@@ -100,6 +100,11 @@ the sources, so it cannot rebuild the package with `--build`; the repository is
 where that happens. If the package must be rebuildable from the cache,
 `exports_sources` copies the sources in on export instead.
 
+Each Conan command is its own process, and `conan build` and `conan export-pkg`
+are two of them. Anything `build()` stores on `self` is gone when `package()`
+runs, so `package()` has to find what it copies the same way `build()` made it -
+from the layout and the settings - rather than from state the build left behind.
+
 ## Where the packages are
 
 `CMakeDeps` serves CMake. Everything else a port builds with - shell scripts,
