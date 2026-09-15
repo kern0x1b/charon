@@ -107,12 +107,15 @@ from the layout and the settings - rather than from state the build left behind.
 
 Editing a recipe changes its revision, and every package exported under the old
 revision stops matching - for each architecture, including the ones the edit was
-not about. A lockfile still names the old revision, so install fails until the
-package is exported again and the lock is updated:
-`conan lock create . --lockfile=conan.lock --lockfile-out=conan.lock` with the
-same profiles as the build. To start the lock over from what the recipes say
-now, pass `--lockfile=""`: Conan otherwise reads a `conan.lock` it finds beside
-the conanfile as its input, and keeps the revisions in it.
+not about. A lockfile still names the old revision, and on the machine that made
+the edit nothing fails: the old revision is still in the local cache, so the
+build quietly uses it. Only a fresh clone fails. Update the lock in the same
+change as the recipe:
+`conan lock create . --lockfile="" --update --lockfile-out=conan.lock` with the
+same profiles as the build. `--lockfile=""` starts over from what the recipes
+say now - Conan otherwise reads a `conan.lock` it finds beside the conanfile as
+its input and keeps the revisions in it - and `--update` exports the recipes
+from the indexes again instead of taking the revision already in the cache.
 
 Every recipe carries a `test_package`, and `conan create` runs it. `ios6-base`
 provides the whole of it; a recipe adds three files:
