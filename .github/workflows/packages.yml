@@ -78,8 +78,10 @@ jobs:
       - name: Check the guard rails
         run: |
           set +e
+          # --build=missing would reuse the cached package and never reach the
+          # hook, which is how this check passed while testing nothing.
           IOS_SDK=/nonexistent/sdk conan create recipes/brotli/all --version=1.1.0 \
-              -pr:h ios6-armv7 -pr:b default --build=missing > guard.log 2>&1
+              -pr:h ios6-armv7 -pr:b default --build="brotli/*" > guard.log 2>&1
           grep -q "the SDK is not at /nonexistent/sdk" guard.log \
             && echo "missing SDK is refused" \
             || { echo "the SDK guard did not fire"; cat guard.log; exit 1; }
