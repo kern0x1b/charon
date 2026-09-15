@@ -81,7 +81,7 @@ keeps them there.
 
 ## Packaging a library
 
-Two things every recipe meets sooner or later.
+Three things every recipe meets sooner or later.
 
 A library built with a SOVERSION leaves `libfoo.dylib -> libfoo.1.2.3.dylib` in
 its build tree. A `copy(self, "*.dylib", ...)` in `package()` that matches the
@@ -104,6 +104,13 @@ Each Conan command is its own process, and `conan build` and `conan export-pkg`
 are two of them. Anything `build()` stores on `self` is gone when `package()`
 runs, so `package()` has to find what it copies the same way `build()` made it -
 from the layout and the settings - rather than from state the build left behind.
+
+Editing a recipe changes its revision, and every package exported under the old
+revision stops matching - for each architecture, including the ones the edit was
+not about. A lockfile still names the old revision, so install fails until the
+package is exported again and the lock is updated:
+`conan lock create . --lockfile=conan.lock --lockfile-out=conan.lock` with the
+same profiles as the build.
 
 ## Where the packages are
 
