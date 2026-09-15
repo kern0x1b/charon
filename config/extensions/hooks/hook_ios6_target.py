@@ -37,9 +37,10 @@ def pre_build(conanfile):
             "set tools.apple:sdk_path; build with one of them.")
     if not os.path.isdir(sdk):
         raise ConanException(
-            f"{conanfile.ref}: the SDK is not at {sdk}. Install theos with an "
-            "iPhoneOS SDK, or point IOS_SDK at one. Do not continue without it: "
-            "the build fails much later, inside Apple's headers.")
+            f"{conanfile.ref}: the SDK is not at {sdk}. Put iPhoneOS13.7.sdk from "
+            "https://github.com/theos/sdks there, or set tools.apple:sdk_path to "
+            "where it is. Do not continue without it: the build fails much later, "
+            "inside Apple's headers.")
 
     if conanfile.name == "ld64" or conanfile.settings.get_safe("arch") != "armv7":
         return

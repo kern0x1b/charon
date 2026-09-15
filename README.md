@@ -15,10 +15,10 @@ other. What is shared is only what is true for all of them.
     config/profiles/ios-arm64  the target: arm64, iOS 7.0 or later, the theos SDK
     config/extensions/hooks/   refuses a missing SDK or a swapped linker
     config/extensions/commands/ serves a checkout's recipes, in the right order
-    config/packaging/ios6.mk   the theos settings every package is built with
     tools/sdk-usage.py         which files of an SDK a build actually read
-    recipes/ld64/               the linker, built from cctools-port
-    recipes/ios6-base/         the base class a port's conanfile extends
+    recipes/ld64/              the linker, built from cctools-port
+    recipes/ldid/              the signing tool the device accepts
+    recipes/ios6-base/         the base class a port's conanfile extends, and its .deb writer
 
 ## A new machine
 
@@ -30,8 +30,10 @@ other. What is shared is only what is true for all of them.
     conan ios6-remote ios6 ios6-toolchain
 
 Xcode is not required and does not need to be installed. The Command Line Tools
-carry the compiler and the compiler runtime, theos carries the SDK, and the
-linker is built from source by the `ld64` recipe.
+carry the compiler and the compiler runtime, the SDK is the one theos publishes
+in [theos/sdks](https://github.com/theos/sdks), and the linker and the signing
+tool are built from source by the `ld64` and `ldid` recipes. Theos itself is not
+needed.
 
 ## A port
 
@@ -140,8 +142,8 @@ what it says about itself instead.
 
 ## Where the packages are
 
-`CMakeDeps` serves CMake. Everything else a port builds with - shell scripts,
-Theos makefiles - needs the same answer, so `ios6-base` writes it once:
+`CMakeDeps` serves CMake. Everything else a port runs - a test harness, a shell
+script - needs the same answer, so `ios6-base` writes it once:
 `build/conan/<arch>/ios6-deps.env`, one line per package, taken from the dependency
 graph rather than typed out.
 
@@ -177,7 +179,7 @@ places, and each is kept to what is needed:
 - **The Command Line Tools** - the compilers and their runtime, `mig`, and the
   archive and binary tools. They are installed once by `xcode-select --install`
   and nothing here replaces them.
-- **The iOS SDK, from theos.** Read, never copied. A port records exactly which
+- **The iOS SDK, from theos/sdks.** Read, never copied. A port records exactly which
   of its files it reads - `tools/sdk-usage.py` turns the compiler's and the
   linker's own logs into that list - so the dependency is a known set of paths
   rather than a whole SDK. This repository's CI builds nothing that reads it and
@@ -211,23 +213,30 @@ commit they build rather than the time they ran.
 
 ## Packaging
 
-Every port ships a .deb, and the settings that produce one are the same for all
-of them: one architecture, a deployment target far below the SDK, the plain
-(non-rootless) package layout, and the module flags this SDK needs. They live
-in `config/packaging/ios6.mk`, which `conan config install` puts where a port's
-own makefile can include it, after the port's `ios6-deps.env`:
+Every port ships a .deb. The port builds what goes in it with CMake like
+anything else, signs it with the `ldid` tool_requires, installs it into a staged
+tree laid out as the device's filesystem, and hands that tree to
+`ios6-base.DebianPackage` from `package()`:
 
-    include build/conan/armv7/ios6-deps.env
-    include $(if $(CONAN_HOME),$(CONAN_HOME),$(HOME)/.conan2)/packaging/ios6.mk
+    def package(self):
+        self.python_requires["ios6-base"].module.DebianPackage(
+            self, "packaging/control", self._stage, "packaging/DEBIAN"
+        ).write(os.path.join(self.package_folder, "deb"))
 
-The order matters because `ios6.mk` links through the `ld64` package it names.
-Apple's own linker from Xcode 27 writes an `LC_ENCRYPTION_INFO` load command into
-every armv7 dylib, and iOS 6 will not start an app whose MobileSubstrate tweak
-carries one - no crash log, the tweak's constructor never runs. The same source
-linked by ld64 has no such command and loads.
+It writes the archive dpkg-deb and theos's dm.pl write - `debian-binary`,
+`control.tar.gz`, `data.tar.lzma`, owned by root - with the version from the
+recipe, so the port's control file carries neither `Version` nor
+`Installed-Size`. Neither theos nor dpkg is needed to produce it.
 
-What stays with the port is its identity - the package id, the version, the
-icon, and what it stages into the package.
+Everything armv7 links through the `ld64` package, which the profile hands to
+every CMake build as `-B`. Apple's own linker from Xcode 27 writes an
+`LC_ENCRYPTION_INFO` load command into every armv7 dylib, and iOS 6 will not
+start an app whose MobileSubstrate tweak carries one - no crash log, the tweak's
+constructor never runs. The same source linked by ld64 has no such command and
+loads.
+
+What stays with the port is its identity - the package id, the icon, and what
+it stages into the package.
 
 Recipes name a git URL and a commit. Nothing is vendored, nothing is committed
 as a binary, and a clean clone builds what the lock says.
