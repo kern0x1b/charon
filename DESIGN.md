@@ -58,7 +58,7 @@ A port's file should be readable in one screen:
 ## Adding a port
 
 1. `conan config install <this repo>/config`
-2. `conan remote add ios6 <this repo> --type=local-recipes-index`
+2. `conan ios6-remote ios6 <this repo>` - `conan remote add` appends after ConanCenter, which would answer first
 3. Write the port's `conanfile.py` as above.
 4. `conan install . -pr:h ios6-armv7 -pr:b default --build=missing`
 5. Commit the resulting `conan.lock`.
