@@ -23,9 +23,11 @@ iOS 6.0, the theos SDK, Cortex-A9 with NEON, and `ld64-armv7` as a build tool.
 `settings_user.yml` adds the iOS versions Conan does not ship. A machine picks
 all of it up with one command, and there is exactly one copy of these facts.
 
-**Shared artifacts** - `recipes/`. Libraries and tools, each pinned to a source
-it is known to build from, each carrying whatever patch this target needs. A
-port names a version; it never vendors the library.
+**The toolchain** - `recipes/ld64-armv7`. The one artifact that is the same for
+every port, because it is what makes building possible at all. Libraries are
+deliberately not here: the ports disagree on versions, and a shared set would
+make one port override another's. Each port carries its own recipes, names a
+git URL and a commit, and builds them itself.
 
 **Shared conventions** - `recipes/ios6-base`. The base class a port's conanfile
 extends: the generators, the layout, and the check that refuses to build if the

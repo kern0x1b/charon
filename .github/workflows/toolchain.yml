@@ -1,0 +1,49 @@
+name: toolchain
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the host tools
+        run: brew install conan ninja llvm
+
+      # theos publishes the SDKs, so nothing here redistributes Apple's, and the
+      # build runs on Apple hardware, which is what the SDK agreement asks.
+      - name: Fetch the iPhoneOS 13.7 SDK
+        run: |
+          git clone --filter=blob:none --no-checkout --depth 1 \
+              https://github.com/theos/sdks.git "$HOME/theos-sdks"
+          git -C "$HOME/theos-sdks" sparse-checkout set --no-cone iPhoneOS13.7.sdk
+          git -C "$HOME/theos-sdks" checkout
+          mkdir -p "$HOME/theos/sdks"
+          mv "$HOME/theos-sdks/iPhoneOS13.7.sdk" "$HOME/theos/sdks/"
+          test -d "$HOME/theos/sdks/iPhoneOS13.7.sdk/usr/include"
+
+      - name: Register the toolchain
+        run: |
+          conan profile detect --force
+          conan config install "$PWD/config"
+          conan remote add ios6 "$PWD" --type=local-recipes-index
+
+      - name: The profile resolves
+        run: conan profile show -pr:h ios6-armv7
+
+      - name: Build the linker
+        run: conan create recipes/ld64-armv7/all --version=956.6 -pr:b default --build=missing
+
+      # Apple's linker cannot link this target once the text passes 16MB. A
+      # linker that cannot say its own name is not one to find that out with.
+      - name: The linker runs and is the one we expect
+        run: |
+          set -e
+          ld=$(find ~/.conan2/p -path "*ld64*/p/bin/ld" | head -1)
+          "$ld" -v 2>&1 | tee ld.txt
+          grep -q "ld64-956.6" ld.txt

@@ -1,46 +1,62 @@
 # ios6-toolchain
 
-Everything the armv7 / iOS 6 ports need in order to build, in one place, so that
-each port carries a list of dependencies instead of a directory of shell
-scripts.
+The part of building for armv7 / iOS 6 that is the same for every project: how
+to build it at all, without Xcode installed.
 
-## What a new machine needs
+Libraries are not here. Each port carries its own recipes and builds them
+itself, because ports disagree - this engine wants OpenSSL 3.0.15, the Telegram
+port 1.1.1w - and a shared library set would make one of them override the
+other. What is shared is only what is true for all of them.
+
+## What is here
+
+    config/settings_user.yml   iOS 6.0 and 6.1, which Conan does not ship
+    config/profiles/ios6-armv7 the target: armv7, iOS 6.0, the theos SDK,
+                               Cortex-A9 with NEON, and the linker
+    config/extensions/hooks/   refuses a missing SDK or a swapped linker
+    recipes/ld64-armv7/        the linker, built from cctools-port
+    recipes/ios6-base/         the base class a port's conanfile extends
+
+## A new machine
 
     brew install conan cmake ninja ccache llvm
     xcode-select --install
-
-Xcode itself is not required. The Command Line Tools carry the compiler and the
-compiler runtime; the SDK comes from theos; the linker and the binary utilities
-are built by the `ld64-armv7` package here.
-
-## Setting it up
 
     git clone https://github.com/kern0x1b/ios6-toolchain.git
     conan config install ios6-toolchain/config
     conan remote add ios6 ios6-toolchain --type=local-recipes-index
 
-`conan config install` brings the profile and the extra iOS versions; the remote
-serves the recipes straight from the working tree, so editing a recipe here is
-immediately visible to every project.
+Xcode is not required and does not need to be installed. The Command Line Tools
+carry the compiler and the compiler runtime, theos carries the SDK, and the
+linker is built from source by the `ld64-armv7` recipe.
 
-## Using it
+## A port
 
+Its own `conanfile.py`, its own `recipes/`, its own `conan.lock`:
+
+    from conan import ConanFile
+
+    class RevenantWebKit(ConanFile):
+        name = "revenant-webkit"
+        python_requires = "ios6-base/1.0"
+        python_requires_extend = "ios6-base.Ios6Port"
+
+        def requirements(self):
+            self.requires("openssl-ios6/3.0.15")
+            self.requires("brotli/1.1.0")
+
+and its own repository serving them:
+
+    conan remote add <port> <port checkout> --type=local-recipes-index
     conan install . -pr:h ios6-armv7 -pr:b default --build=missing
 
-The profile pins the target - armv7, iOS 6.0, the theos SDK, Cortex-A9 with
-NEON - and pulls in `ld64-armv7` as a build tool, which puts itself first in the
-compiler driver's search for `ld`.
+Recipes name a git URL and a commit. Nothing is vendored, nothing is committed
+as a binary, and a clean clone builds what the lock says.
 
-## Why the linker is a package
+## Why the linker is here
 
 Apple's linker from Xcode 27 cannot link a 25MB armv7 dylib: a Thumb branch
-reaches 16MB, the call stubs sit after all the text, and it does not insert
-branch islands to bridge the gap. ld64 does. Since it also has to be built from
-source with libtapi for the SDK's `.tbd` stubs, it is a package like any other,
-pinned to the commits it is known to build from.
-
-## Layout
-
-    config/settings_user.yml   iOS 6.0 and 6.1, which Conan does not ship
-    config/profiles/ios6-armv7 the profile every port includes
-    recipes/                   served as the local-recipes-index remote
+reaches 16MB, the call stubs sit after all the text, and it does not insert the
+branch islands that bridge the gap. ld64 does. It also has to be built from
+source, with libtapi for the SDK's `.tbd` stubs, which makes it a package like
+any other - pinned to the commits it is known to build from.
