@@ -5,7 +5,9 @@ import os
 
 
 class LibCxxArmv7Conan(ConanFile):
-    name = "libcxx-armv7"
+    name = "libcxx"
+    user = "ios6"
+    channel = "stable"
     description = "The C++ runtime for armv7 / iOS 6, which no SDK of that era ships"
     license = "Apache-2.0 WITH LLVM-exception"
     homepage = "https://libcxx.llvm.org"

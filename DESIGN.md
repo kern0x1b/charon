@@ -19,11 +19,11 @@ For anyone arriving from the JVM world, the mapping is close to exact:
 ## The three layers
 
 **Shared configuration** - `config/`. The profile pins the target: armv7,
-iOS 6.0, the theos SDK, Cortex-A9 with NEON, and `ld64-armv7` as a build tool.
+iOS 6.0, the theos SDK, Cortex-A9 with NEON, and `ld64` as a build tool.
 `settings_user.yml` adds the iOS versions Conan does not ship. A machine picks
 all of it up with one command, and there is exactly one copy of these facts.
 
-**The toolchain** - `recipes/ld64-armv7`. The one artifact that is the same for
+**The toolchain** - `recipes/ld64`. The one artifact that is the same for
 every port, because it is what makes building possible at all. Libraries are
 deliberately not here: the ports disagree on versions, and a shared set would
 make one port override another's. Each port carries its own recipes, names a
@@ -52,7 +52,7 @@ A port's file should be readable in one screen:
         python_requires_extend = "ios6-base.Ios6Port"
 
         def requirements(self):
-            self.requires("openssl-ios6/3.0.15")
+            self.requires("openssl/3.0.15@ios6/stable")
             self.requires("brotli/1.1.0")
 
 ## Adding a port

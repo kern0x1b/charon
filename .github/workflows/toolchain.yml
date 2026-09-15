@@ -31,13 +31,21 @@ jobs:
         run: |
           conan profile detect --force
           conan config install "$PWD/config"
-          conan remote add ios6 "$PWD" --type=local-recipes-index
+          conan ios6-remote ios6 "$PWD"
 
       - name: The profile resolves
         run: conan profile show -pr:h ios6-armv7
 
+      # Every recipe here is our build of a third-party library, under that
+      # library's own name. The user and channel are what separate it from the
+      # one ConanCenter publishes, so a reference without them must not resolve
+      # - otherwise remote order is all that stands between a build and a
+      # recipe that cannot cross-compile for this target.
+      - name: A reference without the channel does not resolve
+        run: conan list "ld64/956.6" -r ios6 2>&1 | grep -q "not found"
+
       - name: Build the linker
-        run: conan create recipes/ld64-armv7/all --version=956.6 -pr:b default --build=missing
+        run: conan create recipes/ld64/all --version=956.6 -pr:b default --build=missing
 
       # Apple's linker cannot link this target once the text passes 16MB. A
       # linker that cannot say its own name is not one to find that out with.

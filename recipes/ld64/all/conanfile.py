@@ -6,7 +6,9 @@ import shutil
 
 
 class Ld64Armv7Conan(ConanFile):
-    name = "ld64-armv7"
+    name = "ld64"
+    user = "ios6"
+    channel = "stable"
     description = "Apple's ld64 from cctools-port, the linker that still inserts branch islands for armv7"
     license = "APSL-2.0"
     homepage = "https://github.com/tpoechtrager/cctools-port"

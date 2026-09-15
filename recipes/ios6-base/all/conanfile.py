@@ -4,6 +4,8 @@ from conan.errors import ConanInvalidConfiguration
 
 class Ios6BaseConan(ConanFile):
     name = "ios6-base"
+    user = "ios6"
+    channel = "stable"
     version = "1.0"
     package_type = "python-require"
     description = "Conventions every armv7 / iOS 6 port shares"

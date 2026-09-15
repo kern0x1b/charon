@@ -16,7 +16,7 @@ other. What is shared is only what is true for all of them.
     config/extensions/hooks/   refuses a missing SDK or a swapped linker
     config/extensions/commands/ serves a checkout's recipes, in the right order
     config/packaging/ios6.mk   the theos settings every package is built with
-    recipes/ld64-armv7/        the linker, built from cctools-port
+    recipes/ld64/               the linker, built from cctools-port
     recipes/ios6-base/         the base class a port's conanfile extends
 
 ## A new machine
@@ -30,7 +30,7 @@ other. What is shared is only what is true for all of them.
 
 Xcode is not required and does not need to be installed. The Command Line Tools
 carry the compiler and the compiler runtime, theos carries the SDK, and the
-linker is built from source by the `ld64-armv7` recipe.
+linker is built from source by the `ld64` recipe.
 
 ## A port
 
@@ -40,12 +40,12 @@ Its own `conanfile.py`, its own `recipes/`, its own `conan.lock`:
 
     class RevenantWebKit(ConanFile):
         name = "revenant-webkit"
-        python_requires = "ios6-base/1.0"
+        python_requires = "ios6-base/1.0@ios6/stable"
         python_requires_extend = "ios6-base.Ios6Port"
 
         def requirements(self):
-            self.requires("openssl-ios6/3.0.15")
-            self.requires("brotli/1.1.0")
+            self.requires("openssl/3.0.15@ios6/stable")
+            self.requires("brotli/1.1.0@ios6/stable")
 
 and its own repository serving them:
 

@@ -32,12 +32,12 @@ def pre_build(conanfile):
             "iPhoneOS SDK, or point IOS_SDK at one. Do not continue without it: "
             "the build fails much later, inside Apple's headers.")
 
-    if conanfile.name == "ld64-armv7":
+    if conanfile.name == "ld64":
         return
     build_deps = {str(d.ref.name) for d in conanfile.dependencies.build.values()}
-    if "ld64-armv7" not in build_deps:
+    if "ld64" not in build_deps:
         raise ConanException(
-            f"{conanfile.ref}: ld64-armv7 is not in the build context. Apple's "
+            f"{conanfile.ref}: ld64 is not in the build context. Apple's "
             "linker cannot link this target once the text passes 16MB, and it "
             "fails differently on different machines. The ios6-armv7 profile "
             "requires it; a profile that does not is the wrong profile.")
