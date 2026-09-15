@@ -29,7 +29,7 @@ class LibCxxArmv7Conan(ConanFile):
 
     def generate(self):
         sdk = self.conf.get("tools.apple:sdk_path")
-        target = f"armv7-apple-ios{self.settings.os.version}"
+        target = f"{self.settings.arch}-apple-ios{self.settings.os.version}"
         tc = CMakeToolchain(self)
         # Flags belong here rather than in cache variables: CMakeToolchain owns
         # CMAKE_CXX_FLAGS and would overwrite them.
@@ -39,7 +39,7 @@ class LibCxxArmv7Conan(ConanFile):
         tc.cache_variables.update({
             "CMAKE_SYSTEM_NAME": "Darwin",
             "CMAKE_OSX_SYSROOT": sdk,
-            "CMAKE_OSX_ARCHITECTURES": "armv7",
+            "CMAKE_OSX_ARCHITECTURES": str(self.settings.arch),
             "LLVM_ENABLE_RUNTIMES": "libcxx;libcxxabi",
             "LIBCXX_ENABLE_SHARED": True,
             "LIBCXXABI_ENABLE_SHARED": True,
