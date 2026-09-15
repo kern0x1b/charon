@@ -71,6 +71,95 @@ class Ios6Port:
         DependencyEnv(self).generate()
 
 
+class DebianPackage:
+    """A .deb for the device's dpkg, written from a staged filesystem tree.
+
+    The same archive dpkg-deb and theos's dm.pl write: an ar file holding
+    debian-binary, control.tar.gz and data.tar.lzma. The version comes from the
+    recipe, so the control file a port keeps says everything but that.
+    """
+
+    def __init__(self, conanfile, control, root, scripts=None):
+        self._conanfile = conanfile
+        self._control = control
+        self._root = root
+        self._scripts = scripts
+
+    def _fields(self):
+        with open(self._control) as template:
+            text = template.read().rstrip("\n")
+        if re.search(r"^(Version|Installed-Size):", text, re.M):
+            raise ConanException(f"{self._control} must not carry Version or Installed-Size; the recipe writes them")
+        fields = dict(re.findall(r"^([A-Za-z-]+):\s*(.*)$", text, re.M))
+        for required in ("Package", "Architecture"):
+            if required not in fields:
+                raise ConanException(f"{self._control} has no {required} field")
+        size = sum(os.lstat(os.path.join(folder, name)).st_size
+                   for folder, _, names in os.walk(self._root) for name in names)
+        text += f"\nVersion: {self._conanfile.version}\nInstalled-Size: {(size + 1023) // 1024}\n"
+        return fields, text
+
+    @staticmethod
+    def _tar(members, compression):
+        import io
+        import tarfile
+
+        buffer = io.BytesIO()
+        mode = "w:gz" if compression == "gz" else "w"
+        with tarfile.open(fileobj=buffer, mode=mode, format=tarfile.GNU_FORMAT) as archive:
+            for name, path, data in members:
+                info = archive.gettarinfo(path, arcname=name) if path else tarfile.TarInfo(name)
+                info.uid = info.gid = 0
+                info.uname = info.gname = "root"
+                info.mtime = 0
+                if data is not None:
+                    info.size = len(data)
+                    info.mode = 0o644
+                    archive.addfile(info, io.BytesIO(data))
+                elif info.isfile():
+                    with open(path, "rb") as content:
+                        archive.addfile(info, content)
+                else:
+                    archive.addfile(info)
+        payload = buffer.getvalue()
+        if compression == "lzma":
+            import lzma
+            payload = lzma.compress(payload, format=lzma.FORMAT_ALONE, preset=9)
+        return payload
+
+    def _data_members(self):
+        members = [("./", self._root, None)]
+        for folder, directories, names in os.walk(self._root):
+            directories.sort()
+            for name in sorted(directories) + sorted(names):
+                path = os.path.join(folder, name)
+                members.append(("./" + os.path.relpath(path, self._root), path, None))
+        return members
+
+    def write(self, destination):
+        fields, control = self._fields()
+        control_members = [("./", self._root, None), ("./control", None, control.encode())]
+        if self._scripts and os.path.isdir(self._scripts):
+            for name in sorted(os.listdir(self._scripts)):
+                control_members.append((f"./{name}", os.path.join(self._scripts, name), None))
+        parts = [
+            ("debian-binary", b"2.0\n"),
+            ("control.tar.gz", self._tar(control_members, "gz")),
+            ("data.tar.lzma", self._tar(self._data_members(), "lzma")),
+        ]
+        os.makedirs(destination, exist_ok=True)
+        path = os.path.join(destination,
+                            f"{fields['Package']}_{self._conanfile.version}_{fields['Architecture']}.deb")
+        with open(path, "wb") as deb:
+            deb.write(b"!<arch>\n")
+            for name, data in parts:
+                deb.write(f"{name:<16}{0:<12}{0:<6}{0:<6}{0o100644:<8o}{len(data):<10}`\n".encode())
+                deb.write(data)
+                if len(data) % 2:
+                    deb.write(b"\n")
+        return path
+
+
 class Ios6TestPackage:
     """Base class for a recipe's test_package.
 

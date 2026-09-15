@@ -45,8 +45,8 @@ Its own `conanfile.py`, its own `recipes/`, its own `conan.lock`:
         python_requires_extend = "ios6-base.Ios6Port"
 
         def requirements(self):
-            self.requires("openssl/3.0.15@ios6/stable")
-            self.requires("brotli/1.1.0@ios6/stable")
+            self.requires("libcxx/21.1.0@ios6/stable")
+            self.requires("openssl/3.0.15@revenant/stable")
 
 and its own repository serving them:
 
@@ -78,6 +78,13 @@ registered. `conan remote add` appends, so ConanCenter answers first and a
 build that has never seen these packages silently gets recipes that cannot
 cross-compile for this target. The command puts the checkouts in front and
 keeps them there.
+
+`@ios6/stable` is for what this repository serves - the linker, the C++ runtime,
+the base class - and nothing else. A port's own libraries carry the port's name,
+`openssl/3.0.15@revenant/stable`, `openssl/3.0.15@itglegacy/stable`: two ports
+build the same library with different choices, and two recipes behind one
+reference overwrite each other's packages in the Conan cache every port on the
+machine shares.
 
 ## Packaging a library
 

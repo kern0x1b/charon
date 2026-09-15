@@ -12,12 +12,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: conan-io/setup-conan@v1.4.0
+        with:
+          version: 2.32.0
+          cache_packages: true
+
       - name: Install the host tools
-        run: brew install conan ninja llvm
+        run: brew install ninja llvm
 
       - name: Register the toolchain
         run: |
-          conan profile detect --force
           conan config install "$PWD/config"
           conan ios6-remote ios6 "$PWD"
 
@@ -36,3 +40,6 @@ jobs:
 
       - name: Build the linker and check it is the one we expect
         run: conan create recipes/ld64/all --version=956.6 -pr:b default --build=missing
+
+      - name: Build the signing tool and check it signs
+        run: conan create recipes/ldid/all --version=2.1.5 -pr:h default -pr:b default --build=missing
