@@ -1,0 +1,66 @@
+name: packages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the host tools
+        run: brew install conan ninja llvm
+
+      # theos publishes the SDKs, so nothing here redistributes Apple's, and the
+      # build runs on Apple hardware, which is what the SDK agreement requires.
+      - name: Fetch the iPhoneOS 13.7 SDK
+        run: |
+          git clone --filter=blob:none --no-checkout --depth 1 \
+              https://github.com/theos/sdks.git "$HOME/theos-sdks"
+          git -C "$HOME/theos-sdks" sparse-checkout set --no-cone iPhoneOS13.7.sdk
+          git -C "$HOME/theos-sdks" checkout
+          mkdir -p "$HOME/theos/sdks"
+          mv "$HOME/theos-sdks/iPhoneOS13.7.sdk" "$HOME/theos/sdks/"
+          test -d "$HOME/theos/sdks/iPhoneOS13.7.sdk/usr/include"
+
+      - name: Register the index
+        run: |
+          conan profile detect --force
+          conan config install "$PWD/config"
+          conan remote add ios6 "$PWD" --type=local-recipes-index
+
+      - name: Build the linker
+        run: conan create recipes/ld64-armv7/all --version=956.6 -pr:b default --build=missing
+
+      - name: Build the libraries
+        run: |
+          conan create recipes/brotli/all --version=1.1.0 \
+              -pr:h ios6-armv7 -pr:b default --build=missing
+          conan create recipes/openssl-ios6/all --version=3.0.15 \
+              -pr:h ios6-armv7 -pr:b default --build=missing
+
+      # A package that is not armv7, or not built against iOS 6, is a package
+      # that will fail much later and much less clearly.
+      - name: Check what came out
+        run: |
+          set -e
+          for lib in $(find ~/.conan2/p -name "libbrotlidec.a" -o -name "libcrypto.a"); do
+            echo "== $lib"
+            lipo -info "$lib" | grep -q armv7
+            otool -l "$lib" | grep -A2 LC_VERSION_MIN_IPHONEOS | grep -q "version 6.0"
+          done
+          ar t $(find ~/.conan2/p -name libcrypto.a | head -1) | grep -q armv4
+          echo "armv7, iOS 6.0, ARM assembly present"
+
+      - name: Check the guard rails
+        run: |
+          set +e
+          IOS_SDK=/nonexistent/sdk conan create recipes/brotli/all --version=1.1.0 \
+              -pr:h ios6-armv7 -pr:b default --build=missing > guard.log 2>&1
+          grep -q "the SDK is not at /nonexistent/sdk" guard.log \
+            && echo "missing SDK is refused" \
+            || { echo "the SDK guard did not fire"; cat guard.log; exit 1; }
