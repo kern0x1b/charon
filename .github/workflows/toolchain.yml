@@ -15,18 +15,6 @@ jobs:
       - name: Install the host tools
         run: brew install conan ninja llvm
 
-      # theos publishes the SDKs, so nothing here redistributes Apple's, and the
-      # build runs on Apple hardware, which is what the SDK agreement asks.
-      - name: Fetch the iPhoneOS 13.7 SDK
-        run: |
-          git clone --filter=blob:none --no-checkout --depth 1 \
-              https://github.com/theos/sdks.git "$HOME/theos-sdks"
-          git -C "$HOME/theos-sdks" sparse-checkout set --no-cone iPhoneOS13.7.sdk
-          git -C "$HOME/theos-sdks" checkout
-          mkdir -p "$HOME/theos/sdks"
-          mv "$HOME/theos-sdks/iPhoneOS13.7.sdk" "$HOME/theos/sdks/"
-          test -d "$HOME/theos/sdks/iPhoneOS13.7.sdk/usr/include"
-
       - name: Register the toolchain
         run: |
           conan profile detect --force
