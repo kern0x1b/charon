@@ -1,5 +1,6 @@
 {% set theos = os.getenv("THEOS", os.path.join(os.getenv("HOME"), "theos")) %}
 {% set sdk = os.getenv("IOS_SDK", theos + "/sdks/iPhoneOS13.7.sdk") %}
+{% set detected = detect_api.detect_default_compiler() %}
 
 [settings]
 os=iOS
@@ -7,7 +8,7 @@ os.version=6.0
 os.sdk=iphoneos
 arch=armv7
 compiler=apple-clang
-compiler.version={{ detect_api.detect_default_compiler()[1] }}
+compiler.version={{ detect_api.default_compiler_version(detected[0], detected[1]) }}
 compiler.cppstd=23
 compiler.libcxx=libc++
 build_type=Release
