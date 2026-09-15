@@ -11,6 +11,11 @@ export THEOS_PACKAGE_SCHEME :=
 
 export ADDITIONAL_CFLAGS := -fno-modules -Wno-error=deprecated-module-dot-map
 
+ifeq ($(IOS6_BUILD_LD64),)
+$(error IOS6_BUILD_LD64 is not set. Include the port's ios6-deps.env before ios6.mk: armv7 is linked by the ld64 package)
+endif
+export ADDITIONAL_LDFLAGS := -B$(IOS6_BUILD_LD64)/bin
+
 ifneq ($(wildcard $(IOS6_DEVICE_ENV)),)
 export THEOS_DEVICE_IP ?= $(shell sed -n 's/^DEVICE_HOST=//p' $(IOS6_DEVICE_ENV))
 export THEOS_DEVICE_PORT ?= $(shell sed -n 's/^DEVICE_PORT=//p' $(IOS6_DEVICE_ENV))

@@ -189,9 +189,16 @@ Every port ships a .deb, and the settings that produce one are the same for all
 of them: one architecture, a deployment target far below the SDK, the plain
 (non-rootless) package layout, and the module flags this SDK needs. They live
 in `config/packaging/ios6.mk`, which `conan config install` puts where a port's
-own makefile can include it:
+own makefile can include it, after the port's `ios6-deps.env`:
 
+    include build/conan/armv7/ios6-deps.env
     include $(if $(CONAN_HOME),$(CONAN_HOME),$(HOME)/.conan2)/packaging/ios6.mk
+
+The order matters because `ios6.mk` links through the `ld64` package it names.
+Apple's own linker from Xcode 27 writes an `LC_ENCRYPTION_INFO` load command into
+every armv7 dylib, and iOS 6 will not start an app whose MobileSubstrate tweak
+carries one - no crash log, the tweak's constructor never runs. The same source
+linked by ld64 has no such command and loads.
 
 What stays with the port is its identity - the package id, the version, the
 icon, and what it stages into the package.
