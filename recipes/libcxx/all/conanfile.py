@@ -68,6 +68,6 @@ class LibCxxArmv7Conan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ["c++", "c++abi"]
-        # The headers are consumed with -nostdinc++, so the include directory is
-        # named rather than merged into the default search path.
         self.cpp_info.includedirs = [os.path.join("include", "c++", "v1")]
+        self.cpp_info.cxxflags = ["-nostdinc++"]
+        self.cpp_info.defines = ["_LIBCPP_DISABLE_AVAILABILITY"]
