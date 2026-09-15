@@ -3,6 +3,7 @@ import re
 
 from conan import ConanFile
 from conan.errors import ConanException, ConanInvalidConfiguration
+from conan.tools.scm import Version
 
 
 class Ios6BaseConan(ConanFile):
@@ -52,16 +53,17 @@ class Ios6Port:
     generators = "CMakeDeps", "CMakeToolchain", "VirtualBuildEnv"
 
     def validate(self):
-        if str(self.settings.os) != "iOS" or str(self.settings.arch) != "armv7":
+        arch = str(self.settings.arch)
+        if str(self.settings.os) != "iOS" or arch not in ("armv7", "armv8"):
             raise ConanInvalidConfiguration(
-                f"{self.name} targets armv7 iOS; got {self.settings.os}/{self.settings.arch}. "
-                "Build it with -pr:h ios6-armv7.")
-        if str(self.settings.os.version) not in ("6.0", "6.1"):
+                f"{self.name} targets iOS on armv7 or arm64; got {self.settings.os}/{arch}. "
+                "Build it with -pr:h ios6-armv7 or -pr:h ios-arm64.")
+        if arch == "armv8" and Version(str(self.settings.os.version)) < "7.0":
             raise ConanInvalidConfiguration(
-                f"{self.name} targets iOS 6; the profile says {self.settings.os.version}.")
+                f"{self.name}: arm64 starts at iOS 7.0; the profile says {self.settings.os.version}.")
 
     def layout(self):
-        self.folders.generators = "build/conan"
+        self.folders.generators = os.path.join("build", "conan", str(self.settings.arch))
 
     def generate(self):
         DependencyEnv(self).generate()

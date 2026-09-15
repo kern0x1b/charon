@@ -11,15 +11,18 @@ For anyone arriving from the JVM world, the mapping is close to exact:
 |---|---|
 | `build.gradle` per module | `conanfile.py` in each port |
 | convention plugin / parent POM | `ios6-base`, consumed with `python_requires` |
-| `~/.gradle/init.gradle`, toolchain config | `config/profiles/ios6-armv7`, installed with `conan config install` |
+| `~/.gradle/init.gradle`, toolchain config | `config/profiles/ios6-armv7` and `ios-arm64`, installed with `conan config install` |
 | Maven Central / company Artifactory | this repository, registered as a `local-recipes-index` remote |
 | `gradle.lockfile`, `dependencyManagement` | `conan.lock` in each port |
 | `~/.m2/repository` | `~/.conan2` |
 
 ## The three layers
 
-**Shared configuration** - `config/`. The profile pins the target: armv7,
-iOS 6.0, the theos SDK, Cortex-A9 with NEON, and `ld64` as a build tool.
+**Shared configuration** - `config/`. Two profiles pin the target:
+`ios6-armv7` - armv7, iOS 6.0, the theos SDK, and `ld64` as a build tool - and
+`ios-arm64` - arm64 from iOS 7.0, the theos SDK. They carry nothing a port
+chooses for itself: a C++ standard, CPU tuning or a later deployment target goes
+in the port's own profile, which includes one of these.
 `settings_user.yml` adds the iOS versions Conan does not ship. A machine picks
 all of it up with one command, and there is exactly one copy of these facts.
 
@@ -30,8 +33,8 @@ make one port override another's. Each port carries its own recipes, names a
 git URL and a commit, and builds them itself.
 
 **Shared conventions** - `recipes/ios6-base`. The base class a port's conanfile
-extends: the generators, the layout, and the check that refuses to build if the
-profile is not the armv7 one. This is the piece that stops ten ports from
+extends: the generators, the layout, and the check that refuses an operating
+system or architecture this toolchain does not build for. This is the piece that stops ten ports from
 drifting into ten different spellings of the same build.
 
 ## What stays with the port
@@ -60,7 +63,7 @@ A port's file should be readable in one screen:
 1. `conan config install <this repo>/config`
 2. `conan ios6-remote ios6 <this repo>` - `conan remote add` appends after ConanCenter, which would answer first
 3. Write the port's `conanfile.py` as above.
-4. `conan install . -pr:h ios6-armv7 -pr:b default --build=missing`
+4. `conan install . -pr:h <the port's profile, which includes ios6-armv7 or ios-arm64> -pr:b default --build=missing`
 5. Commit the resulting `conan.lock`.
 
 ## Adding a library

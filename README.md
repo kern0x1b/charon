@@ -11,8 +11,8 @@ other. What is shared is only what is true for all of them.
 ## What is here
 
     config/settings_user.yml   iOS 6.0 and 6.1, which Conan does not ship
-    config/profiles/ios6-armv7 the target: armv7, iOS 6.0, the theos SDK,
-                               Cortex-A9 with NEON, and the linker
+    config/profiles/ios6-armv7 the target: armv7, iOS 6.0, the theos SDK, the linker
+    config/profiles/ios-arm64  the target: arm64, iOS 7.0 or later, the theos SDK
     config/extensions/hooks/   refuses a missing SDK or a swapped linker
     config/extensions/commands/ serves a checkout's recipes, in the right order
     config/packaging/ios6.mk   the theos settings every package is built with
@@ -53,6 +53,24 @@ and its own repository serving them:
     conan ios6-remote <port> <port checkout>
     conan install . -pr:h ios6-armv7 -pr:b default --build=missing
 
+The shared profiles say only what is true of the target: the operating system,
+the architecture, the SDK and, for armv7, the linker. A port's own choices - the
+C++ standard, CPU tuning, a later deployment target - go in a profile of its own
+that includes the shared one:
+
+    include(ios6-armv7)
+
+    [settings]
+    compiler.cppstd=23
+
+    [conf]
+    tools.build:cflags=["-mcpu=cortex-a9"]
+
+and the install names that profile instead: `-pr:h profiles/<port>-armv7`. A
+deployment target alone can also be given on the command line,
+`-s:h os.version=9.0`. arm64 starts at iOS 7.0, and the base class refuses
+anything lower.
+
 `conan ios6-remote` is `conan remote add` with the order enforced. A port and
 this repository both carry recipes under names ConanCenter also publishes -
 icu, brotli, libxslt - and Conan asks the remotes in the order they are
@@ -65,7 +83,7 @@ keeps them there.
 
 `CMakeDeps` serves CMake. Everything else a port builds with - shell scripts,
 Theos makefiles - needs the same answer, so `ios6-base` writes it once:
-`build/conan/ios6-deps.env`, one line per package, taken from the dependency
+`build/conan/<arch>/ios6-deps.env`, one line per package, taken from the dependency
 graph rather than typed out.
 
     IOS6_HOST_OPENSSL=/.../openssl/3.0.15/Release/armv7
@@ -74,8 +92,12 @@ graph rather than typed out.
 `IOS6_HOST_*` are the libraries built for the phone, `IOS6_BUILD_*` the tools
 that run on this machine. The same file reads from a shell and from make:
 
-    . build/conan/ios6-deps.env
-    include build/conan/ios6-deps.env
+    . build/conan/armv7/ios6-deps.env
+    include build/conan/armv8/ios6-deps.env
+
+The folder is per architecture, so a port that ships both slices installs twice
+and each slice keeps its own paths - a `lipo -create` step reads one file for
+each.
 
 A port that extends `ios6-base.Ios6Port` gets it without doing anything. A
 conanfile that does not - a test harness built for the Mac - calls it directly:

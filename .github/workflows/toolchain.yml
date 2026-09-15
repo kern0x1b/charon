@@ -22,7 +22,9 @@ jobs:
           conan ios6-remote ios6 "$PWD"
 
       - name: The profile resolves
-        run: conan profile show -pr:h ios6-armv7
+        run: |
+          conan profile show -pr:h ios6-armv7
+          conan profile show -pr:h ios-arm64
 
       # Every recipe here is our build of a third-party library, under that
       # library's own name. The user and channel are what separate it from the
