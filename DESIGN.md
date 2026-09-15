@@ -78,6 +78,22 @@ the arm-xlate patch is shaped by the version it patches. 3.5.0 moved the block
 out from under the patch we use, and 1.1.1's is different again from 3.0's. A
 recipe version carries the patch that matches it; ports choose.
 
+## What the checks cover, and what they do not
+
+Every push builds the linker and the libraries on a runner neither of us has
+touched, and then looks at what came out rather than at the exit code: the
+slice is armv7, the deployment target is iOS 6.0, libcrypto still contains its
+ARM assembly, and `OPENSSL_armcap_P` resolves through a plain `__data` word
+rather than the non-lazy pointer the linker rejects. It also feeds the build a
+missing SDK to confirm that failure is still refused, so the guard rails cannot
+rot unnoticed.
+
+None of that proves the result runs. This target is one where a build can
+succeed and still be wrong - the failure that started all of this was a linker
+that exited 0 and produced a binary that could not have run. A device is the
+only thing that settles it, and the device suite stays manual, on real hardware.
+Treat green CI as "the toolchain reproduces", not as "the code is good".
+
 ## Binaries
 
 Recipes only, for now: each machine builds a package once and caches it in

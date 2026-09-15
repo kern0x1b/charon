@@ -56,6 +56,25 @@ jobs:
           ar t $(find ~/.conan2/p -name libcrypto.a | head -1) | grep -q armv4
           echo "armv7, iOS 6.0, ARM assembly present"
 
+      # The patch exists to remove one construct: a named atom in a
+      # __nl_symbol_ptr section, which is what the linker asserts on. A version
+      # bump can restore it quietly, so look at the object rather than trusting
+      # that the patch applied.
+      - name: Check OPENSSL_armcap_P is a plain data word
+        run: |
+          set -e
+          work=$(mktemp -d)
+          cd "$work"
+          ar x $(find ~/.conan2/p -name libcrypto.a | head -1) libcrypto-lib-armv4-mont.o
+          if otool -l libcrypto-lib-armv4-mont.o | grep -q "sectname __nl_symbol_ptr"; then
+            echo "armv4-mont still carries a non-lazy symbol pointer:"
+            otool -l libcrypto-lib-armv4-mont.o | grep -A4 "sectname __nl_symbol_ptr"
+            echo "the arm-xlate patch did not take, and this links only until it does not"
+            exit 1
+          fi
+          otool -l libcrypto-lib-armv4-mont.o | grep -q "sectname __data"
+          echo "OPENSSL_armcap_P resolves through __data, no GOT atom"
+
       - name: Check the guard rails
         run: |
           set +e
