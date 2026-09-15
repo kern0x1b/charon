@@ -69,6 +69,15 @@ A patch must fail loudly when the text it looks for is gone: `replace_in_file`
 raises by default, and that is the behaviour to keep. A silently skipped patch
 produces a build that fails somewhere unrelated, months later.
 
+## Versions, and why patches are version-shaped
+
+Recipe versions track upstream, and a port pins the version it needs. The first
+two consumers already disagree: this engine builds against OpenSSL 3.0.15, the
+Telegram port against 1.1.1w. That is not a case for one recipe carrying both -
+the arm-xlate patch is shaped by the version it patches. 3.5.0 moved the block
+out from under the patch we use, and 1.1.1's is different again from 3.0's. A
+recipe version carries the patch that matches it; ports choose.
+
 ## Binaries
 
 Recipes only, for now: each machine builds a package once and caches it in
