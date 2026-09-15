@@ -79,6 +79,27 @@ build that has never seen these packages silently gets recipes that cannot
 cross-compile for this target. The command puts the checkouts in front and
 keeps them there.
 
+## Packaging a library
+
+Two things every recipe meets sooner or later.
+
+A library built with a SOVERSION leaves `libfoo.dylib -> libfoo.1.2.3.dylib` in
+its build tree. A `copy(self, "*.dylib", ...)` in `package()` that matches the
+unversioned name stores the link, not the file it points at, and the package
+ends up holding a dangling symlink. Copy the real file, and recreate the short
+name with `os.symlink` inside `package_folder` if consumers link against it.
+
+Some sources already live in the consuming repository - a submodule pinned in a
+monorepo, too large to copy around. There is no need for an environment
+variable naming the checkout. Point `layout()` at the sources, build them where
+they are with `conan build`, then turn that build into a normal package with
+`conan export-pkg`: it runs `package()` against the local build folder and
+stores the result in the cache, resolvable by `requires()` and written into
+`ios6-deps.env` like any other. The cache holds the recipe and the artifacts, not
+the sources, so it cannot rebuild the package with `--build`; the repository is
+where that happens. If the package must be rebuildable from the cache,
+`exports_sources` copies the sources in on export instead.
+
 ## Where the packages are
 
 `CMakeDeps` serves CMake. Everything else a port builds with - shell scripts,
