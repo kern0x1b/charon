@@ -29,6 +29,15 @@ other. What is shared is only what is true for all of them.
     conan config install ios6-toolchain/config
     conan ios6-remote ios6 ios6-toolchain
 
+    export LLVM_PREFIX="$(brew --prefix llvm)"
+
+`LLVM_PREFIX` is read once, by `config/global.conf`, into
+`user.ios6:llvm_prefix`. Only the `ld64` recipe asks for it: cctools' configure
+runs `llvm-config` to find `libLTO`, and a linker built without it silently
+drops LTO support, which this target builds with. Recipes never read the
+environment themselves, so a missing path stops `conan create` with that
+sentence rather than producing a linker that cannot link.
+
 Xcode is not required and does not need to be installed. The Command Line Tools
 carry the compiler and the compiler runtime, the SDK is the one theos publishes
 in [theos/sdks](https://github.com/theos/sdks), and the linker and the signing

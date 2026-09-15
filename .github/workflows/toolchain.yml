@@ -39,7 +39,7 @@ jobs:
         run: conan list "ld64/956.6" -r ios6 2>&1 | grep -q "not found"
 
       - name: Build the linker and check it is the one we expect
-        run: conan create recipes/ld64/all --version=956.6 -pr:b default --build=missing
+        run: LLVM_PREFIX="$(brew --prefix llvm)" conan create recipes/ld64/all --version=956.6 -pr:b default --build=missing
 
       - name: Build the signing tool and check it signs
         run: conan create recipes/ldid/all --version=2.1.5 -pr:h default -pr:b default --build=missing

@@ -20,15 +20,14 @@ class Ld64Armv7Conan(ConanFile):
             raise ConanInvalidConfiguration("this package builds on macOS")
 
     def _llvm_prefix(self):
-        prefix = os.environ.get("LLVM_PREFIX")
-        if prefix:
-            return prefix
-        brew = shutil.which("brew")
-        if not brew:
-            raise ConanInvalidConfiguration("LLVM_PREFIX is not set and brew was not found")
-        with open("llvm_prefix.txt", "w") as out:
-            self.run(f"{brew} --prefix llvm", stdout=out)
-        return open("llvm_prefix.txt").read().strip()
+        prefix = self.conf.get("user.ios6:llvm_prefix", check_type=str)
+        if not prefix or not os.path.isdir(prefix):
+            raise ConanInvalidConfiguration(
+                "user.ios6:llvm_prefix does not name an LLVM. cctools' configure asks llvm-config where "
+                "libLTO is, and a linker built without it drops LTO support, which this target builds with. "
+                "The ios6-armv7 profile takes the path from LLVM_PREFIX; set it to a full LLVM, such as "
+                "`brew --prefix llvm`.")
+        return prefix
 
     def source(self):
         data = self.conan_data["sources"][self.version]
@@ -65,9 +64,6 @@ class Ld64Armv7Conan(ConanFile):
             self.run("cmake --build . --target install-libtapi install-tapi-headers")
 
         cctools = os.path.join(self.source_folder, "cctools-port", "cctools")
-        # cctools' own llvm-c headers reach for a newer LLVM's config header.
-        shutil.copy(os.path.join(llvm, "include", "llvm-c", "Visibility.h"),
-                    os.path.join(cctools, "include", "llvm-c"))
         install = os.path.join(self.build_folder, "cctools-install")
         with chdir(self, cctools):
             self.run(f'CPPFLAGS="-I{llvm}/include" ./configure'
