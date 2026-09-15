@@ -1,0 +1,22 @@
+{% set theos = os.getenv("THEOS", os.path.join(os.getenv("HOME"), "theos")) %}
+{% set sdk = os.getenv("IOS_SDK", theos + "/sdks/iPhoneOS13.7.sdk") %}
+
+[settings]
+os=iOS
+os.version=6.0
+os.sdk=iphoneos
+arch=armv7
+compiler=apple-clang
+compiler.version=21
+compiler.cppstd=23
+compiler.libcxx=libc++
+build_type=Release
+
+[tool_requires]
+ld64-armv7/956.6
+
+[conf]
+tools.apple:sdk_path={{ sdk }}
+tools.build:cflags=["-mcpu=cortex-a9", "-mtune=cortex-a9", "-mfpu=neon"]
+tools.build:cxxflags=["-mcpu=cortex-a9", "-mtune=cortex-a9", "-mfpu=neon"]
+tools.cmake.cmaketoolchain:generator=Ninja
