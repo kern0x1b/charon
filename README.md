@@ -110,7 +110,23 @@ revision stops matching - for each architecture, including the ones the edit was
 not about. A lockfile still names the old revision, so install fails until the
 package is exported again and the lock is updated:
 `conan lock create . --lockfile=conan.lock --lockfile-out=conan.lock` with the
-same profiles as the build.
+same profiles as the build. To start the lock over from what the recipes say
+now, pass `--lockfile=""`: Conan otherwise reads a `conan.lock` it finds beside
+the conanfile as its input, and keeps the revisions in it.
+
+Every recipe carries a `test_package`, and `conan create` runs it. `ios6-base`
+provides the whole of it; a recipe adds three files:
+
+    test_package/conanfile.py      python_requires_extend = "ios6-base.Ios6TestPackage"
+    test_package/CMakeLists.txt    find_package(<name> CONFIG) and one executable
+    test_package/test_package.c    a program that calls the library for real
+
+The program is compiled against the package and linked for the target through
+ld64, so a package that builds but cannot be linked against - a missing
+component, a define its headers need, a runtime it forgot to declare - fails in
+its own `conan create`, not in a port an hour into a build. It runs only where
+the target can run; for iOS the link is the test. A tool such as ld64 checks
+what it says about itself instead.
 
 ## Where the packages are
 

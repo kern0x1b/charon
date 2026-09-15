@@ -34,14 +34,5 @@ jobs:
       - name: A reference without the channel does not resolve
         run: conan list "ld64/956.6" -r ios6 2>&1 | grep -q "not found"
 
-      - name: Build the linker
+      - name: Build the linker and check it is the one we expect
         run: conan create recipes/ld64/all --version=956.6 -pr:b default --build=missing
-
-      # Apple's linker cannot link this target once the text passes 16MB. A
-      # linker that cannot say its own name is not one to find that out with.
-      - name: The linker runs and is the one we expect
-        run: |
-          set -e
-          ld=$(find ~/.conan2/p -path "*ld64*/p/bin/ld" | head -1)
-          "$ld" -v 2>&1 | tee ld.txt
-          grep -q "ld64-956.6" ld.txt

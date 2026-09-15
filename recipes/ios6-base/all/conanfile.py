@@ -3,6 +3,8 @@ import re
 
 from conan import ConanFile
 from conan.errors import ConanException, ConanInvalidConfiguration
+from conan.tools.build import can_run
+from conan.tools.cmake import CMake, cmake_layout
 from conan.tools.scm import Version
 
 
@@ -67,3 +69,32 @@ class Ios6Port:
 
     def generate(self):
         DependencyEnv(self).generate()
+
+
+class Ios6TestPackage:
+    """Base class for a recipe's test_package.
+
+    Builds test_package.c or test_package.cpp against the package under test and
+    links it for the target, so a package that compiles but cannot be linked
+    against fails at conan create rather than inside the port. The program runs
+    only where the target can run.
+    """
+
+    settings = "os", "arch", "compiler", "build_type"
+    generators = "CMakeDeps", "CMakeToolchain", "VirtualRunEnv"
+    test_type = "explicit"
+
+    def requirements(self):
+        self.requires(self.tested_reference_str)
+
+    def layout(self):
+        cmake_layout(self)
+
+    def build(self):
+        cmake = CMake(self)
+        cmake.configure()
+        cmake.build()
+
+    def test(self):
+        if can_run(self):
+            self.run(os.path.join(self.cpp.build.bindir, "test_package"), env="conanrun")
