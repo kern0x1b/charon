@@ -11,6 +11,18 @@ def _is_ios6_target(conanfile):
             and settings.get_safe("arch") == "armv7")
 
 
+def pre_generate(conanfile):
+    if not _is_ios6_target(conanfile):
+        return
+    maps = []
+    for folder, name in ((conanfile.source_folder, "/source"), (conanfile.build_folder, "/build")):
+        if folder:
+            maps.append(f"-ffile-prefix-map={folder}={name}")
+    if maps:
+        conanfile.conf.append("tools.build:cflags", maps)
+        conanfile.conf.append("tools.build:cxxflags", maps)
+
+
 def pre_build(conanfile):
     """Two things that must never be resolved silently.
 
