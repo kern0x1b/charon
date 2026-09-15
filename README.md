@@ -15,7 +15,7 @@ are built by the `ld64-armv7` package here.
 
 ## Setting it up
 
-    git clone <this repo> ios6-toolchain
+    git clone https://github.com/kern0x1b/ios6-toolchain.git
     conan config install ios6-toolchain/config
     conan remote add ios6 ios6-toolchain --type=local-recipes-index
 
