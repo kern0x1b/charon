@@ -18,7 +18,10 @@ jobs:
           cache_packages: true
 
       - name: Install the host tools
-        run: brew install cmake ninja llvm
+        run: brew install cmake ninja llvm xmake
+
+      - name: The xmake addon holds binaries to the platform's invariants, writes packages dpkg reads, and reads device.env
+        run: cd tests/addon && xmake f -y && xmake test
 
       - name: Every recipe compiles
         run: git ls-files -- recipes | grep -E '\.py$' | xargs python3 -m py_compile

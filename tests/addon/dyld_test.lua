@@ -1,0 +1,75 @@
+import("fixtures")
+
+local function cache(file, architecture, exported, installed)
+    installed = installed or "/usr/lib/libSystem.B.dylib"
+    local strings = "\0" .. exported .. "\0"
+    local image, header = 0x100, 28
+    local symbols = image + header + 24
+    local symbol_table = symbols + 12
+    local name = symbol_table + #strings
+    local size = name + #installed + 1
+    local data = {}
+    local function put(at, bytes)
+        table.insert(data, {at, bytes})
+    end
+    put(0, ("dyld_v1" .. string.rep(" ", 8 - #architecture) .. architecture .. "\0"))
+    put(16, string.pack("<I4I4I4I4", 0x40, 1, 0x60, 1))
+    put(0x40, string.pack("<I8I8I8I4I4", 0, size, 0, 5, 5))
+    put(0x60, string.pack("<I8I8I8I4", image, 0, 0, name))
+    put(image, string.pack("<I4i4i4I4I4I4I4", 0xFEEDFACE, 12, 9, 6, 1, 24, 0))
+    put(image + header, string.pack("<I4I4I4I4I4I4", 0x2, 24, symbols, 1, symbol_table, #strings))
+    put(symbols, string.pack("<I4BBi2I4", 1, 0x0F, 1, 0, 0))
+    put(symbol_table, strings)
+    put(name, installed .. "\0")
+    local bytes = string.rep("\0", size)
+    for _, piece in ipairs(data) do
+        bytes = bytes:sub(1, piece[1]) .. piece[2] .. bytes:sub(piece[1] + #piece[2] + 1)
+    end
+    io.writefile(file, bytes, {encoding = "binary"})
+    return file
+end
+
+local function dylib(folder, ld64, name, triple, imported, extra)
+    io.writefile(path.join(folder, name .. ".c"), string.format("extern int %s(void);\nint use(void) { return %s(); }\n", imported:sub(2), imported:sub(2)))
+    return fixtures.link(folder, ld64, name .. ".dylib", triple, name .. ".c", table.join({"-dynamiclib"}, extra or {}))
+end
+
+function failures(opt)
+    local dyld = import("charon.apple.dyld", {rootdir = opt.modules, anonymous = true})
+    local found = {}
+    local folder = fixtures.scratch()
+    local armv7 = cache(path.join(folder, "dyld_shared_cache_armv7"), "armv7", "_exported")
+    io.writefile(path.join(folder, "libSystem.tbd"), fixtures.system_stub("dyld_stub_binder, _exported, ___divti3"))
+    io.writefile(path.join(folder, "libgone.tbd"), fixtures.system_stub("_gone", "/usr/lib/libgone.dylib"))
+    local clean = dylib(folder, opt.ld64, "clean-armv7", "armv7-apple-ios6.0", "_exported")
+    local late = dylib(folder, opt.ld64, "late-armv7", "armv7-apple-ios6.0", "___divti3")
+    local wide = dylib(folder, opt.ld64, "wide-arm64", "arm64-apple-ios7.0", "___divti3")
+    local loads = dylib(folder, opt.ld64, "loads-armv7", "armv7-apple-ios6.0", "_exported", {"-lgone"})
+    local cases = {
+        {"an armv7 slice importing only what the cache exports, beside an arm64 slice importing what it does not", {clean, wide}, nil},
+        {"an armv7 slice importing what the cache does not export", {late, wide}, "___divti3"},
+        {"a binary with no slice an armv7 device loads", {wide}, "no slice a armv7 device loads"},
+        {"a binary loading a library neither the device nor the build provides", {loads}, "loads /usr/lib/libgone"}
+    }
+    for index, case in ipairs(cases) do
+        local merged = path.join(folder, "merged" .. index .. ".dylib")
+        fixtures.run(folder, "xcrun", table.join({"lipo", "-create"}, case[2], {"-output", merged}))
+        local missing = dyld.missing_imports(armv7, {merged})
+        local described = {}
+        for _, entry in ipairs(missing) do
+            table.insert(described, entry[2])
+        end
+        local text = table.concat(described, "; ")
+        if not case[3] and #missing > 0 then
+            table.insert(found, case[1] .. " must pass: " .. text)
+        elseif case[3] and not text:find(case[3], 1, true) then
+            table.insert(found, case[1] .. " must be refused naming " .. case[3] .. ": " .. text)
+        end
+    end
+    local errors = fixtures.refusal(function () dyld.check(path.join(folder, "absent"), {clean}) end)
+    if not errors or not errors:find("no shared cache", 1, true) then
+        table.insert(found, "a check with no cache to read must refuse rather than pass")
+    end
+    os.tryrm(folder)
+    return found
+end

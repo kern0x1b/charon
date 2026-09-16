@@ -1,16 +1,61 @@
 # Charon
 
-A build driver for ports: a project declares what it builds in one `charon.toml`,
-and Charon writes the recipes, the profiles, the CMake projects and the packages
-from it, builds them with Conan, and holds every binary to the invariants of the
-platform it runs on. The platform is a file of facts; `apple-ios` is the first,
-from armv7 on iOS 6 to arm64 on current releases, with what an old release lacks
-provided by `apple-compat` rather than by pinning old libraries.
+Legacy Apple platforms for [xmake](https://xmake.io): armv7 on iOS 6 up to
+arm64 on current releases, built by the command line tools' clang with no Xcode.
+A port is an ordinary `xmake.lua` in each module; Charon adds what xmake does not
+know about these platforms, and nothing else:
 
-Libraries are not here. Each port carries its own recipes and builds them
-itself, because ports make their own choices for the same library, and a shared
-set would make one override the other. What is here is only what is true for
-every port of a platform.
+- an **addon** - the `apple-ios` toolchain, the `tweak` rule, the checks every
+  binary is held to where it is linked (Thumb interworking, `__PAGEZERO`,
+  `LC_ENCRYPTION_INFO`, system calls a minimum release lacks, and every import
+  against the device's own dyld shared cache), strip and `ldid` signing,
+  reproducible Debian packages (`xmake deb`) and the phone (`xmake device`);
+- a **package repository** - the SDK, ld64 from cctools-port, ldid and
+  libplist, and the libraries ports share, each under `charon@name`.
+
+## A port
+
+    set_project("kindlesyncfix")
+    set_version("1.0.2")
+
+    add_repositories("charon https://github.com/kern0x1b/charon.git main")
+    add_addons("charon main")
+    includes("@addon/charon/apple-ios")
+    apple_ios({minimum = "6.0", distribution = "jailbreak"})
+
+    set_defaultplat("iphoneos")
+    set_defaultarchs("iphoneos|armv7")
+
+    target("kindlesyncfix")
+        add_rules("@addon/charon/tweak")
+        add_files("kindlesyncfix.m")
+        add_frameworks("Foundation")
+        set_values("tweak.filter", "packaging/kindlesyncfix.plist")
+        set_values("charon.control", "packaging/control")
+
+Then:
+
+    xmake                      build; every binary is checked as it links
+    xmake deb                  stage, strip, sign and write build/<Package>_<Version>_<Architecture>.deb
+    xmake device install       the same, then dpkg -i on the phone device.env names
+    xmake device log [-s 30] [TEXT]
+    xmake device run COMMAND, xmake device where
+
+`apple_ios()` pins the toolchain packages it uses and turns on
+`xmake-requires.lock`; commit the lock. The import check reads
+`~/.charon/dyld/dyld_shared_cache_<arch>` (or `$CHARON_HOME/dyld/...`), copied
+from the device once. A check that would have to be skipped is waived by name
+with the reason, e.g. `set_values("charon.waive.pagezero", "why")`.
+
+A new machine needs `brew install xmake llvm` and `xcode-select --install`. The
+addon's tests build their fixtures with the same ld64 and ldid:
+
+    cd tests/addon && xmake f -y && xmake test
+
+## The Conan driver
+
+Ports that have not moved to xmake yet still build through the Conan driver
+below; it goes away once they have.
 
 ## What is here
 
