@@ -1,11 +1,15 @@
 import os
 import re
+from io import StringIO
 
 from conan import ConanFile
 from conan.errors import ConanException, ConanInvalidConfiguration
+from conan.tools.apple import XCRun
 from conan.tools.build import can_run
 from conan.tools.cmake import CMake, cmake_layout
 from conan.tools.scm import Version
+
+PLACEHOLDER = re.compile(r"\{([a-z][a-z0-9_.-]*(?::[^{}]*)?)\}")
 
 
 class Ios6BaseConan(ConanFile):
@@ -69,6 +73,144 @@ class Ios6Port:
 
     def generate(self):
         DependencyEnv(self).generate()
+
+    def _components(self, name):
+        try:
+            return self.dependencies[name].cpp_info.aggregated_components()
+        except KeyError:
+            available = ", ".join(sorted(dependency.ref.name for dependency in self.dependencies.host.values()))
+            raise ConanException(f"{name} is not a dependency of {self.name}; it requires {available}")
+
+    def _static_library(self, name, library):
+        info = self._components(name)
+        if library not in info.libs:
+            raise ConanException(f"{name} does not provide {library}; it provides {', '.join(info.libs)}")
+        for folder in info.libdirs:
+            path = os.path.join(folder, f"lib{library}.a")
+            if os.path.isfile(path):
+                return path
+        raise ConanException(f"{name} declares {library} but no lib{library}.a is in {', '.join(info.libdirs)}")
+
+    def _build_tool(self, name):
+        try:
+            return os.path.join(self.dependencies.build[name].package_folder, "bin")
+        except KeyError:
+            available = ", ".join(sorted(dependency.ref.name for dependency in self.dependencies.build.values()))
+            raise ConanException(f"{name} is not a build tool of {self.name}; it has {available}")
+
+    def _resolve(self, name):
+        kind, _, rest = name.partition(":")
+        parts = [part for part in rest.split(":") if part] if rest else []
+        if kind == "pkg" and len(parts) == 1:
+            return self.dependencies[parts[0]].package_folder
+        if kind == "include" and len(parts) == 1:
+            return self._components(parts[0]).includedirs[0]
+        if kind == "lib" and len(parts) == 2:
+            return self._static_library(parts[0], parts[1])
+        if kind == "libdirs" and len(parts) == 1:
+            return " ".join(f"-L{folder}" for package in parts[0].split(",")
+                            for folder in self._components(package).libdirs)
+        if kind == "bin" and len(parts) == 1:
+            return self._build_tool(parts[0])
+        raise ConanException(f"{{{name}}} is not something this toolchain can resolve; it answers pkg:NAME, "
+                             "include:NAME, lib:NAME:LIBRARY, libdirs:NAME[,NAME] and bin:TOOL")
+
+    def resolved(self, text):
+        return PLACEHOLDER.sub(lambda match: str(self._resolve(match.group(1))), str(text))
+
+    def resolved_values(self, mapping):
+        return {name: self.resolved(value) for name, value in mapping.items()}
+
+
+class MachO:
+    """Reading and correcting the Mach-O files a port produces.
+
+    Every method takes a path and answers about that file, so a port says what
+    it wants done and never assembles an otool or install_name_tool command of
+    its own. A reference that cannot be resolved is refused rather than left for
+    dyld to fail on at load, where iOS 6 gives up with no crash log.
+    """
+
+    ENCRYPTED = "LC_ENCRYPTION_INFO"
+    MAGIC = (b"\xce\xfa\xed\xfe", b"\xca\xfe\xba\xbe")
+
+    def __init__(self, conanfile):
+        self._conanfile = conanfile
+
+    def tool(self, name):
+        return XCRun(self._conanfile).find(name)
+
+    def output(self, command):
+        captured = StringIO()
+        self._conanfile.run(command, stdout=captured)
+        return captured.getvalue()
+
+    @classmethod
+    def is_macho(cls, path):
+        if os.path.islink(path) or not os.path.isfile(path):
+            return False
+        with open(path, "rb") as candidate:
+            return candidate.read(4) in cls.MAGIC
+
+    def binaries_under(self, root):
+        found = []
+        for folder, _, names in os.walk(root):
+            for name in names:
+                path = os.path.join(folder, name)
+                if self.is_macho(path):
+                    found.append(path)
+        return sorted(found)
+
+    def install_name(self, binary):
+        listing = self.output(f'"{self.tool("otool")}" -D "{binary}"').splitlines()
+        return listing[1].strip() if len(listing) > 1 else None
+
+    def references(self, binary):
+        listing = self.output(f'"{self.tool("otool")}" -L "{binary}"')
+        found = [match.group(1) for match in re.finditer(r"^\t(\S+) \(compatibility version", listing, re.M)]
+        identity = self.install_name(binary)
+        return [reference for reference in found if reference != identity]
+
+    def compatibility_version(self, binary):
+        commands = self.output(f'"{self.tool("otool")}" -l "{binary}"').split("Load command")
+        identity = next((block for block in commands if "cmd LC_ID_DYLIB" in block), "")
+        match = re.search(r"compatibility version (\S+)", identity)
+        return match.group(1) if match else None
+
+    def refuse_encryption_info(self, root):
+        otool = self.tool("otool")
+        stamped = [os.path.relpath(path, root) for path in self.binaries_under(root)
+                   if self.ENCRYPTED in self.output(f'"{otool}" -l "{path}"')]
+        if stamped:
+            raise ConanException(f"linked by a linker that stamps {self.ENCRYPTED}, which iOS 6 refuses in a "
+                                 f"library it loads: {', '.join(stamped)}")
+
+    def retarget(self, identities):
+        rename = os.path.basename
+        by_name = {rename(identity).replace("librev-", "lib"): identity for identity in identities.values()}
+        install_name_tool = self.tool("install_name_tool")
+        for binary, identity in identities.items():
+            self._conanfile.run(f'"{install_name_tool}" -id "{identity}" "{binary}"')
+            for reference in self.references(binary):
+                target = by_name.get(rename(reference))
+                if target and target != reference:
+                    self._conanfile.run(f'"{install_name_tool}" -change "{reference}" "{target}" "{binary}"')
+            unresolved = [reference for reference in self.references(binary) if reference.startswith("@rpath/")]
+            if unresolved:
+                raise ConanException(f"{binary} still depends on {', '.join(unresolved)}")
+
+    def require_compatibility_version(self, binary, expected):
+        found = self.compatibility_version(binary)
+        if found != expected:
+            raise ConanException(f"{binary} declares compatibility version {found} and the system's clients of "
+                                 f"this framework recorded {expected}")
+
+    def strip(self, binary, arguments="-x"):
+        self._conanfile.run(f'"{self.tool("strip")}" {arguments} "{binary}"')
+
+    def sign(self, binary, entitlements=None):
+        flags = f'-S"{entitlements}"' if entitlements else "-S"
+        self._conanfile.run(f'ldid {flags} "{binary}"')
 
 
 class DebianPackage:
