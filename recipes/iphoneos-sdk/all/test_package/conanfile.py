@@ -1,5 +1,6 @@
 import os
 import plistlib
+from io import StringIO
 
 from conan import ConanFile
 from conan.errors import ConanException
@@ -34,3 +35,11 @@ class TestPackage(ConanFile):
         for needed in ("usr/lib/libSystem.tbd", "usr/include/stdio.h"):
             if not os.path.exists(os.path.join(sdk, needed)):
                 raise ConanException(f"{sdk} has no {needed}")
+        probe = os.path.join(self.build_folder, "simd.c")
+        with open(probe, "w") as handle:
+            handle.write("#include <simd/base.h>\nint simd_library_version = SIMD_LIBRARY_VERSION;\n")
+        preprocessed = StringIO()
+        self.run(f'clang -target arm64-apple-ios12.0 -isysroot "{sdk}" -E "{probe}"', stdout=preprocessed)
+        if "simd_library_version = 3;" not in preprocessed.getvalue():
+            raise ConanException(f"{sdk} selects a simd library newer than iOS 12 has for an iOS 12 target, so "
+                                 "simd calls reach functions that release does not export")

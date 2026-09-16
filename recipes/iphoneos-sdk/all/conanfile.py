@@ -4,7 +4,7 @@ import shutil
 
 from conan import ConanFile
 from conan.errors import ConanException
-from conan.tools.files import get
+from conan.tools.files import apply_conandata_patches, export_conandata_patches, get
 
 
 class IphoneOSSdkConan(ConanFile):
@@ -26,8 +26,12 @@ class IphoneOSSdkConan(ConanFile):
     def _installed(self):
         return os.path.join("Platforms", "iPhoneOS.platform", "Developer", "SDKs", self._folder)
 
+    def export_sources(self):
+        export_conandata_patches(self)
+
     def source(self):
         get(self, **self.conan_data["sources"][self.version])
+        apply_conandata_patches(self)
 
     def package(self):
         archived = self.conan_data["archive-folders"][self.version]
