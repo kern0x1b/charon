@@ -95,6 +95,19 @@ that exited 0 and produced a binary that could not have run. A device is the
 only thing that settles it, and the device suite stays manual, on real hardware.
 Treat green CI as "the toolchain reproduces", not as "the code is good".
 
+Some ways a binary can be wrong are facts about the platform, and those are
+checked on every build rather than left to a device: the invariants in the base
+class run inside the step that produces a binary, before it is stripped, so a
+pipeline cannot leave them out. Every defect they cover was found shipping with
+a green build: pointers to ARM-mode functions given the Thumb bit by a post-link
+fix-up, an arm64 executable with a 16 KB `__PAGEZERO`, and entitlements missing
+after signing. A port waives one only with a reason. Still to come here: the
+minimum OS version of every link input, read from the objects and archive
+members themselves - refused when newer than the target anywhere, refused when
+different for a package the graph built, reported when older for a prebuilt
+input - and undefined symbols the deployment target's runtime does not export,
+which a newer SDK's stubs let the linker accept.
+
 ## Binaries
 
 Recipes only, for now: each machine builds a package once and caches it in
@@ -129,7 +142,7 @@ the local recipe index from the declarations; nobody writes it.
 
 Module kinds: `application` (a workspace may hold several), `library`,
 `device-library`, `executable`, and `tool` - built for the host, such as a
-Mach-O fix-up or a code generator.
+code generator.
 
 ### Where a library's tree comes from
 
@@ -206,19 +219,55 @@ ogg and tdlib, for iTgLegacy to fill in against its recipes during review:
     name = "tdlib"
     source = { git = "<url>", commit = "<commit>" }
     patches = ["patches/voip-hook.patch"]
-    requires = ["//libs/openssl"]
-    uses = ["ios6-cross", "cxx-stdlib", "emutls"]
+    requires = ["//libs/openssl", "libcxx:runtime"]
+    uses = ["ios6-cross", "emutls"]
     build = "cmake"
     before-build = ["task:prepare-cross-compiling"]
     cache = { "<option>" = "<value>" }
     produces = ["<libraries>"]
-    resources = ["td_api.tl"]
+    resources = [{ from = "td/generate/scheme/td_api.tl" }]
+
+Architecture-specific strings stay in one library through the same variant
+tables an application already has, merged over the library's own keys:
+
+    [library]
+    name = "libvpx"
+    build = "configure"
+    command = "./configure --target={vpx-target} --disable-examples"
+
+    [variants.armv7.library]
+    vpx-target = "armv7-darwin-gcc"
+
+    [variants.arm64.library]
+    vpx-target = "arm64-darwin-gcc"
+
+openssl's `ios-cross` with `-DBROKEN_CLANG_ATOMICS` against `ios64-cross`, and
+opus's `CMAKE_SYSTEM_PROCESSOR`, are the same shape. `-mthumb` is not: the
+`armv7-apple-ios` triple already compiles Thumb, so no convention adds it.
+
+A fetch may name several files, each with its own checksum, placed into one
+folder - emutls is `emutls.c` and four `int_*.h` from compiler-rt:
+
+    source = { files = [{ url = "...", sha256 = "...", into = "lib/builtins" }, ...] }
+
+An extra translation unit beside the tree's own build - tdlib's
+`compat/weak_import_shims.c` on the dylib's link line - is `extra-sources`, which
+every strategy accepts; the files are the module's own and are named through
+`{port}`. Under `build = "sources"`, `sources` may name the module's files and
+the fetched tree's in one list, each through its placeholder.
 
 ### What a library produces, and who may reach it
 
 `produces` names the archives or dylibs; a dylib also declares its install name.
-`headers` copies header folders, with `into` for a prefix such as `opusenc/`.
-`resources` are files a module ships beside its libraries. Any of them can be
+An entry is a path relative to the build tree, or `{ find = "libopus.a" }`,
+which searches it and is refused when it matches no file or more than one,
+symlinks not counted; `as` renames the result, as tdlib's dylib becomes
+`libtdjson.dylib`. `headers` copies header folders: `{ from = "c/include/" }`
+flattens the folder's contents into `include/`, `into = "opusenc"` puts them
+under that prefix, and `{ from = "vpx/", keep = true }` keeps the folder's own
+name, so libvpx's headers land in `include/vpx/` and never in `include/vpx/vpx/`.
+`resources` are files a module ships beside its libraries, each with `from`
+naming its place in the tree, never a bare name to be searched for. Any of them can be
 found from outside a build with `charon where //libs/tdlib:res/td_api.tl`, which
 prints the path or fails; a tool never reads the cache layout itself.
 
@@ -247,28 +296,51 @@ a dependency on a toolchain module, a step to insert. The module's own keys win
 over a convention's; two conventions that set the same key in ways that cannot
 be ordered are refused.
 
-A convention may carry a condition that asks the compiler, never a name:
+A convention may carry a condition that asks the compiler, never a name, with
+the polarity in the key rather than in a boolean:
 
     [convention.emutls]
-    when = { compiles = "static __thread int x;", with = "the module's target, deployment version and flags", holds = false }
+    unless-compiles = "static __thread int x;"
     requires = ["//toolchain/emutls"]
-    options-for = { c = ["-femulated-tls"], cxx = ["-femulated-tls"] }
+    cache = { CMAKE_OSX_DEPLOYMENT_TARGET = "{emutls-compile-at}" }
+    extra-objects = ["{lib://toolchain/emutls:emutls.o}"]
+    link-options = ["-miphoneos-version-min={os-version}"]
+
+`when-compiles` merges the fragment when the snippet compiles, and
+`unless-compiles` when it does not, both with the module's target, deployment
+version and flags. A convention is not limited to flags: emutls needs a cache
+value for the compile, an object on the link line and a link option carrying the
+real deployment version, from one condition.
 
 Whether a module needs emulated TLS depends on the target and its deployment
 version - armv7 below 9.0, arm64 at 7.0 but not from 8.0 - and a toolchain can
 move either number, so the condition is evaluated with the module's own settings
 and the fragment merges only when it holds. A condition that cannot be evaluated
-is refused, never read as false. emutls and the Mach-O fix-up become toolchain
-modules that conventions reference, so no port carries their C.
+is refused, never read as false. emutls becomes a toolchain module that the
+convention references, so no port carries its C. The Mach-O fix-up does not: with
+ld64 the Thumb bits, the entry point and `__PAGEZERO` are already right, the
+fix-up only corrupted pointers to ARM-mode functions, and the invariants now
+prove the linker's output instead.
+
+Per-language lists do not inherit from each other. `objcxx` does not take
+`cxx`'s flags and `objc` does not take `c`'s; a flag both need, such as
+`-fno-threadsafe-statics`, is listed under both, because the generated
+expressions are independent per language.
+
+The C++ runtime is a dependency, not a convention. Headers must match the
+runtime an image binds to: libc++ 21's headers call `std::__hash_memory`, which
+iOS 6's libc++ does not export, and the SDK's stubs let the link succeed. A
+module that compiles C++ requires `libcxx:runtime`, which carries the headers
+and the availability define together, and the application bundles that runtime.
 
 ### Determinism
 
 Charon writes a library's recipe from its declaration alone: no absolute path, no
 time, no host name, keys in declaration order. The same declaration generated in
 two different folders gives the same text, and therefore the same recipe
-revision, so moving a repository never rebuilds a package. Today's generated
-port recipe still bakes the checkout path; that is fixed before any library is
-generated.
+revision, so moving a repository never rebuilds a package. The generated port
+recipe already finds its port from the folder it lies in, and a test generates
+one declaration in two folders and requires the same text.
 
 ### Proving a migration changed nothing
 
@@ -282,10 +354,9 @@ rewrites.
 
 ### Order
 
-1. Generated recipes stop baking the checkout path; a test generates one
-   declaration in two folders and requires the same text.
-2. A verified baseline: today's recipes building each port end to end through
-   Charon.
+1. Done: generated recipes no longer bake the checkout path.
+2. Done: a verified baseline, today's recipes building each port end to end
+   through Charon.
 3. The comparison verb, and `charon where`.
 4. Library modules by strategy - sources, then cmake, then configure - each
    library proven unchanged before its recipe is deleted, simplest first: ogg
