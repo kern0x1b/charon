@@ -451,7 +451,42 @@ def verb_generate(root, parsed):
         say("profile      {}".format(written))
 
 
+def conan_interpreter():
+    launcher = shutil.which("conan")
+    if launcher:
+        with open(launcher, "rb") as handle:
+            first = handle.readline().decode(errors="replace")
+        if first.startswith("#!"):
+            words = first[2:].split()
+            chosen = words[-1] if words and os.path.basename(words[0]) == "env" else (words or [None])[0]
+            if chosen and (os.path.isabs(chosen) or shutil.which(chosen)):
+                return chosen
+    raise Failure("cannot tell which interpreter conan runs under from {}, and the recipe index check needs "
+                  "Conan's own trim".format(launcher or "a conan that is not on PATH"))
+
+
+def local_indexes():
+    return [Path(remote["url"]) for remote in remotes()
+            if remote.get("enabled", True) and Path(str(remote.get("url", ""))).is_dir()
+            and (Path(remote["url"]) / "recipes").is_dir()]
+
+
+def check_indexes(canonical=False):
+    indexes = local_indexes()
+    if not indexes:
+        return
+    checker = Path(__file__).resolve().parent / "indexes.py"
+    result = subprocess.run([conan_interpreter(), str(checker)] + (["--canonical"] if canonical else []) +
+                            [str(index) for index in indexes], stdout=subprocess.PIPE, text=True)
+    for line in (result.stdout or "").splitlines():
+        (warn if line.startswith("rewritten") else say)("index        " + line)
+    if result.returncode:
+        raise Failure("a recipe index would hand consumers a recipe missing what its folder declares; key each "
+                      "table in conandata.yml by version")
+
+
 def verb_build(root, parsed):
+    check_indexes()
     provenance(root, parsed.chosen_profile)
     variant = parsed.variant or default_variant(root)
     slices = merged_slices(root, variant)
@@ -908,6 +943,7 @@ def verb_setup(root, parsed):
     for folder in shared:
         conan("config", "install", folder / "config")
     say("remotes now: {}".format(", ".join(remote["name"] for remote in remotes())))
+    check_indexes(canonical=True)
     check_declared_conf(root, parsed.chosen_profile)
 
 

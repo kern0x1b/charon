@@ -35,6 +35,9 @@ jobs:
       - name: The driver takes a built engine and nothing that only resembles one
         run: python3 tests/driver_test.py
 
+      - name: A recipe index that would drop part of a conandata.yml is refused
+        run: python3 tests/index_test.py
+
       - name: An Objective-C source stays Objective-C when cmake configures again
         run: python3 tests/cmake_language_test.py
 

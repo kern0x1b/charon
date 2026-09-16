@@ -152,6 +152,14 @@ entitlement with its declared value. A port can only take one out with a
 reason, `[waive] pagezero = "why"`; an unknown name or an empty reason is
 refused.
 
+Recipes reach a build only through a local recipe index, which trims each
+`conandata.yml` to the version it exports. A top-level table with no key for
+that version is dropped there, so a recipe reading it works from its folder and
+fails for every consumer; `charon build` and `charon setup` refuse such an index
+before anything runs. `charon setup` also names each `conandata.yml` whose text
+the trim rewrites: `conan create` in that folder gives a different revision from
+the one consumers resolve, so a package built that way is not the one they use.
+
 The rest Charon derives rather than being told: the host profile comes from
 `[target]`, the engine build is the one direct child of `build/` that CMake
 configured and that has frameworks laid out, the frameworks to install are

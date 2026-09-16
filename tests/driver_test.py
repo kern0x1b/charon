@@ -184,6 +184,31 @@ def refusal_failures():
     return found
 
 
+def index_failures():
+    found = []
+    original = charon.remotes
+    with tempfile.TemporaryDirectory() as folder:
+        index = Path(folder)
+        (index / "recipes" / "tdlib" / "all").mkdir(parents=True)
+        (index / "recipes" / "tdlib" / "config.yml").write_text('versions:\n  "1.0.0":\n    folder: all\n')
+        (index / "recipes" / "tdlib" / "all" / "conandata.yml").write_text(
+            "sources:\n  tdlib:\n    url: https://example.invalid/td.tar.gz\n")
+        charon.remotes = lambda: [{"name": "port", "url": str(index), "enabled": True},
+                                  {"name": "center", "url": "https://example.invalid", "enabled": True}]
+        try:
+            charon.verb_build(index, None)
+            found.append("a build must stop before anything runs when an index would drop part of a recipe")
+        except charon.Failure as refused:
+            if "conandata" not in str(refused):
+                found.append("a build must be refused for the index, not for something else: got {}".format(refused))
+        except Exception as escaped:
+            found.append("the index check must run before a build does anything else: {} {}".format(
+                type(escaped).__name__, escaped))
+        finally:
+            charon.remotes = original
+    return found
+
+
 def tier_failures():
     found = []
     tiers = {"scripts": {"needs": []}, "flags": {"needs": ["build"]}, "gate": {"needs": ["device"]},
@@ -216,7 +241,7 @@ def main():
         print("FAIL  this needs Python 3.11 or newer for tomllib, and it is running under {}. Skipping would "
               "report success having checked nothing.".format(".".join(str(p) for p in sys.version_info[:3])))
         return 1
-    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + undefined_names()
+    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + index_failures() + undefined_names()
     for line in found:
         print("FAIL  {}".format(line))
     if found:
