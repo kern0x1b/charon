@@ -1,12 +1,16 @@
-# ios6-toolchain
+# Charon
 
-The part of building for armv7 / iOS 6 that is the same for every project: how
-to build it at all, without Xcode installed.
+A build driver for ports: a project declares what it builds in one `charon.toml`,
+and Charon writes the recipes, the profiles, the CMake projects and the packages
+from it, builds them with Conan, and holds every binary to the invariants of the
+platform it runs on. The platform is a file of facts; `apple-ios` is the first,
+from armv7 on iOS 6 to arm64 on current releases, with what an old release lacks
+provided by `apple-compat` rather than by pinning old libraries.
 
 Libraries are not here. Each port carries its own recipes and builds them
-itself, because ports disagree - this engine wants OpenSSL 3.0.15, the Telegram
-port 1.1.1w - and a shared library set would make one of them override the
-other. What is shared is only what is true for all of them.
+itself, because ports make their own choices for the same library, and a shared
+set would make one override the other. What is here is only what is true for
+every port of a platform.
 
 ## What is here
 
@@ -29,8 +33,8 @@ other. What is shared is only what is true for all of them.
     brew install conan cmake ninja ccache llvm
     xcode-select --install
 
-    git clone https://github.com/kern0x1b/ios6-toolchain.git
-    conan config install ios6-toolchain/config
+    git clone https://github.com/kern0x1b/charon.git
+    conan config install charon/config
 
     export LLVM_PREFIX="$(brew --prefix llvm)"
 
