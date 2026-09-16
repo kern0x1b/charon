@@ -18,8 +18,8 @@ class TestPackage(ConanFile):
 
     def test(self):
         output = StringIO()
-        self.run("ios6-imports-check --help", stdout=output, env="conanbuild")
+        self.run("dyld-imports-check --help", stdout=output, env="conanbuild")
         text = output.getvalue()
         for expected in ("--cache", "--dist"):
             if expected not in text:
-                raise ConanException(f"ios6-imports-check does not offer {expected}: {text}")
+                raise ConanException(f"dyld-imports-check does not offer {expected}: {text}")

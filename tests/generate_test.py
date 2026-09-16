@@ -202,14 +202,14 @@ def checks(declared):
         found.append("a tier that names no packages must get no recipe at all")
 
     cross = written[generate.CROSS_TOOLCHAIN]
-    for expected in ("set(CMAKE_OSX_ARCHITECTURES ${IOS6_ARCHITECTURE})",
-                     "-target ${IOS6_TRIPLE} -isysroot ${SDK6}",
+    for expected in ("set(CMAKE_OSX_ARCHITECTURES ${CHARON_ARCHITECTURE})",
+                     "-target ${CHARON_TRIPLE} -isysroot ${CHARON_SYSROOT}",
                      "set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)",
                      "set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)",
                      "-DEXAMPLE_PORT"):
         if expected not in cross:
             found.append("the cross toolchain must carry {}: got {}".format(expected, cross))
-    if "CACHE PATH" not in cross or "IOS6_SDK" not in cross:
+    if "CACHE PATH" not in cross or "CHARON_SDK" not in cross:
         found.append("the SDK must be remembered in the cache, because ninja re-runs cmake without the shell "
                      "that configured it")
 
@@ -556,8 +556,8 @@ def architecture_failures(folder):
     root.mkdir()
     text = generate.cross_toolchain(loaded(root, '[target]\narch = "armv8"\nos = "iOS"\nos-version = "7.0"\n'))
     found = []
-    for expected in ("set(CMAKE_OSX_ARCHITECTURES ${IOS6_ARCHITECTURE})", "-target ${IOS6_TRIPLE}",
-                     "NOT IOS6_ARCHITECTURE OR NOT IOS6_TRIPLE"):
+    for expected in ("set(CMAKE_OSX_ARCHITECTURES ${CHARON_ARCHITECTURE})", "-target ${CHARON_TRIPLE}",
+                     "NOT CHARON_ARCHITECTURE OR NOT CHARON_TRIPLE"):
         if expected not in text:
             found.append("the cross toolchain must take the architecture and target from the build and refuse "
                          "to configure without them: {} is missing".format(expected))

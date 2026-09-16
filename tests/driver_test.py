@@ -83,7 +83,7 @@ def failures():
     def tier_packages(root):
         env = root / "build" / "tier-packages" / "host" / "conan"
         env.mkdir(parents=True)
-        (env / "ios6-deps.env").write_text("IOS6_HOST_ICU=/nowhere\n")
+        (env / "charon-deps.env").write_text("CHARON_HOST_ICU=/nowhere\n")
     check("a tier's package environment shaped like a build marker", tier_packages, "refuse")
 
     def nested(root):
@@ -98,7 +98,7 @@ def failures():
         tree(root, "build/system")
         tier = root / "build" / "system-imports" / "conan"
         tier.mkdir(parents=True)
-        (tier / "ios6-deps.env").write_text("")
+        (tier / "charon-deps.env").write_text("")
         return root / "build" / "system"
     check("a folder whose name contains a variant but that nothing configured", contains_variant, "tree")
 
@@ -110,7 +110,7 @@ def undefined_names():
     import builtins
     found = []
     folder = HERE.parent / "config" / "extensions" / "charon"
-    for path in sorted(folder.glob("*.py")):
+    for path in sorted(folder.glob("*.py")) + sorted((HERE.parent / "recipes").glob("*/all/conanfile.py")):
         tree = ast.parse(path.read_text())
         bound = set(dir(builtins)) | {"__file__", "__doc__", "__name__"}
         for node in ast.walk(tree):
@@ -217,9 +217,9 @@ def where_failures():
         "0": {"name": None, "context": "host", "binary": None},
         "1": {"name": "tdlib", "context": "host", "ref": "tdlib/1.8.67@itglegacy/stable#aaa", "package_id": "p1",
               "binary": "Cache"},
-        "2": {"name": "ld64", "context": "build", "ref": "ld64/956.6@ios6/stable#bbb", "package_id": "p2",
+        "2": {"name": "ld64", "context": "build", "ref": "ld64/956.6@charon/stable#bbb", "package_id": "p2",
               "binary": "Cache"},
-        "3": {"name": "ld64", "context": "build", "ref": "ld64/956.6@ios6/stable#bbb", "package_id": "p2",
+        "3": {"name": "ld64", "context": "build", "ref": "ld64/956.6@charon/stable#bbb", "package_id": "p2",
               "binary": "Skip"},
         "4": {"name": "absent", "context": "host", "ref": "absent/1@x/y#ccc", "package_id": "p3", "binary": "Missing"},
     }}}
@@ -230,7 +230,7 @@ def where_failures():
         if arguments[0] == "graph":
             return types.SimpleNamespace(returncode=0, stdout=encoded.dumps(graph))
         if arguments[:2] == ("cache", "path"):
-            known = {"tdlib/1.8.67@itglegacy/stable#aaa:p1": "/cache/tdlib", "ld64/956.6@ios6/stable#bbb:p2": "/cache/ld64"}
+            known = {"tdlib/1.8.67@itglegacy/stable#aaa:p1": "/cache/tdlib", "ld64/956.6@charon/stable#bbb:p2": "/cache/ld64"}
             answer = known.get(arguments[2], "")
             return types.SimpleNamespace(returncode=0 if answer else 1, stdout=answer)
         raise AssertionError(arguments)

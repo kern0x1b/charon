@@ -4,9 +4,9 @@ from conan import ConanFile
 from conan.tools.files import copy
 
 
-class Ios6ImportsCheckConan(ConanFile):
-    name = "ios6-imports-check"
-    user = "ios6"
+class DyldImportsCheckConan(ConanFile):
+    name = "dyld-imports-check"
+    user = "charon"
     channel = "stable"
     description = ("Refuses a build whose binaries import a symbol the device's iOS does not export, "
                    "which loads fine and kills the process at its first call")
@@ -15,9 +15,9 @@ class Ios6ImportsCheckConan(ConanFile):
     exports_sources = "src/*"
 
     def package(self):
-        copy(self, "ios6-imports-check", os.path.join(self.source_folder, "src"),
+        copy(self, "dyld-imports-check", os.path.join(self.source_folder, "src"),
              os.path.join(self.package_folder, "bin"))
-        os.chmod(os.path.join(self.package_folder, "bin", "ios6-imports-check"), 0o755)
+        os.chmod(os.path.join(self.package_folder, "bin", "dyld-imports-check"), 0o755)
 
     def package_info(self):
         self.cpp_info.includedirs = []

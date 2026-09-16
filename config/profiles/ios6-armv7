@@ -12,8 +12,8 @@ compiler.libcxx=libc++
 build_type=Release
 
 [tool_requires]
-ld64/956.6@ios6/stable
-iphoneos-sdk/13.7@ios6/stable
+ld64/956.6@charon/stable
+iphoneos-sdk/13.7@charon/stable
 
 [conf]
 tools.cmake.cmaketoolchain:generator=Ninja

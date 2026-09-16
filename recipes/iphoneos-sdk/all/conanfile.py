@@ -9,7 +9,7 @@ from conan.tools.files import get
 
 class IphoneOSSdkConan(ConanFile):
     name = "iphoneos-sdk"
-    user = "ios6"
+    user = "charon"
     channel = "stable"
     description = "The iPhoneOS SDK a build compiles and links against, fetched and verified on the machine that uses it"
     license = "LicenseRef-Apple-SDK"

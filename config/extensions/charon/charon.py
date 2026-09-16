@@ -30,8 +30,8 @@ APPLICATION = ".app"
 CMAKE_STAMP = "CMakeCache.txt"
 APPLICATIONS = "/Applications"
 TESTS = "tests"
-DEPENDENCY_ENV = "ios6-deps.env"
-HOST_PREFIX = "IOS6_HOST_"
+DEPENDENCY_ENV = "charon-deps.env"
+HOST_PREFIX = "CHARON_HOST_"
 MINIMUM_PYTHON = (3, 11)
 CHOSEN_INTERPRETER = "CHARON_INTERPRETER"
 
@@ -167,7 +167,7 @@ def import_file(path, name):
 
 
 def transport(root):
-    device = import_file(Path(__file__).resolve().parent / "device.py", "ios6_device")
+    device = import_file(Path(__file__).resolve().parent / "device.py", "charon_device")
     try:
         device.bind(root)
     except RuntimeError as absent:
@@ -1017,7 +1017,7 @@ def register(name, folder):
 
 
 def verb_device(root, parsed):
-    device = import_file(Path(__file__).resolve().parent / "device.py", "ios6_device")
+    device = import_file(Path(__file__).resolve().parent / "device.py", "charon_device")
     raise SystemExit(device.main(["--root", str(root)] + parsed.extra))
 
 

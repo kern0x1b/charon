@@ -247,7 +247,7 @@ def platform_failures():
         if (platform["os"], platform["arch"], platform["os-version"], platform["sdk"]) != ("iOS", "armv7", "6.0",
                                                                                           "iphoneos"):
             found.append("a platform must answer os, arch, release and SDK: got {}".format(platform))
-        if "ld64/956.6@ios6/stable" not in platform["tool-requires"] or not any(
+        if "ld64/956.6@charon/stable" not in platform["tool-requires"] or not any(
                 name.startswith("iphoneos-sdk/") for name in platform["tool-requires"]):
             found.append("armv7 on apple-ios must bring the SDK and ld64: got {}".format(platform["tool-requires"]))
         wide = declared.for_variant("arm64").platform()

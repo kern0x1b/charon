@@ -204,7 +204,7 @@ whatever the build staged, and a test tier gets the phone, the build tree or its
 packages only when it declares `needs` or `packages`.
 
 `LLVM_PREFIX` is read once, by `config/global.conf`, into
-`user.ios6:llvm_prefix`. Only the `ld64` recipe asks for it: cctools' configure
+`user.ld64:llvm_prefix`. Only the `ld64` recipe asks for it: cctools' configure
 runs `llvm-config` to find `libLTO`, and a linker built without it silently
 drops LTO support, which this target builds with. Recipes never read the
 environment themselves, so a missing path stops `conan create` with that
@@ -237,7 +237,7 @@ C++ standard, CPU tuning, a later deployment target - are `[target]` keys, and
 the profile Charon writes includes the shared one `include-profiles` names.
 arm64 starts at iOS 7.0, and the base class refuses anything lower.
 
-`@ios6/stable` is for what this repository serves - the linker, the C++ runtime,
+`@charon/stable` is for what this repository serves - the linker, the C++ runtime,
 the base class - and nothing else. A port's own libraries carry the port's name,
 `openssl/3.0.15@revenant/stable`, `openssl/3.0.15@itglegacy/stable`: two ports
 build the same library with different choices, and two recipes behind one

@@ -18,7 +18,8 @@ from pathlib import Path
 CHOSEN = "DECLARATION_TEST_INTERPRETER"
 
 HERE = Path(__file__).resolve().parent
-BASE = HERE.parent / "recipes" / "ios6-base" / "all" / "conanfile.py"
+CORE = HERE.parent / "recipes" / "charon-base" / "all" / "conanfile.py"
+APPLE = HERE.parent / "recipes" / "charon-apple" / "all" / "conanfile.py"
 
 DECLARATION = {
     "engine": {
@@ -99,15 +100,38 @@ class Output:
         pass
 
 
-def loaded_base():
-    spec = importlib.util.spec_from_file_location("ios6_base_under_test", BASE)
+def loaded_module(name, path):
+    spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
 
+class Recipe:
+    def __init__(self, core, platform):
+        object.__setattr__(self, "modules", (platform, core))
+        object.__setattr__(self, "Port", type("Port", (platform.ApplePort, core.CharonPort), {}))
+
+    def __getattr__(self, name):
+        for module in self.modules:
+            if hasattr(module, name):
+                return getattr(module, name)
+        raise AttributeError(name)
+
+    def __setattr__(self, name, value):
+        owners = [module for module in self.modules if hasattr(module, name)]
+        if not owners:
+            raise AttributeError(name)
+        for module in owners:
+            setattr(module, name, value)
+
+
+def loaded_base():
+    return Recipe(loaded_module("charon_base_under_test", CORE), loaded_module("charon_apple_under_test", APPLE))
+
+
 def port(module, options):
-    class Port(module.Ios6Port):
+    class Port(module.Port):
         declaration = DECLARATION
         port = "/port"
         name = "example"
@@ -211,7 +235,7 @@ def architecture_failures(module):
     instance._verify_inputs = lambda folder: None
     instance._cmake_project("/port/app", "/port/build/app", {})
     configured = instance.commands[0]
-    for expected in ('-DIOS6_ARCHITECTURE="arm64"', '-DIOS6_TRIPLE="arm64-apple-ios7.0"'):
+    for expected in ('-DCHARON_ARCHITECTURE="arm64"', '-DCHARON_TRIPLE="arm64-apple-ios7.0"'):
         if expected not in configured:
             found.append("a generated project must be configured with {}: {}".format(expected, configured))
     sparc = port(module, {"prefixed": "False"})
@@ -449,9 +473,9 @@ def dispatch_failures(module):
         pass
 
     real = port(module, {"prefixed": "False"})
-    for method, argument, what in ((module.Ios6Port._run_task, "absent", "an undeclared task"),
-                                   (module.Ios6Port._run_check, "absent", "an unknown check"),
-                                   (module.Ios6Port._run_stage, "absent", "an unknown staging step")):
+    for method, argument, what in ((module.Port._run_task, "absent", "an undeclared task"),
+                                   (module.Port._run_check, "absent", "an unknown check"),
+                                   (module.Port._run_stage, "absent", "an unknown staging step")):
         try:
             method(real, argument)
             found.append("{} must be refused".format(what))
@@ -522,7 +546,7 @@ def failures(module):
 
 def task_failures(module):
     found = []
-    real = module.Ios6Port._run_task
+    real = module.Port._run_task
 
     shell = port(module, {"prefixed": "False"})
     real(shell, "greet")

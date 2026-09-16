@@ -7,7 +7,7 @@ import shutil
 
 class Ld64Armv7Conan(ConanFile):
     name = "ld64"
-    user = "ios6"
+    user = "charon"
     channel = "stable"
     description = "Apple's ld64 from cctools-port, the linker that still inserts branch islands for armv7"
     license = ("APSL-2.0", "Apache-2.0 WITH LLVM-exception")
@@ -20,10 +20,10 @@ class Ld64Armv7Conan(ConanFile):
             raise ConanInvalidConfiguration("this package builds on macOS")
 
     def _llvm_prefix(self):
-        prefix = self.conf.get("user.ios6:llvm_prefix", check_type=str)
+        prefix = self.conf.get("user.ld64:llvm_prefix", check_type=str)
         if not prefix or not os.path.isdir(prefix):
             raise ConanInvalidConfiguration(
-                "user.ios6:llvm_prefix does not name an LLVM. cctools' configure asks llvm-config where "
+                "user.ld64:llvm_prefix does not name an LLVM. cctools' configure asks llvm-config where "
                 "libLTO is, and a linker built without it drops LTO support, which this target builds with. "
                 "The ios6-armv7 profile takes the path from LLVM_PREFIX; set it to a full LLVM, such as "
                 "`brew --prefix llvm`.")

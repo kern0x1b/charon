@@ -429,7 +429,7 @@ def cmake_project(declared, kind, project):
     return "\n".join(lines).rstrip("\n") + "\n"
 
 
-BASE = "ios6-base/1.0@ios6/stable"
+BASE = "ios6-base/1.0@charon/stable"
 RECIPE_TEMPLATE = '''{generated}
 from conan import ConanFile
 
@@ -518,20 +518,20 @@ CROSS_TEMPLATE = '''{generated}
 set(CMAKE_SYSTEM_NAME {system})
 set(CMAKE_SYSTEM_PROCESSOR {processor})
 
-if (NOT IOS6_SDK OR NOT IOS6_DEPLOYMENT_TARGET OR NOT IOS6_ARCHITECTURE OR NOT IOS6_TRIPLE)
+if (NOT CHARON_SDK OR NOT CHARON_DEPLOYMENT_TARGET OR NOT CHARON_ARCHITECTURE OR NOT CHARON_TRIPLE)
     message(FATAL_ERROR
-        "IOS6_SDK, IOS6_DEPLOYMENT_TARGET, IOS6_ARCHITECTURE and IOS6_TRIPLE come from the profile Charon wrote. Reading them from the "
+        "CHARON_SDK, CHARON_DEPLOYMENT_TARGET, CHARON_ARCHITECTURE and CHARON_TRIPLE come from the profile Charon wrote. Reading them from the "
         "environment instead would leave them empty when ninja re-runs cmake by itself, and cmake would "
         "quietly fall back to the newest installed SDK")
 endif ()
-set(IOS6_SDK "${{IOS6_SDK}}" CACHE PATH "SDK this port is compiled against" FORCE)
-set(IOS6_DEPLOYMENT_TARGET "${{IOS6_DEPLOYMENT_TARGET}}" CACHE STRING "Oldest release this runs on" FORCE)
-set(IOS6_ARCHITECTURE "${{IOS6_ARCHITECTURE}}" CACHE STRING "Architecture as the Apple tools name it" FORCE)
-set(IOS6_TRIPLE "${{IOS6_TRIPLE}}" CACHE STRING "Target the compiler is asked for" FORCE)
-set(CMAKE_OSX_SYSROOT ${{IOS6_SDK}} CACHE PATH "SDK the compiler is pointed at" FORCE)
-list(APPEND CMAKE_TRY_COMPILE_PLATFORM_VARIABLES IOS6_SDK IOS6_DEPLOYMENT_TARGET IOS6_ARCHITECTURE IOS6_TRIPLE)
-set(CMAKE_OSX_ARCHITECTURES ${{IOS6_ARCHITECTURE}})
-set(CMAKE_OSX_DEPLOYMENT_TARGET ${{IOS6_DEPLOYMENT_TARGET}})
+set(CHARON_SDK "${{CHARON_SDK}}" CACHE PATH "SDK this port is compiled against" FORCE)
+set(CHARON_DEPLOYMENT_TARGET "${{CHARON_DEPLOYMENT_TARGET}}" CACHE STRING "Oldest release this runs on" FORCE)
+set(CHARON_ARCHITECTURE "${{CHARON_ARCHITECTURE}}" CACHE STRING "Architecture as the Apple tools name it" FORCE)
+set(CHARON_TRIPLE "${{CHARON_TRIPLE}}" CACHE STRING "Target the compiler is asked for" FORCE)
+set(CMAKE_OSX_SYSROOT ${{CHARON_SDK}} CACHE PATH "SDK the compiler is pointed at" FORCE)
+list(APPEND CMAKE_TRY_COMPILE_PLATFORM_VARIABLES CHARON_SDK CHARON_DEPLOYMENT_TARGET CHARON_ARCHITECTURE CHARON_TRIPLE)
+set(CMAKE_OSX_ARCHITECTURES ${{CHARON_ARCHITECTURE}})
+set(CMAKE_OSX_DEPLOYMENT_TARGET ${{CHARON_DEPLOYMENT_TARGET}})
 
 if (DEFINED ENV{{DEVELOPER_DIR}})
     set(DEVELOPER_ROOT $ENV{{DEVELOPER_DIR}})
@@ -547,8 +547,8 @@ endif ()
 set(CMAKE_C_COMPILER ${{TOOLCHAIN_BIN}}/clang)
 set(CMAKE_CXX_COMPILER ${{TOOLCHAIN_BIN}}/clang++)
 
-set(SDK6 ${{IOS6_SDK}})
-set(COMMON "-target ${{IOS6_TRIPLE}} -isysroot ${{SDK6}}")
+set(CHARON_SYSROOT ${{CHARON_SDK}})
+set(COMMON "-target ${{CHARON_TRIPLE}} -isysroot ${{CHARON_SYSROOT}}")
 set(CMAKE_C_FLAGS_INIT "${{COMMON}}{defines}")
 set(CMAKE_OBJC_FLAGS_INIT "${{COMMON}}{defines}")
 set(CMAKE_CXX_FLAGS_INIT "${{COMMON}}{defines}")
@@ -556,7 +556,7 @@ set(CMAKE_OBJCXX_FLAGS_INIT "${{COMMON}}{defines}")
 set(CMAKE_EXE_LINKER_FLAGS_INIT "${{COMMON}}")
 set(CMAKE_SHARED_LINKER_FLAGS_INIT "${{COMMON}}")
 
-set(CMAKE_FIND_ROOT_PATH ${{SDK6}})
+set(CMAKE_FIND_ROOT_PATH ${{CHARON_SYSROOT}})
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
@@ -575,7 +575,7 @@ def cross_toolchain(declared):
     return CROSS_TEMPLATE.format(
         generated=GENERATED,
         system=target.get("system-name", "Darwin"),
-        processor=target.get("system-processor", "${IOS6_ARCHITECTURE}"),
+        processor=target.get("system-processor", "${CHARON_ARCHITECTURE}"),
         defines="".join(" {}".format(define) for define in defines),
     )
 

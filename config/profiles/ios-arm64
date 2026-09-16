@@ -12,7 +12,7 @@ compiler.libcxx=libc++
 build_type=Release
 
 [tool_requires]
-iphoneos-sdk/13.7@ios6/stable
+iphoneos-sdk/13.7@charon/stable
 
 [conf]
 tools.cmake.cmaketoolchain:generator=Ninja

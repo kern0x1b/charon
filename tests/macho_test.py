@@ -453,7 +453,7 @@ def entitlement_failures(module, folder, made, ldid):
 
         module.MachO = Signing
         try:
-            module.Ios6Port._sign_target(instance, "application")
+            module.Port._sign_target(instance, "application")
             if reason:
                 found.append("an application {} must be refused".format(description))
         except module.ConanException as refused:
@@ -605,7 +605,7 @@ def input_minimum_failures(module, ldid):
         module.CMake = type("CMake", (), {"__init__": lambda self, conanfile: None,
                                           "configure": lambda self: None, "build": lambda self: None})
         try:
-            module.Ios6Port._build_target(instance, "engine")
+            module.Port._build_target(instance, "engine")
             found.append("an engine object built for a newer version must be refused after the engine builds")
         except module.ConanException as refused:
             if "engine-unit.o was built for iOS 7.0" not in str(refused):
@@ -672,8 +672,8 @@ def main():
         return 1
     found = []
     try:
-        ld64 = packaged("ld64/956.6@ios6/stable", "ld")
-        ldid = packaged("ldid/2.1.5@ios6/stable", "ldid")
+        ld64 = packaged("ld64/956.6@charon/stable", "ld")
+        ldid = packaged("ldid/2.1.5@charon/stable", "ldid")
         with tempfile.TemporaryDirectory() as scratch:
             made, pointers = fixtures(Path(scratch), ld64)
             found += invariant_failures(module, made, pointers)

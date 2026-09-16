@@ -8,7 +8,7 @@ from conan.tools.layout import basic_layout
 
 class LdidConan(ConanFile):
     name = "ldid"
-    user = "ios6"
+    user = "charon"
     channel = "stable"
     description = "Signs Mach-O binaries with a code signature and entitlements, the way a jailbroken device accepts them"
     license = "AGPL-3.0-or-later"
