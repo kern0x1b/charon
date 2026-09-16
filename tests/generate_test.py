@@ -379,6 +379,22 @@ sources = ["later.c"]
 """
 
 
+def determinism_failures(folder):
+    found = []
+    first, second = Path(folder) / "one" / "checkout", Path(folder) / "elsewhere" / "entirely"
+    texts = []
+    for root in (first, second):
+        root.mkdir(parents=True)
+        texts.append(generate.recipe(loaded(root, SLICED).for_variant("arm64")))
+    if texts[0] != texts[1]:
+        found.append("the same declaration in two folders must give the same recipe, or moving a repository "
+                     "changes every revision and rebuilds every package")
+    for root in (first, second):
+        if str(root) in texts[0] or str(root) in texts[1]:
+            found.append("a generated recipe must not name the folder it was written in: {} appears".format(root))
+    return found
+
+
 def order_failures(folder):
     root = Path(folder) / "ordered"
     root.mkdir()
@@ -416,6 +432,7 @@ def main():
         found += glob_failures(folder)
         found += variant_failures(folder)
         found += order_failures(folder)
+        found += determinism_failures(folder)
     for line in found:
         print("FAIL  {}".format(line))
     if found:

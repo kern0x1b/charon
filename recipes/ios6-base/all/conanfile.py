@@ -135,10 +135,19 @@ class Ios6Port:
 
     @property
     def port_root(self):
+        chosen = self.conf.get("user.charon:port", check_type=str)
+        if chosen:
+            return chosen
         root = getattr(type(self), "port", None)
-        if not root:
-            raise ConanException(f"{self.name} does not say which folder it was generated for")
-        return root
+        if root:
+            return root
+        folder = getattr(self, "recipe_folder", None)
+        if folder and os.path.basename(os.path.normpath(folder)) == "charon":
+            candidate = os.path.normpath(os.path.join(folder, os.pardir, os.pardir, os.pardir))
+            if os.path.isfile(os.path.join(candidate, "charon.toml")):
+                return candidate
+        raise ConanException(f"{self.name} cannot tell which port it was written for: it is not in a port's "
+                             "build/<variant>/charon folder, and user.charon:port is not set")
 
     def declared_variant(self):
         building = self.declared.get("for-variant")
@@ -204,6 +213,7 @@ class Ios6Port:
             "source": self.source_folder,
             "build": self.build_folder,
             "stage": self.stage_folder,
+            "port": self.port_root,
             "stubs": os.path.join(self.port_root, engine.get("stubs", "")),
             "prefix-header": self.declared_setting("engine", "prefix-header", ""),
         }
@@ -399,7 +409,8 @@ class Ios6Port:
         if kinds[0] == "script":
             return self._run_script(name, "{} {}".format(self._expand(body["script"], context), arguments))
         if kinds[0] == "shell":
-            return self.run(" ".join(part for part in (self._expand(body["shell"], context), arguments) if part))
+            return self.run(" ".join(part for part in (self._expand(body["shell"], context), arguments) if part),
+                            cwd=self.port_root)
         return self._run_written(name, body["python"], arguments)
 
     def _run_script(self, name, commandline):
@@ -408,7 +419,7 @@ class Ios6Port:
         if not os.path.isfile(script):
             raise ConanException(f"{script} does not exist, and the task {name} names it")
         arguments = " ".join(f'"{word}"' for word in words[1:])
-        self.run(f'"{sys.executable}" "{script}" {arguments}')
+        self.run(f'"{sys.executable}" "{script}" {arguments}', cwd=self.port_root)
 
     def _run_written(self, name, body, arguments):
         folder = os.path.join(self.build_folder, "charon-tasks")
@@ -416,7 +427,7 @@ class Ios6Port:
         written = os.path.join(folder, f"{name}.py")
         with open(written, "w") as handle:
             handle.write(body)
-        self.run(f'"{sys.executable}" "{written}" {arguments}')
+        self.run(f'"{sys.executable}" "{written}" {arguments}', cwd=self.port_root)
 
     def _declared_kind(self, name):
         for kind in ("static-library", "device-library"):

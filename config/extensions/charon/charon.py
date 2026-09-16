@@ -423,7 +423,7 @@ def generated(root, variant):
     folder = root / BUILD / variant / GENERATED
     folder.mkdir(parents=True, exist_ok=True)
     try:
-        recipe = generate.recipe(declared, root)
+        recipe = generate.recipe(declared)
         produced = generate.written(declared, required=False)
     except generate.GenerationError as refused:
         raise Failure(str(refused))

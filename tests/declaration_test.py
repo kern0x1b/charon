@@ -120,9 +120,11 @@ def port(module, options):
             self.output = Output()
             self.ran = []
             self.commands = []
+            self.folders_run_in = []
 
-        def run(self, command):
+        def run(self, command, cwd=None):
             self.commands.append(command)
+            self.folders_run_in.append(cwd)
 
         def _run_task(self, name):
             self.ran.append("task:" + name)
@@ -453,6 +455,11 @@ def task_failures(module):
 
     shell = port(module, {"prefixed": "False"})
     real(shell, "greet")
+    if shell.folders_run_in != ["/port"]:
+        found.append("a task must run from the port, whatever the build folder is: ran in {}".format(
+            shell.folders_run_in))
+    if shell._declared_context().get("port") != "/port":
+        found.append("{port} must name the folder holding the declaration")
     if shell.commands != ["echo /port/build/system"]:
         found.append("a task declared as shell must run what it says, with the placeholders filled: "
                      "got {}".format(shell.commands))
@@ -472,8 +479,19 @@ def task_failures(module):
         elif inline.build_folder not in inline.commands[0].rsplit('"', 2)[-1]:
             found.append("an inline task must receive its declared arguments, expanded: "
                          "got {}".format(inline.commands[0]))
+        if inline.folders_run_in != ["/port"]:
+            found.append("an inline python task must run from the port: ran in {}".format(inline.folders_run_in))
     finally:
         shutil.rmtree(inline.build_folder, ignore_errors=True)
+
+    with tempfile.TemporaryDirectory() as folder:
+        scripted = port(module, {"prefixed": "False"})
+        type(scripted).port = folder
+        (Path(folder) / "steps").mkdir()
+        (Path(folder) / "steps" / "audit.py").write_text("")
+        real(scripted, "audit")
+        if scripted.folders_run_in != [folder]:
+            found.append("a script task must run from the port: ran in {}".format(scripted.folders_run_in))
 
     for name, why, reason in (("silent", "a task that names neither script, shell nor python", "exactly one"),
                               ("torn", "a task that says two things to run", "exactly one"),

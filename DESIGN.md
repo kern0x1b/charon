@@ -147,7 +147,7 @@ Two placeholders name two different trees and must not be confused: `{port}` is
 always the folder holding the module's declaration, and `{source}` is the tree
 the module builds from - its own folder, the engine, or the fetched upstream. A
 task that compiles or reads a file the port wrote names it through `{port}`, and
-a `shell` task runs from `{port}`. A patch that no longer applies stops the build. A text table of replacements is
+every task runs from `{port}`. A patch that no longer applies stops the build. A text table of replacements is
 not a way to edit a source: today's `replace_in_file` tables become patch files.
 
 ### How it is built

@@ -93,9 +93,12 @@ A port carries no conanfile.py, no profile, no CMake and no Makefile. It carries
     system = ["task:carry-check", "build:device-library", "stage:frameworks", "task:where"]
 
 A task is a table with exactly one of `script`, `shell` or `python`, and its
-`args` may name anything the build knows: `{build}`, `{stage}`, `{pkg:NAME}`,
-`{include:NAME}`, `{lib:NAME:LIBRARY}`, `{bin:TOOL}`, `{target:NAME}`. A task
-runs in `[pipeline]` as `task:NAME`, before the build under `charon integrate`
+`args` may name anything the build knows: `{port}`, `{build}`, `{stage}`,
+`{pkg:NAME}`, `{include:NAME}`, `{lib:NAME:LIBRARY}`, `{bin:TOOL}`,
+`{target:NAME}`. Every task runs from `{port}`, the folder holding
+`charon.toml`; the generated recipe finds it from the `build/<variant>/charon`
+folder it lives in, so it carries no checkout path, and `user.charon:port`
+names another. A task runs in `[pipeline]` as `task:NAME`, before the build under `charon integrate`
 when `[integrate] before-build` names it, or on its own with `charon task NAME`.
 
 A target's `sources` may be patterns - `src/**/*.m` - with `exclude`, expanded

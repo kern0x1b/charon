@@ -352,7 +352,6 @@ class Port(ConanFile):
     options = {options}
     default_options = {defaults}
 
-    port = {port}
     declaration = {declaration}
 
     def requirements(self):
@@ -398,7 +397,7 @@ def _references(section):
     return ["{}/{}".format(name, version) for name, version in section.items()]
 
 
-def recipe(declared, port_root):
+def recipe(declared):
     import pprint
     described = declared.section("port")
     for required in ("name", "version"):
@@ -413,7 +412,6 @@ def recipe(declared, port_root):
         base=repr(str(declared.get("use", "base", BASE))),
         options=repr(domains),
         defaults=repr(defaults),
-        port=repr(str(port_root)),
         declaration=pprint.pformat(declared.content, width=110, sort_dicts=False, indent=4),
         requires=repr(_references(declared.section("requires"))),
         tools=repr(_references(declared.section("tools"))),
