@@ -9,8 +9,11 @@ function packages()
         local control = target:values("charon.control")
         if control then
             control = path.absolute(control, target:scriptdir())
-            grouped[control] = grouped[control] or {targets = {}, scripts = nil}
+            grouped[control] = grouped[control] or {targets = {}, scripts = nil, licenses = {}}
             table.insert(grouped[control].targets, target)
+            for _, license in ipairs(table.wrap(target:values("charon.licenses"))) do
+                table.insert(grouped[control].licenses, path.absolute(license, target:scriptdir()))
+            end
             local scripts = target:values("charon.maintainer-scripts")
             if scripts then
                 grouped[control].scripts = path.absolute(scripts, target:scriptdir())
@@ -41,6 +44,17 @@ function write(opt)
             for _, target in ipairs(described.targets) do
                 task.run("build", {target = target:name()})
                 task.run("install", {target = target:name(), installdir = stage})
+            end
+            if #described.licenses > 0 then
+                local fields = debian.control_text(control, version, stage)
+                local documents = path.join(stage, "usr", "share", "doc", fields.Package)
+                os.mkdir(documents)
+                for _, license in ipairs(table.unique(described.licenses)) do
+                    if not os.isfile(license) then
+                        raise("%s names license file %s, and there is no such file", control, license)
+                    end
+                    os.vcp(license, documents .. "/")
+                end
             end
             local output = debian.write({control = control, version = version, root = stage,
                                          scripts = described.scripts,

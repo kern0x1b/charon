@@ -331,9 +331,11 @@ function pagezero_problems(binary)
     return problems
 end
 
+local LOADED = {[6] = true, [8] = true}
+
 function encrypted(binary)
     for _, found in ipairs(images(read(binary))) do
-        for _, command in ipairs(found.cputype == ARM and found.commands or {}) do
+        for _, command in ipairs((found.cputype == ARM and LOADED[found.filetype]) and found.commands or {}) do
             if command == LC_ENCRYPTION_INFO or command == LC_ENCRYPTION_INFO_64 then
                 return true
             end
@@ -415,7 +417,7 @@ function verify(binary, opt)
         table.join2(problems, pagezero_problems(binary))
     end
     if encrypted(binary) then
-        table.insert(problems, "a linker stamped LC_ENCRYPTION_INFO on its 32-bit ARM code, which iOS 6 refuses in a library it loads; link it with ld64")
+        table.insert(problems, "a linker stamped LC_ENCRYPTION_INFO on a 32-bit ARM library, which iOS 6 refuses to load; link it with ld64")
     end
     if opt.arrived then
         local strong, weak = late_imports(binary, opt.arrived)

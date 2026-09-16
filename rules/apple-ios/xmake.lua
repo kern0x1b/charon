@@ -1,6 +1,10 @@
 rule("apple-ios")
     on_load(function (target)
         import("core.project.project")
+        local toplevel = try { function () return os.iorunv("git", {"-C", os.workingdir(), "rev-parse", "--show-toplevel"}):trim() end }
+        if toplevel and path.absolute(toplevel) ~= path.absolute(os.projectdir()) and path.absolute(toplevel):startswith(path.absolute(os.projectdir()) .. "/") then
+            raise("xmake found the project at %s, but this is the checkout at %s nested inside it; run xmake -P . here, or it builds and locks the outer project", os.projectdir(), toplevel)
+        end
         local minimum = get_config("apple_minimum")
         if not minimum then
             raise("target(%s) builds for apple-ios and its project names no oldest release: set_config(\"apple_minimum\", \"6.0\")", target:name())

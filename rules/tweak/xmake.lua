@@ -27,4 +27,5 @@ rule("tweak")
         if filter then
             os.vcp(path.join(target:scriptdir(), filter), path.join(folder, target:basename() .. ".plist"))
         end
+        platform.install_files(target)
     end)

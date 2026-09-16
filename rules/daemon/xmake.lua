@@ -1,0 +1,22 @@
+rule("daemon")
+    add_deps("@self/apple-ios")
+
+    on_load(function (target)
+        target:set("kind", "binary")
+        target:add("packages", "ldid")
+    end)
+
+    after_link(function (target)
+        import("@self.apple.platform")
+        platform.verify(target, target:targetfile())
+    end)
+
+    on_install(function (target)
+        import("@self.apple.platform")
+        local folder = path.join(target:installdir(), target:values("charon.install") or "/usr/libexec")
+        os.mkdir(folder)
+        local installed = path.join(folder, target:filename())
+        os.vcp(target:targetfile(), installed)
+        platform.finish(target, installed)
+        platform.install_files(target)
+    end)

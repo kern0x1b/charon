@@ -34,11 +34,31 @@ know about these platforms, and nothing else:
         set_values("tweak.filter", "packaging/kindlesyncfix.plist")
         set_values("charon.control", "packaging/control")
 
+The rules, and the values each reads:
+
+    @addon/charon/tweak    a MobileSubstrate dylib; tweak.filter, charon.install
+    @addon/charon/daemon   an executable in /usr/libexec (charon.install), with
+                           add_installfiles for its LaunchDaemons plist and /etc
+    @addon/charon/app      Name.app with app.plist-file, app.plist ("KEY=VALUE",
+                           over the file), app.resources (folders copied flat into
+                           the bundle), app.frameworks (packages whose shared
+                           libraries go to Frameworks under their install names,
+                           loaded through @executable_path), app.url-scheme
+
+and, on any of them, charon.entitlements (signed with ldid and read back),
+charon.strip (default -x), charon.control, charon.maintainer-scripts,
+charon.licenses (into /usr/share/doc/<Package>/) and
+charon.waive.<check> "reason". Info.plist keys the file and app.plist leave
+out are derived: the bundle and executable name, the project version, and
+MinimumOSVersion. A checkout nested inside another project (a worktree under
+the main checkout) builds with `xmake -P .`; the rules refuse otherwise.
+
 Then:
 
     xmake                      build; every binary is checked as it links
     xmake deb                  stage, strip, sign and write build/<Package>_<Version>_<Architecture>.deb
-    xmake device install       the same, then dpkg -i on the phone device.env names
+    xmake device install       the same, then dpkg -i on the phone device.env names,
+                               refusing an app over one with another bundle identifier
     xmake device log [-s 30] [TEXT]
     xmake device run COMMAND, xmake device where
 

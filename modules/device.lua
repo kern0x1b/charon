@@ -120,6 +120,9 @@ end
 
 function run(settings, command, opt)
     opt = opt or {}
+    if command:find("killall", 1, true) then
+        wprint("killing a VoIP application makes iOS 6 relaunch it and kill it again for holding a file lock (0xdead10cc); quit it from the switcher instead")
+    end
     tunnel(settings)
     local program, argv, envs = authenticated(settings, "ssh", table.join(ssh_options, {"-p", settings.port, "root@" .. settings.host, command}))
     if opt.capture then
@@ -132,6 +135,33 @@ function copy(settings, localfile, remote)
     tunnel(settings)
     local program, argv, envs = authenticated(settings, "scp", table.join(ssh_options, {"-P", settings.port, localfile, "root@" .. settings.host .. ":" .. remote}))
     os.execv(program, argv, {envs = envs})
+end
+
+function fetch(settings, remote, localfile)
+    tunnel(settings)
+    local program, argv, envs = authenticated(settings, "scp", table.join(ssh_options, {"-P", settings.port, "root@" .. settings.host .. ":" .. remote, localfile}))
+    return try { function ()
+        os.runv(program, argv, {envs = envs})
+        return true
+    end }
+end
+
+function identity_conflicts(settings, stage)
+    import("apple.bundle")
+    local conflicts = {}
+    for _, plist in ipairs(os.files(path.join(stage, "Applications", "*.app", "Info.plist"))) do
+        local packaged = bundle.read_plist(plist).CFBundleIdentifier
+        local relative = path.relative(plist, stage)
+        local fetched = os.tmpfile() .. ".plist"
+        if fetch(settings, "/" .. relative, fetched) and os.isfile(fetched) then
+            local installed = bundle.read_plist(fetched).CFBundleIdentifier
+            os.rm(fetched)
+            if installed ~= packaged then
+                table.insert(conflicts, string.format("/%s on the phone is %s, and this package installs %s over it; SpringBoard would lose the app until a reboot, so remove the installed one first", path.directory(relative), tostring(installed), tostring(packaged)))
+            end
+        end
+    end
+    return conflicts
 end
 
 function log(settings, seconds, text)

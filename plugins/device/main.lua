@@ -17,7 +17,15 @@ function main()
         device.log(settings, tonumber(option.get("seconds")), arguments)
     elseif action == "install" then
         local refreshed = false
-        for _, written in ipairs(packaging.write()) do
+        local written_packages = packaging.write()
+        local conflicts = {}
+        for _, written in ipairs(written_packages) do
+            table.join2(conflicts, device.identity_conflicts(settings, written.stage))
+        end
+        if #conflicts > 0 then
+            raise(table.concat(conflicts, "; "))
+        end
+        for _, written in ipairs(written_packages) do
             local remote = "/tmp/" .. path.filename(written.deb)
             device.copy(settings, written.deb, remote)
             device.run(settings, string.format("dpkg -i %s && rm -f %s", remote, remote))
