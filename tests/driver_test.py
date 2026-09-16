@@ -279,6 +279,33 @@ def profile_failures():
     return found
 
 
+def verb_command_failures():
+    import types
+    found = []
+    calls = []
+    saved = charon.conan, charon.generated, charon.variant_profile, charon.variant_options, charon.default_variant
+    charon.conan = lambda *arguments, **options: calls.append([str(argument) for argument in arguments])
+    charon.generated = lambda root, variant, report=None: root
+    charon.variant_profile = lambda root, parsed, variant: Path("/profile")
+    charon.variant_options = lambda root, variant: []
+    charon.default_variant = lambda root: "armv7"
+    parsed = types.SimpleNamespace(variant="armv7", profile=None, extra=[])
+    try:
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            charon.build_variant(root, parsed, "armv7", [])
+            charon.verb_package(root, parsed)
+        build, package = calls
+        if build[0] != "build" or "--build=missing" not in build:
+            found.append("charon build must let Conan build what is missing: {}".format(build))
+        if package[0] != "export-pkg" or any(argument.startswith("--build") for argument in package):
+            found.append("charon package must hand export-pkg only what it accepts, and it takes no build policy: "
+                         "{}".format(package))
+    finally:
+        charon.conan, charon.generated, charon.variant_profile, charon.variant_options, charon.default_variant = saved
+    return found
+
+
 def tier_failures():
     found = []
     tiers = {"scripts": {"needs": []}, "flags": {"needs": ["build"]}, "gate": {"needs": ["device"]},
@@ -311,7 +338,7 @@ def main():
         print("FAIL  this needs Python 3.11 or newer for tomllib, and it is running under {}. Skipping would "
               "report success having checked nothing.".format(".".join(str(p) for p in sys.version_info[:3])))
         return 1
-    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + index_failures() + where_failures() + profile_failures() + undefined_names()
+    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + index_failures() + where_failures() + profile_failures() + verb_command_failures() + undefined_names()
     for line in found:
         print("FAIL  {}".format(line))
     if found:

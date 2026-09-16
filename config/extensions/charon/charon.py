@@ -215,7 +215,7 @@ def profile(root, parsed):
 
 
 def conan_flags(root, chosen_profile):
-    flags = ["-pr:h", str(chosen_profile), "-pr:b", "default", "--build=missing"]
+    flags = ["-pr:h", str(chosen_profile), "-pr:b", "default"]
     if (root / LOCK).is_file():
         flags += ["--lockfile", str(root / LOCK)]
     return flags
@@ -390,7 +390,7 @@ def variant_profile(root, parsed, variant):
 
 def build_variant(root, parsed, variant, extra):
     where = generated(root, variant) or root
-    conan("build", where, *conan_flags(root, variant_profile(root, parsed, variant)),
+    conan("build", where, *conan_flags(root, variant_profile(root, parsed, variant)), "--build=missing",
           *variant_options(root, variant), *extra)
 
 
@@ -511,7 +511,7 @@ def package_folder(root, parsed, wanted):
                       "got {}".format(wanted or "nothing"))
     variant = parsed.variant or default_variant(root)
     where = generated(root, variant, report=warn) or root
-    flags = [flag for flag in conan_flags(root, variant_profile(root, parsed, variant)) if flag != "--build=missing"]
+    flags = conan_flags(root, variant_profile(root, parsed, variant))
     answered = conan("graph", "info", where, *flags, *variant_options(root, variant), "--format=json",
                      stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
     nodes = [node for node in json.loads(answered.stdout)["graph"]["nodes"].values()
