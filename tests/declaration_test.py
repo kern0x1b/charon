@@ -9,8 +9,12 @@ options, the settings, the configuration and the folders - so the substitution
 logic is checked here rather than discovered in a multi-hour build.
 """
 import importlib.util
+import os
+import shutil
 import sys
 from pathlib import Path
+
+CHOSEN = "DECLARATION_TEST_INTERPRETER"
 
 HERE = Path(__file__).resolve().parent
 BASE = HERE.parent / "recipes" / "ios6-base" / "all" / "conanfile.py"
@@ -215,7 +219,40 @@ def failures(module):
     return found
 
 
+def conan_interpreter():
+    launcher = shutil.which("conan")
+    if not launcher:
+        return None
+    try:
+        with open(launcher) as handle:
+            first = handle.readline()
+    except OSError:
+        return None
+    if not first.startswith("#!"):
+        return None
+    words = first[2:].strip().split()
+    if not words:
+        return None
+    candidate = words[-1] if os.path.basename(words[0]) == "env" else words[0]
+    return candidate if os.path.isabs(candidate) else shutil.which(candidate)
+
+
+def reexec_where_conan_lives():
+    if os.environ.get(CHOSEN):
+        return
+    try:
+        import conan  # noqa: F401
+        return
+    except ImportError:
+        pass
+    interpreter = conan_interpreter()
+    if interpreter and os.path.abspath(interpreter) != os.path.abspath(sys.executable):
+        os.execve(interpreter, [interpreter, os.path.abspath(__file__)] + sys.argv[1:],
+                  dict(os.environ, **{CHOSEN: interpreter}))
+
+
 def main():
+    reexec_where_conan_lives()
     try:
         module = loaded_base()
     except ImportError as missing:
