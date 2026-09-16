@@ -451,18 +451,6 @@ def verb_generate(root, parsed):
         say("profile      {}".format(written))
 
 
-def conan_interpreter():
-    launcher = shutil.which("conan")
-    if launcher:
-        with open(launcher, "rb") as handle:
-            first = handle.readline().decode(errors="replace")
-        if first.startswith("#!"):
-            words = first[2:].split()
-            chosen = words[-1] if words and os.path.basename(words[0]) == "env" else (words or [None])[0]
-            if chosen and (os.path.isabs(chosen) or shutil.which(chosen)):
-                return chosen
-    raise Failure("cannot tell which interpreter conan runs under from {}, and the recipe index check needs "
-                  "Conan's own trim".format(launcher or "a conan that is not on PATH"))
 
 
 def local_index_remotes():
@@ -540,7 +528,11 @@ def check_indexes(canonical=False):
     if not indexes:
         return
     checker = Path(__file__).resolve().parent / "indexes.py"
-    result = subprocess.run([conan_interpreter(), str(checker)] + (["--canonical"] if canonical else []) +
+    interpreter = conan_interpreter()
+    if not interpreter:
+        raise Failure("cannot tell which interpreter conan runs under, and the recipe index check needs Conan's "
+                      "own trim")
+    result = subprocess.run([interpreter, str(checker)] + (["--canonical"] if canonical else []) +
                             [str(index) for index in indexes], stdout=subprocess.PIPE, text=True)
     for line in (result.stdout or "").splitlines():
         (warn if line.startswith("rewritten") else say)("index        " + line)

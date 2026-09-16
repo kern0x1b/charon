@@ -125,9 +125,6 @@ class CharonPort:
     def resolved(self, text):
         return PLACEHOLDER.sub(lambda match: str(self._resolve(match.group(1))), str(text))
 
-    def resolved_values(self, mapping):
-        return {name: self.resolved(value) for name, value in mapping.items()}
-
     @property
     def declared(self):
         declaration = getattr(type(self), "declaration", None)
@@ -169,21 +166,6 @@ class CharonPort:
         if key in variant:
             return variant[key]
         return self.declared.get(section, {}).get(key, default)
-
-    def declared_target(self, kind, name):
-        for target in self.declared.get(kind, []):
-            if target.get("name") == name:
-                return target
-        raise ConanException(f"{self.name} declares no {kind} called {name}")
-
-    def declared_targets(self):
-        found = []
-        for kind in ("static-library", "device-library"):
-            found += self.declared.get(kind, [])
-        application = self.declared.get("application")
-        if application:
-            found.append(application)
-        return found
 
     def _target_product(self, name):
         kind, target = self._declared_kind(name)
