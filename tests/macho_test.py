@@ -591,6 +591,7 @@ class Dependencies:
         packages = list(packages) + [Compat()]
         self.host = {Requirement(package.ref.name): package for package in packages}
         self._named = {package.ref.name: package for package in packages}
+        self.build = {}
 
     def __getitem__(self, name):
         return self._named[name]

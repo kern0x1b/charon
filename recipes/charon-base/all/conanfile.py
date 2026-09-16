@@ -483,6 +483,47 @@ class CharonPort:
             action, _, argument = step.partition(":")
             self.output.title(step)
             self._run_step(action, argument)
+        altered = self.altered_packages()
+        if altered:
+            raise ConanException(f"{self.name} wrote into packages it only reads, so the next build of anything "
+                                 f"that uses them gets what this build left there: {'; '.join(altered)}")
+
+    MANIFEST = "conanmanifest.txt"
+    UNRECORDED = {"conanmanifest.txt", "conan_package.tgz", "conan_export.tgz", "conan_sources.tgz"}
+
+    def altered_packages(self):
+        found = []
+        for dependency in list(self.dependencies.host.values()) + list(self.dependencies.build.values()):
+            folder = dependency.package_folder
+            manifest = os.path.join(folder, self.MANIFEST) if folder else None
+            if not manifest or not os.path.isfile(manifest):
+                continue
+            with open(manifest) as handle:
+                recorded = dict(line.rsplit(": ", 1) for line in handle.read().splitlines()[1:] if ": " in line)
+            present = {}
+            for base, _, names in os.walk(folder):
+                for name in names:
+                    path = os.path.join(base, name)
+                    relative = os.path.relpath(path, folder).replace(os.sep, "/")
+                    if relative not in self.UNRECORDED:
+                        present[relative] = path
+            changed = sorted(name for name in set(recorded) | set(present)
+                             if name not in present or name not in recorded
+                             or self._package_digest(present[name]) != recorded[name])
+            if changed:
+                shown = ", ".join(changed[:5]) + (f" and {len(changed) - 5} more" if len(changed) > 5 else "")
+                found.append(f"{dependency.ref} ({shown})")
+        return found
+
+    @staticmethod
+    def _package_digest(path):
+        if os.path.islink(path):
+            return hashlib.md5(os.readlink(path).encode()).hexdigest()
+        digest = hashlib.md5()
+        with open(path, "rb") as handle:
+            for chunk in iter(lambda: handle.read(1 << 20), b""):
+                digest.update(chunk)
+        return digest.hexdigest()
 
     def declared_pipeline(self):
         variant = self.declared_variant()

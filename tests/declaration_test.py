@@ -149,7 +149,7 @@ def port(module, options):
             self.ran = []
             self.commands = []
             self.folders_run_in = []
-            self.dependencies = type("Dependencies", (), {"host": {}})()
+            self.dependencies = type("Dependencies", (), {"host": {}, "build": {}})()
 
         def run(self, command, cwd=None):
             self.commands.append(command)
@@ -328,7 +328,7 @@ def path_map_failures(module):
 def graph_failures(module):
     found = []
     host = [Library("openssl", ["ssl", "crypto"], "OpenSSL"), Library("ogg", ["ogg"])]
-    dependencies = type("Dependencies", (), {"host": {library.ref.name: library for library in host}})()
+    dependencies = type("Dependencies", (), {"host": {library.ref.name: library for library in host}, "build": {}})()
     with tempfile.TemporaryDirectory() as folder:
         instance = port(module, {"prefixed": "False"})
         instance.dependencies = dependencies
@@ -799,6 +799,35 @@ def fresh_failures(module):
     return found
 
 
+def altered_package_failures(module):
+    from conan.internal.model.manifest import FileTreeManifest
+    found = []
+    with tempfile.TemporaryDirectory() as scratch:
+        package = Path(scratch) / "p"
+        (package / "include" / "unicode").mkdir(parents=True)
+        (package / "include" / "unicode" / "uvernum.h").write_text("#define U_ICU_VERSION \"78.3\"\n")
+        (package / "lib").mkdir()
+        (package / "lib" / "libicuuc.a").write_bytes(b"!<arch>\n")
+        (package / "lib" / "libicu.a").symlink_to("libicuuc.a")
+        (package / "conaninfo.txt").write_text("[settings]\n")
+        FileTreeManifest.create(str(package)).save(str(package))
+        instance = port(module, {"prefixed": "False"})
+        dependency = type("Dependency", (), {"package_folder": str(package), "ref": "icu/78.3"})()
+        instance.dependencies = type("Dependencies", (), {"host": {"icu": dependency}, "build": {}})()
+        if instance.altered_packages():
+            found.append("an untouched package must pass: {}".format(instance.altered_packages()))
+        (package / "include" / "unicode" / "uvernum.h").write_text("#define U_ICU_VERSION \"74.2\"\n")
+        altered = instance.altered_packages()
+        if len(altered) != 1 or "icu/78.3" not in altered[0] or "include/unicode/uvernum.h" not in altered[0]:
+            found.append("a header a build rewrote in a package must be named: {}".format(altered))
+        (package / "include" / "unicode" / "uvernum.h").write_text("#define U_ICU_VERSION \"78.3\"\n")
+        (package / "include" / "unicode" / "extra.h").write_text("")
+        altered = instance.altered_packages()
+        if len(altered) != 1 or "include/unicode/extra.h" not in altered[0]:
+            found.append("a file a build added to a package must be named: {}".format(altered))
+    return found
+
+
 def main():
     reexec_where_conan_lives()
     try:
@@ -810,7 +839,7 @@ def main():
              plist_failures(module) + bundle_failures(module) + merge_failures(module) + flag_failures(module) + runtime_failures(module) +
              find_package_failures(module) + exports_failures(module) + architecture_failures(module) +
              graph_failures(module) + path_map_failures(module) +
-             objective_c_failures(module) + fresh_failures(module))
+             objective_c_failures(module) + fresh_failures(module) + altered_package_failures(module))
     for line in found:
         print("FAIL  {}".format(line))
     if found:
