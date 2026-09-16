@@ -67,7 +67,13 @@ class LibCxxArmv7Conan(ConanFile):
              os.path.join(self.package_folder, "licenses"))
 
     def package_info(self):
-        self.cpp_info.libs = ["c++", "c++abi"]
-        self.cpp_info.includedirs = [os.path.join("include", "c++", "v1")]
-        self.cpp_info.cxxflags = ["-nostdinc++"]
-        self.cpp_info.defines = ["_LIBCPP_DISABLE_AVAILABILITY"]
+        headers = self.cpp_info.components["headers"]
+        headers.includedirs = [os.path.join("include", "c++", "v1")]
+        headers.cxxflags = ["-nostdinc++"]
+        headers.libdirs = []
+        headers.bindirs = []
+        runtime = self.cpp_info.components["runtime"]
+        runtime.requires = ["headers"]
+        runtime.includedirs = []
+        runtime.libs = ["c++", "c++abi"]
+        runtime.defines = ["_LIBCPP_DISABLE_AVAILABILITY"]
