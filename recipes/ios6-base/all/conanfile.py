@@ -407,8 +407,14 @@ class Ios6Port:
             return
         self.run(f'ios6-imports-check --cache "{cache}" --dist "{self.stage_folder}"')
 
+    def _clear_stage(self):
+        rmdir(self, self.stage_folder)
+        mkdir(self, self.stage_folder)
+
     def _run_stage(self, name):
-        stages = {"frameworks": self._stage_frameworks, "plists-to-binary": self._stage_binary_plists}
+        stages = {"clear": self._clear_stage,
+                  "frameworks": self._stage_frameworks,
+                  "plists-to-binary": self._stage_binary_plists}
         if name not in stages:
             raise ConanException(f"{name} is not a staging step this toolchain knows; it runs "
                                  f"{', '.join(sorted(stages))}")
