@@ -240,7 +240,7 @@ class CharonPort:
     def platform_pipeline_problems(self, variant, steps, merged):
         return []
 
-    def platform_verify(self, binary, waived):
+    def platform_verify(self, binary, waived, stripped=False):
         pass
 
     def link_input_findings(self, path, label):
@@ -646,8 +646,8 @@ class CharonPort:
         self.output.info(f"{objects} objects and {members} archive members {os.path.basename(folder)} links record "
                          f"{self.settings.os} {self.settings.os.version}")
 
-    def _verify(self, binary):
-        self.platform_verify(binary, self.declared_waivers())
+    def _verify(self, binary, stripped=False):
+        self.platform_verify(binary, self.declared_waivers(), stripped)
 
     def _run_check(self, name):
         checks = self.platform_checks()

@@ -711,6 +711,42 @@ def input_minimum_failures(module, ldid):
     return found
 
 
+LOCAL_MODES = """
+__attribute__((target("arm"))) static int in_arm(int x) { return x + 1; }
+__attribute__((target("thumb"))) static int in_thumb(int x) { return x + 2; }
+int (*table[])(int) = { in_arm, in_thumb };
+"""
+
+
+def stripped_failures(module, ld64):
+    found = []
+    with tempfile.TemporaryDirectory() as scratch:
+        folder = Path(scratch)
+        (folder / "libSystem.tbd").write_text(SYSTEM_STUB)
+        (folder / "local.c").write_text(LOCAL_MODES)
+        run("xcrun", "clang", "-target", "armv7-apple-ios6.0", "-Wno-incompatible-sysroot", "-fuse-ld={}".format(ld64),
+            "-nostdlib", "-dynamiclib", "-L.", "-lSystem", "-o", "liblocal.dylib", "local.c", cwd=folder)
+        shutil.copy2(folder / "liblocal.dylib", folder / "libstripped.dylib")
+        run("xcrun", "strip", "-x", "libstripped.dylib", cwd=folder)
+        output = Output()
+        conanfile = type("Recipe", (), {"output": output})()
+        macho = module.MachO(conanfile)
+        for name, stripped, waived, reason in (
+                ("liblocal.dylib", False, {}, None),
+                ("libstripped.dylib", False, {}, "arrived stripped"),
+                ("libstripped.dylib", True, {}, None),
+                ("libstripped.dylib", False, {"thumb-interworking": "a reason"}, None)):
+            try:
+                macho.verify(str(folder / name), waived, stripped)
+                if reason:
+                    found.append("{} checked before strip with no symbols to check against must be refused".format(name))
+            except module.ConanException as refused:
+                if not reason or reason not in str(refused):
+                    found.append("{} (stripped={}, waived={}): expected {}, got {}".format(
+                        name, stripped, bool(waived), reason or "success", refused))
+    return found
+
+
 def waiver_failures(module, made):
     found = []
     instance = declaration_test.port(module, {"prefixed": "False"})
@@ -750,6 +786,7 @@ def main():
             made, pointers = fixtures(Path(scratch), ld64)
             found += invariant_failures(module, made, pointers)
             found += waiver_failures(module, made)
+            found += stripped_failures(module, ld64)
             found += wiring_failures(module, made, ldid)
             found += runtime_reference_failures(module, made, ld64, ldid)
             found += input_minimum_failures(module, ldid)

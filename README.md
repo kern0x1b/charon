@@ -154,7 +154,7 @@ whatever the pipeline says: targets installed into the stage, staged
 frameworks, the application's executable and everything bundled with it, and
 each merged binary. On armv7 every rebased pointer to a function must carry
 bit 0 exactly when that function is Thumb code, read from the symbol table
-while it is still there; ld64 gets this right, a linker that drops the bit or
+while it is still there, and a binary none of whose code pointers names a function it can check is refused as having arrived stripped; ld64 gets this right, a linker that drops the bit or
 a post-link edit that sets it on ARM code does not, and either one runs until
 the first call through the pointer. An executable's `__PAGEZERO` must be at
 least 4 GB on arm64 and end where `__TEXT` starts on armv7. After

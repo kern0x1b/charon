@@ -88,8 +88,8 @@ class ApplePort:
                         "variant that signs it"]
         return []
 
-    def platform_verify(self, binary, waived):
-        MachO(self).verify(binary, waived)
+    def platform_verify(self, binary, waived, stripped=False):
+        MachO(self).verify(binary, waived, stripped)
 
     def link_input_findings(self, path, label):
         arch, target = str(self.settings.arch), str(self.settings.os.version)
@@ -345,7 +345,7 @@ class ApplePort:
                 raise ConanException(f"{merged} came out with {', '.join(architectures) or 'no architecture'} "
                                      f"from {len(bundles)} slices; two slices built for the same architecture "
                                      "cannot be told apart")
-            self._verify(merged)
+            self._verify(merged, stripped=True)
 
     def _sign_target(self, name):
         if name != "application":
@@ -830,13 +830,17 @@ class MachO:
         text = captured.getvalue().strip()
         return plistlib.loads(text.encode()) if text else {}
 
-    def verify(self, binary, waived):
+    def verify(self, binary, waived, stripped=False):
         problems = []
         if "thumb-interworking" in waived:
             self._conanfile.output.warning(f"{binary}: thumb-interworking not checked: {waived['thumb-interworking']}")
         else:
             found, checked, into_code = self.interworking_problems(binary)
             problems += found
+            if into_code and not checked and not stripped:
+                problems.append(f"none of its {into_code} rebased code pointers names a function in its symbol "
+                                "table, so no pointer's mode could be checked; it arrived stripped, and the check "
+                                "has to see it before strip")
             self._conanfile.output.info(f"{os.path.basename(binary)}: {checked} of {into_code} rebased code pointers "
                                         "name a function in the symbol table and match its mode")
         if "pagezero" in waived:
