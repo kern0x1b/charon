@@ -21,12 +21,12 @@ MANIFEST = """
 name = "example"
 version = "1.0"
 
-[target]
-include-profiles = ["shared-target"]
+[platform]
+use = "apple-ios"
 arch = "armv7"
-os = "iOS"
 os-version = "6.0"
-sdk = "iphoneos"
+
+[target]
 cppstd = 23
 cpu = "cortex-a9"
 fpu = "neon"
@@ -78,35 +78,35 @@ needs = ["device"]
 
 BROKEN = {
     "a device library with no install path": """
-[target]
+[platform]
+use = "apple-ios"
 arch = "armv7"
-os = "iOS"
 os-version = "6.0"
 [[device-library]]
 name = "tweak"
 sources = ["a.c"]
 """,
     "a source whose language Charon cannot name": """
-[target]
+[platform]
+use = "apple-ios"
 arch = "armv7"
-os = "iOS"
 os-version = "6.0"
 [[static-library]]
 name = "compat"
 sources = ["a.rs"]
 """,
     "a target with neither sources nor cmake": """
-[target]
+[platform]
+use = "apple-ios"
 arch = "armv7"
-os = "iOS"
 os-version = "6.0"
 [[static-library]]
 name = "compat"
 """,
     "a resource that is neither a path nor a table with from and as": """
-[target]
+[platform]
+use = "apple-ios"
 arch = "armv7"
-os = "iOS"
 os-version = "6.0"
 [application]
 name = "Host"
@@ -132,9 +132,8 @@ def checks(declared):
     written = generate.written(declared)
 
     text = written["profile"]
-    if not text.startswith("include(shared-target)"):
-        found.append("a declared profile include must come first, because the shared profile is where the "
-                     "linker and the SDK come from: got {}".format(text.splitlines()[:1]))
+    if "include(" in text:
+        found.append("a platform writes the whole profile, so nothing is included: got {}".format(text))
     for expected in ("arch=armv7", "os.version=6.0", "os.sdk=iphoneos", "compiler.cppstd=23",
                      "build_type=Release", "-mcpu=cortex-a9", "-mfpu=neon"):
         if expected not in text:
@@ -228,9 +227,9 @@ def checks(declared):
 
 
 GLOBBED = """
-[target]
+[platform]
+use = "apple-ios"
 arch = "armv7"
-os = "iOS"
 os-version = "6.0"
 [[static-library]]
 name = "compat"
@@ -275,16 +274,14 @@ SLICED = """
 [port]
 name = "example"
 version = "1.0"
-[target]
+[platform]
+use = "apple-ios"
 arch = "armv7"
-os = "iOS"
 os-version = "6.0"
-include-profiles = ["ios6-armv7"]
 [variants.armv7]
-[variants.arm64.target]
+[variants.arm64.platform]
 arch = "armv8"
 os-version = "7.0"
-include-profiles = ["ios-arm64"]
 """
 
 
@@ -293,11 +290,13 @@ def variant_failures(folder):
     root = Path(folder) / "sliced"
     root.mkdir()
     declared = loaded(root, SLICED)
-    for variant, arch, version, profile in (("armv7", "armv7", "6.0", "ios6-armv7"),
-                                            ("arm64", "armv8", "7.0", "ios-arm64")):
+    for variant, arch, version, tool in (("armv7", "armv7", "6.0", "ld64/"), ("arm64", "armv8", "7.0", None)):
         written = generate.written(declared.for_variant(variant))
         text = written["profile"]
-        for expected in ("arch={}".format(arch), "os.version={}".format(version), "include({})".format(profile)):
+        if (tool not in text) if tool else ("ld64/" in text):
+            found.append("the {} variant's profile must require exactly its architecture's tools: {}".format(
+                variant, text))
+        for expected in ("arch={}".format(arch), "os.version={}".format(version)):
             if expected not in text:
                 found.append("the {} variant's profile must say {}: got {}".format(variant, expected, text))
         if arch in written[generate.CROSS_TOOLCHAIN]:
@@ -307,9 +306,9 @@ def variant_failures(folder):
 
 
 LAYERED = """
-[target]
+[platform]
+use = "apple-ios"
 arch = "armv7"
-os = "iOS"
 os-version = "6.0"
 [application]
 name = "Host"
@@ -370,9 +369,9 @@ def language_failures(folder):
 
 
 ORDERED = """
-[target]
+[platform]
+use = "apple-ios"
 arch = "armv7"
-os = "iOS"
 os-version = "6.0"
 [[static-library]]
 name = "objcfirst"
@@ -400,10 +399,12 @@ def determinism_failures(folder):
 
 
 CONFIGURED = """
-[target]
+[platform]
+use = "apple-ios"
 arch = "armv7"
-os = "iOS"
 os-version = "7.0"
+
+[target]
 cpu = "cortex-a9"
 
 [conf]
@@ -412,7 +413,7 @@ cpu = "cortex-a9"
 "user.charon-test:flags" = { value = ["-a", "-b"], why = "a list stays a list" }
 "user.charon-test:strict" = { value = true, why = "a boolean stays a boolean" }
 
-[variants.arm64.target]
+[variants.arm64.platform]
 arch = "armv8"
 
 [variants.arm64.conf]
@@ -470,8 +471,8 @@ def conf_failures(folder):
     for description, entry in CONF_REFUSED.items():
         refused = Path(folder) / "refused-conf"
         refused.mkdir(exist_ok=True)
-        broken = loaded(refused, '[target]\narch = "armv7"\nos = "iOS"\nos-version = "6.0"\ncpu = "cortex-a9"\n'
-                                 '[conf]\n{}\n'.format(entry))
+        broken = loaded(refused, '[platform]\nuse = "apple-ios"\narch = "armv7"\nos-version = "6.0"\n'
+                                 '[target]\ncpu = "cortex-a9"\n[conf]\n{}\n'.format(entry))
         try:
             generate.written(broken)
             found.append("{} in [conf] must be refused".format(description))
@@ -554,7 +555,7 @@ def platform_failures(folder):
 def architecture_failures(folder):
     root = Path(folder) / "wide"
     root.mkdir()
-    text = generate.cross_toolchain(loaded(root, '[target]\narch = "armv8"\nos = "iOS"\nos-version = "7.0"\n'))
+    text = generate.cross_toolchain(loaded(root, '[platform]\nuse = "apple-ios"\narch = "armv8"\nos-version = "7.0"\n'))
     found = []
     for expected in ("set(CMAKE_OSX_ARCHITECTURES ${CHARON_ARCHITECTURE})", "-target ${CHARON_TRIPLE}",
                      "NOT CHARON_ARCHITECTURE OR NOT CHARON_TRIPLE"):

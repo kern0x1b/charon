@@ -170,7 +170,7 @@ def refusal_failures():
         root = Path(folder)
         (root / "main.m").write_text("")
         (root / "charon.toml").write_text(
-            '[port]\nname = "p"\nversion = "1"\n[target]\narch = "armv7"\nos = "iOS"\nos-version = "6.0"\n'
+            '[port]\nname = "p"\nversion = "1"\n[platform]\nuse = "apple-ios"\narch = "armv7"\nos-version = "6.0"\n'
             '[variants.system]\n[application]\nname = "Host"\nsources = ["main.m"]\ninclude = ["gone"]\n')
         try:
             charon.generated(root, "system")

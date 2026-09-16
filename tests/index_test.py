@@ -63,22 +63,8 @@ def failures():
     return found
 
 
-def reexec_where_conan_lives():
-    if os.environ.get(declaration_test.CHOSEN):
-        return
-    try:
-        import conan  # noqa: F401
-        return
-    except ImportError:
-        pass
-    interpreter = declaration_test.conan_interpreter()
-    if interpreter and os.path.abspath(interpreter) != os.path.abspath(sys.executable):
-        os.execve(interpreter, [interpreter, os.path.abspath(__file__)] + sys.argv[1:],
-                  dict(os.environ, **{declaration_test.CHOSEN: interpreter}))
-
-
 def main():
-    reexec_where_conan_lives()
+    declaration_test.reexec_where_conan_lives(__file__)
     try:
         import conan  # noqa: F401
     except ImportError as missing:

@@ -12,7 +12,7 @@ from pathlib import Path
 
 MANIFEST = "charon.toml"
 PLATFORMS = Path(__file__).resolve().parent / "platforms"
-PLATFORM_SAYS = ("os", "os-version", "arch", "sdk", "include-profiles")
+PLATFORM_SAYS = ("os", "os-version", "arch", "sdk", "include-profiles", "system-name")
 TARGET_KINDS = ("static-library", "device-library", "executable", "application")
 BUILDING_VARIANT = "for-variant"
 PLACEHOLDER = re.compile(r"\{([a-z][a-z0-9_.-]*(?::[^{}]*)?)\}")
@@ -179,8 +179,12 @@ class Spec:
         if unknown:
             raise SpecError("{} says {} under [platform], which Charon does not read".format(
                 self.root / MANIFEST, ", ".join(unknown)))
+        template = facts.get("cross-toolchain")
         return {
             "name": name,
+            "python-requires": list(facts.get("python-requires") or []),
+            "extends": list(facts.get("extends") or []),
+            "cross-toolchain": found.parent / template if template else None,
             "os": facts["os"],
             "sdk": facts.get("sdk"),
             "arch": arch,

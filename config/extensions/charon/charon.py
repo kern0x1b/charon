@@ -190,8 +190,8 @@ def written_profile(root, variant):
     folder.mkdir(parents=True, exist_ok=True)
     path = folder / "profile"
     try:
-        text = generate.profile(declared, includes=declared.get("target", "include-profiles", []))
-    except generate.GenerationError as refused:
+        text = generate.profile(declared)
+    except (generate.GenerationError, generate.spec.SpecError) as refused:
         raise Failure(str(refused))
     path.write_text(text)
     return path

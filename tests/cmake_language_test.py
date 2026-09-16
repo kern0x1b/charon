@@ -25,9 +25,9 @@ import generate
 import spec
 
 DECLARATION = """
-[target]
+[platform]
+use = "apple-ios"
 arch = "armv7"
-os = "iOS"
 os-version = "6.0"
 
 [[static-library]]

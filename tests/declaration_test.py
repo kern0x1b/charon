@@ -267,7 +267,7 @@ def find_package_failures(module):
     import spec
     found = []
     declaration = {
-        "target": {"arch": "armv7", "os": "iOS", "os-version": "6.0"},
+        "platform": {"use": "apple-ios", "arch": "armv7", "os-version": "6.0"},
         "engine": {"find-packages": ["icu"]},
         "static-library": [{"name": "compat", "sources": ["a.c"], "packages": ["zlib"]}],
         "device-library": [{"name": "tweak", "sources": ["t.m"], "install": "/usr/lib", "packages": ["openssl", "zlib"]}],
@@ -620,7 +620,7 @@ def conan_interpreter():
     return candidate if os.path.isabs(candidate) else shutil.which(candidate)
 
 
-def reexec_where_conan_lives():
+def reexec_where_conan_lives(script=None):
     if os.environ.get(CHOSEN):
         return
     try:
@@ -630,7 +630,7 @@ def reexec_where_conan_lives():
         pass
     interpreter = conan_interpreter()
     if interpreter and os.path.abspath(interpreter) != os.path.abspath(sys.executable):
-        os.execve(interpreter, [interpreter, os.path.abspath(__file__)] + sys.argv[1:],
+        os.execve(interpreter, [interpreter, os.path.abspath(script or __file__)] + sys.argv[1:],
                   dict(os.environ, **{CHOSEN: interpreter}))
 
 
