@@ -1,7 +1,7 @@
 import os
 
 from conan import ConanFile
-from conan.tools.files import copy, get
+from conan.tools.files import apply_conandata_patches, copy, export_conandata_patches, get
 from conan.tools.gnu import AutotoolsDeps, AutotoolsToolchain
 from conan.tools.layout import basic_layout
 
@@ -23,8 +23,12 @@ class LdidConan(ConanFile):
         self.requires("libplist/2.6.0")
         self.requires("openssl/[>=4 <5]")
 
+    def export_sources(self):
+        export_conandata_patches(self)
+
     def source(self):
         get(self, **self.conan_data["sources"][self.version], strip_root=True)
+        apply_conandata_patches(self)
 
     def generate(self):
         AutotoolsToolchain(self).generate()
