@@ -86,6 +86,30 @@ to obtain and verify them.
    prove the core holds nothing Apple-mobile.
 6. The repository becomes `charon`, with platforms beside the core.
 
+## Newest upstream, and compatibility where it is missing
+
+Everything a port builds or builds with follows the newest upstream release, or
+the newest commit where a project no longer releases: libraries, the C++
+runtime, the SDK, the linker and signer, the build tools. An old system is not a
+reason to stay behind; it is what this project exists to carry forward. When a
+newer release stops supporting an old system or 32-bit code, the answer is a
+compatibility layer the platform supplies once, not a pin every port repeats.
+
+`apple-compat` is the first: a static library of what current code calls and an
+old Apple system lacks, each entry keyed by the release that introduced it, so
+a build for a newer release links none of it. `aligned_alloc`, which iOS has
+from 13.0 and libc++ calls unconditionally from 22.1, is its first entry: a
+hidden definition over `posix_memalign` keeping C11's contract, linked into
+libc++ with `-hidden-l`, so the runtime binds its own calls to it and exports
+nothing libc-named. The libc++ recipe refuses a build in which it calls
+anything else the target lacks, and a runtime that still imports a provided
+symbol. The same shape serves a platform that dropped 32-bit: the newest SDK
+that theos patched still carries armv7 stubs, and where none does, the stubs
+are the compatibility layer.
+
+A version that cannot be carried forward is recorded with the reason, and the
+reason is the work item, not the pin.
+
 ## The three layers
 
 **Shared configuration** - `config/`. Two profiles pin the target:
