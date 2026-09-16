@@ -116,6 +116,9 @@ class Spec:
     def generates(self, target):
         return not target.get("cmake")
 
+    def conf_required(self):
+        return self.section("conf")
+
     def tasks(self):
         return self.section("tasks")
 

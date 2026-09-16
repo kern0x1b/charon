@@ -35,6 +35,9 @@ sources = ["compat/a.c"]
 name = "tweak"
 cmake = "platform"
 
+[conf]
+"user.example:thing" = "why this port needs it"
+
 [tasks]
 audit = "steps/audit.py --build {build}"
 
@@ -122,6 +125,9 @@ def failures():
             found.append("a variant with no pipeline must be refused rather than running nothing")
         except spec.SpecError:
             pass
+
+        if declared.conf_required() != {"user.example:thing": "why this port needs it"}:
+            found.append("a declared configuration key must come back with the reason the port gave")
 
         if "{build}" not in declared.task("audit"):
             found.append("a task must come back with its placeholders intact")

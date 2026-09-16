@@ -592,6 +592,26 @@ def remotes():
     return json.loads(result.stdout or "[]")
 
 
+def conf_value(key):
+    result = conan("config", "show", key, "--format=json", stdout=subprocess.PIPE, text=True, check=False)
+    try:
+        answered = json.loads(result.stdout or "{}") or {}
+    except json.JSONDecodeError:
+        return ""
+    return str(answered.get(key) or "")
+
+
+def check_declared_conf(root):
+    declared = manifest(root).get("conf", {})
+    if not declared:
+        return
+    for key in sorted(declared):
+        if conf_value(key):
+            say("{} is set".format(key))
+        else:
+            warn("{} is empty, and this port needs it: {}".format(key, declared[key]))
+
+
 def verb_setup(root, parsed):
     shared = [Path(folder).expanduser().resolve() for folder in parsed.extra]
     for folder in shared:
@@ -600,6 +620,7 @@ def verb_setup(root, parsed):
     for folder in shared:
         conan("config", "install", folder / "config")
     say("remotes now: {}".format(", ".join(remote["name"] for remote in remotes())))
+    check_declared_conf(root)
 
 
 def port_name(root):
