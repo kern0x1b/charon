@@ -587,11 +587,12 @@ def remotes():
 
 
 def verb_setup(root, parsed):
-    for folder in parsed.extra:
-        shared = Path(folder).expanduser().resolve()
-        conan("config", "install", shared / "config")
-        register(shared.name, shared)
-    register(port_name(root), root)
+    shared = [Path(folder).expanduser().resolve() for folder in parsed.extra]
+    for folder in shared:
+        register(folder.name, folder)
+    register(declared(root, "port", "index") or port_name(root), root)
+    for folder in shared:
+        conan("config", "install", folder / "config")
     say("remotes now: {}".format(", ".join(remote["name"] for remote in remotes())))
 
 
@@ -600,15 +601,28 @@ def port_name(root):
     return json.loads(result.stdout or "{}").get("name") or root.name
 
 
+def serving(folder):
+    for remote in remotes():
+        url = remote.get("url") or ""
+        if url.startswith("/") and Path(url).expanduser().resolve() == folder:
+            return remote["name"]
+    return None
+
+
 def register(name, folder):
     if not (folder / "recipes").is_dir():
         raise Failure("{} holds no recipes to serve".format(folder))
     known = [remote["name"] for remote in remotes()]
+    held = serving(folder)
     if name in known:
         conan("remote", "update", name, "--url", folder, "--index", "0")
+        say("{} serves {} ahead of the general remotes".format(name, folder))
+    elif held:
+        conan("remote", "update", held, "--index", "0")
+        say("{} already serves {}; it now answers before the general remotes".format(held, folder))
     else:
         conan("remote", "add", name, folder, "-t", "local-recipes-index", "--index", "0")
-    say("{} serves {} ahead of the general remotes".format(name, folder))
+        say("{} serves {} ahead of the general remotes".format(name, folder))
 
 
 def verb_device(root, parsed):

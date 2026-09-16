@@ -36,12 +36,47 @@ verb is the same in every port: `make build`, `make package`, `make deploy`,
 `make run`, `make test`, `make clean`, and `make provenance` to see which
 configuration and which checkout are answering.
 
+A port carries two files for this. The `Makefile` is the whole wiring:
+
+    CHARON_CONFIG ?= $(if $(IOS6_TOOLCHAIN),$(IOS6_TOOLCHAIN)/config,$(shell conan config home))
+    include $(CHARON_CONFIG)/extensions/charon/charon.mk
+
+and `charon.toml` is what the port declares about itself, so no verb has to be
+told twice:
+
+    [port]
+    name = "revenant-webkit"
+    version = "0.1.0"
+
+    [checks]
+    before-build = ["scripts/carry-check.py"]
+
+    [variants]
+    system = {}
+    prefixed = { options = ["prefixed=True"] }
+
+    [application]
+    log = "/tmp/rev-webview-host.log"
+    first-page = "/tmp/rev-url.txt"
+
+Everything else Charon derives rather than being told: the host profile is the
+only file under the port's `profiles/`, a build tree is whichever folder CMake
+stamped under `build/`, the frameworks to install are whatever the build staged,
+and the application to launch is the single bundle it produced. Setting
+`IOS6_TOOLCHAIN` points a port at this repository directly instead of the
+installed copy, which is how to work on Charon itself.
+
 `LLVM_PREFIX` is read once, by `config/global.conf`, into
 `user.ios6:llvm_prefix`. Only the `ld64` recipe asks for it: cctools' configure
 runs `llvm-config` to find `libLTO`, and a linker built without it silently
 drops LTO support, which this target builds with. Recipes never read the
 environment themselves, so a missing path stops `conan create` with that
 sentence rather than producing a linker that cannot link.
+
+To set it for one invocation instead, the flag is `-c:a`, not `-c`: `ld64` is a
+`tool_requires`, so it is configured in the **build** context, which a plain
+`-c` never reaches. A guard firing while the value is plainly set on the command
+line is almost always this.
 
 Xcode is not required and does not need to be installed. The Command Line Tools
 carry the compiler and the compiler runtime, the SDK is the one theos publishes
