@@ -215,6 +215,12 @@ To set it for one invocation instead, the flag is `-c:a`, not `-c`: `ld64` is a
 `-c` never reaches. A guard firing while the value is plainly set on the command
 line is almost always this.
 
+libc++ stops at 21.1: from 22.1 its runtime calls `aligned_alloc`
+unconditionally, which iOS ships only from 13.0, where 21.1 still falls back to
+`posix_memalign` below the release that has it. `libcxx` offers 21.1.0 and
+21.1.8, and a newer release is added only once its runtime builds for the
+oldest release a platform supports.
+
 Xcode is not required and does not need to be installed. The Command Line Tools
 carry the compiler and the compiler runtime, the SDK comes from the
 `iphoneos-sdk` package, and the linker and the signing tool are built from
