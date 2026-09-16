@@ -668,15 +668,16 @@ class Ios6Port:
         self._write_application_plist(bundle, name, declared)
         executable = os.path.join(bundle, name)
         macho.repoint(executable, bundled)
-        carried = {os.path.basename(identity) for identity in bundled.values()}
-        elsewhere = [reference for reference in macho.references(executable)
-                     if os.path.basename(reference) in carried
-                     and not reference.startswith("@executable_path/")]
-        if elsewhere:
-            raise ConanException(
-                f"{executable} loads {', '.join(elsewhere)} from outside its own bundle while shipping a copy "
-                "of each; the application would run against whatever the system has there instead of what it "
-                "was built with")
+        carried = {MachO.library_stem(identity) for identity in bundled.values()}
+        for binary in [executable] + list(bundled):
+            elsewhere = [reference for reference in macho.references(binary)
+                         if MachO.library_stem(reference) in carried
+                         and not reference.startswith("@executable_path/")]
+            if elsewhere:
+                raise ConanException(
+                    f"{binary} loads {', '.join(elsewhere)} from outside its own bundle while the bundle carries "
+                    "that library; it would run against whatever the system has there instead of what it was "
+                    "built with, and two copies of one runtime in a process do not agree")
         self._verify(executable)
         if declared.get("strip"):
             macho.strip(executable, declared["strip"])
@@ -1138,6 +1139,11 @@ class MachO:
                 if self.is_macho(path):
                     found.append(path)
         return sorted(found)
+
+    @staticmethod
+    def library_stem(reference):
+        name = os.path.basename(reference)
+        return name.split(".", 1)[0].replace("librev-", "lib")
 
     def install_name(self, binary):
         listing = self.output(f'"{self.tool("otool")}" -D "{binary}"').splitlines()

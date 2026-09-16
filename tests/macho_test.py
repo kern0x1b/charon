@@ -302,6 +302,61 @@ def wiring_failures(module, made, ldid):
     return found
 
 
+def runtime_reference_failures(module, made, ld64, ldid):
+    found = []
+    original = module.MachO
+    for spelled, reason in (("/usr/lib/libc++.1.dylib", None), ("/usr/lib/libc++.dylib", "/usr/lib/libc++.dylib"),
+                            ("@executable_path/Frameworks/libc++.1.dylib", None)):
+        with tempfile.TemporaryDirectory() as scratch:
+            folder = Path(scratch)
+            packages = folder / "build" / "packages"
+            packages.mkdir(parents=True)
+            (folder / "libSystem.tbd").write_text(SYSTEM_STUB)
+            (folder / "libcpp.tbd").write_text(SYSTEM_STUB.replace("/usr/lib/libSystem.B.dylib", spelled)
+                                               .replace("dyld_stub_binder", "_runtime_marker"))
+            (folder / "user.c").write_text("extern int runtime_marker; int use(void) { return runtime_marker; }\n")
+            run("xcrun", "clang", "-target", "armv7-apple-ios6.0", "-Wno-incompatible-sysroot",
+                "-fuse-ld={}".format(ld64), "-nostdlib", "-dynamiclib", "-L.", "-lSystem", "-lcpp",
+                "-install_name", "@rpath/libuser.dylib", "-o", packages / "libuser.dylib", "user.c", cwd=folder)
+            shutil.copy2(made["library"], packages / "libc++.1.dylib")
+            instance = running_port(module, folder, {"variants": {"system": {}}, "application": {
+                "name": "Host", "bundle": [{"from": "{build}/packages/libc++.1.dylib"},
+                                           {"from": "{build}/packages/libuser.dylib"}]}}, ldid)
+
+            class Linking(original):
+                def tool(self, name):
+                    return subprocess.run(["xcrun", "-f", name], capture_output=True, text=True).stdout.strip()
+
+                def sign(self, binary, entitlements=None):
+                    pass
+
+            module.MachO = Linking
+            instance._cmake_project = lambda source, into, definitions: None
+            instance._project_source = lambda kind, target: str(folder)
+            instance._write_application_plist = lambda bundle, name, declared: None
+            installing = type(instance).run
+
+            def install(self, command, cwd=None, stdout=None, ignore_errors=False):
+                if command.startswith("cmake --install"):
+                    shutil.copy2(made["executable"], folder / "build" / "Host.app" / "Host")
+                    return 0
+                return installing(self, command, cwd, stdout, ignore_errors)
+
+            type(instance).run = install
+            try:
+                instance._build_application()
+                if reason:
+                    found.append("a bundled library loading {} while the bundle carries libc++ must be refused"
+                                 .format(spelled))
+            except module.ConanException as refused:
+                if not reason or reason not in str(refused) or "libuser.dylib" not in str(refused):
+                    found.append("a bundled library loading {}: expected {}, got {}".format(
+                        spelled, "refusal naming it" if reason else "the reference moved into the bundle", refused))
+            finally:
+                module.MachO = original
+    return found
+
+
 def entitlement_failures(module, folder, made, ldid):
     found = []
     declared = {"get-task-allow": True, "keychain-access-groups": ["example.shared"]}
@@ -387,6 +442,7 @@ def main():
             found += invariant_failures(module, made, pointers)
             found += waiver_failures(module, made)
             found += wiring_failures(module, made, ldid)
+            found += runtime_reference_failures(module, made, ld64, ldid)
     except Refused as missing:
         found.append(str(missing))
     for line in found:

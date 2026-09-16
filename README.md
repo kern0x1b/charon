@@ -110,7 +110,7 @@ executable right after it is linked; `plist-file` starts Info.plist from a file,
 with `[application.plist]` over it and the derived keys filling only what both
 leave out; `bundle = [{ from = "{pkg:NAME}/lib/libfoo.dylib", into = "Frameworks" }]`
 copies a package's file into the bundle and gives a binary its
-`@executable_path` identity. `include-exclude` removes a folder whether a pattern or a literal entry
+`@executable_path` identity. Neither the executable nor anything bundled may load a library the bundle carries from anywhere else, whatever version suffix the path spells. `include-exclude` removes a folder whether a pattern or a literal entry
 brought it in, so excluding a tree excludes every folder inside it. A port that
 copies C++ runtime libraries into the device layout names them under
 `[stage.runtime]` and the package they come from as `[stage] runtime-from`; a
