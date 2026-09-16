@@ -20,7 +20,7 @@ class LdidConan(ConanFile):
         basic_layout(self, src_folder="src")
 
     def requirements(self):
-        self.requires("libplist/2.6.0")
+        self.requires("libplist/2.7.0@charon/stable")
         self.requires("openssl/[>=4 <5]")
 
     def export_sources(self):

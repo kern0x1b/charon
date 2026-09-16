@@ -17,6 +17,7 @@ other. What is shared is only what is true for all of them.
     tools/sdk-usage.py         which files of an SDK a build actually read
     recipes/ld64/              the linker, built from cctools-port
     recipes/ldid/              the signing tool the device accepts
+    recipes/libplist/          the property-list library ldid reads entitlements with
     recipes/iphoneos-sdk/      the SDK, fetched and verified on the machine that uses it
     recipes/libcxx/            the C++ runtime an old iOS does not ship
     recipes/dyld-imports-check/  the check that every import exists in a device's dyld cache
