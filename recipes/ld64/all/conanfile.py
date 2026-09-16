@@ -1,5 +1,5 @@
 from conan import ConanFile
-from conan.tools.files import apply_conandata_patches, chdir, copy, export_conandata_patches, get, replace_in_file
+from conan.tools.files import apply_conandata_patches, chdir, copy, export_conandata_patches, get
 from conan.errors import ConanInvalidConfiguration
 import os
 import shutil
@@ -38,15 +38,6 @@ class Ld64Armv7Conan(ConanFile):
             destination="libtapi")
         get(self, **data["cctools"], strip_root=True, destination="cctools-port")
         apply_conandata_patches(self)
-        # Its vendored LLVM does not ship the CMake helper its clang calls.
-        replace_in_file(self, os.path.join(self.source_folder, "libtapi", "src", "clang", "CMakeLists.txt"),
-                        'if (APPLE AND NOT CMAKE_LINKER MATCHES ".*lld.*")\n  get_darwin_linker_version(HOST_LINK_VERSION)',
-                        'if (APPLE AND NOT CMAKE_LINKER MATCHES ".*lld.*")\n'
-                        '  if (COMMAND get_darwin_linker_version)\n'
-                        '    get_darwin_linker_version(HOST_LINK_VERSION)\n'
-                        '  else()\n'
-                        '    set(HOST_LINK_VERSION "1053.12")\n'
-                        '  endif()')
 
     def build(self):
         llvm = self._llvm_prefix()

@@ -4,6 +4,10 @@ patches:
       file on a library search path
     patch_file: patches/inlined-text-stub-before-search-paths.patch
     patch_type: bugfix
+  - patch_description: libtapi's vendored LLVM has no get_darwin_linker_version, and
+      nothing it builds reads the host linker version
+    patch_file: patches/libtapi-without-darwin-linker-version-helper.patch
+    patch_type: portability
 sources:
   '956.6':
     cctools:
