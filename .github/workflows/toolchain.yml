@@ -43,3 +43,6 @@ jobs:
 
       - name: Build the signing tool and check it signs
         run: conan create recipes/ldid/all --version=2.1.5 -pr:h default -pr:b default --build=missing
+
+      - name: Build the import check and see that it answers
+        run: conan create recipes/ios6-imports-check/all --version=1.0 -pr:h default -pr:b default --build=missing
