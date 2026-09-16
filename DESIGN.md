@@ -101,3 +101,190 @@ Recipes only, for now: each machine builds a package once and caches it in
 `~/.conan2`. If sharing built binaries between machines becomes worth it, that
 is a real Conan remote - Artifactory or any server - added alongside, with no
 change to the recipes or the ports.
+
+## Libraries and workspaces - designed, not built
+
+Nothing in this section exists yet. It is the agreed shape for the part of a port
+that is still Conan Python and YAML - each library's `conanfile.py`,
+`conandata.yml` and `config.yml` - so that a repository carries declarations
+only and Conan stays Charon's engine underneath, the way Gradle uses Maven
+repositories without anyone writing a POM. It is not Bazel: a declaration is
+compiled to Conan recipes and CMake, and content keying comes from Conan
+revisions once the text Charon writes is deterministic.
+
+### The workspace
+
+A root `charon.toml` with a `[workspace]` lists its modules by folder. A folder
+that is not listed is not a module, whatever it contains. Each listed folder has
+its own `charon.toml` declaring one module. A root with no `[workspace]` is a
+workspace of one module, which is the shape every port has today.
+
+    [workspace]
+    modules = ["app", "tweak", "daemon", "libs/ogg", "libs/tdlib"]
+
+A label names a module or something it produces: `//libs/ogg` is the module,
+`//libs/ogg:ogg` its library, `//libs/tdlib:res/td_api.tl` one of its files.
+Labels resolve through the workspace list before any remote, and Charon writes
+the local recipe index from the declarations; nobody writes it.
+
+Module kinds: `application` (a workspace may hold several), `library`,
+`device-library`, `executable`, and `tool` - built for the host, such as a
+Mach-O fix-up or a code generator.
+
+### Where a library's tree comes from
+
+A library's fields are the ones a target already has - `sources`, `exclude`,
+`include`, `options-for`, `definitions-for`, `produces` - resolved against the
+library's tree. The tree is the module's own folder unless `source` says
+otherwise, and then patches and an overlay apply to it, in that order:
+
+    source = { git = "https://github.com/openssl/openssl.git", commit = "c523121f902fde2929909dc7f76b13ceb4961efe" }
+    source = { url = "https://.../compiler-rt.tar.xz", sha256 = "..." }
+    patches = ["patches/arm-xlate-armcap-data-word.patch"]
+    overlay = "port/"
+
+A patch that no longer applies stops the build. A text table of replacements is
+not a way to edit a source: today's `replace_in_file` tables become patch files.
+
+### How it is built
+
+`build` names the strategy, and each strategy owns its keys; a key that belongs
+to another strategy is refused rather than ignored.
+
+- `build = "sources"` - Charon compiles the listed sources, the way it builds a
+  port's own static library today.
+- `build = "cmake"` - the tree's own CMake, with `cache = { ... }`.
+- `build = "configure"` - `command`, `environment` and `make-target`.
+
+A step that has to run on the host before the cross build - tdlib's
+`prepare_cross_compiling` - is a task on the host toolchain, declared before the
+build step, not a fourth strategy.
+
+brotli, as it is built for revenant-webkit today:
+
+    [library]
+    name = "brotli"
+    version = "1.1.0"
+    source = { git = "https://github.com/google/brotli.git", commit = "ed738e842d2fbdf2d6459e39267a633c4a9b2f5d" }
+    patches = ["patches/no-app-bundle.patch"]
+    build = "cmake"
+    cache = { BROTLI_DISABLE_TESTS = "ON", BROTLI_BUNDLED_MODE = "ON", BUILD_SHARED_LIBS = "OFF", CMAKE_MACOSX_BUNDLE = "OFF" }
+    produces = ["brotlicommon", "brotlidec", "brotlienc"]
+    headers = [{ from = "c/include/" }]
+    licenses = ["LICENSE"]
+
+openssl, as it is built for revenant-webkit today:
+
+    [library]
+    name = "openssl"
+    version = "3.0.15"
+    source = { git = "https://github.com/openssl/openssl.git", commit = "c523121f902fde2929909dc7f76b13ceb4961efe" }
+    patches = ["patches/arm-xlate-armcap-data-word.patch"]
+    uses = ["ios6-cross"]
+    build = "configure"
+    command = "./Configure ios-cross no-shared no-tests no-ui-console no-engine no-async"
+    environment = { CFLAGS = "-O2 -DBROKEN_CLANG_ATOMICS" }
+    make-target = "build_libs"
+    produces = ["ssl", "crypto"]
+    headers = [{ from = "include/openssl/", into = "openssl" }]
+    licenses = ["LICENSE.txt"]
+
+ogg and tdlib, for iTgLegacy to fill in against its recipes during review:
+
+    [library]
+    name = "ogg"
+    source = { git = "<url>", commit = "<commit>" }
+    build = "sources"
+    sources = ["<source list>"]
+    produces = ["ogg"]
+
+    [library]
+    name = "tdlib"
+    source = { git = "<url>", commit = "<commit>" }
+    patches = ["patches/voip-hook.patch"]
+    requires = ["//libs/openssl"]
+    uses = ["ios6-cross", "cxx-stdlib", "emutls"]
+    build = "cmake"
+    before-build = ["task:prepare-cross-compiling"]
+    cache = { "<option>" = "<value>" }
+    produces = ["<libraries>"]
+    resources = ["td_api.tl"]
+
+### What a library produces, and who may reach it
+
+`produces` names the archives or dylibs; a dylib also declares its install name.
+`headers` copies header folders, with `into` for a prefix such as `opusenc/`.
+`resources` are files a module ships beside its libraries. Any of them can be
+found from outside a build with `charon where //libs/tdlib:res/td_api.tl`, which
+prints the path or fails; a tool never reads the cache layout itself.
+
+### Dependencies expose headers and archives, and nothing else
+
+`requires = ["//libs/opus"]` makes a module's headers and archives visible to the
+consumer. It does not add anything to the consumer's link line. Frameworks and
+system libraries a library needs are information about it, never propagated:
+iTgLegacy's application must not link VideoToolbox or AVFoundation, which it
+reaches through dlopen because a hard link to either stops it starting on iOS 6.
+The consumer declares what it links and in what order - static archive order
+matters - and may mark a framework weak.
+
+### Variants as dimensions
+
+A workspace declares dimensions - architecture, flavour, build type - and a
+module inherits them unless it narrows them: a daemon narrows architecture to
+armv7. An application merges its architecture slices as `merge:application`
+already does.
+
+### Conventions
+
+A convention is a declaration fragment defined once in the toolchain and applied
+by name, `uses = ["emutls"]`. It is data, not code: flags, `include-system-for`,
+a dependency on a toolchain module, a step to insert. The module's own keys win
+over a convention's; two conventions that set the same key in ways that cannot
+be ordered are refused.
+
+A convention may carry a condition that asks the compiler, never a name:
+
+    [convention.emutls]
+    when = { compiles = "static __thread int x;", with = "the module's target, deployment version and flags", holds = false }
+    requires = ["//toolchain/emutls"]
+    options-for = { c = ["-femulated-tls"], cxx = ["-femulated-tls"] }
+
+Whether a module needs emulated TLS depends on the target and its deployment
+version - armv7 below 9.0, arm64 at 7.0 but not from 8.0 - and a toolchain can
+move either number, so the condition is evaluated with the module's own settings
+and the fragment merges only when it holds. A condition that cannot be evaluated
+is refused, never read as false. emutls and the Mach-O fix-up become toolchain
+modules that conventions reference, so no port carries their C.
+
+### Determinism
+
+Charon writes a library's recipe from its declaration alone: no absolute path, no
+time, no host name, keys in declaration order. The same declaration generated in
+two different folders gives the same text, and therefore the same recipe
+revision, so moving a repository never rebuilds a package. Today's generated
+port recipe still bakes the checkout path; that is fixed before any library is
+generated.
+
+### Proving a migration changed nothing
+
+Each library moves from its recipe to a declaration only with a comparison of the
+two builds that covers the archive's members, the defined and undefined symbols,
+the minimum OS version recorded in every object or slice, and, for a dylib, its
+install name and load commands. The minimum version is not optional: iTgLegacy's
+libvpx had the same members and symbols while 110 of its 111 armv7 objects
+targeted iOS 7.0. The comparison is a Charon verb, not a script each port
+rewrites.
+
+### Order
+
+1. Generated recipes stop baking the checkout path; a test generates one
+   declaration in two folders and requires the same text.
+2. A verified baseline: today's recipes building each port end to end through
+   Charon.
+3. The comparison verb, and `charon where`.
+4. Library modules by strategy - sources, then cmake, then configure - each
+   library proven unchanged before its recipe is deleted, simplest first: ogg
+   and brotli before tdlib and openssl.
+5. The workspace with labels and dimensions, once there is more than one module
+   to hold.
