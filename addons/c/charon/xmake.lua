@@ -6,3 +6,4 @@ package("charon")
 
     add_urls("https://github.com/kern0x1b/charon.git")
     add_versions("v0.1.0", "67d53c4f3726becb2e66b28e0691edd8f9fced92")
+    add_versions("v0.2.0", "9568e1afb34c3cbc0b46847aab09d074588f5c16")
