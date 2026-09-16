@@ -50,6 +50,9 @@ jobs:
       - name: A port finding one package also gets the configs of the packages that one finds
         run: python3 tests/cmake_deps_test.py
 
+      - name: A port's .deb carries its stage, and its application where the distribution installs one
+        run: python3 tests/package_test.py
+
       - name: Register the toolchain
         run: |
           conan config install "$PWD/config"

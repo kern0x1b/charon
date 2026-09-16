@@ -131,21 +131,45 @@ class ApplePort:
 
     def platform_package(self):
         application = self.declared.get("application", {})
-        if application and self.declared_variant() == application.get("variant"):
+        variant = self.declared_variant()
+        builds_application = bool(application) and variant == application.get("variant")
+        if builds_application:
             bundle = f"{application['name']}.app"
             shutil.copytree(os.path.join(self.build_folder, bundle),
                             os.path.join(self.package_folder, bundle), symlinks=True, dirs_exist_ok=True)
-            return
-        shutil.copytree(self.stage_folder, os.path.join(self.package_folder, "root"),
-                        symlinks=True, dirs_exist_ok=True)
+        else:
+            shutil.copytree(self.stage_folder, os.path.join(self.package_folder, "root"),
+                            symlinks=True, dirs_exist_ok=True)
         described = self.declared.get("package", {})
+        packaged = described.get("variant", variant)
+        if packaged != variant:
+            if builds_application:
+                return
+            raise ConanException(f"{self.name} packages the {packaged} variant, and {variant} is not it")
         control = described.get("control")
         if not control:
             raise ConanException(f"{self.name} declares no package control file, so no .deb can be written")
+        root = self._distributed_tree(application) if builds_application else self.stage_folder
         scripts = described.get("maintainer-scripts")
-        DebianPackage(self, os.path.join(self.port_root, control), self.stage_folder,
+        DebianPackage(self, os.path.join(self.port_root, control), root,
                       os.path.join(self.port_root, scripts) if scripts else None
                       ).write(os.path.join(self.package_folder, "deb"))
+
+    def _distributed_tree(self, application):
+        platform = self.declared_platform() or {}
+        distribution = platform.get("distribution")
+        applications = (platform.get("distributed") or {}).get("applications")
+        if not applications:
+            raise ConanException(f"{self.name} distributes as {distribution or 'nothing named'}, which says nowhere "
+                                 "for an application to install, so no package can carry one")
+        tree = os.path.join(self.build_folder, "distributed")
+        rmdir(self, tree)
+        if os.path.isdir(self.stage_folder):
+            shutil.copytree(self.stage_folder, tree, symlinks=True)
+        bundle = f"{application['name']}.app"
+        shutil.copytree(os.path.join(self.build_folder, bundle),
+                        os.path.join(tree, applications.lstrip("/"), bundle), symlinks=True)
+        return tree
 
     @property
     def sdk_path(self):

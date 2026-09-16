@@ -252,6 +252,9 @@ def platform_failures():
         if wide["arch"] != "armv8" or wide["os-version"] != "7.0" or wide["distribution"] != "jailbreak":
             found.append("a variant's [platform] must override the keys it names and keep the rest: got {}".format(
                 wide))
+        if (wide.get("distributed") or {}).get("applications") != "/Applications":
+            found.append("a platform must hand on what its chosen distribution says: got {}".format(
+                wide.get("distributed")))
         if any(name.startswith("ld64/") for name in wide["tool-requires"]):
             found.append("an architecture's own tools must not reach another architecture: got {}".format(
                 wide["tool-requires"]))
@@ -274,7 +277,7 @@ def platform_failures():
                 found.append("a repeated key must be refused for that reason: {}".format(refused))
         (root / "platforms").mkdir()
         (root / "platforms" / "apple-ios.toml").write_text(
-            'os = "iOS"\ndistributions = ["jailbreak"]\n[architectures.armv7]\nos-version = { min = "5.0" }\n')
+            'os = "iOS"\n[distributions.jailbreak]\n[architectures.armv7]\nos-version = { min = "5.0" }\n')
         (root / spec.MANIFEST).write_text(PLATFORMED.replace('os-version = "6.0"', 'os-version = "5.1"'))
         try:
             if spec.load(root).platform()["os-version"] != "5.1":

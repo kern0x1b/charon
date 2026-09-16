@@ -466,7 +466,7 @@ def recipe(declared):
             declared.root / spec.MANIFEST))
     content = dict(declared.content)
     content["platform-facts"] = {key: platform[key] for key in ("name", "os", "arch", "os-version", "distribution",
-                                                                "build-only")}
+                                                                "distributed", "build-only")}
     return RECIPE_TEMPLATE.format(
         generated=GENERATED,
         name=repr(described["name"]),

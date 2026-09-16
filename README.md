@@ -397,7 +397,12 @@ commit they build rather than the time they ran.
 Every port ships a .deb. A port declares `[package] control` and, if it has
 them, `maintainer-scripts`; `charon package` hands the staged tree - laid out
 as the device's filesystem, every binary signed with the `ldid` tool_requires -
-to `charon-apple.DebianPackage`. A recipe written by hand calls the same class:
+to `charon-apple.DebianPackage`. For the variant that builds `[application]`,
+the final bundle joins that tree where the port's distribution installs
+applications (`applications` under the platform's `[distributions.<name>]`,
+`/Applications` for a jailbroken iOS device). A port with several variants
+names the one its package is written from with `[package] variant`; the others
+package their bundle or tree without a .deb. A recipe written by hand calls the same class:
 
     def package(self):
         self.python_requires["charon-apple"].module.DebianPackage(

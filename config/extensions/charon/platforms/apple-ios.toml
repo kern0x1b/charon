@@ -1,7 +1,6 @@
 os = "iOS"
 sdk = "iphoneos"
 deployment-environment = "IPHONEOS_DEPLOYMENT_TARGET"
-distributions = ["jailbreak", "trollstore", "sideload"]
 tool-requires = ["iphoneos-sdk/16.4@charon/stable"]
 python-requires = ["charon-apple/1.0@charon/stable"]
 requires = ["apple-compat/1.0@charon/stable"]
@@ -22,3 +21,10 @@ tool-requires = ["ld64/956.6@charon/stable"]
 
 [architectures.armv8]
 os-version = { min = "7.0" }
+
+[distributions.jailbreak]
+applications = "/Applications"
+
+[distributions.trollstore]
+
+[distributions.sideload]

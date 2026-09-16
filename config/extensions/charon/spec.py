@@ -172,9 +172,10 @@ class Spec:
             raise SpecError("{} targets {} {} on {}, and {} ends at {}".format(
                 self.root / MANIFEST, facts.get("os"), version, arch, name, bounds["max"]))
         distribution = declared.get("distribution")
-        if distribution is not None and distribution not in (facts.get("distributions") or []):
+        distributions = facts.get("distributions") or {}
+        if distribution is not None and distribution not in distributions:
             raise SpecError("{} distributes as {}, which {} does not know ({})".format(
-                self.root / MANIFEST, distribution, name, ", ".join(facts.get("distributions") or []) or "none"))
+                self.root / MANIFEST, distribution, name, ", ".join(distributions) or "none"))
         unknown = sorted(set(declared) - {"use", "arch", "os-version", "distribution"})
         if unknown:
             raise SpecError("{} says {} under [platform], which Charon does not read".format(
@@ -192,6 +193,7 @@ class Spec:
             "arch": arch,
             "os-version": str(version),
             "distribution": distribution,
+            "distributed": dict(distributions.get(distribution) or {}),
             "deployment-environment": facts.get("deployment-environment"),
             "compiler": dict(facts.get("compiler") or {}),
             "conf": dict(facts.get("conf") or {}),
