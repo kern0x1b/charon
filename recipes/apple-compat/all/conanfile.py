@@ -29,6 +29,8 @@ class AppleCompatConan(ConanFile):
         "__sincosf_stret": {"iOS": "7.0", "Macos": "10.9"},
         "__strlcpy_chk": {"iOS": "7.0", "Macos": "10.9"},
         "__strlcat_chk": {"iOS": "7.0", "Macos": "10.9"},
+        "__ulock_wait": {"iOS": "10.0", "Macos": "10.12", "tvOS": "10.0", "watchOS": "3.0"},
+        "__ulock_wake": {"iOS": "10.0", "Macos": "10.12", "tvOS": "10.0", "watchOS": "3.0"},
     }
 
     @property

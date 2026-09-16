@@ -53,6 +53,9 @@ jobs:
       - name: A port's .deb carries its stage, and its application where the distribution installs one
         run: python3 tests/package_test.py
 
+      - name: The imports checker reads the slice the cache's device loads
+        run: python3 tests/imports_check_test.py
+
       - name: Register the toolchain
         run: |
           conan config install "$PWD/config"

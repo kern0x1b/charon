@@ -246,12 +246,93 @@ int main(void)
 """
 
 
+ULOCK = r"""
+#include <errno.h>
+#include <pthread.h>
+#include <stdatomic.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <sys/time.h>
+#include <unistd.h>
+
+int __ulock_wait(uint32_t operation, void *address, uint64_t value, uint32_t timeout);
+int __ulock_wake(uint32_t operation, void *address, uint64_t value);
+
+static int fails;
+
+static void expect(int holds, const char *what)
+{
+    if (!holds) {
+        printf("FAIL  %s\n", what);
+        fails++;
+    }
+}
+
+static _Atomic uint32_t narrow;
+static _Atomic uint64_t wide;
+static _Atomic int woke;
+
+static void *wait_narrow(void *unused)
+{
+    (void)unused;
+    while (atomic_load(&narrow) == 0)
+        __ulock_wait(1, &narrow, 0, 0);
+    atomic_fetch_add(&woke, 1);
+    return NULL;
+}
+
+static void *wait_wide(void *unused)
+{
+    (void)unused;
+    while (atomic_load(&wide) == 0)
+        __ulock_wait(5, &wide, 0, 0);
+    atomic_fetch_add(&woke, 1);
+    return NULL;
+}
+
+static double now(void)
+{
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    return time.tv_sec + time.tv_usec / 1e6;
+}
+
+int main(void)
+{
+    uint32_t differs = 7;
+    expect(__ulock_wait(1, &differs, 3, 0) == 0, "a value that already differs returns at once");
+    uint64_t same = 9;
+    double started = now();
+    expect(__ulock_wait(5, &same, 9, 50000) == -1 && errno == ETIMEDOUT, "a timed wait nobody wakes times out");
+    expect(now() - started >= 0.04 && now() - started < 2.0, "the timeout is in microseconds");
+    errno = 0;
+    expect(__ulock_wake(1, &differs, 0) == -1 && errno == ENOENT, "waking an address nobody waits on says so");
+
+    pthread_t threads[8];
+    for (int index = 0; index < 4; index++)
+        pthread_create(&threads[index], NULL, wait_narrow, NULL);
+    for (int index = 4; index < 8; index++)
+        pthread_create(&threads[index], NULL, wait_wide, NULL);
+    usleep(100000);
+    expect(atomic_load(&woke) == 0, "waiters sleep while the value is unchanged");
+    atomic_store(&narrow, 1);
+    __ulock_wake(1 | 0x100, &narrow, 0);
+    atomic_store(&wide, 1);
+    __ulock_wake(5 | 0x100, &wide, 0);
+    for (int index = 0; index < 8; index++)
+        pthread_join(threads[index], NULL);
+    expect(atomic_load(&woke) == 8, "every waiter on 32-bit and 64-bit values wakes once it changes");
+    return fails != 0;
+}
+"""
+
+
 def run(*command, cwd):
     try:
         return subprocess.run([str(part) for part in command], cwd=cwd, capture_output=True, text=True, timeout=120)
     except subprocess.TimeoutExpired:
         return subprocess.CompletedProcess(command, 1, "FAIL  {} did not finish in 120 seconds, which a shim that "
-                                                       "calls itself does\n".format(command[0]), "")
+                                                       "calls itself or never wakes a waiter does\n".format(command[0]), "")
 
 
 def failures():
@@ -352,6 +433,25 @@ def failures():
                     symbol, shim.stderr[-300:], listing))
             if "_" + symbol in run("xcrun", "nm", "-u", "shim-{}.o".format(symbol), cwd=folder).stdout.split():
                 found.append("{} compiled for iOS 6 must not call itself".format(symbol))
+        (folder / "ulock.c").write_text(ULOCK)
+        built = run("xcrun", "clang", "-O2", SHIMS / "__ulock_wait.c", SHIMS / "__ulock_wake.c", "ulock.c", "-o", "ulock",
+                    cwd=folder)
+        if built.returncode:
+            found.append("the __ulock shims must compile: {}".format(built.stderr[-400:]))
+        else:
+            ran = run("./ulock", cwd=folder)
+            found += [line[6:] for line in ran.stdout.splitlines() if line.startswith("FAIL")]
+            if ran.returncode and not ran.stdout:
+                found.append("the __ulock test failed without saying why: {}".format(ran.stderr))
+        for symbol in ("__ulock_wait", "__ulock_wake"):
+            shim = run("xcrun", "clang", "-target", "armv7-apple-ios6.0", "-Wno-incompatible-sysroot", "-Os", "-c",
+                       SHIMS / "{}.c".format(symbol), "-o", "shim-{}.o".format(symbol), cwd=folder)
+            listing = run("xcrun", "nm", "-m", "shim-{}.o".format(symbol), cwd=folder).stdout
+            line = next((row for row in listing.splitlines() if row.endswith(" _" + symbol)), "")
+            if shim.returncode or "private external" not in line:
+                found.append("{} must compile for iOS 6 as a hidden definition: {} {}".format(
+                    symbol, shim.stderr[-300:], listing))
+
         (folder / "late.c").write_text("#include <math.h>\n#include <string.h>\n"
                                        "double both(double x) { return sin(x) + cos(x); }\n"
                                        "unsigned long copy(char *d, const char *s) { char b[8]; "

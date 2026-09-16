@@ -21,10 +21,16 @@ def read_uleb(data, pos):
             return value, pos
 
 
+def cache_architecture(path):
+    with open(path, "rb") as handle:
+        magic = handle.read(16)
+    if not magic.startswith(b"dyld_v1"):
+        sys.exit(f"{path} is not a dyld shared cache")
+    return magic[7:].strip(b" \0").decode("latin1")
+
+
 def cache_exports(path):
     data = open(path, "rb").read()
-    if not data.startswith(b"dyld_v1"):
-        sys.exit(f"{path} is not a dyld shared cache")
     mapping_offset, mapping_count, images_offset, images_count = struct.unpack_from("<IIII", data, 16)
     mappings = [struct.unpack_from("<QQQII", data, mapping_offset + i * 32) for i in range(mapping_count)]
 
@@ -76,8 +82,17 @@ def cache_exports(path):
     return exports
 
 
-def nm(arguments, binary):
-    return subprocess.run(["nm", *arguments, binary], capture_output=True, text=True, check=True).stdout
+def nm(arguments, binary, architecture):
+    return subprocess.run(["nm", "-arch", architecture, *arguments, binary], capture_output=True, text=True,
+                          check=True).stdout
+
+
+def loaded_slice(binary, architecture):
+    slices = subprocess.run(["lipo", "-archs", binary], capture_output=True, text=True, check=True).stdout.split()
+    for candidate in (architecture, "armv7") if architecture == "armv7s" else (architecture,):
+        if candidate in slices:
+            return candidate
+    return None
 
 
 def binaries(folder):
@@ -100,15 +115,22 @@ def main():
                         help="a folder of laid-out binaries; every Mach-O under it is checked")
     args = parser.parse_args()
 
+    architecture = cache_architecture(args.cache)
     exports = cache_exports(args.cache)
-    found = list(binaries(args.dist))
-    own = set()
-    for binary in found:
-        own.update(line.split()[-1] for line in nm(["-gU"], binary).splitlines() if line.strip())
-
     missing = []
-    for binary in found:
-        for line in nm(["-m", "-u"], binary).splitlines():
+    found = []
+    for binary in binaries(args.dist):
+        loaded = loaded_slice(binary, architecture)
+        if loaded is None:
+            missing.append((os.path.relpath(binary, args.dist), f"(no slice a {architecture} device loads)"))
+        else:
+            found.append((binary, loaded))
+    own = set()
+    for binary, loaded in found:
+        own.update(line.split()[-1] for line in nm(["-gU"], binary, loaded).splitlines() if line.strip())
+
+    for binary, loaded in found:
+        for line in nm(["-m", "-u"], binary, loaded).splitlines():
             parts = line.split()
             if not parts:
                 continue
@@ -122,7 +144,8 @@ def main():
         for binary, symbol in sorted(missing):
             print(f"  {binary}  {symbol}")
         sys.exit(1)
-    print(f"imports: every non-weak import of {len(found)} binaries resolves against {len(exports)} exports")
+    print(f"imports: every non-weak import of the {architecture} slices of {len(found)} binaries resolves against "
+          f"{len(exports)} exports")
 
 
 main()
