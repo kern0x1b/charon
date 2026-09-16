@@ -30,6 +30,8 @@ APPLICATION = ".app"
 CMAKE_STAMP = "CMakeCache.txt"
 APPLICATIONS = "/Applications"
 TESTS = "tests"
+DEPENDENCY_ENV = "ios6-deps.env"
+HOST_PREFIX = "IOS6_HOST_"
 MINIMUM_PYTHON = (3, 11)
 CHOSEN_INTERPRETER = "CHARON_INTERPRETER"
 
@@ -548,13 +550,46 @@ def call_declared(root, reference, available):
     return exit_status(target, **{name: available[name] for name in wanted if name in available})
 
 
-def tier_inputs(root, parsed, needs, device):
+def tier_packages(root, parsed, name, wanted):
+    folder = generated(root, parsed.variant or default_variant(root))
+    if folder is None:
+        raise Failure("the {} tier names packages, which only a declaration can ask for".format(name))
+    recipe = folder / TESTS / name
+    if not (recipe / RECIPE).is_file():
+        raise Failure("{} was not written, and it is what asks for the packages the {} tier needs".format(
+            recipe / RECIPE, name))
+    output = root / BUILD / "tier-packages" / name
+    output.mkdir(parents=True, exist_ok=True)
+    locked = ["--lockfile", str(root / LOCK), "--lockfile-partial"] if (root / LOCK).is_file() else []
+    conan("install", recipe, "-pr:h", "default", "-pr:b", "default", "--build=missing",
+          *locked, "--output-folder", output)
+    written = output / DEPENDENCY_ENV
+    if not written.is_file():
+        raise Failure("conan install left no {}, so nothing says where the {} tier's packages are".format(
+            written, name))
+    found = {}
+    for line in written.read_text().splitlines():
+        key, _, value = line.partition("=")
+        if key.startswith(HOST_PREFIX):
+            found[key[len(HOST_PREFIX):].lower()] = Path(value)
+    absent = [package for package in wanted if package.lower() not in found]
+    if absent:
+        raise Failure("{} installed the {} tier's packages and {} is not among what it wrote to {}".format(
+            recipe / RECIPE, name, ", ".join(absent), written))
+    return found
+
+
+def tier_inputs(root, parsed, name, tier, device):
+    needs = tier.get("needs", [])
     available = {"root": root, "host": parsed.host, "port": parsed.test_port}
     if "device" in needs:
         available["device"] = device
     if "build" in needs:
         trees = [tree for tree in build_trees(root) if staged_frameworks(tree) is not None]
         available["build"] = sole_tree(root, trees, "with staged frameworks", parsed.variant)
+    wanted = tier.get("packages")
+    if wanted:
+        available["packages"] = tier_packages(root, parsed, name, wanted)
     return available
 
 
@@ -584,10 +619,15 @@ def verb_test(root, parsed):
     if chosen != list(tiers):
         say("tiers        running: {}".format(", ".join(chosen)))
 
-    device = None
-    if any("device" in tiers[name].get("needs", []) for name in chosen):
-        device = transport(root)
-        bind_transport(root, declared, device)
+    bound = {}
+
+    def device_for(needs):
+        if "device" not in needs:
+            return None
+        if "device" not in bound:
+            bound["device"] = transport(root)
+            bind_transport(root, declared, bound["device"])
+        return bound["device"]
 
     results = {}
     for name in chosen:
@@ -596,7 +636,7 @@ def verb_test(root, parsed):
         if not runs:
             raise Failure("tier {} declares nothing to run".format(name))
         say("\n=== tier: {} ({})".format(name, ", ".join(tier.get("needs", [])) or "nothing needed"))
-        available = tier_inputs(root, parsed, tier.get("needs", []), device)
+        available = tier_inputs(root, parsed, name, tier, device_for(tier.get("needs", [])))
         status = 0
         for reference in runs:
             status = call_declared(root, reference, available) or status

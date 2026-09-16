@@ -62,6 +62,15 @@ name = "Host"
 sources = ["app/main.m"]
 frameworks = ["UIKit"]
 resources = ["app/cacert.pem"]
+
+[tests.host]
+runs = ["tests/run.py:on_host"]
+needs = []
+packages = { icu = "74.2@revenant/stable" }
+
+[tests.gate]
+runs = ["tests/device.py:gate"]
+needs = ["device"]
 """
 
 BROKEN = {
@@ -167,6 +176,14 @@ def checks(declared):
         found.append("an application must install its binary")
     if "install(FILES ${CHARON_PORT}/app/cacert.pem DESTINATION .)" not in application:
         found.append("an application must install its declared resources")
+
+    packages = written["tests/host/conanfile.py"]
+    if "icu/74.2@revenant/stable" not in packages:
+        found.append("a tier that names packages must get a recipe asking for them: got {}".format(packages))
+    if "DependencyEnv" not in packages:
+        found.append("a tier's recipe must write down where the packages landed, or the tier cannot find them")
+    if "tests/gate/conanfile.py" in written:
+        found.append("a tier that names no packages must get no recipe at all")
 
     cross = written[generate.CROSS_TOOLCHAIN]
     for expected in ("set(CMAKE_OSX_ARCHITECTURES armv7)",

@@ -396,6 +396,37 @@ def project_include(declared):
     return "\n".join(lines) + "\n"
 
 
+TIER_RECIPE = '''{generated}
+from conan import ConanFile
+
+
+class TierPackages(ConanFile):
+    name = {name}
+    version = "1.0"
+    settings = "os", "arch", "compiler", "build_type"
+    python_requires = {base}
+
+    def requirements(self):
+        for reference in {requires}:
+            self.requires(reference)
+
+    def generate(self):
+        self.python_requires["ios6-base"].module.DependencyEnv(self).generate()
+'''
+
+
+def tier_recipe(declared, tier, packages):
+    described = declared.section("port")
+    if "name" not in described:
+        raise GenerationError("[port] declares no name, and a tier's packages cannot be named without it")
+    return TIER_RECIPE.format(
+        generated=GENERATED,
+        name=repr("{}-{}-packages".format(described["name"], tier)),
+        base=repr(str(declared.get("use", "base", BASE))),
+        requires=repr(_references(packages)),
+    )
+
+
 def written(declared, required=True):
     produced = {}
     applied = project_include(declared)
@@ -403,6 +434,10 @@ def written(declared, required=True):
         produced[PROJECT_INCLUDE] = applied
     if declared.using("toolchain") is None and declared.get("engine", "user-toolchain", None) is None:
         produced[CROSS_TOOLCHAIN] = cross_toolchain(declared)
+    for tier, described in declared.tiers().items():
+        packages = described.get("packages")
+        if packages:
+            produced["tests/{}/conanfile.py".format(tier)] = tier_recipe(declared, tier, packages)
     profiles = declared.using("profile")
     if profiles is None:
         produced["profile"] = profile(declared, includes=declared.get("target", "include-profiles", []))
