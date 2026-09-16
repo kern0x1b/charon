@@ -194,6 +194,41 @@ def merge_failures(module):
     return found
 
 
+def runtime_failures(module):
+    from types import SimpleNamespace
+    found = []
+    looked_up = []
+
+    def components(name):
+        looked_up.append(name)
+        return SimpleNamespace(libdirs=["/packages/{}/lib".format(name)])
+
+    plain = port(module, {"prefixed": "False"})
+    plain._components = components
+    if plain.declared_runtime() != (None, {}) or looked_up:
+        found.append("a port that ships no runtime must not look for a runtime package: looked up {}".format(
+            looked_up))
+
+    runtime = {"libc++.1.0.dylib": "librev-c++.1.dylib"}
+    unnamed = port(module, {"prefixed": "False"})
+    type(unnamed).declaration = dict(DECLARATION, stage={"runtime": runtime})
+    unnamed._components = components
+    try:
+        unnamed.declared_runtime()
+        found.append("a runtime that names no package to come from must be refused")
+    except Exception as refused:
+        if "runtime-from" not in str(refused):
+            found.append("a runtime with no package must be refused for that reason: got {}".format(refused))
+
+    named = port(module, {"prefixed": "False"})
+    type(named).declaration = dict(DECLARATION, stage={"runtime": runtime, "runtime-from": "somecxx"})
+    named._components = components
+    if named.declared_runtime() != ("/packages/somecxx/lib", runtime):
+        found.append("the runtime must come from the package runtime-from names: got {}".format(
+            named.declared_runtime()))
+    return found
+
+
 def flag_failures(module):
     found = []
     engine = port(module, {"prefixed": "False"})
@@ -494,7 +529,7 @@ def main():
         print("FAIL  this needs an interpreter that can import conan: {}".format(missing))
         return 1
     found = (failures(module) + dispatch_failures(module) + task_failures(module) + sign_failures(module) +
-             plist_failures(module) + bundle_failures(module) + merge_failures(module) + flag_failures(module))
+             plist_failures(module) + bundle_failures(module) + merge_failures(module) + flag_failures(module) + runtime_failures(module))
     for line in found:
         print("FAIL  {}".format(line))
     if found:

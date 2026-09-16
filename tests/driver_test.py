@@ -164,6 +164,26 @@ def merge_failures():
     return found
 
 
+def refusal_failures():
+    found = []
+    with tempfile.TemporaryDirectory() as folder:
+        root = Path(folder)
+        (root / "main.m").write_text("")
+        (root / "charon.toml").write_text(
+            '[port]\nname = "p"\nversion = "1"\n[target]\narch = "armv7"\nos = "iOS"\nos-version = "6.0"\n'
+            '[variants.system]\n[application]\nname = "Host"\nsources = ["main.m"]\ninclude = ["gone"]\n')
+        try:
+            charon.generated(root, "system")
+            found.append("a declaration generation refuses must stop the driver")
+        except charon.Failure as refused:
+            if "gone" not in str(refused):
+                found.append("the driver must pass generation's own reason on: got {}".format(refused))
+        except Exception as escaped:
+            found.append("a refusal from generation must reach the user as a charon: line, not as {}".format(
+                type(escaped).__name__))
+    return found
+
+
 def tier_failures():
     found = []
     tiers = {"scripts": {"needs": []}, "flags": {"needs": ["build"]}, "gate": {"needs": ["device"]},
@@ -196,7 +216,7 @@ def main():
         print("FAIL  this needs Python 3.11 or newer for tomllib, and it is running under {}. Skipping would "
               "report success having checked nothing.".format(".".join(str(p) for p in sys.version_info[:3])))
         return 1
-    found = failures() + task_failures() + tier_failures() + merge_failures() + undefined_names()
+    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + undefined_names()
     for line in found:
         print("FAIL  {}".format(line))
     if found:

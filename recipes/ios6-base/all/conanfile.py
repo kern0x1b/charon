@@ -588,8 +588,8 @@ class Ios6Port:
                 for pattern in flatten.get("patterns", []):
                     copy(self, pattern, origin, os.path.join(target, flatten["into"]))
 
-        runtime = self._components("libcxx").libdirs[0]
-        for built, renamed in stage.get("runtime", {}).items():
+        runtime, runtime_files = self.declared_runtime()
+        for built, renamed in runtime_files.items():
             destination = os.path.join(self.stage_folder, "usr", "lib", renamed)
             mkdir(self, os.path.dirname(destination))
             shutil.copy2(os.path.join(runtime, built), destination)
@@ -623,8 +623,8 @@ class Ios6Port:
             shutil.copytree(os.path.join(self.build_folder, f"{built}.framework"),
                             os.path.dirname(destination), symlinks=True, dirs_exist_ok=True)
             bundled[destination] = f"@executable_path/Frameworks/{built}.framework/{built}"
-        runtime = self._components("libcxx").libdirs[0]
-        for built in stage.get("runtime", {}):
+        runtime, runtime_files = self.declared_runtime()
+        for built in runtime_files:
             library = built.replace(".1.0.", ".1.")
             destination = os.path.join(frameworks, library)
             shutil.copy2(os.path.join(runtime, built), destination)
@@ -696,6 +696,18 @@ class Ios6Port:
                                  "to run before it")
         entitlements = declared.get("entitlements")
         MachO(self).sign(executable, os.path.join(self.port_root, entitlements) if entitlements else None)
+
+    def declared_runtime(self):
+        stage = self.declared.get("stage", {})
+        files = stage.get("runtime") or {}
+        if not files:
+            return None, {}
+        package = stage.get("runtime-from")
+        if not package:
+            raise ConanException(
+                f"{self.name} declares [stage.runtime] and no runtime-from under [stage]; nothing says which "
+                "package the runtime libraries it names are copied from")
+        return self._components(package).libdirs[0], files
 
     def _application_plist(self, name, declared):
         described = dict(declared.get("plist", {}))

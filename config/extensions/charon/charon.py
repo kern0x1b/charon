@@ -189,7 +189,11 @@ def written_profile(root, variant):
     folder = root / BUILD / variant / GENERATED
     folder.mkdir(parents=True, exist_ok=True)
     path = folder / "profile"
-    path.write_text(generate.profile(declared, includes=declared.get("target", "include-profiles", [])))
+    try:
+        text = generate.profile(declared, includes=declared.get("target", "include-profiles", []))
+    except generate.GenerationError as refused:
+        raise Failure(str(refused))
+    path.write_text(text)
     return path
 
 
@@ -343,7 +347,10 @@ def declaration(root):
         import spec
     except ImportError as missing:
         raise Failure("spec.py is not beside the driver: {}".format(missing))
-    return spec.load(root)
+    try:
+        return spec.load(root)
+    except spec.SpecError as refused:
+        raise Failure(str(refused))
 
 
 def declaration_for(root, variant):
@@ -415,10 +422,15 @@ def generated(root, variant):
         raise Failure("generate.py is not beside the driver: {}".format(missing))
     folder = root / BUILD / variant / GENERATED
     folder.mkdir(parents=True, exist_ok=True)
+    try:
+        recipe = generate.recipe(declared, root)
+        produced = generate.written(declared, required=False)
+    except generate.GenerationError as refused:
+        raise Failure(str(refused))
     written = folder / RECIPE
-    written.write_text(generate.recipe(declared, root))
+    written.write_text(recipe)
     say("recipe       {} (written from {})".format(written, root / MANIFEST))
-    for name, text in generate.written(declared, required=False).items():
+    for name, text in produced.items():
         if name == "profile":
             continue
         path = folder / name

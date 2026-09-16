@@ -107,7 +107,11 @@ executable right after it is linked; `plist-file` starts Info.plist from a file,
 with `[application.plist]` over it and the derived keys filling only what both
 leave out; `bundle = [{ from = "{pkg:NAME}/lib/libfoo.dylib", into = "Frameworks" }]`
 copies a package's file into the bundle and gives a binary its
-`@executable_path` identity. A library the application opens by a path string
+`@executable_path` identity. `include-exclude` removes a folder whether a pattern or a literal entry
+brought it in, so excluding a tree excludes every folder inside it. A port that
+copies C++ runtime libraries into the device layout names them under
+`[stage.runtime]` and the package they come from as `[stage] runtime-from`; a
+port that ships no runtime declares neither and needs no such package. A library the application opens by a path string
 is not rewritten by any of this - that path is the application's own. A
 pipeline that builds an application and never signs it is refused, unless
 another variant merges it.
