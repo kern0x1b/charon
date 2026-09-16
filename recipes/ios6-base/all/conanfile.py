@@ -245,6 +245,14 @@ class Ios6Port:
             raise ConanException(f"{self.name} declares no {name} flags")
         return self._expand(flags[name], self._declared_context())
 
+    FLAG_VARIABLES = (("CMAKE_C_FLAGS", "c"), ("CMAKE_CXX_FLAGS", "cxx"), ("CMAKE_OBJC_FLAGS", "objc"),
+                      ("CMAKE_OBJCXX_FLAGS", "objcxx"), ("CMAKE_SHARED_LINKER_FLAGS", "shared-link"),
+                      ("CMAKE_EXE_LINKER_FLAGS", "exe-link"), ("CMAKE_MODULE_LINKER_FLAGS", "module-link"))
+
+    def declared_flag_variables(self):
+        declared = self.declared.get("flags", {})
+        return {variable: self.declared_flags(name) for variable, name in self.FLAG_VARIABLES if name in declared}
+
     def declared_options(self):
         context = self._declared_context()
         options = dict(self.declared.get("engine", {}).get("options", {}))
@@ -284,14 +292,8 @@ class Ios6Port:
             "CMAKE_OSX_DEPLOYMENT_TARGET": str(self.settings.os.version),
             "CMAKE_BUILD_TYPE": "Release",
             "PYTHON_EXECUTABLE": sys.executable,
-            "CMAKE_C_FLAGS": self.declared_flags("c"),
-            "CMAKE_CXX_FLAGS": self.declared_flags("cxx"),
-            "CMAKE_OBJC_FLAGS": self.declared_flags("objc"),
-            "CMAKE_OBJCXX_FLAGS": self.declared_flags("objcxx"),
-            "CMAKE_SHARED_LINKER_FLAGS": self.declared_flags("shared-link"),
-            "CMAKE_EXE_LINKER_FLAGS": self.declared_flags("exe-link"),
-            "CMAKE_MODULE_LINKER_FLAGS": self.declared_flags("module-link"),
         })
+        variables.update(self.declared_flag_variables())
         include = engine.get("project-include")
         if include:
             applied = os.path.join(self.port_root, include)
@@ -825,8 +827,30 @@ class MachO:
                     with open(path, "rb") as handle:
                         contents.add(handle.read())
                 if len(contents) > 1:
-                    problems.append(f"{relative} differs between slices")
+                    problems.append(cls._difference(relative, bundles, paths))
         return binaries, problems
+
+    @staticmethod
+    def _difference(relative, bundles, paths):
+        slices = [os.path.basename(os.path.dirname(bundle)) for bundle in bundles]
+        if not relative.endswith(".plist"):
+            return f"{relative} differs between slices"
+        try:
+            loaded = []
+            for path in paths:
+                with open(path, "rb") as handle:
+                    loaded.append(plistlib.load(handle))
+        except Exception:
+            return f"{relative} differs between slices"
+        keys = sorted({key for plist in loaded for key in plist
+                       if len({repr(other.get(key)) for other in loaded}) > 1})
+        described = "; ".join("{} ({})".format(key, ", ".join(f"{slice_name}: {plist.get(key)!r}"
+                                                               for slice_name, plist in zip(slices, loaded)))
+                              for key in keys)
+        advice = ""
+        if "MinimumOSVersion" in keys:
+            advice = ". Each slice derives MinimumOSVersion from its own target; pin it in plist-file"
+        return f"{relative} differs between slices in {described}{advice}"
 
     @classmethod
     def is_macho(cls, path):

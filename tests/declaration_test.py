@@ -168,7 +168,7 @@ def merge_failures(module):
         ("slices that agree", {}, {}, {}, ["Frameworks/libx.dylib", "Host"], []),
         ("a file only one slice has", {}, {}, {"extra.txt": b"x"}, None, ["present in only some slices"]),
         ("Info.plist keys that disagree", {"MinimumOSVersion": "6.0"}, {"MinimumOSVersion": "7.0"}, {}, None,
-         ["Info.plist differs"]),
+         ["Info.plist differs", "MinimumOSVersion (armv7: '6.0', arm64: '7.0')", "pin it in plist-file"]),
         ("a binary in one slice and data in the other", {}, {}, {"Frameworks/liby.dylib": wide + b"\0" * 8},
          None, None),
     )
@@ -191,6 +191,23 @@ def merge_failures(module):
             for reason in reasons or ["Mach-O in some slices and not in others"]:
                 if not any(reason in problem for problem in problems):
                     found.append("{} must be refused because {}: got {}".format(description, reason, problems))
+    return found
+
+
+def flag_failures(module):
+    found = []
+    engine = port(module, {"prefixed": "False"})
+    variables = engine.declared_flag_variables()
+    if set(variables) != {"CMAKE_CXX_FLAGS"}:
+        found.append("only the flag sets a port declares may become cache variables: got {}".format(sorted(variables)))
+    application = port(module, {"prefixed": "False"})
+    type(application).declaration = dict(DECLARATION, flags={})
+    try:
+        if application.declared_flag_variables():
+            found.append("a port that declares no flags must set no flag variable, not an empty one, which would "
+                         "replace the cross toolchain's -target and -isysroot")
+    except Exception as refused:
+        found.append("a port that declares no flags must build without them: got {}".format(refused))
     return found
 
 
@@ -477,7 +494,7 @@ def main():
         print("FAIL  this needs an interpreter that can import conan: {}".format(missing))
         return 1
     found = (failures(module) + dispatch_failures(module) + task_failures(module) + sign_failures(module) +
-             plist_failures(module) + bundle_failures(module) + merge_failures(module))
+             plist_failures(module) + bundle_failures(module) + merge_failures(module) + flag_failures(module))
     for line in found:
         print("FAIL  {}".format(line))
     if found:
