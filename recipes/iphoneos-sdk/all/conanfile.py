@@ -30,7 +30,8 @@ class IphoneOSSdkConan(ConanFile):
         get(self, **self.conan_data["sources"][self.version])
 
     def package(self):
-        sdk = os.path.join(self.source_folder, self._folder)
+        archived = self.conan_data["archive-folders"][self.version]
+        sdk = os.path.join(self.source_folder, archived)
         with open(os.path.join(sdk, "SDKSettings.plist"), "rb") as handle:
             settings = plistlib.load(handle)
         if settings.get("CanonicalName") != f"iphoneos{self.version}":
