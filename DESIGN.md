@@ -104,7 +104,14 @@ header force-included into the runtime's compile names calls to
 `aligned_alloc` after it, so the SDK's declaration keeps its availability and
 LLVM's `-Werror=unguarded-availability-new` stays on; the library is linked
 with `-hidden-l`, so the runtime binds its own calls and exports nothing. The
-libc++ recipe refuses a runtime that still imports a provided symbol. The same shape serves a platform that dropped 32-bit: the newest SDK
+libc++ recipe refuses a runtime that still imports a provided symbol. `clock_gettime` (iOS 10) over the Mach clock services and `fdopendir`
+(iOS 8) over `F_GETPATH` are the next two: any library written for POSIX.1-2008
+calls them, and a weak import is null on the older release. Each entry is a
+component - `apple-compat::clock_gettime` - whose flags force-include its header
+and whose library is the shim, so a recipe requires the component and writes no
+flags; on a release that has the call, the component is empty. One gap stays
+visible: iOS 6 has no clock that counts across sleep, so the shim's
+`CLOCK_MONOTONIC` is uptime. The same shape serves a platform that dropped 32-bit: the newest SDK
 that theos patched still carries armv7 stubs, and where none does, the stubs
 are the compatibility layer.
 
