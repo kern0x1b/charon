@@ -4,6 +4,7 @@
     tests/generate_test.py
 """
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -401,7 +402,7 @@ CONFIGURED = """
 [target]
 arch = "armv7"
 os = "iOS"
-os-version = "6.0"
+os-version = "7.0"
 cpu = "cortex-a9"
 
 [conf]
@@ -440,8 +441,11 @@ def conf_failures(folder):
     written = root / "build" / "system" / "charon" / "profile"
     written.parent.mkdir(parents=True)
     written.write_text(text)
+    home = Path(folder) / "conan-home"
+    home.mkdir(exist_ok=True)
     shown = subprocess.run(["conan", "profile", "show", "-pr:h", str(written), "-pr:b", str(written),
-                            "--format=json"], capture_output=True, text=True)
+                            "--format=json"], capture_output=True, text=True,
+                           env=dict(os.environ, CONAN_HOME=str(home)))
     if shown.returncode != 0:
         return found + ["conan must read the profile Charon writes: {}".format(shown.stderr.strip()[-400:])]
     conf = json.loads(shown.stdout)["host"]["conf"]
