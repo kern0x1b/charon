@@ -409,12 +409,12 @@ def default_variant(root):
     return plain[0]
 
 
-def generated(root, variant):
+def generated(root, variant, report=say):
     declared = declaration_for(root, variant)
     if declared is None:
         return None
     if declared.using("recipe"):
-        say("recipe       {} (declared under use.recipe)".format(declared.using("recipe")))
+        report("recipe       {} (declared under use.recipe)".format(declared.using("recipe")))
         return None
     try:
         import generate
@@ -429,14 +429,14 @@ def generated(root, variant):
         raise Failure(str(refused))
     written = folder / RECIPE
     written.write_text(recipe)
-    say("recipe       {} (written from {})".format(written, root / MANIFEST))
+    report("recipe       {} (written from {})".format(written, root / MANIFEST))
     for name, text in produced.items():
         if name == "profile":
             continue
         path = folder / name
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text)
-        say("project      {} (written from {})".format(path, root / MANIFEST))
+        report("project      {} (written from {})".format(path, root / MANIFEST))
     return folder
 
 
@@ -499,6 +499,41 @@ def verb_build(root, parsed):
     if slices:
         say("\n=== {}, merging {}".format(variant, ", ".join(slices)))
     build_variant(root, parsed, variant, parsed.extra)
+
+
+WHERE_CONTEXTS = {"pkg": "host", "tool": "build"}
+
+
+def package_folder(root, parsed, wanted):
+    kind, _, name = wanted.partition(":")
+    if kind not in WHERE_CONTEXTS or not name:
+        raise Failure("charon where answers pkg:NAME for a package the build links and tool:NAME for one it runs; "
+                      "got {}".format(wanted or "nothing"))
+    variant = parsed.variant or default_variant(root)
+    where = generated(root, variant, report=warn) or root
+    flags = [flag for flag in conan_flags(root, variant_profile(root, parsed, variant)) if flag != "--build=missing"]
+    answered = conan("graph", "info", where, *flags, *variant_options(root, variant), "--format=json",
+                     stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+    nodes = [node for node in json.loads(answered.stdout)["graph"]["nodes"].values()
+             if node.get("name") == name and node.get("context") == WHERE_CONTEXTS[kind]
+             and node.get("binary") not in ("Skip", None)]
+    found = {(node["ref"], node.get("package_id")) for node in nodes}
+    if not found:
+        raise Failure("the {} build of {} has no {} {}".format(variant, root.name,
+                                                               "package" if kind == "pkg" else "tool", name))
+    if len(found) > 1:
+        raise Failure("{} is in the {} build more than once: {}".format(name, variant, ", ".join(
+            sorted("{}:{}".format(*entry) for entry in found))))
+    reference, package_id = found.pop()
+    located = conan("cache", "path", "{}:{}".format(reference, package_id), stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE, text=True, check=False)
+    if located.returncode or not located.stdout.strip():
+        raise Failure("{}:{} is not in the cache yet; charon build puts it there".format(reference, package_id))
+    return located.stdout.strip()
+
+
+def verb_where(root, parsed):
+    say(package_folder(root, parsed, parsed.extra[0] if parsed.extra else ""))
 
 
 def verb_package(root, parsed):
@@ -1005,6 +1040,7 @@ VERBS = (
     ("clean", "what builds leave behind, reported unless --force"),
     ("setup", "register this port's recipes, and the toolchain's, ahead of the general remotes"),
     ("device", "reach the phone directly: run, copy, fetch, where"),
+    ("where", "the folder of a package the build uses: charon where pkg:NAME or tool:NAME"),
     ("provenance", "which driver, interpreter, port, profile and phone are in use"),
     ("help", "this list"),
 )
@@ -1014,6 +1050,7 @@ HANDLERS = {
     "generate": verb_generate,
     "task": verb_task,
     "package": verb_package,
+    "where": verb_where,
     "deploy": verb_deploy,
     "run": verb_run,
     "test": verb_test,

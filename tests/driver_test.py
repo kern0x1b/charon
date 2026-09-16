@@ -209,6 +209,60 @@ def index_failures():
     return found
 
 
+def where_failures():
+    import json as encoded
+    import types
+    found = []
+    graph = {"graph": {"nodes": {
+        "0": {"name": None, "context": "host", "binary": None},
+        "1": {"name": "tdlib", "context": "host", "ref": "tdlib/1.8.67@itglegacy/stable#aaa", "package_id": "p1",
+              "binary": "Cache"},
+        "2": {"name": "ld64", "context": "build", "ref": "ld64/956.6@ios6/stable#bbb", "package_id": "p2",
+              "binary": "Cache"},
+        "3": {"name": "ld64", "context": "build", "ref": "ld64/956.6@ios6/stable#bbb", "package_id": "p2",
+              "binary": "Skip"},
+        "4": {"name": "absent", "context": "host", "ref": "absent/1@x/y#ccc", "package_id": "p3", "binary": "Missing"},
+    }}}
+    calls = []
+
+    def fake_conan(*arguments, **options):
+        calls.append(arguments)
+        if arguments[0] == "graph":
+            return types.SimpleNamespace(returncode=0, stdout=encoded.dumps(graph))
+        if arguments[:2] == ("cache", "path"):
+            known = {"tdlib/1.8.67@itglegacy/stable#aaa:p1": "/cache/tdlib", "ld64/956.6@ios6/stable#bbb:p2": "/cache/ld64"}
+            answer = known.get(arguments[2], "")
+            return types.SimpleNamespace(returncode=0 if answer else 1, stdout=answer)
+        raise AssertionError(arguments)
+
+    saved = charon.conan, charon.generated, charon.variant_profile, charon.variant_options
+    charon.conan = fake_conan
+    charon.generated = lambda root, variant, report=None: root
+    charon.variant_profile = lambda root, parsed, variant: Path("/profile")
+    charon.variant_options = lambda root, variant: []
+    parsed = types.SimpleNamespace(variant="armv7", profile=None)
+    try:
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for wanted, answer in (("pkg:tdlib", "/cache/tdlib"), ("tool:ld64", "/cache/ld64")):
+                got = charon.package_folder(root, parsed, wanted)
+                if got != answer:
+                    found.append("charon where {} must print {}: got {}".format(wanted, answer, got))
+            if any("--build=missing" in call for call in calls):
+                found.append("asking where a package is must never build anything")
+            for wanted, reason in (("pkg:ld64", "has no package ld64"), ("tool:tdlib", "has no tool tdlib"),
+                                   ("tdlib", "answers pkg:NAME"), ("pkg:absent", "not in the cache yet")):
+                try:
+                    charon.package_folder(root, parsed, wanted)
+                    found.append("charon where {} must be refused".format(wanted))
+                except charon.Failure as refused:
+                    if reason not in str(refused):
+                        found.append("charon where {} must be refused for that reason: {}".format(wanted, refused))
+    finally:
+        charon.conan, charon.generated, charon.variant_profile, charon.variant_options = saved
+    return found
+
+
 def tier_failures():
     found = []
     tiers = {"scripts": {"needs": []}, "flags": {"needs": ["build"]}, "gate": {"needs": ["device"]},
@@ -241,7 +295,7 @@ def main():
         print("FAIL  this needs Python 3.11 or newer for tomllib, and it is running under {}. Skipping would "
               "report success having checked nothing.".format(".".join(str(p) for p in sys.version_info[:3])))
         return 1
-    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + index_failures() + undefined_names()
+    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + index_failures() + where_failures() + undefined_names()
     for line in found:
         print("FAIL  {}".format(line))
     if found:

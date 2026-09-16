@@ -192,6 +192,11 @@ release for one slice. A port's own `platforms/NAME.toml` is used before
 Charon's, so a platform can be written or corrected without changing Charon.
 `[target]` keeps what tunes the build: `cppstd`, `cpu`, `fpu`, `defines`.
 
+`charon where pkg:NAME` prints the folder of a package a variant's build links,
+and `charon where tool:NAME` one it runs, answered from the same lock and profile
+the build uses and never building anything; a script asks it instead of reading
+generated environment files.
+
 The rest Charon derives rather than being told: the host profile comes from
 `[target]`, the engine build is the one direct child of `build/` that CMake
 configured and that has frameworks laid out, the frameworks to install are
