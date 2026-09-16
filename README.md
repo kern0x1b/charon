@@ -90,7 +90,8 @@ with those versions and `apple_minimum`, so a change of any of them rebuilds
 what was built with it. A library comes from here as `charon@name`. The rules
 bind the same toolchain to their targets. Commit `xmake-requires.lock` and
 `xmake-addons.lock`. The addon is pinned by its tag: a new release is a new
-tag in `add_addons`, projects on different tags keep their own installs, and a
+tag in `add_addons` (and a fresh `xmake-requires.lock`, since the addon and the
+package repository move together), projects on different tags keep their own installs, and a
 branch or a range is avoided - xmake resolves those against its own clone of
 this repository, which it does not pull again once it has one. The import check reads
 `~/.charon/dyld/dyld_shared_cache_<arch>` (or `$CHARON_HOME/dyld/...`), copied

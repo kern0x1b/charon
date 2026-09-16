@@ -42,6 +42,9 @@ toolchain("apple-ios")
         if not found.sdk or not declared then
             raise("toolchain(apple-ios) needs the SDK package and apple_minimum; includes(\"@addon/charon/apple-ios\") provides both")
         end
+        if not os.isfile(path.join(found.sdk, "SDKSettings.json")) then
+            raise("the iphoneos-sdk package has no %s: xmake-requires.lock pins a Charon package repository older than this addon; delete the lock, or run xmake require --upgrade, after moving add_addons to a new tag", found.sdk)
+        end
         local floors = {armv7 = "6.0", armv7s = "6.0", arm64 = "7.0"}
         local floor = floors[toolchain:arch()]
         if not floor then
