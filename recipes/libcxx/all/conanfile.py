@@ -83,7 +83,7 @@ class LibCxxArmv7Conan(ConanFile):
         for library in ("libc++.1.0.dylib", "libc++abi.1.0.dylib"):
             imports = StringIO()
             self.run(f'xcrun nm -u "{os.path.join(self.package_folder, "lib", library)}"', stdout=imports)
-            imported = {name.lstrip("_") for name in imports.getvalue().split()}
+            imported = {name[1:] for name in imports.getvalue().split() if name.startswith("_")}
             leaked = sorted((set(provided) | {f"charon_{symbol}" for symbol in provided}) & imported)
             if leaked:
                 raise ConanException(f"{library} still imports {', '.join(leaked)} from the system, which "

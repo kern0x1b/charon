@@ -91,15 +91,18 @@ class ApplePort:
 
     def platform_verify(self, binary, waived, stripped=False):
         MachO(self).verify(binary, waived, stripped)
+        strong, weak = self._late_imports(binary)
+        if strong:
+            raise ConanException(f"{binary} imports what {self.settings.os} {self.settings.os.version} does not have, "
+                                 f"so dyld refuses to load it there: {'; '.join(strong)}")
         if "weak-imports" in waived:
             self.output.warning(f"{binary}: weak-imports not checked: {waived['weak-imports']}")
             return
-        problems = self._late_weak_imports(binary)
-        if problems:
+        if weak:
             raise ConanException(f"{binary} weakly imports what {self.settings.os} {self.settings.os.version} does "
-                                 f"not have, so a call jumps to NULL there: {'; '.join(problems)}")
+                                 f"not have, so a call jumps to NULL there: {'; '.join(weak)}")
 
-    def _late_weak_imports(self, binary):
+    def _late_imports(self, binary):
         try:
             compat = self.dependencies["apple-compat"]
         except KeyError:
@@ -109,9 +112,12 @@ class ApplePort:
         target = Version(str(self.settings.os.version))
         macho = MachO(self)
         listing = macho.output(f'"{macho.tool("nm")}" -m "{binary}"')
-        weak = set(re.findall(r"\(undefined\) weak external _(\w+) \(from libSystem\)", listing))
-        return [f"{symbol} arrived in {arrived[symbol]}; link apple-compat::{symbol}"
-                for symbol in sorted(weak) if symbol in arrived and target < Version(arrived[symbol])]
+        imported = re.findall(r"\(undefined\) (weak )?external _(\w+) \(from libSystem\)", listing)
+        late = sorted((symbol, bool(weak)) for weak, symbol in set(imported)
+                      if symbol in arrived and target < Version(arrived[symbol]))
+        described = [(f"{symbol} arrived in {arrived[symbol]}; link apple-compat::{symbol}", weak)
+                     for symbol, weak in late]
+        return [text for text, weak in described if not weak], [text for text, weak in described if weak]
 
     def link_input_findings(self, path, label):
         arch, target = str(self.settings.arch), str(self.settings.os.version)

@@ -188,7 +188,7 @@ def running_port(module, folder, declaration, ldid):
     instance.steps = []
     instance.dependencies = Dependencies([])
 
-    def execute(self, command, cwd=None, stdout=None, ignore_errors=False):
+    def execute(self, command, cwd=None, stdout=None, ignore_errors=False, quiet=False):
         command = command.replace("ldid ", '"{}" '.format(ldid), 1) if command.startswith("ldid ") else command
         finished = subprocess.run(command, shell=True, cwd=cwd, capture_output=True, text=True)
         if finished.returncode != 0 and not ignore_errors:
@@ -575,7 +575,7 @@ class Requirement:
 
 
 class Compat:
-    ARRIVED = {"aligned_alloc": "13.0", "clock_gettime": "10.0", "fdopendir": "8.0"}
+    ARRIVED = {"aligned_alloc": "13.0", "clock_gettime": "10.0", "fdopendir": "8.0", "__strlcpy_chk": "7.0"}
 
     def __init__(self):
         self.ref = Named("apple-compat")
@@ -652,7 +652,7 @@ def input_minimum_failures(module, ldid):
                                                .format(" ".join(str(path) for path in inputs)))
 
         def running_ninja(ran):
-            def execute(self, command, cwd=None, stdout=None, ignore_errors=False):
+            def execute(self, command, cwd=None, stdout=None, ignore_errors=False, quiet=False):
                 ran.append(command)
                 if not command.startswith("ninja"):
                     return 0
@@ -744,11 +744,15 @@ def weak_import_failures(module, ld64, ldid):
     original = module.MachO
     with tempfile.TemporaryDirectory() as scratch:
         folder = Path(scratch)
-        (folder / "libSystem.tbd").write_text(SYSTEM_STUB.replace("dyld_stub_binder", "dyld_stub_binder, _clock_gettime, _openat"))
+        (folder / "libSystem.tbd").write_text(SYSTEM_STUB.replace(
+            "dyld_stub_binder", "dyld_stub_binder, _clock_gettime, _openat, ___strlcpy_chk"))
         for name, source in (("late", "extern int clock_gettime(int, void *) __attribute__((weak_import));\n"
                                       "int use(void) { return clock_gettime(0, 0); }\n"),
                              ("guarded", "extern int openat(int, const char *, int) __attribute__((weak_import));\n"
-                                         "int use(void) { return openat ? openat(0, \"x\", 0) : -1; }\n")):
+                                         "int use(void) { return openat ? openat(0, \"x\", 0) : -1; }\n"),
+                             ("strong", "extern unsigned long __strlcpy_chk(char *, const char *, unsigned long, "
+                                        "unsigned long);\n"
+                                        "unsigned long use(char *d) { return __strlcpy_chk(d, \"x\", 2, 2); }\n")):
             (folder / "{}.c".format(name)).write_text(source)
             run("xcrun", "clang", "-target", "armv7-apple-ios6.0", "-Wno-incompatible-sysroot",
                 "-fuse-ld={}".format(ld64), "-nostdlib", "-dynamiclib", "-L.", "-lSystem", "-o",
@@ -763,7 +767,9 @@ def weak_import_failures(module, ld64, ldid):
         try:
             for name, waive, reason in (("late", {}, "clock_gettime arrived in 10.0"),
                                         ("guarded", {}, None),
-                                        ("late", {"weak-imports": "a reason"}, None)):
+                                        ("late", {"weak-imports": "a reason"}, None),
+                                        ("strong", {}, "dyld refuses to load it there: __strlcpy_chk arrived in 7.0"),
+                                        ("strong", {"weak-imports": "a reason"}, "__strlcpy_chk arrived in 7.0")):
                 type(instance).declaration = {"stage": {}, "waive": waive}
                 try:
                     instance.platform_verify(str(folder / "lib{}.dylib".format(name)), waive)
@@ -819,9 +825,7 @@ def stripped_failures(module, ld64):
 
 def waiver_failures(module, made):
     found = []
-    instance = declaration_test.port(module, {"prefixed": "False"})
-    instance.output = Output()
-    instance.dependencies = Dependencies([])
+    instance = running_port(module, Path(made["armv7-pagezero-gap"]).parent / "waiver", {}, "ldid")
     for waive, reason in (({"pagezero": ""}, "gives no reason"), ({"thumb": "why"}, "not something this toolchain"),
                           ({"pagezero": True}, "gives no reason")):
         type(instance).declaration = {"waive": waive}

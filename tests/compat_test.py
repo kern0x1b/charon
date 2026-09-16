@@ -183,8 +183,75 @@ int main(int argc, char **argv)
 """
 
 
+LIBRARY_CALLS = r"""
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+double sin(double);
+double cos(double);
+float sinf(float);
+float cosf(float);
+struct pair { double sine; double cosine; };
+struct pairf { float sine; float cosine; };
+struct pair __sincos_stret(double);
+struct pairf __sincosf_stret(float);
+size_t __strlcpy_chk(char *, const char *, size_t, size_t);
+size_t __strlcat_chk(char *, const char *, size_t, size_t);
+
+static int fails;
+
+static void expect(int holds, const char *what)
+{
+    if (!holds) {
+        printf("FAIL  %s\n", what);
+        fails++;
+    }
+}
+
+static int aborts(size_t (*call)(char *, const char *, size_t, size_t))
+{
+    pid_t child = fork();
+    if (child == 0) {
+        char small[4] = "";
+        call(small, "overflowing", 8, sizeof small);
+        _exit(0);
+    }
+    int status = 0;
+    waitpid(child, &status, 0);
+    return WIFSIGNALED(status) && WTERMSIG(status) == SIGABRT;
+}
+
+int main(void)
+{
+    for (double x = -7.0; x < 7.0; x += 0.37) {
+        struct pair both = __sincos_stret(x);
+        expect(both.sine == sin(x) && both.cosine == cos(x), "__sincos_stret answers sin and cos of its argument");
+        struct pairf bothf = __sincosf_stret((float)x);
+        expect(bothf.sine == sinf((float)x) && bothf.cosine == cosf((float)x),
+               "__sincosf_stret answers sinf and cosf of its argument");
+    }
+    char buffer[8] = "";
+    expect(__strlcpy_chk(buffer, "abcdefghij", sizeof buffer, sizeof buffer) == 10 && strcmp(buffer, "abcdefg") == 0,
+           "__strlcpy_chk truncates as strlcpy does and returns the source length");
+    expect(__strlcat_chk(buffer, "xyz", sizeof buffer, sizeof buffer) == 10 && strcmp(buffer, "abcdefg") == 0,
+           "__strlcat_chk truncates as strlcat does and returns the length it tried to create");
+    expect(aborts(__strlcpy_chk), "__strlcpy_chk aborts when told the destination is larger than it is");
+    expect(aborts(__strlcat_chk), "__strlcat_chk aborts when told the destination is larger than it is");
+    return fails != 0;
+}
+"""
+
+
 def run(*command, cwd):
-    return subprocess.run([str(part) for part in command], cwd=cwd, capture_output=True, text=True)
+    try:
+        return subprocess.run([str(part) for part in command], cwd=cwd, capture_output=True, text=True, timeout=120)
+    except subprocess.TimeoutExpired:
+        return subprocess.CompletedProcess(command, 1, "FAIL  {} did not finish in 120 seconds, which a shim that "
+                                                       "calls itself does\n".format(command[0]), "")
 
 
 def failures():
@@ -259,6 +326,42 @@ def failures():
                          if row.endswith(" _charon_" + symbol)), "")
             if "private external" not in line:
                 found.append("charon_{} must be hidden: {}".format(symbol, line))
+
+        (folder / "library.c").write_text(LIBRARY_CALLS)
+        linked = ["__sincos_stret", "__sincosf_stret", "__strlcpy_chk", "__strlcat_chk"]
+        built = run("xcrun", "clang", "-O2", "-D_FORTIFY_SOURCE=2", "-fno-builtin-sin", "-fno-builtin-cos",
+                    "-fno-builtin-sinf", "-fno-builtin-cosf", *[SHIMS / "{}.c".format(symbol) for symbol in linked],
+                    "library.c",
+                    "-o", "library", cwd=folder)
+        if built.returncode:
+            found.append("the compiler-called shims must compile: {}".format(built.stderr[-400:]))
+        else:
+            ran = run("./library", cwd=folder)
+            found += [line[6:] for line in ran.stdout.splitlines() if line.startswith("FAIL")]
+            if ran.returncode and not ran.stdout:
+                found.append("the compiler-called shims test failed without saying why: {}".format(ran.stderr))
+        for symbol in linked:
+            if (SHIMS.parent / "include" / "charon" / "{}.h".format(symbol)).exists():
+                found.append("{} is called by the compiler, not by name, so no header may rename it".format(symbol))
+            shim = run("xcrun", "clang", "-target", "armv7-apple-ios6.0", "-Wno-incompatible-sysroot", "-Os",
+                       "-c", SHIMS / "{}.c".format(symbol), "-o", "shim-{}.o".format(symbol), cwd=folder)
+            listing = run("xcrun", "nm", "-m", "shim-{}.o".format(symbol), cwd=folder).stdout
+            line = next((row for row in listing.splitlines() if row.endswith(" _" + symbol)), "")
+            if shim.returncode or "private external" not in line:
+                found.append("{} must compile for iOS 6 as a hidden definition: {} {}".format(
+                    symbol, shim.stderr[-300:], listing))
+            if "_" + symbol in run("xcrun", "nm", "-u", "shim-{}.o".format(symbol), cwd=folder).stdout.split():
+                found.append("{} compiled for iOS 6 must not call itself".format(symbol))
+        (folder / "late.c").write_text("#include <math.h>\n#include <string.h>\n"
+                                       "double both(double x) { return sin(x) + cos(x); }\n"
+                                       "unsigned long copy(char *d, const char *s) { char b[8]; "
+                                       "return strlcpy(b, s, sizeof b) + strlcat(d, b, 8); }\n")
+        late = run("xcrun", "clang", "-target", "armv7-apple-ios9.0", "-Wno-incompatible-sysroot", "-O2",
+                   "-D_FORTIFY_SOURCE=2", "-c", "late.c", "-o", "late.o", cwd=folder)
+        wanted = set(run("xcrun", "nm", "-u", "late.o", cwd=folder).stdout.split())
+        if late.returncode or not {"___sincos_stret", "___strlcpy_chk"} <= wanted:
+            found.append("code compiled for iOS 7 or later must call these by name, or the shims cover nothing: "
+                         "{} {}".format(late.stderr[-300:], sorted(wanted)))
 
         header = SHIMS.parent / "include" / "charon" / "aligned_alloc.h"
         (folder / "caller.cpp").write_text("#include <cstdlib>\n"

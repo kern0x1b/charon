@@ -25,6 +25,10 @@ class AppleCompatConan(ConanFile):
         "openat": {"iOS": "8.0", "Macos": "10.10", "tvOS": "9.0", "watchOS": "2.0"},
         "fchmodat": {"iOS": "8.0", "Macos": "10.10", "tvOS": "9.0", "watchOS": "2.0"},
         "unlinkat": {"iOS": "8.0", "Macos": "10.10", "tvOS": "9.0", "watchOS": "2.0"},
+        "__sincos_stret": {"iOS": "7.0", "Macos": "10.9"},
+        "__sincosf_stret": {"iOS": "7.0", "Macos": "10.9"},
+        "__strlcpy_chk": {"iOS": "7.0", "Macos": "10.9"},
+        "__strlcat_chk": {"iOS": "7.0", "Macos": "10.9"},
     }
 
     @property
@@ -61,6 +65,9 @@ class AppleCompatConan(ConanFile):
             copy(self, f"{symbol}.h", os.path.join(self.source_folder, "include", "charon"),
                  os.path.join(self.package_folder, "include", "charon"))
 
+    def _renamed(self, symbol):
+        return os.path.isfile(os.path.join(self.package_folder, "include", "charon", f"{symbol}.h"))
+
     def package_info(self):
         provided = self._provided
         for symbol in self.ARRIVED:
@@ -68,9 +75,10 @@ class AppleCompatConan(ConanFile):
             component.includedirs = []
             component.bindirs = []
             if symbol in provided:
-                header = os.path.join(self.package_folder, "include", "charon", f"{symbol}.h")
-                component.cflags = [f"-include{header}"]
-                component.cxxflags = [f"-include{header}"]
+                if self._renamed(symbol):
+                    header = os.path.join(self.package_folder, "include", "charon", f"{symbol}.h")
+                    component.cflags = [f"-include{header}"]
+                    component.cxxflags = [f"-include{header}"]
                 component.libs = ["apple-compat"]
             else:
                 component.libdirs = []
@@ -79,4 +87,5 @@ class AppleCompatConan(ConanFile):
                                                       for symbol, arrived in self.ARRIVED.items()
                                                       if str(self.settings.os) in arrived})
         self.cpp_info.set_property("charon_force_includes",
-                                   [os.path.join("charon", f"{symbol}.h") for symbol in provided])
+                                   [os.path.join("charon", f"{symbol}.h") for symbol in provided
+                                    if self._renamed(symbol)])
