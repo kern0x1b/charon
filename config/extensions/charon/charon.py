@@ -285,6 +285,7 @@ def provenance(root, chosen_profile):
     else:
         say("manifest     none - {} would declare the checks, variants and paths".format(root / MANIFEST))
     say("profile      {}".format(chosen_profile))
+    check_declared_conf(root, chosen_profile)
     trees = build_trees(root)
     say("build trees  {}".format(", ".join(path.name for path in trees) if trees else "none yet"))
     try:
@@ -357,6 +358,7 @@ def deploy_frameworks(root, tree, device):
 
 
 def verb_deploy(root, parsed):
+    provenance(root, parsed.chosen_profile)
     trees = [tree for tree in build_trees(root) if staged_frameworks(tree) is not None]
     tree = sole_tree(root, trees, "with staged frameworks", parsed.variant)
     deploy_frameworks(root, tree, transport(root))
@@ -456,6 +458,7 @@ def run_host(root, parsed):
 
 
 def verb_test(root, parsed):
+    provenance(root, parsed.chosen_profile)
     tiers = TIERS if parsed.tier == "all" else (parsed.tier,)
     device = transport(root) if [tier for tier in tiers if tier != "host"] else None
     results = {}
@@ -592,24 +595,26 @@ def remotes():
     return json.loads(result.stdout or "[]")
 
 
-def conf_value(key):
-    result = conan("config", "show", key, "--format=json", stdout=subprocess.PIPE, text=True, check=False)
+def resolved_conf(chosen_profile):
+    result = conan("profile", "show", "-pr:h", chosen_profile, "-pr:b", "default", "--format=json",
+                   stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, check=False)
     try:
         answered = json.loads(result.stdout or "{}") or {}
     except json.JSONDecodeError:
-        return ""
-    return str(answered.get(key) or "")
+        return {}
+    return (answered.get("host") or {}).get("conf") or {}
 
 
-def check_declared_conf(root):
+def check_declared_conf(root, chosen_profile):
     declared = manifest(root).get("conf", {})
     if not declared:
         return
+    resolved = resolved_conf(chosen_profile)
     for key in sorted(declared):
-        if conf_value(key):
-            say("{} is set".format(key))
+        if resolved.get(key):
+            say("conf         {} is set".format(key))
         else:
-            warn("{} is empty, and this port needs it: {}".format(key, declared[key]))
+            warn("conf         {} is empty, and this port needs it: {}".format(key, declared[key]))
 
 
 def verb_setup(root, parsed):
@@ -620,7 +625,7 @@ def verb_setup(root, parsed):
     for folder in shared:
         conan("config", "install", folder / "config")
     say("remotes now: {}".format(", ".join(remote["name"] for remote in remotes())))
-    check_declared_conf(root)
+    check_declared_conf(root, parsed.chosen_profile)
 
 
 def port_name(root):
