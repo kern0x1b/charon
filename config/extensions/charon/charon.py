@@ -1091,6 +1091,10 @@ def publish_plan(recipes, packages):
 
 
 def recipe_references(index):
+    serving = [remote["name"] for remote in local_index_remotes() if Path(remote["url"]).resolve() == Path(index)]
+    if not serving:
+        raise Failure("{} is not registered as a recipe index, so nothing says which of its versions it serves; "
+                      "register it with charon setup first".format(index))
     found = {}
     for recipe in sorted(Path(index).glob("recipes/*")):
         folders = sorted(folder for folder in recipe.iterdir() if (folder / RECIPE).is_file())
@@ -1099,9 +1103,9 @@ def recipe_references(index):
         described = json.loads(conan("inspect", folders[0], "--format=json", stdout=subprocess.PIPE,
                                      stderr=subprocess.DEVNULL, text=True).stdout)
         suffix = "@{}/{}".format(described["user"], described["channel"]) if described.get("user") else ""
-        listed = conan("list", "{}/*{}".format(described["name"], suffix), "--format=json", stdout=subprocess.PIPE,
-                       stderr=subprocess.DEVNULL, text=True, check=False)
-        for reference in json.loads(listed.stdout or "{}").get("Local Cache") or {}:
+        served = conan("list", "{}/*{}".format(described["name"], suffix), "-r", serving[0], "--format=json",
+                       stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, check=False)
+        for reference in json.loads(served.stdout or "{}").get(serving[0]) or {}:
             found[reference] = described
     return found
 
@@ -1136,10 +1140,12 @@ def verb_publish(root, parsed):
         "package_type") == "python-require"]
     listing = {"Local Cache": {}}
     for reference in selection:
-        listed = conan("list", "{}#latest:*".format(reference), "--format=json", stdout=subprocess.PIPE,
+        listed = conan("list", "{}#latest:*#latest".format(reference), "--format=json", stdout=subprocess.PIPE,
                        stderr=subprocess.DEVNULL, text=True)
         listing["Local Cache"].update(json.loads(listed.stdout)["Local Cache"])
     name = index.name
+    origin = subprocess.run(["git", "-C", str(index), "remote", "get-url", "origin"], stdout=subprocess.PIPE,
+                            stderr=subprocess.DEVNULL, text=True).stdout.strip()
     selected = out / "{}-packages.json".format(name)
     selected.write_text(json.dumps(listing, indent=2))
     archive = out / "{}-packages.tgz".format(name)
@@ -1154,8 +1160,10 @@ def verb_publish(root, parsed):
         binaries = ", ".join(sorted("{} {} {}".format(settings.get("os", "any"), settings.get("arch", "any"),
                                                        settings.get("os.version", "")).strip()
                                     for _, _, settings in found[reference])) or "recipe only"
-        lines.append("| `{}` | {} | {} | {} |".format(reference, described.get("license"),
-                                                      described.get("homepage") or "", binaries))
+        license = described.get("license")
+        license = " AND ".join(license) if isinstance(license, (list, tuple)) else license
+        lines.append("| `{}` | {} | {} | {} |".format(reference, license, described.get("homepage") or origin,
+                                                      binaries))
     if withheld:
         lines += ["", "Not included, because their terms do not allow handing them on; each is fetched on the "
                   "machine that uses it:", ""]
