@@ -98,6 +98,11 @@ A port carries no conanfile.py, no profile, no CMake and no Makefile. It carries
     [pipeline]
     system = ["task:carry-check", "build:device-library", "stage:frameworks", "task:where"]
 
+`[[executable]]` is a program for the device - a daemon, a tool - generated as
+`add_executable` and installed at `install`. A staged device library or
+executable with `entitlements` is signed with that file and its signature read
+back, as the application's is.
+
 A task is a table with exactly one of `script`, `shell` or `python`, and its
 `args` may name anything the build knows: `{port}`, `{build}`, `{stage}`,
 `{pkg:NAME}`, `{include:NAME}`, `{lib:NAME:LIBRARY}`, `{bin:TOOL}`,

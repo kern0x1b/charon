@@ -1008,7 +1008,8 @@ def verb_setup(root, parsed):
     shared = [Path(folder).expanduser().resolve() for folder in parsed.extra]
     for folder in shared:
         register(folder.name, folder)
-    register(declared(root, "port", "index") or port_name(root), root)
+    if (root / "recipes").is_dir():
+        register(declared(root, "port", "index") or port_name(root), root)
     for folder in shared:
         conan("config", "install", folder / "config")
     say("remotes now: {}".format(", ".join(remote["name"] for remote in remotes())))

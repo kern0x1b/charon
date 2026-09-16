@@ -501,7 +501,7 @@ class CharonPort:
         self.run(f'"{sys.executable}" "{written}" {arguments}', cwd=self.port_root)
 
     def _declared_kind(self, name):
-        for kind in ("static-library", "device-library"):
+        for kind in ("static-library", "device-library", "executable"):
             for target in self.declared.get(kind, []):
                 if target.get("name") == name:
                     return kind, target
@@ -542,7 +542,7 @@ class CharonPort:
         if name == "application":
             self.build_application()
             return
-        if name in ("static-library", "device-library"):
+        if name in ("static-library", "device-library", "executable"):
             self._build_kind(name)
             return
         kind, target = self._declared_kind(name)

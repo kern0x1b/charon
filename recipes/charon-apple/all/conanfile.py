@@ -148,11 +148,17 @@ class ApplePort:
         manifest = os.path.join(folder, "install_manifest.txt")
         with open(manifest) as installed:
             paths = [line.strip() for line in installed if line.strip()]
+        entitled = {}
+        for kind in ("device-library", "executable"):
+            for target in self.declared.get(kind, []):
+                if target.get("entitlements"):
+                    names = {target["name"], f"{target['name']}{target.get('suffix', '.dylib')}"}
+                    entitled.update({name: target["entitlements"] for name in names})
         for path in paths:
             if macho.is_macho(path):
                 self._verify(path)
                 macho.strip(path)
-                macho.sign(path)
+                self._sign_with(path, entitled.get(os.path.basename(path)))
 
     def _check_exports(self):
         macho = MachO(self)
@@ -349,25 +355,28 @@ class ApplePort:
         if not executable or not os.path.isfile(executable):
             raise ConanException(f"sign:application found no executable at {executable}; build:application has "
                                  "to run before it")
-        entitlements = declared.get("entitlements")
+        self._sign_with(executable, declared.get("entitlements"))
+
+    def _sign_with(self, binary, entitlements):
         macho = MachO(self)
         if not entitlements:
-            macho.sign(executable)
+            macho.sign(binary)
             return
         listed = os.path.join(self.port_root, entitlements)
-        macho.sign(executable, listed)
+        if not os.path.isfile(listed):
+            raise ConanException(f"{binary} is declared with entitlements {entitlements}, and there is no such file")
+        macho.sign(binary, listed)
         waived = self.declared_waivers()
         if "entitlements" in waived:
-            self.output.warning(f"{executable}: entitlements not read back: {waived['entitlements']}")
+            self.output.warning(f"{binary}: entitlements not read back: {waived['entitlements']}")
             return
         with open(listed, "rb") as handle:
             wanted = plistlib.load(handle)
         problems = [f"{architecture or 'the binary'}: {problem}"
-                    for architecture, signed in macho.entitlements(executable).items()
+                    for architecture, signed in macho.entitlements(binary).items()
                     for problem in macho.entitlement_problems(wanted, signed)]
         if problems:
-            raise ConanException(f"{executable} was signed without what {entitlements} declares: "
-                                 + "; ".join(problems))
+            raise ConanException(f"{binary} was signed without what {entitlements} declares: " + "; ".join(problems))
 
     def declared_runtime(self):
         stage = self.declared.get("stage", {})

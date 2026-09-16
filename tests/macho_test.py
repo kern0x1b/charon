@@ -457,6 +457,46 @@ def naming_failures(module, made, ld64, ldid):
     return found
 
 
+def installed_entitlement_failures(module, made, ldid):
+    found = []
+    original = module.MachO
+    with tempfile.TemporaryDirectory() as scratch:
+        folder = Path(scratch)
+        with open(folder / "daemon.plist", "wb") as handle:
+            plistlib.dump({"platform-application": True, "com.apple.private.security.no-container": True}, handle)
+        installed = folder / "build" / "executable"
+        installed.mkdir(parents=True)
+        for signs, reason in ((True, None), (False, "platform-application is declared and the signature does not "
+                                                     "carry it")):
+            shutil.copy2(made["executable"], installed / "telegramd")
+            (installed / "install_manifest.txt").write_text(str(installed / "telegramd") + "\n")
+            instance = running_port(module, folder, {"executable": [
+                {"name": "telegramd", "install": "/usr/libexec", "entitlements": "daemon.plist"}]}, ldid)
+
+            class Staging(original):
+                def tool(self, name):
+                    return subprocess.run(["xcrun", "-f", name], capture_output=True, text=True).stdout.strip()
+
+                def strip(self, binary, arguments="-x"):
+                    pass
+
+                def sign(self, binary, entitlements=None):
+                    super().sign(binary, entitlements if signs else None)
+
+            module.MachO = Staging
+            try:
+                instance._sign_installed(str(installed))
+                if reason:
+                    found.append("a staged executable signed without its entitlements must be refused")
+            except module.ConanException as refused:
+                if not reason or reason not in str(refused):
+                    found.append("a staged executable signed {}: expected {}, got {}".format(
+                        "with" if signs else "without", reason or "success", refused))
+            finally:
+                module.MachO = original
+    return found
+
+
 def entitlement_failures(module, folder, made, ldid):
     found = []
     declared = {"get-task-allow": True, "keychain-access-groups": ["example.shared"]}
@@ -715,6 +755,7 @@ def main():
             found += input_minimum_failures(module, ldid)
             found += naming_failures(module, made, ld64, ldid)
             found += bundle_content_failures(module, made, ldid)
+            found += installed_entitlement_failures(module, made, ldid)
     except Refused as missing:
         found.append(str(missing))
     for line in found:

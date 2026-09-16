@@ -567,6 +567,31 @@ def architecture_failures(folder):
     return found
 
 
+def executable_failures(folder):
+    root = Path(folder) / "daemon"
+    root.mkdir()
+    (root / "main.c").write_text("")
+    base = '[platform]\nuse = "apple-ios"\narch = "armv7"\nos-version = "6.0"\n[[executable]]\nname = "telegramd"\nsources = ["main.c"]\n'
+    found = []
+    written = generate.written(loaded(root, base + 'install = "/usr/libexec"\n'
+                                             'resources = [{ from = "main.c", as = "/etc/telegramd.conf" }]\n'))
+    text = written.get("executable/CMakeLists.txt", "")
+    for expected in ("project(port-executable C)", "add_executable(telegramd", 
+                     "install(TARGETS telegramd RUNTIME DESTINATION usr/libexec)", "RENAME telegramd.conf"):
+        if expected not in text:
+            found.append("an executable must be generated as a program installed where it says: {} is missing from "
+                         "{}".format(expected, text))
+    if "add_library" in text:
+        found.append("an executable must not be generated as a library: {}".format(text))
+    try:
+        generate.written(loaded(root, base))
+        found.append("an executable with no install path must be refused")
+    except generate.GenerationError as refused:
+        if "install path" not in str(refused):
+            found.append("an executable with no install path must be refused for that: {}".format(refused))
+    return found
+
+
 def package_failures(folder):
     root = Path(folder) / "packaged"
     root.mkdir()
@@ -622,6 +647,7 @@ def main():
         found += conf_failures(folder)
         found += architecture_failures(folder)
         found += package_failures(folder)
+        found += executable_failures(folder)
         found += platform_failures(folder)
     for line in found:
         print("FAIL  {}".format(line))

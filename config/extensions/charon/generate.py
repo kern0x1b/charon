@@ -247,19 +247,18 @@ def _library_block(target, kind, root=None):
     declared_sources = _sources(target, root)
     sources = [_path(source) for source in declared_sources]
     compiled = _languages(declared_sources)
-    if kind == "application":
+    if kind in ("application", "executable"):
         lines = ["add_executable({}".format(name), "    {})".format("\n    ".join(sources))]
     else:
         lines = ["add_library({} {}".format(name, "STATIC" if kind == "static-library" else "SHARED"),
                  "    {})".format("\n    ".join(sources))]
 
     properties = ["PREFIX \"\""] if kind == "device-library" else []
+    if kind in ("device-library", "executable") and not target.get("install"):
+        raise GenerationError("{} declares no install path, and a {} has to say where it belongs on the "
+                              "device".format(name, kind))
     if kind == "device-library":
-        install = target.get("install")
-        if not install:
-            raise GenerationError("{} declares no install path, and a device library has to say where it "
-                                  "belongs on the phone".format(name))
-        properties += ["INSTALL_NAME_DIR {}".format(install), "BUILD_WITH_INSTALL_NAME_DIR ON"]
+        properties += ["INSTALL_NAME_DIR {}".format(target["install"]), "BUILD_WITH_INSTALL_NAME_DIR ON"]
     if "suffix" in target:
         properties.append("SUFFIX {}".format(_quoted(target["suffix"])))
     if "standard" in target:
@@ -313,7 +312,8 @@ def _install_block(target, kind):
         return (["install(TARGETS {} RUNTIME DESTINATION .)".format(name)] +
                 _resource_lines(target, "."))
     install = target["install"].lstrip("/")
-    return (["install(TARGETS {} LIBRARY DESTINATION {})".format(name, install)] +
+    destination = "RUNTIME" if kind == "executable" else "LIBRARY"
+    return (["install(TARGETS {} {} DESTINATION {})".format(name, destination, install)] +
             _resource_lines(target, install))
 
 
@@ -557,7 +557,7 @@ def written(declared, required=True):
     if profiles is None:
         produced["profile"] = profile(declared)
     for kind, project in (("static-library", "port-static"), ("device-library", "port-device"),
-                          ("application", "port-application")):
+                          ("executable", "port-executable"), ("application", "port-application")):
         text = cmake_project(declared, kind, project)
         if text is not None:
             produced["{}/CMakeLists.txt".format(kind)] = text
