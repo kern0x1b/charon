@@ -131,6 +131,39 @@ def undefined_names():
     return found
 
 
+def merge_failures():
+    found = []
+    base = '[variants.armv7]\n[variants.arm64]\n'
+    cases = (
+        ("one variant merges", base + '[variants.app]\nmerge = ["armv7", "arm64"]\n', "app", ["armv7", "arm64"]),
+        ("two variants merge", base + '[variants.a]\nmerge = ["armv7", "arm64"]\n[variants.b]\n'
+                               'merge = ["armv7", "arm64"]\n', None, None),
+        ("a slice nobody declares", base + '[variants.app]\nmerge = ["armv7", "ghost"]\n', "app", None),
+        ("a merge of one slice", base + '[variants.app]\nmerge = ["armv7"]\n', "app", None),
+        ("a merge that names itself", base + '[variants.app]\nmerge = ["armv7", "app"]\n', "app", None),
+        ("a slice that merges", '[variants.armv7]\nmerge = ["arm64", "x"]\n[variants.arm64]\n[variants.x]\n'
+                                '[variants.app]\nmerge = ["armv7", "arm64"]\n', "app", None),
+    )
+    for description, text, variant, expected in cases:
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "charon.toml").write_text(text)
+            try:
+                chosen = variant or charon.default_variant(root)
+                if variant and description == "one variant merges" and charon.default_variant(root) != "app":
+                    found.append("the only variant that merges must be the default")
+                slices = charon.merged_slices(root, chosen)
+                if expected is None:
+                    found.append("{} must be refused".format(description))
+                elif slices != expected:
+                    found.append("{}: slices must be {} in declared order, got {}".format(
+                        description, expected, slices))
+            except charon.Failure:
+                if expected is not None:
+                    found.append("{} must be accepted".format(description))
+    return found
+
+
 def tier_failures():
     found = []
     tiers = {"scripts": {"needs": []}, "flags": {"needs": ["build"]}, "gate": {"needs": ["device"]},
@@ -163,7 +196,7 @@ def main():
         print("FAIL  this needs Python 3.11 or newer for tomllib, and it is running under {}. Skipping would "
               "report success having checked nothing.".format(".".join(str(p) for p in sys.version_info[:3])))
         return 1
-    found = failures() + task_failures() + tier_failures() + undefined_names()
+    found = failures() + task_failures() + tier_failures() + merge_failures() + undefined_names()
     for line in found:
         print("FAIL  {}".format(line))
     if found:

@@ -268,6 +268,40 @@ def glob_failures(folder):
     return found
 
 
+SLICED = """
+[port]
+name = "example"
+version = "1.0"
+[target]
+arch = "armv7"
+os = "iOS"
+os-version = "6.0"
+include-profiles = ["ios6-armv7"]
+[variants.armv7]
+[variants.arm64.target]
+arch = "armv8"
+os-version = "7.0"
+include-profiles = ["ios-arm64"]
+"""
+
+
+def variant_failures(folder):
+    found = []
+    root = Path(folder) / "sliced"
+    root.mkdir()
+    declared = loaded(root, SLICED)
+    for variant, arch, version, profile in (("armv7", "armv7", "6.0", "ios6-armv7"),
+                                            ("arm64", "armv8", "7.0", "ios-arm64")):
+        written = generate.written(declared.for_variant(variant))
+        text = written["profile"]
+        for expected in ("arch={}".format(arch), "os.version={}".format(version), "include({})".format(profile)):
+            if expected not in text:
+                found.append("the {} variant's profile must say {}: got {}".format(variant, expected, text))
+        if "set(CMAKE_OSX_ARCHITECTURES {})".format(arch) not in written[generate.CROSS_TOOLCHAIN]:
+            found.append("the {} variant's cross toolchain must build for {}".format(variant, arch))
+    return found
+
+
 def refusals(folder):
     found = []
     for description, text in BROKEN.items():
@@ -291,6 +325,7 @@ def main():
         found += checks(loaded(folder, MANIFEST))
         found += refusals(folder)
         found += glob_failures(folder)
+        found += variant_failures(folder)
     for line in found:
         print("FAIL  {}".format(line))
     if found:

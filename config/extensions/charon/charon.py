@@ -176,7 +176,7 @@ def transport(root):
 
 
 def written_profile(root, variant):
-    declared = declaration(root)
+    declared = declaration_for(root, variant)
     if declared is None:
         return None
     named = declared.using("profile")
@@ -346,8 +346,55 @@ def declaration(root):
     return spec.load(root)
 
 
+def declaration_for(root, variant):
+    declared = declaration(root)
+    if declared is None:
+        return None
+    import spec
+    try:
+        return declared.for_variant(variant)
+    except spec.SpecError as refused:
+        raise Failure(str(refused))
+
+
+def merged_slices(root, variant):
+    variants = manifest(root).get("variants", {})
+    slices = list((variants.get(variant) or {}).get("merge") or [])
+    if not slices:
+        return []
+    unknown = [name for name in slices if name not in variants]
+    if unknown:
+        raise Failure("{} variant {} merges {}, which it does not declare".format(
+            root / MANIFEST, variant, ", ".join(unknown)))
+    if variant in slices or any((variants[name] or {}).get("merge") for name in slices):
+        raise Failure("{} variant {} merges a variant that merges; a slice is built, not merged".format(
+            root / MANIFEST, variant))
+    if len(slices) < 2:
+        raise Failure("{} variant {} merges one slice, and a merge needs at least two".format(
+            root / MANIFEST, variant))
+    return slices
+
+
+def variant_profile(root, parsed, variant):
+    if parsed.profile:
+        return Path(parsed.profile).expanduser().resolve()
+    return written_profile(root, variant) or parsed.chosen_profile
+
+
+def build_variant(root, parsed, variant, extra):
+    where = generated(root, variant) or root
+    conan("build", where, *conan_flags(root, variant_profile(root, parsed, variant)),
+          *variant_options(root, variant), *extra)
+
+
 def default_variant(root):
     declared = manifest(root).get("variants", {})
+    merging = [name for name, variant in declared.items() if variant.get("merge")]
+    if len(merging) == 1:
+        return merging[0]
+    if len(merging) > 1:
+        raise Failure("{} declares more than one variant that merges ({}); pass --variant to say which to "
+                      "build".format(root / MANIFEST, ", ".join(merging)))
     plain = [name for name, variant in declared.items() if not variant.get("options")]
     if len(plain) != 1:
         raise Failure("{} declares {} variants with no options ({}); pass --variant to say which to build".format(
@@ -356,7 +403,7 @@ def default_variant(root):
 
 
 def generated(root, variant):
-    declared = declaration(root)
+    declared = declaration_for(root, variant)
     if declared is None:
         return None
     if declared.using("recipe"):
@@ -395,16 +442,23 @@ def verb_generate(root, parsed):
 def verb_build(root, parsed):
     provenance(root, parsed.chosen_profile)
     variant = parsed.variant or default_variant(root)
-    where = generated(root, variant) or root
-    conan("build", where, *conan_flags(root, parsed.chosen_profile),
-          *variant_options(root, parsed.variant), *parsed.extra)
+    slices = merged_slices(root, variant)
+    if slices and parsed.profile:
+        raise Failure("--profile names one profile, and {} merges {}, each built for its own target".format(
+            variant, ", ".join(slices)))
+    for name in slices:
+        say("\n=== slice {} of {}".format(name, variant))
+        build_variant(root, parsed, name, parsed.extra)
+    if slices:
+        say("\n=== {}, merging {}".format(variant, ", ".join(slices)))
+    build_variant(root, parsed, variant, parsed.extra)
 
 
 def verb_package(root, parsed):
     variant = parsed.variant or default_variant(root)
     where = generated(root, variant) or root
-    conan("export-pkg", where, *conan_flags(root, parsed.chosen_profile),
-          *variant_options(root, parsed.variant), *parsed.extra)
+    conan("export-pkg", where, *conan_flags(root, variant_profile(root, parsed, variant)),
+          *variant_options(root, variant), *parsed.extra)
 
 
 def frameworks_of(staged):
@@ -721,10 +775,8 @@ def task_steps(root, names):
 
 
 def run_steps(root, parsed, steps):
-    variant = parsed.variant or default_variant(root)
-    where = generated(root, variant) or root
-    conan("build", where, *conan_flags(root, parsed.chosen_profile), *variant_options(root, parsed.variant),
-          "-c", "user.charon:steps={!r}".format(list(steps)))
+    build_variant(root, parsed, parsed.variant or default_variant(root),
+                  ["-c", "user.charon:steps={!r}".format(list(steps))])
 
 
 def verb_task(root, parsed):

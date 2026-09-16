@@ -169,13 +169,79 @@ def failures():
         return found
 
 
+VARIANTS = """
+[port]
+name = "example"
+version = "1.0"
+
+[target]
+arch = "armv7"
+os = "iOS"
+os-version = "6.0"
+include-profiles = ["ios6-armv7"]
+
+[package]
+control = "packaging/app/control"
+
+[application]
+name = "Host"
+sources = ["app/main.m"]
+strip = "-S -x"
+
+[variants.armv7]
+
+[variants.arm64.target]
+arch = "armv8"
+os-version = "7.0"
+include-profiles = ["ios-arm64"]
+
+[variants.arm64.targets.Host]
+exclude = ["app/Debug*.m"]
+
+[variants.tweak.package]
+control = "packaging/tweak/control"
+
+[variants.broken.targets.Nobody]
+strip = ""
+"""
+
+
+def variant_failures():
+    import tempfile
+    found = []
+    with tempfile.TemporaryDirectory() as folder:
+        root = Path(folder)
+        (root / spec.MANIFEST).write_text(VARIANTS)
+        declared = spec.load(root)
+        arm64 = declared.for_variant("arm64")
+        if arm64.get("target", "arch") != "armv8" or arm64.get("target", "os-version") != "7.0":
+            found.append("a variant's [target] must override the port's: got {}".format(arm64.section("target")))
+        if arm64.get("target", "os") != "iOS":
+            found.append("a key the variant leaves out must come from the port's [target]")
+        host = arm64.section("application")
+        if host.get("exclude") != ["app/Debug*.m"] or host.get("strip") != "-S -x":
+            found.append("a variant's override of a target must merge into it, not replace it: got {}".format(host))
+        if arm64.content.get("for-variant") != "arm64":
+            found.append("a declaration written for a variant must carry that variant's name")
+        if declared.get("target", "arch") != "armv7" or "exclude" in declared.section("application"):
+            found.append("writing a variant must not change the port's own declaration")
+        if declared.for_variant("tweak").get("package", "control") != "packaging/tweak/control":
+            found.append("a variant's [package] must replace the port's")
+        try:
+            declared.for_variant("broken")
+            found.append("a variant overriding a target nothing declares must be refused")
+        except spec.SpecError:
+            pass
+    return found
+
+
 def main():
     if sys.version_info < (3, 11):
         running = ".".join(str(part) for part in sys.version_info[:3])
         print("FAIL  this needs Python 3.11 or newer for tomllib, and it is running under {}. "
               "Skipping would report success having checked nothing.".format(running))
         return 1
-    found = failures()
+    found = failures() + variant_failures()
     for line in found:
         print("FAIL  {}".format(line))
     if found:

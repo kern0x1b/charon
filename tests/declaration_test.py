@@ -142,6 +142,58 @@ def port(module, options):
     return Port()
 
 
+def merge_failures(module):
+    import plistlib
+    found = []
+    baked = port(module, {"prefixed": "True"})
+    type(baked).declaration = dict(DECLARATION, **{"for-variant": "system"})
+    if baked.declared_variant() != "system":
+        found.append("a recipe written for a variant must be that variant, whatever its options say")
+
+    def slice_bundle(root, name, arch_magic, plist, extra=None):
+        bundle = root / name / "Host.app"
+        (bundle / "Frameworks").mkdir(parents=True)
+        (bundle / "Host").write_bytes(arch_magic + b"\0" * 60)
+        (bundle / "Frameworks" / "libx.dylib").write_bytes(arch_magic + b"\0" * 60)
+        (bundle / "start.html").write_text("same everywhere")
+        with open(bundle / "Info.plist", "wb") as handle:
+            plistlib.dump(plist, handle)
+        for relative, content in (extra or {}).items():
+            (bundle / relative).parent.mkdir(parents=True, exist_ok=True)
+            (bundle / relative).write_bytes(content)
+        return str(bundle)
+
+    thin, wide = b"\xce\xfa\xed\xfe", b"\xcf\xfa\xed\xfe"
+    cases = (
+        ("slices that agree", {}, {}, {}, ["Frameworks/libx.dylib", "Host"], []),
+        ("a file only one slice has", {}, {}, {"extra.txt": b"x"}, None, ["present in only some slices"]),
+        ("Info.plist keys that disagree", {"MinimumOSVersion": "6.0"}, {"MinimumOSVersion": "7.0"}, {}, None,
+         ["Info.plist differs"]),
+        ("a binary in one slice and data in the other", {}, {}, {"Frameworks/liby.dylib": wide + b"\0" * 8},
+         None, None),
+    )
+    for description, first_plist, second_plist, second_extra, binaries, reasons in cases:
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            extra_first = {"Frameworks/liby.dylib": b"plain data"} if description.startswith("a binary") else {}
+            bundles = [slice_bundle(root, "armv7", thin, dict({"CFBundleExecutable": "Host"}, **first_plist),
+                                    extra_first),
+                       slice_bundle(root, "arm64", wide, dict({"CFBundleExecutable": "Host"}, **second_plist),
+                                    second_extra)]
+            planned, problems = module.MachO.merge_plan(bundles)
+            if binaries is not None:
+                if problems or planned != binaries:
+                    found.append("{}: must merge {} with no problem, got {} and {}".format(
+                        description, binaries, planned, problems))
+                continue
+            if not problems:
+                found.append("{} must be refused".format(description))
+            for reason in reasons or ["Mach-O in some slices and not in others"]:
+                if not any(reason in problem for problem in problems):
+                    found.append("{} must be refused because {}: got {}".format(description, reason, problems))
+    return found
+
+
 def plist_failures(module):
     import plistlib
     found = []
@@ -425,7 +477,7 @@ def main():
         print("FAIL  this needs an interpreter that can import conan: {}".format(missing))
         return 1
     found = (failures(module) + dispatch_failures(module) + task_failures(module) + sign_failures(module) +
-             plist_failures(module) + bundle_failures(module))
+             plist_failures(module) + bundle_failures(module) + merge_failures(module))
     for line in found:
         print("FAIL  {}".format(line))
     if found:

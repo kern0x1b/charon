@@ -141,6 +141,9 @@ class Ios6Port:
         return root
 
     def declared_variant(self):
+        building = self.declared.get("for-variant")
+        if building:
+            return building
         chosen, matched = None, -1
         for name, declared in self.declared.get("variants", {}).items():
             wanted = [entry.split("=", 1) for entry in declared.get("options", [])]
@@ -368,6 +371,7 @@ class Ios6Port:
             "check": self._run_check,
             "stage": self._run_stage,
             "sign": self._sign_target,
+            "merge": self._merge_target,
         }
         if action not in steps:
             raise ConanException(f"{action} is not a step this toolchain knows; it runs "
@@ -646,6 +650,40 @@ class Ios6Port:
         if declared.get("strip"):
             macho.strip(executable, declared["strip"])
 
+    def _merge_target(self, name):
+        if name != "application":
+            raise ConanException(f"merge:{name} is not something this toolchain merges; it merges application")
+        application = (self.declared.get("application") or {}).get("name")
+        if not application:
+            raise ConanException(f"{self.name} declares no application to merge")
+        variant = self.declared_variant()
+        slices = (self.declared.get("variants", {}).get(variant) or {}).get("merge") or []
+        if len(slices) < 2:
+            raise ConanException(f"the {variant} variant runs merge:application and names fewer than two slices "
+                                 "under merge")
+        bundles = [os.path.join(self.port_root, "build", slice_name, f"{application}.app") for slice_name in slices]
+        missing = [slice_name for slice_name, bundle in zip(slices, bundles) if not os.path.isdir(bundle)]
+        if missing:
+            raise ConanException(f"there is no {application}.app for {', '.join(missing)}; build each slice "
+                                 "before merging, which charon build does when it builds the merging variant")
+        binaries, problems = MachO.merge_plan(bundles)
+        if problems:
+            raise ConanException(f"the slices of {application}.app cannot be merged: " + "; ".join(problems))
+        destination = os.path.join(self.build_folder, f"{application}.app")
+        rmdir(self, destination)
+        shutil.copytree(bundles[0], destination, symlinks=True)
+        macho = MachO(self)
+        lipo = macho.tool("lipo")
+        for relative in binaries:
+            merged = os.path.join(destination, relative)
+            inputs = " ".join(f'"{os.path.join(bundle, relative)}"' for bundle in bundles)
+            self.run(f'"{lipo}" -create {inputs} -output "{merged}"')
+            architectures = macho.output(f'"{lipo}" -archs "{merged}"').split()
+            if len(architectures) != len(bundles):
+                raise ConanException(f"{merged} came out with {', '.join(architectures) or 'no architecture'} "
+                                     f"from {len(bundles)} slices; two slices built for the same architecture "
+                                     "cannot be told apart")
+
     def _sign_target(self, name):
         if name != "application":
             raise ConanException(f"sign:{name} is not something this toolchain signs; it signs application")
@@ -756,6 +794,39 @@ class MachO:
         captured = StringIO()
         self._conanfile.run(command, stdout=captured)
         return captured.getvalue()
+
+    @classmethod
+    def merge_plan(cls, bundles):
+        listings = []
+        for bundle in bundles:
+            files = {}
+            for folder, _, names in os.walk(bundle):
+                for name in names:
+                    path = os.path.join(folder, name)
+                    if not os.path.islink(path):
+                        files[os.path.relpath(path, bundle)] = path
+            listings.append(files)
+        problems = []
+        every = set().union(*listings)
+        partial = sorted(relative for relative in every if any(relative not in listing for listing in listings))
+        if partial:
+            problems.append("present in only some slices: " + ", ".join(partial))
+        binaries = []
+        for relative in sorted(every - set(partial)):
+            paths = [listing[relative] for listing in listings]
+            kinds = [cls.is_macho(path) for path in paths]
+            if all(kinds):
+                binaries.append(relative)
+            elif any(kinds):
+                problems.append(f"{relative} is a Mach-O in some slices and not in others")
+            else:
+                contents = set()
+                for path in paths:
+                    with open(path, "rb") as handle:
+                        contents.add(handle.read())
+                if len(contents) > 1:
+                    problems.append(f"{relative} differs between slices")
+        return binaries, problems
 
     @classmethod
     def is_macho(cls, path):

@@ -6,10 +6,13 @@ produced. Names it cannot are left in place for the generated recipe to resolve
 where the graph exists. An unknown name is an error rather than an empty string:
 a flag that silently loses its value builds something that fails elsewhere.
 """
+import copy
 import re
 from pathlib import Path
 
 MANIFEST = "charon.toml"
+TARGET_KINDS = ("static-library", "device-library", "executable", "application")
+BUILDING_VARIANT = "for-variant"
 PLACEHOLDER = re.compile(r"\{([a-z][a-z0-9_.-]*(?::[^{}]*)?)\}")
 GRAPH_PREFIXES = ("pkg", "include", "lib", "libdirs", "bin")
 
@@ -97,6 +100,28 @@ class Spec:
             known = ", ".join(sorted(variants)) or "none declared"
             raise SpecError("{} declares no variant {} ({})".format(self.root / MANIFEST, name, known))
         return variants[name]
+
+    def for_variant(self, name):
+        variant = self.variant(name)
+        content = copy.deepcopy(self.content)
+        if variant.get("target"):
+            content["target"] = dict(content.get("target") or {}, **variant["target"])
+        if variant.get("package"):
+            content["package"] = dict(variant["package"])
+        for target_name, override in (variant.get("targets") or {}).items():
+            matched = False
+            for kind in TARGET_KINDS:
+                declared = content.get(kind)
+                entries = [declared] if isinstance(declared, dict) else (declared or [])
+                for entry in entries:
+                    if entry.get("name") == target_name:
+                        entry.update(copy.deepcopy(override))
+                        matched = True
+            if not matched:
+                raise SpecError("{} variant {} overrides a target {} that nothing declares".format(
+                    self.root / MANIFEST, name, target_name))
+        content[BUILDING_VARIANT] = name
+        return Spec(self.root, content)
 
     def targets(self, kind):
         declared = self.content.get(kind) or []
