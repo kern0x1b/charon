@@ -395,8 +395,26 @@ class CharonPort:
                                      f"it requires {', '.join(sorted(host)) or 'nothing'}")
             found = host[package].cpp_info.get_property("cmake_file_name") or package
             lines.append(f"find_package({found} REQUIRED CONFIG)")
+        for name, dependency in sorted(host.items()):
+            lines += self._objective_c_options(name, dependency.cpp_info)
         with open(os.path.join(self.generators_folder, self.FOUND_PACKAGES), "w") as handle:
             handle.write("\n".join(lines) + "\n")
+
+    @staticmethod
+    def _objective_c_options(name, info):
+        owners = [(info.get_property("cmake_target_name") or f"{name}::{name}", info)]
+        owners += [(component.get_property("cmake_target_name") or f"{name}::{component_name}", component)
+                   for component_name, component in sorted(info.components.items()) if component_name]
+        lines = []
+        for target, owner in owners:
+            options = [f'"$<$<COMPILE_LANGUAGE:OBJC>:{flag}>"' for flag in owner.cflags or []]
+            options += [f'"$<$<COMPILE_LANGUAGE:OBJCXX>:{flag}>"' for flag in owner.cxxflags or []]
+            if options:
+                lines += [f"if (TARGET {target})",
+                          f"    set_property(TARGET {target} APPEND PROPERTY INTERFACE_COMPILE_OPTIONS",
+                          "        " + "\n        ".join(options) + ")",
+                          "endif ()"]
+        return lines
 
     def _refuse_graph_by_hand(self):
         host = [dependency for dependency in self.dependencies.host.values() if dependency.package_folder]

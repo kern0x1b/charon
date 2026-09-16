@@ -257,12 +257,55 @@ class Library:
         self.cpp_info = self
         self._libs = libs
         self._file_name = file_name
+        self.cflags = []
+        self.cxxflags = []
+        self.components = {}
 
     def get_property(self, name):
         return self._file_name if name == "cmake_file_name" else None
 
     def aggregated_components(self):
         return type("Components", (), {"libs": self._libs})()
+
+
+class FlagOwner:
+    def __init__(self, cflags=(), cxxflags=(), components=None, target=None):
+        self.cflags = list(cflags)
+        self.cxxflags = list(cxxflags)
+        self.components = components or {}
+        self._target = target
+
+    def get_property(self, name):
+        return self._target if name == "cmake_target_name" else None
+
+
+def objective_c_failures(module):
+    import subprocess
+    found = []
+    info = FlagOwner(cflags=["-DFROM_PACKAGE_C_FLAGS"], cxxflags=["-includealgorithm"],
+                     components={"shim": FlagOwner(cflags=["-DFROM_COMPONENT"])})
+    lines = module.Port._objective_c_options("pkg", info)
+    with tempfile.TemporaryDirectory() as folder:
+        root = Path(folder)
+        (root / "options.cmake").write_text("\n".join(lines) + "\n")
+        (root / "a.m").write_text("#ifndef FROM_PACKAGE_C_FLAGS\n#error package C flags missing\n#endif\n"
+                                  "#ifndef FROM_COMPONENT\n#error component C flags missing\n#endif\nint a;\n")
+        (root / "b.mm").write_text("void fill(int *p) { std::fill(p, p + 1, 0); }\n")
+        (root / "CMakeLists.txt").write_text(
+            "cmake_minimum_required(VERSION 3.24)\nproject(consumer C CXX OBJC OBJCXX)\n"
+            "add_library(pkg::pkg INTERFACE IMPORTED)\nadd_library(pkg::shim INTERFACE IMPORTED)\n"
+            "target_link_libraries(pkg::pkg INTERFACE pkg::shim)\n"
+            "set_property(TARGET pkg::pkg PROPERTY INTERFACE_COMPILE_OPTIONS "
+            "\"$<$<COMPILE_LANGUAGE:CXX>:-includealgorithm>\")\n"
+            "include(options.cmake)\nadd_library(consumer STATIC a.m b.mm)\n"
+            "target_link_libraries(consumer PRIVATE pkg::pkg)\n")
+        configured = subprocess.run(["cmake", "-S", str(root), "-B", str(root / "build"), "-G", "Ninja"],
+                                    capture_output=True, text=True)
+        built = subprocess.run(["ninja", "-C", str(root / "build")], capture_output=True, text=True)
+        if configured.returncode or built.returncode:
+            found.append("a package's C and C++ flags must reach Objective-C and Objective-C++ consumers: {}".format(
+                (configured.stderr + built.stdout + built.stderr)[-600:]))
+    return found
 
 
 def path_map_failures(module):
@@ -712,7 +755,8 @@ def main():
     found = (failures(module) + dispatch_failures(module) + task_failures(module) + sign_failures(module) +
              plist_failures(module) + bundle_failures(module) + merge_failures(module) + flag_failures(module) + runtime_failures(module) +
              find_package_failures(module) + exports_failures(module) + architecture_failures(module) +
-             graph_failures(module) + path_map_failures(module))
+             graph_failures(module) + path_map_failures(module) +
+             objective_c_failures(module))
     for line in found:
         print("FAIL  {}".format(line))
     if found:
