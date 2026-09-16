@@ -14,7 +14,7 @@ other. What is shared is only what is true for all of them.
     config/profiles/ios6-armv7 the target: armv7, iOS 6.0, the theos SDK, the linker
     config/profiles/ios-arm64  the target: arm64, iOS 7.0 or later, the theos SDK
     config/extensions/hooks/   refuses a missing SDK or a swapped linker
-    config/extensions/commands/ serves a checkout's recipes, in the right order
+    config/extensions/charon/  Charon: the verbs every port gets, and the phone transport
     tools/sdk-usage.py         which files of an SDK a build actually read
     recipes/ld64/              the linker, built from cctools-port
     recipes/ldid/              the signing tool the device accepts
@@ -27,9 +27,14 @@ other. What is shared is only what is true for all of them.
 
     git clone https://github.com/kern0x1b/ios6-toolchain.git
     conan config install ios6-toolchain/config
-    conan ios6-remote ios6 ios6-toolchain
 
     export LLVM_PREFIX="$(brew --prefix llvm)"
+
+In a port, `make setup ARGS=<path to this repo>` reinstalls that configuration
+and registers both sets of recipes ahead of the general remotes. Every other
+verb is the same in every port: `make build`, `make package`, `make deploy`,
+`make run`, `make test`, `make clean`, and `make provenance` to see which
+configuration and which checkout are answering.
 
 `LLVM_PREFIX` is read once, by `config/global.conf`, into
 `user.ios6:llvm_prefix`. Only the `ld64` recipe asks for it: cctools' configure

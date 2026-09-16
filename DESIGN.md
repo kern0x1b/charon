@@ -9,6 +9,8 @@ For anyone arriving from the JVM world, the mapping is close to exact:
 
 | Maven / Gradle | here |
 |---|---|
+| `gradle build`, `gradle clean`, `gradle test` | `make build`, `make clean`, `make test` - Charon, `config/extensions/charon/` |
+| `gradlew` committed in the project | the port's four-line `Makefile`, which includes Charon from the installed configuration |
 | `build.gradle` per module | `conanfile.py` in each port |
 | convention plugin / parent POM | `ios6-base`, consumed with `python_requires` |
 | `~/.gradle/init.gradle`, toolchain config | `config/profiles/ios6-armv7` and `ios-arm64`, installed with `conan config install` |
@@ -60,11 +62,13 @@ A port's file should be readable in one screen:
 
 ## Adding a port
 
-1. `conan config install <this repo>/config`
-2. `conan ios6-remote ios6 <this repo>` - `conan remote add` appends after ConanCenter, which would answer first
-3. Write the port's `conanfile.py` as above.
-4. `conan install . -pr:h <the port's profile, which includes ios6-armv7 or ios-arm64> -pr:b default --build=missing`
-5. Commit the resulting `conan.lock`.
+1. Write the port's `conanfile.py` as above, its `charon.toml`, and a two-line
+   `Makefile` that includes `charon.mk` from the installed configuration.
+2. `make setup ARGS=<this repo>` - installs this configuration and registers both
+   recipe indexes ahead of the general remotes, because `conan remote add` appends
+   after ConanCenter, which would otherwise answer first.
+3. `make build`
+4. Commit the resulting `conan.lock`.
 
 ## Adding a library
 

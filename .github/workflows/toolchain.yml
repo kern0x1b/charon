@@ -23,7 +23,7 @@ jobs:
       - name: Register the toolchain
         run: |
           conan config install "$PWD/config"
-          conan ios6-remote ios6 "$PWD"
+          conan remote add ios6 "$PWD" -t local-recipes-index --index 0 -f
 
       - name: The profile resolves
         run: |

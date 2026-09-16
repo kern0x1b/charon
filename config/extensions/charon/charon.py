@@ -1,0 +1,698 @@
+#!/usr/bin/env python3
+"""Charon carries an armv7 / iOS 6 port across: build, package, install on the phone, test there.
+
+    charon.py --root PORT VERB [options]
+
+The verbs are the same for every port. Nothing here decides what to compile or
+whether a file is stale: Conan resolves the dependencies, CMake owns the graph,
+and this only sequences the calls and reports where they went.
+"""
+import argparse
+import importlib.util
+import json
+import os
+import plistlib
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+RECIPE = "conanfile.py"
+MANIFEST = "charon.toml"
+PROFILES = "profiles"
+LOCK = "conan.lock"
+BUILD = "build"
+STAGE = "stage"
+FRAMEWORK = ".framework"
+APPLICATION = ".app"
+CMAKE_STAMP = "CMakeCache.txt"
+APPLICATIONS = "/Applications"
+GATE = ("tests", "device", "run.py")
+HARNESS = ("tests", "device", "harness.py")
+BATTERIES = ("tests", "run-tests.py")
+TIERS = ("gate", "batteries", "host")
+MINIMUM_PYTHON = (3, 11)
+CHOSEN_INTERPRETER = "CHARON_INTERPRETER"
+
+
+class Failure(Exception):
+    pass
+
+
+def say(message):
+    print(message, flush=True)
+
+
+def warn(message):
+    print(message, file=sys.stderr, flush=True)
+
+
+def conan_interpreter():
+    launcher = shutil.which("conan")
+    if not launcher:
+        return None
+    try:
+        with open(launcher) as handle:
+            first = handle.readline()
+    except OSError:
+        return None
+    if not first.startswith("#!"):
+        return None
+    words = first[2:].strip().split()
+    if not words:
+        return None
+    candidate = words[-1] if os.path.basename(words[0]) == "env" else words[0]
+    return candidate if os.path.isabs(candidate) else shutil.which(candidate)
+
+
+def newest_interpreter():
+    found = {}
+    for folder in os.environ.get("PATH", "").split(os.pathsep):
+        try:
+            names = os.listdir(folder)
+        except OSError:
+            continue
+        for name in names:
+            prefix = "python3."
+            if not name.startswith(prefix) or not name[len(prefix):].isdigit():
+                continue
+            minor = int(name[len(prefix):])
+            if minor >= MINIMUM_PYTHON[1]:
+                found.setdefault(minor, os.path.join(folder, name))
+    return found[max(found)] if found else conan_interpreter()
+
+
+def ensure_interpreter(argv):
+    if sys.version_info >= MINIMUM_PYTHON or os.environ.get(CHOSEN_INTERPRETER):
+        return
+    interpreter = newest_interpreter()
+    wanted = ".".join(str(part) for part in MINIMUM_PYTHON)
+    running = ".".join(str(part) for part in sys.version_info[:3])
+    if not interpreter:
+        raise Failure("Charon reads a port's manifest with tomllib, which arrived in Python {}, and it is "
+                      "running under {}. Install a newer Python or pass one: make PYTHON=python3.14 ...".format(
+                          wanted, running))
+    os.execve(interpreter, [interpreter, os.path.abspath(__file__)] + list(argv),
+              dict(os.environ, **{CHOSEN_INTERPRETER: interpreter}))
+
+
+def manifest(root):
+    import tomllib
+    path = root / MANIFEST
+    if not path.is_file():
+        return {}
+    with path.open("rb") as handle:
+        try:
+            return tomllib.load(handle)
+        except tomllib.TOMLDecodeError as broken:
+            raise Failure("{} is not readable: {}".format(path, broken))
+
+
+def declared(root, section, key, fallback=None):
+    return manifest(root).get(section, {}).get(key, fallback)
+
+
+def variant_options(root, variant):
+    if not variant:
+        return []
+    variants = manifest(root).get("variants", {})
+    if variant not in variants:
+        known = ", ".join(sorted(variants)) or "none declared"
+        raise Failure("{} declares no variant {} ({})".format(root / MANIFEST, variant, known))
+    options = variants[variant].get("options", [])
+    return [argument for option in options for argument in ("-o", option)]
+
+
+def is_port(folder):
+    return (folder / RECIPE).is_file()
+
+
+def find_port(argument):
+    if argument:
+        root = Path(argument).expanduser().resolve()
+        if not is_port(root):
+            raise Failure("{} holds no {}, so it is not a port".format(root, RECIPE))
+        return root
+    here = Path.cwd().resolve()
+    for folder in (here,) + tuple(here.parents):
+        if is_port(folder):
+            return folder
+    raise Failure("{} is not inside a port; run from one or pass --root".format(here))
+
+
+def import_file(path, name):
+    path = Path(path)
+    if not path.is_file():
+        raise Failure("{} does not exist".format(path))
+    loaded = sys.modules.get(name)
+    if loaded is not None and Path(getattr(loaded, "__file__", "") or "").resolve() == path.resolve():
+        return loaded
+    folder = str(path.parent)
+    if folder not in sys.path:
+        sys.path.insert(0, folder)
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    try:
+        spec.loader.exec_module(module)
+    except BaseException:
+        sys.modules.pop(name, None)
+        raise
+    return module
+
+
+def transport(root):
+    device = import_file(Path(__file__).resolve().parent / "device.py", "ios6_device")
+    try:
+        device.bind(root)
+    except RuntimeError as absent:
+        raise Failure(str(absent))
+    return device
+
+
+def profile(root):
+    folder = root / PROFILES
+    found = sorted(path for path in folder.iterdir() if path.is_file()) if folder.is_dir() else []
+    if not found:
+        raise Failure("{} holds no profile, and it is what says which target this port builds for".format(folder))
+    if len(found) > 1:
+        names = ", ".join(path.name for path in found)
+        raise Failure("{} holds more than one profile ({}); pass --profile to say which".format(folder, names))
+    return found[0]
+
+
+def conan_flags(root, chosen_profile):
+    flags = ["-pr:h", str(chosen_profile), "-pr:b", "default", "--build=missing"]
+    if (root / LOCK).is_file():
+        flags += ["--lockfile", str(root / LOCK)]
+    return flags
+
+
+def conan(*arguments, **options):
+    argv = ["conan"] + [str(part) for part in arguments]
+    result = subprocess.run(argv, **options)
+    if result.returncode and options.get("check") is not False:
+        raise Failure("conan {} failed (exit {})".format(" ".join(str(a) for a in arguments), result.returncode))
+    return result
+
+
+def build_trees(root):
+    folder = root / BUILD
+    if not folder.is_dir():
+        return []
+    return sorted(path for path in folder.iterdir() if path.is_dir() and (path / CMAKE_STAMP).is_file())
+
+
+def sole_tree(root, trees, wanted, variant):
+    if variant:
+        chosen = root / BUILD / variant
+        if not chosen.is_dir():
+            raise Failure("{} does not exist".format(chosen))
+        return chosen
+    if not trees:
+        raise Failure("no build tree under {} {} - run make build first".format(root / BUILD, wanted))
+    if len(trees) > 1:
+        names = ", ".join(path.name for path in trees)
+        raise Failure("more than one build tree {} ({}); pass VARIANT= to say which".format(wanted, names))
+    return trees[0]
+
+
+def staged_frameworks(tree):
+    stage = tree / STAGE
+    laid_out = [path for path in stage.glob("**/*" + FRAMEWORK)
+                if (path / path.stem).is_file()] if stage.is_dir() else []
+    if not laid_out:
+        return None
+    return min(laid_out, key=lambda path: len(path.parts)).parent
+
+
+def device_location(staged):
+    for parent in staged.parents:
+        if parent.name == STAGE:
+            return "/" + str(staged.relative_to(parent))
+    raise Failure("{} is not inside a {} tree, so where it belongs on the phone is unknown".format(staged, STAGE))
+
+
+def standalone_app(tree):
+    bundles = sorted(path for path in tree.glob("*" + APPLICATION) if (path / path.stem).is_file())
+    if len(bundles) > 1:
+        names = ", ".join(path.name for path in bundles)
+        raise Failure("{} holds more than one application ({})".format(tree, names))
+    return bundles[0] if bundles else None
+
+
+def tree_size(path):
+    total = 0
+    for folder, directories, names in os.walk(path):
+        directories[:] = [name for name in directories if name != ".git"]
+        for name in names:
+            candidate = os.path.join(folder, name)
+            if not os.path.islink(candidate):
+                total += os.lstat(candidate).st_size
+    return total
+
+
+def megabytes(size):
+    return "{:.0f} MB".format(size / (1024 * 1024))
+
+
+def users_of(folder):
+    listing = subprocess.run(["ps", "-Ao", "pid=,pgid=,args="], capture_output=True, text=True,
+                             errors="replace").stdout
+    mine = (os.getpid(), os.getpgrp())
+    found = []
+    for line in listing.splitlines():
+        fields = line.split(None, 2)
+        if len(fields) < 3 or str(folder) not in fields[2]:
+            continue
+        if int(fields[0]) in mine or int(fields[1]) in mine:
+            continue
+        found.append(fields[2].strip())
+    return found
+
+
+def provenance(root, chosen_profile):
+    driver = Path(__file__).resolve()
+    say("driver       {}".format(driver))
+    say("interpreter  {} ({})".format(sys.executable, ".".join(str(p) for p in sys.version_info[:3])))
+    say("port         {}".format(root))
+    declaration = manifest(root)
+    if declaration:
+        described = declaration.get("port", {})
+        say("manifest     {} ({} {})".format(root / MANIFEST, described.get("name", "unnamed"),
+                                             described.get("version", "unversioned")))
+        say("variants     {}".format(", ".join(sorted(declaration.get("variants", {}))) or "none declared"))
+    else:
+        say("manifest     none - {} would declare the checks, variants and paths".format(root / MANIFEST))
+    say("profile      {}".format(chosen_profile))
+    trees = build_trees(root)
+    say("build trees  {}".format(", ".join(path.name for path in trees) if trees else "none yet"))
+    try:
+        say("phone        {}".format(transport(root).where()))
+    except Failure as unknown:
+        say("phone        not configured: {}".format(unknown))
+
+
+def verb_build(root, parsed):
+    provenance(root, parsed.chosen_profile)
+    conan("build", root, *conan_flags(root, parsed.chosen_profile),
+          *variant_options(root, parsed.variant), *parsed.extra)
+
+
+def verb_package(root, parsed):
+    conan("export-pkg", root, *conan_flags(root, parsed.chosen_profile),
+          *variant_options(root, parsed.variant), *parsed.extra)
+
+
+def frameworks_of(staged):
+    return sorted(path.stem for path in staged.glob("*" + FRAMEWORK))
+
+
+def back_up_engine(device, remote, frameworks):
+    names = " ".join(frameworks)
+    device.run(30, "mkdir -p {remote}.bak; for fw in {names}; do "
+                   "cp -f {remote}/$fw{suffix}/$fw {remote}.bak/$fw 2>/dev/null || true; done".format(
+                       remote=remote, names=names, suffix=FRAMEWORK), capture=False, check=True)
+    held = sorted(device.output(20, "ls {}.bak 2>/dev/null".format(remote)).split())
+    if held:
+        say("{}.bak holds what is being replaced ({}) - the only way back".format(remote, ", ".join(held)))
+    else:
+        warn("{}.bak is empty - this deploy has nothing to roll back to".format(remote))
+
+
+def install_frameworks(device, staged, remote, frameworks):
+    for framework in frameworks:
+        say("installing {}".format(framework))
+        bundle = framework + FRAMEWORK
+        if not device.copy(staged / bundle / framework, "{}/{}/{}".format(remote, bundle, framework), capture=False):
+            raise Failure("copying {} to the phone failed".format(framework))
+        directory = staged / bundle
+        entries = sorted(entry.name for entry in directory.iterdir()
+                         if not entry.name.startswith(".") and entry.name != framework)
+        if not entries:
+            continue
+        say("installing {} resources ({} entries)".format(framework, len(entries)))
+        status = device.pipe_into(["tar", "czf", "-"] + entries,
+                                  "cd {}/{} && tar xzf - && chmod -R 755 . 2>/dev/null".format(remote, bundle),
+                                  cwd=directory)
+        if status:
+            raise Failure("streaming {} resources to the phone failed (exit {})".format(framework, status))
+
+
+def deploy_frameworks(root, tree, device):
+    staged = staged_frameworks(tree)
+    if staged is None:
+        raise Failure("{} holds no laid-out frameworks - run make build first".format(tree / STAGE))
+    remote = device_location(staged)
+    frameworks = frameworks_of(staged)
+    say("deploying {} to {} {}".format(staged, device.where(), remote))
+    if not device.reachable(12):
+        raise Failure("the phone at {} is unreachable".format(device.where()))
+    back_up_engine(device, remote, frameworks)
+    install_frameworks(device, staged, remote, frameworks)
+    device.run(20, "chmod 755 {}/*/* 2>/dev/null; echo installed".format(remote), capture=False, check=True)
+    say("restarting Mobile Safari (no respring)")
+    device.run(15, "killall MobileSafari")
+    say("deployed {}".format(", ".join(frameworks)))
+
+
+def verb_deploy(root, parsed):
+    trees = [tree for tree in build_trees(root) if staged_frameworks(tree) is not None]
+    tree = sole_tree(root, trees, "with staged frameworks", parsed.variant)
+    deploy_frameworks(root, tree, transport(root))
+
+
+def bundle_facts(app):
+    with (app / "Info.plist").open("rb") as handle:
+        info = plistlib.load(handle)
+    executable = info.get("CFBundleExecutable")
+    schemes = [scheme for entry in info.get("CFBundleURLTypes", []) for scheme in entry.get("CFBundleURLSchemes", [])]
+    if not executable or not schemes:
+        raise Failure("{}/Info.plist names no executable or no URL scheme to launch it with".format(app))
+    return executable, schemes[0]
+
+
+def launch_script(wait, url, scheme, log, url_file):
+    lines = ["rm -f {} {}".format(log, url_file)]
+    if url:
+        lines.append("echo '{}' > {}".format(url, url_file))
+    lines += [
+        "su mobile -c uicache >/dev/null 2>&1",
+        "sleep 4",
+        "uiopen {}://".format(scheme),
+        "sleep {}".format(wait),
+        "echo '--- {} ---'".format(os.path.basename(log)),
+        "cat {} 2>&1".format(log),
+    ]
+    return "\n".join(lines)
+
+
+def verb_run(root, parsed):
+    trees = [tree for tree in build_trees(root) if standalone_app(tree) is not None]
+    tree = sole_tree(root, trees, "holding an application", parsed.variant)
+    app = standalone_app(tree)
+    log = parsed.log or declared(root, "application", "log")
+    url_file = parsed.url_file or declared(root, "application", "first-page")
+    if not log or not url_file:
+        raise Failure("{} declares no [application] log and first-page, and nothing was passed".format(
+            root / MANIFEST))
+    executable, scheme = bundle_facts(app)
+    remote = "{}/{}".format(APPLICATIONS, app.name)
+    device = transport(root)
+    say("installing {} ({}) on {}".format(app.name, megabytes(tree_size(app)), device.where()))
+    if not device.reachable(20):
+        raise Failure("the phone at {} is unreachable".format(device.where()))
+    device.run(40, "killall -9 {} 2>/dev/null; rm -rf {}".format(executable, remote))
+    status = device.pipe_into(["tar", "-czf", "-", app.name],
+                             "cd {} && tar xzf - && chmod +x {}/{}".format(APPLICATIONS, remote, executable),
+                             cwd=app.parent)
+    if status:
+        raise Failure("copying {} to the phone failed (exit {})".format(app.name, status))
+    result = device.run(parsed.wait + 60,
+                        launch_script(parsed.wait, parsed.url, scheme, log, url_file),
+                        capture=False)
+    if result.returncode:
+        raise Failure("launching {} failed (exit {})".format(app.name, result.returncode))
+
+
+def require(status, what):
+    if status:
+        raise Failure("{} failed ({})".format(what, status))
+
+
+def exit_status(call, *arguments):
+    try:
+        return call(*arguments)
+    except SystemExit as stop:
+        return stop.code if isinstance(stop.code, int) else 1
+
+
+def bound_harness(root, device):
+    harness = import_file(root.joinpath(*HARNESS), "ios6_harness")
+    if hasattr(harness, "bind"):
+        harness.bind(device)
+    return harness
+
+
+def run_gate(root, device, parsed):
+    bound_harness(root, device)
+    gate = import_file(root.joinpath(*GATE), "ios6_gate")
+    return exit_status(gate.run_gate, parsed.host, parsed.test_port)
+
+
+def run_batteries(root, device, parsed):
+    batteries = import_file(root.joinpath(*BATTERIES), "ios6_batteries")
+    trees = [tree for tree in build_trees(root) if staged_frameworks(tree) is not None]
+    tree = sole_tree(root, trees, "with staged frameworks", parsed.variant)
+    return exit_status(batteries.run_device_tests, root, tree, device)
+
+
+def run_host(root, parsed):
+    batteries = import_file(root.joinpath(*BATTERIES), "ios6_batteries")
+    return exit_status(batteries.run_host_tests, root)
+
+
+def verb_test(root, parsed):
+    tiers = TIERS if parsed.tier == "all" else (parsed.tier,)
+    device = transport(root) if [tier for tier in tiers if tier != "host"] else None
+    results = {}
+    for tier in tiers:
+        say("\n=== device tier: {}".format(tier) if tier != "host" else "\n=== host tier")
+        if tier == "gate":
+            results[tier] = run_gate(root, device, parsed)
+        elif tier == "batteries":
+            results[tier] = run_batteries(root, device, parsed)
+        else:
+            results[tier] = run_host(root, parsed)
+    say("")
+    for tier, status in results.items():
+        say("{}: {}".format(tier, "FAILED ({})".format(status) if status else "PASSED"))
+    failed = [tier for tier, status in results.items() if status]
+    if failed:
+        raise Failure("tiers failed: {}".format(", ".join(failed)))
+
+
+def submodule(root):
+    modules = root / ".gitmodules"
+    if not modules.is_file():
+        raise Failure("{} has no submodule, so there is no upstream tree to merge into".format(root))
+    paths = [line.split("=", 1)[1].strip() for line in modules.read_text().splitlines()
+             if line.strip().startswith("path")]
+    if len(paths) != 1:
+        raise Failure("{} names {} submodules; integrate expects exactly one upstream tree".format(
+            modules, len(paths)))
+    return root / paths[0]
+
+
+def git(*arguments, **options):
+    argv = ["git"] + [str(part) for part in arguments]
+    return subprocess.run(argv, **options)
+
+
+def head_of(tree):
+    return git("-C", tree, "rev-parse", "HEAD", stdout=subprocess.PIPE, text=True, check=True).stdout.strip()
+
+
+def merge_upstream(root, reference):
+    tree = submodule(root)
+    remote, _, branch = reference.partition("/")
+    if git("-C", tree, "fetch", "--filter=blob:none", remote,
+           "refs/heads/{}:refs/remotes/{}".format(branch or reference, reference)).returncode:
+        raise Failure("fetching {} failed".format(reference))
+    before = head_of(tree)
+    if git("-C", tree, "merge", "--no-edit", reference).returncode:
+        raise Failure("merge conflicts left in {}: resolve them, commit, then run again with --no-merge".format(tree))
+    if head_of(tree) == before:
+        say("already up to date")
+
+
+def run_check(root, relative):
+    script = root / relative
+    if not script.is_file():
+        raise Failure("{} does not exist, and integrate was told to run it".format(script))
+    if subprocess.run([sys.executable, str(script)], cwd=str(root)).returncode:
+        raise Failure("{} refused this tree".format(relative))
+
+
+def verb_integrate(root, parsed):
+    tree = submodule(root)
+    git("-C", tree, "config", "rerere.enabled", "true")
+    steps = []
+    if parsed.ref:
+        steps.append(("merging {}".format(parsed.ref), lambda: merge_upstream(root, parsed.ref)))
+    for relative in parsed.check or declared(root, "checks", "before-build", []):
+        steps.append((relative, lambda relative=relative: run_check(root, relative)))
+    steps += [
+        ("build", lambda: verb_build(root, parsed)),
+        ("host tier", lambda: require(run_host(root, parsed), "the host tier")),
+        ("deploy", lambda: verb_deploy(root, parsed)),
+        ("device tiers", lambda: verb_test(root, parsed)),
+    ]
+    for title, step in steps:
+        say("\n=== {}".format(title))
+        step()
+    say("\nintegration green")
+
+
+def locked_references(path):
+    with open(path) as lock:
+        content = json.load(lock)
+    references = set()
+    for section in ("requires", "build_requires", "python_requires"):
+        for entry in content.get(section) or []:
+            references.add(entry.split("#")[0])
+    return references
+
+
+def verb_clean(root, parsed):
+    folder = root / BUILD
+    removed = 0
+    if folder.is_dir():
+        busy = users_of(folder)
+        if busy:
+            raise Failure("{} is in use by:\n  {}\nWait for that build: removing its tree leaves a corrupt "
+                          "one behind.".format(folder, "\n  ".join(busy)))
+        for tree in sorted(path for path in folder.iterdir() if path.is_dir()):
+            size = tree_size(tree)
+            removed += size
+            say("build tree {}: {}".format(tree, megabytes(size)))
+            if parsed.force:
+                shutil.rmtree(tree)
+    else:
+        say("no build trees under {}".format(folder))
+
+    if parsed.cache and parsed.force:
+        conan("cache", "clean", "*", "-s", "-b", "-d")
+    elif parsed.cache:
+        say("cache: the source, build and download folders of every package in this home would be dropped")
+
+    if parsed.unused:
+        lock = root / LOCK
+        if not lock.is_file():
+            raise Failure("{} is missing, and it is what says which references belong to this port; without it "
+                          "an unused sweep would reach into every other port sharing this cache".format(lock))
+        for reference in sorted(locked_references(lock)):
+            arguments = ["remove", reference, "--lru", parsed.unused]
+            arguments += ["-c"] if parsed.force else ["--dry-run"]
+            conan(*arguments, check=False)
+
+    say("build trees: {} {}".format(megabytes(removed), "removed" if parsed.force else "would be removed"))
+    if not parsed.force:
+        say("nothing was deleted; add FORCE=1")
+
+
+def remotes():
+    result = conan("remote", "list", "--format=json", stdout=subprocess.PIPE, text=True)
+    return json.loads(result.stdout or "[]")
+
+
+def verb_setup(root, parsed):
+    for folder in parsed.extra:
+        shared = Path(folder).expanduser().resolve()
+        conan("config", "install", shared / "config")
+        register(shared.name, shared)
+    register(port_name(root), root)
+    say("remotes now: {}".format(", ".join(remote["name"] for remote in remotes())))
+
+
+def port_name(root):
+    result = conan("inspect", root, "--format=json", stdout=subprocess.PIPE, text=True)
+    return json.loads(result.stdout or "{}").get("name") or root.name
+
+
+def register(name, folder):
+    if not (folder / "recipes").is_dir():
+        raise Failure("{} holds no recipes to serve".format(folder))
+    known = [remote["name"] for remote in remotes()]
+    if name in known:
+        conan("remote", "update", name, "--url", folder, "--index", "0")
+    else:
+        conan("remote", "add", name, folder, "-t", "local-recipes-index", "--index", "0")
+    say("{} serves {} ahead of the general remotes".format(name, folder))
+
+
+def verb_device(root, parsed):
+    device = import_file(Path(__file__).resolve().parent / "device.py", "ios6_device")
+    raise SystemExit(device.main(["--root", str(root)] + parsed.extra))
+
+
+def verb_help(root, parsed):
+    say(__doc__.strip())
+    say("")
+    for name, description in VERBS:
+        say("  {:<11} {}".format(name, description))
+
+
+VERBS = (
+    ("build", "compile everything this port produces"),
+    ("package", "the installable package, from what was built"),
+    ("deploy", "install the staged frameworks on the phone"),
+    ("run", "install and launch the standalone application"),
+    ("test", "the tiers: gate, batteries, host"),
+    ("integrate", "one upstream update through every gate, cheapest first"),
+    ("clean", "what builds leave behind, reported unless FORCE=1"),
+    ("setup", "register this port's recipes, and the toolchain's, ahead of the general remotes"),
+    ("device", "reach the phone directly: run, copy, fetch, where"),
+    ("provenance", "which driver, interpreter, port, profile and phone are in use"),
+    ("help", "this list"),
+)
+
+HANDLERS = {
+    "build": verb_build,
+    "package": verb_package,
+    "deploy": verb_deploy,
+    "run": verb_run,
+    "test": verb_test,
+    "integrate": verb_integrate,
+    "clean": verb_clean,
+    "setup": verb_setup,
+    "device": verb_device,
+    "provenance": lambda root, parsed: provenance(root, parsed.chosen_profile),
+    "help": verb_help,
+}
+
+
+def parse(argv):
+    parser = argparse.ArgumentParser(prog="charon", add_help=False)
+    parser.add_argument("--root", help="the port's folder; default: the one holding the current directory")
+    parser.add_argument("--profile", help="host profile; default: the only one under the port's profiles/")
+    parser.add_argument("verb", nargs="?", default="help", choices=[name for name, _ in VERBS])
+    parser.add_argument("--variant", default="", help="build tree under build/ to act on, when there is more than one")
+    parser.add_argument("--wait", type=int, default=20, help="seconds to let a launched application run")
+    parser.add_argument("--url", default="", help="page the application opens first")
+    parser.add_argument("--log", default="", help="log the application writes on the phone")
+    parser.add_argument("--url-file", default="", help="file the application reads its first page from")
+    parser.add_argument("--host", help="address the phone reaches this machine on, for the gate's page server")
+    parser.add_argument("--test-port", type=int, help="port the gate serves its pages on")
+    parser.add_argument("--tier", choices=TIERS + ("all",), default="all", help="which test tier to run")
+    parser.add_argument("--ref", help="upstream ref to merge before integrating")
+    parser.add_argument("--check", action="append", default=[], help="a script integrate runs before building")
+    parser.add_argument("--force", action="store_true", help="clean: delete instead of reporting")
+    parser.add_argument("--cache", action="store_true", help="clean: also the cache's source and build folders")
+    parser.add_argument("--unused", help="clean: also this port's cached packages unused for this long, e.g. 30d")
+    parser.add_argument("extra", nargs="*", default=[])
+    parsed, unknown = parser.parse_known_args(argv)
+    parsed.extra = list(parsed.extra) + unknown
+    return parsed
+
+
+def main(argv):
+    ensure_interpreter(argv)
+    parsed = parse(argv)
+    if parsed.verb == "help":
+        verb_help(None, parsed)
+        return 0
+    root = find_port(parsed.root)
+    parsed.chosen_profile = Path(parsed.profile).expanduser().resolve() if parsed.profile else profile(root)
+    HANDLERS[parsed.verb](root, parsed)
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main(sys.argv[1:]))
+    except Failure as failure:
+        warn("charon: {}".format(failure))
+        sys.exit(1)
+    except KeyboardInterrupt:
+        sys.exit(130)
