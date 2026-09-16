@@ -300,8 +300,9 @@ def variant_failures(folder):
         for expected in ("arch={}".format(arch), "os.version={}".format(version), "include({})".format(profile)):
             if expected not in text:
                 found.append("the {} variant's profile must say {}: got {}".format(variant, expected, text))
-        if "set(CMAKE_OSX_ARCHITECTURES {})".format(arch) not in written[generate.CROSS_TOOLCHAIN]:
-            found.append("the {} variant's cross toolchain must build for {}".format(variant, arch))
+        apple = generate.APPLE_ARCHITECTURES[arch]
+        if "set(CMAKE_OSX_ARCHITECTURES {})".format(apple) not in written[generate.CROSS_TOOLCHAIN]:
+            found.append("the {} variant's cross toolchain must build for {}".format(variant, apple))
     return found
 
 
@@ -479,6 +480,22 @@ def conf_failures(folder):
     return found
 
 
+def architecture_failures(folder):
+    root = Path(folder) / "wide"
+    root.mkdir()
+    text = generate.cross_toolchain(loaded(root, '[target]\narch = "armv8"\nos = "iOS"\nos-version = "7.0"\n'))
+    found = []
+    if "armv8" in text or "set(CMAKE_OSX_ARCHITECTURES arm64)" not in text or "-target arm64-apple-ios" not in text:
+        found.append("an armv8 target must reach CMake and clang as arm64, the name they know: {}".format(
+            [line for line in text.splitlines() if "arm" in line]))
+    try:
+        generate.cross_toolchain(loaded(root, '[target]\narch = "sparc"\nos = "iOS"\n'))
+        found.append("an architecture Charon cannot name for the Apple tools must be refused")
+    except generate.GenerationError:
+        pass
+    return found
+
+
 def order_failures(folder):
     root = Path(folder) / "ordered"
     root.mkdir()
@@ -518,6 +535,7 @@ def main():
         found += order_failures(folder)
         found += determinism_failures(folder)
         found += conf_failures(folder)
+        found += architecture_failures(folder)
     for line in found:
         print("FAIL  {}".format(line))
     if found:

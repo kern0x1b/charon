@@ -8,7 +8,7 @@ from io import StringIO
 
 from conan import ConanFile
 from conan.errors import ConanException, ConanInvalidConfiguration
-from conan.tools.apple import XCRun
+from conan.tools.apple import XCRun, to_apple_arch
 from conan.tools.build import can_run
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.env import Environment
@@ -203,12 +203,19 @@ class Ios6Port:
     def stage_folder(self):
         return os.path.join(self.build_folder, "stage")
 
+    @property
+    def triple(self):
+        architecture = to_apple_arch(self)
+        if not architecture:
+            raise ConanException(f"{self.settings.arch} is not an architecture the Apple tools have a name for")
+        return f"{architecture}-apple-{str(self.settings.os).lower()}{self.settings.os.version}"
+
     def _declared_context(self):
         engine = self.declared.get("engine", {})
         tuning = " ".join(self.conf.get("tools.build:cxxflags", default=[], check_type=list))
         context = {
             "sdk": self.sdk_path,
-            "triple": f"{self.settings.arch}-apple-ios{self.settings.os.version}",
+            "triple": self.triple,
             "tuning": tuning,
             "version": str(self.version),
             "source": self.source_folder,
@@ -591,7 +598,11 @@ class Ios6Port:
     def _check_exports(self):
         macho = MachO(self)
         listed_at = self._expand(self.declared_setting("engine", "exports", ""), self._declared_context())
-        binary = os.path.join(self.build_folder, "WebKitLegacy.framework", "WebKitLegacy")
+        named = self.declared_setting("engine", "exports-binary", "")
+        if not named:
+            raise ConanException(f"{self.name} runs check:exports and declares no exports-binary under [engine]; "
+                                 "nothing says which binary the export list describes")
+        binary = self._expand(named, self._declared_context())
         with open(listed_at) as listing:
             listed = {line.strip() for line in listing if line.strip() and not line.lstrip().startswith("#")}
         exported = set(macho.output(f'"{macho.tool("nm")}" -gUj "{binary}"').split())
@@ -678,10 +689,14 @@ class Ios6Port:
             installed[destination] = f"/usr/lib/{renamed}"
 
         macho.retarget(installed)
+        compatibility = {os.path.join(engine, f"{described['as']}.framework", described["as"]):
+                         described.get("compatibility-version")
+                         for described in stage.get("frameworks", {}).values()}
         for binary in installed:
             self._verify(binary)
             if not binary.endswith(".dylib"):
-                macho.require_compatibility_version(binary, "1.0.0")
+                if compatibility.get(binary):
+                    macho.require_compatibility_version(binary, compatibility[binary])
                 macho.strip(binary, "-S -x")
             macho.sign(binary)
 
@@ -701,30 +716,32 @@ class Ios6Port:
 
         macho, bundled = MachO(self), {}
         stage = self.declared.get("stage", {})
-        for built in stage.get("frameworks", {}):
+        compatibility = {}
+        for built, described in stage.get("frameworks", {}).items():
             destination = os.path.join(frameworks, f"{built}.framework", built)
             shutil.copytree(os.path.join(self.build_folder, f"{built}.framework"),
                             os.path.dirname(destination), symlinks=True, dirs_exist_ok=True)
             bundled[destination] = f"@executable_path/Frameworks/{built}.framework/{built}"
+            compatibility[destination] = described.get("compatibility-version")
         runtime, runtime_files = self.declared_runtime()
         for built in runtime_files:
-            library = built.replace(".1.0.", ".1.")
+            library = os.path.basename(macho.install_name(os.path.join(runtime, built)) or built)
             destination = os.path.join(frameworks, library)
             shutil.copy2(os.path.join(runtime, built), destination)
             bundled[destination] = f"@executable_path/Frameworks/{library}"
         bundled.update(self._declared_bundle(bundle, declared))
 
-        macho.retarget(bundled)
+        names = macho.retarget(bundled)
         for binary in bundled:
             self._verify(binary)
-            if not binary.endswith(".dylib"):
-                macho.require_compatibility_version(binary, "1.0.0")
+            if compatibility.get(binary):
+                macho.require_compatibility_version(binary, compatibility[binary])
             macho.sign(binary)
 
         self._write_application_plist(bundle, name, declared)
         executable = os.path.join(bundle, name)
-        macho.repoint(executable, bundled)
-        carried = {MachO.library_stem(identity) for identity in bundled.values()}
+        macho.repoint(executable, names)
+        carried = {MachO.library_stem(name) for name in names}
         for binary in [executable] + list(bundled):
             elsewhere = [reference for reference in macho.references(binary)
                          if MachO.library_stem(reference) in carried
@@ -1279,7 +1296,7 @@ class MachO:
     @staticmethod
     def library_stem(reference):
         name = os.path.basename(reference)
-        return name.split(".", 1)[0].replace("librev-", "lib")
+        return name.split(".", 1)[0]
 
     def install_name(self, binary):
         listing = self.output(f'"{self.tool("otool")}" -D "{binary}"').splitlines()
@@ -1305,23 +1322,28 @@ class MachO:
             raise ConanException(f"linked by a linker that stamps {self.ENCRYPTED}, which iOS 6 refuses in a "
                                  f"library it loads: {', '.join(stamped)}")
 
-    def repoint(self, binary, identities):
-        rename = os.path.basename
-        by_name = {rename(identity).replace("librev-", "lib"): identity for identity in identities.values()}
+    def repoint(self, binary, names):
         install_name_tool = self.tool("install_name_tool")
         for reference in self.references(binary):
-            target = by_name.get(rename(reference))
+            target = names.get(os.path.basename(reference))
             if target and target != reference:
                 self._conanfile.run(f'"{install_name_tool}" -change "{reference}" "{target}" "{binary}"')
 
     def retarget(self, identities):
+        names = {}
+        for binary, identity in identities.items():
+            linked = self.install_name(binary)
+            if linked:
+                names[os.path.basename(linked)] = identity
+            names[os.path.basename(identity)] = identity
         install_name_tool = self.tool("install_name_tool")
         for binary, identity in identities.items():
             self._conanfile.run(f'"{install_name_tool}" -id "{identity}" "{binary}"')
-            self.repoint(binary, identities)
+            self.repoint(binary, names)
             unresolved = [reference for reference in self.references(binary) if reference.startswith("@rpath/")]
             if unresolved:
                 raise ConanException(f"{binary} still depends on {', '.join(unresolved)}")
+        return names
 
     def require_compatibility_version(self, binary, expected):
         found = self.compatibility_version(binary)

@@ -79,6 +79,9 @@ class Settings:
     arch = "armv7"
     os = OperatingSystem()
 
+    def get_safe(self, name):
+        return getattr(self, name, None)
+
 
 class Conf:
     def __init__(self, values):
@@ -194,6 +197,36 @@ def merge_failures(module):
                 if not any(reason in problem for problem in problems):
                     found.append("{} must be refused because {}: got {}".format(description, reason, problems))
     return found
+
+
+def architecture_failures(module):
+    sys.path.insert(0, str(HERE.parent / "config" / "extensions" / "charon"))
+    import generate
+    from conan.tools.apple.apple import _to_apple_arch
+    found = []
+    for arch in generate.APPLE_ARCHITECTURES:
+        if generate.APPLE_ARCHITECTURES[arch] != _to_apple_arch(arch):
+            found.append("the generator names {} {} and Conan names it {}".format(
+                arch, generate.APPLE_ARCHITECTURES[arch], _to_apple_arch(arch)))
+    instance = port(module, {"prefixed": "False"})
+    instance.settings = type("Wide", (Settings,), {"arch": "armv8"})()
+    instance.settings.os = type("Seven", (OperatingSystem,), {"version": "7.0"})()
+    if instance.triple != "arm64-apple-ios7.0":
+        found.append("an armv8 build must target arm64-apple-ios7.0, the name clang knows: got {}".format(
+            instance.triple))
+    return found
+
+
+def exports_failures(module):
+    instance = port(module, {"prefixed": "False"})
+    type(instance).declaration = dict(DECLARATION, engine=dict(DECLARATION["engine"]))
+    try:
+        instance._check_exports()
+        return ["check:exports with no exports-binary must be refused"]
+    except Exception as refused:
+        if "exports-binary" not in str(refused):
+            return ["check:exports must be refused for naming no binary, not for something else: {}".format(refused)]
+    return []
 
 
 def find_package_failures(module):
@@ -578,7 +611,7 @@ def main():
         return 1
     found = (failures(module) + dispatch_failures(module) + task_failures(module) + sign_failures(module) +
              plist_failures(module) + bundle_failures(module) + merge_failures(module) + flag_failures(module) + runtime_failures(module) +
-             find_package_failures(module))
+             find_package_failures(module) + exports_failures(module) + architecture_failures(module))
     for line in found:
         print("FAIL  {}".format(line))
     if found:

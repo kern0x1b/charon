@@ -207,7 +207,7 @@ def recording_macho(module, instance):
             instance.steps.append(("sign", binary))
 
         def retarget(self, identities):
-            pass
+            return {os.path.basename(identity): identity for identity in identities.values()}
 
         def repoint(self, binary, identities):
             pass
@@ -216,7 +216,7 @@ def recording_macho(module, instance):
             return []
 
         def require_compatibility_version(self, binary, expected):
-            pass
+            instance.steps.append(("compatibility", expected))
 
     return Recording
 
@@ -354,6 +354,58 @@ def runtime_reference_failures(module, made, ld64, ldid):
                         spelled, "refusal naming it" if reason else "the reference moved into the bundle", refused))
             finally:
                 module.MachO = original
+    return found
+
+
+def naming_failures(module, made, ld64, ldid):
+    found = []
+    original = module.MachO
+    with tempfile.TemporaryDirectory() as scratch:
+        folder = Path(scratch)
+        (folder / "libSystem.tbd").write_text(SYSTEM_STUB)
+        (folder / "runtime.c").write_text("int runtime_marker(void) { return 1; }\n")
+        (folder / "user.c").write_text("extern int runtime_marker(void); int use(void) { return runtime_marker(); }\n")
+        common = ["xcrun", "clang", "-target", "armv7-apple-ios6.0", "-Wno-incompatible-sysroot",
+                  "-fuse-ld={}".format(ld64), "-nostdlib", "-dynamiclib", "-L.", "-lSystem"]
+        run(*common, "-install_name", "@rpath/libc++.1.dylib", "-o", "libc++.1.0.dylib", "runtime.c", cwd=folder)
+        run(*common, "libc++.1.0.dylib", "-install_name", "@rpath/libuser.dylib", "-o", "libuser.dylib", "user.c",
+            cwd=folder)
+        instance = running_port(module, folder, {"stage": {}}, ldid)
+
+        class Linking(original):
+            def tool(self, name):
+                return subprocess.run(["xcrun", "-f", name], capture_output=True, text=True).stdout.strip()
+
+        try:
+            macho = Linking(instance)
+            names = macho.retarget({str(folder / "libc++.1.0.dylib"): "/usr/lib/librev-c++.1.dylib",
+                                    str(folder / "libuser.dylib"): "/usr/lib/libuser.dylib"})
+            references = macho.references(str(folder / "libuser.dylib"))
+            if "/usr/lib/librev-c++.1.dylib" not in references or any("libc++" in name for name in references
+                                                                        if name != "/usr/lib/librev-c++.1.dylib"):
+                found.append("a library renamed on the way into the stage must be found by the install name it was "
+                             "linked with, so its clients load the new name: got {}".format(references))
+            if names.get("libc++.1.dylib") != "/usr/lib/librev-c++.1.dylib":
+                found.append("retarget must answer each linked name with its new identity: got {}".format(names))
+        except module.ConanException as refused:
+            found.append("renaming a runtime into the stage must succeed: {}".format(refused))
+
+        framework = folder / "build" / "Engine.framework"
+        framework.mkdir(parents=True)
+        for declared, expected in (({"as": "Engine", "replaces": "/System/Engine"}, []),
+                                   ({"as": "Engine", "replaces": "/System/Engine", "compatibility-version": "1.0.0"},
+                                    [("compatibility", "1.0.0")])):
+            shutil.copy2(made["library"], framework / "Engine")
+            instance = running_port(module, folder, {"stage": {"frameworks": {"Engine": declared}}}, ldid)
+            module.MachO = recording_macho(module, instance)
+            try:
+                instance._stage_frameworks()
+            finally:
+                module.MachO = original
+            checked = [step for step in instance.steps if step[0] == "compatibility"]
+            if checked != expected:
+                found.append("a staged framework's compatibility version is checked only when declared, against the "
+                             "declared value: declared {}, checked {}".format(declared, checked))
     return found
 
 
@@ -562,6 +614,7 @@ def main():
             found += wiring_failures(module, made, ldid)
             found += runtime_reference_failures(module, made, ld64, ldid)
             found += input_minimum_failures(module, ldid)
+            found += naming_failures(module, made, ld64, ldid)
     except Refused as missing:
         found.append(str(missing))
     for line in found:

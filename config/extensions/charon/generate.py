@@ -524,6 +524,17 @@ endif ()
 '''
 
 
+APPLE_ARCHITECTURES = {"x86": "i386", "x86_64": "x86_64", "armv7": "armv7", "armv8": "arm64",
+                       "armv8_32": "arm64_32", "armv8.3": "arm64e", "armv7s": "armv7s", "armv7k": "armv7k"}
+
+
+def apple_architecture(arch):
+    if str(arch) not in APPLE_ARCHITECTURES:
+        raise GenerationError("{} is not an architecture Charon can name for the Apple tools; it knows {}".format(
+            arch, ", ".join(sorted(APPLE_ARCHITECTURES))))
+    return APPLE_ARCHITECTURES[str(arch)]
+
+
 def cross_toolchain(declared):
     target = declared.section("target")
     for required in ("arch", "os"):
@@ -535,7 +546,7 @@ def cross_toolchain(declared):
         generated=GENERATED,
         system=target.get("system-name", "Darwin"),
         processor=target.get("system-processor", "arm"),
-        arch=target["arch"],
+        arch=apple_architecture(target["arch"]),
         system_lower=str(target["os"]).lower(),
         defines="".join(" {}".format(define) for define in defines),
     )
