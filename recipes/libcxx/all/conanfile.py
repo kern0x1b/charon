@@ -1,5 +1,4 @@
 import os
-import re
 from io import StringIO
 
 from conan import ConanFile
@@ -52,7 +51,9 @@ class LibCxxArmv7Conan(ConanFile):
                               "-D_LIBCPP_NO_UTIMENSAT"]
         compat, provided = self._compat
         if provided:
-            tc.extra_cxxflags.append("-Wno-error=unguarded-availability-new")
+            headers = os.path.join(compat.package_folder, "include")
+            for header in compat.cpp_info.get_property("charon_force_includes") or []:
+                tc.extra_cxxflags.append(f"-include {os.path.join(headers, header)}")
             tc.extra_sharedlinkflags += [f"-L{os.path.join(compat.package_folder, 'lib')}",
                                          "-Wl,-hidden-lapple-compat"]
         tc.cache_variables.update({
@@ -75,22 +76,14 @@ class LibCxxArmv7Conan(ConanFile):
     def build(self):
         cmake = CMake(self)
         cmake.configure(build_script_folder=os.path.join("llvm-project", "runtimes"))
-        log = os.path.join(self.build_folder, "charon-build.log")
-        with open(log, "w") as captured:
-            self.run(f'cmake --build "{self.build_folder}" --parallel', stdout=captured, stderr=captured)
-        with open(log) as captured:
-            text = captured.read()
+        cmake.build()
         _, provided = self._compat
-        unavailable = sorted(set(re.findall(r"'(\w+)' is only available on", text)) - set(provided))
-        if unavailable:
-            raise ConanException(f"libc++ calls {', '.join(unavailable)}, which {self.settings.os} "
-                                 f"{self.settings.os.version} does not have and apple-compat does not provide")
         cmake.install()
         for library in ("libc++.1.0.dylib", "libc++abi.1.0.dylib"):
             imports = StringIO()
             self.run(f'xcrun nm -u "{os.path.join(self.package_folder, "lib", library)}"', stdout=imports)
             imported = {name.lstrip("_") for name in imports.getvalue().split()}
-            leaked = sorted(set(provided) & imported)
+            leaked = sorted((set(provided) | {f"charon_{symbol}" for symbol in provided}) & imported)
             if leaked:
                 raise ConanException(f"{library} still imports {', '.join(leaked)} from the system, which "
                                      f"{self.settings.os} {self.settings.os.version} does not have; apple-compat "

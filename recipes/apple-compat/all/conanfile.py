@@ -16,7 +16,7 @@ class AppleCompatConan(ConanFile):
     license = "MIT"
     package_type = "static-library"
     settings = "os", "arch", "compiler", "build_type"
-    exports_sources = "src/*"
+    exports_sources = "src/*", "include/*"
 
     ARRIVED = {
         "aligned_alloc": {"iOS": "13.0", "Macos": "10.15", "tvOS": "13.0", "watchOS": "6.0"},
@@ -52,11 +52,16 @@ class AppleCompatConan(ConanFile):
 
     def package(self):
         copy(self, "libapple-compat.a", self.build_folder, os.path.join(self.package_folder, "lib"))
+        for symbol in self._provided:
+            copy(self, f"{symbol}.h", os.path.join(self.source_folder, "include", "charon"),
+                 os.path.join(self.package_folder, "include", "charon"))
 
     def package_info(self):
-        self.cpp_info.includedirs = []
         provided = self._provided
+        self.cpp_info.includedirs = ["include"] if provided else []
         self.cpp_info.libs = ["apple-compat"] if provided else []
         if not provided:
             self.cpp_info.libdirs = []
         self.cpp_info.set_property("charon_provides", provided)
+        self.cpp_info.set_property("charon_force_includes",
+                                   [os.path.join("charon", f"{symbol}.h") for symbol in provided])

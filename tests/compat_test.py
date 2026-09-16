@@ -65,8 +65,7 @@ def failures():
     found = []
     with tempfile.TemporaryDirectory() as scratch:
         folder = Path(scratch)
-        shim = (SHIMS / "aligned_alloc.c").read_text().replace("void *aligned_alloc(", "void *charon_aligned_alloc(")
-        (folder / "shim.c").write_text(shim)
+        (folder / "shim.c").write_text((SHIMS / "aligned_alloc.c").read_text())
         (folder / "main.c").write_text(ALIGNED)
         built = run("xcrun", "clang", "-O2", "shim.c", "main.c", "-o", "aligned", cwd=folder)
         if built.returncode:
@@ -81,10 +80,24 @@ def failures():
         if compiled.returncode:
             return found + ["the aligned_alloc shim must compile for armv7 on iOS 6: {}".format(compiled.stderr)]
         symbols = run("xcrun", "nm", "-m", "shim.o", cwd=folder).stdout
-        line = next((row for row in symbols.splitlines() if row.endswith(" _aligned_alloc")), "")
+        line = next((row for row in symbols.splitlines() if row.endswith(" _charon_aligned_alloc")), "")
         if "private external" not in line:
             found.append("aligned_alloc must be a hidden definition so the image exports nothing libc-named: {}"
                          .format(line or symbols))
+        header = SHIMS.parent / "include" / "charon" / "aligned_alloc.h"
+        (folder / "caller.cpp").write_text("#include <cstdlib>\n"
+                                           "void *call(unsigned long n) { return ::aligned_alloc(16, n); }\n")
+        called = run("xcrun", "clang++", "-target", "armv7-apple-ios6.0", "-Wno-incompatible-sysroot",
+                     "-Werror=unguarded-availability-new", "-include", header, "-c", "caller.cpp", "-o", "caller.o",
+                     cwd=folder)
+        if called.returncode:
+            found.append("a call to aligned_alloc must compile for iOS 6 with unguarded availability an error once "
+                         "the header is included: {}".format(called.stderr[-400:]))
+        else:
+            undefined = run("xcrun", "nm", "-u", "caller.o", cwd=folder).stdout.split()
+            if "_aligned_alloc" in undefined or "_charon_aligned_alloc" not in undefined:
+                found.append("the call must reach charon_aligned_alloc, not the system's aligned_alloc: {}".format(
+                    undefined))
     return found
 
 
