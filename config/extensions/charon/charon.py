@@ -386,7 +386,7 @@ def install_frameworks(device, staged, remote, frameworks):
         if not entries:
             continue
         say("installing {} resources ({} entries)".format(framework, len(entries)))
-        status = device.pipe_into(["tar", "--no-xattrs", "czf", "-"] + entries,
+        status = device.pipe_into(["tar", "--no-xattrs", "-czf", "-"] + entries,
                                   "cd {}/{} && tar xzf - && chmod -R 755 . 2>/dev/null".format(remote, bundle),
                                   cwd=directory)
         if status:
@@ -405,6 +405,13 @@ def deploy_frameworks(root, tree, device):
     back_up_engine(device, remote, frameworks)
     install_frameworks(device, staged, remote, frameworks)
     device.run(20, "chmod 755 {}/*/* 2>/dev/null; echo installed".format(remote), capture=False, check=True)
+
+    sidecars = [line for line in device.output(30, "find {} -name '._*'".format(remote)).split() if line]
+    if sidecars:
+        raise Failure("{} now holds {} AppleDouble files, the first being {}. The producer lost "
+                      "COPYFILE_DISABLE: tar --no-xattrs removes the extended-attribute headers and none of "
+                      "these.".format(remote, len(sidecars), sidecars[0]))
+
     say("restarting Mobile Safari (no respring)")
     device.run(15, "killall MobileSafari")
     say("deployed {}".format(", ".join(frameworks)))
