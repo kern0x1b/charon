@@ -202,8 +202,8 @@ def checks(declared):
         found.append("a tier that names no packages must get no recipe at all")
 
     cross = written[generate.CROSS_TOOLCHAIN]
-    for expected in ("set(CMAKE_OSX_ARCHITECTURES armv7)",
-                     "-target armv7-apple-ios${IOS6_DEPLOYMENT_TARGET} -isysroot ${SDK6}",
+    for expected in ("set(CMAKE_OSX_ARCHITECTURES ${IOS6_ARCHITECTURE})",
+                     "-target ${IOS6_TRIPLE} -isysroot ${SDK6}",
                      "set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)",
                      "set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)",
                      "-DEXAMPLE_PORT"):
@@ -300,9 +300,9 @@ def variant_failures(folder):
         for expected in ("arch={}".format(arch), "os.version={}".format(version), "include({})".format(profile)):
             if expected not in text:
                 found.append("the {} variant's profile must say {}: got {}".format(variant, expected, text))
-        apple = generate.APPLE_ARCHITECTURES[arch]
-        if "set(CMAKE_OSX_ARCHITECTURES {})".format(apple) not in written[generate.CROSS_TOOLCHAIN]:
-            found.append("the {} variant's cross toolchain must build for {}".format(variant, apple))
+        if arch in written[generate.CROSS_TOOLCHAIN]:
+            found.append("the {} variant's cross toolchain must take its architecture from the build, not "
+                         "spell the declared {}".format(variant, arch))
     return found
 
 
@@ -485,14 +485,13 @@ def architecture_failures(folder):
     root.mkdir()
     text = generate.cross_toolchain(loaded(root, '[target]\narch = "armv8"\nos = "iOS"\nos-version = "7.0"\n'))
     found = []
-    if "armv8" in text or "set(CMAKE_OSX_ARCHITECTURES arm64)" not in text or "-target arm64-apple-ios" not in text:
-        found.append("an armv8 target must reach CMake and clang as arm64, the name they know: {}".format(
-            [line for line in text.splitlines() if "arm" in line]))
-    try:
-        generate.cross_toolchain(loaded(root, '[target]\narch = "sparc"\nos = "iOS"\n'))
-        found.append("an architecture Charon cannot name for the Apple tools must be refused")
-    except generate.GenerationError:
-        pass
+    for expected in ("set(CMAKE_OSX_ARCHITECTURES ${IOS6_ARCHITECTURE})", "-target ${IOS6_TRIPLE}",
+                     "NOT IOS6_ARCHITECTURE OR NOT IOS6_TRIPLE"):
+        if expected not in text:
+            found.append("the cross toolchain must take the architecture and target from the build and refuse "
+                         "to configure without them: {} is missing".format(expected))
+    if "armv8" in text:
+        found.append("the cross toolchain must not spell the Conan architecture name clang does not know")
     return found
 
 

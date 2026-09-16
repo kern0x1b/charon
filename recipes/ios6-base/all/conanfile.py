@@ -204,11 +204,15 @@ class Ios6Port:
         return os.path.join(self.build_folder, "stage")
 
     @property
-    def triple(self):
+    def apple_architecture(self):
         architecture = to_apple_arch(self)
         if not architecture:
             raise ConanException(f"{self.settings.arch} is not an architecture the Apple tools have a name for")
-        return f"{architecture}-apple-{str(self.settings.os).lower()}{self.settings.os.version}"
+        return architecture
+
+    @property
+    def triple(self):
+        return f"{self.apple_architecture}-apple-{str(self.settings.os).lower()}{self.settings.os.version}"
 
     def _declared_context(self):
         engine = self.declared.get("engine", {})
@@ -306,6 +310,8 @@ class Ios6Port:
         variables.update({
             "IOS6_SDK": self.sdk_path,
             "IOS6_DEPLOYMENT_TARGET": str(self.settings.os.version),
+            "IOS6_ARCHITECTURE": self.apple_architecture,
+            "IOS6_TRIPLE": self.triple,
             "CMAKE_OSX_SYSROOT": self.sdk_path,
             "CMAKE_OSX_DEPLOYMENT_TARGET": str(self.settings.os.version),
             "CMAKE_BUILD_TYPE": "Release",
@@ -464,6 +470,7 @@ class Ios6Port:
         self.run(f'cmake -S "{source}" -B "{folder}" -G Ninja -DCMAKE_BUILD_TYPE=Release '
                  f'-DCMAKE_TOOLCHAIN_FILE="{toolchain}" -DIOS6_SDK="{self.sdk_path}" '
                  f'-DIOS6_DEPLOYMENT_TARGET="{self.settings.os.version}" '
+                 f'-DIOS6_ARCHITECTURE="{self.apple_architecture}" -DIOS6_TRIPLE="{self.triple}" '
                  f'-DCHARON_PORT="{self.port_root}" {values}')
         self.run(f'cmake --build "{folder}"')
         self._verify_inputs(folder)

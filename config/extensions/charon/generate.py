@@ -475,17 +475,19 @@ CROSS_TEMPLATE = '''{generated}
 set(CMAKE_SYSTEM_NAME {system})
 set(CMAKE_SYSTEM_PROCESSOR {processor})
 
-if (NOT IOS6_SDK OR NOT IOS6_DEPLOYMENT_TARGET)
+if (NOT IOS6_SDK OR NOT IOS6_DEPLOYMENT_TARGET OR NOT IOS6_ARCHITECTURE OR NOT IOS6_TRIPLE)
     message(FATAL_ERROR
-        "IOS6_SDK and IOS6_DEPLOYMENT_TARGET come from the profile Charon wrote. Reading them from the "
+        "IOS6_SDK, IOS6_DEPLOYMENT_TARGET, IOS6_ARCHITECTURE and IOS6_TRIPLE come from the profile Charon wrote. Reading them from the "
         "environment instead would leave them empty when ninja re-runs cmake by itself, and cmake would "
         "quietly fall back to the newest installed SDK")
 endif ()
 set(IOS6_SDK "${{IOS6_SDK}}" CACHE PATH "SDK this port is compiled against" FORCE)
 set(IOS6_DEPLOYMENT_TARGET "${{IOS6_DEPLOYMENT_TARGET}}" CACHE STRING "Oldest release this runs on" FORCE)
+set(IOS6_ARCHITECTURE "${{IOS6_ARCHITECTURE}}" CACHE STRING "Architecture as the Apple tools name it" FORCE)
+set(IOS6_TRIPLE "${{IOS6_TRIPLE}}" CACHE STRING "Target the compiler is asked for" FORCE)
 set(CMAKE_OSX_SYSROOT ${{IOS6_SDK}} CACHE PATH "SDK the compiler is pointed at" FORCE)
-list(APPEND CMAKE_TRY_COMPILE_PLATFORM_VARIABLES IOS6_SDK IOS6_DEPLOYMENT_TARGET)
-set(CMAKE_OSX_ARCHITECTURES {arch})
+list(APPEND CMAKE_TRY_COMPILE_PLATFORM_VARIABLES IOS6_SDK IOS6_DEPLOYMENT_TARGET IOS6_ARCHITECTURE IOS6_TRIPLE)
+set(CMAKE_OSX_ARCHITECTURES ${{IOS6_ARCHITECTURE}})
 set(CMAKE_OSX_DEPLOYMENT_TARGET ${{IOS6_DEPLOYMENT_TARGET}})
 
 if (DEFINED ENV{{DEVELOPER_DIR}})
@@ -503,7 +505,7 @@ set(CMAKE_C_COMPILER ${{TOOLCHAIN_BIN}}/clang)
 set(CMAKE_CXX_COMPILER ${{TOOLCHAIN_BIN}}/clang++)
 
 set(SDK6 ${{IOS6_SDK}})
-set(COMMON "-target {arch}-apple-{system_lower}${{IOS6_DEPLOYMENT_TARGET}} -isysroot ${{SDK6}}")
+set(COMMON "-target ${{IOS6_TRIPLE}} -isysroot ${{SDK6}}")
 set(CMAKE_C_FLAGS_INIT "${{COMMON}}{defines}")
 set(CMAKE_OBJC_FLAGS_INIT "${{COMMON}}{defines}")
 set(CMAKE_CXX_FLAGS_INIT "${{COMMON}}{defines}")
@@ -524,30 +526,13 @@ endif ()
 '''
 
 
-APPLE_ARCHITECTURES = {"x86": "i386", "x86_64": "x86_64", "armv7": "armv7", "armv8": "arm64",
-                       "armv8_32": "arm64_32", "armv8.3": "arm64e", "armv7s": "armv7s", "armv7k": "armv7k"}
-
-
-def apple_architecture(arch):
-    if str(arch) not in APPLE_ARCHITECTURES:
-        raise GenerationError("{} is not an architecture Charon can name for the Apple tools; it knows {}".format(
-            arch, ", ".join(sorted(APPLE_ARCHITECTURES))))
-    return APPLE_ARCHITECTURES[str(arch)]
-
-
 def cross_toolchain(declared):
     target = declared.section("target")
-    for required in ("arch", "os"):
-        if required not in target:
-            raise GenerationError(
-                "[target] declares no {}, and the cross toolchain cannot be written without it".format(required))
     defines = target.get("defines", [])
     return CROSS_TEMPLATE.format(
         generated=GENERATED,
         system=target.get("system-name", "Darwin"),
-        processor=target.get("system-processor", "arm"),
-        arch=apple_architecture(target["arch"]),
-        system_lower=str(target["os"]).lower(),
+        processor=target.get("system-processor", "${IOS6_ARCHITECTURE}"),
         defines="".join(" {}".format(define) for define in defines),
     )
 

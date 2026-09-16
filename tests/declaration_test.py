@@ -200,20 +200,28 @@ def merge_failures(module):
 
 
 def architecture_failures(module):
-    sys.path.insert(0, str(HERE.parent / "config" / "extensions" / "charon"))
-    import generate
-    from conan.tools.apple.apple import _to_apple_arch
     found = []
-    for arch in generate.APPLE_ARCHITECTURES:
-        if generate.APPLE_ARCHITECTURES[arch] != _to_apple_arch(arch):
-            found.append("the generator names {} {} and Conan names it {}".format(
-                arch, generate.APPLE_ARCHITECTURES[arch], _to_apple_arch(arch)))
     instance = port(module, {"prefixed": "False"})
     instance.settings = type("Wide", (Settings,), {"arch": "armv8"})()
     instance.settings.os = type("Seven", (OperatingSystem,), {"version": "7.0"})()
     if instance.triple != "arm64-apple-ios7.0":
         found.append("an armv8 build must target arm64-apple-ios7.0, the name clang knows: got {}".format(
             instance.triple))
+    instance.generators_folder = "/port/build/generators"
+    instance._verify_inputs = lambda folder: None
+    instance._cmake_project("/port/app", "/port/build/app", {})
+    configured = instance.commands[0]
+    for expected in ('-DIOS6_ARCHITECTURE="arm64"', '-DIOS6_TRIPLE="arm64-apple-ios7.0"'):
+        if expected not in configured:
+            found.append("a generated project must be configured with {}: {}".format(expected, configured))
+    sparc = port(module, {"prefixed": "False"})
+    sparc.settings = type("Sparc", (Settings,), {"arch": "sparc"})()
+    try:
+        sparc.triple
+        found.append("an architecture the Apple tools have no name for must be refused")
+    except Exception as refused:
+        if "have a name for" not in str(refused):
+            found.append("an unknown architecture must be refused for that reason: {}".format(refused))
     return found
 
 
