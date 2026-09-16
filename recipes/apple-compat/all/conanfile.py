@@ -16,7 +16,7 @@ class AppleCompatConan(ConanFile):
     license = "MIT"
     package_type = "static-library"
     settings = "os", "arch", "compiler", "build_type"
-    exports_sources = "src/*", "include/*"
+    exports_sources = "src/*", "include/*", "LICENSE"
 
     ARRIVED = {
         "aligned_alloc": {"iOS": "13.0", "Macos": "10.15", "tvOS": "13.0", "watchOS": "6.0"},
@@ -62,6 +62,7 @@ class AppleCompatConan(ConanFile):
         return f"{to_apple_arch(self)}-apple-{str(self.settings.os).lower()}{self.settings.os.version}"
 
     def package(self):
+        copy(self, "LICENSE", self.source_folder, os.path.join(self.package_folder, "licenses"))
         copy(self, "libapple-compat.a", self.build_folder, os.path.join(self.package_folder, "lib"))
         for symbol in self._provided:
             copy(self, f"{symbol}.h", os.path.join(self.source_folder, "include", "charon"),

@@ -12,9 +12,10 @@ class DyldImportsCheckConan(ConanFile):
                    "which loads fine and kills the process at its first call")
     license = "MIT"
     package_type = "application"
-    exports_sources = "src/*"
+    exports_sources = "src/*", "LICENSE"
 
     def package(self):
+        copy(self, "LICENSE", self.source_folder, os.path.join(self.package_folder, "licenses"))
         copy(self, "dyld-imports-check", os.path.join(self.source_folder, "src"),
              os.path.join(self.package_folder, "bin"))
         os.chmod(os.path.join(self.package_folder, "bin", "dyld-imports-check"), 0o755)

@@ -240,6 +240,32 @@ def lock_failures():
     return found
 
 
+def publish_failures():
+    found = []
+    with tempfile.TemporaryDirectory() as folder:
+        licensed = Path(folder) / "licensed"
+        (licensed / "licenses").mkdir(parents=True)
+        (licensed / "licenses" / "LICENSE").write_text("MIT")
+        bare = Path(folder) / "bare"
+        bare.mkdir()
+        recipes = {"libcxx/23.1.1@charon/stable": {"license": "Apache-2.0 WITH LLVM-exception"},
+                   "iphoneos-sdk/16.4@charon/stable": {"license": "LicenseRef-Apple-SDK", "upload_policy": "skip"},
+                   "charon-base/1.0@charon/stable": {"license": "MIT", "package_type": "python-require"}}
+        archived, withheld, refused = charon.publish_plan(recipes, {
+            "libcxx/23.1.1@charon/stable": [("a1", licensed)],
+            "iphoneos-sdk/16.4@charon/stable": [("b2", bare)]})
+        if [reference for reference, _ in withheld] != ["iphoneos-sdk/16.4@charon/stable"]:
+            found.append("a recipe whose upload_policy is skip must be withheld: got {}".format(withheld))
+        if refused or sorted(reference for reference, _ in archived) != ["charon-base/1.0@charon/stable",
+                                                                         "libcxx/23.1.1@charon/stable"]:
+            found.append("licensed packages and recipes must be archived: got {} {}".format(archived, refused))
+        _, _, refused = charon.publish_plan({"apple-compat/1.0@charon/stable": {"license": "MIT"}},
+                                            {"apple-compat/1.0@charon/stable": [("c3", bare)]})
+        if len(refused) != 1 or "no licenses folder" not in refused[0]:
+            found.append("a package without its licenses must be refused: got {}".format(refused))
+    return found
+
+
 def where_failures():
     import json as encoded
     import types
@@ -369,7 +395,7 @@ def main():
         print("FAIL  this needs Python 3.11 or newer for tomllib, and it is running under {}. Skipping would "
               "report success having checked nothing.".format(".".join(str(p) for p in sys.version_info[:3])))
         return 1
-    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + index_failures() + lock_failures() + where_failures() + profile_failures() + verb_command_failures() + undefined_names()
+    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + index_failures() + lock_failures() + publish_failures() + where_failures() + profile_failures() + verb_command_failures() + undefined_names()
     for line in found:
         print("FAIL  {}".format(line))
     if found:

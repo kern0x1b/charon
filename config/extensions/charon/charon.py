@@ -1075,6 +1075,96 @@ def verb_setup(root, parsed):
     check_declared_conf(root, parsed.chosen_profile)
 
 
+def publish_plan(recipes, packages):
+    archived, withheld, refused = [], [], []
+    for reference, described in sorted(recipes.items()):
+        if described.get("upload_policy") == "skip":
+            withheld.append((reference, described))
+            continue
+        for package, folder in packages.get(reference, []):
+            licenses = Path(folder) / "licenses"
+            if not licenses.is_dir() or not any(licenses.iterdir()):
+                refused.append("{}:{} carries no licenses folder, and a package is only handed on with the terms "
+                               "it came under".format(reference, package))
+        archived.append((reference, described))
+    return archived, withheld, refused
+
+
+def recipe_references(index):
+    found = {}
+    for recipe in sorted(Path(index).glob("recipes/*")):
+        folders = sorted(folder for folder in recipe.iterdir() if (folder / RECIPE).is_file())
+        if not folders:
+            continue
+        described = json.loads(conan("inspect", folders[0], "--format=json", stdout=subprocess.PIPE,
+                                     stderr=subprocess.DEVNULL, text=True).stdout)
+        suffix = "@{}/{}".format(described["user"], described["channel"]) if described.get("user") else ""
+        listed = conan("list", "{}/*{}".format(described["name"], suffix), "--format=json", stdout=subprocess.PIPE,
+                       stderr=subprocess.DEVNULL, text=True, check=False)
+        for reference in json.loads(listed.stdout or "{}").get("Local Cache") or {}:
+            found[reference] = described
+    return found
+
+
+def cached_packages(reference):
+    listed = conan("list", "{}#latest:*".format(reference), "--format=json", stdout=subprocess.PIPE,
+                   stderr=subprocess.DEVNULL, text=True, check=False)
+    cache = (json.loads(listed.stdout or "{}").get("Local Cache") or {}).get(reference) or {}
+    found = []
+    for revision, described in (cache.get("revisions") or {}).items():
+        for package, info in (described.get("packages") or {}).items():
+            folder = conan("cache", "path", "{}#{}:{}".format(reference, revision, package), stdout=subprocess.PIPE,
+                           text=True).stdout.strip()
+            settings = (info.get("info") or {}).get("settings") or {}
+            found.append((package, folder, settings))
+    return found
+
+
+def verb_publish(root, parsed):
+    if len(parsed.extra) != 2:
+        raise Failure("charon publish INDEX OUT: the recipe index whose packages to archive, and the folder to "
+                      "write the archive and its licenses to")
+    index, out = (Path(argument).expanduser().resolve() for argument in parsed.extra)
+    recipes = recipe_references(index)
+    found = {reference: cached_packages(reference) for reference in recipes}
+    archived, withheld, refused = publish_plan(recipes, {reference: [(package, folder) for package, folder, _ in
+                                                                     listed] for reference, listed in found.items()})
+    if refused:
+        raise Failure("; ".join(refused))
+    out.mkdir(parents=True, exist_ok=True)
+    selection = [reference for reference, _ in archived if found[reference] or recipes[reference].get(
+        "package_type") == "python-require"]
+    listing = {"Local Cache": {}}
+    for reference in selection:
+        listed = conan("list", "{}#latest:*".format(reference), "--format=json", stdout=subprocess.PIPE,
+                       stderr=subprocess.DEVNULL, text=True)
+        listing["Local Cache"].update(json.loads(listed.stdout)["Local Cache"])
+    name = index.name
+    selected = out / "{}-packages.json".format(name)
+    selected.write_text(json.dumps(listing, indent=2))
+    archive = out / "{}-packages.tgz".format(name)
+    conan("cache", "save", "--list", selected, "--no-source", "--file", archive)
+    lines = ["# Packages in {}".format(archive.name), "",
+             "Restore with `conan cache restore {}`. Each package carries its licenses under `licenses/`; "
+             "sources are where each recipe fetches them.".format(archive.name), "",
+             "| Package | License | Source | Binaries |", "| --- | --- | --- | --- |"]
+    for reference, described in archived:
+        if reference not in selection:
+            continue
+        binaries = ", ".join(sorted("{} {} {}".format(settings.get("os", "any"), settings.get("arch", "any"),
+                                                       settings.get("os.version", "")).strip()
+                                    for _, _, settings in found[reference])) or "recipe only"
+        lines.append("| `{}` | {} | {} | {} |".format(reference, described.get("license"),
+                                                      described.get("homepage") or "", binaries))
+    if withheld:
+        lines += ["", "Not included, because their terms do not allow handing them on; each is fetched on the "
+                  "machine that uses it:", ""]
+        lines += ["- `{}` ({})".format(reference, described.get("license")) for reference, described in withheld]
+    (out / "{}-packages.md".format(name)).write_text("\n".join(lines) + "\n")
+    say("archive      {} ({} references)".format(archive, len(selection)))
+    say("licenses     {}".format(out / "{}-packages.md".format(name)))
+
+
 def port_name(root):
     declared = manifest(root).get("port", {}).get("name")
     if declared:
@@ -1135,6 +1225,7 @@ VERBS = (
     ("device", "reach the phone directly: run, copy, fetch, where"),
     ("profiles", "write a shared host profile for every architecture of every platform Charon knows"),
     ("where", "the folder of a package the build uses: charon where pkg:NAME or tool:NAME"),
+    ("publish", "archive an index's built packages with their licenses: charon publish INDEX OUT"),
     ("provenance", "which driver, interpreter, port, profile and phone are in use"),
     ("help", "this list"),
 )
@@ -1146,6 +1237,7 @@ HANDLERS = {
     "package": verb_package,
     "where": verb_where,
     "profiles": verb_profiles,
+    "publish": verb_publish,
     "deploy": verb_deploy,
     "run": verb_run,
     "test": verb_test,
@@ -1189,8 +1281,8 @@ def main(argv):
     if parsed.verb == "help":
         verb_help(None, parsed)
         return 0
-    if parsed.verb == "profiles":
-        verb_profiles(None, parsed)
+    if parsed.verb in ("profiles", "publish"):
+        HANDLERS[parsed.verb](None, parsed)
         return 0
     root = find_port(parsed.root)
     parsed.chosen_profile = profile(root, parsed)

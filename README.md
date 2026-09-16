@@ -334,6 +334,16 @@ its own `conan create`, not in a port an hour into a build. It runs only where
 the target can run; for iOS the link is the test. A tool such as ld64 checks
 what it says about itself instead.
 
+## Handing packages on
+
+`charon publish INDEX OUT` archives the packages built from an index's recipes
+with `conan cache save`, without sources, and writes beside the archive a table
+of each package's license, source and binaries. A recipe with `upload_policy =
+"skip"` is left out - the iOS SDK is Apple's to hand on, not ours - and a package
+with no `licenses/` folder refuses the archive. `conan cache restore` puts the
+archive into another machine's cache, where builds for the same settings take
+the binaries instead of building them.
+
 ## Where the packages are
 
 `CMakeDeps` serves CMake. Everything else a port runs - a test harness, a shell
