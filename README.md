@@ -317,7 +317,8 @@ places, and each is kept to what is needed:
   and nothing here replaces them.
 - **The iOS SDK, from the `iphoneos-sdk` package.** The profiles require it; it
   downloads the SDK archive [theos/sdks](https://github.com/theos/sdks) publishes
-  as a release asset, checks its sha256 and its `SDKSettings.plist`, and answers
+  as a release asset, checks its sha256 and its `SDKSettings.plist`, lays it out
+  as Xcode does - `Platforms/iPhoneOS.platform/Developer/SDKs/` - and answers
   `tools.apple:sdk_path` for every build that requires it. It is never uploaded
   anywhere (`upload_policy = "skip"`): the SDK is Apple's, and this project only
   says where it comes from. A `tools.apple:sdk_path` set in a profile or on the

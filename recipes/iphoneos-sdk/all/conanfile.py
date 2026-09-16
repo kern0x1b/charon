@@ -22,6 +22,10 @@ class IphoneOSSdkConan(ConanFile):
     def _folder(self):
         return f"iPhoneOS{self.version}.sdk"
 
+    @property
+    def _installed(self):
+        return os.path.join("Platforms", "iPhoneOS.platform", "Developer", "SDKs", self._folder)
+
     def source(self):
         get(self, **self.conan_data["sources"][self.version])
 
@@ -32,10 +36,10 @@ class IphoneOSSdkConan(ConanFile):
         if settings.get("CanonicalName") != f"iphoneos{self.version}":
             raise ConanException(f"{sdk} describes itself as {settings.get('CanonicalName')}, not "
                                  f"iphoneos{self.version}")
-        shutil.copytree(sdk, os.path.join(self.package_folder, self._folder), symlinks=True)
+        shutil.copytree(sdk, os.path.join(self.package_folder, self._installed), symlinks=True)
 
     def package_info(self):
         self.cpp_info.includedirs = []
         self.cpp_info.libdirs = []
         self.cpp_info.bindirs = []
-        self.conf_info.define("tools.apple:sdk_path", os.path.join(self.package_folder, self._folder))
+        self.conf_info.define("tools.apple:sdk_path", os.path.join(self.package_folder, self._installed))

@@ -19,6 +19,11 @@ class TestPackage(ConanFile):
         version = self.dependencies.build["iphoneos-sdk"].ref.version
         if os.path.basename(sdk) != f"iPhoneOS{version}.sdk":
             raise ConanException(f"the linker reads the SDK version from the folder name, and {sdk} does not carry it")
+        developer = os.path.dirname(os.path.dirname(sdk))
+        if os.path.basename(os.path.dirname(sdk)) != "SDKs" or not developer.endswith(
+                os.path.join("iPhoneOS.platform", "Developer")):
+            raise ConanException(f"{sdk} is not laid out as Xcode lays it out, and build systems that derive "
+                                 "<platform>/Developer/SDKs/<sdk> from it would not find it")
         with open(os.path.join(sdk, "SDKSettings.plist"), "rb") as handle:
             if plistlib.load(handle).get("CanonicalName") != f"iphoneos{version}":
                 raise ConanException(f"{sdk} is not iphoneos{version}")
