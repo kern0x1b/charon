@@ -32,6 +32,9 @@ jobs:
       - name: The base class reads a declaration and refuses the rest
         run: python3 tests/declaration_test.py
 
+      - name: The driver takes a built engine and nothing that only resembles one
+        run: python3 tests/driver_test.py
+
       - name: Register the toolchain
         run: |
           conan config install "$PWD/config"

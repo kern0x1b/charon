@@ -40,6 +40,10 @@ class Failure(Exception):
     pass
 
 
+class NoEngineBuild(Failure, LookupError):
+    pass
+
+
 def say(message):
     print(message, flush=True)
 
@@ -91,8 +95,8 @@ def ensure_interpreter(argv):
     running = ".".join(str(part) for part in sys.version_info[:3])
     if not interpreter:
         raise Failure("Charon reads a port's manifest with tomllib, which arrived in Python {}, and it is "
-                      "running under {}. Install a newer Python or pass one: make PYTHON=python3.14 ...".format(
-                          wanted, running))
+                      "running under {}. Install a newer Python, or run the driver with one: "
+                      "python3.14 {} ...".format(wanted, running, os.path.abspath(__file__)))
     os.execve(interpreter, [interpreter, os.path.abspath(__file__)] + list(argv),
               dict(os.environ, **{CHOSEN_INTERPRETER: interpreter}))
 
@@ -235,10 +239,10 @@ def sole_tree(root, trees, wanted, variant):
             raise Failure("{} does not exist".format(chosen))
         return chosen
     if not trees:
-        raise Failure("no build tree under {} {} - run make build first".format(root / BUILD, wanted))
+        raise Failure("no build tree under {} {} - run charon build first".format(root / BUILD, wanted))
     if len(trees) > 1:
         names = ", ".join(path.name for path in trees)
-        raise Failure("more than one build tree {} ({}); pass VARIANT= to say which".format(wanted, names))
+        raise Failure("more than one build tree {} ({}); pass --variant to say which".format(wanted, names))
     return trees[0]
 
 
@@ -249,6 +253,21 @@ def staged_frameworks(tree):
     if not laid_out:
         return None
     return min(laid_out, key=lambda path: len(path.parts)).parent
+
+
+def engine_build(root, variant=None):
+    root = Path(root)
+    if variant:
+        chosen = root / BUILD / variant
+        if not (chosen / CMAKE_STAMP).is_file() or staged_frameworks(chosen) is None:
+            raise NoEngineBuild("{} is not a built engine: that needs a configured tree with frameworks laid out "
+                                "under {} - run charon build --variant {} first".format(chosen, STAGE, variant))
+        return chosen
+    trees = [tree for tree in build_trees(root) if staged_frameworks(tree) is not None]
+    try:
+        return sole_tree(root, trees, "with staged frameworks", None)
+    except Failure as refused:
+        raise NoEngineBuild(str(refused)) from None
 
 
 def device_location(staged):
@@ -331,7 +350,7 @@ def default_variant(root):
     declared = manifest(root).get("variants", {})
     plain = [name for name, variant in declared.items() if not variant.get("options")]
     if len(plain) != 1:
-        raise Failure("{} declares {} variants with no options ({}); pass VARIANT= to say which to build".format(
+        raise Failure("{} declares {} variants with no options ({}); pass --variant to say which to build".format(
             root / MANIFEST, len(plain), ", ".join(plain) or "none"))
     return plain[0]
 
@@ -426,7 +445,7 @@ def install_frameworks(device, staged, remote, frameworks):
 def deploy_frameworks(root, tree, device):
     staged = staged_frameworks(tree)
     if staged is None:
-        raise Failure("{} holds no laid-out frameworks - run make build first".format(tree / STAGE))
+        raise Failure("{} holds no laid-out frameworks - run charon build first".format(tree / STAGE))
     remote = device_location(staged)
     frameworks = frameworks_of(staged)
     say("deploying {} to {} {}".format(staged, device.where(), remote))
@@ -449,9 +468,7 @@ def deploy_frameworks(root, tree, device):
 
 def verb_deploy(root, parsed):
     provenance(root, parsed.chosen_profile)
-    trees = [tree for tree in build_trees(root) if staged_frameworks(tree) is not None]
-    tree = sole_tree(root, trees, "with staged frameworks", parsed.variant)
-    deploy_frameworks(root, tree, transport(root))
+    deploy_frameworks(root, engine_build(root, parsed.variant), transport(root))
 
 
 def bundle_facts(app):
@@ -585,8 +602,7 @@ def tier_inputs(root, parsed, name, tier, device):
     if "device" in needs:
         available["device"] = device
     if "build" in needs:
-        trees = [tree for tree in build_trees(root) if staged_frameworks(tree) is not None]
-        available["build"] = sole_tree(root, trees, "with staged frameworks", parsed.variant)
+        available["build"] = engine_build(root, parsed.variant)
     wanted = tier.get("packages")
     if wanted:
         available["packages"] = tier_packages(root, parsed, name, wanted)

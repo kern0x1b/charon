@@ -1,0 +1,120 @@
+#!/usr/bin/env python3
+"""Check which folder the driver takes for a built engine, and what it refuses.
+
+    tests/driver_test.py
+
+engine_build is the one name a port imports to find its build, so a port keeps no
+definition of a build tree of its own. These cases pin that definition: a tree is
+a direct child of build/ that cmake configured and that has frameworks laid out,
+and nothing else under build/ qualifies however much it resembles one.
+"""
+import sys
+import tempfile
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent / "config" / "extensions" / "charon"))
+
+import charon
+
+
+def tree(root, relative, staged=True, configured=True):
+    folder = root / relative
+    folder.mkdir(parents=True, exist_ok=True)
+    if configured:
+        (folder / "CMakeCache.txt").write_text("")
+    if staged:
+        framework = folder / "stage" / "usr" / "lib" / "rev-fw" / "WebKit.framework"
+        framework.mkdir(parents=True, exist_ok=True)
+        (framework / "WebKit").write_text("")
+    return folder
+
+
+def answer(root, variant=None):
+    try:
+        return charon.engine_build(root, variant)
+    except LookupError as refused:
+        return refused
+
+
+def failures():
+    found = []
+
+    def check(description, build, expect):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            wanted = build(root)
+            got = answer(root, getattr(build, "variant", None))
+            if expect == "refuse":
+                if not isinstance(got, LookupError):
+                    found.append("{} must be refused: got {}".format(description, got))
+            elif got != wanted:
+                found.append("{}: expected {}, got {}".format(description, wanted, got))
+
+    check("one configured tree with staged frameworks is the answer",
+          lambda root: tree(root, "build/system"), "tree")
+
+    check("no tree at all",
+          lambda root: None, "refuse")
+
+    def two(root):
+        tree(root, "build/system")
+        tree(root, "build/prefixed")
+    check("two built trees with no variant named", two, "refuse")
+
+    def named(root):
+        tree(root, "build/system")
+        return tree(root, "build/prefixed")
+    named.variant = "prefixed"
+    check("a named variant is taken without searching", named, "tree")
+
+    def named_unbuilt(root):
+        tree(root, "build/system")
+        (root / "build" / "prefixed").mkdir(parents=True)
+    named_unbuilt.variant = "prefixed"
+    check("a named variant that exists as a folder but was never built", named_unbuilt, "refuse")
+
+    def named_unstaged(root):
+        tree(root, "build/system")
+        tree(root, "build/prefixed", staged=False)
+    named_unstaged.variant = "prefixed"
+    check("a named variant that was configured but has nothing laid out", named_unstaged, "refuse")
+
+    def tier_packages(root):
+        env = root / "build" / "tier-packages" / "host" / "conan"
+        env.mkdir(parents=True)
+        (env / "ios6-deps.env").write_text("IOS6_HOST_ICU=/nowhere\n")
+    check("a tier's package environment shaped like a build marker", tier_packages, "refuse")
+
+    def nested(root):
+        tree(root, "build/engine/armv7-system")
+    check("the retired build/engine/<arch>-<variant> layout, which is not a direct child", nested, "refuse")
+
+    def unstaged(root):
+        tree(root, "build/system", staged=False)
+    check("a configured tree with nothing laid out", unstaged, "refuse")
+
+    def contains_variant(root):
+        tree(root, "build/system")
+        tier = root / "build" / "system-imports" / "conan"
+        tier.mkdir(parents=True)
+        (tier / "ios6-deps.env").write_text("")
+        return root / "build" / "system"
+    check("a folder whose name contains a variant but that nothing configured", contains_variant, "tree")
+
+    return found
+
+
+def main():
+    found = failures()
+    for line in found:
+        print("FAIL  {}".format(line))
+    if found:
+        print("{} checks failed".format(len(found)))
+        return 1
+    print("ok    the driver takes a configured, laid-out direct child of build/ and nothing that only resembles one")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
