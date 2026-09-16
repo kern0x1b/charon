@@ -365,6 +365,30 @@ def language_failures(folder):
     return found
 
 
+ORDERED = """
+[target]
+arch = "armv7"
+os = "iOS"
+os-version = "6.0"
+[[static-library]]
+name = "objcfirst"
+sources = ["first.m", "first.mm"]
+[[static-library]]
+name = "clater"
+sources = ["later.c"]
+"""
+
+
+def order_failures(folder):
+    root = Path(folder) / "ordered"
+    root.mkdir()
+    static = generate.written(loaded(root, ORDERED))["static-library/CMakeLists.txt"]
+    if "project(port-static C OBJC OBJCXX)" not in static:
+        return ["project() must enable C before OBJC whatever order the sources and targets come in, or a second "
+                "configure hands .m to the C compiler: got {}".format(static.splitlines()[2])]
+    return []
+
+
 def refusals(folder):
     found = []
     for description, text in BROKEN.items():
@@ -391,6 +415,7 @@ def main():
         found += refusals(folder)
         found += glob_failures(folder)
         found += variant_failures(folder)
+        found += order_failures(folder)
     for line in found:
         print("FAIL  {}".format(line))
     if found:

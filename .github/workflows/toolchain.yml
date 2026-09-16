@@ -18,7 +18,7 @@ jobs:
           cache_packages: true
 
       - name: Install the host tools
-        run: brew install ninja llvm
+        run: brew install cmake ninja llvm
 
       - name: Every recipe compiles
         run: git ls-files -- recipes | grep -E '\.py$' | xargs python3 -m py_compile
@@ -34,6 +34,9 @@ jobs:
 
       - name: The driver takes a built engine and nothing that only resembles one
         run: python3 tests/driver_test.py
+
+      - name: An Objective-C source stays Objective-C when cmake configures again
+        run: python3 tests/cmake_language_test.py
 
       - name: Register the toolchain
         run: |

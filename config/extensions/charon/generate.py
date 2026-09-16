@@ -74,16 +74,18 @@ def profile(declared, includes=None):
     return "\n".join(lines) + "\n"
 
 
+PROJECT_LANGUAGE_ORDER = ("C", "CXX", "OBJC", "OBJCXX", "Swift")
+
+
 def _languages(sources):
-    found = []
+    found = set()
     for pattern in sources:
         suffix = pattern[pattern.rfind("."):] if "." in pattern else ""
         language = LANGUAGES.get(suffix)
         if language is None:
             raise GenerationError("{} is a source Charon cannot name a language for".format(pattern))
-        if language not in found:
-            found.append(language)
-    return found
+        found.add(language)
+    return [language for language in PROJECT_LANGUAGE_ORDER if language in found]
 
 
 def _is_pattern(text):
@@ -293,11 +295,10 @@ def cmake_project(declared, kind, project):
     targets = [target for target in declared.targets(kind) if declared.generates(target)]
     if not targets:
         return None
-    languages = []
+    used = set()
     for target in targets:
-        for language in _languages(_sources(target, declared.root)):
-            if language not in languages:
-                languages.append(language)
+        used.update(_languages(_sources(target, declared.root)))
+    languages = [language for language in PROJECT_LANGUAGE_ORDER if language in used]
 
     lines = [GENERATED,
              "cmake_minimum_required(VERSION {})".format(CMAKE_MINIMUM),
