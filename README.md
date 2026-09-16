@@ -152,7 +152,11 @@ entitlement with its declared value. After a project builds, every object in
 its build tree and every archive member of a package it depends on must record
 the target's minimum OS version exactly: newer means the binary needs a later
 iOS, and older or none means it was compiled without the target's flags - the
-assembler is where that usually happens. A port can only take one out with a
+assembler is where that usually happens. Every host profile, shared or
+generated, exports `IPHONEOS_DEPLOYMENT_TARGET` from its `os.version` into the
+build environment, so a compiler or assembler a build system invokes without a
+version flag stamps the target's minimum rather than its own default; an
+explicit flag still wins. A port can only take one out with a
 reason, `[waive] pagezero = "why"`, and `input-minimum` may name packages,
 `[waive] input-minimum = { tdlib = "why" }`; an unknown name, a package nothing
 depends on, or an empty reason is refused.

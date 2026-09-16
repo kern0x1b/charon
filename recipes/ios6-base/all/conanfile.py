@@ -521,11 +521,12 @@ class Ios6Port:
         cputype = MachO.CPU_TYPES.get(arch)
         if cputype is None:
             raise ConanException(f"{arch} is not an architecture this toolchain reads link inputs for")
-        problems = []
+        problems, objects, members = [], 0, 0
         for place, _, names in os.walk(folder):
             for name in sorted(names):
                 if name.endswith(".o"):
                     path = os.path.join(place, name)
+                    objects += 1
                     problems += MachO.minimum_problems(path, cputype, target, os.path.relpath(path, folder))
         checked = getattr(self, "_inputs_checked", set())
         for reference, dependency in self.dependencies.host.items():
@@ -542,6 +543,7 @@ class Ios6Port:
                 for name in sorted(os.listdir(libdir)):
                     path = os.path.join(libdir, name)
                     if name.endswith(".a") and not os.path.islink(path):
+                        members += len(MachO.recorded_minimums(path, cputype))
                         problems += MachO.minimum_problems(path, cputype, target, f"{package}/{name}")
         self._inputs_checked = checked
         unknown = sorted(set(waived) - {dependency.ref.name for dependency in self.dependencies.host.values()})
@@ -551,6 +553,8 @@ class Ios6Port:
         if problems:
             shown = "; ".join(problems[:5]) + (f"; and {len(problems) - 5} more" if len(problems) > 5 else "")
             raise ConanException(f"a link input was not built for this target: {shown}")
+        self.output.info(f"{objects} objects in {os.path.basename(folder)} and {members} archive members of its "
+                         f"dependencies record iOS {target}")
 
     def _verify(self, binary):
         MachO(self).verify(binary, self.declared_waivers())

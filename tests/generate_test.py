@@ -455,6 +455,14 @@ def conf_failures(folder):
     for key, value in expected.items():
         if conf.get(key) != value:
             found.append("the profile must give {} = {!r}: conan read {!r}".format(key, value, conf.get(key)))
+    if "[buildenv]\nIPHONEOS_DEPLOYMENT_TARGET=7.0" not in text:
+        found.append("the profile must export IPHONEOS_DEPLOYMENT_TARGET from os-version, so a tool invoked "
+                     "without a version flag stamps the target's minimum and not its own default: {}".format(text))
+    environment = subprocess.run(["conan", "profile", "show", "-pr:h", str(written), "-pr:b", str(written)],
+                                 capture_output=True, text=True, env=dict(os.environ, CONAN_HOME=str(home)))
+    if "IPHONEOS_DEPLOYMENT_TARGET=7.0" not in environment.stdout:
+        found.append("conan must read IPHONEOS_DEPLOYMENT_TARGET=7.0 in the host build environment: {}".format(
+            environment.stdout[-600:]))
     sliced = generate.written(declared.for_variant("arm64"))["profile"]
     if "user.charon-test:strict=False" not in sliced or "user.charon-test:headers=" not in sliced:
         found.append("a variant's [conf] must replace the keys it names and keep the rest: {}".format(sliced))

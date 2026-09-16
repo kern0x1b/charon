@@ -78,7 +78,14 @@ def profile(declared, includes=None):
         conf[key] = value
     if conf:
         lines += ["", "[conf]"] + ["{}={}".format(key, value) for key, value in conf.items()]
+    deployment = DEPLOYMENT_VARIABLES.get(str(target["os"]))
+    if deployment:
+        lines += ["", "[buildenv]", "{}={}".format(deployment, target["os-version"])]
     return "\n".join(lines) + "\n"
+
+
+DEPLOYMENT_VARIABLES = {"iOS": "IPHONEOS_DEPLOYMENT_TARGET", "Macos": "MACOSX_DEPLOYMENT_TARGET",
+                        "tvOS": "TVOS_DEPLOYMENT_TARGET", "watchOS": "WATCHOS_DEPLOYMENT_TARGET"}
 
 
 PORT_FROM_PROFILE = "{{ os.path.normpath(os.path.join(profile_dir, os.pardir, os.pardir, os.pardir)) }}"
