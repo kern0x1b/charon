@@ -118,6 +118,62 @@ def _sources(target, root=None):
     return expanded
 
 
+LANGUAGE_KEYS = {"c": "C", "cxx": "CXX", "objc": "OBJC", "objcxx": "OBJCXX"}
+
+
+def _directories(root, pattern, name):
+    if root is None:
+        raise GenerationError("{} names {} as a pattern, which needs the port folder to expand".format(name, pattern))
+    return sorted(path.relative_to(root).as_posix() for path in Path(root).glob(pattern.rstrip("/"))
+                  if path.is_dir())
+
+
+def _folders(target, key, root):
+    name = target["name"]
+    excluded = set()
+    for pattern in target.get("{}-exclude".format(key), []):
+        excluded.update(_directories(root, pattern, name))
+    expanded = []
+    for entry in target.get(key) or []:
+        text = str(entry)
+        if text[:1] in ("/", "$", "-"):
+            found = [text]
+        elif _is_pattern(text):
+            found = _directories(root, text, name)
+            if not found:
+                raise GenerationError("{}: {} matches no folder under {}".format(name, text, root))
+        else:
+            if root is not None and not (Path(root) / text).is_dir():
+                raise GenerationError("{} names {} under {}, and there is no such folder; the compiler would drop "
+                                      "it without a word".format(name, text, key))
+            found = [text.rstrip("/")]
+        expanded += [folder for folder in found if folder not in excluded and folder not in expanded]
+    return expanded
+
+
+def _per_language(target, key, compiled):
+    table = target.get(key) or {}
+    if not isinstance(table, dict):
+        raise GenerationError("{} declares {} as {!r}; it is a table keyed by {}".format(
+            target["name"], key, table, ", ".join(LANGUAGE_KEYS)))
+    entries = []
+    for language, values in table.items():
+        if language not in LANGUAGE_KEYS:
+            raise GenerationError("{} declares {} for {}, which is not one of {}".format(
+                target["name"], key, language, ", ".join(LANGUAGE_KEYS)))
+        cmake = LANGUAGE_KEYS[language]
+        if values and cmake not in compiled:
+            raise GenerationError("{} declares {} for {}, and none of its sources is {}; the values would apply "
+                                  "to nothing".format(target["name"], key, language, language))
+        entries += [(cmake, str(value)) for value in values]
+    return entries
+
+
+def _for_language(language, value, shell=False):
+    body = "SHELL:{}".format(value) if shell and " " in value else value
+    return '"$<$<COMPILE_LANGUAGE:{}>:{}>"'.format(language, body)
+
+
 def _options(target, key, prefix=""):
     values = target.get(key, [])
     return ["{}{}".format(prefix, value) for value in values]
@@ -135,7 +191,9 @@ def _source_properties(target):
 
 def _library_block(target, kind, root=None):
     name = target["name"]
-    sources = [_path(source) for source in _sources(target, root)]
+    declared_sources = _sources(target, root)
+    sources = [_path(source) for source in declared_sources]
+    compiled = _languages(declared_sources)
     if kind == "application":
         lines = ["add_executable({}".format(name), "    {})".format("\n    ".join(sources))]
     else:
@@ -158,19 +216,31 @@ def _library_block(target, kind, root=None):
 
     for key, command in (("include", "target_include_directories({} PRIVATE"),
                          ("include-system", "target_include_directories({} SYSTEM PRIVATE")):
-        folders = target.get(key)
+        folders = _folders(target, key, root)
         if folders:
             lines.append(command.format(name) + "\n    {})".format(
                 "\n    ".join(_path(folder) for folder in folders)))
+    system_for = _per_language(target, "include-system-for", compiled)
+    if system_for:
+        lines.append("target_include_directories({} SYSTEM PRIVATE\n    {})".format(name, "\n    ".join(
+            _for_language(language, _path(value)) for language, value in system_for)))
 
     lines += _source_properties(target)
 
     options = _options(target, "options")
     if options:
         lines.append("target_compile_options({} PRIVATE\n    {})".format(name, "\n    ".join(options)))
+    options_for = _per_language(target, "options-for", compiled)
+    if options_for:
+        lines.append("target_compile_options({} PRIVATE\n    {})".format(name, "\n    ".join(
+            _for_language(language, value, shell=True) for language, value in options_for)))
     definitions = _options(target, "definitions")
     if definitions:
         lines.append("target_compile_definitions({} PRIVATE\n    {})".format(name, "\n    ".join(definitions)))
+    definitions_for = _per_language(target, "definitions-for", compiled)
+    if definitions_for:
+        lines.append("target_compile_definitions({} PRIVATE\n    {})".format(name, "\n    ".join(
+            _for_language(language, value) for language, value in definitions_for)))
     link_options = _options(target, "link-options")
     if link_options:
         lines.append("target_link_options({} PRIVATE\n    {})".format(name, "\n    ".join(link_options)))

@@ -302,6 +302,69 @@ def variant_failures(folder):
     return found
 
 
+LAYERED = """
+[target]
+arch = "armv7"
+os = "iOS"
+os-version = "6.0"
+[application]
+name = "Host"
+sources = ["src/**/*.m", "src/**/*.mm"]
+exclude = ["src/Resources/**"]
+include = ["src/**/"]
+include-exclude = ["src/Resources/**"]
+options = ["-O2"]
+[application.options-for]
+objc = ["-fobjc-arc"]
+objcxx = ["-fobjc-arc", "-isystem /sdk/usr/include/c++/v1"]
+[application.definitions-for]
+objcxx = ["TGVOIP_NO_DSP"]
+[application.include-system-for]
+objcxx = ["${CXX_STDLIB}"]
+"""
+
+
+def language_failures(folder):
+    found = []
+    root = Path(folder) / "layered"
+    for relative in ("src/App/main.m", "src/Screens/Chat/Cells/cell.m", "src/Calls/call.mm", "src/Resources/x.m"):
+        path = root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("")
+    application = generate.written(loaded(root, LAYERED))["application/CMakeLists.txt"]
+    for folder_name in ("src", "src/App", "src/Screens", "src/Screens/Chat", "src/Screens/Chat/Cells", "src/Calls"):
+        if "${CHARON_PORT}/" + folder_name + "\n" not in application and \
+                "${CHARON_PORT}/" + folder_name + ")" not in application:
+            found.append("an include pattern must reach {}: got {}".format(folder_name, application))
+    if "src/Resources" in application:
+        found.append("a folder under include-exclude, and its sources, must not be used")
+    for expected in ('"$<$<COMPILE_LANGUAGE:OBJC>:-fobjc-arc>"',
+                     '"$<$<COMPILE_LANGUAGE:OBJCXX>:SHELL:-isystem /sdk/usr/include/c++/v1>"',
+                     '"$<$<COMPILE_LANGUAGE:OBJCXX>:TGVOIP_NO_DSP>"',
+                     '"$<$<COMPILE_LANGUAGE:OBJCXX>:${CXX_STDLIB}>"'):
+        if expected not in application:
+            found.append("a per-language value must be written as {}: got {}".format(expected, application))
+
+    refusals_by_reason = (
+        ("an include pattern that matches no folder", 'include = ["src/**/"]', 'include = ["lib/**/"]',
+         "matches no folder"),
+        ("an include folder that is not there", 'include = ["src/**/"]', 'include = ["src/App", "app"]',
+         "no such folder"),
+        ("options for a language nobody named", "[application.options-for]\nobjc", "[application.options-for]\nswift",
+         "not one of"),
+        ("options for a language no source is in", "[application.options-for]\nobjc", "[application.options-for]\nc",
+         "would apply to nothing"),
+    )
+    for description, old, new, reason in refusals_by_reason:
+        try:
+            generate.written(loaded(root, LAYERED.replace(old, new)))
+            found.append("{} must be refused".format(description))
+        except generate.GenerationError as refused:
+            if reason not in str(refused):
+                found.append("{} must be refused for that reason, not another: got {}".format(description, refused))
+    return found
+
+
 def refusals(folder):
     found = []
     for description, text in BROKEN.items():
@@ -322,7 +385,9 @@ def main():
         return 1
     found = []
     with tempfile.TemporaryDirectory() as folder:
+        (Path(folder) / "compat" / "stubs").mkdir(parents=True)
         found += checks(loaded(folder, MANIFEST))
+        found += language_failures(folder)
         found += refusals(folder)
         found += glob_failures(folder)
         found += variant_failures(folder)
