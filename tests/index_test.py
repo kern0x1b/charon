@@ -63,6 +63,13 @@ def failures():
     return found
 
 
+def served_failures():
+    recipes = HERE.parent / "recipes"
+    return ["{} has no config.yml, so the index serves no version of it and every recipe requiring it fails to "
+            "resolve".format(folder.name) for folder in sorted(recipes.iterdir())
+            if folder.is_dir() and not (folder / "config.yml").is_file()]
+
+
 def main():
     declaration_test.reexec_where_conan_lives(__file__)
     try:
@@ -70,7 +77,7 @@ def main():
     except ImportError as missing:
         print("FAIL  this needs an interpreter that can import conan: {}".format(missing))
         return 1
-    found = failures()
+    found = failures() + served_failures()
     for line in found:
         print("FAIL  {}".format(line))
     if found:
