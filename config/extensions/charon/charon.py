@@ -1259,6 +1259,10 @@ def install_launcher(launcher, path=None):
 def verb_setup(root, parsed):
     shared = [Path(folder).expanduser().resolve() for folder in parsed.extra]
     for folder in shared:
+        if not (folder / "config" / "extensions" / "charon").is_dir():
+            raise Failure("setup takes the path of the Charon checkout - the folder holding config/ - and {} is not "
+                          "one{}".format(folder, "; it is a port" if (folder / MANIFEST).is_file() else ""))
+    for folder in shared:
         register(folder.name, folder)
     if (root / "recipes").is_dir():
         register(declared(root, "port", "index") or port_name(root), root)
