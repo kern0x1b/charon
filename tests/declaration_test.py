@@ -141,7 +141,7 @@ def port(module, options):
         def __init__(self):
             self.options = Options(options)
             self.settings = Settings()
-            self.conf = Conf({"tools.apple:sdk_path": "/sdks/iPhoneOS13.7.sdk",
+            self.conf = Conf({"tools.apple:sdk_path": "/sdks/iPhoneOS16.4.sdk",
                               "tools.build:cxxflags": ["-mcpu=cortex-a9"]})
             self.source_folder = "/port/engine"
             self.build_folder = "/port/build/system"
@@ -614,7 +614,7 @@ def failures(module):
         found.append("a variant must override the section")
 
     flags = plain.declared_flags("cxx")
-    for expected in ("-target armv7-apple-ios6.0", "-mcpu=cortex-a9", "-isysroot /sdks/iPhoneOS13.7.sdk",
+    for expected in ("-target armv7-apple-ios6.0", "-mcpu=cortex-a9", "-isysroot /sdks/iPhoneOS16.4.sdk",
                      "-include /port/compat/stubs/plain.h", "-DONE -DTWO"):
         if expected not in flags:
             found.append("the flags must carry {}: got {}".format(expected, flags))

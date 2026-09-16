@@ -83,7 +83,7 @@ def loaded_hook():
 def failures(hook):
     found = []
     with tempfile.TemporaryDirectory() as folder:
-        sdk = Path(folder) / "iPhoneOS13.7.sdk"
+        sdk = Path(folder) / "iPhoneOS16.4.sdk"
         sdk.mkdir()
         ios = {"os": "iOS", "arch": "armv7"}
         tools = [Dependency("iphoneos-sdk"), Dependency("ld64")]

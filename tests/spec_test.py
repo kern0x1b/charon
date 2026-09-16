@@ -56,7 +56,7 @@ audit = "steps/audit.py --build {build}"
 system = ["task:audit", "build:engine"]
 """
 
-KNOWN = {"build": "/port/build/system", "sdk": "/sdks/iPhoneOS13.7.sdk"}
+KNOWN = {"build": "/port/build/system", "sdk": "/sdks/iPhoneOS16.4.sdk"}
 
 
 def failures():
@@ -87,7 +87,7 @@ def failures():
             found.append("an undeclared escape hatch must read as absent")
 
         resolved = spec.substitute("{sdk} and {build}", KNOWN)
-        if resolved != "/sdks/iPhoneOS13.7.sdk and /port/build/system":
+        if resolved != "/sdks/iPhoneOS16.4.sdk and /port/build/system":
             found.append("known names must resolve: got {}".format(resolved))
 
         kept = spec.substitute("-I{include:libpsl} {lib:woff2:woff2dec}", KNOWN)
