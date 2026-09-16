@@ -138,6 +138,20 @@ placeholder, because a profile is read before the graph that could answer it;
 a dependency that needs another package's files requires that package, for
 example headers only with `requires(..., headers=True, libs=False)`.
 
+Every binary a step produces is verified before anything strips or signs it,
+whatever the pipeline says: targets installed into the stage, staged
+frameworks, the application's executable and everything bundled with it, and
+each merged binary. On armv7 every rebased pointer to a function must carry
+bit 0 exactly when that function is Thumb code, read from the symbol table
+while it is still there; ld64 gets this right, a linker that drops the bit or
+a post-link edit that sets it on ARM code does not, and either one runs until
+the first call through the pointer. An executable's `__PAGEZERO` must be at
+least 4 GB on arm64 and end where `__TEXT` starts on armv7. After
+`sign:application` the signature is read back and must carry every declared
+entitlement with its declared value. A port can only take one out with a
+reason, `[waive] pagezero = "why"`; an unknown name or an empty reason is
+refused.
+
 The rest Charon derives rather than being told: the host profile comes from
 `[target]`, the engine build is the one direct child of `build/` that CMake
 configured and that has frameworks laid out, the frameworks to install are

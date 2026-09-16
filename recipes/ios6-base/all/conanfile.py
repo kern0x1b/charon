@@ -2,6 +2,7 @@ import os
 import plistlib
 import re
 import shutil
+import struct
 import sys
 from io import StringIO
 
@@ -497,6 +498,19 @@ class Ios6Port:
             self.run(f'cmake --install "{folder}" --prefix "{self.stage_folder}"')
             self._sign_installed(folder)
 
+    def declared_waivers(self):
+        waived = self.declared.get("waive") or {}
+        for name, why in waived.items():
+            if name not in MachO.WAIVABLE:
+                raise ConanException(f"[waive] names {name}, which is not something this toolchain verifies; it "
+                                     f"verifies {', '.join(MachO.WAIVABLE)}")
+            if not isinstance(why, str) or not why.strip():
+                raise ConanException(f"[waive] {name} gives no reason, and a check is only left out for one")
+        return waived
+
+    def _verify(self, binary):
+        MachO(self).verify(binary, self.declared_waivers())
+
     def _sign_installed(self, folder):
         macho = MachO(self)
         manifest = os.path.join(folder, "install_manifest.txt")
@@ -504,6 +518,7 @@ class Ios6Port:
             paths = [line.strip() for line in installed if line.strip()]
         for path in paths:
             if macho.is_macho(path):
+                self._verify(path)
                 macho.strip(path)
                 macho.sign(path)
 
@@ -608,6 +623,7 @@ class Ios6Port:
 
         macho.retarget(installed)
         for binary in installed:
+            self._verify(binary)
             if not binary.endswith(".dylib"):
                 macho.require_compatibility_version(binary, "1.0.0")
                 macho.strip(binary, "-S -x")
@@ -644,6 +660,7 @@ class Ios6Port:
 
         macho.retarget(bundled)
         for binary in bundled:
+            self._verify(binary)
             if not binary.endswith(".dylib"):
                 macho.require_compatibility_version(binary, "1.0.0")
             macho.sign(binary)
@@ -660,6 +677,7 @@ class Ios6Port:
                 f"{executable} loads {', '.join(elsewhere)} from outside its own bundle while shipping a copy "
                 "of each; the application would run against whatever the system has there instead of what it "
                 "was built with")
+        self._verify(executable)
         if declared.get("strip"):
             macho.strip(executable, declared["strip"])
 
@@ -696,6 +714,7 @@ class Ios6Port:
                 raise ConanException(f"{merged} came out with {', '.join(architectures) or 'no architecture'} "
                                      f"from {len(bundles)} slices; two slices built for the same architecture "
                                      "cannot be told apart")
+            self._verify(merged)
 
     def _sign_target(self, name):
         if name != "application":
@@ -706,7 +725,22 @@ class Ios6Port:
             raise ConanException(f"sign:application found no executable at {executable}; build:application has "
                                  "to run before it")
         entitlements = declared.get("entitlements")
-        MachO(self).sign(executable, os.path.join(self.port_root, entitlements) if entitlements else None)
+        macho = MachO(self)
+        if not entitlements:
+            macho.sign(executable)
+            return
+        listed = os.path.join(self.port_root, entitlements)
+        macho.sign(executable, listed)
+        waived = self.declared_waivers()
+        if "entitlements" in waived:
+            self.output.warning(f"{executable}: entitlements not read back: {waived['entitlements']}")
+            return
+        with open(listed, "rb") as handle:
+            wanted = plistlib.load(handle)
+        problems = macho.entitlement_problems(wanted, macho.entitlements(executable))
+        if problems:
+            raise ConanException(f"{executable} was signed without what {entitlements} declares: "
+                                 + "; ".join(problems))
 
     def declared_runtime(self):
         stage = self.declared.get("stage", {})
@@ -881,6 +915,220 @@ class MachO:
             return False
         with open(path, "rb") as candidate:
             return candidate.read(4) in cls.MAGIC
+
+    ARM, ARM64 = 12, 0x0100000C
+    EXECUTABLE = 2
+    CODE = 0x80000000 | 0x400
+    THUMB_DEFINITION = 0x0008
+    SMALLEST_ARM64_PAGEZERO = 1 << 32
+    WAIVABLE = ("thumb-interworking", "pagezero", "entitlements")
+
+    @classmethod
+    def images(cls, data):
+        magic = data[:4]
+        if magic in (b"\xca\xfe\xba\xbe", b"\xca\xfe\xba\xbf"):
+            wide = magic == b"\xca\xfe\xba\xbf"
+            count = struct.unpack_from(">I", data, 4)[0]
+            entry, layout = (32, ">iiQQI") if wide else (20, ">iiIII")
+            return [cls._image(data, struct.unpack_from(layout, data, 8 + index * entry)[2])
+                    for index in range(count)]
+        return [cls._image(data, 0)]
+
+    @classmethod
+    def _image(cls, data, base):
+        magic = data[base:base + 4]
+        if magic not in (b"\xce\xfa\xed\xfe", b"\xcf\xfa\xed\xfe"):
+            raise ConanException(f"there is no Mach-O image at offset {base}")
+        wide = magic == b"\xcf\xfa\xed\xfe"
+        cputype, _, filetype, ncmds, _, _ = struct.unpack_from("<iiIIII", data, base + 4)
+        image = {"base": base, "cputype": cputype, "filetype": filetype, "wide": wide,
+                 "segments": [], "sections": [], "symtab": None, "rebase": None, "local": None}
+        at = base + (32 if wide else 28)
+        for _ in range(ncmds):
+            command, size = struct.unpack_from("<II", data, at)
+            if command in (0x1, 0x19):
+                if command == 0x19:
+                    name, vmaddr, vmsize, fileoff, _, _, _, nsects, _ = struct.unpack_from("<16sQQQQiiII", data, at + 8)
+                    first, entry, layout = at + 72, 80, "<16s16sQQIIIIIIII"
+                else:
+                    name, vmaddr, vmsize, fileoff, _, _, _, nsects, _ = struct.unpack_from("<16sIIIIiiII", data, at + 8)
+                    first, entry, layout = at + 56, 68, "<16s16sIIIIIIIIII"
+                image["segments"].append({"name": name.rstrip(b"\0").decode(), "vmaddr": vmaddr,
+                                          "vmsize": vmsize, "fileoff": fileoff})
+                for index in range(nsects):
+                    fields = struct.unpack_from(layout, data, first + index * entry)
+                    image["sections"].append({"name": fields[0].rstrip(b"\0").decode(), "addr": fields[2],
+                                              "size": fields[3], "flags": fields[8]})
+            elif command == 0x2:
+                image["symtab"] = struct.unpack_from("<IIII", data, at + 8)
+            elif command in (0x22, 0x80000022):
+                image["rebase"] = struct.unpack_from("<II", data, at + 8)
+            elif command == 0xB:
+                image["local"] = struct.unpack_from("<II", data, at + 72)
+            at += size
+        return image
+
+    @staticmethod
+    def _uleb(data, at):
+        value, shift = 0, 0
+        while True:
+            byte = data[at]
+            at += 1
+            value |= (byte & 0x7F) << shift
+            shift += 7
+            if byte < 0x80:
+                return value, at
+
+    @classmethod
+    def rebased_slots(cls, data, image):
+        segments = image["segments"]
+        slots = []
+        if image["rebase"] and image["rebase"][1]:
+            offset, size = image["rebase"]
+            at, end = image["base"] + offset, image["base"] + offset + size
+            kind, segment, address, width = 1, 0, 0, 8 if image["wide"] else 4
+            while at < end:
+                byte = data[at]
+                at += 1
+                opcode, immediate = byte & 0xF0, byte & 0x0F
+                if opcode == 0x00:
+                    break
+                if opcode == 0x10:
+                    kind = immediate
+                elif opcode == 0x20:
+                    segment = immediate
+                    address, at = cls._uleb(data, at)
+                elif opcode == 0x30:
+                    step, at = cls._uleb(data, at)
+                    address += step
+                elif opcode == 0x40:
+                    address += immediate * width
+                elif opcode in (0x50, 0x60, 0x70, 0x80):
+                    if opcode == 0x50:
+                        times, skip = immediate, 0
+                    elif opcode == 0x60:
+                        times, at = cls._uleb(data, at)
+                        skip = 0
+                    elif opcode == 0x70:
+                        times = 1
+                        skip, at = cls._uleb(data, at)
+                    else:
+                        times, at = cls._uleb(data, at)
+                        skip, at = cls._uleb(data, at)
+                    for _ in range(times):
+                        if kind in (1, 2):
+                            slots.append((segments[segment]["vmaddr"] + address,
+                                          image["base"] + segments[segment]["fileoff"] + address))
+                        address += width + skip
+                else:
+                    raise ConanException(f"rebase opcode {byte:#x} is not one this toolchain reads")
+        elif image["local"] and image["local"][1] and not image["wide"]:
+            offset, count = image["local"]
+            relocated = segments[0]["vmaddr"]
+            for index in range(count):
+                address, info = struct.unpack_from("<II", data, image["base"] + offset + index * 8)
+                if address & 0x80000000:
+                    kind, length, address = (address >> 24) & 0xF, (address >> 28) & 0x3, address & 0xFFFFFF
+                else:
+                    kind, length = (info >> 28) & 0xF, (info >> 25) & 0x3
+                if kind != 0 or length != 2:
+                    continue
+                vmaddr = relocated + address
+                for described in segments:
+                    if described["vmaddr"] <= vmaddr < described["vmaddr"] + described["vmsize"]:
+                        slots.append((vmaddr, image["base"] + described["fileoff"] + vmaddr - described["vmaddr"]))
+        return slots
+
+    @classmethod
+    def code_symbols(cls, data, image):
+        if not image["symtab"]:
+            return {}
+        symoff, nsyms, stroff, _ = image["symtab"]
+        code = {index + 1 for index, section in enumerate(image["sections"]) if section["flags"] & cls.CODE}
+        found = {}
+        for index in range(nsyms):
+            strx, kind, section, desc, value = struct.unpack_from("<IBBHI", data, image["base"] + symoff + index * 12)
+            if kind & 0xE0 or (kind & 0x0E) != 0x0E or section not in code:
+                continue
+            end = data.index(b"\0", image["base"] + stroff + strx)
+            name = data[image["base"] + stroff + strx:end].decode(errors="replace")
+            found.setdefault(value & ~1, set()).add((bool(desc & cls.THUMB_DEFINITION), name))
+        return found
+
+    @classmethod
+    def interworking_problems(cls, path):
+        with open(path, "rb") as handle:
+            data = handle.read()
+        problems, checked = [], 0
+        for image in cls.images(data):
+            if image["cputype"] != cls.ARM:
+                continue
+            symbols = cls.code_symbols(data, image)
+            for slot, position in cls.rebased_slots(data, image):
+                pointer = struct.unpack_from("<I", data, position)[0]
+                described = symbols.get(pointer & ~1)
+                if not described or len({thumb for thumb, _ in described}) != 1:
+                    continue
+                checked += 1
+                thumb = next(iter(described))[0]
+                name = sorted(name for _, name in described)[0]
+                if thumb and not pointer & 1:
+                    problems.append(f"the pointer at {slot:#x} to Thumb function {name} lacks bit 0, so a call "
+                                    "through it enters Thumb code in ARM state; the linker dropped it")
+                elif not thumb and pointer & 1:
+                    problems.append(f"the pointer at {slot:#x} to ARM function {name} has bit 0 set, so a call "
+                                    "through it enters ARM code in Thumb state; something rewrote it after the link")
+        return problems, checked
+
+    @classmethod
+    def pagezero_problems(cls, path):
+        with open(path, "rb") as handle:
+            data = handle.read()
+        problems = []
+        for image in cls.images(data):
+            if image["filetype"] != cls.EXECUTABLE or image["cputype"] not in (cls.ARM, cls.ARM64):
+                continue
+            named = {segment["name"]: segment for segment in image["segments"]}
+            zero, text = named.get("__PAGEZERO"), named.get("__TEXT")
+            if zero is None or text is None:
+                problems.append("an executable without __PAGEZERO and __TEXT does not map the way iOS expects")
+            elif image["cputype"] == cls.ARM64 and zero["vmsize"] < cls.SMALLEST_ARM64_PAGEZERO:
+                problems.append(f"the arm64 __PAGEZERO is {zero['vmsize']:#x}, and a 64-bit iOS executable needs "
+                                f"at least {cls.SMALLEST_ARM64_PAGEZERO:#x}; nothing should pass -pagezero_size")
+            elif image["cputype"] == cls.ARM and text["vmaddr"] != zero["vmaddr"] + zero["vmsize"]:
+                problems.append(f"__PAGEZERO ends at {zero['vmaddr'] + zero['vmsize']:#x} and __TEXT starts at "
+                                f"{text['vmaddr']:#x}; the gap is what a post-link edit of the segment leaves")
+        return problems
+
+    @staticmethod
+    def entitlement_problems(declared, signed):
+        return [f"{key} is declared as {value!r} and the signature carries "
+                f"{signed[key]!r}" if key in signed else f"{key} is declared and the signature does not carry it"
+                for key, value in declared.items() if signed.get(key, object()) != value]
+
+    def entitlements(self, binary):
+        captured = StringIO()
+        if self._conanfile.run(f'ldid -e "{binary}"', stdout=captured, ignore_errors=True):
+            return {}
+        text = captured.getvalue().strip()
+        return plistlib.loads(text.encode()) if text else {}
+
+    def verify(self, binary, waived):
+        problems = []
+        if "thumb-interworking" in waived:
+            self._conanfile.output.warning(f"{binary}: thumb-interworking not checked: {waived['thumb-interworking']}")
+        else:
+            found, checked = self.interworking_problems(binary)
+            problems += found
+            self._conanfile.output.info(f"{os.path.basename(binary)}: {checked} rebased code pointers match the "
+                                        "mode of the function they name")
+        if "pagezero" in waived:
+            self._conanfile.output.warning(f"{binary}: pagezero not checked: {waived['pagezero']}")
+        else:
+            problems += self.pagezero_problems(binary)
+        if problems:
+            shown = "; ".join(problems[:5]) + (f"; and {len(problems) - 5} more" if len(problems) > 5 else "")
+            raise ConanException(f"{binary} is not what the platform runs: {shown}")
 
     def binaries_under(self, root):
         found = []
