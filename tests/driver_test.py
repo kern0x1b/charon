@@ -105,8 +105,28 @@ def failures():
     return found
 
 
+def task_failures():
+    found = []
+    with tempfile.TemporaryDirectory() as folder:
+        root = Path(folder)
+        (root / "charon.toml").write_text('[tasks.audit]\nscript = "a.py"\n\n[tasks.greet]\nshell = "echo hi"\n')
+        if charon.task_steps(root, ["greet", "audit"]) != ["task:greet", "task:audit"]:
+            found.append("named tasks must become task steps in the order they were named")
+        for names, why in (([], "charon task with no names"), (["greet", "absent"], "a task nobody declared")):
+            try:
+                charon.task_steps(root, names)
+                found.append("{} must be refused before anything is built".format(why))
+            except charon.Failure:
+                pass
+    return found
+
+
 def main():
-    found = failures()
+    if sys.version_info < (3, 11):
+        print("FAIL  this needs Python 3.11 or newer for tomllib, and it is running under {}. Skipping would "
+              "report success having checked nothing.".format(".".join(str(p) for p in sys.version_info[:3])))
+        return 1
+    found = failures() + task_failures()
     for line in found:
         print("FAIL  {}".format(line))
     if found:

@@ -49,10 +49,12 @@ DECLARATION = {
     },
     "static-library": [{"name": "compat", "cmake": "compat", "produces": "libcompat.a"}],
     "tasks": {
-        "audit": "steps/audit.py --build {build}",
+        "audit": {"script": "steps/audit.py", "args": "--build {build}"},
+        "bare": "steps/audit.py --build {build}",
         "greet": {"shell": "echo {build}"},
         "census": {"python": "import sys\nprint(sys.argv[1:])\n", "args": "{build}"},
         "silent": {"note": "declares nothing to run"},
+        "torn": {"shell": "echo one", "python": "print('two')"},
     },
     "pipeline": {"system": ["task:audit", "build:compat", "build:engine", "check:exports", "stage:frameworks"]},
 }
@@ -143,6 +145,13 @@ def dispatch_failures(module):
     recorder.declared_build()
     if recorder.ran != DECLARATION["pipeline"]["system"]:
         found.append("the steps must run in the order declared: got {}".format(recorder.ran))
+
+    chosen = port(module, {"prefixed": "False"})
+    chosen.conf = Conf(dict(chosen.conf._values, **{"user.charon:steps": ["task:greet", "check:exports"]}))
+    chosen.declared_build()
+    if chosen.ran != ["task:greet", "check:exports"]:
+        found.append("steps named on the command line must run instead of the pipeline, and only them: "
+                     "got {}".format(chosen.ran))
 
     try:
         recorder._run_step("nonsense", "x")
@@ -257,14 +266,17 @@ def task_failures(module):
     finally:
         shutil.rmtree(inline.build_folder, ignore_errors=True)
 
-    for name, why in (("silent", "a task that names neither script, shell nor python"),
-                      ("audit", "a task naming a script that is not there")):
+    for name, why, reason in (("silent", "a task that names neither script, shell nor python", "exactly one"),
+                              ("torn", "a task that says two things to run", "exactly one"),
+                              ("bare", "a task written as a bare command line instead of a table", "is a table"),
+                              ("audit", "a task naming a script that is not there", "does not exist")):
         instance = port(module, {"prefixed": "False"})
         try:
             real(instance, name)
             found.append("{} must be refused".format(why))
-        except Exception:
-            pass
+        except Exception as refused:
+            if reason not in str(refused):
+                found.append("{} must be refused for that reason, not for another: got {}".format(why, refused))
     return found
 
 

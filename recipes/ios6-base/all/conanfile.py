@@ -317,8 +317,12 @@ class Ios6Port:
         environment.define("CCACHE_BASEDIR", self.port_root)
         environment.vars(self, scope="build").save_script("ccache_basedir")
 
+    def declared_steps(self):
+        chosen = self.conf.get("user.charon:steps", default=None, check_type=list)
+        return list(chosen) if chosen else self.declared_pipeline()
+
     def declared_build(self):
-        for step in self.declared_pipeline():
+        for step in self.declared_steps():
             action, _, argument = step.partition(":")
             self.output.title(step)
             self._run_step(action, argument)
@@ -349,19 +353,21 @@ class Ios6Port:
             known = ", ".join(sorted(declared)) or "none declared"
             raise ConanException(f"{self.name} declares no task {name} ({known})")
         body = declared[name]
-        context = self._declared_context()
-        if isinstance(body, str):
-            return self._run_script(name, self._expand(body, context))
         if not isinstance(body, dict):
-            raise ConanException(f"task {name} is neither a command line nor a table of one")
+            raise ConanException(
+                f"task {name} is declared as {body!r}. A task is a table - [tasks.{name}] with script, shell or "
+                "python - so that every task in a declaration reads the same way")
+        kinds = [kind for kind in ("script", "shell", "python") if kind in body]
+        if len(kinds) != 1:
+            raise ConanException(f"task {name} declares {', '.join(kinds) or 'none'} of script, shell and python, "
+                                 "and a task has to say exactly one thing to run")
+        context = self._declared_context()
         arguments = self._expand(body.get("args", ""), context)
-        if "script" in body:
+        if kinds[0] == "script":
             return self._run_script(name, "{} {}".format(self._expand(body["script"], context), arguments))
-        if "shell" in body:
-            return self.run(self._expand(body["shell"], context))
-        if "python" in body:
-            return self._run_written(name, body["python"], arguments)
-        raise ConanException(f"task {name} says nothing to run; it may declare script, shell or python")
+        if kinds[0] == "shell":
+            return self.run(" ".join(part for part in (self._expand(body["shell"], context), arguments) if part))
+        return self._run_written(name, body["python"], arguments)
 
     def _run_script(self, name, commandline):
         words = commandline.split()

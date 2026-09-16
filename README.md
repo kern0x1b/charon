@@ -14,7 +14,7 @@ other. What is shared is only what is true for all of them.
     config/profiles/ios6-armv7 the target: armv7, iOS 6.0, the theos SDK, the linker
     config/profiles/ios-arm64  the target: arm64, iOS 7.0 or later, the theos SDK
     config/extensions/hooks/   refuses a missing SDK or a swapped linker
-    config/extensions/charon/  Charon: the verbs every port gets, and the phone transport
+    config/extensions/charon/  Charon: the entry point, what it generates, and the phone transport
     tools/sdk-usage.py         which files of an SDK a build actually read
     recipes/ld64/              the linker, built from cctools-port
     recipes/ldid/              the signing tool the device accepts
@@ -30,49 +30,86 @@ other. What is shared is only what is true for all of them.
 
     export LLVM_PREFIX="$(brew --prefix llvm)"
 
-In a port, `make setup ARGS=<path to this repo>` reinstalls that configuration
-and registers both sets of recipes ahead of the general remotes. Every other
-verb is the same in every port: `make build`, `make package`, `make deploy`,
-`make run`, `make test`, `make clean`, and `make provenance` to see which
-configuration and which checkout are answering.
-
-The verbs can also be typed directly, without make, by putting Charon on the
-path once per machine:
+Charon is the entry point, the way Gradle is. Put it on the path once per
+machine:
 
     ln -s "$(conan config home)/extensions/charon/charon" /usr/local/bin/charon
 
-Then `charon build`, `charon test`, `charon deploy` and the rest work from
-anywhere inside a port, and a port needs no `Makefile` at all.
+and inside a port `charon setup <path to this repo>` installs this configuration
+and registers this repository's recipes and the port's own ahead of the general
+remotes. The verbs are the same in every port:
 
-A port carries two files for this. The `Makefile` is the whole wiring:
+    charon build [--variant NAME]   everything the declaration names
+    charon task NAME [NAME...]      declared tasks, run the way the pipeline runs them
+    charon test [--tier NAME]       the declared test tiers
+    charon package                  the .deb
+    charon deploy, charon run       install on the phone, launch the application
+    charon generate                 write the recipe, profile and CMake without building
+    charon integrate, clean, provenance, device run|copy|fetch
 
-    CHARON_CONFIG ?= $(if $(IOS6_TOOLCHAIN),$(IOS6_TOOLCHAIN)/config,$(shell conan config home))
-    include $(CHARON_CONFIG)/extensions/charon/charon.mk
+`conan config install` copies rather than links, so after changing Charon here
+run `charon setup` again; `charon provenance` says which copy is answering.
 
-and `charon.toml` is what the port declares about itself, so no verb has to be
-told twice:
+A port carries no conanfile.py, no profile, no CMake and no Makefile. It carries
+`charon.toml`, and Charon writes the rest into `build/<variant>/charon/`:
 
     [port]
     name = "revenant-webkit"
     version = "0.1.0"
+    index = "revenant"
 
-    [checks]
-    before-build = ["scripts/carry-check.py"]
+    [target]
+    include-profiles = ["ios6-armv7"]
+    arch = "armv7"
+    os = "iOS"
+    os-version = "6.0"
+    sdk = "iphoneos"
 
-    [variants]
-    system = {}
-    prefixed = { options = ["prefixed=True"] }
+    [requires]
+    openssl = "3.0.15@revenant/stable"
 
-    [application]
-    log = "/tmp/rev-webview-host.log"
-    first-page = "/tmp/rev-url.txt"
+    [[device-library]]
+    name = "RevSafari"
+    sources = ["platform/safari/rev-safari-tweak.c"]
+    install = "/Library/MobileSubstrate/DynamicLibraries"
+    installs-into = "stage"
+    frameworks = ["CoreFoundation"]
 
-Everything else Charon derives rather than being told: the host profile is the
-only file under the port's `profiles/`, a build tree is whichever folder CMake
-stamped under `build/`, the frameworks to install are whatever the build staged,
-and the application to launch is the single bundle it produced. Setting
-`IOS6_TOOLCHAIN` points a port at this repository directly instead of the
-installed copy, which is how to work on Charon itself.
+    [tasks.carry-check]
+    script = "scripts/carry-check.py"
+
+    [tasks.where]
+    shell = "echo built into"
+    args = "{build}"
+
+    [tasks.census]
+    python = """
+    import sys
+    print(sys.argv[1:])
+    """
+    args = "{pkg:openssl}"
+
+    [pipeline]
+    system = ["task:carry-check", "build:device-library", "stage:frameworks", "task:where"]
+
+A task is a table with exactly one of `script`, `shell` or `python`, and its
+`args` may name anything the build knows: `{build}`, `{stage}`, `{pkg:NAME}`,
+`{include:NAME}`, `{lib:NAME:LIBRARY}`, `{bin:TOOL}`, `{target:NAME}`. A task
+runs in `[pipeline]` as `task:NAME`, before the build under `charon integrate`
+when `[integrate] before-build` names it, or on its own with `charon task NAME`.
+
+Anything Charon writes can be replaced. `cmake = "<dir>"` on a target uses that
+project instead of a generated one; `[engine] user-toolchain` and
+`project-include` name hand-written cmake files; `[use] profile` and
+`[use] recipe` name a profile or a recipe of the port's own; `script =` keeps a
+large task in a file. The declaration alone is the default and none of these is
+required.
+
+The rest Charon derives rather than being told: the host profile comes from
+`[target]`, the engine build is the one direct child of `build/` that CMake
+configured and that has frameworks laid out, the frameworks to install are
+whatever the build staged, and a test tier gets the phone, the build tree or its
+packages only when it declares `needs` or `packages`.
 
 `LLVM_PREFIX` is read once, by `config/global.conf`, into
 `user.ios6:llvm_prefix`. Only the `ld64` recipe asks for it: cctools' configure
@@ -94,49 +131,20 @@ needed.
 
 ## A port
 
-Its own `conanfile.py`, its own `recipes/`, its own `conan.lock`:
-
-    from conan import ConanFile
-
-    class RevenantWebKit(ConanFile):
-        name = "revenant-webkit"
-        python_requires = "ios6-base/1.0@ios6/stable"
-        python_requires_extend = "ios6-base.Ios6Port"
-
-        def requirements(self):
-            self.requires("libcxx/21.1.0@ios6/stable")
-            self.requires("openssl/3.0.15@revenant/stable")
-
-and its own repository serving them:
-
-    conan ios6-remote <port> <port checkout>
-    conan install . -pr:h ios6-armv7 -pr:b default --build=missing
+A port is `charon.toml`, its own `recipes/` for the libraries it builds, and its
+own `conan.lock`. `charon setup` registers the port's recipes as the remote
+`[port] index` names and this repository's as `ios6`, and keeps both ahead of
+ConanCenter. A port and this repository both carry recipes under names
+ConanCenter also publishes - icu, brotli, libxslt - and Conan asks the remotes
+in the order they are registered; `conan remote add` appends, so without that
+ConanCenter answers first and a build that has never seen these packages
+silently gets recipes that cannot cross-compile for this target.
 
 The shared profiles say only what is true of the target: the operating system,
 the architecture, the SDK and, for armv7, the linker. A port's own choices - the
-C++ standard, CPU tuning, a later deployment target - go in a profile of its own
-that includes the shared one:
-
-    include(ios6-armv7)
-
-    [settings]
-    compiler.cppstd=23
-
-    [conf]
-    tools.build:cflags=["-mcpu=cortex-a9"]
-
-and the install names that profile instead: `-pr:h profiles/<port>-armv7`. A
-deployment target alone can also be given on the command line,
-`-s:h os.version=9.0`. arm64 starts at iOS 7.0, and the base class refuses
-anything lower.
-
-`conan ios6-remote` is `conan remote add` with the order enforced. A port and
-this repository both carry recipes under names ConanCenter also publishes -
-icu, brotli, libxslt - and Conan asks the remotes in the order they are
-registered. `conan remote add` appends, so ConanCenter answers first and a
-build that has never seen these packages silently gets recipes that cannot
-cross-compile for this target. The command puts the checkouts in front and
-keeps them there.
+C++ standard, CPU tuning, a later deployment target - are `[target]` keys, and
+the profile Charon writes includes the shared one `include-profiles` names.
+arm64 starts at iOS 7.0, and the base class refuses anything lower.
 
 `@ios6/stable` is for what this repository serves - the linker, the C++ runtime,
 the base class - and nothing else. A port's own libraries carry the port's name,
@@ -215,7 +223,9 @@ that run on this machine. The same file reads from a shell and from make:
 
 The folder is per architecture, so a port that ships both slices installs twice
 and each slice keeps its own paths - a `lipo -create` step reads one file for
-each.
+each. A port built from `charon.toml` writes it into its build tree instead,
+`build/<variant>/conan/ios6-deps.env`, and a test tier that declares `packages`
+gets its own under `build/tier-packages/<tier>/`.
 
 A port that extends `ios6-base.Ios6Port` gets it without doing anything. A
 conanfile that does not - a test harness built for the Mac - calls it directly:
@@ -270,10 +280,10 @@ commit they build rather than the time they ran.
 
 ## Packaging
 
-Every port ships a .deb. The port builds what goes in it with CMake like
-anything else, signs it with the `ldid` tool_requires, installs it into a staged
-tree laid out as the device's filesystem, and hands that tree to
-`ios6-base.DebianPackage` from `package()`:
+Every port ships a .deb. A port declares `[package] control` and, if it has
+them, `maintainer-scripts`; `charon package` hands the staged tree - laid out
+as the device's filesystem, every binary signed with the `ldid` tool_requires -
+to `ios6-base.DebianPackage`. A recipe written by hand calls the same class:
 
     def package(self):
         self.python_requires["ios6-base"].module.DebianPackage(

@@ -699,16 +699,31 @@ def merge_upstream(root, reference):
         say("already up to date")
 
 
-def run_check(root, relative):
-    script = root / relative
-    if not script.is_file():
-        raise Failure("{} does not exist, and integrate was told to run it".format(script))
-    if subprocess.run([sys.executable, str(script)], cwd=str(root)).returncode:
-        raise Failure("{} refused this tree".format(relative))
+def task_steps(root, names):
+    declared = manifest(root).get("tasks", {})
+    known = ", ".join(sorted(declared)) or "none declared"
+    if not names:
+        raise Failure("charon task needs the names of the tasks to run ({})".format(known))
+    unknown = [name for name in names if name not in declared]
+    if unknown:
+        raise Failure("{} declares no task {} ({})".format(root / MANIFEST, ", ".join(unknown), known))
+    return ["task:{}".format(name) for name in names]
+
+
+def run_steps(root, parsed, steps):
+    variant = parsed.variant or default_variant(root)
+    where = generated(root, variant) or root
+    conan("build", where, *conan_flags(root, parsed.chosen_profile), *variant_options(root, parsed.variant),
+          "-c", "user.charon:steps={!r}".format(list(steps)))
+
+
+def verb_task(root, parsed):
+    provenance(root, parsed.chosen_profile)
+    run_steps(root, parsed, task_steps(root, parsed.extra))
 
 
 def verb_integrate(root, parsed):
-    if not parsed.check and not manifest(root):
+    if not parsed.step and not manifest(root):
         raise Failure("{} does not exist, and integrate runs the gates a port declares there. Without it this "
                       "would quietly run none and report the integration green.".format(root / MANIFEST))
     tree = submodule(root)
@@ -716,8 +731,10 @@ def verb_integrate(root, parsed):
     steps = []
     if parsed.ref:
         steps.append(("merging {}".format(parsed.ref), lambda: merge_upstream(root, parsed.ref)))
-    for relative in parsed.check or declared(root, "checks", "before-build", []):
-        steps.append((relative, lambda relative=relative: run_check(root, relative)))
+    before = parsed.step or declared(root, "integrate", "before-build", [])
+    if before:
+        steps.append(("before the build: {}".format(", ".join(before)),
+                      lambda: run_steps(root, parsed, before)))
     steps += [
         ("build", lambda: verb_build(root, parsed)),
         ("host tier", lambda: require(run_host(root, parsed), "the host tier")),
@@ -864,6 +881,7 @@ def verb_help(root, parsed):
 VERBS = (
     ("build", "compile everything this port produces"),
     ("generate", "write the recipe and the CMake a declaration asks for, without building"),
+    ("task", "run declared tasks by name, the way the pipeline runs them: charon task NAME [NAME...]"),
     ("package", "the installable package, from what was built"),
     ("deploy", "install the staged frameworks on the phone"),
     ("run", "install and launch the standalone application"),
@@ -879,6 +897,7 @@ VERBS = (
 HANDLERS = {
     "build": verb_build,
     "generate": verb_generate,
+    "task": verb_task,
     "package": verb_package,
     "deploy": verb_deploy,
     "run": verb_run,
@@ -906,7 +925,8 @@ def parse(argv):
     parser.add_argument("--test-port", type=int, help="port the gate serves its pages on")
     parser.add_argument("--tier", default="all", help="which declared test tier to run (default: every one)")
     parser.add_argument("--ref", help="upstream ref to merge before integrating")
-    parser.add_argument("--check", action="append", default=[], help="a script integrate runs before building")
+    parser.add_argument("--step", action="append", default=[],
+                        help="a declared step integrate runs before building, e.g. task:carry-check")
     parser.add_argument("--force", action="store_true", help="clean: delete instead of reporting")
     parser.add_argument("--cache", action="store_true", help="clean: also the cache's source and build folders")
     parser.add_argument("--unused", help="clean: also this port's cached packages unused for this long, e.g. 30d")

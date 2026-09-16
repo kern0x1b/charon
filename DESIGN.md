@@ -9,9 +9,10 @@ For anyone arriving from the JVM world, the mapping is close to exact:
 
 | Maven / Gradle | here |
 |---|---|
-| `gradle build`, `gradle clean`, `gradle test` | `make build`, `make clean`, `make test` - Charon, `config/extensions/charon/` |
-| `gradlew` committed in the project | the port's four-line `Makefile`, which includes Charon from the installed configuration |
-| `build.gradle` per module | `conanfile.py` in each port |
+| `gradle build`, `gradle clean`, `gradle test` | `charon build`, `charon clean`, `charon test` - `config/extensions/charon/` |
+| `gradlew` | `charon`, installed once per machine from this configuration |
+| `build.gradle` per module | `charon.toml` in each port |
+| `task myTask { ... }` and `gradle myTask` | `[tasks.myTask]` with `script`, `shell` or `python`, and `charon task myTask` |
 | convention plugin / parent POM | `ios6-base`, consumed with `python_requires` |
 | `~/.gradle/init.gradle`, toolchain config | `config/profiles/ios6-armv7` and `ios-arm64`, installed with `conan config install` |
 | Maven Central / company Artifactory | this repository, registered as a `local-recipes-index` remote |
@@ -34,40 +35,31 @@ deliberately not here: the ports disagree on versions, and a shared set would
 make one port override another's. Each port carries its own recipes, names a
 git URL and a commit, and builds them itself.
 
-**Shared conventions** - `recipes/ios6-base`. The base class a port's conanfile
-extends: the generators, the layout, and the check that refuses an operating
+**Shared conventions** - `recipes/ios6-base`. The base class the recipe Charon
+writes for a port extends: the generators, the layout, and the check that refuses an operating
 system or architecture this toolchain does not build for. This is the piece that stops ten ports from
 drifting into ten different spellings of the same build.
 
 ## What stays with the port
 
-Its own `conanfile.py`, listing its own dependencies, and its own `conan.lock`.
-Duplication here is deliberate and cheap: two ports that both need OpenSSL both
-say so, and both get the same package out of the cache. What is not duplicated
-is the library itself, the patches, the toolchain, or the knowledge of how this
-target is built.
+Its `charon.toml`, its own recipes for the libraries it builds, and its own
+`conan.lock`. Duplication here is deliberate and cheap: two ports that both need
+OpenSSL both say so, and both get the same package out of the cache. What is not
+duplicated is the toolchain, the generated build files, or the knowledge of how
+this target is built.
 
-A port's file should be readable in one screen:
-
-    from conan import ConanFile
-
-    class RevenantWebKit(ConanFile):
-        name = "revenant-webkit"
-        python_requires = "ios6-base/1.0"
-        python_requires_extend = "ios6-base.Ios6Port"
-
-        def requirements(self):
-            self.requires("openssl/3.0.15@ios6/stable")
-            self.requires("brotli/1.1.0")
+A port's declaration should be readable in one screen - what it requires, what it
+builds, which tasks run in which order - and nothing in the port repeats what
+Charon can write from it.
 
 ## Adding a port
 
-1. Write the port's `conanfile.py` as above, its `charon.toml`, and a two-line
-   `Makefile` that includes `charon.mk` from the installed configuration.
-2. `make setup ARGS=<this repo>` - installs this configuration and registers both
+1. Write the port's `charon.toml`: `[port]`, `[target]`, `[requires]`, its
+   targets and its `[pipeline]`.
+2. `charon setup <this repo>` - installs this configuration and registers both
    recipe indexes ahead of the general remotes, because `conan remote add` appends
    after ConanCenter, which would otherwise answer first.
-3. `make build`
+3. `charon build`
 4. Commit the resulting `conan.lock`.
 
 ## Adding a library
