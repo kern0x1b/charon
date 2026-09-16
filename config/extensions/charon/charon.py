@@ -350,6 +350,13 @@ def generated(root, variant):
     written = folder / RECIPE
     written.write_text(generate.recipe(declared, root))
     say("recipe       {} (written from {})".format(written, root / MANIFEST))
+    for name, text in generate.written(declared, required=False).items():
+        if name == "profile":
+            continue
+        path = folder / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+        say("project      {} (written from {})".format(path, root / MANIFEST))
     return folder
 
 
@@ -359,12 +366,9 @@ def verb_generate(root, parsed):
     folder = generated(root, variant)
     if folder is None:
         raise Failure("{} declares no manifest to generate from, or names a recipe of its own".format(root))
-    import generate
-    for name, text in generate.written(declaration(root)).items():
-        path = root / BUILD / variant / GENERATED / name
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text)
-        say("wrote        {}".format(path))
+    written = written_profile(root, variant)
+    if written is not None:
+        say("profile      {}".format(written))
 
 
 def verb_build(root, parsed):

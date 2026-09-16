@@ -35,8 +35,11 @@ find-packages = ["LibXml2"]
 name = "compat"
 sources = ["compat/a.c", "compat/b.m"]
 standard = 23
-include-system = ["compat/stubs"]
+include-system = ["compat/stubs", "${LIBCXX_DIR}/include/c++/v1"]
 options = ["-O2", "-fno-objc-arc"]
+definitions = ["$<$<COMPILE_LANGUAGE:OBJC>:EXTRAS>"]
+source-include = { "compat/a.c" = "${PSL_INCLUDE_DIR}" }
+cache = { LIBCXX_DIR = "{pkg:libcxx}", PSL_INCLUDE_DIR = "{include:libpsl}" }
 
 [[device-library]]
 name = "tweak"
@@ -124,6 +127,21 @@ def checks(declared):
         found.append("a declared standard must be set on the target")
     if "install(" in static:
         found.append("a static library is consumed by the build, so it must not be installed")
+    if "${CHARON_PORT}/compat/a.c" not in static:
+        found.append("a declared source must be written against the port, because a generated project is "
+                     "configured from the build tree and not from the folder the sources live in")
+    if "${CHARON_PORT}/${LIBCXX_DIR}" in static:
+        found.append("a value that already starts at a cmake variable must be left exactly as declared")
+    if generate.REQUIRES_PORT not in static:
+        found.append("a generated project must refuse to configure when nothing told it where the port is")
+    if "foreach (variable LIBCXX_DIR PSL_INCLUDE_DIR)" not in static:
+        found.append("every cache variable a target names must be guarded, the way the hand-written "
+                     "projects guarded them: got {}".format(static))
+    if "target_compile_definitions(compat PRIVATE" not in static:
+        found.append("declared definitions must reach the target")
+    if ('set_source_files_properties(${CHARON_PORT}/compat/a.c PROPERTIES INCLUDE_DIRECTORIES '
+            '"${PSL_INCLUDE_DIR}")') not in static:
+        found.append("a per-source include must be set on that source and on no other")
 
     device = written["device-library/CMakeLists.txt"]
     if "add_library(tweak SHARED" not in device:
@@ -144,7 +162,7 @@ def checks(declared):
         found.append("an application must be an executable")
     if "install(TARGETS Host RUNTIME DESTINATION .)" not in application:
         found.append("an application must install its binary")
-    if "install(FILES app/cacert.pem DESTINATION .)" not in application:
+    if "install(FILES ${CHARON_PORT}/app/cacert.pem DESTINATION .)" not in application:
         found.append("an application must install its declared resources")
 
     for line in (generate.GENERATED,):

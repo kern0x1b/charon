@@ -172,15 +172,12 @@ class Ios6Port:
         return found
 
     def _target_product(self, name):
-        for target in self.declared_targets():
-            if target.get("name") != name:
-                continue
-            produced = target.get("produces")
-            if not produced:
-                raise ConanException(f"{name} does not say what it produces, so nothing can point at it")
-            folder = os.path.basename(target.get("cmake") or name)
-            return os.path.join(self.build_folder, folder, produced)
-        raise ConanException(f"{self.name} declares no target called {name}")
+        kind, target = self._declared_kind(name)
+        produced = target.get("produces")
+        if not produced:
+            raise ConanException(f"{name} does not say what it produces, so nothing can point at it")
+        project = target.get("cmake")
+        return os.path.join(self.build_folder, os.path.basename(project) if project else kind, produced)
 
     @property
     def sdk_path(self):
@@ -335,12 +332,34 @@ class Ios6Port:
         arguments = " ".join(f'"{word}"' for word in words[1:])
         self.run(f'"{sys.executable}" "{script}" {arguments}')
 
+    def _declared_kind(self, name):
+        for kind in ("static-library", "device-library"):
+            for target in self.declared.get(kind, []):
+                if target.get("name") == name:
+                    return kind, target
+        application = self.declared.get("application") or {}
+        if application.get("name") == name:
+            return "application", application
+        raise ConanException(f"{self.name} declares no target called {name}")
+
+    def _project_source(self, kind, target):
+        project = target.get("cmake")
+        if project:
+            return os.path.join(self.port_root, project)
+        written = os.path.join(self.recipe_folder, kind, "CMakeLists.txt")
+        if not os.path.isfile(written):
+            raise ConanException(
+                f"{target.get('name')} names no cmake project of its own and none was written to {written}; "
+                "the declaration is what generates it, so generating has to happen before building")
+        return os.path.dirname(written)
+
     def _cmake_project(self, source, folder, definitions):
         toolchain = os.path.join(self.generators_folder, "conan_toolchain.cmake")
         values = " ".join(f'-D{name}="{value}"' for name, value in definitions.items())
         self.run(f'cmake -S "{source}" -B "{folder}" -G Ninja -DCMAKE_BUILD_TYPE=Release '
                  f'-DCMAKE_TOOLCHAIN_FILE="{toolchain}" -DIOS6_SDK="{self.sdk_path}" '
-                 f'-DIOS6_DEPLOYMENT_TARGET="{self.settings.os.version}" {values}')
+                 f'-DIOS6_DEPLOYMENT_TARGET="{self.settings.os.version}" '
+                 f'-DCHARON_PORT="{self.port_root}" {values}')
         self.run(f'cmake --build "{folder}"')
 
     def _build_target(self, name):
@@ -352,17 +371,32 @@ class Ios6Port:
         if name == "application":
             self._build_application()
             return
-        target = next((entry for entry in self.declared_targets() if entry.get("name") == name), None)
-        if target is None:
-            raise ConanException(f"{self.name} declares no target called {name}")
-        project = target.get("cmake")
-        if not project:
-            raise ConanException(f"{name} declares no cmake project, and generating one is not done yet")
-        folder = os.path.join(self.build_folder, os.path.basename(project))
-        context = self._declared_context()
-        definitions = {key: self._expand(value, context) for key, value in (target.get("options") or {}).items()}
-        self._cmake_project(os.path.join(self.port_root, project), folder, definitions)
+        if name in ("static-library", "device-library"):
+            self._build_kind(name)
+            return
+        kind, target = self._declared_kind(name)
+        folder = os.path.join(self.build_folder, os.path.basename(target.get("cmake") or name))
+        self._cmake_project(self._project_source(kind, target), folder, self._declared_cache(target))
         if target.get("installs-into") == "stage":
+            self.run(f'cmake --install "{folder}" --prefix "{self.stage_folder}"')
+            self._sign_installed(folder)
+
+    def _declared_cache(self, *targets):
+        context = self._declared_context()
+        values = {}
+        for target in targets:
+            values.update({key: self._expand(value, context)
+                           for key, value in (target.get("cache") or {}).items()})
+        return values
+
+    def _build_kind(self, kind):
+        targets = [target for target in self.declared.get(kind, []) if not target.get("cmake")]
+        if not targets:
+            raise ConanException(f"{self.name} declares no {kind} for Charon to generate; a target that names a "
+                                 "cmake project of its own is built by its own name")
+        folder = os.path.join(self.build_folder, kind)
+        self._cmake_project(self._project_source(kind, targets[0]), folder, self._declared_cache(*targets))
+        if any(target.get("installs-into") == "stage" for target in targets):
             self.run(f'cmake --install "{folder}" --prefix "{self.stage_folder}"')
             self._sign_installed(folder)
 
@@ -491,11 +525,8 @@ class Ios6Port:
         rmdir(self, bundle)
         mkdir(self, frameworks)
 
-        project = declared.get("cmake")
-        folder = os.path.join(self.build_folder, os.path.basename(project))
-        context = self._declared_context()
-        definitions = {key: self._expand(value, context) for key, value in (declared.get("options") or {}).items()}
-        self._cmake_project(os.path.join(self.port_root, project), folder, definitions)
+        folder = os.path.join(self.build_folder, os.path.basename(declared.get("cmake") or "application"))
+        self._cmake_project(self._project_source("application", declared), folder, self._declared_cache(declared))
         self.run(f'cmake --install "{folder}" --prefix "{bundle}"')
 
         macho, bundled = MachO(self), {}
