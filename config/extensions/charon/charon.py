@@ -903,7 +903,7 @@ def verb_clean(root, parsed):
 
     say("build trees: {} {}".format(megabytes(removed), "removed" if parsed.force else "would be removed"))
     if not parsed.force:
-        say("nothing was deleted; add FORCE=1")
+        say("nothing was deleted; add --force")
 
 
 def remotes():
@@ -1002,7 +1002,7 @@ VERBS = (
     ("run", "install and launch the standalone application"),
     ("test", "the tiers: gate, batteries, host"),
     ("integrate", "one upstream update through every gate, cheapest first"),
-    ("clean", "what builds leave behind, reported unless FORCE=1"),
+    ("clean", "what builds leave behind, reported unless --force"),
     ("setup", "register this port's recipes, and the toolchain's, ahead of the general remotes"),
     ("device", "reach the phone directly: run, copy, fetch, where"),
     ("provenance", "which driver, interpreter, port, profile and phone are in use"),
