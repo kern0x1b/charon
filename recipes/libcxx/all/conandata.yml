@@ -4,13 +4,13 @@ patches:
       build say the SDK's UTIME_OMIT does not mean the device has it
     patch_file: patches/utimensat-told-no.patch
     patch_type: portability
-  23.1.1: *id001
+  21.1.8: *id001
 sources:
   21.1.0:
     commit: 3623fe661ae35c6c80ac221f14d85be76aa870f1
     tag: llvmorg-21.1.0
     url: https://github.com/llvm/llvm-project.git
-  23.1.1:
-    commit: 6dfe1677ab8dffbc6ec13d53a1e0215d75147689
-    tag: llvmorg-23.1.1
+  21.1.8:
+    commit: 2078da43e25a4623cab2d0d60decddf709aaea28
+    tag: llvmorg-21.1.8
     url: https://github.com/llvm/llvm-project.git
