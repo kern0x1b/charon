@@ -19,6 +19,7 @@ name = "example"
 version = "1.0"
 
 [target]
+include-profiles = ["shared-target"]
 arch = "armv7"
 os = "iOS"
 os-version = "6.0"
@@ -103,6 +104,9 @@ def checks(declared):
     written = generate.written(declared)
 
     text = written["profile"]
+    if not text.startswith("include(shared-target)"):
+        found.append("a declared profile include must come first, because the shared profile is where the "
+                     "linker and the SDK come from: got {}".format(text.splitlines()[:1]))
     for expected in ("arch=armv7", "os.version=6.0", "os.sdk=iphoneos", "compiler.cppstd=23",
                      "build_type=Release", "-mcpu=cortex-a9", "-mfpu=neon"):
         if expected not in text:

@@ -20,6 +20,7 @@ from pathlib import Path
 
 RECIPE = "conanfile.py"
 MANIFEST = "charon.toml"
+GENERATED = "charon"
 PROFILES = "profiles"
 LOCK = "conan.lock"
 BUILD = "build"
@@ -292,14 +293,68 @@ def provenance(root, chosen_profile):
         say("phone        not configured: {}".format(unknown))
 
 
+def declaration(root):
+    try:
+        import spec
+    except ImportError as missing:
+        raise Failure("spec.py is not beside the driver: {}".format(missing))
+    return spec.load(root)
+
+
+def default_variant(root):
+    declared = manifest(root).get("variants", {})
+    plain = [name for name, variant in declared.items() if not variant.get("options")]
+    if len(plain) != 1:
+        raise Failure("{} declares {} variants with no options ({}); pass VARIANT= to say which to build".format(
+            root / MANIFEST, len(plain), ", ".join(plain) or "none"))
+    return plain[0]
+
+
+def generated(root, variant):
+    declared = declaration(root)
+    if declared is None:
+        return None
+    if declared.using("recipe"):
+        say("recipe       {} (declared under use.recipe)".format(declared.using("recipe")))
+        return None
+    try:
+        import generate
+    except ImportError as missing:
+        raise Failure("generate.py is not beside the driver: {}".format(missing))
+    folder = root / BUILD / variant / GENERATED
+    folder.mkdir(parents=True, exist_ok=True)
+    written = folder / RECIPE
+    written.write_text(generate.recipe(declared, root))
+    say("recipe       {} (written from {})".format(written, root / MANIFEST))
+    return folder
+
+
+def verb_generate(root, parsed):
+    provenance(root, parsed.chosen_profile)
+    variant = parsed.variant or default_variant(root)
+    folder = generated(root, variant)
+    if folder is None:
+        raise Failure("{} declares no manifest to generate from, or names a recipe of its own".format(root))
+    import generate
+    for name, text in generate.written(declaration(root)).items():
+        path = root / BUILD / variant / GENERATED / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+        say("wrote        {}".format(path))
+
+
 def verb_build(root, parsed):
     provenance(root, parsed.chosen_profile)
-    conan("build", root, *conan_flags(root, parsed.chosen_profile),
+    variant = parsed.variant or default_variant(root)
+    where = generated(root, variant) or root
+    conan("build", where, *conan_flags(root, parsed.chosen_profile),
           *variant_options(root, parsed.variant), *parsed.extra)
 
 
 def verb_package(root, parsed):
-    conan("export-pkg", root, *conan_flags(root, parsed.chosen_profile),
+    variant = parsed.variant or default_variant(root)
+    where = generated(root, variant) or root
+    conan("export-pkg", where, *conan_flags(root, parsed.chosen_profile),
           *variant_options(root, parsed.variant), *parsed.extra)
 
 
@@ -712,6 +767,7 @@ def verb_help(root, parsed):
 
 VERBS = (
     ("build", "compile everything this port produces"),
+    ("generate", "write the recipe and the CMake a declaration asks for, without building"),
     ("package", "the installable package, from what was built"),
     ("deploy", "install the staged frameworks on the phone"),
     ("run", "install and launch the standalone application"),
@@ -726,6 +782,7 @@ VERBS = (
 
 HANDLERS = {
     "build": verb_build,
+    "generate": verb_generate,
     "package": verb_package,
     "deploy": verb_deploy,
     "run": verb_run,

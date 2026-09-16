@@ -15,13 +15,16 @@ FERRY := $(PYTHON) $(CHARON) --root $(PORT_ROOT) \
 GATES := $(foreach check,$(CHECKS),--check $(check))
 
 .DEFAULT_GOAL := help
-.PHONY: help build package deploy run test integrate clean setup provenance device
+.PHONY: help build generate package deploy run test integrate clean setup provenance device
 
 help:
 	@$(FERRY) help
 
 build:
 	@$(FERRY) build $(ARGS)
+
+generate:
+	@$(FERRY) generate $(ARGS)
 
 package:
 	@$(FERRY) package $(ARGS)
