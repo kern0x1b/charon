@@ -119,6 +119,19 @@ class Spec:
     def conf_required(self):
         return self.section("conf")
 
+    def tiers(self):
+        return {name: value for name, value in self.section("tests").items() if isinstance(value, dict)}
+
+    def tier(self, name):
+        declared = self.tiers()
+        if name not in declared:
+            known = ", ".join(sorted(declared)) or "none declared"
+            raise SpecError("{} declares no test tier {} ({})".format(self.root / MANIFEST, name, known))
+        return declared[name]
+
+    def transport_binder(self):
+        return self.get("tests", "transport")
+
     def tasks(self):
         return self.section("tasks")
 

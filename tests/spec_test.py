@@ -38,6 +38,17 @@ cmake = "platform"
 [conf]
 "user.example:thing" = "why this port needs it"
 
+[tests]
+transport = "tests/harness.py:bind"
+
+[tests.scripts]
+runs = ["tools/rule-test.py"]
+needs = []
+
+[tests.gate]
+runs = ["tests/run.py:run_gate"]
+needs = ["device"]
+
 [tasks]
 audit = "steps/audit.py --build {build}"
 
@@ -123,6 +134,18 @@ def failures():
         try:
             declared.pipeline("prefixed")
             found.append("a variant with no pipeline must be refused rather than running nothing")
+        except spec.SpecError:
+            pass
+
+        if sorted(declared.tiers()) != ["gate", "scripts"]:
+            found.append("declared tiers must be listed, and the transport key must not read as one")
+        if declared.tier("gate").get("needs") != ["device"]:
+            found.append("a tier must come back with what it needs")
+        if declared.transport_binder() != "tests/harness.py:bind":
+            found.append("the transport binder must be readable on its own")
+        try:
+            declared.tier("nope")
+            found.append("an undeclared tier must be refused")
         except spec.SpecError:
             pass
 

@@ -9,6 +9,7 @@ and this only sequences the calls and reports where they went.
 """
 import argparse
 import importlib.util
+import inspect
 import json
 import os
 import plistlib
@@ -27,10 +28,7 @@ FRAMEWORK = ".framework"
 APPLICATION = ".app"
 CMAKE_STAMP = "CMakeCache.txt"
 APPLICATIONS = "/Applications"
-GATE = ("tests", "device", "run.py")
-HARNESS = ("tests", "device", "harness.py")
-BATTERIES = ("tests", "run-tests.py")
-TIERS = ("gate", "batteries", "host")
+TESTS = "tests"
 MINIMUM_PYTHON = (3, 11)
 CHOSEN_INTERPRETER = "CHARON_INTERPRETER"
 
@@ -422,58 +420,97 @@ def require(status, what):
         raise Failure("{} failed ({})".format(what, status))
 
 
-def exit_status(call, *arguments):
+def exit_status(call, **arguments):
     try:
-        return call(*arguments)
+        return call(**arguments)
     except SystemExit as stop:
         return stop.code if isinstance(stop.code, int) else 1
 
 
-def bound_harness(root, device):
-    harness = import_file(root.joinpath(*HARNESS), "ios6_harness")
-    if not hasattr(harness, "bind"):
-        raise Failure("{} has no bind(), so the tiers would reach the phone through whatever transport they "
-                      "found for themselves instead of the one this run configured".format(
-                          root.joinpath(*HARNESS)))
-    harness.bind(device)
-    return harness
+def declared_entry(root, reference):
+    path, _, function = reference.partition(":")
+    script = root / path
+    if not script.is_file():
+        raise Failure("{} does not exist, and the declaration names it".format(script))
+    return script, function
 
 
-def run_gate(root, device, parsed):
-    bound_harness(root, device)
-    gate = import_file(root.joinpath(*GATE), "ios6_gate")
-    return exit_status(gate.run_gate, parsed.host, parsed.test_port)
+def loaded_entry(root, reference):
+    script, function = declared_entry(root, reference)
+    module = import_file(script, "charon_" + script.stem.replace("-", "_"))
+    target = getattr(module, function, None)
+    if target is None:
+        raise Failure("{} has no {}".format(script, function))
+    return target
 
 
-def run_batteries(root, device, parsed):
-    batteries = import_file(root.joinpath(*BATTERIES), "ios6_batteries")
-    trees = [tree for tree in build_trees(root) if staged_frameworks(tree) is not None]
-    tree = sole_tree(root, trees, "with staged frameworks", parsed.variant)
-    return exit_status(batteries.run_device_tests, root, tree, device)
+def call_declared(root, reference, available):
+    script, function = declared_entry(root, reference)
+    if not function:
+        return subprocess.run([sys.executable, str(script)], cwd=str(root)).returncode
+    target = loaded_entry(root, reference)
+    wanted = inspect.signature(target).parameters
+    missing = [name for name, parameter in wanted.items()
+               if parameter.default is inspect.Parameter.empty and name not in available]
+    if missing:
+        raise Failure("{}:{} asks for {}, which this tier does not provide; declare it under needs".format(
+            script, function, ", ".join(missing)))
+    return exit_status(target, **{name: available[name] for name in wanted if name in available})
 
 
-def run_host(root, parsed):
-    batteries = import_file(root.joinpath(*BATTERIES), "ios6_batteries")
-    return exit_status(batteries.run_host_tests, root)
+def tier_inputs(root, parsed, needs, device):
+    available = {"root": root, "host": parsed.host, "port": parsed.test_port}
+    if "device" in needs:
+        available["device"] = device
+    if "build" in needs:
+        trees = [tree for tree in build_trees(root) if staged_frameworks(tree) is not None]
+        available["build"] = sole_tree(root, trees, "with staged frameworks", parsed.variant)
+    return available
+
+
+def bind_transport(root, declared, device):
+    reference = declared.get("transport")
+    if not reference:
+        return
+    binder = loaded_entry(root, reference)
+    binder(device)
 
 
 def verb_test(root, parsed):
     provenance(root, parsed.chosen_profile)
-    tiers = TIERS if parsed.tier == "all" else (parsed.tier,)
-    device = transport(root) if [tier for tier in tiers if tier != "host"] else None
+    declared = manifest(root).get(TESTS, {})
+    tiers = {name: value for name, value in declared.items() if isinstance(value, dict)}
+    if not tiers:
+        raise Failure("{} declares no tiers under [tests], so there is nothing to run and reporting success "
+                      "would say a port is tested when nothing ran".format(root / MANIFEST))
+    if parsed.tier == "all":
+        chosen = list(tiers)
+    elif parsed.tier in tiers:
+        chosen = [parsed.tier]
+    else:
+        raise Failure("{} declares no tier {} ({})".format(root / MANIFEST, parsed.tier, ", ".join(tiers)))
+
+    device = None
+    if any("device" in tiers[name].get("needs", []) for name in chosen):
+        device = transport(root)
+        bind_transport(root, declared, device)
+
     results = {}
-    for tier in tiers:
-        say("\n=== device tier: {}".format(tier) if tier != "host" else "\n=== host tier")
-        if tier == "gate":
-            results[tier] = run_gate(root, device, parsed)
-        elif tier == "batteries":
-            results[tier] = run_batteries(root, device, parsed)
-        else:
-            results[tier] = run_host(root, parsed)
+    for name in chosen:
+        tier = tiers[name]
+        runs = tier.get("runs") or []
+        if not runs:
+            raise Failure("tier {} declares nothing to run".format(name))
+        say("\n=== tier: {} ({})".format(name, ", ".join(tier.get("needs", [])) or "nothing needed"))
+        available = tier_inputs(root, parsed, tier.get("needs", []), device)
+        status = 0
+        for reference in runs:
+            status = call_declared(root, reference, available) or status
+        results[name] = status
     say("")
-    for tier, status in results.items():
-        say("{}: {}".format(tier, "FAILED ({})".format(status) if status else "PASSED"))
-    failed = [tier for tier, status in results.items() if status]
+    for name, status in results.items():
+        say("{}: {}".format(name, "FAILED ({})".format(status) if status else "PASSED"))
+    failed = [name for name, status in results.items() if status]
     if failed:
         raise Failure("tiers failed: {}".format(", ".join(failed)))
 
@@ -710,7 +747,7 @@ def parse(argv):
     parser.add_argument("--url-file", default="", help="file the application reads its first page from")
     parser.add_argument("--host", help="address the phone reaches this machine on, for the gate's page server")
     parser.add_argument("--test-port", type=int, help="port the gate serves its pages on")
-    parser.add_argument("--tier", choices=TIERS + ("all",), default="all", help="which test tier to run")
+    parser.add_argument("--tier", default="all", help="which declared test tier to run (default: every one)")
     parser.add_argument("--ref", help="upstream ref to merge before integrating")
     parser.add_argument("--check", action="append", default=[], help="a script integrate runs before building")
     parser.add_argument("--force", action="store_true", help="clean: delete instead of reporting")
