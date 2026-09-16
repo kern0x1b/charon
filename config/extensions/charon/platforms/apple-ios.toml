@@ -1,0 +1,18 @@
+os = "iOS"
+sdk = "iphoneos"
+deployment-environment = "IPHONEOS_DEPLOYMENT_TARGET"
+distributions = ["jailbreak", "trollstore", "sideload"]
+tool-requires = ["iphoneos-sdk/13.7@ios6/stable"]
+
+[compiler]
+libcxx = "libc++"
+
+[conf]
+"tools.cmake.cmaketoolchain:generator" = "Ninja"
+
+[architectures.armv7]
+os-version = { min = "6.0" }
+tool-requires = ["ld64/956.6@ios6/stable"]
+
+[architectures.armv8]
+os-version = { min = "7.0" }

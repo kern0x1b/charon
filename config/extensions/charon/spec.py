@@ -11,6 +11,8 @@ import re
 from pathlib import Path
 
 MANIFEST = "charon.toml"
+PLATFORMS = Path(__file__).resolve().parent / "platforms"
+PLATFORM_SAYS = ("os", "os-version", "arch", "sdk", "include-profiles")
 TARGET_KINDS = ("static-library", "device-library", "executable", "application")
 BUILDING_VARIANT = "for-variant"
 PLACEHOLDER = re.compile(r"\{([a-z][a-z0-9_.-]*(?::[^{}]*)?)\}")
@@ -30,6 +32,10 @@ PATHS = {
 
 class SpecError(Exception):
     pass
+
+
+def _release(text):
+    return tuple(int(part) for part in str(text).split("."))
 
 
 def load(root):
@@ -106,6 +112,8 @@ class Spec:
         content = copy.deepcopy(self.content)
         if variant.get("target"):
             content["target"] = dict(content.get("target") or {}, **variant["target"])
+        if variant.get("platform"):
+            content["platform"] = dict(content.get("platform") or {}, **variant["platform"])
         if variant.get("conf"):
             content["conf"] = dict(content.get("conf") or {}, **variant["conf"])
         if variant.get("package"):
@@ -124,6 +132,66 @@ class Spec:
                     self.root / MANIFEST, name, target_name))
         content[BUILDING_VARIANT] = name
         return Spec(self.root, content)
+
+    def platform(self):
+        declared = self.section("platform")
+        if not declared:
+            return None
+        import tomllib
+        name = declared.get("use")
+        if not name:
+            raise SpecError("{} has a [platform] that names none with use".format(self.root / MANIFEST))
+        candidates = [self.root / "platforms" / "{}.toml".format(name), PLATFORMS / "{}.toml".format(name)]
+        found = next((candidate for candidate in candidates if candidate.is_file()), None)
+        if found is None:
+            known = sorted({path.stem for folder in (self.root / "platforms", PLATFORMS) if folder.is_dir()
+                            for path in folder.glob("*.toml")})
+            raise SpecError("{} uses the platform {}, which neither the port nor Charon defines ({})".format(
+                self.root / MANIFEST, name, ", ".join(known) or "none"))
+        with found.open("rb") as handle:
+            facts = tomllib.load(handle)
+        repeated = [key for key in PLATFORM_SAYS if key in self.section("target")]
+        if repeated:
+            raise SpecError("{} names {} under [target] and uses the {} platform, which says it; [platform] is the "
+                            "one place for what the port builds for".format(self.root / MANIFEST,
+                                                                            ", ".join(repeated), name))
+        architectures = facts.get("architectures") or {}
+        arch = declared.get("arch")
+        if arch not in architectures:
+            raise SpecError("{} builds for {} on {}, which builds for {}".format(
+                self.root / MANIFEST, arch, name, ", ".join(sorted(architectures)) or "nothing"))
+        version = declared.get("os-version")
+        if not version:
+            raise SpecError("{} names no os-version under [platform]; it is the oldest release the port runs on"
+                            .format(self.root / MANIFEST))
+        bounds = dict(facts.get("os-version") or {}, **(architectures[arch].get("os-version") or {}))
+        if "min" in bounds and _release(version) < _release(bounds["min"]):
+            raise SpecError("{} targets {} {} on {}, and {} starts at {}".format(
+                self.root / MANIFEST, facts.get("os"), version, arch, name, bounds["min"]))
+        if "max" in bounds and _release(version) > _release(bounds["max"]):
+            raise SpecError("{} targets {} {} on {}, and {} ends at {}".format(
+                self.root / MANIFEST, facts.get("os"), version, arch, name, bounds["max"]))
+        distribution = declared.get("distribution")
+        if distribution is not None and distribution not in (facts.get("distributions") or []):
+            raise SpecError("{} distributes as {}, which {} does not know ({})".format(
+                self.root / MANIFEST, distribution, name, ", ".join(facts.get("distributions") or []) or "none"))
+        unknown = sorted(set(declared) - {"use", "arch", "os-version", "distribution"})
+        if unknown:
+            raise SpecError("{} says {} under [platform], which Charon does not read".format(
+                self.root / MANIFEST, ", ".join(unknown)))
+        return {
+            "name": name,
+            "os": facts["os"],
+            "sdk": facts.get("sdk"),
+            "arch": arch,
+            "os-version": str(version),
+            "distribution": distribution,
+            "deployment-environment": facts.get("deployment-environment"),
+            "compiler": dict(facts.get("compiler") or {}),
+            "conf": dict(facts.get("conf") or {}),
+            "tool-requires": list(facts.get("tool-requires") or []) + list(architectures[arch].get("tool-requires")
+                                                                            or []),
+        }
 
     def targets(self, kind):
         declared = self.content.get(kind) or []

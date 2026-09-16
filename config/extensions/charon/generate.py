@@ -42,7 +42,50 @@ def _path(value):
     return "{}/{}".format(PORT, text)
 
 
+def platform_profile(declared, platform):
+    target = declared.section("target")
+    lines = ["{% set detected = detect_api.detect_default_compiler() %}", "", "[settings]",
+             "os={}".format(platform["os"]), "os.version={}".format(platform["os-version"])]
+    if platform["sdk"]:
+        lines.append("os.sdk={}".format(platform["sdk"]))
+    lines += ["arch={}".format(platform["arch"]), "build_type={}".format(target.get("build-type", "Release")),
+              "compiler={{ detected[0] }}",
+              "compiler.version={{ detect_api.default_compiler_version(detected[0], detected[1]) }}"]
+    for key, value in platform["compiler"].items():
+        lines.append("compiler.{}={}".format(key, value))
+    if "cppstd" in target:
+        lines.append("compiler.cppstd={}".format(target["cppstd"]))
+    if platform["tool-requires"]:
+        lines += ["", "[tool_requires]"] + platform["tool-requires"]
+    conf = {key: _conf_value(key, value) for key, value in platform["conf"].items()}
+    for key, value in list(_tuning_conf(target).items()) + list(declared_conf_values(declared).items()):
+        if key in conf:
+            raise GenerationError("{} is set twice, by the {} platform or [target] tuning and by the declaration; "
+                                  "a second value would silently drop the first".format(key, platform["name"]))
+        conf[key] = value
+    if conf:
+        lines += ["", "[conf]"] + ["{}={}".format(key, value) for key, value in conf.items()]
+    if platform["deployment-environment"]:
+        lines += ["", "[buildenv]", "{}={}".format(platform["deployment-environment"], platform["os-version"])]
+    return "\n".join(lines) + "\n"
+
+
+def _tuning_conf(target):
+    tuning = []
+    if "cpu" in target:
+        tuning += ["-mcpu={}".format(target["cpu"]), "-mtune={}".format(target["cpu"])]
+    if "fpu" in target:
+        tuning.append("-mfpu={}".format(target["fpu"]))
+    if not tuning:
+        return {}
+    rendered = "[{}]".format(", ".join(_quoted(flag) for flag in tuning))
+    return {"tools.build:cflags": rendered, "tools.build:cxxflags": rendered}
+
+
 def profile(declared, includes=None):
+    platform = declared.platform()
+    if platform is not None:
+        return platform_profile(declared, platform)
     target = declared.section("target")
     for required in ("arch", "os", "os-version"):
         if required not in target:

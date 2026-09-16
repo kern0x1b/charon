@@ -206,6 +206,86 @@ strip = ""
 """
 
 
+PLATFORMED = """
+[port]
+name = "example"
+version = "1.0"
+
+[platform]
+use = "apple-ios"
+arch = "armv7"
+os-version = "6.0"
+distribution = "jailbreak"
+
+[target]
+cpu = "cortex-a9"
+
+[variants.armv7]
+
+[variants.arm64.platform]
+arch = "armv8"
+os-version = "7.0"
+"""
+
+PLATFORM_REFUSED = {
+    "a platform nobody defines": ('use = "palm-os"', "neither the port nor Charon defines"),
+    "an architecture the platform does not build": ('arch = "x86"', "which builds for"),
+    "a release older than the architecture allows": ('os-version = "5.1"', "starts at 6.0"),
+    "a distribution the platform does not know": ('distribution = "floppy"', "does not know"),
+    "a key Charon does not read": ('flavour = "sweet"', "does not read"),
+}
+
+
+def platform_failures():
+    import tempfile
+    found = []
+    with tempfile.TemporaryDirectory() as folder:
+        root = Path(folder)
+        (root / spec.MANIFEST).write_text(PLATFORMED)
+        declared = spec.load(root)
+        platform = declared.platform()
+        if (platform["os"], platform["arch"], platform["os-version"], platform["sdk"]) != ("iOS", "armv7", "6.0",
+                                                                                          "iphoneos"):
+            found.append("a platform must answer os, arch, release and SDK: got {}".format(platform))
+        if "ld64/956.6@ios6/stable" not in platform["tool-requires"] or not any(
+                name.startswith("iphoneos-sdk/") for name in platform["tool-requires"]):
+            found.append("armv7 on apple-ios must bring the SDK and ld64: got {}".format(platform["tool-requires"]))
+        wide = declared.for_variant("arm64").platform()
+        if wide["arch"] != "armv8" or wide["os-version"] != "7.0" or wide["distribution"] != "jailbreak":
+            found.append("a variant's [platform] must override the keys it names and keep the rest: got {}".format(
+                wide))
+        if any(name.startswith("ld64/") for name in wide["tool-requires"]):
+            found.append("an architecture's own tools must not reach another architecture: got {}".format(
+                wide["tool-requires"]))
+        for description, (line, reason) in PLATFORM_REFUSED.items():
+            key = line.split(" = ")[0]
+            lines = [row for row in PLATFORMED.split("[target]")[0].splitlines() if not row.startswith(key + " =")]
+            (root / spec.MANIFEST).write_text("\n".join(lines + [line]) + "\n")
+            try:
+                spec.load(root).platform()
+                found.append("{} must be refused".format(description))
+            except spec.SpecError as refused:
+                if reason not in str(refused):
+                    found.append("{} must be refused for that reason: {}".format(description, refused))
+        (root / spec.MANIFEST).write_text(PLATFORMED.replace('cpu = "cortex-a9"', 'arch = "armv7"'))
+        try:
+            spec.load(root).platform()
+            found.append("[target] repeating what the platform says must be refused")
+        except spec.SpecError as refused:
+            if "one place" not in str(refused):
+                found.append("a repeated key must be refused for that reason: {}".format(refused))
+        (root / "platforms").mkdir()
+        (root / "platforms" / "apple-ios.toml").write_text(
+            'os = "iOS"\ndistributions = ["jailbreak"]\n[architectures.armv7]\nos-version = { min = "5.0" }\n')
+        (root / spec.MANIFEST).write_text(PLATFORMED.replace('os-version = "6.0"', 'os-version = "5.1"'))
+        try:
+            if spec.load(root).platform()["os-version"] != "5.1":
+                found.append("a port's own platforms/ must override Charon's platform of the same name")
+        except spec.SpecError as refused:
+            found.append("a port's own platform definition must be used before Charon's: {}".format(refused))
+    return found
+
+
 def variant_failures():
     import tempfile
     found = []
@@ -241,7 +321,7 @@ def main():
         print("FAIL  this needs Python 3.11 or newer for tomllib, and it is running under {}. "
               "Skipping would report success having checked nothing.".format(running))
         return 1
-    found = failures() + variant_failures()
+    found = failures() + variant_failures() + platform_failures()
     for line in found:
         print("FAIL  {}".format(line))
     if found:

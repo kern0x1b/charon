@@ -480,6 +480,77 @@ def conf_failures(folder):
     return found
 
 
+PLATFORMED = """
+[platform]
+use = "apple-ios"
+arch = "armv7"
+os-version = "6.0"
+
+[target]
+cppstd = 23
+cpu = "cortex-a9"
+
+[conf]
+"user.charon-test:value" = { value = "set", why = "a declared value sits beside the platform's" }
+
+[variants.arm64.platform]
+arch = "armv8"
+os-version = "7.0"
+"""
+
+
+def platform_failures(folder):
+    found = []
+    root = Path(folder) / "platformed"
+    root.mkdir()
+    declared = loaded(root, PLATFORMED)
+    home = Path(folder) / "platform-home"
+    home.mkdir()
+    environment = dict(os.environ, CONAN_HOME=str(home))
+    installed = subprocess.run(["conan", "config", "install", str(Path(generate.__file__).resolve().parents[2])],
+                               capture_output=True, text=True, env=environment)
+    if installed.returncode:
+        return ["the toolchain configuration must install into a fresh Conan home: {}".format(installed.stderr)]
+    for variant, arch, version, tools in (("armv7", "armv7", "6.0", {"ld64", "iphoneos-sdk"}),
+                                          ("arm64", "armv8", "7.0", {"iphoneos-sdk"})):
+        text = generate.written(declared if variant == "armv7" else declared.for_variant(variant))["profile"]
+        if "include(" in text:
+            found.append("a platform writes the whole profile, so nothing is included: {}".format(text))
+        written = root / "build" / variant / "charon" / "profile"
+        written.parent.mkdir(parents=True, exist_ok=True)
+        written.write_text(text)
+        shown = subprocess.run(["conan", "profile", "show", "-pr:h", str(written), "-pr:b", "default", "--format=json"],
+                               capture_output=True, text=True, env=environment)
+        if shown.returncode:
+            subprocess.run(["conan", "profile", "detect"], capture_output=True, env=environment)
+            shown = subprocess.run(["conan", "profile", "show", "-pr:h", str(written), "-pr:b", "default",
+                                    "--format=json"], capture_output=True, text=True, env=environment)
+        if shown.returncode:
+            found.append("conan must read the {} profile the platform wrote: {}".format(variant, shown.stderr[-400:]))
+            continue
+        host = json.loads(shown.stdout)["host"]
+        settings = host["settings"]
+        for key, value in (("os", "iOS"), ("os.version", version), ("arch", arch), ("os.sdk", "iphoneos"),
+                           ("compiler.libcxx", "libc++"), ("compiler.cppstd", "23")):
+            if settings.get(key) != value:
+                found.append("the {} profile must set {}={}: got {}".format(variant, key, value, settings.get(key)))
+        if not settings.get("compiler") or not settings.get("compiler.version"):
+            found.append("the {} profile must detect the compiler: got {}".format(variant, settings))
+        required = {reference.split("/")[0] for references in (host.get("tool_requires") or {}).values()
+                    for reference in references}
+        if required != tools:
+            found.append("the {} profile must require {} for its builds: got {}".format(variant, sorted(tools),
+                                                                                      sorted(required)))
+        conf = host.get("conf") or {}
+        for key, value in (("tools.cmake.cmaketoolchain:generator", "Ninja"), ("user.charon-test:value", "set"),
+                           ("tools.build:cxxflags", ["-mcpu=cortex-a9", "-mtune=cortex-a9"])):
+            if conf.get(key) != value:
+                found.append("the {} profile must carry {}={!r}: got {!r}".format(variant, key, value, conf.get(key)))
+        if "IPHONEOS_DEPLOYMENT_TARGET={}".format(version) not in text:
+            found.append("the {} profile must export the platform's deployment variable: {}".format(variant, text))
+    return found
+
+
 def architecture_failures(folder):
     root = Path(folder) / "wide"
     root.mkdir()
@@ -535,6 +606,7 @@ def main():
         found += determinism_failures(folder)
         found += conf_failures(folder)
         found += architecture_failures(folder)
+        found += platform_failures(folder)
     for line in found:
         print("FAIL  {}".format(line))
     if found:

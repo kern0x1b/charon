@@ -58,12 +58,15 @@ A port carries no conanfile.py, no profile, no CMake and no Makefile. It carries
     version = "0.1.0"
     index = "revenant"
 
-    [target]
-    include-profiles = ["ios6-armv7"]
+    [platform]
+    use = "apple-ios"
     arch = "armv7"
-    os = "iOS"
     os-version = "6.0"
-    sdk = "iphoneos"
+    distribution = "jailbreak"
+
+    [target]
+    cppstd = 23
+    cpu = "cortex-a9"
 
     [requires]
     openssl = "3.0.15@revenant/stable"
@@ -174,6 +177,20 @@ fails for every consumer; `charon build` and `charon setup` refuse such an index
 before anything runs. `charon setup` also names each `conandata.yml` whose text
 the trim rewrites: `conan create` in that folder gives a different revision from
 the one consumers resolve, so a package built that way is not the one they use.
+
+`[platform]` names what the port builds for, and nothing else says it. A
+platform is a file of facts - `config/extensions/charon/platforms/apple-ios.toml`
+is the first - giving the operating system, its SDK name, the architectures it
+builds with the oldest and newest release each supports, the tools every build
+for an architecture requires (the SDK package; ld64 for armv7), the compiler's
+runtime, the configuration and the deployment-target variable its tools read,
+and the distributions it knows. Charon writes the whole host profile from it,
+refuses an architecture, a release or a distribution the platform does not
+have, and refuses `[target]` repeating `os`, `arch`, `os-version`, `sdk` or
+`include-profiles`. `[variants.NAME.platform]` changes the architecture or the
+release for one slice. A port's own `platforms/NAME.toml` is used before
+Charon's, so a platform can be written or corrected without changing Charon.
+`[target]` keeps what tunes the build: `cppstd`, `cpu`, `fpu`, `defines`.
 
 The rest Charon derives rather than being told: the host profile comes from
 `[target]`, the engine build is the one direct child of `build/` that CMake
