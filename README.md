@@ -98,6 +98,20 @@ A task is a table with exactly one of `script`, `shell` or `python`, and its
 runs in `[pipeline]` as `task:NAME`, before the build under `charon integrate`
 when `[integrate] before-build` names it, or on its own with `charon task NAME`.
 
+A target's `sources` may be patterns - `src/**/*.m` - with `exclude`, expanded
+when Charon writes the project; a pattern that matches nothing is refused. An
+application is linked by `build:application` and signed by `sign:application`,
+and the steps between them get `{application}` and `{executable}`, so a Mach-O
+fix-up runs on the linked, unsigned binary. `strip = "-S -x"` strips the
+executable right after it is linked; `plist-file` starts Info.plist from a file,
+with `[application.plist]` over it and the derived keys filling only what both
+leave out; `bundle = [{ from = "{pkg:NAME}/lib/libfoo.dylib", into = "Frameworks" }]`
+copies a package's file into the bundle and gives a binary its
+`@executable_path` identity. A library the application opens by a path string
+is not rewritten by any of this - that path is the application's own. A
+pipeline that builds an application and never signs it is refused, unless
+another variant merges it.
+
 Anything Charon writes can be replaced. `cmake = "<dir>"` on a target uses that
 project instead of a generated one; `[engine] user-toolchain` and
 `project-include` name hand-written cmake files; `[use] profile` and

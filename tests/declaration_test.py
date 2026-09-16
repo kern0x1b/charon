@@ -142,6 +142,81 @@ def port(module, options):
     return Port()
 
 
+def plist_failures(module):
+    import plistlib
+    found = []
+    with tempfile.TemporaryDirectory() as folder:
+        root = Path(folder)
+        with open(root / "Info.plist", "wb") as handle:
+            plistlib.dump({"CFBundleExecutable": "Host", "CFBundleVersion": "1.16.48", "MinimumOSVersion": "6.0",
+                           "CFBundleIdentifier": "from.file", "UIRequiredDeviceCapabilities": ["armv7"]}, handle)
+        with open(root / "Wrong.plist", "wb") as handle:
+            plistlib.dump({"CFBundleExecutable": "Other"}, handle)
+        instance = port(module, {"prefixed": "False"})
+        type(instance).port = str(root)
+
+        info = instance._application_plist("Host", {"plist-file": "Info.plist",
+                                                    "plist": {"CFBundleIdentifier": "from.table"}})
+        for key, expected, why in (
+                ("CFBundleVersion", "1.16.48", "a key the file sets must win over the derived one"),
+                ("CFBundleIdentifier", "from.table", "the declared table must win over the file"),
+                ("UIRequiredDeviceCapabilities", ["armv7"], "a key only the file has must be kept"),
+                ("CFBundleName", "Host", "a key neither sets must be derived")):
+            if info.get(key) != expected:
+                found.append("{}: {} is {!r}".format(why, key, info.get(key)))
+
+        plain = instance._application_plist("Host", {"plist": {"CFBundleIdentifier": "x"}})
+        if plain.get("CFBundleVersion") != "1.0" or plain.get("MinimumOSVersion") != "6.0":
+            found.append("with no file, the version and minimum OS must still be derived: got {}".format(plain))
+
+        for declared, why in (({"plist-file": "Wrong.plist"}, "a file naming another executable"),
+                              ({"plist-file": "Absent.plist"}, "a plist-file that is not there")):
+            try:
+                instance._application_plist("Host", declared)
+                found.append("{} must be refused".format(why))
+            except Exception:
+                pass
+    return found
+
+
+def bundle_failures(module):
+    found = []
+    with tempfile.TemporaryDirectory() as folder:
+        root = Path(folder)
+        packages = root / "build" / "packages"
+        packages.mkdir(parents=True)
+        (packages / "libthin.dylib").write_bytes(b"\xce\xfa\xed\xfe" + b"\0" * 60)
+        (packages / "libwide.dylib").write_bytes(b"\xcf\xfa\xed\xfe" + b"\0" * 60)
+        (packages / "notes.txt").write_text("not a binary")
+        bundle = root / "Host.app"
+        bundle.mkdir()
+        instance = port(module, {"prefixed": "False"})
+        instance.build_folder = str(root / "build")
+
+        carried = instance._declared_bundle(str(bundle), {"name": "Host", "bundle": [
+            {"from": "{build}/packages/libthin.dylib"},
+            {"from": "{build}/packages/libwide.dylib"},
+            {"from": "{build}/packages/notes.txt", "into": "Resources"}]})
+        expected = {str(bundle / "Frameworks" / "libthin.dylib"): "@executable_path/Frameworks/libthin.dylib",
+                    str(bundle / "Frameworks" / "libwide.dylib"): "@executable_path/Frameworks/libwide.dylib"}
+        if carried != expected:
+            found.append("bundled binaries, 32-bit and 64-bit alike, must get an identity inside the bundle, and "
+                         "nothing else must: got {}".format(carried))
+        if not (bundle / "Resources" / "notes.txt").is_file():
+            found.append("a bundled file must land where into says")
+
+        for entries, why, reason in (
+                ([{"from": "{build}/packages/absent.dylib"}], "bundling a file that is not there", "no such file"),
+                ([{"into": "Frameworks"}], "a bundle entry with no from", "table with from")):
+            try:
+                instance._declared_bundle(str(bundle), {"name": "Host", "bundle": entries})
+                found.append("{} must be refused".format(why))
+            except Exception as refused:
+                if reason not in str(refused):
+                    found.append("{} must be refused for that reason, not another: got {}".format(why, refused))
+    return found
+
+
 def sign_failures(module):
     found = []
     merged = {"system": {}, "universal": {"merge": ["system"]}}
@@ -349,7 +424,8 @@ def main():
     except ImportError as missing:
         print("FAIL  this needs an interpreter that can import conan: {}".format(missing))
         return 1
-    found = failures(module) + dispatch_failures(module) + task_failures(module) + sign_failures(module)
+    found = (failures(module) + dispatch_failures(module) + task_failures(module) + sign_failures(module) +
+             plist_failures(module) + bundle_failures(module))
     for line in found:
         print("FAIL  {}".format(line))
     if found:

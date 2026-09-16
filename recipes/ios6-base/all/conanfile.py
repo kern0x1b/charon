@@ -623,6 +623,7 @@ class Ios6Port:
             destination = os.path.join(frameworks, library)
             shutil.copy2(os.path.join(runtime, built), destination)
             bundled[destination] = f"@executable_path/Frameworks/{library}"
+        bundled.update(self._declared_bundle(bundle, declared))
 
         macho.retarget(bundled)
         for binary in bundled:
@@ -642,6 +643,8 @@ class Ios6Port:
                 f"{executable} loads {', '.join(elsewhere)} from outside its own bundle while shipping a copy "
                 "of each; the application would run against whatever the system has there instead of what it "
                 "was built with")
+        if declared.get("strip"):
+            macho.strip(executable, declared["strip"])
 
     def _sign_target(self, name):
         if name != "application":
@@ -654,11 +657,24 @@ class Ios6Port:
         entitlements = declared.get("entitlements")
         MachO(self).sign(executable, os.path.join(self.port_root, entitlements) if entitlements else None)
 
-    def _write_application_plist(self, bundle, name, declared):
+    def _application_plist(self, name, declared):
         described = dict(declared.get("plist", {}))
         scheme = described.pop("url-scheme", None)
-        identifier = described.get("CFBundleIdentifier", name)
-        info = {
+        info = {}
+        written = declared.get("plist-file")
+        if written:
+            path = os.path.join(self.port_root, written)
+            if not os.path.isfile(path):
+                raise ConanException(f"{name} names plist-file {written}, and there is no such file")
+            with open(path, "rb") as handle:
+                info = plistlib.load(handle)
+        info.update(described)
+        executable = info.get("CFBundleExecutable")
+        if executable is not None and executable != name:
+            raise ConanException(
+                f"{written or 'the declared plist'} gives CFBundleExecutable {executable}, and the application "
+                f"built is {name}; the bundle would not start")
+        derived = {
             "CFBundleName": name,
             "CFBundleDisplayName": name,
             "CFBundleExecutable": name,
@@ -666,9 +682,34 @@ class Ios6Port:
             "CFBundleShortVersionString": str(self.version),
             "MinimumOSVersion": str(self.settings.os.version),
         }
-        info.update(described)
+        for key, value in derived.items():
+            info.setdefault(key, value)
+        identifier = info.get("CFBundleIdentifier", name)
         if scheme:
             info["CFBundleURLTypes"] = [{"CFBundleURLName": identifier, "CFBundleURLSchemes": [scheme]}]
+        return info
+
+    def _declared_bundle(self, bundle, declared):
+        name = declared.get("name")
+        context = self._declared_context()
+        carried = {}
+        for entry in declared.get("bundle", []):
+            if not isinstance(entry, dict) or not entry.get("from"):
+                raise ConanException(f"{name} bundles {entry!r}; an entry is a table with from and, optionally, "
+                                     "into")
+            source = self._expand(entry["from"], context)
+            if not os.path.isfile(source):
+                raise ConanException(f"{name} bundles {source}, and there is no such file")
+            into = str(entry.get("into", "Frameworks")).strip("/")
+            destination = os.path.join(bundle, into, os.path.basename(source))
+            os.makedirs(os.path.dirname(destination), exist_ok=True)
+            shutil.copy2(source, destination)
+            if MachO.is_macho(destination):
+                carried[destination] = f"@executable_path/{into}/{os.path.basename(source)}"
+        return carried
+
+    def _write_application_plist(self, bundle, name, declared):
+        info = self._application_plist(name, declared)
         with open(os.path.join(bundle, "Info.plist"), "wb") as handle:
             plistlib.dump(info, handle)
 
@@ -703,7 +744,7 @@ class MachO:
     """
 
     ENCRYPTED = "LC_ENCRYPTION_INFO"
-    MAGIC = (b"\xce\xfa\xed\xfe", b"\xca\xfe\xba\xbe")
+    MAGIC = (b"\xce\xfa\xed\xfe", b"\xcf\xfa\xed\xfe", b"\xca\xfe\xba\xbe")
 
     def __init__(self, conanfile):
         self._conanfile = conanfile
