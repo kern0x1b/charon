@@ -30,6 +30,8 @@ fpu = "neon"
 
 [engine]
 find-packages = ["LibXml2"]
+project-name = "Example"
+config-packages = ["LibXml2", "LibXslt"]
 
 [[static-library]]
 name = "compat"
@@ -164,6 +166,14 @@ def checks(declared):
         found.append("an application must install its binary")
     if "install(FILES ${CHARON_PORT}/app/cacert.pem DESTINATION .)" not in application:
         found.append("an application must install its declared resources")
+
+    applied = written[generate.PROJECT_INCLUDE]
+    for package in ("LibXml2", "LibXslt"):
+        if "find_package({} REQUIRED CONFIG)".format(package) not in applied:
+            found.append("a package declared under config-packages must be found by config, or the engine "
+                         "falls back to whatever the SDK has: {} missing from {}".format(package, applied))
+    if generate.GENERATED not in applied:
+        found.append("the applied file must say it is generated")
 
     for line in (generate.GENERATED,):
         if line not in static or line not in device:

@@ -314,8 +314,23 @@ def recipe(declared, port_root):
     )
 
 
+PROJECT_INCLUDE = "project-include.cmake"
+
+
+def project_include(declared):
+    packages = declared.get("engine", "config-packages", [])
+    if not packages:
+        return None
+    lines = [GENERATED]
+    lines += ["find_package({} REQUIRED CONFIG)".format(name) for name in packages]
+    return "\n".join(lines) + "\n"
+
+
 def written(declared, required=True):
     produced = {}
+    applied = project_include(declared)
+    if applied is not None:
+        produced[PROJECT_INCLUDE] = applied
     profiles = declared.using("profile")
     if profiles is None:
         produced["profile"] = profile(declared, includes=declared.get("target", "include-profiles", []))

@@ -279,13 +279,24 @@ class Ios6Port:
         })
         include = engine.get("project-include")
         if include:
+            applied = os.path.join(self.port_root, include)
+        elif engine.get("config-packages"):
+            applied = os.path.join(self.recipe_folder, "project-include.cmake")
+            if not os.path.isfile(applied):
+                raise ConanException(
+                    f"{self.name} declares config-packages and nothing was written to {applied}; the "
+                    "declaration is what generates it, so generating has to happen before building")
+        else:
+            applied = None
+        if applied:
             name = engine.get("project-name")
             if not name:
                 raise ConanException(
-                    f"{self.name} declares project-include but no project-name. CMake applies the file as "
+                    f"{self.name} says which packages the engine must find by config, or names a "
+                    "project-include of its own, but no project-name. CMake applies the file as "
                     "CMAKE_PROJECT_<the name the engine gives project()>_INCLUDE, and the folder the sources "
                     "sit in is not that name; guessing it means the file is silently never included")
-            variables[f"CMAKE_PROJECT_{name}_INCLUDE"] = os.path.join(self.port_root, include)
+            variables[f"CMAKE_PROJECT_{name}_INCLUDE"] = applied
         toolchain.generate()
 
         deps = CMakeDeps(self)
@@ -330,12 +341,36 @@ class Ios6Port:
         if name not in declared:
             known = ", ".join(sorted(declared)) or "none declared"
             raise ConanException(f"{self.name} declares no task {name} ({known})")
-        words = self._expand(declared[name], self._declared_context()).split()
+        body = declared[name]
+        context = self._declared_context()
+        if isinstance(body, str):
+            return self._run_script(name, self._expand(body, context))
+        if not isinstance(body, dict):
+            raise ConanException(f"task {name} is neither a command line nor a table of one")
+        arguments = self._expand(body.get("args", ""), context)
+        if "script" in body:
+            return self._run_script(name, "{} {}".format(self._expand(body["script"], context), arguments))
+        if "shell" in body:
+            return self.run(self._expand(body["shell"], context))
+        if "python" in body:
+            return self._run_written(name, body["python"], arguments)
+        raise ConanException(f"task {name} says nothing to run; it may declare script, shell or python")
+
+    def _run_script(self, name, commandline):
+        words = commandline.split()
         script = os.path.join(self.port_root, words[0])
         if not os.path.isfile(script):
             raise ConanException(f"{script} does not exist, and the task {name} names it")
         arguments = " ".join(f'"{word}"' for word in words[1:])
         self.run(f'"{sys.executable}" "{script}" {arguments}')
+
+    def _run_written(self, name, body, arguments):
+        folder = os.path.join(self.build_folder, "charon-tasks")
+        mkdir(self, folder)
+        written = os.path.join(folder, f"{name}.py")
+        with open(written, "w") as handle:
+            handle.write(body)
+        self.run(f'"{sys.executable}" "{written}" {arguments}')
 
     def _declared_kind(self, name):
         for kind in ("static-library", "device-library"):

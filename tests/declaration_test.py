@@ -12,6 +12,7 @@ import importlib.util
 import os
 import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 CHOSEN = "DECLARATION_TEST_INTERPRETER"
@@ -47,7 +48,12 @@ DECLARATION = {
         },
     },
     "static-library": [{"name": "compat", "cmake": "compat", "produces": "libcompat.a"}],
-    "tasks": {"audit": "steps/audit.py --build {build}"},
+    "tasks": {
+        "audit": "steps/audit.py --build {build}",
+        "greet": {"shell": "echo {build}"},
+        "census": {"python": "import sys\nprint(sys.argv[1:])\n", "args": "{build}"},
+        "silent": {"note": "declares nothing to run"},
+    },
     "pipeline": {"system": ["task:audit", "build:compat", "build:engine", "check:exports", "stage:frameworks"]},
 }
 
@@ -111,6 +117,10 @@ def port(module, options):
             self.build_folder = "/port/build/system"
             self.output = Output()
             self.ran = []
+            self.commands = []
+
+        def run(self, command):
+            self.commands.append(command)
 
         def _run_task(self, name):
             self.ran.append("task:" + name)
@@ -219,6 +229,45 @@ def failures(module):
     return found
 
 
+def task_failures(module):
+    found = []
+    real = module.Ios6Port._run_task
+
+    shell = port(module, {"prefixed": "False"})
+    real(shell, "greet")
+    if shell.commands != ["echo /port/build/system"]:
+        found.append("a task declared as shell must run what it says, with the placeholders filled: "
+                     "got {}".format(shell.commands))
+
+    inline = port(module, {"prefixed": "False"})
+    inline.build_folder = tempfile.mkdtemp()
+    try:
+        real(inline, "census")
+        body = Path(inline.build_folder) / "charon-tasks" / "census.py"
+        if not body.is_file():
+            found.append("a task whose body is declared inline must be written down to be run: "
+                         "{} is absent".format(body))
+        elif "print(sys.argv[1:])" not in body.read_text():
+            found.append("an inline body must be written as declared: got {}".format(body.read_text()))
+        if not inline.commands or str(body) not in inline.commands[0]:
+            found.append("an inline task must run the file it just wrote: got {}".format(inline.commands))
+        elif inline.build_folder not in inline.commands[0].rsplit('"', 2)[-1]:
+            found.append("an inline task must receive its declared arguments, expanded: "
+                         "got {}".format(inline.commands[0]))
+    finally:
+        shutil.rmtree(inline.build_folder, ignore_errors=True)
+
+    for name, why in (("silent", "a task that names neither script, shell nor python"),
+                      ("audit", "a task naming a script that is not there")):
+        instance = port(module, {"prefixed": "False"})
+        try:
+            real(instance, name)
+            found.append("{} must be refused".format(why))
+        except Exception:
+            pass
+    return found
+
+
 def conan_interpreter():
     launcher = shutil.which("conan")
     if not launcher:
@@ -258,7 +307,7 @@ def main():
     except ImportError as missing:
         print("FAIL  this needs an interpreter that can import conan: {}".format(missing))
         return 1
-    found = failures(module) + dispatch_failures(module)
+    found = failures(module) + dispatch_failures(module) + task_failures(module)
     for line in found:
         print("FAIL  {}".format(line))
     if found:
