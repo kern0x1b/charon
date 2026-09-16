@@ -21,20 +21,22 @@ HERE = Path(__file__).resolve().parent
 CHECKER = HERE.parent / "recipes" / "dyld-imports-check" / "all" / "src" / "dyld-imports-check"
 
 
-def cache(path, architecture, exported):
+def cache(path, architecture, exported, installed="/usr/lib/libSystem.B.dylib"):
     strings = b"\0" + exported.encode() + b"\0"
     image, header = 0x100, 28
     symbols = image + header + 24
     table = symbols + 12
-    data = bytearray(table + len(strings))
+    name = table + len(strings)
+    data = bytearray(name + len(installed) + 1)
     data[0:16] = "dyld_v1{:>8}".format(architecture).encode().ljust(16, b"\0")
     struct.pack_into("<IIII", data, 16, 0x40, 1, 0x60, 1)
     struct.pack_into("<QQQII", data, 0x40, 0, len(data), 0, 5, 5)
-    struct.pack_into("<Q", data, 0x60, image)
+    struct.pack_into("<QQQI", data, 0x60, image, 0, 0, name)
     struct.pack_into("<IiiIIII", data, image, 0xFEEDFACE, 12, 9, 6, 1, 24, 0)
     struct.pack_into("<IIIIII", data, image + header, 0x2, 24, symbols, 1, table, len(strings))
     struct.pack_into("<IBBhI", data, symbols, 1, 0x0F, 1, 0, 0)
-    data[table:] = strings
+    data[table:name] = strings
+    data[name:] = installed.encode() + b"\0"
     path.write_bytes(bytes(data))
     return path
 
@@ -64,11 +66,19 @@ def failures():
         clean = dylib(folder, ld64, "clean-armv7", "armv7-apple-ios6.0", "_exported")
         late = dylib(folder, ld64, "late-armv7", "armv7-apple-ios6.0", "___divti3")
         wide = dylib(folder, ld64, "wide-arm64", "arm64-apple-ios7.0", "___divti3")
+        (folder / "libgone.tbd").write_text(macho_test.SYSTEM_STUB.replace(
+            "/usr/lib/libSystem.B.dylib", "/usr/lib/libgone.dylib").replace("dyld_stub_binder", "_gone"))
+        loads = dylib(folder, ld64, "loads-armv7", "armv7-apple-ios6.0", "_exported")
+        loads.unlink()
+        macho_test.run("xcrun", "clang", "-target", "armv7-apple-ios6.0", "-Wno-incompatible-sysroot",
+                       "-fuse-ld={}".format(ld64), "-nostdlib", "-dynamiclib", "-L.", "-lSystem", "-lgone",
+                       "-o", loads.name, "loads-armv7.c", cwd=folder)
         cases = (
             ("an armv7 slice importing only what the cache exports, beside an arm64 slice importing what it does not",
              [clean, wide], None),
             ("an armv7 slice importing what the cache does not export", [late, wide], "___divti3"),
             ("a binary with no slice an armv7 device loads", [wide], "no slice a armv7 device loads"),
+            ("a binary loading a library neither the device nor the build provides", [loads], "loads /usr/lib/libgone"),
         )
         for index, (description, slices, refusal) in enumerate(cases):
             dist = folder / "dist{}".format(index)

@@ -202,6 +202,14 @@ release for one slice. A port's own `platforms/NAME.toml` is used before
 Charon's, so a platform can be written or corrected without changing Charon.
 `[target]` keeps what tunes the build: `cppstd`, `cpu`, `fpu`, `defines`.
 
+A platform also says where a framework lived before it became public:
+`[frameworks.IOSurface] public-since = "11.0"` makes a build for an older release
+link IOSurface through the SDK's own stub laid out at
+`/System/Library/PrivateFrameworks`, so the image records the location that
+release loads it from. `dyld-imports-check` refuses a binary that loads a library
+neither the device's cache nor the build itself provides, besides every symbol
+the device does not export.
+
 `tool-requires` reach every package the profile builds; `port-tool-requires`
 reach only the port's own recipe, beside its `[tools]`, and a port naming the
 same tool picks its version. apple-ios names `dyld-imports-check` there, which

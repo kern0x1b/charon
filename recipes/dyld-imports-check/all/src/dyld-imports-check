@@ -29,6 +29,17 @@ def cache_architecture(path):
     return magic[7:].strip(b" \0").decode("latin1")
 
 
+def cache_images(path):
+    data = open(path, "rb").read()
+    _, _, images_offset, images_count = struct.unpack_from("<IIII", data, 16)
+    paths = set()
+    for index in range(images_count):
+        name_offset = struct.unpack_from("<I", data, images_offset + index * 32 + 24)[0]
+        end = data.index(b"\0", name_offset)
+        paths.add(data[name_offset:end].decode("latin1"))
+    return paths
+
+
 def cache_exports(path):
     data = open(path, "rb").read()
     mapping_offset, mapping_count, images_offset, images_count = struct.unpack_from("<IIII", data, 16)
@@ -87,6 +98,21 @@ def nm(arguments, binary, architecture):
                           check=True).stdout
 
 
+def strong_libraries(binary, architecture):
+    listing = subprocess.run(["otool", "-arch", architecture, "-l", binary], capture_output=True, text=True,
+                             check=True).stdout
+    commands = listing.split("Load command")
+    found, identity = [], None
+    for command in commands:
+        kind = next((line.split()[1] for line in command.splitlines() if line.strip().startswith("cmd ")), None)
+        name = next((line.split()[1] for line in command.splitlines() if line.strip().startswith("name ")), None)
+        if kind == "LC_ID_DYLIB":
+            identity = name
+        elif kind in ("LC_LOAD_DYLIB", "LC_REEXPORT_DYLIB") and name:
+            found.append(name)
+    return identity, found
+
+
 def loaded_slice(binary, architecture):
     slices = subprocess.run(["lipo", "-archs", binary], capture_output=True, text=True, check=True).stdout.split()
     for candidate in (architecture, "armv7") if architecture == "armv7s" else (architecture,):
@@ -128,6 +154,18 @@ def main():
     own = set()
     for binary, loaded in found:
         own.update(line.split()[-1] for line in nm(["-gU"], binary, loaded).splitlines() if line.strip())
+
+    images = cache_images(args.cache)
+    libraries = {binary: strong_libraries(binary, loaded) for binary, loaded in found}
+    provided = {identity for identity, _ in libraries.values() if identity}
+    provided_names = {os.path.basename(identity) for identity in provided}
+    for binary, (_, linked) in libraries.items():
+        for library in linked:
+            relative = library.startswith("@")
+            if library in images or library in provided or (relative and os.path.basename(library) in provided_names):
+                continue
+            missing.append((os.path.relpath(binary, args.dist), f"(loads {library}, which neither the device nor "
+                                                               f"this build provides)"))
 
     for binary, loaded in found:
         for line in nm(["-m", "-u"], binary, loaded).splitlines():

@@ -23,6 +23,9 @@ tool-requires = ["ld64/956.6@charon/stable"]
 [architectures.armv8]
 os-version = { min = "7.0" }
 
+[frameworks.IOSurface]
+public-since = "11.0"
+
 [distributions.jailbreak]
 applications = "/Applications"
 

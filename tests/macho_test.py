@@ -858,6 +858,46 @@ def waiver_failures(module, made):
     return found
 
 
+def moved_framework_failures(module, ld64):
+    found = []
+    with tempfile.TemporaryDirectory() as scratch:
+        folder = Path(scratch)
+        public = folder / "sdk" / "System" / "Library" / "Frameworks" / "IOSurface.framework"
+        (public / "Headers").mkdir(parents=True)
+        (public / "Headers" / "IOSurface.h").write_text("int IOSurfaceGetID(void *);\n")
+        (public / "IOSurface.tbd").write_text(
+            "--- !tapi-tbd\ntbd-version: 4\ntargets: [ armv7-ios, arm64-ios ]\n"
+            "install-name: '/System/Library/Frameworks/IOSurface.framework/IOSurface'\n"
+            "exports:\n  - targets: [ armv7-ios, arm64-ios ]\n    symbols: [ _IOSurfaceGetID ]\n...\n")
+        (folder / "libSystem.tbd").write_text(SYSTEM_STUB)
+        instance = declaration_test.port(module, {"prefixed": "False"})
+        instance.conf = declaration_test.Conf({"tools.apple:sdk_path": str(folder / "sdk")})
+        instance.generators_folder = str(folder / "generators")
+        type(instance).declaration = {"platform-facts": {"frameworks": {"IOSurface": {"public-since": "11.0"}}}}
+        instance.platform_toolchain(type("Toolchain", (), {"blocks": type("Blocks", (), {"remove": lambda self, name: None})()})())
+        root = instance.platform_cache_variables().get("CHARON_FRAMEWORK_ROOT")
+        moved = Path(root or "") / "System" / "Library" / "Frameworks" / "IOSurface.framework"
+        if not root or not (moved / "IOSurface.tbd").is_file():
+            return ["a framework public only from 11.0 must be laid out for a 6.0 build: {}".format(root)]
+        if not (moved / "Headers" / "IOSurface.h").is_file():
+            found.append("the laid-out framework must still carry the SDK's headers")
+        (folder / "user.c").write_text("int IOSurfaceGetID(void *);\nint use(void) { return IOSurfaceGetID(0); }\n")
+        run("xcrun", "clang", "-target", "armv7-apple-ios6.0", "-Wno-incompatible-sysroot",
+            "-fuse-ld={}".format(ld64), "-nostdlib", "-dynamiclib", "-L.", "-lSystem",
+            "-F{}".format(moved.parent), "-framework", "IOSurface", "-o", "libuser.dylib", "user.c", cwd=folder)
+        linked = run("xcrun", "otool", "-L", "libuser.dylib", cwd=folder)
+        if "/System/Library/PrivateFrameworks/IOSurface.framework/IOSurface" not in linked:
+            found.append("an image linked for 6.0 must load IOSurface from where iOS 6 keeps it: {}".format(linked))
+        newer = declaration_test.port(module, {"prefixed": "False"})
+        newer.settings = type("Eleven", (declaration_test.Settings,), {
+            "os": type("OS", (declaration_test.OperatingSystem,), {"version": "11.0"})()})()
+        newer.conf = instance.conf
+        newer.generators_folder = str(folder / "generators-11")
+        if newer.platform_cache_variables().get("CHARON_FRAMEWORK_ROOT"):
+            found.append("a release where the framework is public must link the SDK's own")
+    return found
+
+
 def main():
     declaration_test.reexec_where_conan_lives(__file__)
     try:
@@ -882,6 +922,7 @@ def main():
             found += naming_failures(module, made, ld64, ldid)
             found += bundle_content_failures(module, made, ldid)
             found += installed_entitlement_failures(module, made, ldid)
+            found += moved_framework_failures(module, ld64)
     except Refused as missing:
         found.append(str(missing))
     for line in found:

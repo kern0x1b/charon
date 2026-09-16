@@ -188,6 +188,7 @@ class Spec:
             "extends": list(facts.get("extends") or []),
             "cross-toolchain": found.parent / template if template else None,
             "build-only": list(facts.get("build-only") or []),
+            "frameworks": dict(facts.get("frameworks") or {}),
             "os": facts["os"],
             "sdk": facts.get("sdk"),
             "arch": arch,

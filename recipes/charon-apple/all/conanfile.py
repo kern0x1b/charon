@@ -43,6 +43,7 @@ class ApplePort:
 
     def platform_cache_variables(self):
         return {
+            "CHARON_FRAMEWORK_ROOT": self.framework_root(),
             "CHARON_SDK": self.sdk_path,
             "CHARON_DEPLOYMENT_TARGET": str(self.settings.os.version),
             "CHARON_ARCHITECTURE": self.apple_architecture,
@@ -53,6 +54,42 @@ class ApplePort:
 
     def platform_toolchain(self, toolchain):
         toolchain.blocks.remove("apple_system")
+        self._lay_out_moved_frameworks()
+
+    def moved_frameworks(self):
+        target = Version(str(self.settings.os.version))
+        declared = (self.declared_platform() or {}).get("frameworks") or {}
+        return sorted(name for name, facts in declared.items()
+                      if facts.get("public-since") and target < Version(facts["public-since"]))
+
+    def framework_root(self):
+        return os.path.join(self.generators_folder, "frameworks") if self.moved_frameworks() else ""
+
+    def _lay_out_moved_frameworks(self):
+        root = self.framework_root()
+        if not root:
+            return
+        rmdir(self, root)
+        for name in self.moved_frameworks():
+            public = os.path.join(self.sdk_path, "System", "Library", "Frameworks", f"{name}.framework")
+            stub = os.path.join(public, f"{name}.tbd")
+            if not os.path.isfile(stub):
+                raise ConanException(f"{name} was private before {self.settings.os} "
+                                     f"{self.declared_platform()['frameworks'][name]['public-since']}, and {stub} is "
+                                     "not in the SDK to link it at the private location from")
+            with open(stub) as handle:
+                text = handle.read()
+            public_name = f"/System/Library/Frameworks/{name}.framework/{name}"
+            if public_name not in text:
+                raise ConanException(f"{stub} does not install at {public_name}, so there is no public location "
+                                     "to move it from")
+            framework = os.path.join(root, "System", "Library", "Frameworks", f"{name}.framework")
+            mkdir(self, framework)
+            with open(os.path.join(framework, f"{name}.tbd"), "w") as handle:
+                handle.write(text.replace(public_name, f"/System/Library/PrivateFrameworks/{name}.framework/{name}"))
+            for entry in sorted(os.listdir(public)):
+                if entry != f"{name}.tbd":
+                    os.symlink(os.path.join(public, entry), os.path.join(framework, entry))
 
     def platform_steps(self):
         return {"sign": self._sign_target, "merge": self._merge_target}
