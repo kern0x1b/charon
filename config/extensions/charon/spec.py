@@ -106,6 +106,8 @@ class Spec:
         content = copy.deepcopy(self.content)
         if variant.get("target"):
             content["target"] = dict(content.get("target") or {}, **variant["target"])
+        if variant.get("conf"):
+            content["conf"] = dict(content.get("conf") or {}, **variant["conf"])
         if variant.get("package"):
             content["package"] = dict(variant["package"])
         for target_name, override in (variant.get("targets") or {}).items():

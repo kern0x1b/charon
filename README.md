@@ -126,6 +126,18 @@ project instead of a generated one; `[engine] user-toolchain` and
 large task in a file. The declaration alone is the default and none of these is
 required.
 
+`[conf]` holds what dependency builds read from the profile. A sentence names a
+value the port needs but does not set, and `charon setup` warns while it is
+empty; a table sets it, with the reason beside it:
+`"user.x:headers" = { value = "{port}/include", why = "..." }`. A set value is
+written into the generated profile, so a dependency Conan builds from source
+under `charon build` sees it too, and `{port}` is resolved by the profile from
+where it lies rather than written as a checkout path. `[variants.NAME.conf]`
+replaces the keys it names for that slice. A value may not name a package
+placeholder, because a profile is read before the graph that could answer it;
+a dependency that needs another package's files requires that package, for
+example headers only with `requires(..., headers=True, libs=False)`.
+
 The rest Charon derives rather than being told: the host profile comes from
 `[target]`, the engine build is the one direct child of `build/` that CMake
 configured and that has frameworks laid out, the frameworks to install are

@@ -3,6 +3,8 @@
 
     tests/generate_test.py
 """
+import json
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -395,6 +397,76 @@ def determinism_failures(folder):
     return found
 
 
+CONFIGURED = """
+[target]
+arch = "armv7"
+os = "iOS"
+os-version = "6.0"
+cpu = "cortex-a9"
+
+[conf]
+"user.charon-test:needed" = "a sentence saying why, set elsewhere"
+"user.charon-test:headers" = { value = "{port}/sdk/include", why = "the headers come from the port" }
+"user.charon-test:flags" = { value = ["-a", "-b"], why = "a list stays a list" }
+"user.charon-test:strict" = { value = true, why = "a boolean stays a boolean" }
+
+[variants.arm64.target]
+arch = "armv8"
+
+[variants.arm64.conf]
+"user.charon-test:strict" = { value = false, why = "one slice relaxes it" }
+"""
+
+CONF_REFUSED = {
+    "a value without a reason": '"user.x:y" = { value = "z" }',
+    "a reason without a value": '"user.x:y" = { why = "z" }',
+    "an empty reason": '"user.x:y" = { value = "z", why = " " }',
+    "a key beside value and why": '"user.x:y" = { value = "z", why = "w", when = "armv7" }',
+    "a placeholder a profile cannot answer": '"user.x:y" = { value = "{include:libcxx}", why = "w" }',
+    "a value colliding with the tuning Charon writes": '"tools.build:cxxflags" = { value = ["-O2"], why = "w" }',
+}
+
+
+def conf_failures(folder):
+    found = []
+    root = Path(folder) / "configured"
+    root.mkdir()
+    declared = loaded(root, CONFIGURED)
+    text = generate.written(declared)["profile"]
+    if "user.charon-test:needed" in text:
+        found.append("a [conf] sentence names a value the port does not set, and must not be written: {}".format(text))
+    if str(root) in text:
+        found.append("a profile must find the port from where it lies, not carry the checkout path: {}".format(text))
+    written = root / "build" / "system" / "charon" / "profile"
+    written.parent.mkdir(parents=True)
+    written.write_text(text)
+    shown = subprocess.run(["conan", "profile", "show", "-pr:h", str(written), "-pr:b", str(written),
+                            "--format=json"], capture_output=True, text=True)
+    if shown.returncode != 0:
+        return found + ["conan must read the profile Charon writes: {}".format(shown.stderr.strip()[-400:])]
+    conf = json.loads(shown.stdout)["host"]["conf"]
+    expected = {"user.charon-test:headers": str(root / "sdk" / "include"),
+                "user.charon-test:flags": ["-a", "-b"], "user.charon-test:strict": True,
+                "tools.build:cxxflags": ["-mcpu=cortex-a9", "-mtune=cortex-a9"]}
+    for key, value in expected.items():
+        if conf.get(key) != value:
+            found.append("the profile must give {} = {!r}: conan read {!r}".format(key, value, conf.get(key)))
+    sliced = generate.written(declared.for_variant("arm64"))["profile"]
+    if "user.charon-test:strict=False" not in sliced or "user.charon-test:headers=" not in sliced:
+        found.append("a variant's [conf] must replace the keys it names and keep the rest: {}".format(sliced))
+    for description, entry in CONF_REFUSED.items():
+        refused = Path(folder) / "refused-conf"
+        refused.mkdir(exist_ok=True)
+        broken = loaded(refused, '[target]\narch = "armv7"\nos = "iOS"\nos-version = "6.0"\ncpu = "cortex-a9"\n'
+                                 '[conf]\n{}\n'.format(entry))
+        try:
+            generate.written(broken)
+            found.append("{} in [conf] must be refused".format(description))
+        except generate.GenerationError:
+            pass
+    return found
+
+
 def order_failures(folder):
     root = Path(folder) / "ordered"
     root.mkdir()
@@ -433,6 +505,7 @@ def main():
         found += variant_failures(folder)
         found += order_failures(folder)
         found += determinism_failures(folder)
+        found += conf_failures(folder)
     for line in found:
         print("FAIL  {}".format(line))
     if found:

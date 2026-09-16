@@ -66,12 +66,55 @@ def profile(declared, includes=None):
         tuning += ["-mcpu={}".format(target["cpu"]), "-mtune={}".format(target["cpu"])]
     if "fpu" in target:
         tuning.append("-mfpu={}".format(target["fpu"]))
+    conf = {}
     if tuning:
-        rendered = ", ".join(_quoted(flag) for flag in tuning)
-        lines += ["", "[conf]",
-                  "tools.build:cflags=[{}]".format(rendered),
-                  "tools.build:cxxflags=[{}]".format(rendered)]
+        rendered = "[{}]".format(", ".join(_quoted(flag) for flag in tuning))
+        conf["tools.build:cflags"] = rendered
+        conf["tools.build:cxxflags"] = rendered
+    for key, value in declared_conf_values(declared).items():
+        if key in conf:
+            raise GenerationError("[conf] sets {}, which Charon already writes from [target] cpu and fpu; "
+                                  "a second value would silently drop the tuning".format(key))
+        conf[key] = value
+    if conf:
+        lines += ["", "[conf]"] + ["{}={}".format(key, value) for key, value in conf.items()]
     return "\n".join(lines) + "\n"
+
+
+PORT_FROM_PROFILE = "{{ os.path.normpath(os.path.join(profile_dir, os.pardir, os.pardir, os.pardir)) }}"
+CONF_ENTRY = ("a [conf] entry is either a sentence saying why the port needs a value it does not set, "
+              "or a table { value = ..., why = \"...\" } that sets it")
+
+
+def _conf_value(key, value):
+    if isinstance(value, bool):
+        return "True" if value else "False"
+    if isinstance(value, (int, float)):
+        return str(value)
+    if isinstance(value, list):
+        return "[{}]".format(", ".join(_quoted(_conf_value(key, item)) for item in value))
+    if not isinstance(value, str):
+        raise GenerationError("[conf] {} has a value Charon cannot write into a profile: {!r}".format(key, value))
+    rest = value.replace("{port}", "")
+    if "{" in rest or "}" in rest:
+        raise GenerationError("[conf] {} names a placeholder other than {{port}}, and a profile is read before "
+                              "the graph that could answer it is resolved: {}".format(key, value))
+    return value.replace("{port}", PORT_FROM_PROFILE)
+
+
+def declared_conf_values(declared):
+    values = {}
+    for key, entry in declared.section("conf").items():
+        if isinstance(entry, str):
+            if not entry.strip():
+                raise GenerationError("[conf] {} gives no reason; {}".format(key, CONF_ENTRY))
+            continue
+        if not isinstance(entry, dict) or set(entry) != {"value", "why"}:
+            raise GenerationError("[conf] {}: {}".format(key, CONF_ENTRY))
+        if not isinstance(entry["why"], str) or not entry["why"].strip():
+            raise GenerationError("[conf] {} sets a value without saying why".format(key))
+        values[key] = _conf_value(key, entry["value"])
+    return values
 
 
 PROJECT_LANGUAGE_ORDER = ("C", "CXX", "OBJC", "OBJCXX", "Swift")

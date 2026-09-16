@@ -892,7 +892,9 @@ def check_declared_conf(root, chosen_profile):
         return
     resolved = resolved_conf(chosen_profile)
     for key in sorted(declared):
-        if resolved.get(key):
+        if isinstance(declared[key], dict):
+            say("conf         {} is set by the declaration: {}".format(key, declared[key].get("why")))
+        elif resolved.get(key):
             say("conf         {} is set".format(key))
         else:
             warn("conf         {} is empty, and this port needs it: {}".format(key, declared[key]))
