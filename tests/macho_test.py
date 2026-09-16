@@ -473,6 +473,7 @@ class Package:
         self.ref = Named(name)
         self.cpp_info = self
         self._libdir = libdir
+        self.package_folder = str(Path(libdir).parent)
 
     def aggregated_components(self):
         return type("Components", (), {"libdirs": [str(self._libdir)]})()
@@ -532,28 +533,54 @@ def input_minimum_failures(module, ldid):
         port_objects = folder / "build" / "application"
         port_objects.mkdir(parents=True)
         shutil.copy2(at_target, port_objects / "main.o")
+        shutil.copy2(newer, port_objects / "stale.o")
+        vendor = folder / "vendor"
+        vendor.mkdir()
+        run("xcrun", "libtool", "-static", "-o", vendor / "libolder.a", older, cwd=folder)
+        run("xcrun", "libtool", "-static", "-o", vendor / "libnewer.a", newer, cwd=folder)
         packages = [Package("libvpx", libdir), Package("ogg", clean)]
+
+        def ninja(where, inputs):
+            (where / "build.ninja").write_text("rule link\n  command = true\nbuild linked: link {}\ndefault linked\n"
+                                               .format(" ".join(str(path) for path in inputs)))
+
+        def running_ninja(ran):
+            def execute(self, command, cwd=None, stdout=None, ignore_errors=False):
+                ran.append(command)
+                if not command.startswith("ninja"):
+                    return 0
+                finished = subprocess.run(command, shell=True, capture_output=True, text=True)
+                if stdout is not None:
+                    stdout.write(finished.stdout)
+                return finished.returncode
+            return execute
+
+        linked = [port_objects / "main.o", libdir / "libvpx.a", clean / "libogg.a"]
         cases = (
-            ("an archive member built for another version", {}, None, "libvpx/libvpx.a(intrapred_neon_asm.asm.S.o)"),
-            ("an object of the port's own built for a newer version", {}, newer, "extra.o was built for iOS 7.0"),
-            ("a waived package", {"input-minimum": {"libvpx": "its assembler is fixed upstream next week"}},
-             None, None),
-            ("everything waived", {"input-minimum": "a reason"}, newer, None),
-            ("a waiver naming a package nothing depends on", {"input-minimum": {"tdlib": "why"}}, None,
+            ("an archive member built for another version", {}, [], "libvpx/lib/libvpx.a(intrapred_neon_asm.asm.S.o)"),
+            ("an object of the port's own built for a newer version", {}, [newer], "newer.o was built for iOS 7.0"),
+            ("an object of the port's own built for an older version", {"input-minimum": {"libvpx": "why"}}, [older],
+             "intrapred_neon_asm.asm.S.o was built for iOS 5.0"),
+            ("a waived package", {"input-minimum": {"libvpx": "its assembler is fixed upstream next week"}}, [], None),
+            ("everything waived", {"input-minimum": "a reason"}, [newer], None),
+            ("a waiver naming a package nothing depends on", {"input-minimum": {"tdlib": "why"}}, [],
              "does not depend on"),
-            ("a package waiver without a reason", {"input-minimum": {"libvpx": ""}}, None, "gives no reason"),
+            ("a package waiver without a reason", {"input-minimum": {"libvpx": ""}}, [], "gives no reason"),
+            ("a vendored archive built for a newer version", {"input-minimum": {"libvpx": "why"}},
+             [vendor / "libnewer.a"], "libnewer.a(newer.o) was built for iOS 7.0"),
+            ("a vendored archive built for an older version", {"input-minimum": {"libvpx": "why"}},
+             [vendor / "libolder.a"], None),
         )
         for description, waive, extra, reason in cases:
             instance = running_port(module, folder, {"waive": waive}, ldid)
             instance.dependencies = Dependencies(packages)
             instance.generators_folder = str(folder / "generators")
-            placed = port_objects / "extra.o"
-            if extra:
-                shutil.copy2(extra, placed)
-            elif placed.exists():
-                placed.unlink()
+            for path in extra:
+                if path.suffix == ".o":
+                    shutil.copy2(path, port_objects / path.name)
+            ninja(port_objects, linked + [port_objects / path.name if path.suffix == ".o" else path for path in extra])
             ran = []
-            type(instance).run = lambda self, command, cwd=None, stdout=None, ignore_errors=False: ran.append(command)
+            type(instance).run = running_ninja(ran)
             try:
                 instance._cmake_project(str(folder), str(port_objects), {})
                 if reason:
@@ -563,10 +590,17 @@ def input_minimum_failures(module, ldid):
                     found.append("{}: expected {}, got {}".format(description, reason or "success", refused))
             if not any(command.startswith("cmake --build") for command in ran):
                 found.append("{}: the project must be built before its inputs are read".format(description))
+            if description == "a vendored archive built for an older version" and not any(
+                    "libolder.a(intrapred_neon_asm.asm.S.o) was built for iOS 5.0" in line and "reported" in line
+                    for line in instance.output.lines):
+                found.append("an older input from outside the graph must be reported by name: {}".format(
+                    instance.output.lines))
 
         instance = running_port(module, folder, {"stage": {}}, ldid)
         instance.dependencies = Dependencies([Package("ogg", clean)])
         shutil.copy2(newer, Path(instance.build_folder) / "engine-unit.o")
+        ninja(Path(instance.build_folder), [Path(instance.build_folder) / "engine-unit.o"])
+        type(instance).run = running_ninja([])
         original = module.CMake
         module.CMake = type("CMake", (), {"__init__": lambda self, conanfile: None,
                                           "configure": lambda self: None, "build": lambda self: None})
@@ -578,6 +612,16 @@ def input_minimum_failures(module, ldid):
                 found.append("the engine build must be refused for its object: got {}".format(refused))
         finally:
             module.CMake = original
+
+        instance = running_port(module, folder, {"stage": {}}, ldid)
+        instance.dependencies = Dependencies(packages)
+        (port_objects / "build.ninja").unlink()
+        try:
+            instance._verify_inputs(str(port_objects))
+            found.append("a project without build.ninja must be refused rather than read by walking its folder")
+        except module.ConanException as refused:
+            if "build.ninja" not in str(refused):
+                found.append("a project without build.ninja must be refused for that: {}".format(refused))
     return found
 
 

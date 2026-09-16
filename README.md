@@ -148,9 +148,12 @@ a post-link edit that sets it on ARM code does not, and either one runs until
 the first call through the pointer. An executable's `__PAGEZERO` must be at
 least 4 GB on arm64 and end where `__TEXT` starts on armv7. After
 `sign:application` the signature is read back and must carry every declared
-entitlement with its declared value. After a project builds, every object in
-its build tree and every archive member of a package it depends on must record
-the target's minimum OS version exactly: newer means the binary needs a later
+entitlement with its declared value. After a project builds, every object and
+archive member its links read - asked of Ninja with `ninja -t inputs`, so an
+object left over from a deleted source is not read - must record the target's
+minimum OS version exactly when it was built here or by a package in the
+dependency graph; an input from outside the graph is refused only when newer
+and otherwise reported by name: newer means the binary needs a later
 iOS, and older or none means it was compiled without the target's flags - the
 assembler is where that usually happens. Every host profile, shared or
 generated, exports `IPHONEOS_DEPLOYMENT_TARGET` from its `os.version` into the

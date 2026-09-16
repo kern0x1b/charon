@@ -534,6 +534,21 @@ class Ios6Port:
                 raise ConanException(f"[waive] {name} gives no reason, and a check is only left out for one")
         return waived
 
+    def _link_inputs(self, folder):
+        if not os.path.isfile(os.path.join(folder, "build.ninja")):
+            raise ConanException(f"{folder} has no build.ninja, so there is nothing to ask which objects and archives "
+                                 "its links read; the projects Charon configures are generated for Ninja")
+        captured = StringIO()
+        self.run(f'ninja -C "{folder}" -t inputs', stdout=captured)
+        found = set()
+        for line in captured.getvalue().splitlines():
+            line = line.strip()
+            if line.endswith((".o", ".a")):
+                path = os.path.normpath(line if os.path.isabs(line) else os.path.join(folder, line))
+                if os.path.isfile(path):
+                    found.add(path)
+        return sorted(found)
+
     def _verify_inputs(self, folder):
         waived = self.declared_waivers().get("input-minimum")
         if isinstance(waived, str):
@@ -544,40 +559,44 @@ class Ios6Port:
         cputype = MachO.CPU_TYPES.get(arch)
         if cputype is None:
             raise ConanException(f"{arch} is not an architecture this toolchain reads link inputs for")
-        problems, objects, members = [], 0, 0
-        for place, _, names in os.walk(folder):
-            for name in sorted(names):
-                if name.endswith(".o"):
-                    path = os.path.join(place, name)
-                    objects += 1
-                    problems += MachO.minimum_problems(path, cputype, target, os.path.relpath(path, folder))
-        checked = getattr(self, "_inputs_checked", set())
-        for reference, dependency in self.dependencies.host.items():
-            package = reference.ref.name
-            if package in checked:
-                continue
-            checked.add(package)
-            if package in waived:
-                self.output.warning(f"input-minimum not checked for {package}: {waived[package]}")
-                continue
-            for libdir in dependency.cpp_info.aggregated_components().libdirs:
-                if not os.path.isdir(libdir):
-                    continue
-                for name in sorted(os.listdir(libdir)):
-                    path = os.path.join(libdir, name)
-                    if name.endswith(".a") and not os.path.islink(path):
-                        members += len(MachO.recorded_minimums(path, cputype))
-                        problems += MachO.minimum_problems(path, cputype, target, f"{package}/{name}")
-        self._inputs_checked = checked
-        unknown = sorted(set(waived) - {dependency.ref.name for dependency in self.dependencies.host.values()})
+        packages = {dependency.ref.name: os.path.normpath(dependency.package_folder)
+                    for dependency in self.dependencies.host.values() if dependency.package_folder}
+        unknown = sorted(set(waived) - set(packages))
         if unknown:
             raise ConanException(f"[waive] input-minimum names {', '.join(unknown)}, which this build does not "
                                  "depend on")
+        built_here = os.path.normpath(self.build_folder)
+        problems, reported, objects, members = [], [], 0, 0
+        wanted = MachO.encoded_version(target)
+        for path in self._link_inputs(folder):
+            owner = next((name for name, root in packages.items() if path.startswith(root + os.sep)), None)
+            if owner in waived:
+                continue
+            if owner:
+                label = f"{owner}/{os.path.relpath(path, packages[owner])}"
+            elif path.startswith(built_here + os.sep):
+                label = os.path.relpath(path, built_here)
+            else:
+                label = path
+            recorded = MachO.recorded_minimums(path, cputype)
+            if path.endswith(".a"):
+                members += len(recorded)
+            else:
+                objects += 1
+            for minimum, problem in MachO.minimum_findings(path, cputype, target, label):
+                if owner or path.startswith(built_here + os.sep) or (minimum is not None and minimum > wanted):
+                    problems.append(problem)
+                else:
+                    reported.append(problem)
+        for name in sorted(set(waived)):
+            self.output.warning(f"input-minimum not checked for {name}: {waived[name]}")
+        for line in reported:
+            self.output.warning(f"{line}; it comes from outside the dependency graph, so it is reported, not refused")
         if problems:
             shown = "; ".join(problems[:5]) + (f"; and {len(problems) - 5} more" if len(problems) > 5 else "")
             raise ConanException(f"a link input was not built for this target: {shown}")
-        self.output.info(f"{objects} objects in {os.path.basename(folder)} and {members} archive members of its "
-                         f"dependencies record iOS {target}")
+        self.output.info(f"{objects} objects and {members} archive members {os.path.basename(folder)} links record "
+                         f"iOS {target}")
 
     def _verify(self, binary):
         MachO(self).verify(binary, self.declared_waivers())
@@ -1070,22 +1089,26 @@ class MachO:
         return (parts[0] << 16) | (parts[1] << 8) | parts[2]
 
     @classmethod
-    def minimum_problems(cls, path, cputype, target, label):
+    def minimum_findings(cls, path, cputype, target, label):
         wanted = cls.encoded_version(target)
-        problems = []
+        findings = []
         for member, minimum in cls.recorded_minimums(path, cputype):
             if minimum == wanted:
                 continue
             named = f"{label}({member})" if member else label
             if minimum is None:
-                problems.append(f"{named} records no minimum OS version, so nothing says it was built for {target}")
+                problem = f"{named} records no minimum OS version, so nothing says it was built for {target}"
             elif minimum > wanted:
-                problems.append(f"{named} was built for iOS {cls.version_text(minimum)}, newer than the {target} "
-                                "this links for")
+                problem = f"{named} was built for iOS {cls.version_text(minimum)}, newer than the {target} this links for"
             else:
-                problems.append(f"{named} was built for iOS {cls.version_text(minimum)} instead of {target}, which "
-                                "means it was compiled without the target's flags")
-        return problems
+                problem = (f"{named} was built for iOS {cls.version_text(minimum)} instead of {target}, which means "
+                           "it was compiled without the target's flags")
+            findings.append((minimum, problem))
+        return findings
+
+    @classmethod
+    def minimum_problems(cls, path, cputype, target, label):
+        return [problem for _, problem in cls.minimum_findings(path, cputype, target, label)]
 
     @classmethod
     def images(cls, data):
