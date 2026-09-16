@@ -181,6 +181,9 @@ def running_port(module, folder, declaration, ldid):
     kind.declaration = declaration
     kind.port = str(folder)
     instance.build_folder = str(folder / "build")
+    (folder / "recipe").mkdir(parents=True, exist_ok=True)
+    (folder / "recipe" / "cross-toolchain.cmake").write_text("set(CMAKE_SYSTEM_NAME iOS)\n")
+    instance.recipe_folder = str(folder / "recipe")
     instance.output = Output()
     instance.steps = []
     instance.dependencies = Dependencies([])
@@ -707,7 +710,7 @@ def input_minimum_failures(module, ldid):
         type(instance).run = running_ninja([])
         original = module.CMake
         module.CMake = type("CMake", (), {"__init__": lambda self, conanfile: None,
-                                          "configure": lambda self: None, "build": lambda self: None})
+                                          "configure": lambda self, cli_args=None: None, "build": lambda self: None})
         try:
             module.Port._build_target(instance, "engine")
             found.append("an engine object built for a newer version must be refused after the engine builds")

@@ -11,6 +11,7 @@ logic is checked here rather than discovered in a multi-hour build.
 import importlib.util
 import os
 import shutil
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -234,7 +235,10 @@ def architecture_failures(module):
             instance.triple))
     instance.generators_folder = "/port/build/generators"
     instance._verify_inputs = lambda folder: None
-    instance._cmake_project("/port/app", "/port/build/app", {})
+    with tempfile.TemporaryDirectory() as recipe:
+        (Path(recipe) / "cross-toolchain.cmake").write_text("set(CMAKE_SYSTEM_NAME iOS)\n")
+        instance.recipe_folder = recipe
+        instance._cmake_project("/port/app", "/port/build/app", {})
     configured = instance.commands[0]
     for expected in ('-DCHARON_ARCHITECTURE="arm64"', '-DCHARON_TRIPLE="arm64-apple-ios7.0"'):
         if expected not in configured:
@@ -745,6 +749,56 @@ def reexec_where_conan_lives(script=None):
                   dict(os.environ, **{CHOSEN: interpreter}))
 
 
+def fresh_failures(module):
+    found = []
+    with tempfile.TemporaryDirectory() as scratch:
+        root = Path(scratch)
+        (root / "project").mkdir()
+        (root / "project" / "CMakeLists.txt").write_text("cmake_minimum_required(VERSION 3.24)\nproject(p C)\n")
+        (root / "recipe").mkdir()
+        cross = root / "recipe" / "cross-toolchain.cmake"
+        cross.write_text('set(CMAKE_C_FLAGS_INIT "${CHARON_PATH_MAPS}")\n')
+        build = root / "build"
+        instance = port(module, {"prefixed": "False"})
+        instance.recipe_folder = str(root / "recipe")
+        instance.platform_cache_variables = lambda: {}
+        instance.info = []
+        instance.output = type("Output", (), {"info": lambda self, text: instance.info.append(text)})()
+
+        def maps(folder):
+            instance.conf = Conf({"tools.build:cflags": ["-ffile-prefix-map={}=/package".format(folder)]})
+
+        def configure(folder, *extra):
+            inputs = ["-D{}={}".format(name, value) for name, value in instance.toolchain_inputs().items()]
+            subprocess.run(["cmake", *extra, "-S", str(root / "project"), "-B", str(folder),
+                            "-DCMAKE_TOOLCHAIN_FILE={}".format(cross), *inputs], capture_output=True, check=True)
+            cached = (folder / "CMakeCache.txt").read_text()
+            return next(line for line in cached.splitlines() if line.startswith("CMAKE_C_FLAGS:"))
+
+        maps("/first")
+        if instance.fresh_configure(str(build)):
+            found.append("a folder never configured needs no --fresh")
+        configure(build)
+        configure(root / "kept")
+        if instance.fresh_configure(str(build)):
+            found.append("a folder configured with the same toolchain inputs must not be configured fresh")
+        maps("/second")
+        decided = instance.fresh_configure(str(build))
+        if decided != ["--fresh"] or "CHARON_PATH_MAPS" not in " ".join(instance.info):
+            found.append("changed path maps must configure fresh, naming what changed: {} {}".format(
+                decided, instance.info))
+        if "/first" not in configure(root / "kept"):
+            found.append("cmake is expected to keep the flags it first derived; if it stopped, this check is moot")
+        if "/second" not in configure(build, *decided):
+            found.append("a fresh configure must derive the flags from the new inputs")
+        if instance.fresh_configure(str(build)):
+            found.append("after a fresh configure the same inputs must not configure fresh again")
+        cross.write_text('set(CMAKE_C_FLAGS_INIT "-DCHANGED ${CHARON_PATH_MAPS}")\n')
+        if instance.fresh_configure(str(build)) != ["--fresh"]:
+            found.append("a changed cross toolchain must configure fresh")
+    return found
+
+
 def main():
     reexec_where_conan_lives()
     try:
@@ -756,7 +810,7 @@ def main():
              plist_failures(module) + bundle_failures(module) + merge_failures(module) + flag_failures(module) + runtime_failures(module) +
              find_package_failures(module) + exports_failures(module) + architecture_failures(module) +
              graph_failures(module) + path_map_failures(module) +
-             objective_c_failures(module))
+             objective_c_failures(module) + fresh_failures(module))
     for line in found:
         print("FAIL  {}".format(line))
     if found:

@@ -1,3 +1,4 @@
+import hashlib
 import os
 import re
 import sys
@@ -318,25 +319,47 @@ class CharonPort:
         self.folders.build = os.path.join("build", self.declared_variant())
         self.folders.generators = os.path.join(self.folders.build, "conan")
 
+    def cross_toolchain(self):
+        user_toolchain = self.declared.get("engine", {}).get("user-toolchain")
+        if user_toolchain:
+            return os.path.join(self.port_root, user_toolchain)
+        cross = os.path.join(self.recipe_folder, "cross-toolchain.cmake")
+        if not os.path.isfile(cross):
+            raise ConanException(
+                f"{self.name} names no user-toolchain of its own and nothing was written to {cross}. "
+                "It is what points the compiler at the SDK this port targets; without it cmake falls "
+                "back to the newest installed one and compiles against a system years newer")
+        return cross
+
+    def toolchain_inputs(self):
+        with open(self.cross_toolchain(), "rb") as handle:
+            digest = hashlib.sha256(handle.read()).hexdigest()
+        inputs = dict(self.platform_cache_variables())
+        inputs["CHARON_PATH_MAPS"] = " ".join(self.path_maps())
+        inputs["CHARON_TOOLCHAIN_DIGEST"] = digest
+        return inputs
+
+    def fresh_configure(self, folder):
+        cache = os.path.join(folder, "CMakeCache.txt")
+        if not os.path.isfile(cache):
+            return []
+        with open(cache) as handle:
+            cached = dict(re.findall(r"^([A-Za-z0-9_]+):[A-Z]+=(.*)$", handle.read(), re.M))
+        changed = sorted(name for name, value in self.toolchain_inputs().items() if cached.get(name) != str(value))
+        if not changed:
+            return []
+        self.output.info(f"{folder} was configured with another {', '.join(changed)}, and CMake keeps the flags "
+                         "it first derived from them; configuring it fresh")
+        return ["--fresh"]
+
     def declared_toolchain(self):
         engine = self.declared.get("engine", {})
-        user_toolchain = engine.get("user-toolchain")
-        if user_toolchain:
-            cross = os.path.join(self.port_root, user_toolchain)
-        else:
-            cross = os.path.join(self.recipe_folder, "cross-toolchain.cmake")
-            if not os.path.isfile(cross):
-                raise ConanException(
-                    f"{self.name} names no user-toolchain of its own and nothing was written to {cross}. "
-                    "It is what points the compiler at the SDK this port targets; without it cmake falls "
-                    "back to the newest installed one and compiles against a system years newer")
-        self.conf.define("tools.cmake.cmaketoolchain:user_toolchain", [cross])
+        self.conf.define("tools.cmake.cmaketoolchain:user_toolchain", [self.cross_toolchain()])
         toolchain = CMakeToolchain(self)
         self.platform_toolchain(toolchain)
         variables = toolchain.cache_variables
         variables.update(self.declared_options())
-        variables.update(self.platform_cache_variables())
-        variables["CHARON_PATH_MAPS"] = " ".join(self.path_maps())
+        variables.update(self.toolchain_inputs())
         variables.update({
             "CMAKE_BUILD_TYPE": "Release",
             "PYTHON_EXECUTABLE": sys.executable,
@@ -550,18 +573,18 @@ class CharonPort:
     def _cmake_project(self, source, folder, definitions):
         toolchain = os.path.join(self.generators_folder, "conan_toolchain.cmake")
         values = " ".join(f'-D{name}="{value}"' for name, value in definitions.items())
-        platform = " ".join(f'-D{name}="{value}"' for name, value in self.platform_cache_variables().items())
-        self.run(f'cmake -S "{source}" -B "{folder}" -G Ninja -DCMAKE_BUILD_TYPE=Release '
-                 f'-DCMAKE_TOOLCHAIN_FILE="{toolchain}" {platform} -DCHARON_PORT="{self.port_root}" '
-                 f'-DCHARON_PACKAGES="{os.path.join(self.generators_folder, self.FOUND_PACKAGES)}" '
-                 f'-DCHARON_PATH_MAPS="{" ".join(self.path_maps())}" {values}')
+        inputs = " ".join(f'-D{name}="{value}"' for name, value in self.toolchain_inputs().items())
+        fresh = " ".join(self.fresh_configure(folder))
+        self.run(f'cmake {fresh} -S "{source}" -B "{folder}" -G Ninja -DCMAKE_BUILD_TYPE=Release '
+                 f'-DCMAKE_TOOLCHAIN_FILE="{toolchain}" {inputs} -DCHARON_PORT="{self.port_root}" '
+                 f'-DCHARON_PACKAGES="{os.path.join(self.generators_folder, self.FOUND_PACKAGES)}" {values}')
         self.run(f'cmake --build "{folder}"')
         self._verify_inputs(folder)
 
     def _build_target(self, name):
         if name == "engine":
             cmake = CMake(self)
-            cmake.configure()
+            cmake.configure(cli_args=self.fresh_configure(self.build_folder))
             cmake.build()
             self._verify_inputs(self.build_folder)
             return
