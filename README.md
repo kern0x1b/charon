@@ -69,7 +69,8 @@ Then:
                                makes the git pre-commit hook run the staged ones
 
 An application declared with `add_values("apple.architectures", "armv7", "arm64")`
-is packaged universal: `xmake deb` configures and builds each architecture in
+is packaged universal: `xmake deb` takes the slice of the configured
+architecture from the ordinary build and configures and builds each other one in
 its own folder under the build directory, merges the bundles with lipo - every
 other file has to be the same in every slice, so pin MinimumOSVersion in the
 plist - and signs and checks the merged binaries. A slice with no shared cache
@@ -145,6 +146,11 @@ revision it raises with the script:
 `add_configs("revision", {default = "2", readonly = true})`. A build cut short
 can leave `.git/index.lock` in the package's source cache under
 `~/.xmake/cache/packages/`; remove that lock file before building again.
+
+xmake asks before it installs or reinstalls a package or an addon, and a
+command run in the background waits for that answer forever; pass `-y` there.
+The include makes autotools' m4 a built package: macOS's /usr/bin/m4 is GNU M4
+1.4.6, which autoconf 2.72 refuses.
 
 A new machine needs `brew install xmake llvm` and `xcode-select --install`. The
 addon's tests build their fixtures with the same ld64 and ldid:

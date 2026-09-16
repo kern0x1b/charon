@@ -11,11 +11,16 @@ function universal(target, architectures, stage)
     import("apple.dyld")
     local bundles = {}
     for _, architecture in ipairs(architectures) do
-        local builddir = path.join(config.builddir(), ".charon", "slices", architecture)
-        local envs = {XMAKE_CONFIGDIR = path.join(builddir, "config"), CHARON_SLICE = architecture}
-        os.vexecv(os.programfile(), {"f", "-P", os.projectdir(), "-p", config.plat(), "-a", architecture, "-m", config.mode() or "release", "-o", builddir, "-y"}, {envs = envs})
-        os.vexecv(os.programfile(), {"build", "-P", os.projectdir(), target:name()}, {envs = envs})
-        local built = path.join(builddir, config.plat(), architecture, config.mode() or "release", target:basename() .. ".app")
+        local built
+        if architecture == config.arch() then
+            built = path.join(target:targetdir(), target:basename() .. ".app")
+        else
+            local builddir = path.join(config.builddir(), ".charon", "slices", architecture)
+            local envs = {XMAKE_CONFIGDIR = path.join(builddir, "config"), CHARON_SLICE = architecture}
+            os.vexecv(os.programfile(), {"f", "-P", os.projectdir(), "-p", config.plat(), "-a", architecture, "-m", config.mode() or "release", "-o", builddir, "-y"}, {envs = envs})
+            os.vexecv(os.programfile(), {"build", "-P", os.projectdir(), "-y", target:name()}, {envs = envs})
+            built = path.join(builddir, config.plat(), architecture, config.mode() or "release", target:basename() .. ".app")
+        end
         if not os.isdir(built) then
             raise("the %s slice of %s built no %s", architecture, target:name(), built)
         end

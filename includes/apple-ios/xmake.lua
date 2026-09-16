@@ -6,6 +6,8 @@ for _, tool in ipairs({sdk, ld64, ldid}) do
     add_requires("charon@" .. tool.name .. " " .. tool.version, {alias = tool.name})
 end
 
+add_requireconfs("**.m4", {system = false})
+
 local minimum = get_config("apple_minimum")
 if minimum then
     local toolchain = string.format("@addon/charon/apple-ios[minimum=%s,sdk=%s,ld64=%s,optimize=packages]", minimum, sdk.version, ld64.version)
