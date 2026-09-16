@@ -19,6 +19,71 @@ For anyone arriving from the JVM world, the mapping is close to exact:
 | `gradle.lockfile`, `dependencyManagement` | `conan.lock` in each port |
 | `~/.m2/repository` | `~/.conan2` |
 
+## Charon and its platforms - the direction, being built in steps
+
+iOS 6 is the first platform Charon builds for, not what Charon is. The driver
+is to be as usable for an application on an old macOS, a current iOS, or
+Android 2.x as it is here, and a repository says which platform it targets the
+way a Gradle build applies a plugin. Two things make it worth having: one way to
+drive any of these builds, where Apple platforms have none short of Bazel; and
+compatibility out of the box - the SDK, the linker, the runtime and the shims an
+old system needs arrive from a declaration, so nobody hunts for an archived SDK
+or rebuilds a C++ runtime by hand.
+
+**The core** knows nothing about any operating system: the declaration and its
+variants, generated Conan recipes and CMake projects, tasks, pipelines and test
+tiers, the verbs, `[conf]` values, the recipe index check, and the framework
+that runs invariants inside the step that produces a binary and lets a port
+waive one only with a reason.
+
+**A platform** is a package the declaration names, and supplies everything the
+core must not know:
+
+    [platform]
+    use = "apple-ios"
+    os-version = { min = "6.0", max = "6.1.6" }
+    architectures = ["armv7"]
+    distribution = "jailbreak"
+
+- settings and profiles for each architecture and version range, and the
+  deployment-target environment its tools read;
+- where its SDK comes from - never redistributed by this project, fetched from
+  the vendor's source or the user's own installation, checksummed;
+- its tools as build-context packages: ld64 and ldid for Apple, the NDK for
+  Android;
+- the binary format and the invariants that belong to it: Mach-O rebases and
+  Thumb bits, `__PAGEZERO`, minimum versions of link inputs, imports the
+  deployment runtime does not export; ELF and API levels for Android;
+- target kinds and packaging: an application bundle, a tweak and a daemon,
+  written as a `.deb` for `jailbreak`, a `.tipa` for `trollstore`, an `.ipa`
+  for `sideload`, an `.apk` for Android;
+- the transport to a device for deploy, run and test: SSH to a jailbroken
+  phone, `adb` for Android;
+- compatibility packs: the C++ runtime, emulated TLS, and the shims the old
+  system lacks.
+
+**Distribution.** Everything this project builds from open source - the linker,
+the signer, libc++, compatibility shims - is published as prebuilt Conan
+packages with their licenses, so a user downloads rather than compiles them.
+Vendor SDKs and system images are never published; a platform only knows how
+to obtain and verify them.
+
+**Steps**, each proven on Revenant and iTgLegacy before the next:
+
+1. Take port-specific knowledge out of the base: the exports check names
+   WebKitLegacy, repointing strips a `librev-` prefix and the runtime rename
+   assumes `.1.0.`; a declaration states each.
+2. `[platform]` in the declaration; the profile is generated from the platform's
+   facts instead of `include-profiles`.
+3. Split the base into the core port and the `apple` platform module - Mach-O,
+   signing, bundles, `.deb` - with steps and invariants registered by the
+   platform, and move names such as `user.ios6:*` and `IOS6_HOST_*` to the
+   core's or the platform's namespace.
+4. Publish the prebuilt packages and fetch them with `conan cache restore`.
+5. A second platform - macOS on an old deployment target is the cheapest - to
+   prove the core holds nothing Apple-mobile.
+6. The repository becomes `charon`, with platforms beside the core.
+
 ## The three layers
 
 **Shared configuration** - `config/`. Two profiles pin the target:
