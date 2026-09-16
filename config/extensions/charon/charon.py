@@ -123,14 +123,14 @@ def variant_options(root, variant):
 
 
 def is_port(folder):
-    return (folder / RECIPE).is_file()
+    return (folder / MANIFEST).is_file() or (folder / RECIPE).is_file()
 
 
 def find_port(argument):
     if argument:
         root = Path(argument).expanduser().resolve()
         if not is_port(root):
-            raise Failure("{} holds no {}, so it is not a port".format(root, RECIPE))
+            raise Failure("{} holds neither {} nor {}, so it is not a port".format(root, MANIFEST, RECIPE))
         return root
     here = Path.cwd().resolve()
     for folder in (here,) + tuple(here.parents):
@@ -169,11 +169,35 @@ def transport(root):
     return device
 
 
-def profile(root):
+def written_profile(root, variant):
+    declared = declaration(root)
+    if declared is None:
+        return None
+    named = declared.using("profile")
+    if named:
+        return named
+    try:
+        import generate
+    except ImportError as missing:
+        raise Failure("generate.py is not beside the driver: {}".format(missing))
+    folder = root / BUILD / variant / GENERATED
+    folder.mkdir(parents=True, exist_ok=True)
+    path = folder / "profile"
+    path.write_text(generate.profile(declared, includes=declared.get("target", "include-profiles", [])))
+    return path
+
+
+def profile(root, parsed):
+    if parsed.profile:
+        return Path(parsed.profile).expanduser().resolve()
+    written = written_profile(root, parsed.variant or default_variant(root))
+    if written is not None:
+        return written
     folder = root / PROFILES
     found = sorted(path for path in folder.iterdir() if path.is_file()) if folder.is_dir() else []
     if not found:
-        raise Failure("{} holds no profile, and it is what says which target this port builds for".format(folder))
+        raise Failure("{} holds no profile and {} declares no target to write one from, so nothing says "
+                      "what this port builds for".format(folder, root / MANIFEST))
     if len(found) > 1:
         names = ", ".join(path.name for path in found)
         raise Failure("{} holds more than one profile ({}); pass --profile to say which".format(folder, names))
@@ -732,6 +756,11 @@ def verb_setup(root, parsed):
 
 
 def port_name(root):
+    declared = manifest(root).get("port", {}).get("name")
+    if declared:
+        return declared
+    if not (root / RECIPE).is_file():
+        return root.name
     result = conan("inspect", root, "--format=json", stdout=subprocess.PIPE, text=True)
     return json.loads(result.stdout or "{}").get("name") or root.name
 
@@ -834,7 +863,7 @@ def main(argv):
         verb_help(None, parsed)
         return 0
     root = find_port(parsed.root)
-    parsed.chosen_profile = Path(parsed.profile).expanduser().resolve() if parsed.profile else profile(root)
+    parsed.chosen_profile = profile(root, parsed)
     HANDLERS[parsed.verb](root, parsed)
     return 0
 
