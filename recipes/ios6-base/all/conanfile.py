@@ -328,7 +328,7 @@ class Ios6Port:
         toolchain.generate()
 
         deps = CMakeDeps(self)
-        wanted = engine.get("find-packages", [])
+        wanted = self.declared_find_packages()
         for dependency in self.dependencies.host.values():
             if dependency.ref.name not in wanted:
                 deps.set_property(dependency.ref.name, "cmake_find_mode", "none")
@@ -499,6 +499,14 @@ class Ios6Port:
         if any(target.get("installs-into") == "stage" for target in targets):
             self.run(f'cmake --install "{folder}" --prefix "{self.stage_folder}"')
             self._sign_installed(folder)
+
+    def declared_find_packages(self):
+        wanted = list((self.declared.get("engine") or {}).get("find-packages", []))
+        for kind in ("static-library", "device-library", "executable", "application"):
+            declared = self.declared.get(kind) or []
+            for target in [declared] if isinstance(declared, dict) else declared:
+                wanted += [package for package in target.get("packages", []) if package not in wanted]
+        return wanted
 
     def declared_waivers(self):
         waived = self.declared.get("waive") or {}

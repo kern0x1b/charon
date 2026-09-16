@@ -196,6 +196,36 @@ def merge_failures(module):
     return found
 
 
+def find_package_failures(module):
+    sys.path.insert(0, str(HERE.parent / "config" / "extensions" / "charon"))
+    import generate
+    import spec
+    found = []
+    declaration = {
+        "target": {"arch": "armv7", "os": "iOS", "os-version": "6.0"},
+        "engine": {"find-packages": ["icu"]},
+        "static-library": [{"name": "compat", "sources": ["a.c"], "packages": ["zlib"]}],
+        "device-library": [{"name": "tweak", "sources": ["t.m"], "install": "/usr/lib", "packages": ["openssl", "zlib"]}],
+        "application": {"name": "Host", "sources": ["main.m"], "packages": ["libcxx"]},
+    }
+    with tempfile.TemporaryDirectory() as folder:
+        for name in ("a.c", "t.m", "main.m"):
+            (Path(folder) / name).write_text("")
+        declared = spec.Spec(Path(folder), declaration)
+        written = generate.written(declared)
+        generated = {line.split("(")[1].split()[0] for text in written.values()
+                     for line in text.splitlines() if line.startswith("find_package(")}
+    instance = port(module, {"prefixed": "False"})
+    type(instance).declaration = declaration
+    kept = set(instance.declared_find_packages())
+    if generated - kept:
+        found.append("every package a generated project finds must keep its CMake config, or configure fails "
+                     "looking for it: {} are found and not kept".format(sorted(generated - kept)))
+    if "icu" not in kept:
+        found.append("[engine] find-packages must still keep its packages: kept {}".format(sorted(kept)))
+    return found
+
+
 def runtime_failures(module):
     from types import SimpleNamespace
     found = []
@@ -547,7 +577,8 @@ def main():
         print("FAIL  this needs an interpreter that can import conan: {}".format(missing))
         return 1
     found = (failures(module) + dispatch_failures(module) + task_failures(module) + sign_failures(module) +
-             plist_failures(module) + bundle_failures(module) + merge_failures(module) + flag_failures(module) + runtime_failures(module))
+             plist_failures(module) + bundle_failures(module) + merge_failures(module) + flag_failures(module) + runtime_failures(module) +
+             find_package_failures(module))
     for line in found:
         print("FAIL  {}".format(line))
     if found:
