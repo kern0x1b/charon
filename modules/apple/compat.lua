@@ -20,3 +20,26 @@ function arrived(system)
     end
     return found
 end
+
+function force_includes(package, symbols)
+    local folders = {}
+    if package.fetch then
+        table.insert(folders, path.join(package:installdir(), "include"))
+    else
+        table.join2(folders, table.wrap(package:get("sysincludedirs")), table.wrap(package:get("includedirs")))
+    end
+    local flags = {}
+    for _, symbol in ipairs(table.wrap(symbols)) do
+        if not ARRIVED[symbol] then
+            raise("apple-compat provides nothing named %s; it knows %s", symbol, table.concat(table.orderkeys(ARRIVED), ", "))
+        end
+        for _, folder in ipairs(folders) do
+            local header = path.join(folder, "charon", symbol .. ".h")
+            if os.isfile(header) then
+                table.insert(flags, "-include" .. header)
+                break
+            end
+        end
+    end
+    return flags
+end

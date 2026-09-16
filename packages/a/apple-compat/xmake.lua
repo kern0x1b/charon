@@ -2,8 +2,15 @@ package("apple-compat")
     set_homepage("https://github.com/kern0x1b/charon")
     set_description("What a current library calls and an old Apple system does not have, provided as hidden definitions linked into the image that calls them")
     set_license("MIT")
+    set_policy("package.strict_compatibility", true)
 
-    add_configs("sources", {description = "The digest of the shims this package compiles, so a changed shim is a different package.", default = "", type = "string"})
+    local digests = {}
+    local sources = table.join(os.files(path.join(os.scriptdir(), "src", "*.c")), os.files(path.join(os.scriptdir(), "include", "charon", "*.h")))
+    table.sort(sources)
+    for _, file in ipairs(sources) do
+        table.insert(digests, path.filename(file) .. "=" .. hash.sha256(file))
+    end
+    add_configs("sources", {description = "The digest of the shims this package compiles, so a changed shim is a different package.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
 
     on_load("iphoneos", function (package)
         import("core.base.semver")
@@ -17,24 +24,9 @@ package("apple-compat")
             end
         end
         table.sort(symbols)
-        local digests = {}
-        local files = table.join(os.files(path.join(package:scriptdir(), "src", "*.c")),
-                                 os.files(path.join(package:scriptdir(), "include", "charon", "*.h")))
-        table.sort(files)
-        for _, file in ipairs(files) do
-            table.insert(digests, path.filename(file) .. "=" .. hash.sha256(file))
-        end
-        package:config_set("sources", hash.strhash128(table.concat(digests, ";")))
         package:data_set("provided", symbols)
         if #symbols > 0 then
             package:add("links", "apple-compat")
-        end
-        for _, symbol in ipairs(symbols) do
-            local header = path.join(package:installdir("include"), "charon", symbol .. ".h")
-            if os.isfile(path.join(package:scriptdir(), "include", "charon", symbol .. ".h")) then
-                package:add("cxflags", "-include" .. header)
-                package:add("mxflags", "-include" .. header)
-            end
         end
     end)
 

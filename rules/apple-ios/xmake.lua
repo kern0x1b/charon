@@ -23,4 +23,14 @@ rule("apple-ios")
         target:add("cxflags", mapped)
         target:add("mxflags", mapped)
         target:add("asflags", mapped)
+        local symbols = target:values("apple.compat")
+        if symbols then
+            local compat = target:pkg("apple-compat")
+            if not compat then
+                raise("target(%s) names apple.compat symbols without add_packages(\"apple-compat\")", target:name())
+            end
+            local flags = import("@self.apple.compat").force_includes(compat, symbols)
+            target:add("cxflags", flags, {force = true})
+            target:add("mxflags", flags, {force = true})
+        end
     end)

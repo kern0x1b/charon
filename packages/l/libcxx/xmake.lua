@@ -2,6 +2,7 @@ package("libcxx")
     set_homepage("https://libcxx.llvm.org")
     set_description("The C++ runtime an old iOS does not ship, as the shared libraries an application carries in its bundle")
     set_license("Apache-2.0 WITH LLVM-exception")
+    set_policy("package.strict_compatibility", true)
 
     add_urls("https://github.com/llvm/llvm-project.git")
     add_versions("23.1.1", "6dfe1677ab8dffbc6ec13d53a1e0215d75147689")

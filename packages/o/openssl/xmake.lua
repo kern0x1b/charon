@@ -2,6 +2,7 @@ package("openssl")
     set_homepage("https://www.openssl.org")
     set_description("OpenSSL, the newest release, through its own Configure targets with the ARM assembly kept; armv7 carries a perlasm fix for OPENSSL_armcap_P on Mach-O")
     set_license("Apache-2.0")
+    set_policy("package.strict_compatibility", true)
 
     add_urls("https://github.com/openssl/openssl.git")
     add_versions("4.0.2", "f089acdf4bc7ba94a79f4bf6eb7362c3e7d14aa9")

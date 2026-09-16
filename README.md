@@ -121,6 +121,22 @@ build of a Makefile or autotools project expects. An install script runs in the
 extracted source, so its current directory is the source root.
 `charon@libcxx` is libc++ 23 as the shared pair an application bundles, linked
 with `charon@apple-compat`, the hidden shims for what the minimum release lacks.
+apple-compat links its shims into whoever requires it and force-includes
+nothing on its own, because a shim's header brings its system header with it
+(`unlinkat.h` brings `<unistd.h>`, and with it `sync`). A target names the
+calls it renames with `add_values("apple.compat", "clock_gettime")`; a package
+script takes the flags from
+`import("@addon.charon.apple.compat").force_includes(package:dep("apple-compat"), {"clock_gettime"})`.
+
+xmake's package hash covers a package's version, configs and toolchain, but
+neither its script nor the builds of its dependencies. Charon's libraries set
+`package.strict_compatibility`, so what depends on them is rebuilt when they
+change; a port should set `package.librarydeps.strict_compatibility` in its
+project for its own packages, and give a package defined in its `xmake.lua` a
+revision it raises with the script:
+`add_configs("revision", {default = "2", readonly = true})`. A build cut short
+can leave `.git/index.lock` in the package's source cache under
+`~/.xmake/cache/packages/`; remove that lock file before building again.
 
 A new machine needs `brew install xmake llvm` and `xcode-select --install`. The
 addon's tests build their fixtures with the same ld64 and ldid:
