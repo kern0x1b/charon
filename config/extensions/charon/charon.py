@@ -332,7 +332,7 @@ def install_frameworks(device, staged, remote, frameworks):
         if not entries:
             continue
         say("installing {} resources ({} entries)".format(framework, len(entries)))
-        status = device.pipe_into(["tar", "czf", "-"] + entries,
+        status = device.pipe_into(["tar", "--no-xattrs", "czf", "-"] + entries,
                                   "cd {}/{} && tar xzf - && chmod -R 755 . 2>/dev/null".format(remote, bundle),
                                   cwd=directory)
         if status:
@@ -403,7 +403,7 @@ def verb_run(root, parsed):
     if not device.reachable(20):
         raise Failure("the phone at {} is unreachable".format(device.where()))
     device.run(40, "killall -9 {} 2>/dev/null; rm -rf {}".format(executable, remote))
-    status = device.pipe_into(["tar", "-czf", "-", app.name],
+    status = device.pipe_into(["tar", "--no-xattrs", "-czf", "-", app.name],
                              "cd {} && tar xzf - && chmod +x {}/{}".format(APPLICATIONS, remote, executable),
                              cwd=app.parent)
     if status:

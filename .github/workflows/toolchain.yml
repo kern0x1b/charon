@@ -20,6 +20,9 @@ jobs:
       - name: Install the host tools
         run: brew install ninja llvm
 
+      - name: The declaration reader refuses what it cannot resolve
+        run: python3 tests/spec_test.py
+
       - name: Register the toolchain
         run: |
           conan config install "$PWD/config"
