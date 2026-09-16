@@ -3,6 +3,7 @@ import plistlib
 
 from conan import ConanFile
 from conan.errors import ConanException
+from conan.tools.layout import basic_layout
 
 
 class TestPackage(ConanFile):
@@ -11,6 +12,9 @@ class TestPackage(ConanFile):
 
     def build_requirements(self):
         self.tool_requires(self.tested_reference_str)
+
+    def layout(self):
+        basic_layout(self)
 
     def test(self):
         sdk = self.conf.get("tools.apple:sdk_path", check_type=str)
