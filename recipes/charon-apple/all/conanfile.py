@@ -240,13 +240,26 @@ class ApplePort:
                                  f"(first: {unlisted[:3]})")
 
     def _check_imports(self):
-        cache = self.conf.get("user.apple-ios:dyld_shared_cache", check_type=str)
-        if not cache:
+        cache = self.conf.get("user.apple-ios:dyld_shared_cache", check_type=str) or self._held_cache()
+        if not os.path.isfile(cache):
             raise ConanException(
-                "user.apple-ios:dyld_shared_cache is not set, and check:imports is a step this pipeline declares. "
-                "A step that reports success having looked at nothing is worse than no step at all, so either "
-                "name the cache this port is checked against or take check:imports out of the pipeline")
-        self.run(f'ios6-imports-check --cache "{cache}" --dist "{self.stage_folder}"')
+                f"check:imports is a step this pipeline declares, and there is no shared cache at {cache} to check "
+                "against. Fetch the device's dyld_shared_cache there once, or name another with "
+                "user.apple-ios:dyld_shared_cache; a step that reports success having looked at nothing is worse "
+                "than no step at all")
+        checker = os.path.join(self._build_tool("dyld-imports-check"), "dyld-imports-check")
+        application = self.declared.get("application") or {}
+        bundle = os.path.join(self.build_folder, f"{application.get('name')}.app") if application else None
+        folders = [folder for folder in (self.stage_folder, bundle) if folder and os.path.isdir(folder)]
+        if not folders:
+            raise ConanException(f"check:imports found neither {self.stage_folder} nor an application bundle, so "
+                                 "there is nothing built to check yet; run it after the steps that produce them")
+        for folder in folders:
+            self.run(f'"{checker}" --cache "{cache}" --dist "{folder}"')
+
+    def _held_cache(self):
+        home = self.conf.get("user.charon:home", check_type=str) or os.path.join(os.path.expanduser("~"), ".charon")
+        return os.path.join(home, "dyld", f"dyld_shared_cache_{self.apple_architecture}")
 
     def _stage_binary_plists(self):
         for folder, _, names in os.walk(self.stage_folder):

@@ -197,6 +197,7 @@ class Spec:
             "deployment-environment": facts.get("deployment-environment"),
             "compiler": dict(facts.get("compiler") or {}),
             "conf": dict(facts.get("conf") or {}),
+            "port-tool-requires": list(facts.get("port-tool-requires") or []),
             "tool-requires": list(facts.get("tool-requires") or []) + list(architectures[arch].get("tool-requires")
                                                                             or []),
         }

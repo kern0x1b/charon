@@ -453,6 +453,12 @@ def _references(section):
     return ["{}/{}".format(name, version) for name, version in section.items()]
 
 
+def _port_tools(platform, declared_tools):
+    named = {reference.split("/")[0]: reference for reference in platform["port-tool-requires"]}
+    named.update({name: "{}/{}".format(name, version) for name, version in declared_tools.items()})
+    return list(named.values())
+
+
 def recipe(declared):
     import pprint
     described = declared.section("port")
@@ -478,7 +484,7 @@ def recipe(declared):
         defaults=repr(defaults),
         declaration=pprint.pformat(content, width=110, sort_dicts=False, indent=4),
         requires=repr(platform["requires"] + _references(declared.section("requires"))),
-        tools=repr(_references(declared.section("tools"))),
+        tools=repr(_port_tools(platform, declared.section("tools"))),
     )
 
 

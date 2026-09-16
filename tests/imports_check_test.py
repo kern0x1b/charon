@@ -83,9 +83,58 @@ def failures():
     return found
 
 
+def step_failures(ld64):
+    import declaration_test
+    module = declaration_test.loaded_base()
+    module.ConanException = sys.modules["conan.errors"].ConanException
+    found = []
+    with tempfile.TemporaryDirectory() as scratch:
+        folder = Path(scratch)
+        tool = folder / "tool" / "bin"
+        tool.mkdir(parents=True)
+        (tool / "dyld-imports-check").write_bytes(CHECKER.read_bytes())
+        (tool / "dyld-imports-check").chmod(0o755)
+        home = folder / "home"
+        (home / "dyld").mkdir(parents=True)
+        cache(home / "dyld" / "dyld_shared_cache_armv7", "armv7", "_exported")
+        stage = folder / "build" / "stage" / "usr" / "lib"
+        stage.mkdir(parents=True)
+        dylib(folder, ld64, "clean", "armv7-apple-ios6.0", "_exported").rename(stage / "libclean.dylib")
+        bundle = folder / "build" / "Host.app"
+        bundle.mkdir()
+        dylib(folder, ld64, "late", "armv7-apple-ios6.0", "___divti3").rename(bundle / "Host")
+        instance = macho_test.running_port(module, folder, {"application": {"name": "Host"}}, "ldid")
+        instance.dependencies.build = {"dyld-imports-check": type("Tool", (), {
+            "package_folder": str(folder / "tool"), "ref": "dyld-imports-check/1.0"})()}
+        instance.conf = declaration_test.Conf({"user.charon:home": str(home)})
+        try:
+            instance._check_imports()
+            found.append("check:imports must refuse an application bundle importing what the held cache lacks")
+        except Exception as refused:
+            if "failed" not in str(refused):
+                found.append("check:imports must run the checker on the bundle and fail with it: {}".format(refused))
+        (bundle / "Host").unlink()
+        dylib(folder, ld64, "fine", "armv7-apple-ios6.0", "_exported").rename(bundle / "Host")
+        try:
+            instance._check_imports()
+        except Exception as refused:
+            found.append("check:imports must pass a stage and bundle importing only what the held cache exports: "
+                         "{}".format(refused))
+        instance.conf = declaration_test.Conf({"user.charon:home": str(folder / "nowhere")})
+        try:
+            instance._check_imports()
+            found.append("check:imports with no cache must be refused, not reported as passing")
+        except module.ConanException as refused:
+            if "no shared cache at" not in str(refused):
+                found.append("check:imports must say where it looked for the cache: {}".format(refused))
+    return found
+
+
 def main():
+    import declaration_test
+    declaration_test.reexec_where_conan_lives(__file__)
     try:
-        found = failures()
+        found = failures() + step_failures(macho_test.packaged("ld64/*@charon/stable", "ld"))
     except macho_test.Refused as missing:
         found = [str(missing)]
     for line in found:

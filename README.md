@@ -202,6 +202,16 @@ release for one slice. A port's own `platforms/NAME.toml` is used before
 Charon's, so a platform can be written or corrected without changing Charon.
 `[target]` keeps what tunes the build: `cppstd`, `cpu`, `fpu`, `defines`.
 
+`tool-requires` reach every package the profile builds; `port-tool-requires`
+reach only the port's own recipe, beside its `[tools]`, and a port naming the
+same tool picks its version. apple-ios names `dyld-imports-check` there, which
+the `check:imports` step runs over the stage and the application bundle against
+the device's shared cache: `user.apple-ios:dyld_shared_cache`, or else
+`<user.charon:home, ~/.charon>/dyld/dyld_shared_cache_<arch>`. Without a cache
+the step refuses rather than passing having looked at nothing. It is the check
+that proves a build loads: a table of calls that arrived late only knows what
+someone wrote into it.
+
 `charon where pkg:NAME` prints the folder of a package a variant's build links,
 and `charon where tool:NAME` one it runs, answered from the same lock and profile
 the build uses and never building anything; a script asks it instead of reading
