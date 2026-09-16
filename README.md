@@ -148,9 +148,14 @@ a post-link edit that sets it on ARM code does not, and either one runs until
 the first call through the pointer. An executable's `__PAGEZERO` must be at
 least 4 GB on arm64 and end where `__TEXT` starts on armv7. After
 `sign:application` the signature is read back and must carry every declared
-entitlement with its declared value. A port can only take one out with a
-reason, `[waive] pagezero = "why"`; an unknown name or an empty reason is
-refused.
+entitlement with its declared value. After a project builds, every object in
+its build tree and every archive member of a package it depends on must record
+the target's minimum OS version exactly: newer means the binary needs a later
+iOS, and older or none means it was compiled without the target's flags - the
+assembler is where that usually happens. A port can only take one out with a
+reason, `[waive] pagezero = "why"`, and `input-minimum` may name packages,
+`[waive] input-minimum = { tdlib = "why" }`; an unknown name, a package nothing
+depends on, or an empty reason is refused.
 
 Recipes reach a build only through a local recipe index, which trims each
 `conandata.yml` to the version it exports. A top-level table with no key for

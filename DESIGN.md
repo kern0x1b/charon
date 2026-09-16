@@ -101,12 +101,13 @@ class run inside the step that produces a binary, before it is stripped, so a
 pipeline cannot leave them out. Every defect they cover was found shipping with
 a green build: pointers to ARM-mode functions given the Thumb bit by a post-link
 fix-up, an arm64 executable with a 16 KB `__PAGEZERO`, and entitlements missing
-after signing. A port waives one only with a reason. Still to come here: the
-minimum OS version of every link input, read from the objects and archive
-members themselves - refused when newer than the target anywhere, refused when
-different for a package the graph built, reported when older for a prebuilt
-input - and undefined symbols the deployment target's runtime does not export,
-which a newer SDK's stubs let the linker accept.
+after signing, and an archive member of libvpx's that its assembler stamped for
+iOS 5.0. The minimum OS version is read from every object a project built and
+every archive member of the packages the graph built, and anything other than
+the target is refused. A port waives one only with a reason. Still to come here:
+inputs from outside the graph, such as a vendored archive, reported when older;
+and undefined symbols the deployment target's runtime does not export, which a
+newer SDK's stubs let the linker accept.
 
 ## Binaries
 

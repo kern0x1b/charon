@@ -388,6 +388,124 @@ def entitlement_failures(module, folder, made, ldid):
     return found
 
 
+class Named:
+    def __init__(self, name):
+        self.name = name
+
+
+class Package:
+    def __init__(self, name, libdir):
+        self.ref = Named(name)
+        self.cpp_info = self
+        self._libdir = libdir
+
+    def aggregated_components(self):
+        return type("Components", (), {"libdirs": [str(self._libdir)]})()
+
+
+class Requirement:
+    def __init__(self, name):
+        self.ref = Named(name)
+
+
+class Dependencies:
+    def __init__(self, packages):
+        self.host = {Requirement(package.ref.name): package for package in packages}
+
+
+def compiled(folder, name, version, *extra):
+    (folder / "unit.c").write_text("int unit(void) { return 1; }\n")
+    run("xcrun", "clang", "-target", "armv7-apple-ios{}".format(version), "-Wno-incompatible-sysroot", "-c",
+        "unit.c", "-o", name, *extra, cwd=folder)
+    return folder / name
+
+
+def input_minimum_failures(module, ldid):
+    found = []
+    with tempfile.TemporaryDirectory() as scratch:
+        folder = Path(scratch)
+        at_target = compiled(folder, "a_member_built_for_the_target.o", "6.0")
+        older = compiled(folder, "intrapred_neon_asm.asm.S.o", "5.0")
+        newer = compiled(folder, "newer.o", "7.0")
+        silent = folder / "silent.o"
+        data = bytearray(at_target.read_bytes())
+        command = data.find(struct.pack("<II", 0x25, 16))
+        if command < 0:
+            return ["the compiler must record LC_VERSION_MIN_IPHONEOS for an iOS 6 object for this test to strip it"]
+        data[command:command + 4] = struct.pack("<I", 0x2A)
+        silent.write_bytes(bytes(data))
+        libdir = folder / "vpx" / "lib"
+        libdir.mkdir(parents=True)
+        run("xcrun", "libtool", "-static", "-o", libdir / "libvpx.a", at_target, older, cwd=folder)
+        clean = folder / "clean" / "lib"
+        clean.mkdir(parents=True)
+        run("xcrun", "libtool", "-static", "-o", clean / "libogg.a", at_target, cwd=folder)
+        for name, cputype, problems in (
+                ("libvpx.a", 12, ["vpx/libvpx.a(intrapred_neon_asm.asm.S.o) was built for iOS 5.0 instead of 6.0"]),
+                ("libogg.a", 12, []), ("libvpx.a", 0x0100000C, [])):
+            path = (libdir if name == "libvpx.a" else clean) / name
+            label = "vpx/libvpx.a" if name == "libvpx.a" else "ogg/libogg.a"
+            got = module.MachO.minimum_problems(str(path), cputype, "6.0", label)
+            if len(got) != len(problems) or any(want not in have for want, have in zip(problems, got)):
+                found.append("{} for cpu {:#x}: expected {}, got {}".format(name, cputype, problems or "nothing", got))
+        for path, reason in ((newer, "newer.o was built for iOS 7.0, newer than the 6.0"),
+                             (silent, "silent.o records no minimum OS version")):
+            got = module.MachO.minimum_problems(str(path), 12, "6.0", path.name)
+            if len(got) != 1 or reason not in got[0]:
+                found.append("{}: expected {}, got {}".format(path.name, reason, got))
+
+        port_objects = folder / "build" / "application"
+        port_objects.mkdir(parents=True)
+        shutil.copy2(at_target, port_objects / "main.o")
+        packages = [Package("libvpx", libdir), Package("ogg", clean)]
+        cases = (
+            ("an archive member built for another version", {}, None, "libvpx/libvpx.a(intrapred_neon_asm.asm.S.o)"),
+            ("an object of the port's own built for a newer version", {}, newer, "extra.o was built for iOS 7.0"),
+            ("a waived package", {"input-minimum": {"libvpx": "its assembler is fixed upstream next week"}},
+             None, None),
+            ("everything waived", {"input-minimum": "a reason"}, newer, None),
+            ("a waiver naming a package nothing depends on", {"input-minimum": {"tdlib": "why"}}, None,
+             "does not depend on"),
+            ("a package waiver without a reason", {"input-minimum": {"libvpx": ""}}, None, "gives no reason"),
+        )
+        for description, waive, extra, reason in cases:
+            instance = running_port(module, folder, {"waive": waive}, ldid)
+            instance.dependencies = Dependencies(packages)
+            instance.generators_folder = str(folder / "generators")
+            placed = port_objects / "extra.o"
+            if extra:
+                shutil.copy2(extra, placed)
+            elif placed.exists():
+                placed.unlink()
+            ran = []
+            type(instance).run = lambda self, command, cwd=None, stdout=None, ignore_errors=False: ran.append(command)
+            try:
+                instance._cmake_project(str(folder), str(port_objects), {})
+                if reason:
+                    found.append("{} must be refused".format(description))
+            except module.ConanException as refused:
+                if not reason or reason not in str(refused):
+                    found.append("{}: expected {}, got {}".format(description, reason or "success", refused))
+            if not any(command.startswith("cmake --build") for command in ran):
+                found.append("{}: the project must be built before its inputs are read".format(description))
+
+        instance = running_port(module, folder, {"stage": {}}, ldid)
+        instance.dependencies = Dependencies([Package("ogg", clean)])
+        shutil.copy2(newer, Path(instance.build_folder) / "engine-unit.o")
+        original = module.CMake
+        module.CMake = type("CMake", (), {"__init__": lambda self, conanfile: None,
+                                          "configure": lambda self: None, "build": lambda self: None})
+        try:
+            module.Ios6Port._build_target(instance, "engine")
+            found.append("an engine object built for a newer version must be refused after the engine builds")
+        except module.ConanException as refused:
+            if "engine-unit.o was built for iOS 7.0" not in str(refused):
+                found.append("the engine build must be refused for its object: got {}".format(refused))
+        finally:
+            module.CMake = original
+    return found
+
+
 def waiver_failures(module, made):
     found = []
     instance = declaration_test.port(module, {"prefixed": "False"})
@@ -443,6 +561,7 @@ def main():
             found += waiver_failures(module, made)
             found += wiring_failures(module, made, ldid)
             found += runtime_reference_failures(module, made, ld64, ldid)
+            found += input_minimum_failures(module, ldid)
     except Refused as missing:
         found.append(str(missing))
     for line in found:

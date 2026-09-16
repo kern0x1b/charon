@@ -459,12 +459,14 @@ class Ios6Port:
                  f'-DIOS6_DEPLOYMENT_TARGET="{self.settings.os.version}" '
                  f'-DCHARON_PORT="{self.port_root}" {values}')
         self.run(f'cmake --build "{folder}"')
+        self._verify_inputs(folder)
 
     def _build_target(self, name):
         if name == "engine":
             cmake = CMake(self)
             cmake.configure()
             cmake.build()
+            self._verify_inputs(self.build_folder)
             return
         if name == "application":
             self._build_application()
@@ -504,9 +506,51 @@ class Ios6Port:
             if name not in MachO.WAIVABLE:
                 raise ConanException(f"[waive] names {name}, which is not something this toolchain verifies; it "
                                      f"verifies {', '.join(MachO.WAIVABLE)}")
-            if not isinstance(why, str) or not why.strip():
+            reasons = why.values() if name == "input-minimum" and isinstance(why, dict) else [why]
+            if not reasons or any(not isinstance(reason, str) or not reason.strip() for reason in reasons):
                 raise ConanException(f"[waive] {name} gives no reason, and a check is only left out for one")
         return waived
+
+    def _verify_inputs(self, folder):
+        waived = self.declared_waivers().get("input-minimum")
+        if isinstance(waived, str):
+            self.output.warning(f"input-minimum not checked: {waived}")
+            return
+        waived = waived or {}
+        arch, target = str(self.settings.arch), str(self.settings.os.version)
+        cputype = MachO.CPU_TYPES.get(arch)
+        if cputype is None:
+            raise ConanException(f"{arch} is not an architecture this toolchain reads link inputs for")
+        problems = []
+        for place, _, names in os.walk(folder):
+            for name in sorted(names):
+                if name.endswith(".o"):
+                    path = os.path.join(place, name)
+                    problems += MachO.minimum_problems(path, cputype, target, os.path.relpath(path, folder))
+        checked = getattr(self, "_inputs_checked", set())
+        for reference, dependency in self.dependencies.host.items():
+            package = reference.ref.name
+            if package in checked:
+                continue
+            checked.add(package)
+            if package in waived:
+                self.output.warning(f"input-minimum not checked for {package}: {waived[package]}")
+                continue
+            for libdir in dependency.cpp_info.aggregated_components().libdirs:
+                if not os.path.isdir(libdir):
+                    continue
+                for name in sorted(os.listdir(libdir)):
+                    path = os.path.join(libdir, name)
+                    if name.endswith(".a") and not os.path.islink(path):
+                        problems += MachO.minimum_problems(path, cputype, target, f"{package}/{name}")
+        self._inputs_checked = checked
+        unknown = sorted(set(waived) - {dependency.ref.name for dependency in self.dependencies.host.values()})
+        if unknown:
+            raise ConanException(f"[waive] input-minimum names {', '.join(unknown)}, which this build does not "
+                                 "depend on")
+        if problems:
+            shown = "; ".join(problems[:5]) + (f"; and {len(problems) - 5} more" if len(problems) > 5 else "")
+            raise ConanException(f"a link input was not built for this target: {shown}")
 
     def _verify(self, binary):
         MachO(self).verify(binary, self.declared_waivers())
@@ -922,7 +966,87 @@ class MachO:
     CODE = 0x80000000 | 0x400
     THUMB_DEFINITION = 0x0008
     SMALLEST_ARM64_PAGEZERO = 1 << 32
-    WAIVABLE = ("thumb-interworking", "pagezero", "entitlements")
+    WAIVABLE = ("thumb-interworking", "pagezero", "entitlements", "input-minimum")
+    CPU_TYPES = {"armv7": 12, "armv7s": 12, "armv8": 0x0100000C, "arm64": 0x0100000C}
+
+    @classmethod
+    def recorded_minimums(cls, path, cputype):
+        with open(path, "rb") as handle:
+            if handle.read(8) != b"!<arch>\n":
+                return [(None, minimum) for minimum in cls._minimums_at(handle, 0, cputype)]
+            found = []
+            at = 8
+            while True:
+                handle.seek(at)
+                header = handle.read(60)
+                if len(header) < 60:
+                    return found
+                name, size = header[:16].decode().strip(), int(header[48:58].decode().strip())
+                body = at + 60
+                if name.startswith("#1/"):
+                    length = int(name[3:])
+                    handle.seek(body)
+                    name = handle.read(length).rstrip(b"\0").decode(errors="replace")
+                    start = body + length
+                else:
+                    start = body
+                if not name.startswith("__.SYMDEF"):
+                    found += [(name, minimum) for minimum in cls._minimums_at(handle, start, cputype)]
+                at = body + size + (size & 1)
+
+    @classmethod
+    def _minimums_at(cls, handle, base, cputype):
+        handle.seek(base)
+        magic = handle.read(4)
+        if magic == b"\xca\xfe\xba\xbe":
+            count = struct.unpack(">I", handle.read(4))[0]
+            slices = [struct.unpack(">iiIII", handle.read(20)) for _ in range(count)]
+            return [minimum for kind, _, offset, _, _ in slices if kind == cputype
+                    for minimum in cls._minimums_at(handle, base + offset, cputype)]
+        if magic not in (b"\xce\xfa\xed\xfe", b"\xcf\xfa\xed\xfe"):
+            return []
+        kind, _, _, ncmds, sizeofcmds = struct.unpack("<iiIII", handle.read(20))
+        if kind != cputype:
+            return []
+        handle.seek(base + (32 if magic == b"\xcf\xfa\xed\xfe" else 28))
+        commands = handle.read(sizeofcmds)
+        at = 0
+        for _ in range(ncmds):
+            command, size = struct.unpack_from("<II", commands, at)
+            if command == 0x25:
+                return [struct.unpack_from("<I", commands, at + 8)[0]]
+            if command == 0x32:
+                return [struct.unpack_from("<I", commands, at + 12)[0]]
+            at += size
+        return [None]
+
+    @staticmethod
+    def version_text(encoded):
+        return "none" if encoded is None else f"{encoded >> 16}.{(encoded >> 8) & 0xFF}" + (
+            f".{encoded & 0xFF}" if encoded & 0xFF else "")
+
+    @staticmethod
+    def encoded_version(text):
+        parts = [int(part) for part in str(text).split(".")] + [0, 0]
+        return (parts[0] << 16) | (parts[1] << 8) | parts[2]
+
+    @classmethod
+    def minimum_problems(cls, path, cputype, target, label):
+        wanted = cls.encoded_version(target)
+        problems = []
+        for member, minimum in cls.recorded_minimums(path, cputype):
+            if minimum == wanted:
+                continue
+            named = f"{label}({member})" if member else label
+            if minimum is None:
+                problems.append(f"{named} records no minimum OS version, so nothing says it was built for {target}")
+            elif minimum > wanted:
+                problems.append(f"{named} was built for iOS {cls.version_text(minimum)}, newer than the {target} "
+                                "this links for")
+            else:
+                problems.append(f"{named} was built for iOS {cls.version_text(minimum)} instead of {target}, which "
+                                "means it was compiled without the target's flags")
+        return problems
 
     @classmethod
     def images(cls, data):
