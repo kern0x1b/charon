@@ -181,9 +181,9 @@ local function encryption_failures(macho, folder, ld64)
 end
 
 function failures(opt)
-    local macho = import("charon.apple.macho", {rootdir = opt.modules, anonymous = true})
-    local compat = import("charon.apple.compat", {rootdir = opt.modules, anonymous = true})
-    local signing = import("charon.apple.signing", {rootdir = opt.modules, anonymous = true})
+    local macho = import("apple.macho", {rootdir = opt.modules, anonymous = true})
+    local compat = import("apple.compat", {rootdir = opt.modules, anonymous = true})
+    local signing = import("apple.signing", {rootdir = opt.modules, anonymous = true})
     local folder = fixtures.scratch()
     local made, arm, thumb = made_fixtures(folder, opt.ld64)
     local found = invariant_failures(macho, made, arm, thumb)

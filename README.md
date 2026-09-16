@@ -54,6 +54,23 @@ on every command. The import check reads
 from the device once. A check that would have to be skipped is waived by name
 with the reason, e.g. `set_values("charon.waive.pagezero", "why")`.
 
+A package of a port that builds with CMake calls the addon's bridge from its
+install script, which writes a toolchain file from the `apple-ios` toolchain
+(clang from the command line tools, `-target`, `-isysroot`, ld64, the SDK and
+the package's installed dependencies as find roots) and configures, builds and
+installs with Ninja:
+
+    on_install("iphoneos", function (package)
+        import("@addon.charon.apple.cmake").install(package, {"-DBUILD_TESTING=OFF"})
+    end)
+
+xmake's own `package.tools.cmake` does not pass a custom compiler for iphoneos.
+Every package the port requires gets `-O3` with the toolchain, as a release
+build of a Makefile or autotools project expects. An install script runs in the
+extracted source, so its current directory is the source root.
+`charon@libcxx` is libc++ 23 as the shared pair an application bundles, linked
+with `charon@apple-compat`, the hidden shims for what the minimum release lacks.
+
 A new machine needs `brew install xmake llvm` and `xcode-select --install`. The
 addon's tests build their fixtures with the same ld64 and ldid:
 

@@ -35,7 +35,7 @@ local function dylib(folder, ld64, name, triple, imported, extra)
 end
 
 function failures(opt)
-    local dyld = import("charon.apple.dyld", {rootdir = opt.modules, anonymous = true})
+    local dyld = import("apple.dyld", {rootdir = opt.modules, anonymous = true})
     local found = {}
     local folder = fixtures.scratch()
     local armv7 = cache(path.join(folder, "dyld_shared_cache_armv7"), "armv7", "_exported")

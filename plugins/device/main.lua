@@ -1,6 +1,6 @@
 import("core.base.option")
-import("@self.charon.device")
-import("@self.charon.packaging")
+import("@self.device")
+import("@self.packaging")
 
 function main()
     local settings = device.bind(os.projectdir(), option.get("device"))

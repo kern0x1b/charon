@@ -25,7 +25,7 @@ package("openssl")
             local toolchain = assert(package:toolchains(), "an iPhoneOS OpenSSL is built with the platform's toolchain")[1]
             toolchain:load()
             envs.SDKROOT = assert(toolchain:config("sdkdir"), "the toolchain names no SDK")
-            table.insert(options, "-mios-version-min=" .. assert(toolchain:config("minimum"), "the toolchain names no minimum release"))
+            table.insert(options, "-mios-version-min=" .. assert(toolchain:config("deployment"), "the toolchain names no minimum release"))
             if package:is_arch("armv7") then
                 table.insert(options, "-DBROKEN_CLANG_ATOMICS")
             end

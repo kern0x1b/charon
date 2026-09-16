@@ -9,5 +9,5 @@ end
 local minimum = get_config("apple_minimum")
 if minimum then
     local toolchain = string.format("@addon/charon/apple-ios[minimum=%s,sdk=%s,ld64=%s]", minimum, sdk.version, ld64.version)
-    add_requireconfs("*|" .. sdk.name .. "|" .. ld64.name .. "|" .. ldid.name, {configs = {toolchains = toolchain}})
+    add_requireconfs("*|" .. sdk.name .. "|" .. ld64.name .. "|" .. ldid.name, {configs = {toolchains = toolchain, cxflags = "-O3"}})
 end

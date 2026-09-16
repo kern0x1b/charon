@@ -24,7 +24,7 @@ local function listing(folder, archive)
 end
 
 function failures(opt)
-    local debian = import("charon.debian", {rootdir = opt.modules, anonymous = true})
+    local debian = import("debian", {rootdir = opt.modules, anonymous = true})
     local found = {}
     local folder = fixtures.scratch()
     local root = path.join(folder, "root")

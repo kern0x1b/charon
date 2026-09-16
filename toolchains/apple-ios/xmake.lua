@@ -36,12 +36,20 @@ toolchain("apple-ios")
     end)
 
     on_load(function (toolchain)
+        import("core.base.semver")
         local found = parts(toolchain, import("core.project.project"))
-        local minimum = toolchain:config("minimum")
-        if not found.sdk or not minimum then
-            raise("toolchain(apple-ios) needs an SDK package and a minimum release, e.g. apple_ios({minimum = \"6.0\"})")
+        local declared = toolchain:config("minimum")
+        if not found.sdk or not declared then
+            raise("toolchain(apple-ios) needs the SDK package and apple_minimum; includes(\"@addon/charon/apple-ios\") provides both")
         end
+        local floors = {armv7 = "6.0", armv7s = "6.0", arm64 = "7.0"}
+        local floor = floors[toolchain:arch()]
+        if not floor then
+            raise("toolchain(apple-ios) builds armv7, armv7s and arm64, not %s", toolchain:arch())
+        end
+        local minimum = semver.compare(declared, floor) < 0 and floor or declared
         toolchain:config_set("sdkdir", found.sdk)
+        toolchain:config_set("deployment", minimum)
         local target = {"-target", toolchain:arch() .. "-apple-ios" .. minimum, "-isysroot", found.sdk}
         local linked = table.join(target, found.linker and {"-fuse-ld=" .. found.linker} or {})
         toolchain:add("cxflags", target)

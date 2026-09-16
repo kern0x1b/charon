@@ -1,7 +1,7 @@
 import("fixtures")
 
 function failures(opt)
-    local device = import("charon.device", {rootdir = opt.modules, anonymous = true})
+    local device = import("device", {rootdir = opt.modules, anonymous = true})
     local found = {}
     local folder = fixtures.scratch()
     io.writefile(path.join(folder, "device.env"), table.concat({
