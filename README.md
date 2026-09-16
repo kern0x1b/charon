@@ -20,7 +20,7 @@ know about these platforms, and nothing else:
     set_policy("package.requires_lock", true)
 
     add_repositories("charon https://github.com/kern0x1b/charon.git main")
-    add_addons("charon main")
+    add_addons("charon")
     set_config("apple_minimum", "6.0")
     includes("@addon/charon/apple-ios")
 
@@ -46,7 +46,10 @@ Then:
 versions it pins, and hands every other package the `apple-ios` toolchain named
 with those versions and `apple_minimum`, so a change of any of them rebuilds
 what was built with it. A library comes from here as `charon@name`. The rules
-bind the same toolchain to their targets. Commit `xmake-requires.lock`. The import check reads
+bind the same toolchain to their targets. Commit `xmake-requires.lock` and
+`xmake-addons.lock`; `add_addons("charon")` names no branch, because a branch
+name is not a version xmake can hold a lock to and it would reinstall the addon
+on every command. The import check reads
 `~/.charon/dyld/dyld_shared_cache_<arch>` (or `$CHARON_HOME/dyld/...`), copied
 from the device once. A check that would have to be skipped is waived by name
 with the reason, e.g. `set_values("charon.waive.pagezero", "why")`.
