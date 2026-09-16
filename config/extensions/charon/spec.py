@@ -11,7 +11,7 @@ from pathlib import Path
 
 MANIFEST = "charon.toml"
 PLACEHOLDER = re.compile(r"\{([a-z][a-z0-9_.-]*(?::[^{}]*)?)\}")
-GRAPH_PREFIXES = ("pkg", "include", "lib", "libdirs", "bin", "target")
+GRAPH_PREFIXES = ("pkg", "include", "lib", "libdirs", "bin")
 
 PATHS = {
     "sources": ".",

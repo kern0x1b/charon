@@ -23,6 +23,9 @@ jobs:
       - name: The declaration reader refuses what it cannot resolve
         run: python3 tests/spec_test.py
 
+      - name: What a declaration generates is what it declared
+        run: python3 tests/generate_test.py
+
       - name: Register the toolchain
         run: |
           conan config install "$PWD/config"
