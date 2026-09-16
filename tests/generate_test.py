@@ -224,6 +224,50 @@ def checks(declared):
     return found
 
 
+GLOBBED = """
+[target]
+arch = "armv7"
+os = "iOS"
+os-version = "6.0"
+[[static-library]]
+name = "compat"
+sources = ["compat/**/*.c", "compat/*.m"]
+exclude = ["compat/skip/**"]
+"""
+
+
+def glob_failures(folder):
+    found = []
+    root = Path(folder) / "globbed"
+    for relative in ("compat/a.c", "compat/deep/b.c", "compat/c.m", "compat/skip/d.c"):
+        path = root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("")
+    static = generate.written(loaded(root, GLOBBED))["static-library/CMakeLists.txt"]
+    for expected in ("compat/a.c", "compat/deep/b.c", "compat/c.m"):
+        if "${CHARON_PORT}/" + expected not in static:
+            found.append("a source matched by a pattern must be built: {} missing from {}".format(expected, static))
+    if "compat/skip/d.c" in static:
+        found.append("a source under an exclude pattern must not be built")
+    if "project(port-static C OBJC)" not in static:
+        found.append("languages must come from the files a pattern matched: got {}".format(static.splitlines()[2]))
+
+    for description, sources, exclude, reason in (
+            ("a pattern that matches no file, beside one that does", ["compat/**/*.c", "compat/**/*.swift"], [],
+             "matches no file"),
+            ("sources that exclude takes every one of", ["compat/**/*.c"], ["compat/**"], "takes every one")):
+        text = GLOBBED.replace('sources = ["compat/**/*.c", "compat/*.m"]', "sources = {}".format(
+            "[" + ", ".join('"{}"'.format(s) for s in sources) + "]")).replace(
+            'exclude = ["compat/skip/**"]', "exclude = [" + ", ".join('"{}"'.format(e) for e in exclude) + "]")
+        try:
+            generate.written(loaded(root, text))
+            found.append("{} must be refused".format(description))
+        except generate.GenerationError as refused:
+            if reason not in str(refused):
+                found.append("{} must be refused for that reason, not another: got {}".format(description, refused))
+    return found
+
+
 def refusals(folder):
     found = []
     for description, text in BROKEN.items():
@@ -246,6 +290,7 @@ def main():
     with tempfile.TemporaryDirectory() as folder:
         found += checks(loaded(folder, MANIFEST))
         found += refusals(folder)
+        found += glob_failures(folder)
     for line in found:
         print("FAIL  {}".format(line))
     if found:

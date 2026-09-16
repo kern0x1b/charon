@@ -136,7 +136,36 @@ def port(module, options):
         def _run_stage(self, name):
             self.ran.append("stage:" + name)
 
+        def _sign_target(self, name):
+            self.ran.append("sign:" + name)
+
     return Port()
+
+
+def sign_failures(module):
+    found = []
+    merged = {"system": {}, "universal": {"merge": ["system"]}}
+    cases = (
+        ("an application built and never signed", {"system": {}}, ["build:application"], True),
+        ("an application signed after a task that may change it", {"system": {}},
+         ["build:application", "task:audit", "sign:application"], False),
+        ("a bundle rebuilt after it was signed", {"system": {}},
+         ["build:application", "sign:application", "build:application"], True),
+        ("a slice another variant merges, left unsigned", merged, ["build:application", "task:audit"], False),
+        ("a slice another variant merges, signed on its own", merged,
+         ["build:application", "sign:application"], True),
+    )
+    for description, variants, steps, refuse in cases:
+        instance = port(module, {"prefixed": "False"})
+        type(instance).declaration = dict(DECLARATION, variants=variants, pipeline={"system": steps})
+        try:
+            instance.declared_pipeline()
+            if refuse:
+                found.append("{} must be refused".format(description))
+        except Exception as refused:
+            if not refuse:
+                found.append("{} must be accepted: got {}".format(description, refused))
+    return found
 
 
 def dispatch_failures(module):
@@ -147,9 +176,10 @@ def dispatch_failures(module):
         found.append("the steps must run in the order declared: got {}".format(recorder.ran))
 
     chosen = port(module, {"prefixed": "False"})
-    chosen.conf = Conf(dict(chosen.conf._values, **{"user.charon:steps": ["task:greet", "check:exports"]}))
+    chosen.conf = Conf(dict(chosen.conf._values,
+                            **{"user.charon:steps": ["task:greet", "check:exports", "sign:application"]}))
     chosen.declared_build()
-    if chosen.ran != ["task:greet", "check:exports"]:
+    if chosen.ran != ["task:greet", "check:exports", "sign:application"]:
         found.append("steps named on the command line must run instead of the pipeline, and only them: "
                      "got {}".format(chosen.ran))
 
@@ -319,7 +349,7 @@ def main():
     except ImportError as missing:
         print("FAIL  this needs an interpreter that can import conan: {}".format(missing))
         return 1
-    found = failures(module) + dispatch_failures(module) + task_failures(module)
+    found = failures(module) + dispatch_failures(module) + task_failures(module) + sign_failures(module)
     for line in found:
         print("FAIL  {}".format(line))
     if found:

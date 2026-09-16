@@ -204,6 +204,11 @@ class Ios6Port:
             "stubs": os.path.join(self.port_root, engine.get("stubs", "")),
             "prefix-header": self.declared_setting("engine", "prefix-header", ""),
         }
+        application = self.declared.get("application") or {}
+        if application.get("name"):
+            bundle = os.path.join(self.build_folder, f"{application['name']}.app")
+            context["application"] = bundle
+            context["executable"] = os.path.join(bundle, application["name"])
         flags = self.declared.get("flags", {})
         for name in ("common", "defines", "c", "cxx", "objc", "objcxx"):
             if name in flags:
@@ -333,6 +338,27 @@ class Ios6Port:
         if not steps:
             raise ConanException(f"{self.name} declares no pipeline for the {variant} variant, so building it "
                                  "would do nothing and report success")
+        merged = {name for declared in self.declared.get("variants", {}).values()
+                  for name in (declared.get("merge") or [])}
+        if variant in merged and "sign:application" in steps:
+            raise ConanException(
+                f"the {variant} pipeline signs an application that another variant merges; the merged "
+                "executable is signed after the merge, and a signature on one slice is lost in it")
+        if "sign:application" in steps:
+            signed = steps.index("sign:application")
+            after = [step for step in steps[signed + 1:] if step in ("build:application", "merge:application")]
+            if after:
+                raise ConanException(
+                    f"the {variant} pipeline runs {', '.join(after)} after sign:application; anything that "
+                    "changes the bundle has to come before it is signed")
+        if "build:application" in steps and variant not in merged:
+            built = steps.index("build:application")
+            if "sign:application" not in steps[built + 1:]:
+                raise ConanException(
+                    f"the {variant} pipeline builds the application and never signs it, and an unsigned "
+                    "application does not start on the device; add sign:application after build:application "
+                    "and after any task that changes the executable, or name {variant} in the merge of the "
+                    "variant that signs it")
         return steps
 
     def _run_step(self, action, argument):
@@ -341,6 +367,7 @@ class Ios6Port:
             "build": self._build_target,
             "check": self._run_check,
             "stage": self._run_stage,
+            "sign": self._sign_target,
         }
         if action not in steps:
             raise ConanException(f"{action} is not a step this toolchain knows; it runs "
@@ -604,7 +631,6 @@ class Ios6Port:
             macho.sign(binary)
 
         self._write_application_plist(bundle, name, declared)
-        entitlements = declared.get("entitlements")
         executable = os.path.join(bundle, name)
         macho.repoint(executable, bundled)
         carried = {os.path.basename(identity) for identity in bundled.values()}
@@ -616,7 +642,17 @@ class Ios6Port:
                 f"{executable} loads {', '.join(elsewhere)} from outside its own bundle while shipping a copy "
                 "of each; the application would run against whatever the system has there instead of what it "
                 "was built with")
-        macho.sign(executable, os.path.join(self.port_root, entitlements) if entitlements else None)
+
+    def _sign_target(self, name):
+        if name != "application":
+            raise ConanException(f"sign:{name} is not something this toolchain signs; it signs application")
+        declared = self.declared.get("application", {})
+        executable = self._declared_context().get("executable")
+        if not executable or not os.path.isfile(executable):
+            raise ConanException(f"sign:application found no executable at {executable}; build:application has "
+                                 "to run before it")
+        entitlements = declared.get("entitlements")
+        MachO(self).sign(executable, os.path.join(self.port_root, entitlements) if entitlements else None)
 
     def _write_application_plist(self, bundle, name, declared):
         described = dict(declared.get("plist", {}))

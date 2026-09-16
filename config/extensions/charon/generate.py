@@ -12,6 +12,8 @@ declaration names is therefore written against CHARON_PORT, which the build
 passes; a value that already starts at the root, at a cmake variable or at a
 flag is left exactly as declared.
 """
+from pathlib import Path
+
 import spec
 
 LANGUAGES = {".c": "C", ".m": "OBJC", ".mm": "OBJCXX", ".cpp": "CXX", ".cc": "CXX", ".swift": "Swift"}
@@ -84,11 +86,36 @@ def _languages(sources):
     return found
 
 
-def _sources(target):
+def _is_pattern(text):
+    return any(character in text for character in "*?[")
+
+
+def _matches(root, pattern, name):
+    if root is None:
+        raise GenerationError("{} names {} as a pattern, which needs the port folder to expand".format(name, pattern))
+    return sorted(path.relative_to(root).as_posix() for path in Path(root).glob(pattern) if path.is_file())
+
+
+def _sources(target, root=None):
+    name = target["name"]
     sources = target.get("sources")
     if not sources:
-        raise GenerationError("{} declares no sources and no cmake= to use instead".format(target["name"]))
-    return sources
+        raise GenerationError("{} declares no sources and no cmake= to use instead".format(name))
+    excluded = set()
+    for pattern in target.get("exclude", []):
+        excluded.update(_matches(root, pattern, name))
+    expanded = []
+    for entry in sources:
+        if _is_pattern(entry):
+            found = _matches(root, entry, name)
+            if not found:
+                raise GenerationError("{}: {} matches no file under {}".format(name, entry, root))
+        else:
+            found = [entry]
+        expanded += [path for path in found if path not in excluded and path not in expanded]
+    if not expanded:
+        raise GenerationError("{} declares sources and exclude takes every one of them".format(name))
+    return expanded
 
 
 def _options(target, key, prefix=""):
@@ -106,9 +133,9 @@ def _source_properties(target):
     return lines
 
 
-def _library_block(target, kind):
+def _library_block(target, kind, root=None):
     name = target["name"]
-    sources = [_path(source) for source in _sources(target)]
+    sources = [_path(source) for source in _sources(target, root)]
     if kind == "application":
         lines = ["add_executable({}".format(name), "    {})".format("\n    ".join(sources))]
     else:
@@ -198,7 +225,7 @@ def cmake_project(declared, kind, project):
         return None
     languages = []
     for target in targets:
-        for language in _languages(_sources(target)):
+        for language in _languages(_sources(target, declared.root)):
             if language not in languages:
                 languages.append(language)
 
@@ -232,7 +259,7 @@ def cmake_project(declared, kind, project):
     if lines[-1] != "":
         lines.append("")
     for target in targets:
-        lines += _library_block(target, kind) + [""]
+        lines += _library_block(target, kind, declared.root) + [""]
     for target in targets:
         lines += _install_block(target, kind)
     return "\n".join(lines).rstrip("\n") + "\n"
