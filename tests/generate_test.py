@@ -61,7 +61,7 @@ cmake = "platform/prefs"
 name = "Host"
 sources = ["app/main.m"]
 frameworks = ["UIKit"]
-resources = ["app/cacert.pem"]
+resources = ["app/cacert.pem", { from = "app/Localization/", as = "." }]
 
 [tests.host]
 runs = ["tests/run.py:on_host"]
@@ -99,6 +99,16 @@ os = "iOS"
 os-version = "6.0"
 [[static-library]]
 name = "compat"
+""",
+    "a resource that is neither a path nor a table with from and as": """
+[target]
+arch = "armv7"
+os = "iOS"
+os-version = "6.0"
+[application]
+name = "Host"
+sources = ["main.m"]
+resources = [{ from = "images/" }]
 """,
     "a target that says nothing about what it builds for": """
 [[static-library]]
@@ -176,6 +186,9 @@ def checks(declared):
         found.append("an application must install its binary")
     if "install(FILES ${CHARON_PORT}/app/cacert.pem DESTINATION .)" not in application:
         found.append("an application must install its declared resources")
+    if "install(DIRECTORY ${CHARON_PORT}/app/Localization/ DESTINATION .)" not in application:
+        found.append("an application must install a declared resource folder, not drop it: got {}".format(
+            application))
 
     packages = written["tests/host/conanfile.py"]
     if "icu/74.2@revenant/stable" not in packages:

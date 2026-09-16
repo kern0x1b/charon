@@ -105,6 +105,43 @@ def failures():
     return found
 
 
+def undefined_names():
+    import ast
+    import builtins
+    found = []
+    folder = HERE.parent / "config" / "extensions" / "charon"
+    for path in sorted(folder.glob("*.py")):
+        tree = ast.parse(path.read_text())
+        bound = set(dir(builtins)) | {"__file__", "__doc__", "__name__"}
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                bound.add(node.name)
+            elif isinstance(node, ast.Name) and isinstance(node.ctx, (ast.Store, ast.Del)):
+                bound.add(node.id)
+            elif isinstance(node, ast.arg):
+                bound.add(node.arg)
+            elif isinstance(node, (ast.Import, ast.ImportFrom)):
+                bound.update((alias.asname or alias.name).split(".")[0] for alias in node.names)
+            elif isinstance(node, ast.ExceptHandler) and node.name:
+                bound.add(node.name)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load) and node.id not in bound:
+                found.append("{}:{} uses {}, which nothing in that file defines; it fails only when that line "
+                             "runs".format(path.name, node.lineno, node.id))
+    return found
+
+
+def tier_failures():
+    found = []
+    tiers = {"scripts": {"needs": []}, "flags": {"needs": ["build"]}, "gate": {"needs": ["device"]},
+             "batteries": {"needs": ["device", "build"]}}
+    if charon.tiers_by_phone(tiers, False) != ["scripts", "flags"]:
+        found.append("integrate must run every tier that needs no phone before deploying, in declared order")
+    if charon.tiers_by_phone(tiers, True) != ["gate", "batteries"]:
+        found.append("integrate must run every tier that needs the phone after deploying, in declared order")
+    return found
+
+
 def task_failures():
     found = []
     with tempfile.TemporaryDirectory() as folder:
@@ -126,7 +163,7 @@ def main():
         print("FAIL  this needs Python 3.11 or newer for tomllib, and it is running under {}. Skipping would "
               "report success having checked nothing.".format(".".join(str(p) for p in sys.version_info[:3])))
         return 1
-    found = failures() + task_failures()
+    found = failures() + task_failures() + tier_failures() + undefined_names()
     for line in found:
         print("FAIL  {}".format(line))
     if found:

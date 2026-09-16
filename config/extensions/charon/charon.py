@@ -524,11 +524,6 @@ def verb_run(root, parsed):
         raise Failure("launching {} failed (exit {})".format(app.name, result.returncode))
 
 
-def require(status, what):
-    if status:
-        raise Failure("{} failed ({})".format(what, status))
-
-
 def exit_status(call, **arguments):
     try:
         return call(**arguments)
@@ -617,13 +612,22 @@ def bind_transport(root, declared, device):
     binder(device)
 
 
-def verb_test(root, parsed):
-    provenance(root, parsed.chosen_profile)
+def declared_tiers(root):
     declared = manifest(root).get(TESTS, {})
     tiers = {name: value for name, value in declared.items() if isinstance(value, dict)}
     if not tiers:
         raise Failure("{} declares no tiers under [tests], so there is nothing to run and reporting success "
                       "would say a port is tested when nothing ran".format(root / MANIFEST))
+    return declared, tiers
+
+
+def tiers_by_phone(tiers, wants_phone):
+    return [name for name, tier in tiers.items() if ("device" in tier.get("needs", [])) == wants_phone]
+
+
+def verb_test(root, parsed):
+    provenance(root, parsed.chosen_profile)
+    declared, tiers = declared_tiers(root)
     if parsed.tier == "all":
         chosen = list(tiers)
     elif parsed.tier in tiers:
@@ -634,7 +638,13 @@ def verb_test(root, parsed):
     say("tiers        declared: {}".format(", ".join(tiers)))
     if chosen != list(tiers):
         say("tiers        running: {}".format(", ".join(chosen)))
+    run_tiers(root, parsed, declared, tiers, chosen)
 
+
+def run_tiers(root, parsed, declared, tiers, chosen):
+    if not chosen:
+        say("tiers        none of this kind declared")
+        return
     bound = {}
 
     def device_for(needs):
@@ -735,11 +745,14 @@ def verb_integrate(root, parsed):
     if before:
         steps.append(("before the build: {}".format(", ".join(before)),
                       lambda: run_steps(root, parsed, before)))
+    tests, tiers = declared_tiers(root)
     steps += [
         ("build", lambda: verb_build(root, parsed)),
-        ("host tier", lambda: require(run_host(root, parsed), "the host tier")),
+        ("tiers that need no phone",
+         lambda: run_tiers(root, parsed, tests, tiers, tiers_by_phone(tiers, False))),
         ("deploy", lambda: verb_deploy(root, parsed)),
-        ("device tiers", lambda: verb_test(root, parsed)),
+        ("tiers that need the phone",
+         lambda: run_tiers(root, parsed, tests, tiers, tiers_by_phone(tiers, True))),
     ]
     for title, step in steps:
         say("\n=== {}".format(title))

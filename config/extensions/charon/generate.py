@@ -160,27 +160,35 @@ def _install_block(target, kind):
     if kind == "static-library":
         return []
     if kind == "application":
-        lines = ["install(TARGETS {} RUNTIME DESTINATION .)".format(name)]
-        files = [resource for resource in target.get("resources", []) if isinstance(resource, str)]
-        if files:
-            lines.append("install(FILES {} DESTINATION .)".format(" ".join(_path(name) for name in files)))
-        return lines
-    lines = []
+        return (["install(TARGETS {} RUNTIME DESTINATION .)".format(name)] +
+                _resource_lines(target, "."))
     install = target["install"].lstrip("/")
-    lines.append("install(TARGETS {} LIBRARY DESTINATION {})".format(name, install))
+    return (["install(TARGETS {} LIBRARY DESTINATION {})".format(name, install)] +
+            _resource_lines(target, install))
+
+
+def _resource_lines(target, destination):
+    lines = []
+    files = [resource for resource in target.get("resources", []) if isinstance(resource, str)]
+    if files:
+        lines.append("install(FILES {} DESTINATION {})".format(" ".join(_path(file) for file in files), destination))
     for resource in target.get("resources", []):
         if isinstance(resource, str):
-            lines.append("install(FILES {} DESTINATION {})".format(_path(resource), install))
             continue
-        source, destination = _path(resource["from"]), resource["as"]
+        if not isinstance(resource, dict) or not resource.get("from") or not resource.get("as"):
+            raise GenerationError("{} declares the resource {!r}. A resource is a path, or a table with from and "
+                                  "as; anything else would be left out of the build without a word".format(
+                                      target["name"], resource))
+        source, renamed = _path(resource["from"]), resource["as"]
         if resource["from"].endswith("/"):
             lines.append("install(DIRECTORY {} DESTINATION {})".format(
-                source, install if destination == "." else destination.lstrip("/")))
-        elif destination.startswith("/"):
-            folder, _, renamed = destination.rpartition("/")
-            lines.append("install(FILES {} DESTINATION {} RENAME {})".format(source, folder.lstrip("/"), renamed))
+                source, destination if renamed == "." else renamed.lstrip("/")))
+        elif renamed.startswith("/"):
+            folder, _, file = renamed.rpartition("/")
+            lines.append("install(FILES {} DESTINATION {} RENAME {})".format(
+                source, folder.lstrip("/") or ".", file))
         else:
-            lines.append("install(FILES {} DESTINATION {} RENAME {})".format(source, install, destination))
+            lines.append("install(FILES {} DESTINATION {} RENAME {})".format(source, destination, renamed))
     return lines
 
 
