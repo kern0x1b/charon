@@ -1,4 +1,6 @@
 rule("tweak")
+    add_deps("@self/apple-ios")
+
     on_load(function (target)
         target:set("kind", "shared")
         target:set("prefixname", "")

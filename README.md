@@ -17,11 +17,12 @@ know about these platforms, and nothing else:
 
     set_project("kindlesyncfix")
     set_version("1.0.2")
+    set_policy("package.requires_lock", true)
 
     add_repositories("charon https://github.com/kern0x1b/charon.git main")
     add_addons("charon main")
+    set_config("apple_minimum", "6.0")
     includes("@addon/charon/apple-ios")
-    apple_ios({minimum = "6.0", distribution = "jailbreak"})
 
     set_defaultplat("iphoneos")
     set_defaultarchs("iphoneos|armv7")
@@ -41,8 +42,11 @@ Then:
     xmake device log [-s 30] [TEXT]
     xmake device run COMMAND, xmake device where
 
-`apple_ios()` pins the toolchain packages it uses and turns on
-`xmake-requires.lock`; commit the lock. The import check reads
+`includes("@addon/charon/apple-ios")` requires the SDK, ld64 and ldid at the
+versions it pins, and hands every other package the `apple-ios` toolchain named
+with those versions and `apple_minimum`, so a change of any of them rebuilds
+what was built with it. A library comes from here as `charon@name`. The rules
+bind the same toolchain to their targets. Commit `xmake-requires.lock`. The import check reads
 `~/.charon/dyld/dyld_shared_cache_<arch>` (or `$CHARON_HOME/dyld/...`), copied
 from the device once. A check that would have to be skipped is waived by name
 with the reason, e.g. `set_values("charon.waive.pagezero", "why")`.
