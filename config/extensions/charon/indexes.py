@@ -5,8 +5,10 @@
 Run it with the interpreter Conan runs under, because it asks Conan's own
 trim_conandata what the index exports. A local recipe index trims each
 conandata.yml to the version being exported, and a top-level table with no key
-for that version is dropped, so a recipe that reads it fails only for whoever
-resolves it through the index. With --canonical it also names every
+for that version is dropped. A table keyed by the versions the recipe serves has
+nothing for a version it leaves out; a table keyed by anything else is lost for
+every version, so a recipe that reads it fails only for whoever resolves it
+through the index. With --canonical it also names every
 conandata.yml whose text the trim rewrites: such a recipe gets one revision from
 conan create in its folder and another from the index.
 """
@@ -40,7 +42,9 @@ def findings(index):
                 trim_conandata(Exported(folder, str(version)))
                 trimmed = (Path(folder) / "conandata.yml").read_text()
             kept = yaml.safe_load(trimmed) or {}
-            lost = sorted(set(original) - set(kept))
+            served = {str(served_version) for served_version in versions}
+            lost = sorted(name for name in set(original) - set(kept)
+                          if not (isinstance(original[name], dict) and served & {str(key) for key in original[name]}))
             if lost:
                 dropped.append("{} {}: {} has no entry for {}, so the index drops it".format(
                     config.parent.name, version, ", ".join(lost), version))

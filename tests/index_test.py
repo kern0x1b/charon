@@ -19,14 +19,18 @@ CHECKER = HERE.parent / "config" / "extensions" / "charon" / "indexes.py"
 
 CANONICAL = "sources:\n  1.0.0:\n    sha256: abc\n    url: https://example.invalid/one.tar.gz\n"
 HAND_WRITTEN = 'sources:\n  "1.0.0":\n    url: "https://example.invalid/one.tar.gz"\n    sha256: "abc"\n'
+PATCHED_ONE = ("sources:\n  1.0.0:\n    url: https://example.invalid/one.tar.gz\n"
+               "  2.0.0:\n    url: https://example.invalid/two.tar.gz\n"
+               "patches:\n  2.0.0:\n  - patch_file: patches/two.patch\n")
 BY_SOURCE_NAME = ("sources:\n  tdlib:\n    url: https://example.invalid/td.tar.gz\n"
                   "patches:\n  1.0.0:\n  - patch_file: patches/hook.patch\n")
 
 
-def index(folder, recipes):
+def index(folder, recipes, versions=("1.0.0",)):
     for name, text in recipes.items():
         (folder / "recipes" / name / "all").mkdir(parents=True)
-        (folder / "recipes" / name / "config.yml").write_text('versions:\n  "1.0.0":\n    folder: all\n')
+        (folder / "recipes" / name / "config.yml").write_text("versions:\n" + "".join(
+            '  "{}":\n    folder: all\n'.format(version) for version in versions))
         (folder / "recipes" / name / "all" / "conandata.yml").write_text(text)
     return folder
 
@@ -52,6 +56,12 @@ def failures():
                 result.stdout, result.stderr))
         if checked(written).stdout.strip():
             found.append("without --canonical, a rewritten conandata must not be reported")
+
+        patched = index(Path(scratch) / "patched", {"sdk": PATCHED_ONE}, ("1.0.0", "2.0.0"))
+        result = checked(patched)
+        if result.returncode or result.stdout.strip():
+            found.append("a version-keyed table that leaves out a version holds nothing for it and must pass: "
+                         "{} {}".format(result.stdout, result.stderr))
 
         named = index(Path(scratch) / "named", {"tdlib": BY_SOURCE_NAME})
         result = checked(named)
