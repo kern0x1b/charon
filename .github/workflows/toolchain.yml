@@ -38,6 +38,9 @@ jobs:
       - name: A build missing what its platform requires is refused, and machine paths are mapped away
         run: python3 tests/hook_test.py
 
+      - name: Each compatibility shim keeps its call's contract and stays hidden
+        run: python3 tests/compat_test.py
+
       - name: A recipe index that would drop part of a conandata.yml is refused
         run: python3 tests/index_test.py
 

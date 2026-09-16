@@ -1,4 +1,5 @@
 import os
+import re
 from io import StringIO
 
 from conan import ConanFile
@@ -17,6 +18,14 @@ class LibCxxArmv7Conan(ConanFile):
     homepage = "https://libcxx.llvm.org"
     package_type = "shared-library"
     settings = "os", "arch", "compiler", "build_type"
+
+    def requirements(self):
+        self.requires("apple-compat/1.0@charon/stable", headers=False, libs=False, visible=False)
+
+    @property
+    def _compat(self):
+        compat = self.dependencies["apple-compat"]
+        return compat, list(compat.cpp_info.get_property("charon_provides") or [])
 
     def export_sources(self):
         export_conandata_patches(self)
@@ -41,6 +50,11 @@ class LibCxxArmv7Conan(ConanFile):
         tc.extra_cflags += ["-mllvm", "-hot-cold-split=false"]
         tc.extra_cxxflags += ["-mllvm", "-hot-cold-split=false",
                               "-D_LIBCPP_NO_UTIMENSAT"]
+        compat, provided = self._compat
+        if provided:
+            tc.extra_cxxflags.append("-Wno-error=unguarded-availability-new")
+            tc.extra_sharedlinkflags += [f"-L{os.path.join(compat.package_folder, 'lib')}",
+                                         "-Wl,-hidden-lapple-compat"]
         tc.cache_variables.update({
             "CMAKE_SYSTEM_NAME": "Darwin",
             "CMAKE_OSX_SYSROOT": sdk,
@@ -61,8 +75,26 @@ class LibCxxArmv7Conan(ConanFile):
     def build(self):
         cmake = CMake(self)
         cmake.configure(build_script_folder=os.path.join("llvm-project", "runtimes"))
-        cmake.build()
+        log = os.path.join(self.build_folder, "charon-build.log")
+        with open(log, "w") as captured:
+            self.run(f'cmake --build "{self.build_folder}" --parallel', stdout=captured, stderr=captured)
+        with open(log) as captured:
+            text = captured.read()
+        _, provided = self._compat
+        unavailable = sorted(set(re.findall(r"'(\w+)' is only available on", text)) - set(provided))
+        if unavailable:
+            raise ConanException(f"libc++ calls {', '.join(unavailable)}, which {self.settings.os} "
+                                 f"{self.settings.os.version} does not have and apple-compat does not provide")
         cmake.install()
+        for library in ("libc++.1.0.dylib", "libc++abi.1.0.dylib"):
+            imports = StringIO()
+            self.run(f'xcrun nm -u "{os.path.join(self.package_folder, "lib", library)}"', stdout=imports)
+            imported = {name.lstrip("_") for name in imports.getvalue().split()}
+            leaked = sorted(set(provided) & imported)
+            if leaked:
+                raise ConanException(f"{library} still imports {', '.join(leaked)} from the system, which "
+                                     f"{self.settings.os} {self.settings.os.version} does not have; apple-compat "
+                                     "was not linked into it")
 
     def package(self):
         copy(self, "LICENSE.TXT", os.path.join(self.source_folder, "llvm-project", "libcxx"),
