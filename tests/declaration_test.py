@@ -562,14 +562,23 @@ def sign_failures(module):
 def dispatch_failures(module):
     found = []
     recorder = port(module, {"prefixed": "False"})
-    recorder.declared_build()
+    with tempfile.TemporaryDirectory() as built:
+        recorder.build_folder = built
+        recorder.declared_build()
+        if not (Path(built) / module.Port.BUILT).is_file():
+            found.append("a whole pipeline that finishes must leave the mark charon package looks for")
     if recorder.ran != DECLARATION["pipeline"]["system"]:
         found.append("the steps must run in the order declared: got {}".format(recorder.ran))
 
     chosen = port(module, {"prefixed": "False"})
     chosen.conf = Conf(dict(chosen.conf._values,
                             **{"user.charon:steps": ["task:greet", "check:exports", "sign:application"]}))
-    chosen.declared_build()
+    with tempfile.TemporaryDirectory() as built:
+        chosen.build_folder = built
+        (Path(built) / module.Port.BUILT).write_text("")
+        chosen.declared_build()
+        if not (Path(built) / module.Port.BUILT).is_file():
+            found.append("steps run on their own must leave the last whole build's mark alone")
     if chosen.ran != ["task:greet", "check:exports", "sign:application"]:
         found.append("steps named on the command line must run instead of the pipeline, and only them: "
                      "got {}".format(chosen.ran))

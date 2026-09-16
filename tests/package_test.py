@@ -97,6 +97,12 @@ def application_failures(module):
             found.append("the whole bundle must be carried, not only its executable: got {}".format(sorted(entries)))
         if not (folder / "package" / "Demo.app" / "Demo").is_file():
             found.append("the bundle itself must still be packaged beside the .deb")
+        first = debs[0].read_bytes()
+        import time
+        time.sleep(1.1)
+        instance.platform_package()
+        if debs[0].read_bytes() != first:
+            found.append("packaging the same tree twice must write the same .deb byte for byte")
     return found
 
 

@@ -390,7 +390,7 @@ def platform_requires_failures(folder):
     if "'apple-compat/1.0@charon/stable', 'zlib/1.3'" not in text:
         return ["a port must require what its platform requires, ahead of its own requirements: {}".format(
             [line for line in text.splitlines() if "requires" in line.lower() or "zlib" in line])]
-    if "for reference in ['dyld-imports-check/1.0@charon/stable']:" not in text:
+    if "for reference in ['dyld-imports-check/1.0@charon/stable', 'ldid/2.1.5-procursus7+23.gaf86971@charon/stable']:" not in text:
         return ["a port recipe must take the tools its platform names for ports: {}".format(
             [line for line in text.splitlines() if "for reference in" in line])]
     pinned = root.parent / "compat-tools"
@@ -398,7 +398,7 @@ def platform_requires_failures(folder):
     text = generate.recipe(loaded(pinned, '[port]\nname = "p"\nversion = "1"\n[platform]\nuse = "apple-ios"\n'
                                           'arch = "armv7"\nos-version = "6.0"\n[tools]\n'
                                           'dyld-imports-check = "1.1@charon/stable"\nninja = "1.13.2"\n'))
-    if "for reference in ['dyld-imports-check/1.1@charon/stable', 'ninja/1.13.2']:" not in text:
+    if "for reference in ['dyld-imports-check/1.1@charon/stable', 'ldid/2.1.5-procursus7+23.gaf86971@charon/stable', 'ninja/1.13.2']:" not in text:
         return ["a port naming a platform's tool must replace its version, not add a second: {}".format(
             [line for line in text.splitlines() if "for reference in" in line])]
     return []
@@ -650,6 +650,35 @@ def refusals(folder):
     return found
 
 
+def template_failures():
+    import charon
+    found = []
+    with tempfile.TemporaryDirectory() as folder:
+        for kind in ("tweak", "daemon", "app"):
+            destination = Path(folder) / kind
+            values = charon.template_values("hello-{}".format(kind), "com.example.hello{}".format(kind))
+            charon.write_template(kind, destination, values)
+            leftovers = [path for path in destination.rglob("*") if path.is_file() and "$" in path.read_text()]
+            if leftovers:
+                found.append("the {} template left placeholders in {}".format(kind, leftovers))
+            declared = spec.load(destination)
+            try:
+                generate.recipe(declared.for_variant("system"))
+            except Exception as refused:
+                found.append("the {} template must generate a recipe: {}".format(kind, refused))
+        try:
+            charon.write_template("tweak", Path(folder) / "tweak", values)
+            found.append("a template must not be written over a folder that holds files")
+        except charon.Failure:
+            pass
+        try:
+            charon.template_values("Bad Name")
+            found.append("a port name with spaces or capitals must be refused")
+        except charon.Failure:
+            pass
+    return found
+
+
 def main():
     if sys.version_info < (3, 11):
         running = ".".join(str(part) for part in sys.version_info[:3])
@@ -666,6 +695,7 @@ def main():
         found += variant_failures(folder)
         found += order_failures(folder)
         found += determinism_failures(folder)
+        found += template_failures()
         found += conf_failures(folder)
         found += architecture_failures(folder)
         found += package_failures(folder)

@@ -228,7 +228,7 @@ def lock_failures():
         if len(stale) != 2:
             found.append("a lock must be named stale for exactly the older revision and the version the index "
                          "no longer serves: got {}".format(stale))
-        if not any("apple-compat/1.0@charon/stable#aaaa" in line and "#bbbb" in line and "--update-requires" in line
+        if not any("apple-compat/1.0@charon/stable#aaaa" in line and "#bbbb" in line and "charon lock" in line
                    for line in stale):
             found.append("an older locked revision must be named with the one served and the upgrade that moves "
                          "it: got {}".format(stale))
@@ -455,6 +455,14 @@ def verb_command_failures():
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
             charon.build_variant(root, parsed, "armv7", [])
+            try:
+                charon.verb_package(root, parsed)
+                found.append("charon package must refuse a variant with no finished build")
+            except charon.Failure as refused:
+                if "charon build first" not in str(refused):
+                    found.append("the refusal must say to build first: {}".format(refused))
+            (root / "build" / "armv7").mkdir(parents=True)
+            (root / "build" / "armv7" / charon.BUILT).write_text("")
             charon.verb_package(root, parsed)
         build, package = calls
         if build[0] != "build" or "--build=missing" not in build:

@@ -944,7 +944,7 @@ class MachO:
 
     def _slice_entitlements(self, binary):
         captured = StringIO()
-        if self._conanfile.run(f'ldid -e "{binary}"', stdout=captured, ignore_errors=True):
+        if self._conanfile.run(f'"{self.signer()}" -e "{binary}"', stdout=captured, ignore_errors=True):
             return {}
         text = captured.getvalue().strip()
         return plistlib.loads(text.encode()) if text else {}
@@ -1040,9 +1040,12 @@ class MachO:
     def strip(self, binary, arguments="-x"):
         self._conanfile.run(f'"{self.tool("strip")}" {arguments} "{binary}"')
 
+    def signer(self):
+        return os.path.join(self._conanfile._build_tool("ldid"), "ldid")
+
     def sign(self, binary, entitlements=None):
         flags = f'-S"{entitlements}"' if entitlements else "-S"
-        self._conanfile.run(f'ldid {flags} "{binary}"')
+        self._conanfile.run(f'"{self.signer()}" {flags} "{binary}"')
 
 
 class DebianPackage:
@@ -1079,8 +1082,7 @@ class DebianPackage:
         import tarfile
 
         buffer = io.BytesIO()
-        mode = "w:gz" if compression == "gz" else "w"
-        with tarfile.open(fileobj=buffer, mode=mode, format=tarfile.GNU_FORMAT) as archive:
+        with tarfile.open(fileobj=buffer, mode="w", format=tarfile.GNU_FORMAT) as archive:
             for name, path, data in members:
                 info = archive.gettarinfo(path, arcname=name) if path else tarfile.TarInfo(name)
                 info.uid = info.gid = 0
@@ -1096,6 +1098,9 @@ class DebianPackage:
                 else:
                     archive.addfile(info)
         payload = buffer.getvalue()
+        if compression == "gz":
+            import gzip
+            payload = gzip.compress(payload, mtime=0)
         if compression == "lzma":
             import lzma
             payload = lzma.compress(payload, format=lzma.FORMAT_ALONE, preset=9)

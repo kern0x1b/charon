@@ -459,8 +459,14 @@ class CharonPort:
         chosen = self.conf.get("user.charon:steps", default=None, check_type=list)
         return list(chosen) if chosen else self.declared_pipeline()
 
+    BUILT = "charon-built"
+
     def declared_build(self):
         self._refuse_graph_by_hand()
+        whole = self.conf.get("user.charon:steps", default=None, check_type=list) is None
+        finished = os.path.join(self.build_folder, self.BUILT)
+        if whole and os.path.exists(finished):
+            os.remove(finished)
         for step in self.declared_steps():
             action, _, argument = step.partition(":")
             self.output.title(step)
@@ -469,6 +475,9 @@ class CharonPort:
         if altered:
             raise ConanException(f"{self.name} wrote into packages it only reads, so the next build of anything "
                                  f"that uses them gets what this build left there: {'; '.join(altered)}")
+        if whole:
+            with open(finished, "w") as handle:
+                handle.write(" ".join(self.declared_steps()) + "\n")
 
     MANIFEST = "conanmanifest.txt"
     UNRECORDED = {"conanmanifest.txt", "conan_package.tgz", "conan_export.tgz", "conan_sources.tgz"}
@@ -598,7 +607,7 @@ class CharonPort:
         values = " ".join(f'-D{name}="{value}"' for name, value in definitions.items())
         inputs = " ".join(f'-D{name}="{value}"' for name, value in self.toolchain_inputs().items())
         fresh = " ".join(self.fresh_configure(folder))
-        self.run(f'cmake {fresh} -S "{source}" -B "{folder}" -G Ninja -DCMAKE_BUILD_TYPE=Release '
+        self.run(f'cmake {fresh} --no-warn-unused-cli -S "{source}" -B "{folder}" -G Ninja -DCMAKE_BUILD_TYPE=Release '
                  f'-DCMAKE_TOOLCHAIN_FILE="{toolchain}" {inputs} -DCHARON_PORT="{self.port_root}" '
                  f'-DCHARON_PACKAGES="{os.path.join(self.generators_folder, self.FOUND_PACKAGES)}" {values}')
         self.run(f'cmake --build "{folder}"')

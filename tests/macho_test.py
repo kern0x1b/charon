@@ -187,9 +187,10 @@ def running_port(module, folder, declaration, ldid):
     instance.output = Output()
     instance.steps = []
     instance.dependencies = Dependencies([])
+    instance.dependencies.build = {"ldid": type("Tool", (), {"package_folder": str(Path(ldid).parent.parent),
+                                                             "ref": "ldid"})()}
 
     def execute(self, command, cwd=None, stdout=None, ignore_errors=False, quiet=False):
-        command = command.replace("ldid ", '"{}" '.format(ldid), 1) if command.startswith("ldid ") else command
         finished = subprocess.run(command, shell=True, cwd=cwd, capture_output=True, text=True)
         if finished.returncode != 0 and not ignore_errors:
             raise RuntimeError("{} failed: {}".format(command, finished.stderr))

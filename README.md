@@ -45,9 +45,16 @@ full path:
 
 That installs this configuration, registers this repository's recipes and the
 port's own ahead of the general remotes, and links `charon` into the first
-writable folder on PATH, so every later call is just `charon`. The verbs are the same in every port:
+writable folder on PATH, so every later call is just `charon`. A new port starts from a template, which builds, packages and passes
+`check:imports` as written:
+
+    charon new tweak|daemon|app NAME [--identifier com.example.name]
+
+`CHARON_MAINTAINER` fills the control file's maintainer. The verbs are the same
+in every port:
 
     charon build [--variant NAME]   everything the declaration names
+    charon lock                     pin every variant's graph to what the indexes serve now
     charon task NAME [NAME...]      declared tasks, run the way the pipeline runs them
     charon test [--tier NAME]       the declared test tiers
     charon package                  the .deb, copied to build/<variant>/
@@ -224,6 +231,9 @@ link IOSurface through the SDK's own stub laid out at
 release loads it from. `dyld-imports-check` refuses a binary that loads a library
 neither the device's cache nor the build itself provides, besides every symbol
 the device does not export.
+
+`ldid` signs with the package the platform names under `port-tool-requires`,
+never with one that happens to be on PATH.
 
 `tool-requires` reach every package the profile builds; `port-tool-requires`
 reach only the port's own recipe, beside its `[tools]`, and a port naming the

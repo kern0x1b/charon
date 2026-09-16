@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Charon carries an armv7 / iOS 6 port across: build, package, install on the phone, test there.
+"""Charon builds a port from its charon.toml, for the platform it declares: build, package, install, test.
 
-    charon.py --root PORT VERB [options]
+    charon VERB [options]            inside a port, or with --root PORT
 
 The verbs are the same for every port. Nothing here decides what to compile or
 whether a file is stale: Conan resolves the dependencies, CMake owns the graph,
@@ -13,6 +13,7 @@ import inspect
 import json
 import os
 import plistlib
+import re
 import shutil
 import subprocess
 import sys
@@ -23,6 +24,7 @@ MANIFEST = "charon.toml"
 GENERATED = "charon"
 PROFILES = "profiles"
 LOCK = "conan.lock"
+BUILT = "charon-built"
 BUILD = "build"
 STAGE = "stage"
 FRAMEWORK = ".framework"
@@ -341,7 +343,7 @@ def provenance(root, chosen_profile):
     try:
         say("phone        {}".format(transport(root).where()))
     except Failure as unknown:
-        say("phone        not configured: {}".format(unknown))
+        say("phone        none named; install, deploy and device read {}".format(root / "device.env"))
 
 
 def declaration(root):
@@ -388,6 +390,33 @@ def variant_profile(root, parsed, variant):
     if parsed.profile:
         return Path(parsed.profile).expanduser().resolve()
     return written_profile(root, variant) or parsed.chosen_profile
+
+
+def declared_variants(root):
+    return list(manifest(root).get("variants", {}))
+
+
+def verb_lock(root, parsed):
+    import tempfile
+    variants = [parsed.variant] if parsed.variant else declared_variants(root)
+    if not variants:
+        raise Failure("{} declares no variant, so there is no graph to lock".format(root / MANIFEST))
+    with tempfile.TemporaryDirectory() as folder:
+        written = []
+        for variant in variants:
+            where = generated(root, variant)
+            if where is None:
+                raise Failure("the {} variant uses a recipe of its own; lock it with conan lock create".format(variant))
+            out = Path(folder) / "{}.lock".format(variant)
+            conan("lock", "create", where, "-pr:h", variant_profile(root, parsed, variant), "-pr:b", "default",
+                  "--lockfile=", "--update", *variant_options(root, variant), "--lockfile-out", out)
+            written.append(out)
+        if len(written) == 1:
+            shutil.copy2(written[0], root / LOCK)
+        else:
+            conan("lock", "merge", *[argument for path in written for argument in ("--lockfile", path)],
+                  "--lockfile-out", root / LOCK)
+    say("lock         {} ({})".format(root / LOCK, ", ".join(variants)))
 
 
 def build_variant(root, parsed, variant, extra):
@@ -511,8 +540,8 @@ def stale_pins(lock, served):
             if reference in served:
                 remote, current = served[reference]
                 if current != revision:
-                    stale.append("{} pins {}#{}, and {} serves #{}; conan lock upgrade {}={} brings it forward"
-                                 .format(lock.name, reference, revision, remote, current, flag, reference))
+                    stale.append("{} pins {}#{}, and {} serves #{}; charon lock brings it forward"
+                                 .format(lock.name, reference, revision, remote, current))
             elif recipe_family(reference) in families:
                 offered = ", ".join("{} {}".format(remote, version)
                                     for remote, version in sorted(families[recipe_family(reference)]))
@@ -603,6 +632,8 @@ def verb_where(root, parsed):
 
 def verb_package(root, parsed):
     variant = parsed.variant or default_variant(root)
+    if not (root / BUILD / variant / BUILT).is_file():
+        raise Failure("the {} variant has no finished build to package; run charon build first".format(variant))
     where = generated(root, variant) or root
     exported = conan("export-pkg", where, *conan_flags(root, variant_profile(root, parsed, variant)),
                      *variant_options(root, variant), "--format=json", *parsed.extra, stdout=subprocess.PIPE,
@@ -1157,6 +1188,55 @@ def verb_profiles(root, parsed):
         say("profile      {} (written from its platform)".format(folder / name))
 
 
+TEMPLATES = Path(__file__).resolve().parent / "templates"
+PORT_NAME = re.compile(r"^[a-z][a-z0-9-]*$")
+
+
+def template_values(name, identifier=None, maintainer=None):
+    if not PORT_NAME.match(name):
+        raise Failure("{} is not a port name Charon can use everywhere a port's name goes: lower-case letters, "
+                      "digits and dashes, starting with a letter".format(name))
+    camel = "".join(part.capitalize() for part in name.split("-"))
+    return {"name": name, "Name": camel, "symbol": name.replace("-", "_"),
+            "identifier": identifier or "com.example.{}".format(name.replace("-", "")),
+            "maintainer": maintainer or "unknown"}
+
+
+def write_template(kind, destination, values, templates=TEMPLATES):
+    import string
+    source = templates / kind
+    if not source.is_dir():
+        known = sorted(folder.name for folder in templates.iterdir() if folder.is_dir())
+        raise Failure("there is no {} template; Charon has {}".format(kind, ", ".join(known)))
+    if destination.exists() and any(destination.iterdir()):
+        raise Failure("{} already holds files, and a new port is written only into an empty folder".format(
+            destination))
+    written = []
+    for path in sorted(source.rglob("*")):
+        if path.is_dir():
+            continue
+        relative = string.Template(str(path.relative_to(source))).substitute(values)
+        target = destination / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(string.Template(path.read_text()).substitute(values))
+        written.append(target)
+    ignore = destination / ".gitignore"
+    ignore.write_text((templates / "gitignore").read_text())
+    return written + [ignore]
+
+
+def verb_new(root, parsed):
+    if len(parsed.extra) != 2:
+        known = sorted(folder.name for folder in TEMPLATES.iterdir() if folder.is_dir())
+        raise Failure("charon new KIND NAME [--identifier ID]: KIND is one of {}".format(", ".join(known)))
+    kind, name = parsed.extra
+    values = template_values(name, parsed.identifier or None, os.environ.get("CHARON_MAINTAINER"))
+    destination = Path.cwd() / name
+    for path in write_template(kind, destination, values):
+        say("wrote        {}".format(path))
+    say("next         cd {} && charon build && charon package".format(name))
+
+
 def install_launcher(launcher, path=None):
     launcher = Path(launcher)
     folders = [Path(folder) for folder in (path if path is not None else os.environ.get("PATH", "")).split(os.pathsep)
@@ -1348,11 +1428,13 @@ VERBS = (
     ("test", "the tiers: gate, batteries, host"),
     ("integrate", "one upstream update through every gate, cheapest first"),
     ("clean", "what builds leave behind, reported unless --force"),
+    ("lock", "pin every variant's graph to what the indexes serve now, in conan.lock"),
     ("setup", "register this port's recipes, and the toolchain's, ahead of the general remotes"),
     ("device", "reach the phone directly: run, copy, fetch, where, log [SECONDS] [TEXT]"),
     ("profiles", "write a shared host profile for every architecture of every platform Charon knows"),
     ("where", "the folder of a package the build uses: charon where pkg:NAME or tool:NAME"),
     ("publish", "archive an index's built packages with their licenses: charon publish INDEX OUT"),
+    ("new", "start a port from a template: charon new tweak|daemon|app NAME [--identifier ID]"),
     ("provenance", "which driver, interpreter, port, profile and phone are in use"),
     ("help", "this list"),
 )
@@ -1366,11 +1448,13 @@ HANDLERS = {
     "where": verb_where,
     "profiles": verb_profiles,
     "publish": verb_publish,
+    "new": verb_new,
     "deploy": verb_deploy,
     "run": verb_run,
     "test": verb_test,
     "integrate": verb_integrate,
     "clean": verb_clean,
+    "lock": verb_lock,
     "setup": verb_setup,
     "device": verb_device,
     "provenance": lambda root, parsed: provenance(root, parsed.chosen_profile),
@@ -1385,6 +1469,7 @@ def parse(argv):
     parser.add_argument("verb", nargs="?", default="help", choices=[name for name, _ in VERBS])
     parser.add_argument("--variant", default="", help="build tree under build/ to act on, when there is more than one")
     parser.add_argument("--device", default="", help="which phone: device.NAME.env beside device.env")
+    parser.add_argument("--identifier", default="", help="new: the package and bundle identifier")
     parser.add_argument("--wait", type=int, default=20, help="seconds to let a launched application run")
     parser.add_argument("--url", default="", help="page the application opens first")
     parser.add_argument("--log", default="", help="log the application writes on the phone")
@@ -1412,7 +1497,7 @@ def main(argv):
     if parsed.verb == "help":
         verb_help(None, parsed)
         return 0
-    if parsed.verb in ("profiles", "publish"):
+    if parsed.verb in ("profiles", "publish", "new"):
         HANDLERS[parsed.verb](None, parsed)
         return 0
     root = find_port(parsed.root)
