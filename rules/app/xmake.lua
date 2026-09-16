@@ -8,6 +8,7 @@ rule("app")
 
     after_link(function (target)
         import("@self.apple.platform")
+        platform.verify_inputs(target)
         platform.verify(target, target:targetfile(), {imports = false})
     end)
 

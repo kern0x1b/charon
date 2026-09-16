@@ -18,6 +18,52 @@ function deployment(target)
     return found:config("deployment")
 end
 
+function verify_inputs(target)
+    local wanted = macho.encoded_version(deployment(target))
+    local problems, objects, members = {}, 0, 0
+    local function inspect(file, owner)
+        for _, recorded in ipairs(macho.recorded_minimums(file, target:arch())) do
+            if recorded.member then
+                members = members + 1
+            else
+                objects = objects + 1
+            end
+            if recorded.minimum ~= wanted then
+                local label = (owner and (owner .. "/") or "") .. path.filename(file) .. (recorded.member and ("(" .. recorded.member .. ")") or "")
+                if not recorded.minimum then
+                    table.insert(problems, string.format("%s records no minimum release, so nothing says it was built for %s", label, deployment(target)))
+                elseif recorded.minimum > wanted then
+                    table.insert(problems, string.format("%s was built for iOS %s, newer than the %s this links for", label, macho.version_text(recorded.minimum), deployment(target)))
+                else
+                    table.insert(problems, string.format("%s was built for iOS %s instead of %s, which means it was compiled without the target's flags", label, macho.version_text(recorded.minimum), deployment(target)))
+                end
+            end
+        end
+    end
+    for _, file in ipairs(target:objectfiles()) do
+        if os.isfile(file) then
+            inspect(file)
+        end
+    end
+    for _, package in ipairs(target:orderpkgs()) do
+        local reason = target:values("charon.waive.input-minimum." .. package:name())
+        if reason then
+            wprint("%s: input-minimum not checked for %s: %s", target:name(), package:name(), reason)
+        else
+            for _, file in ipairs(table.wrap(package:get("libfiles"))) do
+                if file:endswith(".a") and os.isfile(file) then
+                    inspect(file, package:name())
+                end
+            end
+        end
+    end
+    if #problems > 0 then
+        local shown = table.concat(table.slice(problems, 1, 5), "; ") .. (#problems > 5 and string.format("; and %d more", #problems - 5) or "")
+        raise("a link input of %s was not built for this target: %s", target:name(), shown)
+    end
+    vprint("%s: %d objects and %d archive members record iOS %s", target:name(), objects, members, deployment(target))
+end
+
 function verify(target, binary, opt)
     opt = opt or {}
     macho.verify(binary, {waived = waivers(target), arrived = compat.arrived("iOS"), stripped = opt.stripped})

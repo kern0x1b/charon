@@ -180,6 +180,31 @@ local function encryption_failures(macho, folder, ld64)
     return found
 end
 
+local function input_minimum_failures(macho, folder)
+    local found = {}
+    io.writefile(path.join(folder, "part.c"), "int part(void) { return 1; }\n")
+    fixtures.run(folder, "xcrun", {"clang", "-c", "-target", "armv7-apple-ios", "-miphoneos-version-min=6.0", "-o", "six.o", "part.c"})
+    fixtures.run(folder, "xcrun", {"clang", "-c", "-target", "armv7-apple-ios", "-miphoneos-version-min=9.0", "-o", "nine.o", "part.c"})
+    io.writefile(path.join(folder, "bare.s"), ".text\n.globl _bare\n_bare:\n bx lr\n")
+    fixtures.run(folder, "xcrun", {"as", "-arch", "armv7", "-o", "bare.o", "bare.s"})
+    fixtures.run(folder, "xcrun", {"libtool", "-static", "-o", "libmixed.a", "six.o", "nine.o", "bare.o"})
+    local recorded = {}
+    for _, entry in ipairs(macho.recorded_minimums(path.join(folder, "libmixed.a"), "armv7")) do
+        recorded[entry.member] = entry.minimum and macho.version_text(entry.minimum) or "none"
+    end
+    if recorded["six.o"] ~= "6.0" or recorded["nine.o"] ~= "9.0" or not recorded["bare.o"] or recorded["bare.o"] == "6.0" then
+        table.insert(found, "archive members must report their own minimums, got six.o=" .. tostring(recorded["six.o"]) .. " nine.o=" .. tostring(recorded["nine.o"]) .. " bare.o=" .. tostring(recorded["bare.o"]))
+    end
+    local single = macho.recorded_minimums(path.join(folder, "six.o"), "armv7")
+    if #single ~= 1 or single[1].member or macho.version_text(single[1].minimum) ~= "6.0" then
+        table.insert(found, "an object file reports one minimum and no member")
+    end
+    if #macho.recorded_minimums(path.join(folder, "six.o"), "arm64") ~= 0 then
+        table.insert(found, "an armv7 object has nothing to say about arm64")
+    end
+    return found
+end
+
 function failures(opt)
     local macho = import("apple.macho", {rootdir = opt.modules, anonymous = true})
     local compat = import("apple.compat", {rootdir = opt.modules, anonymous = true})
@@ -191,6 +216,7 @@ function failures(opt)
     table.join2(found, encryption_failures(macho, folder, opt.ld64))
     table.join2(found, signing_failures(signing, folder, opt.ldid))
     table.join2(found, weak_import_failures(macho, compat, folder, opt.ld64))
+    table.join2(found, input_minimum_failures(macho, folder))
     os.tryrm(folder)
     return found
 end

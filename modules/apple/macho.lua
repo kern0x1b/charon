@@ -119,6 +119,56 @@ local function image(data, base)
     return found
 end
 
+function archive_members(data)
+    local members = {}
+    local at = 8
+    while at + 60 <= #data do
+        local header = data:sub(at + 1, at + 60)
+        local name = header:sub(1, 16):trim()
+        local size = tonumber(header:sub(49, 58):trim())
+        local body = at + 60
+        local start = body
+        if name:startswith("#1/") then
+            local length = tonumber(name:sub(4))
+            name = data:sub(body + 1, body + length):gsub("%z+$", "")
+            start = body + length
+        end
+        if not name:startswith("__.SYMDEF") then
+            table.insert(members, {name = name, offset = start})
+        end
+        at = body + size + (size % 2)
+    end
+    return members
+end
+
+function recorded_minimums(file, architecture)
+    local data = read(file)
+    local found = {}
+    local function collect(label, base)
+        local magic = data:sub(base + 1, base + 4)
+        if magic == FAT then
+            local count = string.unpack(">I4", data, base + 5)
+            for index = 0, count - 1 do
+                local _, _, offset = string.unpack(">i4i4I4", data, base + 9 + index * 20)
+                collect(label, base + offset)
+            end
+        elseif magic == MAGIC32 or magic == MAGIC64 then
+            local described = image(data, base)
+            if described.architecture == architecture then
+                table.insert(found, {member = label, minimum = described.minimum})
+            end
+        end
+    end
+    if data:startswith("!<arch>\n") then
+        for _, member in ipairs(archive_members(data)) do
+            collect(member.name, member.offset)
+        end
+    else
+        collect(nil, 0)
+    end
+    return found
+end
+
 function images(data)
     local magic = data:sub(1, 4)
     if magic == FAT or magic == FAT64 then
