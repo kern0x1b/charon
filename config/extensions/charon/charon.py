@@ -429,8 +429,11 @@ def exit_status(call, *arguments):
 
 def bound_harness(root, device):
     harness = import_file(root.joinpath(*HARNESS), "ios6_harness")
-    if hasattr(harness, "bind"):
-        harness.bind(device)
+    if not hasattr(harness, "bind"):
+        raise Failure("{} has no bind(), so the tiers would reach the phone through whatever transport they "
+                      "found for themselves instead of the one this run configured".format(
+                          root.joinpath(*HARNESS)))
+    harness.bind(device)
     return harness
 
 
@@ -515,6 +518,9 @@ def run_check(root, relative):
 
 
 def verb_integrate(root, parsed):
+    if not parsed.check and not manifest(root):
+        raise Failure("{} does not exist, and integrate runs the gates a port declares there. Without it this "
+                      "would quietly run none and report the integration green.".format(root / MANIFEST))
     tree = submodule(root)
     git("-C", tree, "config", "rerere.enabled", "true")
     steps = []
