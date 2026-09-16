@@ -490,6 +490,10 @@ def verb_test(root, parsed):
     else:
         raise Failure("{} declares no tier {} ({})".format(root / MANIFEST, parsed.tier, ", ".join(tiers)))
 
+    say("tiers        declared: {}".format(", ".join(tiers)))
+    if chosen != list(tiers):
+        say("tiers        running: {}".format(", ".join(chosen)))
+
     device = None
     if any("device" in tiers[name].get("needs", []) for name in chosen):
         device = transport(root)
