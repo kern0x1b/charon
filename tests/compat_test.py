@@ -92,10 +92,28 @@ int main(int argc, char **argv)
     expect(charon_clock_gettime(CLOCK_MONOTONIC, &second) == 0, "CLOCK_MONOTONIC is answered again");
     expect(second.tv_sec > first.tv_sec || (second.tv_sec == first.tv_sec && second.tv_nsec > first.tv_nsec),
            "CLOCK_MONOTONIC moves forward");
-    struct timespec system;
-    clock_gettime(CLOCK_UPTIME_RAW, &system);
-    long long apart = (long long)system.tv_sec - (long long)second.tv_sec;
-    expect(apart > -2 && apart < 2, "CLOCK_MONOTONIC counts the uptime iOS 6 can give, not the calendar");
+    static const struct { clockid_t clock; const char *what; long long tolerance; } clocks[] = {
+        { CLOCK_MONOTONIC, "CLOCK_MONOTONIC counts from boot, sleep included, as Darwin's does", 5000000LL },
+        { CLOCK_UPTIME_RAW, "CLOCK_UPTIME_RAW counts the time awake, as Darwin's does", 5000000LL },
+        { CLOCK_PROCESS_CPUTIME_ID, "CLOCK_PROCESS_CPUTIME_ID counts this process's processor time", 20000000LL },
+        { CLOCK_THREAD_CPUTIME_ID, "CLOCK_THREAD_CPUTIME_ID counts this thread's processor time", 20000000LL },
+    };
+    for (volatile long spin = 0; spin < 30000000; spin++) {
+    }
+    for (size_t index = 0; index < sizeof clocks / sizeof clocks[0]; index++) {
+        struct timespec ours, darwins;
+        int answered = charon_clock_gettime(clocks[index].clock, &ours);
+        clock_gettime(clocks[index].clock, &darwins);
+        long long apart = ((long long)darwins.tv_sec - ours.tv_sec) * 1000000000LL + darwins.tv_nsec - ours.tv_nsec;
+        expect(answered == 0 && apart > -clocks[index].tolerance && apart < clocks[index].tolerance &&
+               ours.tv_nsec >= 0 && ours.tv_nsec < 1000000000, clocks[index].what);
+    }
+    struct timespec monotonic, raw;
+    charon_clock_gettime(CLOCK_MONOTONIC, &monotonic);
+    charon_clock_gettime(CLOCK_MONOTONIC_RAW, &raw);
+    long long drift = ((long long)raw.tv_sec - monotonic.tv_sec) * 1000000000LL + raw.tv_nsec - monotonic.tv_nsec;
+    expect(drift >= 0 && drift < 5000000LL,
+           "CLOCK_MONOTONIC_RAW counts from boot with sleep, the only such clock iOS 6 has");
     errno = 0;
     expect(charon_clock_gettime((clockid_t)12345, &first) == -1 && errno == EINVAL, "an unknown clock is refused");
 
