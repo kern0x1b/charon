@@ -36,6 +36,14 @@ verb is the same in every port: `make build`, `make package`, `make deploy`,
 `make run`, `make test`, `make clean`, and `make provenance` to see which
 configuration and which checkout are answering.
 
+The verbs can also be typed directly, without make, by putting Charon on the
+path once per machine:
+
+    ln -s "$(conan config home)/extensions/charon/charon" /usr/local/bin/charon
+
+Then `charon build`, `charon test`, `charon deploy` and the rest work from
+anywhere inside a port, and a port needs no `Makefile` at all.
+
 A port carries two files for this. The `Makefile` is the whole wiring:
 
     CHARON_CONFIG ?= $(if $(IOS6_TOOLCHAIN),$(IOS6_TOOLCHAIN)/config,$(shell conan config home))
