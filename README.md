@@ -20,7 +20,7 @@ know about these platforms, and nothing else:
     set_policy("package.requires_lock", true)
 
     add_repositories("charon https://github.com/kern0x1b/charon.git main")
-    add_addons("charon v0.3.0")
+    add_addons("charon v0.3.1")
     set_config("apple_minimum", "6.0")
     includes("@addon/charon/apple-ios")
 
@@ -48,7 +48,9 @@ The rules, and the values each reads:
 and, on any of them, charon.entitlements (signed with ldid and read back),
 charon.strip (default -x), charon.control, charon.maintainer-scripts,
 charon.licenses (into /usr/share/doc/<Package>/) and
-charon.waive.<check> "reason". Info.plist keys the file and app.plist leave
+charon.waive.<check> "reason". Every object a target links and every member of
+its packages' static archives has to record the port's minimum release; a
+package that cannot is waived with charon.waive.input-minimum.<package>. Info.plist keys the file and app.plist leave
 out are derived: the bundle and executable name, the project version, and
 MinimumOSVersion. A checkout nested inside another project (a worktree under
 the main checkout) builds with `xmake -P .`; the rules refuse otherwise.
