@@ -27,6 +27,7 @@ sdk = "iphoneos"
 cppstd = 23
 cpu = "cortex-a9"
 fpu = "neon"
+defines = ["-DEXAMPLE_PORT"]
 
 [engine]
 find-packages = ["LibXml2"]
@@ -166,6 +167,18 @@ def checks(declared):
         found.append("an application must install its binary")
     if "install(FILES ${CHARON_PORT}/app/cacert.pem DESTINATION .)" not in application:
         found.append("an application must install its declared resources")
+
+    cross = written[generate.CROSS_TOOLCHAIN]
+    for expected in ("set(CMAKE_OSX_ARCHITECTURES armv7)",
+                     "-target armv7-apple-ios${IOS6_DEPLOYMENT_TARGET} -isysroot ${SDK6}",
+                     "set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)",
+                     "set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)",
+                     "-DEXAMPLE_PORT"):
+        if expected not in cross:
+            found.append("the cross toolchain must carry {}: got {}".format(expected, cross))
+    if "CACHE PATH" not in cross or "IOS6_SDK" not in cross:
+        found.append("the SDK must be remembered in the cache, because ninja re-runs cmake without the shell "
+                     "that configured it")
 
     applied = written[generate.PROJECT_INCLUDE]
     for package in ("LibXml2", "LibXslt"):

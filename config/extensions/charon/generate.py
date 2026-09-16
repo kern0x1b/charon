@@ -315,6 +315,76 @@ def recipe(declared, port_root):
 
 
 PROJECT_INCLUDE = "project-include.cmake"
+CROSS_TOOLCHAIN = "cross-toolchain.cmake"
+
+CROSS_TEMPLATE = '''{generated}
+set(CMAKE_SYSTEM_NAME {system})
+set(CMAKE_SYSTEM_PROCESSOR {processor})
+
+if (NOT IOS6_SDK OR NOT IOS6_DEPLOYMENT_TARGET)
+    message(FATAL_ERROR
+        "IOS6_SDK and IOS6_DEPLOYMENT_TARGET come from the profile Charon wrote. Reading them from the "
+        "environment instead would leave them empty when ninja re-runs cmake by itself, and cmake would "
+        "quietly fall back to the newest installed SDK")
+endif ()
+set(IOS6_SDK "${{IOS6_SDK}}" CACHE PATH "SDK this port is compiled against" FORCE)
+set(IOS6_DEPLOYMENT_TARGET "${{IOS6_DEPLOYMENT_TARGET}}" CACHE STRING "Oldest release this runs on" FORCE)
+set(CMAKE_OSX_SYSROOT ${{IOS6_SDK}} CACHE PATH "SDK the compiler is pointed at" FORCE)
+list(APPEND CMAKE_TRY_COMPILE_PLATFORM_VARIABLES IOS6_SDK IOS6_DEPLOYMENT_TARGET)
+set(CMAKE_OSX_ARCHITECTURES {arch})
+set(CMAKE_OSX_DEPLOYMENT_TARGET ${{IOS6_DEPLOYMENT_TARGET}})
+
+if (DEFINED ENV{{DEVELOPER_DIR}})
+    set(DEVELOPER_ROOT $ENV{{DEVELOPER_DIR}})
+else ()
+    execute_process(COMMAND xcode-select -p
+        OUTPUT_VARIABLE DEVELOPER_ROOT OUTPUT_STRIP_TRAILING_WHITESPACE)
+endif ()
+if (EXISTS ${{DEVELOPER_ROOT}}/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang)
+    set(TOOLCHAIN_BIN ${{DEVELOPER_ROOT}}/Toolchains/XcodeDefault.xctoolchain/usr/bin)
+else ()
+    set(TOOLCHAIN_BIN ${{DEVELOPER_ROOT}}/usr/bin)
+endif ()
+set(CMAKE_C_COMPILER ${{TOOLCHAIN_BIN}}/clang)
+set(CMAKE_CXX_COMPILER ${{TOOLCHAIN_BIN}}/clang++)
+
+set(SDK6 ${{IOS6_SDK}})
+set(COMMON "-target {arch}-apple-{system_lower}${{IOS6_DEPLOYMENT_TARGET}} -isysroot ${{SDK6}}")
+set(CMAKE_C_FLAGS_INIT "${{COMMON}}{defines}")
+set(CMAKE_OBJC_FLAGS_INIT "${{COMMON}}{defines}")
+set(CMAKE_CXX_FLAGS_INIT "${{COMMON}}{defines}")
+set(CMAKE_OBJCXX_FLAGS_INIT "${{COMMON}}{defines}")
+set(CMAKE_EXE_LINKER_FLAGS_INIT "${{COMMON}}")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "${{COMMON}}")
+
+set(CMAKE_FIND_ROOT_PATH ${{SDK6}})
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+
+if (EXISTS ${{DEVELOPER_ROOT}}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk)
+    set(MIG_SYSROOT ${{DEVELOPER_ROOT}}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk)
+else ()
+    set(MIG_SYSROOT ${{DEVELOPER_ROOT}}/SDKs/MacOSX.sdk)
+endif ()
+'''
+
+
+def cross_toolchain(declared):
+    target = declared.section("target")
+    for required in ("arch", "os"):
+        if required not in target:
+            raise GenerationError(
+                "[target] declares no {}, and the cross toolchain cannot be written without it".format(required))
+    defines = target.get("defines", [])
+    return CROSS_TEMPLATE.format(
+        generated=GENERATED,
+        system=target.get("system-name", "Darwin"),
+        processor=target.get("system-processor", "arm"),
+        arch=target["arch"],
+        system_lower=str(target["os"]).lower(),
+        defines="".join(" {}".format(define) for define in defines),
+    )
 
 
 def project_include(declared):
@@ -331,6 +401,8 @@ def written(declared, required=True):
     applied = project_include(declared)
     if applied is not None:
         produced[PROJECT_INCLUDE] = applied
+    if declared.using("toolchain") is None and declared.get("engine", "user-toolchain", None) is None:
+        produced[CROSS_TOOLCHAIN] = cross_toolchain(declared)
     profiles = declared.using("profile")
     if profiles is None:
         produced["profile"] = profile(declared, includes=declared.get("target", "include-profiles", []))

@@ -256,8 +256,15 @@ class Ios6Port:
         engine = self.declared.get("engine", {})
         user_toolchain = engine.get("user-toolchain")
         if user_toolchain:
-            self.conf.define("tools.cmake.cmaketoolchain:user_toolchain",
-                             [os.path.join(self.port_root, user_toolchain)])
+            cross = os.path.join(self.port_root, user_toolchain)
+        else:
+            cross = os.path.join(self.recipe_folder, "cross-toolchain.cmake")
+            if not os.path.isfile(cross):
+                raise ConanException(
+                    f"{self.name} names no user-toolchain of its own and nothing was written to {cross}. "
+                    "It is what points the compiler at the SDK this port targets; without it cmake falls "
+                    "back to the newest installed one and compiles against a system years newer")
+        self.conf.define("tools.cmake.cmaketoolchain:user_toolchain", [cross])
         toolchain = CMakeToolchain(self)
         toolchain.blocks.remove("apple_system")
         variables = toolchain.cache_variables
