@@ -51,9 +51,17 @@ writable folder on PATH, so every later call is just `charon`. The verbs are the
     charon task NAME [NAME...]      declared tasks, run the way the pipeline runs them
     charon test [--tier NAME]       the declared test tiers
     charon package                  the .deb, copied to build/<variant>/
+    charon install                  package and dpkg -i the .deb on the phone, refusing to
+                                    install an app over one with another bundle identifier
     charon deploy, charon run       install on the phone, launch the application
+    charon device log [SECONDS] [TEXT]  the phone's log over USB, filtered
     charon generate                 write the recipe, profile and CMake without building
     charon integrate, clean, provenance, device run|copy|fetch
+
+The phone is named in the port's `device.env` (`DEVICE_HOST`, `DEVICE_PORT`,
+`DEVICE_UDID`, `DEVICE_PASSWORD`). A port with more than one keeps
+`device.NAME.env` beside it and picks one with `--device NAME`, or with
+`CHARON_DEVICE=NAME` for a whole shell.
 
 `conan config install` copies rather than links, so after changing Charon here
 run `charon setup` again; `charon provenance` says which copy is answering.

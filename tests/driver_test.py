@@ -306,6 +306,65 @@ def launcher_failures():
     return found
 
 
+def install_guard_failures():
+    import io, lzma, plistlib, tarfile
+    found = []
+    with tempfile.TemporaryDirectory() as folder:
+        root = Path(folder)
+        payload = io.BytesIO()
+        info = plistlib.dumps({"CFBundleIdentifier": "com.kern0x1b.telegram"})
+        with tarfile.open(fileobj=payload, mode="w") as archive:
+            member = tarfile.TarInfo("./Applications/Telegram.app/Info.plist")
+            member.size = len(info)
+            archive.addfile(member, io.BytesIO(info))
+        data = lzma.compress(payload.getvalue(), format=lzma.FORMAT_ALONE)
+        body = b"!<arch>\n"
+        for name, content in (("debian-binary", b"2.0\n"), ("data.tar.lzma", data)):
+            body += "{:<16}{:<12}{:<6}{:<6}{:<8}{:<10}`\n".format(name, 0, 0, 0, 100644, len(content)).encode()
+            body += content + (b"\n" if len(content) % 2 else b"")
+        deb = root / "telegram.deb"
+        deb.write_bytes(body)
+        other = plistlib.dumps({"CFBundleIdentifier": "com.havrysh.telegram"}, fmt=plistlib.FMT_BINARY)
+        conflicts = charon.installed_identity_conflicts(deb, lambda remote: other)
+        if len(conflicts) != 1 or "com.havrysh.telegram" not in conflicts[0] or "com.kern0x1b.telegram" not in conflicts[0]:
+            found.append("installing over another bundle identifier must be refused naming both: {}".format(conflicts))
+        if charon.installed_identity_conflicts(deb, lambda remote: info):
+            found.append("installing over the same bundle identifier must pass")
+        if charon.installed_identity_conflicts(deb, lambda remote: None):
+            found.append("installing where the app is not installed must pass")
+    return found
+
+
+def device_choice_failures():
+    found = []
+    device = charon.import_file(Path(charon.__file__).resolve().parent / "device.py", "device_under_test")
+    saved = os.environ.pop("CHARON_DEVICE", None), os.environ.pop("DEVICE_HOST", None)
+    try:
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "device.env").write_text("DEVICE_PORT=2231\n")
+            (root / "device.iphone.env").write_text("DEVICE_PORT=2232\n")
+            if device.bind(root)["port"] != "2231":
+                found.append("device.env must answer when no phone is chosen")
+            if device.bind(root, "iphone")["port"] != "2232":
+                found.append("--device NAME must read device.NAME.env")
+            os.environ["CHARON_DEVICE"] = "iphone"
+            if device.bind(root)["port"] != "2232":
+                found.append("CHARON_DEVICE must choose the phone for the whole shell")
+            try:
+                device.bind(root, "ipad")
+                found.append("a phone with no env file must be refused")
+            except RuntimeError as refused:
+                if "device.iphone.env" not in str(refused):
+                    found.append("the refusal must name the phones the port has: {}".format(refused))
+    finally:
+        os.environ.pop("CHARON_DEVICE", None)
+        for name, value in zip(("CHARON_DEVICE", "DEVICE_HOST"), saved):
+            if value is not None:
+                os.environ[name] = value
+    return found
+
+
 def where_failures():
     import json as encoded
     import types
@@ -439,7 +498,7 @@ def main():
         print("FAIL  this needs Python 3.11 or newer for tomllib, and it is running under {}. Skipping would "
               "report success having checked nothing.".format(".".join(str(p) for p in sys.version_info[:3])))
         return 1
-    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + index_failures() + lock_failures() + publish_failures() + launcher_failures() + where_failures() + profile_failures() + verb_command_failures() + undefined_names()
+    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + index_failures() + lock_failures() + publish_failures() + launcher_failures() + install_guard_failures() + device_choice_failures() + where_failures() + profile_failures() + verb_command_failures() + undefined_names()
     for line in found:
         print("FAIL  {}".format(line))
     if found:

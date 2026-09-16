@@ -601,8 +601,79 @@ def verb_package(root, parsed):
     exported = conan("export-pkg", where, *conan_flags(root, variant_profile(root, parsed, variant)),
                      *variant_options(root, variant), "--format=json", *parsed.extra, stdout=subprocess.PIPE,
                      text=True)
-    for artifact in packaged_artifacts(exported.stdout, root / BUILD / variant):
+    artifacts = packaged_artifacts(exported.stdout, root / BUILD / variant)
+    for artifact in artifacts:
         say("package      {}".format(artifact))
+    return artifacts
+
+
+def deb_members(deb):
+    import io
+    import lzma
+    import tarfile
+    content = Path(deb).read_bytes()
+    if not content.startswith(b"!<arch>\n"):
+        raise Failure("{} is not a Debian package".format(deb))
+    offset, parts = 8, {}
+    while offset < len(content):
+        header = content[offset:offset + 60]
+        size = int(header[48:58].decode().strip())
+        parts[header[:16].decode().strip().rstrip("/")] = content[offset + 60:offset + 60 + size]
+        offset += 60 + size + (size % 2)
+    data = next((value for name, value in parts.items() if name.startswith("data.tar")), None)
+    if data is None:
+        raise Failure("{} has no data archive".format(deb))
+    if data[:2] != b"\x1f\x8b" and not data.startswith(b"BZh"):
+        data = lzma.decompress(data)
+    return tarfile.open(fileobj=io.BytesIO(data))
+
+
+def installed_identity_conflicts(deb, fetch):
+    conflicts = []
+    with deb_members(deb) as archive:
+        for member in archive.getmembers():
+            parts = member.name.lstrip("./").split("/")
+            if len(parts) != 3 or parts[0] != "Applications" or not parts[1].endswith(".app") or parts[2] != "Info.plist":
+                continue
+            packaged = plistlib.loads(archive.extractfile(member).read()).get("CFBundleIdentifier")
+            installed_plist = fetch("/" + "/".join(parts))
+            if installed_plist is None:
+                continue
+            installed = plistlib.loads(installed_plist).get("CFBundleIdentifier")
+            if installed != packaged:
+                conflicts.append("/{} on the phone is {}, and {} installs {} over it; SpringBoard would lose the "
+                                 "app until a reboot, so remove the installed one first".format(
+                                     "/".join(parts[:2]), installed, Path(deb).name, packaged))
+    return conflicts
+
+
+def verb_install(root, parsed):
+    import tempfile
+    device = transport(root)
+    debs = verb_package(root, parsed)
+    if not debs:
+        raise Failure("charon package wrote no .deb, so there is nothing to install")
+
+    def fetch(remote):
+        with tempfile.TemporaryDirectory() as folder:
+            local = Path(folder) / "Info.plist"
+            return local.read_bytes() if device.fetch(remote, local) and local.is_file() else None
+
+    for deb in debs:
+        conflicts = installed_identity_conflicts(deb, fetch)
+        if conflicts:
+            raise Failure("; ".join(conflicts))
+    for deb in debs:
+        remote = "/tmp/{}".format(deb.name)
+        if not device.copy(deb, remote):
+            raise Failure("could not copy {} to {} on {}".format(deb, remote, device.where()))
+        installed = device.run(300, "dpkg -i {0} && rm -f {0}".format(remote), capture=False)
+        if installed.returncode:
+            raise Failure("dpkg -i {} failed on {} (exit {})".format(remote, device.where(), installed.returncode))
+        say("installed    {} on {}".format(deb.name, device.where()))
+    with deb_members(debs[0]) as archive:
+        if any(member.name.lstrip("./").startswith("Applications/") for member in archive.getmembers()):
+            device.run(120, "su mobile -c uicache")
 
 
 def packaged_artifacts(graph_json, destination):
@@ -1265,13 +1336,14 @@ VERBS = (
     ("generate", "write the recipe and the CMake a declaration asks for, without building"),
     ("task", "run declared tasks by name, the way the pipeline runs them: charon task NAME [NAME...]"),
     ("package", "the installable package, from what was built"),
+    ("install", "package and install the .deb on the phone, refusing to replace another app's identity"),
     ("deploy", "install the staged frameworks on the phone"),
     ("run", "install and launch the standalone application"),
     ("test", "the tiers: gate, batteries, host"),
     ("integrate", "one upstream update through every gate, cheapest first"),
     ("clean", "what builds leave behind, reported unless --force"),
     ("setup", "register this port's recipes, and the toolchain's, ahead of the general remotes"),
-    ("device", "reach the phone directly: run, copy, fetch, where"),
+    ("device", "reach the phone directly: run, copy, fetch, where, log [SECONDS] [TEXT]"),
     ("profiles", "write a shared host profile for every architecture of every platform Charon knows"),
     ("where", "the folder of a package the build uses: charon where pkg:NAME or tool:NAME"),
     ("publish", "archive an index's built packages with their licenses: charon publish INDEX OUT"),
@@ -1284,6 +1356,7 @@ HANDLERS = {
     "generate": verb_generate,
     "task": verb_task,
     "package": verb_package,
+    "install": verb_install,
     "where": verb_where,
     "profiles": verb_profiles,
     "publish": verb_publish,
@@ -1305,6 +1378,7 @@ def parse(argv):
     parser.add_argument("--profile", help="host profile; default: the only one under the port's profiles/")
     parser.add_argument("verb", nargs="?", default="help", choices=[name for name, _ in VERBS])
     parser.add_argument("--variant", default="", help="build tree under build/ to act on, when there is more than one")
+    parser.add_argument("--device", default="", help="which phone: device.NAME.env beside device.env")
     parser.add_argument("--wait", type=int, default=20, help="seconds to let a launched application run")
     parser.add_argument("--url", default="", help="page the application opens first")
     parser.add_argument("--log", default="", help="log the application writes on the phone")
@@ -1327,6 +1401,8 @@ def parse(argv):
 def main(argv):
     ensure_interpreter(argv)
     parsed = parse(argv)
+    if parsed.device:
+        os.environ["CHARON_DEVICE"] = parsed.device
     if parsed.verb == "help":
         verb_help(None, parsed)
         return 0

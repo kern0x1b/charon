@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 """Reach the phone a port names in its device.env.
 
-    device.py --root PORT run [SECONDS] COMMAND...
-    device.py --root PORT copy LOCAL REMOTE
-    device.py --root PORT fetch REMOTE LOCAL
-    device.py --root PORT where
+    device.py --root PORT [--device NAME] run [SECONDS] COMMAND...
+    device.py --root PORT [--device NAME] copy LOCAL REMOTE
+    device.py --root PORT [--device NAME] fetch REMOTE LOCAL
+    device.py --root PORT [--device NAME] where
+    device.py --root PORT [--device NAME] log [SECONDS] [TEXT]
+
+A port with more than one phone keeps device.NAME.env beside device.env and picks
+one with --device NAME or CHARON_DEVICE=NAME for the whole shell.
 
 Callers import it and bind a port first: bind(root), then run(20, "uiopen ..."),
 copy(...), fetch(...). A dead USB tunnel is brought back before every command,
@@ -19,13 +23,15 @@ import time
 from pathlib import Path
 
 ENV_FILE = "device.env"
+CHOSEN = "CHARON_DEVICE"
 DEFAULTS = {"host": "127.0.0.1", "port": "2222", "password": "", "udid": ""}
 
 SSH_OPTIONS = [
     "-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null",
     "-o", "LogLevel=ERROR", "-o", "ConnectTimeout=8",
     "-o", "HostKeyAlgorithms=+ssh-rsa", "-o", "PubkeyAcceptedKeyTypes=+ssh-rsa",
-    "-o", "KexAlgorithms=+diffie-hellman-group1-sha1", "-o", "Ciphers=+aes128-cbc",
+    "-o", "KexAlgorithms=+diffie-hellman-group1-sha1,diffie-hellman-group14-sha1",
+    "-o", "Ciphers=+aes128-cbc,3des-cbc",
     "-o", "ControlMaster=auto", "-o", "ControlPersist=60",
     "-o", "ControlPath=/tmp/rev-ssh-%h-%p",
 ]
@@ -60,10 +66,15 @@ def _read_env_file(path):
     return values
 
 
-def _settings(root):
+def env_file(root, name=None):
+    chosen = name or os.environ.get(CHOSEN)
+    return Path(root) / (f"device.{chosen}.env" if chosen else ENV_FILE)
+
+
+def _settings(root, name=None):
     env = dict(os.environ)
     if root is not None:
-        env.update(_read_env_file(Path(root) / ENV_FILE))
+        env.update(_read_env_file(env_file(root, name)))
     return {
         "host": env.get("DEVICE_HOST") or DEFAULTS["host"],
         "port": env.get("DEVICE_PORT") or DEFAULTS["port"],
@@ -72,16 +83,18 @@ def _settings(root):
     }
 
 
-def bind(root):
+def bind(root, name=None):
     global ROOT, HOST, PORT
     ROOT = Path(root).expanduser().resolve()
-    named = (ROOT / ENV_FILE).is_file() or "DEVICE_HOST" in os.environ
-    if not named:
-        raise RuntimeError(f"nothing names a phone: {ROOT / ENV_FILE} does not exist and DEVICE_HOST is unset. "
+    named = env_file(ROOT, name)
+    if not named.is_file() and "DEVICE_HOST" not in os.environ:
+        known = sorted(path.name for path in ROOT.glob("device*.env"))
+        raise RuntimeError(f"nothing names a phone: {named} does not exist and DEVICE_HOST is unset"
+                           f"{' (this port has ' + ', '.join(known) + ')' if known else ''}. "
                            f"{DEFAULTS['host']}:{DEFAULTS['port']} is not a safe guess - on a machine with a USB "
                            f"tunnel it reaches whichever phone that tunnel serves.")
     SETTINGS.clear()
-    SETTINGS.update(_settings(ROOT))
+    SETTINGS.update(_settings(ROOT, name))
     HOST = SETTINGS["host"]
     PORT = SETTINGS["port"]
     return SETTINGS
@@ -197,6 +210,19 @@ def reachable(timeout=12):
     return "ok" in output(timeout, "echo ok")
 
 
+def log(seconds, text=""):
+    if not shutil.which("idevicesyslog"):
+        raise RuntimeError("idevicesyslog is not installed; brew install libimobiledevice reads the phone's log over "
+                           "USB without Xcode")
+    argv = ["idevicesyslog"] + (["-u", SETTINGS["udid"]] if SETTINGS["udid"] else [])
+    if text:
+        argv += ["-m", text]
+    try:
+        return subprocess.run(argv, timeout=seconds).returncode
+    except subprocess.TimeoutExpired:
+        return 0
+
+
 def restart_safari(settle):
     run(20, "killall MobileSafari 2>/dev/null")
     time.sleep(settle)
@@ -207,11 +233,18 @@ def open_url(url):
 
 
 def main(argv):
-    if argv[:1] == ["--root"] and len(argv) > 1:
-        bind(argv[1])
+    root, name = Path.cwd(), None
+    while argv[:1] in (["--root"], ["--device"]) and len(argv) > 1:
+        if argv[0] == "--root":
+            root = argv[1]
+        else:
+            name = argv[1]
         argv = argv[2:]
-    else:
-        bind(Path.cwd())
+    try:
+        bind(root, name)
+    except RuntimeError as absent:
+        print(absent, file=sys.stderr)
+        return 2
     if not argv or argv[0] in ("-h", "--help"):
         print(__doc__.strip())
         return 0 if argv else 2
@@ -231,6 +264,15 @@ def main(argv):
     if verb == "where" and not args:
         print(where())
         return 0
+    if verb == "log":
+        seconds = 15
+        if args and args[0].isdigit():
+            seconds, args = int(args[0]), args[1:]
+        try:
+            return log(seconds, " ".join(args))
+        except RuntimeError as missing:
+            print(missing, file=sys.stderr)
+            return 2
     print(__doc__.strip(), file=sys.stderr)
     return 2
 
