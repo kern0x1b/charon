@@ -121,6 +121,127 @@ class Ios6Port:
     def resolved_values(self, mapping):
         return {name: self.resolved(value) for name, value in mapping.items()}
 
+    @property
+    def declared(self):
+        declaration = getattr(type(self), "declaration", None)
+        if not declaration:
+            raise ConanException(f"{self.name} carries no declaration; a generated recipe bakes one in")
+        return declaration
+
+    @property
+    def port_root(self):
+        root = getattr(type(self), "port", None)
+        if not root:
+            raise ConanException(f"{self.name} does not say which folder it was generated for")
+        return root
+
+    def declared_variant(self):
+        chosen, matched = None, -1
+        for name, declared in self.declared.get("variants", {}).items():
+            wanted = [entry.split("=", 1) for entry in declared.get("options", [])]
+            if all(str(self.options.get_safe(option)) == value for option, value in wanted) and len(wanted) > matched:
+                chosen, matched = name, len(wanted)
+        if chosen is None:
+            raise ConanException(f"{self.name}: no declared variant matches the options this build was given")
+        return chosen
+
+    def declared_setting(self, section, key, default=None):
+        variant = self.declared.get("variants", {}).get(self.declared_variant(), {})
+        if key in variant:
+            return variant[key]
+        return self.declared.get(section, {}).get(key, default)
+
+    def declared_target(self, kind, name):
+        for target in self.declared.get(kind, []):
+            if target.get("name") == name:
+                return target
+        raise ConanException(f"{self.name} declares no {kind} called {name}")
+
+    def declared_targets(self):
+        found = []
+        for kind in ("static-library", "device-library"):
+            found += self.declared.get(kind, [])
+        application = self.declared.get("application")
+        if application:
+            found.append(application)
+        return found
+
+    def _target_product(self, name):
+        for target in self.declared_targets():
+            if target.get("name") != name:
+                continue
+            produced = target.get("produces")
+            if not produced:
+                raise ConanException(f"{name} does not say what it produces, so nothing can point at it")
+            folder = os.path.basename(target.get("cmake") or name)
+            return os.path.join(self.build_folder, folder, produced)
+        raise ConanException(f"{self.name} declares no target called {name}")
+
+    @property
+    def sdk_path(self):
+        sdk = self.conf.get("tools.apple:sdk_path", check_type=str)
+        if not sdk:
+            raise ConanException("tools.apple:sdk_path is not set; build with the port's profile")
+        return sdk
+
+    @property
+    def stage_folder(self):
+        return os.path.join(self.build_folder, "stage")
+
+    def _declared_context(self):
+        engine = self.declared.get("engine", {})
+        tuning = " ".join(self.conf.get("tools.build:cxxflags", default=[], check_type=list))
+        context = {
+            "sdk": self.sdk_path,
+            "triple": f"{self.settings.arch}-apple-ios{self.settings.os.version}",
+            "tuning": tuning,
+            "version": str(self.version),
+            "source": self.source_folder,
+            "build": self.build_folder,
+            "stage": self.stage_folder,
+            "stubs": os.path.join(self.port_root, engine.get("stubs", "")),
+            "prefix-header": self.declared_setting("engine", "prefix-header", ""),
+        }
+        flags = self.declared.get("flags", {})
+        for name in ("common", "defines", "c", "cxx", "objc", "objcxx"):
+            if name in flags:
+                context[name] = flags[name]
+        return context
+
+    def _resolve_declared(self, name, context, seen):
+        if name in seen:
+            raise ConanException(f"{{{name}}} refers to itself")
+        if name in context:
+            return self._expand(context[name], context, seen | {name})
+        if name == "engine-exports":
+            return self._expand(self.declared.get("engine", {}).get("exports", ""), context, seen)
+        if name == "exports":
+            return self._expand(self.declared_setting("engine", "exports", ""), context, seen)
+        kind, _, rest = name.partition(":")
+        if kind == "target" and rest:
+            return self._target_product(rest)
+        return None
+
+    def _expand(self, text, context, seen=frozenset()):
+        def replace(match):
+            name = match.group(1)
+            answered = self._resolve_declared(name, context, seen)
+            return str(answered) if answered is not None else str(self._resolve(name))
+        return PLACEHOLDER.sub(replace, str(text))
+
+    def declared_flags(self, name):
+        flags = self.declared.get("flags", {})
+        if name not in flags:
+            raise ConanException(f"{self.name} declares no {name} flags")
+        return self._expand(flags[name], self._declared_context())
+
+    def declared_options(self):
+        context = self._declared_context()
+        options = dict(self.declared.get("engine", {}).get("options", {}))
+        variant = self.declared.get("variants", {}).get(self.declared_variant(), {})
+        options.update(variant.get("engine-options", {}) or {})
+        return {name: self._expand(value, context) for name, value in options.items()}
+
 
 class MachO:
     """Reading and correcting the Mach-O files a port produces.
