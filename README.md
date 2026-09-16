@@ -342,7 +342,8 @@ of each package's license, source and binaries. A recipe with `upload_policy =
 "skip"` is left out - the iOS SDK is Apple's to hand on, not ours - and a package
 with no `licenses/` folder refuses the archive. `conan cache restore` puts the
 archive into another machine's cache, where builds for the same settings take
-the binaries instead of building them.
+the binaries instead of building them. The archives of this index are attached
+to the repository's releases named `packages-<date>`.
 
 ## Where the packages are
 
