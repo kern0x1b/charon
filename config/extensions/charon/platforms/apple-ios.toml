@@ -4,6 +4,7 @@ deployment-environment = "IPHONEOS_DEPLOYMENT_TARGET"
 distributions = ["jailbreak", "trollstore", "sideload"]
 tool-requires = ["iphoneos-sdk/16.4@charon/stable"]
 python-requires = ["charon-apple/1.0@charon/stable"]
+requires = ["apple-compat/1.0@charon/stable"]
 extends = ["charon-apple.ApplePort"]
 cross-toolchain = "apple-ios.cross-toolchain.cmake"
 sysroot-conf = "tools.apple:sdk_path"

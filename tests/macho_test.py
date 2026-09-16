@@ -183,6 +183,7 @@ def running_port(module, folder, declaration, ldid):
     instance.build_folder = str(folder / "build")
     instance.output = Output()
     instance.steps = []
+    instance.dependencies = Dependencies([])
 
     def execute(self, command, cwd=None, stdout=None, ignore_errors=False):
         command = command.replace("ldid ", '"{}" '.format(ldid), 1) if command.startswith("ldid ") else command
@@ -570,9 +571,26 @@ class Requirement:
         self.ref = Named(name)
 
 
+class Compat:
+    ARRIVED = {"aligned_alloc": "13.0", "clock_gettime": "10.0", "fdopendir": "8.0"}
+
+    def __init__(self):
+        self.ref = Named("apple-compat")
+        self.package_folder = None
+        self.cpp_info = self
+
+    def get_property(self, name):
+        return dict(self.ARRIVED) if name == "charon_arrived" else None
+
+
 class Dependencies:
     def __init__(self, packages):
+        packages = list(packages) + [Compat()]
         self.host = {Requirement(package.ref.name): package for package in packages}
+        self._named = {package.ref.name: package for package in packages}
+
+    def __getitem__(self, name):
+        return self._named[name]
 
 
 def compiled(folder, name, version, *extra):
@@ -718,6 +736,45 @@ int (*table[])(int) = { in_arm, in_thumb };
 """
 
 
+def weak_import_failures(module, ld64, ldid):
+    found = []
+    original = module.MachO
+    with tempfile.TemporaryDirectory() as scratch:
+        folder = Path(scratch)
+        (folder / "libSystem.tbd").write_text(SYSTEM_STUB.replace("dyld_stub_binder", "dyld_stub_binder, _clock_gettime, _openat"))
+        for name, source in (("late", "extern int clock_gettime(int, void *) __attribute__((weak_import));\n"
+                                      "int use(void) { return clock_gettime(0, 0); }\n"),
+                             ("guarded", "extern int openat(int, const char *, int) __attribute__((weak_import));\n"
+                                         "int use(void) { return openat ? openat(0, \"x\", 0) : -1; }\n")):
+            (folder / "{}.c".format(name)).write_text(source)
+            run("xcrun", "clang", "-target", "armv7-apple-ios6.0", "-Wno-incompatible-sysroot",
+                "-fuse-ld={}".format(ld64), "-nostdlib", "-dynamiclib", "-L.", "-lSystem", "-o",
+                "lib{}.dylib".format(name), "{}.c".format(name), cwd=folder)
+        instance = running_port(module, folder, {"stage": {}}, ldid)
+
+        class Reading(original):
+            def tool(self, name):
+                return subprocess.run(["xcrun", "-f", name], capture_output=True, text=True).stdout.strip()
+
+        module.MachO = Reading
+        try:
+            for name, waive, reason in (("late", {}, "clock_gettime arrived in 10.0"),
+                                        ("guarded", {}, None),
+                                        ("late", {"weak-imports": "a reason"}, None)):
+                type(instance).declaration = {"stage": {}, "waive": waive}
+                try:
+                    instance.platform_verify(str(folder / "lib{}.dylib".format(name)), waive)
+                    if reason:
+                        found.append("a binary weakly importing a call iOS 6 lacks must be refused")
+                except module.ConanException as refused:
+                    if not reason or reason not in str(refused):
+                        found.append("lib{}.dylib (waived={}): expected {}, got {}".format(
+                            name, bool(waive), reason or "success", refused))
+        finally:
+            module.MachO = original
+    return found
+
+
 def stripped_failures(module, ld64):
     found = []
     with tempfile.TemporaryDirectory() as scratch:
@@ -761,6 +818,7 @@ def waiver_failures(module, made):
     found = []
     instance = declaration_test.port(module, {"prefixed": "False"})
     instance.output = Output()
+    instance.dependencies = Dependencies([])
     for waive, reason in (({"pagezero": ""}, "gives no reason"), ({"thumb": "why"}, "not something this toolchain"),
                           ({"pagezero": True}, "gives no reason")):
         type(instance).declaration = {"waive": waive}
@@ -770,7 +828,8 @@ def waiver_failures(module, made):
         except module.ConanException as refused:
             if reason not in str(refused):
                 found.append("[waive] {} must be refused for {}: got {}".format(waive, reason, refused))
-    type(instance).declaration = {"waive": {"pagezero": "the gap is the point of this binary"}}
+    type(instance).declaration = {"waive": {"pagezero": "the gap is the point of this binary",
+                                            "weak-imports": "this binary imports nothing weakly"}}
     try:
         instance._verify(str(made["armv7-pagezero-gap"]))
     except module.ConanException as refused:
@@ -797,6 +856,7 @@ def main():
             found += invariant_failures(module, made, pointers)
             found += waiver_failures(module, made)
             found += stripped_failures(module, ld64)
+            found += weak_import_failures(module, ld64, ldid)
             found += wiring_failures(module, made, ldid)
             found += runtime_reference_failures(module, made, ld64, ldid)
             found += input_minimum_failures(module, ldid)

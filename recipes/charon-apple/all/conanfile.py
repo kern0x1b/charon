@@ -10,6 +10,7 @@ from conan import ConanFile
 from conan.errors import ConanException
 from conan.tools.apple import XCRun, to_apple_arch
 from conan.tools.files import copy, mkdir, rmdir
+from conan.tools.scm import Version
 
 
 class CharonAppleConan(ConanFile):
@@ -90,6 +91,27 @@ class ApplePort:
 
     def platform_verify(self, binary, waived, stripped=False):
         MachO(self).verify(binary, waived, stripped)
+        if "weak-imports" in waived:
+            self.output.warning(f"{binary}: weak-imports not checked: {waived['weak-imports']}")
+            return
+        problems = self._late_weak_imports(binary)
+        if problems:
+            raise ConanException(f"{binary} weakly imports what {self.settings.os} {self.settings.os.version} does "
+                                 f"not have, so a call jumps to NULL there: {'; '.join(problems)}")
+
+    def _late_weak_imports(self, binary):
+        try:
+            compat = self.dependencies["apple-compat"]
+        except KeyError:
+            raise ConanException(f"{self.name} builds for an Apple platform without apple-compat in its graph, and "
+                                 "it is what says which system calls arrived when")
+        arrived = compat.cpp_info.get_property("charon_arrived") or {}
+        target = Version(str(self.settings.os.version))
+        macho = MachO(self)
+        listing = macho.output(f'"{macho.tool("nm")}" -m "{binary}"')
+        weak = set(re.findall(r"\(undefined\) weak external _(\w+) \(from libSystem\)", listing))
+        return [f"{symbol} arrived in {arrived[symbol]}; link apple-compat::{symbol}"
+                for symbol in sorted(weak) if symbol in arrived and target < Version(arrived[symbol])]
 
     def link_input_findings(self, path, label):
         arch, target = str(self.settings.arch), str(self.settings.os.version)
@@ -539,7 +561,7 @@ class MachO:
     SECTION_TYPE = 0xFF
     LAZY_POINTERS = (0x07, 0x10)
     SMALLEST_ARM64_PAGEZERO = 1 << 32
-    WAIVABLE = ("thumb-interworking", "pagezero", "entitlements", "input-minimum")
+    WAIVABLE = ("thumb-interworking", "pagezero", "entitlements", "input-minimum", "weak-imports")
     CPU_TYPES = {"armv7": 12, "armv7s": 12, "armv8": 0x0100000C, "arm64": 0x0100000C}
 
     @classmethod
@@ -774,8 +796,9 @@ class MachO:
                 if any(start <= slot < end for start, end in lazy):
                     continue
                 pointer = struct.unpack_from("<I", data, position)[0]
-                if any(start <= pointer & ~1 < end for start, end in code):
-                    into_code += 1
+                if not any(start <= pointer & ~1 < end for start, end in code):
+                    continue
+                into_code += 1
                 described = symbols.get(pointer & ~1)
                 if not described or len({thumb for thumb, _ in described}) != 1:
                     continue

@@ -9,7 +9,8 @@ int charon_clock_gettime(clockid_t which, struct timespec *now)
     clock_id_t source;
     if (which == CLOCK_REALTIME) {
         source = CALENDAR_CLOCK;
-    } else if (which == CLOCK_MONOTONIC) {
+    } else if (which == CLOCK_MONOTONIC || which == CLOCK_MONOTONIC_RAW || which == CLOCK_MONOTONIC_RAW_APPROX ||
+               which == CLOCK_UPTIME_RAW || which == CLOCK_UPTIME_RAW_APPROX) {
         source = SYSTEM_CLOCK;
     } else {
         errno = EINVAL;

@@ -19,7 +19,8 @@ class LibCxxArmv7Conan(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
 
     def requirements(self):
-        self.requires("apple-compat/1.0@charon/stable", headers=False, libs=False, visible=False)
+        self.requires("apple-compat/1.0@charon/stable", headers=False, libs=False, visible=False,
+                      package_id_mode="full_mode")
 
     @property
     def _compat(self):

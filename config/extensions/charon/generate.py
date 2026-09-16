@@ -477,7 +477,7 @@ def recipe(declared):
         options=repr(domains),
         defaults=repr(defaults),
         declaration=pprint.pformat(content, width=110, sort_dicts=False, indent=4),
-        requires=repr(_references(declared.section("requires"))),
+        requires=repr(platform["requires"] + _references(declared.section("requires"))),
         tools=repr(_references(declared.section("tools"))),
     )
 

@@ -183,6 +183,7 @@ class Spec:
         return {
             "name": name,
             "python-requires": list(facts.get("python-requires") or []),
+            "requires": list(facts.get("requires") or []),
             "extends": list(facts.get("extends") or []),
             "cross-toolchain": found.parent / template if template else None,
             "build-only": list(facts.get("build-only") or []),

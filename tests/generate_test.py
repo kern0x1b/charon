@@ -382,6 +382,17 @@ sources = ["later.c"]
 """
 
 
+def platform_requires_failures(folder):
+    root = Path(folder) / "compat-required"
+    root.mkdir()
+    text = generate.recipe(loaded(root, '[port]\nname = "p"\nversion = "1"\n[platform]\nuse = "apple-ios"\n'
+                                        'arch = "armv7"\nos-version = "6.0"\n[requires]\nzlib = "1.3"\n'))
+    if "'apple-compat/1.0@charon/stable', 'zlib/1.3'" not in text:
+        return ["a port must require what its platform requires, ahead of its own requirements: {}".format(
+            [line for line in text.splitlines() if "requires" in line.lower() or "zlib" in line])]
+    return []
+
+
 def determinism_failures(folder):
     found = []
     first, second = Path(folder) / "one" / "checkout", Path(folder) / "elsewhere" / "entirely"
@@ -648,6 +659,7 @@ def main():
         found += architecture_failures(folder)
         found += package_failures(folder)
         found += executable_failures(folder)
+        found += platform_requires_failures(folder)
         found += platform_failures(folder)
     for line in found:
         print("FAIL  {}".format(line))

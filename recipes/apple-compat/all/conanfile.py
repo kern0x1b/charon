@@ -22,6 +22,9 @@ class AppleCompatConan(ConanFile):
         "aligned_alloc": {"iOS": "13.0", "Macos": "10.15", "tvOS": "13.0", "watchOS": "6.0"},
         "clock_gettime": {"iOS": "10.0", "Macos": "10.12", "tvOS": "10.0", "watchOS": "3.0"},
         "fdopendir": {"iOS": "8.0", "Macos": "10.10", "tvOS": "9.0", "watchOS": "2.0"},
+        "openat": {"iOS": "8.0", "Macos": "10.10", "tvOS": "9.0", "watchOS": "2.0"},
+        "fchmodat": {"iOS": "8.0", "Macos": "10.10", "tvOS": "9.0", "watchOS": "2.0"},
+        "unlinkat": {"iOS": "8.0", "Macos": "10.10", "tvOS": "9.0", "watchOS": "2.0"},
     }
 
     @property
@@ -72,5 +75,8 @@ class AppleCompatConan(ConanFile):
             else:
                 component.libdirs = []
         self.cpp_info.set_property("charon_provides", provided)
+        self.cpp_info.set_property("charon_arrived", {symbol: arrived[str(self.settings.os)]
+                                                      for symbol, arrived in self.ARRIVED.items()
+                                                      if str(self.settings.os) in arrived})
         self.cpp_info.set_property("charon_force_includes",
                                    [os.path.join("charon", f"{symbol}.h") for symbol in provided])

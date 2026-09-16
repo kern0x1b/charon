@@ -173,7 +173,9 @@ version flag stamps the target's minimum rather than its own default; an
 explicit flag still wins. The variable reaches everything a host package's
 build runs, so a recipe that compiles and runs a helper on the build machine
 inside its own `build()` runs that step with an environment that unsets it;
-a tool that belongs to the build machine is better a build-context package. A port can only take one out with a
+a tool that belongs to the build machine is better a build-context package. A binary that weakly imports from libSystem a call apple-compat records as
+arriving after the target release is refused, naming the component to link:
+on the device that call jumps to NULL. A port can only take one out with a
 reason, `[waive] pagezero = "why"`, and `input-minimum` may name packages,
 `[waive] input-minimum = { tdlib = "why" }`; an unknown name, a package nothing
 depends on, or an empty reason is refused.
