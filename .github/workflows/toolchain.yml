@@ -35,6 +35,9 @@ jobs:
       - name: The driver takes a built engine and nothing that only resembles one
         run: python3 tests/driver_test.py
 
+      - name: A build missing what its platform requires is refused, and machine paths are mapped away
+        run: python3 tests/hook_test.py
+
       - name: A recipe index that would drop part of a conandata.yml is refused
         run: python3 tests/index_test.py
 
@@ -44,15 +47,16 @@ jobs:
       - name: Register the toolchain
         run: |
           conan config install "$PWD/config"
-          conan remote add ios6 "$PWD" -t local-recipes-index --index 0 -f
+          conan remote add charon "$PWD" -t local-recipes-index --index 0 -f
 
       - name: Fetch the SDK and check it is the one it names
         run: conan create recipes/iphoneos-sdk/all --version=13.7 -pr:h default -pr:b default
 
       - name: The profile resolves
         run: |
-          conan profile show -pr:h ios6-armv7
-          conan profile show -pr:h ios-arm64
+          python3 config/extensions/charon/charon.py profiles
+          conan profile show -pr:h apple-ios-armv7
+          conan profile show -pr:h apple-ios-armv8
 
       # Every recipe here is our build of a third-party library, under that
       # library's own name. The user and channel are what separate it from the
@@ -60,7 +64,7 @@ jobs:
       # - otherwise remote order is all that stands between a build and a
       # recipe that cannot cross-compile for this target.
       - name: A reference without the channel does not resolve
-        run: conan list "ld64/956.6" -r ios6 2>&1 | grep -q "not found"
+        run: conan list "ld64/956.6" -r charon 2>&1 | grep -q "not found"
 
       - name: Build the linker and check it is the one we expect
         run: LLVM_PREFIX="$(brew --prefix llvm)" conan create recipes/ld64/all --version=956.6 -pr:b default --build=missing
@@ -72,4 +76,4 @@ jobs:
         run: python3 tests/macho_test.py
 
       - name: Build the import check and see that it answers
-        run: conan create recipes/ios6-imports-check/all --version=1.0 -pr:h default -pr:b default --build=missing
+        run: conan create recipes/dyld-imports-check/all --version=1.0 -pr:h default -pr:b default --build=missing

@@ -10,7 +10,7 @@ from conan.tools.files import apply_conandata_patches, copy, export_conandata_pa
 
 class LibCxxArmv7Conan(ConanFile):
     name = "libcxx"
-    user = "ios6"
+    user = "charon"
     channel = "stable"
     description = "The C++ runtime for armv7 / iOS 6, which no SDK of that era ships"
     license = "Apache-2.0 WITH LLVM-exception"

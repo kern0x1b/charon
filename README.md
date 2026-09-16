@@ -11,14 +11,17 @@ other. What is shared is only what is true for all of them.
 ## What is here
 
     config/settings_user.yml   iOS 6.0 and 6.1, which Conan does not ship
-    config/profiles/ios6-armv7 the target: armv7, iOS 6.0, the SDK package, the linker
-    config/profiles/ios-arm64  the target: arm64, iOS 7.0 or later, the SDK package
-    config/extensions/hooks/   refuses a missing SDK or a swapped linker
+    config/extensions/hooks/   refuses a build missing what its platform requires, and maps machine paths away
     config/extensions/charon/  Charon: the entry point, what it generates, and the phone transport
+    config/extensions/charon/platforms/  apple-ios: what a port that builds for iOS is built with
     tools/sdk-usage.py         which files of an SDK a build actually read
     recipes/ld64/              the linker, built from cctools-port
     recipes/ldid/              the signing tool the device accepts
-    recipes/ios6-base/         the base class a port's conanfile extends, and its .deb writer
+    recipes/iphoneos-sdk/      the SDK, fetched and verified on the machine that uses it
+    recipes/libcxx/            the C++ runtime an old iOS does not ship
+    recipes/dyld-imports-check/  the check that every import exists in a device's dyld cache
+    recipes/charon-base/       what every port's recipe extends, whatever its platform
+    recipes/charon-apple/      the Apple half: Mach-O invariants, bundles, signing, the .deb writer
 
 ## A new machine
 
@@ -187,7 +190,7 @@ runtime, the configuration and the deployment-target variable its tools read,
 and the distributions it knows. Charon writes the whole host profile from it,
 refuses an architecture, a release or a distribution the platform does not
 have, and refuses `[target]` repeating `os`, `arch`, `os-version`, `sdk` or
-`include-profiles`. `[variants.NAME.platform]` changes the architecture or the
+`system-name`. `[variants.NAME.platform]` changes the architecture or the
 release for one slice. A port's own `platforms/NAME.toml` is used before
 Charon's, so a platform can be written or corrected without changing Charon.
 `[target]` keeps what tunes the build: `cppstd`, `cpu`, `fpu`, `defines`.
@@ -204,7 +207,7 @@ whatever the build staged, and a test tier gets the phone, the build tree or its
 packages only when it declares `needs` or `packages`.
 
 `LLVM_PREFIX` is read once, by `config/global.conf`, into
-`user.ios6:llvm_prefix`. Only the `ld64` recipe asks for it: cctools' configure
+`user.ld64:llvm_prefix`. Only the `ld64` recipe asks for it: cctools' configure
 runs `llvm-config` to find `libLTO`, and a linker built without it silently
 drops LTO support, which this target builds with. Recipes never read the
 environment themselves, so a missing path stops `conan create` with that
@@ -230,20 +233,20 @@ source by the `ld64` and `ldid` recipes. Theos itself is not needed.
 
 A port is `charon.toml`, its own `recipes/` for the libraries it builds, and its
 own `conan.lock`. `charon setup` registers the port's recipes as the remote
-`[port] index` names and this repository's as `ios6`, and keeps both ahead of
+`[port] index` names and this repository's as `charon`, and keeps both ahead of
 ConanCenter. A port and this repository both carry recipes under names
 ConanCenter also publishes - icu, brotli, libxslt - and Conan asks the remotes
 in the order they are registered; `conan remote add` appends, so without that
 ConanCenter answers first and a build that has never seen these packages
 silently gets recipes that cannot cross-compile for this target.
 
-The shared profiles say only what is true of the target: the operating system,
-the architecture, the SDK and, for armv7, the linker. A port's own choices - the
-C++ standard, CPU tuning, a later deployment target - are `[target]` keys, and
-the profile Charon writes includes the shared one `include-profiles` names.
-arm64 starts at iOS 7.0, and the base class refuses anything lower.
+`charon profiles`, which `charon setup` also runs, writes a shared profile for
+every architecture of every platform - `apple-ios-armv7` at iOS 6.0 and
+`apple-ios-armv8` at 7.0 - from the same platform files a port's profile is
+written from, for building a recipe with plain `conan create`. A port's own
+choices - the C++ standard, CPU tuning - are `[target]` keys.
 
-`@ios6/stable` is for what this repository serves - the linker, the C++ runtime,
+`@charon/stable` is for what this repository serves - the linker, the C++ runtime,
 the base class - and nothing else. A port's own libraries carry the port's name,
 `openssl/3.0.15@revenant/stable`, `openssl/3.0.15@itglegacy/stable`: two ports
 build the same library with different choices, and two recipes behind one
@@ -266,7 +269,7 @@ variable naming the checkout. Point `layout()` at the sources, build them where
 they are with `conan build`, then turn that build into a normal package with
 `conan export-pkg`: it runs `package()` against the local build folder and
 stores the result in the cache, resolvable by `requires()` and written into
-`ios6-deps.env` like any other. The cache holds the recipe and the artifacts, not
+`charon-deps.env` like any other. The cache holds the recipe and the artifacts, not
 the sources, so it cannot rebuild the package with `--build`; the repository is
 where that happens. If the package must be rebuildable from the cache,
 `exports_sources` copies the sources in on export instead.
@@ -288,10 +291,10 @@ say now - Conan otherwise reads a `conan.lock` it finds beside the conanfile as
 its input and keeps the revisions in it - and `--update` exports the recipes
 from the indexes again instead of taking the revision already in the cache.
 
-Every recipe carries a `test_package`, and `conan create` runs it. `ios6-base`
+Every recipe carries a `test_package`, and `conan create` runs it. `charon-base`
 provides the whole of it; a recipe adds three files:
 
-    test_package/conanfile.py      python_requires_extend = "ios6-base.Ios6TestPackage"
+    test_package/conanfile.py      python_requires_extend = "charon-base.CharonTestPackage"
     test_package/CMakeLists.txt    find_package(<name> CONFIG) and one executable
     test_package/test_package.c    a program that calls the library for real
 
@@ -305,30 +308,30 @@ what it says about itself instead.
 ## Where the packages are
 
 `CMakeDeps` serves CMake. Everything else a port runs - a test harness, a shell
-script - needs the same answer, so `ios6-base` writes it once:
-`build/conan/<arch>/ios6-deps.env`, one line per package, taken from the dependency
+script - needs the same answer, so `charon-base` writes it once:
+`build/conan/<arch>/charon-deps.env`, one line per package, taken from the dependency
 graph rather than typed out.
 
-    IOS6_HOST_OPENSSL=/.../openssl/3.0.15/Release/armv7
-    IOS6_BUILD_LD64=/.../ld64/956.6/Release/armv8
+    CHARON_HOST_OPENSSL=/.../openssl/3.0.15/Release/armv7
+    CHARON_BUILD_LD64=/.../ld64/956.6/Release/armv8
 
-`IOS6_HOST_*` are the libraries built for the phone, `IOS6_BUILD_*` the tools
+`CHARON_HOST_*` are the libraries built for the device, `CHARON_BUILD_*` the tools
 that run on this machine. The same file reads from a shell and from make:
 
-    . build/conan/armv7/ios6-deps.env
-    include build/conan/armv8/ios6-deps.env
+    . build/conan/armv7/charon-deps.env
+    include build/conan/armv8/charon-deps.env
 
 The folder is per architecture, so a port that ships both slices installs twice
 and each slice keeps its own paths - a `lipo -create` step reads one file for
 each. A port built from `charon.toml` writes it into its build tree instead,
-`build/<variant>/conan/ios6-deps.env`, and a test tier that declares `packages`
+`build/<variant>/conan/charon-deps.env`, and a test tier that declares `packages`
 gets its own under `build/tier-packages/<tier>/`.
 
-A port that extends `ios6-base.Ios6Port` gets it without doing anything. A
+A port that extends `charon-base.CharonPort` gets it without doing anything. A
 conanfile that does not - a test harness built for the Mac - calls it directly:
 
     def generate(self):
-        self.python_requires["ios6-base"].module.DependencyEnv(self).generate()
+        self.python_requires["charon-base"].module.DependencyEnv(self).generate()
 
 Nothing downstream names a version, an architecture or a deploy layout, so a
 version bump in `conanfile.py` reaches every consumer. A path that cannot be
@@ -387,10 +390,10 @@ commit they build rather than the time they ran.
 Every port ships a .deb. A port declares `[package] control` and, if it has
 them, `maintainer-scripts`; `charon package` hands the staged tree - laid out
 as the device's filesystem, every binary signed with the `ldid` tool_requires -
-to `ios6-base.DebianPackage`. A recipe written by hand calls the same class:
+to `charon-apple.DebianPackage`. A recipe written by hand calls the same class:
 
     def package(self):
-        self.python_requires["ios6-base"].module.DebianPackage(
+        self.python_requires["charon-apple"].module.DebianPackage(
             self, "packaging/control", self._stage, "packaging/DEBIAN"
         ).write(os.path.join(self.package_folder, "deb"))
 

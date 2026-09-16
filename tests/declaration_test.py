@@ -18,7 +18,8 @@ from pathlib import Path
 CHOSEN = "DECLARATION_TEST_INTERPRETER"
 
 HERE = Path(__file__).resolve().parent
-BASE = HERE.parent / "recipes" / "ios6-base" / "all" / "conanfile.py"
+CORE = HERE.parent / "recipes" / "charon-base" / "all" / "conanfile.py"
+APPLE = HERE.parent / "recipes" / "charon-apple" / "all" / "conanfile.py"
 
 DECLARATION = {
     "engine": {
@@ -99,15 +100,38 @@ class Output:
         pass
 
 
-def loaded_base():
-    spec = importlib.util.spec_from_file_location("ios6_base_under_test", BASE)
+def loaded_module(name, path):
+    spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
 
+class Recipe:
+    def __init__(self, core, platform):
+        object.__setattr__(self, "modules", (platform, core))
+        object.__setattr__(self, "Port", type("Port", (platform.ApplePort, core.CharonPort), {}))
+
+    def __getattr__(self, name):
+        for module in self.modules:
+            if hasattr(module, name):
+                return getattr(module, name)
+        raise AttributeError(name)
+
+    def __setattr__(self, name, value):
+        owners = [module for module in self.modules if hasattr(module, name)]
+        if not owners:
+            raise AttributeError(name)
+        for module in owners:
+            setattr(module, name, value)
+
+
+def loaded_base():
+    return Recipe(loaded_module("charon_base_under_test", CORE), loaded_module("charon_apple_under_test", APPLE))
+
+
 def port(module, options):
-    class Port(module.Ios6Port):
+    class Port(module.Port):
         declaration = DECLARATION
         port = "/port"
         name = "example"
@@ -124,6 +148,7 @@ def port(module, options):
             self.ran = []
             self.commands = []
             self.folders_run_in = []
+            self.dependencies = type("Dependencies", (), {"host": {}})()
 
         def run(self, command, cwd=None):
             self.commands.append(command)
@@ -211,7 +236,7 @@ def architecture_failures(module):
     instance._verify_inputs = lambda folder: None
     instance._cmake_project("/port/app", "/port/build/app", {})
     configured = instance.commands[0]
-    for expected in ('-DIOS6_ARCHITECTURE="arm64"', '-DIOS6_TRIPLE="arm64-apple-ios7.0"'):
+    for expected in ('-DCHARON_ARCHITECTURE="arm64"', '-DCHARON_TRIPLE="arm64-apple-ios7.0"'):
         if expected not in configured:
             found.append("a generated project must be configured with {}: {}".format(expected, configured))
     sparc = port(module, {"prefixed": "False"})
@@ -222,6 +247,60 @@ def architecture_failures(module):
     except Exception as refused:
         if "have a name for" not in str(refused):
             found.append("an unknown architecture must be refused for that reason: {}".format(refused))
+    return found
+
+
+class Library:
+    def __init__(self, name, libs, file_name=None):
+        self.ref = type("Reference", (), {"name": name})()
+        self.package_folder = "/cache/{}/p".format(name)
+        self.cpp_info = self
+        self._libs = libs
+        self._file_name = file_name
+
+    def get_property(self, name):
+        return self._file_name if name == "cmake_file_name" else None
+
+    def aggregated_components(self):
+        return type("Components", (), {"libs": self._libs})()
+
+
+def graph_failures(module):
+    found = []
+    host = [Library("openssl", ["ssl", "crypto"], "OpenSSL"), Library("ogg", ["ogg"])]
+    dependencies = type("Dependencies", (), {"host": {library.ref.name: library for library in host}})()
+    with tempfile.TemporaryDirectory() as folder:
+        instance = port(module, {"prefixed": "False"})
+        instance.dependencies = dependencies
+        instance.generators_folder = folder
+        type(instance).declaration = dict(DECLARATION, application={"name": "Host", "packages": ["openssl", "ogg"]})
+        instance._write_found_packages()
+        written = (Path(folder) / module.Port.FOUND_PACKAGES).read_text().splitlines()
+        if written != ["find_package(OpenSSL REQUIRED CONFIG)", "find_package(ogg REQUIRED CONFIG)"]:
+            found.append("a package must be found under the file name its recipe gives CMake, or its own name: "
+                         "got {}".format(written))
+        type(instance).declaration = dict(DECLARATION, application={"name": "Host", "packages": ["zlib"]})
+        try:
+            instance._write_found_packages()
+            found.append("finding a package the port does not require must be refused")
+        except Exception as refused:
+            if "does not require" not in str(refused):
+                found.append("a package the port does not require must be refused for that: {}".format(refused))
+    for application, reason in (({"name": "Host", "libraries": ["crypto"]}, "links crypto by name"),
+                                ({"name": "Host", "link-options": ["-L/cache/ogg/p/lib"]}, "searches ogg's package"),
+                                ({"name": "Host", "libraries": ["z", "OpenSSL::Crypto"],
+                                  "link-options": ["-L/usr/lib"]}, None)):
+        instance = port(module, {"prefixed": "False"})
+        instance.dependencies = dependencies
+        type(instance).declaration = dict(DECLARATION, application=application)
+        instance._declared_context = lambda: {}
+        try:
+            instance._refuse_graph_by_hand()
+            if reason:
+                found.append("{} must be refused".format(application))
+        except Exception as refused:
+            if not reason or reason not in str(refused):
+                found.append("{}: expected {}, got {}".format(application, reason or "success", refused))
     return found
 
 
@@ -243,7 +322,7 @@ def find_package_failures(module):
     import spec
     found = []
     declaration = {
-        "target": {"arch": "armv7", "os": "iOS", "os-version": "6.0"},
+        "platform": {"use": "apple-ios", "arch": "armv7", "os-version": "6.0"},
         "engine": {"find-packages": ["icu"]},
         "static-library": [{"name": "compat", "sources": ["a.c"], "packages": ["zlib"]}],
         "device-library": [{"name": "tweak", "sources": ["t.m"], "install": "/usr/lib", "packages": ["openssl", "zlib"]}],
@@ -449,9 +528,9 @@ def dispatch_failures(module):
         pass
 
     real = port(module, {"prefixed": "False"})
-    for method, argument, what in ((module.Ios6Port._run_task, "absent", "an undeclared task"),
-                                   (module.Ios6Port._run_check, "absent", "an unknown check"),
-                                   (module.Ios6Port._run_stage, "absent", "an unknown staging step")):
+    for method, argument, what in ((module.Port._run_task, "absent", "an undeclared task"),
+                                   (module.Port._run_check, "absent", "an unknown check"),
+                                   (module.Port._run_stage, "absent", "an unknown staging step")):
         try:
             method(real, argument)
             found.append("{} must be refused".format(what))
@@ -522,7 +601,7 @@ def failures(module):
 
 def task_failures(module):
     found = []
-    real = module.Ios6Port._run_task
+    real = module.Port._run_task
 
     shell = port(module, {"prefixed": "False"})
     real(shell, "greet")
@@ -596,7 +675,7 @@ def conan_interpreter():
     return candidate if os.path.isabs(candidate) else shutil.which(candidate)
 
 
-def reexec_where_conan_lives():
+def reexec_where_conan_lives(script=None):
     if os.environ.get(CHOSEN):
         return
     try:
@@ -606,7 +685,7 @@ def reexec_where_conan_lives():
         pass
     interpreter = conan_interpreter()
     if interpreter and os.path.abspath(interpreter) != os.path.abspath(sys.executable):
-        os.execve(interpreter, [interpreter, os.path.abspath(__file__)] + sys.argv[1:],
+        os.execve(interpreter, [interpreter, os.path.abspath(script or __file__)] + sys.argv[1:],
                   dict(os.environ, **{CHOSEN: interpreter}))
 
 
@@ -619,7 +698,8 @@ def main():
         return 1
     found = (failures(module) + dispatch_failures(module) + task_failures(module) + sign_failures(module) +
              plist_failures(module) + bundle_failures(module) + merge_failures(module) + flag_failures(module) + runtime_failures(module) +
-             find_package_failures(module) + exports_failures(module) + architecture_failures(module))
+             find_package_failures(module) + exports_failures(module) + architecture_failures(module) +
+             graph_failures(module))
     for line in found:
         print("FAIL  {}".format(line))
     if found:

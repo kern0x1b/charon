@@ -359,6 +359,52 @@ def runtime_reference_failures(module, made, ld64, ldid):
     return found
 
 
+def bundle_content_failures(module, made, ldid):
+    found = []
+    original = module.MachO
+    with tempfile.TemporaryDirectory() as scratch:
+        folder = Path(scratch)
+        framework = folder / "build" / "Engine.framework"
+        for relative in ("Headers/Engine.h", "PrivateHeaders/__pycache__/tool.cpython-314.pyc", "Modules/module.modulemap",
+                         "_CodeSignature/CodeResources", "en.lproj/Localizable.strings", "Info.plist"):
+            (framework / relative).parent.mkdir(parents=True, exist_ok=True)
+            (framework / relative).write_text("x")
+        shutil.copy2(made["library"], framework / "Engine")
+        instance = running_port(module, folder, {
+            "variants": {"system": {}}, "application": {"name": "Host", "strip": "-x"},
+            "stage": {"frameworks": {"Engine": {"as": "Engine", "replaces": "/System/Engine"}}},
+            "platform-facts": {"build-only": ["Headers", "PrivateHeaders", "Modules", "_CodeSignature"]}}, ldid)
+        module.MachO = recording_macho(module, instance)
+        instance._cmake_project = lambda source, into, definitions: None
+        instance._project_source = lambda kind, target: str(folder)
+        instance._write_application_plist = lambda bundle, name, declared: None
+        installing = type(instance).run
+
+        def install(self, command, cwd=None, stdout=None, ignore_errors=False):
+            if command.startswith("cmake --install"):
+                shutil.copy2(made["executable"], folder / "build" / "Host.app" / "Host")
+                return 0
+            return installing(self, command, cwd, stdout, ignore_errors)
+
+        type(instance).run = install
+        try:
+            instance._build_application()
+        except module.ConanException as refused:
+            found.append("an application carrying a framework must build: {}".format(refused))
+        finally:
+            module.MachO = original
+        stripped = [Path(binary).name for action, binary in instance.steps if action == "strip"]
+        if sorted(stripped) != ["Engine", "Host"]:
+            found.append("the application's strip policy must reach every binary the bundle carries, not only the "
+                         "executable: stripped {}".format(stripped))
+        carried = folder / "build" / "Host.app" / "Frameworks" / "Engine.framework"
+        shipped = sorted(str(path.relative_to(carried)) for path in carried.rglob("*") if path.is_file())
+        if shipped != ["Engine", "Info.plist", "en.lproj/Localizable.strings"]:
+            found.append("a bundled framework must carry its binary and resources and none of what only a build "
+                         "reads: got {}".format(shipped))
+    return found
+
+
 def naming_failures(module, made, ld64, ldid):
     found = []
     original = module.MachO
@@ -453,7 +499,7 @@ def entitlement_failures(module, folder, made, ldid):
 
         module.MachO = Signing
         try:
-            module.Ios6Port._sign_target(instance, "application")
+            module.Port._sign_target(instance, "application")
             if reason:
                 found.append("an application {} must be refused".format(description))
         except module.ConanException as refused:
@@ -605,7 +651,7 @@ def input_minimum_failures(module, ldid):
         module.CMake = type("CMake", (), {"__init__": lambda self, conanfile: None,
                                           "configure": lambda self: None, "build": lambda self: None})
         try:
-            module.Ios6Port._build_target(instance, "engine")
+            module.Port._build_target(instance, "engine")
             found.append("an engine object built for a newer version must be refused after the engine builds")
         except module.ConanException as refused:
             if "engine-unit.o was built for iOS 7.0" not in str(refused):
@@ -648,22 +694,8 @@ def waiver_failures(module, made):
     return found
 
 
-def reexec_where_conan_lives():
-    if os.environ.get(declaration_test.CHOSEN):
-        return
-    try:
-        import conan  # noqa: F401
-        return
-    except ImportError:
-        pass
-    interpreter = declaration_test.conan_interpreter()
-    if interpreter and os.path.abspath(interpreter) != os.path.abspath(sys.executable):
-        os.execve(interpreter, [interpreter, os.path.abspath(__file__)] + sys.argv[1:],
-                  dict(os.environ, **{declaration_test.CHOSEN: interpreter}))
-
-
 def main():
-    reexec_where_conan_lives()
+    declaration_test.reexec_where_conan_lives(__file__)
     try:
         module = declaration_test.loaded_base()
         module.ConanException = sys.modules["conan.errors"].ConanException
@@ -672,8 +704,8 @@ def main():
         return 1
     found = []
     try:
-        ld64 = packaged("ld64/956.6@ios6/stable", "ld")
-        ldid = packaged("ldid/2.1.5@ios6/stable", "ldid")
+        ld64 = packaged("ld64/956.6@charon/stable", "ld")
+        ldid = packaged("ldid/2.1.5@charon/stable", "ldid")
         with tempfile.TemporaryDirectory() as scratch:
             made, pointers = fixtures(Path(scratch), ld64)
             found += invariant_failures(module, made, pointers)
@@ -682,6 +714,7 @@ def main():
             found += runtime_reference_failures(module, made, ld64, ldid)
             found += input_minimum_failures(module, ldid)
             found += naming_failures(module, made, ld64, ldid)
+            found += bundle_content_failures(module, made, ldid)
     except Refused as missing:
         found.append(str(missing))
     for line in found:

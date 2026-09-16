@@ -42,8 +42,7 @@ def _path(value):
     return "{}/{}".format(PORT, text)
 
 
-def platform_profile(declared, platform):
-    target = declared.section("target")
+def platform_profile(target, declared_conf, platform):
     lines = ["{% set detected = detect_api.detect_default_compiler() %}", "", "[settings]",
              "os={}".format(platform["os"]), "os.version={}".format(platform["os-version"])]
     if platform["sdk"]:
@@ -58,7 +57,7 @@ def platform_profile(declared, platform):
     if platform["tool-requires"]:
         lines += ["", "[tool_requires]"] + platform["tool-requires"]
     conf = {key: _conf_value(key, value) for key, value in platform["conf"].items()}
-    for key, value in list(_tuning_conf(target).items()) + list(declared_conf_values(declared).items()):
+    for key, value in list(_tuning_conf(target).items()) + list(declared_conf.items()):
         if key in conf:
             raise GenerationError("{} is set twice, by the {} platform or [target] tuning and by the declaration; "
                                   "a second value would silently drop the first".format(key, platform["name"]))
@@ -82,53 +81,12 @@ def _tuning_conf(target):
     return {"tools.build:cflags": rendered, "tools.build:cxxflags": rendered}
 
 
-def profile(declared, includes=None):
+def profile(declared):
     platform = declared.platform()
-    if platform is not None:
-        return platform_profile(declared, platform)
-    target = declared.section("target")
-    for required in ("arch", "os", "os-version"):
-        if required not in target:
-            raise GenerationError("[target] declares no {}, and it is what says what this port builds for".format(
-                required))
-    lines = []
-    if includes:
-        lines += ["include({})".format(name) for name in includes] + [""]
-    lines.append("[settings]")
-    lines.append("os={}".format(target["os"]))
-    lines.append("os.version={}".format(target["os-version"]))
-    if "sdk" in target:
-        lines.append("os.sdk={}".format(target["sdk"]))
-    lines.append("arch={}".format(target["arch"]))
-    lines.append("build_type={}".format(target.get("build-type", "Release")))
-    if "cppstd" in target:
-        lines.append("compiler.cppstd={}".format(target["cppstd"]))
-
-    tuning = []
-    if "cpu" in target:
-        tuning += ["-mcpu={}".format(target["cpu"]), "-mtune={}".format(target["cpu"])]
-    if "fpu" in target:
-        tuning.append("-mfpu={}".format(target["fpu"]))
-    conf = {}
-    if tuning:
-        rendered = "[{}]".format(", ".join(_quoted(flag) for flag in tuning))
-        conf["tools.build:cflags"] = rendered
-        conf["tools.build:cxxflags"] = rendered
-    for key, value in declared_conf_values(declared).items():
-        if key in conf:
-            raise GenerationError("[conf] sets {}, which Charon already writes from [target] cpu and fpu; "
-                                  "a second value would silently drop the tuning".format(key))
-        conf[key] = value
-    if conf:
-        lines += ["", "[conf]"] + ["{}={}".format(key, value) for key, value in conf.items()]
-    deployment = DEPLOYMENT_VARIABLES.get(str(target["os"]))
-    if deployment:
-        lines += ["", "[buildenv]", "{}={}".format(deployment, target["os-version"])]
-    return "\n".join(lines) + "\n"
-
-
-DEPLOYMENT_VARIABLES = {"iOS": "IPHONEOS_DEPLOYMENT_TARGET", "Macos": "MACOSX_DEPLOYMENT_TARGET",
-                        "tvOS": "TVOS_DEPLOYMENT_TARGET", "watchOS": "WATCHOS_DEPLOYMENT_TARGET"}
+    if platform is None:
+        raise GenerationError("{} declares no [platform], and it is what says what this port builds for".format(
+            declared.root / spec.MANIFEST))
+    return platform_profile(declared.section("target"), declared_conf_values(declared), platform)
 
 
 PORT_FROM_PROFILE = "{{ os.path.normpath(os.path.join(profile_dir, os.pardir, os.pardir, os.pardir)) }}"
@@ -418,8 +376,12 @@ def cmake_project(declared, kind, project):
         for package in target.get("packages", []):
             if package not in packages:
                 packages.append(package)
-    for package in packages:
-        lines.append("find_package({} REQUIRED CONFIG)".format(package))
+    if packages:
+        lines += ['if (NOT CHARON_PACKAGES)',
+                  '    message(FATAL_ERROR "CHARON_PACKAGES names the file that finds {} under the names the '
+                  'dependency graph gives them; configure through charon build")'.format(", ".join(packages)),
+                  'endif ()',
+                  'include("${CHARON_PACKAGES}")']
     if lines[-1] != "":
         lines.append("")
     for target in targets:
@@ -429,7 +391,8 @@ def cmake_project(declared, kind, project):
     return "\n".join(lines).rstrip("\n") + "\n"
 
 
-BASE = "ios6-base/1.0@ios6/stable"
+BASE = "charon-base/1.0@charon/stable"
+CORE_CLASS = "charon-base.CharonPort"
 RECIPE_TEMPLATE = '''{generated}
 from conan import ConanFile
 
@@ -440,8 +403,8 @@ class Port(ConanFile):
     description = {description}
     package_type = "application"
     generators = "VirtualBuildEnv"
-    python_requires = {base}
-    python_requires_extend = "ios6-base.Ios6Port"
+    python_requires = {python_requires}
+    python_requires_extend = {extends}
     options = {options}
     default_options = {defaults}
 
@@ -497,15 +460,23 @@ def recipe(declared):
         if required not in described:
             raise GenerationError("[port] declares no {}, and a recipe cannot be written without it".format(required))
     domains, defaults = _option_domains(declared)
+    platform = declared.platform()
+    if platform is None:
+        raise GenerationError("{} declares no [platform], and a recipe is written for one".format(
+            declared.root / spec.MANIFEST))
+    content = dict(declared.content)
+    content["platform-facts"] = {key: platform[key] for key in ("name", "os", "arch", "os-version", "distribution",
+                                                                "build-only")}
     return RECIPE_TEMPLATE.format(
         generated=GENERATED,
         name=repr(described["name"]),
         version=repr(str(described["version"])),
         description=repr(described.get("description", "")),
-        base=repr(str(declared.get("use", "base", BASE))),
+        python_requires=repr(tuple([str(declared.get("use", "base", BASE))] + platform["python-requires"])),
+        extends=repr(tuple([CORE_CLASS] + platform["extends"])),
         options=repr(domains),
         defaults=repr(defaults),
-        declaration=pprint.pformat(declared.content, width=110, sort_dicts=False, indent=4),
+        declaration=pprint.pformat(content, width=110, sort_dicts=False, indent=4),
         requires=repr(_references(declared.section("requires"))),
         tools=repr(_references(declared.section("tools"))),
     )
@@ -514,68 +485,19 @@ def recipe(declared):
 PROJECT_INCLUDE = "project-include.cmake"
 CROSS_TOOLCHAIN = "cross-toolchain.cmake"
 
-CROSS_TEMPLATE = '''{generated}
-set(CMAKE_SYSTEM_NAME {system})
-set(CMAKE_SYSTEM_PROCESSOR {processor})
-
-if (NOT IOS6_SDK OR NOT IOS6_DEPLOYMENT_TARGET OR NOT IOS6_ARCHITECTURE OR NOT IOS6_TRIPLE)
-    message(FATAL_ERROR
-        "IOS6_SDK, IOS6_DEPLOYMENT_TARGET, IOS6_ARCHITECTURE and IOS6_TRIPLE come from the profile Charon wrote. Reading them from the "
-        "environment instead would leave them empty when ninja re-runs cmake by itself, and cmake would "
-        "quietly fall back to the newest installed SDK")
-endif ()
-set(IOS6_SDK "${{IOS6_SDK}}" CACHE PATH "SDK this port is compiled against" FORCE)
-set(IOS6_DEPLOYMENT_TARGET "${{IOS6_DEPLOYMENT_TARGET}}" CACHE STRING "Oldest release this runs on" FORCE)
-set(IOS6_ARCHITECTURE "${{IOS6_ARCHITECTURE}}" CACHE STRING "Architecture as the Apple tools name it" FORCE)
-set(IOS6_TRIPLE "${{IOS6_TRIPLE}}" CACHE STRING "Target the compiler is asked for" FORCE)
-set(CMAKE_OSX_SYSROOT ${{IOS6_SDK}} CACHE PATH "SDK the compiler is pointed at" FORCE)
-list(APPEND CMAKE_TRY_COMPILE_PLATFORM_VARIABLES IOS6_SDK IOS6_DEPLOYMENT_TARGET IOS6_ARCHITECTURE IOS6_TRIPLE)
-set(CMAKE_OSX_ARCHITECTURES ${{IOS6_ARCHITECTURE}})
-set(CMAKE_OSX_DEPLOYMENT_TARGET ${{IOS6_DEPLOYMENT_TARGET}})
-
-if (DEFINED ENV{{DEVELOPER_DIR}})
-    set(DEVELOPER_ROOT $ENV{{DEVELOPER_DIR}})
-else ()
-    execute_process(COMMAND xcode-select -p
-        OUTPUT_VARIABLE DEVELOPER_ROOT OUTPUT_STRIP_TRAILING_WHITESPACE)
-endif ()
-if (EXISTS ${{DEVELOPER_ROOT}}/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang)
-    set(TOOLCHAIN_BIN ${{DEVELOPER_ROOT}}/Toolchains/XcodeDefault.xctoolchain/usr/bin)
-else ()
-    set(TOOLCHAIN_BIN ${{DEVELOPER_ROOT}}/usr/bin)
-endif ()
-set(CMAKE_C_COMPILER ${{TOOLCHAIN_BIN}}/clang)
-set(CMAKE_CXX_COMPILER ${{TOOLCHAIN_BIN}}/clang++)
-
-set(SDK6 ${{IOS6_SDK}})
-set(COMMON "-target ${{IOS6_TRIPLE}} -isysroot ${{SDK6}}")
-set(CMAKE_C_FLAGS_INIT "${{COMMON}}{defines}")
-set(CMAKE_OBJC_FLAGS_INIT "${{COMMON}}{defines}")
-set(CMAKE_CXX_FLAGS_INIT "${{COMMON}}{defines}")
-set(CMAKE_OBJCXX_FLAGS_INIT "${{COMMON}}{defines}")
-set(CMAKE_EXE_LINKER_FLAGS_INIT "${{COMMON}}")
-set(CMAKE_SHARED_LINKER_FLAGS_INIT "${{COMMON}}")
-
-set(CMAKE_FIND_ROOT_PATH ${{SDK6}})
-set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-
-if (EXISTS ${{DEVELOPER_ROOT}}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk)
-    set(MIG_SYSROOT ${{DEVELOPER_ROOT}}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk)
-else ()
-    set(MIG_SYSROOT ${{DEVELOPER_ROOT}}/SDKs/MacOSX.sdk)
-endif ()
-'''
 
 
 def cross_toolchain(declared):
     target = declared.section("target")
+    platform = declared.platform()
+    if platform is None or not platform.get("cross-toolchain"):
+        raise GenerationError("{} declares no [platform] with a cross toolchain, and the compiler cannot be "
+                              "pointed at a target without one".format(declared.root / spec.MANIFEST))
     defines = target.get("defines", [])
-    return CROSS_TEMPLATE.format(
+    return platform["cross-toolchain"].read_text().format(
         generated=GENERATED,
         system=target.get("system-name", "Darwin"),
-        processor=target.get("system-processor", "${IOS6_ARCHITECTURE}"),
+        processor=target.get("system-processor", "${CHARON_ARCHITECTURE}"),
         defines="".join(" {}".format(define) for define in defines),
     )
 
@@ -604,7 +526,7 @@ class TierPackages(ConanFile):
             self.requires(reference)
 
     def generate(self):
-        self.python_requires["ios6-base"].module.DependencyEnv(self).generate()
+        self.python_requires["charon-base"].module.DependencyEnv(self).generate()
 '''
 
 
@@ -633,7 +555,7 @@ def written(declared, required=True):
             produced["tests/{}/conanfile.py".format(tier)] = tier_recipe(declared, tier, packages)
     profiles = declared.using("profile")
     if profiles is None:
-        produced["profile"] = profile(declared, includes=declared.get("target", "include-profiles", []))
+        produced["profile"] = profile(declared)
     for kind, project in (("static-library", "port-static"), ("device-library", "port-device"),
                           ("application", "port-application")):
         text = cmake_project(declared, kind, project)
