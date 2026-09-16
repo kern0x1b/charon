@@ -365,7 +365,7 @@ class CharonPort:
         toolchain.generate()
 
         deps = CMakeDeps(self)
-        wanted = self.declared_find_packages()
+        wanted = self.configured_packages(self.dependencies.host, self.declared_find_packages())
         for dependency in self.dependencies.host.values():
             if dependency.ref.name not in wanted:
                 deps.set_property(dependency.ref.name, "cmake_find_mode", "none")
@@ -377,6 +377,14 @@ class CharonPort:
         environment.vars(self, scope="build").save_script("ccache_basedir")
 
     FOUND_PACKAGES = "charon-packages.cmake"
+
+    @staticmethod
+    def configured_packages(host, found):
+        configured = set(found)
+        for dependency in host.values():
+            if dependency.ref.name in found:
+                configured.update(required.ref.name for required in dependency.dependencies.host.values())
+        return configured
 
     def declared_target_packages(self):
         wanted = []

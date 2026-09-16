@@ -47,6 +47,9 @@ jobs:
       - name: An Objective-C source stays Objective-C when cmake configures again
         run: python3 tests/cmake_language_test.py
 
+      - name: A port finding one package also gets the configs of the packages that one finds
+        run: python3 tests/cmake_deps_test.py
+
       - name: Register the toolchain
         run: |
           conan config install "$PWD/config"
