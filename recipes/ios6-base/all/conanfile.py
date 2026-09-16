@@ -1,12 +1,17 @@
 import os
+import plistlib
 import re
+import shutil
+import sys
 from io import StringIO
 
 from conan import ConanFile
 from conan.errors import ConanException, ConanInvalidConfiguration
 from conan.tools.apple import XCRun
 from conan.tools.build import can_run
-from conan.tools.cmake import CMake, cmake_layout
+from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
+from conan.tools.env import Environment
+from conan.tools.files import copy, mkdir, rmdir
 from conan.tools.scm import Version
 
 PLACEHOLDER = re.compile(r"\{([a-z][a-z0-9_.-]*(?::[^{}]*)?)\}")
@@ -241,6 +246,314 @@ class Ios6Port:
         variant = self.declared.get("variants", {}).get(self.declared_variant(), {})
         options.update(variant.get("engine-options", {}) or {})
         return {name: self._expand(value, context) for name, value in options.items()}
+
+    def declared_layout(self):
+        self.folders.root = os.path.relpath(self.port_root, self.recipe_folder)
+        engine = self.declared.get("engine", {})
+        if engine.get("cmake"):
+            self.folders.source = engine["cmake"]
+        self.folders.build = os.path.join("build", self.declared_variant())
+        self.folders.generators = os.path.join(self.folders.build, "conan")
+
+    def declared_toolchain(self):
+        engine = self.declared.get("engine", {})
+        user_toolchain = engine.get("user-toolchain")
+        if user_toolchain:
+            self.conf.define("tools.cmake.cmaketoolchain:user_toolchain",
+                             [os.path.join(self.port_root, user_toolchain)])
+        toolchain = CMakeToolchain(self)
+        toolchain.blocks.remove("apple_system")
+        variables = toolchain.cache_variables
+        variables.update(self.declared_options())
+        variables.update({
+            "IOS6_SDK": self.sdk_path,
+            "IOS6_DEPLOYMENT_TARGET": str(self.settings.os.version),
+            "CMAKE_OSX_SYSROOT": self.sdk_path,
+            "CMAKE_OSX_DEPLOYMENT_TARGET": str(self.settings.os.version),
+            "CMAKE_BUILD_TYPE": "Release",
+            "PYTHON_EXECUTABLE": sys.executable,
+            "CMAKE_C_FLAGS": self.declared_flags("c"),
+            "CMAKE_CXX_FLAGS": self.declared_flags("cxx"),
+            "CMAKE_OBJC_FLAGS": self.declared_flags("objc"),
+            "CMAKE_OBJCXX_FLAGS": self.declared_flags("objcxx"),
+            "CMAKE_SHARED_LINKER_FLAGS": self.declared_flags("shared-link"),
+            "CMAKE_EXE_LINKER_FLAGS": self.declared_flags("exe-link"),
+            "CMAKE_MODULE_LINKER_FLAGS": self.declared_flags("module-link"),
+        })
+        include = engine.get("project-include")
+        if include:
+            name = os.path.basename(str(self.folders.source or "project"))
+            variables[f"CMAKE_PROJECT_{name}_INCLUDE"] = os.path.join(self.port_root, include)
+        toolchain.generate()
+
+        deps = CMakeDeps(self)
+        wanted = engine.get("find-packages", [])
+        for dependency in self.dependencies.host.values():
+            if dependency.ref.name not in wanted:
+                deps.set_property(dependency.ref.name, "cmake_find_mode", "none")
+        deps.generate()
+
+        environment = Environment()
+        environment.define("CCACHE_BASEDIR", self.port_root)
+        environment.vars(self, scope="build").save_script("ccache_basedir")
+
+    def declared_build(self):
+        for step in self.declared_pipeline():
+            action, _, argument = step.partition(":")
+            self.output.title(step)
+            self._run_step(action, argument)
+
+    def declared_pipeline(self):
+        variant = self.declared_variant()
+        steps = self.declared.get("pipeline", {}).get(variant)
+        if not steps:
+            raise ConanException(f"{self.name} declares no pipeline for the {variant} variant, so building it "
+                                 "would do nothing and report success")
+        return steps
+
+    def _run_step(self, action, argument):
+        steps = {
+            "task": self._run_task,
+            "build": self._build_target,
+            "check": self._run_check,
+            "stage": self._run_stage,
+        }
+        if action not in steps:
+            raise ConanException(f"{action} is not a step this toolchain knows; it runs "
+                                 f"{', '.join(sorted(steps))}")
+        steps[action](argument)
+
+    def _run_task(self, name):
+        declared = self.declared.get("tasks", {})
+        if name not in declared:
+            known = ", ".join(sorted(declared)) or "none declared"
+            raise ConanException(f"{self.name} declares no task {name} ({known})")
+        words = self._expand(declared[name], self._declared_context()).split()
+        script = os.path.join(self.port_root, words[0])
+        if not os.path.isfile(script):
+            raise ConanException(f"{script} does not exist, and the task {name} names it")
+        arguments = " ".join(f'"{word}"' for word in words[1:])
+        self.run(f'"{sys.executable}" "{script}" {arguments}')
+
+    def _cmake_project(self, source, folder, definitions):
+        toolchain = os.path.join(self.generators_folder, "conan_toolchain.cmake")
+        values = " ".join(f'-D{name}="{value}"' for name, value in definitions.items())
+        self.run(f'cmake -S "{source}" -B "{folder}" -G Ninja -DCMAKE_BUILD_TYPE=Release '
+                 f'-DCMAKE_TOOLCHAIN_FILE="{toolchain}" -DIOS6_SDK="{self.sdk_path}" '
+                 f'-DIOS6_DEPLOYMENT_TARGET="{self.settings.os.version}" {values}')
+        self.run(f'cmake --build "{folder}"')
+
+    def _build_target(self, name):
+        if name == "engine":
+            cmake = CMake(self)
+            cmake.configure()
+            cmake.build()
+            return
+        if name == "application":
+            self._build_application()
+            return
+        target = next((entry for entry in self.declared_targets() if entry.get("name") == name), None)
+        if target is None:
+            raise ConanException(f"{self.name} declares no target called {name}")
+        project = target.get("cmake")
+        if not project:
+            raise ConanException(f"{name} declares no cmake project, and generating one is not done yet")
+        folder = os.path.join(self.build_folder, os.path.basename(project))
+        context = self._declared_context()
+        definitions = {key: self._expand(value, context) for key, value in (target.get("options") or {}).items()}
+        self._cmake_project(os.path.join(self.port_root, project), folder, definitions)
+        if target.get("installs-into") == "stage":
+            self.run(f'cmake --install "{folder}" --prefix "{self.stage_folder}"')
+            self._sign_installed(folder)
+
+    def _sign_installed(self, folder):
+        macho = MachO(self)
+        manifest = os.path.join(folder, "install_manifest.txt")
+        with open(manifest) as installed:
+            paths = [line.strip() for line in installed if line.strip()]
+        for path in paths:
+            if macho.is_macho(path):
+                macho.strip(path)
+                macho.sign(path)
+
+    def _run_check(self, name):
+        checks = {
+            "exports": self._check_exports,
+            "no-encryption-info": lambda: MachO(self).refuse_encryption_info(self.stage_folder),
+            "imports": self._check_imports,
+        }
+        if name not in checks:
+            raise ConanException(f"{name} is not a check this toolchain knows; it runs {', '.join(sorted(checks))}")
+        checks[name]()
+
+    def _check_exports(self):
+        macho = MachO(self)
+        listed_at = self._expand(self.declared_setting("engine", "exports", ""), self._declared_context())
+        binary = os.path.join(self.build_folder, "WebKitLegacy.framework", "WebKitLegacy")
+        with open(listed_at) as listing:
+            listed = {line.strip() for line in listing if line.strip() and not line.lstrip().startswith("#")}
+        exported = set(macho.output(f'"{macho.tool("nm")}" -gUj "{binary}"').split())
+        missing, unlisted = sorted(listed - exported), sorted(exported - listed)
+        if missing or unlisted:
+            raise ConanException(f"{binary} was not linked with {listed_at}: {len(missing)} listed symbols not "
+                                 f"exported (first: {missing[:3]}), {len(unlisted)} exported symbols not listed "
+                                 f"(first: {unlisted[:3]})")
+
+    def _check_imports(self):
+        cache = self.conf.get("user.ios6:dyld_shared_cache", check_type=str)
+        if not cache:
+            self.output.warning("user.ios6:dyld_shared_cache is not set, so the imports this system exports "
+                                "were not checked")
+            return
+        self.run(f'ios6-imports-check --cache "{cache}" --dist "{self.stage_folder}"')
+
+    def _run_stage(self, name):
+        stages = {"frameworks": self._stage_frameworks, "plists-to-binary": self._stage_binary_plists}
+        if name not in stages:
+            raise ConanException(f"{name} is not a staging step this toolchain knows; it runs "
+                                 f"{', '.join(sorted(stages))}")
+        stages[name]()
+
+    def _stage_binary_plists(self):
+        for folder, _, names in os.walk(self.stage_folder):
+            for name in names:
+                if not name.endswith(".plist"):
+                    continue
+                path = os.path.join(folder, name)
+                with open(path, "rb") as source:
+                    content = plistlib.load(source)
+                with open(path, "wb") as target:
+                    plistlib.dump(content, target, fmt=plistlib.FMT_BINARY)
+
+    def _stage_frameworks(self):
+        stage = self.declared.get("stage", {})
+        engine = os.path.join(self.stage_folder, stage.get("engine-location", ""))
+        macho, installed = MachO(self), {}
+        for built, described in stage.get("frameworks", {}).items():
+            name = described["as"]
+            destination = os.path.join(engine, f"{name}.framework", name)
+            mkdir(self, os.path.dirname(destination))
+            shutil.copy2(os.path.join(self.build_folder, f"{built}.framework", built), destination)
+            installed[destination] = described["replaces"]
+
+        for built, described in stage.get("frameworks", {}).items():
+            if not described.get("resources"):
+                continue
+            source = os.path.join(self.build_folder, f"{built}.framework")
+            if not os.path.isdir(source):
+                raise ConanException(f"{source} does not exist, and it is where {built} resources come from")
+            target = os.path.join(engine, f"{described['as']}.framework")
+            omit = set(described.get("omit", []))
+            for entry in sorted(os.listdir(source)):
+                if entry == built or entry in omit:
+                    continue
+                path = os.path.join(source, entry)
+                if entry.endswith(".lproj"):
+                    copy(self, "*.js", path, os.path.join(target, entry))
+                elif os.path.isdir(path):
+                    shutil.copytree(path, os.path.join(target, entry), symlinks=True, dirs_exist_ok=True)
+                else:
+                    shutil.copy2(path, target)
+            for flatten in described.get("flatten", []):
+                origin = os.path.join(target, flatten["from"])
+                if not os.path.isdir(origin):
+                    continue
+                for pattern in flatten.get("patterns", []):
+                    copy(self, pattern, origin, os.path.join(target, flatten["into"]))
+
+        runtime = self._components("libcxx").libdirs[0]
+        for built, renamed in stage.get("runtime", {}).items():
+            destination = os.path.join(self.stage_folder, "usr", "lib", renamed)
+            mkdir(self, os.path.dirname(destination))
+            shutil.copy2(os.path.join(runtime, built), destination)
+            installed[destination] = f"/usr/lib/{renamed}"
+
+        macho.retarget(installed)
+        for binary in installed:
+            if not binary.endswith(".dylib"):
+                macho.require_compatibility_version(binary, "1.0.0")
+                macho.strip(binary, "-S -x")
+            macho.sign(binary)
+
+    def _build_application(self):
+        declared = self.declared.get("application", {})
+        name = declared.get("name")
+        if not name:
+            raise ConanException(f"{self.name} declares no application to build")
+        bundle = os.path.join(self.build_folder, f"{name}.app")
+        frameworks = os.path.join(bundle, "Frameworks")
+        rmdir(self, bundle)
+        mkdir(self, frameworks)
+
+        project = declared.get("cmake")
+        folder = os.path.join(self.build_folder, os.path.basename(project))
+        context = self._declared_context()
+        definitions = {key: self._expand(value, context) for key, value in (declared.get("options") or {}).items()}
+        self._cmake_project(os.path.join(self.port_root, project), folder, definitions)
+        self.run(f'cmake --install "{folder}" --prefix "{bundle}"')
+
+        macho, bundled = MachO(self), {}
+        stage = self.declared.get("stage", {})
+        for built in stage.get("frameworks", {}):
+            destination = os.path.join(frameworks, f"{built}.framework", built)
+            shutil.copytree(os.path.join(self.build_folder, f"{built}.framework"),
+                            os.path.dirname(destination), symlinks=True, dirs_exist_ok=True)
+            bundled[destination] = f"@executable_path/Frameworks/{built}.framework/{built}"
+        runtime = self._components("libcxx").libdirs[0]
+        for built in stage.get("runtime", {}):
+            library = built.replace(".1.0.", ".1.")
+            destination = os.path.join(frameworks, library)
+            shutil.copy2(os.path.join(runtime, built), destination)
+            bundled[destination] = f"@executable_path/Frameworks/{library}"
+
+        macho.retarget(bundled)
+        for binary in bundled:
+            if not binary.endswith(".dylib"):
+                macho.require_compatibility_version(binary, "1.0.0")
+            macho.sign(binary)
+
+        self._write_application_plist(bundle, name, declared)
+        entitlements = declared.get("entitlements")
+        executable = os.path.join(bundle, name)
+        macho.sign(executable, os.path.join(self.port_root, entitlements) if entitlements else None)
+
+    def _write_application_plist(self, bundle, name, declared):
+        described = dict(declared.get("plist", {}))
+        scheme = described.pop("url-scheme", None)
+        identifier = described.get("CFBundleIdentifier", name)
+        info = {
+            "CFBundleName": name,
+            "CFBundleDisplayName": name,
+            "CFBundleExecutable": name,
+            "CFBundleVersion": str(self.version),
+            "CFBundleShortVersionString": str(self.version),
+            "MinimumOSVersion": str(self.settings.os.version),
+        }
+        info.update(described)
+        if scheme:
+            info["CFBundleURLTypes"] = [{"CFBundleURLName": identifier, "CFBundleURLSchemes": [scheme]}]
+        with open(os.path.join(bundle, "Info.plist"), "wb") as handle:
+            plistlib.dump(info, handle)
+
+    def declared_package(self):
+        for name in self.declared.get("port", {}).get("licenses", []):
+            copy(self, name, self.port_root, os.path.join(self.package_folder, "licenses"))
+        application = self.declared.get("application", {})
+        if application and self.declared_variant() == application.get("variant"):
+            bundle = f"{application['name']}.app"
+            shutil.copytree(os.path.join(self.build_folder, bundle),
+                            os.path.join(self.package_folder, bundle), symlinks=True, dirs_exist_ok=True)
+            return
+        shutil.copytree(self.stage_folder, os.path.join(self.package_folder, "root"),
+                        symlinks=True, dirs_exist_ok=True)
+        described = self.declared.get("package", {})
+        control = described.get("control")
+        if not control:
+            raise ConanException(f"{self.name} declares no package control file, so no .deb can be written")
+        scripts = described.get("maintainer-scripts")
+        DebianPackage(self, os.path.join(self.port_root, control), self.stage_folder,
+                      os.path.join(self.port_root, scripts) if scripts else None
+                      ).write(os.path.join(self.package_folder, "deb"))
 
 
 class MachO:

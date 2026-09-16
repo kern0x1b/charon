@@ -43,6 +43,8 @@ DECLARATION = {
         },
     },
     "static-library": [{"name": "compat", "cmake": "compat", "produces": "libcompat.a"}],
+    "tasks": {"audit": "steps/audit.py --build {build}"},
+    "pipeline": {"system": ["task:audit", "build:compat", "build:engine", "check:exports", "stage:frameworks"]},
 }
 
 
@@ -74,6 +76,14 @@ class Conf:
         return self._values.get(name, default)
 
 
+class Output:
+    def title(self, line):
+        pass
+
+    def warning(self, line):
+        pass
+
+
 def loaded_base():
     spec = importlib.util.spec_from_file_location("ios6_base_under_test", BASE)
     module = importlib.util.module_from_spec(spec)
@@ -95,8 +105,54 @@ def port(module, options):
                               "tools.build:cxxflags": ["-mcpu=cortex-a9"]})
             self.source_folder = "/port/engine"
             self.build_folder = "/port/build/system"
+            self.output = Output()
+            self.ran = []
+
+        def _run_task(self, name):
+            self.ran.append("task:" + name)
+
+        def _build_target(self, name):
+            self.ran.append("build:" + name)
+
+        def _run_check(self, name):
+            self.ran.append("check:" + name)
+
+        def _run_stage(self, name):
+            self.ran.append("stage:" + name)
 
     return Port()
+
+
+def dispatch_failures(module):
+    found = []
+    recorder = port(module, {"prefixed": "False"})
+    recorder.declared_build()
+    if recorder.ran != DECLARATION["pipeline"]["system"]:
+        found.append("the steps must run in the order declared: got {}".format(recorder.ran))
+
+    try:
+        recorder._run_step("nonsense", "x")
+        found.append("an unknown kind of step must be refused")
+    except Exception:
+        pass
+
+    prefixed = port(module, {"prefixed": "True"})
+    try:
+        prefixed.declared_pipeline()
+        found.append("a variant with no declared pipeline must be refused, not run as nothing")
+    except Exception:
+        pass
+
+    real = port(module, {"prefixed": "False"})
+    for method, argument, what in ((module.Ios6Port._run_task, "absent", "an undeclared task"),
+                                   (module.Ios6Port._run_check, "absent", "an unknown check"),
+                                   (module.Ios6Port._run_stage, "absent", "an unknown staging step")):
+        try:
+            method(real, argument)
+            found.append("{} must be refused".format(what))
+        except Exception:
+            pass
+    return found
 
 
 def failures(module):
@@ -165,7 +221,7 @@ def main():
     except ImportError as missing:
         print("FAIL  this needs an interpreter that can import conan: {}".format(missing))
         return 1
-    found = failures(module)
+    found = failures(module) + dispatch_failures(module)
     for line in found:
         print("FAIL  {}".format(line))
     if found:

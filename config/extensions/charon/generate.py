@@ -179,6 +179,90 @@ def cmake_project(declared, kind, project):
     return "\n".join(lines).rstrip("\n") + "\n"
 
 
+BASE = "ios6-base/1.0@ios6/stable"
+RECIPE_TEMPLATE = '''{generated}
+from conan import ConanFile
+
+
+class Port(ConanFile):
+    name = {name}
+    version = {version}
+    description = {description}
+    package_type = "application"
+    generators = "VirtualBuildEnv"
+    python_requires = {base}
+    python_requires_extend = "ios6-base.Ios6Port"
+    options = {options}
+    default_options = {defaults}
+
+    port = {port}
+    declaration = {declaration}
+
+    def requirements(self):
+        for reference in {requires}:
+            self.requires(reference)
+
+    def build_requirements(self):
+        for reference in {tools}:
+            self.tool_requires(reference)
+
+    def layout(self):
+        self.declared_layout()
+
+    def generate(self):
+        super().generate()
+        self.declared_toolchain()
+
+    def build(self):
+        self.declared_build()
+
+    def package(self):
+        self.declared_package()
+'''
+
+
+def _option_domains(declared):
+    named = {}
+    for variant in declared.section("variants").values():
+        for entry in variant.get("options", []):
+            option, _, value = entry.partition("=")
+            named.setdefault(option, set()).add(value)
+    domains, defaults = {}, {}
+    for option, values in named.items():
+        if not values <= {"True", "False"}:
+            raise GenerationError("{} is declared with {}, and Charon only derives a domain for True and "
+                                 "False; declare it in the recipe instead".format(option, ", ".join(sorted(values))))
+        domains[option] = [True, False]
+        defaults[option] = False
+    return domains, defaults
+
+
+def _references(section):
+    return ["{}/{}".format(name, version) for name, version in section.items()]
+
+
+def recipe(declared, port_root):
+    import pprint
+    described = declared.section("port")
+    for required in ("name", "version"):
+        if required not in described:
+            raise GenerationError("[port] declares no {}, and a recipe cannot be written without it".format(required))
+    domains, defaults = _option_domains(declared)
+    return RECIPE_TEMPLATE.format(
+        generated=GENERATED,
+        name=repr(described["name"]),
+        version=repr(str(described["version"])),
+        description=repr(described.get("description", "")),
+        base=repr(str(declared.get("use", "base", BASE))),
+        options=repr(domains),
+        defaults=repr(defaults),
+        port=repr(str(port_root)),
+        declaration=pprint.pformat(declared.content, width=110, sort_dicts=False, indent=4),
+        requires=repr(_references(declared.section("requires"))),
+        tools=repr(_references(declared.section("tools"))),
+    )
+
+
 def written(declared):
     produced = {}
     profiles = declared.using("profile")
