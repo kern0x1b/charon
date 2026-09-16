@@ -285,6 +285,8 @@ class ApplePort:
             self._verify(binary)
             if compatibility.get(binary):
                 macho.require_compatibility_version(binary, compatibility[binary])
+            if declared.get("strip"):
+                macho.strip(binary, declared["strip"])
             macho.sign(binary)
 
         self._write_application_plist(bundle, name, declared)

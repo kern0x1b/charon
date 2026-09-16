@@ -371,7 +371,7 @@ def bundle_content_failures(module, made, ldid):
             (framework / relative).write_text("x")
         shutil.copy2(made["library"], framework / "Engine")
         instance = running_port(module, folder, {
-            "variants": {"system": {}}, "application": {"name": "Host"},
+            "variants": {"system": {}}, "application": {"name": "Host", "strip": "-x"},
             "stage": {"frameworks": {"Engine": {"as": "Engine", "replaces": "/System/Engine"}}},
             "platform-facts": {"build-only": ["Headers", "PrivateHeaders", "Modules", "_CodeSignature"]}}, ldid)
         module.MachO = recording_macho(module, instance)
@@ -393,6 +393,10 @@ def bundle_content_failures(module, made, ldid):
             found.append("an application carrying a framework must build: {}".format(refused))
         finally:
             module.MachO = original
+        stripped = [Path(binary).name for action, binary in instance.steps if action == "strip"]
+        if sorted(stripped) != ["Engine", "Host"]:
+            found.append("the application's strip policy must reach every binary the bundle carries, not only the "
+                         "executable: stripped {}".format(stripped))
         carried = folder / "build" / "Host.app" / "Frameworks" / "Engine.framework"
         shipped = sorted(str(path.relative_to(carried)) for path in carried.rglob("*") if path.is_file())
         if shipped != ["Engine", "Info.plist", "en.lproj/Localizable.strings"]:

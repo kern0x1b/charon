@@ -376,8 +376,12 @@ def cmake_project(declared, kind, project):
         for package in target.get("packages", []):
             if package not in packages:
                 packages.append(package)
-    for package in packages:
-        lines.append("find_package({} REQUIRED CONFIG)".format(package))
+    if packages:
+        lines += ['if (NOT CHARON_PACKAGES)',
+                  '    message(FATAL_ERROR "CHARON_PACKAGES names the file that finds {} under the names the '
+                  'dependency graph gives them; configure through charon build")'.format(", ".join(packages)),
+                  'endif ()',
+                  'include("${CHARON_PACKAGES}")']
     if lines[-1] != "":
         lines.append("")
     for target in targets:

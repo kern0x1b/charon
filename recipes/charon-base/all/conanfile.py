@@ -356,16 +356,66 @@ class CharonPort:
             if dependency.ref.name not in wanted:
                 deps.set_property(dependency.ref.name, "cmake_find_mode", "none")
         deps.generate()
+        self._write_found_packages()
 
         environment = Environment()
         environment.define("CCACHE_BASEDIR", self.port_root)
         environment.vars(self, scope="build").save_script("ccache_basedir")
+
+    FOUND_PACKAGES = "charon-packages.cmake"
+
+    def declared_target_packages(self):
+        wanted = []
+        for kind in ("static-library", "device-library", "executable", "application"):
+            declared = self.declared.get(kind) or []
+            for target in [declared] if isinstance(declared, dict) else declared:
+                wanted += [package for package in target.get("packages", []) if package not in wanted]
+        return wanted
+
+    def _write_found_packages(self):
+        host = {dependency.ref.name: dependency for dependency in self.dependencies.host.values()}
+        lines = []
+        for package in self.declared_target_packages():
+            if package not in host:
+                raise ConanException(f"a target of {self.name} finds {package}, which it does not require; "
+                                     f"it requires {', '.join(sorted(host)) or 'nothing'}")
+            found = host[package].cpp_info.get_property("cmake_file_name") or package
+            lines.append(f"find_package({found} REQUIRED CONFIG)")
+        with open(os.path.join(self.generators_folder, self.FOUND_PACKAGES), "w") as handle:
+            handle.write("\n".join(lines) + "\n")
+
+    def _refuse_graph_by_hand(self):
+        host = [dependency for dependency in self.dependencies.host.values() if dependency.package_folder]
+        provided = {library: dependency.ref.name for dependency in host
+                    for library in dependency.cpp_info.aggregated_components().libs}
+        folders = {os.path.normpath(dependency.package_folder): dependency.ref.name for dependency in host}
+        context = self._declared_context()
+        for kind in ("static-library", "device-library", "executable", "application"):
+            declared = self.declared.get(kind) or []
+            for target in [declared] if isinstance(declared, dict) else declared:
+                for library in target.get("libraries", []):
+                    if library in provided:
+                        raise ConanException(
+                            f"{target.get('name')} links {library} by name, which {provided[library]} provides; "
+                            f"name {provided[library]} under packages and link its imported target, so the "
+                            "archive is an input the build can see and the checks can read")
+                for option in target.get("link-options", []):
+                    expanded = self._expand(option, context)
+                    if expanded.startswith("-L"):
+                        folder = os.path.normpath(expanded[2:])
+                        owner = next((name for root, name in folders.items()
+                                      if folder == root or folder.startswith(root + os.sep)), None)
+                        if owner:
+                            raise ConanException(
+                                f"{target.get('name')} searches {owner}'s package folder with {option}; name "
+                                f"{owner} under packages and link its imported target instead")
 
     def declared_steps(self):
         chosen = self.conf.get("user.charon:steps", default=None, check_type=list)
         return list(chosen) if chosen else self.declared_pipeline()
 
     def declared_build(self):
+        self._refuse_graph_by_hand()
         for step in self.declared_steps():
             action, _, argument = step.partition(":")
             self.output.title(step)
@@ -462,7 +512,8 @@ class CharonPort:
         values = " ".join(f'-D{name}="{value}"' for name, value in definitions.items())
         platform = " ".join(f'-D{name}="{value}"' for name, value in self.platform_cache_variables().items())
         self.run(f'cmake -S "{source}" -B "{folder}" -G Ninja -DCMAKE_BUILD_TYPE=Release '
-                 f'-DCMAKE_TOOLCHAIN_FILE="{toolchain}" {platform} -DCHARON_PORT="{self.port_root}" {values}')
+                 f'-DCMAKE_TOOLCHAIN_FILE="{toolchain}" {platform} -DCHARON_PORT="{self.port_root}" '
+                 f'-DCHARON_PACKAGES="{os.path.join(self.generators_folder, self.FOUND_PACKAGES)}" {values}')
         self.run(f'cmake --build "{folder}"')
         self._verify_inputs(folder)
 
@@ -507,11 +558,7 @@ class CharonPort:
 
     def declared_find_packages(self):
         wanted = list((self.declared.get("engine") or {}).get("find-packages", []))
-        for kind in ("static-library", "device-library", "executable", "application"):
-            declared = self.declared.get(kind) or []
-            for target in [declared] if isinstance(declared, dict) else declared:
-                wanted += [package for package in target.get("packages", []) if package not in wanted]
-        return wanted
+        return wanted + [package for package in self.declared_target_packages() if package not in wanted]
 
     def declared_waivers(self):
         waived = self.declared.get("waive") or {}

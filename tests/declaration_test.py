@@ -148,6 +148,7 @@ def port(module, options):
             self.ran = []
             self.commands = []
             self.folders_run_in = []
+            self.dependencies = type("Dependencies", (), {"host": {}})()
 
         def run(self, command, cwd=None):
             self.commands.append(command)
@@ -246,6 +247,60 @@ def architecture_failures(module):
     except Exception as refused:
         if "have a name for" not in str(refused):
             found.append("an unknown architecture must be refused for that reason: {}".format(refused))
+    return found
+
+
+class Library:
+    def __init__(self, name, libs, file_name=None):
+        self.ref = type("Reference", (), {"name": name})()
+        self.package_folder = "/cache/{}/p".format(name)
+        self.cpp_info = self
+        self._libs = libs
+        self._file_name = file_name
+
+    def get_property(self, name):
+        return self._file_name if name == "cmake_file_name" else None
+
+    def aggregated_components(self):
+        return type("Components", (), {"libs": self._libs})()
+
+
+def graph_failures(module):
+    found = []
+    host = [Library("openssl", ["ssl", "crypto"], "OpenSSL"), Library("ogg", ["ogg"])]
+    dependencies = type("Dependencies", (), {"host": {library.ref.name: library for library in host}})()
+    with tempfile.TemporaryDirectory() as folder:
+        instance = port(module, {"prefixed": "False"})
+        instance.dependencies = dependencies
+        instance.generators_folder = folder
+        type(instance).declaration = dict(DECLARATION, application={"name": "Host", "packages": ["openssl", "ogg"]})
+        instance._write_found_packages()
+        written = (Path(folder) / module.Port.FOUND_PACKAGES).read_text().splitlines()
+        if written != ["find_package(OpenSSL REQUIRED CONFIG)", "find_package(ogg REQUIRED CONFIG)"]:
+            found.append("a package must be found under the file name its recipe gives CMake, or its own name: "
+                         "got {}".format(written))
+        type(instance).declaration = dict(DECLARATION, application={"name": "Host", "packages": ["zlib"]})
+        try:
+            instance._write_found_packages()
+            found.append("finding a package the port does not require must be refused")
+        except Exception as refused:
+            if "does not require" not in str(refused):
+                found.append("a package the port does not require must be refused for that: {}".format(refused))
+    for application, reason in (({"name": "Host", "libraries": ["crypto"]}, "links crypto by name"),
+                                ({"name": "Host", "link-options": ["-L/cache/ogg/p/lib"]}, "searches ogg's package"),
+                                ({"name": "Host", "libraries": ["z", "OpenSSL::Crypto"],
+                                  "link-options": ["-L/usr/lib"]}, None)):
+        instance = port(module, {"prefixed": "False"})
+        instance.dependencies = dependencies
+        type(instance).declaration = dict(DECLARATION, application=application)
+        instance._declared_context = lambda: {}
+        try:
+            instance._refuse_graph_by_hand()
+            if reason:
+                found.append("{} must be refused".format(application))
+        except Exception as refused:
+            if not reason or reason not in str(refused):
+                found.append("{}: expected {}, got {}".format(application, reason or "success", refused))
     return found
 
 
@@ -643,7 +698,8 @@ def main():
         return 1
     found = (failures(module) + dispatch_failures(module) + task_failures(module) + sign_failures(module) +
              plist_failures(module) + bundle_failures(module) + merge_failures(module) + flag_failures(module) + runtime_failures(module) +
-             find_package_failures(module) + exports_failures(module) + architecture_failures(module))
+             find_package_failures(module) + exports_failures(module) + architecture_failures(module) +
+             graph_failures(module))
     for line in found:
         print("FAIL  {}".format(line))
     if found:

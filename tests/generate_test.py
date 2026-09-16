@@ -174,7 +174,7 @@ def checks(declared):
         found.append("a device library must record the path it is deployed to")
     if '"-framework CoreFoundation"' not in device or "objc" not in device:
         found.append("frameworks and libraries must both reach target_link_libraries")
-    if "find_package(openssl REQUIRED CONFIG)" not in device:
+    if 'include("${CHARON_PACKAGES}")' not in device:
         found.append("a package declared on a target must reach that project")
     if "RENAME Tweak.plist" not in device:
         found.append("a renamed resource must keep its new name")
@@ -567,6 +567,20 @@ def architecture_failures(folder):
     return found
 
 
+def package_failures(folder):
+    root = Path(folder) / "packaged"
+    root.mkdir()
+    (root / "main.m").write_text("")
+    text = generate.written(loaded(root, '[platform]\nuse = "apple-ios"\narch = "armv7"\nos-version = "6.0"\n'
+                                         '[application]\nname = "Host"\nsources = ["main.m"]\n'
+                                         'packages = ["openssl"]\n'))["application/CMakeLists.txt"]
+    found = []
+    if "find_package(" in text or 'include("${CHARON_PACKAGES}")' not in text:
+        found.append("a generated project must find its packages through the file the build writes from the graph, "
+                     "not by the names the declaration uses: {}".format(text))
+    return found
+
+
 def order_failures(folder):
     root = Path(folder) / "ordered"
     root.mkdir()
@@ -607,6 +621,7 @@ def main():
         found += determinism_failures(folder)
         found += conf_failures(folder)
         found += architecture_failures(folder)
+        found += package_failures(folder)
         found += platform_failures(folder)
     for line in found:
         print("FAIL  {}".format(line))
