@@ -8,6 +8,7 @@ definition of a build tree of its own. These cases pin that definition: a tree i
 a direct child of build/ that cmake configured and that has frameworks laid out,
 and nothing else under build/ qualifies however much it resembles one.
 """
+import json
 import sys
 import tempfile
 from pathlib import Path
@@ -209,6 +210,36 @@ def index_failures():
     return found
 
 
+def lock_failures():
+    found = []
+    with tempfile.TemporaryDirectory() as folder:
+        lock = Path(folder) / "conan.lock"
+        lock.write_text(json.dumps({
+            "requires": ["apple-compat/1.0@charon/stable#aaaa%1.0", "zlib/1.3#cccc%1.0", "openssl/3.6.4#9999%1.0"],
+            "build_requires": ["ldid/2.1.5@charon/stable#dddd%1.0"],
+            "python_requires": ["charon-base/1.0@charon/stable#eeee%1.0"],
+        }))
+        served = {"apple-compat/1.0@charon/stable": ("charon", "bbbb"),
+                  "ldid/2.1.5-procursus7@charon/stable": ("charon", "ffff"),
+                  "charon-base/1.0@charon/stable": ("charon", "eeee"),
+                  "openssl/3.0.15@port/stable": ("port", "7777")}
+        stale = charon.stale_pins(lock, served)
+        if len(stale) != 2:
+            found.append("a lock must be named stale for exactly the older revision and the version the index "
+                         "no longer serves: got {}".format(stale))
+        if not any("apple-compat/1.0@charon/stable#aaaa" in line and "#bbbb" in line and "--update-requires" in line
+                   for line in stale):
+            found.append("an older locked revision must be named with the one served and the upgrade that moves "
+                         "it: got {}".format(stale))
+        if not any("ldid/2.1.5@charon/stable" in line and "charon 2.1.5-procursus7" in line for line in stale):
+            found.append("a locked version the index stopped serving must be named: got {}".format(stale))
+        if any("zlib" in line or "charon-base" in line or "openssl" in line for line in stale):
+            found.append("a pin no local index serves, one it serves unchanged, or one of the same name under "
+                         "another user and channel must pass silently: got {}"
+                         .format(stale))
+    return found
+
+
 def where_failures():
     import json as encoded
     import types
@@ -338,7 +369,7 @@ def main():
         print("FAIL  this needs Python 3.11 or newer for tomllib, and it is running under {}. Skipping would "
               "report success having checked nothing.".format(".".join(str(p) for p in sys.version_info[:3])))
         return 1
-    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + index_failures() + where_failures() + profile_failures() + verb_command_failures() + undefined_names()
+    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + index_failures() + lock_failures() + where_failures() + profile_failures() + verb_command_failures() + undefined_names()
     for line in found:
         print("FAIL  {}".format(line))
     if found:

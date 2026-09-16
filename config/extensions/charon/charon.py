@@ -465,10 +465,74 @@ def conan_interpreter():
                   "Conan's own trim".format(launcher or "a conan that is not on PATH"))
 
 
-def local_indexes():
-    return [Path(remote["url"]) for remote in remotes()
+def local_index_remotes():
+    return [remote for remote in remotes()
             if remote.get("enabled", True) and Path(str(remote.get("url", ""))).is_dir()
             and (Path(remote["url"]) / "recipes").is_dir()]
+
+
+def local_indexes():
+    return [Path(remote["url"]) for remote in local_index_remotes()]
+
+
+def served_revisions():
+    served = {}
+    for remote in local_index_remotes():
+        listed = conan("list", "*#latest", "-r", remote["name"], "--format=json", stdout=subprocess.PIPE,
+                       stderr=subprocess.DEVNULL, text=True, check=False)
+        try:
+            answered = json.loads(listed.stdout or "{}").get(remote["name"]) or {}
+        except json.JSONDecodeError:
+            continue
+        for reference, recipe in answered.items():
+            revisions = list((recipe or {}).get("revisions") or {})
+            if revisions:
+                served.setdefault(reference, (remote["name"], revisions[0]))
+    return served
+
+
+LOCK_UPGRADES = {"requires": "--update-requires", "build_requires": "--update-build-requires",
+                 "python_requires": "--update-python-requires"}
+
+
+def recipe_family(reference):
+    name, _, rest = reference.partition("/")
+    return name, rest.partition("@")[2]
+
+
+def stale_pins(lock, served):
+    with open(lock) as handle:
+        content = json.load(handle)
+    families = {}
+    for reference, (remote, _) in served.items():
+        version = reference.partition("/")[2].partition("@")[0]
+        families.setdefault(recipe_family(reference), []).append((remote, version))
+    stale = []
+    for section, flag in LOCK_UPGRADES.items():
+        for entry in content.get(section) or []:
+            reference, _, revision = entry.partition("#")
+            revision = revision.split("%")[0]
+            if reference in served:
+                remote, current = served[reference]
+                if current != revision:
+                    stale.append("{} pins {}#{}, and {} serves #{}; conan lock upgrade {}={} brings it forward"
+                                 .format(lock.name, reference, revision, remote, current, flag, reference))
+            elif recipe_family(reference) in families:
+                offered = ", ".join("{} {}".format(remote, version)
+                                    for remote, version in sorted(families[recipe_family(reference)]))
+                stale.append("{} pins {}, a version no local index serves ({}); it builds from a recipe only this "
+                             "cache still holds, until what requires it names a version that is served"
+                             .format(lock.name, reference, offered))
+    return stale
+
+
+def warn_stale_lock(root):
+    lock = root / LOCK
+    if not lock.is_file():
+        return
+    served = served_revisions()
+    for line in stale_pins(lock, served):
+        warn("lock         " + line)
 
 
 def check_indexes(canonical=False):
@@ -487,6 +551,7 @@ def check_indexes(canonical=False):
 
 def verb_build(root, parsed):
     check_indexes()
+    warn_stale_lock(root)
     provenance(root, parsed.chosen_profile)
     variant = parsed.variant or default_variant(root)
     slices = merged_slices(root, variant)
