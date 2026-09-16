@@ -21,7 +21,7 @@ class LdidConan(ConanFile):
 
     def requirements(self):
         self.requires("libplist/2.6.0")
-        self.requires("openssl/[>=3 <4]")
+        self.requires("openssl/[>=4 <5]")
 
     def source(self):
         get(self, **self.conan_data["sources"][self.version], strip_root=True)

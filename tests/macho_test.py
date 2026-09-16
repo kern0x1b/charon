@@ -744,8 +744,8 @@ def main():
         return 1
     found = []
     try:
-        ld64 = packaged("ld64/956.6@charon/stable", "ld")
-        ldid = packaged("ldid/2.1.5@charon/stable", "ldid")
+        ld64 = packaged("ld64/*@charon/stable", "ld")
+        ldid = packaged("ldid/*@charon/stable", "ldid")
         with tempfile.TemporaryDirectory() as scratch:
             made, pointers = fixtures(Path(scratch), ld64)
             found += invariant_failures(module, made, pointers)

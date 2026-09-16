@@ -73,7 +73,7 @@ jobs:
         run: LLVM_PREFIX="$(brew --prefix llvm)" conan create recipes/ld64/all --version=956.6 -pr:b default --build=missing
 
       - name: Build the signing tool and check it signs
-        run: conan create recipes/ldid/all --version=2.1.5 -pr:h default -pr:b default --build=missing
+        run: conan create recipes/ldid/all --version=2.1.5-procursus7+23.gaf86971 -pr:h default -pr:b default --build=missing
 
       - name: A binary that breaks a platform invariant is refused where it is produced
         run: python3 tests/macho_test.py
