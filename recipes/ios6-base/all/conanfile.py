@@ -4,6 +4,7 @@ import re
 import shutil
 import struct
 import sys
+import tempfile
 from io import StringIO
 
 from conan import ConanFile
@@ -818,7 +819,9 @@ class Ios6Port:
             return
         with open(listed, "rb") as handle:
             wanted = plistlib.load(handle)
-        problems = macho.entitlement_problems(wanted, macho.entitlements(executable))
+        problems = [f"{architecture or 'the binary'}: {problem}"
+                    for architecture, signed in macho.entitlements(executable).items()
+                    for problem in macho.entitlement_problems(wanted, signed)]
         if problems:
             raise ConanException(f"{executable} was signed without what {entitlements} declares: "
                                  + "; ".join(problems))
@@ -1220,13 +1223,17 @@ class MachO:
     def interworking_problems(cls, path):
         with open(path, "rb") as handle:
             data = handle.read()
-        problems, checked = [], 0
+        problems, checked, into_code = [], 0, 0
         for image in cls.images(data):
             if image["cputype"] != cls.ARM:
                 continue
             symbols = cls.code_symbols(data, image)
+            code = [(section["addr"], section["addr"] + section["size"]) for section in image["sections"]
+                    if section["flags"] & cls.CODE]
             for slot, position in cls.rebased_slots(data, image):
                 pointer = struct.unpack_from("<I", data, position)[0]
+                if any(start <= pointer & ~1 < end for start, end in code):
+                    into_code += 1
                 described = symbols.get(pointer & ~1)
                 if not described or len({thumb for thumb, _ in described}) != 1:
                     continue
@@ -1239,7 +1246,7 @@ class MachO:
                 elif not thumb and pointer & 1:
                     problems.append(f"the pointer at {slot:#x} to ARM function {name} has bit 0 set, so a call "
                                     "through it enters ARM code in Thumb state; something rewrote it after the link")
-        return problems, checked
+        return problems, checked, into_code
 
     @classmethod
     def pagezero_problems(cls, path):
@@ -1268,6 +1275,19 @@ class MachO:
                 for key, value in declared.items() if signed.get(key, object()) != value]
 
     def entitlements(self, binary):
+        lipo = self.tool("lipo")
+        architectures = self.output(f'"{lipo}" -archs "{binary}"').split()
+        if len(architectures) < 2:
+            return {architecture: self._slice_entitlements(binary) for architecture in architectures or [""]}
+        found = {}
+        with tempfile.TemporaryDirectory() as folder:
+            for architecture in architectures:
+                thin = os.path.join(folder, architecture)
+                self._conanfile.run(f'"{lipo}" "{binary}" -thin {architecture} -output "{thin}"')
+                found[architecture] = self._slice_entitlements(thin)
+        return found
+
+    def _slice_entitlements(self, binary):
         captured = StringIO()
         if self._conanfile.run(f'ldid -e "{binary}"', stdout=captured, ignore_errors=True):
             return {}
@@ -1279,10 +1299,10 @@ class MachO:
         if "thumb-interworking" in waived:
             self._conanfile.output.warning(f"{binary}: thumb-interworking not checked: {waived['thumb-interworking']}")
         else:
-            found, checked = self.interworking_problems(binary)
+            found, checked, into_code = self.interworking_problems(binary)
             problems += found
-            self._conanfile.output.info(f"{os.path.basename(binary)}: {checked} rebased code pointers match the "
-                                        "mode of the function they name")
+            self._conanfile.output.info(f"{os.path.basename(binary)}: {checked} of {into_code} rebased code pointers "
+                                        "name a function in the symbol table and match its mode")
         if "pagezero" in waived:
             self._conanfile.output.warning(f"{binary}: pagezero not checked: {waived['pagezero']}")
         else:

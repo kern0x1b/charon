@@ -144,7 +144,9 @@ def invariant_failures(module, made, pointers):
         ("fat-with-thumb-without-bit", ["Thumb function _in_thumb lacks bit 0"], 2),
     )
     for name, reasons, checked in expectations:
-        problems, counted = module.MachO.interworking_problems(str(made[name]))
+        problems, counted, into_code = module.MachO.interworking_problems(str(made[name]))
+        if into_code != checked:
+            found.append("{}: {} rebased pointers lead into code, counted {}".format(name, checked, into_code))
         if counted != checked:
             found.append("{}: {} pointers must be compared with their functions, got {}".format(name, checked, counted))
         if len(problems) != len(reasons) or any(reason not in problem for reason, problem in zip(reasons, problems)):
@@ -414,19 +416,40 @@ def entitlement_failures(module, folder, made, ldid):
     declared = {"get-task-allow": True, "keychain-access-groups": ["example.shared"]}
     with open(folder / "declared.plist", "wb") as handle:
         plistlib.dump(declared, handle)
-    for description, waive, signs_with_them, reason in (
-            ("signed with what it declares", {}, True, None),
-            ("signed without them", {}, False, "get-task-allow is declared and the signature does not carry it"),
-            ("signed without them, waived", {"entitlements": "a reason"}, False, None)):
+    with open(folder / "partial.plist", "wb") as handle:
+        plistlib.dump({"keychain-access-groups": ["example.shared"]}, handle)
+
+    def slices(first, second):
+        for source, listed, name in ((made["executable"], first, "slice-armv7"), (made["arm64"], second, "slice-arm64")):
+            shutil.copy2(source, folder / name)
+            subprocess.run([str(ldid), "-S{}".format(folder / listed), str(folder / name)], check=True)
+        subprocess.run(["xcrun", "lipo", "-create", str(folder / "slice-armv7"), str(folder / "slice-arm64"),
+                        "-output", str(folder / "signed")], check=True)
+
+    for description, waive, signs_with_them, reason, prepare in (
+            ("signed with what it declares", {}, True, None, None),
+            ("signed without them", {}, False, "get-task-allow is declared and the signature does not carry it", None),
+            ("signed without them, waived", {"entitlements": "a reason"}, False, None, None),
+            ("merged from slices both signed with them", {}, None, None, ("declared.plist", "declared.plist")),
+            ("merged from an arm64 slice signed without one", {}, None,
+             "arm64: get-task-allow is declared and the signature does not carry it",
+             ("declared.plist", "partial.plist"))):
         instance = running_port(module, folder, {"application": {"name": "Host", "entitlements": "declared.plist"},
                                                  "waive": waive}, ldid)
         executable = folder / "signed"
-        shutil.copy2(made["executable"], executable)
+        if prepare:
+            slices(*prepare)
+        else:
+            shutil.copy2(made["executable"], executable)
         instance._declared_context = lambda: {"executable": str(executable)}
 
         class Signing(module.MachO):
+            def tool(self, name):
+                return subprocess.run(["xcrun", "-f", name], capture_output=True, text=True).stdout.strip()
+
             def sign(self, binary, entitlements=None):
-                super().sign(binary, entitlements if signs_with_them else None)
+                if signs_with_them is not None:
+                    super().sign(binary, entitlements if signs_with_them else None)
 
         module.MachO = Signing
         try:
