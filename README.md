@@ -61,6 +61,28 @@ Then:
                                refusing an app over one with another bundle identifier
     xmake device log [-s 30] [TEXT]
     xmake device run COMMAND, xmake device where
+    xmake where PACKAGE        the folder a required package is installed in
+    xmake check [--staged|--changed] [NAMES]
+                               the project's checks; xmake check --install-hook
+                               makes the git pre-commit hook run the staged ones
+
+An application declared with `add_values("apple.architectures", "armv7", "arm64")`
+is packaged universal: `xmake deb` configures and builds each architecture in
+its own folder under the build directory, merges the bundles with lipo - every
+other file has to be the same in every slice, so pin MinimumOSVersion in the
+plist - and signs and checks the merged binaries. A slice with no shared cache
+under ~/.charon/dyld is said to be unchecked.
+
+A check is a target:
+
+    target("lint-strings")
+        add_rules("@addon/charon/check")
+        set_values("check.command", "python3", "scripts/lint-strings.py")
+        add_values("check.files", "src/**.m", "src/**.h")
+        set_values("check.pass-files", true)
+
+It runs when a file it names changed (all of them without --staged or
+--changed), and with check.pass-files it is given those files.
 
 `includes("@addon/charon/apple-ios")` requires the SDK, ld64 and ldid at the
 versions it pins, and hands every other package the `apple-ios` toolchain named
@@ -86,6 +108,13 @@ installs with Ninja:
     end)
 
 xmake's own `package.tools.cmake` does not pass a custom compiler for iphoneos.
+The third argument takes `cflags`, `cxxflags`, `ldflags`, `shflags`, `system`
+(`Darwin` for projects such as LLVM's runtimes that recognise Apple only by that
+name; no deployment target is set then, the flags carry it) and
+`compile_deployment`, a release to compile against while the image still links,
+and records, the port's minimum; `targets` builds only those, and
+`install = false` skips `cmake --install` - `install` returns the build folder
+for a package that copies what it needs.
 Every package the port requires gets `-O3` with the toolchain, as a release
 build of a Makefile or autotools project expects. An install script runs in the
 extracted source, so its current directory is the source root.

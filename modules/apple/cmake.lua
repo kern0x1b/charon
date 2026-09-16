@@ -16,8 +16,10 @@ function toolchain_file(package, opt)
     opt = opt or {}
     local chosen = toolchain(package)
     local sdk = chosen:config("sdkdir")
-    local common = {"-target", package:arch() .. "-apple-ios" .. chosen:config("deployment"), "-isysroot", sdk}
-    local compiled = table.join(common, opt.cflags or {})
+    local linked_minimum = chosen:config("deployment")
+    local compiled_minimum = opt.compile_deployment or linked_minimum
+    local compiled = table.join({"-target", package:arch() .. "-apple-ios", "-miphoneos-version-min=" .. compiled_minimum, "-isysroot", sdk}, opt.cflags or {})
+    local common = {"-target", package:arch() .. "-apple-ios", "-miphoneos-version-min=" .. linked_minimum, "-isysroot", sdk}
     local linker = {}
     for _, flag in ipairs(table.wrap(chosen:get("shflags"))) do
         if flag:startswith("-fuse-ld=") then
@@ -36,10 +38,14 @@ function toolchain_file(package, opt)
         "set(CMAKE_SYSTEM_PROCESSOR " .. assert(processors[package:arch()], "apple-ios builds armv7, armv7s and arm64") .. ")",
         "set(CMAKE_OSX_SYSROOT \"" .. sdk .. "\" CACHE PATH \"\" FORCE)",
         "set(CMAKE_OSX_ARCHITECTURES " .. package:arch() .. " CACHE STRING \"\" FORCE)",
-        "set(CMAKE_OSX_DEPLOYMENT_TARGET " .. chosen:config("deployment") .. " CACHE STRING \"\" FORCE)",
         "set(CMAKE_C_COMPILER \"" .. os.iorunv("xcrun", {"-f", "clang"}):trim() .. "\")",
         "set(CMAKE_CXX_COMPILER \"" .. os.iorunv("xcrun", {"-f", "clang++"}):trim() .. "\")"
     }
+    if (opt.system or "iOS") == "iOS" then
+        table.insert(lines, "set(CMAKE_OSX_DEPLOYMENT_TARGET " .. compiled_minimum .. " CACHE STRING \"\" FORCE)")
+    else
+        table.insert(lines, "set(CMAKE_OSX_DEPLOYMENT_TARGET \"\" CACHE STRING \"\" FORCE)")
+    end
     for _, language in ipairs({"C", "CXX", "OBJC", "OBJCXX", "ASM"}) do
         local flags = table.join(compiled, language:find("CXX") and opt.cxxflags or {})
         table.insert(lines, string.format("set(CMAKE_%s_FLAGS_INIT \"%s\")", language, quoted(flags)))
@@ -77,5 +83,8 @@ function install(package, configs, opt)
     local envs = {SOURCE_DATE_EPOCH = opt.source_date_epoch or "0"}
     os.vrunv(cmake.program, argv, {envs = envs})
     os.vrunv(cmake.program, table.join({"--build", builddir, "--parallel", tostring(os.cpuinfo("ncpu"))}, opt.targets and table.join({"--target"}, opt.targets) or {}), {envs = envs})
-    os.vrunv(cmake.program, {"--install", builddir}, {envs = envs})
+    if opt.install ~= false then
+        os.vrunv(cmake.program, {"--install", builddir}, {envs = envs})
+    end
+    return builddir
 end

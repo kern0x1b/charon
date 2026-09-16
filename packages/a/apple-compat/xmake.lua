@@ -41,11 +41,11 @@ package("apple-compat")
     on_install("iphoneos", function (package)
         local toolchain = package:toolchains()[1]
         toolchain:load()
-        local triple = package:arch() .. "-apple-ios" .. toolchain:config("deployment")
+        local triple = package:arch() .. "-apple-ios"
         local objects = {}
         for _, symbol in ipairs(package:data("provided")) do
             local object = path.absolute(symbol .. ".o")
-            os.vrunv("xcrun", {"clang", "-target", triple, "-isysroot", toolchain:config("sdkdir"), "-Os",
+            os.vrunv("xcrun", {"clang", "-target", triple, "-miphoneos-version-min=" .. toolchain:config("deployment"), "-isysroot", toolchain:config("sdkdir"), "-Os",
                                "-fvisibility=hidden", "-c", path.join(package:scriptdir(), "src", symbol .. ".c"), "-o", object})
             table.insert(objects, object)
             local header = path.join(package:scriptdir(), "include", "charon", symbol .. ".h")

@@ -18,7 +18,7 @@ toolchain("apple-ios")
         local found = {}
         local sdk = required["iphoneos-sdk"]
         if sdk and toolchain:config("sdk") then
-            found.sdk = sdk:installdir()
+            found.sdk = path.join(sdk:installdir(), "iPhoneOS" .. toolchain:config("sdk") .. ".sdk")
         end
         local ld64 = required["ld64"]
         if ld64 and toolchain:config("ld64") then
@@ -29,7 +29,7 @@ toolchain("apple-ios")
 
     on_check(function (toolchain)
         local found = parts(toolchain, import("core.project.project"))
-        if not found.sdk or not toolchain:config("minimum") then
+        if not found.sdk or not os.isfile(path.join(found.sdk, "SDKSettings.json")) or not toolchain:config("minimum") then
             return false
         end
         return not toolchain:is_arch("armv7", "armv7s") or found.linker ~= nil
@@ -50,7 +50,7 @@ toolchain("apple-ios")
         local minimum = semver.compare(declared, floor) < 0 and floor or declared
         toolchain:config_set("sdkdir", found.sdk)
         toolchain:config_set("deployment", minimum)
-        local target = {"-target", toolchain:arch() .. "-apple-ios" .. minimum, "-isysroot", found.sdk}
+        local target = {"-target", toolchain:arch() .. "-apple-ios", "-miphoneos-version-min=" .. minimum, "-isysroot", found.sdk}
         local linked = table.join(target, found.linker and {"-fuse-ld=" .. found.linker} or {})
         toolchain:add("cxflags", target)
         toolchain:add("mxflags", target)

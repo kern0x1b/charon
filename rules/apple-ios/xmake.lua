@@ -15,7 +15,7 @@ rule("apple-ios")
             if not required then
                 raise("target(%s) builds for apple-ios without includes(\"@addon/charon/apple-ios\") in its project", target:name())
             end
-            versions[name] = required:get("version")
+            versions[name] = required:requirestr():match("%s(%S+)$")
         end
         target:set("toolchains", string.format("@addon/charon/apple-ios[minimum=%s,sdk=%s,ld64=%s]", minimum, versions["iphoneos-sdk"], versions.ld64))
         target:set("policy", "build.ccache", false)

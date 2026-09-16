@@ -82,6 +82,8 @@ function application(target)
     for index = #binaries, 1, -1 do
         sign(target, binaries[index], binaries[index] == executable and target:values("charon.entitlements") or nil)
     end
-    dyld.check(dyld.held_cache(target:arch()), binaries, folder)
+    if not os.getenv("CHARON_SLICE") then
+        dyld.check(dyld.held_cache(target:arch()), binaries, folder)
+    end
     return folder
 end

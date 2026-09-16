@@ -3,6 +3,52 @@ import("core.project.config")
 import("core.project.project")
 import("debian")
 
+function universal(target, architectures, stage)
+    import("apple.merge")
+    import("apple.platform")
+    import("apple.macho")
+    import("apple.compat")
+    import("apple.dyld")
+    local bundles = {}
+    for _, architecture in ipairs(architectures) do
+        local builddir = path.join(config.builddir(), ".charon", "slices", architecture)
+        local envs = {XMAKE_CONFIGDIR = path.join(builddir, "config"), CHARON_SLICE = architecture}
+        os.vexecv(os.programfile(), {"f", "-P", os.projectdir(), "-p", config.plat(), "-a", architecture, "-m", config.mode() or "release", "-o", builddir, "-y"}, {envs = envs})
+        os.vexecv(os.programfile(), {"build", "-P", os.projectdir(), target:name()}, {envs = envs})
+        local built = path.join(builddir, config.plat(), architecture, config.mode() or "release", target:basename() .. ".app")
+        if not os.isdir(built) then
+            raise("the %s slice of %s built no %s", architecture, target:name(), built)
+        end
+        table.insert(bundles, built)
+    end
+    local installed = os.dirs(path.join(stage, "**", target:basename() .. ".app"))[1]
+    if not installed then
+        raise("%s installed no %s.app into %s to replace with the merged bundle", target:name(), target:basename(), stage)
+    end
+    local merged = merge.merge(bundles, architectures, installed)
+    local executable = path.join(installed, target:basename())
+    for _, binary in ipairs(merged) do
+        macho.verify(binary, {waived = platform.waivers(target), arrived = compat.arrived("iOS"), stripped = true})
+    end
+    table.sort(merged, function (a, b) return a ~= executable and b == executable end)
+    for _, binary in ipairs(merged) do
+        platform.sign(target, binary, binary == executable and target:values("charon.entitlements") or nil)
+    end
+    local checked = 0
+    for _, architecture in ipairs(architectures) do
+        local cache = dyld.held_cache(architecture)
+        if os.isfile(cache) then
+            dyld.check(cache, merged, installed)
+            checked = checked + 1
+        else
+            wprint("the %s slices of %s are not checked against a device's imports: there is no %s", architecture, target:basename(), cache)
+        end
+    end
+    if checked == 0 then
+        raise("there is no shared cache for any of %s under %s to check the merged imports against", table.concat(architectures, ", "), path.directory(dyld.held_cache(architectures[1])))
+    end
+end
+
 function packages()
     local grouped = {}
     for _, target in ipairs(project.ordertargets()) do
@@ -44,6 +90,10 @@ function write(opt)
             for _, target in ipairs(described.targets) do
                 task.run("build", {target = target:name()})
                 task.run("install", {target = target:name(), installdir = stage})
+                local architectures = table.wrap(target:values("apple.architectures"))
+                if #architectures > 1 then
+                    universal(target, architectures, stage)
+                end
             end
             if #described.licenses > 0 then
                 local fields = debian.control_text(control, version, stage)

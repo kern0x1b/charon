@@ -8,6 +8,8 @@ package("iphoneos-sdk")
     add_versions("16.4", "5e0fd3f01266cce4ce012d4a99b38eb56578fca40d09edc81cd83dee958202fb")
     add_patches("16.4", "patches/16.4-driverkit-22-availability.patch")
 
+    add_configs("layout", {description = "The SDK sits in the package as iPhoneOS<version>.sdk, the name CMake's iOS platform files require.", default = "named-folder", type = "string", readonly = true})
+
     on_install("@macosx", function (package)
         import("core.base.json")
         local settings = json.loadfile("SDKSettings.json")
@@ -15,9 +17,11 @@ package("iphoneos-sdk")
         if settings.CanonicalName ~= wanted then
             raise("the archive describes itself as %s, not %s", tostring(settings.CanonicalName), wanted)
         end
-        os.vcp("*", package:installdir())
+        local folder = path.join(package:installdir(), "iPhoneOS" .. package:version_str() .. ".sdk")
+        os.mkdir(folder)
+        os.vcp("*", folder .. "/")
     end)
 
     on_test(function (package)
-        assert(os.isfile(path.join(package:installdir(), "usr", "include", "simd", "base.h")))
+        assert(os.isfile(path.join(package:installdir(), "iPhoneOS" .. package:version_str() .. ".sdk", "usr", "include", "simd", "base.h")))
     end)
