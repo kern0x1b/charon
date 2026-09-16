@@ -54,7 +54,6 @@ toolchain("apple-ios")
         toolchain:config_set("sdkdir", found.sdk)
         toolchain:config_set("deployment", minimum)
         toolchain:add("runenvs", "IPHONEOS_DEPLOYMENT_TARGET", minimum)
-        os.setenv("IPHONEOS_DEPLOYMENT_TARGET", minimum)
         local target = {"-target", toolchain:arch() .. "-apple-ios", "-miphoneos-version-min=" .. minimum, "-isysroot", found.sdk}
         local linked = table.join(target, found.linker and {"-fuse-ld=" .. found.linker} or {})
         toolchain:add("cxflags", toolchain:config("optimize") == "packages" and table.join(target, {"-O3"}) or target)

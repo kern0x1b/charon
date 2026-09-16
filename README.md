@@ -121,6 +121,12 @@ for a package that copies what it needs.
 Every package the port requires gets `-O3` with the toolchain, as a release
 build of a Makefile or autotools project expects. An install script runs in the
 extracted source, so its current directory is the source root.
+The bridge runs CMake with IPHONEOS_DEPLOYMENT_TARGET, which reaches tools that
+take no flags, such as an assembler a configure script calls. A script that
+runs make or autoconf itself passes
+`import("@addon.charon.apple.envs").build(package, import("package.tools.autoconf").buildenvs(package))`
+as its envs; a host step of a two-stage build (a generator built for macOS)
+runs with the process environment, which does not carry it.
 `charon@libcxx` is libc++ 23 as the shared pair an application bundles, linked
 with `charon@apple-compat`, the hidden shims for what the minimum release lacks.
 apple-compat links its shims into whoever requires it and force-includes

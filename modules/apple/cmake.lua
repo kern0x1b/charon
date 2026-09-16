@@ -80,7 +80,7 @@ function install(package, configs, opt)
                   "-DBUILD_SHARED_LIBS=" .. (package:config("shared") and "ON" or "OFF"),
                   "-DCMAKE_MACOSX_BUNDLE=OFF"}
     table.join2(argv, configs or {})
-    local envs = {SOURCE_DATE_EPOCH = opt.source_date_epoch or "0"}
+    local envs = {SOURCE_DATE_EPOCH = opt.source_date_epoch or "0", IPHONEOS_DEPLOYMENT_TARGET = toolchain(package):config("deployment")}
     os.vrunv(cmake.program, argv, {envs = envs})
     os.vrunv(cmake.program, table.join({"--build", builddir, "--parallel", tostring(os.cpuinfo("ncpu"))}, opt.targets and table.join({"--target"}, opt.targets) or {}), {envs = envs})
     if opt.install ~= false then
