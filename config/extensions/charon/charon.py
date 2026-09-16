@@ -1143,9 +1143,9 @@ def verb_publish(root, parsed):
         listed = conan("list", "{}#latest:*#latest".format(reference), "--format=json", stdout=subprocess.PIPE,
                        stderr=subprocess.DEVNULL, text=True)
         listing["Local Cache"].update(json.loads(listed.stdout)["Local Cache"])
-    name = index.name
     origin = subprocess.run(["git", "-C", str(index), "remote", "get-url", "origin"], stdout=subprocess.PIPE,
                             stderr=subprocess.DEVNULL, text=True).stdout.strip()
+    name = Path(origin).name[:-len(".git")] if origin.endswith(".git") else (Path(origin).name or index.name)
     selected = out / "{}-packages.json".format(name)
     selected.write_text(json.dumps(listing, indent=2))
     archive = out / "{}-packages.tgz".format(name)
