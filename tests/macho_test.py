@@ -757,6 +757,15 @@ def weak_import_failures(module, ld64, ldid):
             run("xcrun", "clang", "-target", "armv7-apple-ios6.0", "-Wno-incompatible-sysroot",
                 "-fuse-ld={}".format(ld64), "-nostdlib", "-dynamiclib", "-L.", "-lSystem", "-o",
                 "lib{}.dylib".format(name), "{}.c".format(name), cwd=folder)
+        (folder / "wide.c").write_text("extern unsigned long __strlcpy_chk(char *, const char *, unsigned long, "
+                                       "unsigned long);\n"
+                                       "unsigned long use(char *d) { return __strlcpy_chk(d, \"x\", 2, 2); }\n")
+        run("xcrun", "clang", "-target", "arm64-apple-ios7.0", "-Wno-incompatible-sysroot",
+            "-fuse-ld={}".format(ld64), "-nostdlib", "-dynamiclib", "-L.", "-lSystem", "-o", "libwide-arm64.dylib",
+            "wide.c", cwd=folder)
+        run("xcrun", "lipo", "-create", "libguarded.dylib", "libwide-arm64.dylib", "-output", "libfat.dylib", cwd=folder)
+        run("xcrun", "lipo", "-create", "libstrong.dylib", "libwide-arm64.dylib", "-output", "libfatlate.dylib",
+            cwd=folder)
         instance = running_port(module, folder, {"stage": {}}, ldid)
 
         class Reading(original):
@@ -768,8 +777,10 @@ def weak_import_failures(module, ld64, ldid):
             for name, waive, reason in (("late", {}, "clock_gettime arrived in 10.0"),
                                         ("guarded", {}, None),
                                         ("late", {"weak-imports": "a reason"}, None),
-                                        ("strong", {}, "dyld refuses to load it there: __strlcpy_chk arrived in 7.0"),
-                                        ("strong", {"weak-imports": "a reason"}, "__strlcpy_chk arrived in 7.0")):
+                                        ("strong", {}, "dyld refuses to load it there: armv7: __strlcpy_chk arrived in 7.0"),
+                                        ("strong", {"weak-imports": "a reason"}, "__strlcpy_chk arrived in 7.0"),
+                                        ("fat", {}, None),
+                                        ("fatlate", {}, "armv7: __strlcpy_chk arrived in 7.0, after 6.0")):
                 type(instance).declaration = {"stage": {}, "waive": waive}
                 try:
                     instance.platform_verify(str(folder / "lib{}.dylib".format(name)), waive)

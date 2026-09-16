@@ -93,14 +93,17 @@ class ApplePort:
         MachO(self).verify(binary, waived, stripped)
         strong, weak = self._late_imports(binary)
         if strong:
-            raise ConanException(f"{binary} imports what {self.settings.os} {self.settings.os.version} does not have, "
-                                 f"so dyld refuses to load it there: {'; '.join(strong)}")
+            raise ConanException(f"{binary} imports what its minimum release does not have, so dyld refuses to load "
+                                 f"it there: {'; '.join(strong)}")
         if "weak-imports" in waived:
             self.output.warning(f"{binary}: weak-imports not checked: {waived['weak-imports']}")
             return
         if weak:
-            raise ConanException(f"{binary} weakly imports what {self.settings.os} {self.settings.os.version} does "
-                                 f"not have, so a call jumps to NULL there: {'; '.join(weak)}")
+            raise ConanException(f"{binary} weakly imports what its minimum release does not have, so a call jumps "
+                                 f"to NULL there: {'; '.join(weak)}")
+
+    MINIMUM = re.compile(r"cmd LC_VERSION_MIN_\w+\s+cmdsize \d+\s+version (\S+)|minos (\S+)")
+    IMPORT = re.compile(r"\(undefined\) (weak )?external _(\w+) \(from libSystem\)")
 
     def _late_imports(self, binary):
         try:
@@ -109,15 +112,21 @@ class ApplePort:
             raise ConanException(f"{self.name} builds for an Apple platform without apple-compat in its graph, and "
                                  "it is what says which system calls arrived when")
         arrived = compat.cpp_info.get_property("charon_arrived") or {}
-        target = Version(str(self.settings.os.version))
         macho = MachO(self)
-        listing = macho.output(f'"{macho.tool("nm")}" -m "{binary}"')
-        imported = re.findall(r"\(undefined\) (weak )?external _(\w+) \(from libSystem\)", listing)
-        late = sorted((symbol, bool(weak)) for weak, symbol in set(imported)
-                      if symbol in arrived and target < Version(arrived[symbol]))
-        described = [(f"{symbol} arrived in {arrived[symbol]}; link apple-compat::{symbol}", weak)
-                     for symbol, weak in late]
-        return [text for text, weak in described if not weak], [text for text, weak in described if weak]
+        strong, weak = [], []
+        for architecture in macho.output(f'"{macho.tool("lipo")}" -archs "{binary}"').split():
+            recorded = self.MINIMUM.search(macho.output(f'"{macho.tool("otool")}" -arch {architecture} -l "{binary}"'))
+            if not recorded:
+                raise ConanException(f"the {architecture} slice of {binary} records no minimum release, so nothing "
+                                     "says which system calls it may import")
+            minimum = recorded.group(1) or recorded.group(2)
+            listing = macho.output(f'"{macho.tool("nm")}" -m -arch {architecture} "{binary}"')
+            for late_weak, symbol in sorted(set(self.IMPORT.findall(listing)), key=lambda found: found[1]):
+                if symbol in arrived and Version(minimum) < Version(arrived[symbol]):
+                    described = (f"{architecture}: {symbol} arrived in {arrived[symbol]}, after {minimum}; "
+                                 f"link apple-compat::{symbol}")
+                    (weak if late_weak else strong).append(described)
+        return strong, weak
 
     def link_input_findings(self, path, label):
         arch, target = str(self.settings.arch), str(self.settings.os.version)
