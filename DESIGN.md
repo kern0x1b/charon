@@ -87,8 +87,8 @@ to obtain and verify them.
 ## The three layers
 
 **Shared configuration** - `config/`. Two profiles pin the target:
-`ios6-armv7` - armv7, iOS 6.0, the theos SDK, and `ld64` as a build tool - and
-`ios-arm64` - arm64 from iOS 7.0, the theos SDK. They carry nothing a port
+`ios6-armv7` - armv7, iOS 6.0, the `iphoneos-sdk` package and `ld64` as build
+tools - and `ios-arm64` - arm64 from iOS 7.0, the `iphoneos-sdk` package. They carry nothing a port
 chooses for itself: a C++ standard, CPU tuning or a later deployment target goes
 in the port's own profile, which includes one of these.
 `settings_user.yml` adds the iOS versions Conan does not ship. A machine picks

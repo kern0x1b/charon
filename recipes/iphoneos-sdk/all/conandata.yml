@@ -1,0 +1,4 @@
+sources:
+  '13.7':
+    sha256: 661d1a8c518025f084d8c1e70dd8767581fb5730fb5950378f0915d840a7b5c3
+    url: https://github.com/theos/sdks/releases/download/master-146e41f/iPhoneOS13.7.sdk.tar.xz

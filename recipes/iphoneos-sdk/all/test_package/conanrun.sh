@@ -1,0 +1,1 @@
+. "/Users/alexanderhavrysh/Git/projects/ios/ios6-toolchain/recipes/iphoneos-sdk/all/test_package/conanrunenv-release-armv8.sh"

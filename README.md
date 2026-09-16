@@ -11,8 +11,8 @@ other. What is shared is only what is true for all of them.
 ## What is here
 
     config/settings_user.yml   iOS 6.0 and 6.1, which Conan does not ship
-    config/profiles/ios6-armv7 the target: armv7, iOS 6.0, the theos SDK, the linker
-    config/profiles/ios-arm64  the target: arm64, iOS 7.0 or later, the theos SDK
+    config/profiles/ios6-armv7 the target: armv7, iOS 6.0, the SDK package, the linker
+    config/profiles/ios-arm64  the target: arm64, iOS 7.0 or later, the SDK package
     config/extensions/hooks/   refuses a missing SDK or a swapped linker
     config/extensions/charon/  Charon: the entry point, what it generates, and the phone transport
     tools/sdk-usage.py         which files of an SDK a build actually read
@@ -191,10 +191,9 @@ To set it for one invocation instead, the flag is `-c:a`, not `-c`: `ld64` is a
 line is almost always this.
 
 Xcode is not required and does not need to be installed. The Command Line Tools
-carry the compiler and the compiler runtime, the SDK is the one theos publishes
-in [theos/sdks](https://github.com/theos/sdks), and the linker and the signing
-tool are built from source by the `ld64` and `ldid` recipes. Theos itself is not
-needed.
+carry the compiler and the compiler runtime, the SDK comes from the
+`iphoneos-sdk` package, and the linker and the signing tool are built from
+source by the `ld64` and `ldid` recipes. Theos itself is not needed.
 
 ## A port
 
@@ -313,11 +312,17 @@ places, and each is kept to what is needed:
 - **The Command Line Tools** - the compilers and their runtime, `mig`, and the
   archive and binary tools. They are installed once by `xcode-select --install`
   and nothing here replaces them.
-- **The iOS SDK, from theos/sdks.** Read, never copied. A port records exactly which
+- **The iOS SDK, from the `iphoneos-sdk` package.** The profiles require it; it
+  downloads the SDK archive [theos/sdks](https://github.com/theos/sdks) publishes
+  as a release asset, checks its sha256 and its `SDKSettings.plist`, and answers
+  `tools.apple:sdk_path` for every build that requires it. It is never uploaded
+  anywhere (`upload_policy = "skip"`): the SDK is Apple's, and this project only
+  says where it comes from. A `tools.apple:sdk_path` set in a profile or on the
+  command line still wins. A port records exactly which
   of its files it reads - `tools/sdk-usage.py` turns the compiler's and the
   linker's own logs into that list - so the dependency is a known set of paths
-  rather than a whole SDK. This repository's CI builds nothing that reads it and
-  does not download it.
+  rather than a whole SDK. This repository's CI fetches it only to check the
+  package names the SDK it says it does.
 - **ld64**, built from cctools-port. Only its linker is built - `ld64/src/3rd`,
   `mach_o` and `ld` - and only libtapi's own targets, with LLVM configured for
   the host alone. The package holds the linker, `libtapi.dylib` and their

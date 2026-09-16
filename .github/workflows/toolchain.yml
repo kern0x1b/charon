@@ -46,6 +46,9 @@ jobs:
           conan config install "$PWD/config"
           conan remote add ios6 "$PWD" -t local-recipes-index --index 0 -f
 
+      - name: Fetch the SDK and check it is the one it names
+        run: conan create recipes/iphoneos-sdk/all --version=13.7 -pr:h default -pr:b default
+
       - name: The profile resolves
         run: |
           conan profile show -pr:h ios6-armv7

@@ -1,6 +1,4 @@
 {% set deployment = "6.0" %}
-{% set theos = os.getenv("THEOS", os.path.join(os.getenv("HOME"), "theos")) %}
-{% set sdk = os.getenv("IOS_SDK", theos + "/sdks/iPhoneOS13.7.sdk") %}
 {% set detected = detect_api.detect_default_compiler() %}
 
 [settings]
@@ -15,9 +13,9 @@ build_type=Release
 
 [tool_requires]
 ld64/956.6@ios6/stable
+iphoneos-sdk/13.7@ios6/stable
 
 [conf]
-tools.apple:sdk_path={{ sdk }}
 tools.cmake.cmaketoolchain:generator=Ninja
 
 [buildenv]

@@ -33,13 +33,13 @@ def pre_build(conanfile):
     sdk = conanfile.conf.get("tools.apple:sdk_path")
     if not sdk:
         raise ConanException(
-            f"{conanfile.ref}: no SDK. The ios6-armv7 and ios-arm64 profiles "
-            "set tools.apple:sdk_path; build with one of them.")
+            f"{conanfile.ref}: no SDK. The ios6-armv7 and ios-arm64 profiles require "
+            "iphoneos-sdk, which sets tools.apple:sdk_path; build with one of them.")
     if not os.path.isdir(sdk):
         raise ConanException(
-            f"{conanfile.ref}: the SDK is not at {sdk}. Put iPhoneOS13.7.sdk from "
-            "https://github.com/theos/sdks there, or set tools.apple:sdk_path to "
-            "where it is. Do not continue without it: the build fails much later, "
+            f"{conanfile.ref}: the SDK is not at {sdk}. tools.apple:sdk_path names a "
+            "folder that does not exist; leave it unset so the iphoneos-sdk package "
+            "answers it. Do not continue without it: the build fails much later, "
             "inside Apple's headers.")
 
     if conanfile.name == "ld64" or conanfile.settings.get_safe("arch") != "armv7":
