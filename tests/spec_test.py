@@ -59,6 +59,22 @@ system = ["task:audit", "build:engine"]
 KNOWN = {"build": "/port/build/system", "sdk": "/sdks/iPhoneOS16.4.sdk"}
 
 
+def implicit_variant_failures():
+    found = []
+    with tempfile.TemporaryDirectory() as folder:
+        root = Path(folder)
+        (root / spec.MANIFEST).write_text('[port]\nname = "p"\nversion = "1"\n[pipeline]\nsystem = ["build:device-library"]\n')
+        declared = spec.load(root)
+        if declared.variants() != {"system": {}}:
+            found.append("a manifest with one pipeline and no [variants] must build that pipeline as its variant: "
+                         "got {}".format(declared.variants()))
+        (root / spec.MANIFEST).write_text('[port]\nname = "p"\nversion = "1"\n[variants.a]\n[pipeline]\n'
+                                          'a = ["build:device-library"]\nb = ["build:device-library"]\n')
+        if sorted(spec.load(root).variants()) != ["a"]:
+            found.append("declared [variants] must not gain the pipeline names: got {}".format(spec.load(root).variants()))
+    return found
+
+
 def failures():
     with tempfile.TemporaryDirectory() as folder:
         root = Path(folder)
@@ -322,7 +338,7 @@ def main():
         print("FAIL  this needs Python 3.11 or newer for tomllib, and it is running under {}. "
               "Skipping would report success having checked nothing.".format(running))
         return 1
-    found = failures() + variant_failures() + platform_failures()
+    found = failures() + variant_failures() + platform_failures() + implicit_variant_failures()
     for line in found:
         print("FAIL  {}".format(line))
     if found:

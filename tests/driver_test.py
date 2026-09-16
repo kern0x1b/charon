@@ -9,6 +9,7 @@ a direct child of build/ that cmake configured and that has frameworks laid out,
 and nothing else under build/ qualifies however much it resembles one.
 """
 import json
+import os
 import sys
 import tempfile
 from pathlib import Path
@@ -266,6 +267,45 @@ def publish_failures():
     return found
 
 
+def launcher_failures():
+    found = []
+    with tempfile.TemporaryDirectory() as folder:
+        root = Path(folder)
+        launcher = root / "home" / "charon"
+        launcher.parent.mkdir()
+        launcher.write_text("#!/bin/sh\n")
+        locked, open_folder = root / "locked", root / "open"
+        locked.mkdir()
+        open_folder.mkdir()
+        locked.chmod(0o555)
+        try:
+            linked, created = charon.install_launcher(launcher, os.pathsep.join([str(locked), str(open_folder)]))
+            if not created or linked != open_folder / "charon" or linked.resolve() != launcher.resolve():
+                found.append("the launcher must be linked into the first writable folder on PATH: got {}".format(
+                    linked))
+            linked, created = charon.install_launcher(launcher, os.pathsep.join([str(locked), str(open_folder)]))
+            if created:
+                found.append("a launcher already on PATH must be left alone")
+            (open_folder / "charon").unlink()
+            (open_folder / "charon").write_text("someone else's")
+            try:
+                charon.install_launcher(launcher, str(open_folder))
+                found.append("a different charon on PATH must be refused, not replaced")
+            except charon.Failure:
+                pass
+        finally:
+            locked.chmod(0o755)
+    with tempfile.TemporaryDirectory() as folder:
+        package = Path(folder) / "p"
+        (package / "deb").mkdir(parents=True)
+        (package / "deb" / "x_1_iphoneos-arm.deb").write_bytes(b"!<arch>\n")
+        graph = json.dumps({"graph": {"nodes": {"0": {"package_folder": str(package)}}}})
+        copied = charon.packaged_artifacts(graph, Path(folder) / "build" / "system")
+        if [path.name for path in copied] != ["x_1_iphoneos-arm.deb"] or not copied[0].is_file():
+            found.append("a packaged .deb must be copied into the port's build folder: got {}".format(copied))
+    return found
+
+
 def where_failures():
     import json as encoded
     import types
@@ -340,8 +380,11 @@ def verb_command_failures():
     import types
     found = []
     calls = []
-    saved = charon.conan, charon.generated, charon.variant_profile, charon.variant_options, charon.default_variant
-    charon.conan = lambda *arguments, **options: calls.append([str(argument) for argument in arguments])
+    saved = (charon.conan, charon.generated, charon.variant_profile, charon.variant_options, charon.default_variant,
+             charon.packaged_artifacts)
+    charon.conan = lambda *arguments, **options: calls.append([str(argument) for argument in arguments]) or \
+        types.SimpleNamespace(stdout="{}")
+    charon.packaged_artifacts = lambda graph, destination: []
     charon.generated = lambda root, variant, report=None: root
     charon.variant_profile = lambda root, parsed, variant: Path("/profile")
     charon.variant_options = lambda root, variant: []
@@ -359,7 +402,8 @@ def verb_command_failures():
             found.append("charon package must hand export-pkg only what it accepts, and it takes no build policy: "
                          "{}".format(package))
     finally:
-        charon.conan, charon.generated, charon.variant_profile, charon.variant_options, charon.default_variant = saved
+        (charon.conan, charon.generated, charon.variant_profile, charon.variant_options, charon.default_variant,
+         charon.packaged_artifacts) = saved
     return found
 
 
@@ -395,7 +439,7 @@ def main():
         print("FAIL  this needs Python 3.11 or newer for tomllib, and it is running under {}. Skipping would "
               "report success having checked nothing.".format(".".join(str(p) for p in sys.version_info[:3])))
         return 1
-    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + index_failures() + lock_failures() + publish_failures() + where_failures() + profile_failures() + verb_command_failures() + undefined_names()
+    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + index_failures() + lock_failures() + publish_failures() + launcher_failures() + where_failures() + profile_failures() + verb_command_failures() + undefined_names()
     for line in found:
         print("FAIL  {}".format(line))
     if found:

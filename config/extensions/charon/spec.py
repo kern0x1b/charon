@@ -38,6 +38,13 @@ def _release(text):
     return tuple(int(part) for part in str(text).split("."))
 
 
+def with_implicit_variants(content):
+    pipelines = content.get("pipeline")
+    if "variants" not in content and isinstance(pipelines, dict) and pipelines:
+        content = dict(content, variants={name: {} for name in pipelines})
+    return content
+
+
 def load(root):
     import tomllib
     path = Path(root) / MANIFEST
@@ -45,7 +52,7 @@ def load(root):
         return None
     with path.open("rb") as handle:
         try:
-            return Spec(Path(root), tomllib.load(handle))
+            return Spec(Path(root), with_implicit_variants(tomllib.load(handle)))
         except tomllib.TOMLDecodeError as broken:
             raise SpecError("{} is not readable: {}".format(path, broken))
 

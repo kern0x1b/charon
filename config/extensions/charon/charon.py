@@ -108,9 +108,11 @@ def manifest(root):
         return {}
     with path.open("rb") as handle:
         try:
-            return tomllib.load(handle)
+            content = tomllib.load(handle)
         except tomllib.TOMLDecodeError as broken:
             raise Failure("{} is not readable: {}".format(path, broken))
+    import spec
+    return spec.with_implicit_variants(content)
 
 
 def declared(root, section, key, fallback=None):
@@ -596,8 +598,25 @@ def verb_where(root, parsed):
 def verb_package(root, parsed):
     variant = parsed.variant or default_variant(root)
     where = generated(root, variant) or root
-    conan("export-pkg", where, *conan_flags(root, variant_profile(root, parsed, variant)),
-          *variant_options(root, variant), *parsed.extra)
+    exported = conan("export-pkg", where, *conan_flags(root, variant_profile(root, parsed, variant)),
+                     *variant_options(root, variant), "--format=json", *parsed.extra, stdout=subprocess.PIPE,
+                     text=True)
+    for artifact in packaged_artifacts(exported.stdout, root / BUILD / variant):
+        say("package      {}".format(artifact))
+
+
+def packaged_artifacts(graph_json, destination):
+    nodes = (json.loads(graph_json or "{}").get("graph") or {}).get("nodes") or {}
+    folder = (nodes.get("0") or {}).get("package_folder")
+    if not folder:
+        raise Failure("conan export-pkg reported no package folder, so there is nothing to hand out")
+    destination.mkdir(parents=True, exist_ok=True)
+    found = []
+    for built in sorted((Path(folder) / "deb").glob("*.deb")):
+        copied = destination / built.name
+        shutil.copy2(built, copied)
+        found.append(copied)
+    return found
 
 
 def frameworks_of(staged):
@@ -1061,6 +1080,25 @@ def verb_profiles(root, parsed):
         say("profile      {} (written from its platform)".format(folder / name))
 
 
+def install_launcher(launcher, path=None):
+    launcher = Path(launcher)
+    folders = [Path(folder) for folder in (path if path is not None else os.environ.get("PATH", "")).split(os.pathsep)
+               if folder]
+    for folder in folders:
+        existing = folder / "charon"
+        if existing.exists() or existing.is_symlink():
+            if existing.resolve() == launcher.resolve():
+                return existing, False
+            raise Failure("{} is on PATH and is not {}; remove it or put Charon's launcher there yourself".format(
+                existing, launcher))
+    for folder in folders:
+        if folder.is_dir() and os.access(folder, os.W_OK):
+            linked = folder / "charon"
+            linked.symlink_to(launcher)
+            return linked, True
+    raise Failure("no folder on PATH is writable, so `charon` cannot be put there; link {} into one".format(launcher))
+
+
 def verb_setup(root, parsed):
     shared = [Path(folder).expanduser().resolve() for folder in parsed.extra]
     for folder in shared:
@@ -1070,6 +1108,9 @@ def verb_setup(root, parsed):
     for folder in shared:
         conan("config", "install", folder / "config")
     say("remotes now: {}".format(", ".join(remote["name"] for remote in remotes())))
+    home = conan("config", "home", stdout=subprocess.PIPE, text=True).stdout.strip()
+    linked, created = install_launcher(Path(home) / "extensions" / "charon" / "charon")
+    say("launcher     {} ({})".format(linked, "linked" if created else "already there"))
     verb_profiles(root, parsed)
     check_indexes(canonical=True)
     check_declared_conf(root, parsed.chosen_profile)

@@ -38,19 +38,19 @@ every port of a platform.
 
     export LLVM_PREFIX="$(brew --prefix llvm)"
 
-Charon is the entry point, the way Gradle is. Put it on the path once per
-machine:
+Charon is the entry point, the way Gradle is. Inside a port, run it once by its
+full path:
 
-    ln -s "$(conan config home)/extensions/charon/charon" /usr/local/bin/charon
+    "$(conan config home)/extensions/charon/charon" setup <path to this repo>
 
-and inside a port `charon setup <path to this repo>` installs this configuration
-and registers this repository's recipes and the port's own ahead of the general
-remotes. The verbs are the same in every port:
+That installs this configuration, registers this repository's recipes and the
+port's own ahead of the general remotes, and links `charon` into the first
+writable folder on PATH, so every later call is just `charon`. The verbs are the same in every port:
 
     charon build [--variant NAME]   everything the declaration names
     charon task NAME [NAME...]      declared tasks, run the way the pipeline runs them
     charon test [--tier NAME]       the declared test tiers
-    charon package                  the .deb
+    charon package                  the .deb, copied to build/<variant>/
     charon deploy, charon run       install on the phone, launch the application
     charon generate                 write the recipe, profile and CMake without building
     charon integrate, clean, provenance, device run|copy|fetch
@@ -58,7 +58,9 @@ remotes. The verbs are the same in every port:
 `conan config install` copies rather than links, so after changing Charon here
 run `charon setup` again; `charon provenance` says which copy is answering.
 
-A port carries no conanfile.py, no profile, no CMake and no Makefile. It carries
+A port with one pipeline needs no `[variants]`: each name under `[pipeline]` is
+a variant with no options of its own. A port carries no conanfile.py, no profile,
+no CMake and no Makefile. It carries
 `charon.toml`, and Charon writes the rest into `build/<variant>/charon/`:
 
     [port]
