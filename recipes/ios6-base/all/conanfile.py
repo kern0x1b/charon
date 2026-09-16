@@ -279,7 +279,12 @@ class Ios6Port:
         })
         include = engine.get("project-include")
         if include:
-            name = os.path.basename(str(self.folders.source or "project"))
+            name = engine.get("project-name")
+            if not name:
+                raise ConanException(
+                    f"{self.name} declares project-include but no project-name. CMake applies the file as "
+                    "CMAKE_PROJECT_<the name the engine gives project()>_INCLUDE, and the folder the sources "
+                    "sit in is not that name; guessing it means the file is silently never included")
             variables[f"CMAKE_PROJECT_{name}_INCLUDE"] = os.path.join(self.port_root, include)
         toolchain.generate()
 
@@ -436,9 +441,10 @@ class Ios6Port:
     def _check_imports(self):
         cache = self.conf.get("user.ios6:dyld_shared_cache", check_type=str)
         if not cache:
-            self.output.warning("user.ios6:dyld_shared_cache is not set, so the imports this system exports "
-                                "were not checked")
-            return
+            raise ConanException(
+                "user.ios6:dyld_shared_cache is not set, and check:imports is a step this pipeline declares. "
+                "A step that reports success having looked at nothing is worse than no step at all, so either "
+                "name the cache this port is checked against or take check:imports out of the pipeline")
         self.run(f'ios6-imports-check --cache "{cache}" --dist "{self.stage_folder}"')
 
     def _clear_stage(self):
@@ -552,6 +558,16 @@ class Ios6Port:
         self._write_application_plist(bundle, name, declared)
         entitlements = declared.get("entitlements")
         executable = os.path.join(bundle, name)
+        macho.repoint(executable, bundled)
+        carried = {os.path.basename(identity) for identity in bundled.values()}
+        elsewhere = [reference for reference in macho.references(executable)
+                     if os.path.basename(reference) in carried
+                     and not reference.startswith("@executable_path/")]
+        if elsewhere:
+            raise ConanException(
+                f"{executable} loads {', '.join(elsewhere)} from outside its own bundle while shipping a copy "
+                "of each; the application would run against whatever the system has there instead of what it "
+                "was built with")
         macho.sign(executable, os.path.join(self.port_root, entitlements) if entitlements else None)
 
     def _write_application_plist(self, bundle, name, declared):
@@ -656,16 +672,20 @@ class MachO:
             raise ConanException(f"linked by a linker that stamps {self.ENCRYPTED}, which iOS 6 refuses in a "
                                  f"library it loads: {', '.join(stamped)}")
 
-    def retarget(self, identities):
+    def repoint(self, binary, identities):
         rename = os.path.basename
         by_name = {rename(identity).replace("librev-", "lib"): identity for identity in identities.values()}
         install_name_tool = self.tool("install_name_tool")
+        for reference in self.references(binary):
+            target = by_name.get(rename(reference))
+            if target and target != reference:
+                self._conanfile.run(f'"{install_name_tool}" -change "{reference}" "{target}" "{binary}"')
+
+    def retarget(self, identities):
+        install_name_tool = self.tool("install_name_tool")
         for binary, identity in identities.items():
             self._conanfile.run(f'"{install_name_tool}" -id "{identity}" "{binary}"')
-            for reference in self.references(binary):
-                target = by_name.get(rename(reference))
-                if target and target != reference:
-                    self._conanfile.run(f'"{install_name_tool}" -change "{reference}" "{target}" "{binary}"')
+            self.repoint(binary, identities)
             unresolved = [reference for reference in self.references(binary) if reference.startswith("@rpath/")]
             if unresolved:
                 raise ConanException(f"{binary} still depends on {', '.join(unresolved)}")
