@@ -536,6 +536,8 @@ class MachO:
     EXECUTABLE = 2
     CODE = 0x80000000 | 0x400
     THUMB_DEFINITION = 0x0008
+    SECTION_TYPE = 0xFF
+    LAZY_POINTERS = (0x07, 0x10)
     SMALLEST_ARM64_PAGEZERO = 1 << 32
     WAIVABLE = ("thumb-interworking", "pagezero", "entitlements", "input-minimum")
     CPU_TYPES = {"armv7": 12, "armv7s": 12, "armv8": 0x0100000C, "arm64": 0x0100000C}
@@ -766,7 +768,11 @@ class MachO:
             symbols = cls.code_symbols(data, image)
             code = [(section["addr"], section["addr"] + section["size"]) for section in image["sections"]
                     if section["flags"] & cls.CODE]
+            lazy = [(section["addr"], section["addr"] + section["size"]) for section in image["sections"]
+                    if section["flags"] & cls.SECTION_TYPE in cls.LAZY_POINTERS]
             for slot, position in cls.rebased_slots(data, image):
+                if any(start <= slot < end for start, end in lazy):
+                    continue
                 pointer = struct.unpack_from("<I", data, position)[0]
                 if any(start <= pointer & ~1 < end for start, end in code):
                     into_code += 1

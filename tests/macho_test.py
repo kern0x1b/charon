@@ -728,9 +728,19 @@ def stripped_failures(module, ld64):
             "-nostdlib", "-dynamiclib", "-L.", "-lSystem", "-o", "liblocal.dylib", "local.c", cwd=folder)
         shutil.copy2(folder / "liblocal.dylib", folder / "libstripped.dylib")
         run("xcrun", "strip", "-x", "libstripped.dylib", cwd=folder)
+        (folder / "libimports.tbd").write_text(SYSTEM_STUB.replace("/usr/lib/libSystem.B.dylib", "/usr/lib/libimports.dylib")
+                                               .replace("dyld_stub_binder", "_first, _second"))
+        (folder / "daemon.c").write_text("extern int first(void); extern int second(void);\n"
+                                         "int start(void) { return first() + second(); }\n")
+        run("xcrun", "clang", "-target", "armv7-apple-ios6.0", "-Wno-incompatible-sysroot", "-fuse-ld={}".format(ld64),
+            "-nostdlib", "-Wl,-e,_start", "-L.", "-lSystem", "-limports", "-o", "daemon", "daemon.c", cwd=folder)
         output = Output()
         conanfile = type("Recipe", (), {"output": output})()
         macho = module.MachO(conanfile)
+        problems, checked, into_code = module.MachO.interworking_problems(str(folder / "daemon"))
+        if into_code or problems:
+            found.append("an executable whose only code pointers are dyld's lazy binding slots has no program pointer "
+                         "to check: counted {} into code, {}".format(into_code, problems))
         for name, stripped, waived, reason in (
                 ("liblocal.dylib", False, {}, None),
                 ("libstripped.dylib", False, {}, "arrived stripped"),
