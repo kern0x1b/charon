@@ -132,7 +132,8 @@ class ApplePort:
     def platform_package(self):
         application = self.declared.get("application", {})
         variant = self.declared_variant()
-        builds_application = bool(application) and variant == application.get("variant")
+        builds_application = bool(application) and any(step.partition(":")[2] == "application"
+                                                        for step in self.declared_pipeline())
         if builds_application:
             bundle = f"{application['name']}.app"
             shutil.copytree(os.path.join(self.build_folder, bundle),

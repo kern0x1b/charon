@@ -3,9 +3,10 @@
 
     tests/package_test.py
 
-A port packages the variant its [package] names: the staged tree, and for the
-variant that builds the application also the bundle, laid out where the chosen
-distribution installs applications. This runs the package step of a port for
+A port packages the variant its [package] names: the staged tree, and for a
+variant whose pipeline builds, merges or signs the application also the bundle,
+laid out where the chosen distribution installs applications. A merged variant
+has no stage of its own. This runs the package step of a port for
 each case on real folders and opens the archive the way dpkg does - ar, then
 control.tar.gz and data.tar.lzma - to check what it carries, who owns it and
 the version in its control file.
@@ -68,8 +69,9 @@ def application_failures(module):
         os.chmod(bundle / "Demo", 0o755)
         (bundle / "Info.plist").write_text("<plist/>")
         instance = packaging_port(module, folder, {
-            "variants": {"universal": {}}, "application": {"name": "Demo", "variant": "universal"},
-            "package": {"control": "control"}, "platform-facts": JAILBREAK})
+            "variants": {"armv7": {}, "arm64": {}, "universal": {"merge": ["armv7", "arm64"]}},
+            "application": {"name": "Demo"}, "package": {"control": "control", "variant": "universal"},
+            "pipeline": {"universal": ["merge:application", "sign:application"]}, "platform-facts": JAILBREAK})
         instance.declared_variant = lambda: "universal"
         instance.platform_package()
         debs = sorted((folder / "package" / "deb").glob("*.deb"))
@@ -107,8 +109,10 @@ def stage_failures(module):
         library.write_bytes(b"\xce\xfa\xed\xfe")
         (folder / "build" / "Host.app").mkdir()
         (folder / "build" / "Host.app" / "Host").write_bytes(b"\xce\xfa\xed\xfe")
-        declaration = {"variants": {"system": {}, "prefixed": {}}, "application": {"name": "Host", "variant": "prefixed"},
-                       "package": {"control": "control", "variant": "system"}, "platform-facts": JAILBREAK}
+        declaration = {"variants": {"system": {}, "prefixed": {}}, "application": {"name": "Host"},
+                       "package": {"control": "control", "variant": "system"}, "platform-facts": JAILBREAK,
+                       "pipeline": {"system": ["build:static-library", "stage:clear", "build:device-library"],
+                                    "prefixed": ["build:static-library", "build:application", "sign:application"]}}
         instance = packaging_port(module, folder, declaration)
         instance.declared_variant = lambda: "system"
         instance.platform_package()
