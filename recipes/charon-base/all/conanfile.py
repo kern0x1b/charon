@@ -288,7 +288,20 @@ class CharonPort:
 
     def declared_flag_variables(self):
         declared = self.declared.get("flags", {})
-        return {variable: self.declared_flags(name) for variable, name in self.FLAG_VARIABLES if name in declared}
+        maps = " ".join(self.path_maps())
+        return {variable: f"{self.declared_flags(name)} {maps}".strip()
+                for variable, name in self.FLAG_VARIABLES if name in declared}
+
+    PATH_MAP = "-ffile-prefix-map="
+
+    def path_maps(self):
+        maps = {}
+        for flag in self.conf.get("tools.build:cflags", default=[], check_type=list):
+            if flag.startswith(self.PATH_MAP):
+                folder, _, name = flag[len(self.PATH_MAP):].rpartition("=")
+                maps[os.path.normpath(folder)] = name
+        maps.setdefault(os.path.normpath(self.port_root), "/port")
+        return [f"{self.PATH_MAP}{folder}={maps[folder]}" for folder in sorted(maps, key=len, reverse=True)]
 
     def declared_options(self):
         context = self._declared_context()
@@ -323,6 +336,7 @@ class CharonPort:
         variables = toolchain.cache_variables
         variables.update(self.declared_options())
         variables.update(self.platform_cache_variables())
+        variables["CHARON_PATH_MAPS"] = " ".join(self.path_maps())
         variables.update({
             "CMAKE_BUILD_TYPE": "Release",
             "PYTHON_EXECUTABLE": sys.executable,
@@ -513,7 +527,8 @@ class CharonPort:
         platform = " ".join(f'-D{name}="{value}"' for name, value in self.platform_cache_variables().items())
         self.run(f'cmake -S "{source}" -B "{folder}" -G Ninja -DCMAKE_BUILD_TYPE=Release '
                  f'-DCMAKE_TOOLCHAIN_FILE="{toolchain}" {platform} -DCHARON_PORT="{self.port_root}" '
-                 f'-DCHARON_PACKAGES="{os.path.join(self.generators_folder, self.FOUND_PACKAGES)}" {values}')
+                 f'-DCHARON_PACKAGES="{os.path.join(self.generators_folder, self.FOUND_PACKAGES)}" '
+                 f'-DCHARON_PATH_MAPS="{" ".join(self.path_maps())}" {values}')
         self.run(f'cmake --build "{folder}"')
         self._verify_inputs(folder)
 

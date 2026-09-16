@@ -58,6 +58,44 @@ def carries_arc(build):
     return any("a.m" in line and "-fobjc-arc" in line for line in commands.splitlines())
 
 
+def path_map_failures():
+    found = []
+    with tempfile.TemporaryDirectory() as folder:
+        root = Path(folder).resolve()
+        port = root / "port"
+        (port / "src").mkdir(parents=True)
+        (port / "src" / "a.m").write_text('const char *where_objc = __FILE__;\n')
+        (port / "src" / "b.c").write_text('const char *where_c = __FILE__;\n')
+        (port / spec.MANIFEST).write_text(DECLARATION)
+        declared = spec.load(port)
+        generated = root / "generated"
+        generated.mkdir()
+        (generated / "CMakeLists.txt").write_text(generate.cmake_project(declared, "static-library", "port-static"))
+        (generated / "cross.cmake").write_text(generate.cross_toolchain(declared))
+        sdk = subprocess.run(["xcrun", "--sdk", "macosx", "--show-sdk-path"], capture_output=True, text=True).stdout.strip()
+        build = root / "build"
+        configured = subprocess.run(
+            ["cmake", "-S", str(generated), "-B", str(build), "-G", "Ninja", "-DCHARON_PORT={}".format(port),
+             "-DCMAKE_TOOLCHAIN_FILE={}".format(generated / "cross.cmake"), "-DCHARON_SDK={}".format(sdk),
+             "-DCHARON_DEPLOYMENT_TARGET=11.0", "-DCHARON_ARCHITECTURE=arm64",
+             "-DCHARON_TRIPLE=arm64-apple-macos11.0",
+             "-DCHARON_PATH_MAPS=-ffile-prefix-map={}=/port".format(port)], capture_output=True, text=True)
+        built = subprocess.run(["ninja", "-C", str(build)], capture_output=True, text=True)
+        if configured.returncode or built.returncode:
+            return ["the cross toolchain must configure and build with the platform's variables: {}".format(
+                (configured.stdout + configured.stderr + built.stdout + built.stderr)[-600:])]
+        texts = []
+        for obj in sorted(build.rglob("*.o")):
+            texts.append(subprocess.run(["strings", "-a", str(obj)], capture_output=True, text=True).stdout)
+        joined = "\n".join(texts)
+        for language, expected in (("Objective-C", "/port/src/a.m"), ("C", "/port/src/b.c")):
+            if expected not in joined:
+                found.append("a {} compile must name its source under /port: {}".format(language, expected))
+        if str(port) in joined:
+            found.append("no compiled object may carry the port's machine path")
+    return found
+
+
 def main():
     if sys.version_info < (3, 11):
         print("FAIL  this needs Python 3.11 or newer for tomllib")
@@ -99,6 +137,7 @@ def main():
             elif not carries_arc(build):
                 found.append("{}: a.m is compiled without its Objective-C flag".format(stage))
 
+    found += path_map_failures()
     for line in found:
         print("FAIL  {}".format(line))
     if found:

@@ -265,6 +265,19 @@ class Library:
         return type("Components", (), {"libs": self._libs})()
 
 
+def path_map_failures(module):
+    instance = port(module, {"prefixed": "False"})
+    instance.conf = Conf({"tools.build:cflags": ["-mcpu=cortex-a9", "-ffile-prefix-map=/port/build/system=/build",
+                                                 "-ffile-prefix-map=/cache/p/opens1234/p=/package/openssl"]})
+    maps = instance.path_maps()
+    expected = ["-ffile-prefix-map=/cache/p/opens1234/p=/package/openssl", "-ffile-prefix-map=/port/build/system=/build",
+                "-ffile-prefix-map=/port=/port"]
+    if maps != expected:
+        return ["path maps must carry the hook's maps and the port, longest folder first, because clang applies the "
+                "first that matches: got {}".format(maps)]
+    return []
+
+
 def graph_failures(module):
     found = []
     host = [Library("openssl", ["ssl", "crypto"], "OpenSSL"), Library("ogg", ["ogg"])]
@@ -699,7 +712,7 @@ def main():
     found = (failures(module) + dispatch_failures(module) + task_failures(module) + sign_failures(module) +
              plist_failures(module) + bundle_failures(module) + merge_failures(module) + flag_failures(module) + runtime_failures(module) +
              find_package_failures(module) + exports_failures(module) + architecture_failures(module) +
-             graph_failures(module))
+             graph_failures(module) + path_map_failures(module))
     for line in found:
         print("FAIL  {}".format(line))
     if found:
