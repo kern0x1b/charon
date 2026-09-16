@@ -359,6 +359,48 @@ def runtime_reference_failures(module, made, ld64, ldid):
     return found
 
 
+def bundle_content_failures(module, made, ldid):
+    found = []
+    original = module.MachO
+    with tempfile.TemporaryDirectory() as scratch:
+        folder = Path(scratch)
+        framework = folder / "build" / "Engine.framework"
+        for relative in ("Headers/Engine.h", "PrivateHeaders/__pycache__/tool.cpython-314.pyc", "Modules/module.modulemap",
+                         "_CodeSignature/CodeResources", "en.lproj/Localizable.strings", "Info.plist"):
+            (framework / relative).parent.mkdir(parents=True, exist_ok=True)
+            (framework / relative).write_text("x")
+        shutil.copy2(made["library"], framework / "Engine")
+        instance = running_port(module, folder, {
+            "variants": {"system": {}}, "application": {"name": "Host"},
+            "stage": {"frameworks": {"Engine": {"as": "Engine", "replaces": "/System/Engine"}}},
+            "platform-facts": {"build-only": ["Headers", "PrivateHeaders", "Modules", "_CodeSignature"]}}, ldid)
+        module.MachO = recording_macho(module, instance)
+        instance._cmake_project = lambda source, into, definitions: None
+        instance._project_source = lambda kind, target: str(folder)
+        instance._write_application_plist = lambda bundle, name, declared: None
+        installing = type(instance).run
+
+        def install(self, command, cwd=None, stdout=None, ignore_errors=False):
+            if command.startswith("cmake --install"):
+                shutil.copy2(made["executable"], folder / "build" / "Host.app" / "Host")
+                return 0
+            return installing(self, command, cwd, stdout, ignore_errors)
+
+        type(instance).run = install
+        try:
+            instance._build_application()
+        except module.ConanException as refused:
+            found.append("an application carrying a framework must build: {}".format(refused))
+        finally:
+            module.MachO = original
+        carried = folder / "build" / "Host.app" / "Frameworks" / "Engine.framework"
+        shipped = sorted(str(path.relative_to(carried)) for path in carried.rglob("*") if path.is_file())
+        if shipped != ["Engine", "Info.plist", "en.lproj/Localizable.strings"]:
+            found.append("a bundled framework must carry its binary and resources and none of what only a build "
+                         "reads: got {}".format(shipped))
+    return found
+
+
 def naming_failures(module, made, ld64, ldid):
     found = []
     original = module.MachO
@@ -668,6 +710,7 @@ def main():
             found += runtime_reference_failures(module, made, ld64, ldid)
             found += input_minimum_failures(module, ldid)
             found += naming_failures(module, made, ld64, ldid)
+            found += bundle_content_failures(module, made, ldid)
     except Refused as missing:
         found.append(str(missing))
     for line in found:

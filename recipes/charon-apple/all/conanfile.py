@@ -263,10 +263,13 @@ class ApplePort:
         macho, bundled = MachO(self), {}
         stage = self.declared.get("stage", {})
         compatibility = {}
+        build_only = set((self.declared_platform() or {}).get("build-only") or [])
         for built, described in stage.get("frameworks", {}).items():
             destination = os.path.join(frameworks, f"{built}.framework", built)
             shutil.copytree(os.path.join(self.build_folder, f"{built}.framework"),
-                            os.path.dirname(destination), symlinks=True, dirs_exist_ok=True)
+                            os.path.dirname(destination), symlinks=True, dirs_exist_ok=True,
+                            ignore=lambda folder, names, top=os.path.join(self.build_folder, f"{built}.framework"):
+                            [name for name in names if folder == top and name in build_only])
             bundled[destination] = f"@executable_path/Frameworks/{built}.framework/{built}"
             compatibility[destination] = described.get("compatibility-version")
         runtime, runtime_files = self.declared_runtime()

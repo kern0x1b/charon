@@ -7,6 +7,7 @@ python-requires = ["charon-apple/1.0@charon/stable"]
 extends = ["charon-apple.ApplePort"]
 cross-toolchain = "apple-ios.cross-toolchain.cmake"
 sysroot-conf = "tools.apple:sdk_path"
+build-only = ["Headers", "PrivateHeaders", "Modules", "_CodeSignature"]
 
 [compiler]
 libcxx = "libc++"

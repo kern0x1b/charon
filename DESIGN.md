@@ -13,8 +13,9 @@ For anyone arriving from the JVM world, the mapping is close to exact:
 | `gradlew` | `charon`, installed once per machine from this configuration |
 | `build.gradle` per module | `charon.toml` in each port |
 | `task myTask { ... }` and `gradle myTask` | `[tasks.myTask]` with `script`, `shell` or `python`, and `charon task myTask` |
-| convention plugin / parent POM | `ios6-base`, consumed with `python_requires` |
-| `~/.gradle/init.gradle`, toolchain config | `config/profiles/ios6-armv7` and `ios-arm64`, installed with `conan config install` |
+| convention plugin / parent POM | `charon-base` and the platform's `charon-apple`, consumed with `python_requires` |
+| Gradle plugin applied to a build | `[platform] use = "apple-ios"`, a file of facts under `config/extensions/charon/platforms/` |
+| `~/.gradle/init.gradle`, toolchain config | the shared profiles `charon profiles` writes from the platform files |
 | Maven Central / company Artifactory | this repository, registered as a `local-recipes-index` remote |
 | `gradle.lockfile`, `dependencyManagement` | `conan.lock` in each port |
 | `~/.m2/repository` | `~/.conan2` |
@@ -73,12 +74,13 @@ to obtain and verify them.
 1. Take port-specific knowledge out of the base: the exports check names
    WebKitLegacy, repointing strips a `librev-` prefix and the runtime rename
    assumes `.1.0.`; a declaration states each.
-2. `[platform]` in the declaration; the profile is generated from the platform's
-   facts instead of `include-profiles`.
-3. Split the base into the core port and the `apple` platform module - Mach-O,
-   signing, bundles, `.deb` - with steps and invariants registered by the
-   platform, and move names such as `user.ios6:*` and `IOS6_HOST_*` to the
-   core's or the platform's namespace.
+2. Done: `[platform]` in the declaration; the profile is generated from the
+   platform's facts.
+3. Done: the base is split into `charon-base` and `charon-apple`, whose hooks
+   answer what a binary is and how it is verified, signed, bundled and
+   packaged; the platform file names the module, the cross toolchain, the tools
+   each architecture requires and what a bundle leaves out, and every name that
+   said ios6 belongs to the core or to the platform.
 4. Publish the prebuilt packages and fetch them with `conan cache restore`.
 5. A second platform - macOS on an old deployment target is the cheapest - to
    prove the core holds nothing Apple-mobile.
@@ -87,8 +89,9 @@ to obtain and verify them.
 ## The three layers
 
 **Shared configuration** - `config/`. Two profiles pin the target:
-`ios6-armv7` - armv7, iOS 6.0, the `iphoneos-sdk` package and `ld64` as build
-tools - and `ios-arm64` - arm64 from iOS 7.0, the `iphoneos-sdk` package. They carry nothing a port
+`apple-ios-armv7` - armv7, iOS 6.0, the `iphoneos-sdk` package and `ld64` as build
+tools - and `apple-ios-armv8` - arm64 from iOS 7.0, the `iphoneos-sdk` package - both
+written by `charon profiles` from the platform file. They carry nothing a port
 chooses for itself: a C++ standard, CPU tuning or a later deployment target goes
 in the port's own profile, which includes one of these.
 `settings_user.yml` adds the iOS versions Conan does not ship. A machine picks
@@ -100,7 +103,7 @@ deliberately not here: the ports disagree on versions, and a shared set would
 make one port override another's. Each port carries its own recipes, names a
 git URL and a commit, and builds them itself.
 
-**Shared conventions** - `recipes/ios6-base`. The base class the recipe Charon
+**Shared conventions** - `recipes/charon-base` and `recipes/charon-apple`. The base classes the recipe Charon
 writes for a port extends: the generators, the layout, and the check that refuses an operating
 system or architecture this toolchain does not build for. This is the piece that stops ten ports from
 drifting into ten different spellings of the same build.
@@ -263,7 +266,7 @@ openssl, as it is built for revenant-webkit today:
     version = "3.0.15"
     source = { git = "https://github.com/openssl/openssl.git", commit = "c523121f902fde2929909dc7f76b13ceb4961efe" }
     patches = ["patches/arm-xlate-armcap-data-word.patch"]
-    uses = ["ios6-cross"]
+    uses = ["apple-cross"]
     build = "configure"
     command = "./Configure ios-cross no-shared no-tests no-ui-console no-engine no-async"
     environment = { CFLAGS = "-O2 -DBROKEN_CLANG_ATOMICS" }
@@ -286,7 +289,7 @@ ogg and tdlib, for iTgLegacy to fill in against its recipes during review:
     source = { git = "<url>", commit = "<commit>" }
     patches = ["patches/voip-hook.patch"]
     requires = ["//libs/openssl", "libcxx:runtime"]
-    uses = ["ios6-cross", "emutls"]
+    uses = ["apple-cross", "emutls"]
     build = "cmake"
     before-build = ["task:prepare-cross-compiling"]
     cache = { "<option>" = "<value>" }

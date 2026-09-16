@@ -461,7 +461,8 @@ def recipe(declared):
         raise GenerationError("{} declares no [platform], and a recipe is written for one".format(
             declared.root / spec.MANIFEST))
     content = dict(declared.content)
-    content["platform-facts"] = {key: platform[key] for key in ("name", "os", "arch", "os-version", "distribution")}
+    content["platform-facts"] = {key: platform[key] for key in ("name", "os", "arch", "os-version", "distribution",
+                                                                "build-only")}
     return RECIPE_TEMPLATE.format(
         generated=GENERATED,
         name=repr(described["name"]),

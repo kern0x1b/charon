@@ -263,6 +263,22 @@ def where_failures():
     return found
 
 
+def profile_failures():
+    found = []
+    written = charon.shared_profiles()
+    if sorted(written) != ["apple-ios-armv7", "apple-ios-armv8"]:
+        found.append("every architecture of every platform must get one shared profile: got {}".format(sorted(written)))
+        return found
+    armv7, armv8 = written["apple-ios-armv7"], written["apple-ios-armv8"]
+    for name, text, version, linker in (("apple-ios-armv7", armv7, "6.0", True), ("apple-ios-armv8", armv8, "7.0",
+                                                                                   False)):
+        if "os.version={}".format(version) not in text:
+            found.append("{} must target its architecture's oldest release {}: {}".format(name, version, text))
+        if ("ld64/" in text) != linker:
+            found.append("{} must require exactly the tools its architecture needs: {}".format(name, text))
+    return found
+
+
 def tier_failures():
     found = []
     tiers = {"scripts": {"needs": []}, "flags": {"needs": ["build"]}, "gate": {"needs": ["device"]},
@@ -295,7 +311,7 @@ def main():
         print("FAIL  this needs Python 3.11 or newer for tomllib, and it is running under {}. Skipping would "
               "report success having checked nothing.".format(".".join(str(p) for p in sys.version_info[:3])))
         return 1
-    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + index_failures() + where_failures() + undefined_names()
+    found = failures() + task_failures() + tier_failures() + merge_failures() + refusal_failures() + index_failures() + where_failures() + profile_failures() + undefined_names()
     for line in found:
         print("FAIL  {}".format(line))
     if found:

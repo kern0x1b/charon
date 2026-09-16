@@ -178,7 +178,6 @@ version = "1.0"
 arch = "armv7"
 os = "iOS"
 os-version = "6.0"
-include-profiles = ["ios6-armv7"]
 
 [package]
 control = "packaging/app/control"
@@ -193,7 +192,6 @@ strip = "-S -x"
 [variants.arm64.target]
 arch = "armv8"
 os-version = "7.0"
-include-profiles = ["ios-arm64"]
 
 [variants.arm64.targets.Host]
 exclude = ["app/Debug*.m"]

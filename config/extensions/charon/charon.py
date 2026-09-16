@@ -970,6 +970,40 @@ def check_declared_conf(root, chosen_profile):
             warn("conf         {} is empty, and this port needs it: {}".format(key, declared[key]))
 
 
+def shared_profiles():
+    try:
+        import generate
+        import spec
+        import tomllib
+    except ImportError as missing:
+        raise Failure("generate.py and spec.py are not beside the driver: {}".format(missing))
+    written = {}
+    for path in sorted(spec.PLATFORMS.glob("*.toml")):
+        with path.open("rb") as handle:
+            facts = tomllib.load(handle)
+        for arch, described in sorted((facts.get("architectures") or {}).items()):
+            bounds = dict(facts.get("os-version") or {}, **(described.get("os-version") or {}))
+            if "min" not in bounds:
+                raise Failure("{} gives {} no oldest release, and a shared profile targets the oldest".format(
+                    path, arch))
+            declared = spec.Spec(Path("/"), {"platform": {"use": path.stem, "arch": arch,
+                                                          "os-version": bounds["min"]}})
+            try:
+                written["{}-{}".format(path.stem, arch)] = generate.platform_profile({}, {}, declared.platform())
+            except (generate.GenerationError, spec.SpecError) as refused:
+                raise Failure(str(refused))
+    return written
+
+
+def verb_profiles(root, parsed):
+    home = conan("config", "home", stdout=subprocess.PIPE, text=True).stdout.strip()
+    folder = Path(home) / "profiles"
+    folder.mkdir(parents=True, exist_ok=True)
+    for name, text in shared_profiles().items():
+        (folder / name).write_text(text)
+        say("profile      {} (written from its platform)".format(folder / name))
+
+
 def verb_setup(root, parsed):
     shared = [Path(folder).expanduser().resolve() for folder in parsed.extra]
     for folder in shared:
@@ -978,6 +1012,7 @@ def verb_setup(root, parsed):
     for folder in shared:
         conan("config", "install", folder / "config")
     say("remotes now: {}".format(", ".join(remote["name"] for remote in remotes())))
+    verb_profiles(root, parsed)
     check_indexes(canonical=True)
     check_declared_conf(root, parsed.chosen_profile)
 
@@ -1040,6 +1075,7 @@ VERBS = (
     ("clean", "what builds leave behind, reported unless --force"),
     ("setup", "register this port's recipes, and the toolchain's, ahead of the general remotes"),
     ("device", "reach the phone directly: run, copy, fetch, where"),
+    ("profiles", "write a shared host profile for every architecture of every platform Charon knows"),
     ("where", "the folder of a package the build uses: charon where pkg:NAME or tool:NAME"),
     ("provenance", "which driver, interpreter, port, profile and phone are in use"),
     ("help", "this list"),
@@ -1051,6 +1087,7 @@ HANDLERS = {
     "task": verb_task,
     "package": verb_package,
     "where": verb_where,
+    "profiles": verb_profiles,
     "deploy": verb_deploy,
     "run": verb_run,
     "test": verb_test,
@@ -1093,6 +1130,9 @@ def main(argv):
     parsed = parse(argv)
     if parsed.verb == "help":
         verb_help(None, parsed)
+        return 0
+    if parsed.verb == "profiles":
+        verb_profiles(None, parsed)
         return 0
     root = find_port(parsed.root)
     parsed.chosen_profile = profile(root, parsed)
