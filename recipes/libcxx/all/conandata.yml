@@ -1,4 +1,16 @@
+patches:
+  21.1.0: &id001
+  - patch_description: utimensat arrived in iOS 11; _LIBCPP_NO_UTIMENSAT lets the
+      build say the SDK's UTIME_OMIT does not mean the device has it
+    patch_file: patches/utimensat-told-no.patch
+    patch_type: portability
+  23.1.1: *id001
 sources:
-  "21.1.0":
-    url: "https://github.com/llvm/llvm-project.git"
-    tag: "llvmorg-21.1.0"
+  21.1.0:
+    commit: 3623fe661ae35c6c80ac221f14d85be76aa870f1
+    tag: llvmorg-21.1.0
+    url: https://github.com/llvm/llvm-project.git
+  23.1.1:
+    commit: 6dfe1677ab8dffbc6ec13d53a1e0215d75147689
+    tag: llvmorg-23.1.1
+    url: https://github.com/llvm/llvm-project.git

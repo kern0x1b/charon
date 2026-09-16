@@ -1,7 +1,11 @@
-from conan import ConanFile
-from conan.tools.cmake import CMake, CMakeToolchain
-from conan.tools.files import copy, replace_in_file
 import os
+from io import StringIO
+
+from conan import ConanFile
+from conan.errors import ConanException
+from conan.tools.apple import to_apple_arch
+from conan.tools.cmake import CMake, CMakeToolchain
+from conan.tools.files import apply_conandata_patches, copy, export_conandata_patches
 
 
 class LibCxxArmv7Conan(ConanFile):
@@ -14,41 +18,39 @@ class LibCxxArmv7Conan(ConanFile):
     package_type = "shared-library"
     settings = "os", "arch", "compiler", "build_type"
 
+    def export_sources(self):
+        export_conandata_patches(self)
+
     def source(self):
         source = self.conan_data["sources"][self.version]
-        # A sparse checkout: the runtimes and what they need, not the compiler.
         self.run(f'git clone --depth 1 --branch {source["tag"]} --filter=blob:none '
                  f'--sparse {source["url"]} llvm-project')
+        checked_out = StringIO()
+        self.run("git -C llvm-project rev-parse HEAD", stdout=checked_out)
+        if checked_out.getvalue().strip() != source["commit"]:
+            raise ConanException(f"{source['tag']} is {checked_out.getvalue().strip()} now, not the "
+                                 f"{source['commit']} this recipe was written against; a tag that moved is not "
+                                 "the release it names")
         self.run("git -C llvm-project sparse-checkout set libcxx libcxxabi libunwind "
                  "runtimes cmake third-party llvm/cmake llvm/utils/llvm-lit libc")
-        # libc++ decides utimensat exists from a macro the SDK defines, but the
-        # function itself arrived in iOS 11. On this target the call would build
-        # and then fail on the device, so the detection gets a way to be told no.
-        replace_in_file(self, os.path.join(self.source_folder, "llvm-project", "libcxx",
-                                           "src", "filesystem", "time_utils.h"),
-                        "#if defined(UTIME_OMIT)",
-                        "#if defined(UTIME_OMIT) && !defined(_LIBCPP_NO_UTIMENSAT)")
+        apply_conandata_patches(self)
 
     def generate(self):
         sdk = self.conf.get("tools.apple:sdk_path")
-        target = f"{self.settings.arch}-apple-ios{self.settings.os.version}"
         tc = CMakeToolchain(self)
-        # Flags belong here rather than in cache variables: CMakeToolchain owns
-        # CMAKE_CXX_FLAGS and would overwrite them.
         tc.extra_cflags += ["-mllvm", "-hot-cold-split=false"]
         tc.extra_cxxflags += ["-mllvm", "-hot-cold-split=false",
                               "-D_LIBCPP_NO_UTIMENSAT"]
         tc.cache_variables.update({
             "CMAKE_SYSTEM_NAME": "Darwin",
             "CMAKE_OSX_SYSROOT": sdk,
-            "CMAKE_OSX_ARCHITECTURES": str(self.settings.arch),
+            "CMAKE_OSX_ARCHITECTURES": to_apple_arch(self),
             "LLVM_ENABLE_RUNTIMES": "libcxx;libcxxabi",
             "LIBCXX_ENABLE_SHARED": True,
             "LIBCXXABI_ENABLE_SHARED": True,
             "LIBCXX_ENABLE_STATIC": False,
             "LIBCXXABI_ENABLE_STATIC": False,
             "LIBCXX_CXX_ABI": "libcxxabi",
-            # This target has its own unwinder in the system libraries.
             "LIBCXXABI_USE_LLVM_UNWINDER": False,
             "LIBCXX_INCLUDE_BENCHMARKS": False,
             "LIBCXX_INCLUDE_TESTS": False,
