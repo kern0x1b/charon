@@ -393,7 +393,13 @@ def variant_profile(root, parsed, variant):
 def build_variant(root, parsed, variant, extra):
     where = generated(root, variant) or root
     conan("build", where, *conan_flags(root, variant_profile(root, parsed, variant)), "--build=missing",
-          *variant_options(root, variant), *extra)
+          *index_updates(), *variant_options(root, variant), *extra)
+
+
+def index_updates():
+    names = sorted({recipe.name for remote in local_index_remotes()
+                    for recipe in (Path(remote["url"]) / "recipes").iterdir() if recipe.is_dir()})
+    return [flag for name in names for flag in ("--update", name)]
 
 
 def default_variant(root):

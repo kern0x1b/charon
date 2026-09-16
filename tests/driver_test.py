@@ -448,6 +448,8 @@ def verb_command_failures():
     charon.variant_profile = lambda root, parsed, variant: Path("/profile")
     charon.variant_options = lambda root, variant: []
     charon.default_variant = lambda root: "armv7"
+    saved_updates = charon.index_updates
+    charon.index_updates = lambda: ["--update", "libcxx"]
     parsed = types.SimpleNamespace(variant="armv7", profile=None, extra=[])
     try:
         with tempfile.TemporaryDirectory() as folder:
@@ -457,12 +459,15 @@ def verb_command_failures():
         build, package = calls
         if build[0] != "build" or "--build=missing" not in build:
             found.append("charon build must let Conan build what is missing: {}".format(build))
+        if "--update" not in build or build[build.index("--update") + 1] != "libcxx":
+            found.append("charon build must refresh the recipes its local indexes serve: {}".format(build))
         if package[0] != "export-pkg" or any(argument.startswith("--build") for argument in package):
             found.append("charon package must hand export-pkg only what it accepts, and it takes no build policy: "
                          "{}".format(package))
     finally:
         (charon.conan, charon.generated, charon.variant_profile, charon.variant_options, charon.default_variant,
          charon.packaged_artifacts) = saved
+        charon.index_updates = saved_updates
     return found
 
 
