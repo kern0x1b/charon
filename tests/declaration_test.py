@@ -828,6 +828,32 @@ def altered_package_failures(module):
     return found
 
 
+def stage_reinstall_failures(module):
+    found = []
+    with tempfile.TemporaryDirectory() as scratch:
+        root = Path(scratch)
+        stage = root / "build" / "stage" / "Library"
+        stage.mkdir(parents=True)
+        staged = stage / "tweak.dylib"
+        staged.write_text("stripped and signed last time")
+        outside = root / "elsewhere.dylib"
+        outside.write_text("not ours")
+        project = root / "build" / "device-library"
+        project.mkdir(parents=True)
+        (project / "install_manifest.txt").write_text("{}\n{}\n".format(staged, outside))
+        instance = port(module, {"prefixed": "False"})
+        instance.build_folder = str(root / "build")
+        instance._install_into_stage(str(project))
+        if staged.exists():
+            found.append("a file the last install put in the stage must be removed before installing again, or "
+                         "cmake keeps the stripped and signed copy as up to date")
+        if not outside.exists():
+            found.append("only files inside the stage may be removed before an install")
+        if not instance.commands or "cmake --install" not in instance.commands[-1]:
+            found.append("the install must still run: {}".format(instance.commands))
+    return found
+
+
 def main():
     reexec_where_conan_lives()
     try:
@@ -839,7 +865,7 @@ def main():
              plist_failures(module) + bundle_failures(module) + merge_failures(module) + flag_failures(module) + runtime_failures(module) +
              find_package_failures(module) + exports_failures(module) + architecture_failures(module) +
              graph_failures(module) + path_map_failures(module) +
-             objective_c_failures(module) + fresh_failures(module) + altered_package_failures(module))
+             objective_c_failures(module) + fresh_failures(module) + altered_package_failures(module) + stage_reinstall_failures(module))
     for line in found:
         print("FAIL  {}".format(line))
     if found:

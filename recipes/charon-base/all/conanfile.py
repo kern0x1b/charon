@@ -621,7 +621,7 @@ class CharonPort:
         folder = os.path.join(self.build_folder, os.path.basename(target.get("cmake") or name))
         self._cmake_project(self._project_source(kind, target), folder, self._declared_cache(target))
         if target.get("installs-into") == "stage":
-            self.run(f'cmake --install "{folder}" --prefix "{self.stage_folder}"')
+            self._install_into_stage(folder)
             self.installed(folder)
 
     def _declared_cache(self, *targets):
@@ -640,8 +640,19 @@ class CharonPort:
         folder = os.path.join(self.build_folder, kind)
         self._cmake_project(self._project_source(kind, targets[0]), folder, self._declared_cache(*targets))
         if any(target.get("installs-into") == "stage" for target in targets):
-            self.run(f'cmake --install "{folder}" --prefix "{self.stage_folder}"')
+            self._install_into_stage(folder)
             self.installed(folder)
+
+    def _install_into_stage(self, folder):
+        manifest = os.path.join(folder, "install_manifest.txt")
+        stage = os.path.realpath(self.stage_folder)
+        if os.path.isfile(manifest):
+            with open(manifest) as installed:
+                for line in installed:
+                    path = os.path.realpath(line.strip())
+                    if line.strip() and path.startswith(stage + os.sep) and os.path.lexists(path):
+                        os.remove(path)
+        self.run(f'cmake --install "{folder}" --prefix "{self.stage_folder}"')
 
     def declared_find_packages(self):
         wanted = list((self.declared.get("engine") or {}).get("find-packages", []))
