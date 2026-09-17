@@ -14,6 +14,7 @@ inputs.
     sh host/foundation2/run.sh  writes device/foundation2-expectations.h when it passes
     sh host/uikit2/run.sh
     sh host/keyedarchive11/run.sh  writes device/keyedarchive11-expectations.h when it passes
+    sh host/foundation11/run.sh    writes device/foundation11-expectations.h when it passes
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
@@ -31,6 +32,18 @@ object every time, it answers for an archiver made with
 `-initForWritingWithMutableData:` instead of raising, and an archive whose root
 is missing or `nil` fails with `NSCoderValueNotFoundError`, not with
 `NSCoderReadCorruptError`.
+
+`host/foundation11/run.sh` does the same for the rest of the iOS 11 and 12
+Foundation batch: reading and writing a property list through a URL,
+`percentEncodedQueryItems`, `-decodeValueOfObjCType:at:size:` and
+`NSSecureUnarchiveFromDataTransformer`. It renames the transformer's class as
+well as attaching the categories, so the system's transformer and the
+backport's stand side by side in one process. Among the answers it holds the
+backport to: the error for a property list of the wrong kind is
+`NSFileReadCorruptFileError` with the text naming the URL, a mutable receiver
+reads a mutable array, a query item keeps its escapes, and the transformer
+raises Apple's own wording for data that is not data and for a class that is
+not allowed.
 
 `host/uikit2/run.sh` renames selectors as well as classes, so a test holds a
 backported method and the system one side by side, and checks the spring curve
@@ -100,6 +113,11 @@ postinst run with `DPKG_ROOT` set to it.
   from, and checks the one thing the host cannot show: that a second
   `-finishEncoding` on iOS 6 neither raises nor touches the archive, which is
   what `-encodedData` stands on.
+- `foundation11.m` with `foundation11-cases.m`: a process of its own for the
+  rest of the iOS 11 and 12 Foundation batch, held to
+  `foundation11-expectations.h`. Besides the cases it shares with the host, it
+  names the image every backported method comes from and checks that the
+  transformer answers to its name through `+[NSValueTransformer valueTransformerForName:]`.
 - `alert.m`, `layout.m`: applications (`alert-Info.plist`, `layout-Info.plist`)
   launched from SpringBoard; they write `/private/var/backports/NAME.log` and
   `NAME.done`, and `alert.m` logs a `SCREENSHOT <label>` line and pauses before

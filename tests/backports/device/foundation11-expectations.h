@@ -1,0 +1,16 @@
+static const char foundation11_expectations[] =
+    "{\"decodeValue.roundTrip\":\"42\",\"decodeValue.wrongSize\":\"NSInvalidArgumentException: Cannot get decode with size 1. The type encoded as i is expected to be 4 byte"
+    "s\",\"paths.stable\":\"charon11-array.plist\",\"queryItems.read.\?\":\"\",\"queryItems.read.\?=v\":\"=v\",\"queryItems.read.\?a\":\"a=(nil)\",\"queryItems.read.\?a+b=c+d\":\"a+b=c+d\",\""
+    "queryItems.read.\?a=\":\"a=\",\"queryItems.read.\?a=%E2%82%AC&b=two%20words\":\"a=%E2%82%AC|b=two%20words\",\"queryItems.read.\?a=1\":\"a=1\",\"queryItems.read.\?a=1&&b=2\":\"a=1"
+    "|=(nil)|b=2\",\"queryItems.read.\?a=1&a=2\":\"a=1|a=2\",\"queryItems.read.\?a=b=c\":\"a=b=c\",\"queryItems.read.(none)\":\"(nil array)\",\"queryItems.write.0\":\" / \",\"queryItems"
+    ".write.1\":\"x=%41 / x=A\",\"queryItems.write.2\":\"x / x\",\"queryItems.write.3\":\"x= / x=\",\"queryItems.write.4\":\"=v / =v\",\"queryItems.write.5\":\"a=1&b=2 / a=1&b=2\",\"que"
+    "ryItems.write.nil\":\"(nil)\",\"read.array\":\"(\\n    a,\\n    2\\n) nil\",\"read.dictionary\":\"{\\n    k = v;\\n} nil\",\"read.empty\":\"nil NSCocoaErrorDomain 259\",\"read.missi"
+    "ng\":\"nil NSCocoaErrorDomain 260\",\"read.mutable\":\"mutable\",\"read.mutable.value\":\"(\\n    a,\\n    2\\n)\",\"read.nilURL\":\"nil nil\",\"read.wrongKind\":\"nil NSCocoaErrorD"
+    "omain 259\",\"read.wrongKind.text\":\"says so\",\"transformer.allowedClasses\":\"(\\n    NSArray,\\n    NSDictionary,\\n    NSSet,\\n    NSString,\\n    NSNumber,\\n    NSDat"
+    "e,\\n    NSData,\\n    NSURL,\\n    NSUUID,\\n    NSNull\\n)\",\"transformer.allowsReverse\":\"YES\",\"transformer.junk\":\"NSInvalidUnarchiveOperationException\",\"transforme"
+    "r.refusesOtherClass\":\"NSInvalidArgumentException: Object of class NSConcreteValue is not among allowed top level class list (\\n    NSArray,\\n    NSDictionary,\\n"
+    "    NSSet,\\n    NSString,\\n    NSNumber,\\n    NSDate,\\n    NSData,\\n    NSURL,\\n    NSUUID,\\n    NSNull\\n)\",\"transformer.reverse\":\"non-empty\",\"transformer.rever"
+    "seRoundTrip\":\"(\\n    b\\n)\",\"transformer.transform\":\"(\\n    a,\\n    1\\n)\",\"transformer.transformedValueClass\":\"nil\",\"transformer.transformNil\":\"nil\",\"transformer"
+    ".transformNotData\":\"NSInvalidArgumentException\",\"write.array\":\"1 nil\",\"write.dictionary\":\"1 nil\",\"write.format\":\"<\?xml version=\\\"1.0\\\"\",\"write.invalid\":\"0 NSCoc"
+    "oaErrorDomain 3851\"}"
+;
