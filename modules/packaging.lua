@@ -33,7 +33,7 @@ function universal(target, architectures, stage)
     local merged = merge.merge(bundles, architectures, installed)
     local executable = path.join(installed, target:basename())
     for _, binary in ipairs(merged) do
-        macho.verify(binary, {waived = platform.waivers(target), arrived = compat.arrived("iOS"), stripped = true})
+        macho.verify(binary, {waived = platform.waivers(target), arrived = compat.arrived("iOS"), process_wide = compat.process_wide(), stripped = true})
     end
     table.sort(merged, function (a, b) return a ~= executable and b == executable end)
     for _, binary in ipairs(merged) do

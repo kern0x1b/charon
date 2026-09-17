@@ -10,30 +10,20 @@ package("llvm")
     add_deps("cmake", "ninja", {kind = "binary"})
 
     local patches = {"clang-emulated-tls-without-dyld.patch", "builtins-leave-emutls-to-the-runtime.patch", "clang-atomic-libcalls-from-the-runtime.patch"}
-    local digests = {}
+    local digests = {"xmake.lua=" .. hash.sha256(path.join(os.scriptdir(), "xmake.lua"))}
     for _, patch in ipairs(patches) do
         table.insert(digests, patch .. "=" .. hash.sha256(path.join(os.scriptdir(), "patches", patch)))
     end
-    add_configs("patches", {description = "The digest of the patches this package applies, so a changed patch is a different compiler.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
+    add_configs("recipe", {description = "The digest of this recipe and the patches it applies, so a changed flag or patch is a different compiler.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
 
     on_download(function (package, opt)
-        local tag = "llvmorg-" .. package:version_str()
-        local checkout = opt.sourcedir .. ".tmp"
-        os.tryrm(checkout)
-        os.vrunv("git", {"clone", "--depth", "1", "--branch", tag, "--filter=blob:none", "--no-checkout", opt.url, checkout})
-        local head = os.iorunv("git", {"-C", checkout, "rev-parse", "HEAD"}):trim()
-        local wanted = package:revision(opt.url_alias) or package:commit()
-        if head ~= wanted then
-            raise("%s is %s now, not the %s this package was written against; a tag that moved is not the release it names", tag, head, tostring(wanted))
-        end
-        os.vrunv("git", {"-C", checkout, "sparse-checkout", "set", "--no-cone",
-                         "/*", "!/*/", "/cmake/", "/third-party/", "/libc/", "!/libc/test/",
-                         "/llvm/", "!/llvm/test/", "!/llvm/unittests/", "!/llvm/docs/",
-                         "/clang/", "!/clang/test/", "!/clang/unittests/", "!/clang/docs/", "!/clang/www/",
-                         "/compiler-rt/", "!/compiler-rt/test/"})
-        os.vrunv("git", {"-C", checkout, "checkout", tag})
-        os.tryrm(opt.sourcedir)
-        os.mv(checkout, opt.sourcedir)
+        local checkout = import("checkout", {rootdir = path.join(os.scriptdir(), "..", "..", "..", "modules"), anonymous = true})
+        checkout.pinned(opt.sourcedir, {{url = opt.url, tag = "llvmorg-" .. package:version_str(),
+                                         commit = package:revision(opt.url_alias) or package:commit(),
+                                         sparse = {"/*", "!/*/", "/cmake/", "/third-party/", "/libc/", "!/libc/test/",
+                                                   "/llvm/", "!/llvm/test/", "!/llvm/unittests/", "!/llvm/docs/",
+                                                   "/clang/", "!/clang/test/", "!/clang/unittests/", "!/clang/docs/", "!/clang/www/",
+                                                   "/compiler-rt/", "!/compiler-rt/test/"}}})
     end)
 
     on_install("@macosx", function (package)

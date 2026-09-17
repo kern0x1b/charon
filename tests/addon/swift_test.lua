@@ -66,12 +66,34 @@ local function build(folder, opt, swift, architecture, deployment)
     return path.join(work, "probe"), path.join(work, "probe.o")
 end
 
+-- The availability macros of the standard library name the releases whose Swift runtime carries a feature; a runtime that
+-- ships with the program has them all, so every macro is rewritten to "always".
+local function bundled_availability(swift, source, found)
+    local written = swift.bundled_availability(source)
+    local defined, all = 0, 0
+    for line in written:gmatch("[^\n]+") do
+        if not line:startswith("#") then
+            all = all + 1
+            defined = defined + (line:match("^[^:]+: %*$") and 1 or 0)
+        end
+    end
+    if all == 0 or defined ~= all then
+        table.insert(found, string.format("every availability macro must be rewritten to always available, not %d of %d", defined, all))
+    end
+    for _, name in ipairs({"SwiftStdlib 5.1", "SwiftStdlib 6.0"}) do
+        if not written:find(name .. ": *", 1, true) then
+            table.insert(found, name .. " must stay a macro the standard library can name: " .. written:sub(1, 200))
+        end
+    end
+end
+
 function failures(opt)
     local swift = import("apple.swift", {rootdir = opt.modules, anonymous = true})
     local dyld = import("apple.dyld", {rootdir = opt.modules, anonymous = true})
     local firmware = import("apple.firmware", {rootdir = opt.modules, anonymous = true})
     local found = {}
     local folder = fixtures.scratch()
+    bundled_availability(swift, path.join(opt.swift, "share", "swift-source"), found)
     for _, case in ipairs({{"armv7", "6.0"}, {"armv7s", "6.0"}, {"arm64", "7.0"}}) do
         local architecture, deployment = case[1], case[2]
         local label = architecture .. " iOS " .. deployment

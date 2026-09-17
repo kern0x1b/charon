@@ -7,8 +7,16 @@ local SOURCE_PATHS = {"/stdlib/public/core/", "/stdlib/public/SwiftShims/", "/st
                       "/utils/gyb.py", "/utils/SwiftIntTypes.py", "/utils/SwiftFloatingPointTypes.py", "/utils/GYBUnicodeDataUtils.py",
                       "/utils/availability-macros.def", "/LICENSE.txt"}
 
+-- What a runtime build reads beside the Embedded module's sources: the standalone runtime build itself, the headers, the
+-- demangler and threading sources it compiles, and the CMake modules and generators they use.
+local RUNTIME_SOURCE_PATHS = {"/Runtimes/", "/include/", "/lib/Demangling/", "/lib/Threading/", "/stdlib/", "/cmake/", "/utils/"}
+
 function source_paths()
     return SOURCE_PATHS
+end
+
+function runtime_source_paths()
+    return RUNTIME_SOURCE_PATHS
 end
 
 function triple(architecture, deployment)
@@ -65,7 +73,7 @@ function core_sources(source, workdir, architecture)
     return files
 end
 
-local function availability(source)
+function availability(source)
     local flags = {}
     for line in io.readfile(path.join(source, "utils", "availability-macros.def")):gmatch("[^\n]+") do
         local definition = line:trim()
@@ -77,6 +85,19 @@ local function availability(source)
         end
     end
     return flags
+end
+
+-- The availability macros of the standard library, every one of them always available: a macro names the OS releases whose
+-- Swift runtime a library may rely on, and a runtime that ships with the program is there whatever the release.
+function bundled_availability(source)
+    local lines = {"# Rewritten by charon@swift-runtime: the runtime ships with the program, so every release has it."}
+    for line in io.readfile(path.join(source, "utils", "availability-macros.def")):gmatch("[^\n]+") do
+        local definition = line:trim()
+        if definition ~= "" and not definition:startswith("#") then
+            table.insert(lines, definition:match("^([^:]+):") .. ": *")
+        end
+    end
+    return table.concat(lines, "\n") .. "\n"
 end
 
 function build_module(opt)

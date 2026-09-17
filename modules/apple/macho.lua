@@ -577,7 +577,7 @@ function system_imports(data, found)
     return imported
 end
 
-function late_imports(binary, arrived)
+function late_imports(binary, arrived, process_wide)
     local data = read(binary)
     local strong, weak = {}, {}
     for _, found in ipairs(images(data)) do
@@ -589,7 +589,8 @@ function late_imports(binary, arrived)
         for _, symbol in ipairs(names) do
             local release = arrived[symbol]
             if release and found.minimum < encoded_version(release) then
-                local described = string.format("%s: %s arrived in %s, after %s; link apple-compat::%s", found.architecture, symbol, release, version_text(found.minimum), symbol)
+                local remedy = (process_wide or {})[symbol] and "link charon@libcxx, whose libc++abi exports it once for the process" or ("link apple-compat::" .. symbol)
+                local described = string.format("%s: %s arrived in %s, after %s; %s", found.architecture, symbol, release, version_text(found.minimum), remedy)
                 table.insert(imported[symbol].weak and weak or strong, described)
             end
         end
@@ -620,7 +621,7 @@ function verify(binary, opt)
         table.insert(problems, "a linker stamped LC_ENCRYPTION_INFO on a 32-bit ARM library, which iOS 6 refuses to load; link it with ld64")
     end
     if opt.arrived then
-        local strong, weak = late_imports(binary, opt.arrived)
+        local strong, weak = late_imports(binary, opt.arrived, opt.process_wide)
         if #strong > 0 then
             table.insert(problems, "it imports what its minimum release does not have, so dyld refuses to load it there: " .. table.concat(strong, "; "))
         end

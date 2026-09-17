@@ -9,6 +9,13 @@ package("libcxx")
     add_deps("charon@apple-compat", {alias = "apple-compat"})
     add_deps("cmake", "ninja", {kind = "binary"})
 
+    local digests = {"xmake.lua=" .. hash.sha256(path.join(os.scriptdir(), "xmake.lua"))}
+    for _, patch in ipairs(os.files(path.join(os.scriptdir(), "patches", "*.patch"))) do
+        table.insert(digests, path.filename(patch) .. "=" .. hash.sha256(patch))
+    end
+    table.sort(digests)
+    add_configs("recipe", {description = "The digest of this recipe and the patches it applies, so a changed flag or patch is a different runtime.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
+
     add_configs("shared", {description = "The runtime is always the shared pair an application bundles.", default = true, type = "boolean", readonly = true})
     add_configs("operators", {description = "operator new and delete are ordinary definitions in libc++abi, so no image binds them weakly and dyld never coalesces them with another C++ runtime in the process.", default = "not-weak", type = "string", readonly = true})
 
@@ -21,21 +28,12 @@ package("libcxx")
     add_shflags("-nostdlib++")
 
     on_download(function (package, opt)
-        local tag = "llvmorg-" .. package:version_str()
-        local checkout = opt.sourcedir .. ".tmp"
-        os.tryrm(checkout)
-        os.vrunv("git", {"clone", "--depth", "1", "--branch", tag, "--filter=blob:none", "--sparse", opt.url, checkout})
-        local head = os.iorunv("git", {"-C", checkout, "rev-parse", "HEAD"}):trim()
-        if head ~= package:revision(opt.url_alias) and head ~= package:commit() then
-            local wanted = package:revision(opt.url_alias) or package:commit()
-            if head ~= wanted then
-                raise("%s is %s now, not the %s this package was written against; a tag that moved is not the release it names", tag, head, tostring(wanted))
-            end
-        end
-        os.vrunv("git", {"-C", checkout, "sparse-checkout", "set", "libcxx", "libcxxabi", "libunwind", "runtimes", "cmake",
-                         "third-party", "llvm/cmake", "llvm/utils/llvm-lit", "libc", "compiler-rt/lib/builtins"})
-        os.tryrm(opt.sourcedir)
-        os.mv(checkout, opt.sourcedir)
+        local checkout = import("checkout", {rootdir = path.join(os.scriptdir(), "..", "..", "..", "modules"), anonymous = true})
+        checkout.pinned(opt.sourcedir, {{url = opt.url, tag = "llvmorg-" .. package:version_str(),
+                                         commit = package:revision(opt.url_alias) or package:commit(),
+                                         sparse = {"/*", "!/*/", "/libcxx/", "/libcxxabi/", "/libunwind/", "/runtimes/", "/cmake/",
+                                                   "/third-party/", "/llvm/cmake/", "/llvm/utils/llvm-lit/", "/libc/",
+                                                   "/compiler-rt/lib/builtins/"}}})
     end)
 
     on_install("iphoneos", function (package)
@@ -43,7 +41,7 @@ package("libcxx")
         local modules = path.join(package:scriptdir(), "..", "..", "..", "modules")
         local cmake = import("apple.cmake", {rootdir = modules, anonymous = true})
         local macho = import("apple.macho", {rootdir = modules, anonymous = true})
-        for _, patch in ipairs({"utimensat-told-no.patch", "reexport-when-dyld-can.patch", "one-emulated-tls-runtime.patch", "one-atomic-runtime.patch"}) do
+        for _, patch in ipairs({"utimensat-told-no.patch", "reexport-when-dyld-can.patch", "one-emulated-tls-runtime.patch", "one-atomic-runtime.patch", "process-wide-compat.patch"}) do
             os.vrunv("git", {"apply", path.join(package:scriptdir(), "patches", patch), "-p2"})
         end
         local compat = package:dep("apple-compat")
@@ -58,12 +56,20 @@ package("libcxx")
         if #(compat:data("provided") or {}) > 0 then
             table.join2(shflags, {"-L" .. compat:installdir("lib"), "-Wl,-hidden-lapple-compat"})
         end
+        local process_wide = compat:data("process_wide") or {}
+        local process_sources, process_exports = {}, path.absolute("process-wide.exp")
+        for _, symbol in ipairs(process_wide) do
+            table.insert(process_sources, path.join(compat:installdir("share"), "apple-compat", "process-wide", symbol .. ".c"))
+        end
+        io.writefile(process_exports, table.concat(table.imap(process_wide, function (_, symbol) return "_" .. symbol end), "\n") .. "\n")
         local deployment = cmake.toolchain(package):config("deployment")
         local emulated_tls = cmake.toolchain(package):config("emulated_tls") and true or false
         local atomic_libcalls = cmake.toolchain(package):config("atomic_libcalls") and true or false
         cmake.install(package, {
             "-DLIBCXXABI_ENABLE_EMULATED_TLS=" .. (emulated_tls and "ON" or "OFF"),
             "-DLIBCXXABI_ENABLE_ATOMIC_LIBCALLS=" .. (atomic_libcalls and "ON" or "OFF"),
+            "-DLIBCXXABI_PROCESS_WIDE_SOURCES=" .. table.concat(process_sources, ";"),
+            "-DLIBCXXABI_PROCESS_WIDE_EXPORTS=" .. process_exports,
             "-DLLVM_ENABLE_RUNTIMES=libcxx;libcxxabi",
             "-DLIBCXXABI_REEXPORT_FROM_LIBCXX=" .. (semver.compare(deployment, "4.2") < 0 and "OFF" or "ON"),
             "-DLIBCXX_ENABLE_SHARED=ON", "-DLIBCXXABI_ENABLE_SHARED=ON",
@@ -102,6 +108,23 @@ package("libcxx")
                 raise("libc++abi.1.0.dylib does not export %s, and code compiled for iOS %s calls it for an atomic the processor cannot update in one instruction", symbol, deployment)
             elseif not atomic_libcalls and found then
                 raise("libc++abi.1.0.dylib exports %s, which libSystem has from iOS 7.0, so code built for iOS %s would bind a second copy with locks of its own", symbol, deployment)
+            end
+        end
+        local reexported = os.iorunv("xcrun", {"nm", "-gm", path.join(package:installdir("lib"), "libc++.1.0.dylib")})
+        local wanted = {}
+        for _, name in ipairs(process_wide) do
+            wanted[name] = true
+        end
+        local compat_module = import("apple.compat", {rootdir = modules, anonymous = true})
+        for _, name in ipairs(table.orderkeys(compat_module.process_wide())) do
+            local found = exported:find(" T _" .. name .. "\n", 1, true)
+            if wanted[name] and not found then
+                raise("libc++abi.1.0.dylib does not export %s, which iOS %s lacks and every image of a process must reach in one copy", name, deployment)
+            elseif not wanted[name] and found then
+                raise("libc++abi.1.0.dylib exports %s, which the system has for iOS %s, so an image would bind a second copy beside the system's", name, deployment)
+            end
+            if wanted[name] and semver.compare(deployment, "4.2") >= 0 and not reexported:find("(indirect) external _" .. name .. " ", 1, true) then
+                raise("libc++.1.0.dylib does not re-export %s from libc++abi, so a client that links libc++ alone binds nothing", name)
             end
         end
         local function is_operator(name)
