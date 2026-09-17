@@ -33,6 +33,7 @@ local LC_UPWARD_DYLIB = 0x80000023
 local LC_VERSION_MIN_IPHONEOS = 0x25
 local LC_ENCRYPTION_INFO_64 = 0x2C
 local LC_BUILD_VERSION = 0x32
+local LC_FUNCTION_STARTS = 0x26
 
 local LIBRARY_COMMANDS = {
     [LC_LOAD_DYLIB] = true, [LC_LOAD_WEAK_DYLIB] = true, [LC_REEXPORT_DYLIB] = true,
@@ -92,16 +93,16 @@ function image(data, base)
             if command == LC_SEGMENT_64 then
                 name, vmaddr, vmsize, fileoff = string.unpack("<c16I8I8I8", data, at + 9)
                 nsects = string.unpack("<I4", data, at + 9 + 56)
-                first, entry, layout = at + 72, 80, "<c16c16I8I8I4I4I4I4I4"
+                first, entry, layout = at + 72, 80, "<c16c16I8I8I4I4I4I4I4I4I4"
             else
                 name, vmaddr, vmsize, fileoff = string.unpack("<c16I4I4I4", data, at + 9)
                 nsects = string.unpack("<I4", data, at + 9 + 40)
-                first, entry, layout = at + 56, 68, "<c16c16I4I4I4I4I4I4I4"
+                first, entry, layout = at + 56, 68, "<c16c16I4I4I4I4I4I4I4I4I4"
             end
             table.insert(found.segments, {name = name:gsub("%z+$", ""), vmaddr = vmaddr, vmsize = vmsize, fileoff = fileoff})
             for index = 0, nsects - 1 do
-                local sectname, _, addr, sectsize, _, _, _, _, flags = string.unpack(layout, data, first + index * entry + 1)
-                table.insert(found.sections, {name = sectname:gsub("%z+$", ""), addr = addr, size = sectsize, flags = flags})
+                local sectname, segname, addr, sectsize, _, _, _, _, flags, reserved1, reserved2 = string.unpack(layout, data, first + index * entry + 1)
+                table.insert(found.sections, {name = sectname:gsub("%z+$", ""), segment = segname:gsub("%z+$", ""), addr = addr, size = sectsize, flags = flags, reserved1 = reserved1, reserved2 = reserved2})
             end
         elseif command == LC_SYMTAB then
             found.symtab = {string.unpack("<I4I4I4I4", data, at + 9)}
@@ -115,6 +116,9 @@ function image(data, base)
         elseif command == LC_DYSYMTAB then
             found["local"] = {string.unpack("<I4I4", data, at + 73)}
             found.external = {string.unpack("<I4I4", data, at + 17)}
+            found.indirect = {string.unpack("<I4I4", data, at + 57)}
+        elseif command == LC_FUNCTION_STARTS then
+            found.function_starts = {string.unpack("<I4I4", data, at + 9)}
         elseif command == LC_SUB_FRAMEWORK then
             found.umbrella = cstring(data, at + string.unpack("<I4", data, at + 9))
         elseif command == LC_SUB_UMBRELLA or command == LC_SUB_LIBRARY then
