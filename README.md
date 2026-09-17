@@ -285,7 +285,10 @@ exception state.
 
 xmake's package hash covers a package's version, configs and toolchain, but
 neither its script nor the builds of its dependencies; the script is not in reach
-of anything that runs before the hash is taken, so it cannot be digested for it. Charon's libraries set
+of anything that runs before the hash is taken, so it cannot be digested for it. The toolchain Charon gives
+packages carries a digest of the files that decide their compiler and linker
+flags, so a release that changes those flags rebuilds every package once, for
+every architecture. Charon's libraries set
 `package.strict_compatibility`, so what depends on them is rebuilt when they
 change; a port should set `package.librarydeps.strict_compatibility` in its
 project for its own packages, and give a package defined in its `xmake.lua` a
