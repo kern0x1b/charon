@@ -3,8 +3,8 @@ import("fixtures")
 local function cache(file, architecture, exported, installed)
     installed = installed or "/usr/lib/libSystem.B.dylib"
     local strings = "\0" .. exported .. "\0"
-    local image, header = 0x100, 28
-    local symbols = image + header + 24
+    local image, header, segment = 0x100, 28, 56
+    local symbols = image + header + segment + 24
     local symbol_table = symbols + 12
     local name = symbol_table + #strings
     local size = name + #installed + 1
@@ -16,8 +16,9 @@ local function cache(file, architecture, exported, installed)
     put(16, string.pack("<I4I4I4I4", 0x40, 1, 0x60, 1))
     put(0x40, string.pack("<I8I8I8I4I4", 0, size, 0, 5, 5))
     put(0x60, string.pack("<I8I8I8I4", image, 0, 0, name))
-    put(image, string.pack("<I4i4i4I4I4I4I4", 0xFEEDFACE, 12, 9, 6, 1, 24, 0))
-    put(image + header, string.pack("<I4I4I4I4I4I4", 0x2, 24, symbols, 1, symbol_table, #strings))
+    put(image, string.pack("<I4i4i4I4I4I4I4", 0xFEEDFACE, 12, 9, 6, 2, segment + 24, 0))
+    put(image + header, string.pack("<I4I4c16I4I4I4I4i4i4I4I4", 0x1, segment, "__LINKEDIT", 0, size, 0, size, 1, 1, 0, 0))
+    put(image + header + segment, string.pack("<I4I4I4I4I4I4", 0x2, 24, symbols, 1, symbol_table, #strings))
     put(symbols, string.pack("<I4BBi2I4", 1, 0x0F, 1, 0, 0))
     put(symbol_table, strings)
     put(name, installed .. "\0")
