@@ -160,20 +160,36 @@ static void charon_set_object_for_keyed_subscript(id self, SEL _cmd, id object, 
         ((void (*)(id, SEL, id))objc_msgSend)(self, sel_registerName("removeObjectForKey:"), key);
 }
 
-static void charon_add_method(const char *class_name, const char *selector, IMP implementation, const char *types)
-{
-    Class found = objc_getClass(class_name);
-    SEL name = sel_registerName(selector);
-    if (found && !class_getInstanceMethod(found, name))
-        class_addMethod(found, name, implementation, types);
-}
+struct charon_added_method {
+    const char *class_name;
+    const char *selector;
+    IMP implementation;
+    const char *types;
+};
+
+static const struct charon_added_method charon_added_methods[] = {
+    {"NSArray", "objectAtIndexedSubscript:", (IMP)charon_object_at_indexed_subscript, "@@:I"},
+    {"NSOrderedSet", "objectAtIndexedSubscript:", (IMP)charon_object_at_indexed_subscript, "@@:I"},
+    {"NSMutableArray", "setObject:atIndexedSubscript:", (IMP)charon_set_object_at_indexed_subscript, "v@:@I"},
+    {"NSMutableOrderedSet", "setObject:atIndexedSubscript:", (IMP)charon_set_object_at_indexed_subscript, "v@:@I"},
+    {"NSDictionary", "objectForKeyedSubscript:", (IMP)charon_object_for_keyed_subscript, "@@:@"},
+    {"NSMutableDictionary", "setObject:forKeyedSubscript:", (IMP)charon_set_object_for_keyed_subscript, "v@:@@"},
+};
+
+__attribute__((used, section("__DATA,__charon_addsel"))) static const char *const charon_added_selectors[] = {
+    "objectAtIndexedSubscript:",
+    "setObject:atIndexedSubscript:",
+    "objectForKeyedSubscript:",
+    "setObject:forKeyedSubscript:",
+};
 
 __attribute__((constructor)) static void charon_arclite_subscripting(void)
 {
-    charon_add_method("NSArray", "objectAtIndexedSubscript:", (IMP)charon_object_at_indexed_subscript, "@@:I");
-    charon_add_method("NSOrderedSet", "objectAtIndexedSubscript:", (IMP)charon_object_at_indexed_subscript, "@@:I");
-    charon_add_method("NSMutableArray", "setObject:atIndexedSubscript:", (IMP)charon_set_object_at_indexed_subscript, "v@:@I");
-    charon_add_method("NSMutableOrderedSet", "setObject:atIndexedSubscript:", (IMP)charon_set_object_at_indexed_subscript, "v@:@I");
-    charon_add_method("NSDictionary", "objectForKeyedSubscript:", (IMP)charon_object_for_keyed_subscript, "@@:@");
-    charon_add_method("NSMutableDictionary", "setObject:forKeyedSubscript:", (IMP)charon_set_object_for_keyed_subscript, "v@:@@");
+    for (unsigned index = 0; index < sizeof charon_added_methods / sizeof *charon_added_methods; index++) {
+        const struct charon_added_method *method = &charon_added_methods[index];
+        Class found = objc_getClass(method->class_name);
+        SEL name = sel_registerName(method->selector);
+        if (found && !class_getInstanceMethod(found, name))
+            class_addMethod(found, name, method->implementation, method->types);
+    }
 }

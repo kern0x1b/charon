@@ -2,6 +2,7 @@ import("macho")
 import("compat")
 import("dyld")
 import("firmware")
+import("objc")
 import("signing")
 import("bundle")
 
@@ -79,12 +80,23 @@ function imports_source(target, architecture)
     return (firmware.ensure(architecture or target:arch(), deployment(target), {tool = tool}))
 end
 
+function report_selectors(source, binaries, architecture, folder)
+    for binary, missing in pairs(objc.absent_selectors(source, binaries, architecture)) do
+        local named = folder and path.relative(binary, folder) or binary
+        local shown = table.concat(table.slice(missing, 1, math.min(12, #missing)), " ") .. (#missing > 12 and string.format(" and %d more", #missing - 12) or "")
+        wprint("%s sends %d selector%s no class of the %s release it is checked against implements, which must run only behind respondsToSelector: or a version check: %s",
+               named, #missing, #missing == 1 and "" or "s", architecture, shown)
+    end
+end
+
 function verify(target, binary, opt)
     opt = opt or {}
     verify_minimum(target, binary)
     macho.verify(binary, {waived = waivers(target), arrived = compat.arrived("iOS"), stripped = opt.stripped})
     if opt.imports ~= false then
-        dyld.check(imports_source(target), {binary})
+        local source = imports_source(target)
+        dyld.check(source, {binary})
+        report_selectors(source, {binary}, target:arch())
     end
 end
 
@@ -145,7 +157,9 @@ function application(target)
         sign(target, binaries[index], binaries[index] == executable and target:values("charon.entitlements") or nil)
     end
     if not os.getenv("CHARON_SLICE") then
-        dyld.check(imports_source(target), binaries, folder)
+        local source = imports_source(target)
+        dyld.check(source, binaries, folder)
+        report_selectors(source, binaries, target:arch(), folder)
     end
     return folder
 end

@@ -1,5 +1,6 @@
 import("core.base.json")
 import("dyld")
+import("macho")
 
 local RELATIVE_METHODS = 0x80000000
 
@@ -34,7 +35,7 @@ local function reader(cache)
             end
         end
     end
-    local self = {wide = wide, size = size, mapped = cache.mapped, relative_lists = cache.main.mapping_offset >= 0x138}
+    local self = {wide = wide, size = size, mapped = cache.mapped, relative_lists = cache.file or cache.main.mapping_offset >= 0x138}
     function self.pointer(address)
         if not cache.mapped(address, size) then
             return 0
@@ -181,8 +182,7 @@ local function section_entries(read, image, wanted)
     return entries
 end
 
-function inventory(cachefile)
-    local cache = dyld.open_cache(cachefile)
+local function collect(cache)
     local read = reader(cache)
     function read.raw(address, count)
         return cache.read_address(address, count)
@@ -234,6 +234,173 @@ function inventory(cachefile)
             end
         end
     end
+    return {architecture = cache.architecture, classes = classes, protocols = protocols, read = read}
+end
+
+function inventory(cachefile)
+    local cache = dyld.open_cache(cachefile)
+    local found = collect(cache)
     cache.close()
-    return {architecture = cache.architecture, classes = classes, protocols = protocols}
+    found.read = nil
+    return found
+end
+
+local function file_source(binary, architecture)
+    local data = macho.read(binary)
+    local image
+    for _, candidate in ipairs(macho.images(data)) do
+        if candidate.architecture == architecture then
+            image = candidate
+        end
+    end
+    if not image then
+        return nil
+    end
+    local wide = image.wide
+    local text_address = 0
+    for _, segment in ipairs(image.segments) do
+        if segment.name == "__TEXT" then
+            text_address = segment.vmaddr
+        end
+    end
+    local function locate(address, size)
+        for _, segment in ipairs(image.segments) do
+            if segment.vmaddr <= address and address + size <= segment.vmaddr + segment.vmsize and segment.fileoff + (address - segment.vmaddr) + size <= #data then
+                return image.base + segment.fileoff + (address - segment.vmaddr)
+            end
+        end
+    end
+    local source = {file = true, architecture = architecture, main = {mapping_offset = 0}, images = {{install = image.identity or binary, image = image}}}
+    function source.field()
+        return nil
+    end
+    function source.mapped(address, size)
+        return locate(address, size or 1) ~= nil
+    end
+    function source.read_address(address, size)
+        local at = locate(address, size) or raise("address %#x is outside the segments of %s", address, binary)
+        return data:sub(at + 1, at + size)
+    end
+    function source.pointer_at(address, pointer_wide)
+        local value = string.unpack(pointer_wide and "<I8" or "<I4", source.read_address(address, pointer_wide and 8 or 4))
+        if pointer_wide and image.chained_fixups and value ~= 0 then
+            if value >> 63 ~= 0 then
+                return 0
+            end
+            local target = value & 0xFFFFFFFFF
+            if target < text_address then
+                target = target + text_address
+            end
+            return target | (((value >> 36) & 0xFF) << 56)
+        end
+        return value
+    end
+    function source.string_at(address)
+        local at = locate(address, 1)
+        if not at then
+            return nil
+        end
+        local finish = data:find("\0", at + 1, true)
+        return data:sub(at + 1, (finish or #data + 1) - 1)
+    end
+    function source.close()
+    end
+    return source, image
+end
+
+function binary_selectors(binary, architecture)
+    local source, image = file_source(binary, architecture)
+    if not source then
+        return nil
+    end
+    local found = collect(source)
+    local implemented = {}
+    for _, class in pairs(found.classes) do
+        for key in pairs(class.instance) do
+            implemented[key] = true
+        end
+        for key in pairs(class.class) do
+            implemented[key] = true
+        end
+    end
+    for _, selector in ipairs(section_entries(found.read, image, "__charon_addsel")) do
+        local name = found.read.string(selector)
+        if name then
+            implemented["-" .. name] = true
+        end
+    end
+    local used = {}
+    for _, selector in ipairs(section_entries(found.read, image, "__objc_selrefs")) do
+        local name = found.read.string(selector)
+        if name then
+            used["-" .. name] = true
+        end
+    end
+    return {used = used, implemented = implemented}
+end
+
+local function add_selectors(into, found)
+    for _, class in pairs(found.classes) do
+        merge(into, class.instance)
+        merge(into, class.class)
+    end
+    for _, protocol in pairs(found.protocols or {}) do
+        merge(into, protocol.instance)
+        merge(into, protocol.class)
+    end
+end
+
+function known_selectors(source)
+    local architecture = path.filename(source):match("^dyld_shared_cache_([%w_]+)") or path.filename(source):match("^libraries_([%w_]+)$")
+    local list = path.join(path.directory(source), "selectors_" .. architecture .. ".txt")
+    local known = {}
+    if os.isfile(list) and os.mtime(list) >= os.mtime(source) then
+        for line in io.readfile(list):gmatch("[^\n]+") do
+            known["-" .. line] = true
+        end
+        return known
+    end
+    if os.isdir(source) then
+        for _, binary in ipairs(macho.binaries_under(source)) do
+            local file = file_source(binary, architecture)
+            if file then
+                add_selectors(known, collect(file))
+            end
+        end
+    else
+        add_selectors(known, inventory(source))
+    end
+    local names = {}
+    for key in pairs(known) do
+        table.insert(names, key:sub(2))
+    end
+    table.sort(names)
+    io.writefile(list, table.concat(names, "\n") .. "\n")
+    return known
+end
+
+function absent_selectors(source, binaries, architecture)
+    local known = known_selectors(source)
+    local results, implemented = {}, {}
+    local found = {}
+    for _, binary in ipairs(binaries) do
+        local selectors = binary_selectors(binary, architecture)
+        if selectors then
+            found[binary] = selectors
+            merge(implemented, selectors.implemented)
+        end
+    end
+    for binary, selectors in pairs(found) do
+        local missing = {}
+        for key in pairs(selectors.used) do
+            if not implemented[key] and not known[key] then
+                table.insert(missing, key:sub(2))
+            end
+        end
+        if #missing > 0 then
+            table.sort(missing)
+            results[binary] = missing
+        end
+    end
+    return results
 end

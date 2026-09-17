@@ -27,6 +27,7 @@ local LC_ENCRYPTION_INFO = 0x21
 local LC_DYLD_INFO = 0x22
 local LC_DYLD_INFO_ONLY = 0x80000022
 local LC_DYLD_EXPORTS_TRIE = 0x80000033
+local LC_DYLD_CHAINED_FIXUPS = 0x80000034
 local LC_LAZY_LOAD_DYLIB = 0x20
 local LC_UPWARD_DYLIB = 0x80000023
 local LC_VERSION_MIN_IPHONEOS = 0x25
@@ -107,6 +108,8 @@ function image(data, base)
         elseif command == LC_DYLD_INFO or command == LC_DYLD_INFO_ONLY then
             found.rebase = {string.unpack("<I4I4", data, at + 9)}
             found.export_trie = found.export_trie or {string.unpack("<I4I4", data, at + 41)}
+        elseif command == LC_DYLD_CHAINED_FIXUPS then
+            found.chained_fixups = true
         elseif command == LC_DYLD_EXPORTS_TRIE then
             found.export_trie = {string.unpack("<I4I4", data, at + 9)}
         elseif command == LC_DYSYMTAB then

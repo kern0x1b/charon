@@ -85,7 +85,15 @@ files and the split caches of iOS 15 on, whose subcache files it opens by the
 suffixes the main header lists - deciding which header fields exist from the
 header's own size, and the library folders of earlier releases. An import is looked up where dyld looks for it: in
 the library its binding names and in what that library re-exports, so a
-symbol the device exports only from another library is refused.
+symbol the device exports only from another library is refused. After the
+imports, every selector the build's binaries reference (`__objc_selrefs`) that
+neither they nor any class or protocol of the checked release implements is
+reported as a warning naming the binary: such a message must only be sent
+behind `respondsToSelector:` or a version check, which no static reading can
+see. The release's selectors are cached as `selectors_<arch>.txt` beside its
+cache; methods a runtime component adds at run time (arclite's subscripting)
+are declared by that component in a `__DATA,__charon_addsel` section and
+count as implemented.
 
 A check is a target:
 

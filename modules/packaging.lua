@@ -40,7 +40,9 @@ function universal(target, architectures, stage)
         platform.sign(target, binary, binary == executable and target:values("charon.entitlements") or nil)
     end
     for _, architecture in ipairs(architectures) do
-        dyld.check(platform.imports_source(target, architecture), merged, installed)
+        local source = platform.imports_source(target, architecture)
+        dyld.check(source, merged, installed)
+        platform.report_selectors(source, merged, architecture, installed)
     end
 end
 
