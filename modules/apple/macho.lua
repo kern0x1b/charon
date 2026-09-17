@@ -108,7 +108,9 @@ function image(data, base)
             found.symtab = {string.unpack("<I4I4I4I4", data, at + 9)}
         elseif command == LC_DYLD_INFO or command == LC_DYLD_INFO_ONLY then
             found.rebase = {string.unpack("<I4I4", data, at + 9)}
+            found.bind = {string.unpack("<I4I4", data, at + 17)}
             found.weak_bind = {string.unpack("<I4I4", data, at + 25)}
+            found.lazy_bind = {string.unpack("<I4I4", data, at + 33)}
             found.export_trie = found.export_trie or {string.unpack("<I4I4", data, at + 41)}
         elseif command == LC_DYLD_CHAINED_FIXUPS then
             found.chained_fixups = true
@@ -272,6 +274,66 @@ function weak_bindings(data, found)
         end
     end
     return order
+end
+
+function bound_slots(data, found)
+    local slots = {}
+    local pointer = found.wide and 8 or 4
+    for _, stream in ipairs({found.bind, found.lazy_bind, found.weak_bind}) do
+        if stream and stream[2] > 0 then
+            local at, finish = found.base + stream[1], found.base + stream[1] + stream[2]
+            local name, address = nil, nil
+            local function bind()
+                if name and address then
+                    slots[address] = name
+                    address = address + pointer
+                end
+            end
+            while at < finish do
+                local byte = data:byte(at + 1)
+                at = at + 1
+                local opcode, immediate = byte & 0xF0, byte & 0x0F
+                if opcode == 0x00 then
+                    name, address = nil, nil
+                elseif opcode == 0x20 or opcode == 0x50 or opcode == 0x60 then
+                    if opcode ~= 0x50 then
+                        _, at = uleb(data, at)
+                    end
+                elseif opcode == 0x40 then
+                    name = cstring(data, at)
+                    at = at + #name + 1
+                elseif opcode == 0x70 then
+                    local offset
+                    offset, at = uleb(data, at)
+                    local segment = found.segments[immediate + 1]
+                    address = segment and (segment.vmaddr + offset) or nil
+                elseif opcode == 0x80 then
+                    local delta
+                    delta, at = uleb(data, at)
+                    address = address and (address + delta) or nil
+                elseif opcode == 0x90 then
+                    bind()
+                elseif opcode == 0xA0 then
+                    local delta
+                    delta, at = uleb(data, at)
+                    bind()
+                    address = address and (address + delta) or nil
+                elseif opcode == 0xB0 then
+                    bind()
+                    address = address and (address + immediate * pointer) or nil
+                elseif opcode == 0xC0 then
+                    local count, skip
+                    count, at = uleb(data, at)
+                    skip, at = uleb(data, at)
+                    for _ = 1, count do
+                        bind()
+                        address = address and (address + skip) or nil
+                    end
+                end
+            end
+        end
+    end
+    return slots
 end
 
 function rebased_slots(data, found)

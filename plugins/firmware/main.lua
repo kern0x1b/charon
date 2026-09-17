@@ -22,8 +22,8 @@ function main()
         end
         return
     end
-    if action ~= "fetch" and action ~= "rootfs" and action ~= "classes" then
-        raise("xmake firmware takes fetch, rootfs, classes or list, not %s", tostring(action))
+    if action ~= "fetch" and action ~= "rootfs" and action ~= "classes" and action ~= "extract" then
+        raise("xmake firmware takes fetch, rootfs, classes, extract or list, not %s", tostring(action))
     end
     local release = option.get("release") or raise("xmake firmware fetch needs the release")
     task.run("config", {}, {disable_dump = true})
@@ -40,6 +40,17 @@ function main()
         return
     end
     local held, fetched = firmware.fetch(architecture, release, {tool = charon_firmware})
+    if action == "extract" then
+        local library = option.get("library") or raise("xmake firmware extract needs --library=INSTALL, e.g. --library=UIKit")
+        local output = option.get("output") or path.join(path.directory(held), path.filename(library))
+        local taken = dyld.extract(held, library, output)
+        cprint("${bright}%s${clear}: %s of iOS %s, %d segments, %d symbols of which %d are its own, %d pointers to rebase, %.1f MB",
+               output, taken.install, fetched or release, #taken.segments, taken.symbols, taken.locals, taken.pointers, taken.size / 1048576)
+        if taken.slide_info then
+            cprint("${color.warning}note:${clear} the cache says where its pointers are in slide info version %d, which this extraction does not read, so the library carries no rebase opcodes: it is for reading, not for loading", taken.slide_info)
+        end
+        return
+    end
     if action == "classes" then
         import("core.base.json")
         local objc = import("apple.objc", {rootdir = path.join(os.scriptdir(), "..", "..", "modules"), anonymous = true})

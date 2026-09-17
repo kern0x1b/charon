@@ -770,3 +770,379 @@ function image_symbols(cache, loaded)
     end
     return found
 end
+
+local function encoded_uleb(value)
+    local bytes = {}
+    repeat
+        local byte = value & 0x7F
+        value = value >> 7
+        table.insert(bytes, string.char(value ~= 0 and (byte | 0x80) or byte))
+    until value == 0
+    return table.concat(bytes)
+end
+
+local function slid_slots(cache, segments)
+    local file = cache.main
+    if file.mapping_offset < 0x48 then
+        return {}
+    end
+    local slide_offset, slide_size = string.unpack("<I8I8", file.header, 0x38 + 1)
+    if slide_size == 0 then
+        return {}
+    end
+    local head = cache.read(file, slide_offset, 64)
+    local version = string.unpack("<I4", head, 1)
+    if version ~= 1 then
+        return {}, version
+    end
+    local toc_offset, toc_count, entries_offset, _, entries_size = string.unpack("<I4I4I4I4I4", head, 5)
+    local page_size = entries_size * 32
+    local mapping_bytes = cache.read(file, file.mapping_offset, 32 * 2)
+    local region_address, region_size = string.unpack("<I8I8", mapping_bytes, 32 + 1)
+    local toc = cache.read(file, slide_offset + toc_offset, toc_count * 2)
+    local entries = cache.read(file, slide_offset + entries_offset, slide_size - entries_offset)
+    local found = {}
+    for _, segment in ipairs(segments) do
+        local slots = {}
+        local first = math.max(segment.vmaddr, region_address)
+        local last = math.min(segment.vmaddr + segment.vmsize, region_address + region_size)
+        local page = (first - region_address) // page_size
+        while page < toc_count and region_address + page * page_size < last do
+            local entry = string.unpack("<I2", toc, page * 2 + 1)
+            local bits = entries:sub(entry * entries_size + 1, (entry + 1) * entries_size)
+            for index = 0, entries_size * 8 - 1 do
+                if bits:byte(index // 8 + 1) & (1 << (index % 8)) ~= 0 then
+                    local address = region_address + page * page_size + index * 4
+                    if segment.vmaddr <= address and address < segment.vmaddr + segment.vmsize then
+                        table.insert(slots, address - segment.vmaddr)
+                    end
+                end
+            end
+            page = page + 1
+        end
+        table.sort(slots)
+        found[segment.name] = slots
+    end
+    return found
+end
+
+local function rebase_stream(segments, slots, wide)
+    local pointer = wide and 8 or 4
+    local stream = {string.char(0x10 | 1)}
+    for index, segment in ipairs(segments) do
+        local held = slots[segment.name] or {}
+        if #held > 0 then
+            table.insert(stream, string.char(0x70 | (index - 1)) .. encoded_uleb(held[1]))
+            local at, run = held[1], 0
+            for position = 1, #held do
+                if held[position] == at + run * pointer then
+                    run = run + 1
+                else
+                    table.insert(stream, string.char(0x50) .. encoded_uleb(run))
+                    table.insert(stream, string.char(0x20) .. encoded_uleb(held[position] - (at + run * pointer)))
+                    at, run = held[position], 1
+                end
+            end
+            table.insert(stream, string.char(0x50) .. encoded_uleb(run))
+        end
+    end
+    table.insert(stream, string.char(0))
+    local bytes = table.concat(stream)
+    return bytes .. string.rep("\0", (8 - #bytes % 8) % 8)
+end
+
+local function local_symbols(cache, address, wide)
+    local file = cache.main
+    if file.mapping_offset < 0x58 then
+        return {}
+    end
+    local region_offset, region_size = string.unpack("<I8I8", file.header, 0x48 + 1)
+    if region_size == 0 then
+        return {}
+    end
+    local head = cache.read(file, region_offset, 24)
+    local nlist_offset, nlist_count, strings_offset, strings_size, entries_offset, entries_count = string.unpack("<I4I4I4I4I4I4", head, 1)
+    local base = string.unpack("<I8", cache.read(file, file.mapping_offset, 8), 1)
+    local entries = cache.read(file, region_offset + entries_offset, entries_count * 12)
+    local start, count
+    for index = 0, entries_count - 1 do
+        local dylib_offset, first, held = string.unpack("<I4I4I4", entries, index * 12 + 1)
+        if dylib_offset == address - base then
+            start, count = first, held
+        end
+    end
+    if not start or count == 0 then
+        return {}
+    end
+    local entry_size = wide and 16 or 12
+    local nlists = cache.read(file, region_offset + nlist_offset + start * entry_size, count * entry_size)
+    local strings = cache.read(file, region_offset + strings_offset, strings_size)
+    local found = {}
+    for index = 0, count - 1 do
+        local strx, kind, section, desc = string.unpack("<I4BBI2", nlists, index * entry_size + 1)
+        local value = wide and string.unpack("<I8", nlists, index * entry_size + 9) or string.unpack("<I4", nlists, index * entry_size + 9)
+        local name = strings:sub(strx + 1, (strings:find("\0", strx + 1, true) or strx + 1) - 1)
+        if #name > 0 then
+            table.insert(found, {name = name, kind = kind, section = section, desc = desc, value = value})
+        end
+    end
+    return found
+end
+
+local function symbol_table(cache, linkedit, symoff, nsyms, stroff, locals, wide)
+    local entry_size = wide and 16 or 12
+    local at = function (offset, size)
+        return cache.read_address(linkedit.vmaddr + (offset - linkedit.fileoff), size)
+    end
+    local nlists, names, strings = {}, {}, {"\0"}
+    local length = 1
+    local function add(name, kind, section, desc, value)
+        local strx = names[name]
+        if not strx then
+            strx = length
+            names[name] = strx
+            table.insert(strings, name .. "\0")
+            length = length + #name + 1
+        end
+        table.insert(nlists, wide and string.pack("<I4BBI2I8", strx, kind, section, desc, value)
+                                  or string.pack("<I4BBI2I4", strx, kind, section, desc, value))
+    end
+    for _, symbol in ipairs(locals) do
+        add(symbol.name, symbol.kind, symbol.section, symbol.desc, symbol.value)
+    end
+    local held = nsyms > 0 and at(symoff, nsyms * entry_size) or ""
+    for index = 0, nsyms - 1 do
+        local strx, kind, section, desc = string.unpack("<I4BBI2", held, index * entry_size + 1)
+        local value = wide and string.unpack("<I8", held, index * entry_size + 9) or string.unpack("<I4", held, index * entry_size + 9)
+        local name = cache.string_at(linkedit.vmaddr + (stroff + strx - linkedit.fileoff))
+        add(name, kind, section, desc, value)
+    end
+    local table_bytes = table.concat(nlists)
+    local string_bytes = table.concat(strings)
+    string_bytes = string_bytes .. string.rep("\0", (8 - #string_bytes % 8) % 8)
+    return table_bytes, string_bytes, #nlists
+end
+
+function extract(cachefile, install, outputfile)
+    local cache = open_cache(cachefile)
+    local chosen
+    for _, entry in ipairs(cache.images) do
+        if entry.install == install or entry.install:endswith("/" .. install) or path.filename(entry.install) == install then
+            chosen = chosen or entry
+        end
+    end
+    if not chosen then
+        raise("%s holds no image named %s", cachefile, install)
+    end
+    local magic = string.unpack("<I4", cache.read_address(chosen.address, 4))
+    local wide = magic == 0xFEEDFACF
+    local header_size = wide and 32 or 28
+    local header = cache.read_address(chosen.address, header_size)
+    local ncmds, sizeofcmds = string.unpack("<I4I4", header, 17)
+    local commands = cache.read_address(chosen.address + header_size, sizeofcmds)
+
+    local segments, linkedit_commands, at = {}, {}, 1
+    for _ = 1, ncmds do
+        local command, size = string.unpack("<I4I4", commands, at)
+        if command == 0x1 or command == 0x19 then
+            local layout = wide and "<c16I8I8I8I8I4I4I4" or "<c16I4I4I4I4I4I4I4"
+            local name, vmaddr, vmsize, fileoff, filesize, maxprot, initprot, nsects = string.unpack(layout, commands, at + 8)
+            table.insert(segments, {name = name:gsub("%z+$", ""), vmaddr = vmaddr, vmsize = vmsize, fileoff = fileoff,
+                                    filesize = filesize, maxprot = maxprot, initprot = initprot, nsects = nsects, at = at, size = size})
+        elseif command == 0x2 then
+            local symoff, nsyms, stroff, strsize = string.unpack("<I4I4I4I4", commands, at + 8)
+            table.insert(linkedit_commands, {at = at, kind = "symtab", symoff = symoff, nsyms = nsyms, stroff = stroff, strsize = strsize,
+                                             fields = {{8, symoff, nsyms * (wide and 16 or 12)}, {16, stroff, strsize}}})
+        elseif command == 0xb then
+            local units = {8, wide and 56 or 52, 4, 4, 8, 8}
+            local fields = {}
+            for index = 0, #units - 1 do
+                local offset, count = string.unpack("<I4I4", commands, at + 32 + index * 8)
+                table.insert(fields, {32 + index * 8, offset, count * units[index + 1]})
+            end
+            local indirect_offset, indirect_count = string.unpack("<I4I4", commands, at + 56)
+            local ilocal, nlocal, iextdef, nextdef, iundef, nundef = string.unpack("<I4I4I4I4I4I4", commands, at + 8)
+            table.insert(linkedit_commands, {at = at, kind = "dysymtab", indirect_offset = indirect_offset, indirect_count = indirect_count,
+                                             ilocal = ilocal, nlocal = nlocal, iextdef = iextdef, nextdef = nextdef, iundef = iundef, nundef = nundef,
+                                             fields = fields})
+        elseif command == 0x22 or command == 0x80000022 then
+            local fields = {}
+            for index = 0, 4 do
+                local offset, size_of = string.unpack("<I4I4", commands, at + 8 + index * 8)
+                table.insert(fields, {8 + index * 8, offset, size_of})
+            end
+            table.insert(linkedit_commands, {at = at, fields = fields, dyld_info = true})
+        elseif command == 0x26 or command == 0x29 or command == 0x2B or command == 0x2C or command == 0x33 then
+            local offset, size_of = string.unpack("<I4I4", commands, at + 8)
+            table.insert(linkedit_commands, {at = at, fields = {{8, offset, size_of}}})
+        end
+        at = at + size
+    end
+
+    local linkedit
+    for _, segment in ipairs(segments) do
+        if segment.name == "__LINKEDIT" then
+            linkedit = segment
+        end
+    end
+    if not linkedit then
+        raise("%s holds no __LINKEDIT segment in %s", install, cachefile)
+    end
+    local first, last
+    for _, command in ipairs(linkedit_commands) do
+        for _, field in ipairs(command.fields) do
+            local offset, length = field[2], field[3]
+            if offset > 0 and length > 0 then
+                first = math.min(first or offset, offset)
+                last = math.max(last or (offset + length), offset + length)
+            end
+        end
+    end
+    first = math.tointeger(first or linkedit.fileoff)
+    last = math.tointeger(last or linkedit.fileoff)
+    if first < linkedit.fileoff or last > linkedit.fileoff + linkedit.vmsize then
+        raise("%s names link edit data between %#x and %#x, outside its own __LINKEDIT at %#x", install, first, last, linkedit.fileoff)
+    end
+    local slots, unread = slid_slots(cache, segments)
+    local rebase = rebase_stream(segments, slots, wide)
+    local symtab, dysymtab
+    for _, command in ipairs(linkedit_commands) do
+        symtab = command.kind == "symtab" and command or symtab
+        dysymtab = command.kind == "dysymtab" and command or dysymtab
+    end
+    local locals = symtab and local_symbols(cache, chosen.address, wide) or {}
+    local symbols, strings, symbol_count = "", "", 0
+    if symtab then
+        symbols, strings, symbol_count = symbol_table(cache, linkedit, symtab.symoff, symtab.nsyms, symtab.stroff, locals, wide)
+    end
+    local indirect = ""
+    if dysymtab and dysymtab.indirect_count > 0 then
+        local held = cache.read_address(linkedit.vmaddr + (dysymtab.indirect_offset - linkedit.fileoff), dysymtab.indirect_count * 4)
+        local rebuilt = {}
+        for index = 0, dysymtab.indirect_count - 1 do
+            local value = string.unpack("<I4", held, index * 4 + 1)
+            if value & 0xC0000000 == 0 then
+                value = value + #locals
+            end
+            table.insert(rebuilt, string.pack("<I4", value))
+        end
+        indirect = table.concat(rebuilt)
+    end
+
+    local page = wide and 0x4000 or 0x1000
+    local layout, offset = {}, 0
+    for _, segment in ipairs(segments) do
+        if segment.name ~= "__LINKEDIT" then
+            layout[segment.name] = offset
+            offset = offset + ((segment.filesize + page - 1) // page) * page
+        end
+    end
+    local linkedit_offset = offset
+    layout["__LINKEDIT"] = linkedit_offset
+    local shift = linkedit_offset - first
+    local appended = linkedit_offset + (last - first)
+    local rebase_at = appended
+    local symbols_at = rebase_at + #rebase
+    local strings_at = symbols_at + #symbols
+    local indirect_at = strings_at + #strings
+    local linkedit_size = (last - first) + #rebase + #symbols + #strings + #indirect
+
+    local pieces, count = {}, 0
+    at = 1
+    for _ = 1, ncmds do
+        local command, size = string.unpack("<I4I4", commands, at)
+        local body = commands:sub(at, at + size - 1)
+        if command == 0x1d or command == 0x1e then
+            body = nil
+        elseif command == 0x1 or command == 0x19 then
+            local segment
+            for _, described in ipairs(segments) do
+                if described.at == at then
+                    segment = described
+                end
+            end
+            local fileoff = layout[segment.name]
+            local filesize = segment.name == "__LINKEDIT" and linkedit_size or segment.filesize
+            local vmsize = segment.name == "__LINKEDIT" and ((linkedit_size + page - 1) // page) * page or segment.vmsize
+            body = body:sub(1, 8 + 16) .. (wide and string.pack("<I8I8I8I8", segment.vmaddr, vmsize, fileoff, filesize)
+                                                or string.pack("<I4I4I4I4", segment.vmaddr, vmsize, fileoff, filesize))
+                       .. body:sub(8 + 16 + (wide and 33 or 17))
+            local sections = body:sub(wide and 73 or 57)
+            local rebuilt = {}
+            for index = 0, segment.nsects - 1 do
+                local entry_size = wide and 80 or 68
+                local section = sections:sub(index * entry_size + 1, (index + 1) * entry_size)
+                local addr = wide and string.unpack("<I8", section, 33) or string.unpack("<I4", section, 33)
+                local kind = string.unpack("<I4", section, wide and 65 or 57)
+                local zero_fill = kind & 0xFF == 1 or kind & 0xFF == 0xC or kind & 0xFF == 0xD
+                local position = zero_fill and 0 or (fileoff + (addr - segment.vmaddr))
+                local head = wide and 32 + 16 or 32 + 8
+                section = section:sub(1, head) .. string.pack("<I4", position) .. section:sub(head + 5)
+                section = section:sub(1, head + 8) .. string.pack("<I4I4", 0, 0) .. section:sub(head + 17)
+                table.insert(rebuilt, section)
+            end
+            body = body:sub(1, wide and 72 or 56) .. table.concat(rebuilt)
+        else
+            for _, described in ipairs(linkedit_commands) do
+                if described.at == at then
+                    for _, field in ipairs(described.fields) do
+                        local position, value = field[1], field[2]
+                        if value > 0 then
+                            body = body:sub(1, position) .. string.pack("<I4", value + shift) .. body:sub(position + 5)
+                        end
+                    end
+                    if described.dyld_info then
+                        body = body:sub(1, 8) .. string.pack("<I4I4", rebase_at, #rebase) .. body:sub(17)
+                    elseif described.kind == "symtab" and symbol_count > 0 then
+                        body = body:sub(1, 8) .. string.pack("<I4I4I4I4", symbols_at, symbol_count, strings_at, #strings)
+                    elseif described.kind == "dysymtab" then
+                        body = body:sub(1, 8) .. string.pack("<I4I4I4I4I4I4", 0, #locals + described.nlocal, #locals + described.iextdef,
+                                                             described.nextdef, #locals + described.iundef, described.nundef) .. body:sub(33)
+                        if #indirect > 0 then
+                            body = body:sub(1, 56) .. string.pack("<I4I4", indirect_at, described.indirect_count) .. body:sub(65)
+                        end
+                    end
+                end
+            end
+        end
+        if body then
+            table.insert(pieces, body)
+            count = count + 1
+        end
+        at = at + size
+    end
+    local rebuilt_commands = table.concat(pieces)
+    local new_header = header:sub(1, 16) .. string.pack("<I4I4", count, #rebuilt_commands) .. header:sub(25)
+
+    os.mkdir(path.directory(path.absolute(outputfile)))
+    local output = assert(io.open(outputfile, "wb"), "cannot write " .. outputfile)
+    for _, segment in ipairs(segments) do
+        if segment.name ~= "__LINKEDIT" then
+            local bytes = segment.filesize > 0 and cache.read_address(segment.vmaddr, segment.filesize) or ""
+            if segment.name == "__TEXT" then
+                bytes = new_header .. rebuilt_commands .. string.rep("\0", header_size + sizeofcmds - #new_header - #rebuilt_commands) .. bytes:sub(header_size + sizeofcmds + 1)
+            end
+            output:write(bytes)
+            output:write(string.rep("\0", ((segment.filesize + page - 1) // page) * page - segment.filesize))
+        end
+    end
+    local remaining, cursor = last - first, first
+    while remaining > 0 do
+        local length = math.min(1 << 22, remaining)
+        output:write(cache.read_address(linkedit.vmaddr + (cursor - linkedit.fileoff), length))
+        cursor = cursor + length
+        remaining = remaining - length
+    end
+    output:write(rebase)
+    output:write(symbols)
+    output:write(strings)
+    output:write(indirect)
+    output:close()
+    cache.close()
+    local pointers = 0
+    for _, held in pairs(slots) do
+        pointers = pointers + #held
+    end
+    return {install = chosen.install, address = chosen.address, segments = segments, linkedit = last - first, pointers = pointers,
+            symbols = symbol_count, locals = #locals, size = linkedit_offset + linkedit_size, slide_info = unread}
+end
