@@ -128,9 +128,9 @@ static void charon_motion_stop(void)
     charon_motion_timestamp = 0;
     charon_tilt_x = 0;
     charon_tilt_y = 0;
-    charon_viewer_offset = UIOffsetZero;
+    charon_viewer_offset = (UIOffset){0, 0};
     for (UIView *view in charon_motion_views.allObjects)
-        [view charon_applyMotionEffectsForViewerOffset:UIOffsetZero duration:charon_motion_removal_duration];
+        [view charon_applyMotionEffectsForViewerOffset:(UIOffset){0, 0} duration:charon_motion_removal_duration];
 }
 
 static void charon_motion_refresh(void)

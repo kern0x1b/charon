@@ -1,3 +1,4 @@
+#include <mach-o/dyld.h>
 #include <mach-o/getsect.h>
 #include <mach-o/loader.h>
 #include <objc/runtime.h>
@@ -11,6 +12,26 @@ typedef struct mach_header charon_header;
 #endif
 
 extern const charon_header __dso_handle;
+
+static const void *charon_section(const char *segment, const char *section, unsigned long *size)
+{
+#ifdef __LP64__
+    const struct section_64 *found = getsectbynamefromheader_64(&__dso_handle, segment, section);
+#else
+    const struct section *found = getsectbynamefromheader(&__dso_handle, segment, section);
+#endif
+    if (!found || found->size == 0)
+        return NULL;
+    intptr_t slide = 0;
+    for (uint32_t index = 0; index < _dyld_image_count(); index++) {
+        if ((const void *)_dyld_get_image_header(index) == (const void *)&__dso_handle) {
+            slide = _dyld_get_image_vmaddr_slide(index);
+            break;
+        }
+    }
+    *size = (unsigned long)found->size;
+    return (const void *)((uintptr_t)found->addr + slide);
+}
 
 struct charon_list {
     uint32_t flags;
@@ -106,7 +127,7 @@ static size_t charon_collect(Class cls, const struct charon_list *list, struct c
 
 static void charon_add_properties(Class cls, const struct charon_list *list)
 {
-    if (!list)
+    if (!list || !class_addProperty)
         return;
     uint32_t size = list->flags & 0xFFFC;
     for (uint32_t index = 0; index < list->count; index++) {
@@ -135,7 +156,7 @@ static void charon_add_properties(Class cls, const struct charon_list *list)
 __attribute__((constructor)) static void charon_backports_attach(void)
 {
     unsigned long size;
-    const struct charon_category *const *categories = (const struct charon_category *const *)getsectiondata(&__dso_handle, "__DATA", "__charon_catlist", &size);
+    const struct charon_category *const *categories = (const struct charon_category *const *)charon_section("__DATA", "__charon_catlist", &size);
     size_t count = categories ? size / sizeof(void *) : 0;
     size_t capacity = 0;
     for (size_t index = 0; index < count; index++) {

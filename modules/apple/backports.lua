@@ -55,21 +55,24 @@ local function exported_symbols(file)
     return table.orderkeys(found)
 end
 
-local function compile(opt, source, object)
-    local arguments = {"-target", opt.triple, "-isysroot", opt.sdkdir, "-Os", "-g0", "-fvisibility=hidden",
-                       "-Wall", "-Wno-unguarded-availability-new", "-Wno-unguarded-availability"}
-    if not source:endswith(".c") then
-        table.insert(arguments, "-fobjc-arc")
+local function clang(opt, arguments, objective_c)
+    local given = {"-target", opt.triple, "-isysroot", opt.sdkdir}
+    if objective_c then
+        table.insert(given, "-fobjc-arc")
         if dyld.compare_versions(opt.deployment, "5.0") < 0 then
-            table.join2(arguments, {"-Xclang", "-fobjc-runtime-has-weak"})
+            table.join2(given, {"-Xclang", "-fobjc-runtime-has-weak"})
         end
     end
-    table.join2(arguments, {"-c", source, "-o", object})
+    table.join2(given, arguments)
     if opt.cc then
-        os.vrunv(opt.cc, arguments)
-    else
-        os.vrunv("xcrun", table.join({"clang"}, arguments))
+        return opt.cc, given
     end
+    return "xcrun", table.join({"clang"}, given)
+end
+
+local function compile(opt, source, object)
+    os.vrunv(clang(opt, {"-Os", "-g0", "-fvisibility=hidden", "-Wall", "-Wno-unguarded-availability-new", "-Wno-unguarded-availability",
+                         "-c", source, "-o", object}, not source:endswith(".c")))
 end
 
 local function sections_of(file)
@@ -494,8 +497,7 @@ local function introduced(opt, source, object)
     local names = availability_names(exported_symbols(object))
     local releases = {}
     for _, name in ipairs(table.orderkeys(names)) do
-        local dump = os.iorunv("xcrun", {"clang", "-target", opt.triple, "-isysroot", opt.sdkdir, "-fobjc-arc", "-fsyntax-only", "-w",
-                                         "-Xclang", "-ast-dump", "-Xclang", "-ast-dump-filter", "-Xclang", name, source})
+        local dump = os.iorunv(clang(opt, {"-fsyntax-only", "-w", "-Xclang", "-ast-dump", "-Xclang", "-ast-dump-filter", "-Xclang", name, source}, true))
         local version = introduced_version(dump, name)
         if not version then
             raise("the SDK declares %s, which %s defines, without an iOS release it arrived in, so no band can hold it", name, path.filename(source))
@@ -547,11 +549,21 @@ local function release_cache(opt, architectures, release)
     return cache
 end
 
+local function staged_libraries(opt)
+    local staged = {}
+    for _, library in ipairs(LIBRARIES) do
+        if not opt.libraries or table.contains(opt.libraries, library.name) then
+            table.insert(staged, library)
+        end
+    end
+    return staged
+end
+
 function stage_bands(opt)
     opt = table.join(opt, {triple = opt.architecture .. "-apple-ios" .. opt.deployment})
     local attach, objects, origins = compiled(opt)
     local points = {[opt.deployment] = true}
-    for _, library in ipairs(LIBRARIES) do
+    for _, library in ipairs(staged_libraries(opt)) do
         for _, object in ipairs(objects[library.name]) do
             if #exported_symbols(object) > 0 then
                 local version = introduced(opt, origins[object], object)
@@ -580,7 +592,7 @@ function stage_bands(opt)
             local found = loaded(release_cache(opt, architectures, release), opt.architecture)
             table.insert(releases, found)
             local reexported = {}
-            for _, library in ipairs(LIBRARIES) do
+            for _, library in ipairs(staged_libraries(opt)) do
                 local _, symbols = band(found.exports, objects[library.name])
                 table.join2(reexported, symbols)
             end
@@ -591,7 +603,7 @@ function stage_bands(opt)
                   range.first, range.last, signatures[range.first], signatures[range.last])
         end
         local built = {}
-        for _, library in ipairs(LIBRARIES) do
+        for _, library in ipairs(staged_libraries(opt)) do
             table.insert(built, link(opt, library, attach, objects[library.name], releases, path.join(home, "bands", range.first)))
         end
         for _, release in ipairs(table.unique({range.first, range.last})) do
