@@ -241,7 +241,11 @@ another. The first run of a device and build unpacks its root filesystem as
 past the first-boot data migration into a golden image under `~/.charon/emulator/golden.noindex/`, keyed
 by device, build and the emulator package; `install` clones it (an APFS clone
 per port and device) and unpacks the data member of each package `xmake deb`
-writes into the clone, through the image's own symbolic links. `run` clones
+writes into the clone, through the image's own symbolic links, and runs each
+package's maintainer scripts against the clone the way dpkg runs them against a
+root, with `DPKG_ROOT` naming it: that is how a package whose libraries depend
+on the release - `charon@apple-backports` - links the ones built for the image's
+own iOS, and a script that refuses the image stops the install and says why. `run` clones
 that image again, puts a LaunchDaemon into `/System/Library/LaunchDaemons` of the image (the only folder
 iOS 6's launchd reads) that starts `charon-runner`, which starts COMMAND with a
 deadline of `-s` seconds and writes its exit status, signal and output into
@@ -288,6 +292,35 @@ reply to a request it sent waited for an answer that never came - a hole in the
 emulation, not a slow guest - so the verdict names that request, the process
 and how long it waited. A daemon parked on its service port is not that and is
 not reported.
+
+A device test of a library - a program that prints its own result and exits with
+the number of failures, needing no UIKit and no SpringBoard - runs on an
+emulated device like this, against a working copy of this repository:
+
+    -- xmake.lua of the test port
+    add_repositories("charon /path/to/charon")   -- the copy with your changes
+    add_requires("charon@apple-backports")
+    includes("@addon/charon/apple-ios")
+    includes("@addon/charon/emulate")
+
+    target("backports-test")
+        set_kind("binary")
+        add_rules("@addon/charon/daemon")
+        add_files("test.m")
+        add_packages("charon@apple-backports")
+        set_values("charon.version", "1.0")
+
+    xmake f -p iphoneos -a armv7 --apple_minimum=6.0 -y
+    xmake emulate -d iPhone3,1 -r 6.0 install
+    xmake emulate -d iPhone3,1 -r 6.0 run /usr/libexec/backports-test
+    xmake emulate -d iPhone4,1 -r 6.1.3 install && xmake emulate -d iPhone4,1 -r 6.1.3 run /usr/libexec/backports-test
+
+`install` puts both packages into the image - the port's and the
+`charon@apple-backports` one `xmake deb` writes beside it - and runs their
+maintainer scripts, so the libraries of the image's own release are linked.
+`run` starts the program with the deadline of `-s`, and its exit status is the
+verdict: `pass`, `fail(exit N)`, `timeout`, `crash(signal N)` or
+`boot-blocked(...)`. `xmake emulate log` prints what it wrote.
 
 A package of a port that builds with CMake calls the addon's bridge from its
 install script, which writes a toolchain file from the `apple-ios` toolchain
