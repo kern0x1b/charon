@@ -6,10 +6,42 @@ local function object(folder, name, source)
     return path.join(folder, name .. ".o")
 end
 
+-- The package keeps its install while its digest is the same, so the digest has
+-- to cover everything a library is built from: a source left out is a change
+-- that is built once and never again.
+local function digest_step(backports, folder, found)
+    local tree = path.join(folder, "digest-tree")
+    os.mkdir(path.join(tree, "Foundation"))
+    io.writefile(path.join(tree, "Foundation", "NSThing.m"), "// a backport\n")
+    io.writefile(path.join(tree, "Foundation", "CharonThing.h"), "// its header\n")
+    io.writefile(path.join(tree, "attach.c"), "// the attach helper\n")
+    io.writefile(path.join(tree, "registry.md"), "notes\n")
+    local module_file = path.join(folder, "module.lua")
+    io.writefile(module_file, "-- the build module\n")
+    local before = backports.source_digest(tree, module_file)
+    for _, changed in ipairs({path.join(tree, "Foundation", "CharonThing.h"), path.join(tree, "Foundation", "NSThing.m"),
+                              path.join(tree, "attach.c"), module_file}) do
+        local kept = io.readfile(changed)
+        io.writefile(changed, kept .. "// changed\n")
+        if backports.source_digest(tree, module_file) == before then
+            table.insert(found, "a change to " .. path.filename(changed) .. " must be a different package digest")
+        end
+        io.writefile(changed, kept)
+    end
+    if backports.source_digest(tree, module_file) ~= before then
+        table.insert(found, "restoring every source must restore the digest")
+    end
+    io.writefile(path.join(tree, "registry.md"), "notes, rewritten\n")
+    if backports.source_digest(tree, module_file) ~= before then
+        table.insert(found, "a note beside the sources is not built into a library and must not change the digest")
+    end
+end
+
 function failures(opt)
     local backports = import("apple.backports", {rootdir = opt.modules, anonymous = true})
     local found = {}
     local folder = fixtures.scratch()
+    digest_step(backports, folder, found)
     local seven = object(folder, "seven", "__attribute__((visibility(\"default\"))) int arrived_seven = 7;\n__attribute__((visibility(\"default\"))) int also_seven(void) { return 7; }\nstatic int helper(void) { return 0; }\n")
     local eight = object(folder, "eight", "__attribute__((visibility(\"default\"))) int arrived_eight = 8;\n")
     local methods = object(folder, "methods", "static int added(void) { return 1; }\nint (*const hidden_table[])(void) = {added};\n")
