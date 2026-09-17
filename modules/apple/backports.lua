@@ -56,9 +56,20 @@ local function exported_symbols(file)
 end
 
 local function compile(opt, source, object)
-    local language = source:endswith(".c") and {} or {"-fobjc-arc"}
-    os.vrunv("xcrun", table.join({"clang", "-target", opt.triple, "-isysroot", opt.sdkdir, "-Os", "-g0", "-fvisibility=hidden",
-                                  "-Wall", "-Wno-unguarded-availability-new", "-Wno-unguarded-availability", "-c", source, "-o", object}, language))
+    local arguments = {"-target", opt.triple, "-isysroot", opt.sdkdir, "-Os", "-g0", "-fvisibility=hidden",
+                       "-Wall", "-Wno-unguarded-availability-new", "-Wno-unguarded-availability"}
+    if not source:endswith(".c") then
+        table.insert(arguments, "-fobjc-arc")
+        if dyld.compare_versions(opt.deployment, "5.0") < 0 then
+            table.join2(arguments, {"-Xclang", "-fobjc-runtime-has-weak"})
+        end
+    end
+    table.join2(arguments, {"-c", source, "-o", object})
+    if opt.cc then
+        os.vrunv(opt.cc, arguments)
+    else
+        os.vrunv("xcrun", table.join({"clang"}, arguments))
+    end
 end
 
 local function sections_of(file)

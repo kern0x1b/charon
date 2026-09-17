@@ -39,6 +39,7 @@ package("apple-backports")
         local tool = path.join(package:dep("firmware-tools"):installdir(), "bin", "charon-firmware")
         local cache = firmware.ensure(package:arch(), deployment, {tool = tool})
         local common = {root = package:scriptdir(), architecture = package:arch(), deployment = deployment, sdkdir = toolchain:config("sdkdir"),
+                        cc = assert(toolchain:tool("cc"), "the apple-ios toolchain names no compiler for " .. package:arch()),
                         ld = assert(linker, "the apple-ios toolchain names no ld64 for " .. package:arch())}
         backports.build(table.join(common, {cache = cache, builddir = path.absolute("link"), outputdir = package:installdir("lib"),
                                             libraries = table.join({"FoundationBackports"}, package:config("uikit") and {"UIKitBackports"} or {},
