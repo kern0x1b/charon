@@ -15,6 +15,17 @@ local function required(name)
     return package
 end
 
+-- A target says with emulate.timing = "strict" that it measures time itself.
+local function timing()
+    for _, target in pairs(project.targets()) do
+        local value = target:values("emulate.timing")
+        if value then
+            return value
+        end
+    end
+    return "scaled"
+end
+
 local function network()
     if option.get("network") then
         return option.get("network")
@@ -96,6 +107,10 @@ local function install(ctx)
 end
 
 local function run(ctx, argv)
+    local refusal = emulator.timing_refusal(timing(), tonumber(option.get("scale")) or emulator.TIME_SCALE)
+    if refusal then
+        raise(refusal)
+    end
     local image = path.join(ctx.image, "rootfs")
     if not os.isdir(image) then
         raise("%s %s has no image yet; run xmake emulate install first", ctx.identifier, ctx.version)

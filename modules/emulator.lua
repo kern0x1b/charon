@@ -371,6 +371,18 @@ function crash_loop(state)
     return looping
 end
 
+-- A target that measures time cannot be measured against a guest clock that
+-- runs slower than the host's, and a converted number would be a guess about
+-- what the target meant. Such a target says so and the run refuses instead.
+function timing_refusal(timing, scale)
+    if timing ~= "strict" or scale == 1 then
+        return nil
+    end
+    return string.format("this port measures time (emulate.timing is strict) and the guest's clock runs %s " ..
+                         "times slower than the host's; run it with --scale 1, which is slow enough that the " ..
+                         "guest's own watchdogs will end long runs", tostring(scale))
+end
+
 function gap(state)
     local most, found = 0, nil
     for key, count in pairs(state.unanswered or {}) do

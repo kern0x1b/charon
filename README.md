@@ -266,7 +266,9 @@ gone. The scale is a property of the run, not a hidden
 correction: it is in the emulator's log, in the verdict and in the line a run
 prints, and a verdict carries `guest_seconds` (the guest's own clock, what the
 runner measured) beside `host_seconds` (the wall-clock length of the boot), so
-a test that measures time can convert or refuse. Everything the guest reads
+a test that measures time can convert. A target that measures time itself says
+`set_values("emulate.timing", "strict")` and the run refuses any scale but 1
+rather than hand it a converted number. Everything the guest reads
 from its clock is scaled together - `mach_absolute_time`, `gettimeofday`,
 dispatch timers and kevent deadlines all come from the one virtual clock the
 emulator paces.

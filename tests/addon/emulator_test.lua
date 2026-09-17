@@ -291,6 +291,13 @@ local function timing_and_reports(emulator, folder, found)
     if not described:find("mediaserverd: RPCTimeout", 1, true) then
         table.insert(found, "a blocked boot names the guest's own reason, said " .. described)
     end
+    for _, case in ipairs({{"strict", 10, true}, {"strict", 1, false}, {"scaled", 10, false}, {nil, 10, false}}) do
+        local refused = emulator.timing_refusal(case[1], case[2]) ~= nil
+        if refused ~= case[3] then
+            table.insert(found, string.format("a %s port at scale %d is %srefused",
+                                              tostring(case[1]), case[2], case[3] and "" or "not "))
+        end
+    end
     -- A request the emulator never answers is a hole in the HLE, and a blocked
     -- boot says so instead of reading as a slow guest.
     if not blocked.gap or blocked.gap.request ~= 118 or blocked.gap.count ~= 2 or
