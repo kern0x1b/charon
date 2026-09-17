@@ -274,11 +274,17 @@ function introduced_version(dump, name)
     return found
 end
 
-local function introduced(opt, source, object)
+function availability_names(symbols)
     local names = {}
-    for _, symbol in ipairs(exported_symbols(object)) do
-        names[symbol:match("^_OBJC_CLASS_%$_(.+)$") or symbol:match("^_OBJC_METACLASS_%$_(.+)$") or symbol:sub(2)] = true
+    for _, symbol in ipairs(symbols) do
+        names[symbol:match("^_OBJC_CLASS_%$_(.+)$") or symbol:match("^_OBJC_METACLASS_%$_(.+)$")
+              or symbol:match("^_OBJC_IVAR_%$_(.-)%.") or symbol:sub(2)] = true
     end
+    return names
+end
+
+local function introduced(opt, source, object)
+    local names = availability_names(exported_symbols(object))
     local releases = {}
     for _, name in ipairs(table.orderkeys(names)) do
         local dump = os.iorunv("xcrun", {"clang", "-target", opt.triple, "-isysroot", opt.sdkdir, "-fobjc-arc", "-fsyntax-only", "-w",
