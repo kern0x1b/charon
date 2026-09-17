@@ -413,7 +413,8 @@ so it does not take over the host process's allocations either.
 `charon@apple-backports` brings Objective-C API later releases added -
 NSURLSession, NSURLComponents, UIAlertController, UIStackView, the layout
 anchors, the traits of a view, base64 data, the quality of service of an
-operation - to a minimum release that lacks it, as
+operation, the measurements and units of iOS 10 and its date intervals - to a
+minimum release that lacks it, as
 `libFoundationBackports.dylib`, with the `uikit` config
 `libUIKitBackports.dylib`, and with the `corelocation` config
 `libCoreLocationBackports.dylib`, which asks for location authorization the way
@@ -460,6 +461,19 @@ system library that lacks it while a library of the build exports it, the sign
 of a link that put a framework first, and a re-export from a library that does
 not export the symbol. `tests/backports` holds differential tests against the
 host's Foundation and UIKit and the device tests, run on an emulated iOS 6.
+
+A backport carries the behaviour of the newest implementation, not of the
+release that introduced the API: where Apple later corrected a number, the
+corrected one is used, and the facts name both. `NSUnitMass`'s stone is the
+plain case - iOS 10 converts it by 0.157473, the reciprocal of the 6.35029 it
+should be, and a program that asks for stones is asking for stones. Each class
+has a facts file under `packages/a/apple-backports/facts/<Framework>/`, saying
+what was read, from which library and release, and what was deliberately left
+out. `packages/a/apple-backports/registry/<Framework>.json` lists every API
+considered, whether it is implemented, inert or absent, and why; an API that
+cannot be carried is absent rather than quietly inert, so `respondsToSelector:`
+stays honest. `NSMeasurementFormatter` is absent for now: formatting a
+measurement needs private ICU entry points iOS 6's libicucore does not export.
 
 xmake's package hash covers a package's version, configs and toolchain, but
 neither its script nor the builds of its dependencies; the script is not in reach
