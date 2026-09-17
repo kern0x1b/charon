@@ -216,7 +216,8 @@ local function collect(cache)
         end
         for _, category in ipairs(table.join(section_entries(read, loaded.image, "__objc_catlist"), section_entries(read, loaded.image, "__charon_catlist"))) do
             local class = read.pointer(category + read.size)
-            local name = class ~= 0 and class_data(read, class).name
+            local bound = cache.bound and cache.bound[category + read.size]
+            local name = class ~= 0 and class_data(read, class).name or (bound and bound:match("^_OBJC_CLASS_%$_(.+)$"))
             local found = name and entry(name) or extensions
             merge(found.instance, method_names(read, read.pointer(category + 2 * read.size)))
             merge(found.class, method_names(read, read.pointer(category + 3 * read.size)))
@@ -270,7 +271,8 @@ local function file_source(binary, architecture)
             end
         end
     end
-    local source = {file = true, architecture = architecture, main = {mapping_offset = 0}, images = {{install = image.identity or binary, image = image}}}
+    local source = {file = true, architecture = architecture, main = {mapping_offset = 0}, images = {{install = image.identity or binary, image = image}},
+                    bound = macho.bound_slots(data, image)}
     function source.field()
         return nil
     end
@@ -345,6 +347,16 @@ function binary_selectors(binary, architecture)
     return {used = used, implemented = implemented}
 end
 
+
+function binary_inventory(binary, architecture)
+    local source = file_source(binary, architecture)
+    if not source then
+        return nil
+    end
+    local found = collect(source)
+    found.read = nil
+    return found
+end
 
 function known_selectors(source)
     local architecture = path.filename(source):match("^dyld_shared_cache_([%w_]+)") or path.filename(source):match("^libraries_([%w_]+)$")

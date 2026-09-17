@@ -2,11 +2,11 @@
 #import <QuartzCore/QuartzCore.h>
 #include <string.h>
 
-static NSString *const CharonKeyPathKey = @"UIInterpolatingMotionEffectKeyPath";
-static NSString *const CharonTypeKey = @"UIInterpolatingMotionEffectType";
-static NSString *const CharonMinimumKey = @"UIInterpolatingMotionEffectMinimumRelativeValue";
-static NSString *const CharonMaximumKey = @"UIInterpolatingMotionEffectMaximumRelativeValue";
-static NSString *const CharonEffectsKey = @"UIMotionEffectGroupMotionEffects";
+static NSString *const CharonKeyPathKey = @"_keyPath";
+static NSString *const CharonTypeKey = @"_type";
+static NSString *const CharonMinimumKey = @"_minimumRelativeValue";
+static NSString *const CharonMaximumKey = @"_maximumRelativeValue";
+static NSString *const CharonEffectsKey = @"_motionEffects";
 
 enum { charon_max_components = 16 };
 
