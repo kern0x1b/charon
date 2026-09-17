@@ -87,6 +87,7 @@ Then:
                                start COMMAND in it and report pass, fail, crash,
                                timeout or boot-blocked; -d DEVICE, -r RELEASE
     xmake emulate log [TEXT], xmake emulate shot [FILE]
+    xmake queue -- COMMAND     run a build in one of this machine's build slots
     xmake emulate [--all] clean remove this port's images (--all: every image and golden image)
     xmake where PACKAGE        the folder a required package is installed in
     xmake check [--staged|--changed] [NAMES]
@@ -275,6 +276,21 @@ emulate at once: golden images are built in a folder of their own and renamed
 into place under a file lock, so a second session waits for the first instead
 of building the same image, and a boot takes one of `min(cores/3, RAM/5 GB)`
 slots of the machine, with the emulator's caches kept per slot.
+
+Several sessions building at once are what makes a machine slow, and a run
+started on top of that measures the queue rather than the guest. A run
+therefore waits for the machine to quiet down - the load average below the
+number of cores - but only for a while, and then starts anyway, because a busy
+machine must still make progress. Builds can take a slot of their own:
+
+    xmake queue -- xmake build          one of this machine's build slots
+    xmake queue -c 3 -- xmake f -y      a different number of them
+
+The slot is taken by the outermost `xmake` only: the command it runs carries
+`CHARON_BUILD_SLOT`, and a build that starts another build inside it runs in
+the slot already held, so a nested build never waits for its own parent. This
+is a queue for the builds that ask for it, not a limit on the machine: a
+`xmake build` started beside it does not see the slots and does not wait.
 
 The guest's clock runs slower than the host's, because the emulator is one to
 two orders of magnitude slower than the device and the guest measures its own

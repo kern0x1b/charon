@@ -587,10 +587,68 @@ function capacity()
     return math.max(1, math.min(cores // 3, gigabytes // 5))
 end
 
+-- The machine runs more than this factory: several sessions build packages at
+-- the same time, and a run started on top of that measures the queue, not the
+-- guest. A run waits for the machine to quiet down, but only for a while - a
+-- busy machine must still make progress, and a slot held forever would be the
+-- worse failure.
+-- Builds of several sessions at once are what makes this machine slow, and a
+-- build cannot be limited from the outside: a session opts in by starting its
+-- build through the queue. The slot is taken by the outermost xmake only - a
+-- build that starts another one passes this marker down, and the inner one
+-- runs inside the slot the outer one holds, so a nested build cannot wait for
+-- a slot its own parent is holding.
+BUILD_SLOT = "CHARON_BUILD_SLOT"
+
+function build_slot_name()
+    return BUILD_SLOT
+end
+
+function build_capacity()
+    local cores = os.cpuinfo("ncpu") or 4
+    return math.max(2, cores // 4)
+end
+
+function holds_build_slot(environment)
+    local value = (environment or os.getenvs())[BUILD_SLOT]
+    return value ~= nil and value ~= ""
+end
+
+function crowded(load, cores)
+    return load ~= nil and cores ~= nil and cores > 0 and load > cores
+end
+
+function machine_load()
+    local read = try {function () return os.iorunv("sysctl", {"-n", "vm.loadavg"}) end}
+    return tonumber((read or ""):match("([%d%.]+)"))
+end
+
+local function wait_for_quiet(opt)
+    local cores = os.cpuinfo("ncpu")
+    local patience = opt.patience or 120
+    local started = os.mclock()
+    local announced
+    while crowded(machine_load(), cores) do
+        if os.mclock() - started > patience * 1000 then
+            cprint("${dim}the machine is still busy after %d s; starting anyway", patience)
+            return
+        end
+        if not announced then
+            cprint("${dim}waiting for the machine to quiet down before emulating (load %.1f on %d cores)",
+                   machine_load() or 0, cores)
+            announced = true
+        end
+        os.sleep(2000)
+    end
+end
+
 function acquire(opt)
     opt = opt or {}
     local folder = directory(opt.folder or path.join(root(), "slots"))
     local count = opt.count or capacity()
+    if opt.patience ~= 0 then
+        wait_for_quiet(opt)
+    end
     local announced
     local started = os.mclock()
     while true do

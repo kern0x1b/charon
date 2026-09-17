@@ -232,6 +232,37 @@ local function spawned(files, arguments)
     end, {total = #files, comax = #files})
 end
 
+local function load_step(emulator, found)
+    for _, case in ipairs({{20.0, 12, true}, {3.0, 12, false}, {12.0, 12, false}, {nil, 12, false}, {5.0, nil, false}}) do
+        if emulator.crowded(case[1], case[2]) ~= case[3] then
+            table.insert(found, string.format("a load of %s on %s cores is %scrowded",
+                                              tostring(case[1]), tostring(case[2]), case[3] and "" or "not "))
+        end
+    end
+    local load = emulator.machine_load()
+    if load ~= nil and (type(load) ~= "number" or load < 0) then
+        table.insert(found, "the machine's load reads as a number or as nothing, read " .. tostring(load))
+    end
+    -- A build the queue already started carries its slot, and a build inside it
+    -- must not wait for a second one.
+    local marker = emulator.build_slot_name()
+    if emulator.holds_build_slot({}) or not emulator.holds_build_slot({[marker] = "2"}) or
+       emulator.holds_build_slot({[marker] = ""}) then
+        table.insert(found, "a build carries its slot to the builds it starts, and only then")
+    end
+    if emulator.build_capacity() < 2 then
+        table.insert(found, "a machine runs at least two builds at once, said " .. tostring(emulator.build_capacity()))
+    end
+    -- Patience of zero is how a test takes a slot without waiting for a quiet
+    -- machine; it must still hand out the slot.
+    local slot = emulator.acquire({folder = path.join(os.tmpdir(), "charon-slot-test-" .. os.getpid()), count = 1, patience = 0})
+    if not slot then
+        table.insert(found, "a run with no patience still takes a slot")
+    else
+        emulator.release(slot)
+    end
+end
+
 local function concurrency(folder, modules, found)
     local root = path.join(folder, "emulator-root")
     local firmware = path.join(folder, "firmware-rootfs")
@@ -351,6 +382,7 @@ function failures(opt)
     deb_step(emulator, debian, folder, found)
     runner_job(emulator, folder, found)
     timing_and_reports(emulator, folder, found)
+    load_step(emulator, found)
     choice(emulator, found)
     concurrency(folder, opt.modules, found)
     os.tryrm(folder)
