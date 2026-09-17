@@ -88,9 +88,13 @@ the library its binding names and in what that library re-exports, so a
 symbol the device exports only from another library is refused. After the
 imports, every selector the build's binaries reference (`__objc_selrefs`) that
 neither they nor any class or protocol of the checked release implements is
-reported as a warning naming the binary: such a message must only be sent
-behind `respondsToSelector:` or a version check, which no static reading can
-see. The release's selectors are cached as `selectors_<arch>.txt` beside its
+reported as a warning naming the binary, the first twelve and all of them
+under `xmake -v`: such a message must only be sent behind
+`respondsToSelector:` or a version check, which no static reading can see.
+Methods of the build's own classes, of its categories, including those on
+classes it imports, and of the protocols it records count as implemented; a
+protocol no class adopts is not recorded, and its optional methods are
+reported. The release's selectors are cached as `selectors_<arch>.txt` beside its
 cache; methods a runtime component adds at run time (arclite's subscripting)
 are declared by that component in a `__DATA,__charon_addsel` section and
 count as implemented.
@@ -239,6 +243,11 @@ It is checked against the devices' own libraries from iPhone OS 2.2.1 to iOS
 not re-export libc++abi and a client links both, as the package's links say;
 below 3.0 apple-compat also carries `posix_memalign` and the integer-to-float and
 byte-swap helpers iPhone OS 2's libgcc_s lacks.
+
+Every compilation names the linker it is for with `-mlinker-version`, the
+version of the ld64 package: clang 23 otherwise assumes the newest Apple
+linker and emits `objc_msgSendClass$` class message stubs on arm64, which only
+that linker synthesizes.
 
 `thread_local`, `_Thread_local` and `__thread` compile for every release. dyld
 reads `__thread_vars` on 32-bit iOS from 9.0 and on arm64 from 8.0; below that

@@ -1,3 +1,4 @@
+import("core.base.option")
 import("macho")
 import("compat")
 import("dyld")
@@ -83,7 +84,8 @@ end
 function report_selectors(source, binaries, architecture, folder)
     for binary, missing in pairs(objc.absent_selectors(source, binaries, architecture)) do
         local named = folder and path.relative(binary, folder) or binary
-        local shown = table.concat(table.slice(missing, 1, math.min(12, #missing)), " ") .. (#missing > 12 and string.format(" and %d more", #missing - 12) or "")
+        local limit = option.get("verbose") and #missing or 12
+        local shown = table.concat(table.slice(missing, 1, math.min(limit, #missing)), " ") .. (#missing > limit and string.format(" and %d more, all of them under xmake -v", #missing - limit) or "")
         wprint("%s sends %d selector%s no class of the %s release it is checked against implements, which must run only behind respondsToSelector: or a version check: %s",
                named, #missing, #missing == 1 and "" or "s", architecture, shown)
     end

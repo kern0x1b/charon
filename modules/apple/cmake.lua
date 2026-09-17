@@ -19,8 +19,9 @@ function toolchain_file(package, opt)
     local linked_minimum = chosen:config("deployment")
     local compiled_minimum = opt.compile_deployment or linked_minimum
     local thread_local = chosen:config("emulated_tls") and {"-femulated-tls"} or {}
-    local compiled = table.join({"-target", package:arch() .. "-apple-ios", "-miphoneos-version-min=" .. compiled_minimum, "-isysroot", sdk}, thread_local, opt.cflags or {})
-    local common = {"-target", package:arch() .. "-apple-ios", "-miphoneos-version-min=" .. linked_minimum, "-isysroot", sdk}
+    local linker_version = chosen:config("linker_version") and {"-mlinker-version=" .. chosen:config("linker_version")} or {}
+    local compiled = table.join({"-target", package:arch() .. "-apple-ios", "-miphoneos-version-min=" .. compiled_minimum, "-isysroot", sdk}, linker_version, thread_local, opt.cflags or {})
+    local common = table.join({"-target", package:arch() .. "-apple-ios", "-miphoneos-version-min=" .. linked_minimum, "-isysroot", sdk}, linker_version)
     local linker = {}
     for _, flag in ipairs(table.wrap(chosen:get("shflags"))) do
         if flag:startswith("-fuse-ld=") then

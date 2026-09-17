@@ -188,6 +188,7 @@ local function collect(cache)
         return cache.read_address(address, count)
     end
     local classes, protocols = {}, {}
+    local extensions = {instance = {}, class = {}, protocols = {}}
     local function entry(name)
         local found = classes[name]
         if not found then
@@ -215,12 +216,10 @@ local function collect(cache)
         for _, category in ipairs(section_entries(read, loaded.image, "__objc_catlist")) do
             local class = read.pointer(category + read.size)
             local name = class ~= 0 and class_data(read, class).name
-            if name then
-                local found = entry(name)
-                merge(found.instance, method_names(read, read.pointer(category + 2 * read.size)))
-                merge(found.class, method_names(read, read.pointer(category + 3 * read.size)))
-                merge(found.protocols, protocol_names(read, read.pointer(category + 4 * read.size)))
-            end
+            local found = name and entry(name) or extensions
+            merge(found.instance, method_names(read, read.pointer(category + 2 * read.size)))
+            merge(found.class, method_names(read, read.pointer(category + 3 * read.size)))
+            merge(found.protocols, protocol_names(read, read.pointer(category + 4 * read.size)))
         end
         for _, protocol in ipairs(section_entries(read, loaded.image, "__objc_protolist")) do
             local name = read.string(read.pointer(protocol + read.size))
@@ -234,7 +233,7 @@ local function collect(cache)
             end
         end
     end
-    return {architecture = cache.architecture, classes = classes, protocols = protocols, read = read}
+    return {architecture = cache.architecture, classes = classes, protocols = protocols, extensions = extensions, read = read}
 end
 
 function inventory(cachefile)
@@ -308,6 +307,19 @@ local function file_source(binary, architecture)
     return source, image
 end
 
+local function add_selectors(into, found)
+    for _, class in pairs(found.classes) do
+        merge(into, class.instance)
+        merge(into, class.class)
+    end
+    merge(into, found.extensions.instance)
+    merge(into, found.extensions.class)
+    for _, protocol in pairs(found.protocols or {}) do
+        merge(into, protocol.instance)
+        merge(into, protocol.class)
+    end
+end
+
 function binary_selectors(binary, architecture)
     local source, image = file_source(binary, architecture)
     if not source then
@@ -315,14 +327,7 @@ function binary_selectors(binary, architecture)
     end
     local found = collect(source)
     local implemented = {}
-    for _, class in pairs(found.classes) do
-        for key in pairs(class.instance) do
-            implemented[key] = true
-        end
-        for key in pairs(class.class) do
-            implemented[key] = true
-        end
-    end
+    add_selectors(implemented, found)
     for _, selector in ipairs(section_entries(found.read, image, "__charon_addsel")) do
         local name = found.read.string(selector)
         if name then
@@ -339,16 +344,6 @@ function binary_selectors(binary, architecture)
     return {used = used, implemented = implemented}
 end
 
-local function add_selectors(into, found)
-    for _, class in pairs(found.classes) do
-        merge(into, class.instance)
-        merge(into, class.class)
-    end
-    for _, protocol in pairs(found.protocols or {}) do
-        merge(into, protocol.instance)
-        merge(into, protocol.class)
-    end
-end
 
 function known_selectors(source)
     local architecture = path.filename(source):match("^dyld_shared_cache_([%w_]+)") or path.filename(source):match("^libraries_([%w_]+)$")

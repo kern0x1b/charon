@@ -71,11 +71,13 @@ toolchain("apple-ios")
         toolchain:config_set("sdkdir", found.sdk)
         toolchain:config_set("deployment", minimum)
         toolchain:add("runenvs", "IPHONEOS_DEPLOYMENT_TARGET", minimum)
-        local target = {"-target", toolchain:arch() .. "-apple-ios", "-miphoneos-version-min=" .. minimum, "-isysroot", found.sdk}
+        local target = table.join({"-target", toolchain:arch() .. "-apple-ios", "-miphoneos-version-min=" .. minimum, "-isysroot", found.sdk},
+                                  found.linker and {"-mlinker-version=" .. toolchain:config("ld64")} or {})
         local native_tls = toolchain:is_arch("arm64") and "8.0" or "9.0"
         local emulated_tls = semver.compare(minimum, native_tls) < 0
         local thread_local = emulated_tls and {"-femulated-tls"} or {}
         toolchain:config_set("emulated_tls", emulated_tls)
+        toolchain:config_set("linker_version", found.linker and toolchain:config("ld64") or nil)
         local linked = table.join(target, found.linker and {"-fuse-ld=" .. found.linker} or {})
         if semver.compare(minimum, "3.2") < 0 then
             table.join2(linked, {"-lBlocksRuntime", "-lobjc"})
