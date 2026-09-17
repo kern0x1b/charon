@@ -508,11 +508,33 @@ plain case - iOS 10 converts it by 0.157473, the reciprocal of the 6.35029 it
 should be, and a program that asks for stones is asking for stones. Each class
 has a facts file under `packages/a/apple-backports/facts/<Framework>/`, saying
 what was read, from which library and release, and what was deliberately left
-out. `packages/a/apple-backports/registry/<Framework>.json` lists every API
-considered, whether it is implemented, inert or absent, and why; an API that
-cannot be carried is absent rather than quietly inert, so `respondsToSelector:`
-stays honest. `NSMeasurementFormatter` is absent for now: formatting a
+out. `packages/a/apple-backports/registry/<Framework>/` lists every API
+considered, a file per author so that work on different releases never edits the
+same file, with one entry per class, method, property, function or constant and
+one of four answers. `implemented` has facts and tests behind it. `inert` is
+declared, does nothing and says so in the log once, and is allowed only where
+doing nothing is a safe reading, such as an effect the release cannot draw.
+`absent` is not there at all, so that `respondsToSelector:` answers honestly; it
+is the default and the rule wherever quiet inaction would corrupt data or
+mislead - security, saving, permissions, the network - because an application
+that asks first keeps running while one that is lied to does not. `ignored` is
+the quietest: the call reaches the release's own implementation, which does
+something else with it, and nothing of ours is in the way, as with an
+enumeration option the compiler writes into a system call; it names what comes
+out instead. `NSMeasurementFormatter` is absent for now: formatting a
 measurement needs private ICU entry points iOS 6's libicucore does not export.
+
+The build reads the registry against what the libraries really define - the
+classes they carry, from their exports and their class lists, and the selectors
+their categories add, whose target class is read from the bind the link left -
+and stops on a class or selector no entry describes, on one API named by two
+files, on an entry that says implemented while neither the build nor the release
+itself carries that name, and on a status that comes without the reason, effect
+or facts it owes. A band built for a later release drops what that release
+already has, so only the libraries of the port's own release are held to the
+registry both ways. An entry that claims behaviour names the file of facts it
+was read into; one that only records where an API begins or ends does not, and
+the entries that still owe facts are counted, not refused.
 
 xmake's package hash covers a package's version, configs and toolchain, but
 neither its script nor the builds of its dependencies; the script is not in reach

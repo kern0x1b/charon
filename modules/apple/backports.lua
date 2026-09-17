@@ -2,6 +2,8 @@ import("macho")
 import("dyld")
 import("firmware")
 import("signing")
+import("objc")
+import("core.base.json")
 
 LIBRARIES = {
     {name = "FoundationBackports", folder = "Foundation", frameworks = {"Foundation", "CoreFoundation"}},
@@ -244,6 +246,140 @@ local function loaded(cache, architecture)
     return release
 end
 
+function surface(binaries, architecture)
+    local found = {classes = {}, members = {}, symbols = {}}
+    for _, binary in ipairs(binaries) do
+        local ours = {}
+        for _, symbol in ipairs(exported_symbols(binary)) do
+            local class = symbol:match("^_OBJC_CLASS_%$_(.+)$")
+            if class then
+                ours[class] = true
+                found.classes[class] = true
+            elseif not symbol:startswith("_OBJC_METACLASS_$_") and not symbol:startswith("_OBJC_IVAR_$_") then
+                found.symbols[symbol:sub(2)] = true
+            end
+        end
+        local inventory = objc.binary_inventory(binary, architecture)
+        for name, class in pairs(inventory and inventory.classes or {}) do
+            if class.image and not name:startswith("Charon") then
+                found.classes[name] = true
+            end
+            if not class.image and not ours[name] then
+                for kind, sign in pairs({instance = "-", class = "+"}) do
+                    for selector in pairs(class[kind]) do
+                        local plain = selector:sub(2)
+                        if not plain:startswith("charon_") and not plain:startswith(".cxx_") then
+                            found.members[string.format("%s[%s %s]", sign, name, plain)] = true
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return found
+end
+
+local STATUSES = {implemented = true, inert = true, absent = true, ignored = true}
+
+function registry(root)
+    local listed, told, incomplete = {}, {}, {}
+    local files = table.join(os.files(path.join(root, "registry", "*.json")), os.files(path.join(root, "registry", "*", "*.json")))
+    table.sort(files)
+    for _, file in ipairs(files) do
+        local named = path.join(path.filename(path.directory(file)), path.filename(file))
+        local held = json.decode(io.readfile(file))
+        for _, entry in ipairs(held.entries or held) do
+            if told[entry.api] then
+                table.insert(incomplete, entry.api .. " is named by both " .. told[entry.api] .. " and " .. named)
+            end
+            told[entry.api] = named
+            listed[entry.api] = entry
+            if not STATUSES[entry.status] then
+                table.insert(incomplete, entry.api .. " says " .. tostring(entry.status) .. ", which is not one of the four answers")
+            elseif entry.status ~= "implemented" then
+                if not entry.effect then
+                    table.insert(incomplete, entry.api .. " is " .. entry.status .. " without an effect")
+                elseif entry.status ~= "ignored" and not entry.reason then
+                    table.insert(incomplete, entry.api .. " is " .. entry.status .. " without a reason")
+                elseif entry.status == "ignored" and not entry.facts then
+                    table.insert(incomplete, entry.api .. " is ignored without a file of facts")
+                end
+            end
+        end
+    end
+    return listed, incomplete
+end
+
+local function spellings(api)
+    local plain = api:gsub("%(%)$", "")
+    local found = {[plain] = true}
+    local class, member = plain:match("^([%u][%w_]*)%.(.+)$")
+    if class then
+        found[string.format("-[%s %s]", class, member)] = true
+        found[string.format("+[%s %s]", class, member)] = true
+    end
+    local sign, owner, selector = plain:match("^([-+])%[([%w_]+) (.+)%]$")
+    if sign then
+        found[owner .. "." .. selector] = true
+    end
+    return found
+end
+
+function check_registry(root, found, complete, deployment, exports)
+    local listed, incomplete = registry(root)
+    local unlisted, undocumented = {}, {}
+    local function known(name)
+        for spelling in pairs(spellings(name)) do
+            if listed[spelling] then
+                return true
+            end
+        end
+        return false
+    end
+    for _, carried in ipairs({found.classes, found.members, found.symbols}) do
+        for name in pairs(carried) do
+            if not known(name) then
+                table.insert(unlisted, name)
+            end
+        end
+    end
+    local unbuilt = {}
+    if complete ~= false then
+        for name, entry in pairs(listed) do
+            local built = false
+            for spelling in pairs(spellings(name)) do
+                built = built or found.classes[spelling] or found.members[spelling] or found.symbols[spelling] or false
+            end
+            local owner = name:match("^[-+]%[([%w_]+) ") or name:match("^([%u][%w_]*)%.")
+            built = built or (owner and found.classes[owner]) or false
+            local carried = deployment and entry.introduced and dyld.compare_versions(entry.introduced, deployment) <= 0
+            carried = carried or (exports and exports["_" .. name:gsub("%(%)$", "")]) or false
+            if entry.status == "implemented" and not built and not carried then
+                table.insert(unbuilt, name)
+            elseif entry.status == "implemented" and not entry.facts then
+                table.insert(undocumented, name)
+            end
+        end
+    end
+    table.sort(unlisted)
+    table.sort(unbuilt)
+    if #unlisted > 0 or #unbuilt > 0 or #incomplete > 0 then
+        local lines = {"the registry does not describe what the backports carry:"}
+        for _, described in ipairs(incomplete) do
+            table.insert(lines, "  " .. described)
+        end
+        if #unlisted > 0 then
+            table.insert(lines, "  built, but no entry in registry/: " .. table.concat(unlisted, " "))
+        end
+        if #unbuilt > 0 then
+            table.insert(lines, "  listed as implemented, but nothing of that name is built: " .. table.concat(unbuilt, " "))
+        end
+        raise(table.concat(lines, "\n"))
+    end
+    return #undocumented
+end
+
+
 function build(opt)
     local release = loaded(opt.cache, opt.architecture)
     opt = table.join(opt, {triple = opt.architecture .. "-apple-ios" .. opt.deployment})
@@ -255,6 +391,12 @@ function build(opt)
         end
     end
     dyld.check(opt.cache, built)
+    if #built == #LIBRARIES then
+        local undocumented = check_registry(opt.root, surface(built, opt.architecture), opt.registry, opt.deployment, release.exports)
+        if undocumented > 0 then
+            cprint("${color.warning}note:${clear} %d of the registry's entries name no file of facts yet", undocumented)
+        end
+    end
     return built
 end
 
