@@ -47,11 +47,22 @@ function compare_versions(a, b)
     return compare(a, b)
 end
 
+function held_source(folder, architecture)
+    local cache = path.join(folder, "dyld_shared_cache_" .. architecture)
+    if os.isfile(cache) then
+        return cache
+    end
+    local libraries = path.join(folder, "libraries_" .. architecture)
+    if os.isdir(libraries) then
+        return libraries
+    end
+end
+
 function held_releases(architecture)
     local releases = {}
     for _, folder in ipairs(os.dirs(path.join(root(), "*"))) do
         local release = path.filename(folder)
-        if release:match("^%d+[%.%d]*$") and os.isfile(path.join(folder, "dyld_shared_cache_" .. architecture)) then
+        if release:match("^%d+[%.%d]*$") and held_source(folder, architecture) then
             table.insert(releases, release)
         end
     end
@@ -62,14 +73,68 @@ end
 function held_cache(architecture, minimum)
     for _, release in ipairs(held_releases(architecture)) do
         if parts(release)[1] == parts(minimum)[1] and compare(release, minimum) >= 0 then
-            return path.join(root(), release, "dyld_shared_cache_" .. architecture), release
+            return held_source(path.join(root(), release), architecture), release
         end
     end
-    return path.join(root(), minimum, "dyld_shared_cache_" .. architecture), nil
+    local expected = compare(minimum, "3.1") < 0 and "libraries_" or "dyld_shared_cache_"
+    return path.join(root(), minimum, expected .. architecture), nil
+end
+
+local function loaded_image(found, architecture)
+    local wanted = architecture == "armv7s" and {"armv7s", "armv7"} or {architecture}
+    for _, candidate in ipairs(wanted) do
+        for _, image in ipairs(found) do
+            if image.architecture == candidate then
+                return image
+            end
+        end
+    end
+end
+
+local function defined_exports(data, image)
+    local defined = {}
+    if not image.symtab then
+        return defined
+    end
+    local symoff, nsyms, stroff = image.symtab[1], image.symtab[2], image.symtab[3]
+    local entry = image.wide and 16 or 12
+    for index = 0, nsyms - 1 do
+        local strx, kind = string.unpack("<I4B", data, image.base + symoff + index * entry + 1)
+        if kind & 0xE0 == 0 and kind & 0x01 ~= 0 and kind & 0x0E ~= 0 then
+            defined[cstring(data, image.base + stroff + strx)] = true
+        end
+    end
+    return defined
+end
+
+local function load_libraries(folder)
+    local architecture = path.filename(folder):match("^libraries_(.+)$")
+    local exports, images, count = {}, {}, 0
+    for _, binary in ipairs(macho.binaries_under(folder)) do
+        local data = macho.read(binary)
+        local image = loaded_image(macho.images(data), architecture)
+        if image and image.identity then
+            images[image.identity] = true
+            for name in pairs(defined_exports(data, image)) do
+                if not exports[name] then
+                    exports[name] = true
+                    count = count + 1
+                end
+            end
+        end
+    end
+    if count == 0 then
+        raise("%s holds no %s library exporting anything", folder, architecture)
+    end
+    return {architecture = architecture, exports = exports, images = images, count = count}
 end
 
 function load(cachefile)
     if caches[cachefile] then
+        return caches[cachefile]
+    end
+    if os.isdir(cachefile) then
+        caches[cachefile] = load_libraries(cachefile)
         return caches[cachefile]
     end
     local data = io.readfile(cachefile, {encoding = "binary"})
@@ -154,33 +219,6 @@ function load(cachefile)
     return loaded
 end
 
-local function loaded_image(found, architecture)
-    local wanted = architecture == "armv7s" and {"armv7s", "armv7"} or {architecture}
-    for _, candidate in ipairs(wanted) do
-        for _, image in ipairs(found) do
-            if image.architecture == candidate then
-                return image
-            end
-        end
-    end
-end
-
-local function defined_exports(data, image)
-    local defined = {}
-    if not image.symtab then
-        return defined
-    end
-    local symoff, nsyms, stroff = image.symtab[1], image.symtab[2], image.symtab[3]
-    local entry = image.wide and 16 or 12
-    for index = 0, nsyms - 1 do
-        local strx, kind = string.unpack("<I4B", data, image.base + symoff + index * entry + 1)
-        if kind & 0xE0 == 0 and kind & 0x01 ~= 0 and kind & 0x0E ~= 0 then
-            defined[cstring(data, image.base + stroff + strx)] = true
-        end
-    end
-    return defined
-end
-
 local function undefined_imports(data, image)
     local imported = {}
     if not image.symtab then
@@ -241,8 +279,8 @@ function missing_imports(cachefile, binaries, root)
 end
 
 function check(cachefile, binaries, folder)
-    if not os.isfile(cachefile) then
-        raise("there is no shared cache at %s to check imports against: the check reads the cache of the oldest release of the same major version the port runs on, under a folder named after that release. Copy the dyld_shared_cache of such a device there once (CHARON_HOME moves the root); a check that reports success having looked at nothing is worse than no check", cachefile)
+    if not os.exists(cachefile) then
+        raise("there is no shared cache at %s to check imports against: the check reads the cache of the oldest release of the same major version the port runs on, under a folder named after that release. Copy the dyld_shared_cache of such a device there once, or for a release before 3.1, which has no cache, its libraries as libraries_<arch> keeping their paths on the device (CHARON_HOME moves the root); a check that reports success having looked at nothing is worse than no check", cachefile)
     end
     local missing, count, cache = missing_imports(cachefile, binaries, folder)
     if #missing > 0 then

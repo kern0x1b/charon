@@ -47,7 +47,7 @@ function universal(target, architectures, stage)
             minimum = floors[architecture]
         end
         local cache = dyld.held_cache(architecture, minimum)
-        if os.isfile(cache) then
+        if os.exists(cache) then
             dyld.check(cache, merged, installed)
             checked = checked + 1
         else

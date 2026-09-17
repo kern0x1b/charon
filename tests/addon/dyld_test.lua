@@ -66,6 +66,32 @@ function failures(opt)
             table.insert(found, case[1] .. " must be refused naming " .. case[3] .. ": " .. text)
         end
     end
+    local libraries = path.join(folder, "home", "dyld", "2.2.1", "libraries_armv7")
+    os.mkdir(path.join(libraries, "usr", "lib"))
+    io.writefile(path.join(folder, "system.c"), "int exported(void) { return 0; }\n")
+    fixtures.link(folder, opt.ld64, path.join(libraries, "usr", "lib", "libSystem.B.dylib"), "armv7-apple-ios6.0", "system.c",
+                  {"-dynamiclib", "-install_name", "/usr/lib/libSystem.B.dylib"})
+    local home = os.getenv("CHARON_HOME")
+    os.setenv("CHARON_HOME", path.join(folder, "home"))
+    local held = dyld.held_cache("armv7", "2.0")
+    local absent = dyld.held_cache("armv7", "4.0")
+    os.setenv("CHARON_HOME", home or "")
+    if held ~= libraries then
+        table.insert(found, "a 2.0 port must be checked against the libraries of the held 2.2.1 release, not " .. tostring(held))
+    end
+    if not absent:endswith(path.join("4.0", "dyld_shared_cache_armv7")) then
+        table.insert(found, "a 4.0 port with nothing of release 4 held must be told where a cache goes, not " .. absent)
+    end
+    if #dyld.missing_imports(libraries, {clean}) > 0 then
+        table.insert(found, "an import a device library exports must pass against the libraries folder")
+    end
+    local text = ""
+    for _, entry in ipairs(dyld.missing_imports(libraries, {late})) do
+        text = text .. entry[2]
+    end
+    if not text:find("___divti3", 1, true) then
+        table.insert(found, "an import no device library exports must be refused against the libraries folder: " .. text)
+    end
     local errors = fixtures.refusal(function () dyld.check(path.join(folder, "absent"), {clean}) end)
     if not errors or not errors:find("no shared cache", 1, true) then
         table.insert(found, "a check with no cache to read must refuse rather than pass")

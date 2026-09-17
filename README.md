@@ -123,7 +123,10 @@ branch or a range is avoided - xmake resolves those against its own clone of
 this repository, which it does not pull again once it has one. The import check reads
 `~/.charon/dyld/<release>/dyld_shared_cache_<arch>` (under `$CHARON_HOME` if set)
 of the oldest held release of the port's major version that is not older than
-its minimum - `6.1.3/` for a 6.0 port - copied from a device once. A check that would have to be skipped is waived by name
+its minimum - `6.1.3/` for a 6.0 port - copied from a device once. Releases
+before 3.1 have no shared cache; for them the check reads the device's
+libraries from `~/.charon/dyld/<release>/libraries_<arch>/`, kept at their paths
+on the device (`usr/lib`, `System/Library/Frameworks`, ...). A check that would have to be skipped is waived by name
 with the reason, e.g. `set_values("charon.waive.pagezero", "why")`.
 
 A package of a port that builds with CMake calls the addon's bridge from its
