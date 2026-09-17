@@ -6,15 +6,17 @@
 Each shim is compiled for this machine and exercised, because the device it is
 for cannot run a test here; and each is checked to be a hidden definition, so
 the image that links it binds its own calls to it and exports nothing another
-image could bind to.
+image could bind to - except the locks, whose waiters and wakes every image of a
+process must share, which are exported from one copy that all images bind to.
 """
+import re
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-SHIMS = HERE.parent / "recipes" / "apple-compat" / "all" / "src"
+SHIMS = HERE.parent / "packages" / "a" / "apple-compat" / "src"
 
 ALIGNED = r"""
 #include <errno.h>
@@ -345,6 +347,784 @@ int main(void)
 """
 
 
+UNFAIR_LOCK = r"""
+#include <dlfcn.h>
+#include <mach/mach.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdatomic.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+typedef struct { uint32_t value; } lock_t;
+typedef struct { lock_t lock; uint32_t count; } recursive_t;
+void os_unfair_lock_lock(lock_t *);
+bool os_unfair_lock_trylock(lock_t *);
+void os_unfair_lock_unlock(lock_t *);
+void os_unfair_recursive_lock_lock_with_options(recursive_t *, uint32_t);
+void os_unfair_recursive_lock_unlock(recursive_t *);
+
+static int fails;
+
+static void expect(int holds, const char *what)
+{
+    if (!holds) {
+        printf("FAIL  %s\n", what);
+        fails++;
+    }
+}
+
+struct api {
+    void (*lock)(lock_t *);
+    bool (*trylock)(lock_t *);
+    void (*unlock)(lock_t *);
+};
+
+static struct api ours = { os_unfair_lock_lock, os_unfair_lock_trylock, os_unfair_lock_unlock };
+static struct api darwins;
+static const struct api *using;
+static lock_t shared;
+static long counter;
+static _Atomic int holding;
+static _Atomic(uint32_t) seen;
+
+static void *hold(void *unused)
+{
+    (void)unused;
+    using->lock(&shared);
+    atomic_store(&holding, 1);
+    usleep(200000);
+    atomic_store(&seen, shared.value);
+    using->unlock(&shared);
+    return NULL;
+}
+
+static void *contend(void *unused)
+{
+    (void)unused;
+    using->lock(&shared);
+    using->unlock(&shared);
+    return NULL;
+}
+
+static void *count(void *unused)
+{
+    (void)unused;
+    for (int round = 0; round < 20000; round++) {
+        using->lock(&shared);
+        counter++;
+        using->unlock(&shared);
+    }
+    return NULL;
+}
+
+static void *try_other(void *unused)
+{
+    (void)unused;
+    return (void *)(intptr_t)using->trylock(&shared);
+}
+
+static int dies(void (*body)(void))
+{
+    fflush(stdout);
+    pid_t child = fork();
+    if (child == 0) {
+        freopen("/dev/null", "w", stderr);
+        alarm(10);
+        body();
+        _exit(0);
+    }
+    int status = 0;
+    waitpid(child, &status, 0);
+    return WIFSIGNALED(status) && WTERMSIG(status) != SIGALRM;
+}
+
+static void relock(void) { lock_t lock = {0}; using->lock(&lock); using->lock(&lock); }
+static void unlock_unlocked(void) { lock_t lock = {0}; using->unlock(&lock); }
+static void *take(void *lock) { using->lock(lock); return NULL; }
+static void unlock_foreign(void) { lock_t lock = {0}; pthread_t thread; pthread_create(&thread, NULL, take, &lock); pthread_join(thread, NULL); using->unlock(&lock); }
+
+static void behaves(const struct api *api, const char *name)
+{
+    char what[256];
+    using = api;
+    uint32_t self = pthread_mach_thread_np(pthread_self()) | 1;
+    snprintf(what, sizeof what, "%s: this kernel hands out odd thread port names, so the shim's word is Darwin's own", name);
+    expect(self == pthread_mach_thread_np(pthread_self()), what);
+    shared.value = 0;
+    api->lock(&shared);
+    snprintf(what, sizeof what, "%s: a held lock records the owner's Mach thread port name with the no-waiters bit", name);
+    expect(shared.value == self, what);
+    snprintf(what, sizeof what, "%s: trylock of a lock this thread holds fails", name);
+    expect(!api->trylock(&shared), what);
+    pthread_t thread;
+    pthread_create(&thread, NULL, try_other, NULL);
+    void *got;
+    pthread_join(thread, &got);
+    snprintf(what, sizeof what, "%s: trylock of a lock another thread holds fails", name);
+    expect(got == NULL, what);
+    api->unlock(&shared);
+    snprintf(what, sizeof what, "%s: unlock leaves the lock free", name);
+    expect(shared.value == 0, what);
+    pthread_create(&thread, NULL, try_other, NULL);
+    pthread_join(thread, &got);
+    snprintf(what, sizeof what, "%s: trylock of a free lock takes it", name);
+    expect(got != NULL && shared.value != 0, what);
+    shared.value = 0;
+
+    atomic_store(&holding, 0);
+    pthread_t holder, waiter;
+    pthread_create(&holder, NULL, hold, NULL);
+    while (!atomic_load(&holding))
+        usleep(1000);
+    pthread_create(&waiter, NULL, contend, NULL);
+    pthread_join(holder, NULL);
+    pthread_join(waiter, NULL);
+    snprintf(what, sizeof what, "%s: a waiter clears the low bit of the owner's word, so the unlock wakes it", name);
+    expect((atomic_load(&seen) & 1) == 0 && atomic_load(&seen) != 0, what);
+    snprintf(what, sizeof what, "%s: the waiter gets the lock and releases it", name);
+    expect(shared.value == 0, what);
+
+    counter = 0;
+    pthread_t threads[8];
+    for (int index = 0; index < 8; index++)
+        pthread_create(&threads[index], NULL, count, NULL);
+    for (int index = 0; index < 8; index++)
+        pthread_join(threads[index], NULL);
+    snprintf(what, sizeof what, "%s: eight threads contending lose no update", name);
+    expect(counter == 8 * 20000, what);
+
+    snprintf(what, sizeof what, "%s: locking a lock this thread holds crashes", name);
+    expect(dies(relock), what);
+    snprintf(what, sizeof what, "%s: unlocking a free lock crashes", name);
+    expect(dies(unlock_unlocked), what);
+    snprintf(what, sizeof what, "%s: unlocking another thread's lock crashes", name);
+    expect(dies(unlock_foreign), what);
+}
+
+typedef void (*recursive_lock_f)(recursive_t *, uint32_t);
+typedef void (*recursive_unlock_f)(recursive_t *);
+
+static void recursive(recursive_lock_f lock, recursive_unlock_f unlock, const char *name)
+{
+    char what[256];
+    recursive_t held = {{0}, 0};
+    uint32_t self = pthread_mach_thread_np(pthread_self()) | 1;
+    lock(&held, 0);
+    lock(&held, 0);
+    lock(&held, 0);
+    snprintf(what, sizeof what, "%s: a recursive lock taken three times holds the owner and a count of two", name);
+    expect(held.lock.value == self && held.count == 2, what);
+    unlock(&held);
+    unlock(&held);
+    snprintf(what, sizeof what, "%s: two unlocks leave it held once", name);
+    expect(held.lock.value == self && held.count == 0, what);
+    unlock(&held);
+    snprintf(what, sizeof what, "%s: the last unlock frees it", name);
+    expect(held.lock.value == 0, what);
+}
+
+int main(void)
+{
+    void *platform = dlopen("/usr/lib/system/libsystem_platform.dylib", RTLD_LAZY | RTLD_NOLOAD);
+    darwins.lock = platform ? dlsym(platform, "os_unfair_lock_lock") : NULL;
+    darwins.trylock = platform ? dlsym(platform, "os_unfair_lock_trylock") : NULL;
+    darwins.unlock = platform ? dlsym(platform, "os_unfair_lock_unlock") : NULL;
+    expect(darwins.lock && darwins.lock != ours.lock, "the test reaches Darwin's os_unfair_lock_lock beside the shim");
+    behaves(&darwins, "Darwin");
+    behaves(&ours, "the shim");
+    recursive_lock_f darwin_lock = platform ? dlsym(platform, "os_unfair_recursive_lock_lock_with_options") : NULL;
+    recursive_unlock_f darwin_unlock = platform ? dlsym(platform, "os_unfair_recursive_lock_unlock") : NULL;
+    if (darwin_lock && darwin_unlock)
+        recursive(darwin_lock, darwin_unlock, "Darwin");
+    recursive(os_unfair_recursive_lock_lock_with_options, os_unfair_recursive_lock_unlock, "the shim");
+    return fails != 0;
+}
+"""
+
+
+PORT_NAMES = r"""
+#include <mach/mach.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdatomic.h>
+#include <stdio.h>
+#include <unistd.h>
+
+#include "unfair_lock.h"
+
+/* XNU hands out odd thread port names, and libplatform's word format relies on it; iLEmu hands out even ones (0x10c00,
+   spaced by 0x100). The shim sets the low bit itself, so both work; here each case runs with owner values the two kernels
+   would give, through the same words the lock keeps. */
+
+static int fails;
+
+static void expect(int holds, const char *what)
+{
+    if (!holds) {
+        printf("FAIL  %s\n", what);
+        fails++;
+    }
+}
+
+static charon_unfair_lock shared;
+static uint32_t owners[2];
+static _Atomic int held;
+static _Atomic(uint32_t) seen;
+static _Atomic long counter;
+
+static void *hold(void *which)
+{
+    uint32_t self = charon_unfair_owner(owners[(intptr_t)which]);
+    charon_unfair_lock_lock(&shared, self);
+    atomic_store(&held, 1);
+    usleep(150000);
+    atomic_store(&seen, atomic_load(&shared.value));
+    charon_unfair_unlock(&shared, self);
+    return NULL;
+}
+
+static void *wait_for_it(void *which)
+{
+    uint32_t self = charon_unfair_owner(owners[(intptr_t)which]);
+    for (int round = 0; round < 200; round++) {
+        charon_unfair_lock_lock(&shared, self);
+        atomic_fetch_add(&counter, 1);
+        charon_unfair_unlock(&shared, self);
+    }
+    return NULL;
+}
+
+static void names(uint32_t first, uint32_t second, const char *what)
+{
+    char said[160];
+    owners[0] = first;
+    owners[1] = second;
+    atomic_store(&shared.value, 0);
+    atomic_store(&held, 0);
+    atomic_store(&counter, 0);
+    pthread_t holder, waiter;
+    pthread_create(&holder, NULL, hold, (void *)0);
+    while (!atomic_load(&held))
+        usleep(1000);
+    pthread_create(&waiter, NULL, wait_for_it, (void *)1);
+    pthread_join(holder, NULL);
+    pthread_join(waiter, NULL);
+    snprintf(said, sizeof said, "a lock whose owners have %s port names hands over to a waiter", what);
+    expect(atomic_load(&counter) == 200 && atomic_load(&shared.value) == 0, said);
+    snprintf(said, sizeof said, "a waiter on %s port names clears the low bit of the owner's word", what);
+    expect((atomic_load(&seen) & CHARON_UNFAIR_NO_WAITERS) == 0 && atomic_load(&seen) != 0, said);
+}
+
+static void stalled(int signal)
+{
+    (void)signal;
+    printf("FAIL  a lock whose owners have the port names one of these kernels gives hands over to a waiter; one slept for 30 s\n");
+    fflush(stdout);
+    _exit(1);
+}
+
+int main(void)
+{
+    signal(SIGALRM, stalled);
+    alarm(30);
+    names(0x1e03, 0x1e17, "the odd");
+    names(0x10c00, 0x11e00, "the even");
+    uint32_t self = charon_unfair_self();
+    expect((self & CHARON_UNFAIR_NO_WAITERS) != 0 && (self | CHARON_UNFAIR_NO_WAITERS) == self,
+           "the owner a thread records always carries the no-waiters bit, whichever name the kernel gave it");
+    expect(self == (pthread_mach_thread_np(pthread_self()) | CHARON_UNFAIR_NO_WAITERS),
+           "the owner is this thread's Mach port name with that bit set");
+    return fails != 0;
+}
+"""
+
+
+LOCK_SIDE = r"""
+#include <stdint.h>
+typedef struct { uint32_t value; } lock_t;
+void os_unfair_lock_lock(lock_t *);
+void os_unfair_lock_unlock(lock_t *);
+__attribute__((visibility("default"))) void SIDE_lock(lock_t *lock) { os_unfair_lock_lock(lock); }
+__attribute__((visibility("default"))) void SIDE_unlock(lock_t *lock) { os_unfair_lock_unlock(lock); }
+"""
+
+
+TWO_IMAGES = r"""
+#include <pthread.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <sys/time.h>
+#include <signal.h>
+#include <unistd.h>
+
+typedef struct { uint32_t value; } lock_t;
+void one_lock(lock_t *);
+void one_unlock(lock_t *);
+void two_lock(lock_t *);
+void two_unlock(lock_t *);
+
+static lock_t shared;
+
+static void stalled(int signal)
+{
+    (void)signal;
+    printf("FAIL  two images that bind the lock to one copy wake each other; a waiter slept past every unlock for 30 s\n");
+    fflush(stdout);
+    _exit(1);
+}
+static long counter;
+
+static void *through_one(void *unused)
+{
+    (void)unused;
+    for (int round = 0; round < 3000; round++) {
+        one_lock(&shared);
+        counter++;
+        if (round % 500 == 0)
+            usleep(2000);
+        one_unlock(&shared);
+    }
+    return NULL;
+}
+
+static void *through_two(void *unused)
+{
+    (void)unused;
+    for (int round = 0; round < 3000; round++) {
+        two_lock(&shared);
+        counter++;
+        if (round % 500 == 0)
+            usleep(2000);
+        two_unlock(&shared);
+    }
+    return NULL;
+}
+
+int main(void)
+{
+    signal(SIGALRM, stalled);
+    alarm(30);
+    struct timeval start, end;
+    gettimeofday(&start, NULL);
+    pthread_t threads[8];
+    for (int index = 0; index < 8; index++)
+        pthread_create(&threads[index], NULL, index % 2 ? through_two : through_one, NULL);
+    for (int index = 0; index < 8; index++)
+        pthread_join(threads[index], NULL);
+    gettimeofday(&end, NULL);
+    double seconds = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1e6;
+    int fails = 0;
+    if (counter != 8 * 3000) {
+        printf("FAIL  a lock two images take, each with its own copy of the shim, loses no update\n");
+        fails++;
+    }
+    (void)seconds;
+    return fails;
+}
+"""
+
+
+FORWARDED_LOCK = r"""
+#include <dlfcn.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdatomic.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+typedef struct { uint32_t value; } lock_t;
+void os_unfair_lock_lock(lock_t *);
+void os_unfair_lock_unlock(lock_t *);
+
+static void (*darwin_lock)(lock_t *);
+static void (*darwin_unlock)(lock_t *);
+static lock_t shared;
+static _Atomic int done;
+
+static void stalled(int signal)
+{
+    (void)signal;
+    printf("FAIL  the exported copy reaches the system's os_unfair_lock by opening libsystem_platform, not by a search that finds the copy itself\n");
+    fflush(stdout);
+    _exit(1);
+}
+
+static void *wait_in_darwin(void *unused)
+{
+    (void)unused;
+    darwin_lock(&shared);
+    darwin_unlock(&shared);
+    atomic_store(&done, 1);
+    return NULL;
+}
+
+int main(void)
+{
+    int fails = 0;
+    signal(SIGALRM, stalled);
+    alarm(20);
+    void *platform = dlopen("/usr/lib/system/libsystem_platform.dylib", RTLD_LAZY | RTLD_NOLOAD);
+    darwin_lock = platform ? dlsym(platform, "os_unfair_lock_lock") : NULL;
+    darwin_unlock = platform ? dlsym(platform, "os_unfair_lock_unlock") : NULL;
+    Dl_info first;
+    void *found = dlsym(RTLD_DEFAULT, "os_unfair_lock_lock");
+    if (!darwin_lock || !found || found == darwin_lock || !dladdr(found, &first) || !strstr(first.dli_fname, "libshared")) {
+        printf("FAIL  the test must reproduce the trap: a search of every image finds the exported copy before the system's\n");
+        fails++;
+    }
+    os_unfair_lock_lock(&shared);
+    pthread_t waiter;
+    pthread_create(&waiter, NULL, wait_in_darwin, NULL);
+    usleep(200000);
+    os_unfair_lock_unlock(&shared);
+    for (int tick = 0; tick < 500 && !atomic_load(&done); tick++)
+        usleep(10000);
+    if (!atomic_load(&done)) {
+        printf("FAIL  where the system has os_unfair_lock, the exported copy is the system's, so a waiter in the system's lock hears its unlock\n");
+        fails++;
+    }
+    return fails != 0;
+}
+"""
+
+
+LATER_CALLS = r"""
+#define __STDC_WANT_LIB_EXT1__ 1
+#include <dispatch/dispatch.h>
+#include <dlfcn.h>
+#include <errno.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdatomic.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <spawn.h>
+#include <sys/wait.h>
+#include <time.h>
+#include <unistd.h>
+
+int memset_s(void *, size_t, int, size_t);
+void *voucher_copy(void);
+void *voucher_adopt(void *);
+unsigned int qos_class_self(void);
+int charon_clock_getres(clockid_t, struct timespec *);
+dispatch_queue_t charon_dispatch_get_global_queue(long, unsigned long);
+void shim_activate(dispatch_object_t) __asm("_dispatch_activate");
+void shim_assert_queue(dispatch_queue_t) __asm("_dispatch_assert_queue$V2");
+
+static int fails;
+
+static void expect(int holds, const char *what)
+{
+    if (!holds) {
+        printf("FAIL  %s\n", what);
+        fails++;
+    }
+}
+
+static const char *program;
+
+/* libdispatch does not survive fork, so a scenario that may crash runs in a fresh process of this program. */
+static int dies(const char *scenario)
+{
+    fflush(stdout);
+    pid_t child;
+    char *arguments[] = {(char *)program, (char *)scenario, NULL};
+    if (posix_spawn(&child, program, NULL, NULL, arguments, NULL) != 0)
+        return -1;
+    int status = 0;
+    waitpid(child, &status, 0);
+    return WIFSIGNALED(status) && WTERMSIG(status) != SIGALRM;
+}
+
+static void memsets(void)
+{
+    int (*darwin)(void *, size_t, int, size_t) = dlsym(RTLD_DEFAULT, "memset_s");
+    expect(darwin && darwin != memset_s, "the test reaches Darwin's memset_s beside the shim");
+    static const struct { size_t capacity, count; int null; } cases[] = {
+        {16, 8, 0}, {16, 16, 0}, {16, 17, 0}, {16, SIZE_MAX, 0}, {SIZE_MAX, 4, 0}, {16, 8, 1}, {0, 0, 0},
+    };
+    for (size_t index = 0; index < sizeof cases / sizeof cases[0]; index++) {
+        unsigned char mine[24], theirs[24];
+        memset(mine, 0xaa, sizeof mine);
+        memset(theirs, 0xaa, sizeof theirs);
+        int got = memset_s(cases[index].null ? NULL : mine, cases[index].capacity, 0x5c, cases[index].count);
+        int wanted = darwin(cases[index].null ? NULL : theirs, cases[index].capacity, 0x5c, cases[index].count);
+        char what[160];
+        snprintf(what, sizeof what, "memset_s(capacity %zu, count %zu%s) answers %d and writes the bytes Darwin's does",
+                 cases[index].capacity, cases[index].count, cases[index].null ? ", NULL" : "", wanted);
+        expect(got == wanted && memcmp(mine, theirs, sizeof mine) == 0, what);
+    }
+}
+
+static void vouchers(void)
+{
+    expect(voucher_copy() == NULL, "without vouchers the current voucher is none");
+    expect(voucher_adopt(NULL) == NULL, "adopting none leaves none adopted before");
+    expect(dies("foreign-voucher") == 1, "a voucher no system call made is refused");
+}
+
+static _Atomic(unsigned) observed;
+
+static void *plain_thread(void *unused)
+{
+    (void)unused;
+    unsigned int (*darwin)(void) = dlsym(RTLD_DEFAULT, "qos_class_self");
+    atomic_store(&observed, qos_class_self() == darwin() ? qos_class_self() : 0xdead);
+    long priorities[] = {DISPATCH_QUEUE_PRIORITY_HIGH, DISPATCH_QUEUE_PRIORITY_DEFAULT, DISPATCH_QUEUE_PRIORITY_LOW,
+                         DISPATCH_QUEUE_PRIORITY_BACKGROUND};
+    unsigned classes[] = {0x19, 0x15, 0x11, 0x09};
+    for (int index = 0; index < 4; index++) {
+        __block unsigned mine = 0, theirs = 0;
+        dispatch_semaphore_t finished = dispatch_semaphore_create(0);
+        dispatch_async(dispatch_get_global_queue(priorities[index], 0), ^{
+            mine = qos_class_self();
+            theirs = darwin();
+            dispatch_semaphore_signal(finished);
+        });
+        dispatch_semaphore_wait(finished, DISPATCH_TIME_FOREVER);
+        char what[160];
+        snprintf(what, sizeof what, "a worker of the global queue of priority %ld has class 0x%x as Darwin's (0x%x) says",
+                 priorities[index], classes[index], theirs);
+        expect(mine == classes[index] && theirs == classes[index], what);
+    }
+    return NULL;
+}
+
+static void classes(void)
+{
+    unsigned int (*darwin)(void) = dlsym(RTLD_DEFAULT, "qos_class_self");
+    expect(darwin && darwin != qos_class_self, "the test reaches Darwin's qos_class_self beside the shim");
+    expect(qos_class_self() == 0x21 && darwin() == 0x21, "the main thread is user-interactive, as Darwin says");
+    pthread_t thread;
+    pthread_create(&thread, NULL, plain_thread, NULL);
+    pthread_join(thread, NULL);
+    expect(atomic_load(&observed) == 0x15, "a thread from pthread_create has the default class, as Darwin says");
+}
+
+static void resolutions(void)
+{
+    static const struct { clockid_t clock; int as_darwin; } clocks[] = {
+        {CLOCK_REALTIME, 1}, {CLOCK_MONOTONIC, 1}, {CLOCK_PROCESS_CPUTIME_ID, 1}, {CLOCK_UPTIME_RAW, 1},
+        {CLOCK_UPTIME_RAW_APPROX, 1}, {CLOCK_MONOTONIC_RAW, 0}, {CLOCK_MONOTONIC_RAW_APPROX, 0}, {CLOCK_THREAD_CPUTIME_ID, 0},
+    };
+    for (size_t index = 0; index < sizeof clocks / sizeof clocks[0]; index++) {
+        struct timespec mine = {-1, -1}, theirs = {-1, -1};
+        int got = charon_clock_getres(clocks[index].clock, &mine);
+        clock_getres(clocks[index].clock, &theirs);
+        char what[160];
+        if (clocks[index].as_darwin) {
+            snprintf(what, sizeof what, "clock %d resolves to Darwin's %ld ns", clocks[index].clock, theirs.tv_nsec);
+            expect(got == 0 && mine.tv_sec == theirs.tv_sec && mine.tv_nsec == theirs.tv_nsec, what);
+        } else {
+            snprintf(what, sizeof what, "clock %d, which charon_clock_gettime counts in microseconds, resolves to one", clocks[index].clock);
+            expect(got == 0 && mine.tv_sec == 0 && mine.tv_nsec == 1000, what);
+        }
+    }
+    errno = 0;
+    struct timespec unused;
+    expect(charon_clock_getres((clockid_t)12345, &unused) == -1 && errno == EINVAL, "an unknown clock is refused");
+    expect(charon_clock_getres(CLOCK_REALTIME, NULL) == 0, "a known clock without a result to fill answers 0");
+}
+
+static void global_queues(void)
+{
+    static const struct { long identifier; long priority; } classes[] = {
+        {0x21, DISPATCH_QUEUE_PRIORITY_HIGH}, {0x19, DISPATCH_QUEUE_PRIORITY_HIGH}, {0x15, DISPATCH_QUEUE_PRIORITY_DEFAULT},
+        {0x11, DISPATCH_QUEUE_PRIORITY_LOW}, {0x09, DISPATCH_QUEUE_PRIORITY_BACKGROUND}, {0, DISPATCH_QUEUE_PRIORITY_DEFAULT},
+        {DISPATCH_QUEUE_PRIORITY_HIGH, DISPATCH_QUEUE_PRIORITY_HIGH}, {DISPATCH_QUEUE_PRIORITY_LOW, DISPATCH_QUEUE_PRIORITY_LOW},
+        {DISPATCH_QUEUE_PRIORITY_BACKGROUND, DISPATCH_QUEUE_PRIORITY_BACKGROUND},
+    };
+    for (size_t index = 0; index < sizeof classes / sizeof classes[0]; index++) {
+        char what[160];
+        snprintf(what, sizeof what, "class or priority %ld reaches the global queue of priority %ld", classes[index].identifier,
+                 classes[index].priority);
+        expect(charon_dispatch_get_global_queue(classes[index].identifier, 0) == dispatch_get_global_queue(classes[index].priority, 0),
+               what);
+    }
+    expect(charon_dispatch_get_global_queue(7, 0) == NULL, "an identifier that is neither a class nor a priority answers NULL");
+    expect(charon_dispatch_get_global_queue(0x19, 2) == dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 2),
+           "the flags reach the system unchanged");
+}
+
+static void activations(void)
+{
+    __block _Atomic int fired = 0;
+    dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(0, 0));
+    dispatch_source_set_timer(source, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_MSEC), DISPATCH_TIME_FOREVER, 0);
+    dispatch_source_set_event_handler(source, ^{
+        atomic_fetch_add(&fired, 1);
+    });
+    usleep(50000);
+    expect(atomic_load(&fired) == 0, "a source nobody activated does not fire");
+    shim_activate(source);
+    shim_activate(source);
+    for (int tick = 0; tick < 200 && atomic_load(&fired) == 0; tick++)
+        usleep(5000);
+    expect(atomic_load(&fired) == 1, "an activated source fires, and a second activation resumes nothing more");
+    dispatch_source_cancel(source);
+    dispatch_queue_t queue = dispatch_queue_create("charon.activate", NULL);
+    shim_activate(queue);
+    __block int ran = 0;
+    dispatch_sync(queue, ^{
+        ran = 1;
+    });
+    expect(ran, "activating a queue, which starts active, leaves it running blocks");
+}
+
+static dispatch_queue_t serial, inner;
+
+static void on_worker(void (^body)(void))
+{
+    dispatch_semaphore_t finished = dispatch_semaphore_create(0);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        body();
+        dispatch_semaphore_signal(finished);
+    });
+    dispatch_semaphore_wait(finished, DISPATCH_TIME_FOREVER);
+}
+
+static int scenario(const char *name)
+{
+    freopen("/dev/null", "w", stderr);
+    alarm(10);
+    void (*darwin)(dispatch_queue_t) = dlsym(RTLD_DEFAULT, "dispatch_assert_queue$V2");
+    serial = dispatch_queue_create("charon.serial", NULL);
+    inner = dispatch_queue_create("charon.inner", NULL);
+    dispatch_set_target_queue(inner, serial);
+    if (!strcmp(name, "foreign-voucher"))
+        voucher_adopt((void *)0x1000);
+    else if (!strcmp(name, "shim-main-thread-on-serial"))
+        shim_assert_queue(serial);
+    else if (!strcmp(name, "darwin-main-thread-on-serial"))
+        darwin(serial);
+    else if (!strcmp(name, "shim-target-on-targeting"))
+        dispatch_sync(serial, ^{ shim_assert_queue(inner); });
+    else if (!strcmp(name, "darwin-target-on-targeting"))
+        dispatch_sync(serial, ^{ darwin(inner); });
+    else if (!strcmp(name, "shim-worker-on-main"))
+        on_worker(^{ shim_assert_queue(dispatch_get_main_queue()); });
+    else if (!strcmp(name, "darwin-worker-on-main"))
+        on_worker(^{ darwin(dispatch_get_main_queue()); });
+    return 0;
+}
+
+static void assertions(void)
+{
+    void (*darwin)(dispatch_queue_t) = dlsym(RTLD_DEFAULT, "dispatch_assert_queue$V2");
+    expect(darwin != NULL, "the test reaches Darwin's dispatch_assert_queue$V2");
+    serial = dispatch_queue_create("charon.serial", NULL);
+    inner = dispatch_queue_create("charon.inner", NULL);
+    dispatch_set_target_queue(inner, serial);
+    shim_assert_queue(dispatch_get_main_queue());
+    darwin(dispatch_get_main_queue());
+    dispatch_sync(serial, ^{ shim_assert_queue(serial); darwin(serial); });
+    dispatch_sync(inner, ^{ shim_assert_queue(serial); darwin(serial); shim_assert_queue(inner); });
+    dispatch_sync(serial, ^{ shim_assert_queue(dispatch_get_main_queue()); darwin(dispatch_get_main_queue()); });
+    dispatch_queue_t global = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+    on_worker(^{ shim_assert_queue(global); darwin(global); });
+    static const char *crashes[][2] = {
+        {"main-thread-on-serial", "the main thread outside a block is not on another queue"},
+        {"target-on-targeting", "a block on a target queue is not on the queue that targets it"},
+        {"worker-on-main", "a worker thread is not on the main queue"},
+    };
+    for (size_t index = 0; index < sizeof crashes / sizeof crashes[0]; index++) {
+        char shim[64], system[64];
+        snprintf(shim, sizeof shim, "shim-%s", crashes[index][0]);
+        snprintf(system, sizeof system, "darwin-%s", crashes[index][0]);
+        expect(dies(shim) == 1 && dies(system) == 1, crashes[index][1]);
+    }
+}
+
+int main(int argc, char **argv)
+{
+    program = argv[0];
+    if (argc > 1)
+        return scenario(argv[1]);
+    memsets();
+    vouchers();
+    classes();
+    resolutions();
+    global_queues();
+    activations();
+    assertions();
+    return fails != 0;
+}
+"""
+
+
+ALLOC_WITH_ZONE = r"""
+#import <Foundation/Foundation.h>
+#include <dlfcn.h>
+#include <stdio.h>
+
+id objc_allocWithZone(Class);
+id objc_opt_self(id);
+
+static int zoned;
+
+@interface Answering : NSObject
+@end
+
+@implementation Answering
+- (instancetype)self
+{
+    return nil;
+}
+@end
+
+@interface Counted : NSObject
+@property int value;
+@end
+
+@implementation Counted
++ (instancetype)allocWithZone:(NSZone *)zone
+{
+    zoned++;
+    return [super allocWithZone:zone];
+}
+@end
+
+int main(void)
+{
+    int fails = 0;
+    id (*darwin)(Class) = dlsym(RTLD_DEFAULT, "objc_allocWithZone");
+    id mine = [objc_allocWithZone([Counted class]) init];
+    id theirs = [darwin([Counted class]) init];
+    if (![mine isKindOfClass:[Counted class]] || [theirs class] != [mine class] || zoned != 2) {
+        printf("FAIL  objc_allocWithZone allocates through the class's +allocWithZone:, as Darwin's does\n");
+        fails++;
+    }
+    if (objc_allocWithZone(Nil) != nil || darwin(Nil) != nil) {
+        printf("FAIL  objc_allocWithZone of Nil answers nil\n");
+        fails++;
+    }
+
+    id (*darwin_self)(id) = dlsym(RTLD_DEFAULT, "objc_opt_self");
+    Counted *counted = [Counted new];
+    if (objc_opt_self((id)[Counted class]) != (id)[Counted class] || objc_opt_self(counted) != counted ||
+        objc_opt_self(nil) != nil || objc_opt_self(@42) != @42) {
+        printf("FAIL  objc_opt_self answers the class, the object, nil and a tagged pointer themselves\n");
+        fails++;
+    }
+    Answering *answering = [Answering new];
+    if (objc_opt_self(answering) != darwin_self(answering)) {
+        printf("FAIL  objc_opt_self answers what -self answers where the class overrides it, as Darwin's does\n");
+        fails++;
+    }
+    return fails;
+}
+"""
+
+
 def run(*command, cwd):
     try:
         return subprocess.run([str(part) for part in command], cwd=cwd, capture_output=True, text=True, timeout=120)
@@ -403,7 +1183,10 @@ def failures():
                                       ("fdopendir", "return fdopendir(3) != 0;", "dirent.h"),
                                       ("openat", "return openat(3, \"x\", 0);", "fcntl.h"),
                                       ("fchmodat", "return fchmodat(3, \"x\", 0600, 0);", "sys/stat.h"),
-                                      ("unlinkat", "return unlinkat(3, \"x\", 0);", "unistd.h")):
+                                      ("unlinkat", "return unlinkat(3, \"x\", 0);", "unistd.h"),
+                                      ("clock_getres", "struct timespec t; return clock_getres(CLOCK_MONOTONIC, &t);", "time.h"),
+                                      ("dispatch_get_global_queue", "return dispatch_get_global_queue(0x19, 0) != 0;",
+                                       "dispatch/dispatch.h")):
             header = SHIMS.parent / "include" / "charon" / "{}.h".format(symbol)
             (folder / "{}.c".format(symbol)).write_text("#include <{}>\nint call(void) {{ {} }}\n".format(include, call))
             called = run("xcrun", "clang", "-target", "armv7-apple-ios6.0", "-Wno-incompatible-sysroot",
@@ -470,6 +1253,111 @@ def failures():
                 found.append("{} must compile for iOS 6 as a hidden definition: {} {}".format(
                     symbol, shim.stderr[-300:], listing))
 
+        def outcome(name, ran):
+            reported = [line[6:] for line in ran.stdout.splitlines() if line.startswith("FAIL")]
+            if ran.returncode and not reported:
+                reported.append("the {} test failed without saying why: {} {}".format(name, ran.returncode, ran.stderr[-300:]))
+            return reported
+
+        locks = [SHIMS / "{}.c".format(symbol) for symbol in ("os_unfair_lock_lock", "os_unfair_lock_trylock", "os_unfair_lock_unlock",
+                                                             "os_unfair_recursive_lock_lock_with_options",
+                                                             "os_unfair_recursive_lock_unlock")]
+        waits = [SHIMS / "__ulock_wait.c", SHIMS / "__ulock_wake.c"]
+        (folder / "unfair.c").write_text(UNFAIR_LOCK)
+        built = run("xcrun", "clang", "-O2", "-w", "-DCHARON_COMPAT_SYSTEM=0", *locks, *waits, "unfair.c", "-o", "unfair", cwd=folder)
+        if built.returncode:
+            found.append("the os_unfair_lock shims must compile: {}".format(built.stderr[-400:]))
+        else:
+            found += outcome("os_unfair_lock", run("./unfair", cwd=folder))
+
+        (folder / "names.c").write_text(PORT_NAMES)
+        built = run("xcrun", "clang", "-O2", "-w", "-DCHARON_COMPAT_SYSTEM=0", "-I", SHIMS, "names.c", *waits, "-o", "names",
+                    cwd=folder)
+        if built.returncode:
+            found.append("the port-name test must compile: {}".format(built.stderr[-400:]))
+        else:
+            found += outcome("port names", run("./names", cwd=folder))
+
+        # The locks are exported once for the process, as libc++abi does: two images bind to that copy and wake each other.
+        shared = folder / "shared"
+        shared.mkdir()
+        (shared / "side.c").write_text(LOCK_SIDE)
+        (shared / "images.c").write_text(TWO_IMAGES)
+        steps = [run("xcrun", "clang", "-O2", "-w", "-fvisibility=hidden", "-DCHARON_COMPAT_SYSTEM=0", "-dynamiclib", *locks, *waits,
+                     "-install_name", "@rpath/libshared.dylib", "-o", "libshared.dylib", cwd=shared)]
+        for side in ("one", "two"):
+            steps.append(run("xcrun", "clang", "-O2", "-w", "-fvisibility=hidden", "-DSIDE_lock={}_lock".format(side),
+                             "-DSIDE_unlock={}_unlock".format(side), "-dynamiclib", "side.c", "-L.", "-lshared", "-install_name",
+                             "@rpath/lib{}.dylib".format(side), "-o", "lib{}.dylib".format(side), cwd=shared))
+        steps.append(run("xcrun", "clang", "-O2", "images.c", "-L.", "-lone", "-ltwo", "-Wl,-rpath,@executable_path", "-o", "images",
+                         cwd=shared))
+        if any(step.returncode for step in steps):
+            found.append("two images bound to one exported lock must link: {}".format(" ".join(step.stderr[-300:] for step in steps)))
+        else:
+            exports = run("xcrun", "nm", "-gm", "libshared.dylib", cwd=shared).stdout
+            for symbol in [path.stem for path in locks]:
+                if not re.search(r"\) external _{}$".format(re.escape(symbol)), exports, re.M):
+                    found.append("{} must be an exported definition, since every image of a process binds to one copy".format(symbol))
+            if re.search(r" external ___ulock_wa(it|ke)$", exports, re.M):
+                found.append("the copy of the locks must keep __ulock_wait and __ulock_wake to itself")
+            imported = run("xcrun", "nm", "-m", "libone.dylib", cwd=shared).stdout
+            if "_os_unfair_lock_lock (from libshared)" not in imported:
+                found.append("an image calling os_unfair_lock_lock must bind it to the one copy: {}".format(imported))
+            found += outcome("two-image lock", run("./images", cwd=shared))
+            forwarding = folder / "forwarding"
+            forwarding.mkdir()
+            (forwarding / "forward.c").write_text(FORWARDED_LOCK)
+            steps = [run("xcrun", "clang", "-O2", "-w", "-fvisibility=hidden", "-dynamiclib", *locks, *waits, "-install_name",
+                         "@rpath/libshared.dylib", "-o", "libshared.dylib", cwd=forwarding),
+                     run("xcrun", "clang", "-O2", "-w", "forward.c", "-L.", "-lshared", "-Wl,-rpath,@executable_path", "-o", "forward",
+                         cwd=forwarding)]
+            if any(step.returncode for step in steps):
+                found.append("the forwarding lock test must link: {}".format(" ".join(step.stderr[-300:] for step in steps)))
+            else:
+                found += outcome("forwarded lock", run("./forward", cwd=forwarding))
+
+        later = ["memset_s", "voucher_copy", "voucher_adopt", "qos_class_self", "clock_getres", "dispatch_get_global_queue",
+                 "dispatch_activate", "dispatch_assert_queue$V2"]
+        (folder / "calls.c").write_text(LATER_CALLS)
+        built = run("xcrun", "clang", "-O2", "-w", "-DCHARON_COMPAT_SYSTEM=0", *[SHIMS / "{}.c".format(symbol) for symbol in later],
+                    "calls.c", "-o", "calls", cwd=folder)
+        if built.returncode:
+            found.append("the shims of later dispatch, clock and memory calls must compile: {}".format(built.stderr[-400:]))
+        else:
+            found += outcome("later calls", run(folder / "calls", cwd=folder))
+        (folder / "alloc.m").write_text(ALLOC_WITH_ZONE)
+        built = run("xcrun", "clang", "-O2", "-w", "-fobjc-arc", "-DCHARON_COMPAT_SYSTEM=0", SHIMS / "objc_allocWithZone.c",
+                    SHIMS / "objc_opt_self.c", "alloc.m", "-framework", "Foundation", "-o", "alloc", cwd=folder)
+        if built.returncode:
+            found.append("the objc_allocWithZone shim must compile: {}".format(built.stderr[-400:]))
+        else:
+            found += outcome("objc_allocWithZone", run("./alloc", cwd=folder))
+
+        for symbol in [path.stem for path in locks] + later + ["objc_allocWithZone", "objc_opt_self"]:
+            process_wide = symbol.startswith("os_unfair_")
+            if (SHIMS.parent / "include" / "charon" / "{}.h".format(symbol)).exists():
+                defined = "_charon_" + symbol
+            else:
+                defined = "_" + symbol
+            for architecture, release in (("armv7", "6.0"), ("arm64", "7.0")):
+                object_file = "ios-{}-{}.o".format(symbol, architecture)
+                shim = run("xcrun", "clang", "-target", "{}-apple-ios{}".format(architecture, release), "-Wno-incompatible-sysroot",
+                           "-Os", "-fvisibility=hidden", "-c", SHIMS / "{}.c".format(symbol), "-o", object_file, cwd=folder)
+                listing = run("xcrun", "nm", "-m", object_file, cwd=folder).stdout
+                line = next((row for row in listing.splitlines() if row.endswith(" " + defined)), "")
+                if shim.returncode or not line or ("private external" in line) == process_wide:
+                    found.append("{} must compile for {} on iOS {} as {} definition: {} {}".format(
+                        symbol, architecture, release, "an exported" if process_wide else "a hidden", shim.stderr[-300:], listing))
+                    continue
+                undefined = run("xcrun", "nm", "-u", object_file, cwd=folder).stdout.split()
+                if any(name.startswith("___atomic_") for name in undefined):
+                    found.append("{} for {} must not call the atomic library functions iOS {} lacks: {}".format(
+                        symbol, architecture, release, undefined))
+                uses_objc = any(name.startswith(("_objc_", "_object_", "_class_", "_sel_")) for name in undefined)
+                options = run("xcrun", "otool", "-l", object_file, cwd=folder).stdout
+                if uses_objc and "string #1 -lobjc" not in options:
+                    found.append("{} calls the Objective-C runtime, so its object must ask the linker for libobjc".format(symbol))
+
         (folder / "late.c").write_text("#include <math.h>\n#include <string.h>\n"
                                        "double both(double x) { return sin(x) + cos(x); }\n"
                                        "unsigned long copy(char *d, const char *s) { char b[8]; "
@@ -505,7 +1393,7 @@ def main():
     if found:
         print("{} checks failed".format(len(found)))
         return 1
-    print("ok    each compatibility shim keeps its call's contract and stays hidden in the image that links it")
+    print("ok    each compatibility shim keeps its call's contract, hidden in the image that links it or exported once for the process")
     return 0
 
 

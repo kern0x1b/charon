@@ -434,12 +434,23 @@ reflection (`Mirror`), `Codable` or `async`. A port requires
 functions, and a `main.swift` is the program's entry point. The result loads
 nothing but libSystem, with `posix_memalign`, `arc4random_buf` and `putchar` the
 calls of note; swift_test holds armv7 and armv7s at 6.0 and arm64 at 7.0 to the
-devices' libraries, and older releases are not checked yet. `charon@swift` is the swift.org release toolchain, pinned by its
-digest and cut to the driver, the frontend, its host libraries and clang's
-headers, with the standard library sources of the same tag: a compiled Swift
-module loads only in the compiler that wrote it, the Command Line Tools' swiftc
-moves with macOS, and building the compiler takes swiftlang's LLVM, swift-syntax
-and a Swift compiler to begin with. `charon@swift-embedded` builds the `Swift`
+devices' libraries, and older releases are not checked yet. `charon@swift` is the compiler of the
+release, built from the sources of its own tag - swift, swiftlang's LLVM, cmark,
+swift-syntax, the string-processing library and the driver with its four
+packages, each pinned to the commit its tag named - with two changes an iOS
+older than Swift's own minimum needs. The frontend takes `-bundled-swift-runtime`:
+the runtime ships with the program, so the features of this Swift release are
+available at any deployment target, while the SDK's own availability is checked
+as before, and the flag is written into a module interface so that whoever
+compiles it reads the same. The driver stops refusing a deployment target below
+iOS 7, which it had as its own minimum. `charon@swift-bootstrap` is the swift.org
+release toolchain, pinned by its digest and cut to the driver, the frontend,
+their host libraries, the package manager and clang's headers; it compiles the
+Swift sources of the compiler, because building a Swift compiler takes a Swift
+compiler to begin with. Only `charon@swift` is what a port uses: a compiled Swift
+module loads only in the compiler that wrote it, and the Command Line Tools'
+swiftc moves with macOS. The sources of the release are installed beside the
+compiler, for the packages that build a module or a runtime from them. `charon@swift-embedded` builds the `Swift`
 module for the port's architecture and oldest release from those sources, the
 way the Swift build does for its own Embedded targets, and the Unicode tables it
 calls as a static library, and names its compiler in `SWIFT_EXEC`. The rule has
@@ -447,12 +458,74 @@ swiftc write LLVM bitcode and the `llvm` package's clang make the object: the
 LLVM inside Swift 6.4 loads the stack guard of armv7 code through an absolute
 address, and an executable with such text relocations loses PIE.
 
+`charon@swift-runtime` is the Swift runtime itself, built for the port's
+architecture and oldest release from those sources: the standard library, its
+Objective-C interoperation and reflection, concurrency, the C library's Swift
+overlay, Synchronization, Observation and the regular expression libraries. What
+the runtime calls and the release lacks comes from apple-compat, renamed where a
+header can do it (`clock_gettime`, `clock_getres`, `dispatch_get_global_queue`,
+whose class of service iOS 6 answers with NULL) and under its own name where the
+compiler emits the call. Three changes are made to the runtime's sources: a
+class the runtime instantiates is realized by a method lookup where
+`objc_readClassPair` (iOS 8) is not there; a deadline is handed to libdispatch
+as a duration where `dispatch_time_t` does not yet carry which clock it counts
+(before iOS 12), which also avoids the fixed 125/3 timebase the runtime assumes
+on ARM; and Synchronization and Observation name `os_unfair_lock_lock` and its
+pair by symbol instead of importing `os/lock.h`, whose declaration carries iOS
+10. The standard library's availability macros are rewritten to `*` for the same
+reason the frontend takes the flag.
+
+The runtime is built without library evolution, and that is a decision with
+consequences worth knowing. A resilient layout makes a client's class need the
+metadata update of iOS 12's Objective-C runtime (`_objc_realizeClassFromSwift`),
+and the runtime stops with "class ... does not have a fragile layout" where that
+is missing; a runtime that ships with the program needs no ABI stability anyway.
+So: Swift modules built by different builds of the runtime do not mix in one
+image, and everything is compiled together, which the package's hash already
+enforces; two packages do not hand Swift types across their boundary, the same
+line libc++ draws; and the `.swiftinterface` of these modules is not a stable ABI
+contract. libswiftCore carries a mark naming the build it is, which a port links
+against by name, so a program built against one build cannot be linked against
+another; the package's own test links a program both ways and expects the second
+to fail.
+
 apple-compat links its shims into whoever requires it and force-includes
 nothing on its own, because a shim's header brings its system header with it
 (`unlinkat.h` brings `<unistd.h>`, and with it `sync`). A target names the
 calls it renames with `add_values("apple.compat", "clock_gettime")`; a package
 script takes the flags from
 `import("@addon.charon.apple.compat").force_includes(package:dep("apple-compat"), {"clock_gettime"})`.
+
+What the Swift runtime calls and an old release lacks is there as well:
+`memset_s` and `objc_allocWithZone` (iOS 7), `voucher_copy`, `voucher_adopt` and
+`qos_class_self` (8), `clock_getres`, `dispatch_activate` and
+`dispatch_assert_queue$V2` (10), and `os_unfair_lock_*` (10) and
+`os_unfair_recursive_lock_*` (12). A release that has one of them is asked for
+it by name in the library that defines it - libsystem_platform, libdispatch or
+libsystem_pthread - so a port built for iOS 6 and run on a newer device uses the
+system's, and a lock it shares with an image built for that newer release is the
+same lock. `dispatch_get_global_queue` is in this list for another reason: every
+release exports it, but it took a class of service in place of a priority only
+in iOS 8, and answers NULL for a class before that; a caller that hands it a
+class renames it, `add_values("apple.compat", "dispatch_get_global_queue")`, and
+the shim maps the class to the priority it stands for.
+
+The shims for calls whose state a whole process shares are not linked into each
+image. The waiters of an `os_unfair_lock` and the unlock that wakes them meet in
+one table, so a lock two images take - a `Mutex` from the Synchronization
+library is inlined into every image that locks it - has to reach one copy of
+these calls. libc++abi carries that copy, as it carries emulated TLS and the
+atomic library calls, and libc++ re-exports it; `charon@libcxx` refuses a
+runtime that does not export them below the release they arrived in, or that
+exports them at or above it, where the system's own must be used. The word an
+`os_unfair_lock` holds is this copy's own format: the owner's Mach thread port
+name with the low bit set, which a waiter clears. libplatform writes the name as
+it is, because XNU's names are odd; the bit is set here so that the lock also
+works where a name is even, which is what iLEmu gives a thread it starts. A
+release below iOS 10 has no os_unfair_lock of its own, so nothing else reads
+that word; from iOS 10 on the system's implementation is called instead. Two
+packages that each carry their own runtime do not share these locks, the same
+boundary their libc++ copies have.
 
 A tweak or a daemon has no bundle, so what it loads from a package - libc++ and
 libc++abi, which also carry emulated TLS - goes to
@@ -578,6 +651,28 @@ revision it raises with the script:
 `add_configs("revision", {default = "2", readonly = true})`. A build cut short
 can leave `.git/index.lock` in the package's source cache under
 `~/.xmake/cache/packages/`; remove that lock file before building again.
+`checkout.pinned` clones the repositories a package is built from, each verified
+against the commit its tag named, and keeps them across installs: the sources of
+a compiler are gigabytes, and an install that fails halfway, or a second
+architecture, should not pay for them again. What the last install changed in
+them is undone before the next one starts.
+
+Writing a recipe has a few traps, each of which costs a whole build to find.
+A package reaches a dependency by the dependency's own name, not by the alias it
+was required under: `package:dep("swift-bootstrap")`, whatever `alias` says, and
+the miss is a nil that only fails where the value is first used. A package with
+no `add_urls` never has `on_download` called at all, however complete that
+function is. A download that leaves a single directory is entered by the build,
+so `os.curdir()` is that directory and a copy written against the level above
+matches nothing - and a copy that matches nothing is silent, so a recipe that
+lays out an install should assert what it laid down. Sources cloned by
+`checkout.pinned` are kept between installs and restored to their tag, so a
+recipe patches them in place and keeps its build tree beside the repositories,
+never inside one. The package manager of Swift 6.4 builds through SwiftBuild and
+reads its resource bundles from `usr/share/pm`, which a toolchain cut to the
+compiler does not have. And two `xmake` processes on one project hold each
+other's package locks: a build that appears to make no progress for a long time
+is usually a second one left over from an earlier run.
 
 xmake asks before it installs or reinstalls a package or an addon, and a
 command run in the background waits for that answer forever; pass `-y` there.
@@ -854,7 +949,10 @@ line is almost always this.
 `libcxx` offers the newest LLVM release, 23.1.1. Its runtime calls what old
 releases lack - `aligned_alloc`, `clock_gettime`, the `*at` calls, `__ulock_wait`
 - and links `apple-compat` hidden, which provides each for the releases before it
-arrived; the recipe refuses a runtime that still imports one of them.
+arrived; the recipe refuses a runtime that still imports one of them. It also
+builds apple-compat's process-wide shims, the unfair locks, into libc++abi with
+default visibility and re-exports them from libc++, so that every image of a
+process binds to one copy.
 
 Xcode is not required and does not need to be installed. The `llvm` package
 builds the compiler and its runtime, the SDK comes from the

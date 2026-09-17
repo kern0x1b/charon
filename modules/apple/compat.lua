@@ -17,7 +17,37 @@ ARRIVED = {
     __strlcpy_chk = {iOS = "7.0", Macos = "10.9"},
     __strlcat_chk = {iOS = "7.0", Macos = "10.9"},
     __ulock_wait = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
-    __ulock_wake = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"}
+    __ulock_wake = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
+    clock_getres = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
+    os_unfair_lock_lock = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
+    os_unfair_lock_trylock = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
+    os_unfair_lock_unlock = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
+    os_unfair_recursive_lock_lock_with_options = {iOS = "12.0", Macos = "10.14", tvOS = "12.0", watchOS = "5.0"},
+    os_unfair_recursive_lock_unlock = {iOS = "12.0", Macos = "10.14", tvOS = "12.0", watchOS = "5.0"},
+    memset_s = {iOS = "7.0", Macos = "10.9"},
+    objc_allocWithZone = {iOS = "7.0", Macos = "10.9"},
+    objc_opt_self = {iOS = "11.0", Macos = "10.13", tvOS = "11.0", watchOS = "4.0"},
+    voucher_adopt = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
+    voucher_copy = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
+    qos_class_self = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
+    dispatch_activate = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
+    ["dispatch_assert_queue$V2"] = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"}
+}
+
+-- Calls whose state every image in a process shares: a lock one image takes and another releases waits and wakes through one
+-- table. apple-compat does not link these into each image; libc++abi of charon@libcxx exports them once for the process.
+PROCESS_WIDE = {
+    os_unfair_lock_lock = true,
+    os_unfair_lock_trylock = true,
+    os_unfair_lock_unlock = true,
+    os_unfair_recursive_lock_lock_with_options = true,
+    os_unfair_recursive_lock_unlock = true
+}
+
+-- Calls every release exports whose meaning grew later: an older release has the symbol, so an import of it is no finding,
+-- but a caller that relies on what the call learned needs the shim, reached by name through its header.
+CHANGED = {
+    dispatch_get_global_queue = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"}
 }
 
 EMITTED = {
@@ -54,6 +84,18 @@ function arrived(system)
     return found
 end
 
+function process_wide()
+    return table.copy(PROCESS_WIDE)
+end
+
+function provided(system)
+    local found = arrived(system)
+    for symbol, releases in pairs(CHANGED) do
+        found[symbol] = releases[system]
+    end
+    return found
+end
+
 function force_includes(package, symbols)
     local folders = {}
     if package.fetch then
@@ -63,8 +105,11 @@ function force_includes(package, symbols)
     end
     local flags = {}
     for _, symbol in ipairs(table.wrap(symbols)) do
-        if not ARRIVED[symbol] then
-            raise("apple-compat provides nothing named %s; it knows %s", symbol, table.concat(table.orderkeys(ARRIVED), ", "))
+        if PROCESS_WIDE[symbol] then
+            raise("%s is exported once for the process by the libc++abi of charon@libcxx, so no image renames it", symbol)
+        end
+        if not ARRIVED[symbol] and not CHANGED[symbol] then
+            raise("apple-compat provides nothing named %s; it knows %s", symbol, table.concat(table.orderkeys(table.join(ARRIVED, CHANGED)), ", "))
         end
         for _, folder in ipairs(folders) do
             local header = path.join(folder, "charon", symbol .. ".h")

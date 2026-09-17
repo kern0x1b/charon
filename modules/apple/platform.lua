@@ -185,7 +185,8 @@ end
 function verify(target, binary, opt)
     opt = opt or {}
     verify_minimum(target, binary)
-    macho.verify(binary, {waived = waivers(target), arrived = compat.arrived("iOS"), stripped = opt.stripped})
+    macho.verify(binary, {waived = waivers(target), arrived = compat.arrived("iOS"), process_wide = compat.process_wide(),
+                          stripped = opt.stripped})
     if opt.imports ~= false then
         local source = imports_source(target)
         local provided = backport_libraries(target)

@@ -27,7 +27,11 @@ function toolchain_file(package, opt)
             table.insert(linker, flag)
         end
     end
-    local linked = table.join(common, linker, opt.ldflags or {})
+    -- CMake has one set of linker flags for every language, and Swift's driver takes neither clang's spelling of the
+    -- sysroot and the deployment target nor its spelling of the linker. Where a build has Swift, each language carries
+    -- those itself - C and C++ in their own flags, which CMake also puts on their link lines, and Swift in its own - and
+    -- what stays here is only what a link of any language takes.
+    local linked = opt.swift and {} or table.join(common, linker, opt.ldflags or {})
     local roots = {sdk}
     for _, dep in ipairs(package:orderdeps()) do
         if not dep:is_binary() and not dep:is_toolchain() then
@@ -53,6 +57,30 @@ function toolchain_file(package, opt)
     end
     for _, kind in ipairs({"EXE", "SHARED", "MODULE"}) do
         table.insert(lines, string.format("set(CMAKE_%s_LINKER_FLAGS_INIT \"%s\")", kind, quoted(table.join(linked, kind ~= "EXE" and opt.shflags or {}))))
+    end
+    if opt.swift then
+        -- CMake cannot run a test binary for the phone, and Swift's linker driver takes its own spelling of the linker,
+        -- so each language names the linker it uses.
+        local linker = ""
+        for _, flag in ipairs(table.wrap(chosen:get("shflags"))) do
+            if flag:startswith("-fuse-ld=") then
+                linker = flag:sub(#"-fuse-ld=" + 1)
+            end
+        end
+        table.join2(lines, {
+            "set(CMAKE_Swift_COMPILER \"" .. opt.swift.compiler .. "\")",
+            "set(CMAKE_Swift_COMPILER_TARGET " .. package:arch() .. "-apple-ios" .. minimum .. ")",
+            "set(CMAKE_Swift_COMPILER_WORKS YES)",
+            string.format("set(CMAKE_Swift_FLAGS_INIT \"%s\")", quoted(table.wrap(opt.swift.flags)))
+        })
+        if linker ~= "" then
+            table.join2(lines, {
+                "set(CMAKE_LINKER_TYPE LD64)",
+                string.format("set(CMAKE_C_USING_LINKER_LD64 \"%s\")", quoted(table.join({"-fuse-ld=" .. linker}, opt.ldflags or {}))),
+                string.format("set(CMAKE_CXX_USING_LINKER_LD64 \"%s\")", quoted(table.join({"-fuse-ld=" .. linker}, opt.ldflags or {}))),
+                string.format("set(CMAKE_Swift_USING_LINKER_LD64 \"-use-ld=%s\")", linker)
+            })
+        end
     end
     table.join2(lines, {
         "set(CMAKE_FIND_ROOT_PATH \"" .. table.concat(roots, "\" \"") .. "\")",

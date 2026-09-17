@@ -5,27 +5,31 @@ package("apple-compat")
     set_policy("package.strict_compatibility", true)
 
     local digests = {}
-    local sources = table.join(os.files(path.join(os.scriptdir(), "src", "*.c")), os.files(path.join(os.scriptdir(), "src", "*.h")),
+    local sources = table.join({path.join(os.scriptdir(), "xmake.lua")},
+                               os.files(path.join(os.scriptdir(), "src", "*.c")), os.files(path.join(os.scriptdir(), "src", "*.h")),
                                os.files(path.join(os.scriptdir(), "include", "charon", "*.h")))
     table.sort(sources)
     for _, file in ipairs(sources) do
         table.insert(digests, path.filename(file) .. "=" .. hash.sha256(file))
     end
-    add_configs("sources", {description = "The digest of the shims this package compiles, so a changed shim is a different package.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
+    add_configs("sources", {description = "The digest of this recipe and the shims it compiles, so a changed shim or recipe is a different package.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
 
     on_load("iphoneos", function (package)
         import("core.base.semver")
         local compat = import("apple.compat", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
         local toolchain = assert(package:toolchains(), "apple-compat is built with the apple-ios toolchain")[1]
         toolchain:load()
-        local symbols = {}
-        for symbol, release in pairs(compat.arrived("iOS")) do
+        local symbols, process_wide = {}, {}
+        local shared = compat.process_wide()
+        for symbol, release in pairs(compat.provided("iOS")) do
             if semver.compare(toolchain:config("deployment"), release) < 0 then
-                table.insert(symbols, symbol)
+                table.insert(shared[symbol] and process_wide or symbols, symbol)
             end
         end
         table.sort(symbols)
+        table.sort(process_wide)
         package:data_set("provided", symbols)
+        package:data_set("process_wide", process_wide)
         if #symbols > 0 then
             package:add("links", "apple-compat")
         end
@@ -49,6 +53,14 @@ package("apple-compat")
         if #objects > 0 then
             os.vrunv("xcrun", table.join({"libtool", "-static", "-o", path.join(package:installdir("lib"), "libapple-compat.a")}, objects))
         end
+        local process_wide = package:data("process_wide")
+        if #process_wide > 0 then
+            local folder = path.join(package:installdir("share"), "apple-compat", "process-wide")
+            os.vcp(path.join(package:scriptdir(), "src", "*.h"), folder .. "/")
+            for _, symbol in ipairs(process_wide) do
+                os.vcp(path.join(package:scriptdir(), "src", symbol .. ".c"), folder .. "/")
+            end
+        end
         os.vcp(path.join(package:scriptdir(), "..", "..", "..", "LICENSE"), package:installdir("licenses"))
     end)
 
@@ -56,5 +68,8 @@ package("apple-compat")
         local symbols = package:data("provided") or {}
         if #symbols > 0 then
             assert(os.isfile(path.join(package:installdir("lib"), "libapple-compat.a")))
+        end
+        for _, symbol in ipairs(package:data("process_wide") or {}) do
+            assert(os.isfile(path.join(package:installdir("share"), "apple-compat", "process-wide", symbol .. ".c")))
         end
     end)
