@@ -1,9 +1,6 @@
 #import <UIKit/UIKit.h>
 #import "check.h"
 
-// iOS 7 states that -tintColor returns the first colour set in the superview chain, that a dimmed adjustment
-// mode greys the colour it returns, and that -tintColorDidChange reaches the views that inherit the colour.
-
 #define NAMED(...) ([NSString stringWithFormat:__VA_ARGS__].UTF8String)
 
 @interface UIView (CharonHostTintColor)

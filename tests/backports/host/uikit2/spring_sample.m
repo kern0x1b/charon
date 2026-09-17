@@ -2,11 +2,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "check.h"
 
-// reads the sample lines the backport wrote and compares them with what Core Animation renders for the
-// same spring and for the same interpolated values; a layer only has a presentation layer inside a window,
-// so this part of the test is a plain macOS tool. A sample at the very end of an animation is left out:
-// Core Animation has already removed the animation there and shows the model value instead.
-
 #define NAMED(...) ([NSString stringWithFormat:__VA_ARGS__].UTF8String)
 
 static NSWindow *window;

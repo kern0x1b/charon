@@ -22,7 +22,26 @@ backports, compares the two and embeds the host's answers in
 `host/uikit2/run.sh` renames selectors as well as classes, so a test holds a
 backported method and the system one side by side, and checks the spring curve
 against a real CASpringAnimation, which needs AppKit and so runs as a plain
-macOS tool.
+macOS tool. What each of its tests holds the backport to:
+
+- `spring_uikit.m` prints the spring UIKit itself builds for
+  `+[UIView animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:]`;
+  `spring_ours.m` compares the spring the backport solves for with it and writes
+  the samples `spring_sample.m` checks against a real CASpringAnimation. A layer
+  has a presentation layer only inside a window, so that part is the plain macOS
+  tool, and the sample at the very end of an animation is left out, where Core
+  Animation has already removed the animation and shows the model value.
+- `motion_test.m`: Mac Catalyst answers nil for every motion effect, so the
+  backport is held to the rules the UIKit headers state - the viewer offset runs
+  from -1 to 1, the horizontal type maps -1 to the minimum relative value and the
+  vertical type maps a downward tilt to it, a group adds the values of its
+  effects, and the view applies the result to its layer.
+- `tint_test.m`: iOS 7 states that `-tintColor` returns the first colour set in
+  the superview chain, that a dimmed adjustment mode greys the colour it returns,
+  and that `-tintColorDidChange` reaches the views that inherit the colour.
+- `bars_test.m`: on iOS 6 the tint colour of a bar is the colour of the bar
+  itself, which is what iOS 7 calls the bar tint colour, so the backport keeps
+  the value it was given and hands it to the iOS 6 tint colour.
 
 ## Device
 
@@ -57,7 +76,11 @@ postinst run with `DPKG_ROOT` set to it.
   the traits, the tint colour, the motion effects, the spring animation, the
   notification settings and the bar appearances. Where the environment cannot
   answer a check - an emulator delivers no device motion for the gyroscope - it
-  prints a `skip` line with the reason instead of a verdict.
+  prints a `skip` line with the reason instead of a verdict. Its controller
+  answers NO to `-shouldAutorotate`, since iOS 6 ignores
+  `-[UIApplication setStatusBarOrientation:animated:]`, which the traits step
+  turns the status bar with, while the top-most full screen controller
+  autorotates.
 - `alert.m`, `layout.m`: applications (`alert-Info.plist`, `layout-Info.plist`)
   launched from SpringBoard; they write `/private/var/backports/NAME.log` and
   `NAME.done`, and `alert.m` logs a `SCREENSHOT <label>` line and pauses before

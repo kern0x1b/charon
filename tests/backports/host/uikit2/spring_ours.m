@@ -3,9 +3,6 @@
 #import "check.h"
 #include <math.h>
 
-// compares the spring the backport solves for with the one UIKit builds (read from the file spring_uikit
-// wrote), and writes the sample lines spring_sample checks against a real CASpringAnimation
-
 double charon_spring_frequency(double duration, double dampingRatio, double velocity);
 double charon_spring_progress(double omega, double dampingRatio, double velocity, double time);
 id charon_spring_interpolate(id from, id to, double progress);

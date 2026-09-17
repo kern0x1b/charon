@@ -2,11 +2,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "check.h"
 
-// Mac Catalyst answers nil for every motion effect, so this test checks the backport against the rules the
-// UIKit headers state: the viewer offset runs from -1 to 1, the horizontal type maps -1 to the minimum
-// relative value and the vertical type maps a downward tilt (a positive vertical offset) to it, a group adds
-// the values of its effects, and the view applies the result to its layer.
-
 #define NAMED(...) ([NSString stringWithFormat:__VA_ARGS__].UTF8String)
 
 @interface CharonHostUIMotionEffect : NSObject <NSCopying, NSCoding>

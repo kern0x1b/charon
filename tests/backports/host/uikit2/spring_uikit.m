@@ -1,9 +1,6 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 
-// prints the spring UIKit itself builds for +[UIView animateWithDuration:delay:usingSpringWithDamping:
-// initialSpringVelocity:options:animations:completion:], as "case duration damping velocity stiffness damping"
-
 int main(void)
 {
     @autoreleasepool {

@@ -1,9 +1,6 @@
 #import <UIKit/UIKit.h>
 #import "check.h"
 
-// on iOS 6 the tint colour of a bar is the colour of the bar itself, which is what iOS 7 calls the bar tint
-// colour, so the backport keeps the value it was given and hands it to the iOS 6 tint colour
-
 #define NAMED(...) ([NSString stringWithFormat:__VA_ARGS__].UTF8String)
 
 @interface UINavigationBar (CharonHostBarAppearance)

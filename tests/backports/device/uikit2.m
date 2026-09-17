@@ -101,8 +101,6 @@ static NSString *traits_of(id environment)
     self.traitChanges++;
 }
 
-// iOS 6 ignores -[UIApplication setStatusBarOrientation:animated:] while the top-most full screen view
-// controller autorotates, so the controller that turns the status bar for the traits step says it does not.
 - (BOOL)shouldAutorotate
 {
     return NO;
