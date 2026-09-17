@@ -402,10 +402,10 @@ index 3b9e9fb..894515b 100644
  };
  
 diff --git a/external/dynarmic/src/dynarmic/backend/arm64/a32_interface.cpp b/external/dynarmic/src/dynarmic/backend/arm64/a32_interface.cpp
-index 37b7e88..43f485c 100644
+index 37b7e88..f1dbf0f 100644
 --- a/external/dynarmic/src/dynarmic/backend/arm64/a32_interface.cpp
 +++ b/external/dynarmic/src/dynarmic/backend/arm64/a32_interface.cpp
-@@ -3,41 +3,879 @@
+@@ -3,41 +3,878 @@
   * SPDX-License-Identifier: 0BSD
   */
  
@@ -413,7 +413,6 @@ index 37b7e88..43f485c 100644
 +#include <atomic>
 +#include <chrono>
 +#include <condition_variable>
-+#include <cstdio>
 +#include <limits>
  #include <memory>
  #include <mutex>
@@ -1293,7 +1292,7 @@ index 37b7e88..43f485c 100644
  
          PerformRequestedCacheInvalidation(hr);
  
-@@ -46,135 +884,460 @@ struct Jit::Impl final {
+@@ -46,135 +883,460 @@ struct Jit::Impl final {
  
      HaltReason Step() {
          ASSERT(!jit_interface->is_executing);
@@ -1800,7 +1799,7 @@ index 37b7e88..43f485c 100644
  
  Jit::~Jit() = default;
  
-@@ -195,6 +1358,32 @@ Jit::GetHostExecutionBudgetResult() const {
+@@ -195,6 +1357,32 @@ Jit::GetHostExecutionBudgetResult() const {
      return impl->GetHostExecutionBudgetResult();
  }
  
@@ -1833,7 +1832,7 @@ index 37b7e88..43f485c 100644
  void Jit::ClearCache() {
      impl->ClearCache();
  }
-@@ -259,4 +1448,12 @@ std::size_t Jit::CodeCacheUsed() const {
+@@ -259,4 +1447,12 @@ std::size_t Jit::CodeCacheUsed() const {
      return impl->CodeCacheUsed();
  }
  
@@ -2414,3 +2413,26 @@ index 5e49cc4..db7a2dc 100644
      if (exclusive_addresses[processor_id] != masked_address) {
          Unlock();
          return false;
+diff --git a/external/dynarmic/src/dynarmic/backend/block_range_information.cpp b/external/dynarmic/src/dynarmic/backend/block_range_information.cpp
+index 2270813..f7bf558 100644
+--- a/external/dynarmic/src/dynarmic/backend/block_range_information.cpp
++++ b/external/dynarmic/src/dynarmic/backend/block_range_information.cpp
+@@ -45,8 +45,16 @@ template<typename ProgramCounterType>
+ tsl::robin_set<IR::LocationDescriptor> BlockRangeInformation<ProgramCounterType>::InvalidateRanges(const boost::icl::interval_set<ProgramCounterType>& ranges) {
+     tsl::robin_set<IR::LocationDescriptor> erase_locations;
+     for (auto invalidate_interval : ranges) {
+-        auto pair = block_ranges.equal_range(invalidate_interval);
+-        for (auto it = pair.first; it != pair.second; ++it) {
++        // equal_range only reaches the first block of the range: the blocks
++        // inside it all compare equivalent to the range while staying ordered
++        // among themselves, which is not a strict weak ordering.
++        const auto first = boost::icl::first(invalidate_interval);
++        const auto last = boost::icl::last(invalidate_interval);
++        for (auto it = block_ranges.lower_bound(Interval::closed(first, first));
++             it != block_ranges.end(); ++it) {
++            if (boost::icl::first(it->first) > last) {
++                break;
++            }
+             for (const auto& descriptor : it->second) {
+                 erase_locations.insert(descriptor);
+             }
