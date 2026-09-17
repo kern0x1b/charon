@@ -312,10 +312,12 @@ function band_ranges(points, listed)
                 last = version
             end
         end
-        if not first then
+        if not first and index == 1 then
             raise("no firmware in the catalog runs iOS %s or later%s, so its API has no band", point, following and (" and before " .. following) or "")
         end
-        table.insert(ranges, {point = point, first = first, last = last})
+        if first then
+            table.insert(ranges, {point = point, first = first, last = last})
+        end
     end
     return ranges
 end

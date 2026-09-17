@@ -51,10 +51,27 @@ function failures(opt)
     if table.concat(described, " ") ~= "6.0-6.1.6 7.0-7.1.2 8.0-8.4.1 9.0-10.3.4" then
         table.insert(found, "each release the backports' API arrived in opens a band running to the last catalog release before the next, and the last band to the catalog's end: " .. table.concat(described, " "))
     end
-    local errors = fixtures.refusal(function () backports.band_ranges({"6.0", "11.0"}, listed) end)
-    if not errors or not errors:find("iOS 11.0 or later", 1, true) then
-        table.insert(found, "API arriving in a release no catalog firmware reaches must be refused: " .. tostring(errors))
+    described = {}
+    for _, range in ipairs(backports.band_ranges({"6.0", "9.0", "11.0"}, listed)) do
+        table.insert(described, range.first .. "-" .. range.last)
     end
+    if table.concat(described, " ") ~= "6.0-8.4.1 9.0-10.3.4" then
+        table.insert(found, "API of a release no firmware of the architecture reaches opens no band and stays in every one: " .. table.concat(described, " "))
+    end
+    local errors = fixtures.refusal(function () backports.band_ranges({"11.0"}, listed) end)
+    if not errors or not errors:find("iOS 11.0 or later", 1, true) then
+        table.insert(found, "a minimum release no catalog firmware reaches must be refused: " .. tostring(errors))
+    end
+    local dump = table.concat({
+        "Dumping NSURLQueryItemReader:", "|-AvailabilityAttr 0x1 <col:1> ios 11.0 0 0 \"\" \"\" 0",
+        "Dumping NSURLQueryItem:", "|-AvailabilityAttr 0x2 <col:1> macos 10.10 0 0 \"\" \"\" 0", "|-AvailabilityAttr 0x3 <col:1> ios 8.0 0 0 \"\" \"\" 0",
+        "| `-ObjCMethodDecl 0x5 <col:1> - dataTaskWithURL:", "|   `-AvailabilityAttr 0x6 <col:1> ios 15.0 0 0 \"\" \"\" 0",
+        "Dumping NSURLQueryItem:", "`-ObjCImplementation 0x4",
+        "Dumping NSURLQueryItem:", "|-AvailabilityAttr 0x7 <col:1> ios 13.0 0 0 \"\" \"\" 0"}, "\n")
+    if backports.introduced_version(dump, "NSURLQueryItem") ~= "8.0" or backports.introduced_version(dump, "NSURLComponents") then
+        table.insert(found, "the release a declaration arrived in is the earliest iOS availability of its own declarations, not of their members or of another declaration the filter matched")
+    end
+
     local dump = table.concat({
         "Dumping NSURLQueryItemReader:", "|-AvailabilityAttr 0x1 <col:1> ios 11.0 0 0 \"\" \"\" 0",
         "Dumping NSURLQueryItem:", "|-AvailabilityAttr 0x2 <col:1> macos 10.10 0 0 \"\" \"\" 0", "|-AvailabilityAttr 0x3 <col:1> ios 8.0 0 0 \"\" \"\" 0",
