@@ -16,6 +16,8 @@ package("libcxx")
     add_defines("_LIBCPP_DISABLE_AVAILABILITY")
     add_cxxflags("-nostdinc++")
     add_mxxflags("-nostdinc++")
+    add_ldflags("-nostdlib++")
+    add_shflags("-nostdlib++")
 
     on_download(function (package, opt)
         local tag = "llvmorg-" .. package:version_str()

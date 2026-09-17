@@ -7,6 +7,7 @@ for _, tool in ipairs({sdk, ld64, ldid}) do
 end
 
 add_requireconfs("**.m4", {system = false})
+add_requireconfs("**.pkgconf", {system = false})
 
 local minimum = get_config("apple_minimum")
 if minimum then

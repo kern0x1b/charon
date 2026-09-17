@@ -18,7 +18,7 @@ function main()
     local wanted = option.get("names")
     local targets = {}
     for _, target in ipairs(project.ordertargets()) do
-        if target:rule("@addon/charon/check") or target:values("check.command") then
+        if target:rule("@addon/charon/check") or target:values("check.command") or target:values("check.script") then
             if not wanted or table.contains(wanted, target:name()) then
                 table.insert(targets, target)
             end

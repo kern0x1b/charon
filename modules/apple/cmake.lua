@@ -66,7 +66,14 @@ function toolchain_file(package, opt)
 end
 
 function install(package, configs, opt)
-    opt = opt or {}
+    opt = table.copy(opt or {})
+    if opt.deps then
+        local from_deps = import("deps").flags(package, opt.deps ~= true and opt.deps or nil)
+        opt.cflags = table.join(opt.cflags or {}, from_deps.cflags)
+        opt.cxxflags = table.join(opt.cxxflags or {}, from_deps.cxxflags)
+        opt.shflags = table.join(opt.shflags or {}, from_deps.ldflags)
+        opt.ldflags = table.join(opt.ldflags or {}, from_deps.ldflags)
+    end
     local cmake = assert(find_tool("cmake"), "cmake is needed to build " .. package:name())
     local ninja = assert(find_tool("ninja"), "ninja is needed to build " .. package:name())
     local builddir = path.absolute(opt.builddir or "build_charon")
@@ -86,5 +93,6 @@ function install(package, configs, opt)
     if opt.install ~= false then
         os.vrunv(cmake.program, {"--install", builddir}, {envs = envs})
     end
+    import("install").finish(package, {prune = opt.prune, licenses = opt.licenses, sourcedir = opt.sourcedir})
     return builddir
 end

@@ -61,6 +61,13 @@ function packages()
         if control then
             control = path.absolute(control, target:scriptdir())
             grouped[control] = grouped[control] or {targets = {}, scripts = nil, licenses = {}}
+            local declared = target:values("charon.version")
+            if declared then
+                if grouped[control].version and grouped[control].version ~= declared then
+                    raise("%s is packaged at versions %s and %s by different targets", control, grouped[control].version, declared)
+                end
+                grouped[control].version = declared
+            end
             table.insert(grouped[control].targets, target)
             for _, license in ipairs(table.wrap(target:values("charon.licenses"))) do
                 table.insert(grouped[control].licenses, path.absolute(license, target:scriptdir()))
@@ -77,10 +84,6 @@ end
 function write(opt)
     opt = opt or {}
     task.run("config", {}, {disable_dump = true})
-    local version = project.version()
-    if not version then
-        raise("the project has no set_version(), and a Debian package cannot be written without one")
-    end
     local written = {}
     local grouped = packages()
     for _, control in ipairs(table.orderkeys(grouped)) do
@@ -88,6 +91,10 @@ function write(opt)
         local wanted = not opt.target
         for _, target in ipairs(described.targets) do
             wanted = wanted or target:name() == opt.target
+        end
+        local version = described.version or project.version()
+        if wanted and not version then
+            raise("%s has no charon.version on its targets and the project no set_version(), and a Debian package cannot be written without one", control)
         end
         if wanted then
             local stage = path.join(config.builddir(), ".charon", "stage", path.basename(control))

@@ -74,18 +74,30 @@ architecture from the ordinary build and configures and builds each other one in
 its own folder under the build directory, merges the bundles with lipo - every
 other file has to be the same in every slice, so pin MinimumOSVersion in the
 plist - and signs and checks the merged binaries. A slice with no shared cache
-under ~/.charon/dyld is said to be unchecked.
+under ~/.charon/dyld is said to be unchecked: there is no arm64 cache here yet,
+so place `dyld_shared_cache_arm64` from the oldest arm64 release a port runs on
+(iOS 7 on an iPhone 5s) there to check that slice too.
 
 A check is a target:
 
     target("lint-strings")
         add_rules("@addon/charon/check")
-        set_values("check.command", "python3", "scripts/lint-strings.py")
+        set_values("check.script", "scripts/lint-strings.py")
         add_values("check.files", "src/**.m", "src/**.h")
         set_values("check.pass-files", true)
 
-It runs when a file it names changed (all of them without --staged or
---changed), and with check.pass-files it is given those files.
+check.script runs a script with the interpreter its extension names (.py, .sh,
+.rb, .pl, .js); check.command runs any program. A check runs when a file it
+names is staged or changed, and on every run without --staged or --changed,
+when it is given every tracked file it names; check.needs-files keeps it quiet
+while there are none. A script that calls xmake again passes the task first:
+`xmake where -P DIR tdlib`, not `xmake -P DIR where`, which xmake reads as a
+target name.
+
+`xmake compile-commands [-o FILE] [TARGETS]` writes compile_commands.json for
+the named targets only, e.g. the iOS ones without the host tests.
+A target sets `charon.version` when its package is versioned apart from the
+project.
 
 `includes("@addon/charon/apple-ios")` requires the SDK, ld64 and ldid at the
 versions it pins, and hands every other package the `apple-ios` toolchain named
@@ -118,7 +130,19 @@ name; no deployment target is set then, the flags carry it) and
 `compile_deployment`, a release to compile against while the image still links,
 and records, the port's minimum; `targets` builds only those, and
 `install = false` skips `cmake --install` - `install` returns the build folder
-for a package that copies what it needs.
+for a package that copies what it needs; `deps` (true, or dependency names)
+turns what those packages declare - include folders, defines, flags, links -
+into the toolchain file, so a C++ package names `{deps = {"libcxx"}}` instead of
+spelling the runtime out; `prune` removes installed paths such as `lib/cmake` or
+`lib/*.la`, and `licenses` copies the named files into the package's licenses.
+
+A library without a build system of its own, a list of sources, is compiled by
+`import("@addon.charon.apple.sources").static(package, {files = {...},
+includedirs, defines, cflags, cxxflags, mflags, mxxflags, deps, headers,
+headers_prefix, licenses, prune, name})` into lib<name>.a with the toolchain's
+flags, the language taken from each file's extension. A script that runs make
+or autoconf itself ends with `import("@addon.charon.apple.install").finish(package,
+{prune = ..., licenses = ...})`.
 Every package the port requires gets `-O3` with the toolchain, as a release
 build of a Makefile or autotools project expects. An install script runs in the
 extracted source, so its current directory is the source root.
@@ -138,7 +162,8 @@ script takes the flags from
 `import("@addon.charon.apple.compat").force_includes(package:dep("apple-compat"), {"clock_gettime"})`.
 
 xmake's package hash covers a package's version, configs and toolchain, but
-neither its script nor the builds of its dependencies. Charon's libraries set
+neither its script nor the builds of its dependencies; the script is not in reach
+of anything that runs before the hash is taken, so it cannot be digested for it. Charon's libraries set
 `package.strict_compatibility`, so what depends on them is rebuilt when they
 change; a port should set `package.librarydeps.strict_compatibility` in its
 project for its own packages, and give a package defined in its `xmake.lua` a
@@ -149,7 +174,8 @@ can leave `.git/index.lock` in the package's source cache under
 
 xmake asks before it installs or reinstalls a package or an addon, and a
 command run in the background waits for that answer forever; pass `-y` there.
-The include makes autotools' m4 a built package: macOS's /usr/bin/m4 is GNU M4
+The include makes autotools' m4 and pkgconf built packages (Homebrew's
+pkgconf has no pkg.m4 for autogen.sh): macOS's /usr/bin/m4 is GNU M4
 1.4.6, which autoconf 2.72 refuses.
 
 A new machine needs `brew install xmake llvm` and `xcode-select --install`. The
