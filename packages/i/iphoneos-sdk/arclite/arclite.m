@@ -26,7 +26,8 @@ CHARON_NATIVE(charon_unary, objc_retainAutoreleasedReturnValue)
 CHARON_NATIVE(charon_unary, objc_autoreleaseReturnValue)
 CHARON_NATIVE(charon_unary, objc_retainAutoreleaseReturnValue)
 CHARON_NATIVE(charon_unary, objc_retainBlock)
-CHARON_NATIVE(charon_unary, _Block_copy)
+
+extern void *_Block_copy(const void *block) __attribute__((weak_import));
 
 typedef void (*charon_store)(id *, id);
 typedef void *(*charon_push)(void);
@@ -101,8 +102,7 @@ __attribute__((visibility("hidden"))) id objc_retainBlock(id block)
     charon_unary native = charon_native_objc_retainBlock();
     if (native)
         __attribute__((musttail)) return native(block);
-    charon_unary copy = charon_native__Block_copy();
-    return copy ? copy(block) : block;
+    return _Block_copy(block);
 }
 
 __attribute__((visibility("hidden"))) void objc_storeStrong(id *location, id object)

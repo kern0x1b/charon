@@ -61,6 +61,9 @@ toolchain("apple-ios")
         toolchain:add("runenvs", "IPHONEOS_DEPLOYMENT_TARGET", minimum)
         local target = {"-target", toolchain:arch() .. "-apple-ios", "-miphoneos-version-min=" .. minimum, "-isysroot", found.sdk}
         local linked = table.join(target, found.linker and {"-fuse-ld=" .. found.linker} or {})
+        if semver.compare(minimum, "3.2") < 0 then
+            table.join2(linked, {"-lBlocksRuntime", "-lobjc"})
+        end
         toolchain:add("cxflags", toolchain:config("optimize") == "packages" and table.join(target, {"-O3"}) or target)
         toolchain:add("mxflags", toolchain:config("optimize") == "packages" and table.join(target, {"-O3"}) or target)
         toolchain:add("asflags", target)

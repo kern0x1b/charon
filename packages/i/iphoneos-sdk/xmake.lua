@@ -13,7 +13,7 @@ package("iphoneos-sdk")
     add_configs("layout", {description = "The SDK sits in the package at Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk, where clang's driver finds the toolchain's libarclite and CMake's iOS platform files the SDK name.", default = "developer-folder", type = "string", readonly = true})
 
     local digests = {}
-    local inputs = table.join({path.join(os.scriptdir(), "xmake.lua")}, os.files(path.join(os.scriptdir(), "usr", "**")), os.files(path.join(os.scriptdir(), "arclite", "*")))
+    local inputs = table.join({path.join(os.scriptdir(), "xmake.lua")}, os.files(path.join(os.scriptdir(), "usr", "**")), os.files(path.join(os.scriptdir(), "arclite", "*")), os.files(path.join(os.scriptdir(), "blocks", "*")))
     table.sort(inputs)
     for _, file in ipairs(inputs) do
         table.insert(digests, path.relative(file, os.scriptdir()) .. "=" .. hash.sha256(file))
@@ -81,6 +81,17 @@ package("iphoneos-sdk")
             os.vrunv("xcrun", {"libtool", "-static", "-o", archive, object})
             table.insert(archives, archive)
         end
+        local blocks = {}
+        for _, architecture in ipairs({"armv6", "armv7"}) do
+            local object = path.absolute(architecture .. "-BlocksRuntime.o")
+            os.vrunv("xcrun", {"clang", "-target", architecture .. "-apple-ios2.0", "-isysroot", folder, "-Os", "-fno-objc-arc",
+                               "-c", path.join(package:scriptdir(), "blocks", "BlocksRuntime.m"), "-o", object})
+            local archive = path.absolute(architecture .. "-libBlocksRuntime.a")
+            os.vrunv("xcrun", {"libtool", "-static", "-o", archive, object})
+            table.insert(blocks, archive)
+        end
+        os.vrunv("xcrun", table.join({"lipo", "-create"}, blocks, {"-output", path.join(libraries, "libBlocksRuntime.a")}))
+
         local arc = path.join(developer, "Toolchains", "XcodeDefault.xctoolchain", "usr", "lib", "arc")
         os.mkdir(arc)
         os.vrunv("xcrun", table.join({"lipo", "-create"}, archives, {"-output", path.join(arc, "libarclite_iphoneos.a")}))
@@ -91,7 +102,7 @@ package("iphoneos-sdk")
         local folder = path.join(developer, "Platforms", "iPhoneOS.platform", "Developer", "SDKs", "iPhoneOS" .. package:version_str() .. ".sdk")
         assert(os.isfile(path.join(developer, "Toolchains", "XcodeDefault.xctoolchain", "usr", "lib", "arc", "libarclite_iphoneos.a")))
         assert(os.isfile(path.join(folder, "usr", "include", "simd", "base.h")))
-        for _, name in ipairs({"crt1.o", "crt1.3.1.o", "dylib1.o", "bundle1.o", "libgcc_s.1.tbd"}) do
+        for _, name in ipairs({"crt1.o", "crt1.3.1.o", "dylib1.o", "bundle1.o", "libgcc_s.1.tbd", "libBlocksRuntime.a"}) do
             assert(os.isfile(path.join(folder, "usr", "lib", name)))
         end
     end)

@@ -128,7 +128,14 @@ Xcode stopped shipping in 14.3. Charon's own arclite defines the ARC entry
 points hidden in each image: each tail-calls the system's implementation when
 the running iOS has one (5.0 on), so the autoreleased-return handshake keeps
 working, and otherwise sends retain, release and autorelease; below iOS 6 it
-adds the subscripting methods the collection classes lack. The rules
+adds the subscripting methods the collection classes lack. Below iPhone OS 3.2,
+where clang weak-imports the blocks runtime, the toolchain links the SDK's
+`libBlocksRuntime.a` (with libobjc, which its block classes are built on):
+`_NSConcreteStackBlock` and the other block isa symbols are aliases of real
+Objective-C classes defined in the image, so a block is an object from its
+first instruction, and `_Block_copy`, `_Block_release`, `_Block_object_assign`
+and `_Block_object_dispose` tail-call the system's runtime when the running
+release has one and implement the clang block ABI themselves on 3.0 and 3.1. The rules
 refuse a binary whose recorded minimum is not the port's.
 
 `includes("@addon/charon/apple-ios")` requires the SDK, ld64 and ldid at the
