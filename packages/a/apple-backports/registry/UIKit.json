@@ -126,5 +126,55 @@
   "reason": "the PDF half of the renderer family is not in this batch; iOS 6 has the PDF context functions it would need, so it is postponed rather than refused",
   "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
   "source": "UIKit of the armv7s cache of iOS 10.3.4"
+ },
+ {
+  "api": "UICubicTimingParameters",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "iOS 10 throws away the timing function it resolves for a builtin curve, so -controlPoint1 and -controlPoint2 answer CGPointZero for every named curve; a later UIKit keeps it and answers the real points, and those are used",
+  "facts": "facts/UIKit/UICubicTimingParameters.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ"
+ },
+ {
+  "api": "_UIViewCubicTimingFunction",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "private to UIKit and in no header; carried under Apple's own name because UICubicTimingParameters archives it as an object, so the class name is part of the archive",
+  "facts": "facts/UIKit/_UIViewCubicTimingFunction.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ"
+ },
+ {
+  "api": "UISpringTimingParameters",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UISpringTimingParameters.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ"
+ },
+ {
+  "api": "-[UISpringTimingParameters settlingDuration]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "private, and it calls +[UIView _durationOfSpringAnimationWithMass:stiffness:damping:velocity:], which iOS 6 does not have; its own implementation is an empirical fit that is carried with UIViewPropertyAnimator, the one thing that needs it",
+  "effect": "the method is not declared, so respondsToSelector: answers honestly; no declared API of this class reaches it",
+  "facts": "facts/UIKit/UISpringTimingParameters.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ"
+ },
+ {
+  "api": "UIViewPropertyAnimator",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the next batch; the timing parameters it takes are carried here first, and nothing about it is refused - the binary shows no daemon, no render server and no new QuartzCore behind it",
+  "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ"
  }
 ]
