@@ -15,6 +15,7 @@ inputs.
     sh host/uikit2/run.sh
     sh host/keyedarchive11/run.sh  writes device/keyedarchive11-expectations.h when it passes
     sh host/foundation11/run.sh    writes device/foundation11-expectations.h when it passes
+    sh host/directionaledges/run.sh  writes device/directionaledges-expectations.h when it passes
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
@@ -44,6 +45,11 @@ backport to: the error for a property list of the wrong kind is
 reads a mutable array, a query item keeps its escapes, and the transformer
 raises Apple's own wording for data that is not data and for a class that is
 not allowed.
+
+`host/directionaledges/run.sh` holds `NSDirectionalEdgeInsets` to the host's
+UIKit through Mac Catalyst: the text the insets format to, everything the
+parser accepts and everything it refuses, the encoding the value carries, and
+the bytes the coder writes with secure coding on and off.
 
 `host/uikit2/run.sh` renames selectors as well as classes, so a test holds a
 backported method and the system one side by side, and checks the spring curve
@@ -118,6 +124,10 @@ postinst run with `DPKG_ROOT` set to it.
   `foundation11-expectations.h`. Besides the cases it shares with the host, it
   names the image every backported method comes from and checks that the
   transformer answers to its name through `+[NSValueTransformer valueTransformerForName:]`.
+- `directionaledges.m` with `directionaledges-cases.m`: a process of its own
+  for `NSDirectionalEdgeInsets`, held to `directionaledges-expectations.h`. The
+  structure's encoding is checked for its own name rather than against the
+  host's, since `CGFloat` is a float on the device and a double on the host.
 - `alert.m`, `layout.m`: applications (`alert-Info.plist`, `layout-Info.plist`)
   launched from SpringBoard; they write `/private/var/backports/NAME.log` and
   `NAME.done`, and `alert.m` logs a `SCREENSHOT <label>` line and pauses before
