@@ -11,6 +11,13 @@ inputs.
     sh host/session/run.sh      starts host/session/server.py on a free 127.0.0.1 port
     sh host/alert/run.sh
     sh host/layout/run.sh
+    sh host/foundation2/run.sh  writes device/foundation2-expectations.h when it passes
+
+`host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
+ones the device runs, against the host's Foundation and against the renamed
+backports, compares the two and embeds the host's answers in
+`device/foundation2-expectations.h`; it attaches the categories itself
+(`host-attach.c`), since the host linker leaves `__objc_catlist` alone.
 
 ## Device
 
@@ -35,6 +42,12 @@ postinst run with `DPKG_ROOT` set to it.
   boot, with `host/session/server.py` running on the host and its port as the
   second argument (`session session PORT`); it writes
   `/private/var/backports/session.log` and `session.done`.
+- `foundation2.m` with `foundation2-cases.m`: a process of their own, the second
+  Foundation batch; it holds each case to `foundation2-expectations.h` and
+  names, for every backported method, the image its implementation comes from,
+  so a method the release already has is never taken from the library.
+- `tolerance.m`: a process of its own, the timer tolerance, which is a property
+  and two CoreFoundation functions.
 - `alert.m`, `layout.m`: applications (`alert-Info.plist`, `layout-Info.plist`)
   launched from SpringBoard; they write `/private/var/backports/NAME.log` and
   `NAME.done`, and `alert.m` logs a `SCREENSHOT <label>` line and pauses before
