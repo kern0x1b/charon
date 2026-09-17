@@ -52,23 +52,81 @@ local function catalog_file()
     return path.join(home(), "firmware", "catalog.json")
 end
 
+local function wiki_firmwares()
+    local titles, continue = {}, nil
+    repeat
+        local listed = fetch_json(KEYS .. "?action=query&list=allpages&apprefix=Firmware/&aplimit=500&format=json" .. (continue and ("&apcontinue=" .. continue:gsub(" ", "_")) or ""))
+        for _, page in ipairs(listed.query.allpages) do
+            local product = page.title:match("^Firmware/(%a+)")
+            if product and table.contains(PRODUCTS, product) then
+                table.insert(titles, page.title)
+            end
+        end
+        continue = listed.continue and listed.continue.apcontinue
+    until not continue
+    local found = {}
+    for first = 1, #titles, 50 do
+        local batch = table.slice(titles, first, math.min(first + 49, #titles))
+        local pages = fetch_json(KEYS .. "?action=query&prop=revisions&rvprop=content&rvslots=main&format=json&titles=" .. table.concat(batch, "|"):gsub(" ", "_"))
+        for _, page in pairs(pages.query.pages) do
+            local content = page.revisions and page.revisions[1].slots.main["*"] or ""
+            local current
+            for line in (content .. "\n"):gmatch("([^\n]*)\n") do
+                local url = line:match("%[(https?://[^%s%]]+_[Rr]estore%.ipsw)")
+                if url then
+                    local identifiers, version, build = path.filename(url):match("^(.-)_([%d%.]+)_(%w+)_[Rr]estore%.ipsw$")
+                    local listed = {}
+                    for identifier in (identifiers or ""):gmatch("%a+%d+,%d+") do
+                        table.insert(listed, identifier)
+                    end
+                    current = #listed > 0 and {identifiers = listed, version = version, build = build:upper(), url = url, size = 0} or nil
+                    if current then
+                        table.insert(found, current)
+                    end
+                elseif current and line:match("^|%s*[%d,]+%s*$") then
+                    current.size = tonumber((line:gsub("[^%d]", "")))
+                    current = nil
+                elseif line:startswith("|-") then
+                    current = nil
+                end
+            end
+        end
+    end
+    return found
+end
+
 local function refresh_catalog()
-    cprint("fetching the firmware catalog from %s", CATALOG)
-    local devices = {}
+    cprint("fetching the firmware catalog from %s and %s", CATALOG, KEYS)
+    local devices, by_identifier = {}, {}
     for _, device in ipairs(fetch_json(CATALOG .. "/devices")) do
         local product = device.identifier:match("^(%a+)%d")
         if table.contains(PRODUCTS, product) then
             local listed = fetch_json(CATALOG .. "/device/" .. device.identifier .. "?type=ipsw")
-            local firmwares = {}
+            local firmwares, builds = {}, {}
             for _, firmware in ipairs(listed.firmwares or {}) do
                 if firmware.url and firmware.url ~= "" then
-                    table.insert(firmwares, {version = firmware.version, build = firmware.buildid, url = firmware.url, size = firmware.filesize})
+                    table.insert(firmwares, {version = firmware.version, build = firmware.buildid:upper(), url = firmware.url, size = firmware.filesize})
+                    builds[firmware.buildid:upper()] = true
                 end
             end
-            table.insert(devices, {identifier = device.identifier, platform = device.platform, firmwares = firmwares})
+            local entry = {identifier = device.identifier, platform = device.platform, firmwares = firmwares, builds = builds}
+            table.insert(devices, entry)
+            by_identifier[device.identifier:lower()] = entry
         end
     end
-    local catalog = {source = CATALOG, devices = devices}
+    for _, firmware in ipairs(wiki_firmwares()) do
+        for _, identifier in ipairs(firmware.identifiers) do
+            local device = by_identifier[identifier:lower()]
+            if device and not device.builds[firmware.build] then
+                device.builds[firmware.build] = true
+                table.insert(device.firmwares, {version = firmware.version, build = firmware.build, url = firmware.url, size = firmware.size})
+            end
+        end
+    end
+    for _, device in ipairs(devices) do
+        device.builds = nil
+    end
+    local catalog = {sources = {CATALOG, KEYS}, devices = devices}
     os.mkdir(path.directory(catalog_file()))
     json.savefile(catalog_file(), catalog)
     return catalog
