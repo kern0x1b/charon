@@ -1,0 +1,130 @@
+[
+ {
+  "api": "UIGraphicsRendererFormat",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UIGraphicsRendererFormat.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4"
+ },
+ {
+  "api": "UIGraphicsRendererContext",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UIGraphicsRendererContext.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4"
+ },
+ {
+  "api": "UIGraphicsRenderer",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UIGraphicsRenderer.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4"
+ },
+ {
+  "api": "UIGraphicsImageRendererFormat",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UIGraphicsImageRendererFormat.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4"
+ },
+ {
+  "api": "UIGraphicsImageRendererContext",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UIGraphicsImageRendererContext.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4"
+ },
+ {
+  "api": "UIGraphicsImageRenderer",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UIGraphicsImageRenderer.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4"
+ },
+ {
+  "api": "+[UIGraphicsRenderer contextWithFormat:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "the private pool that hands a CGContext out again is not carried: it needs _dispatch_source_type_memorypressure and dispatch_queue_attr_make_with_autorelease_frequency, which iOS 6 does not export",
+  "effect": "every context is freshly made rather than possibly reused, which is strictly the safer of the two; no declared API reaches the pool, so nothing an application can observe changes",
+  "facts": "facts/UIKit/UIGraphicsRenderer.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4"
+ },
+ {
+  "api": "CGBitmapGetAlignedBytesPerRow()",
+  "kind": "function",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "private to CoreGraphics and in no header; the image renderer's bytes per row is its answer, so Charon declares and calls it rather than guessing an alignment",
+  "effect": "checked present in every shared cache from 3.1.3 to 10.3.4, so it is exported over the whole band; no fallback is needed",
+  "facts": "facts/UIKit/UIGraphicsImageRenderer.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4"
+ },
+ {
+  "api": "CGContextGetBlendMode()",
+  "kind": "function",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "private to CoreGraphics and in no header; the renderer context reads the blend mode and line width through it",
+  "effect": "exported by CoreGraphics on 6.0 and on 9.3.5, the two ends of the band",
+  "facts": "facts/UIKit/UIGraphicsRendererContext.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4"
+ },
+ {
+  "api": "CGContextGetLineWidth()",
+  "kind": "function",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "private to CoreGraphics and in no header; the renderer context reads the blend mode and line width through it",
+  "effect": "exported by CoreGraphics on 6.0 and on 9.3.5, the two ends of the band",
+  "facts": "facts/UIKit/UIGraphicsRendererContext.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4"
+ },
+ {
+  "api": "UIGraphicsPDFRenderer",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the PDF half of the renderer family is not in this batch; iOS 6 has the PDF context functions it would need, so it is postponed rather than refused",
+  "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4"
+ },
+ {
+  "api": "UIGraphicsPDFRendererFormat",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the PDF half of the renderer family is not in this batch; iOS 6 has the PDF context functions it would need, so it is postponed rather than refused",
+  "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4"
+ },
+ {
+  "api": "UIGraphicsPDFRendererContext",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the PDF half of the renderer family is not in this batch; iOS 6 has the PDF context functions it would need, so it is postponed rather than refused",
+  "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4"
+ }
+]

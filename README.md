@@ -413,8 +413,8 @@ so it does not take over the host process's allocations either.
 `charon@apple-backports` brings Objective-C API later releases added -
 NSURLSession, NSURLComponents, UIAlertController, UIStackView, the layout
 anchors, the traits of a view, base64 data, the quality of service of an
-operation, the measurements and units of iOS 10 and its date intervals - to a
-minimum release that lacks it, as
+operation, the measurements and units of iOS 10, its date intervals and its
+image renderer - to a minimum release that lacks it, as
 `libFoundationBackports.dylib`, with the `uikit` config
 `libUIKitBackports.dylib`, and with the `corelocation` config
 `libCoreLocationBackports.dylib`, which asks for location authorization the way
