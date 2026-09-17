@@ -74,6 +74,11 @@ Then:
                                refusing an app over one with another bundle identifier
     xmake device log [-s 30] [TEXT]
     xmake device run COMMAND, xmake device where
+    xmake device list          the attached devices, their tunnels and who holds them
+    xmake device --holder=NAME [--minutes=30] claim|release
+                               hold a device so every other holder's command on it
+                               is refused until the release or the expiry;
+                               CHARON_DEVICE_HOLDER names the holder for a shell
     xmake where PACKAGE        the folder a required package is installed in
     xmake check [--staged|--changed] [NAMES]
                                the project's checks; xmake check --install-hook

@@ -50,7 +50,7 @@ end
 
 function bind(root, name)
     local file = env_file(root, name)
-    if not os.isfile(file) and not os.getenv("DEVICE_HOST") then
+    if not os.isfile(file) and not os.getenv("DEVICE_HOST") and not os.getenv("DEVICE_UDID") then
         local known = {}
         for _, found in ipairs(os.files(path.join(root, "device*.env"))) do
             table.insert(known, path.filename(found))
@@ -80,6 +80,116 @@ function where(settings)
     return settings.host .. ":" .. settings.port
 end
 
+local function leases()
+    return path.join(os.getenv("CHARON_HOME") or path.join(os.getenv("HOME"), ".charon"), "devices")
+end
+
+function holder_name(given)
+    return given or os.getenv("CHARON_DEVICE_HOLDER")
+end
+
+local function lease_of(udid)
+    local file = path.join(leases(), udid .. ".lease", "holder")
+    if not os.isfile(file) then
+        return nil
+    end
+    local name, expires = io.readfile(file):match("^([^\n]*)\n(%d+)")
+    if not name then
+        return nil
+    end
+    return {holder = name, expires = tonumber(expires)}
+end
+
+function lease(udid)
+    local found = lease_of(udid)
+    if found and found.expires <= os.time() then
+        os.tryrm(path.join(leases(), udid .. ".lease"))
+        return nil
+    end
+    return found
+end
+
+local function identified(settings)
+    if settings.udid == "" then
+        raise("claiming a device needs its UDID: set DEVICE_UDID in device.env or the environment; xmake device list shows the attached ones")
+    end
+    return settings.udid
+end
+
+function claim(settings, holder, minutes)
+    local udid = identified(settings)
+    if not holder or holder == "" then
+        raise("a claim names who holds the device: --holder=NAME or CHARON_DEVICE_HOLDER")
+    end
+    os.mkdir(leases())
+    local folder = path.join(leases(), udid .. ".lease")
+    local current = lease(udid)
+    if current and current.holder ~= holder then
+        raise("%s is held by %s until %s; wait for xmake device release there, or for the claim to expire", udid, current.holder, os.date("%H:%M:%S", current.expires))
+    end
+    if not current and not os.isdir(folder) then
+        local made = try { function () os.runv("mkdir", {folder}); return true end }
+        if not made then
+            current = lease(udid)
+            raise("%s was claimed at the same moment by %s", udid, current and current.holder or "another holder")
+        end
+    end
+    local expires = os.time() + minutes * 60
+    io.writefile(path.join(folder, "holder"), holder .. "\n" .. expires .. "\n")
+    return expires
+end
+
+function release(settings, holder)
+    local udid = identified(settings)
+    local current = lease(udid)
+    if current and current.holder ~= holder then
+        raise("%s is held by %s, not by %s", udid, current.holder, tostring(holder))
+    end
+    os.tryrm(path.join(leases(), udid .. ".lease"))
+end
+
+local function admitted(settings)
+    if settings.udid == "" then
+        return
+    end
+    local current = lease(settings.udid)
+    local holder = holder_name()
+    if current and current.holder ~= holder then
+        raise("%s is held by %s until %s; this process runs as %s. Wait for the release, or claim it after that", settings.udid, current.holder, os.date("%H:%M:%S", current.expires), holder or "no holder (CHARON_DEVICE_HOLDER is unset)")
+    end
+end
+
+local function tunnelled_device(port)
+    local listing = try { function () return os.iorunv("pgrep", {"-fl", "iproxy"}) end } or ""
+    for line in listing:gmatch("[^\n]+") do
+        local listened, udid = line:match("iproxy%s+(%d+)[:%s]+22%s+%-u%s+([%x%-]+)")
+        if listened == tostring(port) then
+            return udid
+        end
+    end
+end
+
+function attached()
+    local found = {}
+    for _, udid in ipairs(((try { function () return os.iorunv("idevice_id", {"-l"}) end }) or ""):split("%s+")) do
+        if udid ~= "" then
+            local function key(name)
+                return ((try { function () return os.iorunv("ideviceinfo", {"-u", udid, "-k", name}) end }) or ""):trim()
+            end
+            local port
+            local listing = try { function () return os.iorunv("pgrep", {"-fl", "iproxy"}) end } or ""
+            for line in listing:gmatch("[^\n]+") do
+                local listened, served = line:match("iproxy%s+(%d+)[:%s]+22%s+%-u%s+([%x%-]+)")
+                if served == udid then
+                    port = listened
+                end
+            end
+            table.insert(found, {udid = udid, product = key("ProductType"), release = key("ProductVersion"), port = port, lease = lease(udid)})
+        end
+    end
+    return found
+end
+
 local function port_open(host, port)
     return try { function ()
         os.runv("nc", {"-z", "-G", "2", host, port})
@@ -88,7 +198,15 @@ local function port_open(host, port)
 end
 
 function tunnel(settings)
-    if settings.host ~= "127.0.0.1" or port_open(settings.host, settings.port) then
+    admitted(settings)
+    if settings.host ~= "127.0.0.1" then
+        return
+    end
+    local serving = tunnelled_device(settings.port)
+    if serving and settings.udid ~= "" and serving ~= settings.udid then
+        raise("port %s tunnels to %s, not to %s; give this device its own DEVICE_PORT (xmake device list shows the tunnels)", settings.port, serving, settings.udid)
+    end
+    if port_open(settings.host, settings.port) then
         return
     end
     local iproxy = find_tool("iproxy")
@@ -106,7 +224,9 @@ function tunnel(settings)
         wprint("tunnel on %s is down and DEVICE_UDID is not set", settings.port)
         return
     end
-    try { function () os.runv("pkill", {"-f", "iproxy " .. settings.port .. " "}) end }
+    if serving then
+        try { function () os.runv("pkill", {"-f", "iproxy " .. settings.port .. "[: ]"}) end }
+    end
     os.execv("sh", {"-c", string.format("nohup %s %s 22 -u %s > /tmp/iproxy-%s.log 2>&1 &", iproxy.program, settings.port, udid, settings.port)})
     os.sleep(3000)
 end
@@ -165,6 +285,7 @@ function identity_conflicts(settings, stage)
 end
 
 function log(settings, seconds, text)
+    admitted(settings)
     local syslog = find_tool("idevicesyslog")
     if not syslog then
         raise("idevicesyslog is not installed; brew install libimobiledevice reads the phone's log over USB without Xcode")

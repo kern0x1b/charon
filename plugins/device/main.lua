@@ -3,10 +3,24 @@ import("@self.device")
 import("@self.packaging")
 
 function main()
-    local settings = device.bind(os.projectdir(), option.get("device"))
     local action = option.get("action")
+    if action == "list" then
+        for _, found in ipairs(device.attached()) do
+            print("%s  %s  iOS %s  tunnel %s  %s", found.udid, found.product, found.release, found.port or "none",
+                  found.lease and string.format("held by %s until %s", found.lease.holder, os.date("%H:%M:%S", found.lease.expires)) or "free")
+        end
+        return
+    end
+    local settings = device.bind(os.projectdir(), option.get("device"))
     local arguments = table.concat(option.get("arguments") or {}, " ")
-    if action == "where" then
+    if action == "claim" then
+        local holder = device.holder_name(option.get("holder"))
+        local expires = device.claim(settings, holder, tonumber(option.get("minutes")))
+        cprint("${bright green}claimed${clear} %s for %s until %s", settings.udid, holder, os.date("%H:%M:%S", expires))
+    elseif action == "release" then
+        device.release(settings, device.holder_name(option.get("holder")))
+        cprint("${bright green}released${clear} %s", settings.udid)
+    elseif action == "where" then
         print(device.where(settings))
     elseif action == "run" then
         if arguments == "" then
@@ -36,6 +50,6 @@ function main()
             device.run(settings, "su mobile -c uicache")
         end
     else
-        raise("xmake device takes install, log, run or where")
+        raise("xmake device takes install, log, run, where, list, claim or release")
     end
 end
