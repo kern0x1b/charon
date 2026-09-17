@@ -52,6 +52,9 @@ The rules, and the values each reads:
     @addon/charon/library  a shared library an application bundles: checked
                            where it links, stripped, signed and import-checked
                            with the bundle
+    @addon/charon/swift    added next to one of the above, compiles the target's
+                           .swift files as one Embedded Swift module; swift.module
+                           (the module name, default the target's), swift.flags
 
 and, on any of them, charon.entitlements (signed with ldid and read back),
 charon.strip (default -x), charon.control, charon.maintainer-scripts,
@@ -274,6 +277,28 @@ re-exported by libc++, one copy for the whole process: it picks the lock for a
 memory location from a table, and two images with tables of their own would
 guard the same memory with different locks. The builtins leave it out as well,
 so an image that makes these calls without the runtime fails to link.
+Swift compiles as Embedded Swift, the subset without a runtime library of its
+own: classes, structures, protocols and generics, closures, `any` existentials,
+`throws`, arrays, dictionaries and strings, with no Objective-C interoperability,
+reflection (`Mirror`), `Codable` or `async`. A port requires
+`add_requires("charon@swift-embedded", {alias = "swift-embedded"})` and adds the
+`@addon/charon/swift` rule to its target; C calls Swift through `@_cdecl`
+functions, and a `main.swift` is the program's entry point. The result loads
+nothing but libSystem, with `posix_memalign`, `arc4random_buf` and `putchar` the
+calls of note; swift_test holds armv7 and armv7s at 6.0 and arm64 at 7.0 to the
+devices' libraries, and older releases are not checked yet. `charon@swift` is the swift.org release toolchain, pinned by its
+digest and cut to the driver, the frontend, its host libraries and clang's
+headers, with the standard library sources of the same tag: a compiled Swift
+module loads only in the compiler that wrote it, the Command Line Tools' swiftc
+moves with macOS, and building the compiler takes swiftlang's LLVM, swift-syntax
+and a Swift compiler to begin with. `charon@swift-embedded` builds the `Swift`
+module for the port's architecture and oldest release from those sources, the
+way the Swift build does for its own Embedded targets, and the Unicode tables it
+calls as a static library, and names its compiler in `SWIFT_EXEC`. The rule has
+swiftc write LLVM bitcode and the `llvm` package's clang make the object: the
+LLVM inside Swift 6.4 loads the stack guard of armv7 code through an absolute
+address, and an executable with such text relocations loses PIE.
+
 apple-compat links its shims into whoever requires it and force-includes
 nothing on its own, because a shim's header brings its system header with it
 (`unlinkat.h` brings `<unistd.h>`, and with it `sync`). A target names the
