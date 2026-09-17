@@ -79,9 +79,11 @@ architecture from the ordinary build and configures and builds each other one in
 its own folder under the build directory, merges the bundles with lipo - every
 other file has to be the same in every slice, so pin MinimumOSVersion in the
 plist - and signs and checks the merged binaries. A slice with no shared cache
-under ~/.charon/dyld is said to be unchecked. The reader understands the 32-bit
-caches of iOS 3.1 to 6 and the library folders of earlier releases; a 64-bit
-arm64 cache is not read yet. An import is looked up where dyld looks for it: in
+under ~/.charon/dyld is said to be unchecked. The reader understands every
+shared cache format from iOS 3.1 to today - 32-bit and arm64/arm64e, single
+files and the split caches of iOS 15 on, whose subcache files it opens by the
+suffixes the main header lists - deciding which header fields exist from the
+header's own size, and the library folders of earlier releases. An import is looked up where dyld looks for it: in
 the library its binding names and in what that library re-exports, so a
 symbol the device exports only from another library is refused.
 

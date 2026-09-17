@@ -26,6 +26,7 @@ local LC_REEXPORT_DYLIB = 0x8000001F
 local LC_ENCRYPTION_INFO = 0x21
 local LC_DYLD_INFO = 0x22
 local LC_DYLD_INFO_ONLY = 0x80000022
+local LC_DYLD_EXPORTS_TRIE = 0x80000033
 local LC_LAZY_LOAD_DYLIB = 0x20
 local LC_UPWARD_DYLIB = 0x80000023
 local LC_VERSION_MIN_IPHONEOS = 0x25
@@ -105,7 +106,9 @@ function image(data, base)
             found.symtab = {string.unpack("<I4I4I4I4", data, at + 9)}
         elseif command == LC_DYLD_INFO or command == LC_DYLD_INFO_ONLY then
             found.rebase = {string.unpack("<I4I4", data, at + 9)}
-            found.export_trie = {string.unpack("<I4I4", data, at + 41)}
+            found.export_trie = found.export_trie or {string.unpack("<I4I4", data, at + 41)}
+        elseif command == LC_DYLD_EXPORTS_TRIE then
+            found.export_trie = {string.unpack("<I4I4", data, at + 9)}
         elseif command == LC_DYSYMTAB then
             found["local"] = {string.unpack("<I4I4", data, at + 73)}
             found.external = {string.unpack("<I4I4", data, at + 17)}
