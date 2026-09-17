@@ -119,7 +119,16 @@ unwinder, listing what the library exports on every release from 3.1.3 to
 6.1.3. The SDK's libSystem stubs hide those symbols from 3.0 to 4.3 so they bind
 to libgcc_s; the package extends that to iPhone OS 2, whose libSystem did not
 export them either. A helper iPhone OS 2 lacks altogether, such as
-`__floatundidf`, fails to link there instead of failing to load. The rules
+`__floatundidf`, fails to link there instead of failing to load. The package is
+laid out as an Xcode developer folder
+(`Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/`),
+so clang's driver finds the toolchain's `libarclite_iphoneos.a` beside it,
+which it force-loads into anything linked with `-fobjc-arc` below iOS 9 and
+Xcode stopped shipping in 14.3. Charon's own arclite defines the ARC entry
+points hidden in each image: each tail-calls the system's implementation when
+the running iOS has one (5.0 on), so the autoreleased-return handshake keeps
+working, and otherwise sends retain, release and autorelease; below iOS 6 it
+adds the subscripting methods the collection classes lack. The rules
 refuse a binary whose recorded minimum is not the port's.
 
 `includes("@addon/charon/apple-ios")` requires the SDK, ld64 and ldid at the
@@ -132,12 +141,21 @@ tag in `add_addons` (and a fresh `xmake-requires.lock`, since the addon and the
 package repository move together), projects on different tags keep their own installs, and a
 branch or a range is avoided - xmake resolves those against its own clone of
 this repository, which it does not pull again once it has one. The import check reads
-`~/.charon/dyld/<release>/dyld_shared_cache_<arch>` (under `$CHARON_HOME` if set)
-of the oldest held release of the port's major version that is not older than
-its minimum - `6.1.3/` for a 6.0 port - copied from a device once. Releases
-before 3.1 have no shared cache; for them the check reads the device's
-libraries from `~/.charon/dyld/<release>/libraries_<arch>/`, kept at their paths
-on the device (`usr/lib`, `System/Library/Frameworks`, ...). A check that would have to be skipped is waived by name
+the system libraries of the earliest release of each slice's architecture that
+is not older than the port's minimum - iOS 6.0 for an armv7 6.0 port, 7.0 for
+its arm64 slice - from `~/.charon/dyld/<release>/` (under `$CHARON_HOME` if
+set): `dyld_shared_cache_<arch>` and its subcaches, or `libraries_<arch>/`
+for a release before 3.1, which has no cache. When they are not held, the
+check offers to fetch them (`-y` accepts) and `xmake firmware [--arch=ARCH]
+fetch RELEASE` does it by hand; `xmake firmware list` shows what is held. The
+release and its firmware come from a catalog of api.ipsw.me and
+theapplewiki's firmware tables, kept in `~/.charon/firmware/catalog.json` and
+refreshed when a minimum is newer than anything it lists. Only the system image
+is downloaded, by byte ranges of the IPSW on Apple's servers; the FileVault
+images of iOS 2 to 9 are decrypted with the key theapplewiki publishes, the
+Apple Encrypted Archives of iOS 18 on with the key Apple's wkms server hands
+out, and the image is mounted to copy the cache (from the SystemOS cryptex on
+iOS 16 on) or the libraries. A check that would have to be skipped is waived by name
 with the reason, e.g. `set_values("charon.waive.pagezero", "why")`.
 
 A package of a port that builds with CMake calls the addon's bridge from its

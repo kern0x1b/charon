@@ -501,9 +501,8 @@ function ensure(architecture, minimum, opt)
     if os.exists(held) then
         return held, release
     end
-    import("utils.confirm")
     local _, firmwares = candidates(architecture, minimum)
-    local accepted = confirm({default = true, description = string.format(
+    local accepted = utils.confirm({default = true, description = string.format(
         "the imports of this %s build are checked against iOS %s, the earliest %s release not older than %s, whose system libraries are not under %s yet; fetch them from Apple's firmware %s %s (%d MB, only its system image is downloaded)",
         architecture, release, architecture, minimum, dyld.root(), firmwares[1].identifier, firmwares[1].build, math.floor(firmwares[1].size / 1048576))})
     if not accepted then

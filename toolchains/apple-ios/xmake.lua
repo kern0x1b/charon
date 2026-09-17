@@ -18,7 +18,8 @@ toolchain("apple-ios")
         local found = {}
         local sdk = required["iphoneos-sdk"]
         if sdk and toolchain:config("sdk") then
-            found.sdk = path.join(sdk:installdir(), "iPhoneOS" .. toolchain:config("sdk") .. ".sdk")
+            found.sdk = path.join(sdk:installdir(), "Developer.app", "Contents", "Developer", "Platforms", "iPhoneOS.platform", "Developer", "SDKs",
+                                  "iPhoneOS" .. toolchain:config("sdk") .. ".sdk")
         end
         local ld64 = required["ld64"]
         if ld64 and toolchain:config("ld64") then

@@ -1,7 +1,7 @@
 package("iphoneos-sdk")
     set_kind("toolchain")
     set_homepage("https://github.com/theos/sdks")
-    set_description("The iPhoneOS SDK a build compiles and links against, fetched and verified on the machine that uses it, with what the SDKs of iPhone OS 2 to iOS 6 carried in usr/lib and current ones dropped")
+    set_description("The iPhoneOS SDK a build compiles and links against, fetched and verified on the machine that uses it, laid out as an Xcode developer folder with what Xcode once shipped and dropped: Csu's startup objects and libgcc_s.1 in usr/lib, and libarclite in the toolchain")
     set_license("LicenseRef-Apple-SDK")
 
     add_urls("https://github.com/theos/sdks/releases/download/master-146e41f/iPhoneOS16.5.sdk.tar.xz")
@@ -10,10 +10,10 @@ package("iphoneos-sdk")
     add_resources("16.4", "csu", "https://github.com/apple-oss-distributions/Csu.git", "de2a331398a7d13a132a630bbf4d27c12b2466ec")
     add_deps("charon@ld64", {alias = "ld64"})
 
-    add_configs("layout", {description = "The SDK sits in the package as iPhoneOS<version>.sdk, the name CMake's iOS platform files require.", default = "named-folder", type = "string", readonly = true})
+    add_configs("layout", {description = "The SDK sits in the package at Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk, where clang's driver finds the toolchain's libarclite and CMake's iOS platform files the SDK name.", default = "developer-folder", type = "string", readonly = true})
 
     local digests = {}
-    local inputs = table.join({path.join(os.scriptdir(), "xmake.lua")}, os.files(path.join(os.scriptdir(), "usr", "**")))
+    local inputs = table.join({path.join(os.scriptdir(), "xmake.lua")}, os.files(path.join(os.scriptdir(), "usr", "**")), os.files(path.join(os.scriptdir(), "arclite", "*")))
     table.sort(inputs)
     for _, file in ipairs(inputs) do
         table.insert(digests, path.relative(file, os.scriptdir()) .. "=" .. hash.sha256(file))
@@ -27,7 +27,8 @@ package("iphoneos-sdk")
         if settings.CanonicalName ~= wanted then
             raise("the archive describes itself as %s, not %s", tostring(settings.CanonicalName), wanted)
         end
-        local folder = path.join(package:installdir(), "iPhoneOS" .. package:version_str() .. ".sdk")
+        local developer = path.join(package:installdir(), "Developer.app", "Contents", "Developer")
+        local folder = path.join(developer, "Platforms", "iPhoneOS.platform", "Developer", "SDKs", "iPhoneOS" .. package:version_str() .. ".sdk")
         os.mkdir(folder)
         os.vcp("*", folder .. "/")
         local libraries = path.join(folder, "usr", "lib")
@@ -70,10 +71,25 @@ package("iphoneos-sdk")
             end
             os.vrunv("xcrun", table.join({"lipo", "-create"}, slices, {"-output", path.join(libraries, object[1])}))
         end
+
+        local archives = {}
+        for _, architecture in ipairs({"armv6", "armv7", "armv7s", "arm64"}) do
+            local object = path.absolute(architecture .. "-arclite.o")
+            os.vrunv("xcrun", {"clang", "-target", architecture .. "-apple-ios2.0", "-isysroot", folder, "-Os", "-fno-objc-arc",
+                               "-c", path.join(package:scriptdir(), "arclite", "arclite.m"), "-o", object})
+            local archive = path.absolute(architecture .. "-libarclite.a")
+            os.vrunv("xcrun", {"libtool", "-static", "-o", archive, object})
+            table.insert(archives, archive)
+        end
+        local arc = path.join(developer, "Toolchains", "XcodeDefault.xctoolchain", "usr", "lib", "arc")
+        os.mkdir(arc)
+        os.vrunv("xcrun", table.join({"lipo", "-create"}, archives, {"-output", path.join(arc, "libarclite_iphoneos.a")}))
     end)
 
     on_test(function (package)
-        local folder = path.join(package:installdir(), "iPhoneOS" .. package:version_str() .. ".sdk")
+        local developer = path.join(package:installdir(), "Developer.app", "Contents", "Developer")
+        local folder = path.join(developer, "Platforms", "iPhoneOS.platform", "Developer", "SDKs", "iPhoneOS" .. package:version_str() .. ".sdk")
+        assert(os.isfile(path.join(developer, "Toolchains", "XcodeDefault.xctoolchain", "usr", "lib", "arc", "libarclite_iphoneos.a")))
         assert(os.isfile(path.join(folder, "usr", "include", "simd", "base.h")))
         for _, name in ipairs({"crt1.o", "crt1.3.1.o", "dylib1.o", "bundle1.o", "libgcc_s.1.tbd"}) do
             assert(os.isfile(path.join(folder, "usr", "lib", name)))
