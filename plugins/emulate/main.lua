@@ -134,12 +134,16 @@ local function run(ctx, argv)
         end
     end
     local described = emulator.describe(result)
+    -- Both clocks are named whatever the outcome, so a run is never read as
+    -- fast or slow without the scale that produced it.
+    local timing = string.format("%.1f guest s / %.1f host s at time scale %s",
+                                 result.guest_seconds or 0, result.host_seconds or 0, result.scale)
     if result.state == "pass" then
-        cprint("${bright green}%s${clear} on %s %s (%s) in %.1f guest s / %.1f host s at time scale %s",
-               described, ctx.identifier, ctx.version, ctx.build, result.guest_seconds or 0,
-               result.host_seconds or 0, result.scale)
+        cprint("${bright green}%s${clear} on %s %s (%s) in %s", described, ctx.identifier, ctx.version,
+               ctx.build, timing)
     else
-        raise("%s on %s %s (%s); the emulator log is %s", described, ctx.identifier, ctx.version, ctx.build, booted.log)
+        raise("%s on %s %s (%s) in %s; the emulator log is %s", described, ctx.identifier, ctx.version,
+              ctx.build, timing, booted.log)
     end
 end
 

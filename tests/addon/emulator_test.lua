@@ -282,11 +282,20 @@ local function timing_and_reports(emulator, folder, found)
         table.insert(found, "the guest's own report names the process and the reason it died")
         return
     end
-    local blocked = emulator.verdict(emulator.scan_file(path.join(recorded(folder, "blocked", LOGS.looping), "emulator.log"), {}),
+    local unanswered = table.join(LOGS.looping, {"[iokit] unhandled pid=23 id=118 remote-object=139776",
+                                                "[iokit] unhandled pid=23 id=118 remote-object=139776",
+                                                "[iokit] unhandled pid=23 id=404 remote-object=139776"})
+    local blocked = emulator.verdict(emulator.scan_file(path.join(recorded(folder, "blocked", unanswered), "emulator.log"), {}),
                                      path.join(folder, "blocked", "results"), {reports = collected})
     local described = emulator.describe(blocked)
     if not described:find("mediaserverd: RPCTimeout", 1, true) then
         table.insert(found, "a blocked boot names the guest's own reason, said " .. described)
+    end
+    -- A request the emulator never answers is a hole in the HLE, and a blocked
+    -- boot says so instead of reading as a slow guest.
+    if not blocked.gap or blocked.gap.request ~= 118 or blocked.gap.count ~= 2 or
+       blocked.gap.process ~= "backboardd" or not described:find("IOKit request 118", 1, true) then
+        table.insert(found, "a blocked boot names the request the emulator left unanswered, said " .. described)
     end
 end
 

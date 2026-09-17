@@ -335,6 +335,15 @@ function scan(state, line)
             state.crashes[name] = (state.crashes[name] or 0) + 1
         end
     end
+    -- An IOKit request the emulator does not answer leaves the guest waiting
+    -- for a reply that never comes, which is a hole in the HLE and not a slow
+    -- guest; a blocked boot names the one it waited on most.
+    local waiting, request = line:match("^%[iokit%] unhandled pid=(%d+) id=(%d+)")
+    if waiting then
+        state.unanswered = state.unanswered or {}
+        local key = waiting .. " " .. request
+        state.unanswered[key] = (state.unanswered[key] or 0) + 1
+    end
     local faulted, pc = line:match("^%[cpu%] fatal pid=(%d+) cpu=%d+ pc=(0x%x+)")
     if faulted then
         state.fatal[faulted] = {pc = pc, line = line}
@@ -362,6 +371,18 @@ function crash_loop(state)
     return looping
 end
 
+function gap(state)
+    local most, found = 0, nil
+    for key, count in pairs(state.unanswered or {}) do
+        if count > most then
+            local pid, request = key:match("^(%d+) (%d+)$")
+            most, found = count, {pid = pid, request = tonumber(request), count = count,
+                                  process = (state.names or {})[pid] or pid}
+        end
+    end
+    return found
+end
+
 function milestone(state)
     if not state.ready then
         return "emulator"
@@ -387,7 +408,7 @@ function verdict(state, results, opt)
     local timing = {scale = opt.scale or TIME_SCALE, host_seconds = opt.host_seconds, reports = opt.reports}
     if not os.isfile(file) then
         return table.join2({state = "boot-blocked", milestone = milestone(state), frame = opt.frame,
-                            errors = opt.errors}, timing)
+                            errors = opt.errors, gap = gap(state)}, timing)
     end
     local recorded = json.loadfile(file)
     local test = recorded.test or {}
@@ -432,7 +453,12 @@ function describe(result)
     elseif result.state == "fail" then
         return result.exit and string.format("fail(exit %d)", result.exit) or string.format("fail(spawn error %d)", result.spawn_error or 0)
     elseif result.state == "boot-blocked" then
-        return string.format("boot-blocked(%s%s)", result.milestone, reported)
+        local waited = ""
+        if result.gap then
+            waited = string.format(", %s waited on IOKit request %d %d times the emulator did not answer",
+                                   result.gap.process, result.gap.request, result.gap.count)
+        end
+        return string.format("boot-blocked(%s%s%s)", result.milestone, reported, waited)
     end
     return result.state
 end
