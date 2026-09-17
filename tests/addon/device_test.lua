@@ -31,9 +31,18 @@ function claim_failures(device, folder)
     if device.lease("abc123") or fixtures.refusal(function () device.claim(phone, "third", 5) end) then
         table.insert(found, "an expired claim frees the device")
     end
-    if not fixtures.refusal(function () device.claim({host = "10.0.0.7", port = "22", password = "", udid = ""}, "first", 5) end) then
-        table.insert(found, "a device without a UDID cannot be claimed")
+    if not fixtures.refusal(function () device.claim({host = "127.0.0.1", port = "2222", password = "", udid = ""}, "first", 5) end) then
+        table.insert(found, "a tunnel on 127.0.0.1 serves any attached device, so a claim there needs the UDID")
     end
+    local networked = {host = "10.0.0.9", port = "22", password = "", udid = ""}
+    device.claim(networked, "first", 5)
+    os.setenv("CHARON_DEVICE_HOLDER", "second")
+    errors = fixtures.refusal(function () device.tunnel(networked) end)
+    if not errors or not errors:find("held by first", 1, true) then
+        table.insert(found, "a device claimed by its address must refuse another holder: " .. tostring(errors))
+    end
+    os.setenv("CHARON_DEVICE_HOLDER", "first")
+    device.release(networked, "first")
     for name, value in pairs({CHARON_HOME = home or false, CHARON_DEVICE_HOLDER = holder or false}) do
         if value then
             os.setenv(name, value)
