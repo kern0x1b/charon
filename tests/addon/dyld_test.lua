@@ -39,7 +39,8 @@ function failures(opt)
     local found = {}
     local folder = fixtures.scratch()
     local armv7 = cache(path.join(folder, "dyld_shared_cache_armv7"), "armv7", "_exported")
-    io.writefile(path.join(folder, "libSystem.tbd"), fixtures.system_stub("dyld_stub_binder, _exported, ___divti3"))
+    io.writefile(path.join(folder, "libSystem.tbd"), fixtures.system_stub("dyld_stub_binder, _exported, _nested, ___divti3"))
+    io.writefile(path.join(folder, "libother.tbd"), fixtures.system_stub("_elsewhere", "/usr/lib/libother.dylib"))
     io.writefile(path.join(folder, "libgone.tbd"), fixtures.system_stub("_gone", "/usr/lib/libgone.dylib"))
     local clean = dylib(folder, opt.ld64, "clean-armv7", "armv7-apple-ios6.0", "_exported")
     local late = dylib(folder, opt.ld64, "late-armv7", "armv7-apple-ios6.0", "___divti3")
@@ -67,10 +68,19 @@ function failures(opt)
         end
     end
     local libraries = path.join(folder, "home", "dyld", "2.2.1", "libraries_armv7")
-    os.mkdir(path.join(libraries, "usr", "lib"))
-    io.writefile(path.join(folder, "system.c"), "int exported(void) { return 0; }\n")
-    fixtures.link(folder, opt.ld64, path.join(libraries, "usr", "lib", "libSystem.B.dylib"), "armv7-apple-ios6.0", "system.c",
-                  {"-dynamiclib", "-install_name", "/usr/lib/libSystem.B.dylib"})
+    local device = path.join(libraries, "usr", "lib")
+    os.mkdir(path.join(device, "system"))
+    io.writefile(path.join(folder, "nested.c"), "int nested(void) { return 0; }\n")
+    fixtures.link(folder, opt.ld64, path.join(device, "system", "libnested.dylib"), "armv7-apple-ios6.0", "nested.c",
+                  {"-dynamiclib", "-install_name", "/usr/lib/system/libnested.dylib"})
+    io.writefile(path.join(folder, "other.c"), "int other(void) { return 0; }\n")
+    fixtures.link(folder, opt.ld64, path.join(device, "libother.dylib"), "armv7-apple-ios6.0", "other.c",
+                  {"-dynamiclib", "-install_name", "/usr/lib/libother.dylib"})
+    io.writefile(path.join(folder, "system.c"), "int exported(void) { return 0; }\nint elsewhere(void) { return 0; }\n")
+    fixtures.link(folder, opt.ld64, path.join(device, "libSystem.B.dylib"), "armv7-apple-ios6.0", "system.c",
+                  {"-dynamiclib", "-install_name", "/usr/lib/libSystem.B.dylib", "-Wl,-reexport_library," .. path.join(device, "system", "libnested.dylib")})
+    local nested = dylib(folder, opt.ld64, "nested-armv7", "armv7-apple-ios6.0", "_nested")
+    local bound = dylib(folder, opt.ld64, "bound-armv7", "armv7-apple-ios6.0", "_elsewhere", {"-lother"})
     local home = os.getenv("CHARON_HOME")
     os.setenv("CHARON_HOME", path.join(folder, "home"))
     local held = dyld.held_cache("armv7", "2.0")
@@ -91,6 +101,17 @@ function failures(opt)
     end
     if not text:find("___divti3", 1, true) then
         table.insert(found, "an import no device library exports must be refused against the libraries folder: " .. text)
+    end
+    local reexported = dyld.missing_imports(libraries, {nested})
+    if #reexported > 0 then
+        table.insert(found, "an import a library re-exports from another must pass: " .. reexported[1][2])
+    end
+    text = ""
+    for _, entry in ipairs(dyld.missing_imports(libraries, {bound})) do
+        text = text .. entry[2]
+    end
+    if not text:find("_elsewhere (bound to /usr/lib/libother.dylib", 1, true) then
+        table.insert(found, "an import bound to a library that does not export it must be refused even when another library does: " .. text)
     end
     local errors = fixtures.refusal(function () dyld.check(path.join(folder, "absent"), {clean}) end)
     if not errors or not errors:find("no shared cache", 1, true) then

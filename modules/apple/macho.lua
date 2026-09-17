@@ -17,6 +17,9 @@ local LC_SYMTAB = 0x2
 local LC_DYSYMTAB = 0xB
 local LC_LOAD_DYLIB = 0xC
 local LC_ID_DYLIB = 0xD
+local LC_SUB_FRAMEWORK = 0x12
+local LC_SUB_UMBRELLA = 0x13
+local LC_SUB_LIBRARY = 0x15
 local LC_LOAD_WEAK_DYLIB = 0x80000018
 local LC_SEGMENT_64 = 0x19
 local LC_REEXPORT_DYLIB = 0x8000001F
@@ -68,15 +71,16 @@ local function cstring(data, at)
     return data:sub(at + 1, finish - 1)
 end
 
-local function image(data, base)
+function image(data, base)
     local magic = data:sub(base + 1, base + 4)
     if magic ~= MAGIC32 and magic ~= MAGIC64 then
         raise("there is no Mach-O image at offset %d", base)
     end
     local wide = magic == MAGIC64
-    local cputype, cpusubtype, filetype, ncmds = string.unpack("<i4i4I4I4", data, base + 5)
-    local found = {base = base, cputype = cputype, cpusubtype = cpusubtype & 0xFFFFFF, filetype = filetype,
-                   wide = wide, segments = {}, sections = {}, libraries = {}, library_strength = {}, commands = {}}
+    local cputype, cpusubtype, filetype, ncmds, _, flags = string.unpack("<i4i4I4I4I4I4", data, base + 5)
+    local found = {base = base, cputype = cputype, cpusubtype = cpusubtype & 0xFFFFFF, filetype = filetype, flags = flags,
+                   wide = wide, segments = {}, sections = {}, libraries = {}, library_strength = {}, reexports = {},
+                   sub_names = {}, commands = {}}
     local at = base + (wide and 32 or 28)
     for _ = 1, ncmds do
         local command, size = string.unpack("<I4I4", data, at + 1)
@@ -101,13 +105,22 @@ local function image(data, base)
             found.symtab = {string.unpack("<I4I4I4I4", data, at + 9)}
         elseif command == LC_DYLD_INFO or command == LC_DYLD_INFO_ONLY then
             found.rebase = {string.unpack("<I4I4", data, at + 9)}
+            found.export_trie = {string.unpack("<I4I4", data, at + 41)}
         elseif command == LC_DYSYMTAB then
             found["local"] = {string.unpack("<I4I4", data, at + 73)}
+            found.external = {string.unpack("<I4I4", data, at + 17)}
+        elseif command == LC_SUB_FRAMEWORK then
+            found.umbrella = cstring(data, at + string.unpack("<I4", data, at + 9))
+        elseif command == LC_SUB_UMBRELLA or command == LC_SUB_LIBRARY then
+            table.insert(found.sub_names, cstring(data, at + string.unpack("<I4", data, at + 9)))
         elseif command == LC_ID_DYLIB then
             found.identity = cstring(data, at + string.unpack("<I4", data, at + 9))
         elseif LIBRARY_COMMANDS[command] then
             table.insert(found.libraries, cstring(data, at + string.unpack("<I4", data, at + 9)))
             table.insert(found.library_strength, command == LC_LOAD_DYLIB or command == LC_REEXPORT_DYLIB)
+            if command == LC_REEXPORT_DYLIB then
+                table.insert(found.reexports, found.libraries[#found.libraries])
+            end
         elseif command == LC_VERSION_MIN_IPHONEOS then
             found.minimum = string.unpack("<I4", data, at + 9)
         elseif command == LC_BUILD_VERSION then

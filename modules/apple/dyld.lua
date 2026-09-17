@@ -91,42 +91,113 @@ local function loaded_image(found, architecture)
     end
 end
 
-local function defined_exports(data, image)
+local function defined_exports(data, image, linkedit)
     local defined = {}
     if not image.symtab then
         return defined
     end
     local symoff, nsyms, stroff = image.symtab[1], image.symtab[2], image.symtab[3]
+    local first, last = 0, nsyms - 1
+    if image.external and image.external[2] > 0 then
+        first, last = image.external[1], image.external[1] + image.external[2] - 1
+    end
     local entry = image.wide and 16 or 12
-    for index = 0, nsyms - 1 do
-        local strx, kind = string.unpack("<I4B", data, image.base + symoff + index * entry + 1)
+    for index = first, last do
+        local strx, kind = string.unpack("<I4B", data, linkedit + symoff + index * entry + 1)
         if kind & 0xE0 == 0 and kind & 0x01 ~= 0 and kind & 0x0E ~= 0 then
-            defined[cstring(data, image.base + stroff + strx)] = true
+            defined[cstring(data, linkedit + stroff + strx)] = true
         end
     end
     return defined
 end
 
+local function trie_exports(data, offset, size)
+    local exports = {}
+    if size == 0 then
+        return exports
+    end
+    local stack = {{0, ""}}
+    while #stack > 0 do
+        local node = table.remove(stack)
+        local cursor = offset + node[1]
+        local terminal
+        terminal, cursor = uleb(data, cursor)
+        if terminal ~= 0 then
+            exports[node[2]] = true
+        end
+        cursor = cursor + terminal
+        local children = data:byte(cursor + 1)
+        cursor = cursor + 1
+        for _ = 1, children do
+            local finish = data:find("\0", cursor + 1, true)
+            local label = data:sub(cursor + 1, finish - 1)
+            local child
+            child, cursor = uleb(data, finish)
+            table.insert(stack, {child, node[2] .. label})
+        end
+    end
+    return exports
+end
+
+local function library_of(data, image, linkedit)
+    local exports
+    if image.export_trie and image.export_trie[2] ~= 0 then
+        exports = trie_exports(data, linkedit + image.export_trie[1], image.export_trie[2])
+    else
+        exports = defined_exports(data, image, linkedit)
+    end
+    return {exports = exports, dependents = image.libraries, reexports = image.reexports, umbrella = image.umbrella, sub_names = image.sub_names}
+end
+
+local function leaf(install)
+    local name = path.filename(install)
+    return name:match("^([^%.]+)") or name
+end
+
+local function assemble(architecture, libraries)
+    local exports, images, count = {}, {}, 0
+    for install, library in pairs(libraries) do
+        images[install] = true
+        for name in pairs(library.exports) do
+            if not exports[name] then
+                exports[name] = true
+                count = count + 1
+            end
+        end
+    end
+    for install, library in pairs(libraries) do
+        local reexported = table.copy(library.reexports)
+        local subs = {}
+        for _, name in ipairs(library.sub_names) do
+            subs[name] = true
+        end
+        local umbrella = leaf(install):gsub("^lib", "")
+        for _, dependent in ipairs(library.dependents) do
+            local other = libraries[dependent]
+            if other and (other.umbrella == umbrella or subs[leaf(dependent)]) then
+                table.insert(reexported, dependent)
+            end
+        end
+        library.reexports = reexported
+    end
+    return {architecture = architecture, exports = exports, images = images, libraries = libraries, count = count}
+end
+
 local function load_libraries(folder)
     local architecture = path.filename(folder):match("^libraries_(.+)$")
-    local exports, images, count = {}, {}, 0
+    local libraries = {}
     for _, binary in ipairs(macho.binaries_under(folder)) do
         local data = macho.read(binary)
         local image = loaded_image(macho.images(data), architecture)
         if image and image.identity then
-            images[image.identity] = true
-            for name in pairs(defined_exports(data, image)) do
-                if not exports[name] then
-                    exports[name] = true
-                    count = count + 1
-                end
-            end
+            libraries[image.identity] = library_of(data, image, image.base)
         end
     end
-    if count == 0 then
+    local loaded = assemble(architecture, libraries)
+    if loaded.count == 0 then
         raise("%s holds no %s library exporting anything", folder, architecture)
     end
-    return {architecture = architecture, exports = exports, images = images, count = count}
+    return loaded
 end
 
 function load(cachefile)
@@ -156,67 +227,38 @@ function load(cachefile)
         end
         raise("address %#x is outside every mapping of %s", address, cachefile)
     end
-    local exports, images, count = {}, {}, 0
-    local function export(name)
-        if not exports[name] then
-            exports[name] = true
-            count = count + 1
-        end
-    end
+    local libraries = {}
     for index = 0, images_count - 1 do
         local entry = images_offset + index * 32
         local address = string.unpack("<I8", data, entry + 1)
-        images[cstring(data, string.unpack("<I4", data, entry + 25))] = true
+        local install = cstring(data, string.unpack("<I4", data, entry + 25))
         local header = file_offset(address)
-        local magic, _, _, _, command_count = string.unpack("<I4i4i4I4I4", data, header + 1)
-        if magic == 0xFEEDFACE then
-            local at = header + 28
-            local trie, symtab
-            for _ = 1, command_count do
-                local command, size = string.unpack("<I4I4", data, at + 1)
-                if command == 0x22 or command == 0x80000022 then
-                    trie = {string.unpack("<I4I4", data, at + 8 + 32 + 1)}
-                elseif command == 0x2 then
-                    symtab = {string.unpack("<I4I4I4I4", data, at + 9)}
-                end
-                at = at + size
-            end
-            if trie and trie[2] ~= 0 then
-                local stack = {{0, ""}}
-                while #stack > 0 do
-                    local node = table.remove(stack)
-                    local cursor = trie[1] + node[1]
-                    local terminal
-                    terminal, cursor = uleb(data, cursor)
-                    if terminal ~= 0 then
-                        export(node[2])
-                    end
-                    cursor = cursor + terminal
-                    local children = data:byte(cursor + 1)
-                    cursor = cursor + 1
-                    for _ = 1, children do
-                        local finish = data:find("\0", cursor + 1, true)
-                        local label = data:sub(cursor + 1, finish - 1)
-                        local child
-                        child, cursor = uleb(data, finish)
-                        table.insert(stack, {child, node[2] .. label})
-                    end
-                end
-            elseif symtab then
-                local symbol_offset, symbol_count, string_offset = symtab[1], symtab[2], symtab[3]
-                for k = 0, symbol_count - 1 do
-                    local string_index, symbol_type = string.unpack("<I4B", data, symbol_offset + k * 12 + 1)
-                    local kind = symbol_type & 0x0E
-                    if symbol_type & 0x01 ~= 0 and (kind == 0x0A or kind == 0x0E) then
-                        export(cstring(data, string_offset + string_index))
-                    end
-                end
-            end
+        if string.unpack("<I4", data, header + 1) == 0xFEEDFACE then
+            libraries[install] = library_of(data, macho.image(data, header), 0)
+        else
+            libraries[install] = {exports = {}, dependents = {}, reexports = {}, sub_names = {}}
         end
     end
-    local loaded = {architecture = architecture, exports = exports, images = images, count = count}
+    local loaded = assemble(architecture, libraries)
     caches[cachefile] = loaded
     return loaded
+end
+
+local function exports_symbol(cache, install, symbol, seen)
+    local library = cache.libraries[install]
+    if not library or seen[install] then
+        return false
+    end
+    seen[install] = true
+    if library.exports[symbol] then
+        return true
+    end
+    for _, other in ipairs(library.reexports) do
+        if exports_symbol(cache, other, symbol, seen) then
+            return true
+        end
+    end
+    return false
 end
 
 local function undefined_imports(data, image)
@@ -229,7 +271,7 @@ local function undefined_imports(data, image)
     for index = 0, nsyms - 1 do
         local strx, kind, _, desc = string.unpack("<I4BBI2", data, image.base + symoff + index * entry + 1)
         if kind & 0xE0 == 0 and kind & 0x0E == 0 and kind & 0x01 ~= 0 then
-            table.insert(imported, {name = cstring(data, image.base + stroff + strx), weak = desc & 0x40 ~= 0})
+            table.insert(imported, {name = cstring(data, image.base + stroff + strx), weak = desc & 0x40 ~= 0, ordinal = (desc >> 8) & 0xFF})
         end
     end
     return imported
@@ -253,7 +295,7 @@ function missing_imports(cachefile, binaries, root)
     end
     local own, provided, provided_names = {}, {}, {}
     for _, entry in ipairs(found) do
-        table.join2(own, defined_exports(entry.data, entry.image))
+        table.join2(own, defined_exports(entry.data, entry.image, entry.image.base))
         if entry.image.identity then
             provided[entry.image.identity] = true
             provided_names[path.filename(entry.image.identity)] = true
@@ -266,9 +308,18 @@ function missing_imports(cachefile, binaries, root)
                 table.insert(missing, {named(entry.binary), string.format("(loads %s, which neither the device nor this build provides)", library)})
             end
         end
+        local twolevel = entry.image.flags & 0x80 ~= 0
         for _, symbol in ipairs(undefined_imports(entry.data, entry.image)) do
-            if symbol.name:startswith("_") and not symbol.weak and not own[symbol.name] and not cache.exports[symbol.name] then
-                table.insert(missing, {named(entry.binary), symbol.name})
+            if symbol.name:startswith("_") and not symbol.weak then
+                local library = twolevel and entry.image.libraries[symbol.ordinal]
+                if library and cache.libraries[library] then
+                    if not exports_symbol(cache, library, symbol.name, {}) then
+                        local elsewhere = cache.exports[symbol.name] and ", which the device exports only from another library" or ""
+                        table.insert(missing, {named(entry.binary), string.format("%s (bound to %s%s)", symbol.name, library, elsewhere)})
+                    end
+                elseif not own[symbol.name] and not cache.exports[symbol.name] then
+                    table.insert(missing, {named(entry.binary), symbol.name})
+                end
             end
         end
     end
