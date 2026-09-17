@@ -20,7 +20,7 @@ know about these platforms, and nothing else:
     set_policy("package.requires_lock", true)
 
     add_repositories("charon https://github.com/kern0x1b/charon.git main")
-    add_addons("charon v0.4.0")
+    add_addons("charon v0.4.1")
     set_config("apple_minimum", "6.0")
     includes("@addon/charon/apple-ios")
 
