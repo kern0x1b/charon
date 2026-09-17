@@ -12,7 +12,7 @@ function main()
         if not wanted or table.contains(wanted, target:name()) then
             for _, sourcebatch in table.orderpairs(target:sourcebatches()) do
                 local sourcekind = sourcebatch.sourcekind
-                if sourcekind then
+                if sourcekind and sourcebatch.objectfiles then
                     for index, sourcefile in ipairs(sourcebatch.sourcefiles) do
                         local objectfile = sourcebatch.objectfiles[index]
                         local argv = table.join(compiler.compargv(sourcefile, objectfile, {target = target, sourcekind = sourcekind, rawargs = true}))

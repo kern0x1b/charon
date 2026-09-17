@@ -43,7 +43,11 @@ The rules, and the values each reads:
                            over the file), app.resources (folders copied flat into
                            the bundle), app.frameworks (packages whose shared
                            libraries go to Frameworks under their install names,
+                           and shared-library targets the app add_deps(), all
                            loaded through @executable_path), app.url-scheme
+    @addon/charon/library  a shared library an application bundles: checked
+                           where it links, stripped, signed and import-checked
+                           with the bundle
 
 and, on any of them, charon.entitlements (signed with ldid and read back),
 charon.strip (default -x), charon.control, charon.maintainer-scripts,

@@ -63,26 +63,40 @@ function info(target, deployment)
     return content
 end
 
+local function package_libraries(target, package, name)
+    local libraries = {}
+    for _, file in ipairs(os.files(path.join(package:installdir(), "lib", "*.dylib"))) do
+        if not os.islink(file) then
+            table.insert(libraries, file)
+        end
+    end
+    if #libraries == 0 then
+        raise("target(%s) bundles the libraries of %s, and it installs no shared library", target:name(), name)
+    end
+    table.sort(libraries)
+    local carried = {}
+    for _, file in ipairs(libraries) do
+        local image = macho.images(macho.read(file))[1]
+        table.insert(carried, {source = file, name = path.filename(image.identity or file)})
+    end
+    return carried
+end
+
 function carried_libraries(target)
     local carried = {}
     for _, name in ipairs(table.wrap(target:values("app.frameworks"))) do
-        local package = target:pkg(name)
-        if not package then
-            raise("target(%s) bundles the libraries of %s, which it does not add_packages()", target:name(), name)
-        end
-        local libraries = {}
-        for _, file in ipairs(os.files(path.join(package:installdir(), "lib", "*.dylib"))) do
-            if not os.islink(file) then
-                table.insert(libraries, file)
+        local built = target:dep(name)
+        if built then
+            if not built:is_shared() then
+                raise("target(%s) bundles target(%s), which is not a shared library", target:name(), name)
             end
-        end
-        if #libraries == 0 then
-            raise("target(%s) bundles the libraries of %s, and it installs no shared library", target:name(), name)
-        end
-        table.sort(libraries)
-        for _, file in ipairs(libraries) do
-            local image = macho.images(macho.read(file))[1]
-            table.insert(carried, {source = file, name = path.filename(image.identity or file)})
+            table.insert(carried, {source = built:targetfile(), name = built:filename()})
+        else
+            local package = target:pkg(name)
+            if not package then
+                raise("target(%s) bundles %s, which is neither a target it add_deps() nor a package it add_packages()", target:name(), name)
+            end
+            table.join2(carried, package_libraries(target, package, name))
         end
     end
     return carried
