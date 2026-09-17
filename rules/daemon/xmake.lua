@@ -3,7 +3,7 @@ rule("daemon")
 
     on_load(function (target)
         target:set("kind", "binary")
-        target:add("packages", "ldid")
+        target:add("packages", "ldid", "firmware-tools")
     end)
 
     after_link(function (target)

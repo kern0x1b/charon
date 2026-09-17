@@ -1,0 +1,455 @@
+import("core.base.json")
+import("utils.progress")
+import("dyld")
+import("macho")
+
+PLATFORMS = {
+    armv6 = {"s5l8720x", "s5l8900x"},
+    armv7 = {"s5l8920x", "s5l8922x", "s5l8930x", "s5l8940x", "s5l8942x", "s5l8945x"},
+    armv7s = {"s5l8950x", "s5l8955x"},
+    arm64 = {"s5l8960x", "t7000", "t7001", "s8000", "s8001", "s8003", "t8010", "t8011", "t8015"},
+    arm64e = {"t8020", "t8027", "t8030", "t8101", "t8103", "t8110", "t8112", "t8120", "t8122", "t8130", "t8132",
+              "t8140", "t8142", "t8150", "t8160"}
+}
+
+CATALOG = "https://api.ipsw.me/v4"
+KEYS = "https://theapplewiki.com/api.php"
+CACHE_FOLDER = "System/Library/Caches/com.apple.dyld"
+PRODUCTS = {"iPhone", "iPad", "iPod"}
+LIBRARY_FOLDERS = {"usr/lib", "System/Library/Frameworks", "System/Library/PrivateFrameworks"}
+
+local function home()
+    return path.directory(dyld.root())
+end
+
+local function architecture_of(platform)
+    for architecture, platforms in pairs(PLATFORMS) do
+        if table.contains(platforms, platform) then
+            return architecture
+        end
+    end
+end
+
+local function download(url, output, opt)
+    opt = opt or {}
+    local argv = {"-fsSL", "--retry", "5", "--retry-all-errors", "-A", "charon", "-o", output}
+    if opt.range then
+        table.join2(argv, {"-r", opt.range})
+    end
+    table.insert(argv, url)
+    os.vrunv("curl", argv)
+end
+
+local function fetch_json(url)
+    local file = os.tmpfile() .. ".json"
+    download(url, file)
+    local decoded = json.loadfile(file)
+    os.tryrm(file)
+    return decoded
+end
+
+local function catalog_file()
+    return path.join(home(), "firmware", "catalog.json")
+end
+
+local function refresh_catalog()
+    cprint("fetching the firmware catalog from %s", CATALOG)
+    local devices = {}
+    for _, device in ipairs(fetch_json(CATALOG .. "/devices")) do
+        local product = device.identifier:match("^(%a+)%d")
+        if table.contains(PRODUCTS, product) then
+            local listed = fetch_json(CATALOG .. "/device/" .. device.identifier .. "?type=ipsw")
+            local firmwares = {}
+            for _, firmware in ipairs(listed.firmwares or {}) do
+                if firmware.url and firmware.url ~= "" then
+                    table.insert(firmwares, {version = firmware.version, build = firmware.buildid, url = firmware.url, size = firmware.filesize})
+                end
+            end
+            table.insert(devices, {identifier = device.identifier, platform = device.platform, firmwares = firmwares})
+        end
+    end
+    local catalog = {source = CATALOG, devices = devices}
+    os.mkdir(path.directory(catalog_file()))
+    json.savefile(catalog_file(), catalog)
+    return catalog
+end
+
+local function releases(catalog, architecture)
+    local found = {}
+    for _, device in ipairs(catalog.devices) do
+        if architecture_of(device.platform) == architecture then
+            for _, firmware in ipairs(device.firmwares) do
+                table.insert(found, table.join(firmware, {identifier = device.identifier}))
+            end
+        end
+    end
+    return found
+end
+
+local function unknown_platforms(catalog)
+    local unknown = {}
+    for _, device in ipairs(catalog.devices) do
+        if not architecture_of(device.platform) then
+            unknown[device.platform] = true
+        end
+    end
+    return table.orderkeys(unknown)
+end
+
+function candidates(architecture, minimum)
+    if not PLATFORMS[architecture] then
+        raise("no Apple device runs %s; the architectures devices use are %s", architecture, table.concat(table.orderkeys(PLATFORMS), ", "))
+    end
+    local catalog = os.isfile(catalog_file()) and json.loadfile(catalog_file())
+    local function choose(from)
+        local earliest
+        for _, firmware in ipairs(releases(from, architecture)) do
+            if dyld.compare_versions(firmware.version, minimum) >= 0 and (not earliest or dyld.compare_versions(firmware.version, earliest) < 0) then
+                earliest = firmware.version
+            end
+        end
+        local chosen = {}
+        for _, firmware in ipairs(releases(from, architecture)) do
+            if earliest and firmware.version == earliest then
+                table.insert(chosen, firmware)
+            end
+        end
+        table.sort(chosen, function (a, b) return a.size < b.size end)
+        return earliest, chosen
+    end
+    local release, chosen
+    if catalog then
+        release, chosen = choose(catalog)
+    end
+    if not release then
+        catalog = refresh_catalog()
+        release, chosen = choose(catalog)
+    end
+    if not release then
+        local unknown = unknown_platforms(catalog)
+        raise("no %s firmware in the catalog of %s is release %s or later%s", architecture, CATALOG, minimum,
+              #unknown > 0 and ("; devices on " .. table.concat(unknown, ", ") .. " have no architecture in firmware.PLATFORMS yet") or "")
+    end
+    return release, chosen
+end
+
+function release_for(architecture, minimum)
+    return (candidates(architecture, minimum))
+end
+
+local function remote_tail(url, size)
+    local file = os.tmpfile()
+    download(url, file, {range = "-" .. size})
+    local bytes = io.readfile(file, {encoding = "binary"})
+    os.tryrm(file)
+    return bytes
+end
+
+local function remote_range(url, first, count)
+    local file = os.tmpfile()
+    download(url, file, {range = first .. "-" .. (first + count - 1)})
+    local bytes = io.readfile(file, {encoding = "binary"})
+    os.tryrm(file)
+    if #bytes ~= count then
+        raise("%s answered %d bytes for a range of %d; the server does not serve byte ranges", url, #bytes, count)
+    end
+    return bytes
+end
+
+local function zip_members(url)
+    local tail = remote_tail(url, 65557)
+    local eocd
+    for at = #tail - 21, 1, -1 do
+        if tail:sub(at, at + 3) == "PK\5\6" then
+            eocd = at
+            break
+        end
+    end
+    if not eocd then
+        raise("%s is not a zip archive", url)
+    end
+    local entries, directory_size, directory_offset = string.unpack("<I2I4I4", tail, eocd + 10)
+    local locator = eocd - 20
+    if locator >= 1 and tail:sub(locator, locator + 3) == "PK\6\7" then
+        local zip64_offset = string.unpack("<I8", tail, locator + 8)
+        local record = remote_range(url, zip64_offset, 56)
+        entries, directory_size, directory_offset = string.unpack("<I8I8I8", record, 33)
+    end
+    local directory = remote_range(url, directory_offset, directory_size)
+    local members, at = {}, 1
+    for _ = 1, entries do
+        if directory:sub(at, at + 3) ~= "PK\1\2" then
+            raise("the central directory of %s is damaged", url)
+        end
+        local method, _, _, crc, compressed, uncompressed, name_length, extra_length, comment_length = string.unpack("<I2I2I2I4I4I4I2I2I2", directory, at + 10)
+        local local_offset = string.unpack("<I4", directory, at + 42)
+        local name = directory:sub(at + 46, at + 45 + name_length)
+        local extra, cursor = directory:sub(at + 46 + name_length, at + 45 + name_length + extra_length), 1
+        while cursor + 4 <= #extra do
+            local id, size = string.unpack("<I2I2", extra, cursor)
+            if id == 1 then
+                local field = cursor + 4
+                if uncompressed == 0xFFFFFFFF then uncompressed, field = string.unpack("<I8", extra, field) end
+                if compressed == 0xFFFFFFFF then compressed, field = string.unpack("<I8", extra, field) end
+                if local_offset == 0xFFFFFFFF then local_offset = string.unpack("<I8", extra, field) end
+            end
+            cursor = cursor + 4 + size
+        end
+        members[name] = {method = method, crc = crc, compressed = compressed, uncompressed = uncompressed, offset = local_offset}
+        at = at + 46 + name_length + extra_length + comment_length
+    end
+    return members
+end
+
+local function fetch_member(url, member, output)
+    local header = remote_range(url, member.offset, 30)
+    local name_length, extra_length = string.unpack("<I2I2", header, 27)
+    local first = member.offset + 30 + name_length + extra_length
+    local part = output .. ".part"
+    local chunk = 64 * 1024 * 1024
+    local done = os.isfile(part) and os.filesize(part) or 0
+    while done < member.compressed do
+        local count = math.min(chunk, member.compressed - done)
+        local piece = os.tmpfile()
+        download(url, piece, {range = (first + done) .. "-" .. (first + done + count - 1)})
+        if os.filesize(piece) ~= count then
+            raise("%s answered %d bytes for a range of %d", url, os.filesize(piece), count)
+        end
+        local sink = io.open(part, "ab")
+        sink:write(io.readfile(piece, {encoding = "binary"}))
+        sink:close()
+        os.tryrm(piece)
+        done = done + count
+        progress.show(math.floor(done * 100 / member.compressed), "${color.build.object}downloading %s", path.filename(output))
+    end
+    if member.method == 0 then
+        os.mv(part, output)
+    elseif member.method == 8 then
+        local gzip = output .. ".gz"
+        local sink = io.open(gzip, "wb")
+        sink:write("\31\139\8\0\0\0\0\0\0\3")
+        sink:close()
+        os.vrunv("sh", {"-c", "cat \"$1\" >> \"$2\"", "sh", part, gzip})
+        sink = io.open(gzip, "ab")
+        sink:write(string.pack("<I4I4", member.crc, member.uncompressed & 0xFFFFFFFF))
+        sink:close()
+        os.tryrm(part)
+        os.vrunv("sh", {"-c", "gzip -dc \"$1\" > \"$2\"", "sh", gzip, output})
+        os.tryrm(gzip)
+    else
+        raise("%s stores %s with compression method %d, which is neither stored nor deflate", url, path.filename(output), member.method)
+    end
+end
+
+local function plist_values(url, members, name, keypaths)
+    if not members[name] then
+        return nil
+    end
+    local file = os.tmpfile() .. ".plist"
+    fetch_member(url, members[name], file)
+    local values = {}
+    for _, keypath in ipairs(keypaths) do
+        local value = try { function () return os.iorunv("plutil", {"-extract", keypath, "raw", "-o", "-", file}) end }
+        if value and value:trim() ~= "" then
+            table.insert(values, value:trim())
+        end
+    end
+    os.tryrm(file)
+    return values
+end
+
+local function system_images(url, members)
+    local images = plist_values(url, members, "BuildManifest.plist",
+                                {"BuildIdentities.0.Manifest.Cryptex1,SystemOS.Info.Path", "BuildIdentities.0.Manifest.OS.Info.Path"})
+    if images and #images > 0 then
+        return images
+    end
+    images = plist_values(url, members, "Restore.plist", {"SystemRestoreImages.User"})
+    if not images or #images == 0 then
+        raise("the firmware at %s names its system image in neither BuildManifest.plist nor Restore.plist", url)
+    end
+    return images
+end
+
+local function filevault_key(firmware, image)
+    local search = fetch_json(KEYS .. "?action=query&list=search&srnamespace=2304&format=json&srsearch=" ..
+                              ("intitle:%s intitle:%s"):format(firmware.build, firmware.identifier):gsub(" ", "+"))
+    for _, hit in ipairs(search.query and search.query.search or {}) do
+        if hit.title:find(" " .. firmware.build .. " ", 1, true) and hit.title:find(firmware.identifier, 1, true) then
+            local page = fetch_json(KEYS .. "?action=query&prop=revisions&rvprop=content&rvslots=main&format=json&titles=" .. hit.title:gsub(" ", "_"))
+            for _, found in pairs(page.query.pages) do
+                local content = found.revisions[1].slots.main["*"]
+                local name = content:match("|%s*RootFS%s*=%s*([%w%-]+)")
+                local key = content:match("|%s*RootFSKey%s*=%s*(%x+)")
+                if name and key and image:startswith(name) then
+                    return key
+                end
+            end
+        end
+    end
+    raise("%s lists no key for %s of %s %s", KEYS, image, firmware.identifier, firmware.build)
+end
+
+local function plain_image(firmware, file)
+    local handle = io.open(file, "rb")
+    local magic = handle:read(8)
+    handle:close()
+    if magic == "encrcdsa" then
+        local decrypted = file .. ".decrypted"
+        os.vrunv(firmware.tool, {"filevault", file, filevault_key(firmware, path.filename(file)), decrypted})
+        os.tryrm(file)
+        return decrypted
+    elseif magic:startswith("AEA1") then
+        local key = os.iorunv(firmware.tool, {"aea-key", file}):trim()
+        local decrypted = file:gsub("%.aea$", "")
+        os.vrunv("aea", {"decrypt", "-i", file, "-o", decrypted, "-key-value", "base64:" .. key})
+        os.tryrm(file)
+        return decrypted
+    end
+    return file
+end
+
+local function copy_libraries(mount, destination)
+    local copied = 0
+    for _, top in ipairs(LIBRARY_FOLDERS) do
+        for _, file in ipairs(os.files(path.join(mount, top, "**"))) do
+            if macho.is_macho(file) then
+                local target = path.join(destination, path.relative(file, mount))
+                os.mkdir(path.directory(target))
+                os.cp(file, target)
+                copied = copied + 1
+            end
+        end
+    end
+    return copied
+end
+
+local function cache_folder(mount)
+    for _, root in ipairs(table.join({mount}, os.dirs(path.join(mount, "*")))) do
+        if os.isdir(path.join(root, CACHE_FOLDER)) then
+            return path.join(root, CACHE_FOLDER)
+        end
+    end
+end
+
+local function harvest(mount, release)
+    local folder = path.join(dyld.root(), release)
+    local found = {}
+    local caches = cache_folder(mount)
+    for _, file in ipairs(caches and os.files(path.join(caches, "dyld_shared_cache_*")) or {}) do
+        local name = path.filename(file)
+        if not name:find("%.symbols$") and not name:find("%.map$") and not name:find("%.atlas$") then
+            os.mkdir(folder)
+            os.cp(file, path.join(folder, name))
+            local architecture = name:match("^dyld_shared_cache_([%w_]+)$")
+            if architecture then
+                table.insert(found, architecture)
+            end
+        end
+    end
+    return found
+end
+
+local function mount_and_harvest(image, release, architecture)
+    local mount = image .. ".mount"
+    os.mkdir(mount)
+    os.vrunv("hdiutil", {"attach", "-readonly", "-nobrowse", "-noverify", "-noautoopen", "-mountpoint", mount, image})
+    local found
+    try {
+        function ()
+            found = harvest(mount, release)
+            if #found == 0 and os.isdir(path.join(mount, LIBRARY_FOLDERS[1])) and not cache_folder(mount) then
+                local copied = copy_libraries(mount, path.join(dyld.root(), release, "libraries_" .. architecture))
+                if copied > 0 then
+                    found = {architecture}
+                end
+            end
+        end,
+        finally {
+            function ()
+                os.vrunv("hdiutil", {"detach", mount})
+                os.tryrm(mount)
+            end
+        }
+    }
+    return found
+end
+
+function fetch(architecture, minimum, opt)
+    opt = opt or {}
+    local release, firmwares = candidates(architecture, minimum)
+    local held = dyld.held_source(path.join(dyld.root(), release), architecture)
+    if held then
+        return held, release
+    end
+    local tool = assert(opt.tool, "fetching firmware needs the charon-firmware tool")
+    local failures = {}
+    for _, firmware in ipairs(firmwares) do
+        local ok = try {
+            function ()
+                firmware.tool = tool
+                cprint("${bright}fetching iOS %s for %s from %s %s${clear} (%s)", release, architecture, firmware.identifier, firmware.build, firmware.url)
+                local work = path.join(home(), "firmware", "work", firmware.identifier .. "_" .. firmware.build)
+                os.mkdir(work)
+                local members = zip_members(firmware.url)
+                local harvested = {}
+                for _, name in ipairs(system_images(firmware.url, members)) do
+                    if members[name] then
+                        local file = path.join(work, path.filename(name))
+                        if not os.isfile(file) then
+                            fetch_member(firmware.url, members[name], file)
+                        end
+                        local image = plain_image(firmware, file)
+                        table.join2(harvested, mount_and_harvest(image, release, architecture))
+                        os.tryrm(image)
+                        if table.contains(harvested, architecture) then
+                            break
+                        end
+                    end
+                end
+                os.tryrm(work)
+                if not table.contains(harvested, architecture) then
+                    raise("%s %s holds %s, not %s", firmware.identifier, firmware.build,
+                          #harvested > 0 and table.concat(harvested, ", ") or "no shared cache or libraries", architecture)
+                end
+                return true
+            end,
+            catch {
+                function (errors)
+                    table.insert(failures, firmware.identifier .. " " .. firmware.build .. ": " .. tostring(errors))
+                end
+            }
+        }
+        if ok then
+            return dyld.held_source(path.join(dyld.root(), release), architecture), release
+        end
+    end
+    raise("no firmware of iOS %s yielded the %s system libraries:\n  %s", release, architecture, table.concat(failures, "\n  "))
+end
+
+function source(architecture, minimum)
+    local release = release_for(architecture, minimum)
+    local folder = path.join(dyld.root(), release)
+    local held = dyld.held_source(folder, architecture)
+    if held then
+        return held, release
+    end
+    local expected = dyld.compare_versions(release, "3.1") < 0 and "libraries_" or "dyld_shared_cache_"
+    return path.join(folder, expected .. architecture), release
+end
+
+function ensure(architecture, minimum, opt)
+    local held, release = source(architecture, minimum)
+    if os.exists(held) then
+        return held, release
+    end
+    import("utils.confirm")
+    local _, firmwares = candidates(architecture, minimum)
+    local accepted = confirm({default = true, description = string.format(
+        "the imports of this %s build are checked against iOS %s, the earliest %s release not older than %s, whose system libraries are not under %s yet; fetch them from Apple's firmware %s %s (%d MB, only its system image is downloaded)",
+        architecture, release, architecture, minimum, dyld.root(), firmwares[1].identifier, firmwares[1].build, math.floor(firmwares[1].size / 1048576))})
+    if not accepted then
+        raise("the imports of this %s build cannot be checked without the libraries of iOS %s; run xmake firmware --arch=%s fetch %s", architecture, release, architecture, release)
+    end
+    return fetch(architecture, minimum, opt)
+end

@@ -1,6 +1,7 @@
 import("macho")
 import("compat")
 import("dyld")
+import("firmware")
 import("signing")
 import("bundle")
 
@@ -73,12 +74,17 @@ function verify_minimum(target, binary)
     end
 end
 
+function imports_source(target, architecture)
+    local tool = path.join(target:pkg("firmware-tools"):installdir(), "bin", "charon-firmware")
+    return (firmware.ensure(architecture or target:arch(), deployment(target), {tool = tool}))
+end
+
 function verify(target, binary, opt)
     opt = opt or {}
     verify_minimum(target, binary)
     macho.verify(binary, {waived = waivers(target), arrived = compat.arrived("iOS"), stripped = opt.stripped})
     if opt.imports ~= false then
-        dyld.check(dyld.held_cache(target:arch(), deployment(target)), {binary})
+        dyld.check(imports_source(target), {binary})
     end
 end
 
@@ -139,7 +145,7 @@ function application(target)
         sign(target, binaries[index], binaries[index] == executable and target:values("charon.entitlements") or nil)
     end
     if not os.getenv("CHARON_SLICE") then
-        dyld.check(dyld.held_cache(target:arch(), deployment(target)), binaries, folder)
+        dyld.check(imports_source(target), binaries, folder)
     end
     return folder
 end

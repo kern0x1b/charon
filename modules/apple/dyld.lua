@@ -70,16 +70,6 @@ function held_releases(architecture)
     return releases
 end
 
-function held_cache(architecture, minimum)
-    for _, release in ipairs(held_releases(architecture)) do
-        if parts(release)[1] == parts(minimum)[1] and compare(release, minimum) >= 0 then
-            return held_source(path.join(root(), release), architecture), release
-        end
-    end
-    local expected = compare(minimum, "3.1") < 0 and "libraries_" or "dyld_shared_cache_"
-    return path.join(root(), minimum, expected .. architecture), nil
-end
-
 local function loaded_image(found, architecture)
     local wanted = architecture == "armv7s" and {"armv7s", "armv7"} or {architecture}
     for _, candidate in ipairs(wanted) do
@@ -480,7 +470,7 @@ end
 
 function check(cachefile, binaries, folder)
     if not os.exists(cachefile) then
-        raise("there is no shared cache at %s to check imports against: the check reads the cache of the oldest release of the same major version the port runs on, under a folder named after that release. Copy the dyld_shared_cache of such a device there once, or for a release before 3.1, which has no cache, its libraries as libraries_<arch> keeping their paths on the device (CHARON_HOME moves the root); a check that reports success having looked at nothing is worse than no check", cachefile)
+        raise("there is no shared cache or library folder at %s to check imports against; a check that reports success having looked at nothing is worse than no check", cachefile)
     end
     local missing, count, cache = missing_imports(cachefile, binaries, folder)
     if #missing > 0 then

@@ -5,7 +5,7 @@ rule("tweak")
         target:set("kind", "shared")
         target:set("prefixname", "")
         target:set("extension", ".dylib")
-        target:add("packages", "ldid")
+        target:add("packages", "ldid", "firmware-tools")
         local installed = target:values("charon.install") or "/Library/MobileSubstrate/DynamicLibraries"
         target:data_set("charon.install", installed)
         target:add("shflags", "-install_name", installed .. "/" .. target:filename(), {force = true})

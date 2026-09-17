@@ -1,3 +1,4 @@
+import("core.base.json")
 import("fixtures")
 
 local function cache(file, architecture, exported, installed)
@@ -82,16 +83,28 @@ function failures(opt)
                   {"-dynamiclib", "-install_name", "/usr/lib/libSystem.B.dylib", "-Wl,-reexport_library," .. path.join(device, "system", "libnested.dylib")})
     local nested = dylib(folder, opt.ld64, "nested-armv7", "armv7-apple-ios6.0", "_nested")
     local bound = dylib(folder, opt.ld64, "bound-armv7", "armv7-apple-ios6.0", "_elsewhere", {"-lother"})
+    local firmware = import("apple.firmware", {rootdir = opt.modules, anonymous = true})
+    local function release(version, build)
+        return {version = version, build = build, url = "https://example.invalid/" .. build .. ".ipsw", size = 1}
+    end
+    json.savefile(path.join(folder, "home", "firmware", "catalog.json"), {devices = {
+        {identifier = "iPhone3,1", platform = "s5l8930x", firmwares = {release("2.2.1", "5H11"), release("4.3.5", "8L1"), release("4.1", "8B117")}},
+        {identifier = "iPhone5,1", platform = "s5l8950x", firmwares = {release("6.0", "10A405")}}
+    }})
     local home = os.getenv("CHARON_HOME")
     os.setenv("CHARON_HOME", path.join(folder, "home"))
-    local held = dyld.held_cache("armv7", "2.0")
-    local absent = dyld.held_cache("armv7", "4.0")
+    local held = firmware.source("armv7", "2.0")
+    local absent, absent_release = firmware.source("armv7", "4.0")
+    local later = firmware.release_for("armv7s", "5.0")
     os.setenv("CHARON_HOME", home or "")
     if held ~= libraries then
-        table.insert(found, "a 2.0 port must be checked against the libraries of the held 2.2.1 release, not " .. tostring(held))
+        table.insert(found, "a 2.0 port must be checked against the libraries of 2.2.1, the earliest release not older than it, not " .. tostring(held))
     end
-    if not absent:endswith(path.join("4.0", "dyld_shared_cache_armv7")) then
-        table.insert(found, "a 4.0 port with nothing of release 4 held must be told where a cache goes, not " .. absent)
+    if absent_release ~= "4.1" or not absent:endswith(path.join("4.1", "dyld_shared_cache_armv7")) then
+        table.insert(found, "a 4.0 port must be checked against 4.1, the earliest armv7 release not older than 4.0, and told where its cache goes, not " .. absent)
+    end
+    if later ~= "6.0" then
+        table.insert(found, "an armv7s port for 5.0 must be checked against 6.0, the first release on armv7s, not " .. tostring(later))
     end
     if #dyld.missing_imports(libraries, {clean}) > 0 then
         table.insert(found, "an import a device library exports must pass against the libraries folder")
