@@ -40,8 +40,13 @@ function universal(target, architectures, stage)
         platform.sign(target, binary, binary == executable and target:values("charon.entitlements") or nil)
     end
     local checked = 0
+    local floors = {armv6 = "2.0", armv7 = "3.0", armv7s = "6.0", arm64 = "7.0"}
     for _, architecture in ipairs(architectures) do
-        local cache = dyld.held_cache(architecture)
+        local minimum = platform.deployment(target)
+        if dyld.compare_versions(minimum, floors[architecture] or minimum) < 0 then
+            minimum = floors[architecture]
+        end
+        local cache = dyld.held_cache(architecture, minimum)
         if os.isfile(cache) then
             dyld.check(cache, merged, installed)
             checked = checked + 1
@@ -50,7 +55,7 @@ function universal(target, architectures, stage)
         end
     end
     if checked == 0 then
-        raise("there is no shared cache for any of %s under %s to check the merged imports against", table.concat(architectures, ", "), path.directory(dyld.held_cache(architectures[1])))
+        raise("there is no shared cache for any of %s under %s to check the merged imports against", table.concat(architectures, ", "), dyld.root())
     end
 end
 

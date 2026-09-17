@@ -20,9 +20,52 @@ local function uleb(data, at)
     end
 end
 
-function held_cache(architecture)
-    local home = os.getenv("CHARON_HOME") or path.join(os.getenv("HOME"), ".charon")
-    return path.join(home, "dyld", "dyld_shared_cache_" .. architecture)
+function root()
+    return path.join(os.getenv("CHARON_HOME") or path.join(os.getenv("HOME"), ".charon"), "dyld")
+end
+
+local function parts(version)
+    local found = {}
+    for part in tostring(version):gmatch("%d+") do
+        table.insert(found, tonumber(part))
+    end
+    return found
+end
+
+local function compare(a, b)
+    local left, right = parts(a), parts(b)
+    for index = 1, math.max(#left, #right) do
+        local x, y = left[index] or 0, right[index] or 0
+        if x ~= y then
+            return x < y and -1 or 1
+        end
+    end
+    return 0
+end
+
+function compare_versions(a, b)
+    return compare(a, b)
+end
+
+function held_releases(architecture)
+    local releases = {}
+    for _, folder in ipairs(os.dirs(path.join(root(), "*"))) do
+        local release = path.filename(folder)
+        if release:match("^%d+[%.%d]*$") and os.isfile(path.join(folder, "dyld_shared_cache_" .. architecture)) then
+            table.insert(releases, release)
+        end
+    end
+    table.sort(releases, function (a, b) return compare(a, b) < 0 end)
+    return releases
+end
+
+function held_cache(architecture, minimum)
+    for _, release in ipairs(held_releases(architecture)) do
+        if parts(release)[1] == parts(minimum)[1] and compare(release, minimum) >= 0 then
+            return path.join(root(), release, "dyld_shared_cache_" .. architecture), release
+        end
+    end
+    return path.join(root(), minimum, "dyld_shared_cache_" .. architecture), nil
 end
 
 function load(cachefile)
@@ -197,11 +240,11 @@ function missing_imports(cachefile, binaries, root)
     return missing, #found, cache
 end
 
-function check(cachefile, binaries, root)
+function check(cachefile, binaries, folder)
     if not os.isfile(cachefile) then
-        raise("there is no shared cache at %s to check imports against. Copy the device's dyld_shared_cache there once, or name another with CHARON_HOME; a check that reports success having looked at nothing is worse than no check", cachefile)
+        raise("there is no shared cache at %s to check imports against: the check reads the cache of the oldest release of the same major version the port runs on, under a folder named after that release. Copy the dyld_shared_cache of such a device there once (CHARON_HOME moves the root); a check that reports success having looked at nothing is worse than no check", cachefile)
     end
-    local missing, count, cache = missing_imports(cachefile, binaries, root)
+    local missing, count, cache = missing_imports(cachefile, binaries, folder)
     if #missing > 0 then
         local lines = {"these imports are not exported by the device's iOS:"}
         for _, entry in ipairs(missing) do

@@ -64,11 +64,21 @@ function verify_inputs(target)
     vprint("%s: %d objects and %d archive members record iOS %s", target:name(), objects, members, deployment(target))
 end
 
+function verify_minimum(target, binary)
+    local wanted = macho.encoded_version(deployment(target))
+    for _, image in ipairs(macho.images(macho.read(binary))) do
+        if image.architecture == target:arch() and image.minimum ~= wanted then
+            raise("%s records iOS %s, and this target builds for %s; the linker raised it, which it does when a startup object such as crt1.3.1.o is missing", binary, macho.version_text(image.minimum), deployment(target))
+        end
+    end
+end
+
 function verify(target, binary, opt)
     opt = opt or {}
+    verify_minimum(target, binary)
     macho.verify(binary, {waived = waivers(target), arrived = compat.arrived("iOS"), stripped = opt.stripped})
     if opt.imports ~= false then
-        dyld.check(dyld.held_cache(target:arch()), {binary})
+        dyld.check(dyld.held_cache(target:arch(), deployment(target)), {binary})
     end
 end
 
@@ -129,7 +139,7 @@ function application(target)
         sign(target, binaries[index], binaries[index] == executable and target:values("charon.entitlements") or nil)
     end
     if not os.getenv("CHARON_SLICE") then
-        dyld.check(dyld.held_cache(target:arch()), binaries, folder)
+        dyld.check(dyld.held_cache(target:arch(), deployment(target)), binaries, folder)
     end
     return folder
 end

@@ -1,6 +1,6 @@
 import("lib.detect.find_tool")
 
-local processors = {armv7 = "arm", armv7s = "arm", arm64 = "aarch64"}
+local processors = {armv6 = "arm", armv7 = "arm", armv7s = "arm", arm64 = "aarch64"}
 
 local function quoted(values)
     return table.concat(values, " "):gsub("\\", "\\\\"):gsub("\"", "\\\"")
@@ -35,7 +35,7 @@ function toolchain_file(package, opt)
     end
     local lines = {
         "set(CMAKE_SYSTEM_NAME " .. (opt.system or "iOS") .. ")",
-        "set(CMAKE_SYSTEM_PROCESSOR " .. assert(processors[package:arch()], "apple-ios builds armv7, armv7s and arm64") .. ")",
+        "set(CMAKE_SYSTEM_PROCESSOR " .. assert(processors[package:arch()], "apple-ios builds armv6, armv7, armv7s and arm64") .. ")",
         "set(CMAKE_OSX_SYSROOT \"" .. sdk .. "\" CACHE PATH \"\" FORCE)",
         "set(CMAKE_OSX_ARCHITECTURES " .. package:arch() .. " CACHE STRING \"\" FORCE)",
         "set(CMAKE_C_COMPILER \"" .. os.iorunv("xcrun", {"-f", "clang"}):trim() .. "\")",
@@ -93,6 +93,6 @@ function install(package, configs, opt)
     if opt.install ~= false then
         os.vrunv(cmake.program, {"--install", builddir}, {envs = envs})
     end
-    import("install").finish(package, {prune = opt.prune, licenses = opt.licenses, sourcedir = opt.sourcedir})
+    import("install").finish(package, {prune = opt.prune, licenses = opt.licenses})
     return builddir
 end

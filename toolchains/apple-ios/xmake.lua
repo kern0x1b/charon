@@ -24,6 +24,13 @@ toolchain("apple-ios")
         if ld64 and toolchain:config("ld64") then
             found.linker = path.join(ld64:installdir(), "bin", "ld")
         end
+        for _, name in ipairs({"csu", "compiler-rt"}) do
+            local package = required[name]
+            local folder = package and package:installdir() and path.join(package:installdir(), "lib")
+            if folder and os.isdir(folder) then
+                found[name] = folder
+            end
+        end
         return found
     end
 
@@ -32,7 +39,7 @@ toolchain("apple-ios")
         if not found.sdk or not os.isfile(path.join(found.sdk, "SDKSettings.json")) or not toolchain:config("minimum") then
             return false
         end
-        return not toolchain:is_arch("armv7", "armv7s") or found.linker ~= nil
+        return not toolchain:is_arch("armv6", "armv7", "armv7s") or found.linker ~= nil
     end)
 
     on_load(function (toolchain)
@@ -45,10 +52,14 @@ toolchain("apple-ios")
         if not os.isfile(path.join(found.sdk, "SDKSettings.json")) then
             raise("the iphoneos-sdk package has no %s: xmake-requires.lock pins a Charon package repository older than this addon; delete the lock, or run xmake require --upgrade, after moving add_addons to a new tag", found.sdk)
         end
-        local floors = {armv7 = "6.0", armv7s = "6.0", arm64 = "7.0"}
+        local floors = {armv6 = "2.0", armv7 = "3.0", armv7s = "6.0", arm64 = "7.0"}
+        local ceilings = {armv6 = "4.2.1"}
         local floor = floors[toolchain:arch()]
         if not floor then
-            raise("toolchain(apple-ios) builds armv7, armv7s and arm64, not %s", toolchain:arch())
+            raise("toolchain(apple-ios) builds armv6, armv7, armv7s and arm64, not %s", toolchain:arch())
+        end
+        if ceilings[toolchain:arch()] and semver.compare(declared, ceilings[toolchain:arch()]) > 0 then
+            raise("apple_minimum %s is newer than %s, the last release an %s device runs", declared, ceilings[toolchain:arch()], toolchain:arch())
         end
         local minimum = semver.compare(declared, floor) < 0 and floor or declared
         toolchain:config_set("sdkdir", found.sdk)
@@ -56,6 +67,12 @@ toolchain("apple-ios")
         toolchain:add("runenvs", "IPHONEOS_DEPLOYMENT_TARGET", minimum)
         local target = {"-target", toolchain:arch() .. "-apple-ios", "-miphoneos-version-min=" .. minimum, "-isysroot", found.sdk}
         local linked = table.join(target, found.linker and {"-fuse-ld=" .. found.linker} or {})
+        if semver.compare(minimum, "7.0") < 0 and found.csu then
+            table.insert(linked, "-L" .. found.csu)
+        end
+        if semver.compare(minimum, "5.0") < 0 and found["compiler-rt"] then
+            table.insert(linked, "-L" .. found["compiler-rt"])
+        end
         toolchain:add("cxflags", toolchain:config("optimize") == "packages" and table.join(target, {"-O3"}) or target)
         toolchain:add("mxflags", toolchain:config("optimize") == "packages" and table.join(target, {"-O3"}) or target)
         toolchain:add("asflags", target)

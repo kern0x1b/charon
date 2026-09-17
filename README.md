@@ -1,7 +1,8 @@
 # Charon
 
-Legacy Apple platforms for [xmake](https://xmake.io): armv7 on iOS 6 up to
-arm64 on current releases, built by the command line tools' clang with no Xcode.
+Legacy Apple platforms for [xmake](https://xmake.io): armv6 from iPhone OS 2.0,
+armv7 from iPhone OS 3.0, armv7s from iOS 6 and arm64 from iOS 7, built by the
+command line tools' clang with no Xcode.
 A port is an ordinary `xmake.lua` in each module; Charon adds what xmake does not
 know about these platforms, and nothing else:
 
@@ -78,9 +79,8 @@ architecture from the ordinary build and configures and builds each other one in
 its own folder under the build directory, merges the bundles with lipo - every
 other file has to be the same in every slice, so pin MinimumOSVersion in the
 plist - and signs and checks the merged binaries. A slice with no shared cache
-under ~/.charon/dyld is said to be unchecked: there is no arm64 cache here yet,
-so place `dyld_shared_cache_arm64` from the oldest arm64 release a port runs on
-(iOS 7 on an iPhone 5s) there to check that slice too.
+under ~/.charon/dyld is said to be unchecked. The reader understands the 32-bit
+caches of iOS 3.1 to 6; a 64-bit arm64 cache is not read yet.
 
 A check is a target:
 
@@ -103,6 +103,14 @@ the named targets only, e.g. the iOS ones without the host tests.
 A target sets `charon.version` when its package is versioned apart from the
 project.
 
+Below iOS 7 an executable starts through Apple's `crt1.3.1.o` (or `crt1.o` below
+3.1), which current SDKs no longer ship; ld64 would silently raise the binary's
+minimum to 7.0 instead. The include then requires `charon@csu`, built from
+Apple's open Csu, and below iOS 5 also `charon@compiler-rt`: the builtins those
+releases took from `/usr/lib/libgcc_s.1.dylib`, linked in statically with hidden
+symbols as the `libgcc_s.1.a` clang asks for. The rules refuse a binary whose
+recorded minimum is not the port's.
+
 `includes("@addon/charon/apple-ios")` requires the SDK, ld64 and ldid at the
 versions it pins, and hands every other package the `apple-ios` toolchain named
 with those versions and `apple_minimum`, so a change of any of them rebuilds
@@ -113,8 +121,9 @@ tag in `add_addons` (and a fresh `xmake-requires.lock`, since the addon and the
 package repository move together), projects on different tags keep their own installs, and a
 branch or a range is avoided - xmake resolves those against its own clone of
 this repository, which it does not pull again once it has one. The import check reads
-`~/.charon/dyld/dyld_shared_cache_<arch>` (or `$CHARON_HOME/dyld/...`), copied
-from the device once. A check that would have to be skipped is waived by name
+`~/.charon/dyld/<release>/dyld_shared_cache_<arch>` (under `$CHARON_HOME` if set)
+of the oldest held release of the port's major version that is not older than
+its minimum - `6.1.3/` for a 6.0 port - copied from a device once. A check that would have to be skipped is waived by name
 with the reason, e.g. `set_values("charon.waive.pagezero", "why")`.
 
 A package of a port that builds with CMake calls the addon's bridge from its

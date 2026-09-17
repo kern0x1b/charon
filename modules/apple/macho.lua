@@ -34,7 +34,7 @@ local LIBRARY_COMMANDS = {
     [LC_LAZY_LOAD_DYLIB] = true, [LC_UPWARD_DYLIB] = true
 }
 
-local ARCHITECTURES = {[ARM] = {[9] = "armv7", [11] = "armv7s"}, [ARM64] = {[0] = "arm64", [2] = "arm64e"}}
+local ARCHITECTURES = {[ARM] = {[6] = "armv6", [9] = "armv7", [11] = "armv7s"}, [ARM64] = {[0] = "arm64", [2] = "arm64e"}}
 
 WAIVABLE = {"thumb-interworking", "pagezero", "entitlements", "weak-imports"}
 
