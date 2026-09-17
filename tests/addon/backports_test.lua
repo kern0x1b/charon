@@ -154,6 +154,26 @@ function failures(opt)
     os.rm(path.join(registry, "UIKit", "floor.json"))
     os.rm(path.join(registry, "Foundation", "ios11.json"))
 
+    io.writefile(path.join(registry, "UIKit", "advice.json"), [[
+        [
+            {"api": "-[UIView setTintColor:]", "kind": "method", "introduced": "7.0", "status": "inert",
+             "reason": "no control of the release reads it", "effect": "the colour is remembered and nothing is drawn with it"},
+            {"api": "UIBlurEffect", "kind": "class", "introduced": "8.0", "status": "absent",
+             "reason": "the render server draws it", "effect": "the class is not there"},
+            {"api": "NSJSONWritingSortedKeys", "kind": "constant", "introduced": "11.0", "status": "ignored",
+             "effect": "the keys come out in the dictionary's own order", "facts": "facts/Foundation/NSJSONSerialization.md"}
+        ]
+    ]])
+    local advised = backports.advice(folder, {["setTintColor:"] = true, UIBlurEffect = true, NSJSONWritingSortedKeys = true, ["description"] = true})
+    local order = {}
+    for _, entry in ipairs(advised) do
+        table.insert(order, entry.api .. "=" .. entry.status)
+    end
+    if table.concat(order, " ") ~= "NSJSONWritingSortedKeys=ignored UIBlurEffect=absent -[UIView setTintColor:]=inert" then
+        table.insert(found, "what a port calls is reported quietest first, since a missing class crashes where a different answer never shows: " .. table.concat(order, " "))
+    end
+    os.rm(path.join(registry, "UIKit", "advice.json"))
+
     local scripts = path.join(folder, "scripts")
     backports.write_scripts(scripts)
     local function device(version)
