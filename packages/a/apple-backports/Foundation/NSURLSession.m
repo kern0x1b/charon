@@ -127,6 +127,28 @@ static void charon_loader_source_perform(void *info)
 {
 }
 
+#if OS_OBJECT_USE_OBJC
+static void *charon_context_of(dispatch_semaphore_t semaphore)
+{
+    return (__bridge void *)semaphore;
+}
+
+static dispatch_semaphore_t charon_semaphore_of(void *context)
+{
+    return (__bridge dispatch_semaphore_t)context;
+}
+#else
+static void *charon_context_of(dispatch_semaphore_t semaphore)
+{
+    return semaphore;
+}
+
+static dispatch_semaphore_t charon_semaphore_of(void *context)
+{
+    return (dispatch_semaphore_t)context;
+}
+#endif
+
 static void *charon_loader_main(void *context)
 {
     @autoreleasepool {
@@ -136,7 +158,7 @@ static void *charon_loader_main(void *context)
         CFRunLoopSourceRef source = CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &sourceContext);
         CFRunLoopAddSource(charon_loader_run_loop, source, kCFRunLoopDefaultMode);
         CFRelease(source);
-        dispatch_semaphore_signal((__bridge dispatch_semaphore_t)context);
+        dispatch_semaphore_signal(charon_semaphore_of(context));
     }
     while (1) {
         @autoreleasepool {
@@ -155,7 +177,7 @@ static void charon_perform(void (^block)(void))
         pthread_attr_init(&attributes);
         pthread_attr_setdetachstate(&attributes, PTHREAD_CREATE_DETACHED);
         pthread_t thread;
-        pthread_create(&thread, &attributes, charon_loader_main, (__bridge void *)ready);
+        pthread_create(&thread, &attributes, charon_loader_main, charon_context_of(ready));
         pthread_attr_destroy(&attributes);
         dispatch_semaphore_wait(ready, DISPATCH_TIME_FOREVER);
     });

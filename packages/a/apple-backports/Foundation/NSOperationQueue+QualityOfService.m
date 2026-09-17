@@ -28,13 +28,26 @@ static void charon_note_queue_scheduling(void)
 
 - (dispatch_queue_t)underlyingQueue
 {
+#if OS_OBJECT_USE_OBJC
     return objc_getAssociatedObject(self, &CharonQueueUnderlyingKey);
+#else
+    return (dispatch_queue_t)(__bridge void *)objc_getAssociatedObject(self, &CharonQueueUnderlyingKey);
+#endif
 }
 
 - (void)setUnderlyingQueue:(dispatch_queue_t)underlyingQueue
 {
     charon_note_queue_scheduling();
+#if OS_OBJECT_USE_OBJC
     objc_setAssociatedObject(self, &CharonQueueUnderlyingKey, underlyingQueue, OBJC_ASSOCIATION_RETAIN);
+#else
+    dispatch_queue_t held = (dispatch_queue_t)(__bridge void *)objc_getAssociatedObject(self, &CharonQueueUnderlyingKey);
+    if (underlyingQueue)
+        dispatch_retain(underlyingQueue);
+    objc_setAssociatedObject(self, &CharonQueueUnderlyingKey, (__bridge id)(void *)underlyingQueue, OBJC_ASSOCIATION_ASSIGN);
+    if (held)
+        dispatch_release(held);
+#endif
 }
 
 @end
