@@ -110,10 +110,13 @@ function lease(udid)
 end
 
 local function identified(settings)
-    if settings.udid == "" then
-        raise("claiming a device needs its UDID: set DEVICE_UDID in device.env or the environment; xmake device list shows the attached ones")
+    if settings.udid ~= "" then
+        return settings.udid
     end
-    return settings.udid
+    if settings.host ~= "127.0.0.1" then
+        return (settings.host .. "-" .. settings.port):gsub("[^%w%-%.]", "_")
+    end
+    raise("claiming the device on %s needs its UDID, because that port can serve any attached device: set DEVICE_UDID in device.env or the environment; xmake device list shows the attached ones", where(settings))
 end
 
 function claim(settings, holder, minutes)
@@ -149,13 +152,17 @@ function release(settings, holder)
 end
 
 local function admitted(settings)
-    if settings.udid == "" then
-        return
+    local key = settings.udid
+    if key == "" then
+        if settings.host == "127.0.0.1" then
+            return
+        end
+        key = (settings.host .. "-" .. settings.port):gsub("[^%w%-%.]", "_")
     end
-    local current = lease(settings.udid)
+    local current = lease(key)
     local holder = holder_name()
     if current and current.holder ~= holder then
-        raise("%s is held by %s until %s; this process runs as %s. Wait for the release, or claim it after that", settings.udid, current.holder, os.date("%H:%M:%S", current.expires), holder or "no holder (CHARON_DEVICE_HOLDER is unset)")
+        raise("%s is held by %s until %s; this process runs as %s. Wait for the release, or claim it after that", key, current.holder, os.date("%H:%M:%S", current.expires), holder or "no holder (CHARON_DEVICE_HOLDER is unset)")
     end
 end
 
