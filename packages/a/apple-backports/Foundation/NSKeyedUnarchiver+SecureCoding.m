@@ -4,27 +4,24 @@ NSError *charon_coder_error(NSException *exception, NSInteger code);
 
 static id charon_unarchive(NSSet *classes, NSData *data, NSError **error)
 {
-    NSKeyedUnarchiver *unarchiver = nil;
-    @try {
-        unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
-    } @catch (NSException *exception) {
+    NSError *failure = nil;
+    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:data error:&failure];
+    if (!unarchiver) {
         if (error)
-            *error = charon_coder_error(exception, NSCoderReadCorruptError);
+            *error = failure;
         return nil;
     }
     unarchiver.requiresSecureCoding = YES;
-    id decoded = nil;
-    @try {
-        decoded = [unarchiver decodeObjectOfClasses:classes forKey:NSKeyedArchiveRootObjectKey];
-        [unarchiver finishDecoding];
-    } @catch (NSException *exception) {
+    unarchiver.decodingFailurePolicy = NSDecodingFailurePolicySetErrorAndReturn;
+    id decoded = [unarchiver decodeTopLevelObjectOfClasses:classes forKey:NSKeyedArchiveRootObjectKey error:&failure];
+    if (failure) {
         if (error)
-            *error = charon_coder_error(exception, NSCoderReadCorruptError);
+            *error = failure;
         return nil;
     }
     if (!decoded && error)
-        *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSCoderReadCorruptError
-                                 userInfo:@{NSDebugDescriptionErrorKey: @"the archive holds no root object of an allowed class"}];
+        *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSCoderValueNotFoundError
+                                 userInfo:@{NSDebugDescriptionErrorKey: [NSString stringWithFormat:@"requested key: '%@'", NSKeyedArchiveRootObjectKey]}];
     return decoded;
 }
 

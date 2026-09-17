@@ -267,5 +267,113 @@
   "reason": "formatting a measurement needs the private ICU entry points uameasfmt_* and _CFLocaleCopyPreferredTemperatureUnit, none of which iOS 6's libicucore exports; a unit formatter over the ICU of iOS 6 is its own piece of work and is not in this batch",
   "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
   "source": "the armv7s cache of iOS 10.3.4, read for the symbols its code imports"
+ },
+ {
+  "api": "NSKeyedArchiver.initRequiringSecureCoding:",
+  "kind": "method",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSKeyedArchiver.md",
+  "source": "Foundation of iOS 11.0 arm64 (iPod7,1 15A372), -[NSKeyedArchiver initRequiringSecureCoding:] at 0x18155624c"
+ },
+ {
+  "api": "NSKeyedArchiver.encodedData",
+  "kind": "method",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "the buffer of an archiver the port did not create is read from iOS 6's private _stream field",
+  "effect": "the field's name is confirmed in 6.0, 6.1.3 and 6.1.6 and is looked up at runtime; where the layout differs the method answers empty data, which is what Apple answers for an archiver that writes somewhere other than memory, and the archive is left alone",
+  "facts": "facts/Foundation/NSKeyedArchiver.md",
+  "source": "Foundation of iOS 11.0 arm64, -[NSKeyedArchiver encodedData] at 0x181552e94; -[NSKeyedArchiver finishEncoding] at 0x319dbf35 in the armv7 cache of 6.1.3"
+ },
+ {
+  "api": "NSKeyedArchiver.archivedDataWithRootObject:requiringSecureCoding:error:",
+  "kind": "method",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "a departure from 11.0 and 12.0, where the error argument is never read and the encoding exception reaches the caller",
+  "effect": "the port answers nil and fills in error 4866 with an underlying 4864, the way the current implementation does, since applications are built against a recent SDK; the text of the underlying error comes from iOS 6's exception and does not match Apple's",
+  "facts": "facts/Foundation/NSKeyedArchiver.md",
+  "source": "Foundation of iOS 11.0 arm64 at 0x181556290 and of iOS 12.0 arm64 at 0x181865f24; the current behaviour from the differential test against the host's Foundation"
+ },
+ {
+  "api": "NSKeyedUnarchiver.initForReadingFromData:error:",
+  "kind": "method",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSKeyedUnarchiver.md",
+  "source": "Foundation of iOS 11.0 arm64, -[NSKeyedUnarchiver initForReadingFromData:error:] at 0x1815563fc"
+ },
+ {
+  "api": "NSKeyedUnarchiver.unarchivedObjectOfClass:fromData:error:",
+  "kind": "method",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSKeyedUnarchiver.md",
+  "source": "Foundation of iOS 11.0 arm64 at 0x181556e74"
+ },
+ {
+  "api": "NSKeyedUnarchiver.unarchivedObjectOfClasses:fromData:error:",
+  "kind": "method",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSKeyedUnarchiver.md",
+  "source": "Foundation of iOS 11.0 arm64 at 0x181556f0c"
+ },
+ {
+  "api": "NSURLSessionConfiguration.multipathServiceType",
+  "kind": "property",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "multipath TCP needs support in the kernel, which iOS 6 does not have",
+  "effect": "the property is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+  "source": "SDK 16.4, NSURLSession.h"
+ },
+ {
+  "api": "NSUserActivity.eligibleForPrediction",
+  "kind": "property",
+  "introduced": "12.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "predictions rest on a system daemon iOS 6 does not run",
+  "effect": "the property is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+  "source": "SDK 16.4, NSUserActivity.h"
+ },
+ {
+  "api": "NSUserActivity.persistentIdentifier",
+  "kind": "property",
+  "introduced": "12.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the store of saved activities is kept by a system daemon iOS 6 does not run",
+  "effect": "the property is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+  "source": "SDK 16.4, NSUserActivity.h"
+ },
+ {
+  "api": "NSUserActivity.deleteSavedUserActivitiesWithPersistentIdentifiers:completionHandler:",
+  "kind": "method",
+  "introduced": "12.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "there is nothing to delete: iOS 6 keeps no store of saved activities",
+  "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+  "source": "SDK 16.4, NSUserActivity.h"
+ },
+ {
+  "api": "NSFileManager.getFileProviderServicesForItemAtURL:completionHandler:",
+  "kind": "method",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "a File Provider daemon is needed and iOS 6 has none",
+  "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+  "source": "SDK 16.4, NSFileManager.h"
  }
 ]
