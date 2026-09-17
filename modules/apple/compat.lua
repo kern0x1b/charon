@@ -20,6 +20,32 @@ ARRIVED = {
     __ulock_wake = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"}
 }
 
+EMITTED = {
+    {by = "arclite, which clang force-loads when -fobjc-arc is on the link and not only on the compile",
+     symbols = {"objc_retain", "objc_release", "objc_autorelease", "objc_retainAutorelease", "objc_retainAutoreleasedReturnValue",
+                "objc_autoreleaseReturnValue", "objc_retainAutoreleaseReturnValue", "objc_retainBlock", "objc_storeStrong",
+                "objc_storeWeak", "objc_loadWeak", "objc_loadWeakRetained", "objc_initWeak", "objc_destroyWeak",
+                "objc_copyWeak", "objc_moveWeak", "objc_autoreleasePoolPush", "objc_autoreleasePoolPop"}},
+    {by = "libBlocksRuntime, which the toolchain links below 3.2",
+     symbols = {"_Block_copy", "_Block_release", "_Block_object_assign", "_Block_object_dispose",
+                "_NSConcreteStackBlock", "_NSConcreteGlobalBlock", "_NSConcreteMallocBlock"}},
+    {by = "the libc++abi of charon@libcxx, which an image that uses them links",
+     symbols = {"__emutls_get_address", "__cxa_thread_atexit", "__atomic_load", "__atomic_store", "__atomic_exchange",
+                "__atomic_compare_exchange", "__atomic_is_lock_free"}},
+    {by = "dyld from 9.0 on, and below it by the -femulated-tls the toolchain compiles with",
+     symbols = {"_tlv_atexit", "_tlv_bootstrap"}}
+}
+
+function emitted()
+    local found = {}
+    for _, group in ipairs(EMITTED) do
+        for _, symbol in ipairs(group.symbols) do
+            found[symbol] = group.by
+        end
+    end
+    return found
+end
+
 function arrived(system)
     local found = {}
     for symbol, releases in pairs(ARRIVED) do

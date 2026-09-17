@@ -53,16 +53,7 @@ toolchain("apple-ios")
         if not os.isfile(path.join(found.sdk, "SDKSettings.json")) then
             raise("the iphoneos-sdk package has no %s: xmake-requires.lock pins a Charon package repository older than this addon; delete the lock, or run xmake require --upgrade, after moving add_addons to a new tag", found.sdk)
         end
-        local floors = {armv6 = "2.0", armv7 = "3.0", armv7s = "6.0", arm64 = "7.0"}
-        local ceilings = {armv6 = "4.2.1"}
-        local floor = floors[toolchain:arch()]
-        if not floor then
-            raise("toolchain(apple-ios) builds armv6, armv7, armv7s and arm64, not %s", toolchain:arch())
-        end
-        if ceilings[toolchain:arch()] and semver.compare(declared, ceilings[toolchain:arch()]) > 0 then
-            raise("apple_minimum %s is newer than %s, the last release an %s device runs", declared, ceilings[toolchain:arch()], toolchain:arch())
-        end
-        local minimum = semver.compare(declared, floor) < 0 and floor or declared
+        local minimum = import("@self.apple.architectures").deployment(toolchain:arch(), declared)
         local clangxx = found.clang .. "++"
         toolchain:set("toolset", "cc", found.clang)
         toolchain:set("toolset", "cxx", found.clang, clangxx)

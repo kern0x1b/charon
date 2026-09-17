@@ -238,14 +238,6 @@ local function collect(cache)
     return {architecture = cache.architecture, classes = classes, protocols = protocols, extensions = extensions, read = read}
 end
 
-function inventory(cachefile)
-    local cache = dyld.open_cache(cachefile)
-    local found = collect(cache)
-    cache.close()
-    found.read = nil
-    return found
-end
-
 local function file_source(binary, architecture)
     local data = macho.read(binary)
     local image
@@ -310,6 +302,58 @@ local function file_source(binary, architecture)
     return source, image
 end
 
+local function gather(into, found)
+    for name, class in pairs(found.classes) do
+        local kept = into.classes[name]
+        if not kept then
+            kept = {instance = {}, class = {}, protocols = {}}
+            into.classes[name] = kept
+        end
+        kept.image = kept.image or class.image
+        kept.superclass = kept.superclass or class.superclass
+        merge(kept.instance, class.instance)
+        merge(kept.class, class.class)
+        merge(kept.protocols, class.protocols)
+    end
+    for name, protocol in pairs(found.protocols) do
+        local kept = into.protocols[name]
+        if not kept then
+            kept = {instance = {}, class = {}}
+            into.protocols[name] = kept
+        end
+        merge(kept.instance, protocol.instance)
+        merge(kept.class, protocol.class)
+    end
+    merge(into.extensions.instance, found.extensions.instance)
+    merge(into.extensions.class, found.extensions.class)
+    merge(into.extensions.protocols, found.extensions.protocols)
+end
+
+function inventory(source)
+    local architecture = path.filename(source):match("^libraries_([%w_]+)$")
+    if not architecture then
+        local cache = dyld.open_cache(source)
+        local found = collect(cache)
+        cache.close()
+        found.read = nil
+        return found
+    end
+    local found = {architecture = architecture, classes = {}, protocols = {},
+                   extensions = {instance = {}, class = {}, protocols = {}}}
+    local read = 0
+    for _, binary in ipairs(macho.binaries_under(source)) do
+        local file = file_source(binary, architecture)
+        if file then
+            gather(found, collect(file))
+            read = read + 1
+        end
+    end
+    if read == 0 then
+        raise("%s holds no %s library to read Objective-C metadata from", source, architecture)
+    end
+    return found
+end
+
 local function add_selectors(into, found)
     for _, class in pairs(found.classes) do
         merge(into, class.instance)
@@ -368,16 +412,7 @@ function known_selectors(source)
         end
         return known
     end
-    if os.isdir(source) then
-        for _, binary in ipairs(macho.binaries_under(source)) do
-            local file = file_source(binary, architecture)
-            if file then
-                add_selectors(known, collect(file))
-            end
-        end
-    else
-        add_selectors(known, inventory(source))
-    end
+    add_selectors(known, inventory(source))
     local names = {}
     for key in pairs(known) do
         table.insert(names, key:sub(2))

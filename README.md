@@ -1,8 +1,11 @@
 # Charon
 
-Legacy Apple platforms for [xmake](https://xmake.io): armv6 from iPhone OS 2.0,
-armv7 from iPhone OS 3.0, armv7s from iOS 6 and arm64 from iOS 7, built by
-clang 23 from the `llvm` package with no Xcode.
+Legacy Apple platforms for [xmake](https://xmake.io): armv6 from iPhone OS 2.0
+to 4.2.1, armv7 from iPhone OS 3.0, armv7s from iOS 6 and arm64 from iOS 7, built
+by clang 23 from the `llvm` package with no Xcode. An `apple_minimum` outside the
+releases its architecture runs is refused, naming the architectures that do run
+it: a port that asks for 2.0 on armv7 is told to build armv6, never handed a 3.0
+binary that says it is one.
 A port is an ordinary `xmake.lua` in each module; Charon adds what xmake does not
 know about these platforms, and nothing else:
 
@@ -100,9 +103,19 @@ under ~/.charon/dyld is said to be unchecked. The reader understands every
 shared cache format from iOS 3.1 to today - 32-bit and arm64/arm64e, single
 files and the split caches of iOS 15 on, whose subcache files it opens by the
 suffixes the main header lists - deciding which header fields exist from the
-header's own size, and the library folders of earlier releases. An import is looked up where dyld looks for it: in
+header's own size, and the library folders of earlier releases. The same reader
+takes the Objective-C inventory of those library folders, so `xmake firmware
+classes` answers for iPhone OS 2 and iPhone OS 3.0 as it does for a cache. An import is looked up where dyld looks for it: in
 the library its binding names and in what that library re-exports, so a
-symbol the device exports only from another library is refused. After the
+symbol the device exports only from another library is refused. A weak import
+the checked release does not export is reported as a warning naming the binary
+and the first twelve symbols, because it is NULL on the device and only a check
+for it makes the call safe; for the symbols the compiler emits by itself -
+the ARC entry points, the block runtime, emulated TLS and the wide atomics,
+listed beside `ARRIVED` in `modules/apple/compat.lua` - it is refused instead,
+naming what should have carried it into the image, since no version check can
+stand in front of a call the compiler wrote. That is what catches an ARC port
+whose link left out `-fobjc-arc`, so clang never force-loaded arclite. After the
 imports, every selector the build's binaries reference (`__objc_selrefs`) that
 neither they nor any class or protocol of the checked release implements is
 reported as a warning naming the binary, the first twelve and all of them

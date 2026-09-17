@@ -28,6 +28,7 @@ local function suite(name)
     target_end()
 end
 
+suite("architectures_test")
 suite("macho_test")
 suite("dyld_test")
 suite("debian_test")

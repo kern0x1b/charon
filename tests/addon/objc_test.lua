@@ -34,6 +34,16 @@ local SELECTORS = [[
 @end
 ]]
 
+local HELD = [[
+#import <Foundation/Foundation.h>
+@interface Held : NSObject
+- (void)heldMethod;
+@end
+@implementation Held
+- (void)heldMethod {}
+@end
+]]
+
 local INVENTORY = [[
 function main(modules, cachefile, output)
     local found = import("apple.objc", {rootdir = modules, anonymous = true}).inventory(cachefile)
@@ -139,6 +149,41 @@ local function linker_version(opt)
     return ((out or "") .. (errors or "")):match("PROJECT:ld64%-(%S+)")
 end
 
+local function held_failures(folder, opt)
+    local found = {}
+    local objc = import("apple.objc", {rootdir = opt.modules, anonymous = true})
+    local libraries = path.join(folder, "libraries_armv7")
+    local device = path.join(libraries, "usr", "lib")
+    os.mkdir(device)
+    io.writefile(path.join(folder, "held.m"), HELD)
+    fixtures.run(folder, opt.clang, {"-target", "armv7-apple-ios6.0", "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-w",
+                                     "-mlinker-version=" .. linker_version(opt), "-fuse-ld=" .. opt.ld64, "-dynamiclib",
+                                     "-framework", "Foundation", "-install_name", "/usr/lib/libheld.dylib",
+                                     "held.m", "-o", path.join(device, "libheld.dylib")})
+    local inventory = objc.inventory(libraries)
+    local class = inventory.classes["Held"]
+    if inventory.architecture ~= "armv7" then
+        table.insert(found, "an inventory of a libraries folder must name the architecture the folder holds, not " .. tostring(inventory.architecture))
+    end
+    if not class then
+        table.insert(found, "a release before 3.1 keeps its libraries as files, and the inventory must read their classes")
+    else
+        if not class.instance["-heldMethod"] then
+            table.insert(found, "the inventory of a libraries folder must read a class's methods, and read " .. table.concat(table.orderkeys(class.instance), " "))
+        end
+        if class.image ~= "/usr/lib/libheld.dylib" then
+            table.insert(found, "the inventory of a libraries folder must say which library a class comes from, not " .. tostring(class.image))
+        end
+    end
+    os.mkdir(path.join(folder, "libraries_armv6"))
+    local errors = fixtures.refusal(function () objc.inventory(path.join(folder, "libraries_armv6")) end)
+    if not errors or not errors:find("holds no armv6 library", 1, true) then
+        table.insert(found, "an inventory of a folder holding nothing of the architecture must refuse rather than report an empty system: " .. tostring(errors))
+    end
+    return found
+end
+
+
 local function stub_failures(folder, opt)
     local found = {}
     local version = linker_version(opt)
@@ -188,7 +233,7 @@ end
 function failures(opt)
     local found = {}
     local folder = fixtures.scratch()
-    for _, check in ipairs({stub_failures, selector_failures, inventory_failures}) do
+    for _, check in ipairs({stub_failures, selector_failures, inventory_failures, held_failures}) do
         table.join2(found, check(folder, opt))
     end
     os.tryrm(folder)

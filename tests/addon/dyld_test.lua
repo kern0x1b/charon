@@ -41,7 +41,7 @@ function failures(opt)
     local found = {}
     local folder = fixtures.scratch()
     local armv7 = cache(path.join(folder, "dyld_shared_cache_armv7"), "armv7", "_exported")
-    io.writefile(path.join(folder, "libSystem.tbd"), fixtures.system_stub("dyld_stub_binder, _exported, _nested, ___divti3, _arrived"))
+    io.writefile(path.join(folder, "libSystem.tbd"), fixtures.system_stub("dyld_stub_binder, _exported, _nested, ___divti3, _arrived, _objc_storeStrong"))
     io.writefile(path.join(folder, "libother.tbd"), fixtures.system_stub("_elsewhere", "/usr/lib/libother.dylib"))
     io.writefile(path.join(folder, "libgone.tbd"), fixtures.system_stub("_gone", "/usr/lib/libgone.dylib"))
     local clean = dylib(folder, opt.ld64, "clean-armv7", "armv7-apple-ios6.0", "_exported")
@@ -90,6 +90,16 @@ function failures(opt)
     end
     if #dyld.missing_imports(armv7, {unprovided}) > 0 then
         table.insert(found, "a weak import the release lacks and nothing in the build provides must pass, as it runs behind a check")
+    end
+    if fixtures.refusal(function () dyld.check(armv7, {unprovided}) end) then
+        table.insert(found, "a weak import a version check can stand in front of must be reported and pass")
+    end
+    io.writefile(path.join(folder, "emitted.c"),
+                 "extern void objc_storeStrong(void **, void *) __attribute__((weak_import));\nvoid use(void **slot) { if (objc_storeStrong) objc_storeStrong(slot, 0); }\n")
+    local emitted = fixtures.link(folder, opt.ld64, "emitted.dylib", "armv7-apple-ios6.0", "emitted.c", {"-dynamiclib"})
+    local refused = fixtures.refusal(function () dyld.check(armv7, {emitted}) end) or ""
+    if not refused:find("_objc_storeStrong", 1, true) or not refused:find("arclite", 1, true) then
+        table.insert(found, "a weak import of a symbol the compiler emits, which the release lacks and the image does not carry, must be refused naming what should carry it: " .. refused)
     end
     io.writefile(path.join(folder, "band.c"), "int band(void) { return 0; }\n")
     for _, case in ipairs({{"_exported", nil}, {"_arrived", "_arrived (re-exported from /usr/lib/libSystem.B.dylib, which does not export _arrived)"}}) do
