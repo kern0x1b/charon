@@ -16,7 +16,7 @@ NSInteger charon_calendar_nanosecond(NSDate *date)
 NSInteger charon_calendar_quarter(NSCalendar *calendar, NSDate *date)
 {
     NSString *identifier = calendar.calendarIdentifier;
-    if (![identifier isEqualToString:NSCalendarIdentifierGregorian] && ![identifier isEqualToString:NSCalendarIdentifierISO8601])
+    if (![identifier isEqualToString:@"gregorian"] && ![identifier isEqualToString:@"iso8601"])
         return 0;
     NSInteger month = [calendar components:NSCalendarUnitMonth fromDate:date].month;
     return month == NSDateComponentUndefined ? NSDateComponentUndefined : (month - 1) / 3 + 1;

@@ -34,12 +34,12 @@ package("apple-backports")
         local deployment = toolchain:config("deployment")
         local tool = path.join(package:dep("firmware-tools"):installdir(), "bin", "charon-firmware")
         local cache = firmware.ensure(package:arch(), deployment, {tool = tool})
+        local libraries = table.join({"FoundationBackports"}, package:config("uikit") and {"UIKitBackports"} or {},
+                                     package:config("corelocation") and {"CoreLocationBackports"} or {})
         local common = {root = package:scriptdir(), architecture = package:arch(), deployment = deployment, sdkdir = toolchain:config("sdkdir"),
                         cc = assert(toolchain:tool("cc"), "the apple-ios toolchain names no compiler for " .. package:arch()),
-                        ld = assert(linker, "the apple-ios toolchain names no ld64 for " .. package:arch())}
-        backports.build(table.join(common, {cache = cache, builddir = path.absolute("link"), outputdir = package:installdir("lib"),
-                                            libraries = table.join({"FoundationBackports"}, package:config("uikit") and {"UIKitBackports"} or {},
-                                                                    package:config("corelocation") and {"CoreLocationBackports"} or {})}))
+                        ld = assert(linker, "the apple-ios toolchain names no ld64 for " .. package:arch()), libraries = libraries}
+        backports.build(table.join(common, {cache = cache, builddir = path.absolute("link"), outputdir = package:installdir("lib")}))
         local released
         for version in io.readfile(path.join(package:scriptdir(), "..", "..", "..", "addons", "c", "charon", "xmake.lua")):gmatch('add_versions%("v(%d[%d%.]*)"') do
             if not released or dyld.compare_versions(version, released) > 0 then
