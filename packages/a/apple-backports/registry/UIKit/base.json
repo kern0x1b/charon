@@ -287,6 +287,7 @@
     "api": "-[UIView addMotionEffect:]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented",
     "reason": "the effect follows the device motion the release reports; a device without a gyroscope delivers none and the layer stays where it is"
   },
@@ -376,6 +377,7 @@
     "api": "-[UIView motionEffects]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented"
   },
   {
@@ -402,6 +404,7 @@
     "api": "-[UIView removeMotionEffect:]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented"
   },
   {
@@ -421,6 +424,7 @@
     "api": "-[UIView setMotionEffects:]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented"
   },
   {

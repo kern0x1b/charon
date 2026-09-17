@@ -357,12 +357,14 @@
     "api": "-[NSLocale alternateQuotationBeginDelimiter]",
     "kind": "method",
     "introduced": "10.0",
+    "minimum": "4.0",
     "status": "implemented"
   },
   {
     "api": "-[NSLocale alternateQuotationEndDelimiter]",
     "kind": "method",
     "introduced": "10.0",
+    "minimum": "4.0",
     "status": "implemented"
   },
   {
@@ -381,6 +383,7 @@
     "api": "-[NSLocale collatorIdentifier]",
     "kind": "method",
     "introduced": "10.0",
+    "minimum": "4.0",
     "status": "implemented"
   },
   {
@@ -441,6 +444,7 @@
     "api": "-[NSLocale localizedStringForCollatorIdentifier:]",
     "kind": "method",
     "introduced": "10.0",
+    "minimum": "4.0",
     "status": "implemented"
   },
   {
@@ -483,12 +487,14 @@
     "api": "-[NSLocale quotationBeginDelimiter]",
     "kind": "method",
     "introduced": "10.0",
+    "minimum": "4.0",
     "status": "implemented"
   },
   {
     "api": "-[NSLocale quotationEndDelimiter]",
     "kind": "method",
     "introduced": "10.0",
+    "minimum": "4.0",
     "status": "implemented"
   },
   {
@@ -737,18 +743,21 @@
     "api": "-[NSURL removeAllCachedResourceValues]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "4.0",
     "status": "implemented"
   },
   {
     "api": "-[NSURL removeCachedResourceValueForKey:]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "4.0",
     "status": "implemented"
   },
   {
     "api": "-[NSURL setTemporaryResourceValue:forKey:]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "4.0",
     "status": "implemented"
   },
   {
@@ -925,6 +934,7 @@
     "api": "NSURLSession",
     "kind": "class",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/Foundation/NSURLSession.md"
   },
@@ -939,6 +949,7 @@
     "api": "NSURLSessionDataTask",
     "kind": "class",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/Foundation/NSURLSession.md"
   },
@@ -946,6 +957,7 @@
     "api": "NSURLSessionDownloadTask",
     "kind": "class",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/Foundation/NSURLSession.md"
   },
@@ -959,6 +971,7 @@
     "api": "NSURLSessionTask",
     "kind": "class",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/Foundation/NSURLSession.md"
   },
@@ -984,12 +997,14 @@
     "api": "NSURLSessionTransferSizeUnknown",
     "kind": "constant",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented"
   },
   {
     "api": "NSURLSessionUploadTask",
     "kind": "class",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/Foundation/NSURLSession.md"
   },
