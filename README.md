@@ -118,7 +118,11 @@ below iOS 5 and that holds those releases' arithmetic helpers and SjLj
 unwinder, listing what the library exports on every release from 3.1.3 to
 6.1.3. The SDK's libSystem stubs hide those symbols from 3.0 to 4.3 so they bind
 to libgcc_s; the package extends that to iPhone OS 2, whose libSystem did not
-export them either. A helper iPhone OS 2 lacks altogether, such as
+export them either. The SDK's stubs also say only for armv7 and armv7s where
+symbols lived on iOS 7 to 10 (`$ld$hide$os7.0$` in CFNetwork, `$ld$add$os7.0$`
+in Foundation for NSURLCache, NSURLRequest and their neighbours), although
+arm64 ran those releases too; the package repeats each such marker for arm64,
+so an arm64 slice for iOS 7 binds them where the device has them. A helper iPhone OS 2 lacks altogether, such as
 `__floatundidf`, fails to link there instead of failing to load. The package is
 laid out as an Xcode developer folder
 (`Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/`),

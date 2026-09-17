@@ -46,6 +46,52 @@ package("iphoneos-sdk")
         if extended == 0 then
             raise("no libSystem stub in %s hides anything from iOS 3.0, so none says which of its symbols older releases took from libgcc_s", libraries)
         end
+        for _, stub in ipairs(os.files(path.join(folder, "**.tbd"))) do
+            local text = io.readfile(stub)
+            if text:find("$ld$", 1, true) then
+                local lines, item, targets, markers = {}, {}, nil, {}
+                local function flush()
+                    table.join2(lines, item)
+                    if targets and targets:find("armv7-ios", 1, true) and not targets:find("arm64-ios", 1, true) then
+                        local wanted = {}
+                        for _, marker in ipairs(markers) do
+                            if tonumber(marker.major) >= 7 then
+                                table.insert(wanted, marker.text)
+                            end
+                        end
+                        if #wanted > 0 then
+                            table.insert(lines, "  - targets:         [ arm64-ios, arm64e-ios ]")
+                            table.insert(lines, "    symbols:         [ " .. table.concat(wanted, ", ") .. " ]")
+                        end
+                    end
+                    item, targets, markers = {}, nil, {}
+                end
+                for line in (text .. "\n"):gmatch("([^\n]*)\n") do
+                    local listed = line:match("^  %- targets:%s+%[(.*)%]")
+                    if listed or not line:startswith("    ") then
+                        flush()
+                    end
+                    if listed then
+                        targets = listed
+                    end
+                    if targets then
+                        table.insert(item, line)
+                        for marker, major in line:gmatch("('%$ld%$%a+%$os(%d+)%.%d+%$[^']+')") do
+                            if marker:find("^'%$ld%$hide%$") or marker:find("^'%$ld%$add%$") then
+                                table.insert(markers, {text = marker, major = major})
+                            end
+                        end
+                    else
+                        table.insert(lines, line)
+                    end
+                end
+                flush()
+                if lines[#lines] == "" then
+                    table.remove(lines)
+                end
+                io.writefile(stub, table.concat(lines, "\n") .. "\n")
+            end
+        end
         os.vcp(path.join(package:scriptdir(), "usr", "lib", "*"), libraries .. "/")
 
         local csu = package:resourcedir("csu")
