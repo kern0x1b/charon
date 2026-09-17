@@ -48,6 +48,10 @@ local function fetch_json(url)
     return decoded
 end
 
+function sources()
+    return {CATALOG, KEYS}
+end
+
 local function catalog_file()
     return path.join(home(), "firmware", "catalog.json")
 end
@@ -126,7 +130,7 @@ local function refresh_catalog()
     for _, device in ipairs(devices) do
         device.builds = nil
     end
-    local catalog = {sources = {CATALOG, KEYS}, devices = devices}
+    local catalog = {sources = sources(), devices = devices}
     os.mkdir(path.directory(catalog_file()))
     json.savefile(catalog_file(), catalog)
     return catalog
@@ -159,6 +163,9 @@ function candidates(architecture, minimum)
         raise("no Apple device runs %s; the architectures devices use are %s", architecture, table.concat(table.orderkeys(PLATFORMS), ", "))
     end
     local catalog = os.isfile(catalog_file()) and json.loadfile(catalog_file())
+    if catalog and table.concat(catalog.sources or {}, " ") ~= table.concat(sources(), " ") then
+        catalog = nil
+    end
     local function choose(from)
         local earliest
         for _, firmware in ipairs(releases(from, architecture)) do

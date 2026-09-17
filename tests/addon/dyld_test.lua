@@ -87,7 +87,7 @@ function failures(opt)
     local function release(version, build)
         return {version = version, build = build, url = "https://example.invalid/" .. build .. ".ipsw", size = 1}
     end
-    json.savefile(path.join(folder, "home", "firmware", "catalog.json"), {devices = {
+    json.savefile(path.join(folder, "home", "firmware", "catalog.json"), {sources = firmware.sources(), devices = {
         {identifier = "iPhone3,1", platform = "s5l8930x", firmwares = {release("2.2.1", "5H11"), release("4.3.5", "8L1"), release("4.1", "8B117")}},
         {identifier = "iPhone5,1", platform = "s5l8950x", firmwares = {release("6.0", "10A405")}}
     }})
