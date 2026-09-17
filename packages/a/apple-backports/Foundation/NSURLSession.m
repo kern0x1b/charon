@@ -959,6 +959,7 @@ static NSURLRequest *charon_redirect_request(NSURLRequest *current, NSURL *url, 
 {
     NSMutableURLRequest *next = [current mutableCopy];
     next.URL = url;
+    [next setValue:nil forHTTPHeaderField:@"Authorization"];
     NSString *method = current.HTTPMethod.uppercaseString;
     BOOL becomesGet = (status == 303 && ![method isEqualToString:@"HEAD"]) || ((status == 301 || status == 302) && [method isEqualToString:@"POST"]);
     if (becomesGet && ![method isEqualToString:@"GET"]) {

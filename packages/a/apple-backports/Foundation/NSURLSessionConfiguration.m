@@ -234,7 +234,11 @@ static NSURLCredentialStorage *charon_ephemeral_credential_storage(void)
     return storage;
 }
 
-@implementation NSURLSessionConfiguration
+@implementation NSURLSessionConfiguration {
+@private
+    SSLProtocol _TLSMinimumSupportedProtocol;
+    SSLProtocol _TLSMaximumSupportedProtocol;
+}
 
 @synthesize identifier = _identifier;
 @synthesize requestCachePolicy = _requestCachePolicy;
@@ -245,8 +249,6 @@ static NSURLCredentialStorage *charon_ephemeral_credential_storage(void)
 @synthesize discretionary = _discretionary;
 @synthesize sessionSendsLaunchEvents = _sessionSendsLaunchEvents;
 @synthesize connectionProxyDictionary = _connectionProxyDictionary;
-@synthesize TLSMinimumSupportedProtocol = _TLSMinimumSupportedProtocol;
-@synthesize TLSMaximumSupportedProtocol = _TLSMaximumSupportedProtocol;
 @synthesize HTTPShouldUsePipelining = _HTTPShouldUsePipelining;
 @synthesize HTTPShouldSetCookies = _HTTPShouldSetCookies;
 @synthesize HTTPCookieAcceptPolicy = _HTTPCookieAcceptPolicy;
@@ -256,6 +258,28 @@ static NSURLCredentialStorage *charon_ephemeral_credential_storage(void)
 @synthesize URLCredentialStorage = _URLCredentialStorage;
 @synthesize URLCache = _URLCache;
 @synthesize protocolClasses = _protocolClasses;
+
+- (SSLProtocol)TLSMinimumSupportedProtocol
+{
+    return _TLSMinimumSupportedProtocol;
+}
+
+- (void)setTLSMinimumSupportedProtocol:(SSLProtocol)protocol
+{
+    if (protocol != _TLSMinimumSupportedProtocol)
+        [NSException raise:NSInvalidArgumentException format:@"this release hands its requests to NSURLConnection, which does not let a handshake be bounded, so the lowest protocol it accepts stays %d", (int)_TLSMinimumSupportedProtocol];
+}
+
+- (SSLProtocol)TLSMaximumSupportedProtocol
+{
+    return _TLSMaximumSupportedProtocol;
+}
+
+- (void)setTLSMaximumSupportedProtocol:(SSLProtocol)protocol
+{
+    if (protocol != _TLSMaximumSupportedProtocol)
+        [NSException raise:NSInvalidArgumentException format:@"this release hands its requests to NSURLConnection, which does not let a handshake be bounded, so the highest protocol it offers stays %d", (int)_TLSMaximumSupportedProtocol];
+}
 
 @dynamic allowsExpensiveNetworkAccess;
 @dynamic allowsConstrainedNetworkAccess;

@@ -2,7 +2,6 @@
 #import <objc/runtime.h>
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 static NSString *const CharonIdiomKey = @"UITraitCollectionBuiltinTrait-_UITraitNameUserInterfaceIdiom";
 static NSString *const CharonScaleKey = @"UITraitCollectionBuiltinTrait-_UITraitNameDisplayScale";
@@ -175,6 +174,16 @@ static NSString *charon_size_class_name(UIUserInterfaceSizeClass sizeClass)
 {
     charon_deliver_trait_changes(environments, change);
 }
+
+@dynamic layoutDirection;
+@dynamic preferredContentSizeCategory;
+@dynamic displayGamut;
+@dynamic userInterfaceStyle;
+@dynamic accessibilityContrast;
+@dynamic userInterfaceLevel;
+@dynamic legibilityWeight;
+@dynamic activeAppearance;
+@dynamic toolbarItemPresentationSize;
 
 + (BOOL)supportsSecureCoding
 {
