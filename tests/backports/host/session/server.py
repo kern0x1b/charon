@@ -122,6 +122,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
         target = query.get("to", "/echo")
         if count > 1:
             target = "/redirect?code=%d&count=%d&to=%s" % (code, count - 1, target)
+        elif "hostname" in query:
+            target = "http://%s:%d%s" % (query["hostname"], self.server.server_address[1], target)
         self.send(code, b"redirect body", [("Location", target), ("Content-Type", "text/plain")])
 
     def route_status(self, query, body):

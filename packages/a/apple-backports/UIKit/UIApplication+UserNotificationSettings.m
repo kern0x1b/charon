@@ -32,17 +32,29 @@ static UIUserNotificationType charon_registered_types(void)
 
 - (UIUserNotificationSettings *)currentUserNotificationSettings
 {
-    UIUserNotificationType types = charon_registered_types();
-    UIRemoteNotificationType enabled = [self enabledRemoteNotificationTypes];
-    if (enabled != UIRemoteNotificationTypeNone)
-        types &= (UIUserNotificationType)enabled;
-    return [UIUserNotificationSettings settingsForTypes:types categories:nil];
+    return [UIUserNotificationSettings settingsForTypes:charon_registered_types() categories:nil];
 }
 
 - (void)registerForRemoteNotifications
 {
     objc_setAssociatedObject(self, &charon_remote_registered_key, @YES, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    [self registerForRemoteNotificationTypes:(UIRemoteNotificationType)charon_registered_types()];
+    UIUserNotificationType types = charon_registered_types();
+    if (types == UIUserNotificationTypeNone) {
+        NSError *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFeatureUnsupportedError
+                                         userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"iOS %@ hands out a device token only for a set of notification types, and none were registered; call -registerUserNotificationSettings: first", [UIDevice currentDevice].systemVersion]}];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            id<UIApplicationDelegate> delegate = self.delegate;
+            if ([delegate respondsToSelector:@selector(application:didFailToRegisterForRemoteNotificationsWithError:)])
+                [delegate application:self didFailToRegisterForRemoteNotificationsWithError:error];
+        });
+        return;
+    }
+    [self registerForRemoteNotificationTypes:(UIRemoteNotificationType)types];
+}
+
+- (BOOL)isRegisteredForRemoteNotifications
+{
+    return [self enabledRemoteNotificationTypes] != UIRemoteNotificationTypeNone;
 }
 
 @end
