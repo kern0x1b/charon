@@ -80,7 +80,10 @@ its own folder under the build directory, merges the bundles with lipo - every
 other file has to be the same in every slice, so pin MinimumOSVersion in the
 plist - and signs and checks the merged binaries. A slice with no shared cache
 under ~/.charon/dyld is said to be unchecked. The reader understands the 32-bit
-caches of iOS 3.1 to 6; a 64-bit arm64 cache is not read yet.
+caches of iOS 3.1 to 6 and the library folders of earlier releases; a 64-bit
+arm64 cache is not read yet. An import is looked up where dyld looks for it: in
+the library its binding names and in what that library re-exports, so a
+symbol the device exports only from another library is refused.
 
 A check is a target:
 
@@ -105,11 +108,17 @@ project.
 
 Below iOS 7 an executable starts through Apple's `crt1.3.1.o` (or `crt1.o` below
 3.1), which current SDKs no longer ship; ld64 would silently raise the binary's
-minimum to 7.0 instead. The include then requires `charon@csu`, built from
-Apple's open Csu, and below iOS 5 also `charon@compiler-rt`: the builtins those
-releases took from `/usr/lib/libgcc_s.1.dylib`, linked in statically with hidden
-symbols as the `libgcc_s.1.a` clang asks for. The rules refuse a binary whose
-recorded minimum is not the port's.
+minimum to 7.0 instead. The `iphoneos-sdk` package puts back into `usr/lib`
+what the SDKs of iPhone OS 2 to iOS 6 carried there: `crt1.o`, `crt1.3.1.o`,
+`dylib1.o` and `bundle1.o` built from Apple's open Csu, and
+`libgcc_s.1.tbd`, the stub of the `/usr/lib/libgcc_s.1.dylib` that clang links
+below iOS 5 and that holds those releases' arithmetic helpers and SjLj
+unwinder, listing what the library exports on every release from 3.1.3 to
+6.1.3. The SDK's libSystem stubs hide those symbols from 3.0 to 4.3 so they bind
+to libgcc_s; the package extends that to iPhone OS 2, whose libSystem did not
+export them either. A helper iPhone OS 2 lacks altogether, such as
+`__floatundidf`, fails to link there instead of failing to load. The rules
+refuse a binary whose recorded minimum is not the port's.
 
 `includes("@addon/charon/apple-ios")` requires the SDK, ld64 and ldid at the
 versions it pins, and hands every other package the `apple-ios` toolchain named
@@ -170,6 +179,11 @@ as its envs; a host step of a two-stage build (a generator built for macOS)
 runs with the process environment, which does not carry it.
 `charon@libcxx` is libc++ 23 as the shared pair an application bundles, linked
 with `charon@apple-compat`, the hidden shims for what the minimum release lacks.
+It is checked against the devices' own libraries from iPhone OS 2.2.1 to iOS
+6.1.3. Below iOS 4.2, whose dyld cannot re-export single symbols, libc++ does
+not re-export libc++abi and a client links both, as the package's links say;
+below 3.0 apple-compat also carries `posix_memalign` and the integer-to-float and
+byte-swap helpers iPhone OS 2's libgcc_s lacks.
 apple-compat links its shims into whoever requires it and force-includes
 nothing on its own, because a shim's header brings its system header with it
 (`unlinkat.h` brings `<unistd.h>`, and with it `sync`). A target names the

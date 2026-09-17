@@ -38,8 +38,11 @@ package("libcxx")
     end)
 
     on_install("iphoneos", function (package)
+        import("core.base.semver")
         local cmake = import("apple.cmake", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
-        os.vrunv("git", {"apply", path.join(package:scriptdir(), "patches", "utimensat-told-no.patch"), "-p2"})
+        for _, patch in ipairs({"utimensat-told-no.patch", "reexport-when-dyld-can.patch"}) do
+            os.vrunv("git", {"apply", path.join(package:scriptdir(), "patches", patch), "-p2"})
+        end
         local compat = package:dep("apple-compat")
         local cxxflags = {"-mllvm", "-hot-cold-split=false", "-D_LIBCPP_NO_UTIMENSAT"}
         local shflags = {}
@@ -52,8 +55,10 @@ package("libcxx")
         if #(compat:data("provided") or {}) > 0 then
             table.join2(shflags, {"-L" .. compat:installdir("lib"), "-Wl,-hidden-lapple-compat"})
         end
+        local deployment = cmake.toolchain(package):config("deployment")
         cmake.install(package, {
             "-DLLVM_ENABLE_RUNTIMES=libcxx;libcxxabi",
+            "-DLIBCXXABI_REEXPORT_FROM_LIBCXX=" .. (semver.compare(deployment, "4.2") < 0 and "OFF" or "ON"),
             "-DLIBCXX_ENABLE_SHARED=ON", "-DLIBCXXABI_ENABLE_SHARED=ON",
             "-DLIBCXX_ENABLE_STATIC=OFF", "-DLIBCXXABI_ENABLE_STATIC=OFF",
             "-DLIBCXX_CXX_ABI=libcxxabi", "-DLIBCXXABI_USE_LLVM_UNWINDER=OFF",

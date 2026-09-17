@@ -5,7 +5,8 @@ package("apple-compat")
     set_policy("package.strict_compatibility", true)
 
     local digests = {}
-    local sources = table.join(os.files(path.join(os.scriptdir(), "src", "*.c")), os.files(path.join(os.scriptdir(), "include", "charon", "*.h")))
+    local sources = table.join(os.files(path.join(os.scriptdir(), "src", "*.c")), os.files(path.join(os.scriptdir(), "src", "*.h")),
+                               os.files(path.join(os.scriptdir(), "include", "charon", "*.h")))
     table.sort(sources)
     for _, file in ipairs(sources) do
         table.insert(digests, path.filename(file) .. "=" .. hash.sha256(file))

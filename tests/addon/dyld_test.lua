@@ -110,7 +110,7 @@ function failures(opt)
     for _, entry in ipairs(dyld.missing_imports(libraries, {bound})) do
         text = text .. entry[2]
     end
-    if not text:find("_elsewhere (bound to /usr/lib/libother.dylib", 1, true) then
+    if not text:find("_elsewhere (bound to /usr/lib/libother.dylib, which only another library exports", 1, true) then
         table.insert(found, "an import bound to a library that does not export it must be refused even when another library does: " .. text)
     end
     local errors = fixtures.refusal(function () dyld.check(path.join(folder, "absent"), {clean}) end)

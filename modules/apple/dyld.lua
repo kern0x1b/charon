@@ -244,8 +244,8 @@ function load(cachefile)
     return loaded
 end
 
-local function exports_symbol(cache, install, symbol, seen)
-    local library = cache.libraries[install]
+local function exports_symbol(lookup, install, symbol, seen)
+    local library = lookup(install)
     if not library or seen[install] then
         return false
     end
@@ -254,7 +254,7 @@ local function exports_symbol(cache, install, symbol, seen)
         return true
     end
     for _, other in ipairs(library.reexports) do
-        if exports_symbol(cache, other, symbol, seen) then
+        if exports_symbol(lookup, other, symbol, seen) then
             return true
         end
     end
@@ -297,24 +297,32 @@ function missing_imports(cachefile, binaries, root)
     for _, entry in ipairs(found) do
         table.join2(own, defined_exports(entry.data, entry.image, entry.image.base))
         if entry.image.identity then
-            provided[entry.image.identity] = true
-            provided_names[path.filename(entry.image.identity)] = true
+            local library = library_of(entry.data, entry.image, entry.image.base)
+            provided[entry.image.identity] = library
+            provided_names[path.filename(entry.image.identity)] = library
         end
     end
+    local function lookup(install)
+        return provided[install] or (install:startswith("@") and provided_names[path.filename(install)]) or cache.libraries[install]
+    end
     for _, entry in ipairs(found) do
+        local absent = {}
         for index, library in ipairs(entry.image.libraries) do
             local relative = library:startswith("@")
-            if entry.image.library_strength[index] and not (cache.images[library] or provided[library] or (relative and provided_names[path.filename(library)])) then
-                table.insert(missing, {named(entry.binary), string.format("(loads %s, which neither the device nor this build provides)", library)})
+            if not (cache.images[library] or provided[library] or (relative and provided_names[path.filename(library)])) then
+                absent[index] = true
+                if entry.image.library_strength[index] then
+                    table.insert(missing, {named(entry.binary), string.format("(loads %s, which neither the device nor this build provides)", library)})
+                end
             end
         end
         local twolevel = entry.image.flags & 0x80 ~= 0
         for _, symbol in ipairs(undefined_imports(entry.data, entry.image)) do
-            if symbol.name:startswith("_") and not symbol.weak then
+            if symbol.name:startswith("_") and not symbol.weak and not (twolevel and absent[symbol.ordinal]) then
                 local library = twolevel and entry.image.libraries[symbol.ordinal]
-                if library and cache.libraries[library] then
-                    if not exports_symbol(cache, library, symbol.name, {}) then
-                        local elsewhere = cache.exports[symbol.name] and ", which the device exports only from another library" or ""
+                if library and lookup(library) then
+                    if not exports_symbol(lookup, library, symbol.name, {}) then
+                        local elsewhere = (cache.exports[symbol.name] or own[symbol.name]) and ", which only another library exports" or ""
                         table.insert(missing, {named(entry.binary), string.format("%s (bound to %s%s)", symbol.name, library, elsewhere)})
                     end
                 elseif not own[symbol.name] and not cache.exports[symbol.name] then
