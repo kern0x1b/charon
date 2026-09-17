@@ -18,9 +18,10 @@ package("apple-backports")
     add_configs("sources", {description = "The digest of the sources, the build module and the Charon releases, so a changed backport or a new release is a different package.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
 
     add_configs("uikit", {description = "Build libUIKitBackports.dylib beside libFoundationBackports.dylib, for an application; a daemon or a tool leaves UIKit out of its process.", default = false, type = "boolean"})
+    add_configs("corelocation", {description = "Build libCoreLocationBackports.dylib, for a port that asks for location authorization; it loads CoreLocation into the process.", default = false, type = "boolean"})
 
     on_load("iphoneos", function (package)
-        package:add("links", table.join(package:config("uikit") and {"UIKitBackports"} or {}, {"FoundationBackports"}))
+        package:add("links", table.join(package:config("uikit") and {"UIKitBackports"} or {}, package:config("corelocation") and {"CoreLocationBackports"} or {}, {"FoundationBackports"}))
     end)
 
     on_install("iphoneos", function (package)
@@ -40,7 +41,8 @@ package("apple-backports")
         local common = {root = package:scriptdir(), architecture = package:arch(), deployment = deployment, sdkdir = toolchain:config("sdkdir"),
                         ld = assert(linker, "the apple-ios toolchain names no ld64 for " .. package:arch())}
         backports.build(table.join(common, {cache = cache, builddir = path.absolute("link"), outputdir = package:installdir("lib"),
-                                            libraries = package:config("uikit") and {"FoundationBackports", "UIKitBackports"} or {"FoundationBackports"}}))
+                                            libraries = table.join({"FoundationBackports"}, package:config("uikit") and {"UIKitBackports"} or {},
+                                                                    package:config("corelocation") and {"CoreLocationBackports"} or {})}))
         local released
         for version in io.readfile(path.join(package:scriptdir(), "..", "..", "..", "addons", "c", "charon", "xmake.lua")):gmatch('add_versions%("v(%d[%d%.]*)"') do
             if not released or dyld.compare_versions(version, released) > 0 then

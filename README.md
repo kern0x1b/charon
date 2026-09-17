@@ -408,8 +408,10 @@ so it does not take over the host process's allocations either.
 NSURLSession, NSURLComponents, UIAlertController, UIStackView, the layout
 anchors, the traits of a view, base64 data, the quality of service of an
 operation - to a minimum release that lacks it, as
-`libFoundationBackports.dylib` and, with the `uikit` config,
-`libUIKitBackports.dylib`, both named
+`libFoundationBackports.dylib`, with the `uikit` config
+`libUIKitBackports.dylib`, and with the `corelocation` config
+`libCoreLocationBackports.dylib`, which asks for location authorization the way
+iOS 6 gets it, by starting the updates the request stands for; all named
 `/usr/lib/charon/org.charon.apple-backports/`. Unlike a runtime a package
 carries, these are one per process: two copies of a class would be two classes.
 `xmake deb` of a port that uses the package writes
