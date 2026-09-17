@@ -87,6 +87,73 @@ function failures(opt)
         table.insert(found, "an ivar has no release of its own and is read as the class that holds it: " .. table.concat(table.orderkeys(named), " "))
     end
 
+    local registry = path.join(folder, "registry")
+    os.mkdir(registry)
+    io.writefile(path.join(registry, "UIKit.json"), [[
+        {"framework": "UIKit", "entries": [
+            {"api": "UIStackView", "kind": "class", "introduced": "9.0", "status": "implemented", "facts": "facts/UIKit/UIStackView.md"},
+            {"api": "-[UIView tintColorDidChange]", "kind": "method", "introduced": "7.0", "status": "implemented"},
+            {"api": "UIFontTextStyleBody", "kind": "constant", "introduced": "7.0", "status": "implemented"},
+            {"api": "UIBlurEffect", "kind": "class", "introduced": "8.0", "status": "absent", "reason": "the render server draws it", "effect": "the class is not there"}
+        ]}
+    ]])
+    local carried = {classes = {UIStackView = true}, members = {["-[UIView tintColorDidChange]"] = true}, symbols = {UIFontTextStyleBody = true}}
+    local undocumented = backports.check_registry(folder, carried)
+    if undocumented ~= 2 then
+        table.insert(found, "an entry that names no file of facts must be counted, not refused: " .. tostring(undocumented))
+    end
+    carried.members["-[UIView tintAdjustmentMode]"] = true
+    errors = fixtures.refusal(function () backports.check_registry(folder, carried) end)
+    if not errors or not errors:find("-[UIView tintAdjustmentMode]", 1, true) then
+        table.insert(found, "a method the backports add without an entry in the registry must be refused naming it: " .. tostring(errors))
+    end
+    carried.members["-[UIView tintAdjustmentMode]"] = nil
+    carried.classes.UIStackView = nil
+    errors = fixtures.refusal(function () backports.check_registry(folder, carried) end)
+    if not errors or not errors:find("UIStackView", 1, true) then
+        table.insert(found, "an entry that says implemented while nothing of that name is built must be refused naming it: " .. tostring(errors))
+    end
+    carried.classes.UIStackView = true
+    os.mkdir(path.join(registry, "Foundation"))
+    io.writefile(path.join(registry, "Foundation", "ios11.json"), [[
+        [
+            {"api": "NSJSONWritingSortedKeys", "kind": "constant", "introduced": "11.0", "status": "ignored",
+             "effect": "the release writes the keys in the order of the dictionary", "facts": "facts/Foundation/NSJSONSerialization.md"},
+            {"api": "NSLocalizedFailureErrorKey", "kind": "constant", "introduced": "11.0", "status": "ignored",
+             "effect": "the release leaves the failure out of -localizedDescription"}
+        ]
+    ]])
+    errors = fixtures.refusal(function () backports.check_registry(folder, carried) end)
+    if not errors or not errors:find("NSLocalizedFailureErrorKey is ignored without a file of facts", 1, true)
+       or errors:find("NSJSONWritingSortedKeys", 1, true) then
+        table.insert(found, "an API the release's own implementation answers differently is ignored, and must name the file of facts that says how: " .. tostring(errors))
+    end
+    io.writefile(path.join(registry, "Foundation", "ios11.json"), [[
+        [
+            {"api": "NSJSONWritingSortedKeys", "kind": "constant", "introduced": "11.0", "status": "ignored",
+             "effect": "the release writes the keys in the order of the dictionary", "facts": "facts/Foundation/NSJSONSerialization.md"}
+        ]
+    ]])
+    os.mkdir(path.join(registry, "UIKit"))
+    io.writefile(path.join(registry, "UIKit", "ios10.json"), [[
+        [{"api": "UIStackView", "kind": "class", "introduced": "9.0", "status": "implemented", "facts": "facts/UIKit/UIStackView.md"}]
+    ]])
+    errors = fixtures.refusal(function () backports.check_registry(folder, carried) end)
+    if not errors or not errors:find("UIKit.json and UIKit/ios10.json", 1, true) then
+        table.insert(found, "one API named by two files of the registry must be refused naming both: " .. tostring(errors))
+    end
+    os.rm(path.join(registry, "UIKit", "ios10.json"))
+    io.writefile(path.join(registry, "UIKit", "floor.json"), [[
+        [{"api": "NSLayoutConstraint", "kind": "class", "introduced": "6.0", "minimum": "6.0", "status": "absent",
+          "reason": "auto layout arrived in 6.0", "effect": "below 6.0 the class is not there", "source": "the armv7 cache of iOS 5.1.1"}]
+    ]])
+    undocumented = backports.check_registry(folder, carried, nil, "6.0")
+    if undocumented ~= 2 then
+        table.insert(found, "a record of where an API begins needs no file of facts, only what the backports carry does: " .. tostring(undocumented))
+    end
+    os.rm(path.join(registry, "UIKit", "floor.json"))
+    os.rm(path.join(registry, "Foundation", "ios11.json"))
+
     local scripts = path.join(folder, "scripts")
     backports.write_scripts(scripts)
     local function device(version)

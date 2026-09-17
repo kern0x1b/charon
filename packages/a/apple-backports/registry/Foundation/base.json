@@ -1,0 +1,1032 @@
+[
+  {
+    "api": "+[NSCalendar calendarWithIdentifier:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSCharacterSet URLFragmentAllowedCharacterSet]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSCharacterSet URLHostAllowedCharacterSet]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSCharacterSet URLPasswordAllowedCharacterSet]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSCharacterSet URLPathAllowedCharacterSet]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSCharacterSet URLQueryAllowedCharacterSet]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSCharacterSet URLUserAllowedCharacterSet]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSExpression expressionForConditional:trueExpression:falseExpression:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSKeyedArchiver archivedDataWithRootObject:requiringSecureCoding:error:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSKeyedUnarchiver unarchiveTopLevelObjectWithData:error:]",
+    "kind": "method",
+    "introduced": "2.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSKeyedUnarchiver unarchivedObjectOfClass:fromData:error:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSKeyedUnarchiver unarchivedObjectOfClasses:fromData:error:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSURL URLWithDataRepresentation:relativeToURL:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSURL absoluteURLWithDataRepresentation:relativeToURL:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSURL fileURLWithFileSystemRepresentation:isDirectory:relativeToURL:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSURL fileURLWithPath:isDirectory:relativeToURL:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSURL fileURLWithPath:relativeToURL:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSArray firstObject]",
+    "kind": "method",
+    "introduced": "4.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar compareDate:toDate:toUnitGranularity:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar component:fromDate:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar components:fromDateComponents:toDateComponents:options:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar componentsInTimeZone:fromDate:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar date:matchesComponents:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar dateByAddingUnit:value:toDate:options:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar dateBySettingHour:minute:second:ofDate:options:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar dateWithEra:year:month:day:hour:minute:second:nanosecond:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar dateWithEra:yearForWeekOfYear:weekOfYear:weekday:hour:minute:second:nanosecond:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar getEra:year:month:day:fromDate:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar getEra:yearForWeekOfYear:weekOfYear:weekday:fromDate:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar getHour:minute:second:nanosecond:fromDate:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar isDate:equalToDate:toUnitGranularity:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar isDate:inSameDayAsDate:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar isDateInToday:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar isDateInTomorrow:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar isDateInWeekend:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar isDateInYesterday:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar nextWeekendStartDate:interval:options:afterDate:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar rangeOfWeekendStartDate:interval:containingDate:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCalendar startOfDayForDate:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCoder decodeTopLevelObjectAndReturnError:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCoder decodeTopLevelObjectForKey:error:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCoder decodeTopLevelObjectOfClass:forKey:error:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCoder decodeTopLevelObjectOfClasses:forKey:error:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCoder decodingFailurePolicy]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCoder error]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCoder failWithError:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSCoder setDecodingFailurePolicy:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSData base64EncodedDataWithOptions:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSData base64EncodedStringWithOptions:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSData enumerateByteRangesUsingBlock:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSData initWithBase64EncodedData:options:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSData initWithBase64EncodedString:options:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSData initWithBytesNoCopy:length:deallocator:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSDateComponents isValidDateInCalendar:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSDateComponents isValidDate]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSIndexPath getIndexes:range:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSKeyedArchiver encodedData]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSKeyedArchiver initRequiringSecureCoding:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSKeyedUnarchiver initForReadingFromData:error:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale alternateQuotationBeginDelimiter]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale alternateQuotationEndDelimiter]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale calendarIdentifier]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale collationIdentifier]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale collatorIdentifier]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale countryCode]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale currencyCode]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale currencySymbol]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale decimalSeparator]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale exemplarCharacterSet]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale groupingSeparator]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale languageCode]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale localizedStringForCalendarIdentifier:]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale localizedStringForCollationIdentifier:]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale localizedStringForCollatorIdentifier:]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale localizedStringForCountryCode:]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale localizedStringForCurrencyCode:]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale localizedStringForLanguageCode:]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale localizedStringForLocaleIdentifier:]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale localizedStringForScriptCode:]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale localizedStringForVariantCode:]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale quotationBeginDelimiter]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale quotationEndDelimiter]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale scriptCode]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale usesMetricSystem]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLocale variantCode]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSMutableString applyTransform:reverse:range:updatedRange:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSOperation qualityOfService]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSOperation setQualityOfService:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSOperationQueue qualityOfService]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSOperationQueue setQualityOfService:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSOperationQueue setUnderlyingQueue:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "inert",
+    "reason": "the release runs an operation queue on its own threads and cannot be told to run it on a dispatch queue",
+    "effect": "the queue is remembered, the operations run where they would have, and the library says so in the log once"
+  },
+  {
+    "api": "-[NSOperationQueue underlyingQueue]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "inert",
+    "reason": "the release runs an operation queue on its own threads",
+    "effect": "it answers what was set"
+  },
+  {
+    "api": "-[NSProcessInfo beginActivityWithOptions:reason:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "reason": "the release holds no power assertions for an activity, and its idle and throttling behaviour is not ours to change",
+    "effect": "it answers a token that ends the activity and asserts nothing; the options that ask to stay awake say so in the log once"
+  },
+  {
+    "api": "-[NSProcessInfo endActivity:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "reason": "the release holds no power assertions for an activity",
+    "effect": "it ends an activity that asserted nothing"
+  },
+  {
+    "api": "-[NSProcessInfo isOperatingSystemAtLeastVersion:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSProcessInfo operatingSystemVersion]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSProcessInfo performActivityWithOptions:reason:usingBlock:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSScanner scanUnsignedLongLong:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSString containsString:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSString localizedCapitalizedString]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSString localizedCaseInsensitiveContainsString:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSString localizedLowercaseString]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSString localizedStandardContainsString:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSString localizedStandardRangeOfString:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSString localizedUppercaseString]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSString stringByAddingPercentEncodingWithAllowedCharacters:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSString stringByApplyingTransform:reverse:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSString stringByRemovingPercentEncoding]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSThread qualityOfService]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSThread setQualityOfService:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSTimer setTolerance:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSTimer tolerance]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSURL dataRepresentation]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSURL fileSystemRepresentation]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSURL getFileSystemRepresentation:maxLength:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSURL hasDirectoryPath]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSURL initAbsoluteURLWithDataRepresentation:relativeToURL:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSURL initFileURLWithFileSystemRepresentation:isDirectory:relativeToURL:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSURL initFileURLWithPath:isDirectory:relativeToURL:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSURL initFileURLWithPath:relativeToURL:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSURL initWithDataRepresentation:relativeToURL:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSURL removeAllCachedResourceValues]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSURL removeCachedResourceValueForKey:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSURL setTemporaryResourceValue:forKey:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSURLSessionConfiguration setTLSMaximumSupportedProtocol:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "absent",
+    "reason": "the release hands its requests to NSURLConnection, which takes no bound on the handshake",
+    "effect": "the setter raises NSInvalidArgumentException naming the reason; the getter answers the bound the platform really has",
+    "facts": "facts/Foundation/NSURLSession.md"
+  },
+  {
+    "api": "-[NSURLSessionConfiguration setTLSMinimumSupportedProtocol:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "absent",
+    "reason": "the release hands its requests to NSURLConnection, which takes no bound on the handshake",
+    "effect": "the setter raises NSInvalidArgumentException naming the reason; the getter answers the bound the platform really has",
+    "facts": "facts/Foundation/NSURLSession.md"
+  },
+  {
+    "api": "-[NSURLSessionTask progress]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "absent",
+    "reason": "NSProgress arrived after the release and the task reports its counts instead",
+    "effect": "the task does not answer -progress, although the SDK declares NSURLSessionTask as NSProgressReporting, so a call crashes unless it is guarded"
+  },
+  {
+    "api": "-[NSValue getValue:size:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented"
+  },
+  {
+    "api": "CFAutorelease",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "CFRunLoopTimerGetTolerance",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "CFRunLoopTimerSetTolerance",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSKeyedArchiveRootObjectKey",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSStringTransformFullwidthToHalfwidth",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSStringTransformHiraganaToKatakana",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSStringTransformLatinToArabic",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSStringTransformLatinToCyrillic",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSStringTransformLatinToGreek",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSStringTransformLatinToHangul",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSStringTransformLatinToHebrew",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSStringTransformLatinToHiragana",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSStringTransformLatinToKatakana",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSStringTransformLatinToThai",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSStringTransformMandarinToLatin",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSStringTransformStripCombiningMarks",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSStringTransformStripDiacritics",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSStringTransformToLatin",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSStringTransformToUnicodeName",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSStringTransformToXMLHex",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSURLComponents",
+    "kind": "class",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSURLErrorBackgroundTaskCancelledReasonKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSURLQueryItem",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSURLSession",
+    "kind": "class",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURLSession.md"
+  },
+  {
+    "api": "NSURLSessionConfiguration",
+    "kind": "class",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURLSession.md"
+  },
+  {
+    "api": "NSURLSessionDataTask",
+    "kind": "class",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURLSession.md"
+  },
+  {
+    "api": "NSURLSessionDownloadTask",
+    "kind": "class",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURLSession.md"
+  },
+  {
+    "api": "NSURLSessionDownloadTaskResumeData",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSURLSessionTask",
+    "kind": "class",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURLSession.md"
+  },
+  {
+    "api": "NSURLSessionTaskPriorityDefault",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSURLSessionTaskPriorityHigh",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSURLSessionTaskPriorityLow",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSURLSessionTransferSizeUnknown",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSURLSessionUploadTask",
+    "kind": "class",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURLSession.md"
+  },
+  {
+    "api": "NSURLUbiquitousItemDownloadingErrorKey",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSURLUbiquitousItemDownloadingStatusCurrent",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSURLUbiquitousItemDownloadingStatusDownloaded",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSURLUbiquitousItemDownloadingStatusKey",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSURLUbiquitousItemDownloadingStatusNotDownloaded",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSURLUbiquitousItemUploadingErrorKey",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  }
+]

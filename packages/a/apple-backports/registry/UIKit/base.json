@@ -1,0 +1,797 @@
+[
+  {
+    "api": "+[NSLayoutConstraint activateConstraints:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[NSLayoutConstraint deactivateConstraints:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[UIColor systemBlueColor]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[UIColor systemGrayColor]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[UIColor systemGreenColor]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[UIColor systemOrangeColor]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[UIColor systemPinkColor]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[UIColor systemPurpleColor]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[UIColor systemRedColor]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[UIColor systemTealColor]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[UIColor systemYellowColor]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[UIFont preferredFontForTextStyle:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "+[UIFont systemFontOfSize:weight:]",
+    "kind": "method",
+    "introduced": "8.2",
+    "status": "implemented"
+  },
+  {
+    "api": "+[UIView animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLayoutConstraint isActive]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[NSLayoutConstraint setActive:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIApplication currentUserNotificationSettings]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIApplication isRegisteredForRemoteNotifications]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIApplication openURL:options:completionHandler:]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIApplication registerForRemoteNotifications]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIApplication registerUserNotificationSettings:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the release shows local notifications without asking, so the types are recorded and reported as granted; categories with actions are not registered and the library says so in the log"
+  },
+  {
+    "api": "-[UIImage imageWithRenderingMode:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "reason": "the release draws an image as it is, with no template pass that fills it with a tint colour",
+    "effect": "the mode is remembered and -renderingMode answers it, but a template image is drawn with its own colours"
+  },
+  {
+    "api": "-[UIImage renderingMode]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "reason": "the release draws an image as it is, with no template pass",
+    "effect": "it answers the mode that was set, which nothing else acts on"
+  },
+  {
+    "api": "-[UINavigationBar backIndicatorImage]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "reason": "the release has no back indicator",
+    "effect": "it answers what was set"
+  },
+  {
+    "api": "-[UINavigationBar backIndicatorTransitionMaskImage]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "reason": "the release has no back indicator",
+    "effect": "it answers what was set"
+  },
+  {
+    "api": "-[UINavigationBar barTintColor]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UINavigationBar setBackIndicatorImage:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "reason": "the release draws the back button as a bordered button with no indicator image",
+    "effect": "the image is remembered and the back button keeps its own look"
+  },
+  {
+    "api": "-[UINavigationBar setBackIndicatorTransitionMaskImage:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "reason": "the release has no back indicator",
+    "effect": "the image is remembered and nothing masks a transition"
+  },
+  {
+    "api": "-[UINavigationBar setBarTintColor:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIScreen nativeBounds]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIScreen nativeScale]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIScreen traitCollectionDidChange:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIScreen traitCollection]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UISearchBar barTintColor]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UISearchBar searchBarStyle]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UISearchBar setBarTintColor:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UISearchBar setSearchBarStyle:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UITabBar barTintColor]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UITabBar setBarTintColor:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UITextField defaultTextAttributes]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UITextField setDefaultTextAttributes:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIToolbar barTintColor]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIToolbar setBarTintColor:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView addLayoutGuide:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView addMotionEffect:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "reason": "the effect follows the device motion the release reports; a device without a gyroscope delivers none and the layer stays where it is"
+  },
+  {
+    "api": "-[UIView bottomAnchor]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView centerXAnchor]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView centerYAnchor]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView firstBaselineAnchor]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView heightAnchor]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView lastBaselineAnchor]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView layoutGuides]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView layoutMarginsDidChange]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView layoutMarginsGuide]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView layoutMargins]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView leadingAnchor]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView leftAnchor]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView motionEffects]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView preservesSuperviewLayoutMargins]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView readableContentGuide]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView removeLayoutGuide:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView removeMotionEffect:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView rightAnchor]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView setLayoutMargins:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView setMotionEffects:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView setPreservesSuperviewLayoutMargins:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView setTintAdjustmentMode:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView setTintColor:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView tintAdjustmentMode]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView tintColorDidChange]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView tintColor]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView topAnchor]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView trailingAnchor]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView traitCollectionDidChange:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView traitCollection]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView viewForFirstBaselineLayout]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView viewForLastBaselineLayout]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIView widthAnchor]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIViewController automaticallyAdjustsScrollViewInsets]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "reason": "the release adjusts no scroll view for the bars",
+    "effect": "it answers what was set"
+  },
+  {
+    "api": "-[UIViewController edgesForExtendedLayout]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "reason": "the release has no extended layout of its own",
+    "effect": "it answers what was set"
+  },
+  {
+    "api": "-[UIViewController extendedLayoutIncludesOpaqueBars]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "reason": "the release has no extended layout of its own",
+    "effect": "it answers what was set"
+  },
+  {
+    "api": "-[UIViewController overrideTraitCollectionForChildViewController:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIViewController setAutomaticallyAdjustsScrollViewInsets:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "reason": "the release adjusts no scroll view for the bars",
+    "effect": "the value is remembered and adjusts nothing"
+  },
+  {
+    "api": "-[UIViewController setEdgesForExtendedLayout:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "reason": "the release lays a controller out under the bars only through wantsFullScreenLayout, which is a different question",
+    "effect": "the value is remembered and changes no layout"
+  },
+  {
+    "api": "-[UIViewController setExtendedLayoutIncludesOpaqueBars:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "reason": "the release has no extended layout of its own",
+    "effect": "the value is remembered and changes no layout"
+  },
+  {
+    "api": "-[UIViewController setOverrideTraitCollection:forChildViewController:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIViewController traitCollectionDidChange:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "-[UIViewController traitCollection]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSLayoutAnchor",
+    "kind": "class",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSLayoutDimension",
+    "kind": "class",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSLayoutXAxisAnchor",
+    "kind": "class",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "NSLayoutYAxisAnchor",
+    "kind": "class",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIAlertAction",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIAlertController",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIApplicationOpenURLOptionUniversalLinksOnly",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIBlurEffect",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "absent",
+    "reason": "a live blur is drawn by the render server, which the release has no pass for",
+    "effect": "the class is not there: NSClassFromString answers nil and a compile time reference crashes on first use"
+  },
+  {
+    "api": "UIFontTextStyleBody",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIFontTextStyleCaption1",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIFontTextStyleCaption2",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIFontTextStyleFootnote",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIFontTextStyleHeadline",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIFontTextStyleSubheadline",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIFontWeightBlack",
+    "kind": "constant",
+    "introduced": "8.2",
+    "status": "implemented"
+  },
+  {
+    "api": "UIFontWeightBold",
+    "kind": "constant",
+    "introduced": "8.2",
+    "status": "implemented"
+  },
+  {
+    "api": "UIFontWeightHeavy",
+    "kind": "constant",
+    "introduced": "8.2",
+    "status": "implemented"
+  },
+  {
+    "api": "UIFontWeightLight",
+    "kind": "constant",
+    "introduced": "8.2",
+    "status": "implemented"
+  },
+  {
+    "api": "UIFontWeightMedium",
+    "kind": "constant",
+    "introduced": "8.2",
+    "status": "implemented"
+  },
+  {
+    "api": "UIFontWeightRegular",
+    "kind": "constant",
+    "introduced": "8.2",
+    "status": "implemented"
+  },
+  {
+    "api": "UIFontWeightSemibold",
+    "kind": "constant",
+    "introduced": "8.2",
+    "status": "implemented"
+  },
+  {
+    "api": "UIFontWeightThin",
+    "kind": "constant",
+    "introduced": "8.2",
+    "status": "implemented"
+  },
+  {
+    "api": "UIFontWeightUltraLight",
+    "kind": "constant",
+    "introduced": "8.2",
+    "status": "implemented"
+  },
+  {
+    "api": "UIInterpolatingMotionEffect",
+    "kind": "class",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIMotionEffect.md"
+  },
+  {
+    "api": "UILayoutGuide",
+    "kind": "class",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIMotionEffect",
+    "kind": "class",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIMotionEffect.md"
+  },
+  {
+    "api": "UIMotionEffectGroup",
+    "kind": "class",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIMotionEffect.md"
+  },
+  {
+    "api": "UIMutableUserNotificationAction",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIMutableUserNotificationCategory",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIPopoverPresentationController",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "absent",
+    "reason": "the release presents a popover through UIPopoverController, whose surface is different",
+    "effect": "the class is not there; -[UIAlertController popoverPresentationController] answers a stand-in of its own instead"
+  },
+  {
+    "api": "UISearchController",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "absent",
+    "reason": "not backported yet; the release has UISearchDisplayController, whose behaviour differs enough to need its own work",
+    "effect": "the class is not there: NSClassFromString answers nil and a compile time reference crashes on first use"
+  },
+  {
+    "api": "UIStackView",
+    "kind": "class",
+    "introduced": "9.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UITraitCollection",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIUserNotificationAction",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIUserNotificationCategory",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIUserNotificationSettings",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented"
+  },
+  {
+    "api": "UIVibrancyEffect",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "absent",
+    "reason": "vibrancy is drawn on top of a live blur, which the release cannot draw",
+    "effect": "the class is not there: NSClassFromString answers nil and a compile time reference crashes on first use"
+  },
+  {
+    "api": "UIVisualEffectView",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "absent",
+    "reason": "a live blur is drawn by the render server, which the release has no pass for",
+    "effect": "the class is not there: NSClassFromString answers nil and a compile time reference crashes on first use"
+  }
+]
