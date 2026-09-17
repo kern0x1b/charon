@@ -396,23 +396,22 @@ for library in "$home/bands/$band"/*.dylib; do
 done
 ]]
 
-POSTRM = [[
+PRERM = [[
 #!/bin/sh
 set -e
-case "$1" in
-    remove|purge)
-        for library in "${DPKG_ROOT:-}@HOME@"/*.dylib; do
-            if [ -L "$library" ]; then
-                rm -f "$library"
-            fi
-        done
-        ;;
-esac
+if [ "$1" = remove ]; then
+    for library in "${DPKG_ROOT:-}@HOME@"/*.dylib; do
+        if [ -L "$library" ]; then
+            rm -f "$library"
+        fi
+    done
+fi
 ]]
 
 function write_scripts(folder)
+    os.tryrm(folder)
     os.mkdir(folder)
-    for name, text in pairs({postinst = POSTINST, postrm = POSTRM}) do
+    for name, text in pairs({postinst = POSTINST, prerm = PRERM}) do
         io.writefile(path.join(folder, name), (text:gsub("@HOME@", INSTALL_FOLDER):gsub("@PACKAGE@", PACKAGE)))
     end
 end

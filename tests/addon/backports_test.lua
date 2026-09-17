@@ -81,13 +81,13 @@ function failures(opt)
             table.insert(found, string.format("iOS %s must get the libraries of the %s band: status %s, link %s, %s", case[1], case[2], tostring(status), tostring(linked), text))
         end
         if case[1] == "6.0" then
-            run("postrm", root, "upgrade")
+            run("prerm", root, "upgrade")
             if not os.islink(path.join(home, "libFoundationBackports.dylib")) then
                 table.insert(found, "an upgrade must keep the links, which the new postinst sets again")
             end
-            run("postrm", root, "remove")
-            if os.islink(path.join(home, "libFoundationBackports.dylib")) then
-                table.insert(found, "removing the package must take the links it set")
+            run("prerm", root, "remove")
+            if os.islink(path.join(home, "libFoundationBackports.dylib")) or #os.filedirs(path.join(home, "*.dylib")) > 0 then
+                table.insert(found, "removing the package must take the links it set before dpkg removes its files, so its folders empty")
             end
         end
     end
