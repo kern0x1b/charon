@@ -29,6 +29,20 @@ function failures(opt)
     if not errors or not errors:find("_arrived_seven_too", 1, true) or not errors:find("_arrived_eight_too", 1, true) then
         table.insert(found, "an object holding what a release exports beside what it does not must be refused naming both: " .. tostring(errors))
     end
+    local uikit = "/System/Library/Frameworks/UIKit.framework/UIKit"
+    local uifoundation = "/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation"
+    local release = {libraries = {[uikit] = {exports = {["_OBJC_CLASS_$_UIAlertController"] = true, ["_OBJC_METACLASS_$_UIAlertController"] = true, _UIApplicationDidFinishLaunchingNotification = true},
+                                             reexports = {uifoundation}},
+                                  [uifoundation] = {exports = {_NSFontAttributeName = true}, reexports = {}}}}
+    local written = backports.stubs("armv7", {name = "UIKitBackports", frameworks = {"UIKit", "Foundation"}},
+                                    {"_OBJC_CLASS_$_UIAlertController", "_NSFontAttributeName"}, {release, release}, folder)
+    local stub = #written == 1 and io.readfile(written[1])
+    if not stub or path.filename(written[1]) ~= "UIKit.tbd" then
+        table.insert(found, "a symbol a framework re-exports must be taken from the framework the library links, not from the private library behind it: " .. table.concat(written, ","))
+    elseif not stub:find("_NSFontAttributeName", 1, true) or not stub:find("UIAlertController", 1, true) or not stub:find("_UIApplicationDidFinishLaunchingNotification", 1, true) then
+        table.insert(found, "a stub stands in for the whole library of its release, since it takes the place of the SDK's: " .. stub)
+    end
+
     local listed = {"5.1.1", "6.0", "6.1.6", "7.0", "7.1.2", "8.0", "8.4.1", "9.0", "9.3.6", "10.0.1", "10.3.4"}
     local described = {}
     for _, range in ipairs(backports.band_ranges({"6.0", "7.0", "8.0", "9.0"}, listed)) do

@@ -5,7 +5,8 @@ import("signing")
 
 LIBRARIES = {
     {name = "FoundationBackports", folder = "Foundation", frameworks = {"Foundation", "CoreFoundation"}},
-    {name = "UIKitBackports", folder = "UIKit", frameworks = {"UIKit", "Foundation", "CoreGraphics", "QuartzCore"}, libraries = {"FoundationBackports"}}
+    {name = "UIKitBackports", folder = "UIKit", frameworks = {"UIKit", "Foundation", "CoreGraphics", "QuartzCore"}, libraries = {"FoundationBackports"}},
+    {name = "CoreLocationBackports", folder = "CoreLocation", frameworks = {"CoreLocation", "Foundation"}, libraries = {"FoundationBackports"}}
 }
 
 PACKAGE = "org.charon.apple-backports"
@@ -120,7 +121,37 @@ local function compiled(opt)
     return attach, objects, origins
 end
 
-local function stubs(opt, library, reexported, releases, folder)
+local function exported_through(release, install, seen)
+    local found = release.libraries[install]
+    if not found or seen[install] then
+        return {}
+    end
+    seen[install] = true
+    local names = table.keys(found.exports)
+    for _, other in ipairs(found.reexports or {}) do
+        table.join2(names, exported_through(release, other, seen))
+    end
+    return names
+end
+
+local function provides(release, install, symbol, seen)
+    local found = release.libraries[install]
+    if not found or seen[install] then
+        return false
+    end
+    seen[install] = true
+    if found.exports[symbol] then
+        return true
+    end
+    for _, other in ipairs(found.reexports or {}) do
+        if provides(release, other, symbol, seen) then
+            return true
+        end
+    end
+    return false
+end
+
+function stubs(architecture, library, reexported, releases, folder)
     local preferred = {}
     for index, framework in ipairs(library.frameworks) do
         preferred[framework] = index
@@ -131,8 +162,7 @@ local function stubs(opt, library, reexported, releases, folder)
         for install in pairs(releases[1].libraries) do
             local everywhere = true
             for _, release in ipairs(releases) do
-                local found = release.libraries[install]
-                everywhere = everywhere and found ~= nil and found.exports[symbol] ~= nil
+                everywhere = everywhere and provides(release, install, symbol, {})
             end
             if everywhere then
                 table.insert(candidates, install)
@@ -154,7 +184,7 @@ local function stubs(opt, library, reexported, releases, folder)
     local files = {}
     for _, install in ipairs(table.orderkeys(chosen)) do
         local symbols, classes = {}, {}
-        for _, symbol in ipairs(chosen[install]) do
+        for _, symbol in ipairs(exported_through(releases[1], install, {})) do
             local class = symbol:match("^_OBJC_CLASS_%$_(.+)$")
             if class then
                 table.insert(classes, class)
@@ -162,7 +192,9 @@ local function stubs(opt, library, reexported, releases, folder)
                 table.insert(symbols, symbol)
             end
         end
-        local target = opt.architecture .. "-ios"
+        table.sort(symbols)
+        table.sort(classes)
+        local target = architecture .. "-ios"
         local file = path.join(folder, path.basename(install) .. ".tbd")
         io.writefile(file, table.concat({"--- !tapi-tbd", "tbd-version: 4", "targets: [ " .. target .. " ]", "install-name: '" .. install .. "'", "exports:",
                                          "  - targets: [ " .. target .. " ]", "    symbols: [ " .. table.concat(symbols, ", ") .. " ]",
@@ -184,7 +216,7 @@ local function link(opt, library, attach, objects, releases, outputdir)
         local folder = path.join(opt.builddir, "stubs", path.filename(outputdir), library.name)
         os.tryrm(folder)
         os.mkdir(folder)
-        table.join2(arguments, stubs(opt, library, reexported, releases, folder))
+        table.join2(arguments, stubs(opt.architecture, library, reexported, releases, folder))
     end
     for _, other in ipairs(library.libraries or {}) do
         table.join2(arguments, {"-L" .. outputdir, "-l" .. other})
