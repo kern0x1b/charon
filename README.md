@@ -1,8 +1,8 @@
 # Charon
 
 Legacy Apple platforms for [xmake](https://xmake.io): armv6 from iPhone OS 2.0,
-armv7 from iPhone OS 3.0, armv7s from iOS 6 and arm64 from iOS 7, built by the
-command line tools' clang with no Xcode.
+armv7 from iPhone OS 3.0, armv7s from iOS 6 and arm64 from iOS 7, built by
+clang 23 from the `llvm` package with no Xcode.
 A port is an ordinary `xmake.lua` in each module; Charon adds what xmake does not
 know about these platforms, and nothing else:
 
@@ -195,7 +195,7 @@ with the reason, e.g. `set_values("charon.waive.pagezero", "why")`.
 
 A package of a port that builds with CMake calls the addon's bridge from its
 install script, which writes a toolchain file from the `apple-ios` toolchain
-(clang from the command line tools, `-target`, `-isysroot`, ld64, the SDK and
+(clang from the `llvm` package, `-target`, `-isysroot`, ld64, the SDK and
 the package's installed dependencies as find roots) and configures, builds and
 installs with Ninja:
 
@@ -239,6 +239,20 @@ It is checked against the devices' own libraries from iPhone OS 2.2.1 to iOS
 not re-export libc++abi and a client links both, as the package's links say;
 below 3.0 apple-compat also carries `posix_memalign` and the integer-to-float and
 byte-swap helpers iPhone OS 2's libgcc_s lacks.
+
+`thread_local`, `_Thread_local` and `__thread` compile for every release. dyld
+reads `__thread_vars` on 32-bit iOS from 9.0 and on arm64 from 8.0; below that
+the toolchain adds `-femulated-tls`, and a thread-local variable lives behind a
+pthread key through `__emutls_get_address`, with C++ destructors registered by
+`__cxa_thread_atexit`. The `llvm` package is clang 23.1.1 with the change that
+lets it accept thread-local variables for a Darwin release under emulated TLS
+and call `__cxa_thread_atexit` instead of dyld's `_tlv_atexit`, which iOS 6
+does not have and iOS 7 and 8 leave empty on armv7. Both entry points are
+exported by the libc++abi of `charon@libcxx`, one copy for the whole process: a
+copy in each image numbers variables on its own, and two images then read each
+other's storage. The compiler's `libclang_rt.ios.a`, built by the same package,
+leaves emutls out, so an image that does not link the runtime fails to link
+rather than getting a copy of its own.
 apple-compat links its shims into whoever requires it and force-includes
 nothing on its own, because a shim's header brings its system header with it
 (`unlinkat.h` brings `<unistd.h>`, and with it `sync`). A target names the
@@ -534,8 +548,8 @@ releases lack - `aligned_alloc`, `clock_gettime`, the `*at` calls, `__ulock_wait
 - and links `apple-compat` hidden, which provides each for the releases before it
 arrived; the recipe refuses a runtime that still imports one of them.
 
-Xcode is not required and does not need to be installed. The Command Line Tools
-carry the compiler and the compiler runtime, the SDK comes from the
+Xcode is not required and does not need to be installed. The `llvm` package
+builds the compiler and its runtime, the SDK comes from the
 `iphoneos-sdk` package, and the linker and the signing tool are built from
 source by the `ld64` and `ldid` recipes. Theos itself is not needed.
 

@@ -32,7 +32,7 @@ package("libcxx")
             end
         end
         os.vrunv("git", {"-C", checkout, "sparse-checkout", "set", "libcxx", "libcxxabi", "libunwind", "runtimes", "cmake",
-                         "third-party", "llvm/cmake", "llvm/utils/llvm-lit", "libc"})
+                         "third-party", "llvm/cmake", "llvm/utils/llvm-lit", "libc", "compiler-rt/lib/builtins"})
         os.tryrm(opt.sourcedir)
         os.mv(checkout, opt.sourcedir)
     end)
@@ -40,7 +40,7 @@ package("libcxx")
     on_install("iphoneos", function (package)
         import("core.base.semver")
         local cmake = import("apple.cmake", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
-        for _, patch in ipairs({"utimensat-told-no.patch", "reexport-when-dyld-can.patch"}) do
+        for _, patch in ipairs({"utimensat-told-no.patch", "reexport-when-dyld-can.patch", "one-emulated-tls-runtime.patch"}) do
             os.vrunv("git", {"apply", path.join(package:scriptdir(), "patches", patch), "-p2"})
         end
         local compat = package:dep("apple-compat")
@@ -56,7 +56,9 @@ package("libcxx")
             table.join2(shflags, {"-L" .. compat:installdir("lib"), "-Wl,-hidden-lapple-compat"})
         end
         local deployment = cmake.toolchain(package):config("deployment")
+        local emulated_tls = cmake.toolchain(package):config("emulated_tls") and true or false
         cmake.install(package, {
+            "-DLIBCXXABI_ENABLE_EMULATED_TLS=" .. (emulated_tls and "ON" or "OFF"),
             "-DLLVM_ENABLE_RUNTIMES=libcxx;libcxxabi",
             "-DLIBCXXABI_REEXPORT_FROM_LIBCXX=" .. (semver.compare(deployment, "4.2") < 0 and "OFF" or "ON"),
             "-DLIBCXX_ENABLE_SHARED=ON", "-DLIBCXXABI_ENABLE_SHARED=ON",
@@ -79,6 +81,14 @@ package("libcxx")
             end
             if #leaked > 0 then
                 raise("%s still imports %s from the system, which iOS %s does not have; apple-compat was not linked into it", library, table.concat(leaked, ", "), cmake.toolchain(package):config("deployment"))
+            end
+        end
+        if emulated_tls then
+            local exported = os.iorunv("xcrun", {"nm", "-gU", path.join(package:installdir("lib"), "libc++abi.1.0.dylib")})
+            for _, symbol in ipairs({"___emutls_get_address", "___cxa_thread_atexit"}) do
+                if not exported:find(" T " .. symbol .. "\n", 1, true) then
+                    raise("libc++abi.1.0.dylib does not export %s, and code compiled with -femulated-tls for iOS %s calls it", symbol, deployment)
+                end
             end
         end
         os.cp("libcxx/LICENSE.TXT", package:installdir("licenses") .. "/")

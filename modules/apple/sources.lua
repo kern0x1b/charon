@@ -36,7 +36,7 @@ function static(package, opt)
     for index, file in ipairs(files) do
         objects[index] = path.join(builddir, path.relative(file, root):gsub("[/\\]", "_") .. ".o")
     end
-    local clang = {clang = os.iorunv("xcrun", {"-f", "clang"}):trim(), ["clang++"] = os.iorunv("xcrun", {"-f", "clang++"}):trim()}
+    local clang = {clang = toolchain:tool("cc"), ["clang++"] = toolchain:tool("cxx")}
     os.mkdir(builddir)
     runjobs("compile " .. package:name(), function (index)
         local file = files[index]

@@ -18,7 +18,8 @@ function toolchain_file(package, opt)
     local sdk = chosen:config("sdkdir")
     local linked_minimum = chosen:config("deployment")
     local compiled_minimum = opt.compile_deployment or linked_minimum
-    local compiled = table.join({"-target", package:arch() .. "-apple-ios", "-miphoneos-version-min=" .. compiled_minimum, "-isysroot", sdk}, opt.cflags or {})
+    local thread_local = chosen:config("emulated_tls") and {"-femulated-tls"} or {}
+    local compiled = table.join({"-target", package:arch() .. "-apple-ios", "-miphoneos-version-min=" .. compiled_minimum, "-isysroot", sdk}, thread_local, opt.cflags or {})
     local common = {"-target", package:arch() .. "-apple-ios", "-miphoneos-version-min=" .. linked_minimum, "-isysroot", sdk}
     local linker = {}
     for _, flag in ipairs(table.wrap(chosen:get("shflags"))) do
@@ -38,8 +39,8 @@ function toolchain_file(package, opt)
         "set(CMAKE_SYSTEM_PROCESSOR " .. assert(processors[package:arch()], "apple-ios builds armv6, armv7, armv7s and arm64") .. ")",
         "set(CMAKE_OSX_SYSROOT \"" .. sdk .. "\" CACHE PATH \"\" FORCE)",
         "set(CMAKE_OSX_ARCHITECTURES " .. package:arch() .. " CACHE STRING \"\" FORCE)",
-        "set(CMAKE_C_COMPILER \"" .. os.iorunv("xcrun", {"-f", "clang"}):trim() .. "\")",
-        "set(CMAKE_CXX_COMPILER \"" .. os.iorunv("xcrun", {"-f", "clang++"}):trim() .. "\")"
+        "set(CMAKE_C_COMPILER \"" .. chosen:tool("cc") .. "\")",
+        "set(CMAKE_CXX_COMPILER \"" .. chosen:tool("cxx") .. "\")"
     }
     if (opt.system or "iOS") == "iOS" then
         table.insert(lines, "set(CMAKE_OSX_DEPLOYMENT_TARGET " .. compiled_minimum .. " CACHE STRING \"\" FORCE)")

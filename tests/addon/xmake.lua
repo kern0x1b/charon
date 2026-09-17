@@ -1,19 +1,22 @@
 add_repositories("charon ../..")
-add_requires("ld64 956.6", "ldid 2.1.5-procursus7+23.gaf86971")
+add_requires("ld64 956.6", "ldid 2.1.5-procursus7+23.gaf86971", "iphoneos-sdk 16.4", "llvm 23.1.1")
 
 set_allowedplats("macosx")
 
 local function suite(name)
     target(name)
         set_kind("phony")
-        add_packages("ld64", "ldid")
+        add_packages("ld64", "ldid", "iphoneos-sdk", "llvm")
         add_tests("default")
         on_test(function (target)
             local modules = path.join(os.projectdir(), "..", "..", "modules")
             local failures = import(target:name(), {rootdir = os.projectdir(), anonymous = true}).failures({
                 modules = modules,
                 ld64 = path.join(target:pkg("ld64"):installdir(), "bin", "ld"),
-                ldid = path.join(target:pkg("ldid"):installdir(), "bin", "ldid")
+                ldid = path.join(target:pkg("ldid"):installdir(), "bin", "ldid"),
+                clang = path.join(target:pkg("llvm"):installdir(), "bin", "clang"),
+                sdk = os.dirs(path.join(target:pkg("iphoneos-sdk"):installdir(), "Developer.app", "Contents", "Developer", "Platforms",
+                                        "iPhoneOS.platform", "Developer", "SDKs", "iPhoneOS*.sdk"))[1]
             })
             for _, failure in ipairs(failures) do
                 cprint("${red}%s: %s", target:name(), failure)
@@ -30,3 +33,4 @@ suite("device_test")
 suite("checks_test")
 suite("blocks_test")
 suite("weak_test")
+suite("tls_test")
