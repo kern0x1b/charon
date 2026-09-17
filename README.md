@@ -210,9 +210,8 @@ installs with Ninja:
 xmake's own `package.tools.cmake` does not pass a custom compiler for iphoneos.
 The third argument takes `cflags`, `cxxflags`, `ldflags`, `shflags`, `system`
 (`Darwin` for projects such as LLVM's runtimes that recognise Apple only by that
-name; no deployment target is set then, the flags carry it) and
-`compile_deployment`, a release to compile against while the image still links,
-and records, the port's minimum; `targets` builds only those, and
+name; no deployment target is set then, the flags carry it); `targets` builds
+only those, and
 `install = false` skips `cmake --install` - `install` returns the build folder
 for a package that copies what it needs; `deps` (true, or dependency names)
 turns what those packages declare - include folders, defines, flags, links -

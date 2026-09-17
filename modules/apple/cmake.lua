@@ -16,12 +16,11 @@ function toolchain_file(package, opt)
     opt = opt or {}
     local chosen = toolchain(package)
     local sdk = chosen:config("sdkdir")
-    local linked_minimum = chosen:config("deployment")
-    local compiled_minimum = opt.compile_deployment or linked_minimum
+    local minimum = chosen:config("deployment")
     local thread_local = chosen:config("emulated_tls") and {"-femulated-tls"} or {}
     local linker_version = chosen:config("linker_version") and {"-mlinker-version=" .. chosen:config("linker_version")} or {}
-    local compiled = table.join({"-target", package:arch() .. "-apple-ios", "-miphoneos-version-min=" .. compiled_minimum, "-isysroot", sdk}, linker_version, thread_local, opt.cflags or {})
-    local common = table.join({"-target", package:arch() .. "-apple-ios", "-miphoneos-version-min=" .. linked_minimum, "-isysroot", sdk}, linker_version)
+    local common = table.join({"-target", package:arch() .. "-apple-ios", "-miphoneos-version-min=" .. minimum, "-isysroot", sdk}, linker_version)
+    local compiled = table.join(common, thread_local, opt.cflags or {})
     local linker = {}
     for _, flag in ipairs(table.wrap(chosen:get("shflags"))) do
         if flag:startswith("-fuse-ld=") then
@@ -44,7 +43,7 @@ function toolchain_file(package, opt)
         "set(CMAKE_CXX_COMPILER \"" .. chosen:tool("cxx") .. "\")"
     }
     if (opt.system or "iOS") == "iOS" then
-        table.insert(lines, "set(CMAKE_OSX_DEPLOYMENT_TARGET " .. compiled_minimum .. " CACHE STRING \"\" FORCE)")
+        table.insert(lines, "set(CMAKE_OSX_DEPLOYMENT_TARGET " .. minimum .. " CACHE STRING \"\" FORCE)")
     else
         table.insert(lines, "set(CMAKE_OSX_DEPLOYMENT_TARGET \"\" CACHE STRING \"\" FORCE)")
     end
