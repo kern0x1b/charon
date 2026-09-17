@@ -6,6 +6,7 @@ import("firmware")
 import("objc")
 import("signing")
 import("bundle")
+import("backports")
 
 function waivers(target)
     local waived = {}
@@ -81,13 +82,34 @@ function imports_source(target, architecture)
     return (firmware.ensure(architecture or target:arch(), deployment(target), {tool = tool}))
 end
 
-function report_selectors(source, binaries, architecture, folder)
-    for binary, missing in pairs(objc.absent_selectors(source, binaries, architecture)) do
-        local named = folder and path.relative(binary, folder) or binary
-        local limit = option.get("verbose") and #missing or 12
-        local shown = table.concat(table.slice(missing, 1, math.min(limit, #missing)), " ") .. (#missing > limit and string.format(" and %d more, all of them under xmake -v", #missing - limit) or "")
-        wprint("%s sends %d selector%s no class of the %s release it is checked against implements, which must run only behind respondsToSelector: or a version check: %s",
-               named, #missing, #missing == 1 and "" or "s", architecture, shown)
+function backport_libraries(target)
+    local package = target:pkg("apple-backports")
+    local libraries = {}
+    for _, folder in ipairs(package and table.wrap(package:get("linkdirs")) or {}) do
+        for _, library in ipairs(backports.libraries()) do
+            local file = path.join(folder, "lib" .. library.name .. ".dylib")
+            if os.isfile(file) then
+                table.insert(libraries, file)
+            end
+        end
+    end
+    if package and #libraries == 0 then
+        raise("target(%s) uses apple-backports, and its link folders %s hold none of its libraries", target:name(), table.concat(table.wrap(package:get("linkdirs")), " "))
+    end
+    return libraries
+end
+
+function report_selectors(source, binaries, architecture, folder, provided)
+    local found = objc.absent_selectors(source, table.join(binaries, provided or {}), architecture)
+    for _, binary in ipairs(binaries) do
+        local missing = found[binary]
+        if missing then
+            local named = folder and path.relative(binary, folder) or binary
+            local limit = option.get("verbose") and #missing or 12
+            local shown = table.concat(table.slice(missing, 1, math.min(limit, #missing)), " ") .. (#missing > limit and string.format(" and %d more, all of them under xmake -v", #missing - limit) or "")
+            wprint("%s sends %d selector%s no class of the %s release it is checked against implements, which must run only behind respondsToSelector: or a version check: %s",
+                   named, #missing, #missing == 1 and "" or "s", architecture, shown)
+        end
     end
 end
 
@@ -97,8 +119,9 @@ function verify(target, binary, opt)
     macho.verify(binary, {waived = waivers(target), arrived = compat.arrived("iOS"), stripped = opt.stripped})
     if opt.imports ~= false then
         local source = imports_source(target)
-        dyld.check(source, {binary})
-        report_selectors(source, {binary}, target:arch())
+        local provided = backport_libraries(target)
+        dyld.check(source, table.join({binary}, provided))
+        report_selectors(source, {binary}, target:arch(), nil, provided)
     end
 end
 
@@ -161,8 +184,9 @@ function verify_placed(target, installed)
         verify(target, placed, {imports = false})
     end
     local source = imports_source(target)
-    dyld.check(source, binaries, root)
-    report_selectors(source, binaries, target:arch(), root)
+    local provided = backport_libraries(target)
+    dyld.check(source, table.join(binaries, provided), root)
+    report_selectors(source, binaries, target:arch(), root, provided)
 end
 
 function install_placed(target, installed)
@@ -233,8 +257,9 @@ function application(target)
     end
     if not os.getenv("CHARON_SLICE") then
         local source = imports_source(target)
-        dyld.check(source, binaries, folder)
-        report_selectors(source, binaries, target:arch(), folder)
+        local provided = backport_libraries(target)
+        dyld.check(source, table.join(binaries, provided), folder)
+        report_selectors(source, binaries, target:arch(), folder, provided)
     end
     return folder
 end

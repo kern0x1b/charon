@@ -136,6 +136,26 @@ local function trie_exports(data, offset, size)
     return exports
 end
 
+local function single_reexports(data, image)
+    local found = {}
+    if not image.export_trie or image.export_trie[2] == 0 then
+        return found
+    end
+    local trie = data:sub(image.base + image.export_trie[1] + 1, image.base + image.export_trie[1] + image.export_trie[2])
+    for name, cursor in pairs(trie_payloads(trie)) do
+        local flags
+        flags, cursor = uleb(trie, cursor)
+        if flags & 0x08 ~= 0 then
+            local ordinal
+            ordinal, cursor = uleb(trie, cursor)
+            local imported = cstring(trie, cursor)
+            table.insert(found, {name = name, ordinal = ordinal, imported = imported ~= "" and imported or name})
+        end
+    end
+    table.sort(found, function (a, b) return a.name < b.name end)
+    return found
+end
+
 local function library_of(data, image, linkedit)
     local exports
     if image.export_trie and image.export_trie[2] ~= 0 then
@@ -360,7 +380,15 @@ local function cache_files(mainfile)
             end
         elseif file.mapping_offset >= 0x48 then
             local slide_offset, slide_size = string.unpack("<I8I8", file.header, 0x38 + 1)
-            describe(slide_offset, slide_size, 0, math.maxinteger)
+            local own = {}
+            for _, mapping in ipairs(mappings) do
+                if mapping.file == file then
+                    table.insert(own, mapping)
+                end
+            end
+            if own[2] then
+                describe(slide_offset, slide_size, own[2].address, own[2].size)
+            end
         end
         found = ranges
         slides[file] = found
@@ -369,9 +397,6 @@ local function cache_files(mainfile)
     local function pointer_at(address, wide)
         local file = locate(address, wide and 8 or 4)
         local value = string.unpack(wide and "<I8" or "<I4", read_address(address, wide and 8 or 4))
-        if not wide then
-            return value
-        end
         if value == 0 then
             return 0
         end
@@ -379,7 +404,9 @@ local function cache_files(mainfile)
             if info.address <= address and address < info.address + info.size then
                 if info.version == 2 then
                     local target = value & ~info.delta_mask
-                    return target ~= 0 and target + info.value_add or 0
+                    return target ~= 0 and ((target + info.value_add) & (wide and -1 or 0xFFFFFFFF)) or 0
+                elseif not wide then
+                    return value
                 elseif info.version == 3 then
                     if value >> 63 ~= 0 then
                         return info.value_add + (value & 0xFFFFFFFF)
@@ -584,8 +611,26 @@ function missing_imports(cachefile, binaries, root)
             end
         end
         local twolevel = entry.image.flags & 0x80 ~= 0
+        local reexported = {}
+        for _, reexport in ipairs(single_reexports(entry.data, entry.image)) do
+            reexported[reexport.imported] = true
+            local library = entry.image.libraries[reexport.ordinal]
+            if library and lookup(library) and not exports_symbol(lookup, library, reexport.imported, {}) then
+                table.insert(missing, {named(entry.binary), string.format("%s (re-exported from %s, which does not export %s)", reexport.name, library, reexport.imported)})
+            end
+        end
         for _, symbol in ipairs(undefined_imports(entry.data, entry.image)) do
-            if symbol.name:startswith("_") and not symbol.weak and not (twolevel and absent[symbol.ordinal]) then
+            local bound = twolevel and entry.image.libraries[symbol.ordinal]
+            if symbol.weak and bound and cache.libraries[bound] and not exports_symbol(lookup, bound, symbol.name, {}) then
+                for _, install in ipairs(table.orderkeys(provided)) do
+                    if install ~= bound and provided[install].exports[symbol.name] then
+                        table.insert(missing, {named(entry.binary), string.format("%s (weakly bound to %s, which does not export it, while %s does; link %s before %s)",
+                                                                                  symbol.name, bound, install, path.filename(install), path.filename(bound))})
+                        break
+                    end
+                end
+            end
+            if symbol.name:startswith("_") and not symbol.weak and not reexported[symbol.name] and not (twolevel and absent[symbol.ordinal]) then
                 local library = twolevel and entry.image.libraries[symbol.ordinal]
                 if library and lookup(library) then
                     if not exports_symbol(lookup, library, symbol.name, {}) then

@@ -63,17 +63,21 @@ local function selector_failures(folder, opt)
     local found = {}
     local objc = import("apple.objc", {rootdir = opt.modules, anonymous = true})
     io.writefile(path.join(folder, "selectors.m"), SELECTORS)
-    for _, case in ipairs({{"armv7", "armv7-apple-ios6.0"}, {"arm64", "arm64-apple-ios7.0"}}) do
-        local library = "libselectors_" .. case[1] .. ".dylib"
-        fixtures.run(folder, opt.clang, {"-target", case[2], "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-w", "-fobjc-arc",
-                                         "-mlinker-version=" .. linker_version(opt), "-fuse-ld=" .. opt.ld64, "-dynamiclib", "-framework", "Foundation",
-                                         "selectors.m", "-o", library})
+    for _, case in ipairs({{"armv7", "armv7-apple-ios6.0", "plain"}, {"arm64", "arm64-apple-ios7.0", "plain"},
+                           {"armv7", "armv7-apple-ios6.0", "charon_catlist", {"-Wl,-rename_section,__DATA,__objc_catlist,__DATA,__charon_catlist"}}}) do
+        local library = "libselectors_" .. case[1] .. "_" .. case[3] .. ".dylib"
+        fixtures.run(folder, opt.clang, table.join({"-target", case[2], "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-w", "-fobjc-arc",
+                                                    "-mlinker-version=" .. linker_version(opt), "-fuse-ld=" .. opt.ld64, "-dynamiclib", "-framework", "Foundation",
+                                                    "selectors.m", "-o", library}, case[4] or {}))
+        if case[4] and fixtures.run(folder, "xcrun", {"otool", "-l", library}):find("__objc_catlist", 1, true) then
+            table.insert(found, "ld64 kept __objc_catlist under -rename_section, which the backports rely on")
+        end
         local selectors = objc.binary_selectors(path.join(folder, library), case[1])
         for _, name in ipairs({"probe_reversed", "probeDidFinishWithCount:"}) do
             if not selectors.used["-" .. name] then
-                table.insert(found, case[1] .. ": the library sends " .. name .. ", and its selector references must list it")
+                table.insert(found, case[1] .. " " .. case[3] .. ": the library sends " .. name .. ", and its selector references must list it")
             elseif not selectors.implemented["-" .. name] then
-                table.insert(found, case[1] .. ": " .. name .. " is defined by the library itself, in a category on a class it imports or a protocol it declares, and must count as implemented")
+                table.insert(found, case[1] .. " " .. case[3] .. ": " .. name .. " is defined by the library itself, in a category on a class it imports or a protocol it declares, and must count as implemented")
             end
         end
     end

@@ -41,7 +41,7 @@ function failures(opt)
     local found = {}
     local folder = fixtures.scratch()
     local armv7 = cache(path.join(folder, "dyld_shared_cache_armv7"), "armv7", "_exported")
-    io.writefile(path.join(folder, "libSystem.tbd"), fixtures.system_stub("dyld_stub_binder, _exported, _nested, ___divti3"))
+    io.writefile(path.join(folder, "libSystem.tbd"), fixtures.system_stub("dyld_stub_binder, _exported, _nested, ___divti3, _arrived"))
     io.writefile(path.join(folder, "libother.tbd"), fixtures.system_stub("_elsewhere", "/usr/lib/libother.dylib"))
     io.writefile(path.join(folder, "libgone.tbd"), fixtures.system_stub("_gone", "/usr/lib/libgone.dylib"))
     local clean = dylib(folder, opt.ld64, "clean-armv7", "armv7-apple-ios6.0", "_exported")
@@ -67,6 +67,43 @@ function failures(opt)
             table.insert(found, case[1] .. " must pass: " .. text)
         elseif case[3] and not text:find(case[3], 1, true) then
             table.insert(found, case[1] .. " must be refused naming " .. case[3] .. ": " .. text)
+        end
+    end
+    io.writefile(path.join(folder, "provider.c"), "int arrived(void) { return 1; }\n")
+    local provider = fixtures.link(folder, opt.ld64, "libprovider.dylib", "armv7-apple-ios6.0", "provider.c",
+                                   {"-dynamiclib", "-install_name", "/usr/lib/charon/libprovider.dylib"})
+    io.writefile(path.join(folder, "weak.c"), "extern int arrived(void) __attribute__((weak_import));\nint use(void) { return arrived ? arrived() : 0; }\n")
+    local system_first = fixtures.link(folder, opt.ld64, "system-first.dylib", "armv7-apple-ios6.0", "weak.c", {"-dynamiclib", "-lprovider"})
+    fixtures.run(folder, "xcrun", {"clang", "-target", "armv7-apple-ios6.0", "-Wno-incompatible-sysroot", "-fuse-ld=" .. opt.ld64, "-nostdlib", "-L.",
+                                   "-lprovider", "-lSystem", "-dynamiclib", "-o", "provider-first.dylib", "weak.c"})
+    local provider_first = path.join(folder, "provider-first.dylib")
+    local unprovided = fixtures.link(folder, opt.ld64, "unprovided.dylib", "armv7-apple-ios6.0", "weak.c", {"-dynamiclib"})
+    local weak = ""
+    for _, entry in ipairs(dyld.missing_imports(armv7, {system_first, provider})) do
+        weak = weak .. entry[2]
+    end
+    if not weak:find("_arrived (weakly bound to /usr/lib/libSystem.B.dylib, which does not export it, while /usr/lib/charon/libprovider.dylib does", 1, true) then
+        table.insert(found, "a weak import bound to a system library that lacks it, while a library of the build provides it, must be refused: " .. weak)
+    end
+    if #dyld.missing_imports(armv7, {provider_first, provider}) > 0 then
+        table.insert(found, "a weak import bound to the library of the build that provides it must pass")
+    end
+    if #dyld.missing_imports(armv7, {unprovided}) > 0 then
+        table.insert(found, "a weak import the release lacks and nothing in the build provides must pass, as it runs behind a check")
+    end
+    io.writefile(path.join(folder, "band.c"), "int band(void) { return 0; }\n")
+    for _, case in ipairs({{"_exported", nil}, {"_arrived", "_arrived (re-exported from /usr/lib/libSystem.B.dylib, which does not export _arrived)"}}) do
+        local list = path.join(folder, case[1] .. ".reexported")
+        io.writefile(list, case[1] .. "\n")
+        local band = fixtures.link(folder, opt.ld64, "band" .. case[1] .. ".dylib", "armv7-apple-ios6.0", "band.c", {"-dynamiclib", "-Wl,-reexported_symbols_list," .. list})
+        local refused = ""
+        for _, entry in ipairs(dyld.missing_imports(armv7, {band})) do
+            refused = refused .. entry[2]
+        end
+        if case[2] and refused ~= case[2] then
+            table.insert(found, "a library re-exporting a symbol the release's library lacks must be refused once, naming it: " .. refused)
+        elseif not case[2] and refused ~= "" then
+            table.insert(found, "a library re-exporting a symbol the release's library exports must pass: " .. refused)
         end
     end
     local libraries = path.join(folder, "home", "dyld", "2.2.1", "libraries_armv7")

@@ -330,6 +330,38 @@ its own allocations and the template code inlined into it, but not allocations
 made inside libc++'s dylib; ld no longer marks such a replacement as overriding,
 so it does not take over the host process's allocations either.
 
+`charon@apple-backports` brings Objective-C API later releases added -
+NSURLSession, NSURLComponents, UIAlertController, UIStackView, the layout
+anchors - to a minimum release that lacks it, as
+`libFoundationBackports.dylib` and, with the `uikit` config,
+`libUIKitBackports.dylib`, both named
+`/usr/lib/charon/org.charon.apple-backports/`. Unlike a runtime a package
+carries, these are one per process: two copies of a class would be two classes.
+The device package that installs them is not written yet, so a port links and
+checks against them, and the libraries have to be put on the phone by hand. A
+class is implemented under its own name against the SDK's headers. xmake puts
+every `-l` of a target and its packages before every `-framework`, whatever
+order `add_packages` names them in, so the weak `_OBJC_CLASS_$_` references
+clang emits for API newer than the minimum bind to the backports library, and
+subclasses and categories of a port work as on the release that introduced the
+class. The libraries are built for one release, the one the port's imports are
+checked against: a source file whose exported symbols that release already
+exports is left out and its symbols are re-exported from the system library
+that has them, so a newer release never holds two classes of one name, and a
+file mixing symbols of two releases is refused. Methods a later release added
+to an existing class are categories, which the link moves from `__objc_catlist`
+to `__DATA,__charon_catlist`, where the runtime does not attach them: the
+library's initializer adds each method, property and protocol only to a class
+that does not respond to it. It reads method lists rather than calling
+`class_getInstanceMethod`, which on iOS 6 runs `+initialize` while UIKit is
+still loading, and realizes the class with `objc_lookUpClass` first, since iOS
+6's `class_addMethod` expects a realized class. The selector check counts those
+categories as implemented. The import check refuses a weak import bound to a
+system library that lacks it while a library of the build exports it, the sign
+of a link that put a framework first, and a re-export from a library that does
+not export the symbol. `tests/backports` holds differential tests against the
+host's Foundation and UIKit and the device tests, run on an emulated iOS 6.
+
 xmake's package hash covers a package's version, configs and toolchain, but
 neither its script nor the builds of its dependencies; the script is not in reach
 of anything that runs before the hash is taken, so it cannot be digested for it. The toolchain Charon gives

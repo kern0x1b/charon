@@ -213,7 +213,7 @@ local function collect(cache)
                 end
             end
         end
-        for _, category in ipairs(section_entries(read, loaded.image, "__objc_catlist")) do
+        for _, category in ipairs(table.join(section_entries(read, loaded.image, "__objc_catlist"), section_entries(read, loaded.image, "__charon_catlist"))) do
             local class = read.pointer(category + read.size)
             local name = class ~= 0 and class_data(read, class).name
             local found = name and entry(name) or extensions
