@@ -81,6 +81,12 @@ function failures(opt)
     if backports.introduced_version(dump, "NSURLQueryItem") ~= "8.0" or backports.introduced_version(dump, "NSURLComponents") then
         table.insert(found, "the release a declaration arrived in is the earliest iOS availability of its own declarations, not of their members or of another declaration the filter matched")
     end
+    local named = backports.availability_names({"_OBJC_CLASS_$_NSDimension", "_OBJC_METACLASS_$_NSDimension",
+                                                "_OBJC_IVAR_$_NSDimension._converter", "_NSCalendarIdentifierGregorian"})
+    if not named["NSDimension"] or not named["NSCalendarIdentifierGregorian"] or named["OBJC_IVAR_$_NSDimension._converter"] then
+        table.insert(found, "an ivar has no release of its own and is read as the class that holds it: " .. table.concat(table.orderkeys(named), " "))
+    end
+
     local scripts = path.join(folder, "scripts")
     backports.write_scripts(scripts)
     local function device(version)
