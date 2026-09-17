@@ -254,12 +254,14 @@
     "api": "-[UITextField defaultTextAttributes]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
     "api": "-[UITextField setDefaultTextAttributes:]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
