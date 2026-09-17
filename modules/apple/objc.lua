@@ -97,22 +97,23 @@ local function lists(read, address, each)
     if address == 0 then
         return
     end
-    if address & 1 ~= 0 then
+    if read.wide and address & 1 ~= 0 then
         local list = address & ~1
         if not read.mapped(list, 8) then
             return
         end
         local entry_size, count = read.u32(list), read.u32(list + 4)
+        if entry_size ~= 8 or not read.mapped(list + 8, count * 8) then
+            return
+        end
         for index = 0, count - 1 do
-            local entry = list + 8 + index * entry_size
-            if read.mapped(entry, 8) then
-                local packed = string.unpack("<i8", read.raw(entry, 8))
-                local offset = packed >> 16
-                if offset >= 0x800000000000 then
-                    offset = offset - 0x1000000000000
-                end
-                each(entry + offset)
+            local entry = list + 8 + index * 8
+            local packed = string.unpack("<i8", read.raw(entry, 8))
+            local offset = packed >> 16
+            if offset >= 0x800000000000 then
+                offset = offset - 0x1000000000000
             end
+            each(entry + offset)
         end
         return
     end

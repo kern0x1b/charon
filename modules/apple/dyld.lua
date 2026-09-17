@@ -369,6 +369,9 @@ local function cache_files(mainfile)
                 info.value_add = string.unpack("<I8", head, 17)
             elseif version == 5 then
                 info.value_add = string.unpack("<I8", head, 17)
+            elseif version == 1 then
+                info.slide_offset = slide_offset
+                info.toc_offset, info.toc_count, info.entries_offset, _, info.entries_size = string.unpack("<I4I4I4I4I4", head, 5)
             end
             table.insert(ranges, info)
         end
@@ -394,6 +397,50 @@ local function cache_files(mainfile)
         slides[file] = found
         return found
     end
+    local function mapped(address, size)
+        for _, mapping in ipairs(mappings) do
+            if mapping.address <= address and address + (size or 1) <= mapping.address + mapping.size then
+                return true
+            end
+        end
+        return false
+    end
+    local function slide_bits(file, info, page)
+        local entry = string.unpack("<I2", read(file, info.slide_offset + info.toc_offset + page * 2, 2))
+        return read(file, info.slide_offset + info.entries_offset + entry * info.entries_size, info.entries_size)
+    end
+    local function slid_pages(file, info, wide)
+        local page_size = info.entries_size * 32
+        local pages, first = 0, nil
+        for page = 0, info.toc_count - 1 do
+            local bits = slide_bits(file, info, page)
+            local slid = false
+            for index = 0, info.entries_size * 8 - 1 do
+                if bits:byte(index // 8 + 1) & (1 << (index % 8)) ~= 0 then
+                    local slot = info.address + page * page_size + index * 4
+                    local value = string.unpack(wide and "<I8" or "<I4", read_address(slot, wide and 8 or 4))
+                    if value ~= 0 and not mapped(value) then
+                        first = first or {slot, value}
+                        slid = true
+                        break
+                    end
+                end
+            end
+            if slid then
+                pages = pages + 1
+            end
+        end
+        return pages, first
+    end
+    local function marked(file, info, address)
+        local page_size = info.entries_size * 32
+        local page = (address - info.address) // page_size
+        if page >= info.toc_count then
+            return false
+        end
+        local index = (address - info.address - page * page_size) // 4
+        return slide_bits(file, info, page):byte(index // 8 + 1) & (1 << (index % 8)) ~= 0
+    end
     local function pointer_at(address, wide)
         local file = locate(address, wide and 8 or 4)
         local value = string.unpack(wide and "<I8" or "<I4", read_address(address, wide and 8 or 4))
@@ -402,7 +449,11 @@ local function cache_files(mainfile)
         end
         for _, info in ipairs(slide_of(file)) do
             if info.address <= address and address < info.address + info.size then
-                if info.version == 2 then
+                if info.version == 1 and not mapped(value) and marked(file, info, address) then
+                    local pages, first = slid_pages(file, info, wide)
+                    raise("%s was copied from a running device: %d of its pages hold pointers the device slid, such as %#x at %#x outside every mapping, so its Objective-C metadata cannot be read; delete it and run xmake firmware --arch=%s fetch %s to take the release's cache from Apple's firmware",
+                          mainfile, pages, first[2], first[1], main.header:sub(8, 16):gsub("[ %z]", ""), path.filename(path.directory(mainfile)))
+                elseif info.version == 2 then
                     local target = value & ~info.delta_mask
                     return target ~= 0 and ((target + info.value_add) & (wide and -1 or 0xFFFFFFFF)) or 0
                 elseif not wide then
@@ -418,14 +469,6 @@ local function cache_files(mainfile)
             end
         end
         return value
-    end
-    local function mapped(address, size)
-        for _, mapping in ipairs(mappings) do
-            if mapping.address <= address and address + (size or 1) <= mapping.address + mapping.size then
-                return true
-            end
-        end
-        return false
     end
     return {main = main, field = field, read = read, read_address = read_address, string_at = string_at, pointer_at = pointer_at, mapped = mapped, close = close}
 end

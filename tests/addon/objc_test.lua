@@ -1,3 +1,4 @@
+import("core.base.process")
 import("fixtures")
 
 local MESSAGES = [[
@@ -32,6 +33,106 @@ local SELECTORS = [[
 }
 @end
 ]]
+
+local INVENTORY = [[
+function main(modules, cachefile, output)
+    local found = import("apple.objc", {rootdir = modules, anonymous = true}).inventory(cachefile)
+    local lines = {}
+    for name, class in pairs(found.classes) do
+        table.insert(lines, name .. " " .. table.concat(table.orderkeys(class.instance), ","))
+    end
+    table.sort(lines)
+    io.writefile(output, table.concat(lines, "\n"))
+end
+]]
+
+local function armv7_cache(file, opt)
+    local text, data, linkedit = 0x30000000, 0x30002000, 0x30003000
+    local pieces, slots = {}, {}
+    local function put(address, bytes)
+        table.insert(pieces, {address - text, bytes})
+    end
+    local function words(address, ...)
+        local values = {...}
+        put(address, string.pack("<" .. string.rep("I4", #values), table.unpack(values)))
+        return #values
+    end
+    local function pointers(address, ...)
+        for index = 1, words(address, ...) do
+            table.insert(slots, address + (index - 1) * 4)
+        end
+    end
+    put(text, "dyld_v1   armv7\0")
+    words(text + 0x10, 0x58, 3, 0x100, 1)
+    put(text + 0x38, string.pack("<I8I8", linkedit - text, 0x100))
+    for index, mapping in ipairs({{text, 0x2000, 5}, {data, 0x1000, 3}, {linkedit, 0x1000, 1}}) do
+        put(text + 0x58 + (index - 1) * 32, string.pack("<I8I8I8I4I4", mapping[1], mapping[2], mapping[1] - text, mapping[3], mapping[3]))
+    end
+    put(text + 0x100, string.pack("<I8I8I8I4I4", text + 0x1000, 0, 0, 0x140, 0))
+    put(text + 0x140, "/System/Library/Frameworks/Probe.framework/Probe\0")
+    local commands = {}
+    for _, segment in ipairs({{"__TEXT", text + 0x1000, 5}, {"__DATA", data, 3, {"__objc_classlist", data, 4}}, {"__LINKEDIT", linkedit, 1}}) do
+        local section = segment[4] and string.pack("<c16c16I4I4I4I4I4I4I4I4I4", segment[4][1], segment[1], segment[4][2], segment[4][3], segment[4][2] - text, 2, 0, 0, 0, 0, 0) or ""
+        table.insert(commands, string.pack("<I4I4c16I4I4I4I4i4i4I4I4", 0x1, 56 + #section, segment[1], segment[2], 0x1000, segment[2] - text, 0x1000,
+                                           segment[3], segment[3], segment[4] and 1 or 0, 0) .. section)
+    end
+    put(text + 0x1000, string.pack("<I4i4i4I4I4I4I4", 0xFEEDFACE, 12, 9, 6, #commands, #table.concat(commands), 0) .. table.concat(commands))
+    put(text + 0x1800, "Probe\0probe\0v8@0:4\0")
+    words(text + 0x1900, 8, 0x7FFFFFFF)
+    local class = data + 0x10
+    pointers(data, class + (opt.slide or 0))
+    pointers(class, data + 0x30, 0, 0, 0, data + 0x50)
+    pointers(data + 0x30, data + 0x30, class, 0, 0, data + 0x70)
+    words(data + 0x50, 0, 0, 0, 0)
+    pointers(data + 0x60, text + 0x1800, opt.methods or data + 0x90, 0)
+    words(data + 0x70, 1, 0, 0, 0)
+    pointers(data + 0x80, text + 0x1800, 0, 0)
+    words(data + 0x90, 12, 1)
+    pointers(data + 0x98, text + 0x1806, text + 0x180c, text + 0x1001)
+    local bitmap = {}
+    for index = 1, 128 do
+        bitmap[index] = 0
+    end
+    for _, slot in ipairs(slots) do
+        local index = (slot - data) // 4
+        bitmap[index // 8 + 1] = bitmap[index // 8 + 1] | (1 << (index % 8))
+    end
+    put(linkedit, string.pack("<I4I4I4I4I4I4I2", 1, 24, 1, 26, 1, 128, 0) .. string.char(table.unpack(bitmap)))
+    local bytes = string.rep("\0", 0x4000)
+    for _, piece in ipairs(pieces) do
+        bytes = bytes:sub(1, piece[1]) .. piece[2] .. bytes:sub(piece[1] + #piece[2] + 1)
+    end
+    io.writefile(file, bytes, {encoding = "binary"})
+    return file
+end
+
+local function inventory_failures(folder, opt)
+    local found = {}
+    io.writefile(path.join(folder, "inventory.lua"), INVENTORY)
+    for index, case in ipairs({{"a cache read from firmware", {}, "Probe -probe"},
+                           {"a class whose method list address has its low bit set, as garbage from a device copy does", {methods = 0x30001901}, "Probe "},
+                           {"a cache copied from a running device, its pages slid", {slide = 0x10000000}, nil, "copied from a running device: 1 of its pages hold pointers the device slid"}}) do
+        local cachefile = armv7_cache(path.join(folder, "dyld_shared_cache_armv7_" .. index), case[2])
+        local output, log = cachefile .. ".txt", cachefile .. ".log"
+        local child = process.openv(os.programfile(), {"l", "inventory.lua", opt.modules, cachefile, output}, {curdir = folder, stdout = log, stderr = log})
+        local finished = child:wait(60000)
+        if finished == 0 then
+            child:kill()
+        end
+        child:close()
+        local said = os.isfile(log) and io.readfile(log) or ""
+        if finished == 0 then
+            table.insert(found, case[1] .. ": the inventory did not finish within a minute")
+        elseif case[4] then
+            if not said:find(case[4], 1, true) then
+                table.insert(found, case[1] .. ": the inventory must refuse it saying " .. case[4] .. ", and said: " .. said)
+            end
+        elseif not os.isfile(output) or io.readfile(output) ~= case[3] then
+            table.insert(found, case[1] .. ": the inventory must list " .. case[3] .. ", and listed " .. (os.isfile(output) and io.readfile(output) or "nothing: " .. said))
+        end
+    end
+    return found
+end
 
 local function linker_version(opt)
     local out, errors = os.iorunv(opt.ld64, {"-v"})
@@ -87,7 +188,7 @@ end
 function failures(opt)
     local found = {}
     local folder = fixtures.scratch()
-    for _, check in ipairs({stub_failures, selector_failures}) do
+    for _, check in ipairs({stub_failures, selector_failures, inventory_failures}) do
         table.join2(found, check(folder, opt))
     end
     os.tryrm(folder)
