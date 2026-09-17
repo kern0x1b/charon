@@ -136,6 +136,41 @@ local function deb_step(emulator, debian, folder, found)
     if os.isfile("/private/var/mobile/profile.txt") then
         table.insert(found, "installing a package wrote to the host's /private/var/mobile")
     end
+
+    -- A package whose libraries depend on the release, like the backports, does
+    -- its work in the maintainer script dpkg runs with DPKG_ROOT; the image is
+    -- that root.
+    local scripted = path.join(folder, "scripted")
+    os.mkdir(path.join(scripted, "usr", "lib"))
+    io.writefile(path.join(scripted, "usr", "lib", "carried.txt"), "carried")
+    local scripts = path.join(folder, "scripts")
+    os.mkdir(scripts)
+    io.writefile(path.join(scripts, "postinst"),
+                 '#!/bin/sh\nset -e\n[ "$1" = configure ] || exit 3\n' ..
+                 'echo "root ${DPKG_ROOT}" > "${DPKG_ROOT}/usr/lib/configured.txt"\n')
+    local script_deb = debian.write({control = control, version = "1.0", root = scripted,
+                                     scripts = scripts,
+                                     outputdir = path.join(folder, "scripted-debs")})
+    emulator.install_deb(script_deb, rootfs)
+    local configured = path.join(rootfs, "usr", "lib", "configured.txt")
+    if not os.isfile(configured) or not io.readfile(configured):find(rootfs, 1, true) then
+        table.insert(found, "the package's postinst runs against the image as its DPKG_ROOT")
+    end
+
+    local failing_scripts = path.join(folder, "failing-scripts")
+    os.mkdir(failing_scripts)
+    io.writefile(path.join(failing_scripts, "postinst"),
+                 '#!/bin/sh\necho "no libraries for this release" >&2\nexit 1\n')
+    local failing_deb = debian.write({control = control, version = "1.0", root = scripted,
+                                      scripts = failing_scripts,
+                                      outputdir = path.join(folder, "failing-debs")})
+    local script_refusal = fixtures.refusal(function ()
+        emulator.install_deb(failing_deb, rootfs)
+    end)
+    if not script_refusal or not script_refusal:find("no libraries for this release", 1, true) then
+        table.insert(found, "a postinst that refuses the image stops the install and says why, said " ..
+                            tostring(script_refusal))
+    end
     local refused = fixtures.refusal(function ()
         io.writefile(path.join(folder, "not.deb"), "plain text")
         emulator.install_deb(path.join(folder, "not.deb"), rootfs)

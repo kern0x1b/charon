@@ -238,6 +238,45 @@ local function place(tree, rootfs)
     end
 end
 
+-- dpkg runs a package's maintainer scripts with DPKG_ROOT naming the root it
+-- installs into, and Charon's own scripts are written for it: the backports
+-- package reads the release out of that root and links the libraries built for
+-- it. The image is such a root, so the scripts run against it here exactly as
+-- they run on a device.
+local function maintainer_script(work, members, name, rootfs, deb, stage)
+    local control
+    for member, content in pairs(members) do
+        if member:startswith("control.tar") then
+            control = {name = member, content = content}
+        end
+    end
+    if not control then
+        return
+    end
+    local tree = path.join(work, "control")
+    os.mkdir(tree)
+    local archive = path.join(work, control.name)
+    io.writefile(archive, control.content, {encoding = "binary"})
+    os.vrunv("tar", {"-xpf", archive, "-C", tree})
+    local script = path.join(tree, name)
+    if not os.isfile(script) then
+        return
+    end
+    os.vrunv("chmod", {"u+x", script})
+    local output = os.tmpfile()
+    local ok = os.execv("/bin/sh", {script, stage}, {envs = {DPKG_ROOT = path.absolute(rootfs)},
+                                                    stdout = output, stderr = output, try = true})
+    local said = os.isfile(output) and io.readfile(output):trim() or ""
+    os.tryrm(output)
+    if ok ~= 0 then
+        raise("the %s of %s refused this image%s", name, path.filename(deb),
+              said ~= "" and (": " .. said) or "")
+    end
+    if said ~= "" then
+        cprint("${dim}%s: %s", name, said)
+    end
+end
+
 function install_deb(deb, rootfs)
     local members = ar_members(io.readfile(deb, {encoding = "binary"}), deb)
     local data
@@ -254,7 +293,9 @@ function install_deb(deb, rootfs)
     local archive = path.join(work, data.name)
     io.writefile(archive, data.content, {encoding = "binary"})
     os.vrunv("tar", {"-xpf", archive, "-C", path.join(work, "tree")})
+    maintainer_script(work, members, "preinst", rootfs, deb, "install")
     place(path.join(work, "tree"), rootfs)
+    maintainer_script(work, members, "postinst", rootfs, deb, "configure")
     remove(work)
 end
 
