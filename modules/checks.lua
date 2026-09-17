@@ -57,7 +57,7 @@ end
 function run(targets, opt)
     opt = opt or {}
     local scoped = opt.staged or opt.changed
-    local files = scoped and changed(opt) or tracked()
+    local files = opt.files or (scoped and changed(opt) or tracked())
     local failed, ran = {}, 0
     for _, target in ipairs(targets) do
         local argv0 = command(target)
