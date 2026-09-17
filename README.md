@@ -164,7 +164,12 @@ its arm64 slice - from `~/.charon/dyld/<release>/` (under `$CHARON_HOME` if
 set): `dyld_shared_cache_<arch>` and its subcaches, or `libraries_<arch>/`
 for a release before 3.1, which has no cache. When they are not held, the
 check offers to fetch them (`-y` accepts) and `xmake firmware [--arch=ARCH]
-fetch RELEASE` does it by hand; `xmake firmware list` shows what is held. The
+fetch RELEASE` does it by hand; `xmake firmware list` shows what is held. `xmake firmware
+--device=IDENTIFIER rootfs RELEASE` unpacks the whole root filesystem of that
+device's earliest firmware not older than the release (with the SystemOS
+cryptex under `System/Cryptexes/OS` from iOS 16) into
+`~/.charon/firmware/rootfs/<device>/<version>_<build>/`, the input an emulator
+boots. The
 release and its firmware come from a catalog of api.ipsw.me and
 theapplewiki's firmware tables, kept in `~/.charon/firmware/catalog.json` and
 refreshed when a minimum is newer than anything it lists. Only the system image

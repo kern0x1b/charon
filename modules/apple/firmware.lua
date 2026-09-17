@@ -517,3 +517,92 @@ function ensure(architecture, minimum, opt)
     end
     return fetch(architecture, minimum, opt)
 end
+
+function device_releases(identifier)
+    local catalog = os.isfile(catalog_file()) and json.loadfile(catalog_file())
+    if not catalog or table.concat(catalog.sources or {}, " ") ~= table.concat(sources(), " ") then
+        catalog = refresh_catalog()
+    end
+    for _, device in ipairs(catalog.devices) do
+        if device.identifier:lower() == identifier:lower() then
+            return device
+        end
+    end
+    local known = {}
+    for _, device in ipairs(catalog.devices) do
+        table.insert(known, device.identifier)
+    end
+    raise("the firmware catalog knows no device %s; it knows %s", identifier, table.concat(known, ", "))
+end
+
+function device_firmware(identifier, minimum)
+    local device = device_releases(identifier)
+    local chosen
+    for _, firmware in ipairs(device.firmwares) do
+        if dyld.compare_versions(firmware.version, minimum) >= 0 and (not chosen or dyld.compare_versions(firmware.version, chosen.version) < 0) then
+            chosen = firmware
+        end
+    end
+    if not chosen then
+        raise("%s has no firmware of release %s or later in the catalog", device.identifier, minimum)
+    end
+    return table.join(chosen, {identifier = device.identifier, platform = device.platform, architecture = architecture_of(device.platform)})
+end
+
+local function copy_tree(image, destination)
+    local mount = image .. ".mount"
+    os.mkdir(mount)
+    os.vrunv("hdiutil", {"attach", "-readonly", "-nobrowse", "-noverify", "-noautoopen", "-mountpoint", mount, image})
+    try {
+        function ()
+            os.mkdir(destination)
+            os.vrunv("ditto", {mount, destination})
+        end,
+        finally {
+            function ()
+                os.vrunv("hdiutil", {"detach", mount})
+                os.tryrm(mount)
+            end
+        }
+    }
+end
+
+function rootfs(identifier, minimum, opt)
+    opt = opt or {}
+    local firmware = device_firmware(identifier, minimum)
+    local folder = path.join(home(), "firmware", "rootfs", firmware.identifier, firmware.version .. "_" .. firmware.build)
+    if os.isfile(path.join(folder, "System", "Library", "CoreServices", "SystemVersion.plist")) then
+        return folder, firmware
+    end
+    firmware.tool = assert(opt.tool, "unpacking firmware needs the charon-firmware tool")
+    cprint("${bright}unpacking the root filesystem of %s %s (%s)${clear} from %s", firmware.identifier, firmware.version, firmware.build, firmware.url)
+    local work = path.join(home(), "firmware", "work", firmware.identifier .. "_" .. firmware.build)
+    local staging = folder .. ".partial"
+    os.tryrm(staging)
+    os.mkdir(work)
+    local members = zip_members(firmware.url)
+    local images = system_images(firmware.url, members)
+    for index = #images, 1, -1 do
+        local name = images[index]
+        if members[name] then
+            local file = path.join(work, path.filename(name))
+            if not os.isfile(file) then
+                fetch_member(firmware.url, members[name], file)
+            end
+            local image = plain_image(firmware, file)
+            local destination = staging
+            if index < #images then
+                destination = path.join(staging, "System", "Cryptexes", "OS")
+            end
+            copy_tree(image, destination)
+            os.tryrm(image)
+        end
+    end
+    os.tryrm(work)
+    if not os.isfile(path.join(staging, "System", "Library", "CoreServices", "SystemVersion.plist")) then
+        raise("the system image of %s %s holds no System/Library/CoreServices/SystemVersion.plist", firmware.identifier, firmware.build)
+    end
+    os.tryrm(folder)
+    os.mv(staging, folder)
+    return folder, firmware
+end
