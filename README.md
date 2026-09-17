@@ -281,7 +281,11 @@ packages sharing one, because a runtime is built for a minimum release:
 libc++ below iOS 4.2 does not re-export libc++abi, and an image linked against
 a later build binds those symbols to libc++. Copies of different packages in one
 process, two tweaks in SpringBoard, keep separate thread-local storage and
-exception state.
+exception state. `operator new` and `operator delete` are not per package: dyld
+coalesces them across the process, and on iOS 6 the first inserted image takes
+the system libstdc++'s while later ones keep their own; every implementation
+involved allocates with `malloc` or `posix_memalign` and releases with `free`,
+so a pair from different images is compatible.
 
 xmake's package hash covers a package's version, configs and toolchain, but
 neither its script nor the builds of its dependencies; the script is not in reach
