@@ -79,6 +79,12 @@ Then:
                                hold a device so every other holder's command on it
                                is refused until the release or the expiry;
                                CHARON_DEVICE_HOLDER names the holder for a shell
+    xmake emulate install      the same packages into the image of an emulated device
+    xmake emulate [-s 60] run COMMAND
+                               start COMMAND in it and report pass, fail, crash,
+                               timeout or boot-blocked; -d DEVICE, -r RELEASE
+    xmake emulate log [TEXT], xmake emulate shot [FILE]
+    xmake emulate [--all] clean remove this port's images (--all: every image and golden image)
     xmake where PACKAGE        the folder a required package is installed in
     xmake check [--staged|--changed] [NAMES]
                                the project's checks; xmake check --install-hook
@@ -209,6 +215,42 @@ Apple Encrypted Archives of iOS 18 on with the key Apple's wkms server hands
 out, and the image is mounted to copy the cache (from the SystemOS cryptex on
 iOS 16 on) or the libraries. A check that would have to be skipped is waived by name
 with the reason, e.g. `set_values("charon.waive.pagezero", "why")`.
+
+`xmake emulate` runs the port on an emulated device instead of a phone, on a
+macOS arm64 host. `includes("@addon/charon/emulate")` after the `apple-ios`
+include requires `charon@ilemu` - MC-XiaoXiao's iLEmu, which boots a
+firmware's own userland over an emulated XNU on a dynarmic CPU, pinned by
+commit with the patches under `packages/i/ilemu/patches/` - with
+`charon@swiftshader`, the CPU Vulkan driver its OpenGL ES is drawn through, and
+`charon@emulator-guest`, `charon-runner` built by the `daemon` rule for the
+port's architecture and minimum. The device is `-d`, or the first device of
+the catalog of the configured architecture that iLEmu has a profile for and
+that runs `-r` (default `apple_minimum`); its earliest release not older than
+that is the one emulated. A device without a profile, or a release whose
+Darwin iLEmu does not emulate, is refused with the reason, never replaced by
+another. The first run of a device and build unpacks its root filesystem as
+`xmake firmware rootfs` does, marks Setup Assistant done in the mobile user's
+`com.apple.purplebuddy` preferences, and boots it once past the first-boot data
+migration into a golden image under `~/.charon/emulator/golden.noindex/`, keyed
+by device, build and the emulator package; `install` clones it (an APFS clone
+per port and device) and unpacks the data member of each package `xmake deb`
+writes into the clone, through the image's own symbolic links. `run` clones
+that image again, puts a LaunchDaemon into `/System/Library/LaunchDaemons` of the image (the only folder
+iOS 6's launchd reads) that starts `charon-runner`, which starts COMMAND with a
+deadline of `-s` seconds and writes its exit status, signal and output into
+`/private/var/charon`; the boot is quit once that verdict is there, and killed
+when `-t` seconds pass. The verdict, the guest's results, the emulator log and
+the last frame stay in the image's `run` folder, and the clone the run booted
+is removed unless `-k` keeps it. A golden image of an older emulator package is
+removed when the golden image of the new one is made. A crash names the signal, the program counter the
+emulator saw and the last frame, and a boot that never ran the command names
+where it stopped: the emulator, a process that keeps crashing, SpringBoard or
+the data migration. The guest has no network unless `-n` or a target's
+`emulate.network` value says `loopback` or `host`. Several ports and sessions
+emulate at once: golden images are built in a folder of their own and renamed
+into place under a file lock, so a second session waits for the first instead
+of building the same image, and a boot takes one of `min(cores/3, RAM/5 GB)`
+slots of the machine, with the emulator's caches kept per slot.
 
 A package of a port that builds with CMake calls the addon's bridge from its
 install script, which writes a toolchain file from the `apple-ios` toolchain

@@ -532,18 +532,27 @@ function ensure(architecture, minimum, opt)
     return fetch(architecture, minimum, opt)
 end
 
-function device_releases(identifier)
-    local catalog = os.isfile(catalog_file()) and json.loadfile(catalog_file())
-    if not catalog or table.concat(catalog.sources or {}, " ") ~= table.concat(sources(), " ") then
-        catalog = refresh_catalog()
+function architecture(platform)
+    return architecture_of(platform)
+end
+
+function catalog()
+    local loaded = os.isfile(catalog_file()) and json.loadfile(catalog_file())
+    if not loaded or table.concat(loaded.sources or {}, " ") ~= table.concat(sources(), " ") then
+        loaded = refresh_catalog()
     end
-    for _, device in ipairs(catalog.devices) do
+    return loaded
+end
+
+function device_releases(identifier)
+    local listed = catalog()
+    for _, device in ipairs(listed.devices) do
         if device.identifier:lower() == identifier:lower() then
             return device
         end
     end
     local known = {}
-    for _, device in ipairs(catalog.devices) do
+    for _, device in ipairs(listed.devices) do
         table.insert(known, device.identifier)
     end
     raise("the firmware catalog knows no device %s; it knows %s", identifier, table.concat(known, ", "))
