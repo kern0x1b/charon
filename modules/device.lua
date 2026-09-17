@@ -231,11 +231,23 @@ function tunnel(settings)
     os.sleep(3000)
 end
 
+local function askpass()
+    local helper = path.join(os.tmpdir(), "charon-askpass")
+    if not os.isfile(helper) then
+        local staged = helper .. "." .. os.getpid()
+        io.writefile(staged, "#!/bin/sh\nprintf '%s\\n' \"$CHARON_DEVICE_SECRET\"\n")
+        os.runv("chmod", {"700", staged})
+        os.mv(staged, helper)
+    end
+    return helper
+end
+
 local function authenticated(settings, program, argv)
     if settings.password == "" then
         return program, argv, nil
     end
-    return "sshpass", table.join({"-e", program}, argv), {SSHPASS = settings.password}
+    return program, table.join({"-o", "PubkeyAuthentication=no", "-o", "PreferredAuthentications=keyboard-interactive,password"}, argv),
+           {SSH_ASKPASS = askpass(), SSH_ASKPASS_REQUIRE = "force", CHARON_DEVICE_SECRET = settings.password}
 end
 
 function run(settings, command, opt)
