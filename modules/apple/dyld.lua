@@ -1,4 +1,6 @@
+import("core.base.option")
 import("macho")
+import("compat")
 
 local caches = {}
 
@@ -616,7 +618,7 @@ end
 
 function missing_imports(cachefile, binaries, root)
     local cache = load(cachefile)
-    local missing = {}
+    local missing, dangling = {}, {}
     local found = {}
     local function named(binary)
         return root and path.relative(binary, root) or binary
@@ -673,6 +675,12 @@ function missing_imports(cachefile, binaries, root)
                     end
                 end
             end
+            if symbol.weak and symbol.name:startswith("_") and not reexported[symbol.name] and not own[symbol.name] then
+                local resolved = bound and exports_symbol(lookup, bound, symbol.name, {}) or (not bound and cache.exports[symbol.name] ~= nil)
+                if not resolved then
+                    table.insert(dangling, {named(entry.binary), symbol.name, bound})
+                end
+            end
             if symbol.name:startswith("_") and not symbol.weak and not reexported[symbol.name] and not (twolevel and absent[symbol.ordinal]) then
                 local library = twolevel and entry.image.libraries[symbol.ordinal]
                 if library and lookup(library) then
@@ -689,15 +697,40 @@ function missing_imports(cachefile, binaries, root)
     table.sort(missing, function (a, b)
         return a[1] == b[1] and a[2] < b[2] or a[1] < b[1]
     end)
-    return missing, #found, cache
+    table.sort(dangling, function (a, b)
+        return a[1] == b[1] and a[2] < b[2] or a[1] < b[1]
+    end)
+    return missing, #found, cache, dangling
 end
 
 function check(cachefile, binaries, folder)
     if not os.exists(cachefile) then
         raise("there is no shared cache or library folder at %s to check imports against; a check that reports success having looked at nothing is worse than no check", cachefile)
     end
-    local missing, count, cache = missing_imports(cachefile, binaries, folder)
+    local missing, count, cache, dangling = missing_imports(cachefile, binaries, folder)
+    local emitted = compat.emitted()
+    local guarded = {}
+    for _, entry in ipairs(dangling) do
+        local by = emitted[entry[2]:sub(2)]
+        if by then
+            table.insert(missing, {entry[1], string.format("%s (weakly imported from %s, which this release does not export; the compiler emits this, so no version check stands in front of it and it reaches NULL; the image should carry it from %s)",
+                                                           entry[2], entry[3] or "the flat namespace", by)})
+        else
+            guarded[entry[1]] = guarded[entry[1]] or {}
+            table.insert(guarded[entry[1]], entry[2])
+        end
+    end
+    for _, binary in ipairs(table.orderkeys(guarded)) do
+        local names = guarded[binary]
+        local limit = option.get("verbose") and #names or 12
+        local shown = table.concat(table.slice(names, 1, math.min(limit, #names)), " ") .. (#names > limit and string.format(" and %d more, all of them under xmake -v", #names - limit) or "")
+        wprint("%s weakly imports %d symbol%s the %s release it is checked against does not export, each of which is NULL there and must be called only behind a check for it: %s",
+               binary, #names, #names == 1 and "" or "s", cache.architecture, shown)
+    end
     if #missing > 0 then
+        table.sort(missing, function (a, b)
+            return a[1] == b[1] and a[2] < b[2] or a[1] < b[1]
+        end)
         local lines = {"these imports are not exported by the device's iOS:"}
         for _, entry in ipairs(missing) do
             table.insert(lines, "  " .. entry[1] .. "  " .. entry[2])
