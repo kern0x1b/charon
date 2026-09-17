@@ -103,8 +103,24 @@ function control_fields(control)
     return fields, text
 end
 
-function control_text(control, version, root)
+function control_text(control, version, root, depends)
     local fields, text = control_fields(control)
+    if depends and #depends > 0 then
+        local added = table.concat(depends, ", ")
+        local lines, found = {}, false
+        for line in (text .. "\n"):gmatch("([^\n]*)\n") do
+            if line:startswith("Depends:") then
+                line = line .. ", " .. added
+                found = true
+            end
+            table.insert(lines, line)
+        end
+        if not found then
+            table.insert(lines, "Depends: " .. added)
+        end
+        text = table.concat(lines, "\n")
+        fields.Depends = fields.Depends and (fields.Depends .. ", " .. added) or added
+    end
     if text:find("\nVersion:") or text:startswith("Version:") or text:find("Installed%-Size:") then
         raise("%s must not carry Version or Installed-Size; the build writes them", control)
     end
@@ -117,7 +133,7 @@ function control_text(control, version, root)
 end
 
 function write(opt)
-    local fields, control = control_text(opt.control, opt.version, opt.root)
+    local fields, control = control_text(opt.control, opt.version, opt.root, opt.depends)
     local control_members = {{name = "./", directory = true}, {name = "./control", mode = 420, data = control}}
     if opt.scripts and os.isdir(opt.scripts) then
         local names = os.files(path.join(opt.scripts, "*"))

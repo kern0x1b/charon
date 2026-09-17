@@ -22,8 +22,10 @@ and started by the emulator lab:
         device/url.m device/check.m -LBAND -lFoundationBackports -framework Foundation -o url
     ldid -S url BAND/*.dylib
 
-and the libraries go to `/usr/lib/charon/org.charon.apple-backports/` of the
-emulated root filesystem.
+and the libraries reach `/usr/lib/charon/org.charon.apple-backports/` of the
+emulated root filesystem the way a device gets them: the data of
+`org.charon.apple-backports_<revision>_iphoneos-arm.deb` unpacked into it and its
+postinst run with `DPKG_ROOT` set to it.
 
 - `mechanism.m`, `url.m`: a process of their own, Foundation only; they print
   `ok`/`FAIL` lines and exit with the number of failures. `url.m` includes

@@ -99,6 +99,18 @@ function backport_libraries(target)
     return libraries
 end
 
+function backport_package(target)
+    local libraries = backport_libraries(target)
+    if #libraries == 0 then
+        return nil
+    end
+    local debs = os.files(path.join(path.directory(path.directory(libraries[1])), "share", backports.package_name() .. "_*.deb"))
+    if #debs ~= 1 then
+        raise("target(%s) uses apple-backports, whose install holds %d %s packages instead of one", target:name(), #debs, backports.package_name())
+    end
+    return {deb = debs[1], name = backports.package_name(), version = path.filename(debs[1]):match("^[^_]+_([^_]+)_")}
+end
+
 function report_selectors(source, binaries, architecture, folder, provided)
     local found = objc.absent_selectors(source, table.join(binaries, provided or {}), architecture)
     for _, binary in ipairs(binaries) do

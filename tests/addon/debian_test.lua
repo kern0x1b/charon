@@ -75,6 +75,16 @@ function failures(opt)
         table.insert(found, "writing the same tree twice must give the same bytes")
     end
 
+    for _, case in ipairs({{CONTROL, "Depends: org.example.library (>= 2)"},
+                           {CONTROL .. "Depends: firmware (>= 6.0)\n", "Depends: firmware (>= 6.0), org.example.library (>= 2)"}}) do
+        io.writefile(control, case[1])
+        local fields, text = debian.control_text(control, "1.2.3", root, {"org.example.library (>= 2)"})
+        local _, count = text:gsub("\nDepends:", "")
+        if not text:find("\n" .. case[2]:gsub("%p", "%%%0") .. "\n") or count ~= 1 or fields.Depends ~= case[2]:sub(10) then
+            table.insert(found, "a package the build depends on joins the control file's one Depends field as " .. case[2] .. ": " .. text)
+        end
+    end
+
     io.writefile(control, CONTROL .. "Version: 9\n")
     local errors = fixtures.refusal(function () debian.write({control = control, version = "1.2.3", root = root, outputdir = folder}) end)
     if not errors or not errors:find("must not carry Version", 1, true) then

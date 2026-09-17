@@ -77,7 +77,7 @@ end
 function write(opt)
     opt = opt or {}
     task.run("config", {}, {disable_dump = true})
-    local written = {}
+    local written, carried = {}, {}
     local grouped = packages()
     for _, control in ipairs(table.orderkeys(grouped)) do
         local described = grouped[control]
@@ -90,9 +90,22 @@ function write(opt)
             raise("%s has no charon.version on its targets and the project no set_version(), and a Debian package cannot be written without one", control)
         end
         if wanted then
+            import("apple.platform")
             local stage = path.join(config.builddir(), ".charon", "stage", path.basename(control))
             os.tryrm(stage)
+            local depends = {}
             for _, target in ipairs(described.targets) do
+                local backports = platform.backport_package(target)
+                if backports then
+                    table.insert(depends, string.format("%s (>= %s)", backports.name, backports.version))
+                end
+                if backports and not carried[backports.deb] then
+                    carried[backports.deb] = true
+                    local copied = path.join(opt.outputdir or config.builddir(), path.filename(backports.deb))
+                    os.vcp(backports.deb, copied)
+                    cprint("${bright green}deb${clear} %s", copied)
+                    table.insert(written, {deb = copied})
+                end
                 task.run("build", {target = target:name()})
                 task.run("install", {target = target:name(), installdir = stage})
                 local architectures = table.wrap(target:values("apple.architectures"))
@@ -112,7 +125,7 @@ function write(opt)
                 end
             end
             local output = debian.write({control = control, version = version, root = stage,
-                                         scripts = described.scripts,
+                                         scripts = described.scripts, depends = table.unique(depends),
                                          outputdir = opt.outputdir or config.builddir()})
             cprint("${bright green}deb${clear} %s", output)
             table.insert(written, {deb = output, stage = stage})

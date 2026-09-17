@@ -342,9 +342,25 @@ anchors - to a minimum release that lacks it, as
 `libUIKitBackports.dylib`, both named
 `/usr/lib/charon/org.charon.apple-backports/`. Unlike a runtime a package
 carries, these are one per process: two copies of a class would be two classes.
-The device package that installs them is not written yet, so a port links and
-checks against them, and the libraries have to be put on the phone by hand. A
-class is implemented under its own name against the SDK's headers. xmake puts
+`xmake deb` of a port that uses the package writes
+`org.charon.apple-backports_<release>+<digest>_iphoneos-arm.deb` beside the
+port's own package, named by the latest Charon release the addon recipe lists
+and the first eight hex digits of the digest of the backports' sources, their
+build module and that recipe, and the port's control file gains a Depends on
+that version; `xmake device install` installs it first. The package holds the
+libraries once for each band under `bands/<release>/` and a `bands/ranges`
+file; its postinst reads ProductVersion from the device's SystemVersion.plist
+and links the libraries of the band whose range holds it, and refuses, naming
+the ranges it has, a release outside all of them rather than taking the nearest.
+A band starts at the port's minimum and at every release the SDK's
+availability gives for the symbols a backport source exports, and runs to the
+last release of the firmware catalog before the next one, the last band to the
+catalog's last release a device running armv7 code gets. Each band is built
+for its first release and import-checked against the shared caches of its first
+and last releases, from an armv7 device where the catalog has one and an armv7s
+device otherwise; a cache that is not held is fetched as the import check
+fetches one, and a declined fetch stops the build with the command to run.
+A class is implemented under its own name against the SDK's headers. xmake puts
 every `-l` of a target and its packages before every `-framework`, whatever
 order `add_packages` names them in, so the weak `_OBJC_CLASS_$_` references
 clang emits for API newer than the minimum bind to the backports library, and

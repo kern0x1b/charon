@@ -198,6 +198,20 @@ function candidates(architecture, minimum)
     return release, chosen
 end
 
+function versions(architecture)
+    local catalog = os.isfile(catalog_file()) and json.loadfile(catalog_file())
+    if not catalog or table.concat(catalog.sources or {}, " ") ~= table.concat(sources(), " ") then
+        catalog = refresh_catalog()
+    end
+    local found = {}
+    for _, firmware in ipairs(releases(catalog, architecture)) do
+        found[firmware.version] = true
+    end
+    local listed = table.orderkeys(found)
+    table.sort(listed, function (a, b) return dyld.compare_versions(a, b) < 0 end)
+    return listed
+end
+
 function release_for(architecture, minimum)
     return (candidates(architecture, minimum))
 end
