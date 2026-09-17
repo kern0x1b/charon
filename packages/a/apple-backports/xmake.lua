@@ -53,6 +53,7 @@ package("apple-backports")
                                                 ldid = path.join(package:dep("ldid"):installdir(), "bin", "ldid"),
                                                 version = assert(released, "the addon recipe names no Charon release") .. "+" .. package:config("sources"):sub(1, 8),
                                                 outputdir = package:installdir("share")}))
+        os.vcp(path.join(package:scriptdir(), "registry"), package:installdir("share"))
         os.vcp(path.join(package:scriptdir(), "..", "..", "..", "LICENSE"), package:installdir("licenses"))
     end)
 

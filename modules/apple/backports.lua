@@ -325,6 +325,35 @@ local function spellings(api)
     return found
 end
 
+local ORDER = {ignored = 1, absent = 2, inert = 3}
+
+function advice(root, used)
+    local listed = registry(root)
+    local found = {}
+    for api, entry in pairs(listed) do
+        if ORDER[entry.status] then
+            for spelling in pairs(spellings(api)) do
+                local selector = spelling:match("^[-+]%[[%w_]+ (.+)%]$")
+                if used[spelling] or (selector and used[selector]) then
+                    found[api] = entry
+                end
+            end
+        end
+    end
+    local named = table.orderkeys(found)
+    table.sort(named, function (a, b)
+        if ORDER[found[a].status] ~= ORDER[found[b].status] then
+            return ORDER[found[a].status] < ORDER[found[b].status]
+        end
+        return a < b
+    end)
+    local advised = {}
+    for _, api in ipairs(named) do
+        table.insert(advised, {api = api, status = found[api].status, effect = found[api].effect, introduced = found[api].introduced})
+    end
+    return advised
+end
+
 function check_registry(root, found, complete, deployment, exports)
     local listed, incomplete = registry(root)
     local unlisted, undocumented = {}, {}

@@ -548,6 +548,21 @@ function encoded_version(text)
     return ((parts[1] or 0) << 16) | ((parts[2] or 0) << 8) | (parts[3] or 0)
 end
 
+function imported_symbols(binary, architecture)
+    local data = read(binary)
+    local imported = {}
+    for _, found in ipairs(images(data)) do
+        if not architecture or found.architecture == architecture then
+            each_symbol(data, found, function (name, kind, section, desc)
+                if kind & 0xE0 == 0 and kind & 0x0E == 0 and kind & 0x01 ~= 0 and name:startswith("_") then
+                    imported[name:sub(2)] = true
+                end
+            end)
+        end
+    end
+    return imported
+end
+
 function system_imports(data, found)
     local imported = {}
     each_symbol(data, found, function (name, kind, section, desc)

@@ -125,6 +125,31 @@ function report_selectors(source, binaries, architecture, folder, provided)
     end
 end
 
+function report_registry(target, binary)
+    local libraries = backport_libraries(target)
+    if #libraries == 0 then
+        return
+    end
+    local root = path.join(path.directory(path.directory(libraries[1])), "share")
+    if not os.isdir(path.join(root, "registry")) then
+        return
+    end
+    local used = macho.imported_symbols(binary, target:arch())
+    for selector in pairs((objc.binary_selectors(binary, target:arch()) or {used = {}}).used) do
+        used[selector:sub(2)] = true
+    end
+    local advised = backports.advice(root, used)
+    if #advised == 0 then
+        return
+    end
+    local told = {}
+    for _, entry in ipairs(advised) do
+        table.insert(told, string.format("  %s (iOS %s) is %s: %s", entry.api, entry.introduced or "?", entry.status, entry.effect or "?"))
+    end
+    wprint("%s calls %d API the backports do not carry as the release that added them does:\n%s",
+           path.filename(binary), #advised, table.concat(told, "\n"))
+end
+
 function verify(target, binary, opt)
     opt = opt or {}
     verify_minimum(target, binary)
@@ -134,6 +159,7 @@ function verify(target, binary, opt)
         local provided = backport_libraries(target)
         dyld.check(source, table.join({binary}, provided))
         report_selectors(source, {binary}, target:arch(), nil, provided)
+        report_registry(target, binary)
     end
 end
 
