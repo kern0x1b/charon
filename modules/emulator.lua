@@ -335,14 +335,15 @@ function scan(state, line)
             state.crashes[name] = (state.crashes[name] or 0) + 1
         end
     end
-    -- An IOKit request the emulator does not answer leaves the guest waiting
-    -- for a reply that never comes, which is a hole in the HLE and not a slow
-    -- guest; a blocked boot names the one it waited on most.
-    local waiting, request = line:match("^%[iokit%] unhandled pid=(%d+) id=(%d+)")
-    if waiting then
-        state.unanswered = state.unanswered or {}
-        local key = waiting .. " " .. request
-        state.unanswered[key] = (state.unanswered[key] or 0) + 1
+    -- A thread that sent a request and is still receiving its reply when the
+    -- run ends waited for an answer that never came. A daemon parked on its
+    -- service port is not that, and the emulator only reports the former.
+    local stalled, request, seconds = line:match(
+        "^%[mach%] stalled pid=(%d+) thread=%d+ request=(%d+).* guest%-seconds=(%d+)")
+    if stalled then
+        state.stalls = state.stalls or {}
+        table.insert(state.stalls, {pid = stalled, request = tonumber(request),
+                                    seconds = tonumber(seconds)})
     end
     local faulted, pc = line:match("^%[cpu%] fatal pid=(%d+) cpu=%d+ pc=(0x%x+)")
     if faulted then
@@ -384,15 +385,14 @@ function timing_refusal(timing, scale)
 end
 
 function gap(state)
-    local most, found = 0, nil
-    for key, count in pairs(state.unanswered or {}) do
-        if count > most then
-            local pid, request = key:match("^(%d+) (%d+)$")
-            most, found = count, {pid = pid, request = tonumber(request), count = count,
-                                  process = (state.names or {})[pid] or pid}
+    local longest
+    for _, stall in ipairs(state.stalls or {}) do
+        if not longest or stall.seconds > longest.seconds then
+            longest = {pid = stall.pid, request = stall.request, seconds = stall.seconds,
+                       process = (state.names or {})[stall.pid] or stall.pid}
         end
     end
-    return found
+    return longest
 end
 
 function milestone(state)
@@ -467,8 +467,8 @@ function describe(result)
     elseif result.state == "boot-blocked" then
         local waited = ""
         if result.gap then
-            waited = string.format(", %s waited on IOKit request %d %d times the emulator did not answer",
-                                   result.gap.process, result.gap.request, result.gap.count)
+            waited = string.format(", %s waited %d guest s for a reply to request %d",
+                                   result.gap.process, result.gap.seconds, result.gap.request)
         end
         return string.format("boot-blocked(%s%s%s)", result.milestone, reported, waited)
     end

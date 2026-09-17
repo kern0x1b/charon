@@ -277,10 +277,11 @@ What the guest kills, the guest explains: the reports it writes into
 `/private/var/logs/CrashReporter` are copied beside the verdict, and the reason
 the first of them names (`mediaserverd: RPCTimeout message received to
 terminate [0] with reason 'InitializeSystemSoundPorts'`) is part of a blocked
-boot's verdict line. A request the emulator does not answer leaves the guest
-waiting for a reply that never comes, which is a hole in the emulation and not
-a slow guest, so a blocked boot also names the request it waited on most and
-who asked for it.
+boot's verdict line. A boot that ends while a thread is still receiving the
+reply to a request it sent waited for an answer that never came - a hole in the
+emulation, not a slow guest - so the verdict names that request, the process
+and how long it waited. A daemon parked on its service port is not that and is
+not reported.
 
 A package of a port that builds with CMake calls the addon's bridge from its
 install script, which writes a toolchain file from the `apple-ios` toolchain

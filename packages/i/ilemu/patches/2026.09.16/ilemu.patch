@@ -1,5 +1,5 @@
 diff --git a/app/main.cpp b/app/main.cpp
-index 6f2d311..2112408 100644
+index 6f2d311..e1b048c 100644
 --- a/app/main.cpp
 +++ b/app/main.cpp
 @@ -67,7 +67,7 @@ constexpr std::size_t bytes_per_mebibyte = 1024U * 1024U;
@@ -16,7 +16,7 @@ index 6f2d311..2112408 100644
             "[--boot-logo PNG] [--frame-output FILE] [--touch-replay FILE] [--control-stdin] "
             "[--baseband-input FILE] [--baseband-output FILE] "
 -           "[--disable-scheduler-preemption] "
-+           "[--disable-scheduler-preemption] [--time-scale FACTOR] "
++           "[--disable-scheduler-preemption] [--time-scale FACTOR] [--verbose] "
             "[--perf-summary] [--jit-observer-only] [--perf-frame-content] "
             "[--perf-cpu-phases] "
             "[--perf-jit-native-lookups] "
@@ -48,6 +48,19 @@ index 6f2d311..2112408 100644
      options.jit_observer_only = flag(args, "--jit-observer-only");
      options.report_performance = flag(args, "--perf-summary");
      if (const auto value = option(args, "--ticks"))
+@@ -1123,8 +1137,10 @@ void boot(const std::vector<std::string>& args, Output& output)
+     }
+     options.baseband_input = option(args, "--baseband-input");
+     options.baseband_output = option(args, "--baseband-output");
+-    if (!options.ticks && options.windowed && !flag(args, "--verbose"))
+-        options.quiet_output = true;
++    // Tracing every syscall, mach message and IOKit request costs more than
++    // the guest work it describes, so a run traces only what a verdict reads
++    // unless it is asked for the whole trace.
++    options.quiet_output = !flag(args, "--verbose");
+     DesktopHost host;
+     EmulatorSession session { std::move(options), host, output };
+     session.run();
 diff --git a/src/device_state/graphics_services_capabilities.cpp b/src/device_state/graphics_services_capabilities.cpp
 index f0e97ea..cd93b16 100644
 --- a/src/device_state/graphics_services_capabilities.cpp
@@ -330,6 +343,35 @@ index 877b189..ff1b2cf 100644
          chunk = std::make_shared<PagePermissionChunk>(*chunk);
      }
      return *chunk;
+diff --git a/src/foundation/cpu.cpp b/src/foundation/cpu.cpp
+index 5a313d7..591d1cf 100644
+--- a/src/foundation/cpu.cpp
++++ b/src/foundation/cpu.cpp
+@@ -53,6 +53,10 @@
+ namespace ilemu {
+ namespace {
+ 
++    // The armv7 shared region of the releases this emulator boots.
++    constexpr std::uint32_t shared_region_first_address = 0x20000000U;
++    constexpr std::uint32_t shared_region_end_address = 0x40000000U;
++
+     [[nodiscard]] bool jit_env_flag(const char* name) noexcept
+     {
+         const char* value = std::getenv(name);
+@@ -627,6 +631,13 @@ public:
+     {
+         if (ir.block.CycleCount() == 0) {
+             performance_counters().record_translation_block();
++            // The dyld shared cache is the same read-only code at the same
++            // addresses in every process, so its blocks are the ones every
++            // process translates again.
++            if (address >= shared_region_first_address &&
++                address < shared_region_end_address) {
++                performance_counters().record_translation_block_shared_region();
++            }
+             translation_block_ = &ir.block;
+             translation_code_pages_.clear();
+             translation_constant_dependencies_.clear();
 diff --git a/src/foundation/device_model.cpp b/src/foundation/device_model.cpp
 index 1d12298..6682d87 100644
 --- a/src/foundation/device_model.cpp
@@ -460,6 +502,37 @@ index 2e5cd4f..7f69d89 100644
      bool unmap(std::uint32_t address, std::uint32_t size);
      enum class FileSyncResult { Success, Unmapped, IoError };
      // Writes shared file pages through their retained backing descriptors.
+diff --git a/src/foundation/include/foundation/performance.hpp b/src/foundation/include/foundation/performance.hpp
+index 1e70023..7bef726 100644
+--- a/src/foundation/include/foundation/performance.hpp
++++ b/src/foundation/include/foundation/performance.hpp
+@@ -295,6 +295,7 @@ struct PerformanceSnapshot {
+     std::uint64_t scheduler_preemption_deferred_consumes { };
+     std::uint64_t scheduler_quantum_expirations { };
+     std::uint64_t translation_blocks { };
++    std::uint64_t translation_blocks_shared_region { };
+     std::uint64_t cpu_executions { };
+     std::uint64_t cpu_ticks { };
+     std::uint64_t svc_calls { };
+@@ -471,6 +472,10 @@ public:
+     void record_scheduler_preemption_deferred_consume();
+     void record_scheduler_quantum_expiry();
+     void record_translation_block();
++    // Blocks first read from the dyld shared cache's address range. The cache
++    // is the same read-only code at the same addresses in every process, so
++    // this counts the work every process repeats for it.
++    void record_translation_block_shared_region();
+     void record_cpu_execution(std::uint64_t ticks);
+     void record_svc();
+     void record_page_miss();
+@@ -676,6 +681,7 @@ private:
+     std::atomic<std::uint64_t> scheduler_preemption_deferred_consumes_ { };
+     std::atomic<std::uint64_t> scheduler_quantum_expirations_ { };
+     std::atomic<std::uint64_t> translation_blocks_ { };
++    std::atomic<std::uint64_t> translation_blocks_shared_region_ { };
+     std::atomic<std::uint64_t> cpu_executions_ { };
+     std::atomic<std::uint64_t> cpu_ticks_ { };
+     std::atomic<std::uint64_t> svc_calls_ { };
 diff --git a/src/foundation/macho.cpp b/src/foundation/macho.cpp
 index cf91834..690c2e7 100644
 --- a/src/foundation/macho.cpp
@@ -526,6 +599,73 @@ index 1cb93b9..568fb16 100644
          result.available_bytes =
              proc_meminfo_bytes("MemAvailable:").value_or(result.total_bytes);
  
+diff --git a/src/foundation/output.cpp b/src/foundation/output.cpp
+index 4102a77..c974991 100644
+--- a/src/foundation/output.cpp
++++ b/src/foundation/output.cpp
+@@ -22,6 +22,11 @@ namespace {
+             "[clock]",
+             "[process]",
+             "[cpu] fatal",
++            // What a verdict reads: the scale a run used, who ended a process
++            // and what a thread was still waiting for when the run stopped.
++            "[time]",
++            "[signal]",
++            "[mach] stalled",
+             "[display]",
+             "[baseband]",
+             "[watch]",
+diff --git a/src/foundation/performance.cpp b/src/foundation/performance.cpp
+index 4dafcc4..4d43e97 100644
+--- a/src/foundation/performance.cpp
++++ b/src/foundation/performance.cpp
+@@ -557,6 +557,7 @@ void PerformanceCounters::reset(bool enabled)
+     scheduler_preemption_deferred_consumes_.store(0, std::memory_order_relaxed);
+     scheduler_quantum_expirations_.store(0, std::memory_order_relaxed);
+     translation_blocks_.store(0, std::memory_order_relaxed);
++    translation_blocks_shared_region_.store(0, std::memory_order_relaxed);
+     cpu_executions_.store(0, std::memory_order_relaxed);
+     cpu_ticks_.store(0, std::memory_order_relaxed);
+     svc_calls_.store(0, std::memory_order_relaxed);
+@@ -995,6 +996,8 @@ std::optional<PerformanceSnapshot> PerformanceCounters::end_display_window()
+     result.scheduler_quantum_expirations = diagnostic_delta(
+         scheduler_quantum_expirations_.load(std::memory_order_relaxed),
+         diagnostic_work_baseline.scheduler_quantum_expirations);
++    result.translation_blocks_shared_region =
++        translation_blocks_shared_region_.load(std::memory_order_relaxed);
+     result.translation_blocks =
+         diagnostic_delta(translation_blocks_.load(std::memory_order_relaxed),
+             diagnostic_work_baseline.translation_blocks);
+@@ -1592,6 +1595,11 @@ void PerformanceCounters::record_translation_block()
+     add_if_enabled(translation_blocks_, enabled_);
+ }
+ 
++void PerformanceCounters::record_translation_block_shared_region()
++{
++    add_if_enabled(translation_blocks_shared_region_, enabled_);
++}
++
+ void PerformanceCounters::record_cpu_execution(std::uint64_t ticks)
+ {
+     if (!enabled())
+@@ -2873,6 +2881,8 @@ PerformanceSnapshot PerformanceCounters::snapshot() const
+         scheduler_quantum_expirations_.load(std::memory_order_relaxed);
+     result.translation_blocks =
+         translation_blocks_.load(std::memory_order_relaxed);
++    result.translation_blocks_shared_region =
++        translation_blocks_shared_region_.load(std::memory_order_relaxed);
+     result.cpu_executions = cpu_executions_.load(std::memory_order_relaxed);
+     result.cpu_ticks = cpu_ticks_.load(std::memory_order_relaxed);
+     result.svc_calls = svc_calls_.load(std::memory_order_relaxed);
+@@ -3347,6 +3357,8 @@ std::string format_performance_summary(const PerformanceSnapshot& snapshot)
+          << " scheduler-quantum-expired="
+          << snapshot.scheduler_quantum_expirations
+          << " translation-blocks=" << snapshot.translation_blocks
++         << " translation-blocks-shared-region="
++         << snapshot.translation_blocks_shared_region
+          << " cpu-exec=" << snapshot.cpu_executions
+          << " cpu-ticks=" << snapshot.cpu_ticks << " svc=" << snapshot.svc_calls
+          << " page-misses=" << snapshot.page_misses
 diff --git a/src/kernel/bsd/descriptor_memory.cpp b/src/kernel/bsd/descriptor_memory.cpp
 index 7ccedbd..ec975d5 100644
 --- a/src/kernel/bsd/descriptor_memory.cpp
@@ -645,10 +785,23 @@ index 9d93631..1778a25 100644
      inline constexpr std::uint32_t flock = 131;
      inline constexpr std::uint32_t receive_message = 27;
 diff --git a/src/kernel/include/kernel/kernel.hpp b/src/kernel/include/kernel/kernel.hpp
-index 1faed7f..d994e17 100644
+index 1faed7f..fd6393d 100644
 --- a/src/kernel/include/kernel/kernel.hpp
 +++ b/src/kernel/include/kernel/kernel.hpp
-@@ -652,6 +652,9 @@ private:
+@@ -378,6 +378,12 @@ public:
+         return shared_state_->clock.wall_time();
+     }
+     [[nodiscard]] std::size_t bootstrap_checked_in_service_count() const;
++    // Report the threads of this process still waiting for a mach reply that
++    // has not come within the given guest time. A run that ends while a thread
++    // waits names what it waited on, which no message-level line can: a
++    // request the kernel does not answer looks exactly like one a guest server
++    // answers slowly until the reply never arrives.
++    void report_stalled_receives(std::uint64_t threshold_nanoseconds) const;
+     void set_wall_time(std::uint64_t unix_time_nanoseconds)
+     {
+         shared_state_->clock.set_wall_time(unix_time_nanoseconds);
+@@ -652,6 +658,9 @@ private:
      void bsd_success(
          Cpu& cpu, std::uint32_t value, std::uint32_t second_value = 0);
      void bsd_error(Cpu& cpu, std::uint32_t error);
@@ -658,14 +811,66 @@ index 1faed7f..d994e17 100644
      [[nodiscard]] bool protect_memory(Cpu& cpu, std::uint32_t address,
          std::uint32_t size, MemoryPermission permissions);
      void trace_unknown(Cpu& cpu, std::string kind, std::uint32_t number);
+diff --git a/src/kernel/include/kernel/kernel_shared_state.hpp b/src/kernel/include/kernel/kernel_shared_state.hpp
+index c091998..ece398a 100644
+--- a/src/kernel/include/kernel/kernel_shared_state.hpp
++++ b/src/kernel/include/kernel/kernel_shared_state.hpp
+@@ -166,6 +166,13 @@ struct PendingMachReceive {
+     // that ipc_mqueue_post would select, rather than whichever emulated CPU is
+     // polled first.
+     std::uint64_t wait_queue_sequence { };
++    // When the receive started, so a run can say how long a thread has been
++    // waiting for a reply that never came, and, when the receive follows the
++    // send of the same mach_msg, which request it is waiting on. A daemon
++    // parked on its service port waits forever by design; a thread waiting for
++    // a reply to a request it sent is a stall.
++    std::uint64_t started { };
++    std::optional<std::uint32_t> awaited_request;
+ };
+ 
+ struct PendingKevent {
 diff --git a/src/kernel/kernel.cpp b/src/kernel/kernel.cpp
-index be9e0f8..19fff56 100644
+index be9e0f8..0526eec 100644
 --- a/src/kernel/kernel.cpp
 +++ b/src/kernel/kernel.cpp
-@@ -2958,6 +2958,35 @@ void CompatibilityKernel::bsd_error(Cpu& cpu, std::uint32_t error)
+@@ -2958,6 +2958,69 @@ void CompatibilityKernel::bsd_error(Cpu& cpu, std::uint32_t error)
      cpu.set_cpsr(cpu.cpsr() | carry_flag);
  }
  
++void CompatibilityKernel::report_stalled_receives(
++    std::uint64_t threshold_nanoseconds) const
++{
++    const auto now = shared_state_->clock.now();
++    for (const auto& [processor, pending] : pending_mach_receives_) {
++        // A thread parked on a service port is a daemon waiting for work, not
++        // a stall. Only a thread that sent a request and is receiving its
++        // reply is waiting for an answer that should have come.
++        if (!pending.awaited_request)
++            continue;
++        if (pending.started == 0 || now < pending.started)
++            continue;
++        const auto waited = now - pending.started;
++        if (waited < threshold_nanoseconds)
++            continue;
++        std::string line = "[mach] stalled pid=" + std::to_string(process_.pid) +
++            " thread=" + std::to_string(processor + 1U) + " request=" +
++            std::to_string(*pending.awaited_request) + " reply-port=" +
++            std::to_string(pending.receive_name);
++        if (pending.receive_object) {
++            line += " object=" + std::to_string(*pending.receive_object);
++            const std::lock_guard mach_lock { shared_state_->mach_mutex };
++            const auto owner = shared_state_->mach_port_objects
++                                   .lookup(*pending.receive_object)
++                                   .value_or(xnu::ipc::PortObject { })
++                                   .receive_owner;
++            line += " receive-owner=" + std::to_string(owner);
++        }
++        line += " guest-seconds=" +
++            std::to_string(waited / VirtualClock::nanoseconds_per_second);
++        output_.line(line);
++    }
++}
++
 +bool CompatibilityKernel::unmap_memory(
 +    Cpu& cpu, std::uint32_t address, std::uint32_t size)
 +{
@@ -698,6 +903,48 @@ index be9e0f8..19fff56 100644
  bool CompatibilityKernel::protect_memory(Cpu& cpu, std::uint32_t address,
      std::uint32_t size, MemoryPermission permissions)
  {
+diff --git a/src/kernel/mach/message.cpp b/src/kernel/mach/message.cpp
+index 9f27717..d53881f 100644
+--- a/src/kernel/mach/message.cpp
++++ b/src/kernel/mach/message.cpp
+@@ -87,7 +87,8 @@ void CompatibilityKernel::dispatch_mach_message(
+ {
+     auto& registers = cpu.registers();
+     const auto message_address = registers[0];
+-    const auto begin_receive = [&] {
++    const auto begin_receive = [&](std::optional<std::uint32_t> awaited_request =
++                                       std::nullopt) {
+         const auto timeout_enabled =
+             (registers[1] & darwin::mach_message::option_receive_timeout) != 0;
+         const auto timeout_milliseconds = registers[5];
+@@ -116,7 +117,8 @@ void CompatibilityKernel::dispatch_mach_message(
+                     registers[4], registers[1], cpu.processor_id(), deadline,
+                     receive_object,
+                     shared_state_->mach_port_sets.contains(*receive_object), 0,
+-                    shared_state_->allocate_mach_wait_queue_sequence_locked() };
++                    shared_state_->allocate_mach_wait_queue_sequence_locked(),
++                    shared_state_->clock.now(), awaited_request };
+             process_.waiting_for_events = true;
+             if (deliver_pending_mach_locked(cpu, false))
+                 return;
+@@ -665,7 +667,7 @@ void CompatibilityKernel::dispatch_mach_message(
+                 trace_unknown(cpu, "MIG routine", *message_id);
+                 if (*local_port == xnu::ipc::null_name) {
+                     if (wants_receive) {
+-                        begin_receive();
++                        begin_receive(message_id);
+                     } else {
+                         registers[0] = darwin::mach::success;
+                     }
+@@ -1173,7 +1175,7 @@ void CompatibilityKernel::dispatch_mach_message(
+                 }
+             }
+             if (wants_receive) {
+-                begin_receive();
++                begin_receive(message_id);
+             } else {
+                 registers[0] = 0;
+             }
 diff --git a/src/kernel/mach/vm/deallocate.cpp b/src/kernel/mach/vm/deallocate.cpp
 index 2b5fe19..0630134 100644
 --- a/src/kernel/mach/vm/deallocate.cpp
@@ -725,7 +972,7 @@ index 6602c81..2c121ee 100644
          }
      }
 diff --git a/src/runtime/emulator_session.cpp b/src/runtime/emulator_session.cpp
-index 8fab643..636dfce 100644
+index 8fab643..b03017d 100644
 --- a/src/runtime/emulator_session.cpp
 +++ b/src/runtime/emulator_session.cpp
 @@ -2356,7 +2356,15 @@ void EmulatorSession::run()
@@ -757,6 +1004,23 @@ index 8fab643..636dfce 100644
                  output.line(failure.str());
              }
              auto completion = XnuSliceCompletion::Continue;
+@@ -5014,6 +5027,16 @@ void EmulatorSession::run()
+         concurrent_live_current_at_stop =
+             runtime_jit_memory->concurrent_live_current;
+     }
++    // A run that ends while a guest thread is still waiting for a mach reply
++    // names what it waited on. A request the kernel never answers looks, from
++    // the guest, exactly like one a guest server answers slowly, and only the
++    // wait itself distinguishes them.
++    constexpr std::uint64_t stalled_receive_guest_nanoseconds =
++        10ULL * VirtualClock::nanoseconds_per_second;
++    for (auto& runtime : runtimes) {
++        runtime->kernel->report_stalled_receives(
++            stalled_receive_guest_nanoseconds);
++    }
+     for (auto& runtime : runtimes) {
+         account_runtime_jit_memory(*runtime, true);
+         runtime_index.erase(*runtime);
 diff --git a/src/runtime/include/runtime/boot_options.hpp b/src/runtime/include/runtime/boot_options.hpp
 index b4c1b01..bb8f205 100644
 --- a/src/runtime/include/runtime/boot_options.hpp
