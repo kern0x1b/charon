@@ -7,15 +7,11 @@ package("apple-backports")
     add_deps("charon@firmware-tools", {alias = "firmware-tools"})
     add_deps("charon@ldid 2.1.5-procursus7+23.gaf86971", {alias = "ldid"})
 
-    local digests = {}
-    local sources = table.join(os.files(path.join(os.scriptdir(), "*.c")), os.files(path.join(os.scriptdir(), "*", "*.m")),
-                               {path.join(os.scriptdir(), "..", "..", "..", "modules", "apple", "backports.lua"),
-                                path.join(os.scriptdir(), "..", "..", "..", "addons", "c", "charon", "xmake.lua")})
-    table.sort(sources)
-    for _, file in ipairs(sources) do
-        table.insert(digests, path.filename(file) .. "=" .. hash.sha256(file))
-    end
-    add_configs("sources", {description = "The digest of the sources, the build module and the Charon releases, so a changed backport or a new release is a different package.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
+    local modules = path.join(os.scriptdir(), "..", "..", "..", "modules")
+    local digest = import("apple.backports", {rootdir = modules, anonymous = true}).source_digest(
+        os.scriptdir(), path.join(modules, "apple", "backports.lua"),
+        path.join(os.scriptdir(), "..", "..", "..", "addons", "c", "charon", "xmake.lua"))
+    add_configs("sources", {description = "The digest of the sources, their headers, the build module and the Charon releases, so a changed backport or a new release is a different package.", default = digest, type = "string", readonly = true})
 
     add_configs("uikit", {description = "Build libUIKitBackports.dylib beside libFoundationBackports.dylib, for an application; a daemon or a tool leaves UIKit out of its process.", default = false, type = "boolean"})
     add_configs("corelocation", {description = "Build libCoreLocationBackports.dylib, for a port that asks for location authorization; it loads CoreLocation into the process.", default = false, type = "boolean"})

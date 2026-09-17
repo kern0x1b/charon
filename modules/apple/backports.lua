@@ -88,6 +88,31 @@ function sources(root, library)
     return found
 end
 
+-- Everything a built library depends on: the sources of every library, the
+-- headers they include, this module and the releases the addon recipe names.
+-- The package digests this, so a changed backport is a different package; a
+-- file that is left out is a change that is built once and never again.
+function build_inputs(root, module_file, addon_recipe)
+    local found = table.join(os.files(path.join(root, "*.c")), os.files(path.join(root, "*.h")),
+                             os.files(path.join(root, "*", "*.m")), os.files(path.join(root, "*", "*.h")))
+    if module_file then
+        table.insert(found, module_file)
+    end
+    if addon_recipe then
+        table.insert(found, addon_recipe)
+    end
+    table.sort(found)
+    return found
+end
+
+function source_digest(root, module_file, addon_recipe)
+    local digests = {}
+    for _, file in ipairs(build_inputs(root, module_file, addon_recipe)) do
+        table.insert(digests, path.filename(file) .. "=" .. hash.sha256(file))
+    end
+    return hash.strhash128(table.concat(digests, ";"))
+end
+
 function band(release_exports, objects)
     local kept, reexported = {}, {}
     for _, object in ipairs(objects) do
