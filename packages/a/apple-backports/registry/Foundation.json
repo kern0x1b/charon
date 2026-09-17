@@ -375,5 +375,123 @@
   "reason": "a File Provider daemon is needed and iOS 6 has none",
   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
   "source": "SDK 16.4, NSFileManager.h"
+ },
+ {
+  "api": "NSArray.writeToURL:error:",
+  "kind": "method",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSArray.md",
+  "source": "Foundation of iOS 11.0 arm64, -[NSArray writeToURL:error:] at 0x181506f70"
+ },
+ {
+  "api": "NSArray.arrayWithContentsOfURL:error:",
+  "kind": "method",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "a departure from 11.0, which answers nil for a value of the wrong kind without filling in an error, and answers an immutable array even to a mutable receiver",
+  "effect": "the port answers error 259 with the same text as the current implementation, and gives the receiver's own kind, so a mutable receiver is mutable",
+  "facts": "facts/Foundation/NSArray.md",
+  "source": "Foundation of iOS 11.0 arm64, +[NSArray arrayWithContentsOfURL:error:] at 0x1815069e4 and -[NSArray initWithContentsOfURL:error:] at 0x181506ac8"
+ },
+ {
+  "api": "NSArray.initWithContentsOfURL:error:",
+  "kind": "method",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSArray.md",
+  "source": "Foundation of iOS 11.0 arm64 at 0x181506ac8"
+ },
+ {
+  "api": "NSDictionary.writeToURL:error:",
+  "kind": "method",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSArray.md",
+  "source": "Foundation of iOS 11.0 arm64, -[NSDictionary writeToURL:error:] at 0x181521348"
+ },
+ {
+  "api": "NSDictionary.dictionaryWithContentsOfURL:error:",
+  "kind": "method",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSArray.md",
+  "source": "Foundation of iOS 11.0 arm64 at 0x1815214fc"
+ },
+ {
+  "api": "NSDictionary.initWithContentsOfURL:error:",
+  "kind": "method",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSArray.md",
+  "source": "Foundation of iOS 11.0 arm64 at 0x1815215e0"
+ },
+ {
+  "api": "NSURLComponents.percentEncodedQueryItems",
+  "kind": "property",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "the refusal of a query with characters that do not belong in one comes from -setPercentEncodedQuery: of the NSURLComponents backport",
+  "effect": "the same NSInvalidArgumentException is raised, naming percentEncodedQuery where Apple names percentEncodedQueryItems",
+  "facts": "facts/Foundation/NSURLComponents.md",
+  "source": "Foundation of iOS 11.0 arm64, -[__NSConcreteURLComponents percentEncodedQueryItems] at 0x1815af674 and its setter at 0x1815af830"
+ },
+ {
+  "api": "NSCoder.decodeValueOfObjCType:at:size:",
+  "kind": "method",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCoder.md",
+  "source": "Foundation of iOS 11.0 arm64, -[NSCoder decodeValueOfObjCType:at:size:] at 0x181513e44; the wording of the exception from the host's Foundation"
+ },
+ {
+  "api": "NSSecureUnarchiveFromDataTransformer",
+  "kind": "class",
+  "introduced": "12.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "a departure from 12.0, which allows eight top level classes",
+  "effect": "the port allows the ten of the current implementation, adding NSSet and NSNull, so a set or a null survives the round trip",
+  "facts": "facts/Foundation/NSSecureUnarchiveFromDataTransformer.md",
+  "source": "Foundation of iOS 12.0 arm64, +allowedTopLevelClasses at 0x18198d2ac, -transformedValue: at 0x18198d4a4, -reverseTransformedValue: at 0x18198d674"
+ },
+ {
+  "api": "NSSecureUnarchiveFromDataTransformerName",
+  "kind": "symbol",
+  "introduced": "12.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSSecureUnarchiveFromDataTransformer.md",
+  "source": "Foundation of iOS 12.0 arm64; the value is NSSecureUnarchiveFromData"
+ },
+ {
+  "api": "NSJSONWritingSortedKeys",
+  "kind": "constant",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "ignored",
+  "reason": "the option is a number the compiler writes into a call to +dataWithJSONObject:options:error:, which iOS 6 already implements; there is no selector to add and no call to intercept, and the port does not replace system implementations",
+  "effect": "the keys come out in the dictionary's own order instead of the order of -localizedStandardCompare:, and nothing reports it",
+  "facts": "facts/Foundation/NSJSONSerialization.md",
+  "source": "the host's Foundation, checked against -localizedStandardCompare: on four hundred random sets of keys"
+ },
+ {
+  "api": "NSLocalizedFailureErrorKey",
+  "kind": "symbol",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "ignored",
+  "reason": "honouring the key means changing -localizedDescription, a method every release already answers, and the port does not replace system implementations",
+  "effect": "-localizedDescription ignores the key, so the message is the release's own and the sentence naming the failure is lost; nothing reports it",
+  "facts": "facts/Foundation/NSError.md",
+  "source": "the host's Foundation"
  }
 ]
