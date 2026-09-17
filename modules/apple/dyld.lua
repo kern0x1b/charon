@@ -884,22 +884,68 @@ local function rebase_stream(segments, slots, wide)
     return bytes .. string.rep("\0", (8 - #bytes % 8) % 8)
 end
 
-local function local_symbols(cache, address, wide)
+local function symbol_file(cache)
     local file = cache.main
     if file.mapping_offset < 0x58 then
+        return nil
+    end
+    local _, region_size = string.unpack("<I8I8", file.header, 0x48 + 1)
+    if region_size > 0 then
+        return file
+    end
+    if file.mapping_offset < 0x1a0 then
+        return nil
+    end
+    local wanted = file.header:sub(0x190 + 1, 0x190 + 16)
+    if wanted == string.rep("\0", 16) then
+        return nil
+    end
+    for _, candidate in ipairs(os.files(path.join(path.directory(file.path), path.filename(file.path) .. "*"))) do
+        local handle = io.open(candidate, "rb")
+        local header = handle and handle:read(0x200)
+        if handle then
+            handle:close()
+        end
+        if header and header:startswith("dyld_v1") and header:sub(0x58 + 1, 0x58 + 16) == wanted then
+            local mapping_offset = string.unpack("<I4", header, 17)
+            local offset, size = string.unpack("<I8I8", header, 0x48 + 1)
+            if size > 0 then
+                return {path = candidate, header = header, mapping_offset = mapping_offset, separate = true}
+            end
+        end
+    end
+    return nil
+end
+
+local function local_symbols(cache, address, wide)
+    local file = symbol_file(cache)
+    if not file then
         return {}
     end
     local region_offset, region_size = string.unpack("<I8I8", file.header, 0x48 + 1)
-    if region_size == 0 then
-        return {}
+    local function read(offset, size)
+        if not file.separate then
+            return cache.read(file, offset, size)
+        end
+        local handle = assert(io.open(file.path, "rb"), "cannot read " .. file.path)
+        handle:seek("set", offset)
+        local bytes = handle:read(size)
+        handle:close()
+        return bytes
     end
-    local head = cache.read(file, region_offset, 24)
+    local head = read(region_offset, 24)
     local nlist_offset, nlist_count, strings_offset, strings_size, entries_offset, entries_count = string.unpack("<I4I4I4I4I4I4", head, 1)
-    local base = string.unpack("<I8", cache.read(file, file.mapping_offset, 8), 1)
-    local entries = cache.read(file, region_offset + entries_offset, entries_count * 12)
+    local base = string.unpack("<I8", cache.read(cache.main, cache.main.mapping_offset, 8), 1)
+    local entry_width = region_size >= entries_offset + entries_count * 16 and #read(region_offset + entries_offset, math.min(16, region_size - entries_offset)) == 16 and 16 or 12
+    local entries = read(region_offset + entries_offset, entries_count * entry_width)
     local start, count
     for index = 0, entries_count - 1 do
-        local dylib_offset, first, held = string.unpack("<I4I4I4", entries, index * 12 + 1)
+        local dylib_offset, first, held
+        if entry_width == 16 then
+            dylib_offset, first, held = string.unpack("<I8I4I4", entries, index * 16 + 1)
+        else
+            dylib_offset, first, held = string.unpack("<I4I4I4", entries, index * 12 + 1)
+        end
         if dylib_offset == address - base then
             start, count = first, held
         end
@@ -908,8 +954,8 @@ local function local_symbols(cache, address, wide)
         return {}
     end
     local entry_size = wide and 16 or 12
-    local nlists = cache.read(file, region_offset + nlist_offset + start * entry_size, count * entry_size)
-    local strings = cache.read(file, region_offset + strings_offset, strings_size)
+    local nlists = read(region_offset + nlist_offset + start * entry_size, count * entry_size)
+    local strings = read(region_offset + strings_offset, strings_size)
     local found = {}
     for index = 0, count - 1 do
         local strx, kind, section, desc = string.unpack("<I4BBI2", nlists, index * entry_size + 1)
