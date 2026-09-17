@@ -68,6 +68,38 @@ function verify_inputs(target)
     vprint("%s: %d objects and %d archive members record iOS %s", target:name(), objects, members, deployment(target))
 end
 
+-- A package checks what it installs: every image is for the architecture and the release it was built for. The sources of
+-- a package are one directory for every architecture, so a build tree, or an object, that another configuration left
+-- behind would otherwise reach a port as a library it cannot use. Nothing downstream would say so either: a port's link
+-- checks its own objects and the static archives of its packages, not the libraries a package installs.
+function verify_installed(package)
+    local chosen = assert(package:toolchains(), package:name() .. " is built for apple-ios without the apple-ios toolchain")[1]
+    chosen:load()
+    local wanted = macho.encoded_version(chosen:config("deployment"))
+    local problems, checked = {}, 0
+    for _, file in ipairs(os.files(path.join(package:installdir(), "**"))) do
+        if macho.is_macho(file) or file:endswith(".a") then
+            local recorded = macho.recorded_minimums(file, package:arch())
+            if #recorded == 0 then
+                table.insert(problems, string.format("%s holds nothing for %s", path.filename(file), package:arch()))
+            end
+            for _, entry in ipairs(recorded) do
+                checked = checked + 1
+                if entry.minimum ~= wanted then
+                    table.insert(problems, string.format("%s%s records iOS %s, not the %s this package is built for",
+                                 path.filename(file), entry.member and ("(" .. entry.member .. ")") or "",
+                                 entry.minimum and macho.version_text(entry.minimum) or "nothing", chosen:config("deployment")))
+                end
+            end
+        end
+    end
+    if #problems > 0 then
+        local shown = table.concat(table.slice(problems, 1, 5), "; ") .. (#problems > 5 and string.format("; and %d more", #problems - 5) or "")
+        raise("%s installed what it did not build for %s iOS %s: %s", package:name(), package:arch(), chosen:config("deployment"), shown)
+    end
+    vprint("%s: %d images record %s iOS %s", package:name(), checked, package:arch(), chosen:config("deployment"))
+end
+
 function verify_minimum(target, binary)
     local wanted = macho.encoded_version(deployment(target))
     for _, image in ipairs(macho.images(macho.read(binary))) do
@@ -153,7 +185,7 @@ end
 function verify(target, binary, opt)
     opt = opt or {}
     verify_minimum(target, binary)
-    macho.verify(binary, {waived = waivers(target), arrived = compat.arrived("iOS"), stripped = opt.stripped})
+    macho.verify(binary, {waived = waivers(target), arrived = compat.arrived("iOS"), process_wide = compat.process_wide(), stripped = opt.stripped})
     if opt.imports ~= false then
         local source = imports_source(target)
         local provided = backport_libraries(target)

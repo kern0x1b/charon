@@ -20,4 +20,7 @@ end
 function finish(package, opt)
     prune(package, opt.prune)
     licenses(package, opt.licenses, opt)
+    if package:is_plat("iphoneos") and opt.verify ~= false then
+        import("platform").verify_installed(package)
+    end
 end
