@@ -12,12 +12,17 @@ inputs.
     sh host/alert/run.sh
     sh host/layout/run.sh
     sh host/foundation2/run.sh  writes device/foundation2-expectations.h when it passes
+    sh host/uikit2/run.sh
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
 backports, compares the two and embeds the host's answers in
 `device/foundation2-expectations.h`; it attaches the categories itself
 (`host-attach.c`), since the host linker leaves `__objc_catlist` alone.
+`host/uikit2/run.sh` renames selectors as well as classes, so a test holds a
+backported method and the system one side by side, and checks the spring curve
+against a real CASpringAnimation, which needs AppKit and so runs as a plain
+macOS tool.
 
 ## Device
 
@@ -48,6 +53,11 @@ postinst run with `DPKG_ROOT` set to it.
   so a method the release already has is never taken from the library.
 - `tolerance.m`: a process of its own, the timer tolerance, which is a property
   and two CoreFoundation functions.
+- `uikit2.m` (`uikit2-Info.plist`): an application for the second UIKit batch -
+  the traits, the tint colour, the motion effects, the spring animation, the
+  notification settings and the bar appearances. Where the environment cannot
+  answer a check - an emulator delivers no device motion for the gyroscope - it
+  prints a `skip` line with the reason instead of a verdict.
 - `alert.m`, `layout.m`: applications (`alert-Info.plist`, `layout-Info.plist`)
   launched from SpringBoard; they write `/private/var/backports/NAME.log` and
   `NAME.done`, and `alert.m` logs a `SCREENSHOT <label>` line and pauses before

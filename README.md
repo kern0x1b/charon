@@ -406,8 +406,8 @@ so it does not take over the host process's allocations either.
 
 `charon@apple-backports` brings Objective-C API later releases added -
 NSURLSession, NSURLComponents, UIAlertController, UIStackView, the layout
-anchors, base64 data, the quality of service of an operation - to a minimum
-release that lacks it, as
+anchors, the traits of a view, base64 data, the quality of service of an
+operation - to a minimum release that lacks it, as
 `libFoundationBackports.dylib` and, with the `uikit` config,
 `libUIKitBackports.dylib`, both named
 `/usr/lib/charon/org.charon.apple-backports/`. Unlike a runtime a package

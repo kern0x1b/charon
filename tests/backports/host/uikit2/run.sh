@@ -1,0 +1,84 @@
+#!/bin/sh
+# run.sh — differential host tests for the second UIKit batch: the backported sources are compiled for
+# Mac Catalyst with their classes, selectors and constants renamed, so each test can put the backport and
+# the system implementation side by side in one process. The spring curve is checked against a real
+# CASpringAnimation, which needs AppKit, so that part runs as a plain macOS tool.
+set -eu
+here=$(cd "$(dirname "$0")" && pwd)
+sources=${UIKIT2_SOURCES:-$here/../../../../packages/a/apple-backports/UIKit}
+harness=${UIKIT2_HARNESS:-$here/../../device}
+build=${UIKIT2_BUILD:-${TMPDIR:-/tmp}/charon-uikit2-host}
+sdk=$(xcrun --show-sdk-path)
+target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
+frameworks="-framework UIKit -framework QuartzCore -framework CoreGraphics -framework Foundation"
+flags="-fobjc-arc -fvisibility=hidden -Wall -Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-objc-protocol-method-implementation -Wno-incomplete-implementation -Wno-objc-property-implementation"
+rm -rf "$build"
+mkdir -p "$build/plain"
+
+renames() {
+    # $1: newline separated object files, $2: selectors that must keep their name
+    keep=$2
+    defined=$(nm -m $1 | grep -v '(undefined)')
+    printf '%s\n' "$defined" | sed -n 's/.* external _OBJC_CLASS_\$_\(.*\)/-D\1=CharonHost\1/p' | sort -u
+    printf '%s\n' "$defined" | sed -n 's/.* external _\([A-Za-z_][A-Za-z0-9_]*\)$/\1/p' | grep -v '^OBJC_' | sort -u |
+        awk '{ print "-D" $0 "=CharonHost" $0 }'
+    [ "$keep" = "*" ] && return 0
+    keep="$keep init initWithCoder copyWithZone mutableCopyWithZone encodeWithCoder description isEqual hash supportsSecureCoding dealloc load initialize"
+    nm $1 | sed -n 's/.*[-+]\[[A-Za-z_]*(*[A-Za-z]*)* \([A-Za-z_][A-Za-z0-9_]*\).*\]$/\1/p' | grep -v '^charon_' | sort -u |
+        awk -v keep="$keep" '
+            BEGIN { split(keep, kept, " "); for (index_ in kept) skip[kept[index_]] = 1 }
+            { if ($0 in skip) next
+              name = $0
+              if (name ~ /^set[A-Z]/) { rest = substr(name, 4); print "-D" name "=setCharonHost" rest; print "-D" tolower(substr(rest, 1, 1)) substr(rest, 2) "=charonHost" rest }
+              else if (name ~ /^is[A-Z]/) { rest = substr(name, 3); print "-D" name "=isCharonHost" rest; print "-D" tolower(substr(rest, 1, 1)) substr(rest, 2) "=charonHost" rest }
+              else print "-D" name "=charonHost" toupper(substr(name, 1, 1)) substr(name, 2) }' | sort -u
+}
+
+group() {
+    # $1: group name, $2: sources, $3: selectors to keep, $4: test source
+    name=$1
+    files=$2
+    keep=$3
+    test=$4
+    objects=""
+    for file in $files; do
+        xcrun clang $target $flags -w -c "$sources/$file" -o "$build/plain/$name-$file.o"
+        objects="$objects $build/plain/$name-$file.o"
+    done
+    renames "$objects" "$keep" > "$build/$name.flags"
+    mkdir -p "$build/$name"
+    built=""
+    for file in $files; do
+        xcrun clang $target $flags $(cat "$build/$name.flags") -c "$sources/$file" -o "$build/$name/$file.o"
+        built="$built $build/$name/$file.o"
+    done
+    xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/$test" "$harness/check.m" $built $frameworks -o "$build/$name-test"
+    if "$build/$name-test" > "$build/$name.log" 2>&1; then result=0; else result=$?; fi
+    grep -v '^ok ' "$build/$name.log" || true
+    echo "$name: exit=$result log=$build/$name.log"
+    [ "$result" = 0 ] || status=1
+}
+
+status=0
+group traits "UITraitCollection.m" "*" traits_test.m
+group notifications "UIUserNotificationSettings.m" "*" notifications_test.m
+group misc "UIScreen+NativeBounds.m UIFont+TextStyles.m UIFont+Weights.m UIColor+SystemColors.m UIColor+SystemPurpleColor.m UIImage+RenderingMode.m UITextField+DefaultTextAttributes.m UIViewController+ExtendedLayout.m" "systemFontOfSize" misc_test.m
+group motion "UIMotionEffect.m UIView+MotionEffects.m" "initWithKeyPath keyPath type minimumRelativeValue setMinimumRelativeValue maximumRelativeValue setMaximumRelativeValue keyPathsAndRelativeValuesForViewerOffset" motion_test.m
+group tint "UIView+TintColor.m" "" tint_test.m
+group bars "UINavigationBar+BarAppearance.m UISearchBar+BarStyle.m UIToolbar+BarTintColor.m UITabBar+BarTintColor.m" "" bars_test.m
+
+# the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation
+xcrun clang $target -fobjc-arc -Wall -w -I"$harness" "$here/spring_uikit.m" $frameworks -o "$build/spring_uikit"
+xcrun clang $target $flags -w -c "$sources/UIView+SpringAnimation.m" -o "$build/plain/spring.o"
+xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/spring_ours.m" "$harness/check.m" "$build/plain/spring.o" $frameworks -o "$build/spring_ours"
+xcrun clang -fobjc-arc -Wall -I"$harness" "$here/spring_sample.m" "$harness/check.m" -framework AppKit -framework QuartzCore -o "$build/spring_sample"
+"$build/spring_uikit" > "$build/spring_uikit.txt"
+if "$build/spring_ours" "$build/spring_uikit.txt" "$build/spring_samples.txt" > "$build/spring_ours.log" 2>&1; then result=0; else result=$?; fi
+grep -v '^ok ' "$build/spring_ours.log" || true
+echo "spring_ours: exit=$result log=$build/spring_ours.log"
+[ "$result" = 0 ] || status=1
+if "$build/spring_sample" < "$build/spring_samples.txt" > "$build/spring_sample.log" 2>&1; then result=0; else result=$?; fi
+grep -v '^ok ' "$build/spring_sample.log" || true
+echo "spring_sample: exit=$result log=$build/spring_sample.log"
+[ "$result" = 0 ] || status=1
+exit $status
