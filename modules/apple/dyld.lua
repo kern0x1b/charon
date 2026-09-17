@@ -208,13 +208,48 @@ local function cache_files(mainfile)
         table.insert(files, file)
         return file
     end
-    local function read(file, offset, size)
+    local block_size = 65536
+    local function read_direct(file, offset, size)
         file.handle:seek("set", offset)
         local bytes = size > 0 and file.handle:read(size) or ""
         if not bytes or #bytes ~= size then
             raise("%s ends before offset %#x + %#x", file.path, offset, size)
         end
         return bytes
+    end
+    local function read(file, offset, size)
+        if size > block_size // 4 then
+            return read_direct(file, offset, size)
+        end
+        file.blocks = file.blocks or {}
+        local pieces = {}
+        local remaining, at = size, offset
+        while remaining > 0 do
+            local index = at // block_size
+            local block = file.blocks[index]
+            if not block then
+                local start = index * block_size
+                if start >= file.size then
+                    raise("%s ends before offset %#x + %#x", file.path, offset, size)
+                end
+                file.handle:seek("set", start)
+                block = file.handle:read(math.min(block_size, file.size - start)) or ""
+                file.block_count = (file.block_count or 0) + 1
+                if file.block_count > 1024 then
+                    file.blocks, file.block_count = {}, 1
+                end
+                file.blocks[index] = block
+            end
+            local inner = at - index * block_size
+            local piece = block:sub(inner + 1, math.min(#block, inner + remaining))
+            if #piece == 0 then
+                raise("%s ends before offset %#x + %#x", file.path, offset, size)
+            end
+            table.insert(pieces, piece)
+            remaining = remaining - #piece
+            at = at + #piece
+        end
+        return #pieces == 1 and pieces[1] or table.concat(pieces)
     end
     local function add_mappings(file)
         local header = read(file, 0, 32)
@@ -290,7 +325,108 @@ local function cache_files(mainfile)
             file.handle:close()
         end
     end
-    return {main = main, field = field, read = read, read_address = read_address, string_at = string_at, close = close}
+    local slides = {}
+    local function slide_of(file)
+        if slides[file] ~= nil then
+            return slides[file]
+        end
+        local found = false
+        local with_slide_offset, with_slide_count = nil, nil
+        if file.mapping_offset >= 0x140 then
+            with_slide_offset, with_slide_count = string.unpack("<I4I4", file.header, 0x138 + 1)
+        end
+        local ranges = {}
+        local function describe(slide_offset, slide_size, address, size)
+            if slide_size == 0 then
+                return
+            end
+            local head = read(file, slide_offset, math.min(slide_size, 64))
+            local version = string.unpack("<I4", head, 1)
+            local info = {version = version, address = address, size = size}
+            if version == 2 then
+                info.delta_mask, info.value_add = string.unpack("<I8I8", head, 25)
+            elseif version == 3 then
+                info.value_add = string.unpack("<I8", head, 17)
+            elseif version == 5 then
+                info.value_add = string.unpack("<I8", head, 17)
+            end
+            table.insert(ranges, info)
+        end
+        if with_slide_offset and with_slide_count and with_slide_count > 0 then
+            local entries = read(file, with_slide_offset, with_slide_count * 56)
+            for index = 0, with_slide_count - 1 do
+                local address, size, _, slide_offset, slide_size = string.unpack("<I8I8I8I8I8", entries, index * 56 + 1)
+                describe(slide_offset, slide_size, address, size)
+            end
+        elseif file.mapping_offset >= 0x48 then
+            local slide_offset, slide_size = string.unpack("<I8I8", file.header, 0x38 + 1)
+            describe(slide_offset, slide_size, 0, math.maxinteger)
+        end
+        found = ranges
+        slides[file] = found
+        return found
+    end
+    local function pointer_at(address, wide)
+        local file = locate(address, wide and 8 or 4)
+        local value = string.unpack(wide and "<I8" or "<I4", read_address(address, wide and 8 or 4))
+        if not wide then
+            return value
+        end
+        if value == 0 then
+            return 0
+        end
+        for _, info in ipairs(slide_of(file)) do
+            if info.address <= address and address < info.address + info.size then
+                if info.version == 2 then
+                    local target = value & ~info.delta_mask
+                    return target ~= 0 and target + info.value_add or 0
+                elseif info.version == 3 then
+                    if value >> 63 ~= 0 then
+                        return info.value_add + (value & 0xFFFFFFFF)
+                    end
+                    return (value & 0x7FFFFFFFFFF) | (((value >> 43) & 0xFF) << 56)
+                elseif info.version == 5 then
+                    return info.value_add + (value & 0x3FFFFFFFF)
+                end
+            end
+        end
+        return value
+    end
+    local function mapped(address, size)
+        for _, mapping in ipairs(mappings) do
+            if mapping.address <= address and address + (size or 1) <= mapping.address + mapping.size then
+                return true
+            end
+        end
+        return false
+    end
+    return {main = main, field = field, read = read, read_address = read_address, string_at = string_at, pointer_at = pointer_at, mapped = mapped, close = close}
+end
+
+function open_cache(cachefile)
+    local cache = cache_files(cachefile)
+    local images_offset, images_count
+    if cache.main.mapping_offset >= 0x1c4 then
+        images_offset, images_count = cache.field(cache.main, 0x1c0, "<I4"), cache.field(cache.main, 0x1c4, "<I4")
+    else
+        images_offset, images_count = cache.field(cache.main, 0x18, "<I4"), cache.field(cache.main, 0x1c, "<I4")
+    end
+    local entries = cache.read(cache.main, images_offset, images_count * 32)
+    local images, seen = {}, {}
+    for index = 0, images_count - 1 do
+        local address, _, _, path_offset = string.unpack("<I8I8I8I4", entries, index * 32 + 1)
+        if not seen[address] then
+            seen[address] = true
+            local install = cache.read(cache.main, path_offset, math.min(1024, cache.main.size - path_offset)):match("^([^%z]*)")
+            local magic = string.unpack("<I4", cache.read_address(address, 4))
+            local header_size = magic == 0xFEEDFACF and 32 or 28
+            local sizeofcmds = string.unpack("<I4", cache.read_address(address + 20, 4))
+            table.insert(images, {install = install, address = address, image = macho.image(cache.read_address(address, header_size + sizeofcmds), 0)})
+        end
+    end
+    cache.architecture = cache.main.header:sub(8, 16):gsub("[ %z]", "")
+    cache.images = images
+    return cache
 end
 
 local function cached_library(cache, address)

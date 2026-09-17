@@ -169,7 +169,12 @@ fetch RELEASE` does it by hand; `xmake firmware list` shows what is held. `xmake
 device's earliest firmware not older than the release (with the SystemOS
 cryptex under `System/Cryptexes/OS` from iOS 16) into
 `~/.charon/firmware/rootfs/<device>/<version>_<build>/`, the input an emulator
-boots. The
+boots. `xmake firmware [--arch=ARCH] classes RELEASE` writes the release's
+Objective-C inventory - every class with its superclass, image, instance and
+class methods and protocols, categories merged in - as JSON beside its cache,
+read from the objc2 metadata in the cache: 32-bit and arm64 caches, pointers
+decoded by the mapping's slide info (v1 to v5), relative method lists with
+selector offsets, and the lists of lists iOS 17 on prebuilds. The
 release and its firmware come from a catalog of api.ipsw.me and
 theapplewiki's firmware tables, kept in `~/.charon/firmware/catalog.json` and
 refreshed when a minimum is newer than anything it lists. Only the system image

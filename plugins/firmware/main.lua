@@ -22,8 +22,8 @@ function main()
         end
         return
     end
-    if action ~= "fetch" and action ~= "rootfs" then
-        raise("xmake firmware takes fetch, rootfs or list, not %s", tostring(action))
+    if action ~= "fetch" and action ~= "rootfs" and action ~= "classes" then
+        raise("xmake firmware takes fetch, rootfs, classes or list, not %s", tostring(action))
     end
     local release = option.get("release") or raise("xmake firmware fetch needs the release")
     task.run("config", {}, {disable_dump = true})
@@ -40,5 +40,27 @@ function main()
         return
     end
     local held, fetched = firmware.fetch(architecture, release, {tool = charon_firmware})
+    if action == "classes" then
+        import("core.base.json")
+        local objc = import("apple.objc", {rootdir = path.join(os.scriptdir(), "..", "..", "modules"), anonymous = true})
+        local inventory = objc.inventory(held)
+        local classes = {}
+        for name, class in pairs(inventory.classes) do
+            local function selectors(set)
+                local names = {}
+                for key in pairs(set) do
+                    table.insert(names, key:sub(2))
+                end
+                table.sort(names)
+                return names
+            end
+            classes[name] = {superclass = class.superclass, image = class.image, instance = selectors(class.instance),
+                             class = selectors(class.class), protocols = table.orderkeys(class.protocols)}
+        end
+        local output = option.get("output") or path.join(path.directory(held), "classes_" .. architecture .. ".json")
+        json.savefile(output, {release = fetched, architecture = architecture, classes = classes})
+        cprint("${bright}%s${clear}: the Objective-C classes of iOS %s for %s", output, fetched, architecture)
+        return
+    end
     cprint("${bright}%s${clear}: iOS %s for %s", held, fetched, architecture)
 end
