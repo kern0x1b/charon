@@ -13,12 +13,25 @@ inputs.
     sh host/layout/run.sh
     sh host/foundation2/run.sh  writes device/foundation2-expectations.h when it passes
     sh host/uikit2/run.sh
+    sh host/keyedarchive11/run.sh  writes device/keyedarchive11-expectations.h when it passes
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
 backports, compares the two and embeds the host's answers in
 `device/foundation2-expectations.h`; it attaches the categories itself
 (`host-attach.c`), since the host linker leaves `__objc_catlist` alone.
+`host/keyedarchive11/run.sh` holds the iOS 11 keyed archiving API to the host's
+own: it runs `device/keyedarchive11-cases.m` twice in one process, once against
+the system's methods and once against the backport's, attached under the
+`charonHost_` prefix by `host/foundation2/host-attach.c`, and compares the two
+answer by answer. It writes `device/keyedarchive11-expectations.h` only when
+every answer agrees. What it holds the backport to, beyond the obvious round
+trip: `-encodedData` returns the archiver's own mutable buffer and the same
+object every time, it answers for an archiver made with
+`-initForWritingWithMutableData:` instead of raising, and an archive whose root
+is missing or `nil` fails with `NSCoderValueNotFoundError`, not with
+`NSCoderReadCorruptError`.
+
 `host/uikit2/run.sh` renames selectors as well as classes, so a test holds a
 backported method and the system one side by side, and checks the spring curve
 against a real CASpringAnimation, which needs AppKit and so runs as a plain
@@ -81,6 +94,12 @@ postinst run with `DPKG_ROOT` set to it.
   `-[UIApplication setStatusBarOrientation:animated:]`, which the traits step
   turns the status bar with, while the top-most full screen controller
   autorotates.
+- `keyedarchive11.m` with `keyedarchive11-cases.m`: a process of its own for the
+  iOS 11 keyed archiving API. It holds each case to
+  `keyedarchive11-expectations.h`, names the image every backported method comes
+  from, and checks the one thing the host cannot show: that a second
+  `-finishEncoding` on iOS 6 neither raises nor touches the archive, which is
+  what `-encodedData` stands on.
 - `alert.m`, `layout.m`: applications (`alert-Info.plist`, `layout-Info.plist`)
   launched from SpringBoard; they write `/private/var/backports/NAME.log` and
   `NAME.done`, and `alert.m` logs a `SCREENSHOT <label>` line and pauses before

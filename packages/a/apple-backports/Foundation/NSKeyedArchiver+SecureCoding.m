@@ -6,6 +6,16 @@ NSError *charon_coder_error(NSException *exception, NSInteger code);
 static char CharonArchiverDataKey;
 static char CharonArchiverFinishedKey;
 
+static NSMutableData *charon_archiver_buffer(NSKeyedArchiver *archiver)
+{
+    NSMutableData *data = objc_getAssociatedObject(archiver, &CharonArchiverDataKey);
+    if (data)
+        return data;
+    Ivar stream = class_getInstanceVariable([NSKeyedArchiver class], "_stream");
+    id output = stream ? object_getIvar(archiver, stream) : nil;
+    return [output isKindOfClass:[NSMutableData class]] ? output : nil;
+}
+
 @implementation NSKeyedArchiver (CharonSecureCoding)
 
 - (instancetype)initRequiringSecureCoding:(BOOL)requiresSecureCoding
@@ -20,24 +30,21 @@ static char CharonArchiverFinishedKey;
 
 - (NSData *)encodedData
 {
-    NSMutableData *data = objc_getAssociatedObject(self, &CharonArchiverDataKey);
+    NSMutableData *data = charon_archiver_buffer(self);
     if (!data)
-        [NSException raise:NSInvalidArgumentException format:@"*** -[%@ %@]: the archiver was not created with -initRequiringSecureCoding:", [self class], NSStringFromSelector(_cmd)];
+        return [NSMutableData data];
     if (!objc_getAssociatedObject(self, &CharonArchiverFinishedKey)) {
         objc_setAssociatedObject(self, &CharonArchiverFinishedKey, @YES, OBJC_ASSOCIATION_RETAIN);
         [self finishEncoding];
     }
-    return [data copy];
+    return data;
 }
 
 + (NSData *)archivedDataWithRootObject:(id)object requiringSecureCoding:(BOOL)requiresSecureCoding error:(NSError **)error
 {
-    NSMutableData *data = [NSMutableData data];
-    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
-    archiver.requiresSecureCoding = requiresSecureCoding;
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initRequiringSecureCoding:requiresSecureCoding];
     @try {
         [archiver encodeObject:object forKey:NSKeyedArchiveRootObjectKey];
-        [archiver finishEncoding];
     } @catch (NSException *exception) {
         if (error) {
             NSError *underlying = charon_coder_error(exception, NSCoderReadCorruptError);
@@ -45,7 +52,7 @@ static char CharonArchiverFinishedKey;
         }
         return nil;
     }
-    return data;
+    return [archiver encodedData];
 }
 
 @end
