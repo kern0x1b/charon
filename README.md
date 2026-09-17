@@ -264,6 +264,16 @@ copy in each image numbers variables on its own, and two images then read each
 other's storage. The compiler's `libclang_rt.ios.a`, built by the same package,
 leaves emutls out, so an image that does not link the runtime fails to link
 rather than getting a copy of its own.
+An atomic the processor cannot update in one instruction, such as a
+`std::atomic` of a structure wider than a word, compiles to `__atomic_load`,
+`__atomic_store`, `__atomic_exchange` and `__atomic_compare_exchange` calls,
+which libSystem has from iOS 7.0 and which clang otherwise refuses to emit for an
+older release. The `llvm` package's clang emits them for every iOS release, and
+below 7.0 the libc++abi of `charon@libcxx` exports compiler-rt's implementation,
+re-exported by libc++, one copy for the whole process: it picks the lock for a
+memory location from a table, and two images with tables of their own would
+guard the same memory with different locks. The builtins leave it out as well,
+so an image that makes these calls without the runtime fails to link.
 apple-compat links its shims into whoever requires it and force-includes
 nothing on its own, because a shim's header brings its system header with it
 (`unlinkat.h` brings `<unistd.h>`, and with it `sync`). A target names the

@@ -40,7 +40,7 @@ package("libcxx")
     on_install("iphoneos", function (package)
         import("core.base.semver")
         local cmake = import("apple.cmake", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
-        for _, patch in ipairs({"utimensat-told-no.patch", "reexport-when-dyld-can.patch", "one-emulated-tls-runtime.patch"}) do
+        for _, patch in ipairs({"utimensat-told-no.patch", "reexport-when-dyld-can.patch", "one-emulated-tls-runtime.patch", "one-atomic-runtime.patch"}) do
             os.vrunv("git", {"apply", path.join(package:scriptdir(), "patches", patch), "-p2"})
         end
         local compat = package:dep("apple-compat")
@@ -57,8 +57,10 @@ package("libcxx")
         end
         local deployment = cmake.toolchain(package):config("deployment")
         local emulated_tls = cmake.toolchain(package):config("emulated_tls") and true or false
+        local atomic_libcalls = cmake.toolchain(package):config("atomic_libcalls") and true or false
         cmake.install(package, {
             "-DLIBCXXABI_ENABLE_EMULATED_TLS=" .. (emulated_tls and "ON" or "OFF"),
+            "-DLIBCXXABI_ENABLE_ATOMIC_LIBCALLS=" .. (atomic_libcalls and "ON" or "OFF"),
             "-DLLVM_ENABLE_RUNTIMES=libcxx;libcxxabi",
             "-DLIBCXXABI_REEXPORT_FROM_LIBCXX=" .. (semver.compare(deployment, "4.2") < 0 and "OFF" or "ON"),
             "-DLIBCXX_ENABLE_SHARED=ON", "-DLIBCXXABI_ENABLE_SHARED=ON",
@@ -83,12 +85,20 @@ package("libcxx")
                 raise("%s still imports %s from the system, which iOS %s does not have; apple-compat was not linked into it", library, table.concat(leaked, ", "), cmake.toolchain(package):config("deployment"))
             end
         end
+        local exported = os.iorunv("xcrun", {"nm", "-gU", path.join(package:installdir("lib"), "libc++abi.1.0.dylib")})
         if emulated_tls then
-            local exported = os.iorunv("xcrun", {"nm", "-gU", path.join(package:installdir("lib"), "libc++abi.1.0.dylib")})
             for _, symbol in ipairs({"___emutls_get_address", "___cxa_thread_atexit"}) do
                 if not exported:find(" T " .. symbol .. "\n", 1, true) then
                     raise("libc++abi.1.0.dylib does not export %s, and code compiled with -femulated-tls for iOS %s calls it", symbol, deployment)
                 end
+            end
+        end
+        for _, symbol in ipairs({"___atomic_load", "___atomic_store", "___atomic_exchange", "___atomic_compare_exchange", "___atomic_is_lock_free"}) do
+            local found = exported:find(" T " .. symbol .. "\n", 1, true)
+            if atomic_libcalls and not found then
+                raise("libc++abi.1.0.dylib does not export %s, and code compiled for iOS %s calls it for an atomic the processor cannot update in one instruction", symbol, deployment)
+            elseif not atomic_libcalls and found then
+                raise("libc++abi.1.0.dylib exports %s, which libSystem has from iOS 7.0, so code built for iOS %s would bind a second copy with locks of its own", symbol, deployment)
             end
         end
         os.cp("libcxx/LICENSE.TXT", package:installdir("licenses") .. "/")

@@ -77,6 +77,7 @@ toolchain("apple-ios")
         local emulated_tls = semver.compare(minimum, native_tls) < 0
         local thread_local = emulated_tls and {"-femulated-tls"} or {}
         toolchain:config_set("emulated_tls", emulated_tls)
+        toolchain:config_set("atomic_libcalls", semver.compare(minimum, "7.0") < 0)
         toolchain:config_set("linker_version", found.linker and toolchain:config("ld64") or nil)
         local linked = table.join(target, found.linker and {"-fuse-ld=" .. found.linker} or {})
         if semver.compare(minimum, "3.2") < 0 then

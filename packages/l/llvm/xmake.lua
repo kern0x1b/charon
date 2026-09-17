@@ -1,7 +1,7 @@
 package("llvm")
     set_kind("toolchain")
     set_homepage("https://llvm.org")
-    set_description("clang that compiles thread-local variables for an iOS whose dyld has none, through emulated TLS, with compiler-rt's iOS builtins in its resource folder")
+    set_description("clang that compiles thread-local variables for an iOS whose dyld has none, through emulated TLS, and atomics of any size for an iOS whose libSystem has no __atomic_* calls, with compiler-rt's iOS builtins in its resource folder")
     set_license("Apache-2.0 WITH LLVM-exception")
 
     add_urls("https://github.com/llvm/llvm-project.git")
@@ -9,7 +9,7 @@ package("llvm")
     add_deps("charon@iphoneos-sdk", {alias = "iphoneos-sdk"})
     add_deps("cmake", "ninja", {kind = "binary"})
 
-    local patches = {"clang-emulated-tls-without-dyld.patch", "builtins-leave-emutls-to-the-runtime.patch"}
+    local patches = {"clang-emulated-tls-without-dyld.patch", "builtins-leave-emutls-to-the-runtime.patch", "clang-atomic-libcalls-from-the-runtime.patch"}
     local digests = {}
     for _, patch in ipairs(patches) do
         table.insert(digests, patch .. "=" .. hash.sha256(path.join(os.scriptdir(), "patches", patch)))
@@ -95,5 +95,7 @@ package("llvm")
         io.writefile(probe, "_Thread_local int probe;\n")
         local clang = path.join(package:installdir("bin"), "clang")
         os.vrunv(clang, {"-target", "armv7-apple-ios6.0", "-femulated-tls", "-fsyntax-only", probe})
+        io.writefile(probe, "struct wide { int a, b, c; };\n_Atomic(struct wide) probe;\nstruct wide read(void) { return probe; }\n")
+        os.vrunv(clang, {"-target", "armv7-apple-ios6.0", "-fsyntax-only", probe})
         os.tryrm(probe)
     end)
