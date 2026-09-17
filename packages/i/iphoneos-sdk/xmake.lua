@@ -74,11 +74,15 @@ package("iphoneos-sdk")
 
         local archives = {}
         for _, architecture in ipairs({"armv6", "armv7", "armv7s", "arm64"}) do
-            local object = path.absolute(architecture .. "-arclite.o")
-            os.vrunv("xcrun", {"clang", "-target", architecture .. "-apple-ios2.0", "-isysroot", folder, "-Os", "-fno-objc-arc",
-                               "-c", path.join(package:scriptdir(), "arclite", "arclite.m"), "-o", object})
+            local objects = {}
+            for _, source in ipairs(os.files(path.join(package:scriptdir(), "arclite", "*.m"))) do
+                local object = path.absolute(architecture .. "-" .. path.basename(source) .. ".o")
+                os.vrunv("xcrun", {"clang", "-target", architecture .. "-apple-ios2.0", "-isysroot", folder, "-Os", "-fno-objc-arc",
+                                   "-c", source, "-o", object})
+                table.insert(objects, object)
+            end
             local archive = path.absolute(architecture .. "-libarclite.a")
-            os.vrunv("xcrun", {"libtool", "-static", "-o", archive, object})
+            os.vrunv("xcrun", table.join({"libtool", "-static", "-o", archive}, objects))
             table.insert(archives, archive)
         end
         local blocks = {}

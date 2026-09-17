@@ -65,7 +65,8 @@ toolchain("apple-ios")
             table.join2(linked, {"-lBlocksRuntime", "-lobjc"})
         end
         toolchain:add("cxflags", toolchain:config("optimize") == "packages" and table.join(target, {"-O3"}) or target)
-        toolchain:add("mxflags", toolchain:config("optimize") == "packages" and table.join(target, {"-O3"}) or target)
+        local objc = semver.compare(minimum, "5.0") < 0 and {"-Xclang", "-fobjc-runtime-has-weak"} or {}
+        toolchain:add("mxflags", table.join(toolchain:config("optimize") == "packages" and table.join(target, {"-O3"}) or target, objc))
         toolchain:add("asflags", target)
         toolchain:add("ldflags", linked)
         toolchain:add("shflags", linked)

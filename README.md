@@ -127,8 +127,14 @@ which it force-loads into anything linked with `-fobjc-arc` below iOS 9 and
 Xcode stopped shipping in 14.3. Charon's own arclite defines the ARC entry
 points hidden in each image: each tail-calls the system's implementation when
 the running iOS has one (5.0 on), so the autoreleased-return handshake keeps
-working, and otherwise sends retain, release and autorelease; below iOS 6 it
-adds the subscripting methods the collection classes lack. Below iPhone OS 3.2,
+working, and otherwise sends retain, release and autorelease; below iOS 5 it
+also gives `__weak` its zeroing references (the toolchain tells clang the
+runtime has them): the side table lives in arclite, NSObject's `-release`
+clears an object's weak references under a short lock just before its last
+release and `-dealloc` again, so a load never resurrects an object on its way
+out and no lock is held while user code deallocates; a class that manages its
+own retain count is refused as iOS 5 refuses it. Below iOS 6 it adds the
+subscripting methods the collection classes lack. Below iPhone OS 3.2,
 where clang weak-imports the blocks runtime, the toolchain links the SDK's
 `libBlocksRuntime.a` (with libobjc, which its block classes are built on):
 `_NSConcreteStackBlock` and the other block isa symbols are aliases of real
