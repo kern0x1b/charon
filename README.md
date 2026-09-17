@@ -316,11 +316,19 @@ packages sharing one, because a runtime is built for a minimum release:
 libc++ below iOS 4.2 does not re-export libc++abi, and an image linked against
 a later build binds those symbols to libc++. Copies of different packages in one
 process, two tweaks in SpringBoard, keep separate thread-local storage and
-exception state. `operator new` and `operator delete` are not per package: dyld
-coalesces them across the process, and on iOS 6 the first inserted image takes
-the system libstdc++'s while later ones keep their own; every implementation
-involved allocates with `malloc` or `posix_memalign` and releases with `free`,
-so a pair from different images is compatible.
+exception state. `operator new` and `operator delete` stay with the package too:
+libc++abi defines them as ordinary symbols, forced by
+`packages/l/libcxx/operators-not-weak.exp`, so the package's images and its
+libc++ bind them two-level to its own runtime, and the runtime takes no part in
+dyld's coalescing of weak definitions. A failed allocation in a tweak therefore
+throws the `std::bad_alloc` its own `catch` names, and SpringBoard's code keeps
+the system libstdc++'s `operator new`. Before this, dyld bound the first inserted
+image's uses to libstdc++, whose allocation failure is thrown by iOS 5 and 6's
+libc++abi as a `GNUCC++` exception with GNU typeinfo, which Charon's libc++abi
+can only catch as `catch (...)`. An image that replaces `operator new` reaches
+its own allocations and the template code inlined into it, but not allocations
+made inside libc++'s dylib; ld no longer marks such a replacement as overriding,
+so it does not take over the host process's allocations either.
 
 xmake's package hash covers a package's version, configs and toolchain, but
 neither its script nor the builds of its dependencies; the script is not in reach

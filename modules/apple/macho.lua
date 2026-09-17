@@ -108,6 +108,7 @@ function image(data, base)
             found.symtab = {string.unpack("<I4I4I4I4", data, at + 9)}
         elseif command == LC_DYLD_INFO or command == LC_DYLD_INFO_ONLY then
             found.rebase = {string.unpack("<I4I4", data, at + 9)}
+            found.weak_bind = {string.unpack("<I4I4", data, at + 25)}
             found.export_trie = found.export_trie or {string.unpack("<I4I4", data, at + 41)}
         elseif command == LC_DYLD_CHAINED_FIXUPS then
             found.chained_fixups = true
@@ -222,6 +223,55 @@ local function uleb(data, at)
             return value, at
         end
     end
+end
+
+function weak_bindings(data, found)
+    local bindings, order = {}, {}
+    if not found.weak_bind or found.weak_bind[2] == 0 then
+        return order
+    end
+    local at = found.base + found.weak_bind[1]
+    local finish = at + found.weak_bind[2]
+    local current
+    while at < finish do
+        local byte = data:byte(at + 1)
+        at = at + 1
+        local opcode, immediate = byte & 0xF0, byte & 0x0F
+        if opcode == 0x40 then
+            local name = cstring(data, at)
+            at = at + #name + 1
+            current = bindings[name]
+            if not current then
+                current = {name = name, overrides = false, bound = false}
+                bindings[name] = current
+                table.insert(order, current)
+            end
+            current.overrides = current.overrides or (immediate & 0x8) ~= 0
+        elseif opcode == 0x60 then
+            repeat
+                byte = data:byte(at + 1)
+                at = at + 1
+            until byte < 0x80
+        elseif opcode == 0x70 or opcode == 0x80 then
+            _, at = uleb(data, at)
+        elseif opcode == 0x90 or opcode == 0xB0 then
+            if current then
+                current.bound = true
+            end
+        elseif opcode == 0xA0 then
+            _, at = uleb(data, at)
+            if current then
+                current.bound = true
+            end
+        elseif opcode == 0xC0 then
+            _, at = uleb(data, at)
+            _, at = uleb(data, at)
+            if current then
+                current.bound = true
+            end
+        end
+    end
+    return order
 end
 
 function rebased_slots(data, found)

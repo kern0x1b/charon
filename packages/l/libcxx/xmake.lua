@@ -10,6 +10,7 @@ package("libcxx")
     add_deps("cmake", "ninja", {kind = "binary"})
 
     add_configs("shared", {description = "The runtime is always the shared pair an application bundles.", default = true, type = "boolean", readonly = true})
+    add_configs("operators", {description = "operator new and delete are ordinary definitions in libc++abi, so no image binds them weakly and dyld never coalesces them with another C++ runtime in the process.", default = "not-weak", type = "string", readonly = true})
 
     add_includedirs("include/c++/v1")
     add_links("c++", "c++abi")
@@ -39,13 +40,15 @@ package("libcxx")
 
     on_install("iphoneos", function (package)
         import("core.base.semver")
-        local cmake = import("apple.cmake", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
+        local modules = path.join(package:scriptdir(), "..", "..", "..", "modules")
+        local cmake = import("apple.cmake", {rootdir = modules, anonymous = true})
+        local macho = import("apple.macho", {rootdir = modules, anonymous = true})
         for _, patch in ipairs({"utimensat-told-no.patch", "reexport-when-dyld-can.patch", "one-emulated-tls-runtime.patch", "one-atomic-runtime.patch"}) do
             os.vrunv("git", {"apply", path.join(package:scriptdir(), "patches", patch), "-p2"})
         end
         local compat = package:dep("apple-compat")
         local cxxflags = {"-mllvm", "-hot-cold-split=false", "-D_LIBCPP_NO_UTIMENSAT"}
-        local shflags = {}
+        local shflags = {"-Wl,-force_symbols_not_weak_list," .. path.join(package:scriptdir(), "operators-not-weak.exp")}
         for _, symbol in ipairs(compat:data("provided") or {}) do
             local header = path.join(compat:installdir("include"), "charon", symbol .. ".h")
             if os.isfile(header) then
@@ -100,6 +103,55 @@ package("libcxx")
             elseif not atomic_libcalls and found then
                 raise("libc++abi.1.0.dylib exports %s, which libSystem has from iOS 7.0, so code built for iOS %s would bind a second copy with locks of its own", symbol, deployment)
             end
+        end
+        local function is_operator(name)
+            return name:find("^__Zn[wa]") ~= nil or name:find("^__Zd[la]") ~= nil
+        end
+        local library = package:installdir("lib")
+        local defined = 0
+        for line in os.iorunv("xcrun", {"nm", "-gmU", path.join(library, "libc++abi.1.0.dylib")}):gmatch("[^\n]+") do
+            local name = line:match("(%S+)$")
+            if is_operator(name) then
+                defined = defined + 1
+                if line:find("weak external", 1, true) then
+                    raise("libc++abi.1.0.dylib still defines %s weakly", name)
+                end
+            end
+        end
+        if defined == 0 then
+            raise("libc++abi.1.0.dylib defines no operator new or delete")
+        end
+        for _, runtime_library in ipairs({"libc++.1.0.dylib", "libc++abi.1.0.dylib"}) do
+            local data = macho.read(path.join(library, runtime_library))
+            for _, binding in ipairs(macho.weak_bindings(data, macho.images(data)[1])) do
+                if is_operator(binding.name) then
+                    raise("%s %s %s, and dyld would coalesce it with another C++ runtime in the process", runtime_library,
+                          binding.overrides and "overrides" or "binds weakly", binding.name)
+                end
+            end
+        end
+        local chosen = cmake.toolchain(package)
+        local probe = path.absolute(path.join("operators_probe", "probe.cpp"))
+        io.writefile(probe, "int *kept;\nint *kept_array;\nint main(int argc, char **) { kept = new int(argc); delete kept; kept_array = new int[argc]; delete[] kept_array; return 0; }\n")
+        local client = path.join(path.directory(probe), "probe")
+        os.vrunv(chosen:tool("cxx"), table.join(table.wrap(chosen:get("cxflags")), table.wrap(chosen:get("ldflags")),
+                                                {"-nostdinc++", "-isystem", package:installdir("include", "c++", "v1"), "-nostdlib++",
+                                                 "-L" .. library, "-lc++", "-lc++abi", probe, "-o", client}))
+        local imported = os.iorunv("xcrun", {"nm", "-u", client})
+        for _, symbol in ipairs({"__Znwm", "__ZdlPv", "__Znam", "__ZdaPv"}) do
+            if not imported:find(symbol .. "\n", 1, true) then
+                raise("the probe client does not import %s, so it says nothing about how operator new and delete bind", symbol)
+            end
+        end
+        local probed = macho.read(client)
+        local probed_image = macho.images(probed)[1]
+        for _, binding in ipairs(macho.weak_bindings(probed, probed_image)) do
+            if is_operator(binding.name) then
+                raise("a client linked against this runtime still binds %s weakly", binding.name)
+            end
+        end
+        if probed_image.flags & 0x10000 ~= 0 then
+            raise("a client that only calls operator new and delete is still marked MH_BINDS_TO_WEAK")
         end
         os.cp("libcxx/LICENSE.TXT", package:installdir("licenses") .. "/")
     end)
