@@ -82,9 +82,9 @@ local function package_libraries(target, package, name)
     return carried
 end
 
-function carried_libraries(target)
+function carried_libraries(target, key)
     local carried = {}
-    for _, name in ipairs(table.wrap(target:values("app.frameworks"))) do
+    for _, name in ipairs(table.wrap(target:values(key or "app.frameworks"))) do
         local built = target:dep(name)
         if built then
             if not built:is_shared() then
@@ -106,7 +106,8 @@ local function stem(reference)
     return path.filename(reference):match("^[^.]+")
 end
 
-function retarget(binaries, identities)
+function retarget(binaries, identities, opt)
+    local home = opt and opt.home or "@executable_path/"
     local names = {}
     for binary, identity in pairs(identities) do
         local image = macho.images(macho.read(binary))[1]
@@ -136,8 +137,8 @@ function retarget(binaries, identities)
             for _, reference in ipairs(image.libraries) do
                 if reference:startswith("@rpath/") then
                     table.insert(problems, string.format("%s still depends on %s", path.filename(binary), reference))
-                elseif carried[stem(reference)] and not reference:startswith("@executable_path/") then
-                    table.insert(problems, string.format("%s loads %s from outside its own bundle while the bundle carries that library; it would run against whatever the system has there, and two copies of one runtime in a process do not agree", path.filename(binary), reference))
+                elseif carried[stem(reference)] and not reference:startswith(home) then
+                    table.insert(problems, string.format("%s loads %s from outside %s while its package carries that library; it would run against whatever the system has there, and two copies of one runtime in a process do not agree", path.filename(binary), reference, home))
                 end
             end
         end

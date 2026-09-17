@@ -102,6 +102,79 @@ function verify(target, binary, opt)
     end
 end
 
+function carried_folder(target)
+    local control = target:values("charon.control")
+    if not control then
+        raise("target(%s) carries %s, and a tweak or daemon keeps what it carries in /usr/lib/charon/<Package>; name the package with set_values(\"charon.control\", ...)", target:name(), table.concat(table.wrap(target:values("charon.libraries")), ", "))
+    end
+    local debian = import("debian", {rootdir = path.join(os.scriptdir(), ".."), anonymous = true})
+    local package = debian.control_fields(path.absolute(control, target:scriptdir())).Package
+    if not package or package == "" then
+        raise("%s has no Package field to name the folder target(%s) carries its libraries in", control, target:name())
+    end
+    return "/usr/lib/charon/" .. package
+end
+
+function place_carried(target, root, binary)
+    local offered = {}
+    for _, library in ipairs(bundle.carried_libraries(target, "charon.libraries")) do
+        offered[library.name] = library
+    end
+    local libraries, pending = {}, {binary}
+    while #pending > 0 do
+        for _, reference in ipairs(macho.images(macho.read(table.remove(pending)))[1].libraries) do
+            local library = offered[path.filename(reference)]
+            if library and not library.taken then
+                library.taken = true
+                table.insert(libraries, library)
+                table.insert(pending, library.source)
+            end
+        end
+    end
+    if #libraries == 0 then
+        return {binary}
+    end
+    local folder = carried_folder(target)
+    local identities, binaries = {}, {binary}
+    for _, library in ipairs(libraries) do
+        local destination = path.join(root, folder, library.name)
+        os.mkdir(path.directory(destination))
+        os.vcp(library.source, destination)
+        identities[destination] = folder .. "/" .. library.name
+        table.insert(binaries, destination)
+    end
+    bundle.retarget(binaries, identities, {home = folder .. "/"})
+    return binaries
+end
+
+function verify_placed(target, installed)
+    if #table.wrap(target:values("charon.libraries")) == 0 then
+        return verify(target, target:targetfile())
+    end
+    local root = path.join(target:targetdir(), ".charon", "placed", target:name())
+    os.tryrm(root)
+    local binary = path.join(root, installed)
+    os.mkdir(path.directory(binary))
+    os.vcp(target:targetfile(), binary)
+    local binaries = place_carried(target, root, binary)
+    for _, placed in ipairs(binaries) do
+        verify(target, placed, {imports = false})
+    end
+    local source = imports_source(target)
+    dyld.check(source, binaries, root)
+    report_selectors(source, binaries, target:arch(), root)
+end
+
+function install_placed(target, installed)
+    local binary = path.join(target:installdir(), installed)
+    os.mkdir(path.directory(binary))
+    os.vcp(target:targetfile(), binary)
+    local binaries = place_carried(target, target:installdir(), binary)
+    for index = #binaries, 1, -1 do
+        finish(target, binaries[index])
+    end
+end
+
 function ldid(target)
     return path.join(target:pkg("ldid"):installdir(), "bin", "ldid")
 end

@@ -94,14 +94,19 @@ function installed_size(root)
     return (size + 1023) // 1024
 end
 
-function control_text(control, version, root)
+function control_fields(control)
     local text = io.readfile(control):gsub("\n+$", "")
-    if text:find("\nVersion:") or text:startswith("Version:") or text:find("Installed%-Size:") then
-        raise("%s must not carry Version or Installed-Size; the build writes them", control)
-    end
     local fields = {}
     for key, value in text:gmatch("([%a%-]+):[ \t]*([^\n]*)") do
         fields[key] = value
+    end
+    return fields, text
+end
+
+function control_text(control, version, root)
+    local fields, text = control_fields(control)
+    if text:find("\nVersion:") or text:startswith("Version:") or text:find("Installed%-Size:") then
+        raise("%s must not carry Version or Installed-Size; the build writes them", control)
     end
     for _, required in ipairs({"Package", "Architecture"}) do
         if not fields[required] then

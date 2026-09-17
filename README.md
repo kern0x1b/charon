@@ -37,9 +37,12 @@ know about these platforms, and nothing else:
 
 The rules, and the values each reads:
 
-    @addon/charon/tweak    a MobileSubstrate dylib; tweak.filter, charon.install
+    @addon/charon/tweak    a MobileSubstrate dylib; tweak.filter, charon.install,
+                           charon.libraries (packages whose shared libraries it
+                           loads, carried in /usr/lib/charon/<Package>)
     @addon/charon/daemon   an executable in /usr/libexec (charon.install), with
-                           add_installfiles for its LaunchDaemons plist and /etc
+                           add_installfiles for its LaunchDaemons plist and /etc,
+                           and charon.libraries as a tweak
     @addon/charon/app      Name.app with app.plist-file, app.plist ("KEY=VALUE",
                            over the file), app.resources (folders copied flat into
                            the bundle), app.frameworks (packages whose shared
@@ -267,6 +270,18 @@ nothing on its own, because a shim's header brings its system header with it
 calls it renames with `add_values("apple.compat", "clock_gettime")`; a package
 script takes the flags from
 `import("@addon.charon.apple.compat").force_includes(package:dep("apple-compat"), {"clock_gettime"})`.
+
+A tweak or a daemon has no bundle, so what it loads from a package - libc++ and
+libc++abi, which also carry emulated TLS - goes to
+`/usr/lib/charon/<Package>/`, named by the Package field of its
+`charon.control`, and the images are pointed there when they are checked and
+installed; only the libraries an image actually loads are carried, so a C tweak
+takes libc++abi alone. Each package carries its own copy rather than all
+packages sharing one, because a runtime is built for a minimum release:
+libc++ below iOS 4.2 does not re-export libc++abi, and an image linked against
+a later build binds those symbols to libc++. Copies of different packages in one
+process, two tweaks in SpringBoard, keep separate thread-local storage and
+exception state.
 
 xmake's package hash covers a package's version, configs and toolchain, but
 neither its script nor the builds of its dependencies; the script is not in reach
