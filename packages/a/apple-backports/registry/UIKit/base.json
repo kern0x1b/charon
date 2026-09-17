@@ -3,12 +3,14 @@
     "api": "+[NSLayoutConstraint activateConstraints:]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
     "api": "+[NSLayoutConstraint deactivateConstraints:]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
@@ -87,12 +89,14 @@
     "api": "-[NSLayoutConstraint isActive]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
     "api": "-[NSLayoutConstraint setActive:]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
@@ -274,6 +278,7 @@
     "api": "-[UIView addLayoutGuide:]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
@@ -287,42 +292,49 @@
     "api": "-[UIView bottomAnchor]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
     "api": "-[UIView centerXAnchor]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
     "api": "-[UIView centerYAnchor]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
     "api": "-[UIView firstBaselineAnchor]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
     "api": "-[UIView heightAnchor]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
     "api": "-[UIView lastBaselineAnchor]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
     "api": "-[UIView layoutGuides]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
@@ -335,6 +347,7 @@
     "api": "-[UIView layoutMarginsGuide]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
@@ -347,12 +360,14 @@
     "api": "-[UIView leadingAnchor]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
     "api": "-[UIView leftAnchor]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
@@ -371,12 +386,14 @@
     "api": "-[UIView readableContentGuide]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
     "api": "-[UIView removeLayoutGuide:]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
@@ -389,6 +406,7 @@
     "api": "-[UIView rightAnchor]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
@@ -443,12 +461,14 @@
     "api": "-[UIView topAnchor]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
     "api": "-[UIView trailingAnchor]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
@@ -479,6 +499,7 @@
     "api": "-[UIView widthAnchor]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
@@ -557,24 +578,28 @@
     "api": "NSLayoutAnchor",
     "kind": "class",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
     "api": "NSLayoutDimension",
     "kind": "class",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
     "api": "NSLayoutXAxisAnchor",
     "kind": "class",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
     "api": "NSLayoutYAxisAnchor",
     "kind": "class",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
@@ -704,6 +729,7 @@
     "api": "UILayoutGuide",
     "kind": "class",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
@@ -752,6 +778,7 @@
     "api": "UIStackView",
     "kind": "class",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented"
   },
   {
