@@ -12,6 +12,7 @@ task("emulate")
             {"k", "keep", "k", nil, "Keep the root filesystem a run booted, beside its log, instead of removing it after the verdict."},
             {"a", "all", "k", nil, "With clean: every port's images and every golden image, not only this port's images."},
             {"n", "network", "kv", nil, "isolated, loopback or host (default: the emulate.network value of the project's targets, else isolated)."},
+            {nil, "scale", "kv", nil, "How many host seconds one guest second takes, so the guest's own watchdogs and RPC deadlines see an emulator that is slower than the device (default: 10)."},
             {},
             {nil, "action", "v", nil, "install, run, log, shot or clean."},
             {nil, "arguments", "vs", nil, "The command run executes, the text log filters on, or the file shot writes."}

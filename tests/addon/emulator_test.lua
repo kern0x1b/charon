@@ -73,8 +73,15 @@ end
 local function home_step(emulator, folder, found)
     local rootfs = path.join(folder, "home-rootfs")
     os.mkdir(path.join(rootfs, "private", "var", "mobile"))
+    os.mkdir(path.join(rootfs, "private", "var", "root", "Library", "Lockdown"))
     os.ln("private/var", path.join(rootfs, "var"))
+    local ark = path.join(rootfs, "private", "var", "root", "Library", "Lockdown", "data_ark.plist")
+    os.vrunv("plutil", {"-create", "binary1", ark})
     emulator.home(rootfs)
+    local state = try {function () return os.iorunv("plutil", {"-extract", "com\\.apple\\.purplebuddy-SetupState", "raw", ark}):trim() end}
+    if state ~= "DONE" then
+        table.insert(found, "iOS 6.1 reads the setup state from lockdownd, expected DONE, read " .. tostring(state))
+    end
     local plist = path.join(rootfs, "private", "var", "mobile", "Library", "Preferences", "com.apple.purplebuddy.plist")
     if not os.isfile(plist) then
         table.insert(found, "the home step writes com.apple.purplebuddy.plist under /private/var/mobile")
@@ -247,6 +254,42 @@ local function concurrency(folder, modules, found)
     end
 end
 
+local function timing_and_reports(emulator, folder, found)
+    local run = recorded(folder, "timed", LOGS.springboard,
+                         {test = {path = "/usr/libexec/tool", spawned = 1, spawn_error = 0, timed_out = 0,
+                                  seconds = 1.5, exit = 0}})
+    local result = emulator.verdict(emulator.scan_file(path.join(run, "emulator.log"), {}),
+                                    path.join(run, "results"), {scale = 10, host_seconds = 18.25})
+    if result.guest_seconds ~= 1.5 or result.host_seconds ~= 18.25 or result.scale ~= 10 then
+        table.insert(found, string.format("a verdict carries both clocks and the scale, read %s guest, %s host, scale %s",
+                                          tostring(result.guest_seconds), tostring(result.host_seconds), tostring(result.scale)))
+    end
+
+    local rootfs = path.join(folder, "report-rootfs")
+    local reports = path.join(rootfs, "private", "var", "logs", "CrashReporter")
+    os.mkdir(reports)
+    os.ln("private/var", path.join(rootfs, "var"))
+    local description = table.concat({"Incident Identifier: 0", "Hardware Model:      iPhone4,1",
+                                      "Exception Code:      0xbe18d1ee",
+                                      "Reason:              mediaserverd: RPCTimeout message received to terminate [0] with reason 'InitializeSystemSoundPorts'"}, "\n")
+    local report = path.join(reports, "SpringBoard-2026-09-17-131741.plist")
+    io.writefile(report, "")
+    os.vrunv("plutil", {"-create", "binary1", report})
+    os.vrunv("plutil", {"-replace", "description", "-string", description, report})
+    local collected = emulator.reports(rootfs)
+    if #collected ~= 1 or collected[1].process ~= "SpringBoard" or
+       not (collected[1].reason or ""):startswith("mediaserverd: RPCTimeout") then
+        table.insert(found, "the guest's own report names the process and the reason it died")
+        return
+    end
+    local blocked = emulator.verdict(emulator.scan_file(path.join(recorded(folder, "blocked", LOGS.looping), "emulator.log"), {}),
+                                     path.join(folder, "blocked", "results"), {reports = collected})
+    local described = emulator.describe(blocked)
+    if not described:find("mediaserverd: RPCTimeout", 1, true) then
+        table.insert(found, "a blocked boot names the guest's own reason, said " .. described)
+    end
+end
+
 function failures(opt)
     local emulator = import("emulator", {rootdir = opt.modules, anonymous = true})
     local debian = import("debian", {rootdir = opt.modules, anonymous = true})
@@ -256,6 +299,7 @@ function failures(opt)
     home_step(emulator, folder, found)
     deb_step(emulator, debian, folder, found)
     runner_job(emulator, folder, found)
+    timing_and_reports(emulator, folder, found)
     choice(emulator, found)
     concurrency(folder, opt.modules, found)
     os.tryrm(folder)

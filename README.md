@@ -80,7 +80,7 @@ Then:
                                is refused until the release or the expiry;
                                CHARON_DEVICE_HOLDER names the holder for a shell
     xmake emulate install      the same packages into the image of an emulated device
-    xmake emulate [-s 60] run COMMAND
+    xmake emulate [-s 60] [--scale 10] run COMMAND
                                start COMMAND in it and report pass, fail, crash,
                                timeout or boot-blocked; -d DEVICE, -r RELEASE
     xmake emulate log [TEXT], xmake emulate shot [FILE]
@@ -229,9 +229,10 @@ that runs `-r` (default `apple_minimum`); its earliest release not older than
 that is the one emulated. A device without a profile, or a release whose
 Darwin iLEmu does not emulate, is refused with the reason, never replaced by
 another. The first run of a device and build unpacks its root filesystem as
-`xmake firmware rootfs` does, marks Setup Assistant done in the mobile user's
-`com.apple.purplebuddy` preferences, and boots it once past the first-boot data
-migration into a golden image under `~/.charon/emulator/golden.noindex/`, keyed
+`xmake firmware rootfs` does, marks Setup Assistant done - in the mobile user's
+`com.apple.purplebuddy` preferences, which iOS 6.0 reads, and in lockdownd's
+`com.apple.purplebuddy` domain, which 6.1 reads instead - and boots it once
+past the first-boot data migration into a golden image under `~/.charon/emulator/golden.noindex/`, keyed
 by device, build and the emulator package; `install` clones it (an APFS clone
 per port and device) and unpacks the data member of each package `xmake deb`
 writes into the clone, through the image's own symbolic links. `run` clones
@@ -251,6 +252,30 @@ emulate at once: golden images are built in a folder of their own and renamed
 into place under a file lock, so a second session waits for the first instead
 of building the same image, and a boot takes one of `min(cores/3, RAM/5 GB)`
 slots of the machine, with the emulator's caches kept per slot.
+
+The guest's clock runs slower than the host's, because the emulator is one to
+two orders of magnitude slower than the device and the guest measures its own
+watchdogs and RPC deadlines in wall-clock seconds. `--scale` is how many host
+seconds one guest second takes, 10 by default: backboardd gives an app about
+20 guest seconds to finish launching, an app needs up to two host minutes of
+this emulator, and 10 covers that with room to spare without making the
+guest's own waits the length of a run. Measured on iPhone4,1 6.1.3 over 11
+minutes of booting: at 1 backboardd killed six processes (Setup and MobileMail
+among them) and SpringBoard restarted five times, at 5 and 10 those kills are
+gone. The scale is a property of the run, not a hidden
+correction: it is in the emulator's log, in the verdict and in the line a run
+prints, and a verdict carries `guest_seconds` (the guest's own clock, what the
+runner measured) beside `host_seconds` (the wall-clock length of the boot), so
+a test that measures time can convert or refuse. Everything the guest reads
+from its clock is scaled together - `mach_absolute_time`, `gettimeofday`,
+dispatch timers and kevent deadlines all come from the one virtual clock the
+emulator paces.
+
+What the guest kills, the guest explains: the reports it writes into
+`/private/var/logs/CrashReporter` are copied beside the verdict, and the reason
+the first of them names (`mediaserverd: RPCTimeout message received to
+terminate [0] with reason 'InitializeSystemSoundPorts'`) is part of a blocked
+boot's verdict line.
 
 A package of a port that builds with CMake calls the addon's bridge from its
 install script, which writes a toolchain file from the `apple-ios` toolchain

@@ -1,5 +1,5 @@
 diff --git a/app/main.cpp b/app/main.cpp
-index 6f2d311..946c0ba 100644
+index 6f2d311..2112408 100644
 --- a/app/main.cpp
 +++ b/app/main.cpp
 @@ -67,7 +67,7 @@ constexpr std::size_t bytes_per_mebibyte = 1024U * 1024U;
@@ -11,6 +11,15 @@ index 6f2d311..946c0ba 100644
             "  ilemu abi [--rootfs DIR] [--ios-build CODE] [--output FILE]\n"
             "  ilemu inspect --rootfs DIR [--binary /sbin/launchd] "
             "[--device PROFILE] [--shared-cache GUEST_PATH] "
+@@ -102,7 +102,7 @@ std::string usage()
+            "[--activation activated|unactivated|preserve] "
+            "[--boot-logo PNG] [--frame-output FILE] [--touch-replay FILE] [--control-stdin] "
+            "[--baseband-input FILE] [--baseband-output FILE] "
+-           "[--disable-scheduler-preemption] "
++           "[--disable-scheduler-preemption] [--time-scale FACTOR] "
+            "[--perf-summary] [--jit-observer-only] [--perf-frame-content] "
+            "[--perf-cpu-phases] "
+            "[--perf-jit-native-lookups] "
 @@ -386,6 +386,11 @@ const DeviceModel& select_device_model(const std::vector<std::string>& args)
  
  void profile(const std::vector<std::string>& args, Output& output)
@@ -23,6 +32,22 @@ index 6f2d311..946c0ba 100644
      const auto& device = select_device_model(args);
      std::ostringstream text;
      text << "product: " << device.identity.product_type << '\n'
+@@ -1078,6 +1083,15 @@ void boot(const std::vector<std::string>& args, Output& output)
+     options.control_enabled = flag(args, "--control-stdin");
+     options.disable_scheduler_preemption =
+         flag(args, "--disable-scheduler-preemption");
++    if (const auto value = option(args, "--time-scale")) {
++        const auto parsed = std::stod(*value);
++        if (!(parsed >= 1.0) || parsed > 1000.0) {
++            throw std::runtime_error {
++                "--time-scale must be between 1 and 1000"
++            };
++        }
++        options.time_scale = parsed;
++    }
+     options.jit_observer_only = flag(args, "--jit-observer-only");
+     options.report_performance = flag(args, "--perf-summary");
+     if (const auto value = option(args, "--ticks"))
 diff --git a/src/device_state/graphics_services_capabilities.cpp b/src/device_state/graphics_services_capabilities.cpp
 index f0e97ea..cd93b16 100644
 --- a/src/device_state/graphics_services_capabilities.cpp
@@ -574,6 +599,26 @@ index 9e2a251..1e46372 100644
      case darwin::syscall::change_owner_fd: {
          auto fd = registers[0];
          if (const auto duplicate = duplicated_descriptors_.find(fd);
+diff --git a/src/kernel/bsd/signal/signal.cpp b/src/kernel/bsd/signal/signal.cpp
+index 732ab05..b42fe4e 100644
+--- a/src/kernel/bsd/signal/signal.cpp
++++ b/src/kernel/bsd/signal/signal.cpp
+@@ -224,6 +224,15 @@ void CompatibilityKernel::dispatch_bsd_signal(Cpu& cpu, std::uint32_t number)
+         if (signal == 0) {
+             continue;
+         }
++        if (target_pid != process_.pid &&
++            (signal == darwin::signal::kill || signal == 15U)) {
++            // Which process ended another one is the first thing a failed run
++            // asks, and a guest that is killed leaves no other trace.
++            output_.write("[signal] sent pid=" +
++                std::to_string(process_.pid) + " target=" +
++                std::to_string(target_pid) + " signal=" +
++                std::to_string(signal) + "\n");
++        }
+         const auto error = signal_delivery_handler_
+                                ? signal_delivery_handler_(target_pid, signal)
+                            : target_pid == process_.pid
 diff --git a/src/kernel/bsd/vm/shared_region.cpp b/src/kernel/bsd/vm/shared_region.cpp
 index 347d439..6206103 100644
 --- a/src/kernel/bsd/vm/shared_region.cpp
@@ -680,10 +725,27 @@ index 6602c81..2c121ee 100644
          }
      }
 diff --git a/src/runtime/emulator_session.cpp b/src/runtime/emulator_session.cpp
-index 8fab643..552e36d 100644
+index 8fab643..636dfce 100644
 --- a/src/runtime/emulator_session.cpp
 +++ b/src/runtime/emulator_session.cpp
-@@ -3772,6 +3772,11 @@ void EmulatorSession::run()
+@@ -2356,7 +2356,15 @@ void EmulatorSession::run()
+     DeadlineQueue<std::uint32_t, std::uint64_t> guest_deadlines;
+     if (device_time_policy == DeviceTimePolicy::HostMappedInteractive) {
+         realtime_pacer.emplace(
+-            initial_runtime->kernel->current_absolute_time());
++            initial_runtime->kernel->current_absolute_time(),
++            options.time_scale);
++        if (realtime_pacer->time_scale() != 1.0) {
++            std::ostringstream scale;
++            scale << "[time] scale=" << std::fixed << std::setprecision(2)
++                  << realtime_pacer->time_scale()
++                  << " (one guest second takes that many host seconds)";
++            output.line(scale.str());
++        }
+         const auto host_wall_time =
+             std::chrono::duration_cast<std::chrono::nanoseconds>(
+                 std::chrono::system_clock::now().time_since_epoch())
+@@ -3772,6 +3780,11 @@ void EmulatorSession::run()
                  }
                  if (!result.exception.empty())
                      failure << " exception=\"" << result.exception << '"';
@@ -695,3 +757,115 @@ index 8fab643..552e36d 100644
                  output.line(failure.str());
              }
              auto completion = XnuSliceCompletion::Continue;
+diff --git a/src/runtime/include/runtime/boot_options.hpp b/src/runtime/include/runtime/boot_options.hpp
+index b4c1b01..bb8f205 100644
+--- a/src/runtime/include/runtime/boot_options.hpp
++++ b/src/runtime/include/runtime/boot_options.hpp
+@@ -48,6 +48,10 @@ struct BootOptions {
+     bool quiet_output { };
+     bool control_enabled { };
+     bool disable_scheduler_preemption { };
++    // The guest's clock runs this many times slower than the host's, so a
++    // host that cannot emulate the device in real time still meets the
++    // guest's own watchdogs and RPC deadlines.
++    double time_scale { 1.0 };
+     bool jit_observer_only { };
+     bool report_performance { };
+     std::optional<std::uint64_t> ticks;
+diff --git a/src/runtime/include/runtime/realtime_pacer.hpp b/src/runtime/include/runtime/realtime_pacer.hpp
+index 6a672f7..de6cf7c 100644
+--- a/src/runtime/include/runtime/realtime_pacer.hpp
++++ b/src/runtime/include/runtime/realtime_pacer.hpp
+@@ -28,7 +28,13 @@ enum class DeviceTimePolicy : std::uint8_t {
+ // this class so their deterministic-time behavior remains fast and repeatable.
+ class RealtimePacer {
+ public:
+-    explicit RealtimePacer(DeviceMonotonicTime initial_device_monotonic_time);
++    // A scale above one runs the guest's clock that many times slower than the
++    // host's, which is how a host that cannot emulate the device in real time
++    // still meets the guest's own watchdogs and RPC deadlines.
++    explicit RealtimePacer(DeviceMonotonicTime initial_device_monotonic_time,
++        double time_scale = 1.0);
++
++    [[nodiscard]] double time_scale() const { return time_scale_; }
+ 
+     [[nodiscard]] DeviceMonotonicTime allowed_device_monotonic_time() const;
+     [[nodiscard]] std::chrono::nanoseconds delay_until(
+@@ -44,8 +50,13 @@ public:
+         const;
+ 
+ private:
++    // Guest nanoseconds take time_scale times as long on the host.
++    [[nodiscard]] std::uint64_t host_duration_for(
++        std::uint64_t guest_nanoseconds) const;
++
+     DeviceMonotonicTime initial_device_monotonic_time_ { };
+     std::chrono::steady_clock::time_point initial_host_time_;
++    double time_scale_ { 1.0 };
+ };
+ 
+ } // namespace ilemu
+diff --git a/src/runtime/realtime_pacer.cpp b/src/runtime/realtime_pacer.cpp
+index c257c43..72f9524 100644
+--- a/src/runtime/realtime_pacer.cpp
++++ b/src/runtime/realtime_pacer.cpp
+@@ -14,12 +14,26 @@
+ 
+ namespace ilemu {
+ 
+-RealtimePacer::RealtimePacer(DeviceMonotonicTime initial_device_monotonic_time)
++RealtimePacer::RealtimePacer(
++    DeviceMonotonicTime initial_device_monotonic_time, double time_scale)
+     : initial_device_monotonic_time_ { initial_device_monotonic_time }
+     , initial_host_time_ { std::chrono::steady_clock::now() }
++    , time_scale_ { time_scale >= 1.0 ? time_scale : 1.0 }
+ {
+ }
+ 
++std::uint64_t RealtimePacer::host_duration_for(
++    std::uint64_t guest_nanoseconds) const
++{
++    if (time_scale_ <= 1.0)
++        return guest_nanoseconds;
++    const auto scaled = static_cast<double>(guest_nanoseconds) * time_scale_;
++    return scaled >= static_cast<double>(
++               std::numeric_limits<std::uint64_t>::max())
++        ? std::numeric_limits<std::uint64_t>::max()
++        : static_cast<std::uint64_t>(scaled);
++}
++
+ DeviceMonotonicTime RealtimePacer::allowed_device_monotonic_time() const
+ {
+     // iPhone OS 1.0's mach_timebase_info is exposed as 1:1, so one Mach
+@@ -29,8 +43,10 @@ DeviceMonotonicTime RealtimePacer::allowed_device_monotonic_time() const
+             std::chrono::steady_clock::duration::zero());
+     const auto elapsed_nanoseconds =
+         std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
+-    const auto positive_elapsed =
+-        static_cast<std::uint64_t>(elapsed_nanoseconds);
++    const auto positive_elapsed = time_scale_ > 1.0
++        ? static_cast<std::uint64_t>(
++              static_cast<double>(elapsed_nanoseconds) / time_scale_)
++        : static_cast<std::uint64_t>(elapsed_nanoseconds);
+     if (positive_elapsed > std::numeric_limits<DeviceMonotonicTime>::max() -
+                                initial_device_monotonic_time_) {
+         return std::numeric_limits<std::uint64_t>::max();
+@@ -45,7 +61,7 @@ std::chrono::nanoseconds RealtimePacer::delay_until(
+     if (device_monotonic_time <= allowed) {
+         return std::chrono::nanoseconds::zero();
+     }
+-    const auto delay = device_monotonic_time - allowed;
++    const auto delay = host_duration_for(device_monotonic_time - allowed);
+     const auto maximum =
+         static_cast<std::uint64_t>(std::chrono::nanoseconds::max().count());
+     return std::chrono::nanoseconds {
+@@ -58,7 +74,8 @@ std::chrono::steady_clock::time_point RealtimePacer::host_deadline_for(
+ {
+     if (device_monotonic_time <= initial_device_monotonic_time_)
+         return initial_host_time_;
+-    const auto delta = device_monotonic_time - initial_device_monotonic_time_;
++    const auto delta =
++        host_duration_for(device_monotonic_time - initial_device_monotonic_time_);
+     const auto maximum = static_cast<std::uint64_t>(
+         std::chrono::steady_clock::duration::max().count());
+     if (delta >= maximum)

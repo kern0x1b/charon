@@ -59,6 +59,7 @@ local function booter(ctx)
         local ok, result = try {
             function ()
                 return true, emulator.boot(table.join(opt, {
+                    scale = tonumber(option.get("scale")) or emulator.TIME_SCALE,
                     cache = path.join(emulator.root(), "cache.noindex", ctx.identifier .. "_" .. ctx.build, "slot-" .. slot.index),
                     tmpdir = path.join(emulator.root(), "tmp.noindex")}))
             end,
@@ -109,8 +110,15 @@ local function run(ctx, argv)
     local booted = booter(ctx)(table.join(ctx, {rootfs = rootfs, run = folder, stop = function ()
         return os.isfile(path.join(results, "verdict.json"))
     end}))
-    local result = emulator.verdict(booted.state, results, {frame = booted.frame, errors = booted.errors})
+    local reports = emulator.reports(rootfs)
+    local result = emulator.verdict(booted.state, results, {frame = booted.frame, errors = booted.errors,
+                                                            scale = booted.scale, host_seconds = booted.seconds,
+                                                            reports = reports})
     os.cp(results, path.join(folder, "results"))
+    for _, report in ipairs(reports) do
+        os.cp(report.file, path.join(folder, "results", "reports", path.filename(report.file)))
+        report.file = path.join(folder, "results", "reports", path.filename(report.file))
+    end
     result.stdout = path.join(folder, "results", "test.stdout")
     result.stderr = path.join(folder, "results", "test.stderr")
     json.savefile(path.join(folder, "verdict.json"), table.join(result, {reason = booted.reason, seconds = booted.seconds}))
@@ -127,7 +135,9 @@ local function run(ctx, argv)
     end
     local described = emulator.describe(result)
     if result.state == "pass" then
-        cprint("${bright green}%s${clear} on %s %s (%s)", described, ctx.identifier, ctx.version, ctx.build)
+        cprint("${bright green}%s${clear} on %s %s (%s) in %.1f guest s / %.1f host s at time scale %s",
+               described, ctx.identifier, ctx.version, ctx.build, result.guest_seconds or 0,
+               result.host_seconds or 0, result.scale)
     else
         raise("%s on %s %s (%s); the emulator log is %s", described, ctx.identifier, ctx.version, ctx.build, booted.log)
     end

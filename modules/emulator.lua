@@ -5,12 +5,19 @@ import("apple.dyld")
 import("apple.firmware")
 
 RESULTS = "private/var/charon"
+REPORTS = "private/var/logs/CrashReporter"
 RUNNER = "usr/libexec/charon-runner"
 RUNNER_JOB = "System/Library/LaunchDaemons/org.charon.emulator.runner.plist"
 MIGRATOR = "System/Library/PrivateFrameworks/DataMigration.framework/Support/DataMigrator"
 SETUP_KEYS = {{"SetupDone", "-bool", "YES"}, {"SetupFinishedAllSteps", "-bool", "YES"}, {"SetupVersion", "-integer", "2"},
               {"AssistantPresented", "-bool", "YES"}}
 CRASH_LOOP = 3
+-- A guest second takes this many host seconds. The emulator is one to two
+-- orders of magnitude slower than the device it emulates, so at 1 the guest's
+-- own watchdogs and RPC deadlines expire before it finishes: iOS 6.1.3 loses
+-- SpringBoard every 100 s to a mediaserverd RPC timeout and loses every app
+-- backboardd's launch watchdog reaches. See README for the measurements.
+TIME_SCALE = 10
 
 function directory(folder)
     if not os.isdir(folder) then
@@ -156,6 +163,38 @@ function home(rootfs)
         os.vrunv("xattr", {"-w", "hfsfuse.record.owner_id", "501", file})
         os.vrunv("xattr", {"-w", "hfsfuse.record.group_id", "501", file})
     end
+    -- iOS 6.1 asks lockdownd instead of the preferences above: SpringBoard
+    -- reads com.apple.purplebuddy/SetupState, which Setup.app sets to DONE
+    -- when it finishes. 6.0 reads the preferences, so both are written.
+    local ark = guest_path(rootfs, "private/var/root/Library/Lockdown/data_ark.plist")
+    if os.isfile(ark) then
+        -- plutil reads a dot as a key-path separator, so the dots are escaped.
+        os.vrunv("plutil", {"-replace", "com\\.apple\\.purplebuddy-SetupState", "-string", "DONE", ark})
+        os.vrunv("xattr", {"-w", "hfsfuse.record.owner_id", "0", ark})
+        os.vrunv("xattr", {"-w", "hfsfuse.record.group_id", "0", ark})
+    end
+end
+
+-- The guest writes a report for every process it kills or that crashes, and
+-- the report names the reason, which no emulator-side line can.
+function reports(rootfs)
+    local folder = guest_path(rootfs, REPORTS)
+    local collected = {}
+    for _, file in ipairs(os.files(path.join(folder, "*.plist"))) do
+        local name = path.basename(file):match("^(.-)%-%d%d%d%d%-") or path.basename(file)
+        local reason
+        local printed = try {function () return os.iorunv("plutil", {"-extract", "description", "raw", "-o", "-", file}) end}
+        for line in (printed or ""):gmatch("[^\n]+") do
+            local named = line:match("^Reason:%s*(.+)$")
+            if named then
+                reason = named:trim()
+                break
+            end
+        end
+        table.insert(collected, {process = name, file = file, reason = reason})
+    end
+    table.sort(collected, function (left, right) return left.file < right.file end)
+    return collected
 end
 
 local function ar_members(content, deb)
@@ -343,13 +382,19 @@ end
 function verdict(state, results, opt)
     opt = opt or {}
     local file = path.join(results, "verdict.json")
+    -- Guest seconds are the guest's own clock, which runs scale times slower
+    -- than the host's; a test that measures time reads both and the scale.
+    local timing = {scale = opt.scale or TIME_SCALE, host_seconds = opt.host_seconds, reports = opt.reports}
     if not os.isfile(file) then
-        return {state = "boot-blocked", milestone = milestone(state), frame = opt.frame, errors = opt.errors}
+        return table.join2({state = "boot-blocked", milestone = milestone(state), frame = opt.frame,
+                            errors = opt.errors}, timing)
     end
     local recorded = json.loadfile(file)
     local test = recorded.test or {}
-    local result = {machine = recorded.machine, system = recorded.system, seconds = test.seconds,
-                    stdout = path.join(results, "test.stdout"), stderr = path.join(results, "test.stderr")}
+    local result = table.join2({machine = recorded.machine, system = recorded.system,
+                                guest_seconds = test.seconds, seconds = test.seconds,
+                                stdout = path.join(results, "test.stdout"),
+                                stderr = path.join(results, "test.stderr")}, timing)
     if test.spawned ~= 1 then
         result.state = "fail"
         result.spawn_error = test.spawn_error
@@ -374,13 +419,20 @@ function verdict(state, results, opt)
 end
 
 function describe(result)
+    local reported = ""
+    for _, report in ipairs(result.reports or {}) do
+        if report.reason then
+            reported = string.format(", %s: %s", report.process, report.reason)
+            break
+        end
+    end
     if result.state == "crash" then
         return string.format("crash(signal %d%s%s)", result.signal, result.pc and (", pc " .. result.pc) or "",
                              result.frame and (", last frame " .. result.frame) or "")
     elseif result.state == "fail" then
         return result.exit and string.format("fail(exit %d)", result.exit) or string.format("fail(spawn error %d)", result.spawn_error or 0)
     elseif result.state == "boot-blocked" then
-        return string.format("boot-blocked(%s)", result.milestone)
+        return string.format("boot-blocked(%s%s)", result.milestone, reported)
     end
     return result.state
 end
@@ -393,9 +445,11 @@ function boot(opt)
     local frame = path.join(run, "frame.png")
     os.tryrm(log)
     os.tryrm(errors)
+    local scale = opt.scale or TIME_SCALE
     local argv = {"boot", "--rootfs", opt.rootfs, "--device", opt.identifier, "--host-cache", opt.cache,
                   "--display", "headless", "--gles-backend", "software", "--control-stdin",
-                  "--network", opt.network or "isolated", "--frame-output", frame}
+                  "--network", opt.network or "isolated", "--frame-output", frame,
+                  "--time-scale", tostring(scale)}
     local input, control = pipe.openpair("BB")
     local envs = {}
     for name, value in pairs(table.join(os.getenvs(), {TMPDIR = opt.tmpdir, VK_ICD_FILENAMES = opt.icd})) do
@@ -444,8 +498,8 @@ function boot(opt)
     control:close()
     proc:close()
     state = scan_file(log, {})
-    return {state = state, reason = reason, seconds = (os.mclock() - started) / 1000, log = log, errors = errors,
-            frame = os.isfile(frame) and frame or nil}
+    return {state = state, reason = reason, seconds = (os.mclock() - started) / 1000, scale = scale,
+            log = log, errors = errors, frame = os.isfile(frame) and frame or nil}
 end
 
 function capacity()
