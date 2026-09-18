@@ -175,5 +175,25 @@
   "reason": "the next batch; the timing parameters it takes are carried here first, and nothing about it is refused - the binary shows no daemon, no render server and no new QuartzCore behind it",
   "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
   "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ"
+ },
+ {
+  "api": "-[NSCoder encodeCGVector:forKey:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "UIKit's geometry coding gained the vector after iOS 6 and the SDK header carries no availability for it, so nothing warns at compile time; a spring's archive raised an unrecognised selector on iOS 6 until this was carried",
+  "facts": "facts/UIKit/UISpringTimingParameters.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, absent from the armv7 cache of 6.0"
+ },
+ {
+  "api": "-[NSCoder decodeCGVectorForKey:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "the other half of the same pair",
+  "facts": "facts/UIKit/UISpringTimingParameters.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, absent from the armv7 cache of 6.0"
  }
 ]
