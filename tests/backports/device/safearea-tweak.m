@@ -13,6 +13,16 @@ static void note(NSString *line)
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
+#undef CHECK
+#define CHECK(condition, name) do { \
+        BOOL charon_passed = (condition) ? YES : NO; \
+        charon_check(charon_passed, name, @#condition); \
+        note([NSString stringWithFormat:@"%s %s%@", charon_passed ? "ok  " : "FAIL", name, \
+              charon_passed ? @"" : [NSString stringWithFormat:@" (%s)", #condition]]); \
+    } while (0)
+
+
+
 static NSString *const results_folder = @"/private/var/backports";
 
 static NSString *text(UIEdgeInsets insets)
@@ -49,11 +59,8 @@ static void check_sources(void)
 static void check_absent(void)
 {
     CHECK(![[UIView new] respondsToSelector:@selector(safeAreaInsetsDidChange)], "UIView does not claim -safeAreaInsetsDidChange");
-    note(@"checked UIView does not claim -safeAreaInsetsDidChange");
     CHECK(![[UIViewController new] respondsToSelector:@selector(viewSafeAreaInsetsDidChange)], "UIViewController does not claim -viewSafeAreaInsetsDidChange");
-    note(@"checked UIViewController does not claim -viewSafeAreaInsetsDidChange");
     CHECK(![[UIView new] respondsToSelector:@selector(safeAreaLayoutGuide)], "UIView does not claim -safeAreaLayoutGuide");
-    note(@"checked UIView does not claim -safeAreaLayoutGuide");
 }
 
 static void run(void)
@@ -64,7 +71,6 @@ static void run(void)
     UIApplication *application = [UIApplication sharedApplication];
     CGFloat statusBar = CGRectGetHeight(application.statusBarFrame);
     CHECK(statusBar > 0, "the status bar has a height");
-    note(@"checked the status bar has a height");
 
     UIWindow *window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     UIViewController *controller = [UIViewController new];
@@ -104,13 +110,10 @@ static void run(void)
 
     CHECK(![[UIScrollView new] respondsToSelector:@selector(adjustedContentInsetDidChange)],
           "UIScrollView does not claim -adjustedContentInsetDidChange");
-    note(@"checked UIScrollView does not claim -adjustedContentInsetDidChange");
     CHECK(![[UIViewController new] respondsToSelector:@selector(systemMinimumLayoutMargins)],
           "UIViewController does not claim -systemMinimumLayoutMargins");
-    note(@"checked UIViewController does not claim -systemMinimumLayoutMargins");
     CHECK(![[UIViewController new] respondsToSelector:@selector(viewRespectsSystemMinimumLayoutMargins)],
           "UIViewController does not claim -viewRespectsSystemMinimumLayoutMargins");
-    note(@"checked UIViewController does not claim -viewRespectsSystemMinimumLayoutMargins");
 
     UIScrollView *scroll = [[UIScrollView alloc] initWithFrame:root.bounds];
     [root addSubview:scroll];
@@ -120,18 +123,15 @@ static void run(void)
     scroll.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     CHECK(UIEdgeInsetsEqualToEdgeInsets(scroll.adjustedContentInset, UIEdgeInsetsZero),
           "never adjusting leaves the content inset alone");
-    note(@"checked never adjusting leaves the content inset alone");
 
     scroll.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentAlways;
     CHECK(UIEdgeInsetsEqualToEdgeInsets(scroll.adjustedContentInset, area),
           "always adjusting adds the whole safe area");
-    note(@"checked always adjusting adds the whole safe area");
 
     scroll.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentScrollableAxes;
     scroll.contentSize = CGSizeMake(10, 10);
     CHECK(UIEdgeInsetsEqualToEdgeInsets(scroll.adjustedContentInset, UIEdgeInsetsZero),
           "content that does not scroll gets no safe area at all");
-    note(@"checked content that does not scroll gets no safe area at all");
 
     scroll.contentSize = CGSizeMake(10, CGRectGetHeight(scroll.bounds) * 2);
     CHECK(UIEdgeInsetsEqualToEdgeInsets(scroll.adjustedContentInset, UIEdgeInsetsMake(area.top, 0, area.bottom, 0)),
@@ -146,7 +146,6 @@ static void run(void)
     scroll.contentSize = CGSizeMake(CGRectGetWidth(scroll.bounds) * 2, CGRectGetHeight(scroll.bounds) * 2);
     CHECK(UIEdgeInsetsEqualToEdgeInsets(scroll.adjustedContentInset, area),
           "content larger both ways takes the whole safe area");
-    note(@"checked content larger both ways takes the whole safe area");
 
     scroll.contentInset = UIEdgeInsetsMake(5, 6, 7, 8);
     CHECK(UIEdgeInsetsEqualToEdgeInsets(scroll.adjustedContentInset,
@@ -159,27 +158,24 @@ static void run(void)
     CGFloat screen = [UIScreen mainScreen].scale;
     note([NSString stringWithFormat:@"screen scale %g", screen]);
     CHECK([body scaledValueForValue:10] == 10, "a whole value is left alone");
-    note(@"checked a whole value is left alone");
     CHECK([body scaledValueForValue:10.3] == round(10.3 * screen) / screen, "a value is rounded to the screen scale");
-    note(@"checked a value is rounded to the screen scale");
     CHECK([body scaledValueForValue:-3.3] == round(-3.3 * screen) / screen, "a negative value rounds the same way");
-    note(@"checked a negative value rounds the same way");
     UIFont *seventeen = [UIFont systemFontOfSize:17];
     CHECK([body scaledFontForFont:seventeen].pointSize == 17, "a font keeps its size where one category exists");
-    note(@"checked a font keeps its size where one category exists");
     CHECK([body scaledFontForFont:seventeen maximumPointSize:12].pointSize == 12, "a maximum point size caps the font");
-    note(@"checked a maximum point size caps the font");
-    CHECK([body scaledFontForFont:seventeen] != seventeen, "the scaled font is a new object");
-    note(@"checked the scaled font is a new object");
+    UIFont *same_size = [body scaledFontForFont:seventeen];
+    CHECK([same_size.fontName isEqual:seventeen.fontName] && same_size.pointSize == seventeen.pointSize,
+          "the scaled font keeps the family and the size");
+    CHECK(same_size == seventeen, "this release hands back the very font it was given when the size does not change");
+    CHECK([body scaledFontForFont:seventeen maximumPointSize:12] != seventeen,
+          "a font of another size is another object");
     CGFloat fromDefault = [[UIFontMetrics defaultMetrics] scaledValueForValue:10.3];
     CGFloat fromBody = [body scaledValueForValue:10.3];
     note([NSString stringWithFormat:@"default %g body %g", fromDefault, fromBody]);
     CHECK(fromDefault == fromBody, "the default metrics scale like the body");
-    note(@"checked the default metrics scale like the body");
     BOOL raised = NO;
     @try { [body scaledFontForFont:nil]; } @catch (NSException *exception) { raised = YES; }
     CHECK(raised, "a nil font is refused");
-    note(@"checked a nil font is refused");
 
     UIView *loose = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     expect(loose, UIEdgeInsetsZero, "a view with no superview and no controller is not inset");
@@ -189,26 +185,21 @@ static void run(void)
     NSDirectionalEdgeInsets defaults = margins.directionalLayoutMargins;
     CHECK(defaults.top == 8 && defaults.leading == 8 && defaults.bottom == 8 && defaults.trailing == 8,
           "the directional margins start at eight on every edge");
-    note(@"checked the directional margins start at eight on every edge");
     margins.layoutMargins = UIEdgeInsetsMake(1, 2, 3, 4);
     NSDirectionalEdgeInsets read = margins.directionalLayoutMargins;
     CHECK(read.top == 1 && read.bottom == 3 && read.leading == (reversed ? 4 : 2) && read.trailing == (reversed ? 2 : 4),
           "the directional margins read the plain ones by direction");
-    note(@"checked the directional margins read the plain ones by direction");
     margins.directionalLayoutMargins = NSDirectionalEdgeInsetsMake(5, 6, 7, 8);
     UIEdgeInsets written = margins.layoutMargins;
     CHECK(written.top == 5 && written.bottom == 7 && written.left == (reversed ? 8 : 6) && written.right == (reversed ? 6 : 8),
           "the plain margins follow the directional ones by direction");
-    note(@"checked the plain margins follow the directional ones by direction");
     NSDirectionalEdgeInsets back = margins.directionalLayoutMargins;
     CHECK(back.top == 5 && back.leading == 6 && back.bottom == 7 && back.trailing == 8,
           "the directional margins come back as they were set");
-    note(@"checked the directional margins come back as they were set");
     margins.layoutMargins = UIEdgeInsetsMake(9, 10, 11, 12);
     NSDirectionalEdgeInsets last = margins.directionalLayoutMargins;
     CHECK(last.top == 9 && last.bottom == 11 && last.leading == (reversed ? 12 : 10) && last.trailing == (reversed ? 10 : 12),
           "the plain margins win when they are set last");
-    note(@"checked the plain margins win when they are set last");
 
     controller.additionalSafeAreaInsets = UIEdgeInsetsZero;
     expect(root, UIEdgeInsetsMake(statusBar, 0, 0, 0), "clearing the additional insets restores what the bars alone give");

@@ -184,8 +184,11 @@ postinst run with `DPKG_ROOT` set to it.
   need a real window and so run inside a running application rather than one of
   their own: it is a MobileSubstrate tweak filtered to Preferences, which
   `killall Preferences` restarts without a respring. It makes a window of its
-  own below the normal level, checks twenty-one answers against what the
-  algorithm read out of UIKit 11.0 says they must be, writes
+  own below the normal level, checks forty-one answers against what the
+  algorithm read out of UIKit 11.0 says they must be - the safe area, the
+  scroll view's adjusted content inset, the directional margins and
+  `UIFontMetrics`, which shares the run because it needs the device's screen
+  scale and its font cache - writes
   `/private/var/backports/safearea.log` and `safearea.done`, and hides its
   window again. Six of the checks are that `-safeAreaInsetsDidChange`,
   `-viewSafeAreaInsetsDidChange`, `-safeAreaLayoutGuide`,
@@ -196,7 +199,10 @@ postinst run with `DPKG_ROOT` set to it.
   host: the window gives `{30, 5, 15, 20}`, and each behaviour is held to the
   edges the algorithm says it keeps. The folder has to
   exist and be writable by the application first:
-  `mkdir -p /private/var/backports && chmod 777 /private/var/backports`.
+  `mkdir -p /private/var/backports && chmod 777 /private/var/backports`. Every
+  check writes its own line to the log, since a tweak must not touch the
+  application's `stdout`: a failure that only printed would be lost. The last
+  full run answered `ok checks=41 failures=0` on an iPhone 4S (6.1.3, armv7).
 - `alert.m`, `layout.m`: applications (`alert-Info.plist`, `layout-Info.plist`)
   launched from SpringBoard; they write `/private/var/backports/NAME.log` and
   `NAME.done`, and `alert.m` logs a `SCREENSHOT <label>` line and pauses before

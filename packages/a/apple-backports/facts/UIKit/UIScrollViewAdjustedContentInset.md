@@ -57,3 +57,13 @@ for the same reason and with the same result.
 `-adjustedContentInsetDidChange` and `-[UIScrollViewDelegate scrollViewDidChangeAdjustedContentInset:]`
 are not declared: both are called from the moment the value changes, which the
 port never sees without replacing UIKit's layout.
+
+## How far this is checked
+
+On an iPhone 4S (6.1.3, armv7), inside the same tweak as the safe area:
+never adjusting leaves the content inset alone, always adjusting adds the whole
+safe area, content that does not scroll gets nothing, content taller than the
+frame takes the vertical edges, bouncing vertically counts as scrolling,
+content larger both ways takes all four edges, and a content inset of the
+application's own adds to the safe area edge by edge. All of them agreed, in a
+run of forty-one checks with no failures.
