@@ -395,18 +395,24 @@ end
 -- that but running it, so the test installs the repository as an addon in a
 -- store of its own, with a Charon home of its own for the slots, and asks the
 -- queue for a command that succeeds and one that fails.
-local function queue_step(folder, opt, found)
+local function queue_step(emulator, folder, opt, found)
     local work = path.join(folder, "queue")
     local envs = {XMAKE_GLOBALDIR = path.join(work, "store"), CHARON_HOME = path.join(work, "home")}
     os.mkdir(work)
     os.iorunv("xmake", {"addon", "--install", "-y", path.absolute(path.join(opt.modules, ".."))}, {curdir = work, envs = envs})
-    for _, case in ipairs({{"/usr/bin/true", 0}, {"/usr/bin/false", 1}}) do
-        local code = os.execv("xmake", {"queue", "--", case[1]},
-                              {curdir = work, envs = envs, try = true,
-                               stdout = path.join(work, "queue.log"), stderr = path.join(work, "queue.log")})
-        if code ~= case[2] then
-            table.insert(found, string.format("the queue ends with the status of what it ran: %s answered %s, not %d, and said %s",
-                                              case[1], tostring(code), case[2], (io.readfile(path.join(work, "queue.log")) or ""):trim()))
+    -- A queue that already holds a slot passes it down and runs the command
+    -- itself, and both ways have to answer with the status of what they ran.
+    for _, held in ipairs({"", "1"}) do
+        for _, case in ipairs({{"/usr/bin/true", 0}, {"/usr/bin/false", 1}}) do
+            local code = os.execv("xmake", {"queue", "--", case[1]},
+                                  {curdir = work, try = true,
+                                   envs = table.join(envs, {[emulator.build_slot_name()] = held}),
+                                   stdout = path.join(work, "queue.log"), stderr = path.join(work, "queue.log")})
+            if code ~= case[2] then
+                table.insert(found, string.format("the queue ends with the status of what it ran%s: %s answered %s, not %d, and said %s",
+                                                  held == "" and "" or ", slot held", case[1], tostring(code), case[2],
+                                                  (io.readfile(path.join(work, "queue.log")) or ""):trim()))
+            end
         end
     end
 end
@@ -424,7 +430,7 @@ function failures(opt)
     load_step(emulator, found)
     choice(emulator, found)
     concurrency(folder, opt.modules, found)
-    queue_step(folder, opt, found)
+    queue_step(emulator, folder, opt, found)
     os.tryrm(folder)
     return found
 end

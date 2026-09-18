@@ -10,7 +10,10 @@ function main()
     -- A build that the queue already started passes its slot down, so a nested
     -- build runs inside it instead of waiting for one its parent holds.
     if emulator.holds_build_slot() then
-        os.execv(program, arguments)
+        local held = os.execv(program, arguments, {try = true})
+        if held ~= 0 then
+            os.exit(held)
+        end
         return
     end
     local count = tonumber(option.get("count")) or emulator.build_capacity()
