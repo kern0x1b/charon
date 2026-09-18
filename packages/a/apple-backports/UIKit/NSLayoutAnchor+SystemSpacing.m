@@ -32,10 +32,13 @@ static NSLayoutConstraint *charon_system_spacing_constraint(NSLayoutAnchor *anch
         if (below && above)
             spacing = charon_baseline_spacing(below, above);
     }
+    CGFloat constant = spacing * multiplier;
+    if (constant < 0)
+        constant = 0;
     NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:shape.firstItem attribute:shape.firstAttribute
                                                                  relatedBy:relation toItem:shape.secondItem
                                                                  attribute:shape.secondAttribute multiplier:1
-                                                                  constant:spacing * multiplier];
+                                                                  constant:constant];
     constraint.priority = shape.priority;
     return constraint;
 }
