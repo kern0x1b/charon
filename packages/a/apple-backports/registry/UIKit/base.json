@@ -212,6 +212,7 @@
     "api": "-[UIScreen traitCollection]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "5.0",
     "status": "implemented"
   },
   {
@@ -287,7 +288,6 @@
     "api": "-[UIView addMotionEffect:]",
     "kind": "method",
     "introduced": "7.0",
-    "minimum": "5.0",
     "status": "implemented",
     "reason": "the effect follows the device motion the release reports; a device without a gyroscope delivers none and the layer stays where it is"
   },
@@ -377,7 +377,6 @@
     "api": "-[UIView motionEffects]",
     "kind": "method",
     "introduced": "7.0",
-    "minimum": "5.0",
     "status": "implemented"
   },
   {
@@ -404,7 +403,6 @@
     "api": "-[UIView removeMotionEffect:]",
     "kind": "method",
     "introduced": "7.0",
-    "minimum": "5.0",
     "status": "implemented"
   },
   {
@@ -424,7 +422,6 @@
     "api": "-[UIView setMotionEffects:]",
     "kind": "method",
     "introduced": "7.0",
-    "minimum": "5.0",
     "status": "implemented"
   },
   {
@@ -487,6 +484,7 @@
     "api": "-[UIView traitCollection]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "5.0",
     "status": "implemented"
   },
   {
@@ -536,6 +534,7 @@
     "api": "-[UIViewController overrideTraitCollectionForChildViewController:]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "5.0",
     "status": "implemented"
   },
   {
@@ -566,6 +565,7 @@
     "api": "-[UIViewController setOverrideTraitCollection:forChildViewController:]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "5.0",
     "status": "implemented"
   },
   {
@@ -578,6 +578,7 @@
     "api": "-[UIViewController traitCollection]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "5.0",
     "status": "implemented"
   },
   {
@@ -895,6 +896,7 @@
     "api": "UITraitCollection",
     "kind": "class",
     "introduced": "8.0",
+    "minimum": "5.0",
     "status": "implemented"
   },
   {
