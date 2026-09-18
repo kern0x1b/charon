@@ -23,6 +23,16 @@ NSDirectionalEdgeInsets NSDirectionalEdgeInsetsFromString(NSString *string)
 - (NSDirectionalEdgeInsets)directionalEdgeInsetsValue
 {
     NSDirectionalEdgeInsets insets = NSDirectionalEdgeInsetsZero;
+    if ([self respondsToSelector:@selector(getValue:size:)]) {
+        [self getValue:&insets size:sizeof(insets)];
+        return insets;
+    }
+    NSUInteger held = 0;
+    NSGetSizeAndAlignment(self.objCType, &held, NULL);
+    if (held != sizeof(insets))
+        [NSException raise:NSInvalidArgumentException
+                    format:@"Cannot get value with size %zu. The type encoded as %s is expected to be %zu bytes",
+                           sizeof(insets), self.objCType, (size_t)held];
     [self getValue:&insets];
     return insets;
 }

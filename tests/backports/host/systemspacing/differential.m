@@ -95,6 +95,17 @@ int main(void)
                 shape([plain.leadingAnchor constraintEqualToSystemSpacingAfterAnchor:box.leadingAnchor multiplier:1]),
                 shape(ours_x(plain.leadingAnchor, NSSelectorFromString(@"charonHost_constraintEqualToSystemSpacingAfterAnchor:multiplier:"), box.leadingAnchor, 1)));
 
+        for (NSUInteger index = 0; index < 4; index++) {
+            static const CGFloat multipliers[] = {0, 0.25, -0.5, -2};
+            CGFloat multiplier = multipliers[index];
+            compare([NSString stringWithFormat:@"a multiplier of %g", (double)multiplier],
+                    shape([plain.leadingAnchor constraintEqualToSystemSpacingAfterAnchor:another.trailingAnchor multiplier:multiplier]),
+                    shape(ours_x(plain.leadingAnchor, NSSelectorFromString(@"charonHost_constraintEqualToSystemSpacingAfterAnchor:multiplier:"), another.trailingAnchor, multiplier)));
+            compare([NSString stringWithFormat:@"a multiplier of %g, downwards", (double)multiplier],
+                    shape([plain.topAnchor constraintEqualToSystemSpacingBelowAnchor:another.bottomAnchor multiplier:multiplier]),
+                    shape(ours_y(plain.topAnchor, NSSelectorFromString(@"charonHost_constraintEqualToSystemSpacingBelowAnchor:multiplier:"), another.bottomAnchor, multiplier)));
+        }
+
         NSLayoutConstraint *systemMixed = [body.firstBaselineAnchor constraintEqualToSystemSpacingBelowAnchor:plain.lastBaselineAnchor multiplier:1];
         NSLayoutConstraint *ourMixed = ours_y(body.firstBaselineAnchor, NSSelectorFromString(@"charonHost_constraintEqualToSystemSpacingBelowAnchor:multiplier:"), plain.lastBaselineAnchor, 1);
         printf("note a baseline of a text view under the baseline of a view with no text: the system answers %g,\n"

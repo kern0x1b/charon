@@ -52,6 +52,23 @@ void directionaledges_run(DirectionalEdgesImplementation implementation, Directi
                    named:[@"value." stringByAppendingString:label]];
     }
 
+    NSValue *wrong = [NSValue valueWithCGPoint:CGPointMake(1, 2)];
+    NSString *refusal = @"nothing raised";
+    @try {
+        ((NSDirectionalEdgeInsets (*)(id, SEL))objc_msgSend)(wrong, sel(@selector(directionalEdgeInsetsValue)));
+    } @catch (NSException *exception) {
+        NSUInteger held = 0;
+        NSGetSizeAndAlignment(wrong.objCType, &held, NULL);
+        NSString *sizes = [NSString stringWithFormat:@"%zu", sizeof(NSDirectionalEdgeInsets)];
+        NSString *other = [NSString stringWithFormat:@"%zu", (size_t)held];
+        refusal = [NSString stringWithFormat:@"%@, names the size asked for: %@, names the size it holds: %@, names the encoding: %@",
+                   exception.name,
+                   [exception.reason containsString:sizes] ? @"yes" : @"no",
+                   [exception.reason containsString:other] ? @"yes" : @"no",
+                   [exception.reason containsString:@(wrong.objCType)] ? @"yes" : @"no"];
+    }
+    [recorder record:refusal named:@"value.of another type"];
+
     NSArray *strings = @[@"{1, 2, 3, 4}", @"{1, 2}", @"{1}", @"", @"nonsense", @"{1, 2, 3, 4, 5}", @"{ 1 , 2 , 3 , 4 }",
                          @"1, 2, 3, 4", @"{-1.5, 0, 2e2, .5}"];
     for (NSString *string in strings)

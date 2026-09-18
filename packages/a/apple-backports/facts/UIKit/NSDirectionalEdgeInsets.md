@@ -46,3 +46,19 @@ an object under the key — the archive holds `{1.5, 2, 3.25, 4}` as text, and
 the port's archive is byte for byte the same, with secure coding on and off.
 `-decodeDirectionalEdgeInsetsForKey:` reads that string back, and a key that is
 not there reads as zeroes, since an absent string parses to zeroes.
+
+## Asking a value for insets it does not hold
+
+`-directionalEdgeInsetsValue` on a value that holds something else raises
+`NSInvalidArgumentException`, and the reason names three things: the size asked
+for, the encoding the value really holds and the size of that encoding -
+`Cannot get value with size 32. The type encoded as {CGPoint=dd} is expected to
+be 16 bytes` on a 64-bit host, with the same sentence and its own numbers
+elsewhere. That refusal comes from `-getValue:size:`, which iOS 11 added
+alongside these insets; where the release has it the port calls it, and where
+it does not the port measures the encoding with `NSGetSizeAndAlignment` and
+raises the same exception itself rather than reading a struct of the wrong size
+off the end of the value. The first version of the port did read it, and
+answered a point's two numbers as the first two insets; the second pass against
+the current implementation found that too.
+

@@ -36,6 +36,16 @@ one side and an edge on the other — uses the same formula.
 Two views that carry no font at all fall back to the eight points, even when
 both anchors are baselines.
 
+## A multiplier below zero asks for nothing
+
+The multiplier scales the spacing, and the current implementation stops at
+zero: a multiplier of 0.25 gives a quarter of the spacing, 2 gives twice it, 0
+gives none, and **-0.5 or -2 give none either** - not a negative constant.
+Measured against the host across both axes; the port floors the constant the
+same way. The port first read the multiplication and carried it plainly, which
+is where a negative multiplier would have pulled one view over another; the
+second pass against the current implementation found it.
+
 ## The release that introduced it rounded differently
 
 iOS 11's `_UIViewBaselineToBaselineSpacing` takes the same `value` and rounds it
