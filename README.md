@@ -328,7 +328,9 @@ emulated device like this, against a working copy of this repository:
 
     -- xmake.lua of the test port
     add_repositories("charon /path/to/charon")   -- the copy with your changes
-    add_requires("charon@apple-backports")
+    add_addons("charon latest")
+    set_config("apple_minimum", "6.0")
+    add_requires("charon@apple-backports", {alias = "apple-backports"})
     includes("@addon/charon/apple-ios")
     includes("@addon/charon/emulate")
 
@@ -336,10 +338,12 @@ emulated device like this, against a working copy of this repository:
         set_kind("binary")
         add_rules("@addon/charon/daemon")
         add_files("test.m")
-        add_packages("charon@apple-backports")
+        add_packages("apple-backports")
+        add_frameworks("Foundation")
         set_values("charon.version", "1.0")
+        set_values("charon.control", "packaging/control")
 
-    xmake f -p iphoneos -a armv7 --apple_minimum=6.0 -y
+    xmake f -p iphoneos -a armv7 -y
     xmake emulate -d iPhone3,1 -r 6.0 install
     xmake emulate -d iPhone3,1 -r 6.0 run /usr/libexec/backports-test
     xmake emulate -d iPhone4,1 -r 6.1.3 install && xmake emulate -d iPhone4,1 -r 6.1.3 run /usr/libexec/backports-test
