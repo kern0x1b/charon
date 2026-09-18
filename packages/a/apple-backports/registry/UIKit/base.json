@@ -80,6 +80,14 @@
     "status": "implemented"
   },
   {
+    "api": "+[UITraitCollection traitCollectionWithUserInterfaceStyle:]",
+    "kind": "method",
+    "introduced": "12.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UITraitCollectionUserInterfaceStyle.md",
+    "source": "the UIKit of the host's Mac Catalyst, measured trait by trait, and UIKit 12.0 arm64, read by the session that carries iOS 11 and 12"
+  },
+  {
     "api": "+[UIView animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:]",
     "kind": "method",
     "introduced": "7.0",
@@ -945,6 +953,14 @@
     "introduced": "8.0",
     "minimum": "5.0",
     "status": "implemented"
+  },
+  {
+    "api": "UITraitCollection.userInterfaceStyle",
+    "kind": "property",
+    "introduced": "12.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UITraitCollectionUserInterfaceStyle.md",
+    "source": "the UIKit of the host's Mac Catalyst, measured trait by trait, and UIKit 12.0 arm64, read by the session that carries iOS 11 and 12"
   },
   {
     "api": "UIUserNotificationAction",
