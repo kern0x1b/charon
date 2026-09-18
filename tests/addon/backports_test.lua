@@ -96,12 +96,43 @@ local function surface_step(backports, opt, folder, found)
     end
 end
 
+-- A band drops what the release already carries and re-exports it in its place,
+-- and dyld learned that in iOS 4.2: ld64 refuses the list for anything older,
+-- so a band for such a release has to drop without promising. The floor is the
+-- linker's, not ours, so the test asks the linker where it is.
+local function floor_step(backports, opt, folder, found)
+    for _, deployment in ipairs({"4.1", "4.2", "6.0"}) do
+        local wanted = deployment ~= "4.1"
+        if backports.reexports(deployment) ~= wanted then
+            table.insert(found, string.format("iOS %s %s re-export a symbol of another library", deployment, wanted and "does" or "does not"))
+        end
+    end
+    local work = path.join(folder, "floor")
+    os.mkdir(work)
+    io.writefile(path.join(work, "libSystem.tbd"), fixtures.system_stub("dyld_stub_binder, _charon_reexported"))
+    io.writefile(path.join(work, "carried.c"), "int charon_carried(void) { return 0; }\n")
+    io.writefile(path.join(work, "reexported.list"), "_charon_reexported\n")
+    for _, deployment in ipairs({"4.1", "4.2"}) do
+        local refused = fixtures.refusal(function ()
+            fixtures.run(work, "xcrun", {"clang", "-target", "armv7-apple-ios" .. deployment, "-Wno-incompatible-sysroot",
+                                         "-fuse-ld=" .. opt.ld64, "-dynamiclib", "-nostdlib", "-L.", "-lSystem",
+                                         "-Wl,-reexported_symbols_list,reexported.list", "-o", "carried" .. deployment .. ".dylib", "carried.c"})
+        end)
+        if (refused ~= nil) ~= (not backports.reexports(deployment)) then
+            table.insert(found, string.format("the linker and the backports disagree about iOS %s: ld %s, backports say %s",
+                                              deployment, refused and "refuses the list" or "takes the list",
+                                              backports.reexports(deployment) and "it re-exports" or "it cannot"))
+        end
+    end
+end
+
 function failures(opt)
     local backports = import("apple.backports", {rootdir = opt.modules, anonymous = true})
     local found = {}
     local folder = fixtures.scratch()
     digest_step(opt, folder, found)
     surface_step(backports, opt, folder, found)
+    floor_step(backports, opt, folder, found)
     local seven = object(folder, "seven", "__attribute__((visibility(\"default\"))) int arrived_seven = 7;\n__attribute__((visibility(\"default\"))) int also_seven(void) { return 7; }\nstatic int helper(void) { return 0; }\n")
     local eight = object(folder, "eight", "__attribute__((visibility(\"default\"))) int arrived_eight = 8;\n")
     local methods = object(folder, "methods", "static int added(void) { return 1; }\nint (*const hidden_table[])(void) = {added};\n")

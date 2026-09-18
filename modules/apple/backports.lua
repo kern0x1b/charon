@@ -253,8 +253,21 @@ function stubs(architecture, library, reexported, releases, folder)
     return files
 end
 
+-- dyld learned to re-export a symbol of another library in iOS 4.2, and ld64
+-- refuses -reexported_symbols_list for anything older ("targeted OS version
+-- does not support -reexported_symbols_list"). A band for such a release still
+-- drops what the release carries - that is the point of the band - it just
+-- promises nothing in its place, and the port binds the release's own symbol,
+-- which is there. libcxx does the same where it cannot re-export libcxxabi.
+function reexports(deployment)
+    return dyld.compare_versions(deployment, "4.2") >= 0
+end
+
 local function link(opt, library, attach, objects, releases, outputdir)
     local kept, reexported = band(releases[1].exports, objects)
+    if not reexports(opt.deployment) then
+        reexported = {}
+    end
     local output = path.join(outputdir, "lib" .. library.name .. ".dylib")
     os.mkdir(outputdir)
     local arguments = {"clang", "-target", opt.triple, "-isysroot", opt.sdkdir, "-fuse-ld=" .. opt.ld, "-fobjc-arc", "-dynamiclib",
