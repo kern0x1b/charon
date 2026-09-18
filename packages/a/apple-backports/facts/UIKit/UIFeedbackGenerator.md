@@ -94,3 +94,98 @@ needs upwards of 200 ms - which is what `enable-ms = 100` in the device tree is
 about. So the crisp tap that `UIImpactFeedbackGenerator` and
 `UISelectionFeedbackGenerator` stand for cannot be produced on this hardware.
 What can be produced is a buzz of a chosen strength and length.
+
+## The API, read off iOS 10
+
+Public members, and nothing else: `-[UIFeedbackGenerator prepare]`,
+`-[UIImpactFeedbackGenerator initWithStyle:]`, `-[UIImpactFeedbackGenerator impactOccurred]`,
+`-[UINotificationFeedbackGenerator notificationOccurred:]`,
+`-[UISelectionFeedbackGenerator selectionChanged]`.
+
+What the implementation says:
+
+- `-initWithStyle:` maps light to `+[_UIImpactFeedbackGeneratorConfiguration lightConfiguration]`,
+  medium to `+defaultConfiguration` and heavy to `+strongConfiguration`. **Any other
+  value is not an error**: the configuration is `nil` and the object is built with
+  it, so the generator exists and plays nothing.
+- `-impactOccurred` is `-_impactOccurredWithIntensity:` with an intensity of
+  exactly `1.0f`.
+- `-_impactOccurredWithIntensity:` reads the configuration's `feedback` and
+  **returns without playing when it is nil**, then plays through
+  `-_playFeedback:withMinimumIntervalPassed:since:prefersRegularPace:` with the
+  configuration's `minimumInterval`.
+- `-notificationOccurred:` tail-calls `-_playEventType:`, and so does the private
+  `-_privateNotificationOccurred:`.
+
+The three impact configurations, out of their preparation blocks:
+
+| style | feedback type | `hapticParameters.volume` | `minimumInterval` |
+|---|---|---|---|
+| light | 8 | 0.7 | 0 |
+| medium | 5 | 0.7 | 0 |
+| heavy | 2 | 0.8 | 0 |
+
+The type is the argument of `+[_UIDiscreteFeedback discreteFeedbackForType:]`,
+and it **names a waveform; it is not a count of anything**. The class keeps it in
+a `type` ivar and `-_effectiveSystemSoundID` turns it into a system sound -
+`1001` into `1519`, `1002` into `1520`, anything else into a default - so each
+value is one identity in a table, the way
+`-[UINotificationFeedbackGenerator _categoryForType:]` also tests that space with
+`(type | 2) == 1002`. Their order says nothing either: light is 8 and heavy is 2.
+
+The fact that matters for a port: **Apple separates the three styles by waveform,
+not by strength.** The volumes are within a tenth of each other; what differs is
+which discrete Taptic waveform is played. `minimumInterval` is zero for all
+three, so iOS 10 does not rate-limit impacts.
+
+## What this port does, and what is ours
+
+An eccentric rotating mass has no waveforms - only amplitude and length - so the
+three styles cannot be told apart the way iOS 10 tells them apart. On top of
+that, `UIFeedbackGenerator` on iOS 10 does nothing at all on hardware without a
+Taptic Engine, so there is no Apple behaviour for an ERM to copy. The patterns
+below are therefore **ours**, not Apple's, and they are chosen from the hardware
+measured above: nothing shorter than 40 ms moves the motor, amplitude is close to
+linear up to 0.5, and the usable floor is 0.02.
+
+| call | pulses, milliseconds | intensity |
+|---|---|---|
+| `impactOccurred` (light) | 40 | 0.45 |
+| `impactOccurred` (medium) | 65 | 0.70 |
+| `impactOccurred` (heavy) | 100 | 1.00 |
+| `notificationOccurred:` success | 55 on, 90 off, 55 on | 0.55 |
+| `notificationOccurred:` warning | 55 on, 90 off, 110 on | 0.75 |
+| `notificationOccurred:` error | 70, 70, 70, 70, 70 | 1.00 |
+
+Kept from iOS 10 as read above: a style outside the three raises nothing and
+plays nothing; `impactOccurred` is full intensity for its style; there is no
+rate limiting.
+
+The motor is reached the way the system reaches it -
+`AudioServicesPlaySystemSoundWithVibration(0xFFF, nil, pattern)`. That is not a
+guess at the sound identifier: `-[TLVibratorController _turnOnWithVibrationPattern:]`
+of ToneLibrary, which is what the Settings vibration picker plays through, loads
+`0xFFF` into r0 and nil into r1 and tail-calls exactly this function, and
+`-_turnOff` stops the same identifier. The third
+argument iOS 6 serialises as a binary property list and hands to mediaserverd,
+which is where `FigVibratorPlayVibrationWithDictionary` reads `VibePattern` and
+`Intensity`. `VibePattern` alternates a CFBoolean and a CFNumber of milliseconds,
+and a true entry is the one that carries the intensity. Writing the IORegistry
+node directly would skip the server's own mutex and its `VibeWillStart`
+notification, so the port does not do that. Both functions are reached by
+`dlsym`, so the library gains no new link.
+
+Whether the motor exists at all is asked of
+`FigVibratorIsVibratorAvailable`, which matches the IOService named `vibrator`
+and is independent of `FigVibratorInitialize`. On an iPad 2, which has no motor,
+it answers no and every call plays nothing - which is exactly what iOS 10 does on
+a device without a Taptic Engine.
+
+`-prepare` has nothing to warm on an ERM and does nothing. It is not a stub: its
+only contract is latency, and iOS 10's own does nothing when there is no engine.
+
+`UISelectionFeedbackGenerator` is **not declared**. Its whole point is a tick per
+detent as a picker turns, and the motor needs 40 ms before it moves at all -
+slower than the detents it would have to mark. A buzz there would be an imitation
+of a sensation the hardware cannot produce, so the class does not exist and
+`respondsToSelector:` and `NSClassFromString` answer honestly.
