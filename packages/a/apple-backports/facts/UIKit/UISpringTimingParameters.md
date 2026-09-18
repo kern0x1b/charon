@@ -44,6 +44,16 @@ everywhere; the host, where a `CGFloat` is a double, is what shows the other hal
 Non-keyed coders raise `NSInvalidUnarchiveOperationException`:
 `%@ only supports keyed coding.`
 
+`-encodeCGVector:forKey:` and `-decodeCGVectorForKey:` are themselves later than
+iOS 6, and the SDK header carries **no** availability for them, so nothing warns
+at compile time and the archive simply raised an unrecognised selector on a
+release without them. They are carried beside this class. UIKit writes the vector
+as a string through `-encodeObject:forKey:` and reads it back with
+`-decodeObjectOfClass:[NSString class] forKey:`, in the shape
+`NSStringFromCGPoint` writes, so an archive crosses to a release that has them.
+The package's own selector check is what found this; the host could not, because
+the host has the methods.
+
 ## Settling
 
 `-settlingDuration` is private and answers how long the spring takes to come to
