@@ -766,6 +766,39 @@ static void run_calendar(Foundation2Recorder *recorder)
     NSCalendar *identified = ((id (*)(id, SEL, id))objc_msgSend)([NSCalendar class], sel(@selector(calendarWithIdentifier:)), NSCalendarIdentifierIslamicCivil);
     NSCalendar *unknown = ((id (*)(id, SEL, id))objc_msgSend)([NSCalendar class], sel(@selector(calendarWithIdentifier:)), @"org.charon.unknown");
     [recorder record:@[identified.calendarIdentifier ?: @"<nil>", unknown ? @"unexpected" : @"<nil>"] named:@"calendar.identifier"];
+    NSCalendar *shifting = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    shifting.timeZone = [NSTimeZone timeZoneWithName:@"Europe/Berlin"];
+    shifting.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+    NSDateComponents *forward = [[NSDateComponents alloc] init];
+    forward.year = 2026;
+    forward.month = 3;
+    forward.day = 29;
+    forward.hour = 12;
+    NSDate *jumpDay = [shifting dateFromComponents:forward];
+    NSDate *(*setting)(id, SEL, NSInteger, NSInteger, NSInteger, id, NSCalendarOptions) = (NSDate *(*)(id, SEL, NSInteger, NSInteger, NSInteger, id, NSCalendarOptions))objc_msgSend;
+    [recorder record:@[date_text(((id (*)(id, SEL, id))objc_msgSend)(shifting, sel(@selector(startOfDayForDate:)), jumpDay)),
+                       date_text(setting(shifting, sel(@selector(dateBySettingHour:minute:second:ofDate:options:)), 2, 30, 0, jumpDay, 0)),
+                       date_text(setting(shifting, sel(@selector(dateBySettingHour:minute:second:ofDate:options:)), 2, 30, 0, jumpDay, NSCalendarMatchStrictly)),
+                       date_text(setting(shifting, sel(@selector(dateBySettingHour:minute:second:ofDate:options:)), 2, 30, 0, jumpDay, NSCalendarMatchNextTime))]
+               named:@"calendar.clockJump"];
+    NSDate *noon = setting(shifting, sel(@selector(dateBySettingHour:minute:second:ofDate:options:)), 12, 0, 0, jumpDay, 0);
+    NSDate *evening = setting(shifting, sel(@selector(dateBySettingHour:minute:second:ofDate:options:)), 20, 0, 0, jumpDay, 0);
+    NSCalendarUnit granularities[] = {NSCalendarUnitDay, NSCalendarUnitHour, NSCalendarUnitDay | NSCalendarUnitHour, NSCalendarUnitCalendar, NSCalendarUnitTimeZone};
+    NSMutableArray *granular = [NSMutableArray array];
+    for (size_t index = 0; index < sizeof granularities / sizeof *granularities; index++) {
+        [granular addObject:@(((BOOL (*)(id, SEL, id, id, NSCalendarUnit))objc_msgSend)(shifting, sel(@selector(isDate:equalToDate:toUnitGranularity:)), noon, evening, granularities[index]))];
+        [granular addObject:@(((NSComparisonResult (*)(id, SEL, id, id, NSCalendarUnit))objc_msgSend)(shifting, sel(@selector(compareDate:toDate:toUnitGranularity:)), noon, evening, granularities[index]))];
+    }
+    [recorder record:granular named:@"calendar.granularity"];
+    for (NSString *identifier in @[@"en_US_POSIX", @"he_IL"]) {
+        NSCalendar *weekly = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+        weekly.timeZone = [NSTimeZone timeZoneWithName:@"Europe/Berlin"];
+        weekly.locale = [NSLocale localeWithLocaleIdentifier:identifier];
+        NSDate *start = nil;
+        NSTimeInterval interval = 0;
+        BOOL found = ((BOOL (*)(id, SEL, NSDate **, NSTimeInterval *, NSCalendarOptions, id))objc_msgSend)(weekly, sel(@selector(nextWeekendStartDate:interval:options:afterDate:)), &start, &interval, 0, jumpDay);
+        [recorder record:@[@(found), date_text(start), @(interval)] named:[@"calendar.weekend." stringByAppendingString:identifier]];
+    }
     NSCalendar *today = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     NSDate *now = [NSDate date];
     [recorder record:@[@(((BOOL (*)(id, SEL, id))objc_msgSend)(today, sel(@selector(isDateInToday:)), now)),

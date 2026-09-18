@@ -219,7 +219,30 @@ static NSDate *charon_add_unit(NSCalendar *calendar, NSCalendarUnit unit, NSInte
     components.hour = h;
     components.minute = m;
     components.second = s;
-    return [self dateFromComponents:components];
+    NSDate *candidate = [self dateFromComponents:components];
+    NSDateComponents *reached = candidate ? [self components:NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond fromDate:candidate] : nil;
+    if (reached && reached.hour == h && reached.minute == m && reached.second == s)
+        return candidate;
+    if (opts & NSCalendarMatchStrictly) {
+        for (NSInteger following = 1; following <= 400; following++) {
+            NSDateComponents *day = [[NSDateComponents alloc] init];
+            day.day = following;
+            NSDate *next = [self dateByAddingComponents:day toDate:date options:0];
+            NSDateComponents *parts = next ? [self components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:next] : nil;
+            if (!parts)
+                return nil;
+            parts.hour = h;
+            parts.minute = m;
+            parts.second = s;
+            NSDate *exact = [self dateFromComponents:parts];
+            NSDateComponents *got = exact ? [self components:NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond fromDate:exact] : nil;
+            if (got && got.hour == h && got.minute == m && got.second == s)
+                return exact;
+        }
+        return nil;
+    }
+    NSDate *transition = [self.timeZone nextDaylightSavingTimeTransitionAfterDate:[self startOfDayForDate:date]];
+    return transition && candidate && [transition compare:candidate] == NSOrderedAscending ? transition : candidate;
 }
 
 - (BOOL)date:(NSDate *)date matchesComponents:(NSDateComponents *)components

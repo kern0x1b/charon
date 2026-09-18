@@ -3,7 +3,9 @@
     "api": "+[NSCalendar calendarWithIdentifier:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "+[NSCharacterSet URLFragmentAllowedCharacterSet]",
@@ -93,127 +95,169 @@
     "api": "-[NSCalendar compareDate:toDate:toUnitGranularity:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar component:fromDate:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar components:fromDateComponents:toDateComponents:options:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar componentsInTimeZone:fromDate:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar date:matchesComponents:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar dateByAddingUnit:value:toDate:options:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar dateBySettingHour:minute:second:ofDate:options:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar dateWithEra:year:month:day:hour:minute:second:nanosecond:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar dateWithEra:yearForWeekOfYear:weekOfYear:weekday:hour:minute:second:nanosecond:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar getEra:year:month:day:fromDate:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar getEra:yearForWeekOfYear:weekOfYear:weekday:fromDate:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar getHour:minute:second:nanosecond:fromDate:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar isDate:equalToDate:toUnitGranularity:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar isDate:inSameDayAsDate:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar isDateInToday:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar isDateInTomorrow:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar isDateInWeekend:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar isDateInYesterday:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar nextWeekendStartDate:interval:options:afterDate:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar rangeOfWeekendStartDate:interval:containingDate:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCalendar startOfDayForDate:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSCoder decodeTopLevelObjectAndReturnError:]",
