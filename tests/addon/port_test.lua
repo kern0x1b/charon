@@ -1,4 +1,5 @@
 import("fixtures")
+import("core.package.addon")
 
 -- What a port reaches through @addon/charon is the addon, not the files of this checkout, so the rules of a port - the
 -- toolchain, the checks after the link, the placement - are exercised only where a port is really built. The suites
@@ -105,6 +106,9 @@ function failures(opt)
             table.insert(found, string.format("the refusal of the %s port must name %s: %s", case[1], case[3], told))
         end
     end
+    -- The addon this installed is named after the tree it copied, so it is this run's and no other's; a test that leaves
+    -- one behind would leave one for every run it ever made.
+    os.tryrm(path.join(addon.installdir(), addon.dirname("charon"), version))
     os.tryrm(folder)
     return found
 end
