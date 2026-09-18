@@ -15,11 +15,9 @@ function main()
     end
     local count = tonumber(option.get("count")) or emulator.build_capacity()
     local slot = emulator.acquire({folder = path.join(emulator.root(), "build-slots"), count = count, patience = 0})
-    local ok, errors = pcall(function ()
-        os.execv(program, arguments, {envs = {[emulator.build_slot_name()] = tostring(slot.index)}})
-    end)
+    local code = os.execv(program, arguments, {try = true, envs = {[emulator.build_slot_name()] = tostring(slot.index)}})
     emulator.release(slot)
-    if not ok then
-        raise(errors)
+    if code ~= 0 then
+        os.exit(code)
     end
 end
