@@ -22,15 +22,21 @@ static UIColor *charon_default_tint(void)
     return color;
 }
 
+static const CGFloat charon_dimmed_alpha = 0.8f;
+
 static UIColor *charon_dimmed(UIColor *color)
 {
-    CGFloat white = 0, alpha = 1;
-    if ([color getWhite:&white alpha:&alpha])
-        return [UIColor colorWithWhite:white alpha:alpha];
-    CGFloat red = 0, green = 0, blue = 0;
-    if ([color getRed:&red green:&green blue:&blue alpha:&alpha])
-        return [UIColor colorWithWhite:red * 0.299f + green * 0.587f + blue * 0.114f alpha:alpha];
-    return color;
+    CGFloat alpha = CGColorGetAlpha(color.CGColor) * charon_dimmed_alpha;
+    unsigned char level = 0;
+    CGColorSpaceRef gray = CGColorSpaceCreateDeviceGray();
+    CGContextRef context = CGBitmapContextCreate(&level, 1, 1, 8, 1, gray, (CGBitmapInfo)kCGImageAlphaNone);
+    CGColorSpaceRelease(gray);
+    if (!context)
+        return [color colorWithAlphaComponent:alpha];
+    CGContextSetFillColorWithColor(context, [color colorWithAlphaComponent:1].CGColor);
+    CGContextFillRect(context, CGRectMake(0, 0, 1, 1));
+    CGContextRelease(context);
+    return [UIColor colorWithWhite:level / (CGFloat)255 alpha:alpha];
 }
 
 static void charon_tint_changed(UIView *view, BOOL colorChanged)

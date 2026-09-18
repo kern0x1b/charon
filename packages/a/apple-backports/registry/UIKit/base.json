@@ -508,31 +508,41 @@
     "api": "-[UIView setTintAdjustmentMode:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewTintColor.md",
+    "source": "the host's own UIKit, through the tint group of tests/backports/host/uikit2"
   },
   {
     "api": "-[UIView setTintColor:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewTintColor.md",
+    "source": "the host's own UIKit, through the tint group of tests/backports/host/uikit2"
   },
   {
     "api": "-[UIView tintAdjustmentMode]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewTintColor.md",
+    "source": "the host's own UIKit, through the tint group of tests/backports/host/uikit2"
   },
   {
     "api": "-[UIView tintColorDidChange]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewTintColor.md",
+    "source": "the host's own UIKit, through the tint group of tests/backports/host/uikit2"
   },
   {
     "api": "-[UIView tintColor]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewTintColor.md",
+    "source": "the host's own UIKit, through the tint group of tests/backports/host/uikit2"
   },
   {
     "api": "-[UIView topAnchor]",

@@ -69,7 +69,18 @@ int main(void)
         CGFloat red = 0, green = 0, blue = 0, alpha = 0;
         [[leaf charonHostTintColor] getRed:&red green:&green blue:&blue alpha:&alpha];
         charon_check(red == green && green == blue, "a dimmed colour is grey", components_of([leaf charonHostTintColor]));
-        charon_check(alpha == 1, "a dimmed colour keeps its alpha", components_of([leaf charonHostTintColor]));
+        charon_check(fabs(alpha - 0.8) < 0.001, "a dimmed colour keeps four fifths of its alpha", components_of([leaf charonHostTintColor]));
+        UIView *systemRoot = [[UIView alloc] init];
+        UIView *systemLeaf = [[UIView alloc] init];
+        [systemRoot addSubview:systemLeaf];
+        systemRoot.tintColor = [UIColor redColor];
+        systemRoot.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
+        CGFloat systemWhite = 0, systemAlpha = 0, ourWhite = 0, ourAlpha = 0;
+        [systemLeaf.tintColor getWhite:&systemWhite alpha:&systemAlpha];
+        [[leaf charonHostTintColor] getWhite:&ourWhite alpha:&ourAlpha];
+        charon_check(fabs(ourWhite - systemWhite) <= 1 / 255.0 && fabs(ourAlpha - systemAlpha) < 0.001,
+                     "the dimmed colour is the one the system makes, to the byte the grey is stored in",
+                     [NSString stringWithFormat:@"ours %.6f/%.3f system %.6f/%.3f", ourWhite, ourAlpha, systemWhite, systemAlpha]);
         charon_check([components_of([root charonHostTintColor]) isEqualToString:components_of([UIColor redColor])], "a view above the dimmed one keeps its colour", components_of([root charonHostTintColor]));
         [middle setCharonHostTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
         charon_check([components_of([leaf charonHostTintColor]) isEqualToString:components_of([UIColor redColor])], "the colour comes back when the dimming stops", components_of([leaf charonHostTintColor]));
