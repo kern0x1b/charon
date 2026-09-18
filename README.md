@@ -89,6 +89,7 @@ Then:
     xmake emulate log [TEXT], xmake emulate shot [FILE]
     xmake queue -- COMMAND     run a build in one of this machine's build slots
     xmake emulate [--all] clean remove this port's images (--all: every image and golden image)
+    xmake borrow PACKAGE ...   take installs this store lacks from another store
     xmake where PACKAGE        the folder a required package is installed in
     xmake check [--staged|--changed] [NAMES]
                                the project's checks; xmake check --install-hook
@@ -291,6 +292,23 @@ The slot is taken by the outermost `xmake` only: the command it runs carries
 the slot already held, so a nested build never waits for its own parent. This
 is a queue for the builds that ask for it, not a limit on the machine: a
 `xmake build` started beside it does not see the slots and does not wait.
+
+A session that builds in a store of its own - `XMAKE_GLOBALDIR` pointing
+somewhere other than the home - starts with nothing in it, and the host
+packages it needs first are the ones that take longest to build: the compiler
+alone is an hour. What another store has already built it can take instead:
+
+    xmake borrow llvm swift             from the store beside $HOME
+    xmake borrow --from=/path llvm      from another one, named with = as
+                                        the packages follow the options
+
+An install is taken under the same path it had, because the digest in that path
+is what xmake looks an install up by, so what is taken answers for the configs
+it was built with or is not used at all. On APFS the copy is a clone and costs
+no space; where the filesystem cannot clone, it is an ordinary copy. An install
+the store already holds is left alone, and a name the source store holds
+nothing of is refused rather than passed over - a package the machine provides
+of itself is never in a store to begin with.
 
 The guest's clock runs slower than the host's, because the emulator is one to
 two orders of magnitude slower than the device and the guest measures its own
