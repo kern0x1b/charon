@@ -86,6 +86,9 @@ Then:
     xmake emulate [-s 60] [--scale 10] run COMMAND
                                start COMMAND in it and report pass, fail, crash,
                                timeout or boot-blocked; -d DEVICE, -r RELEASE
+    xmake emulate debug COMMAND
+                               start COMMAND as the guest's first process under
+                               the emulator's debugger and print where it stopped
     xmake emulate log [TEXT], xmake emulate shot [FILE]
     xmake queue -- COMMAND     run a build in one of this machine's build slots
     xmake emulate [--all] clean remove this port's images (--all: every image and golden image)
@@ -365,6 +368,25 @@ emulated device like this, against a working copy of this repository:
     xmake emulate -d iPhone3,1 -r 6.0 install
     xmake emulate -d iPhone3,1 -r 6.0 run /usr/libexec/backports-test
     xmake emulate -d iPhone4,1 -r 6.1.3 install && xmake emulate -d iPhone4,1 -r 6.1.3 run /usr/libexec/backports-test
+
+A program that crashes on the guest says only where it stopped, and the
+emulator prints that as a number. `xmake emulate debug /usr/libexec/port`
+starts it as the guest's first process - nothing else boots, so what the report
+holds is the program and what it loads - stops where it crashes and says what
+it was doing:
+
+    /usr/libexec/crasher stopped with signal 11 on iPhone3,1 6.0 (10A403)
+      #0  pc     0x0000bf86  crasher`_wrong + 0x6
+      #1  lr     0x0000bf7d  crasher`_main + 0x34
+      #2  return 0x36e20b20  libdyld.dylib + 0x1b20
+
+Charon speaks the debugger's protocol itself, because no debugger on an arm64
+host talks to an armv7 guest. The frames are the chain the frame pointer holds,
+and they are named by what the guest itself says it has loaded - dyld's own
+list of images, which carries the shared cache's libraries as well as the
+port's - with the nearest symbol of the images the image holds as files. The
+whole reading, registers and images included, is left beside the log as
+`debug.json`.
 
 A port that carries the backports into a tweak or an application names them in
 `charon.libraries` the way the target knows them - `apple-backports`, the alias

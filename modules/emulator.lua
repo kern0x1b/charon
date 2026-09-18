@@ -2,6 +2,8 @@ import("core.base.json")
 import("core.base.pipe")
 import("core.base.process")
 import("apple.dyld")
+import("apple.macho")
+import("gdb")
 import("apple.firmware")
 
 RESULTS = "private/var/charon"
@@ -12,6 +14,9 @@ MIGRATOR = "System/Library/PrivateFrameworks/DataMigration.framework/Support/Dat
 SETUP_KEYS = {{"SetupDone", "-bool", "YES"}, {"SetupFinishedAllSteps", "-bool", "YES"}, {"SetupVersion", "-integer", "2"},
               {"AssistantPresented", "-bool", "YES"}}
 CRASH_LOOP = 3
+-- The registers a stopped guest is read by, in the order the debugger lays
+-- them out; charon prints them in that order too.
+REGISTERS = {"r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9", "r10", "r11", "r12", "sp", "lr", "pc", "cpsr"}
 -- A guest second takes this many host seconds. The emulator is one to two
 -- orders of magnitude slower than the device it emulates, so at 1 the guest's
 -- own watchdogs and RPC deadlines expire before it finishes: iOS 6.1.3 loses
@@ -137,6 +142,161 @@ function guest_path(rootfs, relative, opt)
         end
     end
     return resolved
+end
+
+-- What the guest has loaded, asked of the guest itself: dyld keeps the list at
+-- _dyld_all_image_infos, and the copy of dyld in the image says where that is.
+-- The list carries the cache's libraries as well as the port's own, so an
+-- address in a backtrace is named without reading the shared cache at all.
+local function loaded_images(connection, rootfs)
+    local file = path.join(rootfs, "usr", "lib", "dyld")
+    if not os.isfile(file) then
+        return {}
+    end
+    local data = macho.read(file)
+    local address
+    for _, image in ipairs(macho.images(data)) do
+        address = address or macho.symbol(data, image, "_dyld_all_image_infos")
+    end
+    if not address then
+        return {}
+    end
+    local count, array = gdb.word(connection, address + 4), gdb.word(connection, address + 8)
+    if not count or not array or count == 0 or count > 4096 then
+        return {}
+    end
+    local held = {}
+    for index = 0, count - 1 do
+        local base, name = gdb.word(connection, array + index * 12), gdb.word(connection, array + index * 12 + 4)
+        if base and name then
+            table.insert(held, {address = base, install = gdb.text(connection, name)})
+        end
+    end
+    table.sort(held, function (a, b) return a.address < b.address end)
+    return held
+end
+
+-- A symbol table for the images the rootfs holds as files - dyld, the port and
+-- what it carries - so their frames are named and not only placed. What lives
+-- only in the shared cache is placed by image and offset.
+local function image_symbols(install, rootfs, architecture)
+    local file = path.join(rootfs, install)
+    if not os.isfile(file) or os.filesize(file) > 16 * 1024 * 1024 then
+        return nil
+    end
+    return try {
+        function ()
+            local data = macho.read(file)
+            local named = {}
+            for _, image in ipairs(macho.images(data)) do
+                if not architecture or image.architecture == architecture then
+                    -- A symbol stands at the address the image was linked for,
+                    -- and the guest loaded it wherever it did, so both are read
+                    -- as offsets from the image's own first segment.
+                    local first
+                    for _, segment in ipairs(image.segments) do
+                        if segment.name ~= "__PAGEZERO" and (not first or segment.vmaddr < first) then
+                            first = segment.vmaddr
+                        end
+                    end
+                    for address, symbols in pairs(macho.code_symbols(data, image)) do
+                        table.insert(named, {address = address - (first or 0), name = symbols[1].name})
+                    end
+                end
+            end
+            table.sort(named, function (a, b) return a.address < b.address end)
+            return #named > 0 and named or nil
+        end
+    }
+end
+
+function named_address(address, images, symbols)
+    local found
+    for _, image in ipairs(images) do
+        if image.address <= address then
+            found = image
+        end
+    end
+    if not found then
+        return string.format("0x%08x", address)
+    end
+    local offset = address - found.address
+    local named = string.format("%s + 0x%x", path.filename(found.install), offset)
+    local table_of = symbols and symbols[found.install]
+    if table_of then
+        local best
+        for _, entry in ipairs(table_of) do
+            if entry.address <= (offset & ~1) and (not best or entry.address > best.address) then
+                best = entry
+            end
+        end
+        if best then
+            named = string.format("%s`%s + 0x%x", path.filename(found.install), best.name, (offset & ~1) - best.address)
+        end
+    end
+    return named
+end
+
+-- A crash in the guest says only where it stopped, and where is a number. The
+-- emulator answers a debugger on a port, so charon starts the program as the
+-- guest's first process, asks the debugger for the registers and the frames the
+-- moment the guest stops, and names the addresses with what the guest itself
+-- says it has loaded. The program runs as pid 1: nothing else boots, so what
+-- the report holds is the program and what it loads, and no service of the
+-- release is between them.
+function debugged(opt)
+    local run = directory(opt.run)
+    local log = path.join(run, "emulator.log")
+    local errors = path.join(run, "emulator.stderr")
+    os.tryrm(log)
+    os.tryrm(errors)
+    local port = opt.port or (12000 + os.getpid() % 2000)
+    local argv = {"boot", "--rootfs", opt.rootfs, "--device", opt.identifier, "--host-cache", opt.cache,
+                  "--display", "headless", "--gles-backend", "software", "--network", opt.network or "isolated",
+                  "--binary", opt.guest, "--gdb", tostring(port)}
+    local envs = {}
+    for name, value in pairs(table.join(os.getenvs(), {TMPDIR = opt.tmpdir, VK_ICD_FILENAMES = opt.icd})) do
+        table.insert(envs, name .. "=" .. value)
+    end
+    directory(opt.tmpdir)
+    directory(opt.cache)
+    local proc = process.openv(opt.ilemu, argv, {stdout = log, stderr = errors, envs = envs})
+    local report = try {
+        function ()
+            local connection = gdb.connect(port, {patience = opt.patience or 120})
+            local stopped = gdb.ask(connection, "c")
+            -- A program that does not crash answers with its exit status
+            -- instead of a signal, and there is nothing to read of it.
+            if stopped and (stopped:startswith("W") or stopped:startswith("X")) then
+                gdb.close(connection)
+                return {stopped = stopped, exited = tonumber(stopped:sub(2, 3), 16) or 0, frames = {}, images = {}, log = log}
+            end
+            local held = gdb.registers(connection)
+            if not held then
+                raise("the guest stopped (%s) and the debugger cannot read its registers", tostring(stopped))
+            end
+            local walked = gdb.frames(connection, held)
+            local images = loaded_images(connection, opt.rootfs)
+            local symbols = {}
+            for _, image in ipairs(images) do
+                symbols[image.install] = image_symbols(image.install, opt.rootfs, opt.architecture)
+            end
+            local named = {}
+            for _, frame in ipairs(walked) do
+                table.insert(named, table.join(frame, {name = named_address(frame.address, images, symbols)}))
+            end
+            gdb.close(connection)
+            return {stopped = stopped, signal = tonumber((stopped or ""):match("^T(%x%x)") or "0", 16),
+                    registers = held, frames = named, images = images, log = log}
+        end
+    }
+    proc:kill()
+    proc:wait(2000)
+    proc:close()
+    if not report then
+        raise("the guest was started under the debugger and never stopped where it could be read; the emulator log is %s", log)
+    end
+    return report
 end
 
 function results(rootfs)

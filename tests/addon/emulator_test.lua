@@ -417,6 +417,22 @@ local function queue_step(emulator, folder, opt, found)
     end
 end
 
+-- An address in a backtrace is named by the image the guest says it loaded and
+-- by the nearest symbol of the images the rootfs holds as files; what only the
+-- shared cache holds is named by image and offset, and what no image covers
+-- stays the number it is.
+local function naming_step(emulator, found)
+    local images = {{address = 0x4000, install = "/usr/libexec/port"}, {address = 0x33141000, install = "/usr/lib/libobjc.A.dylib"}}
+    local symbols = {["/usr/libexec/port"] = {{address = 0x0, name = "_start"}, {address = 0x120, name = "_main"}}}
+    for _, case in ipairs({{0x4124, "port`_main + 0x4"}, {0x4000, "port`_start + 0x0"},
+                           {0x3314dfe8, "libobjc.A.dylib + 0xcfe8"}, {0x100, "0x00000100"}}) do
+        local named = emulator.named_address(case[1], images, symbols)
+        if named ~= case[2] then
+            table.insert(found, string.format("0x%x is %s, not %s", case[1], case[2], named))
+        end
+    end
+end
+
 function failures(opt)
     local emulator = import("emulator", {rootdir = opt.modules, anonymous = true})
     local debian = import("debian", {rootdir = opt.modules, anonymous = true})
@@ -431,6 +447,7 @@ function failures(opt)
     choice(emulator, found)
     concurrency(folder, opt.modules, found)
     queue_step(emulator, folder, opt, found)
+    naming_step(emulator, found)
     os.tryrm(folder)
     return found
 end
