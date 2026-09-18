@@ -251,6 +251,17 @@
       "effect": "the property is not declared, so respondsToSelector: answers honestly; constraints against the guide cannot be written",
       "facts": "facts/UIKit/UIScrollViewAdjustedContentInset.md",
       "source": "UIKit of iOS 11.0 arm64, UIScrollView.h of SDK 16.4"
+    },
+    {
+      "api": "UIFontMetrics",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the ratio the scaling rests on is one on this release, since iOS 6 has a single content size category",
+      "effect": "a font or a value comes back at its own size, rounded to the screen scale; the cap, the refusal of a nil font and the new-object rule are carried exactly",
+      "facts": "facts/UIKit/UIFontMetrics.md",
+      "source": "UIKit of iOS 11.0 arm64 at 0x18a75ece8 and 0x18a75ebdc, UIFoundation -[UIFont _scaledValueForValue:] at 0x18b0f34c0, and the differential test against the host's UIKit"
     }
   ]
 }

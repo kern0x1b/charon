@@ -18,6 +18,7 @@ inputs.
     sh host/directionaledges/run.sh  writes device/directionaledges-expectations.h when it passes
     sh host/directionalmargins/run.sh
     sh host/contentsize/run.sh
+    sh host/fontmetrics/run.sh
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
@@ -67,6 +68,12 @@ directional margins were set, which would need `-layoutMargins` itself.
 `host/contentsize/run.sh` holds the two content size category functions to the
 host's: all one hundred and sixty-nine ordered pairs, the accessibility answer
 for every category and for nil, and the exception an arbitrary string earns.
+
+`host/fontmetrics/run.sh` holds `UIFontMetrics` to the host's UIKit at the
+default content size category, which is the only category iOS 6 has: the
+rounding to the display scale, the `maximumPointSize` cap, a custom font
+keeping its family, the answer being a new object, and the wording of the
+refusal when the font is `nil`.
 
 `host/uikit2/run.sh` renames selectors as well as classes, so a test holds a
 backported method and the system one side by side, and checks the spring curve
