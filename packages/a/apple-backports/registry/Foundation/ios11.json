@@ -206,13 +206,13 @@
       "source": "Foundation of iOS 12.0 arm64; the value is NSSecureUnarchiveFromData"
     },
     {
-      "api": "NSJSONWritingSortedKeys",
-      "kind": "constant",
-      "introduced": "11.0",
+      "api": "+[NSJSONSerialization dataWithJSONObject:options:error:]",
+      "kind": "method",
+      "introduced": "5.0",
       "minimum": "6.0",
       "status": "ignored",
-      "reason": "the option is a number the compiler writes into a call to +dataWithJSONObject:options:error:, which iOS 6 already implements; there is no selector to add and no call to intercept, and the port does not replace system implementations",
-      "effect": "the keys come out in the dictionary's own order instead of the order of -localizedStandardCompare:, and nothing reports it",
+      "reason": "NSJSONWritingSortedKeys of iOS 11 is a case of an enumeration, so the compiler writes the bit into this call, which this release already implements and which knows nothing of it; there is no selector to add and no call to intercept",
+      "effect": "the option is dropped: the keys come out in the dictionary's own order instead of the order of -localizedStandardCompare:, and nothing reports it",
       "facts": "facts/Foundation/NSJSONSerialization.md",
       "source": "the host's Foundation, checked against -localizedStandardCompare: on four hundred random sets of keys"
     },
