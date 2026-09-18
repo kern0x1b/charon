@@ -409,6 +409,68 @@
       "reason": "the insets belong to an image this release never draws",
       "effect": "the property is not declared, so respondsToSelector: answers honestly",
       "source": "SDK 16.4, UIBarItem.h"
+    },
+    {
+      "api": "-[UITableView performBatchUpdates:completion:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "built on iOS 6's own -beginUpdates and -endUpdates inside a Core Animation transaction, whose completion block carries the caller's",
+      "effect": "the completion always reports YES, since a transaction does not say whether the animation was cut short; Apple reports NO for an interrupted one",
+      "facts": "facts/UIKit/UITableViewBatchUpdates.md",
+      "source": "UIKit of iOS 11.0 arm64 at 0x18a2cc288 and 0x18a1b6768; the order and the edges from the differential test against the host's UIKit"
+    },
+    {
+      "api": "UITableView.hasUncommittedUpdates",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the flag reports on a group of updates the release's own table never tracks; the port groups changes through -beginUpdates and -endUpdates and has nothing to read it from",
+      "effect": "the property is not declared, so respondsToSelector: answers honestly",
+      "facts": "facts/UIKit/UITableViewBatchUpdates.md",
+      "source": "UIKit of iOS 11.0 arm64, -[UITableView hasUncommittedUpdates] at 0x18a2d7944"
+    },
+    {
+      "api": "UISwipeActionsConfiguration",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the configuration means something only if UITableView applies it while swiping, and the port replaces no system implementation",
+      "effect": "the class is not declared, so NSClassFromString answers nil; carrying it only so that it could be created would leave an application believing it had configured a swipe that never happens",
+      "source": "SDK 16.4, UISwipeActionsConfiguration.h"
+    },
+    {
+      "api": "UIContextualAction",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the action is carried by a swipe configuration this release's table never applies",
+      "effect": "the class is not declared, so NSClassFromString answers nil",
+      "source": "SDK 16.4, UIContextualAction.h"
+    },
+    {
+      "api": "-[UITableViewDelegate tableView:leadingSwipeActionsConfigurationForRowAtIndexPath:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "nothing in the release asks the delegate for a swipe configuration",
+      "effect": "the selector is never sent, so an application that checks respondsToSelector: falls back to the release's own swipe to delete",
+      "source": "SDK 16.4, UITableView.h"
+    },
+    {
+      "api": "-[UITableViewDelegate tableView:trailingSwipeActionsConfigurationForRowAtIndexPath:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the same: the release's table has one swipe gesture and its own delete",
+      "effect": "the selector is never sent, so an application that checks respondsToSelector: falls back to the release's own swipe to delete",
+      "source": "SDK 16.4, UITableView.h"
     }
   ]
 }
