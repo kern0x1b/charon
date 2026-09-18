@@ -601,7 +601,10 @@ class. The libraries are built for one release, the one the port's imports are
 checked against: a source file whose exported symbols that release already
 exports is left out and its symbols are re-exported from the system library
 that has them, so a newer release never holds two classes of one name, and a
-file mixing symbols of two releases is refused. Methods a later release added
+file mixing symbols of two releases is refused. A port whose minimum is older
+than iOS 4.2 gets the file left out and nothing re-exported in its place, which
+is what dyld there can do: ld64 refuses `-reexported_symbols_list` for such a
+target, and the release's own symbol is what the port binds anyway. Methods a later release added
 to an existing class are categories, which the link moves from `__objc_catlist`
 to `__DATA,__charon_catlist`, where the runtime does not attach them: the
 library's initializer adds each method, property and protocol only to a class
