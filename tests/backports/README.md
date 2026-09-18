@@ -154,9 +154,14 @@ postinst run with `DPKG_ROOT` set to it.
   own below the normal level, checks twenty-one answers against what the
   algorithm read out of UIKit 11.0 says they must be, writes
   `/private/var/backports/safearea.log` and `safearea.done`, and hides its
-  window again. Three of the checks are that `-safeAreaInsetsDidChange`,
-  `-viewSafeAreaInsetsDidChange` and `-safeAreaLayoutGuide` are **not** there,
-  since the port does not declare what it cannot deliver. The folder has to
+  window again. Six of the checks are that `-safeAreaInsetsDidChange`,
+  `-viewSafeAreaInsetsDidChange`, `-safeAreaLayoutGuide`,
+  `-adjustedContentInsetDidChange`, `-systemMinimumLayoutMargins` and
+  `-viewRespectsSystemMinimumLayoutMargins` are **not** there, since the port
+  does not declare what it cannot deliver. The scroll view checks need a safe
+  area that is not zero on any edge, which is why they run here and not on the
+  host: the window gives `{30, 5, 15, 20}`, and each behaviour is held to the
+  edges the algorithm says it keeps. The folder has to
   exist and be writable by the application first:
   `mkdir -p /private/var/backports && chmod 777 /private/var/backports`.
 - `alert.m`, `layout.m`: applications (`alert-Info.plist`, `layout-Info.plist`)

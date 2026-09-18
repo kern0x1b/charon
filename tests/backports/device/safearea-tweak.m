@@ -102,6 +102,52 @@ static void run(void)
     [top addSubview:nested];
     expect(nested, UIEdgeInsetsMake(MIN(full.top, 10), full.left, 0, full.right), "a nested subview keeps what its own frame still covers");
 
+    CHECK(![[UIScrollView new] respondsToSelector:@selector(adjustedContentInsetDidChange)],
+          "UIScrollView does not claim -adjustedContentInsetDidChange");
+    CHECK(![[UIViewController new] respondsToSelector:@selector(systemMinimumLayoutMargins)],
+          "UIViewController does not claim -systemMinimumLayoutMargins");
+    CHECK(![[UIViewController new] respondsToSelector:@selector(viewRespectsSystemMinimumLayoutMargins)],
+          "UIViewController does not claim -viewRespectsSystemMinimumLayoutMargins");
+
+    UIScrollView *scroll = [[UIScrollView alloc] initWithFrame:root.bounds];
+    [root addSubview:scroll];
+    UIEdgeInsets area = scroll.safeAreaInsets;
+    note([NSString stringWithFormat:@"scroll safe area %@", text(area)]);
+
+    scroll.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    CHECK(UIEdgeInsetsEqualToEdgeInsets(scroll.adjustedContentInset, UIEdgeInsetsZero),
+          "never adjusting leaves the content inset alone");
+
+    scroll.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentAlways;
+    CHECK(UIEdgeInsetsEqualToEdgeInsets(scroll.adjustedContentInset, area),
+          "always adjusting adds the whole safe area");
+
+    scroll.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentScrollableAxes;
+    scroll.contentSize = CGSizeMake(10, 10);
+    CHECK(UIEdgeInsetsEqualToEdgeInsets(scroll.adjustedContentInset, UIEdgeInsetsZero),
+          "content that does not scroll gets no safe area at all");
+
+    scroll.contentSize = CGSizeMake(10, CGRectGetHeight(scroll.bounds) * 2);
+    CHECK(UIEdgeInsetsEqualToEdgeInsets(scroll.adjustedContentInset, UIEdgeInsetsMake(area.top, 0, area.bottom, 0)),
+          "content taller than the frame takes the vertical safe area");
+
+    scroll.contentSize = CGSizeMake(10, 10);
+    scroll.alwaysBounceVertical = YES;
+    CHECK(UIEdgeInsetsEqualToEdgeInsets(scroll.adjustedContentInset, UIEdgeInsetsMake(area.top, 0, area.bottom, 0)),
+          "bouncing vertically counts as scrolling");
+    scroll.alwaysBounceVertical = NO;
+
+    scroll.contentSize = CGSizeMake(CGRectGetWidth(scroll.bounds) * 2, CGRectGetHeight(scroll.bounds) * 2);
+    CHECK(UIEdgeInsetsEqualToEdgeInsets(scroll.adjustedContentInset, area),
+          "content larger both ways takes the whole safe area");
+
+    scroll.contentInset = UIEdgeInsetsMake(5, 6, 7, 8);
+    CHECK(UIEdgeInsetsEqualToEdgeInsets(scroll.adjustedContentInset,
+                                        UIEdgeInsetsMake(5 + area.top, 6 + area.left, 7 + area.bottom, 8 + area.right)),
+          "the content inset and the safe area add up");
+    scroll.contentInset = UIEdgeInsetsZero;
+    [scroll removeFromSuperview];
+
     UIView *loose = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     expect(loose, UIEdgeInsetsZero, "a view with no superview and no controller is not inset");
 

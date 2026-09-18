@@ -154,6 +154,70 @@
       "status": "implemented",
       "facts": "facts/UIKit/UIContentSizeCategoryComparison.md",
       "source": "the host's UIKit: the style is the string UICTFontTextStyleTitle0, which UIFont+TextStyles.m already answers at 34 points"
+    },
+    {
+      "api": "UIScrollView.adjustedContentInset",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "computed on every read instead of stored, and the controller's content scroll view mark of step three does not exist on this release",
+      "effect": "Automatic and ScrollableAxes behave the same way, since the mark that would add the vertical edges back is never set",
+      "facts": "facts/UIKit/UIScrollViewAdjustedContentInset.md",
+      "source": "UIKit of iOS 11.0 arm64, -[UIScrollView adjustedContentInset] at 0x18a2a8320 and -_edgesApplyingSafeAreaInsetsToContentInset at 0x18a2a97f0"
+    },
+    {
+      "api": "UIScrollView.contentInsetAdjustmentBehavior",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIScrollViewAdjustedContentInset.md",
+      "source": "UIKit of iOS 11.0 arm64, getter at 0x18a29e2ec and setter at 0x18a29e234"
+    },
+    {
+      "api": "-[UIScrollView adjustedContentInsetDidChange]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "called from the moment the adjusted inset changes, which the port cannot see without replacing UIKit's layout",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly; an override is never called",
+      "facts": "facts/UIKit/UIScrollViewAdjustedContentInset.md",
+      "source": "UIKit of iOS 11.0 arm64, -[UIScrollView _notifyAdjustedContentInsetDidChange] at 0x18a29e574"
+    },
+    {
+      "api": "-[UIScrollViewDelegate scrollViewDidChangeAdjustedContentInset:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the delegate is told from the same moment of change, which the port never reaches",
+      "effect": "the selector is never sent, so a delegate that implements it is simply not called",
+      "facts": "facts/UIKit/UIScrollViewAdjustedContentInset.md",
+      "source": "UIKit of iOS 11.0 arm64, reached from -[UIScrollView _notifyAdjustedContentInsetDidChange] at 0x18a29e574"
+    },
+    {
+      "api": "UIViewController.systemMinimumLayoutMargins",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no system minimum layout margins: nothing in it produces such a value, so any answer would be invented rather than read",
+      "effect": "the property is not declared, so respondsToSelector: answers honestly; layout that wants a minimum has to choose one itself",
+      "facts": "facts/UIKit/UIViewControllerSystemMinimumLayoutMargins.md",
+      "source": "UIKit of iOS 11.0 arm64, -[UIViewController systemMinimumLayoutMargins] at 0x18a329698"
+    },
+    {
+      "api": "UIViewController.viewRespectsSystemMinimumLayoutMargins",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "there is no system minimum on this release for a controller to respect or ignore",
+      "effect": "the property is not declared, so respondsToSelector: answers honestly",
+      "facts": "facts/UIKit/UIViewControllerSystemMinimumLayoutMargins.md",
+      "source": "UIKit of iOS 11.0 arm64, -[UIViewController viewRespectsSystemMinimumLayoutMargins] at 0x18a30ee90"
     }
   ]
 }
