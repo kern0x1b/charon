@@ -27,12 +27,12 @@ release can: it fills one pixel of a device-grey bitmap with the colour and read
 difference from the system's answer is that byte's rounding - at most 1/255, and the test holds it to
 that. The alpha is multiplied by 0.8: an opaque colour dims to 0.8, a colour at 0.5 to 0.4.
 
-## The one number that is not read from a release
+## The colour a view answers when nothing sets one
 
-The colour a view answers when nothing above it sets one is `(0, 122/255, 1)`, the blue of iOS 7, and
-that number is the only thing in this file that is not read from an implementation. The host cannot give
-it: Mac Catalyst answers the Mac's own accent colour, `(0, 0.533, 1)` on the machine this was measured on,
-and so does `+[UIColor systemBlueColor]` there. iOS 7's own UIKit does not carry it as a literal either -
-neither the float nor the double form of 122/255 appears anywhere in its armv7s image, so it is built
-rather than stored. It is written down here so that nobody reads the number back out of our code as
-though it had been measured.
+It is the system blue, `(0, 122/255, 1)`, and the number is read from UIKit: `122/255` is a `double`
+literal in the UIKitCore of iOS 12.0 arm64 at `0x1ad730c78`, in the same constant pool as the other
+components of [the system colours](UIColorSystemColors.md), and the pair `(122, 255)` is carried whole by
+VectorKit of that release. The host is no help here - under Mac Catalyst both the default tint and
+`+systemBlueColor` answer the Mac's accent colour, `(0, 0.533, 1)` on the machine this was measured on -
+and iOS 7's own UIKit carries the number in neither float nor double form, so it builds the colour rather
+than storing it. That is why the later release is the one read.
