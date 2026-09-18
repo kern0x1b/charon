@@ -73,6 +73,8 @@ macOS tool. What each of its tests holds the backport to:
   from -1 to 1, the horizontal type maps -1 to the minimum relative value and the
   vertical type maps a downward tilt to it, a group adds the values of its
   effects, and the view applies the result to its layer.
+- `sizes_test.m`: every content size category of the backport against the string
+  the system's own constant holds, and that no two of them are the same string.
 - `tint_test.m`: iOS 7 states that `-tintColor` returns the first colour set in
   the superview chain, that a dimmed adjustment mode greys the colour it returns,
   and that `-tintColorDidChange` reaches the views that inherit the colour.

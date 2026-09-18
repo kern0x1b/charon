@@ -635,6 +635,110 @@
     "effect": "the class is not there: NSClassFromString answers nil and a compile time reference crashes on first use"
   },
   {
+    "api": "UIContentSizeCategoryAccessibilityExtraExtraExtraLarge",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIContentSizeCategory.md",
+    "source": "UIKit 9.3.5 armv7 and the host's own UIKit"
+  },
+  {
+    "api": "UIContentSizeCategoryAccessibilityExtraExtraLarge",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIContentSizeCategory.md",
+    "source": "UIKit 9.3.5 armv7 and the host's own UIKit"
+  },
+  {
+    "api": "UIContentSizeCategoryAccessibilityExtraLarge",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIContentSizeCategory.md",
+    "source": "UIKit 9.3.5 armv7 and the host's own UIKit"
+  },
+  {
+    "api": "UIContentSizeCategoryAccessibilityLarge",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIContentSizeCategory.md",
+    "source": "UIKit 9.3.5 armv7 and the host's own UIKit"
+  },
+  {
+    "api": "UIContentSizeCategoryAccessibilityMedium",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIContentSizeCategory.md",
+    "source": "UIKit 9.3.5 armv7 and the host's own UIKit"
+  },
+  {
+    "api": "UIContentSizeCategoryExtraExtraExtraLarge",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIContentSizeCategory.md",
+    "source": "UIKit 9.3.5 armv7 and the host's own UIKit"
+  },
+  {
+    "api": "UIContentSizeCategoryExtraExtraLarge",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIContentSizeCategory.md",
+    "source": "UIKit 9.3.5 armv7 and the host's own UIKit"
+  },
+  {
+    "api": "UIContentSizeCategoryExtraLarge",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIContentSizeCategory.md",
+    "source": "UIKit 9.3.5 armv7 and the host's own UIKit"
+  },
+  {
+    "api": "UIContentSizeCategoryExtraSmall",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIContentSizeCategory.md",
+    "source": "UIKit 9.3.5 armv7 and the host's own UIKit"
+  },
+  {
+    "api": "UIContentSizeCategoryLarge",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIContentSizeCategory.md",
+    "source": "UIKit 9.3.5 armv7 and the host's own UIKit"
+  },
+  {
+    "api": "UIContentSizeCategoryMedium",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIContentSizeCategory.md",
+    "source": "UIKit 9.3.5 armv7 and the host's own UIKit"
+  },
+  {
+    "api": "UIContentSizeCategorySmall",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIContentSizeCategory.md",
+    "source": "UIKit 9.3.5 armv7 and the host's own UIKit"
+  },
+  {
+    "api": "UIContentSizeCategoryUnspecified",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIContentSizeCategory.md",
+    "source": "the host's own UIKit; iOS 9.3.5 has neither the symbol nor the string"
+  },
+  {
     "api": "UIFontTextStyleBody",
     "kind": "constant",
     "introduced": "7.0",
