@@ -231,6 +231,11 @@ function failures(opt)
         table.insert(found, "a method the backports add without an entry in the registry must be refused naming it: " .. tostring(errors))
     end
     carried.members["-[UIView tintAdjustmentMode]"] = nil
+    carried.members["-[UIStackView setSpacing:]"] = true
+    if fixtures.refusal(function () backports.check_registry(folder, carried) end) then
+        table.insert(found, "a method of a class the registry describes needs no entry of its own: the class carries its surface")
+    end
+    carried.members["-[UIStackView setSpacing:]"] = nil
     carried.classes.UIStackView = nil
     errors = fixtures.refusal(function () backports.check_registry(folder, carried) end)
     if not errors or not errors:find("UIStackView", 1, true) then
