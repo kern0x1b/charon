@@ -245,7 +245,9 @@
     "introduced": "11.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIStackView.md",
-    "source": "UIKit of iOS 11.0 arm64 and the host's own UIKit, measured side by side"
+    "source": "UIKit of iOS 11.0 arm64 and the host's own UIKit, measured side by side",
+    "maximum": "9.0",
+    "effect": "from 9.0 the release lays out its own stack view and the two methods are not there: respondsToSelector: answers NO"
   },
   {
     "api": "-[UIStackView setCustomSpacing:afterView:]",
@@ -253,7 +255,9 @@
     "introduced": "11.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIStackView.md",
-    "source": "UIKit of iOS 11.0 arm64 and the host's own UIKit, measured side by side"
+    "source": "UIKit of iOS 11.0 arm64 and the host's own UIKit, measured side by side",
+    "maximum": "9.0",
+    "effect": "from 9.0 the release lays out its own stack view and the two methods are not there: respondsToSelector: answers NO"
   },
   {
     "api": "-[UITabBar barTintColor]",

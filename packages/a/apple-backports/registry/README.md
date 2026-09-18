@@ -43,7 +43,11 @@ entry point a backport calls, the release of the API that needed it. `removed` n
 release that took the API away, so that what modern iOS no longer has is not
 backported as though it were current. `minimum` is the release below which the
 entry becomes `absent`, which is how a release older than the one a backport
-needs is written down once instead of once per release. `facts` points at the
+needs is written down once instead of once per release. `maximum` is its mirror,
+the release from which the entry becomes `absent` although the release itself
+does not have the API either: a member of a class the backports implement
+themselves, whose behaviour lives inside that implementation, is gone once the
+release carries the class and lays it out itself. `facts` points at the
 file the behaviour was read into. It is required of an entry that claims
 behaviour - one whose API the package itself carries - and of every `ignored`
 entry; a record that only says where an API begins or ends, for a symbol this
