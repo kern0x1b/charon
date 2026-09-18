@@ -445,6 +445,24 @@ static void run_url(Foundation2Recorder *recorder)
     for (NSString *key in foundation2_implementation.ubiquityKeys)
         [keys addObject:key];
     [recorder record:keys named:@"url.ubiquityKeys"];
+
+    NSFileManager *manager = [NSFileManager defaultManager];
+    NSString *root = [NSTemporaryDirectory() stringByAppendingPathComponent:@"charon-url-relative"];
+    [manager removeItemAtPath:root error:NULL];
+    [manager createDirectoryAtPath:[root stringByAppendingPathComponent:@"folder"] withIntermediateDirectories:YES attributes:nil error:NULL];
+    [manager createDirectoryAtPath:[root stringByAppendingPathComponent:@"folder/inner"] withIntermediateDirectories:YES attributes:nil error:NULL];
+    [manager createDirectoryAtPath:[root stringByAppendingPathComponent:@"~/inner"] withIntermediateDirectories:YES attributes:nil error:NULL];
+    [@"x" writeToFile:[root stringByAppendingPathComponent:@"file.txt"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+    [manager createSymbolicLinkAtPath:[root stringByAppendingPathComponent:@"link"] withDestinationPath:@"folder" error:NULL];
+    [manager createSymbolicLinkAtPath:[root stringByAppendingPathComponent:@"broken"] withDestinationPath:@"nowhere" error:NULL];
+    NSURL *anchor = [NSURL fileURLWithPath:root isDirectory:YES];
+    NSMutableArray *relatives = [NSMutableArray array];
+    for (NSString *name in @[@"folder", @"file.txt", @"missing", @"folder/", @"link", @"link/inner", @"broken", @"~/inner", @"folder/../folder"]) {
+        NSURL *made = ((id (*)(id, SEL, id, id))objc_msgSend)([NSURL alloc], sel(@selector(initFileURLWithPath:relativeToURL:)), name, anchor);
+        [relatives addObject:[NSString stringWithFormat:@"%@|%@", made.relativeString ?: @"<nil>", made.hasDirectoryPath ? @"directory" : @"file"]];
+    }
+    [recorder record:relatives named:@"url.relativeDirectory"];
+    [manager removeItemAtPath:root error:NULL];
 }
 
 static NSOperatingSystemVersion system_version(void)
@@ -966,6 +984,11 @@ static void run_relative_urls(Foundation2Recorder *recorder)
                            @(((BOOL (*)(id, SEL))objc_msgSend)(relative, sel(@selector(hasDirectoryPath))))]
                    named:[NSString stringWithFormat:@"url.dataRepresentation.%lu", (unsigned long)index]];
     }
+    unsigned char latin[] = {'h', 't', 't', 'p', ':', '/', '/', 'h', '/', 0xE4, 0xFF};
+    NSData *raw = [NSData dataWithBytes:latin length:sizeof latin];
+    NSURL *fromRaw = ((id (*)(id, SEL, id, id))objc_msgSend)([NSURL class], sel(@selector(URLWithDataRepresentation:relativeToURL:)), raw, nil);
+    NSData *rawBack = ((id (*)(id, SEL))objc_msgSend)(fromRaw, sel(@selector(dataRepresentation)));
+    [recorder record:@[url_text(fromRaw, nil), rawBack ? hex(rawBack) : @"<nil>"] named:@"url.dataRepresentation.latin1"];
 }
 
 
