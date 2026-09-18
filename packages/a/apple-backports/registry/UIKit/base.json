@@ -630,6 +630,33 @@
     "status": "implemented"
   },
   {
+    "api": "UIAccessibilitySpeechAttributeLanguage",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIAccessibilitySpeechAttributes.md",
+    "source": "the UIKit of the host's Mac Catalyst, asked for the value of each key",
+    "effect": "the key carries the string UIKit gives it, so an attributed string can be built with it; the release's VoiceOver reads the language a run is spoken in from no attribute and speaks the text as it would without one"
+  },
+  {
+    "api": "UIAccessibilitySpeechAttributePitch",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIAccessibilitySpeechAttributes.md",
+    "source": "the UIKit of the host's Mac Catalyst, asked for the value of each key",
+    "effect": "the key carries the string UIKit gives it, so an attributed string can be built with it; the release's VoiceOver reads the pitch a run is spoken at from no attribute and speaks the text as it would without one"
+  },
+  {
+    "api": "UIAccessibilitySpeechAttributePunctuation",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIAccessibilitySpeechAttributes.md",
+    "source": "the UIKit of the host's Mac Catalyst, asked for the value of each key",
+    "effect": "the key carries the string UIKit gives it, so an attributed string can be built with it; the release's VoiceOver reads whether punctuation is spoken from no attribute and speaks the text as it would without one"
+  },
+  {
     "api": "UIAlertAction",
     "kind": "class",
     "introduced": "8.0",
