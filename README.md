@@ -680,6 +680,9 @@ something else with it, and nothing of ours is in the way, as with an
 enumeration option the compiler writes into a system call; it names what comes
 out instead. `NSMeasurementFormatter` is absent for now: formatting a
 measurement needs private ICU entry points iOS 6's libicucore does not export.
+What the package carries range by range, what it carries with a named
+difference and what it refuses with the reason, is
+`packages/a/apple-backports/README.md`.
 
 The build reads the registry against what the libraries really define - the
 classes they carry, from their exports and their class lists, and the selectors
