@@ -2,6 +2,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
 #import <objc/message.h>
+#include <math.h>
 
 static int checks;
 static int failures;
@@ -28,6 +29,18 @@ static void same_double(double ours, double theirs, NSString *what)
     checks++;
     if (ours != theirs)
         fail(@"%@: ours %.17g, UIKit %.17g", what, ours, theirs);
+}
+
+/* A settling duration is not held to the last bit: UIKit computes it in the width
+   of a CGFloat, which is a float where this package is built and a double on the
+   host, so the two round differently in the ninth digit. Everything else here is
+   compared exactly. */
+static void near_double(double ours, double theirs, NSString *what)
+{
+    checks++;
+    if (fabs(ours - theirs) <= fmax(1e-9, fabs(theirs) * 1e-7))
+        return;
+    fail(@"%@: ours %.17g, UIKit %.17g", what, ours, theirs);
 }
 
 static void same_point(CGPoint ours, CGPoint theirs, NSString *what)
@@ -235,11 +248,52 @@ static void compare_spring(void)
     same_description(usOnly, themOnly, @"a spring made from a ratio alone");
 }
 
+
+/* How long the spring takes to settle, over a grid wide enough to reach both
+   branches of the formula and both ends of the damping ratio's clamp. */
+static void compare_settling(void)
+{
+    Class theirs = [UISpringTimingParameters class], mine = ours_of(@"UISpringTimingParameters");
+    if (!mine)
+        return;
+    const CGFloat masses[] = {0.5, 1, 3, 10}, stiffnesses[] = {40, 100, 1000, 5000},
+                  dampings[] = {1, 10, 100, 500, 2000};
+    const CGVector velocities[] = {{0, 0}, {1, 0}, {10, 0}, {0, 10}, {6, 8}, {-10, 0}};
+    for (unsigned a = 0; a < 4; a++)
+        for (unsigned b = 0; b < 4; b++)
+            for (unsigned c = 0; c < 5; c++)
+                for (unsigned d = 0; d < 6; d++) {
+                    UISpringTimingParameters *them = [[theirs alloc] initWithMass:masses[a] stiffness:stiffnesses[b]
+                                                                          damping:dampings[c] initialVelocity:velocities[d]];
+                    id us = ((id (*)(id, SEL, CGFloat, CGFloat, CGFloat, CGVector))objc_msgSend)([mine alloc],
+                                @selector(initWithMass:stiffness:damping:initialVelocity:),
+                                masses[a], stiffnesses[b], dampings[c], velocities[d]);
+                    double ourSettling = ((double (*)(id, SEL))objc_msgSend)(us, @selector(settlingDuration));
+                    double theirSettling = ((double (*)(id, SEL))objc_msgSend)(them, @selector(settlingDuration));
+                    checks++;
+                    if (fabs(ourSettling - theirSettling) > fmax(1e-9, fabs(theirSettling) * 1e-7))
+                        fail(@"settling of %g/%g/%g at velocity (%g,%g): ours %.9g, UIKit %.9g",
+                             masses[a], stiffnesses[b], dampings[c], velocities[d].dx, velocities[d].dy,
+                             ourSettling, theirSettling);
+                }
+    /* A spring given only a damping ratio carries no mass, stiffness or damping,
+       and settles in no time at all rather than in an infinity. */
+    UISpringTimingParameters *themRatio = [[theirs alloc] initWithDampingRatio:0.5];
+    id usRatio = ((id (*)(id, SEL, CGFloat))objc_msgSend)([mine alloc], @selector(initWithDampingRatio:), (CGFloat)0.5);
+    near_double(((double (*)(id, SEL))objc_msgSend)(usRatio, @selector(settlingDuration)),
+                ((double (*)(id, SEL))objc_msgSend)(themRatio, @selector(settlingDuration)),
+                @"the settling of a spring made from a ratio alone");
+    near_double(((double (*)(id, SEL))objc_msgSend)([[mine alloc] init], @selector(settlingDuration)),
+                ((double (*)(id, SEL))objc_msgSend)([[theirs alloc] init], @selector(settlingDuration)),
+                @"the settling of the default spring");
+}
+
 int main(void)
 {
     @autoreleasepool {
         compare_cubic();
         compare_spring();
+        compare_settling();
         printf("%d checks, %d failures\n", checks, failures);
     }
     return failures;

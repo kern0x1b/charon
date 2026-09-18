@@ -27,4 +27,5 @@ enum {
 - (CGFloat)stiffness;
 - (CGFloat)damping;
 - (CGFloat)dampingRatio;
+- (NSTimeInterval)settlingDuration;
 @end

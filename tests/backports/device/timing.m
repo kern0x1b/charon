@@ -3,6 +3,11 @@
 #include <dlfcn.h>
 #import "check.h"
 
+/* Private, so no header declares it. */
+@interface UISpringTimingParameters (CharonSettling)
+- (NSTimeInterval)settlingDuration;
+@end
+
 static NSString *image_of(Class cls)
 {
     Dl_info info;
@@ -81,6 +86,24 @@ int main(void)
         CHECK([ratioBack.description isEqual:ratio.description], "a spring survives an archive");
         CHECK([[ratio copy] description] != nil && [[[ratio copy] description] isEqual:ratio.description],
               "a spring survives a copy");
+
+        UISpringTimingParameters *settling =
+            [[UISpringTimingParameters alloc] initWithMass:3 stiffness:1000 damping:500
+                                           initialVelocity:CGVectorMake(0, 0)];
+        CHECK(close_enough((CGFloat)[settling settlingDuration], 0.505823782),
+              "the default spring settles in about half a second");
+        UISpringTimingParameters *loose =
+            [[UISpringTimingParameters alloc] initWithMass:0.5 stiffness:40 damping:1
+                                           initialVelocity:CGVectorMake(0, 0)];
+        CHECK(fabs([loose settlingDuration] - 7.01437292) < 1e-4,
+              "a barely damped spring settles in about seven seconds");
+        UISpringTimingParameters *thrown =
+            [[UISpringTimingParameters alloc] initWithMass:0.5 stiffness:40 damping:1
+                                           initialVelocity:CGVectorMake(6, 8)];
+        CHECK(fabs([thrown settlingDuration] - 7.4886077) < 1e-4,
+              "the settling takes the larger of the two velocity components, not their length");
+        CHECK([[[UISpringTimingParameters alloc] initWithDampingRatio:0.5] settlingDuration] == 0,
+              "a spring made from a ratio alone settles in no time");
 
         printf("%d checks, %d failures\n", charon_checks, charon_failures);
         return charon_failures;

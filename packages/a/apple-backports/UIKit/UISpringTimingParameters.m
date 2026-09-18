@@ -1,4 +1,5 @@
 #import "CharonTimingParameters.h"
+#include <math.h>
 
 /* A CGFloat is a float on the architectures this is built for and a double on the
    64-bit ones, and the archive carries whichever it is, as Apple's own does. */
@@ -9,6 +10,33 @@
 #define charon_encode_scalar(coder, value, key) [(coder) encodeFloat:(value) forKey:(key)]
 #define charon_decode_scalar(coder, key) ((CGFloat)[(coder) decodeFloatForKey:(key)])
 #endif
+
+
+/* How long the spring takes to come to rest, for one component of the initial
+   velocity. Read off +[UIView _durationOfSpringAnimationWithMass:stiffness:damping:velocity:],
+   which iOS 6 has not got. The damping ratio is clamped to at most one, so a
+   spring damped past critical settles as a critically damped one does. */
+static double charon_settling(double mass, double stiffness, double damping, double velocity)
+{
+    double zeta = damping / (2 * sqrt(mass * stiffness));
+    zeta = MIN(MAX(zeta, 0.0), 1.0);
+    if (zeta == 0)
+        return INFINITY;
+    double frequency = sqrt(stiffness / mass);
+    if (zeta < 1) {
+        double decay = frequency * zeta, damped = frequency * sqrt(1 - zeta * zeta);
+        return MAX((-log(0.001) + log(1 + fabs((decay - velocity) / damped))) / decay, 0.0);
+    }
+    double reach = frequency - velocity;
+    if (reach == 0)
+        return NAN;
+    double logarithm = log(fabs(0.001 * frequency * exp(-frequency / reach) / reach));
+    double amplitude = -1.0 - logarithm;
+    double fitted = 1.0 + (0.3361 * sqrt(amplitude / 2.0))
+                        / (1.0 - 0.0042 * amplitude * exp(-0.0201 * sqrt(amplitude)));
+    double corrected = logarithm + (-5.9506097239272915) * (1.0 - 1.0 / fitted);
+    return -(frequency + reach * corrected) / (frequency * reach);
+}
 
 @implementation UISpringTimingParameters {
 @private
@@ -152,6 +180,15 @@
 {
     _damping = damping;
     _implicitDuration = YES;
+}
+
+- (NSTimeInterval)settlingDuration
+{
+    if (!_implicitDuration)
+        return 0;
+    double along = charon_settling(_mass, _stiffness, _damping, _initialVelocity.dx);
+    double across = charon_settling(_mass, _stiffness, _damping, _initialVelocity.dy);
+    return MAX(isnan(along) ? 0 : along, isnan(across) ? 0 : across);
 }
 
 - (id)copyWithZone:(NSZone *)zone
