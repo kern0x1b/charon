@@ -328,6 +328,87 @@
       "effect": "a baseline under the baseline of a view that carries no font gets the plain eight points where UIKit measures 22; every other combination matches the host to the last digit",
       "facts": "facts/UIKit/NSLayoutAnchorSystemSpacing.md",
       "source": "UIKit of iOS 11.0 arm64, _UIViewBaselineToBaselineSpacing at 0x18aa9eda8, and the differential test against the host's UIKit"
+    },
+    {
+      "api": "UIGestureRecognizer.name",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "nothing in the release acts on the name, so carrying it in an associated object is the whole behaviour",
+      "effect": "the name reads back as it was set, copied the way Apple copies it; it does not appear in -description, which belongs to the release",
+      "facts": "facts/UIKit/UIGestureRecognizerName.md",
+      "source": "UIKit of iOS 11.0 arm64, setter at 0x18a63db60 (objc_setProperty_nonatomic_copy) and getter at 0x18a63db50"
+    },
+    {
+      "api": "UIControlContentHorizontalAlignmentLeading",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the alignment has to be understood by UIControl itself while it lays its content out, and this release knows only left and right",
+      "effect": "the constant is not declared; mapping leading onto left would be quietly wrong wherever the writing direction is right to left, which this release does have, so nothing is mapped",
+      "source": "SDK 16.4, UIControl.h"
+    },
+    {
+      "api": "UIControlContentHorizontalAlignmentTrailing",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the same: the control lays out by left and right, and trailing is not either of them",
+      "effect": "the constant is not declared; mapping trailing onto right would be quietly wrong in a right to left layout",
+      "source": "SDK 16.4, UIControl.h"
+    },
+    {
+      "api": "UITextInputTraits.smartQuotesType",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "smart quotes are substituted by the keyboard, and this release's keyboard knows no such rule",
+      "effect": "the property is not declared, so respondsToSelector: answers honestly; text is typed with the quotes the keyboard gives",
+      "source": "SDK 16.4, UITextInputTraits.h"
+    },
+    {
+      "api": "UITextInputTraits.smartDashesType",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the dash substitution belongs to the keyboard, which does not have it here",
+      "effect": "the property is not declared, so respondsToSelector: answers honestly",
+      "source": "SDK 16.4, UITextInputTraits.h"
+    },
+    {
+      "api": "UITextInputTraits.smartInsertDeleteType",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "inserting and deleting spaces around a selection is the keyboard's behaviour, absent in this release",
+      "effect": "the property is not declared, so respondsToSelector: answers honestly",
+      "source": "SDK 16.4, UITextInputTraits.h"
+    },
+    {
+      "api": "UIBarItem.largeContentSizeImage",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the image is shown only where an accessibility content size category is in force, and this release has no such category",
+      "effect": "the property is not declared, so respondsToSelector: answers honestly; there is nothing that would draw the image",
+      "source": "SDK 16.4, UIBarItem.h"
+    },
+    {
+      "api": "UIBarItem.largeContentSizeImageInsets",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the insets belong to an image this release never draws",
+      "effect": "the property is not declared, so respondsToSelector: answers honestly",
+      "source": "SDK 16.4, UIBarItem.h"
     }
   ]
 }
