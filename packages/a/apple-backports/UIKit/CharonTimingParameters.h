@@ -29,3 +29,13 @@ enum {
 - (CGFloat)dampingRatio;
 - (NSTimeInterval)settlingDuration;
 @end
+
+/* From UIView+SpringAnimation.m, where the spring was solved and held to a real
+   CASpringAnimation. */
+double charon_spring_frequency(double duration, double dampingRatio, double velocity);
+double charon_spring_progress(double omega, double dampingRatio, double velocity, double time);
+
+@interface UIViewPropertyAnimator (CharonAnimator)
+- (NSTimeInterval)internalDuration;
+- (NSString *)_stateAsString;
+@end

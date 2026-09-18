@@ -171,10 +171,11 @@
   "kind": "class",
   "introduced": "10.0",
   "minimum": "6.0",
-  "status": "absent",
-  "reason": "the next batch; the timing parameters it takes are carried here first, and nothing about it is refused - the binary shows no daemon, no render server and no new QuartzCore behind it",
-  "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ"
+  "status": "implemented",
+  "reason": "the blocks run through UIView's own animation and, for an interruptible animator, are paused and scrubbed from there, which is what UIKit does; only the animations this animator added are held, by layer and key, so nothing else on those layers is stopped",
+  "effect": "the behaviour is held to on an emulated iPhone3,1 running iOS 6.0; what scrubbing costs on an A5 is not measured yet, and -charon_setFraction: is the one method that may change for it",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ",
+  "facts": "facts/UIKit/UIViewPropertyAnimator.md"
  },
  {
   "api": "-[NSCoder encodeCGVector:forKey:]",
