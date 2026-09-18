@@ -212,6 +212,7 @@ extern NSAttributedStringKey const CharonHostUIAccessibilityTextAttributeHeading
 extern NSAttributedStringKey const CharonHostUIAccessibilityTextAttributeCustom;
 extern UIImagePickerControllerInfoKey const CharonHostUIImagePickerControllerImageURL;
 extern UIActivityType const CharonHostUIActivityTypeMarkupAsPDF;
+extern NSNotificationName const CharonHostUIAccessibilityVoiceOverStatusDidChangeNotification;
 
 static void keys_of_the_port(void)
 {
@@ -227,6 +228,10 @@ static void keys_of_the_port(void)
           "the image picker's URL key is the string UIKit has");
     CHECK([CharonHostUIActivityTypeMarkupAsPDF isEqual:UIActivityTypeMarkupAsPDF],
           "the markup as PDF activity is the identifier UIKit has");
+    CHECK([CharonHostUIAccessibilityVoiceOverStatusDidChangeNotification isEqual:UIAccessibilityVoiceOverStatusDidChangeNotification],
+          "the VoiceOver notification is the name UIKit has");
+    CHECK([CharonHostUIAccessibilityVoiceOverStatusDidChangeNotification isEqual:UIAccessibilityVoiceOverStatusChanged],
+          "and it is the same name as the one it replaced, which is why it works on a release that only has the old one");
 }
 
 int main(void)

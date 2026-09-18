@@ -101,9 +101,10 @@ runs one script against UIKit's own implementation and the same script against
 the port under its host names, and compares every answer - which interaction is
 told what and when, the order of the list, the copy the getter hands out, the
 three exceptions the current implementation raises for a `nil` argument, and
-how an attributed label and a plain one stand for one value. The six loose
-constants the port carries for this range are compared with UIKit's own
-strings, values included.
+how an attributed label and a plain one stand for one value. The loose constants the port carries for this range are compared with UIKit's
+own strings, values included, and the VoiceOver notification is compared with
+the deprecated name it replaced as well - being the same string is the whole
+reason it works here.
 
 `host/batchupdates/run.sh` runs the same sequence of table updates twice, once
 through the system's `-performBatchUpdates:completion:` and once through the

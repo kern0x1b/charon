@@ -7,7 +7,7 @@ build=${INTERACTIONS_BUILD:-${TMPDIR:-/tmp}/charon-interactions-host}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 files="UIView+Interactions.m NSObject+AccessibilityAttributedStrings.m UIKitConstants11.m"
-constants="UIAccessibilitySpeechAttributeQueueAnnouncement UIAccessibilitySpeechAttributeIPANotation UIAccessibilityTextAttributeHeadingLevel UIAccessibilityTextAttributeCustom UIImagePickerControllerImageURL UIActivityTypeMarkupAsPDF"
+constants="UIAccessibilitySpeechAttributeQueueAnnouncement UIAccessibilitySpeechAttributeIPANotation UIAccessibilityTextAttributeHeadingLevel UIAccessibilityTextAttributeCustom UIImagePickerControllerImageURL UIActivityTypeMarkupAsPDF UIAccessibilityVoiceOverStatusDidChangeNotification"
 frameworks="-framework UIKit -framework Foundation -framework CoreGraphics"
 rm -rf "$build"
 mkdir -p "$build/plain" "$build/ours"
