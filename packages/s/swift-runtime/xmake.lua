@@ -16,22 +16,29 @@ package("swift-runtime")
     -- The libraries, in the order they are built: each one's modules are what the next ones compile against. The C library's
     -- Swift overlay comes from swift-6.2-RELEASE, the last release whose sources carry it, because Synchronization and
     -- Observation import Darwin and the SDK has only an interface for arm64.
-    local libraries = {"swiftCore", "swiftSwiftOnoneSupport", "swift_Concurrency", "swiftDarwin", "swiftSynchronization",
+    local libraries = {"swiftCore", "swiftSwiftOnoneSupport", "swift_Concurrency", "swiftDarwin", "swiftObjectiveC",
+                       "swiftSynchronization",
                        "swift_RegexParser", "swift_StringProcessing", "swiftRegexBuilder", "swiftObservation"}
 
     -- What every image of the runtime and of the port renames, because the release the port is built for either does not
     -- have the call or gives it a narrower meaning.
     local renamed = {"clock_gettime", "clock_getres", "dispatch_get_global_queue"}
 
-    -- The C library's Swift overlay: swift-6.2-RELEASE is the last release whose sources carry it (the build of the SDK
-    -- overlays on Apple platforms was removed in 15345ef2d5), and the SDK ships only an arm64 interface of the module.
-    local overlay = {tag = "swift-6.2-RELEASE", commit = "1ff1cc1170617ab23ab74aa8b741c8daca1903f6",
-                     url = "https://github.com/swiftlang/swift.git"}
+    -- The overlays of the system's own frameworks, each taken from the last release whose sources carry it. The C
+    -- library's went in swift-6.2 (the build of the SDK overlays on Apple platforms was removed in 15345ef2d5) and the
+    -- SDK ships only an arm64 interface of that module; the overlays of Objective-C and the frameworks above it went
+    -- earlier, and swift-5.3.3 is the last release that has them.
+    local sources = {
+        {name = "platform", tag = "swift-6.2-RELEASE", commit = "1ff1cc1170617ab23ab74aa8b741c8daca1903f6",
+         url = "https://github.com/swiftlang/swift.git", sparse = {"/stdlib/public/Platform/", "/LICENSE.txt"}},
+        {name = "overlays", tag = "swift-5.3.3-RELEASE", commit = "a51d2fefc70a41cf765853739c5037c182bdaad9",
+         url = "https://github.com/swiftlang/swift.git",
+         sparse = {"/stdlib/public/Darwin/ObjectiveC/", "/stdlib/public/SwiftShims/ObjectiveCOverlayShims.h", "/LICENSE.txt"}}
+    }
 
     on_download(function (package, opt)
         local checkout = import("checkout", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
-        checkout.pinned(opt.sourcedir, {{url = overlay.url, tag = overlay.tag, commit = overlay.commit,
-                                         sparse = {"/stdlib/public/Platform/", "/LICENSE.txt"}}})
+        checkout.pinned(opt.sourcedir, sources)
     end)
 
     local digests = {"xmake.lua=" .. hash.sha256(path.join(os.scriptdir(), "xmake.lua"))}
@@ -216,7 +223,7 @@ package("swift-runtime")
 
         -- The C library's overlay, which the SDK has only as an interface for another architecture. It is built the way the
         -- release that still carried it did: the generated sources, the platform sources and the error types.
-        local platform_source = path.join(path.absolute("stdlib"), "public", "Platform")
+        local platform_source = path.join(path.absolute("platform"), "stdlib", "public", "Platform")
         local generated = path.absolute(path.join("build", "overlay"))
         os.mkdir(generated)
         local overlay_sources = {}
@@ -250,6 +257,35 @@ package("swift-runtime")
         offer(path.join(install, "Darwin.swiftmodule"))
         offer(path.join(install, "libswiftDarwin.dylib"))
 
+        -- The overlay of Objective-C: what a port needs to write a selector, to read a BOOL as a Bool and to hold an
+        -- autorelease pool. It is the release's own source, built against the C library's overlay as its own build did.
+        -- Its shim goes in beside the shims the standard library installed, because those are the ones every build here
+        -- reads and the ones a port is given; the standard library installs a list of its own and would not carry it.
+        local installed_shims = path.join(install, "shims")
+        os.vcp(path.join(path.absolute("overlays"), "stdlib", "public", "SwiftShims", "ObjectiveCOverlayShims.h"),
+               installed_shims .. "/")
+        local shim_modules = path.join(installed_shims, "module.modulemap")
+        if not io.readfile(shim_modules):find("_SwiftObjectiveCOverlayShims", 1, true) then
+            io.writefile(shim_modules, io.readfile(shim_modules) ..
+                         "\nmodule _SwiftObjectiveCOverlayShims {\n  header \"ObjectiveCOverlayShims.h\"\n}\n")
+        end
+        local objc_module = path.join(install, "ObjectiveC.swiftmodule")
+        os.mkdir(objc_module)
+        local objc_flags = table.join({"-target", triple, "-resource-dir", resources, "-module-name", "ObjectiveC",
+                                       "-parse-as-library", "-swift-version", "5", "-O", "-wmo",
+                                       "-Xfrontend", "-disable-implicit-concurrency-module-import",
+                                       "-Xfrontend", "-disable-implicit-string-processing-module-import"}, use_ld,
+                                      runtime_flags, swift.availability(source))
+        os.vrunv(swiftc, table.join(objc_flags, {"-emit-module", "-emit-module-path",
+                 path.join(objc_module, package:arch() .. "-apple-ios.swiftmodule"),
+                 "-emit-object", "-module-link-name", "swiftObjectiveC", "-o", path.join(generated, "ObjectiveC.o"),
+                 path.join(path.absolute("overlays"), "stdlib", "public", "Darwin", "ObjectiveC", "ObjectiveC.swift")}))
+        os.vrunv(swiftc, table.join(objc_flags, {"-emit-library", "-o", path.join(install, "libswiftObjectiveC.dylib"),
+                 path.join(generated, "ObjectiveC.o"), "-Xlinker", "-install_name", "-Xlinker",
+                 "@rpath/libswiftObjectiveC.dylib", "-L" .. install, "-lswiftCore", "-lswiftDarwin"}))
+        offer(path.join(install, "ObjectiveC.swiftmodule"))
+        offer(path.join(install, "libswiftObjectiveC.dylib"))
+
         -- The supplemental libraries, each its own project, against the standard library built above.
         for _, library in ipairs({"Synchronization", "Observation", "StringProcessing"}) do
             configure(library:lower(), path.join(source, "Runtimes", "Supplemental", library),
@@ -278,7 +314,7 @@ package("swift-runtime")
             os.tryrm(path.join(install, entry))
             os.vcp(path.join(compiler:installdir("lib"), "swift", entry), path.join(install, entry))
         end
-        os.vcp(path.join(path.absolute("."), "LICENSE.txt"), package:installdir("licenses") .. "/")
+        os.vcp(path.join(path.absolute("platform"), "LICENSE.txt"), package:installdir("licenses") .. "/")
         os.tryrm(path.absolute("build"))
         os.tryrm(source)
     end)
