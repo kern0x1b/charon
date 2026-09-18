@@ -3,7 +3,7 @@
 @implementation UICubicTimingParameters {
 @private
     NSInteger _curve;
-    _UIViewCubicTimingFunction *_timingFunction;
+    CharonViewCubicTimingFunction *_timingFunction;
 }
 
 - (instancetype)init
@@ -28,7 +28,7 @@
 {
     if ((self = [super init])) {
         _curve = CharonCubicCurveControlPoints;
-        _timingFunction = [[_UIViewCubicTimingFunction alloc] initWithControlPoint1:point1 controlPoint2:point2];
+        _timingFunction = charon_cubic_timing_function(point1, point2);
     }
     return self;
 }
@@ -85,7 +85,7 @@
     _curve = curve;
 }
 
-- (_UIViewCubicTimingFunction *)timingFunction
+- (CharonViewCubicTimingFunction *)timingFunction
 {
     return _timingFunction;
 }
@@ -100,7 +100,7 @@
     return _timingFunction ? _timingFunction.controlPoint2 : CGPointZero;
 }
 
-- (_UIViewCubicTimingFunction *)effectiveTimingFunction
+- (CharonViewCubicTimingFunction *)effectiveTimingFunction
 {
     if (_timingFunction)
         return _timingFunction;
@@ -120,8 +120,7 @@
     float first[2] = {0, 0}, second[2] = {0, 0};
     [function getControlPointAtIndex:1 values:first];
     [function getControlPointAtIndex:2 values:second];
-    return [[_UIViewCubicTimingFunction alloc] initWithControlPoint1:CGPointMake(first[0], first[1])
-                                                      controlPoint2:CGPointMake(second[0], second[1])];
+    return charon_cubic_timing_function(CGPointMake(first[0], first[1]), CGPointMake(second[0], second[1]));
 }
 
 - (id)copyWithZone:(NSZone *)zone

@@ -25,9 +25,10 @@ int main(void)
         CHECK_EQUAL([NSUnitMass baseUnit].symbol, @"kg", "the base unit of mass is the kilogramme");
         CHECK_EQUAL([NSUnitTemperature baseUnit].symbol, @"K", "the base unit of temperature is the kelvin");
         CHECK([NSUnitLength meters] == [NSUnitLength meters], "a unit is a singleton");
-        CHECK_EQUAL([NSUnitLength micrometers].symbol, @"µm", "a symbol outside ASCII survives");
-        CHECK_EQUAL([NSUnitElectricResistance ohms].symbol, @"Ω", "the ohm keeps its sign");
-        CHECK_EQUAL([NSUnitArea squareKilometers].symbol, @"km²", "a squared symbol keeps its exponent");
+        CHECK_EQUAL([NSUnitLength micrometers].symbol, @"\u00b5m", "a symbol outside ASCII survives");
+        CHECK_EQUAL([NSUnitElectricResistance ohms].symbol, @"\u2126",
+                    "the ohm keeps the sign Apple uses, U+2126, not the Greek omega it is drawn like");
+        CHECK_EQUAL([NSUnitArea squareKilometers].symbol, @"km\u00b2", "a squared symbol keeps its exponent");
 
         CHECK(close_enough([[NSUnitLength miles].converter baseUnitValueFromValue:1], 1609.344),
               "a mile is 1609.344 metres");

@@ -9,6 +9,26 @@ It is carried under Apple's own name for the same reason as
 `NSUnitConverterReciprocal`: `UICubicTimingParameters` archives it as an object
 under the `timingFunction` key, so the class name is written into the archive,
 and an archive that cannot cross is not the same archive.
+## Carried under Apple's name, but only where there is none
+
+The class is private, so the framework exports no symbol for it. A band can drop
+and re-export an object whose symbols the release already exports; here there are
+none to match, so the object would stay in every band and a release that has the
+class would end up with two of that name.
+
+The name cannot simply be given up, because an archive names the class and an
+unarchiver looks it up by that name. So the class is defined under a Charon name
+and Apple's name is registered **for** it, as a subclass made at run time, and only
+where `objc_getClass` shows the runtime has none. On iOS 6 ours answers to the
+name; on a release that has its own, nothing is registered and the system's is
+used.
+
+The registration happens when the library loads, not when the first instance is
+made. That is not a detail: an unarchiver resolves a class by name before anything
+has had a reason to make one, so a lazy registration would leave an archive
+written by the real framework undecodable. The device test caught exactly that -
+`NSClassFromString` answered nil until something else had built a curve.
+
 
 | member | behaviour |
 |---|---|
