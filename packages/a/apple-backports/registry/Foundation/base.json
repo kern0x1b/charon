@@ -11,37 +11,49 @@
     "api": "+[NSCharacterSet URLFragmentAllowedCharacterSet]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringPercentEncoding.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/url"
   },
   {
     "api": "+[NSCharacterSet URLHostAllowedCharacterSet]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringPercentEncoding.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/url"
   },
   {
     "api": "+[NSCharacterSet URLPasswordAllowedCharacterSet]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringPercentEncoding.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/url"
   },
   {
     "api": "+[NSCharacterSet URLPathAllowedCharacterSet]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringPercentEncoding.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/url"
   },
   {
     "api": "+[NSCharacterSet URLQueryAllowedCharacterSet]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringPercentEncoding.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/url"
   },
   {
     "api": "+[NSCharacterSet URLUserAllowedCharacterSet]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringPercentEncoding.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/url"
   },
   {
     "api": "+[NSExpression expressionForConditional:trueExpression:falseExpression:]",
@@ -321,37 +333,49 @@
     "api": "-[NSData base64EncodedDataWithOptions:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSData.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSData base64EncodedStringWithOptions:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSData.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSData enumerateByteRangesUsingBlock:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSData.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSData initWithBase64EncodedData:options:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSData.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSData initWithBase64EncodedString:options:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSData.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSData initWithBytesNoCopy:length:deallocator:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSData.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSDateComponents isValidDateInCalendar:]",
@@ -589,7 +613,9 @@
     "api": "-[NSMutableString applyTransform:reverse:range:updatedRange:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSOperation qualityOfService]",
@@ -675,61 +701,81 @@
     "api": "-[NSString containsString:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringLocalizedCase.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSString localizedCapitalizedString]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringLocalizedCase.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSString localizedCaseInsensitiveContainsString:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringLocalizedCase.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSString localizedLowercaseString]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringLocalizedCase.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSString localizedStandardContainsString:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringLocalizedCase.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSString localizedStandardRangeOfString:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringLocalizedCase.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSString localizedUppercaseString]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringLocalizedCase.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSString stringByAddingPercentEncodingWithAllowedCharacters:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringPercentEncoding.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/url"
   },
   {
     "api": "-[NSString stringByApplyingTransform:reverse:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSString stringByRemovingPercentEncoding]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringPercentEncoding.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/url"
   },
   {
     "api": "-[NSThread qualityOfService]",
