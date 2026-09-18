@@ -59,31 +59,41 @@
     "api": "+[NSURL URLWithDataRepresentation:relativeToURL:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "+[NSURL absoluteURLWithDataRepresentation:relativeToURL:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "+[NSURL fileURLWithFileSystemRepresentation:isDirectory:relativeToURL:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "+[NSURL fileURLWithPath:isDirectory:relativeToURL:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "+[NSURL fileURLWithPath:relativeToURL:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSArray firstObject]",
@@ -749,76 +759,100 @@
     "api": "-[NSURL dataRepresentation]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSURL fileSystemRepresentation]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSURL getFileSystemRepresentation:maxLength:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSURL hasDirectoryPath]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSURL initAbsoluteURLWithDataRepresentation:relativeToURL:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSURL initFileURLWithFileSystemRepresentation:isDirectory:relativeToURL:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSURL initFileURLWithPath:isDirectory:relativeToURL:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSURL initFileURLWithPath:relativeToURL:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSURL initWithDataRepresentation:relativeToURL:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSURL removeAllCachedResourceValues]",
     "kind": "method",
     "introduced": "7.0",
     "minimum": "4.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSURL removeCachedResourceValueForKey:]",
     "kind": "method",
     "introduced": "7.0",
     "minimum": "4.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSURL setTemporaryResourceValue:forKey:]",
     "kind": "method",
     "introduced": "7.0",
     "minimum": "4.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "-[NSURLSessionConfiguration setTLSMaximumSupportedProtocol:]",
@@ -1072,36 +1106,48 @@
     "api": "NSURLUbiquitousItemDownloadingErrorKey",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "NSURLUbiquitousItemDownloadingStatusCurrent",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "NSURLUbiquitousItemDownloadingStatusDownloaded",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "NSURLUbiquitousItemDownloadingStatusKey",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "NSURLUbiquitousItemDownloadingStatusNotDownloaded",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
     "api": "NSURLUbiquitousItemUploadingErrorKey",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   }
 ]

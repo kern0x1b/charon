@@ -39,9 +39,11 @@ static NSURL *charon_url_from_bytes(NSData *data, NSURL *baseURL, BOOL absolute)
 
 - (instancetype)initFileURLWithPath:(NSString *)path relativeToURL:(NSURL *)baseURL
 {
-    BOOL directory = NO;
-    [[NSFileManager defaultManager] fileExistsAtPath:path.stringByExpandingTildeInPath isDirectory:&directory];
-    return [self initFileURLWithPath:path isDirectory:directory relativeToURL:baseURL];
+    NSURL *asked = [[NSURL alloc] initFileURLWithPath:path isDirectory:NO relativeToURL:baseURL].absoluteURL;
+    NSNumber *directory = nil;
+    if (asked.isFileURL)
+        [asked getResourceValue:&directory forKey:NSURLIsDirectoryKey error:NULL];
+    return [self initFileURLWithPath:path isDirectory:directory.boolValue relativeToURL:baseURL];
 }
 
 - (instancetype)initWithDataRepresentation:(NSData *)data relativeToURL:(NSURL *)baseURL
