@@ -253,6 +253,24 @@ local function load_step(emulator, found)
     if emulator.build_capacity() < 2 then
         table.insert(found, "a machine runs at least two builds at once, said " .. tostring(emulator.build_capacity()))
     end
+    -- A slot is a share of the machine: what runs in it is told how much of it
+    -- to take, and only when it is an xmake that would otherwise take all of it.
+    if emulator.build_jobs(12, 3) ~= 4 or emulator.build_jobs(2, 3) ~= 1 or emulator.build_jobs(12, 0) ~= 12 then
+        table.insert(found, string.format("three slots on twelve cores are four jobs each, said %d, %d and %d",
+                                          emulator.build_jobs(12, 3), emulator.build_jobs(2, 3), emulator.build_jobs(12, 0)))
+    end
+    for _, case in ipairs({{{"xmake", {}}, "-j 4"},
+                           {{"xmake", {"test", "suite/default"}}, "test suite/default -j 4"},
+                           {{"xmake", {"build", "--", "-v"}}, "build -j 4 -- -v"},
+                           {{"xmake", {"run", "port"}}, "run port"},
+                           {{"xmake", {"f", "-y"}}, "f -y"},
+                           {{"xmake", {"build", "-j8"}}, "build -j8"},
+                           {{"/bin/sh", {"-c", "xmake"}}, "-c xmake"}}) do
+        local given = table.concat(emulator.queued_arguments(case[1][1], case[1][2], 4), " ")
+        if given ~= case[2] then
+            table.insert(found, string.format("%s %s runs in a slot as %s, not %s", case[1][1], table.concat(case[1][2], " "), case[2], given))
+        end
+    end
     -- Patience of zero is how a test takes a slot without waiting for a quiet
     -- machine; it must still hand out the slot.
     local slot = emulator.acquire({folder = path.join(os.tmpdir(), "charon-slot-test-" .. os.getpid()), count = 1, patience = 0})
