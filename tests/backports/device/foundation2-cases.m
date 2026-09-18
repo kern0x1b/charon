@@ -380,10 +380,12 @@ static NSString *url_text(NSURL *url, NSString *directory)
 
 static void run_url(Foundation2Recorder *recorder)
 {
+    progress(@"url.fileSystem");
     NSString *directory = [[[NSURL fileURLWithPath:[[NSFileManager defaultManager] currentDirectoryPath] isDirectory:YES] absoluteString] stringByReplacingOccurrencesOfString:@"file://localhost/" withString:@"file:///"];
     NSArray *paths = @[@"a/b", @"/abs/x", @"", @"rel dir/ä%20#?;", @"../up", @"a//b/", @"~/x", @"/", @".", @"./x/", @"/trailing/", @"//double", @"a/./b/../c", @"näive", @"sp ace", @"%41"];
     NSArray *bases = @[[NSNull null], [NSURL URLWithString:@"file:///tmp/base/"], [NSURL URLWithString:@"file:///tmp/base"], [NSURL URLWithString:@"http://host/dir/"], [NSURL URLWithString:@"sub/" relativeToURL:[NSURL URLWithString:@"file:///root/"]]];
     for (NSUInteger pathIndex = 0; pathIndex < paths.count; pathIndex++) {
+        progress([NSString stringWithFormat:@"url.fileSystem.%lu", (unsigned long)pathIndex]);
         for (NSUInteger baseIndex = 0; baseIndex < bases.count; baseIndex++) {
             for (int isDirectory = 0; isDirectory < 2; isDirectory++) {
                 NSURL *base = bases[baseIndex] == [NSNull null] ? nil : bases[baseIndex];
@@ -395,10 +397,12 @@ static void run_url(Foundation2Recorder *recorder)
             }
         }
     }
+    progress(@"url.representation");
     NSArray *urls = @[[NSURL fileURLWithPath:@"/tmp/a b/ä"], [NSURL URLWithString:@"http://h/p%20q/r?x#y"], [NSURL URLWithString:@"x/y" relativeToURL:[NSURL URLWithString:@"file:///a/b/"]],
                       [NSURL URLWithString:@"file:"], [NSURL URLWithString:@"mailto:x@y"], [NSURL URLWithString:@"file:///a/%00b"], [NSURL URLWithString:@"file:///dir/"], [NSURL URLWithString:@"file://host/x"],
                       [NSURL URLWithString:@"file:///%C3%A4%2F"], [NSURL URLWithString:@"data:,hello"], [NSURL URLWithString:@"file:///a/b/../c/./d"], [NSURL URLWithString:@"file:///na%CC%88ive"]];
     for (NSUInteger index = 0; index < urls.count; index++) {
+        progress([NSString stringWithFormat:@"url.representation.%lu", (unsigned long)index]);
         NSURL *url = urls[index];
         const char *representation = ((const char *(*)(id, SEL))objc_msgSend)(url, sel(@selector(fileSystemRepresentation)));
         NSMutableArray *fits = [NSMutableArray array];
@@ -410,6 +414,7 @@ static void run_url(Foundation2Recorder *recorder)
         }
         [recorder record:@[representation ? hex([NSData dataWithBytes:representation length:strlen(representation)]) : @"<NULL>", fits] named:[NSString stringWithFormat:@"url.representation.%lu", (unsigned long)index]];
     }
+    progress(@"url.resourceCache");
     NSURL *folder = [NSURL fileURLWithPath:NSTemporaryDirectory() isDirectory:YES];
     NSMutableArray *events = [NSMutableArray array];
     id value = nil;
@@ -446,6 +451,7 @@ static void run_url(Foundation2Recorder *recorder)
         [keys addObject:key];
     [recorder record:keys named:@"url.ubiquityKeys"];
 
+    progress(@"url.relativeDirectory");
     NSFileManager *manager = [NSFileManager defaultManager];
     NSString *root = [NSTemporaryDirectory() stringByAppendingPathComponent:@"charon-url-relative"];
     [manager removeItemAtPath:root error:NULL];
@@ -458,6 +464,7 @@ static void run_url(Foundation2Recorder *recorder)
     NSURL *anchor = [NSURL fileURLWithPath:root isDirectory:YES];
     NSMutableArray *relatives = [NSMutableArray array];
     for (NSString *name in @[@"folder", @"file.txt", @"missing", @"folder/", @"link", @"link/inner", @"broken", @"~/inner", @"folder/../folder"]) {
+        progress([@"url.relativeDirectory." stringByAppendingString:name]);
         NSURL *made = ((id (*)(id, SEL, id, id))objc_msgSend)([NSURL alloc], sel(@selector(initFileURLWithPath:relativeToURL:)), name, anchor);
         [relatives addObject:[NSString stringWithFormat:@"%@|%@", made.relativeString ?: @"<nil>", made.hasDirectoryPath ? @"directory" : @"file"]];
     }
@@ -547,7 +554,9 @@ static void run_strings(Foundation2Recorder *recorder)
         NSString *subject = searches[index][0], *search = searches[index][1];
         NSRange range = standard_range(subject, search);
         BOOL contains = ((BOOL (*)(id, SEL, id))objc_msgSend)(subject, sel(@selector(localizedStandardContainsString:)), search);
-        [recorder record:@[@(range.location), @(range.length), @(contains)] named:[NSString stringWithFormat:@"string.search.%lu", (unsigned long)index]];
+        BOOL plain = ((BOOL (*)(id, SEL, id))objc_msgSend)(subject, sel(@selector(containsString:)), search);
+        BOOL insensitive = ((BOOL (*)(id, SEL, id))objc_msgSend)(subject, sel(@selector(localizedCaseInsensitiveContainsString:)), search);
+        [recorder record:@[@(range.location), @(range.length), @(contains), @(plain), @(insensitive)] named:[NSString stringWithFormat:@"string.search.%lu", (unsigned long)index]];
     }
     [recorder record:foundation2_implementation.transformNames named:@"string.transform.names"];
     NSArray *texts = @[@"hello", @"héllo wörld", @"ひらがな", @"中文", @"ＡＢＣ", @"&#x68;ello", @"\\N{LATIN SMALL LETTER A}", @"Привет", @""];
