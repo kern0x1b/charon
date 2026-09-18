@@ -186,11 +186,60 @@ local function log(ctx, text)
     end
 end
 
+-- The program is started as the guest's first process and stopped where it
+-- crashes, and what the debugger reads is printed as it is read: the signal,
+-- the frames named by the images the guest says it loaded, and the registers.
+local function debug_command(ctx, command)
+    local image = path.join(ctx.image, "rootfs")
+    if not os.isdir(image) then
+        raise("%s %s has no image yet; run xmake emulate install first", ctx.identifier, ctx.version)
+    end
+    local folder = path.join(ctx.image, "debug")
+    emulator.remove(folder)
+    local rootfs = path.join(folder, "rootfs")
+    emulator.clone(image, rootfs)
+    local slot = emulator.acquire()
+    local report = try {
+        function ()
+            return emulator.debugged(table.join(ctx, {rootfs = rootfs, run = folder, guest = command,
+                                                      architecture = config.arch(), network = network(),
+                                                      cache = path.join(emulator.root(), "cache.noindex", ctx.identifier .. "_" .. ctx.build, "slot-" .. slot.index),
+                                                      tmpdir = path.join(emulator.root(), "tmp.noindex")}))
+        end,
+        catch {
+            function (errors)
+                emulator.release(slot)
+                raise(errors)
+            end
+        }
+    }
+    emulator.release(slot)
+    json.savefile(path.join(folder, "debug.json"), report)
+    if report.exited then
+        cprint("${bright}%s${clear} ran to its own exit %d on %s %s (%s), with nothing to debug", command, report.exited,
+               ctx.identifier, ctx.version, ctx.build)
+        return
+    end
+    cprint("${bright}%s${clear} stopped with signal %d on %s %s (%s)", command, report.signal, ctx.identifier, ctx.version, ctx.build)
+    for index, frame in ipairs(report.frames) do
+        cprint("  #%-2d %-6s 0x%08x  %s", index - 1, frame.kind, frame.address, frame.name)
+    end
+    local told = {}
+    for _, name in ipairs(emulator.REGISTERS or {}) do
+        table.insert(told, string.format("%s=0x%08x", name, report.registers[name] or 0))
+    end
+    if #told > 0 then
+        print(table.concat(told, " "))
+    end
+    cprint("${dim}%d images loaded; the report is %s and the emulator log is %s", #report.images,
+           path.join(folder, "debug.json"), report.log)
+end
+
 function main()
     local action = option.get("action")
     local arguments = option.get("arguments") or {}
-    if action ~= "install" and action ~= "run" and action ~= "log" and action ~= "shot" and action ~= "clean" then
-        raise("xmake emulate takes install, run, log, shot or clean")
+    if action ~= "install" and action ~= "run" and action ~= "debug" and action ~= "log" and action ~= "shot" and action ~= "clean" then
+        raise("xmake emulate takes install, run, debug, log, shot or clean")
     end
     if action == "clean" then
         local owner = (project.name() or path.filename(os.projectdir())) .. "-" .. hash.strhash32(os.projectdir())
@@ -215,6 +264,11 @@ function main()
             raise("xmake emulate run needs a command")
         end
         run(ctx, arguments)
+    elseif action == "debug" then
+        if #arguments == 0 then
+            raise("xmake emulate debug needs the command to start under the debugger")
+        end
+        debug_command(ctx, arguments[1])
     elseif action == "log" then
         log(ctx, table.concat(arguments, " "))
     else

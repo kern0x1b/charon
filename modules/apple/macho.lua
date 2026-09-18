@@ -420,6 +420,19 @@ local function each_symbol(data, found, callback)
     end
 end
 
+-- The address a named symbol stands at, for the few that are looked up by name
+-- rather than walked over: dyld's own _dyld_all_image_infos among them, which
+-- is how a debugger asks a process what it has loaded.
+function symbol(data, found, wanted)
+    local address
+    each_symbol(data, found, function (name, kind, section, desc, value)
+        if name == wanted and kind & 0xE0 == 0 and kind & 0x0E ~= 0 then
+            address = address or value
+        end
+    end)
+    return address
+end
+
 function code_symbols(data, found)
     local code = {}
     for index, section in ipairs(found.sections) do

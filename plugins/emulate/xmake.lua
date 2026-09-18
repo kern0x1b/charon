@@ -2,8 +2,8 @@ task("emulate")
     set_category("plugin")
     on_run("main")
     set_menu {
-        usage = "xmake emulate [options] install|run|log|shot|clean [arguments]",
-        description = "Reach an emulated device: install the packages into its image, run a command in a fresh clone of it, read what the run left, take its last frame, or remove what emulation left on disk.",
+        usage = "xmake emulate [options] install|run|debug|log|shot|clean [arguments]",
+        description = "Reach an emulated device: install the packages into its image, run a command in a fresh clone of it, debug the one that crashes, read what the run left, take its last frame, or remove what emulation left on disk.",
         options = {
             {"d", "device", "kv", nil, "The device to emulate, e.g. iPhone3,1 (default: the first device of the configured architecture iLEmu emulates that runs the release)."},
             {"r", "release", "kv", nil, "The iOS release, the earliest firmware not older than it (default: apple_minimum)."},
@@ -14,7 +14,7 @@ task("emulate")
             {"n", "network", "kv", nil, "isolated, loopback or host (default: the emulate.network value of the project's targets, else isolated)."},
             {nil, "scale", "kv", nil, "How many host seconds one guest second takes, so the guest's own watchdogs and RPC deadlines see an emulator that is slower than the device (default: 10)."},
             {},
-            {nil, "action", "v", nil, "install, run, log, shot or clean."},
-            {nil, "arguments", "vs", nil, "The command run executes, the text log filters on, or the file shot writes."}
+            {nil, "action", "v", nil, "install, run, debug, log, shot or clean."},
+            {nil, "arguments", "vs", nil, "The command run or debug executes, the text log filters on, or the file shot writes."}
         }
     }
