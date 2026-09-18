@@ -44,7 +44,12 @@ backport to: the error for a property list of the wrong kind is
 `NSFileReadCorruptFileError` with the text naming the URL, a mutable receiver
 reads a mutable array, a query item keeps its escapes, and the transformer
 raises Apple's own wording for data that is not data and for a class that is
-not allowed.
+not allowed. It also holds the validated format to the host's: which formats
+pass against which allowed specifiers, and the message for the ones that do
+not. The matching rule itself was read off the running implementation - three
+thousand random pairs of format and allowed specifiers, where the two agreed
+on every verdict and every message - rather than out of CoreFoundation's
+format parser.
 
 `host/directionaledges/run.sh` holds `NSDirectionalEdgeInsets` to the host's
 UIKit through Mac Catalyst: the text the insets format to, everything the

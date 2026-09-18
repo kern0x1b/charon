@@ -203,6 +203,40 @@ static void run_transformer(Foundation11Implementation implementation, Foundatio
     [recorder record:notData named:@"transformer.transformNotData"];
 }
 
+static NSString *validated(NSString *format, NSString *valid, NSError **error)
+{
+    return ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), format, valid, error, @"A", @"B", @"C", @"D");
+}
+
+static void run_validated_format(Foundation11Recorder *recorder)
+{
+    NSArray *pairs = @[@[@"%@ has %@", @"%@ %@"], @[@"%@", @"%@ %@"], @[@"%@ %@", @"%@"], @[@"%@", @""],
+                       @[@"plain", @""], @[@"100%% sure", @"%@"], @[@"%2$@ %1$@", @"%@ %@"], @[@"%1$@ %1$@", @"%@"],
+                       @[@"%-10@", @"%@"], @[@"%@", @"%ld"], @[@"%@", @"%@, %ld"]];
+    for (NSArray *pair in pairs) {
+        NSError *error = nil;
+        NSString *made = validated(pair[0], pair[1], &error);
+        NSString *answer = made ? [@"ok " stringByAppendingString:made]
+                                : [NSString stringWithFormat:@"%@ %ld %@", error.domain, (long)error.code, error.userInfo[NSDebugDescriptionErrorKey] ?: @""];
+        [recorder record:answer named:[NSString stringWithFormat:@"validated.%@|%@", pair[0], pair[1]]];
+    }
+
+    NSError *typed = nil;
+    NSString *numbers = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), @"%ld and %.2f", @"%ld %f", &typed, (long)7, 2.5);
+    [recorder record:numbers ?: @"nil" named:@"validated.numbers"];
+
+    NSString *raised = @"none";
+    @try {
+        ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+            sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), (NSString *)nil, @"%@", NULL);
+    } @catch (NSException *exception) {
+        raised = exception.name;
+    }
+    [recorder record:raised named:@"validated.nilFormat"];
+}
+
 void foundation11_run(Foundation11Implementation implementation, Foundation11Recorder *recorder)
 {
     foundation11_prefix = implementation.prefix;
@@ -210,5 +244,6 @@ void foundation11_run(Foundation11Implementation implementation, Foundation11Rec
     run_query_items(recorder);
     run_decode_value(recorder);
     run_transformer(implementation, recorder);
+    run_validated_format(recorder);
     foundation11_prefix = nil;
 }
