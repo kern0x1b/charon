@@ -71,3 +71,19 @@ the port cannot manufacture one without wrapping a font it does not own, so
 this is the release's own font cache showing through and the answer is equal in
 family, size and descriptor either way. The device test now says so in two
 checks instead of asking for an identity this release does not give.
+
+## One divergence the port keeps on purpose
+
+`+[UIFontMetrics metricsForTextStyle:nil]` and then a scaled value **kills the
+process** on the current implementation: the exception comes out of a dispatch
+barrier inside UIKit's own cache, where it cannot be caught, so the program
+ends. The port simply treats the missing style as a style it does not know and
+scales by one.
+
+This is left as it is on purpose. The rule of this package is the behaviour of
+the newest implementation, and an abort is not behaviour - there is nothing for
+an application to observe, catch or rely on, and a port that reproduced it
+would only take a program down in a place where it need not go down. It is
+written here so that nobody later reads the difference as a bug and fixes the
+port into crashing.
+
