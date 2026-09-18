@@ -218,6 +218,39 @@
       "effect": "the property is not declared, so respondsToSelector: answers honestly",
       "facts": "facts/UIKit/UIViewControllerSystemMinimumLayoutMargins.md",
       "source": "UIKit of iOS 11.0 arm64, -[UIViewController viewRespectsSystemMinimumLayoutMargins] at 0x18a30ee90"
+    },
+    {
+      "api": "UIView.insetsLayoutMarginsFromSafeArea",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the flag only means anything if it changes -layoutMargins, which belongs to the iOS 8 backport and does not answer to this port",
+      "effect": "the property is not declared, so respondsToSelector: answers honestly; a flag that changed nothing would be worse, since layout would read it and believe it",
+      "facts": "facts/UIKit/UIViewSafeArea.md",
+      "source": "UIKit of iOS 11.0 arm64, -[UIView layoutMargins] at 0x18a27bca4, which folds the safe area in before answering"
+    },
+    {
+      "api": "UIScrollView.contentLayoutGuide",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the guide's frame is kept live by the layout engine, which the port is not part of, as with safeAreaLayoutGuide",
+      "effect": "the property is not declared, so respondsToSelector: answers honestly; constraints against the guide cannot be written",
+      "facts": "facts/UIKit/UIScrollViewAdjustedContentInset.md",
+      "source": "UIKit of iOS 11.0 arm64, UIScrollView.h of SDK 16.4"
+    },
+    {
+      "api": "UIScrollView.frameLayoutGuide",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the same: a guide whose frame nothing updates is worse than no guide",
+      "effect": "the property is not declared, so respondsToSelector: answers honestly; constraints against the guide cannot be written",
+      "facts": "facts/UIKit/UIScrollViewAdjustedContentInset.md",
+      "source": "UIKit of iOS 11.0 arm64, UIScrollView.h of SDK 16.4"
     }
   ]
 }
