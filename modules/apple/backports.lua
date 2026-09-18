@@ -36,7 +36,19 @@ function held_cache(architecture, release)
     end
 end
 
-local function exported_symbols(file)
+-- A backport holds more than the API it carries: Charon's own helpers, the
+-- classes it invents for itself and the ivars of the classes it implements.
+-- None of that is API - a release that already has a class exports its own
+-- ivars, not these - so it is neither weighed against a release nor exported.
+local function internal_symbol(name)
+    if name:startswith("_OBJC_IVAR_$_") or name:find("$shim", 1, true) then
+        return true
+    end
+    local bare = name:match("^_OBJC_%u*CLASS_%$_(.+)$") or name:match("^_(.+)$") or name
+    return bare:startswith("charon_") or bare:startswith("Charon")
+end
+
+local function defined_symbols(file)
     local data = macho.read(file)
     local found = {}
     for _, image in ipairs(macho.images(data)) do
@@ -55,6 +67,16 @@ local function exported_symbols(file)
     return table.orderkeys(found)
 end
 
+local function exported_symbols(file)
+    local found = {}
+    for _, symbol in ipairs(defined_symbols(file)) do
+        if not internal_symbol(symbol) then
+            table.insert(found, symbol)
+        end
+    end
+    return found
+end
+
 local function clang(opt, arguments, objective_c)
     local given = {"-target", opt.triple, "-isysroot", opt.sdkdir}
     if objective_c then
@@ -70,9 +92,20 @@ local function clang(opt, arguments, objective_c)
     return "xcrun", table.join({"clang"}, given)
 end
 
-local function compile(opt, source, object)
-    os.vrunv(clang(opt, {"-Os", "-g0", "-fvisibility=hidden", "-Wall", "-Wno-unguarded-availability-new", "-Wno-unguarded-availability",
-                         "-c", source, "-o", object}, not source:endswith(".c")))
+-- Only C is compiled hidden. The classes of a backport are the API it carries,
+-- and the headers of the release declare a Foundation class without the
+-- visibility UIKit gives its own, so -fvisibility=hidden makes clang hide every
+-- Foundation class it implements: the library exports nothing, a port links its
+-- classes as the weak imports that are NULL on the release, and the device says
+-- only that the program failed. What the library must not export it hides at
+-- the link, where a hidden symbol can still be named.
+function compile(opt, source, object)
+    local objective_c = not source:endswith(".c")
+    local arguments = {"-Os", "-g0", "-Wall", "-Wno-unguarded-availability-new", "-Wno-unguarded-availability"}
+    if not objective_c then
+        table.insert(arguments, "-fvisibility=hidden")
+    end
+    os.vrunv(clang(opt, table.join(arguments, {"-c", source, "-o", object}), objective_c))
 end
 
 local function sections_of(file)
@@ -245,9 +278,39 @@ local function link(opt, library, attach, objects, releases, outputdir)
         io.writefile(list, table.concat(reexported, "\n") .. "\n")
         table.insert(arguments, "-Wl,-reexported_symbols_list," .. list)
     end
+    local internal = {}
+    for _, object in ipairs(kept) do
+        for _, symbol in ipairs(defined_symbols(object)) do
+            if internal_symbol(symbol) then
+                table.insert(internal, symbol)
+            end
+        end
+    end
+    if #internal > 0 then
+        local list = path.join(opt.builddir, library.name .. ".internal")
+        io.writefile(list, table.concat(table.unique(internal), "\n") .. "\n")
+        table.insert(arguments, "-Wl,-unexported_symbols_list," .. list)
+    end
     os.vrunv("xcrun", arguments)
     if sections_of(output)["__DATA,__objc_catlist"] then
         raise("%s kept __objc_catlist: the linker did not rename it, so the runtime would attach every backported method over the system's own", output)
+    end
+    local held = {}
+    for _, symbol in ipairs(defined_symbols(output)) do
+        held[symbol] = true
+    end
+    local missing = {}
+    for _, object in ipairs(kept) do
+        for _, symbol in ipairs(exported_symbols(object)) do
+            if not held[symbol] then
+                table.insert(missing, symbol)
+            end
+        end
+    end
+    if #missing > 0 then
+        table.sort(missing)
+        raise("%s holds %d API it does not export, and a port that links against it takes the weak import of the release instead, which is NULL there: %s",
+              output, #missing, table.concat(table.slice(missing, 1, math.min(8, #missing)), " ") .. (#missing > 8 and (" and %d more"):format(#missing - 8) or ""))
     end
     return output
 end
@@ -468,6 +531,13 @@ function availability_names(symbols)
     return names
 end
 
+local LISTED = {}
+
+local function listed(root)
+    LISTED[root] = LISTED[root] or registry(root)
+    return LISTED[root]
+end
+
 local function introduced(opt, source, object)
     local names = availability_names(exported_symbols(object))
     local releases = {}
@@ -475,7 +545,14 @@ local function introduced(opt, source, object)
         local dump = os.iorunv(clang(opt, {"-fsyntax-only", "-w", "-Xclang", "-ast-dump", "-Xclang", "-ast-dump-filter", "-Xclang", name, source}, true))
         local version = introduced_version(dump, name)
         if not version then
-            raise("the SDK declares %s, which %s defines, without an iOS release it arrived in, so no band can hold it", name, path.filename(source))
+            -- API that is Foundation's own and in no header of the SDK, which a
+            -- backport still carries under Apple's name because an archive holds
+            -- it: the registry is what says when it arrived.
+            local entry = listed(opt.root)[name]
+            version = entry and entry.status == "implemented" and entry.introduced or nil
+        end
+        if not version then
+            raise("neither the SDK nor the registry says which iOS release %s arrived in, and %s defines it, so no band can hold it", name, path.filename(source))
         end
         releases[version] = releases[version] or {}
         table.insert(releases[version], name)

@@ -61,11 +61,47 @@ local function digest_step(opt, folder, found)
     end
 end
 
+-- A backport carries a class by defining it, and the release is told of it by
+-- the library's exports: a class the compiler leaves hidden is a class no port
+-- can link, and the band for a release that already has it cannot see that it
+-- is there. The library is compiled as the package compiles it, with the
+-- compiler the toolchain names, and asked both questions of one class.
+local function surface_step(backports, opt, folder, found)
+    local source = path.join(folder, "surface", "NSDateInterval.m")
+    io.writefile(source, "#import <Foundation/Foundation.h>\n" ..
+                         "void charon_surface_helper(void);\n" ..
+                         "void charon_surface_helper(void) { }\n" ..
+                         "@implementation NSDateInterval\n@end\n")
+    local object = path.join(folder, "surface", "NSDateInterval.o")
+    backports.compile({triple = "armv7-apple-ios6.0", sdkdir = opt.sdk, deployment = "6.0", cc = opt.clang}, source, object)
+    local listed = fixtures.run(folder, "xcrun", {"nm", "-arch", "armv7", "-m", object})
+    if not listed:find("%) external _OBJC_CLASS_%$_NSDateInterval") then
+        table.insert(found, "a class the backport implements must stay external in the object, or nothing can link it: " ..
+                            (listed:match("[^\n]*_OBJC_CLASS_%$_NSDateInterval[^\n]*") or "it is not there at all"))
+    end
+    local release_six, release_ten = {}, {["_OBJC_CLASS_$_NSDateInterval"] = true, ["_OBJC_METACLASS_$_NSDateInterval"] = true}
+    local kept, reexported = backports.band(release_six, {object})
+    if #kept ~= 1 or #reexported ~= 0 then
+        table.insert(found, string.format("a release without the class must keep the object, not %d of them with %d re-exported", #kept, #reexported))
+    end
+    local refused = fixtures.refusal(function () kept, reexported = backports.band(release_ten, {object}) end)
+    if refused then
+        table.insert(found, "the helpers and ivars an object holds beside a class are not API, and weighing them against a release refuses it: " .. refused)
+        return
+    end
+    table.sort(reexported)
+    if #kept ~= 0 or table.concat(reexported, ",") ~= "_OBJC_CLASS_$_NSDateInterval,_OBJC_METACLASS_$_NSDateInterval" then
+        table.insert(found, string.format("a release that has the class must re-export it instead of defining it again, not keep %d objects and re-export %s",
+                                          #kept, table.concat(reexported, ",")))
+    end
+end
+
 function failures(opt)
     local backports = import("apple.backports", {rootdir = opt.modules, anonymous = true})
     local found = {}
     local folder = fixtures.scratch()
     digest_step(opt, folder, found)
+    surface_step(backports, opt, folder, found)
     local seven = object(folder, "seven", "__attribute__((visibility(\"default\"))) int arrived_seven = 7;\n__attribute__((visibility(\"default\"))) int also_seven(void) { return 7; }\nstatic int helper(void) { return 0; }\n")
     local eight = object(folder, "eight", "__attribute__((visibility(\"default\"))) int arrived_eight = 8;\n")
     local methods = object(folder, "methods", "static int added(void) { return 1; }\nint (*const hidden_table[])(void) = {added};\n")
