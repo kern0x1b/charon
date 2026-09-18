@@ -48,27 +48,9 @@
     "status": "implemented"
   },
   {
-    "api": "+[NSKeyedArchiver archivedDataWithRootObject:requiringSecureCoding:error:]",
-    "kind": "method",
-    "introduced": "11.0",
-    "status": "implemented"
-  },
-  {
     "api": "+[NSKeyedUnarchiver unarchiveTopLevelObjectWithData:error:]",
     "kind": "method",
     "introduced": "2.0",
-    "status": "implemented"
-  },
-  {
-    "api": "+[NSKeyedUnarchiver unarchivedObjectOfClass:fromData:error:]",
-    "kind": "method",
-    "introduced": "11.0",
-    "status": "implemented"
-  },
-  {
-    "api": "+[NSKeyedUnarchiver unarchivedObjectOfClasses:fromData:error:]",
-    "kind": "method",
-    "introduced": "11.0",
     "status": "implemented"
   },
   {
@@ -333,24 +315,6 @@
     "api": "-[NSIndexPath getIndexes:range:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
-  },
-  {
-    "api": "-[NSKeyedArchiver encodedData]",
-    "kind": "method",
-    "introduced": "10.0",
-    "status": "implemented"
-  },
-  {
-    "api": "-[NSKeyedArchiver initRequiringSecureCoding:]",
-    "kind": "method",
-    "introduced": "11.0",
-    "status": "implemented"
-  },
-  {
-    "api": "-[NSKeyedUnarchiver initForReadingFromData:error:]",
-    "kind": "method",
-    "introduced": "11.0",
     "status": "implemented"
   },
   {

@@ -1,7 +1,9 @@
-# NSKeyedArchiver, the API of iOS 11.0
+# NSKeyedArchiver, the API of iOS 10.0 and 11.0
 
-Introduced in iOS 11.0: an archiver that carries its own buffer, hands it over
-with `-encodedData`, and archives an object in one call.
+An archiver that carries its own buffer and hands it over with `-encodedData`,
+which the SDK's availability gives to iOS 10.0, and the two members iOS 11.0
+added: an archiver created requiring secure coding, and one call that archives
+an object.
 
 Source: Foundation of the arm64 shared cache of iOS 11.0 (iPod7,1 15A372) and of
 iOS 12.0; the current behaviour from the differential test against the host's

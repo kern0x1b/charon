@@ -13,7 +13,7 @@
     {
       "api": "-[NSKeyedArchiver encodedData]",
       "kind": "method",
-      "introduced": "11.0",
+      "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the buffer of an archiver the port did not create is read from iOS 6's private _stream field",
