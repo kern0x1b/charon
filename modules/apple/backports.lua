@@ -414,17 +414,31 @@ function registry(root)
     return listed, incomplete
 end
 
+local function property_of(selector)
+    local named = selector:match("^set(%u[%w_]*):$")
+    if named then
+        return named:sub(1, 1):lower() .. named:sub(2)
+    end
+    return selector:match("^([%w_]+)$")
+end
+
 local function spellings(api)
     local plain = api:gsub("%(%)$", "")
-    local found = {[plain] = true}
+    local found = {[plain] = true, [plain .. "()"] = true}
     local class, member = plain:match("^([%u][%w_]*)%.(.+)$")
     if class then
-        found[string.format("-[%s %s]", class, member)] = true
-        found[string.format("+[%s %s]", class, member)] = true
+        for _, selector in ipairs({member, "set" .. member:sub(1, 1):upper() .. member:sub(2) .. ":"}) do
+            found[string.format("-[%s %s]", class, selector)] = true
+            found[string.format("+[%s %s]", class, selector)] = true
+        end
     end
     local sign, owner, selector = plain:match("^([-+])%[([%w_]+) (.+)%]$")
     if sign then
         found[owner .. "." .. selector] = true
+        local property = property_of(selector)
+        if property then
+            found[owner .. "." .. property] = true
+        end
     end
     return found
 end

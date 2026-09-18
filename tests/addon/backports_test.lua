@@ -240,6 +240,20 @@ function failures(opt)
         table.insert(found, "a method the backports add without an entry in the registry must be refused naming it: " .. tostring(errors))
     end
     carried.members["-[UIView tintAdjustmentMode]"] = nil
+    io.writefile(path.join(registry, "UIKit", "spellings.json"), [[
+        [
+            {"api": "UIView.directionalLayoutMargins", "kind": "property", "introduced": "11.0", "status": "implemented", "facts": "facts/UIKit/UIView.md"},
+            {"api": "NSStringFromDirectionalEdgeInsets()", "kind": "function", "introduced": "11.0", "status": "implemented", "facts": "facts/UIKit/UIView.md"}
+        ]
+    ]])
+    carried.members["-[UIView setDirectionalLayoutMargins:]"] = true
+    carried.symbols["NSStringFromDirectionalEdgeInsets"] = true
+    if fixtures.refusal(function () backports.check_registry(folder, carried) end) then
+        table.insert(found, "a property's entry covers both of its accessors, and a function's entry is the same whether it is written with brackets or without")
+    end
+    carried.members["-[UIView setDirectionalLayoutMargins:]"] = nil
+    carried.symbols["NSStringFromDirectionalEdgeInsets"] = nil
+    os.rm(path.join(registry, "UIKit", "spellings.json"))
     carried.members["-[UIStackView setSpacing:]"] = true
     if fixtures.refusal(function () backports.check_registry(folder, carried) end) then
         table.insert(found, "a method of a class the registry describes needs no entry of its own: the class carries its surface")
