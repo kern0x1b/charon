@@ -60,7 +60,7 @@ group() {
 }
 
 status=0
-group traits "UITraitCollection.m" "*" traits_test.m
+group traits "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m" "*" traits_test.m
 group notifications "UIUserNotificationSettings.m" "*" notifications_test.m
 group misc "UIScreen+NativeBounds.m UIFont+TextStyles.m UIFont+Weights.m UIColor+SystemColors.m UIColor+SystemPurpleColor.m UIImage+RenderingMode.m UITextField+DefaultTextAttributes.m UIViewController+ExtendedLayout.m" "systemFontOfSize" misc_test.m
 group motion "UIMotionEffect.m UIView+MotionEffects.m" "initWithKeyPath keyPath type minimumRelativeValue setMinimumRelativeValue maximumRelativeValue setMaximumRelativeValue keyPathsAndRelativeValuesForViewerOffset" motion_test.m
