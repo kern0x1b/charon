@@ -471,6 +471,271 @@
       "reason": "the same: the release's table has one swipe gesture and its own delete",
       "effect": "the selector is never sent, so an application that checks respondsToSelector: falls back to the release's own swipe to delete",
       "source": "SDK 16.4, UITableView.h"
+    },
+    {
+      "api": "-[UIView addInteraction:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a departure from 11.0, which returns quietly for a nil interaction and re-adds one the view already holds",
+      "effect": "the port follows the current implementation: a nil interaction raises NSInternalInconsistencyException with 'Invalid parameter not satisfying: interaction != nil', and an interaction this view already holds is left where it is",
+      "facts": "facts/UIKit/UIViewInteractions.md",
+      "source": "UIKit of iOS 11.0 arm64 at 0x18a294394, 0x18a29459c, 0x18a2946e4, 0x18a294748 and 0x18a29452c; the current behaviour from the differential test against the host's UIKit"
+    },
+    {
+      "api": "-[UIView removeInteraction:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the same departure from 11.0 for a nil interaction",
+      "effect": "a nil interaction raises NSInternalInconsistencyException as the current implementation does; an interaction the view does not hold is neither an error nor a change",
+      "facts": "facts/UIKit/UIViewInteractions.md",
+      "source": "UIKit of iOS 11.0 arm64 at 0x18a294394, 0x18a29459c, 0x18a2946e4, 0x18a294748 and 0x18a29452c; the current behaviour from the differential test against the host's UIKit"
+    },
+    {
+      "api": "UIView.interactions",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a departure from 11.0, which returns quietly when the list it is given is nil",
+      "effect": "the getter answers a copy, and an empty array for a view that never held one; setting nil raises NSInternalInconsistencyException with 'Invalid parameter not satisfying: interactions', as the current implementation does",
+      "facts": "facts/UIKit/UIViewInteractions.md",
+      "source": "UIKit of iOS 11.0 arm64 at 0x18a294394, 0x18a29459c, 0x18a2946e4, 0x18a294748 and 0x18a29452c; the current behaviour from the differential test against the host's UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityAttributedLabel",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the attributed string is stored copied and its text written into the release's own accessibilityLabel, where this release's VoiceOver reads it; the speech attributes travel in the string and are not honoured here",
+      "facts": "facts/UIKit/NSObjectAccessibilityAttributedStrings.md",
+      "source": "UIKit of iOS 11.0 arm64 at 0x18a571e88 and 0x18a5721c0 with the value and the hint beside them; the relation between the attributed string and the plain one from the differential test against the host's UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityAttributedHint",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "as the label, through accessibilityHint",
+      "facts": "facts/UIKit/NSObjectAccessibilityAttributedStrings.md",
+      "source": "UIKit of iOS 11.0 arm64 at 0x18a571e88 and 0x18a5721c0 with the value and the hint beside them; the relation between the attributed string and the plain one from the differential test against the host's UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityAttributedValue",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "as the label, through accessibilityValue",
+      "facts": "facts/UIKit/NSObjectAccessibilityAttributedStrings.md",
+      "source": "UIKit of iOS 11.0 arm64 at 0x18a571e88 and 0x18a5721c0 with the value and the hint beside them; the relation between the attributed string and the plain one from the differential test against the host's UIKit"
+    },
+    {
+      "api": "UIAccessibilitySpeechAttributeIPANotation",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the key carries the string UIKit gives it, so an attributed string built with it is well formed; this release's VoiceOver does not read pronunciation from it",
+      "facts": "facts/UIKit/NSObjectAccessibilityAttributedStrings.md",
+      "source": "UIKit of iOS 11.0 arm64, the exported constant at 0x1aa625ce0"
+    },
+    {
+      "api": "UIAccessibilitySpeechAttributeQueueAnnouncement",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the key carries the string UIKit gives it; nothing in this release queues announcements",
+      "facts": "facts/UIKit/NSObjectAccessibilityAttributedStrings.md",
+      "source": "UIKit of iOS 11.0 arm64, the exported constant at 0x1aa625cd8"
+    },
+    {
+      "api": "UIAccessibilityTextAttributeHeadingLevel",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the key carries the string UIKit gives it; this release has no notion of a heading level",
+      "facts": "facts/UIKit/NSObjectAccessibilityAttributedStrings.md",
+      "source": "UIKit of iOS 11.0 arm64, the exported constant at 0x1aa625cf8"
+    },
+    {
+      "api": "UIAccessibilityTextAttributeCustom",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the key carries the string UIKit gives it; nothing in this release reads a custom text attribute",
+      "facts": "facts/UIKit/NSObjectAccessibilityAttributedStrings.md",
+      "source": "UIKit of iOS 11.0 arm64, the exported constant at 0x1aa625d00"
+    },
+    {
+      "api": "UIDragInteraction",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "dragging is carried by a system service the release does not run, and nothing of ours can stand in for it",
+      "effect": "the class is not there: NSClassFromString answers nil, and an application that asks before dragging keeps its own path",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDropInteraction",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "a drop can only be delivered by the same system service that carries the drag",
+      "effect": "the class is not there, so a drop target is never installed rather than installed and silent",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UISpringLoadedInteraction",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "spring loading is driven by a drag in progress, which this release has no way to start",
+      "effect": "the class is not there; -[UIView addInteraction:] of the port accepts every interaction an application can build here, since the one case UIKit refuses cannot arise",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UINavigationBar.prefersLargeTitles",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the large title is laid out and animated by the navigation bar itself, and the port replaces no part of that layout",
+      "effect": "the property is not there: a bar keeps the one title row this release draws, and an application that asks first does not expect the tall one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UINavigationItem.largeTitleDisplayMode",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the mode only means something to a bar that can draw a large title",
+      "effect": "the property is not there, so nothing claims to choose between modes that do not exist",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UINavigationItem.searchController",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the search bar in a navigation bar is placed by the bar's own layout, together with the large title",
+      "effect": "the property is not there; an application puts its search bar in its own view as this release expects",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UINavigationItem.hidesSearchBarWhenScrolling",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "there is no search bar in the navigation bar here to hide",
+      "effect": "the property is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIViewController.prefersHomeIndicatorAutoHidden",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "this device has a home button and no home indicator to hide",
+      "effect": "the property is not there, and a controller that would hide the indicator changes nothing on a phone that never draws one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIViewController setNeedsUpdateOfHomeIndicatorAutoHidden]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "nothing to ask for an update of",
+      "effect": "the method is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIViewController.preferredScreenEdgesDeferringSystemGestures",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the system edge gestures the property defers were introduced with the home indicator and do not exist here",
+      "effect": "the property is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIViewController setNeedsUpdateOfScreenEdgesDeferringSystemGestures]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the same: there is no edge gesture to defer",
+      "effect": "the method is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIScreen.captured",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "whether a screen is being recorded, mirrored or sent to AirPlay is reported by a system service this release does not run",
+      "effect": "the property is not there, so an application that hides content while captured is told nothing rather than told NO",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "+[UIColor colorNamed:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "a named colour lives in the compiled asset catalogue, which CoreUI reads; this release's CoreUI knows no such file",
+      "effect": "the method is not there: an application falls back to the colour it builds in code rather than getting a black or nil one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIView.accessibilityIgnoresInvertColors",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "inverting colours is done by the render server for the whole screen, and exempting one view means telling that server about it",
+      "effect": "the property is not there; this release's own inversion of colours applies to everything as it always did",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITextInputPasswordRules",
+      "kind": "class",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the rules are read by the keyboard's password generator, which this release does not have",
+      "effect": "the class is not there, so an application does not hand rules to a field that would ignore them",
+      "source": "UIKit of iOS 12.0 arm64"
+    },
+    {
+      "api": "UITextInputTraits.passwordRules",
+      "kind": "property",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the property only means something to a keyboard that offers a generated password",
+      "effect": "the property is not there",
+      "source": "UIKit of iOS 12.0 arm64"
+    },
+    {
+      "api": "UITableView.insetsContentViewsToSafeArea",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the flag changes how the table lays its cells' content views out, which belongs to UIKit's own layout",
+      "effect": "the property is not there; a cell's content view fills the cell as this release lays it out",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITableView.dragInteractionEnabled",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "there is no drag interaction on a table here to enable",
+      "effect": "the property is not there",
+      "source": "UIKit of iOS 11.0 arm64"
     }
   ]
 }
