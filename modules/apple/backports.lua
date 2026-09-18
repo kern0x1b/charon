@@ -351,9 +351,14 @@ local function loaded(cache, architecture)
 end
 
 function surface(binaries, architecture)
-    local found = {classes = {}, members = {}, symbols = {}}
+    local found = {classes = {}, members = {}, symbols = {}, registered = {}}
     for _, binary in ipairs(binaries) do
         local ours = {}
+        if macho.imported_symbols(binary, architecture)["objc_allocateClassPair"] then
+            for literal in pairs(macho.text_literals(binary, architecture)) do
+                found.registered[literal] = true
+            end
+        end
         for _, symbol in ipairs(exported_symbols(binary)) do
             local class = symbol:match("^_OBJC_CLASS_%$_(.+)$")
             if class then
@@ -500,6 +505,7 @@ function check_registry(root, found, complete, deployment, exports)
             end
             local owner = name:match("^[-+]%[([%w_]+) ") or name:match("^([%u][%w_]*)%.")
             built = built or (owner and found.classes[owner]) or false
+            built = built or (entry.kind == "class" and (found.registered or {})[name]) or false
             local carried = deployment and entry.introduced and dyld.compare_versions(entry.introduced, deployment) <= 0
             carried = carried or (exports and exports["_" .. name:gsub("%(%)$", "")]) or false
             if entry.status == "implemented" and not built and not carried then

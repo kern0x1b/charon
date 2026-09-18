@@ -576,6 +576,28 @@ function imported_symbols(binary, architecture)
     return imported
 end
 
+function text_literals(binary, architecture)
+    local data = read(binary)
+    local literals = {}
+    for _, found in ipairs(images(data)) do
+        if not architecture or found.architecture == architecture then
+            for _, section in ipairs(found.sections) do
+                if section.segment == "__TEXT" and section.name == "__cstring" then
+                    for _, segment in ipairs(found.segments) do
+                        if segment.name == section.segment then
+                            local at = found.base + segment.fileoff + (section.addr - segment.vmaddr)
+                            for literal in data:sub(at + 1, at + section.size):gmatch("([^%z]+)%z") do
+                                literals[literal] = true
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return literals
+end
+
 function system_imports(data, found)
     local imported = {}
     each_symbol(data, found, function (name, kind, section, desc)
