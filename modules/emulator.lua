@@ -609,6 +609,41 @@ function build_capacity()
     return math.max(2, cores // 4)
 end
 
+-- A slot stands for a share of the machine, not for a machine: a build that
+-- takes every core inside one puts three times the cores to work when three
+-- slots are held. xmake passes -j down to the cmake and ninja a package builds
+-- with, and takes every core when it is not told otherwise, so a queued xmake
+-- is told the share of its slot. A command that already says how many jobs it
+-- wants keeps its own answer, a task that has no -j is left alone, and so is a
+-- program that is not xmake: the queue holds the slot, it does not rewrite what
+-- runs in it.
+JOBS_TASKS = {build = true, test = true, require = true, pack = true, install = true}
+
+function build_jobs(cores, capacity)
+    return math.max(1, (cores or 4) // math.max(1, capacity or 1))
+end
+
+function queued_arguments(program, arguments, jobs)
+    if path.basename(program) ~= "xmake" then
+        return arguments
+    end
+    local task, given = nil, #arguments + 1
+    for index, argument in ipairs(arguments) do
+        if argument == "--" then
+            given = index
+            break
+        elseif argument:startswith("-j") or argument:startswith("--jobs") then
+            return arguments
+        elseif not argument:startswith("-") and not task then
+            task = argument
+        end
+    end
+    if task and not JOBS_TASKS[task] then
+        return arguments
+    end
+    return table.join(table.slice(arguments, 1, given - 1), {"-j", tostring(jobs)}, table.slice(arguments, given))
+end
+
 function holds_build_slot(environment)
     local value = (environment or os.getenvs())[BUILD_SLOT]
     return value ~= nil and value ~= ""

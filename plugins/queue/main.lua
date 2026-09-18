@@ -15,7 +15,9 @@ function main()
     end
     local count = tonumber(option.get("count")) or emulator.build_capacity()
     local slot = emulator.acquire({folder = path.join(emulator.root(), "build-slots"), count = count, patience = 0})
-    local code = os.execv(program, arguments, {try = true, envs = {[emulator.build_slot_name()] = tostring(slot.index)}})
+    local jobs = emulator.build_jobs(os.cpuinfo("ncpu"), count)
+    local code = os.execv(program, emulator.queued_arguments(program, arguments, jobs),
+                          {try = true, envs = {[emulator.build_slot_name()] = tostring(slot.index)}})
     emulator.release(slot)
     if code ~= 0 then
         os.exit(code)
