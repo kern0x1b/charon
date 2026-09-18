@@ -26,6 +26,7 @@ inputs.
     sh host/interactions/run.sh
     sh host/traitstyle/run.sh
     sh host/backbuttontitle/run.sh
+    sh host/animatorscrub/run.sh
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
@@ -105,6 +106,17 @@ that it starts empty, that it is copied rather than held, that clearing it
 works, and that two recognizers keep their own. It notes the one thing the port
 cannot do - the system prints the name inside `-description`, which belongs to
 the release.
+
+`host/animatorscrub/run.sh` is the contract for the two flags iOS 11 added to
+`UIViewPropertyAnimator`, a class of the iOS 10 range: the defaults, where the
+flag may be set and where setting it raises, what scrubbing does to an animator
+built with animations, built without, paused and running, and what an animator
+that pauses on completion does when its time has passed - it stays active and
+not running, and holds its completion blocks until the application finishes it.
+It fails until the class carries them; the properties answer `NO` before that,
+because the class is the SDK's own interface under another name and the compiler
+synthesises what nobody wrote, so every check is behaviour rather than
+`respondsToSelector:`.
 
 `host/backbuttontitle/run.sh` holds the back button title of a navigation item
 to the system's: what the item answers before and after it is given one, that
