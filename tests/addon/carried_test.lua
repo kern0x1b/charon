@@ -42,10 +42,28 @@ local function packages_step(platform, found)
     end
 end
 
+-- A package is bundled under the name the target knows it by, and a require
+-- named after its repository reaches the target under its alias, so the
+-- repository's spelling finds nothing and has to say what to write instead.
+local function bundled_step(bundle, found)
+    local target = {
+        name = function () return "tweak" end,
+        values = function (_, key) return key == "charon.libraries" and {"charon@apple-backports"} or nil end,
+        dep = function () return nil end,
+        pkg = function () return nil end
+    }
+    local refused = fixtures.refusal(function () bundle.carried_libraries(target, "charon.libraries") end)
+    if not (refused and refused:find("which is apple-backports", 1, true)) then
+        table.insert(found, "a package bundled under the name of its repository must be told the name to use, not " .. tostring(refused))
+    end
+end
+
 function failures(opt)
     local platform = import("apple.platform", {rootdir = opt.modules, anonymous = true})
+    local bundle = import("apple.bundle", {rootdir = opt.modules, anonymous = true})
     local found = {}
     packages_step(platform, found)
+    bundled_step(bundle, found)
     local folder = fixtures.scratch()
     io.writefile(path.join(folder, "libSystem.tbd"), fixtures.system_stub())
     local runtime = path.join(folder, "runtime")

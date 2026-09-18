@@ -96,7 +96,9 @@ function carried_libraries(target, key)
         else
             local package = target:pkg(name)
             if not package then
-                raise("target(%s) bundles %s, which is neither a target it add_deps() nor a package it add_packages()", target:name(), name)
+                local at = name:lastof("@", true)
+                raise("target(%s) bundles %s, which is neither a target it add_deps() nor a package it add_packages()%s", target:name(), name,
+                      at and string.format("; a package is bundled under the name the target knows it by, which is %s, not the repository it came from", name:sub(at + 1)) or "")
             end
             table.join2(carried, package_libraries(target, package, name))
         end
