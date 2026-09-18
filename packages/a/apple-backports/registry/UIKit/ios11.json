@@ -63,6 +63,97 @@
       "status": "implemented",
       "facts": "facts/UIKit/NSDirectionalEdgeInsets.md",
       "source": "the host's UIKit through Mac Catalyst"
+    },
+    {
+      "api": "-[UIView safeAreaInsets]",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "computed on every read instead of stored",
+      "effect": "the answer is always current; storing it would need a hook into UIKit's layout, which the port does not take",
+      "facts": "facts/UIKit/UIViewSafeArea.md",
+      "source": "UIKit of iOS 11.0 arm64, -[UIView safeAreaInsets] at 0x18a285b78 and the path from -_updateSafeAreaInsets at 0x18a27c9d4"
+    },
+    {
+      "api": "UIViewController.additionalSafeAreaInsets",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewSafeArea.md",
+      "source": "UIKit of iOS 11.0 arm64, getter at 0x18a329618 and setter at 0x18a30d224"
+    },
+    {
+      "api": "-[UIView safeAreaInsetsDidChange]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the callback comes from the moment the insets change, and reaching that moment means replacing -layoutSubviews, -setFrame: or -didMoveToSuperview, which the port does not do",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly; an override in a subclass is never called, and nothing pretends otherwise",
+      "facts": "facts/UIKit/UIViewSafeArea.md",
+      "source": "UIKit of iOS 11.0 arm64, -[UIView _safeAreaInsetsDidChangeFromOldInsets:] at 0x18a27d178"
+    },
+    {
+      "api": "-[UIViewController viewSafeAreaInsetsDidChange]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the same moment of change, reached through the view's callback, which the port cannot deliver",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly; an override is never called",
+      "facts": "facts/UIKit/UIViewSafeArea.md",
+      "source": "UIKit of iOS 11.0 arm64, reached as _safeAreaInsetsDidChangeForView from 0x18a27d178"
+    },
+    {
+      "api": "UIView.safeAreaLayoutGuide",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the guide's frame is kept live by the layout engine, and the port is not part of it; a guide that does not move is worse than no guide",
+      "effect": "the property is not declared, so respondsToSelector: answers honestly; constraints against the guide cannot be written, and the safe area is read from -safeAreaInsets instead",
+      "facts": "facts/UIKit/UIViewSafeArea.md",
+      "source": "UIKit of iOS 11.0 arm64, -[UIView safeAreaLayoutGuide] at 0x18a27cda8"
+    },
+    {
+      "api": "UIView.directionalLayoutMargins",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "written through -setLayoutMargins:, which belongs to the iOS 8 backport, and read back from it",
+      "effect": "changing the writing direction after setting directional margins does not mirror the plain ones; on iOS 6 that cannot happen, since semanticContentAttribute is not there and the application's direction does not change while it runs",
+      "facts": "facts/UIKit/UIViewDirectionalLayoutMargins.md",
+      "source": "UIKit of iOS 11.0 arm64, -[UIView layoutMargins] at 0x18a27bca4; the projections from the differential test against the host's UIKit"
+    },
+    {
+      "api": "UIContentSizeCategoryIsAccessibilityCategory()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIContentSizeCategoryComparison.md",
+      "source": "UIKit of iOS 11.0 arm64, _UIContentSizeCategoryIsAccessibilityContentSizeCategory at 0x18a3fd070; the answers from the differential test against the host's UIKit"
+    },
+    {
+      "api": "UIContentSizeCategoryCompareToCategory()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIContentSizeCategoryComparison.md",
+      "source": "UIKit of iOS 11.0 arm64 at 0x18a3fd1e0; all 169 ordered pairs and the refusal of an arbitrary string checked against the host's UIKit"
+    },
+    {
+      "api": "UIFontTextStyleLargeTitle",
+      "kind": "symbol",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIContentSizeCategoryComparison.md",
+      "source": "the host's UIKit: the style is the string UICTFontTextStyleTitle0, which UIFont+TextStyles.m already answers at 34 points"
     }
   ]
 }

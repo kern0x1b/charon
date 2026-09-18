@@ -16,6 +16,8 @@ inputs.
     sh host/keyedarchive11/run.sh  writes device/keyedarchive11-expectations.h when it passes
     sh host/foundation11/run.sh    writes device/foundation11-expectations.h when it passes
     sh host/directionaledges/run.sh  writes device/directionaledges-expectations.h when it passes
+    sh host/directionalmargins/run.sh
+    sh host/contentsize/run.sh
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
@@ -55,6 +57,16 @@ format parser.
 UIKit through Mac Catalyst: the text the insets format to, everything the
 parser accepts and everything it refuses, the encoding the value carries, and
 the bytes the coder writes with secure coding on and off.
+
+`host/directionalmargins/run.sh` holds the directional layout margins to the
+host's UIKit: which of the two projections wins when each is set last, and how
+both read in either writing direction. It ends with a note rather than a check
+for the one case the port cannot follow — a direction changed after the
+directional margins were set, which would need `-layoutMargins` itself.
+
+`host/contentsize/run.sh` holds the two content size category functions to the
+host's: all one hundred and sixty-nine ordered pairs, the accessibility answer
+for every category and for nil, and the exception an arbitrary string earns.
 
 `host/uikit2/run.sh` renames selectors as well as classes, so a test holds a
 backported method and the system one side by side, and checks the spring curve
@@ -135,6 +147,18 @@ postinst run with `DPKG_ROOT` set to it.
   for `NSDirectionalEdgeInsets`, held to `directionaledges-expectations.h`. The
   structure's encoding is checked for its own name rather than against the
   host's, since `CGFloat` is a float on the device and a double on the host.
+- `safearea-tweak.m`: the safe area and the directional layout margins, which
+  need a real window and so run inside a running application rather than one of
+  their own: it is a MobileSubstrate tweak filtered to Preferences, which
+  `killall Preferences` restarts without a respring. It makes a window of its
+  own below the normal level, checks twenty-one answers against what the
+  algorithm read out of UIKit 11.0 says they must be, writes
+  `/private/var/backports/safearea.log` and `safearea.done`, and hides its
+  window again. Three of the checks are that `-safeAreaInsetsDidChange`,
+  `-viewSafeAreaInsetsDidChange` and `-safeAreaLayoutGuide` are **not** there,
+  since the port does not declare what it cannot deliver. The folder has to
+  exist and be writable by the application first:
+  `mkdir -p /private/var/backports && chmod 777 /private/var/backports`.
 - `alert.m`, `layout.m`: applications (`alert-Info.plist`, `layout-Info.plist`)
   launched from SpringBoard; they write `/private/var/backports/NAME.log` and
   `NAME.done`, and `alert.m` logs a `SCREENSHOT <label>` line and pauses before

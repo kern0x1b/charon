@@ -1,0 +1,155 @@
+#import <UIKit/UIKit.h>
+#import <objc/runtime.h>
+#include <dlfcn.h>
+#import "check.h"
+
+static NSMutableString *charon_report;
+
+static void note(NSString *line)
+{
+    [charon_report appendFormat:@"%@\n", line];
+    [charon_report writeToFile:@"/private/var/backports/safearea.log" atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+}
+
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+static NSString *const results_folder = @"/private/var/backports";
+
+static NSString *text(UIEdgeInsets insets)
+{
+    return [NSString stringWithFormat:@"{%g, %g, %g, %g}", insets.top, insets.left, insets.bottom, insets.right];
+}
+
+static void expect(UIView *view, UIEdgeInsets wanted, const char *name)
+{
+    note([NSString stringWithFormat:@"> %s", name]);
+    UIEdgeInsets found = view.safeAreaInsets;
+    BOOL passed = UIEdgeInsetsEqualToEdgeInsets(found, wanted);
+    charon_check(passed, name, [NSString stringWithFormat:@"%@ != %@", text(found), text(wanted)]);
+    note([NSString stringWithFormat:@"%@ %s: %@ wanted %@", passed ? @"ok  " : @"FAIL", name, text(found), text(wanted)]);
+}
+
+static NSString *image_of(void *pointer)
+{
+    Dl_info info;
+    if (!pointer || !dladdr(pointer, &info) || !info.dli_fname)
+        return @"?";
+    return @(info.dli_fname).lastPathComponent;
+}
+
+static void check_sources(void)
+{
+    NSString *library = @"libUIKitBackports.dylib";
+    CHECK_EQUAL(image_of((void *)method_getImplementation(class_getInstanceMethod([UIView class], @selector(safeAreaInsets)))),
+                library, "-[UIView safeAreaInsets] comes from the backports");
+    CHECK_EQUAL(image_of((void *)method_getImplementation(class_getInstanceMethod([UIViewController class], @selector(additionalSafeAreaInsets)))),
+                library, "-[UIViewController additionalSafeAreaInsets] comes from the backports");
+}
+
+static void check_absent(void)
+{
+    CHECK(![[UIView new] respondsToSelector:@selector(safeAreaInsetsDidChange)], "UIView does not claim -safeAreaInsetsDidChange");
+    note(@"checked UIView does not claim -safeAreaInsetsDidChange");
+    CHECK(![[UIViewController new] respondsToSelector:@selector(viewSafeAreaInsetsDidChange)], "UIViewController does not claim -viewSafeAreaInsetsDidChange");
+    note(@"checked UIViewController does not claim -viewSafeAreaInsetsDidChange");
+    CHECK(![[UIView new] respondsToSelector:@selector(safeAreaLayoutGuide)], "UIView does not claim -safeAreaLayoutGuide");
+    note(@"checked UIView does not claim -safeAreaLayoutGuide");
+}
+
+static void run(void)
+{
+    check_sources();
+    check_absent();
+
+    UIApplication *application = [UIApplication sharedApplication];
+    CGFloat statusBar = CGRectGetHeight(application.statusBarFrame);
+    CHECK(statusBar > 0, "the status bar has a height");
+    note(@"checked the status bar has a height");
+
+    UIWindow *window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    UIViewController *controller = [UIViewController new];
+    window.rootViewController = controller;
+    window.hidden = NO;
+    window.windowLevel = UIWindowLevelNormal - 1;
+
+    expect(window, UIEdgeInsetsMake(statusBar, 0, 0, 0), "the window is inset by the status bar");
+
+    UIView *root = controller.view;
+    root.frame = CGRectMake(0, statusBar, CGRectGetWidth(window.bounds), CGRectGetHeight(window.bounds) - statusBar);
+    expect(root, UIEdgeInsetsZero, "a view below the status bar is not inset");
+
+    root.frame = window.bounds;
+    expect(root, UIEdgeInsetsMake(statusBar, 0, 0, 0), "a view under the status bar is inset by it");
+
+    controller.additionalSafeAreaInsets = UIEdgeInsetsMake(10, 5, 15, 20);
+    UIEdgeInsets full = UIEdgeInsetsMake(statusBar + 10, 5, 15, 20);
+    expect(root, full, "the additional insets add to what the bars give");
+
+    UIView *middle = [[UIView alloc] initWithFrame:CGRectMake(60, 80, 100, 100)];
+    [root addSubview:middle];
+    expect(middle, UIEdgeInsetsZero, "a subview away from every edge is not inset");
+
+    CGRect bounds = root.bounds;
+    UIView *top = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds), 100)];
+    [root addSubview:top];
+    expect(top, UIEdgeInsetsMake(full.top, full.left, 0, full.right), "a subview at the top carries three of the insets");
+
+    UIView *bottom = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(bounds) - 100, CGRectGetWidth(bounds), 100)];
+    [root addSubview:bottom];
+    expect(bottom, UIEdgeInsetsMake(0, full.left, full.bottom, full.right), "a subview at the bottom carries the other three");
+
+    UIView *nested = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds), 10)];
+    [top addSubview:nested];
+    expect(nested, UIEdgeInsetsMake(MIN(full.top, 10), full.left, 0, full.right), "a nested subview keeps what its own frame still covers");
+
+    UIView *loose = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    expect(loose, UIEdgeInsetsZero, "a view with no superview and no controller is not inset");
+
+    UIView *margins = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    BOOL reversed = application.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft;
+    NSDirectionalEdgeInsets defaults = margins.directionalLayoutMargins;
+    CHECK(defaults.top == 8 && defaults.leading == 8 && defaults.bottom == 8 && defaults.trailing == 8,
+          "the directional margins start at eight on every edge");
+    margins.layoutMargins = UIEdgeInsetsMake(1, 2, 3, 4);
+    NSDirectionalEdgeInsets read = margins.directionalLayoutMargins;
+    CHECK(read.top == 1 && read.bottom == 3 && read.leading == (reversed ? 4 : 2) && read.trailing == (reversed ? 2 : 4),
+          "the directional margins read the plain ones by direction");
+    margins.directionalLayoutMargins = NSDirectionalEdgeInsetsMake(5, 6, 7, 8);
+    UIEdgeInsets written = margins.layoutMargins;
+    CHECK(written.top == 5 && written.bottom == 7 && written.left == (reversed ? 8 : 6) && written.right == (reversed ? 6 : 8),
+          "the plain margins follow the directional ones by direction");
+    NSDirectionalEdgeInsets back = margins.directionalLayoutMargins;
+    CHECK(back.top == 5 && back.leading == 6 && back.bottom == 7 && back.trailing == 8,
+          "the directional margins come back as they were set");
+    margins.layoutMargins = UIEdgeInsetsMake(9, 10, 11, 12);
+    NSDirectionalEdgeInsets last = margins.directionalLayoutMargins;
+    CHECK(last.top == 9 && last.bottom == 11 && last.leading == (reversed ? 12 : 10) && last.trailing == (reversed ? 10 : 12),
+          "the plain margins win when they are set last");
+
+    controller.additionalSafeAreaInsets = UIEdgeInsetsZero;
+    expect(root, UIEdgeInsetsMake(statusBar, 0, 0, 0), "clearing the additional insets restores what the bars alone give");
+
+    window.hidden = YES;
+
+    NSString *summary = [NSString stringWithFormat:@"%@ checks=%d failures=%d\n", charon_failures ? @"FAIL" : @"ok", charon_checks, charon_failures];
+    [summary writeToFile:[results_folder stringByAppendingPathComponent:@"safearea.done"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+}
+
+__attribute__((constructor)) static void safearea_tweak(void)
+{
+    charon_report = [NSMutableString string];
+    [[NSFileManager defaultManager] createDirectoryAtPath:results_folder withIntermediateDirectories:YES attributes:nil error:NULL];
+    note(@"loaded");
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        @autoreleasepool {
+            @try {
+                run();
+            } @catch (NSException *exception) {
+                note([NSString stringWithFormat:@"raised %@: %@", exception.name, exception.reason]);
+                charon_check(NO, "the run raises no exception", [NSString stringWithFormat:@"%@: %@", exception.name, exception.reason]);
+                NSString *summary = [NSString stringWithFormat:@"FAIL checks=%d failures=%d %@\n", charon_checks, charon_failures, exception.name];
+                [summary writeToFile:[results_folder stringByAppendingPathComponent:@"safearea.done"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+            }
+        }
+    });
+}
