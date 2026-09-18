@@ -19,6 +19,7 @@ inputs.
     sh host/directionalmargins/run.sh
     sh host/contentsize/run.sh
     sh host/fontmetrics/run.sh
+    sh host/systemspacing/run.sh
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
@@ -74,6 +75,16 @@ default content size category, which is the only category iOS 6 has: the
 rounding to the display scale, the `maximumPointSize` cap, a custom font
 keeping its family, the answer being a new object, and the wording of the
 refusal when the font is `nil`.
+
+`host/systemspacing/run.sh` holds the system spacing of a layout anchor to the
+host's UIKit, comparing the whole shape of the constraint each method returns -
+items, attributes, relation, multiplier, priority and the constant the spacing
+ends up in. It covers the eight points between ordinary edges at four
+multipliers, the three relations on both axes, the baseline spacing over five
+pairs of font sizes, a baseline against an edge, two views with no font at all,
+and an edge of the container. It ends with a note for the one combination the
+port does not reproduce: a baseline of a text view under the baseline of a view
+with no font.
 
 `host/uikit2/run.sh` renames selectors as well as classes, so a test holds a
 backported method and the system one side by side, and checks the spring curve
