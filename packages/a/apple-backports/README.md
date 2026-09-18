@@ -31,6 +31,13 @@ take a URL and fill in an error, `NSURLComponents`'
 of `NSString`, which are the ones a program uses when the format string comes
 from outside it.
 
+UIKit also gets the list of interactions a view holds - the list, the two
+callbacks an interaction is told its move by, and the owner - which is
+bookkeeping the release can do even though Apple's own interactions of that
+release cannot be carried, and the attributed label, hint and value of
+accessibility, whose text reaches this release's VoiceOver through the plain
+property it has kept since iOS 3.
+
 UIKit gets directional edge insets whole - the struct's zero, its two string
 functions, its `NSValue` and `NSCoder` surface - and then the parts of the safe
 area that are values rather than moments: `-safeAreaInsets` on a view,
@@ -88,6 +95,12 @@ useful because the layout engine keeps its frame current, and a guide whose
 frame nothing updates is worse for an application than no guide at all, because
 constraints to it would resolve and be wrong.
 
+The attributes inside an accessibility string are the mild case of the same
+thing: the four keys of this range carry the strings UIKit gives them, so an
+application can build such a string at all, but this release's VoiceOver speaks
+the text and knows nothing of pronunciation, pitch, queued announcements or
+heading levels.
+
 Some API only means anything if the release's own code understands it. The
 leading and trailing content alignments of a control are decided inside
 `UIControl` while it lays its content out; mapping them to left and right would
@@ -105,6 +118,15 @@ classes included: carrying the value types so that they could merely be created
 would leave an application believing it had configured a swipe that never
 happens, while with them missing it falls back to the release's own swipe to
 delete.
+
+A navigation bar's large title and its search bar are laid out by the bar
+itself, a home indicator and the system edge gestures that defer to it do not
+exist on this hardware, a colour named in an asset catalogue is read by a
+CoreUI that knows no such file, the exemption from inverted colours has to
+reach the render server, the password rules of a text field are read by a
+keyboard that generates none, and `UIScreen.captured` is answered by a service
+that watches recording and mirroring. Dragging, dropping and spring loading are
+the same story with a service of their own.
 
 The rest needs something the device does not run. Multipath TCP
 (`multipathServiceType`) needs it in the kernel. `getFileProviderServicesForItemAtURL:`
