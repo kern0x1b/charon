@@ -24,6 +24,7 @@ inputs.
     sh host/batchupdates/run.sh
     sh host/interactions/run.sh
     sh host/traitstyle/run.sh
+    sh host/backbuttontitle/run.sh
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
@@ -95,6 +96,15 @@ that it starts empty, that it is copied rather than held, that clearing it
 works, and that two recognizers keep their own. It notes the one thing the port
 cannot do - the system prints the name inside `-description`, which belongs to
 the release.
+
+`host/backbuttontitle/run.sh` holds the back button title of a navigation item
+to the system's: what the item answers before and after it is given one, that
+the title and `backBarButtonItem` leave each other alone whichever is set
+first, the copy on the way in, the last write winning and clearing with `nil`.
+Three checks are the port's own, because they are the difference: the port puts
+the title into a plain `backBarButtonItem`, which is where this release draws
+the back button from, leaves an item the application set alone, and takes its
+own item away again when the title goes.
 
 `host/traitstyle/run.sh` is the contract for the user interface style of a
 trait collection, iOS 12 API on a class of the iOS 7-10 range: it runs one
@@ -225,7 +235,10 @@ postinst run with `DPKG_ROOT` set to it.
   `mkdir -p /private/var/backports && chmod 777 /private/var/backports`. Every
   check writes its own line to the log, since a tweak must not touch the
   application's `stdout`: a failure that only printed would be lost. The last
-  full run answered `ok checks=41 failures=0` on an iPhone 4S (6.1.3, armv7).
+  full run answered `ok checks=44 failures=0` on an iPhone 4S (6.1.3, armv7).
+  Three of those checks are not about the safe area at all: they ask the
+  release's own visual format parser what it does with the iOS 11 spacing
+  option, which is a question only a real iOS 6 can answer.
 - `alert.m`, `layout.m`: applications (`alert-Info.plist`, `layout-Info.plist`)
   launched from SpringBoard; they write `/private/var/backports/NAME.log` and
   `NAME.done`, and `alert.m` logs a `SCREENSHOT <label>` line and pauses before

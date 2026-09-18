@@ -1967,6 +1967,28 @@
       "reason": "the same: the type is read by an AutoFill this release has no part of",
       "effect": "the constant is not there",
       "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UINavigationItem.backButtonTitle",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a departure from 11.0, which leaves backBarButtonItem alone",
+      "effect": "the title is kept as Apple keeps it, and is also put into a plain UIBarButtonItem in backBarButtonItem, which is where this release draws the back button from, unless the application has put an item there itself; so backBarButtonItem is no longer nil after a title is set",
+      "facts": "facts/UIKit/UINavigationItemBackButtonTitle.md",
+      "source": "UIKit of iOS 11.0 arm64 at 0x18a043a9c, 0x18a043628 and 0x18a04e8e8; the value behaviour from the differential test against the host's UIKit"
+    },
+    {
+      "api": "+[NSLayoutConstraint constraintsWithVisualFormat:options:metrics:views:]",
+      "kind": "method",
+      "introduced": "6.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "NSLayoutFormatSpacingBaselineToBaseline of iOS 11 is a case of an enumeration, so the compiler writes the bit into this call, which this release already implements and which knows nothing of it",
+      "effect": "the option is dropped without a word: measured on an iPhone 4S running 6.1.3, the same format with and without the bit raises nothing and gives the same constraint, edge to edge, of the same constant and the same attributes - so a vertical format asking for baseline to baseline spacing is laid out edge to edge",
+      "facts": "facts/UIKit/NSLayoutConstraintVisualFormat.md",
+      "source": "the SDK's enumeration for the value, 1 << 19, and a run on an iPhone 4S (6.1.3, armv7) for what the release does with it"
     }
   ]
 }

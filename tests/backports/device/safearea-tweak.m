@@ -201,6 +201,36 @@ static void run(void)
     CHECK(last.top == 9 && last.bottom == 11 && last.leading == (reversed ? 12 : 10) && last.trailing == (reversed ? 10 : 12),
           "the plain margins win when they are set last");
 
+    UIView *left = [[UIView alloc] initWithFrame:CGRectZero], *right = [[UIView alloc] initWithFrame:CGRectZero];
+    left.translatesAutoresizingMaskIntoConstraints = NO;
+    right.translatesAutoresizingMaskIntoConstraints = NO;
+    [root addSubview:left];
+    [root addSubview:right];
+    NSDictionary *pair = [NSDictionary dictionaryWithObjectsAndKeys:left, @"a", right, @"b", nil];
+    NSArray *plain = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[a]-[b]" options:0 metrics:nil views:pair];
+    NSArray *spaced = nil;
+    NSString *complaint = nil;
+    @try {
+        spaced = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[a]-[b]" options:(1 << 19) metrics:nil views:pair];
+    } @catch (NSException *exception) {
+        complaint = exception.name;
+    }
+    note([NSString stringWithFormat:@"visual format with the baseline spacing option: raised %@, %lu constraints against %lu",
+          complaint ?: @"nothing", (unsigned long)spaced.count, (unsigned long)plain.count]);
+    CHECK(complaint == nil, "a visual format takes the iOS 11 spacing option without raising");
+    CHECK(spaced.count == plain.count, "and makes the same number of constraints");
+    if (spaced.count && plain.count) {
+        NSLayoutConstraint *one = [spaced objectAtIndex:0], *other = [plain objectAtIndex:0];
+        note([NSString stringWithFormat:@"the first constraint: %g against %g, attributes %ld/%ld against %ld/%ld",
+              one.constant, other.constant, (long)one.firstAttribute, (long)one.secondAttribute,
+              (long)other.firstAttribute, (long)other.secondAttribute]);
+        CHECK(one.constant == other.constant && one.firstAttribute == other.firstAttribute
+              && one.secondAttribute == other.secondAttribute,
+              "and the option changes nothing about them");
+    }
+    [left removeFromSuperview];
+    [right removeFromSuperview];
+
     controller.additionalSafeAreaInsets = UIEdgeInsetsZero;
     expect(root, UIEdgeInsetsMake(statusBar, 0, 0, 0), "clearing the additional insets restores what the bars alone give");
 
