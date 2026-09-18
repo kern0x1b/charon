@@ -252,3 +252,14 @@ postinst run with `DPKG_ROOT` set to it.
   frame of 16666.7. Reading the presentation layer needs `[CATransaction flush]`
   and a turn of the run loop first: before the first commit there is no
   presentation layer and the model value is what comes back.
+- `haptics.m`: a process of its own for the feedback generators, linking UIKit
+  but raising no window. It holds the port to what was read off iOS 10 rather
+  than to a sensation: that the three generators are there and come from the
+  backports library, that `UISelectionFeedbackGenerator` is **not** declared,
+  that a style outside the three still builds a generator and simply plays
+  nothing instead of raising, that the iOS 13 `-impactOccurredWithIntensity:` is
+  not answered, and that every call returns without raising. It says nothing
+  about how hard the motor turns: that was measured on an iPhone4,1 with the
+  accelerometer and is written down in
+  `packages/a/apple-backports/facts/UIKit/UIFeedbackGenerator.md`, since an
+  emulated device has no motor and every call there plays nothing.

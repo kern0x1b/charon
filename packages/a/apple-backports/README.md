@@ -8,6 +8,37 @@ has none. This file is the reasoning behind the answers, a section per range of
 releases, so that a port can see at a glance what it gets, what it gets with a
 difference, and what it will never get here and why.
 
+## iOS 10
+
+### Feedback that is a vibration, not a haptic
+
+The three feedback generators are implemented against the motor the iPhone 4S
+has, and one of the four is not implemented at all. Both halves of that are
+measurements rather than opinions, and `facts/UIKit/UIFeedbackGenerator.md`
+carries the numbers.
+
+iOS 10 tells `light`, `medium` and `heavy` apart by which Taptic waveform it
+plays, not by how hard - the volumes of the three differ by a tenth. An
+eccentric rotating mass has no waveforms, only amplitude and length, so this
+port separates the three by strength and duration instead. It is the same API
+and the same three steps of emphasis; it is not the same sensation, and nothing
+here pretends otherwise. On hardware with no motor at all, such as the iPad 2,
+every call plays nothing, which is what iOS 10 itself does on a device without a
+Taptic Engine.
+
+`UISelectionFeedbackGenerator` is **absent**. Measured on an iPhone4,1, a pulse
+of 20 ms does not start the motor and 40 ms is the shortest that moves it, while
+full amplitude needs upwards of 200 ms. A tick per detent of a turning picker is
+faster than that floor, so the class would have to imitate a sensation the
+hardware cannot make. `respondsToSelector:` and `NSClassFromString` answer
+honestly instead.
+
+The motor is reached through
+`AudioServicesPlaySystemSoundWithVibration`, the path the system itself uses, so
+mediaserverd keeps its own arbitration; the port does not write the IORegistry
+node behind its back. `-prepare` has nothing to warm and does nothing, which is
+also what iOS 10 does when there is no engine.
+
 ## iOS 11 and 12
 
 These two releases are read differently from the ones before them. The last

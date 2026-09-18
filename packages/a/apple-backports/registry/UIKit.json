@@ -196,5 +196,43 @@
   "reason": "the other half of the same pair",
   "facts": "facts/UIKit/UISpringTimingParameters.md",
   "source": "UIKit of the armv7s cache of iOS 10.3.4, absent from the armv7 cache of 6.0"
+ },
+ {
+  "api": "UIFeedbackGenerator",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UIFeedbackGenerator.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
+ },
+ {
+  "api": "UIImpactFeedbackGenerator",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UIFeedbackGenerator.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
+ },
+ {
+  "api": "UINotificationFeedbackGenerator",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UIFeedbackGenerator.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
+ },
+ {
+  "api": "UISelectionFeedbackGenerator",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "it marks each detent of a turning picker with a tick, and the iPhone 4S motor needs 40 ms before it moves at all, which is slower than the detents it would mark; a buzz there would imitate a sensation the hardware cannot produce",
+  "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
+  "facts": "facts/UIKit/UIFeedbackGenerator.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
  }
 ]
