@@ -22,6 +22,7 @@ inputs.
     sh host/systemspacing/run.sh
     sh host/gesturename/run.sh
     sh host/batchupdates/run.sh
+    sh host/interactions/run.sh
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
@@ -93,6 +94,15 @@ that it starts empty, that it is copied rather than held, that clearing it
 works, and that two recognizers keep their own. It notes the one thing the port
 cannot do - the system prints the name inside `-description`, which belongs to
 the release.
+
+`host/interactions/run.sh` covers two things a view holds for somebody else:
+the list of `UIInteraction`s, and the attributed strings of accessibility. It
+runs one script against UIKit's own implementation and the same script against
+the port under its host names, and compares every answer - which interaction is
+told what and when, the order of the list, the copy the getter hands out, the
+three exceptions the current implementation raises for a `nil` argument, and
+how an attributed label and a plain one stand for one value. The four
+attribute keys the port carries are compared with UIKit's own strings.
 
 `host/batchupdates/run.sh` runs the same sequence of table updates twice, once
 through the system's `-performBatchUpdates:completion:` and once through the
