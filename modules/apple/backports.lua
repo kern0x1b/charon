@@ -453,7 +453,8 @@ function check_registry(root, found, complete, deployment, exports)
                 return true
             end
         end
-        return false
+        local owner = name:match("^[-+]%[([%w_]+) ") or name:match("^([%u][%w_]*)%.")
+        return owner ~= nil and listed[owner] ~= nil
     end
     for _, carried in ipairs({found.classes, found.members, found.symbols}) do
         for name in pairs(carried) do
