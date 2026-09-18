@@ -64,6 +64,7 @@ group traits "UITraitCollection.m" "*" traits_test.m
 group notifications "UIUserNotificationSettings.m" "*" notifications_test.m
 group misc "UIScreen+NativeBounds.m UIFont+TextStyles.m UIFont+Weights.m UIColor+SystemColors.m UIColor+SystemPurpleColor.m UIImage+RenderingMode.m UITextField+DefaultTextAttributes.m UIViewController+ExtendedLayout.m" "systemFontOfSize" misc_test.m
 group motion "UIMotionEffect.m UIView+MotionEffects.m" "initWithKeyPath keyPath type minimumRelativeValue setMinimumRelativeValue maximumRelativeValue setMaximumRelativeValue keyPathsAndRelativeValuesForViewerOffset" motion_test.m
+group sizes "UIContentSizeCategory.m UIContentSizeCategory+Unspecified.m" "" sizes_test.m
 group tint "UIView+TintColor.m" "" tint_test.m
 group bars "UINavigationBar+BarAppearance.m UISearchBar+BarStyle.m UIToolbar+BarTintColor.m UITabBar+BarTintColor.m" "" bars_test.m
 
