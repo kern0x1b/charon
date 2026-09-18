@@ -19,9 +19,33 @@ local function references(folder, binary)
     return table.concat(listed, " ")
 end
 
+local function packages_target(declared, held)
+    return {
+        name = function () return "port" end,
+        get = function (_, key) return key == "packages" and declared or nil end,
+        pkg = function (_, name) return held[name] end
+    }
+end
+
+-- A package the target adds and never receives is a binary built without it,
+-- which the device only tells apart by failing, so the rules refuse the target.
+local function packages_step(platform, found)
+    local refused = fixtures.refusal(function () platform.verify_packages(packages_target({"ldid"}, {})) end)
+    if not (refused and refused:find("adds package ldid", 1, true)) then
+        table.insert(found, "a package the target adds and never receives must refuse the target, not " .. tostring(refused))
+    end
+    if fixtures.refusal(function () platform.verify_packages(packages_target({"ldid"}, {ldid = {}})) end) then
+        table.insert(found, "a package the target receives must leave it alone")
+    end
+    if fixtures.refusal(function () platform.verify_packages(packages_target({"charon@absent"}, {})) end) then
+        table.insert(found, "a name the project requires nowhere is no package of this target")
+    end
+end
+
 function failures(opt)
     local platform = import("apple.platform", {rootdir = opt.modules, anonymous = true})
     local found = {}
+    packages_step(platform, found)
     local folder = fixtures.scratch()
     io.writefile(path.join(folder, "libSystem.tbd"), fixtures.system_stub())
     local runtime = path.join(folder, "runtime")

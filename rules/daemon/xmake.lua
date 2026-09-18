@@ -8,6 +8,7 @@ rule("daemon")
 
     after_link(function (target)
         import("@self.apple.platform")
+        platform.verify_packages(target)
         platform.verify_inputs(target)
         platform.verify_placed(target, (target:values("charon.install") or "/usr/libexec") .. "/" .. target:filename())
     end)

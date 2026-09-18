@@ -1,4 +1,5 @@
 import("core.base.option")
+import("core.project.project")
 import("macho")
 import("compat")
 import("dyld")
@@ -20,6 +21,26 @@ function deployment(target)
     local found = target:toolchain("apple-ios")
     found:load()
     return found:config("deployment")
+end
+
+-- xmake hands a target the packages it adds under the name a require carries,
+-- which is its alias, or its own name when it has none: a require named after
+-- the repository it comes from reaches no target without one. A target that
+-- adds a package and never receives it links against the frameworks of the
+-- release alone, and the program it builds fails on the device saying nothing.
+function verify_packages(target)
+    local _, extra = project.requires_str()
+    for _, required in ipairs(table.wrap(target:get("packages"))) do
+        local wanted = required:split("%s+")[1]
+        local at = wanted:lastof("@", true)
+        local name = wanted:sub(at and at + 1 or 1)
+        local declared = (extra or {})[required] or {}
+        if not target:pkg(name) and project.required_package(required) and not declared.optional then
+            raise("target(%s) adds package %s, and nothing of it reached the target%s", target:name(), required,
+                  at and string.format("; a require named after its repository reaches one only under an alias: add_requires(\"%s\", {alias = \"%s\"})", wanted, name)
+                     or ", so this configuration holds no install of it")
+        end
+    end
 end
 
 function verify_inputs(target)
