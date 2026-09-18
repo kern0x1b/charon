@@ -126,5 +126,9 @@ Every implemented entry has a differential test under `tests/backports/host/`
 that compiles these sources with the classes and functions renamed and the
 categories attached under their own selector prefix, so the system's
 implementation and the port run side by side in one process and the two answers
-are compared. The safe area work was also checked on an iPhone 4S running
-6.1.3, through a tweak loaded into an application the phone already has.
+are compared. The safe area, the scroll view's adjusted content inset, the
+directional margins and the font metrics were also checked on an iPhone 4S
+running 6.1.3, through a tweak loaded into an application the phone already
+has: forty-one checks in one run, no failures. That run is where the font cache
+of this release showed up - a font scaled to the size it already has comes back
+as the same object, which no host can show.

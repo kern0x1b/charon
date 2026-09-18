@@ -56,7 +56,18 @@ that same default category.
 
 The behaviour here is deterministic, so the host differential is a real
 reference rather than a set of expectations derived by hand: sixty-one checks
-against the system's own UIKit, all of them agreeing. On the device the same
-members were exercised inside the safe area tweak and passed; the full device
-run is still owed, and waits on a phone whose Substrate is loading tweaks into
-applications again.
+against the system's own UIKit, all of them agreeing. The device run is done
+too, on an iPhone 4S (6.1.3, armv7) inside the safe area tweak: a whole value
+left alone, a positive and a negative value rounded to the screen scale of two,
+a font keeping its size, a maximum point size capping it, the default metrics
+scaling like the body's, and a `nil` font refused.
+
+One thing that run found, which no host can show: **iOS 6 interns its fonts**.
+`-scaledFontForFont:` asks the font for `-fontWithSize:`, and where the size
+does not change this release answers the very same object, while the host's
+UIKit answers a new one. A font of another size - the capped one, for instance -
+is a different object on both. Nothing in the API promises a new object, and
+the port cannot manufacture one without wrapping a font it does not own, so
+this is the release's own font cache showing through and the answer is equal in
+family, size and descriptor either way. The device test now says so in two
+checks instead of asking for an identity this release does not give.
