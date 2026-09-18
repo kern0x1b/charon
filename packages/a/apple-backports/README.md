@@ -128,6 +128,24 @@ keyboard that generates none, and `UIScreen.captured` is answered by a service
 that watches recording and mirroring. Dragging, dropping and spring loading are
 the same story with a service of their own.
 
+Whole families go out for one reason each, and the registry names every class
+and protocol in them rather than the family: everything that hangs off a drag
+session (the previews, the items, the sessions and the delegates, the drop
+side, the row and item level of a table or a collection view, and text
+dragging, dropping and pasting), spring loading, the focus engine, and the
+document browser with the file provider world behind it. Four accessibility
+protocols of that release go out too, because the VoiceOver here never asks the
+questions they answer.
+
+Two loose constants of iOS 11 are carried instead of refused, for a reason
+worth naming: `UIImagePickerControllerImageURL` and `UIActivityTypeMarkupAsPDF`
+are strings an application writes into a dictionary or an array, and a missing
+one becomes a `nil` key that raises. They carry the values UIKit gives them -
+the second is a reverse-domain identifier, not its own name, which is why both
+were read rather than assumed - and they make nothing happen: the picker of
+this release never fills that key in, and its share sheet never offers that
+activity.
+
 The rest needs something the device does not run. Multipath TCP
 (`multipathServiceType`) needs it in the kernel. `getFileProviderServicesForItemAtURL:`
 needs a File Provider daemon. `NSUserActivity`'s `eligibleForPrediction`,

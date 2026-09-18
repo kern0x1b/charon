@@ -736,6 +736,638 @@
       "reason": "there is no drag interaction on a table here to enable",
       "effect": "the property is not there",
       "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDragItem",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
+      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDragPreview",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
+      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDragPreviewParameters",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
+      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDragPreviewTarget",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
+      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITargetedDragPreview",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
+      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDropProposal",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
+      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDragSession",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
+      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDropSession",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
+      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDragDropSession",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
+      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDragAnimating",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
+      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDragInteractionDelegate",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
+      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDropInteractionDelegate",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
+      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIPasteConfiguration",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the configuration tells the system which types a responder accepts, and this release's paste menu and drop target ask nobody",
+      "effect": "the class is not there, so a responder is never told it may paste something it cannot be handed",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIPasteConfigurationSupporting",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "nothing in this release reads a paste configuration off a responder",
+      "effect": "the protocol is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDataSourceTranslating",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the translation between a data source's indexes and a view's exists for drag and drop, which this release cannot run",
+      "effect": "the protocol is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIItemProviderPresentationSizeProviding",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the size is asked for while a drag preview is built",
+      "effect": "the protocol is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITableViewDragDelegate",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the row and item level of dragging is driven by the same system service, through the view's own drag session",
+      "effect": "the name is not there; the table or collection view behaves as this release's does, with its own reordering where it has one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITableViewDropDelegate",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the row and item level of dragging is driven by the same system service, through the view's own drag session",
+      "effect": "the name is not there; the table or collection view behaves as this release's does, with its own reordering where it has one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITableViewDropCoordinator",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the row and item level of dragging is driven by the same system service, through the view's own drag session",
+      "effect": "the name is not there; the table or collection view behaves as this release's does, with its own reordering where it has one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITableViewDropItem",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the row and item level of dragging is driven by the same system service, through the view's own drag session",
+      "effect": "the name is not there; the table or collection view behaves as this release's does, with its own reordering where it has one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITableViewDropPlaceholder",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the row and item level of dragging is driven by the same system service, through the view's own drag session",
+      "effect": "the name is not there; the table or collection view behaves as this release's does, with its own reordering where it has one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITableViewDropPlaceholderContext",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the row and item level of dragging is driven by the same system service, through the view's own drag session",
+      "effect": "the name is not there; the table or collection view behaves as this release's does, with its own reordering where it has one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITableViewDropProposal",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the row and item level of dragging is driven by the same system service, through the view's own drag session",
+      "effect": "the name is not there; the table or collection view behaves as this release's does, with its own reordering where it has one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITableViewPlaceholder",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the row and item level of dragging is driven by the same system service, through the view's own drag session",
+      "effect": "the name is not there; the table or collection view behaves as this release's does, with its own reordering where it has one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UICollectionViewDragDelegate",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the row and item level of dragging is driven by the same system service, through the view's own drag session",
+      "effect": "the name is not there; the table or collection view behaves as this release's does, with its own reordering where it has one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UICollectionViewDropDelegate",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the row and item level of dragging is driven by the same system service, through the view's own drag session",
+      "effect": "the name is not there; the table or collection view behaves as this release's does, with its own reordering where it has one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UICollectionViewDropCoordinator",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the row and item level of dragging is driven by the same system service, through the view's own drag session",
+      "effect": "the name is not there; the table or collection view behaves as this release's does, with its own reordering where it has one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UICollectionViewDropItem",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the row and item level of dragging is driven by the same system service, through the view's own drag session",
+      "effect": "the name is not there; the table or collection view behaves as this release's does, with its own reordering where it has one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UICollectionViewDropPlaceholder",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the row and item level of dragging is driven by the same system service, through the view's own drag session",
+      "effect": "the name is not there; the table or collection view behaves as this release's does, with its own reordering where it has one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UICollectionViewDropPlaceholderContext",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the row and item level of dragging is driven by the same system service, through the view's own drag session",
+      "effect": "the name is not there; the table or collection view behaves as this release's does, with its own reordering where it has one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UICollectionViewDropProposal",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the row and item level of dragging is driven by the same system service, through the view's own drag session",
+      "effect": "the name is not there; the table or collection view behaves as this release's does, with its own reordering where it has one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UICollectionViewPlaceholder",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the row and item level of dragging is driven by the same system service, through the view's own drag session",
+      "effect": "the name is not there; the table or collection view behaves as this release's does, with its own reordering where it has one",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UICollectionViewCell dragStateDidChange:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the state it reports belongs to a drag this release never starts",
+      "effect": "the method is not there, and a cell is never told about a drag state",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITextDraggable",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
+      "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITextDroppable",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
+      "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITextDragDelegate",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
+      "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITextDropDelegate",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
+      "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITextDragRequest",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
+      "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITextDropRequest",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
+      "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITextDropProposal",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
+      "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITextDragPreviewRenderer",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
+      "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITextPasteConfigurationSupporting",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
+      "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITextPasteDelegate",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
+      "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITextPasteItem",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
+      "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UISpringLoadedInteractionBehavior",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "spring loading opens what a drag hovers over, and there is no drag here to hover",
+      "effect": "the name is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UISpringLoadedInteractionContext",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "spring loading opens what a drag hovers over, and there is no drag here to hover",
+      "effect": "the name is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UISpringLoadedInteractionEffect",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "spring loading opens what a drag hovers over, and there is no drag here to hover",
+      "effect": "the name is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UISpringLoadedInteractionSupporting",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "spring loading opens what a drag hovers over, and there is no drag here to hover",
+      "effect": "the name is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIFocusSystem",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the focus engine moves focus between views for a remote, a keyboard or a pointer, and it is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there: this release has no focused item to ask about",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIFocusDebugger",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the focus engine moves focus between views for a remote, a keyboard or a pointer, and it is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there: this release has no focused item to ask about",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIFocusDebuggerOutput",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the focus engine moves focus between views for a remote, a keyboard or a pointer, and it is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there: this release has no focused item to ask about",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIFocusAnimationContext",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the focus engine moves focus between views for a remote, a keyboard or a pointer, and it is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there: this release has no focused item to ask about",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIFocusMovementHint",
+      "kind": "class",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the focus engine moves focus between views for a remote, a keyboard or a pointer, and it is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there: this release has no focused item to ask about",
+      "source": "UIKit of iOS 12.0 arm64"
+    },
+    {
+      "api": "UIFocusItemContainer",
+      "kind": "protocol",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the focus engine moves focus between views for a remote, a keyboard or a pointer, and it is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there: this release has no focused item to ask about",
+      "source": "UIKit of iOS 12.0 arm64"
+    },
+    {
+      "api": "UIFocusItemScrollableContainer",
+      "kind": "protocol",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the focus engine moves focus between views for a remote, a keyboard or a pointer, and it is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there: this release has no focused item to ask about",
+      "source": "UIKit of iOS 12.0 arm64"
+    },
+    {
+      "api": "UIDocumentBrowserViewController",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the document browser is a view of the Files world: it shows what file providers offer and hands back documents through a daemon this release does not run",
+      "effect": "the name is not there; an application picks documents with the picker this release has, inside its own container",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDocumentBrowserViewControllerDelegate",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the document browser is a view of the Files world: it shows what file providers offer and hands back documents through a daemon this release does not run",
+      "effect": "the name is not there; an application picks documents with the picker this release has, inside its own container",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDocumentBrowserTransitionController",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the document browser is a view of the Files world: it shows what file providers offer and hands back documents through a daemon this release does not run",
+      "effect": "the name is not there; an application picks documents with the picker this release has, inside its own container",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDocumentBrowserAction",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the document browser is a view of the Files world: it shows what file providers offer and hands back documents through a daemon this release does not run",
+      "effect": "the name is not there; an application picks documents with the picker this release has, inside its own container",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIAccessibilityContainerDataTable",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the protocol exists so that VoiceOver can walk a table by rows and columns, and this release's VoiceOver never asks",
+      "effect": "the protocol is not there; a table is read out in the order its elements come",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIAccessibilityContainerDataTableCell",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the cell half of the same conversation, which nothing here starts",
+      "effect": "the protocol is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIAccessibilityContentSizeCategoryImageAdjusting",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the protocol makes an image grow with an accessibility content size category, and this release has one category and no accessibility sizes",
+      "effect": "the protocol is not there; an image keeps the size the application gives it",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIAccessibilityLocationDescriptor",
+      "kind": "class",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the descriptor names a point of a view for VoiceOver to act on, and nothing in this release reads one",
+      "effect": "the class is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UICollectionViewFlowLayout.sectionInsetReference",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the reference says whether a section's insets start at the content area, the safe area or the layout margins, and the flow layout that reads it is UIKit's own",
+      "effect": "the property is not there: sections are laid out from the content area as this release's flow layout always does",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "+[UIColor colorNamed:inBundle:compatibleWithTraitCollection:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the same asset catalogue as the plain +colorNamed:, read by a CoreUI that knows no such file",
+      "effect": "the method is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "NSLayoutManager.limitsLayoutForSuspiciousContents",
+      "kind": "property",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the flag belongs to TextKit's layout manager, which arrived in iOS 7; this release has no NSLayoutManager at all",
+      "effect": "the property is not there, and neither is the class that would carry it",
+      "source": "UIKit of iOS 12.0 arm64; the absence of NSLayoutManager read from the armv7 cache of 6.1.3"
+    },
+    {
+      "api": "UITextContentTypeNewPassword",
+      "kind": "constant",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "a content type is a hint to the keyboard's AutoFill, which this release does not have; the property that would carry it, UITextInputTraits.textContentType, is iOS 10 API this package does not carry either",
+      "effect": "the constant is not there: an application that sets a content type is setting it on a property that does not exist",
+      "source": "UIKit of iOS 12.0 arm64"
+    },
+    {
+      "api": "UITextContentTypeOneTimeCode",
+      "kind": "constant",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the same: the one time code is offered by the AutoFill of a keyboard this release does not have",
+      "effect": "the constant is not there",
+      "source": "UIKit of iOS 12.0 arm64"
+    },
+    {
+      "api": "UIImagePickerControllerImageURL",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the key carries the string UIKit gives it, so an application can look it up; this release's image picker never puts it in the dictionary, and the application falls back to UIImagePickerControllerReferenceURL, which it does fill in",
+      "facts": "facts/UIKit/UIKitConstants11.md",
+      "source": "UIKit of iOS 11.0 arm64, the exported constant at 0x1aa619318"
+    },
+    {
+      "api": "UIActivityTypeMarkupAsPDF",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the constant carries com.apple.UIKit.activity.MarkupAsPDF, the identifier UIKit uses, so it can be named in excludedActivityTypes; this release's share sheet never offers that activity, so excluding it excludes nothing",
+      "facts": "facts/UIKit/UIKitConstants11.md",
+      "source": "UIKit of iOS 11.0 arm64, the exported constant at 0x1aa645bf0"
     }
   ]
 }
