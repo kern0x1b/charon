@@ -1368,6 +1368,605 @@
       "effect": "the constant carries com.apple.UIKit.activity.MarkupAsPDF, the identifier UIKit uses, so it can be named in excludedActivityTypes; this release's share sheet never offers that activity, so excluding it excludes nothing",
       "facts": "facts/UIKit/UIKitConstants11.md",
       "source": "UIKit of iOS 11.0 arm64, the exported constant at 0x1aa645bf0"
+    },
+    {
+      "api": "UIAccessibilityVoiceOverStatusDidChangeNotification",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the name carries UIAccessibilityVoiceOverTouchStatusChanged, the string this release posts under its older name, so an application registered for the new name is told when VoiceOver starts and stops",
+      "facts": "facts/UIKit/UIKitConstants11.md",
+      "source": "UIKit of iOS 11.0 arm64, the exported constant at 0x1aa61b730, read beside the deprecated UIAccessibilityVoiceOverStatusChanged at 0x1aa61b738; the same string exported by UIKit of 6.1.3 armv7"
+    },
+    {
+      "api": "UIAccessibilityClosedCaptioningStatusDidChangeNotification",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "nothing is carried: this release exports the name itself and posts UIAccessibilityClosedCaptioningChanged under it, which is the same string iOS 11 has",
+      "facts": "facts/UIKit/UIKitConstants11.md",
+      "source": "UIKit of iOS 11.0 arm64 and of 6.1.3 armv7, both constants read for their values"
+    },
+    {
+      "api": "UIAccessibilityGuidedAccessStatusDidChangeNotification",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "nothing is carried: this release exports the name itself and posts UIAccessibilityGuidedAccessStateChanged under it, which is the same string iOS 11 has",
+      "facts": "facts/UIKit/UIKitConstants11.md",
+      "source": "UIKit of iOS 11.0 arm64 and of 6.1.3 armv7, both constants read for their values"
+    },
+    {
+      "api": "UIAccessibilityInvertColorsStatusDidChangeNotification",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "nothing is carried: this release exports the name itself and posts UIAccessibilityInvertColorsChanged under it, which is the same string iOS 11 has",
+      "facts": "facts/UIKit/UIKitConstants11.md",
+      "source": "UIKit of iOS 11.0 arm64 and of 6.1.3 armv7, both constants read for their values"
+    },
+    {
+      "api": "UIAccessibilityMonoAudioStatusDidChangeNotification",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "nothing is carried: this release exports the name itself and posts UIAccessibilityMonoAudioStatusChanged under it, which is the same string iOS 11 has",
+      "facts": "facts/UIKit/UIKitConstants11.md",
+      "source": "UIKit of iOS 11.0 arm64 and of 6.1.3 armv7, both constants read for their values"
+    },
+    {
+      "api": "NSObject.accessibilityDragSourceDescriptors",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "dragging is begun and carried by a system service this release does not run",
+      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "NSObject.accessibilityDropPointDescriptors",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "dragging is begun and carried by a system service this release does not run",
+      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "NSObject.accessibilityContainerType",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "this release's VoiceOver never asks the question the member answers",
+      "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "NSItemProvider.teamData",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "dragging is begun and carried by a system service this release does not run",
+      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "NSItemProvider.preferredPresentationSize",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the size is read while a drag preview is built",
+      "effect": "the property is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "NSItemProvider.preferredPresentationStyle",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the style is read while a drag preview is built",
+      "effect": "the property is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIAccessibilityCustomAction initWithAttributedName:target:selector:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "this release's VoiceOver never asks the question the member answers",
+      "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIAccessibilityCustomAction.attributedName",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "this release's VoiceOver never asks the question the member answers",
+      "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIAccessibilityCustomRotor initWithAttributedName:itemSearchBlock:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "this release's VoiceOver never asks the question the member answers",
+      "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIAccessibilityCustomRotor initWithSystemType:itemSearchBlock:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "this release's VoiceOver never asks the question the member answers",
+      "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIAccessibilityCustomRotor.attributedName",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "this release's VoiceOver never asks the question the member answers",
+      "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIAccessibilityCustomRotor.systemRotorType",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "this release's VoiceOver never asks the question the member answers",
+      "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIAccessibilityReadingContent accessibilityAttributedContentForLineNumber:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "this release's VoiceOver never asks the question the member answers",
+      "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIAccessibilityReadingContent accessibilityAttributedPageContent]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "this release's VoiceOver never asks the question the member answers",
+      "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIPickerViewAccessibilityDelegate pickerView:accessibilityAttributedLabelForComponent:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "this release's VoiceOver never asks the question the member answers",
+      "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIPickerViewAccessibilityDelegate pickerView:accessibilityAttributedHintForComponent:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "this release's VoiceOver never asks the question the member answers",
+      "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIScrollViewAccessibilityDelegate accessibilityAttributedScrollStatusForScrollView:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "this release's VoiceOver never asks the question the member answers",
+      "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UICollectionView.dragDelegate",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "dragging is begun and carried by a system service this release does not run",
+      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UICollectionView.dropDelegate",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "dragging is begun and carried by a system service this release does not run",
+      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UICollectionView.dragInteractionEnabled",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "dragging is begun and carried by a system service this release does not run",
+      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UICollectionView.hasActiveDrag",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "dragging is begun and carried by a system service this release does not run",
+      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UICollectionView.hasActiveDrop",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "dragging is begun and carried by a system service this release does not run",
+      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UICollectionView.reorderingCadence",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the cadence says how eagerly items move out of the way of a drag",
+      "effect": "the property is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UICollectionView.hasUncommittedUpdates",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the flag reports on bookkeeping this release's collection view does not keep",
+      "effect": "the property is not there, as on a table view",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UICollectionViewDelegate collectionView:shouldSpringLoadItemAtIndexPath:withContext:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "spring loading opens what a drag hovers over, and there is no drag here",
+      "effect": "the method is never asked for",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UITableViewDelegate tableView:shouldSpringLoadRowAtIndexPath:withContext:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the same: nothing hovers over a row here",
+      "effect": "the method is never asked for",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITableView.dragDelegate",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "dragging is begun and carried by a system service this release does not run",
+      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITableView.dropDelegate",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "dragging is begun and carried by a system service this release does not run",
+      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITableView.hasActiveDrag",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "dragging is begun and carried by a system service this release does not run",
+      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITableView.hasActiveDrop",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "dragging is begun and carried by a system service this release does not run",
+      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITableView.separatorInsetReference",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the reference says whether a separator's inset starts at the cell's edge or at its layout margins, and the table draws its separators itself",
+      "effect": "the property is not there: separators keep the inset this release draws them with",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UITableViewCell dragStateDidChange:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "dragging is begun and carried by a system service this release does not run",
+      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITableViewCell.userInteractionEnabledWhileDragging",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "dragging is begun and carried by a system service this release does not run",
+      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIDocumentPickerViewController.allowsMultipleSelection",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the picker of this release shows one document at a time through a document provider it does not have either",
+      "effect": "the property is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIDocumentPickerDelegate documentPicker:didPickDocumentsAtURLs:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the plural callback belongs to a picker that can select several documents",
+      "effect": "the method is never called; the delegate of this release is asked for one URL",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIFocusAnimationCoordinator addCoordinatedFocusingAnimations:completion:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIFocusAnimationCoordinator addCoordinatedUnfocusingAnimations:completion:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIFocusEnvironment.parentFocusEnvironment",
+      "kind": "property",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
+      "source": "UIKit of iOS 12.0 arm64"
+    },
+    {
+      "api": "UIFocusEnvironment.focusItemContainer",
+      "kind": "property",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
+      "source": "UIKit of iOS 12.0 arm64"
+    },
+    {
+      "api": "UIFocusItem.frame",
+      "kind": "property",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
+      "source": "UIKit of iOS 12.0 arm64"
+    },
+    {
+      "api": "-[UIFocusItem didHintFocusMovement:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
+      "source": "UIKit of iOS 12.0 arm64"
+    },
+    {
+      "api": "UIFocusDidUpdateNotification",
+      "kind": "constant",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIFocusMovementDidFailNotification",
+      "kind": "constant",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIFocusUpdateContextKey",
+      "kind": "constant",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIFocusUpdateAnimationCoordinatorKey",
+      "kind": "constant",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
+      "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIScreenCapturedDidChangeNotification",
+      "kind": "constant",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "nothing in this release watches recording, mirroring or AirPlay, so nothing posts it",
+      "effect": "the name is not there. As with the focus notifications, an application that registers for it without checking UIScreen for -isCaptured first passes a nil name and observes every notification",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIInputViewController.hasFullAccess",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the member belongs to a keyboard extension, and this release has no extensions",
+      "effect": "the member is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIInputViewController.needsInputModeSwitchKey",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the member belongs to a keyboard extension, and this release has no extensions",
+      "effect": "the member is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITextDocumentProxy.selectedText",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the member belongs to a keyboard extension, and this release has no extensions",
+      "effect": "the member is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITextDocumentProxy.documentIdentifier",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the member belongs to a keyboard extension, and this release has no extensions",
+      "effect": "the member is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UINavigationBar.largeTitleTextAttributes",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the attributes style a large title this release's navigation bar never draws",
+      "effect": "the property is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UISplitViewController.primaryEdge",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "which edge the primary column sits at is decided by the split view controller's own layout",
+      "effect": "the property is not there: the primary column stays where this release puts it",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIViewController viewLayoutMarginsDidChange]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the callback comes from the moment the layout margins change, and reaching that moment means standing in for UIKit's layout",
+      "effect": "the method is not there, as with the safe area callbacks of the same release",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIViewController.childViewControllerForScreenEdgesDeferringSystemGestures",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "there are no system edge gestures here to defer, so no child to ask about them",
+      "effect": "the property is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIViewController.childViewControllerForHomeIndicatorAutoHidden",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "there is no home indicator here to hide",
+      "effect": "the property is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UIPasteboard.itemProviders",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the pasteboard of this release carries data and types, not item providers, and the provider machinery is the drag world's",
+      "effect": "the property is not there; an application reads and writes the pasteboard by type as this release does",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIPasteboard setItemProviders:localOnly:expirationDate:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the same: there are no item providers on this pasteboard",
+      "effect": "the method is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIPasteboard setObjects:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the objects are written through NSItemProviderWriting, which this release has nothing of",
+      "effect": "the method is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "-[UIPasteboard setObjects:localOnly:expirationDate:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the same",
+      "effect": "the method is not there",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITextContentTypeUsername",
+      "kind": "constant",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "a content type is a hint to the keyboard's AutoFill, and the property that would carry it, UITextInputTraits.textContentType, is iOS 10 API this package does not carry",
+      "effect": "the constant is not there; setting a content type would call a setter that does not exist either",
+      "source": "UIKit of iOS 11.0 arm64"
+    },
+    {
+      "api": "UITextContentTypePassword",
+      "kind": "constant",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the same: the type is read by an AutoFill this release has no part of",
+      "effect": "the constant is not there",
+      "source": "UIKit of iOS 11.0 arm64"
     }
   ]
 }
