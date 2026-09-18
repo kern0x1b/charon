@@ -107,7 +107,9 @@ function failures(opt)
         end
     end
     -- The addon this installed is named after the tree it copied, so it is this run's and no other's; a test that leaves
-    -- one behind would leave one for every run it ever made.
+    -- one behind would leave one for every run it ever made. Both halves go: the files, and the registry entry that
+    -- names them - an entry whose files are gone is worse than the files, because the next install reads it and stops.
+    addon.unregister("charon", version)
     os.tryrm(path.join(addon.installdir(), addon.dirname("charon"), version))
     os.tryrm(folder)
     return found
