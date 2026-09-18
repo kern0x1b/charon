@@ -322,162 +322,214 @@
     "kind": "method",
     "introduced": "10.0",
     "minimum": "4.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale alternateQuotationEndDelimiter]",
     "kind": "method",
     "introduced": "10.0",
     "minimum": "4.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale calendarIdentifier]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale collationIdentifier]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale collatorIdentifier]",
     "kind": "method",
     "introduced": "10.0",
     "minimum": "4.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale countryCode]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale currencyCode]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale currencySymbol]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale decimalSeparator]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale exemplarCharacterSet]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale groupingSeparator]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale languageCode]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale localizedStringForCalendarIdentifier:]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale localizedStringForCollationIdentifier:]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale localizedStringForCollatorIdentifier:]",
     "kind": "method",
     "introduced": "10.0",
     "minimum": "4.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale localizedStringForCountryCode:]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale localizedStringForCurrencyCode:]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale localizedStringForLanguageCode:]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale localizedStringForLocaleIdentifier:]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale localizedStringForScriptCode:]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale localizedStringForVariantCode:]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale quotationBeginDelimiter]",
     "kind": "method",
     "introduced": "10.0",
     "minimum": "4.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale quotationEndDelimiter]",
     "kind": "method",
     "introduced": "10.0",
     "minimum": "4.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale scriptCode]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale usesMetricSystem]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSLocale variantCode]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSLocale.md",
+    "source": "the host's own Foundation, property against key"
   },
   {
     "api": "-[NSMutableString applyTransform:reverse:range:updatedRange:]",

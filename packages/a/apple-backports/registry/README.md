@@ -72,6 +72,13 @@ names the library, release and architecture the behaviour was read from.
   quietest of the four and the one a port is least likely to notice, so a report
   says it first.
 
+A value the header itself carries - a `static const`, a macro, a case of an
+enumeration - gets no entry, because the package carries nothing of it: the
+compiler writes the value into the application, and neither side of the check can
+see it. `UIStackViewSpacingUseSystem` is one of those. Where such a value changes
+what an API does, the entry of the API that reads it says so, and its file of
+facts says what the value means.
+
 The build checks the registry against what the package really defines: the
 classes its libraries carry and the selectors its categories add. A class or
 selector without an entry, an `implemented` entry that names nothing the build
