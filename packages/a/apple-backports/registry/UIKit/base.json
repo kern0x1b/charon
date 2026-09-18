@@ -310,153 +310,199 @@
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewLayoutGuides.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView addMotionEffect:]",
     "kind": "method",
     "introduced": "7.0",
     "status": "implemented",
-    "reason": "the effect follows the device motion the release reports; a device without a gyroscope delivers none and the layer stays where it is"
+    "reason": "the effect follows the device motion the release reports; a device without a gyroscope delivers none and the layer stays where it is",
+    "facts": "facts/UIKit/UIViewMotionEffects.md",
+    "source": "the host's own UIKit, through the motion group of tests/backports/host/uikit2"
   },
   {
     "api": "-[UIView bottomAnchor]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView centerXAnchor]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView centerYAnchor]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView firstBaselineAnchor]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView heightAnchor]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView lastBaselineAnchor]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView layoutGuides]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewLayoutGuides.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView layoutMarginsDidChange]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewLayoutMargins.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView layoutMarginsGuide]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewLayoutGuides.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView layoutMargins]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewLayoutMargins.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView leadingAnchor]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView leftAnchor]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView motionEffects]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewMotionEffects.md",
+    "source": "the host's own UIKit, through the motion group of tests/backports/host/uikit2"
   },
   {
     "api": "-[UIView preservesSuperviewLayoutMargins]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewLayoutMargins.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView readableContentGuide]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewLayoutGuides.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView removeLayoutGuide:]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewLayoutGuides.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView removeMotionEffect:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewMotionEffects.md",
+    "source": "the host's own UIKit, through the motion group of tests/backports/host/uikit2"
   },
   {
     "api": "-[UIView rightAnchor]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView setLayoutMargins:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewLayoutMargins.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView setMotionEffects:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewMotionEffects.md",
+    "source": "the host's own UIKit, through the motion group of tests/backports/host/uikit2"
   },
   {
     "api": "-[UIView setPreservesSuperviewLayoutMargins:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewLayoutMargins.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView setTintAdjustmentMode:]",
@@ -493,14 +539,18 @@
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView trailingAnchor]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView traitCollectionDidChange:]",
@@ -519,20 +569,26 @@
     "api": "-[UIView viewForFirstBaselineLayout]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView viewForLastBaselineLayout]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIView widthAnchor]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
   },
   {
     "api": "-[UIViewController automaticallyAdjustsScrollViewInsets]",

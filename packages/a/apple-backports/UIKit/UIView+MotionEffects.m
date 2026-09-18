@@ -50,6 +50,8 @@ static NSDictionary *charon_layer_values(UIView *view, UIOffset offset)
 {
     NSMutableDictionary *values = [NSMutableDictionary dictionary];
     for (UIMotionEffect *effect in objc_getAssociatedObject(view, &charon_effects_key)) {
+        if (![effect respondsToSelector:@selector(keyPathsAndRelativeValuesForViewerOffset:)])
+            continue;
         NSDictionary *emitted = [effect keyPathsAndRelativeValuesForViewerOffset:offset];
         for (NSString *keyPath in emitted) {
             NSString *layerKeyPath = charon_layer_key_path(keyPath);
@@ -193,7 +195,7 @@ static void charon_motion_track(UIView *view)
 {
     NSMutableArray *effects = [NSMutableArray arrayWithCapacity:motionEffects.count];
     for (UIMotionEffect *effect in motionEffects) {
-        if ([effect isKindOfClass:[UIMotionEffect class]] && ![effects containsObject:effect])
+        if ([effects indexOfObjectIdenticalTo:effect] == NSNotFound)
             [effects addObject:effect];
     }
     objc_setAssociatedObject(self, &charon_effects_key, effects, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -202,7 +204,7 @@ static void charon_motion_track(UIView *view)
 
 - (void)addMotionEffect:(UIMotionEffect *)effect
 {
-    if (![effect isKindOfClass:[UIMotionEffect class]])
+    if (!effect)
         return;
     NSMutableArray *effects = objc_getAssociatedObject(self, &charon_effects_key);
     if (effects && [effects indexOfObjectIdenticalTo:effect] != NSNotFound)
