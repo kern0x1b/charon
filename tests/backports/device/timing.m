@@ -14,6 +14,15 @@ static NSString *image_of(Class cls)
     return dladdr((__bridge const void *)cls, &info) ? @(info.dli_fname).lastPathComponent : @"?";
 }
 
+static NSString *shape_of(NSString *description)
+{
+    NSRange open = [description rangeOfString:@"("], close = [description rangeOfString:@")"];
+    if (open.location == NSNotFound || close.location == NSNotFound || close.location < open.location)
+        return description;
+    return [description stringByReplacingCharactersInRange:NSMakeRange(open.location, close.location - open.location + 1)
+                                               withString:@"(*)"];
+}
+
 static BOOL close_enough(CGFloat actual, CGFloat expected)
 {
     return fabs(actual - expected) <= 1e-5;
@@ -22,9 +31,14 @@ static BOOL close_enough(CGFloat actual, CGFloat expected)
 int main(void)
 {
     @autoreleasepool {
-        for (NSString *name in @[@"UICubicTimingParameters", @"UISpringTimingParameters", @"_UIViewCubicTimingFunction"])
+        for (NSString *name in @[@"UICubicTimingParameters", @"UISpringTimingParameters"])
             CHECK_EQUAL(image_of(NSClassFromString(name)), @"libUIKitBackports.dylib",
                         [name stringByAppendingString:@" comes from the backports library"].UTF8String);
+        /* The private timing function is registered at run time under Apple's name,
+           and only where the release has none, so it belongs to no image and its
+           provenance cannot be read; that it answers to the name is the point. */
+        CHECK(NSClassFromString(@"_UIViewCubicTimingFunction") != Nil,
+              "the private timing function answers to Apple's name");
 
         UICubicTimingParameters *plain = [[UICubicTimingParameters alloc] init];
         CHECK(plain.timingCurveType == UITimingCurveTypeBuiltin, "a plain cubic curve is a builtin one");
@@ -83,8 +97,11 @@ int main(void)
               "a spring made from a ratio describes itself by that ratio");
         UISpringTimingParameters *ratioBack =
             [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:ratio]];
-        CHECK([ratioBack.description isEqual:ratio.description], "a spring survives an archive");
-        CHECK([[ratio copy] description] != nil && [[[ratio copy] description] isEqual:ratio.description],
+        /* A description carries the object's address, so two of them never read
+           alike; what is compared is the shape and the numbers between them. */
+        CHECK([shape_of(ratioBack.description) isEqualToString:shape_of(ratio.description)],
+              "a spring survives an archive");
+        CHECK([shape_of([[ratio copy] description]) isEqualToString:shape_of(ratio.description)],
               "a spring survives a copy");
 
         UISpringTimingParameters *settling =

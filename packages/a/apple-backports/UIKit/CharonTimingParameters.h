@@ -9,16 +9,20 @@ enum {
     CharonCubicCurveControlPoints = 6
 };
 
-@interface _UIViewCubicTimingFunction : NSObject <NSCopying, NSCoding>
+@interface CharonViewCubicTimingFunction : NSObject <NSCopying, NSCoding>
 - (instancetype)initWithControlPoint1:(CGPoint)point1 controlPoint2:(CGPoint)point2;
 @property (nonatomic, readonly) CGPoint controlPoint1;
 @property (nonatomic, readonly) CGPoint controlPoint2;
 - (CAMediaTimingFunction *)_mediaTimingFunction;
 @end
 
+/* The class under Apple's own name, which is what an archive names. */
+Class charon_cubic_timing_function_class(void);
+id charon_cubic_timing_function(CGPoint point1, CGPoint point2);
+
 @interface UICubicTimingParameters (CharonTiming)
-- (_UIViewCubicTimingFunction *)timingFunction;
-- (_UIViewCubicTimingFunction *)effectiveTimingFunction;
+- (CharonViewCubicTimingFunction *)timingFunction;
+- (CharonViewCubicTimingFunction *)effectiveTimingFunction;
 @end
 
 @interface UISpringTimingParameters (CharonTiming)
