@@ -68,6 +68,31 @@ static NSLayoutConstraint *charon_relate(NSLayoutAnchor *anchor, NSLayoutRelatio
     }
 }
 
+static NSLayoutConstraint *charon_system_spacing(NSLayoutAnchor *anchor, NSLayoutRelation relation, NSLayoutAnchor *other,
+                                                 UILayoutConstraintAxis axis, CGFloat multiplier)
+{
+    if (axis == UILayoutConstraintAxisHorizontal) {
+        NSLayoutXAxisAnchor *first = (NSLayoutXAxisAnchor *)anchor, *second = (NSLayoutXAxisAnchor *)other;
+        switch (relation) {
+        case NSLayoutRelationLessThanOrEqual:
+            return [first constraintLessThanOrEqualToSystemSpacingAfterAnchor:second multiplier:multiplier];
+        case NSLayoutRelationGreaterThanOrEqual:
+            return [first constraintGreaterThanOrEqualToSystemSpacingAfterAnchor:second multiplier:multiplier];
+        default:
+            return [first constraintEqualToSystemSpacingAfterAnchor:second multiplier:multiplier];
+        }
+    }
+    NSLayoutYAxisAnchor *first = (NSLayoutYAxisAnchor *)anchor, *second = (NSLayoutYAxisAnchor *)other;
+    switch (relation) {
+    case NSLayoutRelationLessThanOrEqual:
+        return [first constraintLessThanOrEqualToSystemSpacingBelowAnchor:second multiplier:multiplier];
+    case NSLayoutRelationGreaterThanOrEqual:
+        return [first constraintGreaterThanOrEqualToSystemSpacingBelowAnchor:second multiplier:multiplier];
+    default:
+        return [first constraintEqualToSystemSpacingBelowAnchor:second multiplier:multiplier];
+    }
+}
+
 static void charon_add(NSMutableArray *list, NSLayoutConstraint *constraint, UILayoutPriority priority, NSString *identifier)
 {
     constraint.priority = priority;
@@ -90,6 +115,7 @@ static void charon_add(NSMutableArray *list, NSLayoutConstraint *constraint, UIL
     UILayoutGuide *_alignmentSpanner;
     NSMutableArray *_distributingGuides;
     NSArray *_intrinsicSizes;
+    NSMapTable *_customSpacing;
     BOOL _needsRebuild;
 }
 
@@ -206,7 +232,41 @@ static void charon_setup(UIStackView *self)
         return;
     [view removeObserver:self forKeyPath:@"hidden" context:charon_hidden_context];
     [_arrangedSubviews removeObjectAtIndex:index];
+    [_customSpacing removeObjectForKey:view];
     [self charon_setNeedsRebuild];
+}
+
+- (void)setCustomSpacing:(CGFloat)customSpacing afterView:(UIView *)arrangedSubview
+{
+    if (!arrangedSubview || [_arrangedSubviews indexOfObjectIdenticalTo:arrangedSubview] == NSNotFound)
+        return;
+    if (!_customSpacing)
+        _customSpacing = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsObjectPointerPersonality | NSPointerFunctionsStrongMemory
+                                                   valueOptions:NSPointerFunctionsObjectPersonality | NSPointerFunctionsStrongMemory capacity:0];
+    NSNumber *held = [_customSpacing objectForKey:arrangedSubview];
+    if (held && held.doubleValue == customSpacing)
+        return;
+    [_customSpacing setObject:@(customSpacing) forKey:arrangedSubview];
+    [self charon_setNeedsRebuild];
+}
+
+- (CGFloat)customSpacingAfterView:(UIView *)arrangedSubview
+{
+    NSNumber *held = arrangedSubview ? [_customSpacing objectForKey:arrangedSubview] : nil;
+    return held ? (CGFloat)held.doubleValue : UIStackViewSpacingUseDefault;
+}
+
+- (CGFloat)charon_spacingAfterView:(UIView *)view
+{
+    CGFloat spacing = [self customSpacingAfterView:view];
+    if (spacing == UIStackViewSpacingUseDefault)
+        spacing = _spacing;
+    if (spacing == UIStackViewSpacingUseDefault)
+        return 0;
+    if (spacing == UIStackViewSpacingUseSystem)
+        return spacing;
+    CGFloat scale = (self.window.screen ?: [UIScreen mainScreen]).scale;
+    return scale > 1 ? round(spacing * scale) / scale : round(spacing);
 }
 
 - (void)willRemoveSubview:(UIView *)subview
@@ -433,7 +493,11 @@ static UILayoutGuide *charon_guide(UIStackView *self, UILayoutGuide *guide, NSSt
                     leading = next.firstBaselineAnchor;
                     trailing = previous.lastBaselineAnchor;
                 }
-                charon_add(stack, charon_relate(leading, relation, trailing, _spacing), UILayoutPriorityRequired, @"UISV-spacing");
+                CGFloat gap = [self charon_spacingAfterView:previous];
+                NSLayoutConstraint *constraint = gap == UIStackViewSpacingUseSystem
+                    ? charon_system_spacing(leading, relation, trailing, axis, 1)
+                    : charon_relate(leading, relation, trailing, gap);
+                charon_add(stack, constraint, UILayoutPriorityRequired, @"UISV-spacing");
             }
             for (NSUInteger index = 0; index < all.count; index++) {
                 UIView *view = all[index];
@@ -454,7 +518,11 @@ static UILayoutGuide *charon_guide(UIStackView *self, UILayoutGuide *guide, NSSt
                     leading = leadingView.firstBaselineAnchor;
                 if (baselines && !trailingView.hidden)
                     trailing = trailingView.lastBaselineAnchor;
-                charon_add(stack, charon_relate(leading, relation, trailing, previous && next ? _spacing / 2 : 0), 50, @"UISV-spacing-hidden");
+                CGFloat gap = previous && next ? [self charon_spacingAfterView:previous] : 0;
+                NSLayoutConstraint *constraint = gap == UIStackViewSpacingUseSystem
+                    ? charon_system_spacing(leading, relation, trailing, axis, 0.5)
+                    : charon_relate(leading, relation, trailing, gap / 2);
+                charon_add(stack, constraint, 50, @"UISV-spacing-hidden");
             }
         } else {
             orderingSpanner = charon_guide(self, _orderingSpanner, @"UISV-ordering-spanner");

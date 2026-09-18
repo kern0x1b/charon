@@ -240,6 +240,22 @@
     "status": "implemented"
   },
   {
+    "api": "-[UIStackView customSpacingAfterView:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIStackView.md",
+    "source": "UIKit of iOS 11.0 arm64 and the host's own UIKit, measured side by side"
+  },
+  {
+    "api": "-[UIStackView setCustomSpacing:afterView:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIStackView.md",
+    "source": "UIKit of iOS 11.0 arm64 and the host's own UIKit, measured side by side"
+  },
+  {
     "api": "-[UITabBar barTintColor]",
     "kind": "method",
     "introduced": "7.0",
