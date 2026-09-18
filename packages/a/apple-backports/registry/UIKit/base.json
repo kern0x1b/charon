@@ -17,55 +17,73 @@
     "api": "+[UIColor systemBlueColor]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIColorSystemColors.md",
+    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
   },
   {
     "api": "+[UIColor systemGrayColor]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIColorSystemColors.md",
+    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
   },
   {
     "api": "+[UIColor systemGreenColor]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIColorSystemColors.md",
+    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
   },
   {
     "api": "+[UIColor systemOrangeColor]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIColorSystemColors.md",
+    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
   },
   {
     "api": "+[UIColor systemPinkColor]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIColorSystemColors.md",
+    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
   },
   {
     "api": "+[UIColor systemPurpleColor]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIColorSystemColors.md",
+    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
   },
   {
     "api": "+[UIColor systemRedColor]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIColorSystemColors.md",
+    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
   },
   {
     "api": "+[UIColor systemTealColor]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIColorSystemColors.md",
+    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
   },
   {
     "api": "+[UIColor systemYellowColor]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIColorSystemColors.md",
+    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
   },
   {
     "api": "+[UIFont preferredFontForTextStyle:]",
