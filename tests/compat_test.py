@@ -794,6 +794,38 @@ int main(void)
 """
 
 
+SYSTEM_RANDOM = r"""
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
+void charon_arc4random_buf(void *, size_t);
+
+/* The stream the shim reads only where the release has no arc4random_buf of its own. This one is compiled with the
+   system's, so what the shim answers must not be these words: it must ask the library that defines the call. */
+uint32_t arc4random(void)
+{
+    return 0x5c5c5c5c;
+}
+
+int main(void)
+{
+    unsigned char bytes[32];
+    memset(bytes, 0xaa, sizeof bytes);
+    charon_arc4random_buf(bytes, sizeof bytes);
+    int ours = 1;
+    for (size_t at = 0; at < sizeof bytes; at++) {
+        if (bytes[at] != 0x5c)
+            ours = 0;
+    }
+    if (ours) {
+        printf("FAIL  arc4random_buf must use the system's where the release has it, not its own stream\n");
+        return 1;
+    }
+    return 0;
+}
+"""
+
 LATER_CALLS = r"""
 #define __STDC_WANT_LIB_EXT1__ 1
 #include <dispatch/dispatch.h>
@@ -812,6 +844,7 @@ LATER_CALLS = r"""
 #include <unistd.h>
 
 int memset_s(void *, size_t, int, size_t);
+void charon_arc4random_buf(void *, size_t);
 void *voucher_copy(void);
 void *voucher_adopt(void *);
 unsigned int qos_class_self(void);
@@ -863,6 +896,46 @@ static void memsets(void)
                  cases[index].capacity, cases[index].count, cases[index].null ? ", NULL" : "", wanted);
         expect(got == wanted && memcmp(mine, theirs, sizeof mine) == 0, what);
     }
+}
+
+/* The stream the fallback reads from, so what it writes is exactly what this says. The shim is compiled here with
+   CHARON_COMPAT_SYSTEM=0, which is the release that has no arc4random_buf of its own. */
+static uint32_t charon_test_words;
+
+uint32_t arc4random(void)
+{
+    return ++charon_test_words;
+}
+
+static void randoms(void)
+{
+    void (*darwin)(void *, size_t) = dlsym(RTLD_DEFAULT, "arc4random_buf");
+    expect(darwin && darwin != charon_arc4random_buf, "the test reaches Darwin's arc4random_buf beside the shim");
+    static const size_t lengths[] = {0, 1, 3, 4, 5, 8, 31, 64};
+    for (size_t index = 0; index < sizeof lengths / sizeof lengths[0]; index++) {
+        size_t length = lengths[index];
+        unsigned char mine[96], wanted[96];
+        memset(mine, 0xaa, sizeof mine);
+        memset(wanted, 0xaa, sizeof wanted);
+        /* Word after word of the stream, the tail the low bytes of the one that follows them: the answer of the system's
+           own implementation, and of every release that has arc4random and not arc4random_buf. */
+        charon_test_words = 0;
+        for (size_t at = 0; at < length; at += sizeof(uint32_t)) {
+            uint32_t word = at + sizeof(uint32_t) <= length ? (uint32_t)(at / sizeof(uint32_t) + 1) : (uint32_t)(length / sizeof(uint32_t) + 1);
+            size_t bytes = length - at < sizeof(uint32_t) ? length - at : sizeof(uint32_t);
+            memcpy(wanted + 16 + at, &word, bytes);
+        }
+        charon_test_words = 0;
+        charon_arc4random_buf(mine + 16, length);
+        char what[160];
+        snprintf(what, sizeof what, "arc4random_buf fills %zu bytes from the stream, the tail included, and nothing around them", length);
+        expect(memcmp(mine, wanted, sizeof mine) == 0, what);
+    }
+    charon_test_words = 0;
+    unsigned char first[32], second[32];
+    charon_arc4random_buf(first, sizeof first);
+    charon_arc4random_buf(second, sizeof second);
+    expect(memcmp(first, second, sizeof first) != 0, "two fills of the same length read on through the stream");
 }
 
 static void vouchers(void)
@@ -1050,6 +1123,7 @@ int main(int argc, char **argv)
     if (argc > 1)
         return scenario(argv[1]);
     memsets();
+    randoms();
     vouchers();
     classes();
     resolutions();
@@ -1316,7 +1390,7 @@ def failures():
             else:
                 found += outcome("forwarded lock", run("./forward", cwd=forwarding))
 
-        later = ["memset_s", "voucher_copy", "voucher_adopt", "qos_class_self", "clock_getres", "dispatch_get_global_queue",
+        later = ["memset_s", "arc4random_buf", "voucher_copy", "voucher_adopt", "qos_class_self", "clock_getres", "dispatch_get_global_queue",
                  "dispatch_activate", "dispatch_assert_queue$V2"]
         (folder / "calls.c").write_text(LATER_CALLS)
         built = run("xcrun", "clang", "-O2", "-w", "-DCHARON_COMPAT_SYSTEM=0", *[SHIMS / "{}.c".format(symbol) for symbol in later],
@@ -1325,6 +1399,12 @@ def failures():
             found.append("the shims of later dispatch, clock and memory calls must compile: {}".format(built.stderr[-400:]))
         else:
             found += outcome("later calls", run(folder / "calls", cwd=folder))
+        (folder / "system-random.c").write_text(SYSTEM_RANDOM)
+        built = run("xcrun", "clang", "-O2", "-w", SHIMS / "arc4random_buf.c", "system-random.c", "-o", "system-random", cwd=folder)
+        if built.returncode:
+            found.append("the arc4random_buf shim must compile against the system's own: {}".format(built.stderr[-400:]))
+        else:
+            found += outcome("system arc4random_buf", run("./system-random", cwd=folder))
         (folder / "alloc.m").write_text(ALLOC_WITH_ZONE)
         built = run("xcrun", "clang", "-O2", "-w", "-fobjc-arc", "-DCHARON_COMPAT_SYSTEM=0", SHIMS / "objc_allocWithZone.c",
                     SHIMS / "objc_opt_self.c", "alloc.m", "-framework", "Foundation", "-o", "alloc", cwd=folder)
