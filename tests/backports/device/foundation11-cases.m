@@ -206,17 +206,31 @@ static void run_transformer(Foundation11Implementation implementation, Foundatio
 static NSString *validated(NSString *format, NSString *valid, NSError **error)
 {
     return ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
-        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), format, valid, error, @"A", @"B", @"C", @"D");
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), format, valid, error,
+        @"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L");
 }
 
 static void run_validated_format(Foundation11Recorder *recorder)
 {
     NSArray *pairs = @[@[@"%@ has %@", @"%@ %@"], @[@"%@", @"%@ %@"], @[@"%@ %@", @"%@"], @[@"%@", @""],
                        @[@"plain", @""], @[@"100%% sure", @"%@"], @[@"%2$@ %1$@", @"%@ %@"], @[@"%1$@ %1$@", @"%@"],
-                       @[@"%-10@", @"%@"], @[@"%@", @"%ld"], @[@"%@", @"%@, %ld"]];
+                       @[@"%-10@", @"%@"], @[@"%@", @"%ld"], @[@"%@", @"%@, %ld"],
+                       @[@"%3$@", @"%@ %@"], @[@"%2$@ %@", @"%@ %@"], @[@"%@ %2$@", @"%@ %@"],
+                       @[@"%2$@ %1$@ %@", @"%@ %@ %@"], @[@"", @"%@"], @[@"", @""], @[@"%1$@", @""],
+                       @[@"%0$@", @"%@"], @[@"%S", @"%s"], @[@"%@%@%@%@%@%@%@%@%@%@", @"%@%@%@%@%@%@%@%@%@%@"],
+                       @[@"%@%@%@%@%@%@%@%@%@%@%@", @"%@%@%@%@%@%@%@%@%@%@"], @[@"%", @"%@"], @[@"%@ %", @"%@"],
+                       @[@"%10$@", @"%@%@%@%@%@%@%@%@%@%@"], @[@"%11$@", @"%@%@%@%@%@%@%@%@%@%@"],
+                       @[@"%*d", @"%d"], @[@"%@", @"%%"], @[@"%%@", @"%@"]];
     for (NSArray *pair in pairs) {
         NSError *error = nil;
-        NSString *made = validated(pair[0], pair[1], &error);
+        NSString *made = nil;
+        @try {
+            made = validated(pair[0], pair[1], &error);
+        } @catch (NSException *exception) {
+            [recorder record:[@"raised " stringByAppendingString:exception.name]
+                       named:[NSString stringWithFormat:@"validated.%@|%@", pair[0], pair[1]]];
+            continue;
+        }
         NSString *answer = made ? [@"ok " stringByAppendingString:made]
                                 : [NSString stringWithFormat:@"%@ %ld %@", error.domain, (long)error.code, error.userInfo[NSDebugDescriptionErrorKey] ?: @""];
         [recorder record:answer named:[NSString stringWithFormat:@"validated.%@|%@", pair[0], pair[1]]];

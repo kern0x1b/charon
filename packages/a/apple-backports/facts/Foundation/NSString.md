@@ -12,7 +12,11 @@ at `0x1815891ac`, which checks both arguments for `nil` and then hands the work
 to CoreFoundation at `0x180b578fc`). The rule below was read off the running
 implementation rather than out of that CoreFoundation parser: three thousand
 random pairs of format and allowed specifiers were put to the host's Foundation
-and to the port, and the two agreed on every one, verdict and message alike.
+and to the port, and the two agreed on every one, verdict and message alike, as
+did twenty-eight pairs chosen to be awkward rather than random: a positional
+past the end, positionals mixed with sequential ones, every kind at its
+boundary, an empty format, an empty list of allowed specifiers, ten slots and
+eleven, an unfinished `%`, and a width given as `*`.
 
 ## The rule
 
@@ -36,6 +40,13 @@ Kinds, and what is ignored:
 Flags, width, precision and length are ignored, so `%-10@` matches `%@` and
 `%.2f` matches `%f`; `%d` matches `%ld`, since both are integers, while `%@`
 does not match `%s`.
+
+Edges the awkward pairs pin down: `%0$@` is not a specifier at all — both
+implementations print it as the text `0$@`; a width written `*` is refused,
+since the argument that carries it has no kind to match; `%` at the very end of
+a format is refused; `%%` in the allowed string names no slot, so a format with
+one specifier against `%%` is refused; and the count of slots is compared
+against the allowed string's, so ten against ten passes while eleven does not.
 
 Consequences worth naming: a format that uses fewer slots than allowed passes
 (`%@` against `%@ %ld`), one that uses a later slot without the earlier one does
