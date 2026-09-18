@@ -262,6 +262,72 @@
       "effect": "a font or a value comes back at its own size, rounded to the screen scale; the cap, the refusal of a nil font and the new-object rule are carried exactly",
       "facts": "facts/UIKit/UIFontMetrics.md",
       "source": "UIKit of iOS 11.0 arm64 at 0x18a75ece8 and 0x18a75ebdc, UIFoundation -[UIFont _scaledValueForValue:] at 0x18b0f34c0, and the differential test against the host's UIKit"
+    },
+    {
+      "api": "-[NSLayoutXAxisAnchor constraintEqualToSystemSpacingAfterAnchor:multiplier:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the baseline spacing follows the current implementation, which rounds up to the screen scale, rather than iOS 11's, which rounded up to four points",
+      "effect": "a baseline under the baseline of a view that carries no font gets the plain eight points where UIKit measures 22; every other combination matches the host to the last digit",
+      "facts": "facts/UIKit/NSLayoutAnchorSystemSpacing.md",
+      "source": "UIKit of iOS 11.0 arm64, _UIViewBaselineToBaselineSpacing at 0x18aa9eda8, and the differential test against the host's UIKit"
+    },
+    {
+      "api": "-[NSLayoutXAxisAnchor constraintGreaterThanOrEqualToSystemSpacingAfterAnchor:multiplier:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the baseline spacing follows the current implementation, which rounds up to the screen scale, rather than iOS 11's, which rounded up to four points",
+      "effect": "a baseline under the baseline of a view that carries no font gets the plain eight points where UIKit measures 22; every other combination matches the host to the last digit",
+      "facts": "facts/UIKit/NSLayoutAnchorSystemSpacing.md",
+      "source": "UIKit of iOS 11.0 arm64, _UIViewBaselineToBaselineSpacing at 0x18aa9eda8, and the differential test against the host's UIKit"
+    },
+    {
+      "api": "-[NSLayoutXAxisAnchor constraintLessThanOrEqualToSystemSpacingAfterAnchor:multiplier:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the baseline spacing follows the current implementation, which rounds up to the screen scale, rather than iOS 11's, which rounded up to four points",
+      "effect": "a baseline under the baseline of a view that carries no font gets the plain eight points where UIKit measures 22; every other combination matches the host to the last digit",
+      "facts": "facts/UIKit/NSLayoutAnchorSystemSpacing.md",
+      "source": "UIKit of iOS 11.0 arm64, _UIViewBaselineToBaselineSpacing at 0x18aa9eda8, and the differential test against the host's UIKit"
+    },
+    {
+      "api": "-[NSLayoutYAxisAnchor constraintEqualToSystemSpacingBelowAnchor:multiplier:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the baseline spacing follows the current implementation, which rounds up to the screen scale, rather than iOS 11's, which rounded up to four points",
+      "effect": "a baseline under the baseline of a view that carries no font gets the plain eight points where UIKit measures 22; every other combination matches the host to the last digit",
+      "facts": "facts/UIKit/NSLayoutAnchorSystemSpacing.md",
+      "source": "UIKit of iOS 11.0 arm64, _UIViewBaselineToBaselineSpacing at 0x18aa9eda8, and the differential test against the host's UIKit"
+    },
+    {
+      "api": "-[NSLayoutYAxisAnchor constraintGreaterThanOrEqualToSystemSpacingBelowAnchor:multiplier:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the baseline spacing follows the current implementation, which rounds up to the screen scale, rather than iOS 11's, which rounded up to four points",
+      "effect": "a baseline under the baseline of a view that carries no font gets the plain eight points where UIKit measures 22; every other combination matches the host to the last digit",
+      "facts": "facts/UIKit/NSLayoutAnchorSystemSpacing.md",
+      "source": "UIKit of iOS 11.0 arm64, _UIViewBaselineToBaselineSpacing at 0x18aa9eda8, and the differential test against the host's UIKit"
+    },
+    {
+      "api": "-[NSLayoutYAxisAnchor constraintLessThanOrEqualToSystemSpacingBelowAnchor:multiplier:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the baseline spacing follows the current implementation, which rounds up to the screen scale, rather than iOS 11's, which rounded up to four points",
+      "effect": "a baseline under the baseline of a view that carries no font gets the plain eight points where UIKit measures 22; every other combination matches the host to the last digit",
+      "facts": "facts/UIKit/NSLayoutAnchorSystemSpacing.md",
+      "source": "UIKit of iOS 11.0 arm64, _UIViewBaselineToBaselineSpacing at 0x18aa9eda8, and the differential test against the host's UIKit"
     }
   ]
 }
