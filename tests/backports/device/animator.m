@@ -1,6 +1,7 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #include <dlfcn.h>
+#include <mach/mach_time.h>
 #import "check.h"
 
 /* There is no host to hold the animator to: Mac Catalyst raises no UIWindow, and
@@ -119,6 +120,8 @@ static void run_checks(UIView *stage)
        inside a window; without one there is nothing to read and the check is not
        pretended. */
     if (box.window) {
+        [CATransaction flush];
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
         CGPoint half = [box.layer.presentationLayer position];
         CHECK(half.x > 20 && half.x < 200,
               NAMED(@"half way along the animation the view is between its ends (x = %g)", half.x));
@@ -180,6 +183,57 @@ static void run_checks(UIView *stage)
     CHECK(plain.isRunning, "an uninterruptible animator runs");
 }
 
+/* What the correct scrubbing costs on this hardware. Rebuilding the animation
+   with its own speed and time offset is the only way to scrub one animator
+   without freezing animations it never started; freezing the layer is cheaper
+   and wrong. The A5 is the slowest thing this port runs on, so the number that
+   matters is whether one scrub step fits in a display frame. */
+static double per_step_microseconds(NSUInteger steps, void (^step)(double fraction))
+{
+    mach_timebase_info_data_t timebase;
+    mach_timebase_info(&timebase);
+    uint64_t started = mach_absolute_time();
+    for (NSUInteger i = 0; i < steps; i++)
+        step((double)i / (double)steps);
+    uint64_t elapsed = mach_absolute_time() - started;
+    double nanoseconds = (double)elapsed * timebase.numer / timebase.denom;
+    return nanoseconds / 1000.0 / (double)steps;
+}
+
+static void measure_scrubbing(UIView *stage)
+{
+    static const NSUInteger steps = 200;
+    static const double frame_microseconds = 1000000.0 / 60.0;
+
+    UIView *box = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+    box.backgroundColor = [UIColor greenColor];
+    [stage addSubview:box];
+
+    UIViewPropertyAnimator *animator =
+        [[UIViewPropertyAnimator alloc] initWithDuration:2 curve:UIViewAnimationCurveLinear
+                                              animations:^{ box.center = CGPointMake(200, 200); }];
+    [animator startAnimation];
+    [animator pauseAnimation];
+
+    __block double sink = 0;
+    double baseline = per_step_microseconds(steps, ^(double fraction) { sink += fraction; });
+    double rebuild = per_step_microseconds(steps, ^(double fraction) { animator.fractionComplete = fraction; });
+    CALayer *layer = box.layer;
+    double freeze = per_step_microseconds(steps, ^(double fraction) {
+        layer.speed = 0;
+        layer.timeOffset = fraction * 2;
+    });
+    [animator stopAnimation:YES];
+    [box removeFromSuperview];
+
+    printf("scrub %lu steps: loop %.1f us, freeze-the-layer %.1f us, rebuild-the-animation %.1f us (frame is %.1f us)\n",
+           (unsigned long)steps, baseline, freeze, rebuild, frame_microseconds);
+    charon_check(rebuild < frame_microseconds,
+                 "one scrub step fits in a display frame on this hardware",
+                 [NSString stringWithFormat:@"%.1f us >= %.1f us", rebuild, frame_microseconds]);
+    (void)sink;
+}
+
 @interface CharonAnimatorDelegate : UIResponder <UIApplicationDelegate>
 @end
 
@@ -196,6 +250,7 @@ static void run_checks(UIView *stage)
     [_window makeKeyAndVisible];
     @try {
         run_checks(_window.rootViewController.view);
+        measure_scrubbing(_window.rootViewController.view);
     } @catch (NSException *exception) {
         charon_check(NO, "the checks raise no exception",
                      [NSString stringWithFormat:@"%@: %@", exception.name, exception.reason]);
