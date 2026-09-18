@@ -11,6 +11,9 @@ static const char foundation11_expectations[] =
     "r.refusesOtherClass\":\"NSInvalidArgumentException: Object of class NSConcreteValue is not among allowed top level class list (\\n    NSArray,\\n    NSDictionary,\\n"
     "    NSSet,\\n    NSString,\\n    NSNumber,\\n    NSDate,\\n    NSData,\\n    NSURL,\\n    NSUUID,\\n    NSNull\\n)\",\"transformer.reverse\":\"non-empty\",\"transformer.rever"
     "seRoundTrip\":\"(\\n    b\\n)\",\"transformer.transform\":\"(\\n    a,\\n    1\\n)\",\"transformer.transformedValueClass\":\"nil\",\"transformer.transformNil\":\"nil\",\"transformer"
-    ".transformNotData\":\"NSInvalidArgumentException\",\"write.array\":\"1 nil\",\"write.dictionary\":\"1 nil\",\"write.format\":\"<\?xml version=\\\"1.0\\\"\",\"write.invalid\":\"0 NSCoc"
-    "oaErrorDomain 3851\"}"
+    ".transformNotData\":\"NSInvalidArgumentException\",\"validated.%-10@|%@\":\"ok A\",\"validated.%@ %@|%@\":\"NSCocoaErrorDomain 2048 Format '%@ %@' does not match expected"
+    " '%@'\",\"validated.%@ has %@|%@ %@\":\"ok A has B\",\"validated.%@|\":\"NSCocoaErrorDomain 2048 Format '%@' does not match expected ''\",\"validated.%@|%@ %@\":\"ok A\",\"va"
+    "lidated.%@|%@, %ld\":\"ok A\",\"validated.%@|%ld\":\"NSCocoaErrorDomain 2048 Format '%@' does not match expected '%ld'\",\"validated.%1$@ %1$@|%@\":\"ok A A\",\"validated.%"
+    "2$@ %1$@|%@ %@\":\"ok B A\",\"validated.100%% sure|%@\":\"ok 100% sure\",\"validated.nilFormat\":\"NSInvalidArgumentException\",\"validated.numbers\":\"7 and 2.50\",\"validated"
+    ".plain|\":\"ok plain\",\"write.array\":\"1 nil\",\"write.dictionary\":\"1 nil\",\"write.format\":\"<\?xml version=\\\"1.0\\\"\",\"write.invalid\":\"0 NSCocoaErrorDomain 3851\"}"
 ;

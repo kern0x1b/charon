@@ -226,6 +226,51 @@
       "effect": "-localizedDescription ignores the key, so the message is the release's own and the sentence naming the failure is lost; nothing reports it",
       "facts": "facts/Foundation/NSError.md",
       "source": "the host's Foundation"
+    },
+    {
+      "api": "+[NSString stringWithValidatedFormat:validFormatSpecifiers:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSString.md",
+      "source": "Foundation of iOS 11.0 arm64 at 0x1815863e0, 0x181586350 and 0x1815891ac; the matching rule read off the running implementation over three thousand random pairs"
+    },
+    {
+      "api": "+[NSString localizedStringWithValidatedFormat:validFormatSpecifiers:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSString.md",
+      "source": "Foundation of iOS 11.0 arm64 at 0x1815863e0, 0x181586350 and 0x1815891ac; the matching rule read off the running implementation over three thousand random pairs"
+    },
+    {
+      "api": "-[NSString initWithValidatedFormat:validFormatSpecifiers:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSString.md",
+      "source": "Foundation of iOS 11.0 arm64 at 0x1815863e0, 0x181586350 and 0x1815891ac; the matching rule read off the running implementation over three thousand random pairs"
+    },
+    {
+      "api": "-[NSString initWithValidatedFormat:validFormatSpecifiers:locale:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSString.md",
+      "source": "Foundation of iOS 11.0 arm64 at 0x1815863e0, 0x181586350 and 0x1815891ac; the matching rule read off the running implementation over three thousand random pairs"
+    },
+    {
+      "api": "-[NSString initWithValidatedFormat:validFormatSpecifiers:locale:arguments:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSString.md",
+      "source": "Foundation of iOS 11.0 arm64 at 0x1815863e0, 0x181586350 and 0x1815891ac; the matching rule read off the running implementation over three thousand random pairs"
     }
   ]
 }
