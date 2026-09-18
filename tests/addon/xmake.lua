@@ -28,6 +28,25 @@ local function suite(name)
     target_end()
 end
 
+-- A test that only reads the repository's own Lua needs none of the toolchain
+-- packages, so it runs without building anything.
+local function light(name)
+    target(name)
+        set_kind("phony")
+        add_tests("default")
+        on_test(function (target)
+            local modules = path.join(os.projectdir(), "..", "..", "modules")
+            local failures = import(target:name(), {rootdir = os.projectdir(), anonymous = true}).failures({modules = modules})
+            for _, failure in ipairs(failures) do
+                cprint("${red}%s: %s", target:name(), failure)
+            end
+            return #failures == 0
+        end)
+    target_end()
+end
+
+light("descriptions_test")
+
 suite("architectures_test")
 suite("macho_test")
 suite("dyld_test")
