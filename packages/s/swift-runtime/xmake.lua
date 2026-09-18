@@ -45,7 +45,7 @@ package("swift-runtime")
         for _, library in ipairs(libraries) do
             package:add("links", library)
         end
-        package:add("linkdirs", path.join("lib", "swift"))
+        package:add("linkdirs", path.join("lib", "swift", "iphoneos"))
         package:data_set("mark", "charon_swift_runtime_" .. package:buildhash())
     end)
 
@@ -61,6 +61,13 @@ package("swift-runtime")
         local minimum = toolchain:config("deployment")
         local triple = package:arch() .. "-apple-ios" .. minimum
         local swiftc = path.join(compiler:installdir("bin"), "swiftc")
+
+        -- What a port needs to compile against this runtime, written where it is read from afterwards: the compiler this
+        -- was built with, the way charon@swift-embedded names the one its modules were built with, its macro plugins, and
+        -- the symbol a port binds to so that a program compiled against this build cannot be linked against another.
+        package:setenv("SWIFT_EXEC", swiftc)
+        package:setenv("SWIFT_PLUGIN_PATH", path.join(compiler:installdir("lib"), "swift", "host", "plugins"))
+        package:setenv("CHARON_SWIFT_RUNTIME_MARK", package:data("mark"))
         local jobs = math.min(import("core.base.option").get("jobs") or os.cpuinfo("ncpu"), 8)
         local install = path.join(package:installdir("lib"), "swift")
 
@@ -87,6 +94,21 @@ package("swift-runtime")
 
         -- The standalone runtime build keeps its own copies of the standard library's sources; this brings them up to date
         -- with the changes above, and copies in the regular expression sources, which live in their own repository.
+        -- The shims of the standard library reach the C library through static inline functions, and one of them calls
+        -- openat, which iOS 8 brought. A call written inside a header of a clang module cannot be renamed from outside:
+        -- a forced include reaches the file being compiled, not the module the header belongs to, which the compiler's
+        -- own output shows. So the shims built here call apple-compat's function by name, which is that call itself
+        -- where the release has it, and everything that reads them - the standard library, the overlay and a port's own
+        -- Swift - reaches the shim.
+        local overlay_shims = path.join(source, "stdlib", "public", "SwiftShims", "swift", "shims", "LibcOverlayShims.h")
+        local renamed_shims, calls = io.readfile(overlay_shims):gsub("return openat%(", "return charon_openat(")
+        assert(calls == 1, "the shims of Swift " .. package:version_str() ..
+               " no longer call openat exactly once, and this runtime would ship a header that does not say what it does")
+        local declared, declarations = renamed_shims:gsub("(int static inline _swift_stdlib_openat)",
+                                                          "extern int charon_openat(int directory, const char *path, int flags, ...);\n%1", 1)
+        assert(declarations == 1, "the shims of Swift " .. package:version_str() .. " no longer declare _swift_stdlib_openat as they did")
+        io.writefile(overlay_shims, declared)
+
         os.vrunv("cmake", {"-DStringProcessing_ROOT_DIR=" .. compiler:installdir("share"), "-P",
                            path.join(source, "Runtimes", "Resync.cmake")})
         assert(os.isdir(path.join(source, "Runtimes", "Supplemental", "StringProcessing", "_RegexParser")),
@@ -177,7 +199,10 @@ package("swift-runtime")
         local resources = path.absolute(path.join("build", "resources"))
         local platform = path.join(resources, "iphoneos")
         os.mkdir(platform)
-        for _, entry in ipairs({"shims", "clang", "apinotes", "module.modulemap"}) do
+        -- The shims are the ones the standard library just installed; the rest belong to the compiler. Two paths to the
+        -- same clang headers in one build would leave two modules of the same name, and a compile that reads both stops.
+        os.ln(path.join(install, "shims"), path.join(resources, "shims"))
+        for _, entry in ipairs({"clang", "apinotes", "module.modulemap"}) do
             os.ln(path.join(compiler:installdir("lib"), "swift", entry), path.join(resources, entry))
         end
         local function offer(pattern)
@@ -236,13 +261,23 @@ package("swift-runtime")
             offer(path.join(install, "iphoneos", package:arch(), "*.dylib"))
         end
 
-        -- One layout for everything: the libraries and their modules beside the standard library's, whichever subdirectory
-        -- each project installs into.
-        for _, built in ipairs(table.join(os.filedirs(path.join(install, "iphoneos", "*.swiftmodule")),
-                                          os.files(path.join(install, "iphoneos", package:arch(), "*.dylib")))) do
-            os.vmv(built, path.join(install, path.filename(built)))
+        -- What is installed is a resource directory, the layout the compiler reads: the shims, the clang headers and the
+        -- API notes of the compiler at the root, and under the platform's folder the libraries and their modules,
+        -- whichever subdirectory each project installed them into. A port compiles against this directory, so it needs
+        -- nothing of the compiler beside the compiler itself.
+        local platform_dir = path.join(install, "iphoneos")
+        os.mkdir(platform_dir)
+        for _, built in ipairs(table.join(os.filedirs(path.join(install, "*.swiftmodule")), os.files(path.join(install, "*.dylib")),
+                                          os.files(path.join(platform_dir, package:arch(), "*.dylib")))) do
+            os.vmv(built, path.join(platform_dir, path.filename(built)))
         end
-        os.tryrm(path.join(install, "iphoneos"))
+        os.tryrm(path.join(platform_dir, package:arch()))
+        -- What a port reads beside the shims the standard library installed: the clang headers, the API notes and the
+        -- module map of the compiler this was built with, so a port passes one directory and needs nothing else.
+        for _, entry in ipairs({"clang", "apinotes", "module.modulemap"}) do
+            os.tryrm(path.join(install, entry))
+            os.vcp(path.join(compiler:installdir("lib"), "swift", entry), path.join(install, entry))
+        end
         os.vcp(path.join(path.absolute("."), "LICENSE.txt"), package:installdir("licenses") .. "/")
         os.tryrm(path.absolute("build"))
         os.tryrm(source)
@@ -250,7 +285,8 @@ package("swift-runtime")
 
     on_test(function (package)
         local swift = import("apple.swift", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
-        local install = path.join(package:installdir("lib"), "swift")
+        local resources = path.join(package:installdir("lib"), "swift")
+        local install = path.join(resources, "iphoneos")
         for _, library in ipairs({"swiftCore", "swift_Concurrency", "swiftDarwin", "swiftSynchronization", "swiftObservation",
                                   "swift_StringProcessing", "swift_RegexParser", "swiftRegexBuilder"}) do
             assert(os.isfile(path.join(install, "lib" .. library .. ".dylib")), "the runtime has no lib" .. library .. ".dylib")
@@ -258,6 +294,11 @@ package("swift-runtime")
         for _, module in ipairs({"Swift", "_Concurrency", "Darwin", "Synchronization", "Observation", "_StringProcessing"}) do
             assert(os.isdir(path.join(install, module .. ".swiftmodule")) or os.isfile(path.join(install, module .. ".swiftmodule")),
                    "the runtime has no " .. module .. " module")
+        end
+        -- What a port passes as its resource directory is this one, so the compiler's own parts are here too.
+        for _, entry in ipairs({"shims", "clang", "apinotes", "module.modulemap"}) do
+            assert(os.exists(path.join(resources, entry)),
+                   "the runtime installs no " .. entry .. ", and a port could not use it as a resource directory")
         end
         local exported = os.iorunv("xcrun", {"nm", "-gU", path.join(install, "libswiftCore.dylib")})
         assert(exported:find("%s_" .. package:data("mark") .. "%s"),
@@ -269,14 +310,6 @@ package("swift-runtime")
         local toolchain = assert(package:toolchains(), "the runtime is built with the apple-ios toolchain")[1]
         toolchain:load()
         local compiler = assert(package:dep("swift"), "the runtime is built with charon@swift")
-        local resources = os.tmpfile() .. ".rd"
-        os.mkdir(path.join(resources, "iphoneos"))
-        for _, entry in ipairs({"shims", "clang", "apinotes", "module.modulemap"}) do
-            os.ln(path.join(compiler:installdir("lib"), "swift", entry), path.join(resources, entry))
-        end
-        for _, built in ipairs(table.join(os.filedirs(path.join(install, "*.swiftmodule")), os.files(path.join(install, "*.dylib")))) do
-            os.ln(built, path.join(resources, "iphoneos", path.filename(built)))
-        end
         local source = os.tmpfile() .. ".swift"
         io.writefile(source, "import Darwin\nimport Synchronization\npublic func held() -> Int32 { return Darwin.getpid() }\n")
         local _, loaded = os.iorunv(path.join(compiler:installdir("bin"), "swiftc"),
@@ -289,7 +322,6 @@ package("swift-runtime")
             assert(from and from:startswith(resources),
                    "a port would compile against " .. module .. " from " .. (from or "nowhere") .. ", not against this runtime's own")
         end
-        os.tryrm(resources)
         os.tryrm(source)
 
         -- The mark is what a port binds to, so a program built against this runtime does not link against another build of
