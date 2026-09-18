@@ -101,7 +101,7 @@ int main(void)
         [view charonHostRemoveMotionEffect:horizontal];
         charon_check([view charonHostMotionEffects].count == 1 && [[view charonHostMotionEffects] objectAtIndex:0] == vertical, "removing an effect", @"the wrong effect was removed");
         [view setCharonHostMotionEffects:@[horizontal, (CharonHostUIMotionEffect *)@"not an effect"]];
-        charon_check([view charonHostMotionEffects].count == 1, "setting the effects ignores what is not an effect", @"a foreign object was kept");
+        charon_check([view charonHostMotionEffects].count == 2, "setting the effects keeps what is not an effect, as the system does", @"a foreign object was dropped");
 
         [view setCharonHostMotionEffects:@[effect_for(@"center.x", UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis, @(-10), @10),
                                            effect_for(@"layer.shadowOpacity", UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis, @0, @1)]];
