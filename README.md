@@ -348,6 +348,14 @@ emulated device like this, against a working copy of this repository:
     xmake emulate -d iPhone3,1 -r 6.0 run /usr/libexec/backports-test
     xmake emulate -d iPhone4,1 -r 6.1.3 install && xmake emulate -d iPhone4,1 -r 6.1.3 run /usr/libexec/backports-test
 
+A port that carries the backports into a tweak or an application names them in
+`charon.libraries` the way the target knows them - `apple-backports`, the alias
+the require carries - and not the repository they came from. The install of the
+package is what a port links against, and the resolution a project has already
+made is cached, so a change to the backports' sources or to their build module
+is a different package that `xmake f -c` installs, where `xmake f` alone leaves
+the port linking against the install it had.
+
 `install` puts both packages into the image - the port's and the
 `charon@apple-backports` one `xmake deb` writes beside it - and runs their
 maintainer scripts, so the libraries of the image's own release are linked.
