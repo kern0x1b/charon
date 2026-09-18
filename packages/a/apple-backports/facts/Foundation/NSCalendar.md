@@ -23,3 +23,32 @@ A date carries its time as a double of seconds, so the nanosecond is read back f
 rounded, and it is capped at 999999999 so that a rounded fraction never reads as a whole second. Around
 2026 a double holds about 240 nanoseconds of resolution, so the low digits of the answer are not the ones
 a release with a nanosecond field of its own would give.
+
+## Setting a time the clock skips
+
+Europe/Berlin moves its clocks forward on 29 March 2026, so 02:30 does not happen that day. The system
+answers `-dateBySettingHour:minute:second:ofDate:options:` for 02:30 of that day with **03:00**, the instant
+the clock jumps to, and the same for `NSCalendarMatchNextTime`; with `NSCalendarMatchStrictly` it answers
+**02:30 of the next day**, the first day the time exists again. The start of that day is 00:00 as on any
+other day.
+
+The backport used to set the components and hand back whatever the calendar made of them, which is 03:30 -
+the requested minutes carried into the shifted hour - for all three options. It now checks that the time it
+reached is the time it asked for, and, when it is not, answers the daylight saving transition of that day,
+or, for a strict match, walks the following days until the time exists.
+
+## Granularity
+
+`-isDate:equalToDate:toUnitGranularity:` and `-compareDate:toDate:toUnitGranularity:` were measured against
+the system for noon and eight in the evening of one day: equal to the day, not equal to the hour, and **not
+equal to a mask of both**, which behaves as the finer of the two. A unit that names no field of a date -
+`NSCalendarUnitCalendar`, `NSCalendarUnitTimeZone` - answers equal and orders the same, since there is
+nothing to tell the two dates apart by. The backport answers each of those as the system does.
+
+## Weekends
+
+`-nextWeekendStartDate:interval:options:afterDate:` follows the locale, not the calendar: from that Sunday
+an `en_US_POSIX` calendar answers the following Saturday at 00:00 with an interval of 48 hours, and a
+`he_IL` one answers the Friday before it, also 48 hours. The weekend of a locale comes from ICU, which the
+release carries as `libicucore`; where that library does not answer, `-isDateInWeekend:` says no and the
+library says so once in the log.
