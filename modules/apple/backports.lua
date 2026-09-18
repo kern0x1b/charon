@@ -263,10 +263,24 @@ function reexports(deployment)
     return dyld.compare_versions(deployment, "4.2") >= 0
 end
 
-local function link(opt, library, attach, objects, releases, outputdir)
+local INVENTORIES = {}
+
+local function carried_classes(cache)
+    INVENTORIES[cache] = INVENTORIES[cache] or objc.inventory(cache).classes
+    return INVENTORIES[cache]
+end
+
+local function link(opt, library, attach, objects, releases, outputdir, checked)
     local kept, reexported = band(releases[1].exports, objects)
     if not reexports(opt.deployment) then
         reexported = {}
+    end
+    if checked then
+        local told = duplicated(kept, carried_classes(checked.cache))
+        if #told > 0 then
+            raise("the band for iOS %s keeps %s, which the release has and does not export: the band cannot leave a class out that nothing says is there, and a process would hold two classes of that name, one of which the runtime picks. Ask the release for the class where it has one, or carry it under a name of Charon's own.",
+                  checked.release, table.concat(told, " "))
+        end
     end
     local output = path.join(outputdir, "lib" .. library.name .. ".dylib")
     os.mkdir(outputdir)
@@ -507,7 +521,8 @@ function build(opt)
     local built = {}
     for _, library in ipairs(LIBRARIES) do
         if not opt.libraries or table.contains(opt.libraries, library.name) then
-            table.insert(built, link(opt, library, attach, objects[library.name], {release}, opt.outputdir))
+            table.insert(built, link(opt, library, attach, objects[library.name], {release}, opt.outputdir,
+                                     {cache = opt.cache, release = opt.deployment}))
         end
     end
     dyld.check(opt.cache, built)
@@ -582,6 +597,29 @@ local function introduced(opt, source, object)
     return found[1]
 end
 
+-- A class the release carries but does not export is one a band cannot drop:
+-- nothing says it is there in the symbols, and it cannot be re-exported. The
+-- library would define a second class of that name, and the runtime would take
+-- one of the two, so the band asks the release's Objective-C metadata as well
+-- and refuses what it would duplicate.
+function duplicated(objects, classes)
+    local found = {}
+    for _, object in ipairs(objects) do
+        for _, symbol in ipairs(exported_symbols(object)) do
+            local class = symbol:match("^_OBJC_CLASS_%$_(.+)$")
+            if class and classes[class] then
+                found[class] = path.filename(object)
+            end
+        end
+    end
+    local named = table.orderkeys(found)
+    local told = {}
+    for _, class in ipairs(named) do
+        table.insert(told, string.format("%s (%s)", class, found[class]))
+    end
+    return told
+end
+
 function band_ranges(points, listed)
     local ranges = {}
     for index, point in ipairs(points) do
@@ -653,10 +691,12 @@ function stage_bands(opt)
     local home = path.join(opt.stage, INSTALL_FOLDER)
     local lines = {}
     for _, range in ipairs(ranges) do
-        local releases, signatures = {}, {}
+        local releases, signatures, caches = {}, {}, {}
         for _, release in ipairs(table.unique({range.first, range.last})) do
-            local found = loaded(release_cache(opt, architectures, release), opt.architecture)
+            local file = release_cache(opt, architectures, release)
+            local found = loaded(file, opt.architecture)
             table.insert(releases, found)
+            table.insert(caches, {cache = file, release = release})
             local reexported = {}
             for _, library in ipairs(staged_libraries(opt)) do
                 local _, symbols = band(found.exports, objects[library.name])
@@ -670,7 +710,7 @@ function stage_bands(opt)
         end
         local built = {}
         for _, library in ipairs(staged_libraries(opt)) do
-            table.insert(built, link(opt, library, attach, objects[library.name], releases, path.join(home, "bands", range.first)))
+            table.insert(built, link(opt, library, attach, objects[library.name], releases, path.join(home, "bands", range.first), caches[1]))
         end
         for _, release in ipairs(table.unique({range.first, range.last})) do
             dyld.check(release_cache(opt, architectures, release), built)
