@@ -218,3 +218,11 @@ postinst run with `DPKG_ROOT` set to it.
   `NAME.done`, and `alert.m` logs a `SCREENSHOT <label>` line and pauses before
   each state worth a snapshot. `layout.m` holds a table of the system
   UIStackView's frames written by `host/layout/expectations.m`.
+- `animator.m` also measures what scrubbing costs, since the answer only means
+  something on the slowest hardware the port runs on. It times a scrub step
+  three ways - an empty loop, freezing the layer, and rebuilding the animation,
+  which is what the port does - and holds the last to one display frame. On an
+  iPhone4,1 the three came out at 0.1, 4.4 and 109.2 microseconds against a
+  frame of 16666.7. Reading the presentation layer needs `[CATransaction flush]`
+  and a turn of the run loop first: before the first commit there is no
+  presentation layer and the model value is what comes back.
