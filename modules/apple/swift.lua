@@ -162,6 +162,32 @@ function compile_flags(opt)
     return flags
 end
 
+-- The flags a port compiles with against the runtime it carries. The features of this Swift release are available
+-- whatever the deployment target, because the runtime ships with the program, while the SDK's own availability is
+-- checked as before; the clang importer is told the same target, or it would read the SDK's headers for the release the
+-- compiler was built against. The compatibility libraries of the Swift runtimes that shipped in an OS are not linked:
+-- there is no OS Swift here to be compatible with.
+function runtime_flags(opt)
+    local flags = {"-target", triple(opt.architecture, opt.deployment), "-clang-target", triple(opt.architecture, opt.deployment),
+                   "-sdk", opt.sdk, "-resource-dir", opt.resources, "-Xfrontend", "-bundled-swift-runtime",
+                   "-runtime-compatibility-version", "none", "-wmo", "-module-name", module_identifier(opt.module)}
+    if opt.plugins then
+        table.join2(flags, {"-plugin-path", opt.plugins})
+    end
+    local optimizations = {none = "-Onone", smallest = "-Osize"}
+    table.insert(flags, opt.optimize and (optimizations[opt.optimize] or "-O") or "-Onone")
+    if opt.symbols then
+        table.insert(flags, "-g")
+    end
+    if opt.prefix_map then
+        table.join2(flags, {"-file-prefix-map", opt.prefix_map})
+    end
+    if not opt.has_main then
+        table.insert(flags, "-parse-as-library")
+    end
+    return flags
+end
+
 function codegen_flags(opt)
     local levels = {none = "-O0", smallest = "-Os"}
     return {opt.optimize and (levels[opt.optimize] or "-O2") or "-O0", "-x", "ir"}

@@ -65,7 +65,9 @@ end
 
 local function package_libraries(target, package, name)
     local libraries = {}
-    for _, file in ipairs(os.files(path.join(package:installdir(), "lib", "*.dylib"))) do
+    -- Wherever under lib a package keeps its shared libraries: a runtime built for a platform and an architecture puts
+    -- them where the compiler reads them, which is a folder of its own, and they are carried like any others.
+    for _, file in ipairs(os.files(path.join(package:installdir(), "lib", "**.dylib"))) do
         if not os.islink(file) then
             table.insert(libraries, file)
         end
