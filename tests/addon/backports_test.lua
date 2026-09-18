@@ -84,6 +84,15 @@ local function surface_step(backports, opt, folder, found)
     if #kept ~= 1 or #reexported ~= 0 then
         table.insert(found, string.format("a release without the class must keep the object, not %d of them with %d re-exported", #kept, #reexported))
     end
+    -- The release carries classes it does not export, and a band that keeps one
+    -- of those puts a second class of that name in the process.
+    local told = backports.duplicated({object}, {NSDateInterval = {image = "Foundation"}})
+    if table.concat(told, " ") ~= "NSDateInterval (NSDateInterval.o)" then
+        table.insert(found, "a class the release holds without exporting it must be named with the object that carries it, not " .. table.concat(told, " "))
+    end
+    if #backports.duplicated({object}, {NSSomethingElse = {}}) ~= 0 then
+        table.insert(found, "a class no release holds is the backport's to carry")
+    end
     local refused = fixtures.refusal(function () kept, reexported = backports.band(release_ten, {object}) end)
     if refused then
         table.insert(found, "the helpers and ivars an object holds beside a class are not API, and weighing them against a release refuses it: " .. refused)
