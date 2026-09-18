@@ -23,6 +23,7 @@ inputs.
     sh host/gesturename/run.sh
     sh host/batchupdates/run.sh
     sh host/interactions/run.sh
+    sh host/traitstyle/run.sh
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
@@ -94,6 +95,16 @@ that it starts empty, that it is copied rather than held, that clearing it
 works, and that two recognizers keep their own. It notes the one thing the port
 cannot do - the system prints the name inside `-description`, which belongs to
 the release.
+
+`host/traitstyle/run.sh` is the contract for the user interface style of a
+trait collection, iOS 12 API on a class of the iOS 7-10 range: it runs one
+script against UIKit's own collection and the same script against the port's,
+and compares the style a collection is built with, what a collection of a scale
+alone and of nothing at all answer, five merges, equality and hash against an
+empty collection, four containment questions, the description, the copy, an
+archive round trip, and the collection a screen is given. It fails until the
+port carries the API, which is the point: the numbers in it are what the port
+has to match.
 
 `host/interactions/run.sh` covers two things a view holds for somebody else:
 the list of `UIInteraction`s, and the attributed strings of accessibility. It
