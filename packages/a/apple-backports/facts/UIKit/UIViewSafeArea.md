@@ -72,7 +72,11 @@ promise the port cannot keep: the first two are called from the moment of
 change, which the port never sees, and the guide's frame is kept live by the
 layout engine, which the port is not part of. A declared method that is never
 called is the quietest kind of lie, so `respondsToSelector:` answers honestly
-instead. They are in the registry as `absent` with that reason.
+instead. They are in the registry as `absent` with that reason, and so is
+`insetsLayoutMarginsFromSafeArea`: it would only mean something if it changed
+what `-layoutMargins` answers, and that method belongs to the iOS 8 backport,
+not to this one. A flag that layout reads and believes, while nothing acts on
+it, is worse than no flag.
 
 ## Where the insets come from on iOS 6
 
