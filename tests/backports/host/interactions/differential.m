@@ -210,6 +210,8 @@ extern NSAttributedStringKey const CharonHostUIAccessibilitySpeechAttributeQueue
 extern NSAttributedStringKey const CharonHostUIAccessibilitySpeechAttributeIPANotation;
 extern NSAttributedStringKey const CharonHostUIAccessibilityTextAttributeHeadingLevel;
 extern NSAttributedStringKey const CharonHostUIAccessibilityTextAttributeCustom;
+extern UIImagePickerControllerInfoKey const CharonHostUIImagePickerControllerImageURL;
+extern UIActivityType const CharonHostUIActivityTypeMarkupAsPDF;
 
 static void keys_of_the_port(void)
 {
@@ -221,6 +223,10 @@ static void keys_of_the_port(void)
           "the heading level key is the string UIKit has");
     CHECK([CharonHostUIAccessibilityTextAttributeCustom isEqual:UIAccessibilityTextAttributeCustom],
           "the custom text key is the string UIKit has");
+    CHECK([CharonHostUIImagePickerControllerImageURL isEqual:UIImagePickerControllerImageURL],
+          "the image picker's URL key is the string UIKit has");
+    CHECK([CharonHostUIActivityTypeMarkupAsPDF isEqual:UIActivityTypeMarkupAsPDF],
+          "the markup as PDF activity is the identifier UIKit has");
 }
 
 int main(void)
