@@ -800,6 +800,7 @@ SYSTEM_RANDOM = r"""
 #include <string.h>
 
 void charon_arc4random_buf(void *, size_t);
+void arc4random_buf(void *, size_t);
 
 /* The stream the shim reads only where the release has no arc4random_buf of its own. This one is compiled with the
    system's, so what the shim answers must not be these words: it must ask the library that defines the call. */
@@ -931,6 +932,15 @@ static void randoms(void)
         snprintf(what, sizeof what, "arc4random_buf fills %zu bytes from the stream, the tail included, and nothing around them", length);
         expect(memcmp(mine, wanted, sizeof mine) == 0, what);
     }
+    /* A caller that names the symbol rather than writing the call - the standard library of Embedded Swift does - reaches
+       the same shim, which is why the image defines that name too. */
+    unsigned char named[16], renamed[16];
+    charon_test_words = 0;
+    arc4random_buf(named, sizeof named);
+    charon_test_words = 0;
+    charon_arc4random_buf(renamed, sizeof renamed);
+    expect(memcmp(named, renamed, sizeof named) == 0, "the shim answers to the name of the call itself");
+
     charon_test_words = 0;
     unsigned char first[32], second[32];
     charon_arc4random_buf(first, sizeof first);
