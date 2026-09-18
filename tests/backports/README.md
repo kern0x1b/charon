@@ -21,6 +21,7 @@ inputs.
     sh host/fontmetrics/run.sh
     sh host/systemspacing/run.sh
     sh host/gesturename/run.sh
+    sh host/batchupdates/run.sh
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
@@ -92,6 +93,13 @@ that it starts empty, that it is copied rather than held, that clearing it
 works, and that two recognizers keep their own. It notes the one thing the port
 cannot do - the system prints the name inside `-description`, which belongs to
 the release.
+
+`host/batchupdates/run.sh` runs the same sequence of table updates twice, once
+through the system's `-performBatchUpdates:completion:` and once through the
+backport's, and compares the whole order of what happened: the update block
+running inside the call, the completion arriving only after the run loop turns,
+one completion per call, `nil` blocks and an empty block accepted, a nested
+call, and the rows left after inserting, deleting and moving.
 
 `host/uikit2/run.sh` renames selectors as well as classes, so a test holds a
 backported method and the system one side by side, and checks the spring curve
