@@ -20,6 +20,7 @@ inputs.
     sh host/contentsize/run.sh
     sh host/fontmetrics/run.sh
     sh host/systemspacing/run.sh
+    sh host/gesturename/run.sh
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
@@ -85,6 +86,12 @@ pairs of font sizes, a baseline against an edge, two views with no font at all,
 and an edge of the container. It ends with a note for the one combination the
 port does not reproduce: a baseline of a text view under the baseline of a view
 with no font.
+
+`host/gesturename/run.sh` holds the name of a gesture recognizer to the host's:
+that it starts empty, that it is copied rather than held, that clearing it
+works, and that two recognizers keep their own. It notes the one thing the port
+cannot do - the system prints the name inside `-description`, which belongs to
+the release.
 
 `host/uikit2/run.sh` renames selectors as well as classes, so a test holds a
 backported method and the system one side by side, and checks the spring curve
