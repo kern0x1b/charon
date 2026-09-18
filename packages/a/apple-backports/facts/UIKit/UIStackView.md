@@ -75,3 +75,28 @@ The length a proportional item is measured by is settled:
 intrinsic content size along the axis, and falls back to `systemLayoutSizeFittingSize:` when that is
 `UIViewNoIntrinsicMetric` or the view asks for a second constraints pass - which is what the backport's own
 measure already does.
+
+## The spacing after one arranged subview (iOS 11)
+
+Source: Foundation and UIKit of iOS 11.0 arm64, read by the session that carries iOS 11 and 12, and the
+host's own UIKit measured beside it; the numbers below are the system's answers, which the differential run
+of `tests/backports/host/stackspacing/run.sh` holds the backport to.
+
+`-setCustomSpacing:afterView:` and `-customSpacingAfterView:` are a table on the arrangement, keyed by the
+preceding view itself - by the identity of the pointer, not by `isEqual:` - holding a number. A view that is
+not an arranged subview is ignored by the setter and answers the default from the getter. Leaving
+`arrangedSubviews` clears a view's spacing; being moved within them keeps it.
+
+A gap takes the spacing of the **preceding visible** view, so hiding a view hands the gap to the one before
+it. The value replaces the stack's `spacing` for that gap and is never added to it:
+`UIStackViewSpacingUseDefault`, which is `FLT_MAX`, means the table says nothing and the stack's own
+`spacing` decides; a `spacing` that is itself the default means zero. Both constants are `static const` in
+the SDK's header, so nothing of them is carried - a caller compiles the value in - and the backport only has
+to read them as UIKit does.
+
+`UIStackViewSpacingUseSystem`, which is `FLT_MIN`, is not a number at all: UIKit builds a constraint between
+the two views' anchors with `constraintEqualToSystemSpacingAfterAnchor:multiplier:` (or `...BelowAnchor:`,
+or the baseline anchors of a baseline relative arrangement), where the backport uses the system spacing
+anchors of iOS 11 it already carries. The multiplier is one, or a half where one of the two is not laid out
+as if visible, which is where the half of a hidden neighbour's gap comes from; a plain number is halved the
+same way. A number is rounded to the screen's scale before it becomes a constant, as UIKit rounds it.
