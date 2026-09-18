@@ -231,6 +231,16 @@ static void run(void)
     [left removeFromSuperview];
     [right removeFromSuperview];
 
+    controller.additionalSafeAreaInsets = UIEdgeInsetsMake(-10, 0, 0, 0);
+    expect(root, UIEdgeInsetsMake(MAX(0, statusBar - 10), 0, 0, 0), "a negative additional inset takes away from what the bars give");
+
+    controller.additionalSafeAreaInsets = UIEdgeInsetsMake(-100, -100, -100, -100);
+    expect(root, UIEdgeInsetsZero, "and never takes the safe area below nothing");
+
+    UIView *unheld = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+    CHECK(UIEdgeInsetsEqualToEdgeInsets(unheld.safeAreaInsets, UIEdgeInsetsZero),
+          "a view in no window at all has no safe area");
+
     controller.additionalSafeAreaInsets = UIEdgeInsetsZero;
     expect(root, UIEdgeInsetsMake(statusBar, 0, 0, 0), "clearing the additional insets restores what the bars alone give");
 

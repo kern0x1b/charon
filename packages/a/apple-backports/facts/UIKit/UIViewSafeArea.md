@@ -100,6 +100,25 @@ So the port measures what is really covered:
 The controller of a view is found through the responder chain: the view of a
 controller answers it as its `-nextResponder`.
 
+## Where the insets stop
+
+Two rules the first version of the port did not have, both found by putting it
+in front of the current implementation a second time.
+
+A view that is in no window has **no** safe area, whatever its controller says:
+the current implementation answers zero for a controller's view that was never
+put in a window, even when `additionalSafeAreaInsets` were set on it and read
+back unchanged. The port answers zero there too, and asks the question the way
+this release can - a view is in a window when it is one or when `-window`
+answers - since iOS 6's `-[UIWindow window]` is nil rather than itself.
+
+The safe area never goes below zero. `additionalSafeAreaInsets` are added edge
+by edge, negative values included, and the sum is floored at nothing: on the
+device, a status bar of twenty with an additional inset of minus ten leaves
+ten, and minus a hundred leaves zero, not minus eighty. The port added the
+controller's insets with a maximum before, which quietly ignored every negative
+one; it adds them now and floors the result.
+
 ## How far this is checked
 
 The tweak runs inside Preferences on an iPhone 4S (iPhone4,1, 6.1.3, armv7)
@@ -108,5 +127,7 @@ below it and a view under it, the additional insets adding edge by edge, a
 subview away from every edge, one at the top and one at the bottom carrying
 three insets each, a nested subview keeping what its own frame still covers, a
 view with neither superview nor controller, and clearing the additional insets
-again. Forty-one checks in one run, the whole tweak, no failures; the same run
-carries the scroll view, the directional margins and the font metrics.
+again. Forty-seven checks in one run, the whole tweak, no failures; the same run
+carries the scroll view, the directional margins, the font metrics, the two
+rules above and what this release's own visual format parser does with an
+option of iOS 11.

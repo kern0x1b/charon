@@ -217,7 +217,7 @@ postinst run with `DPKG_ROOT` set to it.
   need a real window and so run inside a running application rather than one of
   their own: it is a MobileSubstrate tweak filtered to Preferences, which
   `killall Preferences` restarts without a respring. It makes a window of its
-  own below the normal level, checks forty-one answers against what the
+  own below the normal level, checks forty-seven answers against what the
   algorithm read out of UIKit 11.0 says they must be - the safe area, the
   scroll view's adjusted content inset, the directional margins and
   `UIFontMetrics`, which shares the run because it needs the device's screen
@@ -235,7 +235,7 @@ postinst run with `DPKG_ROOT` set to it.
   `mkdir -p /private/var/backports && chmod 777 /private/var/backports`. Every
   check writes its own line to the log, since a tweak must not touch the
   application's `stdout`: a failure that only printed would be lost. The last
-  full run answered `ok checks=44 failures=0` on an iPhone 4S (6.1.3, armv7).
+  full run answered `ok checks=47 failures=0` on an iPhone 4S (6.1.3, armv7).
   Three of those checks are not about the safe area at all: they ask the
   release's own visual format parser what it does with the iOS 11 spacing
   option, which is a question only a real iOS 6 can answer.
