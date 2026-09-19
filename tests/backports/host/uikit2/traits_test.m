@@ -9,7 +9,7 @@
 + (instancetype)traitCollectionWithDisplayScale:(CGFloat)scale;
 + (instancetype)traitCollectionWithHorizontalSizeClass:(UIUserInterfaceSizeClass)horizontalSizeClass;
 + (instancetype)traitCollectionWithVerticalSizeClass:(UIUserInterfaceSizeClass)verticalSizeClass;
-+ (instancetype)charon_traitCollectionWithIdiom:(UIUserInterfaceIdiom)idiom scale:(CGFloat)scale orientation:(UIInterfaceOrientation)orientation external:(BOOL)external;
++ (instancetype)charon_traitCollectionWithScreenIdiom:(UIUserInterfaceIdiom)screenIdiom deviceIdiom:(UIUserInterfaceIdiom)deviceIdiom scale:(CGFloat)scale bounds:(CGSize)bounds;
 - (BOOL)containsTraitsInCollection:(id)trait;
 @property (nonatomic, readonly) UIUserInterfaceIdiom userInterfaceIdiom;
 @property (nonatomic, readonly) CGFloat displayScale;
@@ -92,6 +92,8 @@ int main(void)
                                  [[UITraitCollection alloc] init]];
         compare([CharonHostUITraitCollection traitCollectionWithTraitsFromCollections:@[]],
                 [UITraitCollection traitCollectionWithTraitsFromCollections:@[]], "merge of nothing");
+        compare([CharonHostUITraitCollection traitCollectionWithTraitsFromCollections:nil],
+                [UITraitCollection traitCollectionWithTraitsFromCollections:nil], "merge of a nil array");
         for (NSUInteger first = 0; first < ourParts.count; first++) {
             for (NSUInteger second = 0; second < ourParts.count; second++) {
                 NSArray *ours = @[[ourParts objectAtIndex:first], [ourParts objectAtIndex:second]];
@@ -125,20 +127,48 @@ int main(void)
         charon_check([values_of(decoded) isEqualToString:values_of(merged)], "coding round trip", [NSString stringWithFormat:@"%@ != %@", values_of(decoded), values_of(merged)]);
         charon_check([archive_keys(merged) isEqual:archive_keys(systemMerged)], "archive keys", [NSString stringWithFormat:@"%@ != %@", archive_keys(merged), archive_keys(systemMerged)]);
 
-        struct { UIUserInterfaceIdiom idiom; CGFloat scale; UIInterfaceOrientation orientation; BOOL external; const char *expected; } rules[] = {
-            {UIUserInterfaceIdiomPhone, 2, UIInterfaceOrientationPortrait, NO, "idiom 0 scale 2 horizontal 1 vertical 2"},
-            {UIUserInterfaceIdiomPhone, 2, UIInterfaceOrientationPortraitUpsideDown, NO, "idiom 0 scale 2 horizontal 1 vertical 2"},
-            {UIUserInterfaceIdiomPhone, 2, UIInterfaceOrientationLandscapeLeft, NO, "idiom 0 scale 2 horizontal 1 vertical 1"},
-            {UIUserInterfaceIdiomPhone, 1, UIInterfaceOrientationLandscapeRight, NO, "idiom 0 scale 1 horizontal 1 vertical 1"},
-            {UIUserInterfaceIdiomPad, 2, UIInterfaceOrientationPortrait, NO, "idiom 1 scale 2 horizontal 2 vertical 2"},
-            {UIUserInterfaceIdiomPad, 1, UIInterfaceOrientationLandscapeLeft, NO, "idiom 1 scale 1 horizontal 2 vertical 2"},
-            {UIUserInterfaceIdiomPhone, 1, UIInterfaceOrientationPortrait, YES, "idiom -1 scale 1 horizontal 2 vertical 2"},
+        struct { UIUserInterfaceIdiom screen; UIUserInterfaceIdiom device; CGFloat scale; CGFloat width; CGFloat height; const char *expected; } rules[] = {
+            {UIUserInterfaceIdiomPhone, UIUserInterfaceIdiomPhone, 2, 320, 480, "idiom 0 scale 2 horizontal 1 vertical 2"},
+            {UIUserInterfaceIdiomPhone, UIUserInterfaceIdiomPhone, 2, 320, 568, "idiom 0 scale 2 horizontal 1 vertical 2"},
+            {UIUserInterfaceIdiomPhone, UIUserInterfaceIdiomPhone, 2, 480, 320, "idiom 0 scale 2 horizontal 1 vertical 1"},
+            {UIUserInterfaceIdiomPhone, UIUserInterfaceIdiomPhone, 1, 568, 320, "idiom 0 scale 1 horizontal 1 vertical 1"},
+            {UIUserInterfaceIdiomPhone, UIUserInterfaceIdiomPhone, 2, 320, 479, "idiom 0 scale 2 horizontal 1 vertical 1"},
+            {UIUserInterfaceIdiomPhone, UIUserInterfaceIdiomPhone, 2, 667, 375, "idiom 0 scale 2 horizontal 1 vertical 1"},
+            {UIUserInterfaceIdiomPhone, UIUserInterfaceIdiomPhone, 2, 668, 375, "idiom 0 scale 2 horizontal 2 vertical 1"},
+            {UIUserInterfaceIdiomPhone, UIUserInterfaceIdiomPhone, 3, 414, 736, "idiom 0 scale 3 horizontal 1 vertical 2"},
+            {UIUserInterfaceIdiomPhone, UIUserInterfaceIdiomPhone, 3, 736, 414, "idiom 0 scale 3 horizontal 2 vertical 1"},
+            {UIUserInterfaceIdiomPad, UIUserInterfaceIdiomPad, 2, 768, 1024, "idiom 1 scale 2 horizontal 2 vertical 2"},
+            {UIUserInterfaceIdiomPad, UIUserInterfaceIdiomPad, 1, 1024, 768, "idiom 1 scale 1 horizontal 2 vertical 2"},
+            {UIUserInterfaceIdiomPad, UIUserInterfaceIdiomPad, 1, 320, 320, "idiom 1 scale 1 horizontal 1 vertical 2"},
+            {UIUserInterfaceIdiomUnspecified, UIUserInterfaceIdiomPhone, 1, 1024, 768, "idiom -1 scale 1 horizontal 2 vertical 2"},
+            {UIUserInterfaceIdiomUnspecified, UIUserInterfaceIdiomPhone, 1, 640, 480, "idiom -1 scale 1 horizontal 1 vertical 2"},
+            {UIUserInterfaceIdiomUnspecified, UIUserInterfaceIdiomPad, 1, 640, 480, "idiom -1 scale 1 horizontal 1 vertical 2"},
+            {UIUserInterfaceIdiomUnspecified, UIUserInterfaceIdiomPad, 1, 1280, 720, "idiom -1 scale 1 horizontal 2 vertical 2"},
+            {UIUserInterfaceIdiomPhone, (UIUserInterfaceIdiom)2, 2, 1920, 1080, "idiom 0 scale 2 horizontal 0 vertical 0"},
         };
         for (NSUInteger index = 0; index < sizeof(rules) / sizeof(*rules); index++) {
-            id collection = [CharonHostUITraitCollection charon_traitCollectionWithIdiom:rules[index].idiom scale:rules[index].scale orientation:rules[index].orientation external:rules[index].external];
+            id collection = [CharonHostUITraitCollection charon_traitCollectionWithScreenIdiom:rules[index].screen deviceIdiom:rules[index].device scale:rules[index].scale bounds:CGSizeMake(rules[index].width, rules[index].height)];
             NSString *expected = [NSString stringWithUTF8String:rules[index].expected];
             charon_check([values_of(collection) isEqualToString:expected], NAMED(@"iOS 8 rule %lu", (unsigned long)index), [NSString stringWithFormat:@"%@ != %@", values_of(collection), expected]);
         }
+        id foreign[] = {[NSNull null], @"traits", @1, [NSObject new]};
+        NSMutableArray *oursRaised = [NSMutableArray array];
+        for (int index = 0; index < 4; index++) {
+            @try {
+                [CharonHostUITraitCollection traitCollectionWithTraitsFromCollections:@[[ourParts objectAtIndex:1], foreign[index]]];
+                [oursRaised addObject:@"no exception"];
+            } @catch (NSException *exception) {
+                [oursRaised addObject:[NSString stringWithFormat:@"%@: %@", exception.name, exception.reason]];
+            }
+        }
+        NSString *systemRaised = @"no exception";
+        @try {
+            [UITraitCollection traitCollectionWithTraitsFromCollections:@[[systemParts objectAtIndex:1], foreign[0]]];
+        } @catch (NSException *exception) {
+            systemRaised = [NSString stringWithFormat:@"%@: %@", exception.name, exception.reason];
+        }
+        for (int index = 0; index < 4; index++)
+            charon_check([[oursRaised objectAtIndex:index] isEqualToString:systemRaised], NAMED(@"merge with a foreign object %d raises as the system does", index), [NSString stringWithFormat:@"%@ != %@", [oursRaised objectAtIndex:index], systemRaised]);
         printf("checks=%d failures=%d\n", charon_checks, charon_failures);
         return charon_failures;
     }

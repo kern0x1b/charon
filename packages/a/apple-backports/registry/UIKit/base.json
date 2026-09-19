@@ -220,26 +220,30 @@
     "api": "-[UIScreen nativeBounds]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UITraitEnvironment.md"
   },
   {
     "api": "-[UIScreen nativeScale]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UITraitEnvironment.md"
   },
   {
     "api": "-[UIScreen traitCollectionDidChange:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UITraitEnvironment.md"
   },
   {
     "api": "-[UIScreen traitCollection]",
     "kind": "method",
     "introduced": "8.0",
     "minimum": "5.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UITraitEnvironment.md"
   },
   {
     "api": "-[UISearchBar barTintColor]",
@@ -584,14 +588,16 @@
     "api": "-[UIView traitCollectionDidChange:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UITraitEnvironment.md"
   },
   {
     "api": "-[UIView traitCollection]",
     "kind": "method",
     "introduced": "8.0",
     "minimum": "5.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UITraitEnvironment.md"
   },
   {
     "api": "-[UIView viewForFirstBaselineLayout]",
@@ -624,7 +630,8 @@
     "introduced": "7.0",
     "status": "inert",
     "reason": "the release adjusts no scroll view for the bars",
-    "effect": "it answers what was set"
+    "effect": "it answers what was set",
+    "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
     "api": "-[UIViewController edgesForExtendedLayout]",
@@ -632,7 +639,8 @@
     "introduced": "7.0",
     "status": "inert",
     "reason": "the release has no extended layout of its own",
-    "effect": "it answers what was set"
+    "effect": "it answers what was set",
+    "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
     "api": "-[UIViewController extendedLayoutIncludesOpaqueBars]",
@@ -640,14 +648,16 @@
     "introduced": "7.0",
     "status": "inert",
     "reason": "the release has no extended layout of its own",
-    "effect": "it answers what was set"
+    "effect": "it answers what was set",
+    "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
     "api": "-[UIViewController overrideTraitCollectionForChildViewController:]",
     "kind": "method",
     "introduced": "8.0",
     "minimum": "5.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UITraitEnvironment.md"
   },
   {
     "api": "-[UIViewController setAutomaticallyAdjustsScrollViewInsets:]",
@@ -655,7 +665,8 @@
     "introduced": "7.0",
     "status": "inert",
     "reason": "the release adjusts no scroll view for the bars",
-    "effect": "the value is remembered and adjusts nothing"
+    "effect": "the value is remembered and adjusts nothing",
+    "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
     "api": "-[UIViewController setEdgesForExtendedLayout:]",
@@ -663,7 +674,8 @@
     "introduced": "7.0",
     "status": "inert",
     "reason": "the release lays a controller out under the bars only through wantsFullScreenLayout, which is a different question",
-    "effect": "the value is remembered and changes no layout"
+    "effect": "the value is remembered and changes no layout",
+    "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
     "api": "-[UIViewController setExtendedLayoutIncludesOpaqueBars:]",
@@ -671,27 +683,31 @@
     "introduced": "7.0",
     "status": "inert",
     "reason": "the release has no extended layout of its own",
-    "effect": "the value is remembered and changes no layout"
+    "effect": "the value is remembered and changes no layout",
+    "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
     "api": "-[UIViewController setOverrideTraitCollection:forChildViewController:]",
     "kind": "method",
     "introduced": "8.0",
     "minimum": "5.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UITraitEnvironment.md"
   },
   {
     "api": "-[UIViewController traitCollectionDidChange:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UITraitEnvironment.md"
   },
   {
     "api": "-[UIViewController traitCollection]",
     "kind": "method",
     "introduced": "8.0",
     "minimum": "5.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UITraitEnvironment.md"
   },
   {
     "api": "NSLayoutAnchor",
@@ -1036,7 +1052,8 @@
     "kind": "class",
     "introduced": "8.0",
     "minimum": "5.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UITraitEnvironment.md"
   },
   {
     "api": "UITraitCollection.userInterfaceStyle",

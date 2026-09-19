@@ -26,6 +26,9 @@ static char charon_overrides_key;
     UIViewController *presenting = self.presentingViewController;
     if (presenting && presenting != self)
         return [presenting traitCollection];
+    UIView *superview = self.isViewLoaded ? self.view.superview : nil;
+    if (superview)
+        return [superview traitCollection];
     return [UITraitCollection charon_traitCollectionForScreen:self.isViewLoaded ? self.view.window.screen : nil];
 }
 

@@ -212,9 +212,11 @@ static NSString *traits_of(id environment)
             UIScreen *screen = [UIScreen mainScreen];
             UIUserInterfaceIdiom idiom = [UIDevice currentDevice].userInterfaceIdiom;
             BOOL landscape = UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
+            CGSize inOrientation = landscape ? CGSizeMake(screen.bounds.size.height, screen.bounds.size.width) : screen.bounds.size;
             NSString *expected = [NSString stringWithFormat:@"idiom %ld scale %g horizontal %ld vertical %ld", (long)idiom, (double)screen.scale,
-                                  (long)(idiom == UIUserInterfaceIdiomPad ? UIUserInterfaceSizeClassRegular : UIUserInterfaceSizeClassCompact),
-                                  (long)(idiom == UIUserInterfaceIdiomPad || !landscape ? UIUserInterfaceSizeClassRegular : UIUserInterfaceSizeClassCompact)];
+                                  (long)(inOrientation.width > 667 ? UIUserInterfaceSizeClassRegular : UIUserInterfaceSizeClassCompact),
+                                  (long)(idiom == UIUserInterfaceIdiomPad || inOrientation.height >= 480 ? UIUserInterfaceSizeClassRegular : UIUserInterfaceSizeClassCompact)];
+            printf("info the screen is %s in the orientation %ld\n", NSStringFromCGSize(inOrientation).UTF8String, (long)[UIApplication sharedApplication].statusBarOrientation);
             charon_check([traits_of(screen) isEqualToString:expected], "the screen traits follow the iOS 8 rules", [NSString stringWithFormat:@"%@ != %@", traits_of(screen), expected]);
             charon_check([traits_of(test.window) isEqualToString:traits_of(screen)], "a window takes the traits of its screen", traits_of(test.window));
             charon_check([traits_of(test.host) isEqualToString:traits_of(screen)], "a view controller in a window takes its traits", traits_of(test.host));
@@ -279,12 +281,43 @@ static NSString *traits_of(id environment)
             [test.host setOverrideTraitCollection:[UITraitCollection traitCollectionWithHorizontalSizeClass:overridden] forChildViewController:child];
             charon_check(child.traitCollection.horizontalSizeClass == overridden, "an override reaches the child", traits_of(child));
             charon_check(child.traitChanges == 1, "the child hears about the override", [NSString stringWithFormat:@"%ld changes", (long)child.traitChanges]);
+            UITraitCollection *given = [UITraitCollection traitCollectionWithHorizontalSizeClass:overridden];
+            [test.host setOverrideTraitCollection:given forChildViewController:child];
+            charon_check(child.traitChanges == 1, "the same override again is not heard", [NSString stringWithFormat:@"%ld changes", (long)child.traitChanges]);
+            charon_check([test.host overrideTraitCollectionForChildViewController:child] == given, "the override is answered as it was given", @"another object");
+            charon_check([[[UIViewController alloc] init] overrideTraitCollectionForChildViewController:child] == nil && [test.host overrideTraitCollectionForChildViewController:nil] == nil,
+                         "no other controller and no nil child has an override", @"one was answered");
+            [test.host setOverrideTraitCollection:given forChildViewController:nil];
+            charon_check(child.view.traitCollection.horizontalSizeClass == overridden, "the view of the child takes the override", traits_of(child.view));
             charon_check([[test.host overrideTraitCollectionForChildViewController:child] horizontalSizeClass] == overridden, "the override is kept", @"the override is gone");
             charon_check(test.content.traitCollection.horizontalSizeClass == inherited, "the override leaves the other views alone", traits_of(test.content));
             [test.host setOverrideTraitCollection:nil forChildViewController:child];
             charon_check(child.traitCollection.horizontalSizeClass == inherited, "clearing the override", traits_of(child));
             [child.view removeFromSuperview];
             [child removeFromParentViewController];
+            NSString *raised = @"nothing";
+            @try {
+                [UITraitCollection traitCollectionWithTraitsFromCollections:@[[UITraitCollection traitCollectionWithDisplayScale:2], [NSNull null]]];
+            } @catch (NSException *exception) {
+                raised = [NSString stringWithFormat:@"%@: %@", exception.name, exception.reason];
+            }
+            CHECK_EQUAL(raised, @"NSInvalidArgumentException: Arguments to traitCollectionWithTraitsFromCollections: must all be of type UITraitCollection", "merging an object that is no trait collection raises");
+            UIViewController *presented = [[UIViewController alloc] init];
+            [test.host presentViewController:presented animated:NO completion:nil];
+            charon_check([traits_of(presented) isEqualToString:traits_of(test.host)], "a presented controller takes the traits of its presenter", traits_of(presented));
+            [test.host dismissViewControllerAnimated:NO completion:nil];
+            UIViewController *adopted = [[UIViewController alloc] init];
+            UITraitCollection *forAdopter = [UITraitCollection traitCollectionWithHorizontalSizeClass:test.host.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular ? UIUserInterfaceSizeClassCompact : UIUserInterfaceSizeClassRegular];
+            RecordingController *adopter = [[RecordingController alloc] init];
+            [test.host addChildViewController:adopter];
+            [test.host.view addSubview:adopter.view];
+            [adopter didMoveToParentViewController:test.host];
+            [test.host setOverrideTraitCollection:forAdopter forChildViewController:adopter];
+            [adopter.view addSubview:adopted.view];
+            charon_check(adopted.traitCollection.horizontalSizeClass == forAdopter.horizontalSizeClass, "a controller whose view sits in another controller's takes that controller's traits", traits_of(adopted));
+            [adopted.view removeFromSuperview];
+            [adopter.view removeFromSuperview];
+            [adopter removeFromParentViewController];
             done();
         } copy],
         [^(void (^done)(void)) {
@@ -477,7 +510,38 @@ static NSString *traits_of(id environment)
             charon_check(test.host.automaticallyAdjustsScrollViewInsets, "automaticallyAdjustsScrollViewInsets starts as YES", @"the default is NO");
             test.host.edgesForExtendedLayout = UIRectEdgeNone;
             charon_check(test.host.edgesForExtendedLayout == UIRectEdgeNone, "edgesForExtendedLayout is kept", @"the value is not kept");
-            charon_check(CGRectGetMinY(test.host.view.frame) >= 0, "iOS 6 lays out below the bars either way", NSStringFromCGRect(test.host.view.frame));
+            UIViewController *content = [[UIViewController alloc] init];
+            UINavigationController *bars = [[UINavigationController alloc] initWithRootViewController:content];
+            bars.navigationBar.translucent = YES;
+            [test.host addChildViewController:bars];
+            bars.view.frame = CGRectMake(0, 0, 320, 440);
+            [test.host.view addSubview:bars.view];
+            [bars.view layoutIfNeeded];
+            NSMutableArray *frames = [NSMutableArray array];
+            [frames addObject:NSStringFromCGRect(content.view.frame)];
+            content.edgesForExtendedLayout = UIRectEdgeNone;
+            [bars.view setNeedsLayout];
+            [bars.view layoutIfNeeded];
+            [frames addObject:NSStringFromCGRect(content.view.frame)];
+            content.edgesForExtendedLayout = UIRectEdgeAll;
+            content.extendedLayoutIncludesOpaqueBars = YES;
+            content.automaticallyAdjustsScrollViewInsets = NO;
+            [bars.view setNeedsLayout];
+            [bars.view layoutIfNeeded];
+            [frames addObject:NSStringFromCGRect(content.view.frame)];
+            charon_check([frames[0] isEqualToString:frames[1]] && [frames[1] isEqualToString:frames[2]], "none of the extended layout properties changes a controller's frame on iOS 6", [frames componentsJoinedByString:@" "]);
+            [bars.view removeFromSuperview];
+            [bars removeFromParentViewController];
+            NSMutableData *coded = [NSMutableData data];
+            NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:coded];
+            UIViewController *written = [[UIViewController alloc] init];
+            written.edgesForExtendedLayout = UIRectEdgeNone;
+            written.extendedLayoutIncludesOpaqueBars = YES;
+            written.automaticallyAdjustsScrollViewInsets = NO;
+            [archiver encodeObject:written forKey:@"root"];
+            [archiver finishEncoding];
+            UIViewController *read = [[[NSKeyedUnarchiver alloc] initForReadingWithData:coded] decodeObjectForKey:@"root"];
+            printf("info after archiving a controller, edges %lu, opaque bars %d, adjusts insets %d\n", (unsigned long)read.edgesForExtendedLayout, read.extendedLayoutIncludesOpaqueBars, read.automaticallyAdjustsScrollViewInsets);
             done();
         } copy],
         [^(void (^done)(void)) {

@@ -24,19 +24,33 @@ static UIInterfaceOrientation charon_interface_orientation(void)
     return orientation ? orientation : UIInterfaceOrientationPortrait;
 }
 
-static UITraitCollection *charon_trait_collection_for(UIUserInterfaceIdiom idiom, CGFloat scale, UIInterfaceOrientation orientation, BOOL external)
+static UIUserInterfaceSizeClass charon_horizontal_class(UIUserInterfaceIdiom device, CGFloat width)
 {
-    UITraitCollection *collection;
-    if (external)
-        collection = charon_make([UITraitCollection class], UIUserInterfaceIdiomUnspecified, scale, UIUserInterfaceSizeClassRegular, UIUserInterfaceSizeClassRegular);
-    else if (idiom == UIUserInterfaceIdiomPad)
-        collection = charon_make([UITraitCollection class], idiom, scale, UIUserInterfaceSizeClassRegular, UIUserInterfaceSizeClassRegular);
-    else {
-        UIUserInterfaceSizeClass vertical = UIInterfaceOrientationIsLandscape(orientation) ? UIUserInterfaceSizeClassCompact : UIUserInterfaceSizeClassRegular;
-        collection = charon_make([UITraitCollection class], idiom, scale, UIUserInterfaceSizeClassCompact, vertical);
-    }
+    if (device != UIUserInterfaceIdiomPhone && device != UIUserInterfaceIdiomPad)
+        return UIUserInterfaceSizeClassUnspecified;
+    return width > 667 ? UIUserInterfaceSizeClassRegular : UIUserInterfaceSizeClassCompact;
+}
+
+static UIUserInterfaceSizeClass charon_vertical_class(UIUserInterfaceIdiom device, CGFloat height)
+{
+    if (device == UIUserInterfaceIdiomPad)
+        return UIUserInterfaceSizeClassRegular;
+    if (device != UIUserInterfaceIdiomPhone)
+        return UIUserInterfaceSizeClassUnspecified;
+    return height >= 480 ? UIUserInterfaceSizeClassRegular : UIUserInterfaceSizeClassCompact;
+}
+
+static UITraitCollection *charon_trait_collection_for(UIUserInterfaceIdiom screenIdiom, UIUserInterfaceIdiom device, CGFloat scale, CGSize bounds)
+{
+    UITraitCollection *collection = charon_make([UITraitCollection class], screenIdiom, scale, charon_horizontal_class(device, bounds.width), charon_vertical_class(device, bounds.height));
     charon_set_trait_style(collection, UIUserInterfaceStyleLight);
     return collection;
+}
+
+static CGSize charon_bounds_for_orientation(UIScreen *screen, UIInterfaceOrientation orientation)
+{
+    CGSize natural = screen.bounds.size;
+    return UIInterfaceOrientationIsLandscape(orientation) ? CGSizeMake(natural.height, natural.width) : natural;
 }
 
 static UITraitCollection *charon_screen_traits(UIScreen *screen)
@@ -45,19 +59,25 @@ static UITraitCollection *charon_screen_traits(UIScreen *screen)
     if (!screen)
         screen = main;
     UIInterfaceOrientation orientation = charon_interface_orientation();
+    UIUserInterfaceIdiom device = [UIDevice currentDevice].userInterfaceIdiom;
     if (screen != main)
-        return charon_trait_collection_for(UIUserInterfaceIdiomUnspecified, screen.scale, orientation, YES);
+        return charon_trait_collection_for(UIUserInterfaceIdiomUnspecified, device, screen.scale, screen.bounds.size);
     static UITraitCollection *cached[2];
     static CGFloat cachedScale;
+    static CGSize cachedBounds;
+    static UIUserInterfaceIdiom cachedDevice;
     BOOL landscape = UIInterfaceOrientationIsLandscape(orientation);
     CGFloat scale = screen.scale;
-    if (cachedScale != scale) {
+    CGSize natural = screen.bounds.size;
+    if (cachedScale != scale || !CGSizeEqualToSize(cachedBounds, natural) || cachedDevice != device) {
         cached[0] = nil;
         cached[1] = nil;
         cachedScale = scale;
+        cachedBounds = natural;
+        cachedDevice = device;
     }
     if (!cached[landscape])
-        cached[landscape] = charon_trait_collection_for([UIDevice currentDevice].userInterfaceIdiom, scale, orientation, NO);
+        cached[landscape] = charon_trait_collection_for(device, device, scale, charon_bounds_for_orientation(screen, orientation));
     return cached[landscape];
 }
 
@@ -172,9 +192,9 @@ static NSString *charon_size_class_name(UIUserInterfaceSizeClass sizeClass)
     return charon_screen_traits(screen);
 }
 
-+ (UITraitCollection *)charon_traitCollectionWithIdiom:(UIUserInterfaceIdiom)idiom scale:(CGFloat)scale orientation:(UIInterfaceOrientation)orientation external:(BOOL)external
++ (UITraitCollection *)charon_traitCollectionWithScreenIdiom:(UIUserInterfaceIdiom)screenIdiom deviceIdiom:(UIUserInterfaceIdiom)deviceIdiom scale:(CGFloat)scale bounds:(CGSize)bounds
 {
-    return charon_trait_collection_for(idiom, scale, orientation, external);
+    return charon_trait_collection_for(screenIdiom, deviceIdiom, scale, bounds);
 }
 
 + (void)charon_deliverChangesInEnvironments:(NSArray *)environments change:(void (^)(void))change
@@ -207,7 +227,7 @@ static NSString *charon_size_class_name(UIUserInterfaceSizeClass sizeClass)
     UIUserInterfaceStyle style = UIUserInterfaceStyleUnspecified;
     for (UITraitCollection *collection in traitCollections) {
         if (![collection isKindOfClass:[UITraitCollection class]])
-            continue;
+            [NSException raise:NSInvalidArgumentException format:@"Arguments to traitCollectionWithTraitsFromCollections: must all be of type UITraitCollection"];
         if (collection->_userInterfaceIdiom != UIUserInterfaceIdiomUnspecified)
             idiom = collection->_userInterfaceIdiom;
         if (collection->_displayScale != 0)
