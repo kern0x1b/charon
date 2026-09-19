@@ -4,6 +4,18 @@
 
 static Class base, image;
 
+@interface CharonGamutlessTraits : NSObject
+@end
+
+@implementation CharonGamutlessTraits
+
+- (CGFloat)displayScale
+{
+    return 3;
+}
+
+@end
+
 static NSString *caught(id (^work)(void), id *made)
 {
     @try {
@@ -89,6 +101,13 @@ int main(void)
             printf("  %s: %s\n", [system[index][0] UTF8String], expected.UTF8String);
             charon_check([expected isEqual:actual], [system[index][0] UTF8String],
                          [NSString stringWithFormat:@"%@ != %@", actual, expected]);
+        }
+        if (carried) {
+            NSString *gamutless = for_traits((UITraitCollection *)[[CharonGamutlessTraits alloc] init]);
+            NSString *wanted = system[6][1];
+            printf("  for traits of a release that has no gamut: %s\n", gamutless.UTF8String);
+            charon_check([gamutless isEqual:wanted], "for traits of a release that has no gamut",
+                         [NSString stringWithFormat:@"%@ != %@", gamutless, wanted]);
         }
     }
     printf("checks=%d failures=%d\n", charon_checks, charon_failures);
