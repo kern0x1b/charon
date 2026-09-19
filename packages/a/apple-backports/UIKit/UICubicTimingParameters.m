@@ -127,9 +127,7 @@
 {
     if (self.timingCurveType == UITimingCurveTypeCubic)
         return [[[self class] allocWithZone:zone] initWithControlPoint1:self.controlPoint1 controlPoint2:self.controlPoint2];
-    UICubicTimingParameters *copy = [[[self class] allocWithZone:zone] init];
-    [copy _setAnimationCurve:(UIViewAnimationCurve)_curve];
-    return copy;
+    return [[[self class] allocWithZone:zone] initWithAnimationCurve:self.animationCurve];
 }
 
 - (NSString *)description

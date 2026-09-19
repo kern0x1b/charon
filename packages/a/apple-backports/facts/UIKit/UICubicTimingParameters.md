@@ -57,6 +57,16 @@ instead is a defect Apple itself corrected, and carrying it forward would be
 carrying a bug with our name on it. Nothing else changes - the type stays
 builtin, and the archive still carries the curve rather than the points.
 
+## Copying
+
+`-copyWithZone:` (`0x20a4109a`) makes a cubic copy from the two control points
+with `-initWithControlPoint1:controlPoint2:`, and a builtin one with
+`-initWithAnimationCurve:` of the same curve, so the copy resolves its own
+function. Making it with `-init` and changing only the number afterwards would
+leave the copy holding Core Animation's default curve under the name of the one
+it was asked for, and an animator, which keeps a copy of its parameters, would
+run that curve instead.
+
 ## Archiving
 
 | key | encoded with | decoded with |
