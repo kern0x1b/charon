@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <dlfcn.h>
+#import <objc/message.h>
 #import "check.h"
 
 static NSString *image_of(Class cls)
@@ -11,6 +12,58 @@ static NSString *image_of(Class cls)
 static BOOL close_enough(double actual, double expected)
 {
     return fabs(actual - expected) <= fabs(expected) * 1e-12;
+}
+
+static NSString *raised(void (^block)(void))
+{
+    @try {
+        block();
+    } @catch (NSException *exception) {
+        return [NSString stringWithFormat:@"%@: %@", exception.name, exception.reason];
+    }
+    return @"nothing";
+}
+
+@interface CharonPartialArchive : NSObject <NSCoding>
+@property (nonatomic, copy) NSDictionary *keys;
+@end
+
+@implementation CharonPartialArchive
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    return nil;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    for (NSString *key in self.keys) {
+        id value = self.keys[key];
+        if ([value isKindOfClass:[NSNumber class]])
+            [coder encodeDouble:[value doubleValue] forKey:key];
+        else
+            [coder encodeObject:value forKey:key];
+    }
+}
+
+@end
+
+static id decode_as(NSString *className, NSDictionary *keys, NSError **error)
+{
+    NSMutableData *data = [NSMutableData data];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
+    [archiver setClassName:className forClass:[CharonPartialArchive class]];
+    CharonPartialArchive *partial = [[CharonPartialArchive alloc] init];
+    partial.keys = keys;
+    [archiver encodeObject:partial forKey:@"root"];
+    [archiver finishEncoding];
+    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
+    unarchiver.decodingFailurePolicy = NSDecodingFailurePolicySetErrorAndReturn;
+    id object = [unarchiver decodeObjectForKey:@"root"];
+    if (error)
+        *error = unarchiver.error;
+    [unarchiver finishDecoding];
+    return object;
 }
 
 int main(void)
@@ -91,6 +144,45 @@ int main(void)
         NSDateInterval *backAgain = [NSKeyedUnarchiver unarchiveObjectWithData:
                                         [NSKeyedArchiver archivedDataWithRootObject:ten]];
         CHECK_EQUAL(backAgain, ten, "an interval survives an archive");
+
+        NSDate *start = [NSDate dateWithTimeIntervalSinceReferenceDate:10], *end = [NSDate dateWithTimeIntervalSinceReferenceDate:15];
+        NSDate *none = nil;
+        CHECK_EQUAL(raised(^{ (void)[[NSDateInterval alloc] initWithStartDate:none duration:1]; }),
+                    @"NSInvalidArgumentException: Start date is nil!", "an interval with no start raises");
+        CHECK_EQUAL(raised(^{ (void)[[NSDateInterval alloc] initWithStartDate:start duration:-1]; }),
+                    @"NSInvalidArgumentException: Duration is less than 0!", "a negative duration raises");
+        CHECK_EQUAL(raised(^{ (void)[[NSDateInterval alloc] initWithStartDate:start duration:NAN]; }), @"nothing",
+                    "a duration that is not a number passes, as on every release");
+        CHECK_EQUAL(raised(^{ (void)[[NSDateInterval alloc] initWithStartDate:start endDate:none]; }),
+                    @"NSInvalidArgumentException: End date is nil!", "an interval with no end raises");
+        CHECK_EQUAL(raised(^{ (void)[[NSDateInterval alloc] initWithStartDate:end endDate:start]; }),
+                    @"NSGenericException: Start date cannot be later in time than end date!",
+                    "an interval that ends before it starts raises");
+        CHECK(![ten containsDate:none] && ![ten intersectsDateInterval:(id)none]
+              && [ten intersectionWithDateInterval:(id)none] == nil, "no date and no interval meet nothing");
+
+        NSError *error = nil;
+        NSDateInterval *byDuration = decode_as(@"NSDateInterval", @{@"NS.startDate": start, @"NS.duration": @5}, &error);
+        CHECK(byDuration.duration == 5 && !error, "an archive with a duration decodes by it");
+        NSDateInterval *startOnly = decode_as(@"NSDateInterval", @{@"NS.startDate": start}, &error);
+        CHECK(startOnly != nil && startOnly.duration == 0 && !error, "an archive with a start alone decodes to no duration");
+        NSDateInterval *endOnly = decode_as(@"NSDateInterval", @{@"NS.endDate": end}, &error);
+        CHECK(endOnly == nil && [error.domain isEqual:NSCocoaErrorDomain] && error.code == 4865,
+              "an archive with no start fails the coder with 4865");
+        NSData *intervalArchive = [NSKeyedArchiver archivedDataWithRootObject:ten];
+        NSDictionary *plist = [NSPropertyListSerialization propertyListWithData:intervalArchive options:0 format:NULL error:NULL];
+        BOOL hasDuration = NO;
+        for (id object in plist[@"$objects"])
+            if ([object isKindOfClass:[NSDictionary class]] && object[@"NS.duration"])
+                hasDuration = YES;
+        CHECK(hasDuration, "an interval is archived with its duration beside its dates");
+
+        CHECK_EQUAL(raised(^{ (void)((id (*)(id, SEL))objc_msgSend)([NSUnit alloc], @selector(init)); }),
+                    @"NSGenericException: -init should never be called on NSUnit!", "a unit made with -init raises");
+        CHECK(![[[NSUnit alloc] initWithSymbol:@"m"] isEqual:[NSUnitLength meters]],
+              "a plain unit of m is not metres: the classes differ");
+        id noSymbol = decode_as(@"NSUnit", @{}, &error);
+        CHECK(noSymbol == nil && error.code == 4865, "a unit archived with no symbol fails the coder with 4865");
 
         printf("%d checks, %d failures\n", charon_checks, charon_failures);
         return charon_failures;

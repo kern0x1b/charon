@@ -18,6 +18,10 @@
 
 - (instancetype)initWithStartDate:(NSDate *)startDate duration:(NSTimeInterval)duration
 {
+    if (!startDate)
+        [NSException raise:NSInvalidArgumentException format:@"Start date is nil!"];
+    if (duration < 0)
+        [NSException raise:NSInvalidArgumentException format:@"Duration is less than 0!"];
     if ((self = [super init])) {
         _startDate = [startDate copy];
         _duration = duration;
@@ -27,6 +31,12 @@
 
 - (instancetype)initWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate
 {
+    if (!startDate)
+        [NSException raise:NSInvalidArgumentException format:@"Start date is nil!"];
+    if (!endDate)
+        [NSException raise:NSInvalidArgumentException format:@"End date is nil!"];
+    if ([startDate compare:endDate] == NSOrderedDescending)
+        [NSException raise:NSGenericException format:@"Start date cannot be later in time than end date!"];
     return [self initWithStartDate:startDate duration:[endDate timeIntervalSinceDate:startDate]];
 }
 
@@ -37,8 +47,19 @@
         return nil;
     }
     NSDate *start = [coder decodeObjectOfClass:[NSDate class] forKey:@"NS.startDate"];
+    if (!start) {
+        [coder failWithError:[NSError errorWithDomain:NSCocoaErrorDomain code:NSCoderValueNotFoundError userInfo:nil]];
+        return nil;
+    }
+    NSTimeInterval duration = [coder decodeDoubleForKey:@"NS.duration"];
+    if ([coder containsValueForKey:@"NS.duration"])
+        return [self initWithStartDate:start duration:duration];
     NSDate *end = [coder decodeObjectOfClass:[NSDate class] forKey:@"NS.endDate"];
-    return [self initWithStartDate:start endDate:end];
+    if (coder.error) {
+        [coder failWithError:[NSError errorWithDomain:NSCocoaErrorDomain code:NSCoderValueNotFoundError userInfo:nil]];
+        return nil;
+    }
+    return end ? [self initWithStartDate:start endDate:end] : [self initWithStartDate:start duration:duration];
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
@@ -49,6 +70,7 @@
     }
     [coder encodeObject:self.startDate forKey:@"NS.startDate"];
     [coder encodeObject:self.endDate forKey:@"NS.endDate"];
+    [coder encodeDouble:_duration forKey:@"NS.duration"];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -89,18 +111,24 @@
 
 - (BOOL)containsDate:(NSDate *)date
 {
+    if (!date)
+        return NO;
     NSTimeInterval when = date.timeIntervalSinceReferenceDate;
     return when >= self.startDate.timeIntervalSinceReferenceDate && when <= self.endDate.timeIntervalSinceReferenceDate;
 }
 
 - (BOOL)intersectsDateInterval:(NSDateInterval *)dateInterval
 {
+    if (!dateInterval)
+        return NO;
     return [self containsDate:dateInterval.startDate] || [self containsDate:dateInterval.endDate]
         || [dateInterval containsDate:_startDate] || [dateInterval containsDate:self.endDate];
 }
 
 - (NSDateInterval *)intersectionWithDateInterval:(NSDateInterval *)dateInterval
 {
+    if (!dateInterval)
+        return nil;
     if (![self intersectsDateInterval:dateInterval])
         return nil;
     if ([self isEqualToDateInterval:dateInterval])
