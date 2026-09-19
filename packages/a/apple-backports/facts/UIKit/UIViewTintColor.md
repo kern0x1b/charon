@@ -27,6 +27,13 @@ release can: it fills one pixel of a device-grey bitmap with the colour and read
 difference from the system's answer is that byte's rounding - at most 1/255, and the test holds it to
 that. The alpha is multiplied by 0.8: an opaque colour dims to 0.8, a colour at 0.5 to 0.4.
 
+On iOS 6 the same pixel gives other greys, because the CoreGraphics of that release does no colour
+management between device spaces: it matches a device colour to device grey by a luma weighting, and red,
+green and blue come out at 77, 150 and 28 of 255. The backport asks the release's CoreGraphics and so
+dims to those; the later answer would need the colour management iOS 6 does not have, and a formula of
+our own in its place would only be a guess at it. Measured in the device test on iOS 6.0 in the emulator,
+where the alpha of 0.8 and 0.4 holds as it does on the later release.
+
 ## The colour a view answers when nothing sets one
 
 It is the system blue, `(0, 122/255, 1)`, and the number is read from UIKit: `122/255` is a `double`

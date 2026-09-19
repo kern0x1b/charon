@@ -3,6 +3,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import <CoreMotion/CoreMotion.h>
 #import <objc/runtime.h>
+#import <objc/message.h>
 #include <dlfcn.h>
 #import "check.h"
 
@@ -526,6 +527,68 @@ static NSString *traits_of(id environment)
             [[UIColor systemBlueColor] getRed:&blueRed green:&blueGreen blue:&blueBlue alpha:&blueAlpha];
             charon_check(fabs(blueRed) < 0.01 && fabs(blueGreen - 122 / 255.0) < 0.01 && fabs(blueBlue - 1) < 0.01, "systemBlueColor is the iOS 7 blue",
                          [NSString stringWithFormat:@"%g %g %g", (double)blueRed, (double)blueGreen, (double)blueBlue]);
+            done();
+        } copy],
+        [^(void (^done)(void)) {
+            struct { const char *name; int red, green, blue; } systems[] = {
+                {"systemRedColor", 255, 59, 48}, {"systemGreenColor", 76, 217, 100}, {"systemBlueColor", 0, 122, 255},
+                {"systemOrangeColor", 255, 149, 0}, {"systemYellowColor", 255, 204, 0}, {"systemPinkColor", 255, 45, 85},
+                {"systemTealColor", 90, 200, 250}, {"systemGrayColor", 142, 142, 147}, {"systemPurpleColor", 88, 86, 214},
+            };
+            for (size_t index = 0; index < sizeof systems / sizeof *systems; index++) {
+                SEL selector = sel_registerName(systems[index].name);
+                UIColor *colour = [UIColor respondsToSelector:selector] ? ((id (*)(id, SEL))objc_msgSend)([UIColor class], selector) : nil;
+                CGFloat red = -1, green = -1, blue = -1, alpha = -1;
+                [colour getRed:&red green:&green blue:&blue alpha:&alpha];
+                charon_check(fabs(red * 255 - systems[index].red) < 0.5 && fabs(green * 255 - systems[index].green) < 0.5 && fabs(blue * 255 - systems[index].blue) < 0.5 && alpha == 1,
+                             NAMED(@"%s is %d %d %d", systems[index].name, systems[index].red, systems[index].green, systems[index].blue),
+                             [NSString stringWithFormat:@"%g %g %g %g", (double)(red * 255), (double)(green * 255), (double)(blue * 255), (double)alpha]);
+            }
+
+            struct { const char *name; CGFloat red, green, blue, alpha, grey, dimmedAlpha; } dims[] = {
+                {"red", 1, 0, 0, 1, 77 / 255.0, 0.8}, {"green", 0, 1, 0, 1, 150 / 255.0, 0.8}, {"blue", 0, 0, 1, 1, 28 / 255.0, 0.8}, {"half red", 1, 0, 0, 0.5, 77 / 255.0, 0.4},
+            };
+            for (size_t index = 0; index < sizeof dims / sizeof *dims; index++) {
+                UIView *parent = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+                UIView *child = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 5, 5)];
+                [parent addSubview:child];
+                parent.tintColor = [UIColor colorWithRed:dims[index].red green:dims[index].green blue:dims[index].blue alpha:dims[index].alpha];
+                parent.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
+                CGFloat white = -1, alpha = -1;
+                BOOL grey = [child.tintColor getWhite:&white alpha:&alpha];
+                charon_check(grey && fabs(white - dims[index].grey) <= 1.5 / 255 && fabs(alpha - dims[index].dimmedAlpha) < 0.001,
+                             NAMED(@"dimmed %s is the grey iOS 6 CoreGraphics matches it to, %g, at alpha %g", dims[index].name, (double)(dims[index].grey * 255), (double)dims[index].dimmedAlpha),
+                             [NSString stringWithFormat:@"%d %g %g", grey, (double)white, (double)alpha]);
+            }
+
+            NSArray *speech = @[@"UIAccessibilitySpeechAttributePunctuation", @"UIAccessibilitySpeechAttributeLanguage", @"UIAccessibilitySpeechAttributePitch"];
+            for (NSString *name in speech) {
+                void *symbol = dlsym(RTLD_DEFAULT, name.UTF8String);
+                Dl_info info;
+                NSString *image = symbol && dladdr(symbol, &info) ? [[NSString stringWithUTF8String:info.dli_fname] lastPathComponent] : @"<none>";
+                NSString *value = symbol ? *(__unsafe_unretained NSString **)symbol : nil;
+                charon_check([value isEqualToString:name], NAMED(@"%@ is its own name", name), value ?: @"<nil>");
+                printf("info %s comes from %s\n", name.UTF8String, image.UTF8String);
+            }
+
+            Class traits = [UITraitCollection class];
+            SEL withStyle = sel_registerName("traitCollectionWithUserInterfaceStyle:");
+            SEL style = sel_registerName("userInterfaceStyle");
+            charon_check([traits respondsToSelector:withStyle] && [traits instancesRespondToSelector:style], "a trait collection has a user interface style", @"the methods are missing");
+            if ([traits respondsToSelector:withStyle]) {
+                UITraitCollection *dark = ((id (*)(id, SEL, NSInteger))objc_msgSend)(traits, withStyle, 2);
+                UITraitCollection *light = ((id (*)(id, SEL, NSInteger))objc_msgSend)(traits, withStyle, 1);
+                NSInteger (*read)(id, SEL) = (NSInteger (*)(id, SEL))objc_msgSend;
+                CHECK_EQUAL(@(read(dark, style)), @2, "a collection made with the dark style answers dark");
+                CHECK_EQUAL(@(read([UITraitCollection traitCollectionWithDisplayScale:2], style)), @0, "a collection without a style answers unspecified");
+                UITraitCollection *merged = [UITraitCollection traitCollectionWithTraitsFromCollections:@[[UITraitCollection traitCollectionWithDisplayScale:2], dark]];
+                charon_check(read(merged, style) == 2 && merged.displayScale == 2, "merging keeps the style and the other traits", merged.description);
+                charon_check(![dark isEqual:light] && [dark isEqual:((id (*)(id, SEL, NSInteger))objc_msgSend)(traits, withStyle, 2)], "the style takes part in equality", dark.description);
+                charon_check([merged containsTraitsInCollection:dark] && ![merged containsTraitsInCollection:light], "the style takes part in containment", merged.description);
+                UITraitCollection *decoded = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:merged]];
+                charon_check([decoded isEqual:merged] && read(decoded, style) == 2, "the style survives archiving", decoded.description);
+                CHECK_EQUAL(@(read(test.host.view.window.traitCollection, style)), @1, "the window answers the light style");
+            }
             done();
         } copy],
         [^(void (^done)(void)) {
