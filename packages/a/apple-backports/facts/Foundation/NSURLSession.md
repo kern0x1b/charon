@@ -20,11 +20,11 @@ URL of the last hop.
 ## What the release cannot do
 
 `TLSMinimumSupportedProtocol` and `TLSMaximumSupportedProtocol` reach CFNetwork on a modern release and bound
-the handshake. iOS 6 hands its requests to NSURLConnection, which takes no such bound, so the backport's
-setters raise `NSInvalidArgumentException` naming the reason instead of storing a value that changes nothing,
-and the getters answer with the bounds the platform really has, SSLv3 to TLS 1.2. An application that only
-reads them, or writes the platform's own bounds back, runs as it does on a newer release; one that narrows
-them learns at once that it cannot.
+the handshake. iOS 6 hands its requests to NSURLConnection, which takes no such bound, so the backport has
+no setters for them - `respondsToSelector:` answers no, and a call raises rather than storing a value that
+changes nothing - and the getters answer with the bounds the platform really has, SSLv3 to TLS 1.2. An
+application that only reads them runs as it does on a newer release; one that asks before it narrows them
+learns that it cannot, and one that narrows them without asking stops at the call.
 
 ## The key a background session would have answered under
 
