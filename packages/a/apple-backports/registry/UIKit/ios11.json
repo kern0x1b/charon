@@ -1972,10 +1972,10 @@
       "api": "UINavigationItem.backButtonTitle",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
+      "status": "ignored",
       "facts": "facts/UIKit/UINavigationItemBackButtonTitle.md",
-      "source": "the release's own -backButtonTitle and -setBackButtonTitle: of UINavigationItem, which UIKit has had privately on every release from 3.0 to 10.3.4; the behaviour held on an iPhone 4S (6.1.3) to UIKit 11.0 (-currentBackButtonTitle at 0x18a04e8e8) and to the host's UIKit"
+      "source": "the release's own -backButtonTitle and -setBackButtonTitle: of UINavigationItem, which UIKit has had privately on every release from 3.0 to 10.3.4; the behaviour held on an iPhone 4S (6.1.3) to UIKit 11.0 (-currentBackButtonTitle at 0x18a04e8e8) and to the host's UIKit",
+      "effect": "the call reaches UIKit's own -backButtonTitle and -setBackButtonTitle:, which every release from 3.0 to 10.3.4 has had privately and iOS 11 made public; nothing of the backports is in the way, and on an iPhone 4S (6.1.3) the release's methods answer and draw the back button as iOS 11 does"
     },
     {
       "api": "+[NSLayoutConstraint constraintsWithVisualFormat:options:metrics:views:]",

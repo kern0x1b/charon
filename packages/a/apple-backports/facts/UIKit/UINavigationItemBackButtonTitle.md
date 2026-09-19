@@ -37,6 +37,13 @@ the class does not answer, so there is nothing for this package to attach, and
 it carries no code for this property: what an application gets is the
 release's own method.
 
+In the registry the entry is therefore `ignored`, the status for a call that
+reaches the release's own implementation with nothing of ours in the way. It is
+not `implemented`, because the build checks that an implemented entry names
+something the package builds, and here there is nothing to build. It has no
+`minimum`: the release answers on every version this package reads, so there is
+no release below which the property is missing.
+
 That method behaves as the iOS 11 one does, measured on an iPhone 4S running
 6.1.3.
 
