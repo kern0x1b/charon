@@ -474,8 +474,21 @@ static NSString *traits_of(id environment)
                 handlers++;
                 universalOpened = success;
             }];
+            __block BOOL textOpened = YES, nilOpened = YES, handlerOnMain = NO;
+            [application openURL:[NSURL URLWithString:@"charon-backports-nothing://test"] options:@{UIApplicationOpenURLOptionUniversalLinksOnly: @"YES"} completionHandler:^(BOOL success) {
+                handlers++;
+                textOpened = success;
+                handlerOnMain = [NSThread isMainThread];
+            }];
+            [application openURL:nil options:@{} completionHandler:^(BOOL success) {
+                handlers++;
+                nilOpened = success;
+            }];
+            [application openURL:[NSURL URLWithString:@"charon-backports-nothing://test"] options:@{} completionHandler:nil];
             after(1, ^{
-                charon_check(handlers == 2, "every openURL handler runs", [NSString stringWithFormat:@"%ld handlers", (long)handlers]);
+                charon_check(handlers == 4, "every openURL handler runs", [NSString stringWithFormat:@"%ld handlers", (long)handlers]);
+                charon_check(!textOpened && !nilOpened, "a text where the option wants a number and a nil URL are reported as not opened", @"one was opened");
+                charon_check(handlerOnMain, "the handler runs on the main thread", @"another thread");
                 charon_check(!unknownOpened, "a scheme no application claims is reported as not opened", @"the URL was opened");
                 charon_check(!universalOpened, "iOS 6 has no universal links, so a universal link only open fails", @"the URL was opened");
                 done();

@@ -10,7 +10,8 @@ UIApplicationOpenExternalURLOptionsKey const UIApplicationOpenURLOptionUniversal
 
 - (void)openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenExternalURLOptionsKey, id> *)options completionHandler:(void (^)(BOOL success))completion
 {
-    BOOL universalLinksOnly = [[options objectForKey:UIApplicationOpenURLOptionUniversalLinksOnly] boolValue];
+    id universalOption = [options objectForKey:UIApplicationOpenURLOptionUniversalLinksOnly];
+    BOOL universalLinksOnly = [universalOption isKindOfClass:[NSNumber class]] && [universalOption boolValue];
     if (universalLinksOnly)
         NSLog(@"openURL:options:completionHandler: iOS %@ has no universal links, so %@ opens no application and the handler is called with NO", [UIDevice currentDevice].systemVersion, url);
     BOOL opened = universalLinksOnly ? NO : [self openURL:url];

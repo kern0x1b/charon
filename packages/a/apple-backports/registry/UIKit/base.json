@@ -135,32 +135,37 @@
     "api": "-[UIApplication currentUserNotificationSettings]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIApplicationNotificationRegistration.md"
   },
   {
     "api": "-[UIApplication isRegisteredForRemoteNotifications]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIApplicationNotificationRegistration.md"
   },
   {
     "api": "-[UIApplication openURL:options:completionHandler:]",
     "kind": "method",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIApplicationOpenURL.md"
   },
   {
     "api": "-[UIApplication registerForRemoteNotifications]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIApplicationNotificationRegistration.md"
   },
   {
     "api": "-[UIApplication registerUserNotificationSettings:]",
     "kind": "method",
     "introduced": "8.0",
     "status": "implemented",
-    "reason": "the release shows local notifications without asking, so the types are recorded and reported as granted; categories with actions are not registered and the library says so in the log"
+    "reason": "the release shows local notifications without asking, so the types are recorded and reported as granted; categories with actions are not registered and the library says so in the log",
+    "facts": "facts/UIKit/UIApplicationNotificationRegistration.md"
   },
   {
     "api": "-[UIImage imageWithRenderingMode:]",
@@ -800,7 +805,8 @@
     "api": "UIApplicationOpenURLOptionUniversalLinksOnly",
     "kind": "constant",
     "introduced": "10.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIApplicationOpenURL.md"
   },
   {
     "api": "UIBlurEffect",
