@@ -268,9 +268,13 @@ end
 
 local INVENTORIES = {}
 
-local function carried_classes(cache)
-    INVENTORIES[cache] = INVENTORIES[cache] or objc.inventory(cache).classes
+local function release_inventory(cache)
+    INVENTORIES[cache] = INVENTORIES[cache] or objc.inventory(cache)
     return INVENTORIES[cache]
+end
+
+local function carried_classes(cache)
+    return release_inventory(cache).classes
 end
 
 local function link(opt, library, attach, objects, releases, outputdir, checked)
@@ -487,7 +491,34 @@ function advice(root, used)
     return advised
 end
 
-function check_registry(root, found, complete, deployment, exports)
+local function carried_by_release(entry, inventory)
+    local function has(class, selector, sign)
+        local carried = inventory.classes[class]
+        return carried ~= nil and carried[sign == "-" and "instance" or "class"]["-" .. selector] ~= nil
+    end
+    if entry.kind == "class" then
+        return inventory.classes[entry.api] ~= nil
+    elseif entry.kind == "protocol" then
+        return inventory.protocols[entry.api] ~= nil
+    elseif entry.kind == "method" then
+        local sign, class, selector = entry.api:match("^([-+])%[([%w_]+) (.+)%]$")
+        return sign ~= nil and has(class, selector, sign)
+    elseif entry.kind == "property" then
+        local class, property = entry.api:match("^([%w_]+)%.([%w_]+)$")
+        return class ~= nil and (has(class, property, "-") or has(class, "set" .. property:sub(1, 1):upper() .. property:sub(2) .. ":", "-"))
+    end
+    return nil
+end
+
+local function in_range(entry, deployment)
+    if not deployment then
+        return false
+    end
+    return not (entry.minimum and dyld.compare_versions(deployment, entry.minimum) < 0)
+        and not (entry.maximum and dyld.compare_versions(deployment, entry.maximum) >= 0)
+end
+
+function check_registry(root, found, complete, deployment, exports, inventory)
     local listed, incomplete = registry(root)
     local unlisted, undocumented = {}, {}
     local function known(name)
@@ -518,6 +549,17 @@ function check_registry(root, found, complete, deployment, exports)
             end
         end
     end
+    local held, missing = {}, {}
+    if inventory then
+        for name, entry in pairs(listed) do
+            local natively = deployment and entry.introduced and dyld.compare_versions(deployment, entry.introduced) >= 0
+            if entry.status == "absent" and in_range(entry, deployment) and not natively and carried_by_release(entry, inventory) then
+                table.insert(held, name)
+            elseif entry.status == "ignored" and in_range(entry, deployment) and carried_by_release(entry, inventory) == false then
+                table.insert(missing, name)
+            end
+        end
+    end
     local unbuilt = {}
     if complete ~= false then
         for name, entry in pairs(listed) do
@@ -541,7 +583,9 @@ function check_registry(root, found, complete, deployment, exports)
     table.sort(unlisted)
     table.sort(unbuilt)
     table.sort(answered)
-    if #unlisted > 0 or #unbuilt > 0 or #answered > 0 or #incomplete > 0 then
+    table.sort(held)
+    table.sort(missing)
+    if #unlisted > 0 or #unbuilt > 0 or #answered > 0 or #held > 0 or #missing > 0 or #incomplete > 0 then
         local lines = {"the registry does not describe what the backports carry:"}
         for _, described in ipairs(incomplete) do
             table.insert(lines, "  " .. described)
@@ -554,6 +598,12 @@ function check_registry(root, found, complete, deployment, exports)
         end
         if #answered > 0 then
             table.insert(lines, "  listed as absent, but what is built answers it: " .. table.concat(answered, " "))
+        end
+        if #held > 0 then
+            table.insert(lines, "  listed as absent, but the release carries it itself, so it is the release's own and not absent: " .. table.concat(held, " "))
+        end
+        if #missing > 0 then
+            table.insert(lines, "  listed as ignored because the release carries it, but the release does not: " .. table.concat(missing, " "))
         end
         raise(table.concat(lines, "\n"))
     end
@@ -574,7 +624,7 @@ function build(opt)
     end
     dyld.check(opt.cache, built)
     if #built == #LIBRARIES then
-        local undocumented = check_registry(opt.root, surface(built, opt.architecture), opt.registry, opt.deployment, release.exports)
+        local undocumented = check_registry(opt.root, surface(built, opt.architecture), opt.registry, opt.deployment, release.exports, release_inventory(opt.cache))
         if undocumented > 0 then
             cprint("${color.warning}note:${clear} %d of the registry's entries name no file of facts yet", undocumented)
         end

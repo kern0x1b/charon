@@ -31,6 +31,14 @@ inputs.
     sh host/animatorscrub/run.sh
     sh host/usernotifications/run.sh  writes device/usernotifications-expectations.h when it passes
     sh host/coredata/run.sh
+    sh host/registry/run.sh <dyld_shared_cache_armv7>
+
+`host/registry/run.sh` holds the build's check of the registry to a release's own
+Objective-C metadata. The build refuses an `absent` entry whose class, method,
+accessor or protocol the release carries, and an `ignored` entry the release
+does not carry, within the releases the entry covers. The script gives the check
+entries made up for the purpose, against the cache it is passed, and needs no
+device.
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
