@@ -78,11 +78,18 @@ package("swift-runtime")
     -- same headers (modules/apple/lift.lua).
     add_configs("backports", {description = "Build the overlays for a port that carries charon@apple-backports: API the backports implement is available from the port's release, in the overlays and in the port's own Swift.", default = false, type = "boolean"})
 
+    -- The application half of it: UIKit's overlay is linked against the UIKit backports too. A daemon has no use for that
+    -- library, and loading it would pull UIKit into the process, so it is a config of its own.
+    add_configs("backports_uikit", {description = "With backports: link the overlay of UIKit against libUIKitBackports, for an application that carries charon@apple-backports with its uikit config.", default = false, type = "boolean"})
+
     on_load("iphoneos", function (package)
+        if package:config("backports_uikit") and not package:config("backports") then
+            raise("swift-runtime's backports_uikit config is the application half of the backports config; set backports too")
+        end
         if package:config("backports") then
-            -- Foundation's backports only: UIKit's overlay keeps the marks its release wrote, so it reaches nothing the UIKit
-            -- backports carry, and a daemon built against this runtime keeps UIKit out of its process.
-            package:add("deps", "charon@apple-backports", {alias = "apple-backports"})
+            -- Foundation's and CoreData's backports: UIKit's overlay keeps the marks its release wrote, so it reaches
+            -- nothing the UIKit backports carry, and a daemon built against this runtime keeps UIKit out of its process.
+            package:add("deps", "charon@apple-backports", {alias = "apple-backports", configs = {coredata = true, uikit = package:config("backports_uikit") or nil}})
         end
         for _, library in ipairs(libraries) do
             package:add("links", library)
@@ -316,7 +323,13 @@ package("swift-runtime")
                   result.lifted, result.headers, result.implemented, #result.unmatched)
             lifted = {"-vfsoverlay", result.vfs}
             package:setenv("CHARON_SWIFT_LIFTED_HEADERS", result.vfs)
+            -- the configs of apple-backports whose libraries the overlays link, which a port must carry as well
+            package:setenv("CHARON_SWIFT_RUNTIME_BACKPORTS", package:config("backports_uikit") and "coredata,uikit" or "coredata")
             carried.FoundationBackports = path.join(backported:installdir("lib"), "libFoundationBackports.dylib")
+            carried.CoreDataBackports = path.join(backported:installdir("lib"), "libCoreDataBackports.dylib")
+            if package:config("backports_uikit") then
+                carried.UIKitBackports = path.join(backported:installdir("lib"), "libUIKitBackports.dylib")
+            end
             -- The marks the Foundation patch puts on what came with iOS 7 are left out where the backports carry it; what
             -- stays marked is what they do not, named here so that it is a decision rather than a guess.
             local foundation = path.join(overlays, "stdlib", "public", "Darwin", "Foundation")
@@ -488,7 +501,8 @@ package("swift-runtime")
                  "-o", initializers})
         build_overlay("UIKit", {path.join(uikit, "stdlib", "public", "Darwin", "UIKit", "UIKit.swift"),
                                 generated_from("UIKit", "UIKit_FoundationExtensions.swift")},
-                      table.join(foundation_links, {"-lswiftQuartzCore", "-framework", "QuartzCore", "-framework", "UIKit"}), {initializers})
+                      table.join(foundation_links, {"-lswiftQuartzCore", "-framework", "QuartzCore", "-framework", "UIKit"}), {initializers},
+                      {backports = package:config("backports_uikit") and {"UIKitBackports", "FoundationBackports"} or nil})
 
         -- CoreData: the generic fetch and count of a context, CoreData's error codes as CocoaError's, and its one file of
         -- Objective-C, which makes the classes a fetch answers conform to NSFetchRequestResult where the release does not.
@@ -498,7 +512,7 @@ package("swift-runtime")
                  toolchain:config("sdkdir"), "-Os", "-c", path.join(coredata, "CoreData.mm"), "-o", conformances})
         build_overlay("CoreData", {path.join(coredata, "CocoaError.swift"), path.join(coredata, "NSManagedObjectContext.swift")},
                       table.join(foundation_links, {"-framework", "CoreData"}), {conformances},
-                      {backports = {"FoundationBackports"}})
+                      {backports = {"FoundationBackports", "CoreDataBackports"}})
 
         -- The supplemental libraries, each its own project, against the standard library built above.
         for _, library in ipairs({"Synchronization", "Observation", "StringProcessing"}) do

@@ -54,8 +54,23 @@ rule("swift")
             -- the backports that make them true.
             local lifted = table.wrap((package:envs() or {}).CHARON_SWIFT_LIFTED_HEADERS)[1]
             if lifted then
-                if not target:pkg("apple-backports") then
+                local carried = target:pkg("apple-backports")
+                if not carried then
                     raise("target(%s) compiles against swift-runtime built with the backports, and does not carry them: add_requires(\"charon@apple-backports\", {alias = \"apple-backports\"}) and add_packages(\"apple-backports\")", target:name())
+                end
+                -- The lifted headers let the port write a call the backports implement; the call finds its implementation
+                -- only where that library is loaded. A library the runtime was built to link is one the port must carry too:
+                -- its config says so, and a class message that reaches a library that is not there is not a link error but
+                -- an unrecognized selector at run time.
+                local libraries = {coredata = "CoreDataBackports", uikit = "UIKitBackports"}
+                for _, config in ipairs(table.wrap((package:envs() or {}).CHARON_SWIFT_RUNTIME_BACKPORTS)[1]:split(",")) do
+                    local found = false
+                    for _, folder in ipairs(table.wrap(carried:get("linkdirs"))) do
+                        found = found or os.isfile(path.join(folder, "lib" .. libraries[config] .. ".dylib"))
+                    end
+                    if not found then
+                        raise("target(%s) compiles against swift-runtime built with the %s backports, and its apple-backports package holds no lib%s.dylib: add_requires(\"charon@apple-backports\", {alias = \"apple-backports\", configs = {%s = true}})", target:name(), config, libraries[config], config)
+                    end
                 end
                 target:add("values", "swift.flags", "-vfsoverlay", lifted)
             end

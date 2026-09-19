@@ -571,9 +571,21 @@ the release of every implemented API lowered - found from clang's AST, never
 lower than an entry's own minimum, never for what the registry calls absent,
 inert or ignored, checked both ways - and a VFS overlay lays the copies over the
 SDK for the overlays that link the backports and for the port's own Swift
-(`CHARON_SWIFT_LIFTED_HEADERS`, which the swift rule hands the compiler). A port
-that takes that runtime requires `charon@apple-backports` itself, and the rule
-says so if it does not.
+(`CHARON_SWIFT_LIFTED_HEADERS`, which the swift rule hands the compiler). Beside
+the classes and members the registry names, the lift lowers a type only the
+headers declare - an enumeration, a set of options - when every API of the SDK
+that uses it and is above the port's release is implemented, and redeclares the
+members the SDK declares only as requirements of a protocol (`traitCollection` of
+`UITraitEnvironment`) as a category on each class the registry names, rather than
+lower the protocol for every type that adopts it. The overlays of Foundation and
+CoreData link libFoundationBackports and libCoreDataBackports by path; the
+`backports_uikit` config, for an application, links UIKit's overlay to
+libUIKitBackports too. A port that takes that runtime requires
+`charon@apple-backports` itself with the configs the runtime links (`coredata`,
+and `uikit` with `backports_uikit`), and the rule says which is missing: a lowered
+call finds its implementation only where that library is loaded, and a message to
+a library that is not there is an unrecognized selector at run time, not a link
+error.
 
 apple-compat links its shims into whoever requires it and force-includes
 nothing on its own, because a shim's header brings its system header with it

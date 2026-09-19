@@ -20,5 +20,28 @@ function failures(opt)
             table.insert(found, string.format("%s became %s, not %s", case[1], got, case[2]))
         end
     end
+
+    -- The redeclaration of a member the SDK gives only as a protocol requirement, from the nodes clang dumps for
+    -- UITraitEnvironment: a property whose type carries a nested availability macro (ios(8.0) has parens inside parens),
+    -- and a method whose selector part pairs with its parameter.
+    local declarations = {
+        {{kind = "ObjCPropertyDecl", type = {qualType = "API_AVAILABLE(ios(8.0)) UITraitCollection *"}}, "traitCollection", "6.0",
+         "@property (nonatomic, readonly) UITraitCollection * traitCollection API_AVAILABLE(ios(6.0));"},
+        {{kind = "ObjCMethodDecl", returnType = {qualType = "void"},
+          inner = {{kind = "ParmVarDecl", name = "previousTraitCollection", type = {qualType = "UITraitCollection * _Nullable"}}}},
+         "traitCollectionDidChange:", "6.0",
+         "- (void)traitCollectionDidChange:(UITraitCollection * _Nullable)previousTraitCollection API_AVAILABLE(ios(6.0));"},
+        {{kind = "ObjCMethodDecl", returnType = {qualType = "BOOL"},
+          inner = {{kind = "ParmVarDecl", name = "date", type = {qualType = "NSDate *"}},
+                   {kind = "ParmVarDecl", name = "options", type = {qualType = "NSUInteger"}}}},
+         "isDate:options:", "5.0", "- (BOOL)isDate:(NSDate *)date options:(NSUInteger)options API_AVAILABLE(ios(5.0));"},
+        {{kind = "ObjCMethodDecl", returnType = {qualType = "id"}}, "copy", "6.0", "- (id)copy API_AVAILABLE(ios(6.0));"},
+    }
+    for _, case in ipairs(declarations) do
+        local got = lift.protocol_member_declaration(case[1], case[2], case[3])
+        if got ~= case[4] then
+            table.insert(found, string.format("%s was redeclared as %s, not %s", case[2], got, case[4]))
+        end
+    end
     return found
 end
