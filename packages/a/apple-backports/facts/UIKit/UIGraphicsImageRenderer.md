@@ -33,6 +33,16 @@ a device RGB context carries no colour profile, so its PNG is 12 bytes shorter
 than the one UIKit makes and its JPEG likewise. With sRGB every byte of both
 matches. The differential test holds this.
 
+**Where the release cannot make sRGB, device RGB.** On an iPhone4,1 running
+6.1.3, `CGColorSpaceCreateWithName(kCGColorSpaceSRGB)` answers `NULL`: the
+constant is exported, but CoreGraphics makes no space of it and a context asked
+for with none is refused (`unsupported parameter combination ... 0-component
+color space`). There the renderer draws in `CGColorSpaceCreateDeviceRGB()`,
+which is what the release's own UIKit draws an image context in
+(`UIGraphicsBeginImageContextWithOptions` of 6.0, `0x32ce23ec`). The pixels are
+the same; the PNG and JPEG carry no colour profile, as every image UIKit itself
+makes on that release does.
+
 `+prepareCGContext:withRendererContext:` then, in order:
 `CGContextClearRect` over the whole bitmap, `CGContextTranslateCTM(0, height)`,
 `CGContextScaleCTM(scale, -scale)` - which flips the y axis - and
@@ -40,8 +50,11 @@ matches. The differential test holds this.
 
 ## An empty answer, never nil
 
-When the context cannot be made - a renderer of no size - the drawing block still
-runs, and the three drawing methods answer an **empty object rather than nil**:
+When the context cannot be made - a renderer of no size - the drawing block does
+**not** run: `-runDrawingActions:completionActions:format:error:` (`0x205e03f6`)
+answers NO with `NSCocoaErrorDomain` 0, `Could not create CGContextRef`, before
+either block, and the newest UIKit does the same. The three drawing methods then
+answer an **empty object rather than nil**:
 
 - `-imageWithActions:` answers `[[UIImage alloc] init]`, a `UIImage` of size zero;
 - `-PNGDataWithActions:` and `-JPEGDataWithCompressionQuality:actions:` answer

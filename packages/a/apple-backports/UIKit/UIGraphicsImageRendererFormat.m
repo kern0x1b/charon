@@ -7,6 +7,8 @@
     BOOL _prefersExtendedRange;
 }
 
+@dynamic preferredRange;
+
 + (instancetype)defaultFormat
 {
     UIGraphicsImageRendererFormat *format = [super defaultFormat];

@@ -14,12 +14,14 @@ static UIColor *pixel_at(UIImage *image, int x, int y)
 {
     uint8_t bytes[4] = {0, 0, 0, 0};
     CGColorSpaceRef space = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+    if (!space)
+        space = CGColorSpaceCreateDeviceRGB();
     CGContextRef context = CGBitmapContextCreate(bytes, 1, 1, 8, 4, space,
                                                  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
     CGColorSpaceRelease(space);
     if (!context)
         return nil;
-    CGContextTranslateCTM(context, -x, -y);
+    CGContextTranslateCTM(context, -x, -(image.size.height * image.scale - 1 - y));
     CGContextDrawImage(context, CGRectMake(0, 0, image.size.width * image.scale, image.size.height * image.scale),
                        image.CGImage);
     CGContextRelease(context);
@@ -47,6 +49,9 @@ static void run_checks(void)
     CHECK(format.opaque == NO, "a fresh format is not opaque");
     CHECK([UIGraphicsImageRendererFormat defaultFormat].prefersExtendedRange == NO,
           "no armv7 device has deep colour, so the default format asks for no extended range");
+    CHECK(![UIGraphicsImageRendererFormat instancesRespondToSelector:NSSelectorFromString(@"preferredRange")] &&
+          ![UIGraphicsImageRendererFormat instancesRespondToSelector:NSSelectorFromString(@"setPreferredRange:")],
+          "the iOS 12 preferred range is not there, since no context of this release is of extended range");
 
     format.scale = 2;
     UIGraphicsImageRenderer *renderer = [[UIGraphicsImageRenderer alloc] initWithSize:CGSizeMake(20, 10) format:format];
@@ -55,9 +60,14 @@ static void run_checks(void)
           "the renderer keeps its bounds on its own copy of the format");
     CHECK(CGRectEqualToRect(format.bounds, CGRectZero), "the format the caller kept is untouched");
 
-    __block CGContextRef seen = NULL;
+    __block size_t seenWidth = 0, seenHeight = 0, seenBits = 0;
+    __block CGColorSpaceModel seenModel = kCGColorSpaceModelUnknown;
     UIImage *image = [renderer imageWithActions:^(UIGraphicsImageRendererContext *context) {
-        seen = context.CGContext;
+        CGContextRef seen = context.CGContext;
+        seenWidth = CGBitmapContextGetWidth(seen);
+        seenHeight = CGBitmapContextGetHeight(seen);
+        seenBits = CGBitmapContextGetBitsPerComponent(seen);
+        seenModel = CGColorSpaceGetModel(CGBitmapContextGetColorSpace(seen));
         CGContextSetRGBFillColor(context.CGContext, 1, 0, 0, 1);
         [context fillRect:CGRectMake(0, 0, 20, 10)];
         CGContextSetRGBFillColor(context.CGContext, 0, 0, 1, 1);
@@ -67,10 +77,10 @@ static void run_checks(void)
     CHECK(image.size.width == 20 && image.size.height == 10, "the image is the size asked for");
     CHECK(image.scale == 2, "the image carries the format's scale");
     CHECK(image.imageOrientation == UIImageOrientationUp, "the image is the right way up");
-    CHECK(CGBitmapContextGetWidth(seen) == 40 && CGBitmapContextGetHeight(seen) == 20,
+    CHECK(seenWidth == 40 && seenHeight == 20,
           "the bitmap is the size times the scale");
-    CHECK(CGBitmapContextGetBitsPerComponent(seen) == 8, "the bitmap has eight bits a component");
-    CHECK(CGColorSpaceGetModel(CGBitmapContextGetColorSpace(seen)) == kCGColorSpaceModelRGB,
+    CHECK(seenBits == 8, "the bitmap has eight bits a component");
+    CHECK(seenModel == kCGColorSpaceModelRGB,
           "the bitmap is an RGB one");
     CHECK(is_colour(pixel_at(image, 30, 15), 1, 0, 0), "the fill reached the far corner");
     CHECK(is_colour(pixel_at(image, 2, 2), 0, 0, 1), "the second fill landed at the origin, y downwards");
@@ -89,7 +99,7 @@ static void run_checks(void)
         [context fillRect:CGRectMake(0, 0, 20, 10)];
     }];
     CHECK(png.length > 8, "the renderer answers PNG data");
-    CHECK(memcmp(png.bytes, "\x89PNG", 4) == 0, "the data really is a PNG");
+    CHECK(png.length > 8 && memcmp(png.bytes, "\x89PNG", 4) == 0, "the data really is a PNG");
     NSData *jpeg = [renderer JPEGDataWithCompressionQuality:0.8 actions:^(UIGraphicsImageRendererContext *context) {
         CGContextSetRGBFillColor(context.CGContext, 0, 1, 0, 1);
         [context fillRect:CGRectMake(0, 0, 20, 10)];
@@ -99,7 +109,7 @@ static void run_checks(void)
     __block BOOL ran = NO;
     UIGraphicsImageRenderer *nothing = [[UIGraphicsImageRenderer alloc] initWithSize:CGSizeZero];
     UIImage *empty = [nothing imageWithActions:^(UIGraphicsImageRendererContext *context) { ran = YES; }];
-    CHECK(ran, "a renderer of no size still runs the drawing block");
+    CHECK(!ran, "a renderer of no size cannot make a context, so it runs no drawing block");
     CHECK(empty != nil, "a renderer of no size answers an empty image, never nil");
     CHECK(empty.size.width == 0 && empty.size.height == 0, "that image has no size");
     NSData *emptyData = [nothing PNGDataWithActions:^(UIGraphicsImageRendererContext *context) { }];
