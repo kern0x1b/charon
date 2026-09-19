@@ -425,3 +425,24 @@ postinst run with `DPKG_ROOT` set to it.
   accelerometer and is written down in
   `packages/a/apple-backports/facts/UIKit/UIFeedbackGenerator.md`, since an
   emulated device has no motor and every call there plays nothing.
+
+## Checking an application against a release and the backports
+
+`tools/check-app.lua` says, for a built armv7 binary, what stays unresolved on a
+release and why. It asks the build's own import check what the binary imports
+that neither the release's shared cache nor the backports' libraries export,
+and sorts the answer into the imports the backports carry - which are
+unresolved only because the binary binds the stock library first, and are cured
+by linking `libUIKitBackports.dylib` or `libFoundationBackports.dylib` before it
+or by retargeting the weak binding - and the imports nothing carries, which are
+what a port is still missing.
+
+    CHARON_ROOT=/path/to/charon xmake l tests/backports/tools/check-app.lua \
+        6.0 /path/to/band/folder /path/to/App /path/to/Other
+
+The release is one the `~/.charon/dyld` folder holds a cache of, and the band
+folder is the folder of `libFoundationBackports.dylib` and its siblings that the
+package builds for that release (`lib` of an installed `charon@apple-backports`,
+or the `bands/<release>` folder of its deb). A binary that already loads the
+backports by their install names is checked with those libraries supplied, so
+it has nothing left in the first list.
