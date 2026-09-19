@@ -88,7 +88,7 @@ index 7f69ded..9e94568 100644
          return _representation.withInteriorPointerReference {
              return $0.base64EncodedData(options: options)
 diff --git a/stdlib/public/Darwin/Foundation/DataThunks.m b/stdlib/public/Darwin/Foundation/DataThunks.m
-index a919323..dc992cd 100644
+index a919323..177bbf4 100644
 --- a/stdlib/public/Darwin/Foundation/DataThunks.m
 +++ b/stdlib/public/Darwin/Foundation/DataThunks.m
 @@ -13,7 +13,8 @@
@@ -101,7 +101,32 @@ index a919323..dc992cd 100644
  
  #if TARGET_OS_IPHONE && !TARGET_OS_SIMULATOR
  static int __NSFileProtectionClassForOptions(NSUInteger options) {
-@@ -173,3 +174,17 @@ BOOL __NSDataWriteToURL(NSData * _Nonnull data NS_RELEASES_ARGUMENT, NSURL * _No
+@@ -141,7 +142,7 @@ BOOL __NSDataWriteToURL(NSData * _Nonnull data NS_RELEASES_ARGUMENT, NSURL * _No
+     __block BOOL writingFailed = NO;
+     __block int32_t saveerr = 0;
+     NSUInteger dataLength = [data length];
+-    [data enumerateByteRangesUsingBlock:^(const void *bytes, NSRange byteRange, BOOL *stop) {
++    void (^writeRange)(const void *, NSRange, BOOL *) = ^(const void *bytes, NSRange byteRange, BOOL *stop) {
+         NSUInteger length = byteRange.length;
+         BOOL success = NO;
+         if (length > 0) {
+@@ -155,7 +156,14 @@ BOOL __NSDataWriteToURL(NSData * _Nonnull data NS_RELEASES_ARGUMENT, NSURL * _No
+             writingFailed = YES;
+             *stop = YES;
+         }
+-    }];
++    };
++    if ([data respondsToSelector:@selector(enumerateByteRangesUsingBlock:)]) {
++        [data enumerateByteRangesUsingBlock:writeRange];
++    } else {
++        // Before iOS 7 an NSData is one run of bytes, and enumerateByteRangesUsingBlock: came with the other kind.
++        BOOL stop = NO;
++        writeRange([data bytes], NSMakeRange(0, dataLength), &stop);
++    }
+     if (dataLength && !writingFailed) {
+         if (fsync(fd) < 0) {
+             writingFailed = YES;
+@@ -173,3 +181,17 @@ BOOL __NSDataWriteToURL(NSData * _Nonnull data NS_RELEASES_ARGUMENT, NSURL * _No
      close(fd);
      return YES;
  }
