@@ -184,9 +184,13 @@ runtime has them): the side table lives in arclite, NSObject's `-release`
 clears an object's weak references under a short lock just before its last
 release and `-dealloc` again, so a load never resurrects an object on its way
 out and no lock is held while user code deallocates; a class that manages its
-own retain count is refused as iOS 5 refuses it. Below iOS 6 it adds the
-subscripting methods the collection classes lack. Below iPhone OS 3.2,
-where clang weak-imports the blocks runtime, the toolchain links the SDK's
+own retain count is refused with the reason and the process aborts. Below iOS
+5 that includes every toll-free bridged object - NSString, NSArray,
+NSDictionary and the rest are CoreFoundation objects, released by
+CoreFoundation, which gained `_tryRetain` and `_isDeallocating` only in 5.0 -
+so a weak reference to one works from iOS 5 on and aborts below it. Below iOS
+6 it adds the subscripting methods the collection classes lack. Below iPhone
+OS 3.2, where clang weak-imports the blocks runtime, the toolchain links the SDK's
 `libBlocksRuntime.a` (with libobjc, which its block classes are built on):
 `_NSConcreteStackBlock` and the other block isa symbols are aliases of real
 Objective-C classes defined in the image, so a block is an object from its
