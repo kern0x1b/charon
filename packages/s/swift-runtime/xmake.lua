@@ -309,12 +309,20 @@ package("swift-runtime")
                                      (opt and opt.concurrency) and {} or {"-Xfrontend", "-disable-implicit-concurrency-module-import"},
                                      runtime_flags, swift.availability(source))
             local object = path.join(generated, name .. ".o")
+            -- The overlays built here are named to the linker by their paths, not by -l: the driver lists every framework
+            -- before every -l, and today's SDK's Foundation exports the Swift symbols of its own overlay (marked as moved
+            -- only for iOS 12.2 to 16), so an -lswiftFoundation behind -framework Foundation loses them to the system.
+            local linked = {}
+            for _, link in ipairs(links) do
+                local library = link:match("^%-l(swift.+)$")
+                table.insert(linked, library and path.join(install, "lib" .. library .. ".dylib") or link)
+            end
             os.vrunv(swiftc, table.join(flags, {"-emit-module", "-emit-module-path",
                      path.join(module, package:arch() .. "-apple-ios.swiftmodule"),
                      "-emit-object", "-module-link-name", "swift" .. name, "-o", object}, overlay_sources))
             os.vrunv(swiftc, table.join(flags, {"-emit-library", "-o", path.join(install, "libswift" .. name .. ".dylib"),
                      object, table.unpack(objects or {})}, {"-Xlinker", "-install_name", "-Xlinker", "@rpath/libswift" .. name .. ".dylib",
-                     "-L" .. install, "-lswiftCore"}, links))
+                     "-L" .. install, "-lswiftCore"}, linked))
             offer(module)
             offer(path.join(install, "libswift" .. name .. ".dylib"))
         end
