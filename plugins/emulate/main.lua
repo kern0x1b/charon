@@ -44,21 +44,21 @@ local function context()
         raise("xmake emulate runs on macOS arm64 hosts only, and this is %s %s", os.host(), os.arch())
     end
     task.run("config", {}, {disable_dump = true})
-    local ilemu = required("ilemu")
+    local shade = required("shade")
     local guest = required("emulator-guest")
     local swiftshader = required("swiftshader")
     local tool = path.join(required("firmware-tools"):installdir(), "bin", "charon-firmware")
-    local program = path.join(ilemu:installdir(), "bin", "ilemu")
+    local program = path.join(shade:installdir(), "bin", "ilemu")
     local release = option.get("release") or config.get("apple_minimum") or raise("xmake emulate needs -r RELEASE or set_config(\"apple_minimum\", ...)")
     local chosen = emulator.choose(firmware.catalog().devices, emulator.profiles(program),
                                    {device = option.get("device"), architecture = config.arch(), release = release})
     if not emulator.kernel(program, chosen.build) then
-        raise("iLEmu emulates no Darwin kernel for %s iOS %s (%s); it has %s", chosen.identifier, chosen.version, chosen.build,
+        raise("Shade emulates no Darwin kernel for %s iOS %s (%s); it has %s", chosen.identifier, chosen.version, chosen.build,
               table.concat(emulator.kernels(program), ", "))
     end
     local owner = (project.name() or path.filename(os.projectdir())) .. "-" .. hash.strhash32(os.projectdir())
     local image = path.join(emulator.root(), "images.noindex", owner, chosen.identifier .. "_" .. chosen.build)
-    return {ilemu = program, ilemu_hash = path.filename(ilemu:installdir()), guest = guest:installdir(), tool = tool,
+    return {ilemu = program, ilemu_hash = path.filename(shade:installdir()), guest = guest:installdir(), tool = tool,
             icd = path.join(swiftshader:installdir(), "share", "vulkan", "icd.d", "vk_swiftshader_icd.json"),
             identifier = chosen.identifier, version = chosen.version, build = chosen.build, image = image,
             deadline = tonumber(option.get("timeout")), network = network()}

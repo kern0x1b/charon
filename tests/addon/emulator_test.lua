@@ -236,7 +236,7 @@ local function choice(emulator, found)
     end
     local refused = fixtures.refusal(function () emulator.choose(devices, emulated, {device = "iPad3,1", architecture = "armv7", release = "6.0"}) end)
     if not refused or not refused:find("no profile for iPad3,1", 1, true) then
-        table.insert(found, "a device iLEmu has no profile for must be refused, not replaced by another: " .. tostring(refused))
+        table.insert(found, "a device Shade has no profile for must be refused, not replaced by another: " .. tostring(refused))
     end
     refused = fixtures.refusal(function () emulator.choose(devices, emulated, {architecture = "armv7", release = "8.0"}) end)
     if not refused or not refused:find("release 8.0 or later", 1, true) then

@@ -1,17 +1,18 @@
-package("ilemu")
+package("shade")
     set_kind("binary")
-    set_homepage("https://github.com/MC-XiaoXiao/iLEmu")
-    set_description("iLEmu, which boots an iPhone OS or iOS firmware's own userland over an emulated XNU on a dynarmic CPU, patched to run on macOS arm64 hosts, for the devices and releases Charon emulates")
+    set_homepage("https://github.com/kern0x1b/shade")
+    set_description("Shade, Charon's emulator for an iPhone OS or iOS firmware's own userland: it boots the firmware over an emulated XNU on macOS arm64 hosts, for the devices and releases Charon emulates. Provenance and required attribution in Shade's NOTICE.")
     set_license("MPL-2.0")
 
-    add_urls("https://github.com/MC-XiaoXiao/iLEmu.git")
-    add_versions("2026.09.16", "411248cdd309b3018c41dbcc2eb59cdaea2aa8e3")
+    add_urls("https://github.com/kern0x1b/shade.git")
+    add_versions("2026.09.19", "ff7dc663dd9775782fa3dfad76ad6b7500cdf567")
 
+    -- What Charon has fixed since the fork: each a patch until Shade takes it.
     local digests = {}
-    for _, patch in ipairs({"ilemu.patch", "dynarmic.patch", "host-memory.patch", "voice-device.patch"}) do
-        local file = path.join("patches", "2026.09.16", patch)
+    for _, patch in ipairs({"host-memory.patch", "voice-device.patch"}) do
+        local file = path.join("patches", "2026.09.19", patch)
         local digest = hash.sha256(path.join(os.scriptdir(), file))
-        add_patches("2026.09.16", file, digest)
+        add_patches("2026.09.19", file, digest)
         table.insert(digests, patch .. "=" .. digest)
     end
     add_configs("patches", {description = "The digest of the patches this package applies, so a changed patch is a different emulator.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
@@ -88,7 +89,7 @@ package("ilemu")
                 known = known or (library and library:startswith(prefix))
             end
             if library and not known then
-                raise("ilemu links %s, which is neither a system library nor one of its packages; the build found a library outside Charon", library)
+                raise("the emulator links %s, which is neither a system library nor one of its packages; the build found a library outside Charon", library)
             end
         end
         os.cp(path.join("build", "ilemu"), package:installdir("bin") .. "/")

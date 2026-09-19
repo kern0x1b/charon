@@ -87,7 +87,7 @@ function choose(devices, emulated, opt)
     if opt.device then
         local device = known[opt.device:lower()] or raise("the firmware catalog knows no device %s", opt.device)
         if not table.contains(emulated, device.identifier) then
-            raise("iLEmu has no profile for %s; it emulates %s", device.identifier, table.concat(emulated, ", "))
+            raise("Shade has no profile for %s; it emulates %s", device.identifier, table.concat(emulated, ", "))
         end
         candidates = {device}
     else
@@ -111,7 +111,7 @@ function choose(devices, emulated, opt)
     if opt.device then
         raise("%s has no firmware of release %s or later in the catalog; pass -r with a release it runs", opt.device, opt.release)
     end
-    raise("no device iLEmu emulates (%s) runs %s release %s or later; pass -d and -r", table.concat(emulated, ", "), opt.architecture, opt.release)
+    raise("no device Shade emulates (%s) runs %s release %s or later; pass -d and -r", table.concat(emulated, ", "), opt.architecture, opt.release)
 end
 
 function guest_path(rootfs, relative, opt)

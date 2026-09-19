@@ -20,5 +20,5 @@ if minimum then
         table.insert(digests, file .. "=" .. hash.sha256(path.join(root, file)))
     end
     local toolchain = string.format("@addon/charon/apple-ios[minimum=%s,sdk=%s,ld64=%s,llvm=%s,optimize=packages,flags=%s]", minimum, sdk.version, ld64.version, llvm.version, hash.strhash128(table.concat(digests, ";")))
-    add_requireconfs("*|" .. sdk.name .. "|" .. ld64.name .. "|" .. ldid.name .. "|" .. llvm.name .. "|firmware-tools|ilemu|swiftshader", {configs = {toolchains = toolchain}})
+    add_requireconfs("*|" .. sdk.name .. "|" .. ld64.name .. "|" .. ldid.name .. "|" .. llvm.name .. "|firmware-tools|shade|swiftshader", {configs = {toolchains = toolchain}})
 end

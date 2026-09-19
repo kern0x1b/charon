@@ -246,16 +246,18 @@ with the reason, e.g. `set_values("charon.waive.pagezero", "why")`.
 
 `xmake emulate` runs the port on an emulated device instead of a phone, on a
 macOS arm64 host. `includes("@addon/charon/emulate")` after the `apple-ios`
-include requires `charon@ilemu` - MC-XiaoXiao's iLEmu, which boots a
-firmware's own userland over an emulated XNU on a dynarmic CPU, pinned by
-commit with the patches under `packages/i/ilemu/patches/` - with
+include requires `charon@shade` - Shade, Charon's own emulator (MPL-2.0;
+provenance and required attribution in its NOTICE), which boots a firmware's
+own userland over an emulated XNU on macOS arm64 hosts; it is pinned by
+commit, with the fixes it has not taken yet as patches under
+`packages/s/shade/patches/` - with
 `charon@swiftshader`, the CPU Vulkan driver its OpenGL ES is drawn through, and
 `charon@emulator-guest`, `charon-runner` built by the `daemon` rule for the
 port's architecture and minimum. The device is `-d`, or the first device of
-the catalog of the configured architecture that iLEmu has a profile for and
+the catalog of the configured architecture that Shade has a profile for and
 that runs `-r` (default `apple_minimum`); its earliest release not older than
 that is the one emulated. A device without a profile, or a release whose
-Darwin iLEmu does not emulate, is refused with the reason, never replaced by
+Darwin Shade does not emulate, is refused with the reason, never replaced by
 another. The first run of a device and build unpacks its root filesystem as
 `xmake firmware rootfs` does, marks Setup Assistant done - in the mobile user's
 `com.apple.purplebuddy` preferences, which iOS 6.0 reads, and in lockdownd's
