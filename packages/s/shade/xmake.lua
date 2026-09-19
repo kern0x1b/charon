@@ -7,7 +7,7 @@ package("shade")
     add_urls("https://github.com/kern0x1b/shade.git")
     -- The revision is a config as well as the version: the version string names a release, and a
     -- different commit under the same name must be a different install.
-    local revision = "30ffdb63b6b3fdd8bb0cd0bab3237f12bf735bff"
+    local revision = "8268d630accd70910e0e69763456266cdb96cf88"
     add_versions("2026.09.20", revision)
     add_configs("revision", {description = "The Shade commit this package builds, so another commit is another emulator.", default = revision, type = "string", readonly = true})
     add_configs("sdl", {description = "Build the SDL2 window backend, for watching a guest on the desktop.", default = false, type = "boolean"})
