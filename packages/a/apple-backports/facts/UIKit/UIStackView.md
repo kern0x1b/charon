@@ -88,6 +88,18 @@ visible item of such a stack is tied to it at its share of the natural lengths, 
 frames of those cases are reported as `known`; every other case of the table is held to today's frames.
 With a length of its own the proportions do not decide the stack's length, and those cases match.
 
+The iPad 2 shows two more things the engine does, and the test tells them apart from a wrong answer by
+itself. On a screen of scale 1 it fits two views of 15 and 30 points centred over each other into a box of
+31 points, where a screen of scale 2 gives 30 - plain views, no stack, measured by the test on every run
+(`info the release's engine, plain views`). A proportional stack takes its shares from what the release
+measures, so a nested stack of those two views gets 31/91 of the length instead of 30/90, and the frames
+move by up to 3.5 points; the test reports such a case as `known` with both numbers, and holds the shares to
+the release's own measure strictly as before. And on the iPad some stacks with a nested stack and a length
+of their own - spaced equally, centred equally or proportional - come out differently from one layout of
+the same views to the next. When a case misses today's frames, the test lays it out five more times with
+the objects elsewhere in memory; if the answers differ, the engine decides the case and it is `known`, and if
+they are all the same wrong answer, it fails. Over five runs on the iPad every miss was one of these two.
+
 A stack aligned on the first baseline puts its labels on one baseline, and a view without text or a nested
 stack at the top of the text, not on a baseline of its own: that is what the current UIKit does with the
 same views in a row of 100 points and of 200, and what iOS 6 does with the backport.

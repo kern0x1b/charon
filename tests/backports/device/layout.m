@@ -974,6 +974,25 @@ static NSString *engine_trial(NSMutableArray *ballast)
     return heightsSeen;
 }
 
+static void test_engine_fitting(void)
+{
+    UIView *box = [[UIView alloc] init];
+    SizedView *narrow = sized(15, 10), *wide = sized(30, 12);
+    NSMutableArray *constraints = [NSMutableArray array];
+    for (UIView *view in @[narrow, wide]) {
+        view.translatesAutoresizingMaskIntoConstraints = NO;
+        [box addSubview:view];
+        [constraints addObject:[NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:box attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+        [constraints addObject:[NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:box attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+    }
+    [constraints addObject:[NSLayoutConstraint constraintWithItem:narrow attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:box attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+    [constraints addObject:[NSLayoutConstraint constraintWithItem:wide attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:narrow attribute:NSLayoutAttributeBottom multiplier:1 constant:2]];
+    [constraints addObject:[NSLayoutConstraint constraintWithItem:box attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:wide attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    [box addConstraints:constraints];
+    printf("info the release's engine, plain views: a 15 and a 30 point wide view centred in a box fit it at %s on a screen of scale %g\n",
+           NSStringFromCGSize([box systemLayoutSizeFittingSize:UILayoutFittingCompressedSize]).UTF8String, [UIScreen mainScreen].scale);
+}
+
 static void test_engine_multiplier(void)
 {
     NSMutableArray *ballast = [NSMutableArray array];
@@ -987,6 +1006,68 @@ static void test_engine_multiplier(void)
            (unsigned long)seen.count, (unsigned long)[seen countForObject:@"20 30 50 25 "]);
 }
 
+static UIStackView *lay_out_case(const struct charon_stack_case *item, UIView *root, NSArray **arrangedOut)
+{
+    NSArray *arranged;
+    if (item->nested) {
+        UIStackView *inner = [[UIStackView alloc] initWithArrangedSubviews:@[sized(15, 10), sized(30, 12)]];
+        inner.axis = item->axis == 0 ? UILayoutConstraintAxisVertical : UILayoutConstraintAxisHorizontal;
+        inner.alignment = UIStackViewAlignmentCenter;
+        inner.spacing = 2;
+        arranged = @[sized(40, 20), inner, sized(10, 50)];
+    } else {
+        arranged = @[sized(40, 20), sized(60, 30), sized(10, 50), sized(25, 25)];
+    }
+    UIStackView *stack = [[UIStackView alloc] initWithArrangedSubviews:arranged];
+    stack.axis = item->axis;
+    stack.distribution = item->distribution;
+    stack.alignment = item->alignment;
+    stack.spacing = 5;
+    if (item->margins) {
+        stack.layoutMarginsRelativeArrangement = YES;
+        stack.layoutMargins = UIEdgeInsetsMake(3, 5, 7, 11);
+    }
+    stack.translatesAutoresizingMaskIntoConstraints = NO;
+    [root addSubview:stack];
+    [root addConstraint:[NSLayoutConstraint constraintWithItem:stack attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:root attribute:NSLayoutAttributeLeft multiplier:1 constant:10]];
+    [root addConstraint:[NSLayoutConstraint constraintWithItem:stack attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:root attribute:NSLayoutAttributeTop multiplier:1 constant:20]];
+    if (item->size) {
+        [root addConstraint:[NSLayoutConstraint constraintWithItem:stack attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:400]];
+        [root addConstraint:[NSLayoutConstraint constraintWithItem:stack attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:300]];
+    }
+    [root layoutIfNeeded];
+    if (item->hidden)
+        [[arranged objectAtIndex:item->hidden == 1 ? 1 : 0] setHidden:YES];
+    layout_tree(root);
+    *arrangedOut = arranged;
+    return stack;
+}
+
+static NSString *case_frames(const struct charon_stack_case *item)
+{
+    UIView *root = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 600, 600)];
+    NSArray *arranged;
+    UIStackView *stack = lay_out_case(item, root, &arranged);
+    NSMutableString *frames = [NSMutableString string];
+    for (UIView *subject in collect(stack, [NSMutableArray array]))
+        [frames appendFormat:@"%@ ", NSStringFromCGRect([subject convertRect:subject.bounds toView:root])];
+    return frames;
+}
+
+static BOOL engine_varies(const struct charon_stack_case *item, NSString *first)
+{
+    NSMutableArray *ballast = [NSMutableArray array];
+    NSMutableSet *answers = [NSMutableSet setWithObject:first];
+    for (int trial = 0; trial < 5; trial++) {
+        @autoreleasepool {
+            for (uint32_t index = arc4random_uniform(64); index > 0; index--)
+                [ballast addObject:[[NSObject alloc] init]];
+            [answers addObject:case_frames(item)];
+        }
+    }
+    return answers.count > 1;
+}
+
 static void test_stack_table(void)
 {
     int matched = 0, known = 0, count = sizeof charon_stack_cases / sizeof charon_stack_cases[0];
@@ -995,36 +1076,7 @@ static void test_stack_table(void)
         @autoreleasepool {
             UIView *root = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 600, 600)];
             NSArray *arranged;
-            if (item->nested) {
-                UIStackView *inner = [[UIStackView alloc] initWithArrangedSubviews:@[sized(15, 10), sized(30, 12)]];
-                inner.axis = item->axis == 0 ? UILayoutConstraintAxisVertical : UILayoutConstraintAxisHorizontal;
-                inner.alignment = UIStackViewAlignmentCenter;
-                inner.spacing = 2;
-                arranged = @[sized(40, 20), inner, sized(10, 50)];
-            } else {
-                arranged = @[sized(40, 20), sized(60, 30), sized(10, 50), sized(25, 25)];
-            }
-            UIStackView *stack = [[UIStackView alloc] initWithArrangedSubviews:arranged];
-            stack.axis = item->axis;
-            stack.distribution = item->distribution;
-            stack.alignment = item->alignment;
-            stack.spacing = 5;
-            if (item->margins) {
-                stack.layoutMarginsRelativeArrangement = YES;
-                stack.layoutMargins = UIEdgeInsetsMake(3, 5, 7, 11);
-            }
-            stack.translatesAutoresizingMaskIntoConstraints = NO;
-            [root addSubview:stack];
-            [root addConstraint:[NSLayoutConstraint constraintWithItem:stack attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:root attribute:NSLayoutAttributeLeft multiplier:1 constant:10]];
-            [root addConstraint:[NSLayoutConstraint constraintWithItem:stack attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:root attribute:NSLayoutAttributeTop multiplier:1 constant:20]];
-            if (item->size) {
-                [root addConstraint:[NSLayoutConstraint constraintWithItem:stack attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:400]];
-                [root addConstraint:[NSLayoutConstraint constraintWithItem:stack attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:300]];
-            }
-            [root layoutIfNeeded];
-            if (item->hidden)
-                [[arranged objectAtIndex:item->hidden == 1 ? 1 : 0] setHidden:YES];
-            layout_tree(root);
+            UIStackView *stack = lay_out_case(item, root, &arranged);
             NSArray *views = collect(stack, [NSMutableArray array]);
             BOOL same = (int)views.count == item->count;
             NSMutableString *actual = [NSMutableString string];
@@ -1036,6 +1088,18 @@ static void test_stack_table(void)
                     same = same && rect_close(rect, CGRectMake(item->frames[view * 4], item->frames[view * 4 + 1], item->frames[view * 4 + 2], item->frames[view * 4 + 3]));
             }
             BOOL engineDecides = item->distribution == UIStackViewDistributionFillProportionally && !item->size;
+            CGFloat fitted = 0, arithmetic = 0;
+            if (item->distribution == UIStackViewDistributionFillProportionally && item->nested) {
+                UIStackView *inner = [arranged objectAtIndex:1];
+                fitted = proportional_length(inner, stack.axis);
+                for (UIView *view in inner.arrangedSubviews) {
+                    CGFloat length = proportional_length(view, stack.axis);
+                    arithmetic = inner.axis == stack.axis ? arithmetic + length : MAX(arithmetic, length);
+                }
+                if (inner.axis == stack.axis)
+                    arithmetic += inner.spacing * (inner.arrangedSubviews.count - 1);
+            }
+            BOOL releaseMeasures = fitted != arithmetic;
             if (engineDecides) {
                 NSMutableArray *visible = [NSMutableArray array];
                 for (UIView *view in arranged)
@@ -1058,10 +1122,14 @@ static void test_stack_table(void)
             }
             if (same) {
                 matched++;
-            } else if (engineDecides) {
+            } else if (engineDecides || releaseMeasures || engine_varies(item, actual)) {
                 known++;
-                printf("known stack frames nested=%d margins=%d axis=%d distribution=%d alignment=%d hidden=%d size=%d: the release's Auto Layout engine settles a multiplier off its optimum\n  actual %s\n",
-                       item->nested, item->margins, item->axis, item->distribution, item->alignment, item->hidden, item->size, actual.UTF8String);
+                printf("known stack frames nested=%d margins=%d axis=%d distribution=%d alignment=%d hidden=%d size=%d: %s\n  actual %s\n",
+                       item->nested, item->margins, item->axis, item->distribution, item->alignment, item->hidden, item->size,
+                       engineDecides ? "the release's Auto Layout engine settles a multiplier off its optimum"
+                       : releaseMeasures ? [NSString stringWithFormat:@"the release fits the nested stack at %g points where its views take %g, on a screen of scale %g", fitted, arithmetic, [UIScreen mainScreen].scale].UTF8String
+                       : "the release's Auto Layout engine lays the same views out differently from one run to the next",
+                       actual.UTF8String);
             } else {
                 NSMutableString *expected = [NSMutableString string];
                 for (int view = 0; view < item->count; view++)
@@ -1170,6 +1238,7 @@ static void test_stack_api(void)
             test_guides();
             test_stack_api();
             test_engine_multiplier();
+            test_engine_fitting();
             test_stack_table();
         }
         [self runWindowTest:host];
