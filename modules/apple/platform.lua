@@ -11,7 +11,7 @@ import("backports")
 
 function waivers(target)
     local waived = {}
-    for _, name in ipairs(macho.WAIVABLE) do
+    for _, name in ipairs(macho.waivable()) do
         waived[name] = target:values("charon.waive." .. name)
     end
     return waived

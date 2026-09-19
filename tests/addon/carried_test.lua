@@ -58,11 +58,24 @@ local function bundled_step(bundle, found)
     end
 end
 
+local function waivers_step(platform, found)
+    local declared = {["charon.waive.pagezero"] = "a reason", ["charon.waive.weak-imports"] = "guarded"}
+    local target = {values = function (_, key) return declared[key] end}
+    local waived = platform.waivers(target)
+    if waived.pagezero ~= "a reason" or waived["weak-imports"] ~= "guarded" then
+        table.insert(found, "the waivers a target declares with charon.waive.<check> must reach the checks: " .. tostring(waived.pagezero) .. ", " .. tostring(waived["weak-imports"]))
+    end
+    if waived.entitlements or waived["thumb-interworking"] then
+        table.insert(found, "a check the target does not waive must not be waived")
+    end
+end
+
 function failures(opt)
     local platform = import("apple.platform", {rootdir = opt.modules, anonymous = true})
     local bundle = import("apple.bundle", {rootdir = opt.modules, anonymous = true})
     local found = {}
     packages_step(platform, found)
+    waivers_step(platform, found)
     bundled_step(bundle, found)
     local folder = fixtures.scratch()
     io.writefile(path.join(folder, "libSystem.tbd"), fixtures.system_stub())

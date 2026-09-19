@@ -43,7 +43,9 @@ local LIBRARY_COMMANDS = {
 
 local ARCHITECTURES = {[ARM] = {[6] = "armv6", [9] = "armv7", [11] = "armv7s"}, [ARM64] = {[0] = "arm64", [2] = "arm64e"}}
 
-WAIVABLE = {"thumb-interworking", "pagezero", "entitlements", "weak-imports"}
+function waivable()
+    return {"thumb-interworking", "pagezero", "entitlements", "weak-imports"}
+end
 
 function read(path)
     return io.readfile(path, {encoding = "binary"})
