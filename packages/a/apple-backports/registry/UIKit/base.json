@@ -178,7 +178,8 @@
     "introduced": "7.0",
     "status": "inert",
     "reason": "the release has no back indicator",
-    "effect": "it answers what was set"
+    "effect": "it answers what was set",
+    "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
     "api": "-[UINavigationBar backIndicatorTransitionMaskImage]",
@@ -186,13 +187,15 @@
     "introduced": "7.0",
     "status": "inert",
     "reason": "the release has no back indicator",
-    "effect": "it answers what was set"
+    "effect": "it answers what was set",
+    "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
     "api": "-[UINavigationBar barTintColor]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
     "api": "-[UINavigationBar setBackIndicatorImage:]",
@@ -200,7 +203,8 @@
     "introduced": "7.0",
     "status": "inert",
     "reason": "the release draws the back button as a bordered button with no indicator image",
-    "effect": "the image is remembered and the back button keeps its own look"
+    "effect": "the image is remembered and the back button keeps its own look",
+    "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
     "api": "-[UINavigationBar setBackIndicatorTransitionMaskImage:]",
@@ -208,13 +212,15 @@
     "introduced": "7.0",
     "status": "inert",
     "reason": "the release has no back indicator",
-    "effect": "the image is remembered and nothing masks a transition"
+    "effect": "the image is remembered and nothing masks a transition",
+    "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
     "api": "-[UINavigationBar setBarTintColor:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
     "api": "-[UIScreen nativeBounds]",
@@ -249,25 +255,29 @@
     "api": "-[UISearchBar barTintColor]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
     "api": "-[UISearchBar searchBarStyle]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
     "api": "-[UISearchBar setBarTintColor:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
     "api": "-[UISearchBar setSearchBarStyle:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
     "api": "-[UIStackView customSpacingAfterView:]",
@@ -293,13 +303,15 @@
     "api": "-[UITabBar barTintColor]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
     "api": "-[UITabBar setBarTintColor:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
     "api": "-[UITextField defaultTextAttributes]",
@@ -319,13 +331,15 @@
     "api": "-[UIToolbar barTintColor]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
     "api": "-[UIToolbar setBarTintColor:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
     "api": "-[UIView addLayoutGuide:]",

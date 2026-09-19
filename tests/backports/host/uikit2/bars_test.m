@@ -80,6 +80,43 @@ int main(void)
         charon_check(CGSizeEqualToSize(search.backgroundImage.size, image.size), "leaving the minimal style leaves an application background alone",
                      [NSString stringWithFormat:@"%@", NSStringFromCGSize(search.backgroundImage.size)]);
 
+        NSInteger styles[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 255, 256, -1, -2, NSIntegerMin, NSIntegerMax};
+        for (size_t index = 0; index < sizeof styles / sizeof *styles; index++) {
+            UISearchBar *ours = [[UISearchBar alloc] init], *system = [[UISearchBar alloc] init];
+            [ours setCharonHostSearchBarStyle:(UISearchBarStyle)styles[index]];
+            system.searchBarStyle = (UISearchBarStyle)styles[index];
+            charon_check((NSInteger)[ours charonHostSearchBarStyle] == (NSInteger)system.searchBarStyle, NAMED(@"search bar style %ld reads as the system's", (long)styles[index]),
+                         [NSString stringWithFormat:@"%ld != %ld", (long)[ours charonHostSearchBarStyle], (long)system.searchBarStyle]);
+        }
+
+        for (unsigned steps = 0; steps < 4096; steps++) {
+            UINavigationBar *ours = [[UINavigationBar alloc] init], *system = [[UINavigationBar alloc] init];
+            UIImage *pair[2] = {drawn_image(), drawn_image()};
+            UIImage *other[2] = {drawn_image(), drawn_image()};
+            NSMutableString *trace = [NSMutableString string];
+            BOOL same = YES;
+            unsigned seed = steps;
+            for (int move = 0; move < 6 && same; move++, seed /= 4) {
+                int which = (seed >> 0) & 1, clear = (seed >> 1) & 1;
+                UIImage *given = clear ? nil : (move % 2 ? other[which] : pair[which]);
+                [trace appendFormat:@"%s%s ", which ? "mask" : "image", clear ? "=nil" : (move % 2 ? "'" : "")];
+                if (which) {
+                    [ours setCharonHostBackIndicatorTransitionMaskImage:given];
+                    system.backIndicatorTransitionMaskImage = given;
+                } else {
+                    [ours setCharonHostBackIndicatorImage:given];
+                    system.backIndicatorImage = given;
+                }
+                same = [ours charonHostBackIndicatorImage] == system.backIndicatorImage && [ours charonHostBackIndicatorTransitionMaskImage] == system.backIndicatorTransitionMaskImage;
+            }
+            if (!same) {
+                charon_check(NO, NAMED(@"the back indicator pair after %@", trace), @"the images differ from the system's");
+                break;
+            }
+            if (steps == 4095)
+                charon_check(YES, "the back indicator pair answers as the system's over every order of six changes", @"");
+        }
+
         printf("checks=%d failures=%d\n", charon_checks, charon_failures);
         return charon_failures;
     }

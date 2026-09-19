@@ -25,6 +25,7 @@ static UIImage *charon_clear_image(void)
 
 - (void)setSearchBarStyle:(UISearchBarStyle)searchBarStyle
 {
+    searchBarStyle = (UISearchBarStyle)((NSUInteger)searchBarStyle & 7);
     objc_setAssociatedObject(self, &charon_search_bar_style_key, @(searchBarStyle), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     UIImage *ours = objc_getAssociatedObject(self, &charon_minimal_background_key);
     if (searchBarStyle == UISearchBarStyleMinimal) {

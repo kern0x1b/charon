@@ -9,7 +9,7 @@ static char charon_bar_tint_key;
 
 - (UIImage *)backIndicatorImage
 {
-    return objc_getAssociatedObject(self, &charon_back_indicator_key);
+    return objc_getAssociatedObject(self, &charon_back_indicator_mask_key) ? objc_getAssociatedObject(self, &charon_back_indicator_key) : nil;
 }
 
 - (void)setBackIndicatorImage:(UIImage *)backIndicatorImage
@@ -19,7 +19,7 @@ static char charon_bar_tint_key;
 
 - (UIImage *)backIndicatorTransitionMaskImage
 {
-    return objc_getAssociatedObject(self, &charon_back_indicator_mask_key);
+    return objc_getAssociatedObject(self, &charon_back_indicator_key) ? objc_getAssociatedObject(self, &charon_back_indicator_mask_key) : nil;
 }
 
 - (void)setBackIndicatorTransitionMaskImage:(UIImage *)backIndicatorTransitionMaskImage
