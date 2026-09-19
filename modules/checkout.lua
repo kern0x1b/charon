@@ -6,13 +6,18 @@
 -- last install changed in a repository - the patches it applied - is undone, so a build always starts from the release; a
 -- build tree kept beside the repositories, rather than inside one, survives that and is the reason to keep them at all.
 -- The stamp is written last, so a clone cut short is not mistaken for a finished one.
+-- The stamp names the paths a sparse clone holds too: a list that grew is a clone that lacks what was added to it.
 
 local STAMP = "charon-sources.txt"
 
 local function described(repositories)
     local lines = {}
     for _, repository in ipairs(repositories) do
-        table.insert(lines, string.format("%s %s %s %s", repository.name or ".", repository.url, repository.tag, repository.commit))
+        local line = string.format("%s %s %s %s", repository.name or ".", repository.url, repository.tag, repository.commit)
+        if repository.sparse then
+            line = line .. " " .. table.concat(repository.sparse, " ")
+        end
+        table.insert(lines, line)
     end
     return table.concat(lines, "\n") .. "\n"
 end
