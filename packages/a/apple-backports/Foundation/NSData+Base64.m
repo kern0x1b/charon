@@ -86,9 +86,9 @@ static unsigned char *charon_base64_decode(const unsigned char *input, NSUIntege
     unsigned char *output = malloc(length / 4 * 3 + 3);
     if (!output)
         return NULL;
-    NSUInteger written = 0, symbols = 0, padding = 0;
+    NSUInteger written = 0, count = 0, padding = 0, index = 0;
     uint32_t accumulated = 0;
-    for (NSUInteger index = 0; index < length; index++) {
+    for (; index < length; index++) {
         unsigned char value = table[input[index]];
         if (value == CharonBase64Unknown) {
             if (ignoreUnknown)
@@ -98,31 +98,43 @@ static unsigned char *charon_base64_decode(const unsigned char *input, NSUIntege
         }
         if (value == CharonBase64Padding) {
             padding++;
-            continue;
-        }
-        if (padding) {
+            value = 0;
+        } else if (padding && !ignoreUnknown) {
             free(output);
             return NULL;
         }
-        accumulated = accumulated << 6 | value;
-        if (++symbols % 4 == 0) {
-            output[written++] = (accumulated >> 16) & 0xFF;
+        accumulated = (accumulated << 6) + value;
+        if (++count < 4)
+            continue;
+        if (padding == 3) {
+            free(output);
+            return NULL;
+        }
+        BOOL last = YES;
+        for (NSUInteger ahead = index + 1; padding && ahead < length && last; ahead++) {
+            unsigned char next = table[input[ahead]];
+            last = next == CharonBase64Padding || (ignoreUnknown && next == CharonBase64Unknown);
+        }
+        NSUInteger bytes = !last || !padding ? 3 : padding == 1 ? 2 : 1;
+        output[written++] = (accumulated >> 16) & 0xFF;
+        if (bytes > 1)
             output[written++] = (accumulated >> 8) & 0xFF;
+        if (bytes > 2)
             output[written++] = accumulated & 0xFF;
-            accumulated = 0;
+        count = 0;
+        if (padding && !ignoreUnknown)
+            break;
+        padding = 0;
+    }
+    for (index++; index < length && !ignoreUnknown; index++) {
+        if (table[input[index]] != CharonBase64Padding) {
+            free(output);
+            return NULL;
         }
     }
-    static const NSUInteger requiredPadding[4] = {0, NSNotFound, 2, 1};
-    NSUInteger trailing = symbols % 4;
-    if (requiredPadding[trailing] != padding) {
+    if (count) {
         free(output);
         return NULL;
-    }
-    if (trailing == 2) {
-        output[written++] = (accumulated >> 4) & 0xFF;
-    } else if (trailing == 3) {
-        output[written++] = (accumulated >> 10) & 0xFF;
-        output[written++] = (accumulated >> 2) & 0xFF;
     }
     *decodedLength = written;
     return output;

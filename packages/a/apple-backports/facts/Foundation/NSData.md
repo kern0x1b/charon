@@ -20,11 +20,31 @@ line.
 ## Decoding
 
 `-initWithBase64EncodedString:options:` and `-initWithBase64EncodedData:options:` answer nil for anything
-that is not base64, and they are strict: a space or a newline in the middle is enough, and so is padding
-that does not complete the last group, or symbols after the padding.
-`NSDataBase64DecodingIgnoreUnknownCharacters` drops everything outside the alphabet and the padding
-before reading, so `QU JD` becomes the three bytes `41 42 43`. An empty string answers empty data rather
-than nil.
+that is not base64: a space or a newline in the middle is enough. An empty string answers empty data rather
+than nil. `NSDataBase64DecodingIgnoreUnknownCharacters` drops everything outside the alphabet and the
+padding before reading, so `QU JD` becomes the three bytes `41 42 43`.
+
+What they do with the padding sign is Foundation's own decoder, the Objective-C method
+`-[NSData(NSData) _decodeBase64EncodedCharacterBuffer:length:options:buffer:bufferLength:state:]` that
+`-_initWithBase64EncodedObject:options:` hands every range to - a selector the Foundation of iOS 7.0, 9.0,
+12.0 and 18.0 all carry. It is not the decoder of Swift's `Data`, which the same host answers differently
+with: `QQ==QQ==` is `41` there and `41 00 00 41` here. Read from its instructions:
+
+- the characters are taken four at a time, `=` counting as a character whose value is 0, into an
+  accumulator that is shifted by six and never cleared; a group gives the low eight bits of the
+  accumulator shifted right by 16, by 8 and by nothing;
+- a group with three `=` in it fails the whole string, and the characters left over at the end must make
+  no incomplete group;
+- a group with no `=` gives three bytes. A group with `=` gives three bytes too, unless nothing but `=`
+  (and, when unknown characters are ignored, characters outside the alphabet) follows it anywhere in the
+  string: then it gives two for one `=` and one for more;
+- without the option a character after a `=` inside a group fails, and after the first group with `=` in
+  it the decoder stops, so the rest may be `=` and nothing else: `QQQ==` is `41 04` and `QQQ=A` is nil;
+- with the option the count of `=` starts again at every group, so `QUJD==RA` is `41 42 43 00`,
+  `QUI=QUI=` is `41 42 00 41 42` and `=A/A====` is `00 0F 00`.
+
+The backport decodes the same way, and every string of up to eight characters over `Q`, `/`, `=` and an
+unknown `!`, with and without the option - 174762 of them - answers as the host's Foundation does.
 
 ## The other two
 

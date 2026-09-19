@@ -166,32 +166,6 @@ static NSData *encode_data(NSData *data, NSUInteger options)
     return ((id (*)(id, SEL, NSUInteger))objc_msgSend)(data, sel(@selector(base64EncodedDataWithOptions:)), options);
 }
 
-static NSString *padding_shape(NSString *input, BOOL ignoreUnknown)
-{
-    NSCharacterSet *alphabet = [NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"];
-    NSUInteger symbols = 0, padding = 0;
-    BOOL dataAfterPadding = NO, unknown = NO;
-    for (NSUInteger index = 0; index < input.length; index++) {
-        unichar character = [input characterAtIndex:index];
-        if (character == '=') {
-            padding++;
-        } else if ([alphabet characterIsMember:character]) {
-            symbols++;
-            dataAfterPadding |= padding > 0;
-        } else {
-            unknown = YES;
-        }
-    }
-    if (unknown && !ignoreUnknown)
-        return nil;
-    static const NSUInteger required[4] = {0, 99, 2, 1};
-    if (dataAfterPadding)
-        return @"base64 input with symbols after padding";
-    if (padding != required[symbols % 4])
-        return @"base64 input whose padding does not complete its last group";
-    return nil;
-}
-
 static const NSUInteger encoding_options[] = {0, 1, 2, 3, 4, 8, 16, 32, 48, 64, 1 | 16, 1 | 32, 1 | 48, 2 | 16, 2 | 32, 2 | 48, 3 | 48, 0xFFFFFFFFu};
 
 static void run_base64(Foundation2Recorder *recorder)
@@ -242,9 +216,8 @@ static void run_base64(Foundation2Recorder *recorder)
             }
         }
         for (NSUInteger ignore = 0; ignore < 2; ignore++) {
-            NSString *shape = padding_shape(corrupt, ignore == 1);
             [recorder record:@[hex(decode_string([NSData class], corrupt, ignore)), hex(decode_data([NSData class], [corrupt dataUsingEncoding:NSUTF8StringEncoding], ignore))]
-                       named:[NSString stringWithFormat:@"%@.corrupt.%lu", name, (unsigned long)ignore] tolerating:shape];
+                       named:[NSString stringWithFormat:@"%@.corrupt.%lu", name, (unsigned long)ignore]];
         }
     }
     NSArray *inputs = @[@"", @"YQ==", @"YQ", @"YQ=", @"YWI=", @"YWI", @"YWJj", @"Y", @"YQ==YQ==", @"YQ==\n", @"Y Q = =", @"YR==", @"YWJ=", @"YQ===", @"=", @"==", @"===", @"====",
@@ -254,9 +227,8 @@ static void run_base64(Foundation2Recorder *recorder)
         for (NSUInteger options = 0; options < 3; options++) {
             NSString *input = inputs[index];
             NSUInteger ignore = options & 1;
-            NSString *shape = padding_shape(input, ignore);
             [recorder record:@[hex(decode_string([NSData class], input, options)), hex(decode_data([NSData class], [input dataUsingEncoding:NSUTF8StringEncoding], options)), hex(decode_string([NSMutableData class], input, options))]
-                       named:[NSString stringWithFormat:@"base64.decode.fixed.%lu.%lu", (unsigned long)index, (unsigned long)options] tolerating:shape];
+                       named:[NSString stringWithFormat:@"base64.decode.fixed.%lu.%lu", (unsigned long)index, (unsigned long)options]];
         }
     }
     NSMutableData *mutable = (NSMutableData *)decode_string([NSMutableData class], @"YWJj", 0);
