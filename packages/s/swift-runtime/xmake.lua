@@ -107,7 +107,9 @@ package("swift-runtime")
         end
         if package:config("shared") then
             local runtime = import("apple.shared_runtime", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
-            package:add("linkdirs", path.join("share", "root", "usr", "lib", "charon", runtime.package_name("swift-runtime", package:buildhash())))
+            for _, kind in ipairs({"swift-runtime", "swift-runtime-ui"}) do
+                package:add("linkdirs", path.join("share", "root", "usr", "lib", "charon", runtime.package_name(kind, package:buildhash())))
+            end
         else
             package:add("linkdirs", path.join("lib", "swift", "iphoneos"))
         end
@@ -581,25 +583,33 @@ package("swift-runtime")
         os.vcp(path.join(path.absolute("platform"), "LICENSE.txt"), package:installdir("licenses") .. "/")
         if package:config("shared") then
             local runtime = import("apple.shared_runtime", {rootdir = modules, anonymous = true})
-            local name = runtime.package_name("swift-runtime", package:buildhash())
-            local libraries = os.files(path.join(platform_dir, "*.dylib"))
-            -- The C++ runtime is the package of charon@libcxx, and this one depends on exactly that build of it.
+            local name, ui = runtime.package_name("swift-runtime", package:buildhash()), runtime.package_name("swift-runtime-ui", package:buildhash())
+            local version = runtime.package_version(package:buildhash())
+            -- The overlays of QuartzCore and UIKit are a package of their own: their libraries load UIKit into the process,
+            -- which a daemon must not, so only a program that links them depends on it.
+            local libraries, ui_libraries = {}, {}
+            for _, library in ipairs(os.files(path.join(platform_dir, "*.dylib"))) do
+                table.insert(({libswiftQuartzCore = ui_libraries, libswiftUIKit = ui_libraries})[path.basename(library)] or libraries, library)
+            end
+            -- The C++ runtime is the package of charon@libcxx, and these depend on exactly that build of it.
             local cxx = runtime.package_name("libcxx", libcxx:buildhash())
-            runtime.write({name = name, version = runtime.package_version(package:buildhash()),
-                           title = "Swift runtime " .. package:buildhash():sub(1, 8),
-                           description = "The Swift runtime and the overlays of one build of Charon's charon@swift-runtime,",
-                           depends = {string.format("%s (= %s)", cxx, runtime.package_version(libcxx:buildhash()))},
-                           libraries = libraries,
+            runtime.write({packages = {{name = name, version = version, title = "Swift runtime " .. package:buildhash():sub(1, 8),
+                                        description = "The Swift runtime and the overlays of one build of Charon's charon@swift-runtime,",
+                                        depends = {string.format("%s (= %s)", cxx, runtime.package_version(libcxx:buildhash()))},
+                                        libraries = libraries},
+                                       {name = ui, version = version, title = "Swift runtime UI " .. package:buildhash():sub(1, 8),
+                                        description = "The overlays of QuartzCore and UIKit of one build of Charon's charon@swift-runtime,",
+                                        depends = {string.format("%s (= %s)", name, version)},
+                                        libraries = ui_libraries}},
                            root = path.join(package:installdir("share"), "root"), workdir = path.absolute("shared-work"),
                            outputdir = package:installdir("share"),
                            ldid = path.join(package:dep("ldid"):installdir(), "bin", "ldid"), strip = {"-x"}})
-            -- A program links against the libraries in the package's tree, not against a second copy.
-            for _, library in ipairs(libraries) do
+            -- A program links against the libraries in the packages' trees, not against a second copy.
+            for _, library in ipairs(table.join(libraries, ui_libraries)) do
                 os.rm(library)
             end
             os.tryrm(path.absolute("shared-work"))
-            package:setenv("CHARON_SHARED_PACKAGE", name)
-            package:setenv("CHARON_SHARED_NEEDS", cxx)
+            package:setenv("CHARON_SHARED_PACKAGE", name .. "=" .. cxx .. ";" .. ui .. "=" .. name)
         end
         os.tryrm(path.absolute("build"))
         os.tryrm(source)
@@ -613,8 +623,15 @@ package("swift-runtime")
         if package:config("shared") then
             local shared = import("apple.shared_runtime", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
             libraries = path.join(package:installdir("share"), "root", shared.folder_of(shared.package_name("swift-runtime", package:buildhash())))
-            assert(#os.files(path.join(package:installdir("share"), shared.package_name("swift-runtime", package:buildhash()) .. "_*.deb")) == 1,
-                   "the shared runtime wrote no package")
+            for _, kind in ipairs({"swift-runtime", "swift-runtime-ui"}) do
+                assert(#os.files(path.join(package:installdir("share"), shared.package_name(kind, package:buildhash()) .. "_*.deb")) == 1,
+                       "the shared runtime wrote no " .. kind .. " package")
+            end
+            local ui = path.join(package:installdir("share"), "root", shared.folder_of(shared.package_name("swift-runtime-ui", package:buildhash())))
+            for _, library in ipairs({"swiftQuartzCore", "swiftUIKit"}) do
+                assert(os.isfile(path.join(ui, "lib" .. library .. ".dylib")), "the UI package has no lib" .. library .. ".dylib")
+                assert(not os.isfile(path.join(libraries, "lib" .. library .. ".dylib")), "lib" .. library .. ".dylib is in the runtime package too")
+            end
             assert(#os.files(path.join(install, "*.dylib")) == 0, "the shared runtime keeps a second copy of its libraries")
         end
         for _, library in ipairs({"swiftCore", "swift_Concurrency", "swiftDarwin", "swiftSynchronization", "swiftObservation",

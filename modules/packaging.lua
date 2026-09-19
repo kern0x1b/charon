@@ -95,6 +95,8 @@ function write(opt)
             os.tryrm(stage)
             local depends = {}
             for _, target in ipairs(described.targets) do
+                -- What the program links against is read from the program, so it is built first.
+                task.run("build", {target = target:name()})
                 local dependencies = {}
                 local backports, shared = platform.backport_package(target), platform.shared_runtime(target)
                 if backports then
@@ -111,7 +113,6 @@ function write(opt)
                         table.insert(written, {deb = copied})
                     end
                 end
-                task.run("build", {target = target:name()})
                 task.run("install", {target = target:name(), installdir = stage})
                 local architectures = table.wrap(target:values("apple.architectures"))
                 if #architectures > 1 then

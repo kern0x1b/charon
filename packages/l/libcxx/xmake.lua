@@ -202,10 +202,10 @@ package("libcxx")
             end
             import("apple.bundle", {rootdir = modules, anonymous = true}).retarget(table.keys(identities), identities,
                                                                                     {home = shared.folder_of(name) .. "/"})
-            shared.write({name = name, version = shared.package_version(package:buildhash()),
-                          title = "C++ runtime " .. package:buildhash():sub(1, 8),
-                          description = "libc++ and libc++abi of one build of Charon's charon@libcxx,",
-                          libraries = {}, extra = held,
+            shared.write({packages = {{name = name, version = shared.package_version(package:buildhash()),
+                                       title = "C++ runtime " .. package:buildhash():sub(1, 8),
+                                       description = "libc++ and libc++abi of one build of Charon's charon@libcxx,",
+                                       libraries = {}, extra = held}},
                           root = path.join(package:installdir("share"), "root"), workdir = path.absolute("shared-work"),
                           outputdir = package:installdir("share"),
                           ldid = path.join(package:dep("ldid"):installdir(), "bin", "ldid"), strip = {"-x"}})

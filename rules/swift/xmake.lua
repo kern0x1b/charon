@@ -33,6 +33,11 @@ rule("swift")
         -- daemon in its package's folder, an application inside its bundle. A shared runtime is a package of its own that
         -- the program depends on instead: it carries none of it, and its libc++ is the one in that package's folder.
         local runtime = target:pkg("swift-runtime")
+        if runtime and runtime:requireconf("configs", "shared") then
+            -- The runtime's libraries are all on the link line, and the program loads the ones it uses: a daemon that
+            -- never touches UIKit loads no UIKit overlay, and depends on no package that holds it.
+            target:add("ldflags", "-Wl,-dead_strip_dylibs", {force = true})
+        end
         if runtime and not runtime:requireconf("configs", "shared") then
             for _, carried in ipairs({"swift-runtime", "libcxx"}) do
                 target:add("values", "charon.libraries", carried)

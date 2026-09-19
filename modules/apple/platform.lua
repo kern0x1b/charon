@@ -156,39 +156,64 @@ end
 -- for their builds, and the libraries in them under the names the program will find them by.
 local SHARED = {"swift-runtime", "libcxx"}
 
+-- Answers the packages of the shared runtime the target's binary is linked against, with what each needs, or nil when it
+-- shares none. A package the binary does not load is not depended on: a daemon has no use for the UIKit overlays, and
+-- depending on them would put UIKit in its process.
 function shared_runtime(target)
-    local found = {packages = {}, identities = {}, libraries = {}}
+    local all, identities, libraries = {}, {}, {}
     for _, alias in ipairs(SHARED) do
         local package = target:pkg(alias)
-        local name = package and table.wrap((package:envs() or {}).CHARON_SHARED_PACKAGE)[1]
-        if name then
+        for _, entry in ipairs(package and table.wrap((package:envs() or {}).CHARON_SHARED_PACKAGE)[1] and table.wrap((package:envs() or {}).CHARON_SHARED_PACKAGE)[1]:split(";") or {}) do
+            local name, needs = entry:match("^([^=]+)=?(.*)$")
             local folder = "/usr/lib/charon/" .. name
             local debs = os.files(path.join(package:installdir(), "share", name .. "_*.deb"))
             if #debs ~= 1 then
                 raise("target(%s) shares %s, whose install holds %d packages of that name instead of one", target:name(), name, #debs)
             end
+            local held = {}
             for _, file in ipairs(os.files(path.join(package:installdir(), "share", "root", folder, "*.dylib"))) do
-                found.identities[path.filename(file)] = folder .. "/" .. path.filename(file)
-                table.insert(found.libraries, file)
+                held[folder .. "/" .. path.filename(file)] = true
+                identities[path.filename(file)] = folder .. "/" .. path.filename(file)
+                table.insert(libraries, file)
             end
-            table.insert(found.packages, {deb = debs[1], name = name, relation = "=", version = path.filename(debs[1]):match("^[^_]+_([^_]+)_"),
-                                          needs = table.wrap((package:envs() or {}).CHARON_SHARED_NEEDS)[1]})
+            table.insert(all, {deb = debs[1], name = name, relation = "=", version = path.filename(debs[1]):match("^[^_]+_([^_]+)_"),
+                               needs = needs ~= "" and needs or nil, held = held})
         end
     end
-    if #found.packages == 0 then
+    if #all == 0 then
         return nil
     end
-    -- One copy of libc++abi to a process: the runtime and the program name the same build of it.
-    local names = {}
-    for _, shared in ipairs(found.packages) do
-        names[shared.name] = true
+    local byname = {}
+    for _, shared in ipairs(all) do
+        byname[shared.name] = shared
     end
-    for _, shared in ipairs(found.packages) do
-        if shared.needs and not names[shared.needs] then
+    -- One copy of libc++abi to a process: the runtime and the program name the same build of it.
+    for _, shared in ipairs(all) do
+        if shared.needs and not byname[shared.needs] then
             raise("target(%s) shares %s, which is linked against %s, and the target itself takes the C++ runtime from a different build; require charon@libcxx with the same configs as the runtime does (packaged)", target:name(), shared.name, shared.needs)
         end
     end
-    return found
+    local used = {}
+    for _, reference in ipairs(macho.images(macho.read(target:targetfile()))[1].libraries) do
+        for _, shared in ipairs(all) do
+            used[shared.name] = used[shared.name] or shared.held[reference]
+        end
+    end
+    local packages, pending = {}, table.keys(used)
+    while #pending > 0 do
+        local shared = byname[table.remove(pending)]
+        if not packages[shared.name] then
+            packages[shared.name] = shared
+            if shared.needs then
+                table.insert(pending, shared.needs)
+            end
+        end
+    end
+    local listed = {}
+    for _, name in ipairs(table.orderkeys(packages)) do
+        table.insert(listed, packages[name])
+    end
+    return {packages = listed, identities = identities, libraries = libraries}
 end
 
 -- What the release's own libraries do not hold and the program finds installed by a package it depends on.

@@ -29,51 +29,74 @@ function folder_of(name)
     return "/usr/lib/charon/" .. name
 end
 
--- Gives the libraries their absolute names and writes the package.
---   opt.name, opt.version, opt.title, opt.description: the package; opt.depends: the packages it needs, as Debian writes them
---   opt.libraries: the libraries the package holds; opt.extra: {source, leaf} of the ones that come from elsewhere (libc++)
---   opt.root: where the package's tree is built, and stays, since a program links against the libraries in it
---   opt.workdir: a scratch folder; opt.outputdir: where the package is written
+-- Gives the libraries of one or more packages their absolute names and writes the packages.
+--   opt.packages: each {name, version, title, description, depends, libraries, extra}: the package, the packages it needs as
+--     Debian writes them, the libraries it holds, and {source, leaf} for the ones that come from elsewhere (libc++)
+--   opt.root: where the packages' trees are built, and stay, since a program links against the libraries in them
+--   opt.workdir: a scratch folder; opt.outputdir: where the packages are written
 --   opt.ldid, opt.strip: the signer and the strip arguments
+-- Answers the packages' debs by name.
 function write(opt)
     local debian = import("debian", {rootdir = path.join(os.scriptdir(), ".."), anonymous = true})
-    local folder = folder_of(opt.name)
-    local root = opt.root
-    os.tryrm(root)
+    os.tryrm(opt.root)
     os.tryrm(opt.workdir)
     os.mkdir(opt.workdir)
-    local destination = path.join(root, folder)
-    os.mkdir(destination)
-    local identities, binaries = {}, {}
-    local function place(source, leaf)
-        local target = path.join(destination, leaf)
-        os.vcp(source, target)
-        identities[target] = folder .. "/" .. leaf
-        table.insert(binaries, target)
+    local held = {}
+    for _, described in ipairs(opt.packages) do
+        local folder = folder_of(described.name)
+        local destination = path.join(opt.root, folder)
+        os.mkdir(destination)
+        local entry = {described = described, folder = folder, destination = destination, identities = {}, binaries = {}, leaves = {}}
+        local function place(source, leaf)
+            local target = path.join(destination, leaf)
+            os.vcp(source, target)
+            entry.identities[target] = folder .. "/" .. leaf
+            entry.leaves[leaf] = folder .. "/" .. leaf
+            table.insert(entry.binaries, target)
+        end
+        for _, library in ipairs(described.libraries) do
+            place(library, path.filename(library))
+        end
+        for _, library in ipairs(described.extra or {}) do
+            place(library.source, library.leaf)
+        end
+        table.insert(held, entry)
     end
-    for _, library in ipairs(opt.libraries) do
-        place(library, path.filename(library))
+    -- Every reference the libraries make to one another is by absolute name afterwards, into their own package or into
+    -- another of these, and retarget refuses a library that still says @rpath.
+    for _, entry in ipairs(held) do
+        local others = {}
+        for _, other in ipairs(held) do
+            if other ~= entry then
+                for leaf, identity in pairs(other.leaves) do
+                    others[leaf] = identity
+                end
+            end
+        end
+        bundle.retarget(entry.binaries, entry.identities, {home = entry.folder .. "/", provided = others})
+        for _, library in ipairs(entry.binaries) do
+            os.vrunv("xcrun", table.join({"strip"}, opt.strip, {library}))
+        end
+        for _, library in ipairs(entry.binaries) do
+            signing.sign(opt.ldid, library)
+        end
     end
-    for _, library in ipairs(opt.extra or {}) do
-        place(library.source, library.leaf)
+    local debs = {}
+    for _, entry in ipairs(held) do
+        local described = entry.described
+        local control = path.join(opt.workdir, described.name .. ".control")
+        io.writefile(control, table.concat({
+            "Package: " .. described.name,
+            "Name: " .. described.title,
+            "Architecture: iphoneos-arm",
+            "Section: System",
+            "Description: " .. described.description .. " in " .. entry.folder .. "; a runtime built without library evolution cannot be replaced by another build"
+        }, "\n") .. "\n")
+        -- The package holds its own folder and nothing of the others'.
+        local tree = path.join(opt.workdir, described.name .. "-tree")
+        os.mkdir(path.directory(path.join(tree, entry.folder)))
+        os.vcp(entry.destination, path.directory(path.join(tree, entry.folder)) .. "/")
+        debs[described.name] = debian.write({control = control, version = described.version, root = tree, depends = described.depends, outputdir = opt.outputdir})
     end
-    -- Every reference the libraries make to one another is by absolute name afterwards, and retarget refuses a library
-    -- that still says @rpath or loads one of these from anywhere else.
-    bundle.retarget(binaries, identities, {home = folder .. "/"})
-    for _, library in ipairs(binaries) do
-        os.vrunv("xcrun", table.join({"strip"}, opt.strip, {library}))
-    end
-    for _, library in ipairs(binaries) do
-        signing.sign(opt.ldid, library)
-    end
-    local control = path.join(opt.workdir, "control")
-    io.writefile(control, table.concat({
-        "Package: " .. opt.name,
-        "Name: " .. opt.title,
-        "Architecture: iphoneos-arm",
-        "Section: System",
-        "Description: " .. opt.description .. " in " .. folder .. "; a runtime built without library evolution cannot be replaced by another build"
-    }, "\n") .. "\n")
-    local deb = debian.write({control = control, version = opt.version, root = root, depends = opt.depends, outputdir = opt.outputdir})
-    return deb, destination
+    return debs
 end
