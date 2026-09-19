@@ -1,18 +1,25 @@
 #import <Foundation/Foundation.h>
+#import <objc/runtime.h>
 
-double charon_thread_priority_for_quality(NSQualityOfService quality);
-NSQualityOfService charon_quality_for_thread_priority(double priority);
+NSQualityOfService charon_quality_of_service(NSInteger quality);
+
+static char CharonThreadQualityKey;
 
 @implementation NSThread (CharonQualityOfService)
 
 - (NSQualityOfService)qualityOfService
 {
-    return charon_quality_for_thread_priority(self.threadPriority);
+    NSNumber *quality = objc_getAssociatedObject(self, &CharonThreadQualityKey);
+    if (quality)
+        return (NSQualityOfService)quality.integerValue;
+    return self.isMainThread ? NSQualityOfServiceUserInteractive : NSQualityOfServiceDefault;
 }
 
 - (void)setQualityOfService:(NSQualityOfService)qualityOfService
 {
-    self.threadPriority = charon_thread_priority_for_quality(qualityOfService);
+    if (self.isExecuting || self.isFinished || self.isMainThread)
+        return;
+    objc_setAssociatedObject(self, &CharonThreadQualityKey, @(charon_quality_of_service(qualityOfService)), OBJC_ASSOCIATION_RETAIN);
 }
 
 @end

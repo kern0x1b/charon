@@ -925,11 +925,24 @@ static void run_archiving(Foundation2Recorder *recorder)
     [recorder record:@[keyed ? [keyed description] : @"<nil>", error_text(keyedError)] named:@"archiving.decodeTopLevel"];
     NSError *missingError = nil;
     id missing = ((id (*)(id, SEL, id, NSError **))objc_msgSend)(legacy, sel(@selector(decodeTopLevelObjectForKey:error:)), @"org.charon.missing", &missingError);
-    [recorder record:@[@(missing != nil), error_text(missingError)] named:@"archiving.decodeMissing"
-          tolerating:@"macOS 27 reports a missing key of a top level decode as an error"];
+    [recorder record:@[@(missing != nil), error_text(missingError)] named:@"archiving.decodeMissing"];
     NSError *ofClassKeyError = nil;
     id ofClassKey = ((id (*)(id, SEL, Class, id, NSError **))objc_msgSend)(legacy, sel(@selector(decodeTopLevelObjectOfClass:forKey:error:)), [NSArray class], foundation2_implementation.rootObjectKey, &ofClassKeyError);
     [recorder record:@[ofClassKey ? [ofClassKey description] : @"<nil>", error_text(ofClassKeyError)] named:@"archiving.decodeTopLevelOfClass"];
+    NSKeyedUnarchiver *legacyPlain = [[NSKeyedUnarchiver alloc] initForReadingWithData:written];
+    NSError *legacyPlainError = nil;
+    id legacyPlainDecoded = ((id (*)(id, SEL, NSError **))objc_msgSend)(legacyPlain, sel(@selector(decodeTopLevelObjectAndReturnError:)), &legacyPlainError);
+    [recorder record:@[legacyPlainDecoded ? [legacyPlainDecoded description] : @"<nil>", error_text(legacyPlainError)] named:@"archiving.decodeTopLevelPlain"];
+    NSKeyedUnarchiver *classesRight = [[NSKeyedUnarchiver alloc] initForReadingWithData:written];
+    NSError *classesRightError = nil;
+    NSSet *rightClasses = [NSSet setWithObjects:[NSString class], [NSArray class], nil];
+    id classesRightDecoded = ((id (*)(id, SEL, id, id, NSError **))objc_msgSend)(classesRight, sel(@selector(decodeTopLevelObjectOfClasses:forKey:error:)), rightClasses, foundation2_implementation.rootObjectKey, &classesRightError);
+    [recorder record:@[classesRightDecoded ? [classesRightDecoded description] : @"<nil>", error_text(classesRightError)] named:@"archiving.decodeTopLevelOfClasses"];
+    NSKeyedUnarchiver *classesWrong = [[NSKeyedUnarchiver alloc] initForReadingWithData:written];
+    NSError *classesWrongError = nil;
+    NSSet *wrongClasses = [NSSet setWithObjects:[NSNumber class], [NSDate class], nil];
+    id classesWrongDecoded = ((id (*)(id, SEL, id, id, NSError **))objc_msgSend)(classesWrong, sel(@selector(decodeTopLevelObjectOfClasses:forKey:error:)), wrongClasses, foundation2_implementation.rootObjectKey, &classesWrongError);
+    [recorder record:@[classesWrongDecoded ? [classesWrongDecoded description] : @"<nil>", error_text(classesWrongError)] named:@"archiving.decodeTopLevelOfClassesWrong"];
     NSKeyedArchiver *requiring = ((F2InitFlag)objc_msgSend)([NSKeyedArchiver alloc], sel(@selector(initRequiringSecureCoding:)), YES);
     [requiring encodeObject:@"payload" forKey:@"key"];
     NSData *produced = ((id (*)(id, SEL))objc_msgSend)(requiring, sel(@selector(encodedData)));
@@ -1081,7 +1094,54 @@ static void run_scheduling(Foundation2Recorder *recorder)
     ((void (*)(id, SEL, NSInteger))objc_msgSend)(thread, sel(@selector(setQualityOfService:)), NSQualityOfServiceBackground);
     [threadValues addObject:@(((NSInteger (*)(id, SEL))objc_msgSend)(thread, sel(@selector(qualityOfService))))];
     [threadValues addObject:@(thread.threadPriority)];
-    [recorder record:threadValues named:@"scheduling.thread" tolerating:@"macOS 27 keeps the thread priority and the quality of service apart"];
+    [recorder record:threadValues named:@"scheduling.thread"];
+    NSMutableArray *coerced = [NSMutableArray array];
+    NSInteger asked[] = {12345, 0, 1, 0x21, 0x19, 0x11, 0x09, -1, -2, 0x15};
+    for (size_t index = 0; index < sizeof asked / sizeof *asked; index++) {
+        NSThread *unstarted = [[NSThread alloc] init];
+        NSOperationQueue *fresh = [[NSOperationQueue alloc] init];
+        NSOperation *pending = [NSBlockOperation blockOperationWithBlock:^{
+        }];
+        ((void (*)(id, SEL, NSInteger))objc_msgSend)(unstarted, sel(@selector(setQualityOfService:)), asked[index]);
+        ((void (*)(id, SEL, NSInteger))objc_msgSend)(fresh, sel(@selector(setQualityOfService:)), asked[index]);
+        ((void (*)(id, SEL, NSInteger))objc_msgSend)(pending, sel(@selector(setQualityOfService:)), asked[index]);
+        [coerced addObject:@[@(((NSInteger (*)(id, SEL))objc_msgSend)(unstarted, sel(@selector(qualityOfService)))), @(((NSInteger (*)(id, SEL))objc_msgSend)(fresh, sel(@selector(qualityOfService)))),
+                             @(((NSInteger (*)(id, SEL))objc_msgSend)(pending, sel(@selector(qualityOfService))))]];
+    }
+    [recorder record:coerced named:@"scheduling.coerced"];
+    NSMutableArray *apart = [NSMutableArray array];
+    [apart addObject:@(((NSInteger (*)(id, SEL))objc_msgSend)([NSThread mainThread], sel(@selector(qualityOfService))))];
+    [apart addObject:@(((NSInteger (*)(id, SEL))objc_msgSend)([NSOperationQueue mainQueue], sel(@selector(qualityOfService))))];
+    NSOperation *weighed = [NSBlockOperation blockOperationWithBlock:^{
+    }];
+    ((void (*)(id, SEL, NSInteger))objc_msgSend)(weighed, sel(@selector(setQualityOfService:)), NSQualityOfServiceBackground);
+    [apart addObject:@(weighed.threadPriority)];
+    weighed.threadPriority = 0.9;
+    [apart addObject:@(((NSInteger (*)(id, SEL))objc_msgSend)(weighed, sel(@selector(qualityOfService))))];
+    NSThread *prioritized = [[NSThread alloc] init];
+    prioritized.threadPriority = 0.1;
+    [apart addObject:@(((NSInteger (*)(id, SEL))objc_msgSend)(prioritized, sel(@selector(qualityOfService))))];
+    NSCondition *started = [[NSCondition alloc] init];
+    __block BOOL running = NO, leave = NO;
+    NSThread *runner = [[NSThread alloc] initWithTarget:[NSBlockOperation blockOperationWithBlock:^{
+        [started lock];
+        running = YES;
+        [started broadcast];
+        while (!leave)
+            [started wait];
+        [started unlock];
+    }] selector:@selector(start) object:nil];
+    ((void (*)(id, SEL, NSInteger))objc_msgSend)(runner, sel(@selector(setQualityOfService:)), NSQualityOfServiceUtility);
+    [runner start];
+    [started lock];
+    while (!running)
+        [started wait];
+    ((void (*)(id, SEL, NSInteger))objc_msgSend)(runner, sel(@selector(setQualityOfService:)), NSQualityOfServiceBackground);
+    [apart addObject:@(((NSInteger (*)(id, SEL))objc_msgSend)(runner, sel(@selector(qualityOfService))))];
+    leave = YES;
+    [started broadcast];
+    [started unlock];
+    [recorder record:apart named:@"scheduling.apart"];
 }
 
 void foundation2_run(Foundation2Implementation implementation, Foundation2Recorder *recorder)

@@ -11,10 +11,14 @@ CFTimeInterval CFRunLoopTimerGetTolerance(CFRunLoopTimerRef timer)
 
 void CFRunLoopTimerSetTolerance(CFRunLoopTimerRef timer, CFTimeInterval tolerance)
 {
-    CFTimeInterval accepted = tolerance > 0 ? tolerance : 0;
-    if (CFRunLoopTimerDoesRepeat(timer))
-        accepted = MIN(accepted, CFRunLoopTimerGetInterval(timer) / 2);
-    objc_setAssociatedObject((__bridge id)timer, &charon_tolerance_key, @(accepted), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    if (CFRunLoopTimerDoesRepeat(timer)) {
+        CFTimeInterval half = CFRunLoopTimerGetInterval(timer) / 2;
+        if (!(tolerance <= half))
+            tolerance = half;
+    } else if (tolerance < 0) {
+        tolerance = 0;
+    }
+    objc_setAssociatedObject((__bridge id)timer, &charon_tolerance_key, @(tolerance), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @implementation NSTimer (CharonTolerance)

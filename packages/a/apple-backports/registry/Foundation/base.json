@@ -285,49 +285,57 @@
     "api": "-[NSCoder decodeTopLevelObjectAndReturnError:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCoderTopLevel.md"
   },
   {
     "api": "-[NSCoder decodeTopLevelObjectForKey:error:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCoderTopLevel.md"
   },
   {
     "api": "-[NSCoder decodeTopLevelObjectOfClass:forKey:error:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCoderTopLevel.md"
   },
   {
     "api": "-[NSCoder decodeTopLevelObjectOfClasses:forKey:error:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCoderTopLevel.md"
   },
   {
     "api": "-[NSCoder decodingFailurePolicy]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCoderFailure.md"
   },
   {
     "api": "-[NSCoder error]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCoderFailure.md"
   },
   {
     "api": "-[NSCoder failWithError:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCoderFailure.md"
   },
   {
     "api": "-[NSCoder setDecodingFailurePolicy:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCoderFailure.md"
   },
   {
     "api": "-[NSData base64EncodedDataWithOptions:]",
@@ -621,25 +629,29 @@
     "api": "-[NSOperation qualityOfService]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSQualityOfService.md"
   },
   {
     "api": "-[NSOperation setQualityOfService:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSQualityOfService.md"
   },
   {
     "api": "-[NSOperationQueue qualityOfService]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSQualityOfService.md"
   },
   {
     "api": "-[NSOperationQueue setQualityOfService:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSQualityOfService.md"
   },
   {
     "api": "-[NSOperationQueue setUnderlyingQueue:]",
@@ -647,7 +659,8 @@
     "introduced": "8.0",
     "status": "inert",
     "reason": "the release runs an operation queue on its own threads and cannot be told to run it on a dispatch queue",
-    "effect": "the queue is remembered, the operations run where they would have, and the library says so in the log once"
+    "effect": "the queue is remembered, the operations run where they would have, and the library says so in the log once",
+    "facts": "facts/Foundation/NSQualityOfService.md"
   },
   {
     "api": "-[NSOperationQueue underlyingQueue]",
@@ -655,7 +668,8 @@
     "introduced": "8.0",
     "status": "inert",
     "reason": "the release runs an operation queue on its own threads",
-    "effect": "it answers what was set"
+    "effect": "it answers what was set",
+    "facts": "facts/Foundation/NSQualityOfService.md"
   },
   {
     "api": "-[NSProcessInfo beginActivityWithOptions:reason:]",
@@ -663,7 +677,8 @@
     "introduced": "7.0",
     "status": "inert",
     "reason": "the release holds no power assertions for an activity, and its idle and throttling behaviour is not ours to change",
-    "effect": "it answers a token that ends the activity and asserts nothing; the options that ask to stay awake say so in the log once"
+    "effect": "it answers a token that ends the activity and asserts nothing; the options that ask to stay awake say so in the log once",
+    "facts": "facts/Foundation/NSProcessInfo.md"
   },
   {
     "api": "-[NSProcessInfo endActivity:]",
@@ -671,25 +686,29 @@
     "introduced": "7.0",
     "status": "inert",
     "reason": "the release holds no power assertions for an activity",
-    "effect": "it ends an activity that asserted nothing"
+    "effect": "it ends an activity that asserted nothing",
+    "facts": "facts/Foundation/NSProcessInfo.md"
   },
   {
     "api": "-[NSProcessInfo isOperatingSystemAtLeastVersion:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSProcessInfo.md"
   },
   {
     "api": "-[NSProcessInfo operatingSystemVersion]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSProcessInfo.md"
   },
   {
     "api": "-[NSProcessInfo performActivityWithOptions:reason:usingBlock:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSProcessInfo.md"
   },
   {
     "api": "-[NSScanner scanUnsignedLongLong:]",
@@ -781,25 +800,29 @@
     "api": "-[NSThread qualityOfService]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSQualityOfService.md"
   },
   {
     "api": "-[NSThread setQualityOfService:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSQualityOfService.md"
   },
   {
     "api": "-[NSTimer setTolerance:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSTimer.md"
   },
   {
     "api": "-[NSTimer tolerance]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSTimer.md"
   },
   {
     "api": "-[NSURL dataRepresentation]",
@@ -936,25 +959,29 @@
     "api": "CFAutorelease",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/CFAutorelease.md"
   },
   {
     "api": "CFRunLoopTimerGetTolerance",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSTimer.md"
   },
   {
     "api": "CFRunLoopTimerSetTolerance",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSTimer.md"
   },
   {
     "api": "NSKeyedArchiveRootObjectKey",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSKeyedArchiver.md"
   },
   {
     "api": "NSStringTransformFullwidthToHalfwidth",

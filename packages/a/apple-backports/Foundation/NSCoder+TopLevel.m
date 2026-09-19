@@ -25,6 +25,8 @@ id charon_decode_top_level(NSCoder *coder, id (^decode)(void), NSError **error)
     }
     if (!failure)
         failure = objc_getAssociatedObject(coder, &CharonCoderErrorKey);
+    if (!failure && !decoded)
+        failure = [NSError errorWithDomain:NSCocoaErrorDomain code:4865 userInfo:nil];
     if (failure) {
         decoded = nil;
         if (error)

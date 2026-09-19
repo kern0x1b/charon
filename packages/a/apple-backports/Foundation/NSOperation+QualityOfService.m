@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
 
-double charon_thread_priority_for_quality(NSQualityOfService quality);
+NSQualityOfService charon_quality_of_service(NSInteger quality);
 
 static char CharonOperationQualityKey;
 
@@ -15,8 +15,7 @@ static char CharonOperationQualityKey;
 
 - (void)setQualityOfService:(NSQualityOfService)qualityOfService
 {
-    objc_setAssociatedObject(self, &CharonOperationQualityKey, @(qualityOfService), OBJC_ASSOCIATION_RETAIN);
-    self.threadPriority = charon_thread_priority_for_quality(qualityOfService);
+    objc_setAssociatedObject(self, &CharonOperationQualityKey, @(charon_quality_of_service(qualityOfService)), OBJC_ASSOCIATION_RETAIN);
 }
 
 @end
