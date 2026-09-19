@@ -50,6 +50,15 @@ rule("swift")
                 raise("swift-runtime at %s names no build of itself; reinstall it", package:installdir())
             end
             target:add("ldflags", "-Wl,-u,_" .. mark, {force = true})
+            -- A runtime built with the backports hands its lifted headers to the port's own Swift too, and the port carries
+            -- the backports that make them true.
+            local lifted = table.wrap((package:envs() or {}).CHARON_SWIFT_LIFTED_HEADERS)[1]
+            if lifted then
+                if not target:pkg("apple-backports") then
+                    raise("target(%s) compiles against swift-runtime built with the backports, and does not carry them: add_requires(\"charon@apple-backports\", {alias = \"apple-backports\"}) and add_packages(\"apple-backports\")", target:name())
+                end
+                target:add("values", "swift.flags", "-vfsoverlay", lifted)
+            end
         end
     end)
 

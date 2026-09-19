@@ -25,6 +25,20 @@ package("swift-runtime")
     -- have the call or gives it a narrower meaning.
     local renamed = {"clock_gettime", "clock_getres", "dispatch_get_global_queue"}
 
+    -- With the backports, the files of Foundation's overlay whose iOS 7 marks stay: what they mark the backports do not
+    -- carry. Found by building without the marks and reading what the compiler refused: Progress has no entry in the
+    -- registry, and the options of NSCalendar and of NSData's base64 are types the headers alone declare, which the
+    -- registry does not name yet.
+    local still_ios7 = {["Progress.swift"] = true, ["Calendar.swift"] = true, ["Data.swift"] = true}
+
+    -- With the backports, the files of Foundation's overlay whose own marks of iOS 7 to 11 come down to the port's release:
+    -- their Swift wraps classes the backports implement. The overlay is compiled against the lifted headers, so a mark
+    -- lowered over a call the backports do not carry is refused there.
+    -- URL.swift, DateComponents.swift, NSCoder.swift and Measurement.swift are not here: each also marks API the backports
+    -- leave out (resource keys and security scope, a component's value, NSCoderValueNotFoundError, MeasurementFormatter),
+    -- which the compiler refused when their marks came down.
+    local lowered_with_backports = {"URLComponents.swift", "DateInterval.swift", "NSStringAPI.swift"}
+
     -- The overlays of the system's own frameworks, each taken from the last release whose sources carry it. The C
     -- library's went in swift-6.2 (the build of the SDK overlays on Apple platforms was removed in 15345ef2d5) and the
     -- SDK ships only an arm64 interface of that module; the overlays of Objective-C and the frameworks above it went
@@ -59,7 +73,17 @@ package("swift-runtime")
     table.sort(digests)
     add_configs("recipe", {description = "The digest of this recipe and the changes it makes to the runtime's sources, so a changed flag or patch is a different runtime.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
 
+    -- With the backports, what they implement of later releases is available from the port's release: the overlays are
+    -- built against headers that say so and linked against the backports' libraries, and a port compiles against the
+    -- same headers (modules/apple/lift.lua).
+    add_configs("backports", {description = "Build the overlays for a port that carries charon@apple-backports: API the backports implement is available from the port's release, in the overlays and in the port's own Swift.", default = false, type = "boolean"})
+
     on_load("iphoneos", function (package)
+        if package:config("backports") then
+            -- Foundation's backports only: UIKit's overlay keeps the marks its release wrote, so it reaches nothing the UIKit
+            -- backports carry, and a daemon built against this runtime keeps UIKit out of its process.
+            package:add("deps", "charon@apple-backports", {alias = "apple-backports"})
+        end
         for _, library in ipairs(libraries) do
             package:add("links", library)
         end
@@ -280,6 +304,37 @@ package("swift-runtime")
         for _, patch in ipairs(overlay_patches) do
             os.vrunv("patch", {"-p1", "-i", patch}, {curdir = overlays})
         end
+        -- The backports variant: the headers with what the backports implement lowered to the port's release, for the
+        -- overlays here and for every port that compiles against this runtime, which finds them through the environment.
+        local lifted, carried = {}, {}
+        local backported = package:dep("apple-backports")
+        if package:config("backports") then
+            local lift = import("apple.lift", {rootdir = modules, anonymous = true})
+            local result = lift.lift({clang = toolchain:tool("cc"), sdk = toolchain:config("sdkdir"), triple = triple, minimum = minimum,
+                                      registry = backported:installdir("share"), outputdir = path.join(package:installdir("share"), "lift")})
+            print("lifted %d marks in %d headers for %d implemented API; %d not declared by the SDK's headers",
+                  result.lifted, result.headers, result.implemented, #result.unmatched)
+            lifted = {"-vfsoverlay", result.vfs}
+            package:setenv("CHARON_SWIFT_LIFTED_HEADERS", result.vfs)
+            carried.FoundationBackports = path.join(backported:installdir("lib"), "libFoundationBackports.dylib")
+            -- The marks the Foundation patch puts on what came with iOS 7 are left out where the backports carry it; what
+            -- stays marked is what they do not, named here so that it is a decision rather than a guess.
+            local foundation = path.join(overlays, "stdlib", "public", "Darwin", "Foundation")
+            for _, file in ipairs(os.files(path.join(foundation, "*.swift"))) do
+                if not still_ios7[path.filename(file)] then
+                    io.writefile(file, (io.readfile(file):gsub("\n[ \t]*@available%(macOS 10%.9, iOS 7%.0, %*%)\n", "\n")))
+                end
+            end
+            for _, name in ipairs(lowered_with_backports) do
+                local file = path.join(foundation, name)
+                io.writefile(file, (io.readfile(file):gsub("@available%(([^)]*)%)", function (arguments)
+                    return "@available(" .. arguments:gsub("iOS (%d+)%.(%d+)", function (major, minor)
+                        local release = tonumber(major)
+                        return (release >= 7 and release <= 11) and "iOS " .. minimum or "iOS " .. major .. "." .. minor
+                    end) .. ")"
+                end)))
+            end
+        end
         local installed_shims = path.join(install, "shims")
         local shim_modules = path.join(installed_shims, "module.modulemap")
         for _, name in ipairs({"ObjectiveC", "Dispatch", "CoreFoundation", "Foundation"}) do
@@ -324,12 +379,21 @@ package("swift-runtime")
                                       "-parse-as-library", "-swift-version", "5", "-O", "-wmo",
                                       "-Xfrontend", "-disable-implicit-string-processing-module-import"}, use_ld,
                                      (opt and opt.concurrency) and {} or {"-Xfrontend", "-disable-implicit-concurrency-module-import"},
-                                     runtime_flags, swift.availability(source))
+                                     runtime_flags, swift.availability(source),
+                                     -- the lifted headers only where the backports are linked: an overlay that does not
+                                     -- carry them would bind what the headers now call available to the system's library
+                                     (opt and opt.backports) and lifted or {})
             local object = path.join(generated, name .. ".o")
             -- The overlays built here are named to the linker by their paths, not by -l: the driver lists every framework
             -- before every -l, and today's SDK's Foundation exports the Swift symbols of its own overlay (marked as moved
             -- only for iOS 12.2 to 16), so an -lswiftFoundation behind -framework Foundation loses them to the system.
             local linked = {}
+            -- ahead of the frameworks, for the same reason: the classes the backports carry are bound to them
+            for _, library in ipairs(opt and opt.backports or {}) do
+                if carried[library] then
+                    table.insert(linked, carried[library])
+                end
+            end
             for _, link in ipairs(links) do
                 local library = link:match("^%-l(swift.+)$")
                 table.insert(linked, library and path.join(install, "lib" .. library .. ".dylib") or link)
@@ -403,7 +467,7 @@ package("swift-runtime")
                       {"-lswiftDarwin", "-lswiftObjectiveC", "-lswiftDispatch", "-lswiftCoreFoundation", "-lswiftCoreGraphics",
                        "-framework", "Foundation", "-framework", "CoreFoundation"}, foundation_objects,
                       -- URLSession has async calls, which want the concurrency library the runtime already carries.
-                      {concurrency = true})
+                      {concurrency = true, backports = {"FoundationBackports"}})
 
         -- QuartzCore and UIKit, from the release that last had them: CATransform3D and UIKit's structures cross to NSValue,
         -- UIKit's structures compare and are Codable, and its alert and action sheet take their buttons as variadic
@@ -433,7 +497,8 @@ package("swift-runtime")
         os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
                  toolchain:config("sdkdir"), "-Os", "-c", path.join(coredata, "CoreData.mm"), "-o", conformances})
         build_overlay("CoreData", {path.join(coredata, "CocoaError.swift"), path.join(coredata, "NSManagedObjectContext.swift")},
-                      table.join(foundation_links, {"-framework", "CoreData"}), {conformances})
+                      table.join(foundation_links, {"-framework", "CoreData"}), {conformances},
+                      {backports = {"FoundationBackports"}})
 
         -- The supplemental libraries, each its own project, against the standard library built above.
         for _, library in ipairs({"Synchronization", "Observation", "StringProcessing"}) do

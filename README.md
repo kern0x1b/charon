@@ -558,6 +558,23 @@ and a run loop timer's tolerance is read and set only behind `#available`. A por
 takes it with `add_requires("charon@opencombine", {alias = "opencombine"})` and
 `add_packages("opencombine")` beside the runtime and libcxx.
 
+The runtime carries the Swift overlays of the system's own frameworks, which
+Apple ships inside a newer OS: ObjectiveC, Dispatch, CoreFoundation,
+CoreGraphics and Foundation from swift-5.4.3, QuartzCore, UIKit and CoreData
+from swift-5.2.5 - each from the last release that has it - built by today's
+compiler with patches where today's SDK or an older release differs. API an
+overlay reaches from a later release keeps the availability the SDK gives it,
+so a port for 6.0 asks with `#available`. With the `backports` config, what
+`charon@apple-backports` implements of later releases is available from the
+port's release instead: `modules/apple/lift.lua` copies the SDK headers with
+the release of every implemented API lowered - found from clang's AST, never
+lower than an entry's own minimum, never for what the registry calls absent,
+inert or ignored, checked both ways - and a VFS overlay lays the copies over the
+SDK for the overlays that link the backports and for the port's own Swift
+(`CHARON_SWIFT_LIFTED_HEADERS`, which the swift rule hands the compiler). A port
+that takes that runtime requires `charon@apple-backports` itself, and the rule
+says so if it does not.
+
 apple-compat links its shims into whoever requires it and force-includes
 nothing on its own, because a shim's header brings its system header with it
 (`unlinkat.h` brings `<unistd.h>`, and with it `sync`). A target names the

@@ -47,6 +47,7 @@ end
 
 light("descriptions_test")
 light("checkout_test")
+light("lift_test")
 
 suite("architectures_test")
 suite("macho_test")
