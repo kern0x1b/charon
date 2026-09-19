@@ -113,7 +113,8 @@
     "api": "+[UIView animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewSpringAnimation.md"
   },
   {
     "api": "-[NSLayoutConstraint isActive]",
