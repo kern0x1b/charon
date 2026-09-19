@@ -69,7 +69,10 @@ not the same. Described as `[super description]` followed by
   the user info `message: Cannot fetch without an NSManagedObjectContext in scope`.
   iOS 10 keeps that context in a slot of the thread set by its own
   `-performBlock:` and `-performBlockAndWait:`; iOS 6's set nothing, so the port
-  wraps the two to set its own.
+  wraps the two to set its own. As on the host's Core Data, a block inside
+  another context's block fetches in its own and the outer context is back
+  after it, another thread has no context, and a block that raises leaves none
+  behind.
 - `automaticallyMergesChangesFromParent`: off by default. On, the context merges
   every save of its parent, or, with no parent, of any other context on its
   coordinator that has no parent either, inside its own block. A context of
@@ -105,5 +108,5 @@ iPhone4,1 and on an iPad2,2, both running 6.1.3, a process loads a SQLite store
 and an in-memory one asynchronously, inserts through `-initWithContext:`,
 fetches through `+fetchRequest` and `-execute:` in and out of a context's block,
 saves in a background task and watches the view context merge it, refuses a
-class no entity claims, and holds every text and default above: 28 checks, no
+class no entity claims, and holds every text and default above: 30 checks, no
 failures on each.

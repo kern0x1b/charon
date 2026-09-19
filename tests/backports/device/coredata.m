@@ -131,6 +131,30 @@ int main(void)
             inside = [[CharonItem fetchRequest] execute:NULL].count;
         }];
         CHECK(inside == 1, "and inside one it fetches in that context");
+        __block BOOL nestedInner = NO, nestedOuter = NO, otherThread = YES;
+        NSManagedObjectContext *nested = [container newBackgroundContext];
+        [container.viewContext performBlockAndWait:^{
+            [nested performBlockAndWait:^{
+                nestedInner = [[CharonItem fetchRequest] execute:NULL] != nil;
+            }];
+            nestedOuter = [[CharonItem fetchRequest] execute:NULL] != nil;
+            dispatch_semaphore_t done = dispatch_semaphore_create(0);
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                otherThread = [[CharonItem fetchRequest] execute:NULL] != nil;
+                dispatch_semaphore_signal(done);
+            });
+            dispatch_semaphore_wait(done, DISPATCH_TIME_FOREVER);
+        }];
+        CHECK(nestedInner && nestedOuter && !otherThread,
+              "a block inside another context's block fetches in its own, the outer one is back after it, and another thread has none");
+        NSString *thrown = raised(^{
+            [container.viewContext performBlockAndWait:^{
+                @throw [NSException exceptionWithName:@"CharonThrown" reason:@"inside a block" userInfo:nil];
+            }];
+        });
+        NSError *afterThrow = nil;
+        CHECK([thrown hasPrefix:@"CharonThrown"] && [[CharonItem fetchRequest] execute:&afterThrow] == nil && afterThrow.code == NSCoreDataError,
+              "a block that raises leaves no context in scope behind it");
 
         container.viewContext.automaticallyMergesChangesFromParent = YES;
         CHECK(container.viewContext.automaticallyMergesChangesFromParent, "the view context can merge automatically");

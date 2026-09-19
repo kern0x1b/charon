@@ -26,8 +26,11 @@ static void (^charon_in_scope(NSManagedObjectContext *context, void (^block)(voi
     return [^{
         void *outer = pthread_getspecific(charon_context_key);
         pthread_setspecific(charon_context_key, (__bridge void *)context);
-        block();
-        pthread_setspecific(charon_context_key, outer);
+        @try {
+            block();
+        } @finally {
+            pthread_setspecific(charon_context_key, outer);
+        }
     } copy];
 }
 
