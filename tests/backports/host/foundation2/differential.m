@@ -69,7 +69,8 @@ int main(int argc, char **argv)
                                 NSStringTransformLatinToThai, NSStringTransformLatinToCyrillic, NSStringTransformLatinToGreek, NSStringTransformToLatin, NSStringTransformMandarinToLatin,
                                 NSStringTransformHiraganaToKatakana, NSStringTransformFullwidthToHalfwidth, NSStringTransformToXMLHex, NSStringTransformToUnicodeName,
                                 NSStringTransformStripCombiningMarks, NSStringTransformStripDiacritics],
-            .progressConstants = @[NSProgressEstimatedTimeRemainingKey, NSProgressFileOperationKindReceiving, NSProgressFileOperationKindUploading]
+            .progressConstants = @[NSProgressEstimatedTimeRemainingKey, NSProgressFileOperationKindReceiving, NSProgressFileOperationKindUploading],
+            .queryItemClass = [NSURLQueryItem class]
         };
         Foundation2Implementation charon = {
             .prefix = @"charonHost_",
@@ -82,7 +83,8 @@ int main(int argc, char **argv)
                                 CharonHostNSStringTransformToLatin, CharonHostNSStringTransformMandarinToLatin, CharonHostNSStringTransformHiraganaToKatakana,
                                 CharonHostNSStringTransformFullwidthToHalfwidth, CharonHostNSStringTransformToXMLHex, CharonHostNSStringTransformToUnicodeName,
                                 CharonHostNSStringTransformStripCombiningMarks, CharonHostNSStringTransformStripDiacritics],
-            .progressConstants = @[CharonHostNSProgressEstimatedTimeRemainingKey, CharonHostNSProgressFileOperationKindReceiving, CharonHostNSProgressFileOperationKindUploading]
+            .progressConstants = @[CharonHostNSProgressEstimatedTimeRemainingKey, CharonHostNSProgressFileOperationKindReceiving, CharonHostNSProgressFileOperationKindUploading],
+            .queryItemClass = NSClassFromString(@"CharonHostNSURLQueryItem")
         };
         Foundation2Recorder *theirs = [[Foundation2Recorder alloc] init];
         Foundation2Recorder *mine = [[Foundation2Recorder alloc] init];

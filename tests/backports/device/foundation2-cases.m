@@ -1199,6 +1199,46 @@ static void run_array(Foundation2Recorder *recorder)
     [recorder record:@[found, afterRemoval ? [afterRemoval description] : @"<nil>", afterEmptied ? [afterEmptied description] : @"<nil>"] named:@"array.firstObject"];
 }
 
+static NSString *item_text(id item)
+{
+    NSString *description = [item description];
+    NSRange close = [description rangeOfString:@">"];
+    return [NSString stringWithFormat:@"%@|%@|%@", [item name], [item value] ?: @"<nil>", close.location == NSNotFound ? description : [description substringFromIndex:close.location + 1]];
+}
+
+static void run_query_item(Foundation2Recorder *recorder)
+{
+    Class class = foundation2_implementation.queryItemClass;
+    id (^make)(NSString *, NSString *) = ^(NSString *name, NSString *value) {
+        return ((id (*)(id, SEL, id, id))objc_msgSend)(class, @selector(queryItemWithName:value:), name, value);
+    };
+    id empty = [[class alloc] init];
+    id nilName = ((id (*)(id, SEL, id, id))objc_msgSend)([class alloc], @selector(initWithName:value:), nil, @"v");
+    id a = make(@"k", @"v"), b = make(@"k", @"v"), c = make(@"k", nil), d = make(@"k", @""), other = make(@"k2", @"v");
+    [recorder record:@[item_text(empty), item_text(nilName), item_text(a), item_text(c), item_text(d), item_text(make(@"a b&c", @"ü=é"))] named:@"queryItem.description"];
+    NSArray *items = @[a, b, c, d, other, empty, nilName];
+    NSMutableArray *matrix = [NSMutableArray array];
+    for (id left in items) {
+        NSMutableString *row = [NSMutableString string];
+        for (id right in items)
+            [row appendString:[left isEqual:right] ? ([left hash] == [right hash] ? @"E" : @"e") : @"."];
+        [matrix addObject:row];
+    }
+    [recorder record:@[matrix, @([a isEqual:nil]), @([a isEqual:@"k"]), @([[a copy] isEqual:a]), @([[c copy] isEqual:c]), @([class supportsSecureCoding])] named:@"queryItem.equality"];
+    NSMutableString *changing = [NSMutableString stringWithString:@"mutable"];
+    id copied = make(changing, changing);
+    [changing appendString:@"X"];
+    [recorder record:@[[copied name], [copied value]] named:@"queryItem.copiesItsStrings"];
+    NSMutableArray *archived = [NSMutableArray array];
+    for (id item in @[a, c, d, make(@"ü", @"é&=")]) {
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:item];
+        NSError *error = nil;
+        id back = ((id (*)(id, SEL, Class, id, NSError **))objc_msgSend)([NSKeyedUnarchiver class], @selector(unarchivedObjectOfClass:fromData:error:), class, data, &error);
+        [archived addObject:@[back ? item_text(back) : @"<nil>", error_text(error), @([back isEqual:item])]];
+    }
+    [recorder record:archived named:@"queryItem.archive"];
+}
+
 static void run_relative_urls(Foundation2Recorder *recorder)
 {
     NSString *directory = [[[NSURL fileURLWithPath:[[NSFileManager defaultManager] currentDirectoryPath] isDirectory:YES] absoluteString] stringByReplacingOccurrencesOfString:@"file://localhost/" withString:@"file:///"];
@@ -1364,6 +1404,8 @@ void foundation2_run(Foundation2Implementation implementation, Foundation2Record
         run_value(recorder);
         progress(@"locale");
         run_locale(recorder);
+        progress(@"queryItem");
+        run_query_item(recorder);
         progress(@"array");
         run_array(recorder);
         progress(@"progress");

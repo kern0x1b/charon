@@ -1130,7 +1130,8 @@
     "api": "NSURLQueryItem",
     "kind": "class",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURLQueryItem.md"
   },
   {
     "api": "NSURLSession",

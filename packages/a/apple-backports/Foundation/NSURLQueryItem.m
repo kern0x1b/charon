@@ -20,7 +20,7 @@
 - (instancetype)initWithName:(NSString *)name value:(NSString *)value
 {
     if ((self = [super init])) {
-        _name = [name copy];
+        _name = [name copy] ?: @"";
         _value = [value copy];
     }
     return self;
@@ -41,7 +41,7 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    return self;
+    return [[[self class] alloc] initWithName:_name value:_value];
 }
 
 - (NSString *)name

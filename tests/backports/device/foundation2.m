@@ -137,7 +137,8 @@ int main(int argc, char **argv)
                                 NSStringTransformLatinToThai, NSStringTransformLatinToCyrillic, NSStringTransformLatinToGreek, NSStringTransformToLatin, NSStringTransformMandarinToLatin,
                                 NSStringTransformHiraganaToKatakana, NSStringTransformFullwidthToHalfwidth, NSStringTransformToXMLHex, NSStringTransformToUnicodeName,
                                 NSStringTransformStripCombiningMarks, NSStringTransformStripDiacritics],
-            .progressConstants = @[NSProgressEstimatedTimeRemainingKey, NSProgressFileOperationKindReceiving, NSProgressFileOperationKindUploading]
+            .progressConstants = @[NSProgressEstimatedTimeRemainingKey, NSProgressFileOperationKindReceiving, NSProgressFileOperationKindUploading],
+            .queryItemClass = [NSURLQueryItem class]
         };
         Foundation2Recorder *recorder = [[Foundation2Recorder alloc] init];
         foundation2_run(native, recorder);

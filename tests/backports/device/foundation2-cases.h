@@ -7,6 +7,7 @@ typedef struct {
     NSArray *ubiquityKeys;
     NSArray *transformNames;
     NSArray *progressConstants;
+    Class queryItemClass;
 } Foundation2Implementation;
 
 @interface Foundation2Recorder : NSObject
