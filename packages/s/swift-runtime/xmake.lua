@@ -17,7 +17,7 @@ package("swift-runtime")
     -- Swift overlay comes from swift-6.2-RELEASE, the last release whose sources carry it, because Synchronization and
     -- Observation import Darwin and the SDK has only an interface for arm64.
     local libraries = {"swiftCore", "swiftSwiftOnoneSupport", "swift_Concurrency", "swiftDarwin", "swiftObjectiveC", "swiftDispatch",
-                       "swiftCoreFoundation", "swiftCoreGraphics",
+                       "swiftCoreFoundation", "swiftCoreGraphics", "swiftFoundation",
                        "swiftSynchronization",
                        "swift_RegexParser", "swift_StringProcessing", "swiftRegexBuilder", "swiftObservation"}
 
@@ -36,7 +36,9 @@ package("swift-runtime")
          url = "https://github.com/swiftlang/swift.git",
          sparse = {"/stdlib/public/Darwin/ObjectiveC/", "/stdlib/public/Darwin/Dispatch/", "/stdlib/public/Darwin/CoreFoundation/",
                    "/stdlib/public/Darwin/CoreGraphics/", "/stdlib/public/SwiftShims/ObjectiveCOverlayShims.h",
-                   "/stdlib/public/SwiftShims/DispatchOverlayShims.h", "/LICENSE.txt"}}
+                   "/stdlib/public/SwiftShims/DispatchOverlayShims.h", "/stdlib/public/Darwin/Foundation/",
+                   "/stdlib/public/SwiftShims/Foundation*.h", "/stdlib/public/SwiftShims/NS*Shims.h",
+                   "/stdlib/public/SwiftShims/CoreFoundationOverlayShims.h", "/stdlib/public/SwiftShims/CF*Shims.h", "/LICENSE.txt"}}
     }
 
     on_download(function (package, opt)
@@ -274,7 +276,7 @@ package("swift-runtime")
         end
         local installed_shims = path.join(install, "shims")
         local shim_modules = path.join(installed_shims, "module.modulemap")
-        for _, name in ipairs({"ObjectiveC", "Dispatch"}) do
+        for _, name in ipairs({"ObjectiveC", "Dispatch", "CoreFoundation", "Foundation"}) do
             os.vcp(path.join(overlays, "stdlib", "public", "SwiftShims", name .. "OverlayShims.h"), installed_shims .. "/")
             local module = "_Swift" .. name .. "OverlayShims"
             if not io.readfile(shim_modules):find(module, 1, true) then
@@ -282,6 +284,13 @@ package("swift-runtime")
                              string.format("\nmodule %s {\n  header \"%sOverlayShims.h\"\n}\n", module, name))
             end
         end
+        -- The overlay of Foundation reads its shims through the headers they include, one per class or type it reaches.
+        local shim_headers = table.join(os.files(path.join(overlays, "stdlib", "public", "SwiftShims", "NS*Shims.h")),
+                                        os.files(path.join(overlays, "stdlib", "public", "SwiftShims", "CF*Shims.h")))
+        for _, header in ipairs(shim_headers) do
+            os.vcp(header, installed_shims .. "/")
+        end
+        os.vcp(path.join(overlays, "stdlib", "public", "SwiftShims", "FoundationShimSupport.h"), installed_shims .. "/")
         local function overlay_sources_of(name, files)
             local found = {}
             for _, file in ipairs(files) do
@@ -291,13 +300,13 @@ package("swift-runtime")
         end
         -- One overlay: its module, in the layout the others are installed in, and its library, which a port finds by the
         -- run path it carries.
-        local function build_overlay(name, overlay_sources, links, objects)
+        local function build_overlay(name, overlay_sources, links, objects, opt)
             local module = path.join(install, name .. ".swiftmodule")
             os.mkdir(module)
             local flags = table.join({"-target", triple, "-resource-dir", resources, "-module-name", name,
                                       "-parse-as-library", "-swift-version", "5", "-O", "-wmo",
-                                      "-Xfrontend", "-disable-implicit-concurrency-module-import",
                                       "-Xfrontend", "-disable-implicit-string-processing-module-import"}, use_ld,
+                                     (opt and opt.concurrency) and {} or {"-Xfrontend", "-disable-implicit-concurrency-module-import"},
                                      runtime_flags, swift.availability(source))
             local object = path.join(generated, name .. ".o")
             os.vrunv(swiftc, table.join(flags, {"-emit-module", "-emit-module-path",
@@ -335,6 +344,41 @@ package("swift-runtime")
         build_overlay("CoreGraphics", table.join({graphics}, overlay_sources_of("CoreGraphics", {"CoreGraphics.swift", "Geometry.swift"})),
                       {"-lswiftDarwin", "-lswiftObjectiveC", "-lswiftCoreFoundation",
                        "-framework", "CoreGraphics", "-framework", "CoreFoundation"})
+
+        -- Foundation: the release's sources but those of Combine, which no release before iOS 13 has, with its value types
+        -- generated as its own build generated them and its two files of Objective-C compiled the way the port's own are.
+        local foundation = path.join(overlays, "stdlib", "public", "Darwin", "Foundation")
+        local values = path.join(generated, "NSValue.swift")
+        os.vrunv("python3", {path.join(source, "utils", "gyb.py"), "-DCMAKE_SIZEOF_VOID_P=" .. (package:arch() == "arm64" and "8" or "4"),
+                             "--line-directive", "", "-o", values, path.join(foundation, "NSValue.swift.gyb")})
+        local foundation_objects = {}
+        for _, file in ipairs({"DataThunks.m", "BundleLookup.mm"}) do
+            local object = path.join(generated, file .. ".o")
+            os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
+                     toolchain:config("sdkdir"), "-Os", "-I" .. path.join(source, "stdlib", "public", "SwiftShims"),
+                     "-c", path.join(foundation, file), "-o", object})
+            table.insert(foundation_objects, object)
+        end
+        build_overlay("Foundation", table.join({values}, overlay_sources_of("Foundation", {
+            "AffineTransform.swift", "Boxing.swift", "Calendar.swift", "CharacterSet.swift",
+            "CheckClass.swift", "Codable.swift", "Collections+DataProtocol.swift", "ContiguousBytes.swift",
+            "Data.swift", "DataProtocol.swift", "Date.swift", "DateComponents.swift", "DateInterval.swift",
+            "Decimal.swift", "DispatchData+DataProtocol.swift", "FileManager.swift", "Foundation.swift",
+            "IndexPath.swift", "IndexSet.swift", "JSONEncoder.swift", "Locale.swift", "Measurement.swift",
+            "Notification.swift", "NSArray.swift", "NSCoder.swift", "NSData+DataProtocol.swift",
+            "NSDate.swift", "NSDictionary.swift", "NSError.swift", "NSExpression.swift",
+            "NSFastEnumeration.swift", "NSGeometry.swift", "NSIndexSet.swift", "NSItemProvider.swift",
+            "NSNumber.swift", "NSObject.swift", "NSOrderedCollectionDifference.swift", "NSPredicate.swift",
+            "NSRange.swift", "NSSet.swift", "NSSortDescriptor.swift", "NSString.swift", "NSStringAPI.swift",
+            "NSStringEncodings.swift", "NSTextCheckingResult.swift", "NSUndoManager.swift", "NSURL.swift",
+            "PersonNameComponents.swift", "PlistEncoder.swift", "Pointers+DataProtocol.swift",
+            "Progress.swift", "ReferenceConvertible.swift", "Scanner.swift", "String.swift", "TimeZone.swift",
+            "URL.swift", "URLCache.swift", "URLComponents.swift", "URLRequest.swift", "URLSession.swift",
+            "UUID.swift"})),
+                      {"-lswiftDarwin", "-lswiftObjectiveC", "-lswiftDispatch", "-lswiftCoreFoundation", "-lswiftCoreGraphics",
+                       "-framework", "Foundation", "-framework", "CoreFoundation"}, foundation_objects,
+                      -- URLSession has async calls, which want the concurrency library the runtime already carries.
+                      {concurrency = true})
 
         -- The supplemental libraries, each its own project, against the standard library built above.
         for _, library in ipairs({"Synchronization", "Observation", "StringProcessing"}) do
