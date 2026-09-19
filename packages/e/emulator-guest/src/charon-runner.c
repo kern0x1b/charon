@@ -110,6 +110,9 @@ static char** read_job(const char* file, char* self, int* count)
 // daemons, so a runner that stays would hold the whole boot - SpringBoard, notifyd, configd - back
 // until its test is over. Started that way its parent is launchctl, not launchd: the runner then
 // leaves at once and carries on in a session of its own. Started by launchd itself it stays put.
+// launchd still counts the process a child of the bootstrap it was started in, and about a minute after
+// launchctl is done it sends that bootstrap's leftovers SIGTERM, which would end the runner - and its
+// verdict with it - in the middle of a test. The runner does not take that, and the test does not inherit it.
 static void detach_from_launchctl(void)
 {
     if (getppid() == 1)
@@ -120,6 +123,7 @@ static void detach_from_launchctl(void)
     if (child > 0)
         _exit(0);
     setsid();
+    signal(SIGTERM, SIG_IGN);
 }
 
 int main(int argc, char** argv)
@@ -166,8 +170,16 @@ int main(int argc, char** argv)
         if (err >= 0)
             dup2(err, STDERR_FILENO);
         pid_t child;
+        posix_spawnattr_t attributes;
+        sigset_t defaults;
+        sigemptyset(&defaults);
+        sigaddset(&defaults, SIGTERM);
+        posix_spawnattr_init(&attributes);
+        posix_spawnattr_setsigdefault(&attributes, &defaults);
+        posix_spawnattr_setflags(&attributes, POSIX_SPAWN_SETSIGDEF);
         double spawned_at = now();
-        spawn_error = posix_spawn(&child, argv[2], NULL, NULL, argv + 2, environ);
+        spawn_error = posix_spawn(&child, argv[2], &attributes, NULL, argv + 2, environ);
+        posix_spawnattr_destroy(&attributes);
         dup2(saved_out, STDOUT_FILENO);
         dup2(saved_err, STDERR_FILENO);
         close(saved_out);
