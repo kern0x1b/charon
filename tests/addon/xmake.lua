@@ -46,6 +46,7 @@ local function light(name)
 end
 
 light("descriptions_test")
+light("checkout_test")
 
 suite("architectures_test")
 suite("macho_test")
