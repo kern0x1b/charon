@@ -827,6 +827,22 @@ static NSString *error_text(NSError *error)
 
 static void run_calendar_edges(Foundation2Recorder *recorder)
 {
+    NSCalendar *chinese = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierChinese];
+    chinese.timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    NSDate *notLeap = [NSDate dateWithTimeIntervalSinceReferenceDate:609417600], *leap = [NSDate dateWithTimeIntervalSinceReferenceDate:611923200];
+    NSCalendarUnit leapGranularities[] = {NSCalendarUnitEra, NSCalendarUnitYear, NSCalendarUnitMonth, NSCalendarUnitQuarter, NSCalendarUnitDay, NSCalendarUnitHour, NSCalendarUnitWeekOfMonth};
+    NSMutableArray *leapCompared = [NSMutableArray array];
+    for (size_t index = 0; index < sizeof leapGranularities / sizeof *leapGranularities; index++)
+        [leapCompared addObject:@(((NSComparisonResult (*)(id, SEL, id, id, NSCalendarUnit))objc_msgSend)(chinese, sel(@selector(compareDate:toDate:toUnitGranularity:)), notLeap, leap, leapGranularities[index]))];
+    [recorder record:leapCompared named:@"calendar.edges.leapMonthCompare"];
+    NSCalendar *newYork = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    newYork.timeZone = [NSTimeZone timeZoneWithName:@"America/New_York"];
+    NSDate *beforeTransition = [NSDate dateWithTimeIntervalSinceReferenceDate:700254000];
+    NSMutableArray *dstSet = [NSMutableArray array];
+    for (NSInteger hour = 0; hour < 5; hour++)
+        [dstSet addObject:date_text(((id (*)(id, SEL, NSInteger, NSInteger, NSInteger, id, NSCalendarOptions))objc_msgSend)(newYork, sel(@selector(dateBySettingHour:minute:second:ofDate:options:)), hour, 30, 0, beforeTransition, 0))];
+    [recorder record:dstSet named:@"calendar.edges.dstSetting"];
+
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     gregorian.timeZone = [NSTimeZone timeZoneWithName:@"America/New_York"];
     gregorian.locale = [NSLocale localeWithLocaleIdentifier:@"fa_IR"];
