@@ -51,7 +51,12 @@ function main()
         if refreshed then
             device.run(settings, "su mobile -c uicache")
         end
+    elseif action == "uninstall" then
+        if arguments == "" then
+            raise("xmake device uninstall needs the packages to remove")
+        end
+        device.run(settings, device.uninstall_command(option.get("arguments"), {keep = option.get("keep")}))
     else
-        raise("xmake device takes install, log, run, where, list, claim or release")
+        raise("xmake device takes install, uninstall, log, run, where, list, claim or release")
     end
 end
