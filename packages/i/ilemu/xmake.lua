@@ -8,7 +8,7 @@ package("ilemu")
     add_versions("2026.09.16", "411248cdd309b3018c41dbcc2eb59cdaea2aa8e3")
 
     local digests = {}
-    for _, patch in ipairs({"ilemu.patch", "dynarmic.patch"}) do
+    for _, patch in ipairs({"ilemu.patch", "dynarmic.patch", "host-memory.patch"}) do
         local file = path.join("patches", "2026.09.16", patch)
         local digest = hash.sha256(path.join(os.scriptdir(), file))
         add_patches("2026.09.16", file, digest)
