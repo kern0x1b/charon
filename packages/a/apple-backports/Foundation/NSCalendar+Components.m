@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 
 extern const NSCalendarUnit CharonCalendarAllUnits;
-NSInteger charon_calendar_nanosecond(NSDate *date);
+NSInteger charon_calendar_nanosecond_exactly(NSDate *date);
 NSInteger charon_calendar_quarter(NSCalendar *calendar, NSDate *date);
 NSDateComponents *charon_calendar_components(NSCalendar *calendar, NSCalendarUnit units, NSDate *date);
 NSInteger charon_calendar_value(NSDateComponents *components, NSCalendarUnit unit);
@@ -41,22 +41,91 @@ static NSDate *charon_start_of_unit(NSCalendar *calendar, NSCalendarUnit unit, N
     return start;
 }
 
+static NSComparisonResult charon_order(double first, double second)
+{
+    return first == second ? NSOrderedSame : first > second ? NSOrderedDescending : NSOrderedAscending;
+}
+
+static BOOL charon_repeats_months(NSCalendar *calendar)
+{
+    return [@[@"chinese", @"dangi", @"gujarati", @"kannada", @"marathi", @"telugu", @"vietnamese", @"vikram"] containsObject:calendar.calendarIdentifier];
+}
+
 static NSComparisonResult charon_compare(NSCalendar *calendar, NSDate *first, NSDate *second, NSCalendarUnit unit)
 {
     if (!charon_single_unit(unit))
         return NSOrderedSame;
-    if (unit == NSCalendarUnitNanosecond)
-        return [first compare:second];
-    BOOL supported = NO;
-    NSDate *start = charon_start_of_unit(calendar, unit, first, &supported);
-    if (!supported)
+    NSComparisonResult fallback = [first compare:second];
+    double one = first.timeIntervalSinceReferenceDate, two = second.timeIntervalSinceReferenceDate;
+    switch (unit) {
+    case NSCalendarUnitCalendar:
+    case NSCalendarUnitTimeZone:
         return NSOrderedSame;
-    return [start compare:charon_start_of_unit(calendar, unit, second, &supported)];
+    case NSCalendarUnitDay:
+    case NSCalendarUnitHour: {
+        NSDate *start = nil;
+        NSTimeInterval length = 0;
+        if (![calendar rangeOfUnit:unit startDate:&start interval:&length forDate:first])
+            return fallback;
+        double from = start.timeIntervalSinceReferenceDate;
+        if (two >= from && two < from + length)
+            return NSOrderedSame;
+        return two < from ? NSOrderedDescending : NSOrderedAscending;
+    }
+    case NSCalendarUnitMinute:
+        return charon_order(floor(floor(one) / 60.0), floor(floor(two) / 60.0));
+    case NSCalendarUnitSecond:
+        return charon_order(floor(one), floor(two));
+    case NSCalendarUnitNanosecond: {
+        double seconds1 = trunc(one), seconds2 = trunc(two);
+        if (seconds1 != seconds2)
+            return charon_order(seconds1, seconds2);
+        return charon_order(trunc(1e9 * (one - seconds1)), trunc(1e9 * (two - seconds2)));
+    }
+    default:
+        break;
+    }
+    NSCalendarUnit units[5];
+    size_t count;
+    if (unit == NSCalendarUnitYearForWeekOfYear || unit == NSCalendarUnitWeekOfYear) {
+        NSCalendarUnit chosen[] = {NSCalendarUnitEra, NSCalendarUnitYearForWeekOfYear, NSCalendarUnitWeekOfYear, NSCalendarUnitWeekday};
+        count = 4;
+        memcpy(units, chosen, sizeof chosen);
+    } else if (unit == NSCalendarUnitWeekdayOrdinal) {
+        NSCalendarUnit chosen[] = {NSCalendarUnitEra, NSCalendarUnitYear, NSCalendarUnitMonth, NSCalendarUnitWeekdayOrdinal, NSCalendarUnitDay};
+        count = 5;
+        memcpy(units, chosen, sizeof chosen);
+    } else if (unit == NSCalendarUnitWeekday || unit == NSCalendarUnitWeekOfMonth) {
+        NSCalendarUnit chosen[] = {NSCalendarUnitEra, NSCalendarUnitYear, NSCalendarUnitMonth, NSCalendarUnitWeekOfMonth, NSCalendarUnitWeekday};
+        count = 5;
+        memcpy(units, chosen, sizeof chosen);
+    } else {
+        NSCalendarUnit chosen[] = {NSCalendarUnitEra, NSCalendarUnitYear, NSCalendarUnitMonth, NSCalendarUnitDay};
+        count = 4;
+        memcpy(units, chosen, sizeof chosen);
+    }
+    NSCalendarUnit all = 0;
+    for (size_t index = 0; index < count; index++)
+        all |= units[index];
+    NSDateComponents *components1 = [calendar components:all fromDate:first], *components2 = [calendar components:all fromDate:second];
+    BOOL repeats = charon_repeats_months(calendar);
+    for (size_t index = 0; index < count; index++) {
+        NSInteger value1 = charon_calendar_value(components1, units[index]), value2 = charon_calendar_value(components2, units[index]);
+        if (value1 == NSDateComponentUndefined || value2 == NSDateComponentUndefined)
+            return fallback;
+        if (value1 != value2)
+            return value1 > value2 ? NSOrderedDescending : NSOrderedAscending;
+        if (units[index] == NSCalendarUnitMonth && repeats && components1.leapMonth != components2.leapMonth)
+            return components2.leapMonth ? NSOrderedAscending : NSOrderedDescending;
+        if (units[index] == unit)
+            return NSOrderedSame;
+    }
+    return NSOrderedSame;
 }
 
 static NSDate *charon_add_unit(NSCalendar *calendar, NSCalendarUnit unit, NSInteger value, NSDate *date, NSCalendarOptions options)
 {
-    if (unit == NSCalendarUnitCalendar || unit == NSCalendarUnitTimeZone)
+    if (unit == NSCalendarUnitCalendar || unit == NSCalendarUnitTimeZone || value == NSDateComponentUndefined)
         return date;
     if (unit == NSCalendarUnitNanosecond)
         return [date dateByAddingTimeInterval:value / 1000000000.0];
@@ -109,7 +178,7 @@ static NSDate *charon_add_unit(NSCalendar *calendar, NSCalendarUnit unit, NSInte
     if (secondValuePointer)
         *secondValuePointer = components.second;
     if (nanosecondValuePointer)
-        *nanosecondValuePointer = charon_calendar_nanosecond(date);
+        *nanosecondValuePointer = charon_calendar_nanosecond_exactly(date);
 }
 
 - (NSInteger)component:(NSCalendarUnit)unit fromDate:(NSDate *)date
@@ -119,7 +188,7 @@ static NSDate *charon_add_unit(NSCalendar *calendar, NSCalendarUnit unit, NSInte
     if (unit == NSCalendarUnitCalendar || unit == NSCalendarUnitTimeZone)
         return 0;
     if (unit == NSCalendarUnitNanosecond)
-        return charon_calendar_nanosecond(date);
+        return charon_calendar_nanosecond_exactly(date);
     return charon_calendar_value(charon_calendar_components(self, unit, date), unit);
 }
 
@@ -215,6 +284,14 @@ static NSDate *charon_add_unit(NSCalendar *calendar, NSCalendarUnit unit, NSInte
 
 - (NSDate *)dateBySettingHour:(NSInteger)h minute:(NSInteger)m second:(NSInteger)s ofDate:(NSDate *)date options:(NSCalendarOptions)opts
 {
+    if (h == NSDateComponentUndefined && m == NSDateComponentUndefined && s == NSDateComponentUndefined)
+        return nil;
+    h = h == NSDateComponentUndefined ? 0 : h;
+    m = m == NSDateComponentUndefined ? 0 : m;
+    s = s == NSDateComponentUndefined ? 0 : s;
+    if (!NSLocationInRange(h, [self maximumRangeOfUnit:NSCalendarUnitHour]) || !NSLocationInRange(m, [self maximumRangeOfUnit:NSCalendarUnitMinute]) ||
+        !NSLocationInRange(s, [self maximumRangeOfUnit:NSCalendarUnitSecond]))
+        return nil;
     NSDateComponents *components = [self components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:date];
     components.hour = h;
     components.minute = m;

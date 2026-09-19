@@ -8,9 +8,18 @@ const NSCalendarUnit CharonCalendarAllUnits = NSCalendarUnitEra | NSCalendarUnit
 NSInteger charon_calendar_nanosecond(NSDate *date)
 {
     double interval = date.timeIntervalSinceReferenceDate;
+    return (NSInteger)((interval - floor(interval)) * 1000000000.0);
+}
+
+NSInteger charon_calendar_nanosecond_exactly(NSDate *date)
+{
+    double interval = date.timeIntervalSinceReferenceDate;
     double fraction = interval - floor(interval);
-    NSInteger nanoseconds = (NSInteger)(fraction * 1000000000.0 + 0.5);
-    return nanoseconds > 999999999 ? 999999999 : nanoseconds;
+    double product = fraction * 1000000000.0;
+    NSInteger nanoseconds = (NSInteger)product;
+    if (product == floor(product) && fma(fraction, 1000000000.0, -product) < 0)
+        nanoseconds--;
+    return nanoseconds;
 }
 
 NSInteger charon_calendar_quarter(NSCalendar *calendar, NSDate *date)

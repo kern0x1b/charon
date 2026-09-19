@@ -853,6 +853,61 @@ static NSString *error_text(NSError *error)
     return [NSString stringWithFormat:@"%@/%ld", error.domain, (long)error.code];
 }
 
+static void run_calendar_edges(Foundation2Recorder *recorder)
+{
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    gregorian.timeZone = [NSTimeZone timeZoneWithName:@"America/New_York"];
+    gregorian.locale = [NSLocale localeWithLocaleIdentifier:@"fa_IR"];
+    NSMutableArray *nanoseconds = [NSMutableArray array];
+    double instants[] = {0.086, -0.25, -0.086, 710258281.086, 710258281.802, -0.0000000001, 0.9999999999};
+    for (size_t index = 0; index < sizeof instants / sizeof *instants; index++) {
+        NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:instants[index]];
+        NSInteger hour = -1, minute = -1, second = -1, nanosecond = -1;
+        ((void (*)(id, SEL, NSInteger *, NSInteger *, NSInteger *, NSInteger *, id))objc_msgSend)(gregorian, sel(@selector(getHour:minute:second:nanosecond:fromDate:)), &hour, &minute, &second, &nanosecond, date);
+        [nanoseconds addObject:@[@(((NSInteger (*)(id, SEL, NSCalendarUnit, id))objc_msgSend)(gregorian, sel(@selector(component:fromDate:)), NSCalendarUnitNanosecond, date)), @(second), @(nanosecond)]];
+    }
+    [recorder record:nanoseconds named:@"calendar.edges.nanosecond"];
+    NSDate *day = [NSDate dateWithTimeIntervalSinceReferenceDate:710258281.086];
+    NSInteger times[][3] = {{40, 0, 0}, {2155, 0, 0}, {10, -954, 0}, {10, 0, -860}, {24, 0, 0}, {23, 59, 59}, {-1, 0, 0}, {0, 60, 0}, {0, 0, 60}, {14, 16, 53}, {0, 0, 0}, {3, 1, NSDateComponentUndefined}, {NSDateComponentUndefined, 35, 21}, {2, NSDateComponentUndefined, 30}, {NSDateComponentUndefined, NSDateComponentUndefined, NSDateComponentUndefined}};
+    NSMutableArray *settings = [NSMutableArray array];
+    for (size_t index = 0; index < sizeof times / sizeof *times; index++) {
+        for (int strict = 0; strict < 2; strict++) {
+            NSDate *set = ((id (*)(id, SEL, NSInteger, NSInteger, NSInteger, id, NSCalendarOptions))objc_msgSend)(gregorian, sel(@selector(dateBySettingHour:minute:second:ofDate:options:)), times[index][0], times[index][1], times[index][2], day,
+                                                                                                         strict ? NSCalendarMatchStrictly : 0);
+            [settings addObject:date_text(set)];
+        }
+    }
+    [recorder record:settings named:@"calendar.edges.settingHour"];
+    NSDate *first = [NSDate dateWithTimeIntervalSinceReferenceDate:-349434443], *second = [NSDate dateWithTimeIntervalSinceReferenceDate:-349272243];
+    NSCalendarUnit granularities[] = {NSCalendarUnitEra, NSCalendarUnitYear, NSCalendarUnitQuarter, NSCalendarUnitMonth, NSCalendarUnitWeekOfYear, NSCalendarUnitWeekOfMonth, NSCalendarUnitYearForWeekOfYear,
+                                      NSCalendarUnitWeekday, NSCalendarUnitWeekdayOrdinal, NSCalendarUnitDay, NSCalendarUnitHour, NSCalendarUnitMinute, NSCalendarUnitSecond, NSCalendarUnitNanosecond};
+    NSArray *others = @[second, [first dateByAddingTimeInterval:2 * 86400], [first dateByAddingTimeInterval:40 * 86400], [first dateByAddingTimeInterval:61], [first dateByAddingTimeInterval:0.5]];
+    NSMutableArray *comparisons = [NSMutableArray array];
+    for (NSDate *other in others) {
+        NSMutableString *row = [NSMutableString string];
+        for (size_t index = 0; index < sizeof granularities / sizeof *granularities; index++)
+            [row appendFormat:@"%ld", (long)((NSComparisonResult (*)(id, SEL, id, id, NSCalendarUnit))objc_msgSend)(gregorian, sel(@selector(compareDate:toDate:toUnitGranularity:)), first, other, granularities[index]) + 1];
+        [comparisons addObject:row];
+    }
+    [recorder record:comparisons named:@"calendar.edges.compare"];
+    NSMutableArray *validity = [NSMutableArray array];
+    for (NSString *identifier in @[NSCalendarIdentifierGregorian, NSCalendarIdentifierChinese, NSCalendarIdentifierHebrew]) {
+        NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:identifier];
+        calendar.timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+        NSDateComponents *components = [calendar components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:day];
+        for (int leap = 0; leap < 2; leap++) {
+            components.leapMonth = leap;
+            [validity addObject:@(((BOOL (*)(id, SEL, id))objc_msgSend)(components, sel(@selector(isValidDateInCalendar:)), calendar))];
+        }
+    }
+    [recorder record:validity named:@"calendar.edges.leapMonthValid" tolerating:@"whether a leap month flag names a real month is the release's ICU, which iOS 6 ignores and macOS 27 checks per calendar"];
+    NSCalendarUnit addable[] = {NSCalendarUnitYear, NSCalendarUnitMonth, NSCalendarUnitDay, NSCalendarUnitHour, NSCalendarUnitSecond, NSCalendarUnitNanosecond, NSCalendarUnitWeekOfYear};
+    NSMutableArray *undefined = [NSMutableArray array];
+    for (size_t index = 0; index < sizeof addable / sizeof *addable; index++)
+        [undefined addObject:date_text(((id (*)(id, SEL, NSCalendarUnit, NSInteger, id, NSCalendarOptions))objc_msgSend)(gregorian, sel(@selector(dateByAddingUnit:value:toDate:options:)), addable[index], NSDateComponentUndefined, day, 0))];
+    [recorder record:undefined named:@"calendar.edges.addUndefined"];
+}
+
 static void run_archiving(Foundation2Recorder *recorder)
 {
     NSArray *root = @[@"a", @2, [NSDate dateWithTimeIntervalSinceReferenceDate:1000]];
@@ -1102,6 +1157,8 @@ void foundation2_run(Foundation2Implementation implementation, Foundation2Record
     @autoreleasepool {
         progress(@"calendar");
         run_calendar(recorder);
+        progress(@"calendarEdges");
+        run_calendar_edges(recorder);
         progress(@"done");
     }
 }

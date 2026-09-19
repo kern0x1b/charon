@@ -138,7 +138,8 @@ int main(int argc, char **argv)
             NSCalendarOptions setOptions = [@[@0, @(NSCalendarMatchStrictly), @(NSCalendarMatchNextTime), @(NSCalendarMatchNextTimePreservingSmallerUnits),
                                             @(NSCalendarMatchPreviousTimePreservingSmallerUnits), @(NSCalendarMatchLast), @(NSCalendarMatchFirst)][roll(7)] unsignedIntegerValue];
             NSInteger sh = roll(3) ? (NSInteger)roll(24) : random_value(), sm = roll(3) ? (NSInteger)roll(60) : random_value(), ss = roll(3) ? (NSInteger)roll(60) : random_value();
-            both([NSString stringWithFormat:@"setting %ld:%ld:%ld options %lu %@", (long)sh, (long)sm, (long)ss, (unsigned long)setOptions, where], ^{
+            NSString *settingCategory = date.timeIntervalSinceReferenceDate < -2524521600 ? @"setting.beforeStandardTime" : @"setting";
+            both([NSString stringWithFormat:@"%@ %ld:%ld:%ld options %lu %@", settingCategory, (long)sh, (long)sm, (long)ss, (unsigned long)setOptions, where], ^{
                 return date_text(((id (*)(id, SEL, NSInteger, NSInteger, NSInteger, id, NSCalendarOptions))objc_msgSend)(calendar, named(@"dateBySettingHour:minute:second:ofDate:options:"), sh, sm, ss, date, setOptions));
             });
             NSDateComponents *wanted = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour fromDate:date];
@@ -162,12 +163,13 @@ int main(int argc, char **argv)
                 return [NSString stringWithFormat:@"%d %d", ((BOOL (*)(id, SEL, id))objc_msgSend)(validity, named(@"isValidDateInCalendar:"), calendar),
                         ((BOOL (*)(id, SEL))objc_msgSend)(validity, named(@"isValidDate"))];
             });
-            both([NSString stringWithFormat:@"weekend %@", where], ^{
+            NSCalendarOptions direction = roll(2) ? NSCalendarSearchBackwards : 0;
+            both([NSString stringWithFormat:@"weekend %@ options %lu", where, (unsigned long)direction], ^{
                 NSDate *start = nil, *next = nil;
                 NSTimeInterval length = -1, nextLength = -1;
                 BOOL inWeekend = ((BOOL (*)(id, SEL, id))objc_msgSend)(calendar, named(@"isDateInWeekend:"), date);
                 BOOL range = ((BOOL (*)(id, SEL, NSDate **, NSTimeInterval *, id))objc_msgSend)(calendar, named(@"rangeOfWeekendStartDate:interval:containingDate:"), &start, &length, date);
-                BOOL found = ((BOOL (*)(id, SEL, NSDate **, NSTimeInterval *, NSCalendarOptions, id))objc_msgSend)(calendar, named(@"nextWeekendStartDate:interval:options:afterDate:"), &next, &nextLength, roll(2) ? NSCalendarSearchBackwards : 0, date);
+                BOOL found = ((BOOL (*)(id, SEL, NSDate **, NSTimeInterval *, NSCalendarOptions, id))objc_msgSend)(calendar, named(@"nextWeekendStartDate:interval:options:afterDate:"), &next, &nextLength, direction, date);
                 return [NSString stringWithFormat:@"%d | %d %@ %.0f | %d %@ %.0f", inWeekend, range, date_text(start), length, found, date_text(next), nextLength];
             });
         }
