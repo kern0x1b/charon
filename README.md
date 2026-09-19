@@ -626,9 +626,11 @@ anchors, the traits of a view, base64 data, the quality of service of an
 operation, the measurements and units of iOS 10, its date intervals, its image
 renderer and its timing curves - to a minimum release that lacks it, as
 `libFoundationBackports.dylib`, with the `uikit` config
-`libUIKitBackports.dylib`, and with the `corelocation` config
+`libUIKitBackports.dylib`, with the `corelocation` config
 `libCoreLocationBackports.dylib`, which asks for location authorization the way
-iOS 6 gets it, by starting the updates the request stands for; all named
+iOS 6 gets it, by starting the updates the request stands for, and with the
+`coredata` config `libCoreDataBackports.dylib`, the persistent container of iOS
+10 over the release's own Core Data; all named
 `/usr/lib/charon/org.charon.apple-backports/`. Unlike a runtime a package
 carries, these are one per process: two copies of a class would be two classes.
 `xmake deb` of a port that uses the package writes

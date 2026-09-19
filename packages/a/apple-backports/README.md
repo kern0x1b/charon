@@ -60,6 +60,20 @@ nothing of what the user set. Attachments, categories, actions, location
 triggers, service extensions and the delivered notifications are absent: the
 last live in BulletinBoard, which answers no application on this jailbreak.
 
+### Core Data's container, in a library of its own
+
+`NSPersistentContainer` and `NSPersistentStoreDescription` are carried in
+`libCoreDataBackports.dylib`, built with the `coredata` config, so that only a
+port that keeps its data with Core Data loads Core Data. With them come the
+members iOS 10 gave the classes iOS 6 has: `-initWithContext:`, `+entity` and
+`+fetchRequest` of a managed object, `-execute:` of a fetch request,
+`automaticallyMergesChangesFromParent` of a context, the description-taking way
+to add a store, and the merge policies as class properties. `-execute:` needs
+to know the context whose block is running, which iOS 6 does not record, so
+the library records it around `-performBlock:` and `-performBlockAndWait:`.
+Query generations are absent: they read a snapshot of a store kept with
+write-ahead logging, and the store of iOS 6 keeps a rollback journal.
+
 ### Images drawn where sRGB cannot be made
 
 `UIGraphicsImageRenderer` draws in sRGB, as iOS 10 does, so that its PNG and

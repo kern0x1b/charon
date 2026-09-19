@@ -29,6 +29,7 @@ inputs.
     sh host/traitstyle/run.sh
     sh host/animatorscrub/run.sh
     sh host/usernotifications/run.sh  writes device/usernotifications-expectations.h when it passes
+    sh host/coredata/run.sh
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
@@ -371,6 +372,10 @@ postinst run with `DPKG_ROOT` set to it.
   authorization, adds, replaces and removes requests, reads back what iOS 6 was
   given - the body and no title - checks which repeats are taken and which
   refused, and waits for a notification to arrive while it is in front.
+- `coredata.m`: a process of its own for the Core Data container, linking
+  `libCoreDataBackports.dylib`. It loads a SQLite store and, asynchronously, an
+  in-memory one, inserts, fetches in and out of a context's block, saves in a
+  background task and waits for the view context to merge it.
 - `haptics.m`: a process of its own for the feedback generators, linking UIKit
   but raising no window. It holds the port to what was read off iOS 10 rather
   than to a sensation: that the three generators are there and come from the
