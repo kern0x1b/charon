@@ -68,8 +68,57 @@ static void system_version(char* version, size_t size)
     CFRelease(url);
 }
 
+// On iOS 6.1 and earlier the runner is started from launchd.conf, which gives
+// it no output of its own and splits its line on whitespace with no quoting;
+// so the runner keeps its own output next to its verdict, and takes its job -
+// the deadline, the program and its arguments - as NUL-separated words from
+// the file named after --job.
+static void keep_own_output(void)
+{
+    int out = open("/private/var/charon/runner.stdout", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    int err = open("/private/var/charon/runner.stderr", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (out >= 0) {
+        dup2(out, STDOUT_FILENO);
+        close(out);
+    }
+    if (err >= 0) {
+        dup2(err, STDERR_FILENO);
+        close(err);
+    }
+}
+
+static char** read_job(const char* file, char* self, int* count)
+{
+    static char words[65536];
+    static char* job[256];
+    FILE* stream = fopen(file, "rb");
+    if (!stream)
+        return NULL;
+    size_t length = fread(words, 1, sizeof words - 1, stream);
+    fclose(stream);
+    words[length] = '\0';
+    int found = 0;
+    job[found++] = self;
+    for (size_t at = 0; at < length && found < 255; at += strlen(words + at) + 1)
+        job[found++] = words + at;
+    job[found] = NULL;
+    *count = found;
+    return job;
+}
+
 int main(int argc, char** argv)
 {
+    keep_own_output();
+    if (argc == 3 && strcmp(argv[1], "--job") == 0) {
+        int count = 0;
+        char** job = read_job(argv[2], argv[0], &count);
+        if (!job) {
+            printf("charon-runner: cannot read the job %s: %s\n", argv[2], strerror(errno));
+            return 1;
+        }
+        argc = count;
+        argv = job;
+    }
     double started = now();
     printf("charon-runner: started pid=%d uid=%d\n", getpid(), getuid());
     fflush(stdout);

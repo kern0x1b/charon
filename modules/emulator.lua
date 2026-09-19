@@ -10,6 +10,12 @@ RESULTS = "private/var/charon"
 REPORTS = "private/var/logs/CrashReporter"
 RUNNER = "usr/libexec/charon-runner"
 RUNNER_JOB = "System/Library/LaunchDaemons/org.charon.emulator.runner.plist"
+-- launchd reads launchd.conf at boot through iOS 6.1; from 7 it does not, and
+-- from 6.1 it ignores a LaunchDaemons plist its prebuilt job cache does not
+-- list, so the runner starts from launchd.conf up to 6.x and from its plist
+-- from 7.
+LAUNCHD_CONF = "private/etc/launchd.conf"
+RUNNER_TASK = RESULTS .. "/job"
 MIGRATOR = "System/Library/PrivateFrameworks/DataMigration.framework/Support/DataMigrator"
 SETUP_KEYS = {{"SetupDone", "-bool", "YES"}, {"SetupFinishedAllSteps", "-bool", "YES"}, {"SetupVersion", "-integer", "2"},
               {"AssistantPresented", "-bool", "YES"}}
@@ -463,11 +469,27 @@ local function escaped(text)
     return (text:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;"))
 end
 
-function runner_job(argv, deadline)
-    local arguments = {"<string>/" .. RUNNER .. "</string>", "<string>" .. tostring(deadline) .. "</string>"}
+-- The runner's job as it reads it: the deadline, the program and its
+-- arguments, each word ended by a NUL, so no argument needs quoting.
+function runner_task(argv, deadline)
+    local words = {tostring(deadline)}
     for _, argument in ipairs(argv) do
-        table.insert(arguments, "<string>" .. escaped(argument) .. "</string>")
+        if argument:find("\0", 1, true) then
+            raise("an argument of the test holds a NUL byte, which the runner's job cannot carry")
+        end
+        table.insert(words, argument)
     end
+    return table.concat(words, "\0") .. "\0"
+end
+
+-- launchd.conf's line for the runner: launchctl splits it on whitespace, so it
+-- names only the job file.
+function runner_launch()
+    return "bsexec .. /" .. RUNNER .. " --job /" .. RUNNER_TASK .. "\n"
+end
+
+function runner_job()
+    local arguments = {"<string>/" .. RUNNER .. "</string>", "<string>--job</string>", "<string>/" .. RUNNER_TASK .. "</string>"}
     return table.concat({
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
@@ -477,23 +499,32 @@ function runner_job(argv, deadline)
         "<key>ProgramArguments</key><array>" .. table.concat(arguments) .. "</array>",
         "<key>RunAtLoad</key><true/>",
         "<key>LaunchOnlyOnce</key><true/>",
-        "<key>StandardOutPath</key><string>/" .. RESULTS .. "/runner.stdout</string>",
-        "<key>StandardErrorPath</key><string>/" .. RESULTS .. "/runner.stderr</string>",
         "</dict>",
         "</plist>",
         ""}, "\n")
 end
 
-function install_runner(rootfs, guest, argv, deadline)
+function install_runner(rootfs, guest, argv, deadline, release)
     local runner = guest_path(rootfs, RUNNER)
     os.mkdir(path.directory(runner))
     os.vrunv("cp", {"-p", path.join(guest, RUNNER), runner})
-    local job = guest_path(rootfs, RUNNER_JOB)
-    io.writefile(job, runner_job(argv, deadline))
     local results = guest_path(rootfs, RESULTS)
     remove(results)
     os.mkdir(results)
     os.vrunv("chmod", {"0777", results})
+    io.writefile(guest_path(rootfs, RUNNER_TASK), runner_task(argv, deadline))
+    if dyld.compare_versions(release, "7.0") < 0 then
+        local conf = guest_path(rootfs, LAUNCHD_CONF)
+        local kept = os.isfile(conf) and io.readfile(conf) or ""
+        if not kept:find(runner_launch(), 1, true) then
+            if kept ~= "" and not kept:endswith("\n") then
+                kept = kept .. "\n"
+            end
+            io.writefile(conf, kept .. runner_launch())
+        end
+    else
+        io.writefile(guest_path(rootfs, RUNNER_JOB), runner_job())
+    end
 end
 
 function scan(state, line)

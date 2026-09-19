@@ -181,15 +181,40 @@ local function deb_step(emulator, debian, folder, found)
 end
 
 local function runner_job(emulator, folder, found)
+    local task = emulator.runner_task({"/usr/libexec/tool", "a&b", "<x>", "two words", "'q\"x"}, 45)
+    if task ~= "45\0/usr/libexec/tool\0a&b\0<x>\0two words\0'q\"x\0" then
+        table.insert(found, "the runner's job holds the deadline and every argument verbatim, each ended by a NUL")
+    end
+    local launch = emulator.runner_launch()
+    if launch ~= "bsexec .. /usr/libexec/charon-runner --job /private/var/charon/job\n" then
+        table.insert(found, "launchd.conf starts the runner on its job file, in words launchctl splits on whitespace: " .. launch)
+    end
     local job = path.join(folder, "job.plist")
-    io.writefile(job, emulator.runner_job({"/usr/libexec/tool", "a&b", "<x>"}, 45))
+    io.writefile(job, emulator.runner_job())
     if not try {function () os.vrunv("plutil", {"-lint", job}) return true end} then
         table.insert(found, "the runner's LaunchDaemon job is a well-formed property list")
         return
     end
     local listed = os.iorunv("plutil", {"-convert", "json", "-o", "-", job})
-    if not listed:find('"a&b"', 1, true) or not listed:find('"<x>"', 1, true) or not listed:find('"45"', 1, true) then
-        table.insert(found, "the runner job passes the deadline and every argument verbatim: " .. listed)
+    if not listed:find('"--job"', 1, true) or not listed:find("private\\/var\\/charon\\/job", 1, true) then
+        table.insert(found, "the runner's plist starts it on its job file: " .. listed)
+    end
+    for _, case in ipairs({{release = "6.1.3", conf = true}, {release = "3.0", conf = true}, {release = "7.1.2", conf = false}}) do
+        local rootfs = path.join(folder, "rootfs-" .. case.release)
+        local guest = path.join(folder, "guest")
+        os.mkdir(path.join(guest, "usr", "libexec"))
+        io.writefile(path.join(guest, "usr", "libexec", "charon-runner"), "")
+        os.mkdir(path.join(rootfs, "private", "etc"))
+        os.mkdir(path.join(rootfs, "System", "Library", "LaunchDaemons"))
+        io.writefile(path.join(rootfs, "private", "etc", "launchd.conf"), "setenv TZ UTC")
+        emulator.install_runner(rootfs, guest, {"/bin/true"}, 30, case.release)
+        emulator.install_runner(rootfs, guest, {"/bin/true"}, 30, case.release)
+        local conf = io.readfile(path.join(rootfs, "private", "etc", "launchd.conf"))
+        local plist = os.isfile(path.join(rootfs, "System", "Library", "LaunchDaemons", "org.charon.emulator.runner.plist"))
+        local expected = case.conf and "setenv TZ UTC\n" .. emulator.runner_launch() or "setenv TZ UTC"
+        if conf ~= expected or plist == case.conf then
+            table.insert(found, "iOS " .. case.release .. " starts the runner from " .. (case.conf and "launchd.conf, once, keeping what it held" or "its plist") .. ": " .. conf)
+        end
     end
 end
 
