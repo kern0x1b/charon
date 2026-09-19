@@ -134,15 +134,23 @@ compiles. It exits non-zero on anything but `caught`.
 
 `host/fuzz/run.sh` runs one of three fuzzers against the host's Foundation:
 `percentencoding` (percent encoding and the URL character sets, Base64 of
-strings and data), `stringcase` (localized case, containment and transforms)
-and `calendar` (the `NSCalendar` and `NSDateComponents` methods of iOS 8).
-Each draws its inputs from a seeded generator and prints the seed, so a run can
-be repeated with `run.sh <fuzzer> 0 <seed>`. Every difference is filed under a
+strings and data), `stringcase` (localized case, containment and transforms,
+tried under `en_US` and `tr_TR` so a locale-blind rule shows up), and
+`calendar` (the `NSCalendar` and `NSDateComponents` methods of iOS 8). Each
+draws its inputs from a seeded generator and prints the seed, so a run can be
+repeated with `run.sh <fuzzer> 0 <seed>`. Every difference is filed under a
 category, one per method or option, and the first three of each are printed.
 The host is newer than any release the port follows, so a difference is not by
 itself a bug in the port: a category listed in `host/fuzz/tolerated/<fuzzer>.txt`,
 with the reason on the same line after a tab, is counted but does not fail the
 run. Any other category does.
+
+`host/fuzz/run.sh --mutants <fuzzer> [rounds] [seed]` checks a fuzzer the way
+`validatedformat`'s does: `mutants/<fuzzer>.txt` names, one per line, a rule of
+the port and a Perl substitution that breaks it, over a private copy of
+Foundation built for that one run; the script says `caught` with the category
+the run failed under, `MISSED` when the broken port still passes, and `STALE`
+or `BROKEN` when the change no longer applies or no longer compiles.
 
 `host/systemspacing/run.sh` holds the system spacing of a layout anchor to the
 host's UIKit, comparing the whole shape of the constraint each method returns -

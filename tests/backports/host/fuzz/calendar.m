@@ -159,7 +159,7 @@ int main(int argc, char **argv)
             validity.year = roll(3000); validity.month = random_value(); validity.day = random_value(); validity.hour = random_value(); validity.minute = random_value();
             if (roll(2)) validity.calendar = calendar;
             if (roll(3) == 0) validity.leapMonth = YES;
-            both([NSString stringWithFormat:@"valid [%@] %@", components_text(validity), where], ^{
+            both([NSString stringWithFormat:@"%@ [%@] %@", validity.leapMonth ? @"valid.leapMonth" : @"valid", components_text(validity), where], ^{
                 return [NSString stringWithFormat:@"%d %d", ((BOOL (*)(id, SEL, id))objc_msgSend)(validity, named(@"isValidDateInCalendar:"), calendar),
                         ((BOOL (*)(id, SEL))objc_msgSend)(validity, named(@"isValidDate"))];
             });

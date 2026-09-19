@@ -26,7 +26,12 @@ static NSString *text(void)
     unichar buffer[64];
     NSUInteger used = 0;
     for (uint32_t i = 0; i < length; i++) {
-        if (roll(5) == 0 && used + 3 <= 60) {
+        if (roll(12) == 0 && used + 12 <= 60) {
+            static const char *sequences[] = {"%C0%AF", "%C1%BF", "%E0%80%80", "%E0%9F%BF", "%E0%A0%80", "%ED%A0%80", "%ED%9F%BF", "%EF%BF%BD",
+                                              "%F0%8F%BF%BF", "%F0%90%80%80", "%F4%8F%BF%BF", "%F4%90%80%80", "%F5%80%80%80", "%E2%82", "%80"};
+            for (const char *sequence = sequences[roll(sizeof sequences / sizeof *sequences)]; *sequence; sequence++)
+                buffer[used++] = (unichar)*sequence;
+        } else if (roll(5) == 0 && used + 3 <= 60) {
             static const char *hex = "0123456789abcdefABCDEFgG";
             buffer[used++] = '%';
             buffer[used++] = hex[roll(24)];
@@ -138,6 +143,12 @@ static NSString *base64_text(void)
         else if (r == 2) [made appendString:@" "];
         else if (r == 3) [made appendFormat:@"%C", piece()];
         else if (r == 4) [made appendString:@"-_"];
+        else if (r == 5) {
+            uint32_t kept = 1 + roll(3);
+            for (uint32_t k = 0; k < kept; k++)
+                [made appendFormat:@"%c", alphabet[roll(64)]];
+            [made appendString:[@"===" substringToIndex:4 - kept]];
+        }
         else [made appendFormat:@"%c", alphabet[roll(64)]];
     }
     if (roll(3) == 0) {
