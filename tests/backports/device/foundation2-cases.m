@@ -825,6 +825,53 @@ static NSString *error_text(NSError *error)
     return [NSString stringWithFormat:@"%@/%ld", error.domain, (long)error.code];
 }
 
+static NSDateComponents *validity_components(NSInteger year, NSInteger month, NSInteger day, NSCalendar *calendar)
+{
+    NSDateComponents *components = [[NSDateComponents alloc] init];
+    if (year != NSDateComponentUndefined)
+        components.year = year;
+    if (month != NSDateComponentUndefined)
+        components.month = month;
+    if (day != NSDateComponentUndefined)
+        components.day = day;
+    components.calendar = calendar;
+    return components;
+}
+
+static void run_validity(Foundation2Recorder *recorder)
+{
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    gregorian.timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    NSInteger u = NSDateComponentUndefined;
+    NSInteger cases[][3] = {{2024, 2, 29}, {2023, 2, 29}, {2026, 2, 31}, {2026, 13, 1}, {2026, 0, 1}, {2026, 4, 31}, {2026, 12, 31}, {u, 2, 30}, {2026, u, u}, {u, u, u}, {2026, 5, u}, {1582, 10, 10}, {2026, -1, 5}, {2026, 1, 0}};
+    NSMutableArray *rows = [NSMutableArray array];
+    for (size_t index = 0; index < sizeof cases / sizeof *cases; index++) {
+        NSDateComponents *with = validity_components(cases[index][0], cases[index][1], cases[index][2], gregorian);
+        NSDateComponents *without = validity_components(cases[index][0], cases[index][1], cases[index][2], nil);
+        [rows addObject:[NSString stringWithFormat:@"%d%d%d%d", ((BOOL (*)(id, SEL))objc_msgSend)(with, sel(@selector(isValidDate))), ((BOOL (*)(id, SEL, id))objc_msgSend)(with, sel(@selector(isValidDateInCalendar:)), gregorian),
+                         ((BOOL (*)(id, SEL))objc_msgSend)(without, sel(@selector(isValidDate))), ((BOOL (*)(id, SEL, id))objc_msgSend)(without, sel(@selector(isValidDateInCalendar:)), gregorian)]];
+    }
+    NSDateComponents *time = [[NSDateComponents alloc] init];
+    time.hour = 25;
+    time.calendar = gregorian;
+    BOOL hour = ((BOOL (*)(id, SEL))objc_msgSend)(time, sel(@selector(isValidDate)));
+    time.hour = 23;
+    time.minute = 61;
+    BOOL minute = ((BOOL (*)(id, SEL))objc_msgSend)(time, sel(@selector(isValidDate)));
+    NSDateComponents *week = [[NSDateComponents alloc] init];
+    week.year = 2026;
+    week.weekOfYear = 53;
+    week.calendar = gregorian;
+    NSDateComponents *zoned = validity_components(2026, 1, 1, gregorian);
+    zoned.timeZone = [NSTimeZone timeZoneWithName:@"Asia/Tokyo"];
+    NSCalendar *japanese = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierJapanese];
+    NSDateComponents *era = validity_components(5, 1, 1, gregorian);
+    era.era = 0;
+    [recorder record:@[rows, @(hour), @(minute), @(((BOOL (*)(id, SEL))objc_msgSend)(week, sel(@selector(isValidDate)))), @(((BOOL (*)(id, SEL))objc_msgSend)(zoned, sel(@selector(isValidDate)))),
+                       @(((BOOL (*)(id, SEL, id))objc_msgSend)(validity_components(2026, 2, 30, gregorian), sel(@selector(isValidDateInCalendar:)), japanese)), @(((BOOL (*)(id, SEL))objc_msgSend)(era, sel(@selector(isValidDate))))]
+               named:@"calendar.edges.validity"];
+}
+
 static void run_calendar_edges(Foundation2Recorder *recorder)
 {
     NSCalendar *chinese = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierChinese];
@@ -1136,6 +1183,22 @@ static void run_progress(Foundation2Recorder *recorder)
     [recorder record:@[@(((id (*)(id, SEL))objc_msgSend)(handled, sel(@selector(cancellationHandler))) == nil), @(((id (*)(id, SEL))objc_msgSend)(handled, sel(@selector(pausingHandler))) == nil)] named:@"progress.handlerCleared"];
 }
 
+static void run_array(Foundation2Recorder *recorder)
+{
+    NSMutableArray *mutable = [NSMutableArray arrayWithObjects:@"a", [NSNull null], @3, nil];
+    NSArray *arrays[] = {@[], @[@"only"], @[[NSNull null], @"x"], mutable, [NSArray arrayWithObject:@[]], [@[@1, @2, @3] subarrayWithRange:NSMakeRange(1, 2)], [@[] arrayByAddingObject:@9], [[NSOrderedSet orderedSetWithObjects:@"p", @"q", nil] array]};
+    NSMutableArray *found = [NSMutableArray array];
+    for (size_t index = 0; index < sizeof arrays / sizeof *arrays; index++) {
+        id first = ((id (*)(id, SEL))objc_msgSend)(arrays[index], sel(@selector(firstObject)));
+        [found addObject:first ? [first description] : @"<nil>"];
+    }
+    [mutable removeObjectAtIndex:0];
+    id afterRemoval = ((id (*)(id, SEL))objc_msgSend)(mutable, sel(@selector(firstObject)));
+    [mutable removeAllObjects];
+    id afterEmptied = ((id (*)(id, SEL))objc_msgSend)(mutable, sel(@selector(firstObject)));
+    [recorder record:@[found, afterRemoval ? [afterRemoval description] : @"<nil>", afterEmptied ? [afterEmptied description] : @"<nil>"] named:@"array.firstObject"];
+}
+
 static void run_relative_urls(Foundation2Recorder *recorder)
 {
     NSString *directory = [[[NSURL fileURLWithPath:[[NSFileManager defaultManager] currentDirectoryPath] isDirectory:YES] absoluteString] stringByReplacingOccurrencesOfString:@"file://localhost/" withString:@"file:///"];
@@ -1301,6 +1364,8 @@ void foundation2_run(Foundation2Implementation implementation, Foundation2Record
         run_value(recorder);
         progress(@"locale");
         run_locale(recorder);
+        progress(@"array");
+        run_array(recorder);
         progress(@"progress");
         run_progress(recorder);
         progress(@"relativeUrls");
@@ -1313,6 +1378,7 @@ void foundation2_run(Foundation2Implementation implementation, Foundation2Record
         run_calendar(recorder);
         progress(@"calendarEdges");
         run_calendar_edges(recorder);
+        run_validity(recorder);
         progress(@"done");
     }
 }

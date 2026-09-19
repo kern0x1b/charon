@@ -59,13 +59,15 @@
     "api": "+[NSExpression expressionForConditional:trueExpression:falseExpression:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSExpressionConditional.md"
   },
   {
     "api": "+[NSKeyedUnarchiver unarchiveTopLevelObjectWithData:error:]",
     "kind": "method",
     "introduced": "2.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSKeyedUnarchiverTopLevel.md"
   },
   {
     "api": "+[NSURL URLWithDataRepresentation:relativeToURL:]",
@@ -111,7 +113,8 @@
     "api": "-[NSArray firstObject]",
     "kind": "method",
     "introduced": "4.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSArrayFirstObject.md"
   },
   {
     "api": "-[NSCalendar compareDate:toDate:toUnitGranularity:]",
@@ -389,19 +392,22 @@
     "api": "-[NSDateComponents isValidDateInCalendar:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md"
   },
   {
     "api": "-[NSDateComponents isValidDate]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md"
   },
   {
     "api": "-[NSIndexPath getIndexes:range:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSIndexPathIndexes.md"
   },
   {
     "api": "-[NSLocale alternateQuotationBeginDelimiter]",
@@ -714,7 +720,8 @@
     "api": "-[NSScanner scanUnsignedLongLong:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSScannerUnsignedLongLong.md"
   },
   {
     "api": "-[NSString containsString:]",
@@ -953,7 +960,8 @@
     "api": "-[NSValue getValue:size:]",
     "kind": "method",
     "introduced": "11.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSValueSize.md"
   },
   {
     "api": "CFAutorelease",
@@ -1099,7 +1107,8 @@
     "api": "NSURLComponents",
     "kind": "class",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURLComponents.md"
   },
   {
     "api": "NSURLComponents.encodedHost",

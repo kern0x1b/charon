@@ -73,3 +73,21 @@ an `en_US_POSIX` calendar answers the following Saturday at 00:00 with an interv
 `he_IL` one answers the Friday before it, also 48 hours. The weekend of a locale comes from ICU, which the
 release carries as `libicucore`; where that library does not answer, `-isDateInWeekend:` says no and the
 library says so once in the log.
+
+## Whether components name a date
+
+`-isValidDateInCalendar:` asks the calendar to make a date of the components and to give back the same components;
+it answers yes only when everything the components hold comes back unchanged. `-isValidDate` is the same with the
+components' own calendar, and answers no when there is none, even for components the calendar would accept.
+Measured on the host and held by `calendar.edges.validity`, over fourteen cases and the Gregorian calendar:
+
+- 29 February 2024 and 31 December 2026 are valid; 29 February 2023, 31 February and 31 April 2026, month 13, month 0,
+  month -1 and day 0 are not;
+- components that leave things out are valid as far as they go: a year alone, a year and a month, and components
+  with nothing set are valid, while a day and a month with no year that cannot exist in any year (30 February) are not;
+- an hour of 25, a minute of 61 and a week of the year, 53, in 2026, which has 52, are not valid;
+- a time zone on the components and an era of 0 leave a valid date valid; components read in another calendar are read
+  by that calendar, and 30 February 2026 is no date in the Japanese calendar either;
+- 10 October 1582 is not valid on the host, whose Gregorian calendar skips 5 to 14 October 1582, and is valid on iOS 6.0
+  and 6.1.3, whose Gregorian calendar has no gap: the date makes the same components back. That is the one
+  record of the fourteen where the release differs, and it is the release's calendar rather than the backport's.
