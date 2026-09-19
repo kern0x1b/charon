@@ -711,6 +711,12 @@ function check(cachefile, binaries, folder, opt)
     local missing, count, cache, dangling = missing_imports(cachefile, binaries, folder)
     local emitted = compat.emitted()
     local guarded = {}
+    -- What another package provides is checked, and reported, but it is that package's image and not this one's to refuse.
+    -- The images are named as the check names them, relative to the folder when there is one.
+    local exempt = {}
+    for _, binary in ipairs(opt.exempt or {}) do
+        exempt[folder and path.relative(binary, folder) or binary] = true
+    end
     for _, entry in ipairs(dangling) do
         local by = emitted[entry[2]:sub(2)]
         if by then
@@ -727,7 +733,7 @@ function check(cachefile, binaries, folder, opt)
         local shown = table.concat(table.slice(names, 1, math.min(limit, #names)), " ") .. (#names > limit and string.format(" and %d more, all of them under xmake -v", #names - limit) or "")
         local text = string.format("weakly imports %d symbol%s the %s release it is checked against does not export, each of which is NULL there and must be called only behind a check for it: %s",
                                    #names, #names == 1 and "" or "s", cache.architecture, shown)
-        if opt.release and not opt.waived then
+        if opt.release and not opt.waived and not exempt[binary] then
             table.insert(missing, {binary, text .. "; a released image is refused these unless the target waives the check with charon.waive.weak-imports and says why every call is guarded"})
         else
             wprint("%s %s", binary, text)

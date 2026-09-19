@@ -101,6 +101,21 @@ function failures(opt)
     if fixtures.refusal(function () dyld.check(armv7, {unprovided}, nil, {release = true, waived = "each call is behind a check"}) end) then
         table.insert(found, "a released image whose target waives weak-imports with a reason must pass")
     end
+    -- a library another package provides is not this program's image to refuse
+    local other = fixtures.link(folder, opt.ld64, "other.dylib", "armv7-apple-ios6.0", "weak.c", {"-dynamiclib"})
+    local exempted = fixtures.refusal(function () dyld.check(armv7, {other}, nil, {release = true, exempt = {other}}) end)
+    if exempted then
+        table.insert(found, "a released build must not be refused for a weak import in a library another package provides: " .. exempted)
+    end
+    -- and the same when the images are named relative to the folder they are checked in
+    local relative = fixtures.refusal(function () dyld.check(armv7, {other}, folder, {release = true, exempt = {other}}) end)
+    if relative then
+        table.insert(found, "an exempt library must stay exempt when the check names images relative to a folder: " .. relative)
+    end
+    local mixed = fixtures.refusal(function () dyld.check(armv7, {unprovided, other}, nil, {release = true, exempt = {other}}) end) or ""
+    if not mixed:find("unprovided.dylib", 1, true) or mixed:find("other.dylib", 1, true) then
+        table.insert(found, "the program's own weak import must still be refused, and only it, when a provided library is exempt: " .. mixed)
+    end
     io.writefile(path.join(folder, "emitted.c"),
                  "extern void objc_storeStrong(void **, void *) __attribute__((weak_import));\nvoid use(void **slot) { if (objc_storeStrong) objc_storeStrong(slot, 0); }\n")
     local emitted = fixtures.link(folder, opt.ld64, "emitted.dylib", "armv7-apple-ios6.0", "emitted.c", {"-dynamiclib"})

@@ -42,7 +42,7 @@ function universal(target, architectures, stage)
     for _, architecture in ipairs(architectures) do
         local source = platform.imports_source(target, architecture)
         local provided = architecture == target:arch() and platform.provided_libraries(target) or {}
-        dyld.check(source, table.join(merged, provided), installed, platform.import_options(target))
+        dyld.check(source, table.join(merged, provided), installed, platform.import_options(target, provided))
         platform.report_selectors(source, merged, architecture, installed, provided)
     end
 end

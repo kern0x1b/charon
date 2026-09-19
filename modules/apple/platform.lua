@@ -17,8 +17,10 @@ function waivers(target)
     return waived
 end
 
-function import_options(target)
-    return {release = os.getenv("CHARON_RELEASE") ~= nil, waived = waivers(target)["weak-imports"]}
+-- The libraries other packages provide (the backports, a shared runtime) are checked with the program, and a weak import in
+-- one of them is that package's to answer for when it is built, not a reason to refuse this program.
+function import_options(target, provided)
+    return {release = os.getenv("CHARON_RELEASE") ~= nil, waived = waivers(target)["weak-imports"], exempt = provided}
 end
 
 function deployment(target)
@@ -319,7 +321,7 @@ function verify(target, binary, opt)
     if opt.imports ~= false then
         local source = imports_source(target)
         local provided = provided_libraries(target)
-        dyld.check(source, table.join({binary}, provided), nil, import_options(target))
+        dyld.check(source, table.join({binary}, provided), nil, import_options(target, provided))
         report_selectors(source, {binary}, target:arch(), nil, provided)
         report_registry(target, binary)
     end
@@ -389,7 +391,7 @@ function verify_placed(target, installed)
     end
     local source = imports_source(target)
     local provided = provided_libraries(target)
-    dyld.check(source, table.join(binaries, provided), root, import_options(target))
+    dyld.check(source, table.join(binaries, provided), root, import_options(target, provided))
     report_selectors(source, binaries, target:arch(), root, provided)
 end
 
@@ -463,7 +465,7 @@ function application(target)
     if not os.getenv("CHARON_SLICE") then
         local source = imports_source(target)
         local provided = provided_libraries(target)
-        dyld.check(source, table.join(binaries, provided), folder, import_options(target))
+        dyld.check(source, table.join(binaries, provided), folder, import_options(target, provided))
         report_selectors(source, binaries, target:arch(), folder, provided)
     end
     return folder
