@@ -17,8 +17,13 @@ for name in $(xcrun nm -gU "$BUILD"/plain/*.o | awk 'NF == 3 {print $3}' | grep 
     renames="$renames -D$name=CharonHost$name"
 done
 echo "renamed:$renames"
+mkdir -p "$BUILD/prefixed"
+printf '#import <Foundation/Foundation.h>\n' > "$BUILD/prefixed/declarations.h"
 for source in $sources; do
-    xcrun clang -fobjc-arc -fvisibility=hidden $quiet $renames -c "$FOUNDATION/$source" -o "$BUILD/renamed/$source.o"
+    python3 "$here/../prefix_selectors.py" "$FOUNDATION/$source" "$BUILD/prefixed/$source" charonHost_ --declarations="$BUILD/prefixed/declarations.h" -fobjc-arc $quiet -- "$BUILD"/plain/*.o
+done
+for source in $sources; do
+    xcrun clang -fobjc-arc -fvisibility=hidden $quiet $renames -I"$FOUNDATION" -include "$BUILD/prefixed/declarations.h" -c "$BUILD/prefixed/$source" -o "$BUILD/renamed/$source.o"
     perl -0777 -pi -e 's/__objc_catlist\0\0/__charon_catlist/g' "$BUILD/renamed/$source.o"
 done
 xcrun clang -fobjc-arc $quiet -I"$DEVICE" "$here/differential.m" "$here/host-attach.c" "$DEVICE/foundation2-cases.m" "$BUILD"/renamed/*.o \

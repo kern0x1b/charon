@@ -42,7 +42,14 @@ static SEL sel(SEL selector)
 {
     if (!foundation2_prefix.length)
         return selector;
-    return NSSelectorFromString([foundation2_prefix stringByAppendingString:NSStringFromSelector(selector)]);
+    NSString *name = NSStringFromSelector(selector);
+    NSString *family = [foundation2_prefix stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"_"]];
+    family = [[family substringToIndex:1].uppercaseString stringByAppendingString:[family substringFromIndex:1]];
+    for (NSString *word in @[@"mutableCopy", @"copy", @"init", @"new", @"alloc"]) {
+        if ([name hasPrefix:word] && (name.length == word.length || [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[name characterAtIndex:word.length]] || [name characterAtIndex:word.length] == ':'))
+            return NSSelectorFromString([NSString stringWithFormat:@"%@%@%@", word, family, [name substringFromIndex:word.length]]);
+    }
+    return NSSelectorFromString([foundation2_prefix stringByAppendingString:name]);
 }
 
 id foundation2_portable(id value)

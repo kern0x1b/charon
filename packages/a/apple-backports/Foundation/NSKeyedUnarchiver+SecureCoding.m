@@ -12,7 +12,7 @@ static id charon_unarchive(NSSet *classes, NSData *data, NSError **error)
         return nil;
     }
     unarchiver.requiresSecureCoding = YES;
-    unarchiver.decodingFailurePolicy = NSDecodingFailurePolicySetErrorAndReturn;
+    [unarchiver setDecodingFailurePolicy:NSDecodingFailurePolicySetErrorAndReturn];
     id decoded = [unarchiver decodeTopLevelObjectOfClasses:classes forKey:NSKeyedArchiveRootObjectKey error:&failure];
     if (failure) {
         if (error)
@@ -43,7 +43,7 @@ static id charon_unarchive(NSSet *classes, NSData *data, NSError **error)
         return nil;
     }
     self.requiresSecureCoding = YES;
-    self.decodingFailurePolicy = NSDecodingFailurePolicySetErrorAndReturn;
+    [self setDecodingFailurePolicy:NSDecodingFailurePolicySetErrorAndReturn];
     return self;
 }
 
