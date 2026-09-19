@@ -55,20 +55,42 @@ and an equal one carries `item == firstItem` at required for each item after the
 reference item, no canvas fit, and the priorities count down from 999 by the item's index - which is the
 backport's own recipe, to the constraint. The differential run agrees: all 12000 frames match.
 
-So UIKit changed this between iOS 9 and now, and what the disassembly of 9.3.5 says above is that release's
-answer, not today's. The rule is that the newest implementation is the source of truth, so the backport
-keeps what the newest does, and the frames iOS 6 still gets differently are the old solver's doing, not a
-recipe we read wrongly. Carrying the 9.3.5 recipe across was measured three ways and made both the host and
-the emulated iOS 6 worse.
+So UIKit changed this between iOS 9 and now, and what the disassembly of 9.3.5 says above is that
+release's answer, not today's. The rule is that the newest implementation is the source of truth, so the
+backport keeps what the newest does. Carrying the 9.3.5 recipe across was measured three ways and made
+both the host and the emulated iOS 6 worse. The backport ties each item to the stack with the multiplier
+of its share and asks at 999 - i. On the host's solver the two agree on every frame the differential
+compares; on iOS 6 they do not, and the frames of a proportional stack are the known difference. Carrying
+Apple's parts across one at a time is worse than either: the priorities alone, on the backport's own
+topology, take the emulated iOS 6 from 7 failed frames to 10; the reference item and the priorities
+together, with and without the canvas fit at 49, with the reference taken as the first item or as the one
+before, and with or without the zero constraint on an item of no length, all fail the same 72 frames of
+the host run. They fail because that is a release older than the one we are held to.
 
-The backport ties each item to the stack with the multiplier of its share and asks at 999 - i.
-On the host's solver the two agree on every frame the differential compares; on iOS 6 they do not, and
-the frames of a proportional stack are the known difference. Carrying Apple's parts across one at a time is worse than
-either: the priorities alone, on the backport's own topology, take the emulated iOS 6 from 7 failed frames
-to 10; the reference item and the priorities together, with and without the canvas fit at 49, with the
-reference taken as the first item or as the one before, and with or without the zero constraint on an item
-of no length, all fail the same 72 frames of the host run. They fail because that is a release older than
-the one we are held to, as the next section shows.
+## Where iOS 6 lays a proportional stack out differently, and why
+
+A proportional stack with no length of its own has one solution that meets every constraint: each item at
+its natural length and the stack at their sum with the spacing, because the shares were taken from exactly
+those lengths. iOS 6 does not always find it. On iOS 6.0 in the emulator and on 6.1.3 on an iPhone 4S the
+same binary misses it in 17 of the 560 cases of the table on every run, a different 17 each time, all of
+them among the 56 proportional stacks without a size, by a quarter of a point up to about 25 points.
+
+The engine does this without the backport. Plain views, a container, the three spacings, the two ends and
+four heights tied to the container by multipliers of 20, 30, 50 and 25 over 140 - nothing of UIStackView -
+give on iOS 6.0 a different answer on almost every run of twenty, and the solution two to four times. That
+holds with the multipliers at 999 less the index, at 999 for all, at 750 less the index, and with all of
+them required, where an answer such as a container of 136.5 breaks constraints the engine was told it must
+meet. Which answer comes out changes with nothing but where the objects of a run lie in memory. The device
+test measures it again on every run (`info the release's engine`), so the claim stays a measurement.
+
+So what the backport answers for on iOS 6 is the constraints, and the test holds those strictly: every
+visible item of such a stack is tied to it at its share of the natural lengths, at 999 less its index. The
+frames of those cases are reported as `known`; every other case of the table is held to today's frames.
+With a length of its own the proportions do not decide the stack's length, and those cases match.
+
+A stack aligned on the first baseline puts its labels on one baseline, and a view without text or a nested
+stack at the top of the text, not on a baseline of its own: that is what the current UIKit does with the
+same views in a row of 100 points and of 200, and what iOS 6 does with the backport.
 
 The length a proportional item is measured by is settled:
 `-[UIView _proportionalFillLengthForOrderedArrangement:relevantParentAxis:]` (0x2545ea85) takes the
