@@ -21,6 +21,7 @@ inputs.
     sh host/fontmetrics/run.sh
     sh host/systemspacing/run.sh
     sh host/gesturename/run.sh
+    sh host/rendererformat/run.sh
     sh host/batchupdates/run.sh
     sh host/interactions/run.sh
     sh host/traitstyle/run.sh
@@ -90,6 +91,14 @@ pairs of font sizes, a baseline against an edge, two views with no font at all,
 and an edge of the container. It ends with a note for the one combination the
 port does not reproduce: a baseline of a text view under the baseline of a view
 with no font.
+
+`host/rendererformat/run.sh` holds the preferred formats and
+`+formatForTraitCollection:` to the host's UIKit. It compiles the renderer
+format classes renamed together with the categories, and compares what each
+factory answers: its class, bounds, scale, whether it is opaque and whether it
+prefers an extended range. The trait collections cover nil, empty, six display
+scales on both sides of the two epsilons the releases have used, each display
+gamut, a scale with a gamut, and a size class alone.
 
 `host/gesturename/run.sh` holds the name of a gesture recognizer to the host's:
 that it starts empty, that it is copied rather than held, that clearing it
