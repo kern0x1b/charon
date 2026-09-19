@@ -1053,6 +1053,24 @@
     "status": "implemented"
   },
   {
+    "api": "UIUserNotificationAction.behavior",
+    "kind": "property",
+    "introduced": "9.0",
+    "status": "absent",
+    "reason": "not carried: a text input action is shown by the notification centre of iOS 9, which the release does not have",
+    "effect": "the property is not there on the backport's class or its mutable subclass, so respondsToSelector: answers honestly and an unchecked call raises",
+    "source": "SDK 16.4, UIUserNotificationSettings.h"
+  },
+  {
+    "api": "UIUserNotificationAction.parameters",
+    "kind": "property",
+    "introduced": "9.0",
+    "status": "absent",
+    "reason": "not carried: the parameters configure the text input action of iOS 9, which the release cannot show",
+    "effect": "the property is not there on the backport's class or its mutable subclass, so respondsToSelector: answers honestly and an unchecked call raises",
+    "source": "SDK 16.4, UIUserNotificationSettings.h"
+  },
+  {
     "api": "UIUserNotificationCategory",
     "kind": "class",
     "introduced": "8.0",
