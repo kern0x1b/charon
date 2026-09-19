@@ -470,3 +470,25 @@ package builds for that release (`lib` of an installed `charon@apple-backports`,
 or the `bands/<release>` folder of its deb). A binary that already loads the
 backports by their install names is checked with those libraries supplied, so
 it has nothing left in the first list.
+
+## Measuring how much of an SDK the registry has decided
+
+`tools/surface-diff.py` lists what an SDK declares for a framework - every class,
+protocol, method, property, extern constant and function, with the release its
+availability attribute gives for iOS - and says how much of it the registry has
+decided. It reads the SDK the way the build reads one, from clang's AST of the
+umbrella header, and needs no addon. A row is decided when the registry lists it
+by name, lists its property's accessors, lists its class as `absent` or
+`ignored`, or lists its class as `implemented` and the row arrived no later than
+the class did; the rest is API nobody has said anything about, which is
+`absent` by default, and is the gap the tool counts by framework and release.
+
+    python3 tests/backports/tools/surface-diff.py Foundation UIKit CoreLocation \
+        --sdk /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk
+
+A macOS SDK is read as Mac Catalyst, whose `System/iOSSupport` carries UIKit and
+the other iOS frameworks with the availability of iOS up to that SDK's release;
+a framework that exists only on iOS is not in it, and a run against it reports
+nothing. An iPhoneOS SDK takes `--target arm64-apple-ios16.4` and has them.
+`--above` and `--up-to` cut the releases, `--list` prints every gap, and
+`--rows FILE` writes every declared row for other tools to read.
