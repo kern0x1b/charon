@@ -9,11 +9,12 @@ static NSURL *charon_url_from_bytes(NSData *data, NSURL *baseURL, BOOL absolute)
         NSURL *empty = [[NSURL alloc] initWithString:@"" relativeToURL:baseURL];
         return absolute ? empty.absoluteURL : empty;
     }
-    CFURLRef url = absolute ? CFURLCreateAbsoluteURLWithBytes(kCFAllocatorDefault, data.bytes, (CFIndex)data.length, kCFStringEncodingUTF8, (__bridge CFURLRef)baseURL, true)
-                            : CFURLCreateWithBytes(kCFAllocatorDefault, data.bytes, (CFIndex)data.length, kCFStringEncodingUTF8, (__bridge CFURLRef)baseURL);
-    if (!url)
-        url = absolute ? CFURLCreateAbsoluteURLWithBytes(kCFAllocatorDefault, data.bytes, (CFIndex)data.length, kCFStringEncodingISOLatin1, (__bridge CFURLRef)baseURL, true)
-                       : CFURLCreateWithBytes(kCFAllocatorDefault, data.bytes, (CFIndex)data.length, kCFStringEncodingISOLatin1, (__bridge CFURLRef)baseURL);
+    CFStringRef text = CFStringCreateWithBytes(kCFAllocatorDefault, data.bytes, (CFIndex)data.length, kCFStringEncodingUTF8, false);
+    CFStringEncoding encoding = text ? kCFStringEncodingUTF8 : kCFStringEncodingISOLatin1;
+    if (text)
+        CFRelease(text);
+    CFURLRef url = absolute ? CFURLCreateAbsoluteURLWithBytes(kCFAllocatorDefault, data.bytes, (CFIndex)data.length, encoding, (__bridge CFURLRef)baseURL, true)
+                            : CFURLCreateWithBytes(kCFAllocatorDefault, data.bytes, (CFIndex)data.length, encoding, (__bridge CFURLRef)baseURL);
     return CFBridgingRelease(url);
 }
 

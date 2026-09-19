@@ -74,6 +74,11 @@ data and, against a base that ends in a slash, a URL that has a directory path.
 `+absoluteURLWithDataRepresentation:relativeToURL:` resolves it. Both read the bytes as UTF-8 and fall
 back to ISO Latin 1 when they are not: `68 74 74 70 3a 2f 2f 68 2f e4 ff` becomes
 `http://h/%C3%A4%C3%BF`, and its data representation is those same eleven bytes again.
+The fallback is ISO Latin 1 and not Windows 1252 - `80 9f` becomes `%C2%80%C2%9F` - and it takes the
+whole data, not only the bytes that fail: `c3 a4 ff` becomes `%C3%83%C2%A4%C3%BF`.
+The check for UTF-8 is made on the bytes before a URL is made from them: CFURL on iOS 6 does not refuse
+bytes that are not UTF-8 but escapes them as they are, and on the device the same eleven bytes gave
+`http://h/%E4%FF` until the encoding was chosen first.
 
 ## The temporary resource value and the caches
 
