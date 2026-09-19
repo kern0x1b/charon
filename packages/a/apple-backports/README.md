@@ -74,6 +74,21 @@ the library records it around `-performBlock:` and `-performBlockAndWait:`.
 Query generations are absent: they read a snapshot of a store kept with
 write-ahead logging, and the store of iOS 6 keeps a rollback journal.
 
+### Blocks for timers, threads and run loops, and what stays out
+
+`NSTimer` gets the block factories and `-initWithFireDate:interval:repeats:block:`,
+`NSThread` gets `-initWithBlock:` and `+detachNewThreadWithBlock:`, `NSRunLoop`
+gets `-performBlock:` and `-performInModes:block:`, `NSFileManager` gets
+`temporaryDirectory`, `UIImage` gets `-imageWithHorizontallyFlippedOrientation`
+and `UIScreen` gets `maximumFramesPerSecond`, each read from the release's own
+code and answering the same, the text of the exceptions included; the flipped
+image is rebuilt from public API, and its facts say where that differs.
+Left out because iOS 6 cannot answer as iOS 10 does: the pasteboard's `hasStrings`,
+`hasURLs`, `hasImages`, `hasColors` and `-setItems:options:`, which ask a
+pasteboard service and a framework iOS 6 does not have and, with an expiration
+date, promise to clear the pasteboard after the application has gone, and the
+Display P3 colors, which need a color space iOS 6 cannot make.
+
 ### Images drawn where sRGB cannot be made
 
 `UIGraphicsImageRenderer` draws in sRGB, as iOS 10 does, so that its PNG and

@@ -277,5 +277,85 @@
   "reason": "CFDateFormatterCreateISO8601Formatter is younger than the minimum, so the formatter is assembled out of the CoreFoundation parts that are not; the week rule comes from the locale because a calendar will not stay on a formatter, and the zone falls back from X to ZZZZZ where the release's ICU does not know X",
   "facts": "facts/Foundation/NSISO8601DateFormatter.md",
   "source": "the armv7s cache of iOS 10.3.4, held to the real formatter on all 1024 option combinations"
+ },
+ {
+  "api": "+[NSTimer timerWithTimeInterval:repeats:block:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSTimerBlocks.md",
+  "source": "Foundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own Foundation run beside the port",
+  "maximum": "10.0"
+ },
+ {
+  "api": "+[NSTimer scheduledTimerWithTimeInterval:repeats:block:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSTimerBlocks.md",
+  "source": "Foundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own Foundation run beside the port",
+  "maximum": "10.0"
+ },
+ {
+  "api": "-[NSTimer initWithFireDate:interval:repeats:block:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSTimerBlocks.md",
+  "source": "Foundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own Foundation run beside the port",
+  "maximum": "10.0"
+ },
+ {
+  "api": "-[NSThread initWithBlock:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSThreadBlocks.md",
+  "source": "Foundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own Foundation run beside the port",
+  "maximum": "10.0"
+ },
+ {
+  "api": "+[NSThread detachNewThreadWithBlock:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSThreadBlocks.md",
+  "source": "Foundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own Foundation run beside the port",
+  "maximum": "10.0"
+ },
+ {
+  "api": "-[NSRunLoop performBlock:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSRunLoopBlocks.md",
+  "source": "Foundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own Foundation run beside the port",
+  "maximum": "10.0"
+ },
+ {
+  "api": "-[NSRunLoop performInModes:block:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSRunLoopBlocks.md",
+  "source": "Foundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own Foundation run beside the port",
+  "maximum": "10.0"
+ },
+ {
+  "api": "NSFileManager.temporaryDirectory",
+  "kind": "property",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSFileManagerTemporaryDirectory.md",
+  "source": "Foundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own Foundation run beside the port",
+  "maximum": "10.0"
  }
 ]

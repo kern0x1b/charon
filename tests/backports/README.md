@@ -32,6 +32,13 @@ inputs.
     sh host/usernotifications/run.sh  writes device/usernotifications-expectations.h when it passes
     sh host/coredata/run.sh
     sh host/registry/run.sh <dyld_shared_cache_armv7>
+    sh host/blocks/run.sh
+    sh host/imageflip/run.sh
+
+`host/blocks/run.sh` runs the port's timers, threads and run loop blocks in one
+process with the system's own, compiled with the selectors prefixed, and compares
+what each does and raises; `host/imageflip/run.sh` does the same for the flipped
+image through Mac Catalyst.
 
 `host/registry/run.sh` holds the build's check of the registry to a release's own
 Objective-C metadata. The build refuses an `absent` entry whose class, method,
@@ -410,6 +417,14 @@ postinst run with `DPKG_ROOT` set to it.
   authorization, adds, replaces and removes requests, reads back what iOS 6 was
   given - the body and no title - checks which repeats are taken and which
   refused, and waits for a notification to arrive while it is in front.
+- `blocks.m`: a process of its own for the block methods of `NSTimer`, `NSThread`
+  and `NSRunLoop` and for `temporaryDirectory`, linking the backports library. It
+  holds the timers, the thread and the run loop to what the host's own Foundation
+  answers in `host/blocks`, the exception texts included.
+- `imagescreen.m`: a process of its own for `-imageWithHorizontallyFlippedOrientation`
+  and `maximumFramesPerSecond`. It flips all eight orientations, keeps the insets
+  and rendering mode, and asks the release for the refresh interval the frame
+  rate is worked out from.
 - `coredata.m`: a process of its own for the Core Data container, linking
   `libCoreDataBackports.dylib`. It loads a SQLite store and, asynchronously, an
   in-memory one, inserts, fetches in and out of a context's block, saves in a

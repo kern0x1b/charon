@@ -257,5 +257,137 @@
   "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
   "facts": "facts/UIKit/UIFeedbackGenerator.md",
   "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
+ },
+ {
+  "api": "-[UIImage imageWithHorizontallyFlippedOrientation]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "the release copies the image with a private initializer and sets the orientation bits of its flags, whose place in the object is private and differs between releases; the port builds the copy from public API",
+  "effect": "an image that holds no pixels, no frames and no Core Image data is answered as itself and keeps its orientation, where the release answers a copy that says it is mirrored; nothing can be drawn from either",
+  "facts": "facts/UIKit/UIImageHorizontalFlip.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method, and the host's own UIKit run beside the port through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UIScreen.maximumFramesPerSecond",
+  "kind": "property",
+  "introduced": "10.3",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UIScreenMaximumFramesPerSecond.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method, and UIKit of iOS 6.0 for the interval it asks",
+  "maximum": "10.3"
+ },
+ {
+  "api": "UIPasteboard.hasStrings",
+  "kind": "property",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the answer is decided by the Pasteboard framework's PBItemCollection over type identifiers held by the pasteboard service, which iOS 6 has neither of; a check of the types iOS 6 does have would decide differently from the release for the same contents",
+  "effect": "the property is not declared, so respondsToSelector: answers honestly",
+  "facts": "facts/UIKit/UIPasteboardIOS10.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
+ },
+ {
+  "api": "UIPasteboard.hasURLs",
+  "kind": "property",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the answer is decided by the Pasteboard framework's PBItemCollection over type identifiers held by the pasteboard service, which iOS 6 has neither of; a check of the types iOS 6 does have would decide differently from the release for the same contents",
+  "effect": "the property is not declared, so respondsToSelector: answers honestly",
+  "facts": "facts/UIKit/UIPasteboardIOS10.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
+ },
+ {
+  "api": "UIPasteboard.hasImages",
+  "kind": "property",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the answer is decided by the Pasteboard framework's PBItemCollection over type identifiers held by the pasteboard service, which iOS 6 has neither of; a check of the types iOS 6 does have would decide differently from the release for the same contents",
+  "effect": "the property is not declared, so respondsToSelector: answers honestly",
+  "facts": "facts/UIKit/UIPasteboardIOS10.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
+ },
+ {
+  "api": "UIPasteboard.hasColors",
+  "kind": "property",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the answer is decided by the Pasteboard framework's PBItemCollection over type identifiers held by the pasteboard service, which iOS 6 has neither of; a check of the types iOS 6 does have would decide differently from the release for the same contents",
+  "effect": "the property is not declared, so respondsToSelector: answers honestly",
+  "facts": "facts/UIKit/UIPasteboardIOS10.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
+ },
+ {
+  "api": "-[UIPasteboard setItems:options:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "an expiration date has to clear the pasteboard after the application that set it has gone, which only the pasteboard service can do, and password managers rely on it; a port in the application's process cannot keep that promise, and ignoring the option would leave a secret on the pasteboard",
+  "effect": "the method is not declared, so respondsToSelector: answers NO",
+  "facts": "facts/UIKit/UIPasteboardIOS10.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
+ },
+ {
+  "api": "UIPasteboardOptionLocalOnly",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the key is read only by -setItems:options:, which is not carried",
+  "effect": "the symbol is not exported",
+  "facts": "facts/UIKit/UIPasteboardIOS10.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
+ },
+ {
+  "api": "UIPasteboardOptionExpirationDate",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the key is read only by -setItems:options:, which is not carried",
+  "effect": "the symbol is not exported",
+  "facts": "facts/UIKit/UIPasteboardIOS10.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
+ },
+ {
+  "api": "UIPasteboardTypeAutomatic",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the type is read only by -setItems:options:, which is not carried",
+  "effect": "the symbol is not exported",
+  "facts": "facts/UIKit/UIPasteboardIOS10.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
+ },
+ {
+  "api": "+[UIColor colorWithDisplayP3Red:green:blue:alpha:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the color is a private subclass holding its components in the Display P3 color space, which iOS 6 has not; a color made from sRGB values answers other components than the release does, so it would be a different color under the same name",
+  "effect": "the method is not declared, so respondsToSelector: answers NO",
+  "facts": "facts/UIKit/UIColorDisplayP3.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method"
+ },
+ {
+  "api": "-[UIColor initWithDisplayP3Red:green:blue:alpha:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the color is a private subclass holding its components in the Display P3 color space, which iOS 6 has not; a color made from sRGB values answers other components than the release does, so it would be a different color under the same name",
+  "effect": "the method is not declared, so respondsToSelector: answers NO",
+  "facts": "facts/UIKit/UIColorDisplayP3.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method"
  }
 ]
