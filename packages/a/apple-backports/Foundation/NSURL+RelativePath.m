@@ -31,6 +31,8 @@ static NSURL *charon_url_from_bytes(NSData *data, NSURL *baseURL, BOOL absolute)
 
 - (instancetype)initFileURLWithPath:(NSString *)path isDirectory:(BOOL)isDir relativeToURL:(NSURL *)baseURL
 {
+    if (!path.length)
+        return nil;
     NSURL *url = CFBridgingRelease(CFURLCreateWithFileSystemPathRelativeToBase(kCFAllocatorDefault, (__bridge CFStringRef)path, kCFURLPOSIXPathStyle, isDir, (__bridge CFURLRef)baseURL));
     if (!url || object_getClass(self) == [NSURL class])
         return url;
