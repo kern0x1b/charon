@@ -1,0 +1,324 @@
+[
+ {
+  "api": "UNUserNotificationCenter",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotificationSettings",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotificationContent",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UserNotifications/UNNotificationContent.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNMutableNotificationContent",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UserNotifications/UNNotificationContent.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotificationSound",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UserNotifications/UNNotificationContent.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotificationTrigger",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UserNotifications/UNNotificationTrigger.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNTimeIntervalNotificationTrigger",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UserNotifications/UNNotificationTrigger.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNCalendarNotificationTrigger",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UserNotifications/UNNotificationTrigger.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotificationRequest",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UserNotifications/UNNotificationContent.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotification",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UserNotifications/UNNotificationContent.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotificationResponse",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UserNotifications/UNNotificationContent.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotificationDefaultActionIdentifier",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UserNotifications/UNNotificationContent.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotificationDismissActionIdentifier",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UserNotifications/UNNotificationContent.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNErrorDomain",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotificationContent.title",
+  "kind": "property",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "maximum": "10.0",
+  "status": "inert",
+  "reason": "a local notification of iOS 6 has no title; it arrived in iOS 8.2",
+  "effect": "the title is kept with the request, archived and handed back by the pending requests and the delegate, and never shown; the one place it would be handed to the release is behind a single switch, and the first request that carries one says so in the log",
+  "facts": "facts/UserNotifications/UNNotificationContent.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotificationContent.subtitle",
+  "kind": "property",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "maximum": "10.0",
+  "status": "inert",
+  "reason": "a local notification of iOS 6 has no subtitle",
+  "effect": "it is kept like the title and never shown",
+  "facts": "facts/UserNotifications/UNNotificationContent.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotificationContent.categoryIdentifier",
+  "kind": "property",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "maximum": "10.0",
+  "status": "inert",
+  "reason": "iOS 6 has no notification categories and no actions to show",
+  "effect": "it is kept with the request and changes nothing; the first request that carries one says so in the log",
+  "facts": "facts/UserNotifications/UNNotificationContent.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotificationContent.threadIdentifier",
+  "kind": "property",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "maximum": "10.0",
+  "status": "inert",
+  "reason": "iOS 6 does not group notifications",
+  "effect": "it is kept with the request and changes nothing",
+  "facts": "facts/UserNotifications/UNNotificationContent.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotificationAttachment",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "iOS 6 shows no image, sound or film inside a notification",
+  "effect": "the class is not there, so NSClassFromString answers nil and respondsToSelector: answers honestly",
+  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotificationCategory",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "iOS 6 has no notification categories: actions on a notification arrived in iOS 8",
+  "effect": "the class is not there, so NSClassFromString answers nil and respondsToSelector: answers honestly",
+  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotificationAction",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "iOS 6 shows no actions on a notification",
+  "effect": "the class is not there, so NSClassFromString answers nil and respondsToSelector: answers honestly",
+  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNTextInputNotificationAction",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "iOS 6 shows no actions on a notification",
+  "effect": "the class is not there, so NSClassFromString answers nil and respondsToSelector: answers honestly",
+  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNTextInputNotificationResponse",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "iOS 6 shows no actions on a notification",
+  "effect": "the class is not there, so NSClassFromString answers nil and respondsToSelector: answers honestly",
+  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNLocationNotificationTrigger",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "iOS 6 has no region trigger for a local notification",
+  "effect": "the class is not there, so NSClassFromString answers nil and respondsToSelector: answers honestly",
+  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNPushNotificationTrigger",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "remote notifications of iOS 6 reach the application delegate and not this center, so no request ever carries a push trigger",
+  "effect": "the class is not there, so NSClassFromString answers nil and respondsToSelector: answers honestly",
+  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "UNNotificationServiceExtension",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "iOS 6 runs no application extensions",
+  "effect": "the class is not there, so NSClassFromString answers nil and respondsToSelector: answers honestly",
+  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+ },
+ {
+  "api": "-[UNUserNotificationCenter getDeliveredNotificationsWithCompletionHandler:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the delivered notifications live in BulletinBoard, which answers no application on this jailbreak: every call comes back empty with an XPC error, as root, as mobile and with its entitlements applied",
+  "effect": "the method is not there, so respondsToSelector: answers NO",
+  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3",
+  "maximum": "10.0"
+ },
+ {
+  "api": "-[UNUserNotificationCenter removeDeliveredNotificationsWithIdentifiers:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the delivered notifications live in BulletinBoard, which answers no application here",
+  "effect": "the method is not there, so respondsToSelector: answers NO",
+  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3",
+  "maximum": "10.0"
+ },
+ {
+  "api": "-[UNUserNotificationCenter removeAllDeliveredNotifications]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the delivered notifications live in BulletinBoard, which answers no application here",
+  "effect": "the method is not there, so respondsToSelector: answers NO",
+  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3",
+  "maximum": "10.0"
+ },
+ {
+  "api": "-[UNUserNotificationCenter setNotificationCategories:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "iOS 6 has no notification categories",
+  "effect": "the method is not there, so respondsToSelector: answers NO",
+  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3",
+  "maximum": "10.0"
+ },
+ {
+  "api": "-[UNUserNotificationCenter getNotificationCategoriesWithCompletionHandler:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "iOS 6 has no notification categories",
+  "effect": "the method is not there, so respondsToSelector: answers NO",
+  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3",
+  "maximum": "10.0"
+ }
+]

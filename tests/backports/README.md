@@ -28,6 +28,7 @@ inputs.
     sh host/traitstyle/run.sh
     sh host/backbuttontitle/run.sh
     sh host/animatorscrub/run.sh
+    sh host/usernotifications/run.sh  writes device/usernotifications-expectations.h when it passes
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
@@ -132,6 +133,14 @@ It fails until the class carries them; the properties answer `NO` before that,
 because the class is the SDK's own interface under another name and the compiler
 synthesises what nobody wrote, so every check is behaviour rather than
 `respondsToSelector:`.
+
+`host/usernotifications/run.sh` sets the notification values and triggers
+beside the system's UserNotifications: what a trigger refuses and with what
+text, the next date of every trigger through the triggers' own
+`-nextTriggerDateAfterDate:withRequestedDate:` on 5760 fixed dates, a content
+fresh, filled, copied, set to nil and archived both ways, requests, sounds and
+the members of later releases the class must not answer. When it passes it
+writes the device's expectations.
 
 `host/backbuttontitle/run.sh` holds the back button title of a navigation item
 to the system's: what the item answers before and after it is given one, that
@@ -292,6 +301,17 @@ postinst run with `DPKG_ROOT` set to it.
   curve, which is the one thing `scrubsLinearly` changes and only a window
   shows: a quarter of the way when the animator scrubs linearly, and short of
   it, where the curve says, when it does not.
+- `usernotifications.m`: a process of its own for the notification values and
+  triggers. It holds 5760 next dates of calendar triggers, in five zones and
+  around changes of clocks, to `usernotifications-expectations.h`, which
+  `host/usernotifications/run.sh` writes from the system's own triggers when it
+  passes; a zone whose rules changed after 2013 is not among them, since iOS
+  6.1.3 keeps the rules of 2013.
+- `notifications.m` (`notifications-Info.plist`): an application for the center,
+  launched with `sblaunch` since it needs a running `UIApplication`. It asks for
+  authorization, adds, replaces and removes requests, reads back what iOS 6 was
+  given - the body and no title - checks which repeats are taken and which
+  refused, and waits for a notification to arrive while it is in front.
 - `haptics.m`: a process of its own for the feedback generators, linking UIKit
   but raising no window. It holds the port to what was read off iOS 10 rather
   than to a sensation: that the three generators are there and come from the

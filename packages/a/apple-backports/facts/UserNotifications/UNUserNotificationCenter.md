@@ -1,0 +1,159 @@
+# UNUserNotificationCenter
+
+Introduced in iOS 10.0. The center an application schedules its notifications
+through, carried on iOS 6 as a facade over the scheduler the release already
+has.
+
+Sources: UserNotifications and UserNotificationsServer of the armv7s cache of
+iOS 10.3.4; UIKit, BulletinBoard and SpringBoard of iOS 6.0 and of an iPhone4,1
+running 6.1.3.
+
+## On iOS 10 it is a client of a daemon
+
+`UserNotifications.framework` holds the API - `UNUserNotificationCenter`,
+`UNNotificationRequest`, the triggers, the content, the settings - and talks over
+XPC (`UNUserNotificationServiceConnection`, `UNUserNotificationService`) to a
+second framework, `UserNotificationsServer`, which is where the work happens:
+`UNSNotificationRepository`, `UNSPendingNotificationRepository`,
+`UNSNotificationSchedulingService`, `UNSNotificationSettingsService`,
+`UNSLocationMonitor`, `UNSUserNotificationServer`.
+
+That daemon does not exist on iOS 6 and cannot be written for it. **But it does
+not have to be.** Everything the daemon does for local notifications - keeping
+the pending list, firing on a date, repeating on a calendar, delivering to the
+notification centre, badging, sounding - SpringBoard already does on iOS 6,
+through `-[UIApplication scheduleLocalNotification:]`. So the port is not a
+daemon; it is a facade over the scheduler iOS 6 already has.
+
+## What iOS 6 gives it
+
+`UILocalNotification` is a class cluster; the real class is
+`UIConcreteLocalNotification`, and it carries more than the iOS 6 header admits:
+
+| member | note |
+|---|---|
+| `fireDate`, `timeZone` | the public pair |
+| `repeatInterval` | an `NSCalendarUnit`, not an arbitrary interval |
+| `repeatCalendar` | the calendar the repeat is counted in |
+| `totalRepeatCount`, `remainingRepeatCount` | a **finite** number of repeats, which iOS 10's own API cannot express |
+| `alertBody`, `alertAction`, `alertLaunchImage`, `hasAction` | the alert |
+| `soundName`, `soundType` | the sound |
+| `applicationIconBadgeNumber` | the badge |
+| `userInfo` | free-form, and the only place a port can keep an identifier |
+| `fireNotificationsWhenAppRunning` | shows the alert even in the foreground |
+| `allowSnooze`, `snoozedNotificationName`, `firedNotificationName` | snoozing |
+| `isSystemAlert`, `hideAlertTitle`, `customLockSliderLabel`, `interruptAudioAndLockDevice`, `resumeApplicationInBackground`, `showsAlarmStatusBarItem` | private |
+
+SpringBoard refuses the private ones to an unentitled app - its own string is
+`Ignoring UILocalNotification property change as '%@' entitlement is re...` - so
+a port may not lean on them.
+
+`UIApplication` gives `-scheduleLocalNotification:`, `-cancelLocalNotification:`,
+`-cancelAllLocalNotifications`, `-scheduledLocalNotifications`,
+`-presentLocalNotificationNow:`, `-registerForRemoteNotificationTypes:`,
+`-enabledRemoteNotificationTypes` and `-unregisterForRemoteNotifications`.
+
+## What the center does
+
+| iOS 10 | on iOS 6 |
+|---|---|
+| `+currentNotificationCenter` | one center for the process. |
+| `delegate` | weak. Setting it hooks `-application:didReceiveLocalNotification:` of the application delegate's class, once; a notification scheduled through the center goes to the center's delegate, any other to the application delegate as before. |
+| `-requestAuthorizationWithOptions:completionHandler:` | local notifications need no permission on iOS 6 and the release never asks, so the answer is granted. Badge, sound and alert are recorded under `org.charon.apple-backports.UIUserNotificationTypes`, the key the iOS 8 `UIUserNotificationSettings` of this package records its types under - the bits are the same - so the two APIs agree. |
+| `-getNotificationSettingsWithCompletionHandler:` | not determined until authorization was asked for; after it, authorized, and each of badge, sound and alert enabled if it was asked for and disabled if not, the notification centre and the lock screen following the alert, the alert style a banner, CarPlay not supported. **These are what the application asked for, not what the user set**: iOS 6 tells an application nothing of its notification settings - they live in BulletinBoard, which answers no application here (see below). |
+| `-addNotificationRequest:withCompletionHandler:` | the request becomes a `UILocalNotification`, any pending one of the same identifier is cancelled, and it is scheduled; one with no trigger is presented at once. A request with no content is refused with `UNErrorDomain` 1401. |
+| `-getPendingNotificationRequestsWithCompletionHandler:` | the release's scheduled notifications that carry a request, the requests read back from them whole. |
+| `-removePendingNotificationRequestsWithIdentifiers:`, `-removeAllPendingNotificationRequests` | cancel those - only those: `-cancelAllLocalNotifications` would take notifications the application scheduled itself as well. |
+| `supportsContentExtensions` | NO: iOS 6 runs no extensions. |
+
+The completion handlers run on a serial queue of the center's own, never the
+main thread, as iOS 10's do; the delegate is told on the main thread.
+
+## Triggers, and what the release can repeat
+
+A time interval trigger fires at now plus its interval. A calendar trigger
+fires at its next date (see `UNNotificationTrigger.md`), in its calendar's zone,
+so it keeps to the wall clock when the device's zone changes; one with no next
+date is refused with `UNErrorDomain` 1400, `UNErrorCodeNotificationInvalidNoDate`.
+
+iOS 6 repeats a local notification by one calendar unit from its first date.
+Where that is the same series the trigger describes, it is used:
+
+- a time interval of exactly a minute, an hour, a day or a week, counted in
+  Greenwich time so that a change of clocks does not bend it;
+- a calendar trigger whose highest unit is the second, minute, hour or weekday
+  alone - every minute, hour, day or week;
+- a day of the month up to the 28th, every month;
+- a month and a day, other than the 29th of February, every year.
+
+Any other repeat - 90 seconds, the 31st of every month, the second Tuesday - is
+refused with `NSCocoaErrorDomain` `NSFeatureUnsupportedError` and a reason that
+says so, rather than scheduled to fire on dates it does not describe.
+
+## Arriving
+
+- **In front.** The release calls the application delegate; the center makes a
+  `UNNotification` of the request, dated when it arrived, and asks its
+  delegate's `-userNotificationCenter:willPresentNotification:withCompletionHandler:`.
+  Of the options it answers, the badge is set; iOS 6 shows nothing and plays
+  nothing for a notification that arrives in front, so alert and sound change
+  nothing, and the first time they are asked for the log says so.
+- **Opened from the notification.** The release calls the application delegate
+  with the application inactive, or launches it with the notification in its
+  launch options; the center hands its delegate a response with
+  `UNNotificationDefaultActionIdentifier`.
+- **Dismissed.** iOS 6 does not tell an application, so no dismissal is ever
+  reported.
+
+## How it is held
+
+On an iPhone4,1 running 6.1.3, an application launched by SpringBoard asks for
+authorization, reads the settings before and after, adds a request and adds it
+again under the same identifier, reads the pending request back whole, reads
+what iOS 6 was given - the body, the badge, the sound, the user info and the
+date, and no title - has repeats taken and refused, removes by identifier and
+all at once while a notification it scheduled itself survives, and waits for a
+notification to arrive in front: the delegate hears of it on the main thread,
+as the request it was added as, and the badge it asks for is set. A request
+with no trigger arrives at once. 36 checks, no failures.
+
+The notification opened from outside, and the one that launches the
+application, need a hand on the screen, so they are read off the release -
+`-application:didReceiveLocalNotification:` with the application inactive,
+and `UIApplicationLaunchOptionsLocalNotificationKey` - and not measured.
+
+## BulletinBoard, and why the delivered notifications are not there
+
+iOS 6 has the whole notification backend as a framework: `BBBulletin`,
+`BBBulletinRequest`, `BBObserver`, `BBServer`, `BBSectionInfo`, `BBSound`,
+`BBAction`, `BBButton`, `BBSettingsGateway`. Two pieces would answer exactly what
+the mapping table leaves open:
+
+- `BBObserver` - `-requestListBulletinsForSectionID:`, `-clearBulletins:inSection:`,
+  `-clearSection:` - is what `getDeliveredNotifications` and
+  `removeDeliveredNotifications` would ride on.
+- `BBSectionInfo` carries `alertType`, `showsInNotificationCenter`,
+  `showsInLockScreen`, `showsMessagePreview`, `pushSettings`, `enabled`,
+  `notificationCenterLimit` - which is nearly field for field what
+  `UNNotificationSettings` reports.
+
+The services are vended by SpringBoard as `com.apple.bulletinboard.settings`,
+`.observer`, `.utilities` and `.systemstate`, and SpringBoard carries a plist
+naming those same four strings as the entitlements it requires.
+
+Measured on the iPhone4,1: a process that dlopens BulletinBoard gets the classes
+and can construct `BBSettingsGateway` and `BBObserver`, but every call comes back
+empty and the log says `Unexpected error on BBServer connection ... XPCObjectsErrorDomain Code=2`.
+That happened as root, as `mobile`, and with all four entitlements applied by
+`ldid`. SpringBoard's own failure string for this path is
+`Unable to get entitlements for client task`, which suggests it validates through
+`SecTaskCopyValueForEntitlement` and does not accept an `ldid` pseudo-signature.
+It is not a bootstrap namespace problem: other SpringBoard services answer this
+same SSH session.
+
+So: whether a properly installed application can reach BulletinBoard on this
+jailbreak is **not established**. Until it is, the delivered-notification methods
+are not there rather than answer emptily, and the settings report what the
+application asked for, which is all the release lets it know.
+Proving it needs code running inside an application SpringBoard launched. The
+device check of this center is one, but it has not asked BulletinBoard yet.

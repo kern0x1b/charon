@@ -39,6 +39,27 @@ mediaserverd keeps its own arbitration; the port does not write the IORegistry
 node behind its back. `-prepare` has nothing to warm and does nothing, which is
 also what iOS 10 does when there is no engine.
 
+### Notifications through the scheduler iOS 6 already has
+
+`UNUserNotificationCenter` is carried as a facade over the local notifications
+of iOS 6: a request becomes a `UILocalNotification`, the pending requests are
+read back from the ones scheduled, and the delegate hears of a notification
+through the application delegate, whose `-application:didReceiveLocalNotification:`
+the center takes over for its own notifications only. The triggers find their
+dates as the newest release does, held on 5760 dates on the host and on iOS
+6.1.3.
+
+What the release cannot show is kept rather than faked. The title and subtitle
+travel with the request everywhere and are never shown, since a local
+notification of iOS 6 has no title; the one place that would hand the title to
+the release is a single switch, off. Categories and threads are kept and change
+nothing. A repeat iOS 6 cannot follow - every 90 seconds, the 31st of every
+month - is refused with an error rather than scheduled to fire on other dates.
+The settings report what the application asked for, since iOS 6 tells it
+nothing of what the user set. Attachments, categories, actions, location
+triggers, service extensions and the delivered notifications are absent: the
+last live in BulletinBoard, which answers no application on this jailbreak.
+
 ### Images drawn where sRGB cannot be made
 
 `UIGraphicsImageRenderer` draws in sRGB, as iOS 10 does, so that its PNG and
