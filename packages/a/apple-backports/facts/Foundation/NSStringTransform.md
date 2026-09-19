@@ -7,7 +7,10 @@ one and an invented one to nine texts, forwards and in reverse, through both met
 `-stringByApplyingTransform:reverse:` answers the transformed string, and the sixteen names of the SDK
 are the `kCFStringTransform…` identifiers, which is why a transform that CoreFoundation knows by a name
 of its own - a compound like `Any-Latin; Latin-ASCII`, or `Hex-Any` - works just as well: the name is
-handed to the transform engine as it stands.
+handed to the transform engine as it stands. Each of the sixteen constants is the very string of its
+CoreFoundation counterpart, a closing parenthesis and the identifier's name: `NSStringTransformLatinToKatakana`
+is `)kCFStringTransformLatinKatakana`, `NSStringTransformToXMLHex` is `)kCFStringTransformToXMLHex`. The
+backport carries those strings, and the device test records all sixteen and holds iOS 6 to the host's.
 
 A name the engine does not know answers nil, and it is the only way these methods fail.
 

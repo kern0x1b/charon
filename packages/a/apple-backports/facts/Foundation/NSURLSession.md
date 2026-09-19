@@ -34,3 +34,18 @@ nothing in this release cancels one, because the backport's background configura
 like any other session and the daemon that would have reported a reason is not there. The constant is
 carried so that an application that reads the key out of an error, or names it in a comparison, builds and
 runs; it is never the key of an error the backport makes.
+
+## The constants and a task's priority
+
+Measured against the host's own Foundation, and held by the differential transcripts of
+`tests/backports/host/session` and by the device test:
+
+- `NSURLSessionTaskPriorityLow`, `Default` and `High` are 0.25, 0.5 and 0.75, and a new task's priority is
+  0.5.
+- `-setPriority:` keeps a value from 0 to 1 and ignores anything outside it, leaving the priority it had:
+  0.3 followed by -0.1, 1.0001, 2, -5 or infinity still reads 0.3. The test is `priority < 0 || priority >
+  1`, so NaN is not outside it and is kept.
+- `NSURLSessionTransferSizeUnknown` is -1, and it is what `countOfBytesExpectedToReceive` answers once a
+  response has come without a length; before any response it answers 0.
+- `NSURLSessionDownloadTaskResumeData` is its own name, and it is the key under which a cancelled download's
+  error carries the data to resume from.

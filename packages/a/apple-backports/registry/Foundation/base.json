@@ -960,97 +960,113 @@
     "api": "NSStringTransformFullwidthToHalfwidth",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md"
   },
   {
     "api": "NSStringTransformHiraganaToKatakana",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md"
   },
   {
     "api": "NSStringTransformLatinToArabic",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md"
   },
   {
     "api": "NSStringTransformLatinToCyrillic",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md"
   },
   {
     "api": "NSStringTransformLatinToGreek",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md"
   },
   {
     "api": "NSStringTransformLatinToHangul",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md"
   },
   {
     "api": "NSStringTransformLatinToHebrew",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md"
   },
   {
     "api": "NSStringTransformLatinToHiragana",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md"
   },
   {
     "api": "NSStringTransformLatinToKatakana",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md"
   },
   {
     "api": "NSStringTransformLatinToThai",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md"
   },
   {
     "api": "NSStringTransformMandarinToLatin",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md"
   },
   {
     "api": "NSStringTransformStripCombiningMarks",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md"
   },
   {
     "api": "NSStringTransformStripDiacritics",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md"
   },
   {
     "api": "NSStringTransformToLatin",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md"
   },
   {
     "api": "NSStringTransformToUnicodeName",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md"
   },
   {
     "api": "NSStringTransformToXMLHex",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSStringTransform.md"
   },
   {
     "api": "NSURLComponents",
@@ -1071,7 +1087,8 @@
     "api": "NSURLErrorBackgroundTaskCancelledReasonKey",
     "kind": "constant",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURLSession.md"
   },
   {
     "api": "NSURLQueryItem",
@@ -1114,7 +1131,8 @@
     "api": "NSURLSessionDownloadTaskResumeData",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURLSession.md"
   },
   {
     "api": "NSURLSessionTask",
@@ -1128,26 +1146,30 @@
     "api": "NSURLSessionTaskPriorityDefault",
     "kind": "constant",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURLSession.md"
   },
   {
     "api": "NSURLSessionTaskPriorityHigh",
     "kind": "constant",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURLSession.md"
   },
   {
     "api": "NSURLSessionTaskPriorityLow",
     "kind": "constant",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURLSession.md"
   },
   {
     "api": "NSURLSessionTransferSizeUnknown",
     "kind": "constant",
     "introduced": "7.0",
     "minimum": "5.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURLSession.md"
   },
   {
     "api": "NSURLSessionUploadTask",

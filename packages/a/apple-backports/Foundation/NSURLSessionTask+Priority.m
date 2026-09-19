@@ -17,6 +17,8 @@ static char CharonPriorityKey;
 
 - (void)setPriority:(float)priority
 {
+    if (priority < 0 || priority > 1)
+        return;
     objc_setAssociatedObject(self, &CharonPriorityKey, @(priority), OBJC_ASSOCIATION_RETAIN);
 }
 

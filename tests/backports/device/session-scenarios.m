@@ -414,6 +414,14 @@ static NSArray *scenario_configuration(SessionHarness *harness)
     [transcript addObject:[NSString stringWithFormat:@"priority default=%g", first.priority]];
     first.priority = NSURLSessionTaskPriorityHigh;
     [transcript addObject:[NSString stringWithFormat:@"priority set=%g constants=%g/%g/%g unknown=%lld", first.priority, NSURLSessionTaskPriorityLow, NSURLSessionTaskPriorityDefault, NSURLSessionTaskPriorityHigh, NSURLSessionTransferSizeUnknown]];
+    NSMutableArray *kept = [NSMutableArray array];
+    float priorities[] = {0, 1, 0.3f, -0.1f, 1.0001f, 2, -5, INFINITY};
+    for (size_t index = 0; index < sizeof priorities / sizeof *priorities; index++) {
+        first.priority = priorities[index];
+        [kept addObject:[NSString stringWithFormat:@"%g", first.priority]];
+    }
+    first.priority = NSURLSessionTaskPriorityHigh;
+    [transcript addObject:[@"priority kept " stringByAppendingString:[kept componentsJoinedByString:@" "]]];
     [first suspend];
     [first suspend];
     [transcript addObject:[NSString stringWithFormat:@"suspend unresumed state=%ld", (long)first.state]];
@@ -1077,6 +1085,7 @@ NSDictionary *session_expected_transcripts(void)
             @"task description=first copy-same=1",
             @"priority default=0.5",
             @"priority set=0.75 constants=0.25/0.5/0.75 unknown=-1",
+            @"priority kept 0 1 0.3 0.3 0.3 0.3 0.3 0.3",
             @"suspend unresumed state=1",
             @"cancel unresumed state=2",
             @"nil request exception=NSInvalidArgumentException",
