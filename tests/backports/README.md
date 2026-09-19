@@ -16,6 +16,7 @@ inputs.
     sh host/keyedarchive11/run.sh  writes device/keyedarchive11-expectations.h when it passes
     sh host/foundation11/run.sh    writes device/foundation11-expectations.h when it passes
     sh host/validatedformat/run.sh [pairs]
+    sh host/fuzz/run.sh percentencoding|stringcase|calendar [rounds] [seed]
     sh host/directionaledges/run.sh  writes device/directionaledges-expectations.h when it passes
     sh host/directionalmargins/run.sh
     sh host/contentsize/run.sh
@@ -107,6 +108,18 @@ on a pair whose arguments it misreads. This method once slipped through the Foun
 called the host's own initializer, so the port's check never ran on the host.
 The port now does its work in one static function, and the fuzzer calls it
 directly.
+
+`host/fuzz/run.sh` runs one of three fuzzers against the host's Foundation:
+`percentencoding` (percent encoding and the URL character sets, Base64 of
+strings and data), `stringcase` (localized case, containment and transforms)
+and `calendar` (the `NSCalendar` and `NSDateComponents` methods of iOS 8).
+Each draws its inputs from a seeded generator and prints the seed, so a run can
+be repeated with `run.sh <fuzzer> 0 <seed>`. Every difference is filed under a
+category, one per method or option, and the first three of each are printed.
+The host is newer than any release the port follows, so a difference is not by
+itself a bug in the port: a category listed in `host/fuzz/tolerated/<fuzzer>.txt`,
+with the reason on the same line after a tab, is counted but does not fail the
+run. Any other category does.
 
 `host/systemspacing/run.sh` holds the system spacing of a layout anchor to the
 host's UIKit, comparing the whole shape of the constraint each method returns -
