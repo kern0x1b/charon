@@ -98,6 +98,8 @@ static NSString *device_tolerance(NSString *name)
         return @"iOS 6 computes no quarter component, so the backport derives it from the month";
     if ([name hasPrefix:@"locale."])
         return @"iOS 6 carries older locale data than macOS 27";
+    if ([name isEqualToString:@"url.dataRepresentation.latin1.string"])
+        return @"iOS 6 CFURL escapes the string of a URL read as ISO Latin 1 in ISO Latin 1, not in UTF-8";
     if ([name isEqualToString:@"url.representation.5"] || [name isEqualToString:@"url.representation.8"])
         return @"iOS 6 CFURL keeps %00 and %2F percent-encoded in a file system representation";
     return nil;
