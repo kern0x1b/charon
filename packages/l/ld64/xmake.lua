@@ -13,6 +13,16 @@ package("ld64")
                   "cf939c661aa288da773e59acf8ab916bb6c322bf7abe9130c09a66bcc98fdc5a")
     add_deps("cmake", "ninja", {kind = "binary"})
 
+    -- This is a specific cctools-port ld64 that still inserts armv7 branch
+    -- islands; the system /usr/bin/ld is not it. Without an on_fetch a
+    -- toolchain package is looked for on the system first, and a clean store
+    -- finds Apple's ld under this name, never builds ours, and leaves an empty
+    -- bin that a dependent (iphoneos-sdk) then passes to -fuse-ld. Refuse the
+    -- system linker outright so the store always builds ours.
+    on_fetch(function (package)
+        return nil
+    end)
+
     on_install("@macosx", function (package)
         import("lib.detect.find_tool")
         local llvm_config = find_tool("llvm-config", {paths = {"$(env LLVM_PREFIX)/bin", "/opt/homebrew/opt/llvm/bin", "/usr/local/opt/llvm/bin"}})
