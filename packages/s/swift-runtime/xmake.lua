@@ -102,7 +102,11 @@ package("swift-runtime")
             -- nothing the UIKit backports carry, and a daemon built against this runtime keeps UIKit out of its process.
             package:add("deps", "charon@apple-backports", {alias = "apple-backports", configs = {coredata = true, uikit = package:config("backports_uikit") or nil}})
         end
-        for _, library in ipairs(libraries) do
+        -- A shared runtime is linked by what a program imports: the compiler records the libraries of the modules it imports in
+        -- the object, and those are linked. A program that never imports UIKit has no reference to the overlay of UIKit, so it
+        -- loads no UIKit and depends on no package that holds it. Naming no library at all would have the build link every
+        -- one it finds, so the standard library, which every program has, is the one named.
+        for _, library in ipairs(package:config("shared") and {"swiftCore"} or libraries) do
             package:add("links", library)
         end
         if package:config("shared") then
@@ -593,13 +597,26 @@ package("swift-runtime")
             end
             -- The C++ runtime is the package of charon@libcxx, and these depend on exactly that build of it.
             local cxx = runtime.package_name("libcxx", libcxx:buildhash())
+            local depends, ui_depends = {string.format("%s (= %s)", cxx, runtime.package_version(libcxx:buildhash()))}, {string.format("%s (= %s)", name, version)}
+            -- Overlays linked against the backports load them from their package, at the version they were built from or a
+            -- later one: the package that holds an overlay depends on it.
+            if package:config("backports") then
+                local backports = import("apple.backports", {rootdir = modules, anonymous = true})
+                local debs = os.files(path.join(backported:installdir("share"), backports.package_name() .. "_*.deb"))
+                assert(#debs == 1, "the apple-backports install holds " .. #debs .. " packages instead of one")
+                local needed = string.format("%s (>= %s)", backports.package_name(), path.filename(debs[1]):match("^[^_]+_([^_]+)_"))
+                table.insert(depends, needed)
+                if package:config("backports_uikit") then
+                    table.insert(ui_depends, needed)
+                end
+            end
             runtime.write({packages = {{name = name, version = version, title = "Swift runtime " .. package:buildhash():sub(1, 8),
                                         description = "The Swift runtime and the overlays of one build of Charon's charon@swift-runtime,",
-                                        depends = {string.format("%s (= %s)", cxx, runtime.package_version(libcxx:buildhash()))},
+                                        depends = depends,
                                         libraries = libraries},
                                        {name = ui, version = version, title = "Swift runtime UI " .. package:buildhash():sub(1, 8),
                                         description = "The overlays of QuartzCore and UIKit of one build of Charon's charon@swift-runtime,",
-                                        depends = {string.format("%s (= %s)", name, version)},
+                                        depends = ui_depends,
                                         libraries = ui_libraries}},
                            root = path.join(package:installdir("share"), "root"), workdir = path.absolute("shared-work"),
                            outputdir = package:installdir("share"),

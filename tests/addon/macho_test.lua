@@ -205,6 +205,22 @@ local function input_minimum_failures(macho, folder)
     return found
 end
 
+-- What an object asks the linker for on behalf of what it imports (a Swift object does it for every module) is read back
+-- as the libraries and frameworks, in the order the compiler wrote them.
+local function linker_option_failures(macho, folder)
+    local found = {}
+    io.writefile(path.join(folder, "asks.c"), "int kept;\n")
+    fixtures.run(folder, "xcrun", {"clang", "-c", "-target", "armv7-apple-ios", "-miphoneos-version-min=6.0", "-Xclang", "--linker-option=-lasked", "-Xclang", "--linker-option=-lsecond", "-o", "asks.o", "asks.c"})
+    local asked = {}
+    for _, options in ipairs(macho.images(macho.read(path.join(folder, "asks.o")))[1].linker_options) do
+        table.insert(asked, table.concat(options, " "))
+    end
+    if table.concat(asked, ",") ~= "-lasked,-lsecond" then
+        table.insert(found, "an object that asks for libasked and libsecond must be read as -lasked then -lsecond, got " .. table.concat(asked, ","))
+    end
+    return found
+end
+
 function failures(opt)
     local macho = import("apple.macho", {rootdir = opt.modules, anonymous = true})
     local compat = import("apple.compat", {rootdir = opt.modules, anonymous = true})
@@ -217,6 +233,7 @@ function failures(opt)
     table.join2(found, signing_failures(signing, folder, opt.ldid))
     table.join2(found, weak_import_failures(macho, compat, folder, opt.ld64))
     table.join2(found, input_minimum_failures(macho, folder))
+    table.join2(found, linker_option_failures(macho, folder))
     os.tryrm(folder)
     return found
 end

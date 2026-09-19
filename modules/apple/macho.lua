@@ -23,6 +23,7 @@ local LC_SUB_LIBRARY = 0x15
 local LC_LOAD_WEAK_DYLIB = 0x80000018
 local LC_SEGMENT_64 = 0x19
 local LC_REEXPORT_DYLIB = 0x8000001F
+local LC_LINKER_OPTION = 0x2D
 local LC_ENCRYPTION_INFO = 0x21
 local LC_DYLD_INFO = 0x22
 local LC_DYLD_INFO_ONLY = 0x80000022
@@ -83,7 +84,7 @@ function image(data, base)
     local cputype, cpusubtype, filetype, ncmds, _, flags = string.unpack("<i4i4I4I4I4I4", data, base + 5)
     local found = {base = base, cputype = cputype, cpusubtype = cpusubtype & 0xFFFFFF, filetype = filetype, flags = flags,
                    wide = wide, segments = {}, sections = {}, libraries = {}, library_strength = {}, reexports = {},
-                   sub_names = {}, commands = {}}
+                   sub_names = {}, commands = {}, linker_options = {}}
     local at = base + (wide and 32 or 28)
     for _ = 1, ncmds do
         local command, size = string.unpack("<I4I4", data, at + 1)
@@ -126,6 +127,15 @@ function image(data, base)
             found.umbrella = cstring(data, at + string.unpack("<I4", data, at + 9))
         elseif command == LC_SUB_UMBRELLA or command == LC_SUB_LIBRARY then
             table.insert(found.sub_names, cstring(data, at + string.unpack("<I4", data, at + 9)))
+        elseif command == LC_LINKER_OPTION then
+            -- What the compiler asks the linker for on behalf of the modules the object imports, one argument list per command.
+            local count, arguments, cursor = string.unpack("<I4", data, at + 9), {}, at + 12
+            for _ = 1, count do
+                local text = cstring(data, cursor)
+                table.insert(arguments, text)
+                cursor = cursor + #text + 1
+            end
+            table.insert(found.linker_options, arguments)
         elseif command == LC_ID_DYLIB then
             found.identity = cstring(data, at + string.unpack("<I4", data, at + 9))
         elseif LIBRARY_COMMANDS[command] then

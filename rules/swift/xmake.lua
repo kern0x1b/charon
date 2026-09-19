@@ -33,11 +33,6 @@ rule("swift")
         -- daemon in its package's folder, an application inside its bundle. A shared runtime is a package of its own that
         -- the program depends on instead: it carries none of it, and its libc++ is the one in that package's folder.
         local runtime = target:pkg("swift-runtime")
-        if runtime and runtime:requireconf("configs", "shared") then
-            -- The runtime's libraries are all on the link line, and the program loads the ones it uses: a daemon that
-            -- never touches UIKit loads no UIKit overlay, and depends on no package that holds it.
-            target:add("ldflags", "-Wl,-dead_strip_dylibs", {force = true})
-        end
         if runtime and not runtime:requireconf("configs", "shared") then
             for _, carried in ipairs({"swift-runtime", "libcxx"}) do
                 target:add("values", "charon.libraries", carried)
@@ -82,6 +77,34 @@ rule("swift")
                     end
                 end
                 target:add("values", "swift.flags", "-vfsoverlay", lifted)
+            end
+        end
+    end)
+
+    -- A shared runtime is linked by what the program imports. The compiler records the libraries of the modules an object
+    -- imports in the object; they are named here, as libraries, so that they come before the frameworks on the link line:
+    -- left to the object they would come after them, and a symbol of an overlay would bind to the framework of the same
+    -- name, which the SDK's stub also exports and the device does not. A program that imports no UIKit names no overlay of
+    -- UIKit, loads no UIKit, and depends on no package that holds it.
+    before_link(function (target)
+        local runtime = target:pkg("swift-runtime")
+        local objectfile = target:data("swift.objectfile")
+        if not (runtime and runtime:requireconf("configs", "shared") and objectfile and os.isfile(objectfile)) then
+            return
+        end
+        local macho = import("@self.apple.macho")
+        local folders = {}
+        for _, name in ipairs((table.wrap((runtime:envs() or {}).CHARON_SHARED_PACKAGE)[1] or ""):split(";")) do
+            table.insert(folders, path.join(runtime:installdir(), "share", "root", "usr", "lib", "charon", (name:match("^([^=]+)"))))
+        end
+        for _, options in ipairs(macho.images(macho.read(objectfile))[1].linker_options) do
+            local library = #options == 1 and options[1]:match("^%-l(.+)$")
+            for _, folder in ipairs(library and folders or {}) do
+                if os.isfile(path.join(folder, "lib" .. library .. ".dylib")) then
+                    target:add("linkdirs", folder)
+                    target:add("links", library)
+                    break
+                end
             end
         end
     end)
