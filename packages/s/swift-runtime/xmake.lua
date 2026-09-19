@@ -65,11 +65,13 @@ package("swift-runtime")
         checkout.pinned(opt.sourcedir, sources)
     end)
 
-    local digests = {"xmake.lua=" .. hash.sha256(path.join(os.scriptdir(), "xmake.lua"))}
+    -- The Lua this is made of enters the build hash as the digest in digest.lua, which leaves comments out
+    -- (modules/digest.lua): rewording one is not a new runtime.
+    includes(path.join(os.scriptdir(), "digest.lua"))
+    local digests = {"sources=" .. swift_runtime_sources_digest}
     for _, patch in ipairs(os.files(path.join(os.scriptdir(), "patches", "**.patch"))) do
         table.insert(digests, path.relative(patch, path.join(os.scriptdir(), "patches")) .. "=" .. hash.sha256(patch))
     end
-    table.insert(digests, "shared_runtime.lua=" .. hash.sha256(path.join(os.scriptdir(), "..", "..", "..", "modules", "apple", "shared_runtime.lua")))
     table.sort(digests)
     add_configs("recipe", {description = "The digest of this recipe and the changes it makes to the runtime's sources, so a changed flag or patch is a different runtime.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
 
