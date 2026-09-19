@@ -17,6 +17,7 @@ package("swift-runtime")
     -- Swift overlay comes from swift-6.2-RELEASE, the last release whose sources carry it, because Synchronization and
     -- Observation import Darwin and the SDK has only an interface for arm64.
     local libraries = {"swiftCore", "swiftSwiftOnoneSupport", "swift_Concurrency", "swiftDarwin", "swiftObjectiveC",
+                       "swiftCoreFoundation", "swiftCoreGraphics",
                        "swiftSynchronization",
                        "swift_RegexParser", "swift_StringProcessing", "swiftRegexBuilder", "swiftObservation"}
 
@@ -33,7 +34,8 @@ package("swift-runtime")
          url = "https://github.com/swiftlang/swift.git", sparse = {"/stdlib/public/Platform/", "/LICENSE.txt"}},
         {name = "overlays", tag = "swift-5.3.3-RELEASE", commit = "a51d2fefc70a41cf765853739c5037c182bdaad9",
          url = "https://github.com/swiftlang/swift.git",
-         sparse = {"/stdlib/public/Darwin/ObjectiveC/", "/stdlib/public/SwiftShims/ObjectiveCOverlayShims.h", "/LICENSE.txt"}}
+         sparse = {"/stdlib/public/Darwin/ObjectiveC/", "/stdlib/public/Darwin/CoreFoundation/",
+                   "/stdlib/public/Darwin/CoreGraphics/", "/stdlib/public/SwiftShims/ObjectiveCOverlayShims.h", "/LICENSE.txt"}}
     }
 
     on_download(function (package, opt)
@@ -42,8 +44,8 @@ package("swift-runtime")
     end)
 
     local digests = {"xmake.lua=" .. hash.sha256(path.join(os.scriptdir(), "xmake.lua"))}
-    for _, patch in ipairs(os.files(path.join(os.scriptdir(), "patches", "*.patch"))) do
-        table.insert(digests, path.filename(patch) .. "=" .. hash.sha256(patch))
+    for _, patch in ipairs(os.files(path.join(os.scriptdir(), "patches", "**.patch"))) do
+        table.insert(digests, path.relative(patch, path.join(os.scriptdir(), "patches")) .. "=" .. hash.sha256(patch))
     end
     table.sort(digests)
     add_configs("recipe", {description = "The digest of this recipe and the changes it makes to the runtime's sources, so a changed flag or patch is a different runtime.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
@@ -269,22 +271,55 @@ package("swift-runtime")
             io.writefile(shim_modules, io.readfile(shim_modules) ..
                          "\nmodule _SwiftObjectiveCOverlayShims {\n  header \"ObjectiveCOverlayShims.h\"\n}\n")
         end
-        local objc_module = path.join(install, "ObjectiveC.swiftmodule")
-        os.mkdir(objc_module)
-        local objc_flags = table.join({"-target", triple, "-resource-dir", resources, "-module-name", "ObjectiveC",
-                                       "-parse-as-library", "-swift-version", "5", "-O", "-wmo",
-                                       "-Xfrontend", "-disable-implicit-concurrency-module-import",
-                                       "-Xfrontend", "-disable-implicit-string-processing-module-import"}, use_ld,
-                                      runtime_flags, swift.availability(source))
-        os.vrunv(swiftc, table.join(objc_flags, {"-emit-module", "-emit-module-path",
-                 path.join(objc_module, package:arch() .. "-apple-ios.swiftmodule"),
-                 "-emit-object", "-module-link-name", "swiftObjectiveC", "-o", path.join(generated, "ObjectiveC.o"),
-                 path.join(path.absolute("overlays"), "stdlib", "public", "Darwin", "ObjectiveC", "ObjectiveC.swift")}))
-        os.vrunv(swiftc, table.join(objc_flags, {"-emit-library", "-o", path.join(install, "libswiftObjectiveC.dylib"),
-                 path.join(generated, "ObjectiveC.o"), "-Xlinker", "-install_name", "-Xlinker",
-                 "@rpath/libswiftObjectiveC.dylib", "-L" .. install, "-lswiftCore", "-lswiftDarwin"}))
-        offer(path.join(install, "ObjectiveC.swiftmodule"))
-        offer(path.join(install, "libswiftObjectiveC.dylib"))
+        -- The overlays above it are the release's own sources too, built by today's compiler in the language mode they were
+        -- written for. What of them the SDK of today no longer lets them write is changed by the patches beside them.
+        local overlays = path.absolute("overlays")
+        local overlay_patches = os.files(path.join(package:scriptdir(), "patches", "overlays", "*.patch"))
+        table.sort(overlay_patches)
+        for _, patch in ipairs(overlay_patches) do
+            os.vrunv("patch", {"-p1", "-i", patch}, {curdir = overlays})
+        end
+        local function overlay_sources_of(name, files)
+            local found = {}
+            for _, file in ipairs(files) do
+                table.insert(found, path.join(overlays, "stdlib", "public", "Darwin", name, file))
+            end
+            return found
+        end
+        -- One overlay: its module, in the layout the others are installed in, and its library, which a port finds by the
+        -- run path it carries.
+        local function build_overlay(name, overlay_sources, links)
+            local module = path.join(install, name .. ".swiftmodule")
+            os.mkdir(module)
+            local flags = table.join({"-target", triple, "-resource-dir", resources, "-module-name", name,
+                                      "-parse-as-library", "-swift-version", "5", "-O", "-wmo",
+                                      "-Xfrontend", "-disable-implicit-concurrency-module-import",
+                                      "-Xfrontend", "-disable-implicit-string-processing-module-import"}, use_ld,
+                                     runtime_flags, swift.availability(source))
+            local object = path.join(generated, name .. ".o")
+            os.vrunv(swiftc, table.join(flags, {"-emit-module", "-emit-module-path",
+                     path.join(module, package:arch() .. "-apple-ios.swiftmodule"),
+                     "-emit-object", "-module-link-name", "swift" .. name, "-o", object}, overlay_sources))
+            os.vrunv(swiftc, table.join(flags, {"-emit-library", "-o", path.join(install, "libswift" .. name .. ".dylib"),
+                     object, "-Xlinker", "-install_name", "-Xlinker", "@rpath/libswift" .. name .. ".dylib",
+                     "-L" .. install, "-lswiftCore"}, links))
+            offer(module)
+            offer(path.join(install, "libswift" .. name .. ".dylib"))
+        end
+        build_overlay("ObjectiveC", overlay_sources_of("ObjectiveC", {"ObjectiveC.swift"}), {"-lswiftDarwin"})
+        build_overlay("CoreFoundation", overlay_sources_of("CoreFoundation", {"CoreFoundation.swift"}),
+                      {"-lswiftDarwin", "-framework", "CoreFoundation"})
+        -- CGFloat is generated for the width of the target's pointer, as the release's own build generated it.
+        local graphics = path.join(generated, "CGFloat.swift")
+        os.vrunv("python3", {path.join(source, "utils", "gyb.py"),
+                             "-DCMAKE_SIZEOF_VOID_P=" .. (package:arch() == "arm64" and "8" or "4"),
+                             "--line-directive", "", "-o", graphics,
+                             path.join(overlays, "stdlib", "public", "Darwin", "CoreGraphics", "CGFloat.swift.gyb")})
+        -- Private.swift is left out: it is the release's migration aid, a declaration of each C call the overlay renamed,
+        -- unavailable and ending in fatalError, and in the overlay's own module it hides the C calls the patches reach.
+        build_overlay("CoreGraphics", table.join({graphics}, overlay_sources_of("CoreGraphics", {"CoreGraphics.swift", "Geometry.swift"})),
+                      {"-lswiftDarwin", "-lswiftObjectiveC", "-lswiftCoreFoundation",
+                       "-framework", "CoreGraphics", "-framework", "CoreFoundation"})
 
         -- The supplemental libraries, each its own project, against the standard library built above.
         for _, library in ipairs({"Synchronization", "Observation", "StringProcessing"}) do
