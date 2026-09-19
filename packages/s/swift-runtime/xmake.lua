@@ -371,6 +371,26 @@ package("swift-runtime")
         for _, patch in ipairs(uikit_patches) do
             os.vrunv("patch", {"-p1", "-i", patch}, {curdir = uikit})
         end
+        if package:config("backports_uikit") then
+            -- What the UIKit backports carry of the iOS 11 wrappers: UIFontMetrics through UIFont.TextStyle.metrics, and the
+            -- comparison of content size categories, from iOS 7 where the type came. NSDirectionalEdgeInsets stays marked (the registry does not carry
+            -- every user of the type), and so do the focus and drag and drop wrappers, which nobody carries.
+            local file = path.join(uikit, "stdlib", "public", "Darwin", "UIKit", "UIKit.swift")
+            local text = io.readfile(file)
+            local function lowered(block)
+                return (block:gsub("@available%(iOS 11%.0", "@available(iOS " .. minimum))
+            end
+            local count
+            text, count = text:gsub("(extension UIFont%.TextStyle {.-\n})", lowered)
+            assert(count == 1, "UIKit.swift has no extension of UIFont.TextStyle")
+            -- UIContentSizeCategory itself stays at iOS 7 (one of its users, a limit on a view, is iOS 15 and not carried),
+            -- and a member cannot be more available than the extension that holds it: its comparison comes down to 7
+            text, count = text:gsub("(extension UIContentSizeCategory {.-\n}\n)", function (block)
+                return (block:gsub("@available%(iOS 11%.0", "@available(iOS 7.0"))
+            end)
+            assert(count == 1, "UIKit.swift has no extension of UIContentSizeCategory")
+            io.writefile(file, text)
+        end
         os.vcp(path.join(uikit, "stdlib", "public", "SwiftShims", "UIKitOverlayShims.h"), installed_shims .. "/")
         if not io.readfile(shim_modules):find("_SwiftUIKitOverlayShims", 1, true) then
             io.writefile(shim_modules, io.readfile(shim_modules) ..
