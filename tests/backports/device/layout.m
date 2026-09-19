@@ -769,6 +769,25 @@ static void test_activation(void)
         name = exception.name;
     }
     CHECK_EQUAL(name, NSGenericException, "activating without a common ancestor raises NSGenericException");
+
+    UIView *top = [UIView new];
+    UIView *member = [UIView new];
+    [top addSubview:member];
+    UILayoutGuide *guide = [UILayoutGuide new];
+    NSLayoutConstraint *ownerless = [guide.widthAnchor constraintEqualToConstant:5];
+    ownerless.active = YES;
+    CHECK(!ownerless.active, "a guide without an owner takes no constraint");
+    [top addLayoutGuide:guide];
+    NSLayoutConstraint *pair = [guide.leadingAnchor constraintEqualToAnchor:member.leadingAnchor];
+    NSLayoutConstraint *size = [guide.widthAnchor constraintEqualToConstant:5];
+    pair.active = YES;
+    size.active = YES;
+    CHECK([top.constraints indexOfObjectIdenticalTo:pair] != NSNotFound, "a constraint between a guide and a view is held by their common ancestor");
+    CHECK([top.constraints indexOfObjectIdenticalTo:size] != NSNotFound, "a guide's own size constraint is held by its owning view");
+    [top removeLayoutGuide:guide];
+    CHECK(!pair.active && !size.active && top.constraints.count == 0, "removing a guide takes its constraints with it");
+    [top addLayoutGuide:guide];
+    CHECK(!pair.active && !size.active && top.constraints.count == 0, "adding the guide again does not bring them back");
 }
 
 static void test_margins(void)

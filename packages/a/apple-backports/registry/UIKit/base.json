@@ -4,14 +4,16 @@
     "kind": "method",
     "introduced": "8.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/NSLayoutConstraintActivation.md"
   },
   {
     "api": "+[NSLayoutConstraint deactivateConstraints:]",
     "kind": "method",
     "introduced": "8.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/NSLayoutConstraintActivation.md"
   },
   {
     "api": "+[UIColor systemBlueColor]",
@@ -118,14 +120,16 @@
     "kind": "method",
     "introduced": "8.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/NSLayoutConstraintActivation.md"
   },
   {
     "api": "-[NSLayoutConstraint setActive:]",
     "kind": "method",
     "introduced": "8.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/NSLayoutConstraintActivation.md"
   },
   {
     "api": "-[UIApplication currentUserNotificationSettings]",

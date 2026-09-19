@@ -658,6 +658,85 @@ static void test_activation(void)
     @try { [ours setActive:YES constraint:orphan]; } @catch (NSException *exception) { ourException = exception.name; }
     CHECK_EQUAL(ourException, systemException, "activating without a common ancestor raises the same exception");
     CHECK(![ours isActive:orphan], "failed activation leaves the constraint inactive");
+    NSMutableArray *records[2] = {[NSMutableArray array], [NSMutableArray array]};
+    for (int index = 0; index < 2; index++) {
+        Flavor *flavor = index ? ours : system;
+        NSMutableArray *record = records[index];
+        UIView *top = [UIView new], *first = [UIView new], *second = [UIView new], *child = [UIView new];
+        [top addSubview:first];
+        [top addSubview:second];
+        [first addSubview:child];
+        NSArray *names = @[@"top", @"first", @"second", @"child"];
+        NSArray *views = @[top, first, second, child];
+        NSString * (^holder)(NSLayoutConstraint *) = ^NSString *(NSLayoutConstraint *constraint) {
+            for (NSUInteger position = 0; position < views.count; position++)
+                if ([[views[position] constraints] indexOfObjectIdenticalTo:constraint] != NSNotFound)
+                    return names[position];
+            return @"none";
+        };
+        NSLayoutConstraint *size = [NSLayoutConstraint constraintWithItem:child attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:5];
+        [flavor setActive:YES constraint:size];
+        [record addObject:[@"a size constraint is held by " stringByAppendingString:holder(size)]];
+        UIView *loneView = [UIView new];
+        NSLayoutConstraint *lone = [NSLayoutConstraint constraintWithItem:loneView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:5];
+        [flavor setActive:YES constraint:lone];
+        [record addObject:[NSString stringWithFormat:@"a view without a superview holds its own size constraint %d", [loneView.constraints indexOfObjectIdenticalTo:(id)lone] != NSNotFound]];
+        NSLayoutConstraint *ancestor = [NSLayoutConstraint constraintWithItem:first attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:child attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+        [flavor setActive:YES constraint:ancestor];
+        [record addObject:[@"a constraint between a view and its descendant is held by " stringByAppendingString:holder(ancestor)]];
+        NSLayoutConstraint *leaving = [NSLayoutConstraint constraintWithItem:child attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:second attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+        [flavor setActive:YES constraint:leaving];
+        [second removeFromSuperview];
+        [record addObject:[NSString stringWithFormat:@"a constraint outlives its view's removal: active %d held by %@", [flavor isActive:leaving], holder(leaving)]];
+        NSLayoutConstraint *added = [NSLayoutConstraint constraintWithItem:child attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:5];
+        [top addConstraint:added];
+        [record addObject:[NSString stringWithFormat:@"a constraint added by hand is active %d", [flavor isActive:added]]];
+        [flavor setActive:YES constraint:added];
+        [record addObject:[@"activating it again leaves it on " stringByAppendingString:holder(added)]];
+        [top removeConstraint:added];
+        [record addObject:[NSString stringWithFormat:@"removing it by hand makes it inactive %d", ![flavor isActive:added]]];
+        NSLayoutConstraint *never = [NSLayoutConstraint constraintWithItem:child attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:9];
+        [flavor setActive:NO constraint:never];
+        [record addObject:@"deactivating a constraint that was never active is quiet"];
+        [flavor activate:nil];
+        [flavor deactivate:nil];
+        [record addObject:@"a nil array of constraints is quiet"];
+        UIView *third = [UIView new], *stranger = [UIView new];
+        [top addSubview:third];
+        NSLayoutConstraint *good = [NSLayoutConstraint constraintWithItem:third attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:5];
+        NSLayoutConstraint *bad = [NSLayoutConstraint constraintWithItem:third attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:stranger attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+        NSLayoutConstraint *after = [NSLayoutConstraint constraintWithItem:third attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:5];
+        NSString *raised = @"nothing";
+        @try { [flavor activate:@[good, bad, after]]; } @catch (NSException *exception) { raised = exception.name; }
+        [record addObject:[NSString stringWithFormat:@"a bad constraint in a list raises %@ after the ones before it: %d %d %d", raised, [flavor isActive:good], [flavor isActive:bad], [flavor isActive:after]]];
+        NSLayoutConstraint *twice = [NSLayoutConstraint constraintWithItem:third attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:9];
+        [flavor activate:@[twice, twice]];
+        NSUInteger copies = 0;
+        for (NSLayoutConstraint *constraint in third.constraints)
+            copies += constraint == twice;
+        [record addObject:[NSString stringWithFormat:@"a constraint listed twice is installed %lu time", (unsigned long)copies]];
+        id guide = [[flavor guideClass] new];
+        NSLayoutConstraint *ownerless = [[flavor anchor:guide named:@"widthAnchor"] constraintEqualToConstant:5];
+        raised = @"nothing";
+        @try { [flavor setActive:YES constraint:ownerless]; } @catch (NSException *exception) { raised = exception.name; }
+        [record addObject:[NSString stringWithFormat:@"a guide without an owner: %@, active %d", raised, [flavor isActive:ownerless]]];
+        [flavor addGuide:guide to:top];
+        NSLayoutConstraint *guided = [[flavor anchor:guide named:@"leadingAnchor"] constraintEqualToAnchor:[flavor anchor:child named:@"leadingAnchor"]];
+        [flavor setActive:YES constraint:guided];
+        [record addObject:[@"a guide and a view are held by " stringByAppendingString:holder(guided)]];
+        NSLayoutConstraint *guideSize = [[flavor anchor:guide named:@"widthAnchor"] constraintEqualToConstant:5];
+        [flavor setActive:YES constraint:guideSize];
+        [record addObject:[@"a guide's own size is held by " stringByAppendingString:holder(guideSize)]];
+        [flavor removeGuide:guide from:top];
+        [record addObject:[NSString stringWithFormat:@"removing a guide takes its constraints with it: %d %d, %lu held", [flavor isActive:guided], [flavor isActive:guideSize], (unsigned long)top.constraints.count]];
+        [flavor addGuide:guide to:top];
+        [record addObject:[NSString stringWithFormat:@"adding it again does not bring them back: %d %d, %lu held", [flavor isActive:guided], [flavor isActive:guideSize], (unsigned long)top.constraints.count]];
+        [flavor setActive:NO constraint:size];
+        [record addObject:[NSString stringWithFormat:@"a deactivated constraint keeps its items %d", size.firstItem == child]];
+    }
+    CHECK(records[0].count == records[1].count, "the activation records are as long");
+    for (NSUInteger position = 0; position < records[0].count && position < records[1].count; position++)
+        CHECK_EQUAL(records[1][position], records[0][position], NAMED(@"activation record %lu: %@", (unsigned long)position, records[0][position]));
 }
 
 @interface MarginsView : UIView

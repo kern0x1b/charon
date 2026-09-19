@@ -5,6 +5,21 @@
 + (instancetype)charon_anchorWithItem:(id)item attribute:(NSLayoutAttribute)attribute;
 @end
 
+@interface CharonLayoutGuideView : UIView {
+@public
+    __weak UILayoutGuide *_guide;
+}
+@end
+
+@implementation CharonLayoutGuideView
+
+- (UILayoutGuide *)charon_guide
+{
+    return _guide;
+}
+
+@end
+
 @implementation UILayoutGuide {
     UIView *_view;
     __weak UIView *_owningView;
@@ -14,7 +29,9 @@
 - (instancetype)init
 {
     if ((self = [super init])) {
-        _view = [[UIView alloc] initWithFrame:CGRectZero];
+        CharonLayoutGuideView *view = [[CharonLayoutGuideView alloc] initWithFrame:CGRectZero];
+        view->_guide = self;
+        _view = view;
         _view.hidden = YES;
         _view.userInteractionEnabled = NO;
         _view.translatesAutoresizingMaskIntoConstraints = NO;

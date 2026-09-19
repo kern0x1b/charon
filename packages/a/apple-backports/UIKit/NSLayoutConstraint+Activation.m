@@ -20,6 +20,27 @@ static UIView *charon_common_ancestor(UIView *first, UIView *second)
     return nil;
 }
 
+@interface NSObject (CharonGuideBacking)
+- (UILayoutGuide *)charon_guide;
+@end
+
+static UILayoutGuide *charon_guide(id item)
+{
+    return [item respondsToSelector:@selector(charon_guide)] ? [item charon_guide] : nil;
+}
+
+static BOOL charon_ownerless(id item)
+{
+    UILayoutGuide *guide = charon_guide(item);
+    return guide && !guide.owningView;
+}
+
+static UIView *charon_holder(UIView *ancestor)
+{
+    UILayoutGuide *guide = charon_guide(ancestor);
+    return guide ? guide.owningView : ancestor;
+}
+
 @implementation NSLayoutConstraint (CharonActivation)
 
 + (void)activateConstraints:(NSArray *)constraints
@@ -46,12 +67,12 @@ static UIView *charon_common_ancestor(UIView *first, UIView *second)
         [container removeConstraint:self];
         return;
     }
-    if (container)
+    if (container || charon_ownerless(self.firstItem) || charon_ownerless(self.secondItem))
         return;
     UIView *ancestor = charon_common_ancestor(self.firstItem, self.secondItem);
     if (!ancestor)
         [NSException raise:NSGenericException format:@"Unable to activate constraint with items %@ and %@ because they have no common ancestor.  Does the constraint reference items in different view hierarchies?  That's illegal.", self.firstItem, self.secondItem];
-    [ancestor addConstraint:self];
+    [charon_holder(ancestor) addConstraint:self];
 }
 
 @end
