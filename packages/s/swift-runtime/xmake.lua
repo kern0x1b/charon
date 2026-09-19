@@ -17,7 +17,7 @@ package("swift-runtime")
     -- Swift overlay comes from swift-6.2-RELEASE, the last release whose sources carry it, because Synchronization and
     -- Observation import Darwin and the SDK has only an interface for arm64.
     local libraries = {"swiftCore", "swiftSwiftOnoneSupport", "swift_Concurrency", "swiftDarwin", "swiftObjectiveC", "swiftDispatch",
-                       "swiftCoreFoundation", "swiftCoreGraphics", "swiftFoundation", "swiftQuartzCore", "swiftUIKit",
+                       "swiftCoreFoundation", "swiftCoreGraphics", "swiftFoundation", "swiftQuartzCore", "swiftUIKit", "swiftCoreData",
                        "swiftSynchronization",
                        "swift_RegexParser", "swift_StringProcessing", "swiftRegexBuilder", "swiftObservation"}
 
@@ -39,10 +39,11 @@ package("swift-runtime")
                    "/stdlib/public/SwiftShims/DispatchOverlayShims.h", "/stdlib/public/Darwin/Foundation/",
                    "/stdlib/public/SwiftShims/Foundation*.h", "/stdlib/public/SwiftShims/NS*Shims.h",
                    "/stdlib/public/SwiftShims/CoreFoundationOverlayShims.h", "/stdlib/public/SwiftShims/CF*Shims.h", "/LICENSE.txt"}},
-        -- UIKit's and QuartzCore's went before the others: swift-5.2.5 is the last release that has them.
+        -- UIKit's, QuartzCore's and CoreData's went before the others: swift-5.2.5 is the last release that has them.
         {name = "uikit", tag = "swift-5.2.5-RELEASE", commit = "71d85a7c28eed8f46241649a723ddf23989139c6",
          url = "https://github.com/swiftlang/swift.git",
-         sparse = {"/stdlib/public/Darwin/UIKit/", "/stdlib/public/Darwin/QuartzCore/", "/stdlib/public/SwiftShims/UIKitOverlayShims.h",
+         sparse = {"/stdlib/public/Darwin/UIKit/", "/stdlib/public/Darwin/QuartzCore/", "/stdlib/public/Darwin/CoreData/",
+                   "/stdlib/public/SwiftShims/UIKitOverlayShims.h",
                    "/LICENSE.txt"}}
     }
 
@@ -424,6 +425,15 @@ package("swift-runtime")
         build_overlay("UIKit", {path.join(uikit, "stdlib", "public", "Darwin", "UIKit", "UIKit.swift"),
                                 generated_from("UIKit", "UIKit_FoundationExtensions.swift")},
                       table.join(foundation_links, {"-lswiftQuartzCore", "-framework", "QuartzCore", "-framework", "UIKit"}), {initializers})
+
+        -- CoreData: the generic fetch and count of a context, CoreData's error codes as CocoaError's, and its one file of
+        -- Objective-C, which makes the classes a fetch answers conform to NSFetchRequestResult where the release does not.
+        local coredata = path.join(uikit, "stdlib", "public", "Darwin", "CoreData")
+        local conformances = path.join(generated, "CoreData.mm.o")
+        os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
+                 toolchain:config("sdkdir"), "-Os", "-c", path.join(coredata, "CoreData.mm"), "-o", conformances})
+        build_overlay("CoreData", {path.join(coredata, "CocoaError.swift"), path.join(coredata, "NSManagedObjectContext.swift")},
+                      table.join(foundation_links, {"-framework", "CoreData"}), {conformances})
 
         -- The supplemental libraries, each its own project, against the standard library built above.
         for _, library in ipairs({"Synchronization", "Observation", "StringProcessing"}) do
