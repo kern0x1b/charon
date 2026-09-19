@@ -70,6 +70,7 @@ package("swift-runtime")
     for _, patch in ipairs(os.files(path.join(os.scriptdir(), "patches", "**.patch"))) do
         table.insert(digests, path.relative(patch, path.join(os.scriptdir(), "patches")) .. "=" .. hash.sha256(patch))
     end
+    table.insert(digests, "shared_runtime.lua=" .. hash.sha256(path.join(os.scriptdir(), "..", "..", "..", "modules", "apple", "shared_runtime.lua")))
     table.sort(digests)
     add_configs("recipe", {description = "The digest of this recipe and the changes it makes to the runtime's sources, so a changed flag or patch is a different runtime.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
 
@@ -82,7 +83,15 @@ package("swift-runtime")
     -- library, and loading it would pull UIKit into the process, so it is a config of its own.
     add_configs("backports_uikit", {description = "With backports: link the overlay of UIKit against libUIKitBackports, for an application that carries charon@apple-backports with its uikit config.", default = false, type = "boolean"})
 
+    -- The runtime as a package of its own, /usr/lib/charon/org.charon.swift-runtime-<build>, that programs depend on and
+    -- share, instead of libraries each of them carries. The build is part of the name: with no library evolution a program
+    -- runs only against the build it was compiled with (see the mark).
+    add_configs("shared", {description = "Install the libraries under absolute install names and write a Debian package that holds them, which the programs built against this runtime depend on instead of carrying the libraries.", default = false, type = "boolean"})
+
     on_load("iphoneos", function (package)
+        if package:config("shared") then
+            package:add("deps", "charon@ldid 2.1.5-procursus7+23.gaf86971", {alias = "ldid"})
+        end
         if package:config("backports_uikit") and not package:config("backports") then
             raise("swift-runtime's backports_uikit config is the application half of the backports config; set backports too")
         end
@@ -94,7 +103,12 @@ package("swift-runtime")
         for _, library in ipairs(libraries) do
             package:add("links", library)
         end
-        package:add("linkdirs", path.join("lib", "swift", "iphoneos"))
+        if package:config("shared") then
+            local runtime = import("apple.shared_runtime", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
+            package:add("linkdirs", path.join("share", "root", "usr", "lib", "charon", runtime.package_name(package:buildhash())))
+        else
+            package:add("linkdirs", path.join("lib", "swift", "iphoneos"))
+        end
         package:data_set("mark", "charon_swift_runtime_" .. package:buildhash())
     end)
 
@@ -563,6 +577,37 @@ package("swift-runtime")
             os.vcp(path.join(compiler:installdir("lib"), "swift", entry), path.join(install, entry))
         end
         os.vcp(path.join(path.absolute("platform"), "LICENSE.txt"), package:installdir("licenses") .. "/")
+        if package:config("shared") then
+            local runtime = import("apple.shared_runtime", {rootdir = modules, anonymous = true})
+            local released
+            local dyld = import("apple.dyld", {rootdir = modules, anonymous = true})
+            for version in io.readfile(path.join(package:scriptdir(), "..", "..", "..", "addons", "c", "charon", "xmake.lua")):gmatch('add_versions%("v(%d[%d%.]*)"') do
+                if not released or dyld.compare_versions(version, released) > 0 then
+                    released = version
+                end
+            end
+            -- libc++ and libc++abi ride in the runtime's folder under the names its libraries and a program link them by: a
+            -- process has one copy of them, and the runtime relies on that copy's locks and thread-local storage.
+            local extra = {}
+            for _, leaf in ipairs({"libc++.1.dylib", "libc++abi.1.dylib"}) do
+                local source = path.join(libcxx:installdir("lib"), leaf)
+                assert(os.isfile(source), "the C++ runtime of charon@libcxx has no " .. leaf)
+                table.insert(extra, {source = source, leaf = leaf})
+            end
+            local name = runtime.package_name(package:buildhash())
+            local libraries = os.files(path.join(platform_dir, "*.dylib"))
+            runtime.write({name = name, version = assert(released, "the addon recipe names no Charon release") .. "+" .. package:buildhash():sub(1, 8),
+                           libraries = libraries, extra = extra,
+                           root = path.join(package:installdir("share"), "root"), workdir = path.absolute("shared-work"),
+                           outputdir = package:installdir("share"),
+                           ldid = path.join(package:dep("ldid"):installdir(), "bin", "ldid"), strip = {"-x"}})
+            -- A program links against the libraries in the package's tree, not against a second copy.
+            for _, library in ipairs(libraries) do
+                os.rm(library)
+            end
+            os.tryrm(path.absolute("shared-work"))
+            package:setenv("CHARON_SWIFT_RUNTIME_SHARED", name)
+        end
         os.tryrm(path.absolute("build"))
         os.tryrm(source)
     end)
@@ -571,9 +616,17 @@ package("swift-runtime")
         local swift = import("apple.swift", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
         local resources = path.join(package:installdir("lib"), "swift")
         local install = path.join(resources, "iphoneos")
+        local libraries = install
+        if package:config("shared") then
+            local shared = import("apple.shared_runtime", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
+            libraries = path.join(package:installdir("share"), "root", shared.folder_of(shared.package_name(package:buildhash())))
+            assert(#os.files(path.join(package:installdir("share"), shared.package_name(package:buildhash()) .. "_*.deb")) == 1,
+                   "the shared runtime wrote no package")
+            assert(#os.files(path.join(install, "*.dylib")) == 0, "the shared runtime keeps a second copy of its libraries")
+        end
         for _, library in ipairs({"swiftCore", "swift_Concurrency", "swiftDarwin", "swiftSynchronization", "swiftObservation",
                                   "swift_StringProcessing", "swift_RegexParser", "swiftRegexBuilder"}) do
-            assert(os.isfile(path.join(install, "lib" .. library .. ".dylib")), "the runtime has no lib" .. library .. ".dylib")
+            assert(os.isfile(path.join(libraries, "lib" .. library .. ".dylib")), "the runtime has no lib" .. library .. ".dylib")
         end
         for _, module in ipairs({"Swift", "_Concurrency", "Darwin", "Synchronization", "Observation", "_StringProcessing"}) do
             assert(os.isdir(path.join(install, module .. ".swiftmodule")) or os.isfile(path.join(install, module .. ".swiftmodule")),
@@ -584,7 +637,7 @@ package("swift-runtime")
             assert(os.exists(path.join(resources, entry)),
                    "the runtime installs no " .. entry .. ", and a port could not use it as a resource directory")
         end
-        local exported = os.iorunv("xcrun", {"nm", "-gU", path.join(install, "libswiftCore.dylib")})
+        local exported = os.iorunv("xcrun", {"nm", "-gU", path.join(libraries, "libswiftCore.dylib")})
         assert(exported:find("%s_" .. package:data("mark") .. "%s"),
                "libswiftCore.dylib does not carry the mark of the build it is, so a program could be linked against another")
 
@@ -622,7 +675,7 @@ package("swift-runtime")
         end
         local function links(mark)
             return try { function ()
-                os.vrunv(toolchain:tool("cc"), table.join(common, {path.join(folder, "port.c"), "-L" .. install, "-lswiftCore",
+                os.vrunv(toolchain:tool("cc"), table.join(common, {path.join(folder, "port.c"), "-L" .. libraries, "-lswiftCore",
                          "-Wl,-u,_" .. mark, "-o", path.join(folder, "port")}))
                 return true
             end }

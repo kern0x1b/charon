@@ -26,15 +26,19 @@ rule("swift")
             raise("target(%s) compiles Swift against the runtime it carries, which links the C++ runtime: add_requires(\"charon@libcxx\", {alias = \"libcxx\"})", target:name())
         end
         target:add("packages", "swift-runtime", "libcxx")
-        -- The runtime is shared libraries; the program carries them the way it carries any package's - a tweak or a
-        -- daemon in its package's folder, an application inside its bundle.
-        for _, carried in ipairs({"swift-runtime", "libcxx"}) do
-            target:add("values", "charon.libraries", carried)
-            target:add("values", "app.frameworks", carried)
-        end
     end)
 
     on_config(function (target)
+        -- The runtime is shared libraries; the program carries them the way it carries any package's - a tweak or a
+        -- daemon in its package's folder, an application inside its bundle. A shared runtime is a package of its own that
+        -- the program depends on instead: it carries none of it, and its libc++ is the one in that package's folder.
+        local runtime = target:pkg("swift-runtime")
+        if runtime and not runtime:requireconf("configs", "shared") then
+            for _, carried in ipairs({"swift-runtime", "libcxx"}) do
+                target:add("values", "charon.libraries", carried)
+                target:add("values", "app.frameworks", carried)
+            end
+        end
         local sourcebatch = target:sourcebatches()["@addon/charon/swift"] or target:sourcebatches()["swift"]
         if sourcebatch and #sourcebatch.sourcefiles > 0 then
             local objectfile = path.join(target:objectdir(), "swift", target:name() .. ".o")

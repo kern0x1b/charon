@@ -41,7 +41,7 @@ function universal(target, architectures, stage)
     end
     for _, architecture in ipairs(architectures) do
         local source = platform.imports_source(target, architecture)
-        local provided = architecture == target:arch() and platform.backport_libraries(target) or {}
+        local provided = architecture == target:arch() and platform.provided_libraries(target) or {}
         dyld.check(source, table.join(merged, provided), installed)
         platform.report_selectors(source, merged, architecture, installed, provided)
     end
@@ -95,16 +95,21 @@ function write(opt)
             os.tryrm(stage)
             local depends = {}
             for _, target in ipairs(described.targets) do
-                local backports = platform.backport_package(target)
-                if backports then
-                    table.insert(depends, string.format("%s (>= %s)", backports.name, backports.version))
+                local dependencies = {}
+                for _, dependency in ipairs({platform.backport_package(target) or false, platform.shared_runtime(target) or false}) do
+                    if dependency then
+                        table.insert(dependencies, dependency)
+                    end
                 end
-                if backports and not carried[backports.deb] then
-                    carried[backports.deb] = true
-                    local copied = path.join(opt.outputdir or config.builddir(), path.filename(backports.deb))
-                    os.vcp(backports.deb, copied)
-                    cprint("${bright green}deb${clear} %s", copied)
-                    table.insert(written, {deb = copied})
+                for _, dependency in ipairs(dependencies) do
+                    table.insert(depends, string.format("%s (%s %s)", dependency.name, dependency.relation, dependency.version))
+                    if not carried[dependency.deb] then
+                        carried[dependency.deb] = true
+                        local copied = path.join(opt.outputdir or config.builddir(), path.filename(dependency.deb))
+                        os.vcp(dependency.deb, copied)
+                        cprint("${bright green}deb${clear} %s", copied)
+                        table.insert(written, {deb = copied})
+                    end
                 end
                 task.run("build", {target = target:name()})
                 task.run("install", {target = target:name(), installdir = stage})

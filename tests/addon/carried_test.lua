@@ -114,6 +114,21 @@ function failures(opt)
     if not errors:find("no Package field", 1, true) then
         table.insert(found, "a control file without Package cannot name the folder, and must be refused: " .. errors)
     end
+    -- A library a package the program depends on installs is pointed at by its installed name, and carried by nobody.
+    local shared = path.join(folder, "shared-tweak.dylib")
+    os.cp(built, shared)
+    local provided = {["libabi.1.dylib"] = "/usr/lib/charon/org.example.shared/libabi.1.dylib"}
+    bundle.retarget({shared}, {}, {provided = provided})
+    listed = references(folder, shared)
+    if not listed:find("/usr/lib/charon/org.example.shared/libabi.1.dylib", 1, true) or listed:find("@rpath", 1, true) then
+        table.insert(found, "a program must load a library its dependency installs from that package's folder: " .. listed)
+    end
+    os.cp(built, shared)
+    os.vrunv("xcrun", {"install_name_tool", "-change", "@rpath/libabi.1.dylib", "/usr/lib/elsewhere/libabi.dylib", shared})
+    errors = fixtures.refusal(function () bundle.retarget({shared}, {}, {provided = provided}) end) or ""
+    if not errors:find("installs that library there", 1, true) then
+        table.insert(found, "a program that loads the library a package installs, under another file name from another folder, must be refused: " .. errors)
+    end
     os.tryrm(folder)
     return found
 end

@@ -110,9 +110,15 @@ local function stem(reference)
     return path.filename(reference):match("^[^.]+")
 end
 
+-- opt.provided: {file name = identity} of libraries a package the program depends on installs; the program is pointed at
+-- them, and carries none of them.
 function retarget(binaries, identities, opt)
     local home = opt and opt.home or "@executable_path/"
+    local provided = opt and opt.provided or {}
     local names = {}
+    for name, identity in pairs(provided) do
+        names[name] = identity
+    end
     for binary, identity in pairs(identities) do
         local image = macho.images(macho.read(binary))[1]
         if image.identity then
@@ -131,9 +137,13 @@ function retarget(binaries, identities, opt)
             end
         end
     end
-    local carried = {}
+    local carried, installed = {}, {}
     for name in pairs(names) do
-        carried[stem(name)] = true
+        if provided[name] then
+            installed[stem(name)] = path.directory(provided[name]) .. "/"
+        else
+            carried[stem(name)] = true
+        end
     end
     local problems = {}
     for _, binary in ipairs(binaries) do
@@ -141,6 +151,8 @@ function retarget(binaries, identities, opt)
             for _, reference in ipairs(image.libraries) do
                 if reference:startswith("@rpath/") then
                     table.insert(problems, string.format("%s still depends on %s", path.filename(binary), reference))
+                elseif installed[stem(reference)] and not reference:startswith(installed[stem(reference)]) then
+                    table.insert(problems, string.format("%s loads %s from outside %s while the package it depends on installs that library there; it would run against whatever the system has, and two copies of one runtime in a process do not agree", path.filename(binary), reference, installed[stem(reference)]))
                 elseif carried[stem(reference)] and not reference:startswith(home) then
                     table.insert(problems, string.format("%s loads %s from outside %s while its package carries that library; it would run against whatever the system has there, and two copies of one runtime in a process do not agree", path.filename(binary), reference, home))
                 end

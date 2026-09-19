@@ -152,6 +152,34 @@ function backport_libraries(target)
     return libraries
 end
 
+-- The runtime a program shares rather than carries: the package charon@swift-runtime wrote for its build, and the libraries
+-- in it under the names the program will find them by.
+function shared_runtime(target)
+    local package = target:pkg("swift-runtime")
+    local name = package and table.wrap((package:envs() or {}).CHARON_SWIFT_RUNTIME_SHARED)[1]
+    if not name then
+        return nil
+    end
+    local folder = "/usr/lib/charon/" .. name
+    local debs = os.files(path.join(package:installdir(), "share", name .. "_*.deb"))
+    if #debs ~= 1 then
+        raise("target(%s) shares the runtime %s, whose install holds %d packages of that name instead of one", target:name(), name, #debs)
+    end
+    local identities, libraries = {}, {}
+    for _, file in ipairs(os.files(path.join(package:installdir(), "share", "root", folder, "*.dylib"))) do
+        identities[path.filename(file)] = folder .. "/" .. path.filename(file)
+        table.insert(libraries, file)
+    end
+    return {deb = debs[1], name = name, version = path.filename(debs[1]):match("^[^_]+_([^_]+)_"), relation = "=",
+            identities = identities, libraries = libraries}
+end
+
+-- What the release's own libraries do not hold and the program finds installed by a package it depends on.
+function provided_libraries(target)
+    local shared = shared_runtime(target)
+    return table.join(backport_libraries(target), shared and shared.libraries or {})
+end
+
 function backport_package(target)
     local libraries = backport_libraries(target)
     if #libraries == 0 then
@@ -161,7 +189,7 @@ function backport_package(target)
     if #debs ~= 1 then
         raise("target(%s) uses apple-backports, whose install holds %d %s packages instead of one", target:name(), #debs, backports.package_name())
     end
-    return {deb = debs[1], name = backports.package_name(), version = path.filename(debs[1]):match("^[^_]+_([^_]+)_")}
+    return {deb = debs[1], name = backports.package_name(), relation = ">=", version = path.filename(debs[1]):match("^[^_]+_([^_]+)_")}
 end
 
 function report_selectors(source, binaries, architecture, folder, provided)
@@ -210,7 +238,7 @@ function verify(target, binary, opt)
                           stripped = opt.stripped})
     if opt.imports ~= false then
         local source = imports_source(target)
-        local provided = backport_libraries(target)
+        local provided = provided_libraries(target)
         dyld.check(source, table.join({binary}, provided))
         report_selectors(source, {binary}, target:arch(), nil, provided)
         report_registry(target, binary)
@@ -246,7 +274,11 @@ function place_carried(target, root, binary)
             end
         end
     end
+    local shared = shared_runtime(target)
     if #libraries == 0 then
+        if shared then
+            bundle.retarget({binary}, {}, {provided = shared.identities})
+        end
         return {binary}
     end
     local folder = carried_folder(target)
@@ -258,12 +290,12 @@ function place_carried(target, root, binary)
         identities[destination] = folder .. "/" .. library.name
         table.insert(binaries, destination)
     end
-    bundle.retarget(binaries, identities, {home = folder .. "/"})
+    bundle.retarget(binaries, identities, {home = folder .. "/", provided = shared and shared.identities})
     return binaries
 end
 
 function verify_placed(target, installed)
-    if #table.wrap(target:values("charon.libraries")) == 0 then
+    if #table.wrap(target:values("charon.libraries")) == 0 and not shared_runtime(target) then
         return verify(target, target:targetfile())
     end
     local root = path.join(target:targetdir(), ".charon", "placed", target:name())
@@ -276,7 +308,7 @@ function verify_placed(target, installed)
         verify(target, placed, {imports = false})
     end
     local source = imports_source(target)
-    local provided = backport_libraries(target)
+    local provided = provided_libraries(target)
     dyld.check(source, table.join(binaries, provided), root)
     report_selectors(source, binaries, target:arch(), root, provided)
 end
@@ -337,7 +369,8 @@ function application(target)
         identities[destination] = "@executable_path/Frameworks/" .. library.name
         table.insert(binaries, destination)
     end
-    bundle.retarget(binaries, identities)
+    local shared = shared_runtime(target)
+    bundle.retarget(binaries, identities, {provided = shared and shared.identities})
     bundle.copy_resources(target, folder)
     bundle.write_plist(path.join(folder, "Info.plist"), bundle.info(target, deployment(target)))
     for _, binary in ipairs(binaries) do
@@ -349,7 +382,7 @@ function application(target)
     end
     if not os.getenv("CHARON_SLICE") then
         local source = imports_source(target)
-        local provided = backport_libraries(target)
+        local provided = provided_libraries(target)
         dyld.check(source, table.join(binaries, provided), folder)
         report_selectors(source, binaries, target:arch(), folder, provided)
     end
