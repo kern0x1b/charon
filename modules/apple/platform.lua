@@ -152,26 +152,43 @@ function backport_libraries(target)
     return libraries
 end
 
--- The runtime a program shares rather than carries: the package charon@swift-runtime wrote for its build, and the libraries
--- in it under the names the program will find them by.
+-- The packages of the runtime a program shares rather than carries: the ones charon@swift-runtime and charon@libcxx wrote
+-- for their builds, and the libraries in them under the names the program will find them by.
+local SHARED = {"swift-runtime", "libcxx"}
+
 function shared_runtime(target)
-    local package = target:pkg("swift-runtime")
-    local name = package and table.wrap((package:envs() or {}).CHARON_SWIFT_RUNTIME_SHARED)[1]
-    if not name then
+    local found = {packages = {}, identities = {}, libraries = {}}
+    for _, alias in ipairs(SHARED) do
+        local package = target:pkg(alias)
+        local name = package and table.wrap((package:envs() or {}).CHARON_SHARED_PACKAGE)[1]
+        if name then
+            local folder = "/usr/lib/charon/" .. name
+            local debs = os.files(path.join(package:installdir(), "share", name .. "_*.deb"))
+            if #debs ~= 1 then
+                raise("target(%s) shares %s, whose install holds %d packages of that name instead of one", target:name(), name, #debs)
+            end
+            for _, file in ipairs(os.files(path.join(package:installdir(), "share", "root", folder, "*.dylib"))) do
+                found.identities[path.filename(file)] = folder .. "/" .. path.filename(file)
+                table.insert(found.libraries, file)
+            end
+            table.insert(found.packages, {deb = debs[1], name = name, relation = "=", version = path.filename(debs[1]):match("^[^_]+_([^_]+)_"),
+                                          needs = table.wrap((package:envs() or {}).CHARON_SHARED_NEEDS)[1]})
+        end
+    end
+    if #found.packages == 0 then
         return nil
     end
-    local folder = "/usr/lib/charon/" .. name
-    local debs = os.files(path.join(package:installdir(), "share", name .. "_*.deb"))
-    if #debs ~= 1 then
-        raise("target(%s) shares the runtime %s, whose install holds %d packages of that name instead of one", target:name(), name, #debs)
+    -- One copy of libc++abi to a process: the runtime and the program name the same build of it.
+    local names = {}
+    for _, shared in ipairs(found.packages) do
+        names[shared.name] = true
     end
-    local identities, libraries = {}, {}
-    for _, file in ipairs(os.files(path.join(package:installdir(), "share", "root", folder, "*.dylib"))) do
-        identities[path.filename(file)] = folder .. "/" .. path.filename(file)
-        table.insert(libraries, file)
+    for _, shared in ipairs(found.packages) do
+        if shared.needs and not names[shared.needs] then
+            raise("target(%s) shares %s, which is linked against %s, and the target itself takes the C++ runtime from a different build; require charon@libcxx with the same configs as the runtime does (packaged)", target:name(), shared.name, shared.needs)
+        end
     end
-    return {deb = debs[1], name = name, version = path.filename(debs[1]):match("^[^_]+_([^_]+)_"), relation = "=",
-            identities = identities, libraries = libraries}
+    return found
 end
 
 -- What the release's own libraries do not hold and the program finds installed by a package it depends on.

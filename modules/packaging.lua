@@ -96,11 +96,11 @@ function write(opt)
             local depends = {}
             for _, target in ipairs(described.targets) do
                 local dependencies = {}
-                for _, dependency in ipairs({platform.backport_package(target) or false, platform.shared_runtime(target) or false}) do
-                    if dependency then
-                        table.insert(dependencies, dependency)
-                    end
+                local backports, shared = platform.backport_package(target), platform.shared_runtime(target)
+                if backports then
+                    table.insert(dependencies, backports)
                 end
+                table.join2(dependencies, shared and shared.packages or {})
                 for _, dependency in ipairs(dependencies) do
                     table.insert(depends, string.format("%s (%s %s)", dependency.name, dependency.relation, dependency.version))
                     if not carried[dependency.deb] then

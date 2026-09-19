@@ -13,11 +13,17 @@ package("libcxx")
     for _, patch in ipairs(os.files(path.join(os.scriptdir(), "patches", "*.patch"))) do
         table.insert(digests, path.filename(patch) .. "=" .. hash.sha256(patch))
     end
+    table.insert(digests, "shared_runtime.lua=" .. hash.sha256(path.join(os.scriptdir(), "..", "..", "..", "modules", "apple", "shared_runtime.lua")))
     table.sort(digests)
     add_configs("recipe", {description = "The digest of this recipe and the patches it applies, so a changed flag or patch is a different runtime.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
 
     add_configs("shared", {description = "The runtime is always the shared pair an application bundles.", default = true, type = "boolean", readonly = true})
     add_configs("operators", {description = "operator new and delete are ordinary definitions in libc++abi, so no image binds them weakly and dyld never coalesces them with another C++ runtime in the process.", default = "not-weak", type = "string", readonly = true})
+
+    -- The pair as a package of its own, /usr/lib/charon/org.charon.libcxx-<build>, which what links against it depends on
+    -- instead of carrying it: a process has one copy of libc++abi, so the programs and the Swift runtime that share it
+    -- name this one.
+    add_configs("packaged", {description = "Install the libraries under absolute install names and write a Debian package that holds them, which what is linked against them depends on instead of carrying them.", default = false, type = "boolean"})
 
     add_includedirs("include/c++/v1")
     add_links("c++", "c++abi")
@@ -26,6 +32,12 @@ package("libcxx")
     add_mxxflags("-nostdinc++")
     add_ldflags("-nostdlib++")
     add_shflags("-nostdlib++")
+
+    on_load("iphoneos", function (package)
+        if package:config("packaged") then
+            package:add("deps", "charon@ldid 2.1.5-procursus7+23.gaf86971", {alias = "ldid"})
+        end
+    end)
 
     on_download(function (package, opt)
         local checkout = import("checkout", {rootdir = path.join(os.scriptdir(), "..", "..", "..", "modules"), anonymous = true})
@@ -177,9 +189,39 @@ package("libcxx")
             raise("a client that only calls operator new and delete is still marked MH_BINDS_TO_WEAK")
         end
         os.cp("libcxx/LICENSE.TXT", package:installdir("licenses") .. "/")
+        if package:config("packaged") then
+            local shared = import("apple.shared_runtime", {rootdir = modules, anonymous = true})
+            local name = shared.package_name("libcxx", package:buildhash())
+            -- What links against these libraries reads their install names, so they are given before the package is written
+            -- and the package holds copies of them under the names the libraries are loaded by.
+            local held = {{source = path.join(library, "libc++.1.0.dylib"), leaf = "libc++.1.dylib"},
+                          {source = path.join(library, "libc++abi.1.0.dylib"), leaf = "libc++abi.1.dylib"}}
+            local identities = {}
+            for _, entry in ipairs(held) do
+                identities[entry.source] = shared.folder_of(name) .. "/" .. entry.leaf
+            end
+            import("apple.bundle", {rootdir = modules, anonymous = true}).retarget(table.keys(identities), identities,
+                                                                                    {home = shared.folder_of(name) .. "/"})
+            shared.write({name = name, version = shared.package_version(package:buildhash()),
+                          title = "C++ runtime " .. package:buildhash():sub(1, 8),
+                          description = "libc++ and libc++abi of one build of Charon's charon@libcxx,",
+                          libraries = {}, extra = held,
+                          root = path.join(package:installdir("share"), "root"), workdir = path.absolute("shared-work"),
+                          outputdir = package:installdir("share"),
+                          ldid = path.join(package:dep("ldid"):installdir(), "bin", "ldid"), strip = {"-x"}})
+            os.tryrm(path.absolute("shared-work"))
+            package:setenv("CHARON_SHARED_PACKAGE", name)
+        end
     end)
 
     on_test(function (package)
         assert(os.isfile(path.join(package:installdir("lib"), "libc++.1.0.dylib")))
         assert(os.isfile(path.join(package:installdir("include", "c++", "v1"), "vector")))
+        if package:config("packaged") then
+            local shared = import("apple.shared_runtime", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
+            local name = shared.package_name("libcxx", package:buildhash())
+            assert(#os.files(path.join(package:installdir("share"), name .. "_*.deb")) == 1, "the packaged libc++ wrote no package")
+            local identity = os.iorunv("xcrun", {"otool", "-D", path.join(package:installdir("lib"), "libc++.1.0.dylib")})
+            assert(identity:find(shared.folder_of(name) .. "/libc++.1.dylib", 1, true), "libc++ is not identified by the package's folder: " .. identity)
+        end
     end)

@@ -10,7 +10,6 @@ package("swift-runtime")
     add_versions("6.4.0", "b8189d766d86ad7fc8106787d6ce9e402f38dd72")
 
     add_deps("charon@swift 6.4.0", {alias = "swift", host = true, private = true, system = false})
-    add_deps("charon@libcxx", {alias = "libcxx"})
     add_deps("charon@apple-compat", {alias = "apple-compat"})
 
     -- The libraries, in the order they are built: each one's modules are what the next ones compile against. The C library's
@@ -89,6 +88,9 @@ package("swift-runtime")
     add_configs("shared", {description = "Install the libraries under absolute install names and write a Debian package that holds them, which the programs built against this runtime depend on instead of carrying the libraries.", default = false, type = "boolean"})
 
     on_load("iphoneos", function (package)
+        -- A shared runtime links the C++ runtime of the package that installs it, so that its libraries name that package's
+        -- libc++ and depend on that package.
+        package:add("deps", "charon@libcxx", {alias = "libcxx", configs = {packaged = package:config("shared") or nil}})
         if package:config("shared") then
             package:add("deps", "charon@ldid 2.1.5-procursus7+23.gaf86971", {alias = "ldid"})
         end
@@ -105,7 +107,7 @@ package("swift-runtime")
         end
         if package:config("shared") then
             local runtime = import("apple.shared_runtime", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
-            package:add("linkdirs", path.join("share", "root", "usr", "lib", "charon", runtime.package_name(package:buildhash())))
+            package:add("linkdirs", path.join("share", "root", "usr", "lib", "charon", runtime.package_name("swift-runtime", package:buildhash())))
         else
             package:add("linkdirs", path.join("lib", "swift", "iphoneos"))
         end
@@ -579,25 +581,15 @@ package("swift-runtime")
         os.vcp(path.join(path.absolute("platform"), "LICENSE.txt"), package:installdir("licenses") .. "/")
         if package:config("shared") then
             local runtime = import("apple.shared_runtime", {rootdir = modules, anonymous = true})
-            local released
-            local dyld = import("apple.dyld", {rootdir = modules, anonymous = true})
-            for version in io.readfile(path.join(package:scriptdir(), "..", "..", "..", "addons", "c", "charon", "xmake.lua")):gmatch('add_versions%("v(%d[%d%.]*)"') do
-                if not released or dyld.compare_versions(version, released) > 0 then
-                    released = version
-                end
-            end
-            -- libc++ and libc++abi ride in the runtime's folder under the names its libraries and a program link them by: a
-            -- process has one copy of them, and the runtime relies on that copy's locks and thread-local storage.
-            local extra = {}
-            for _, leaf in ipairs({"libc++.1.dylib", "libc++abi.1.dylib"}) do
-                local source = path.join(libcxx:installdir("lib"), leaf)
-                assert(os.isfile(source), "the C++ runtime of charon@libcxx has no " .. leaf)
-                table.insert(extra, {source = source, leaf = leaf})
-            end
-            local name = runtime.package_name(package:buildhash())
+            local name = runtime.package_name("swift-runtime", package:buildhash())
             local libraries = os.files(path.join(platform_dir, "*.dylib"))
-            runtime.write({name = name, version = assert(released, "the addon recipe names no Charon release") .. "+" .. package:buildhash():sub(1, 8),
-                           libraries = libraries, extra = extra,
+            -- The C++ runtime is the package of charon@libcxx, and this one depends on exactly that build of it.
+            local cxx = runtime.package_name("libcxx", libcxx:buildhash())
+            runtime.write({name = name, version = runtime.package_version(package:buildhash()),
+                           title = "Swift runtime " .. package:buildhash():sub(1, 8),
+                           description = "The Swift runtime and the overlays of one build of Charon's charon@swift-runtime,",
+                           depends = {string.format("%s (= %s)", cxx, runtime.package_version(libcxx:buildhash()))},
+                           libraries = libraries,
                            root = path.join(package:installdir("share"), "root"), workdir = path.absolute("shared-work"),
                            outputdir = package:installdir("share"),
                            ldid = path.join(package:dep("ldid"):installdir(), "bin", "ldid"), strip = {"-x"}})
@@ -606,7 +598,8 @@ package("swift-runtime")
                 os.rm(library)
             end
             os.tryrm(path.absolute("shared-work"))
-            package:setenv("CHARON_SWIFT_RUNTIME_SHARED", name)
+            package:setenv("CHARON_SHARED_PACKAGE", name)
+            package:setenv("CHARON_SHARED_NEEDS", cxx)
         end
         os.tryrm(path.absolute("build"))
         os.tryrm(source)
@@ -619,8 +612,8 @@ package("swift-runtime")
         local libraries = install
         if package:config("shared") then
             local shared = import("apple.shared_runtime", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
-            libraries = path.join(package:installdir("share"), "root", shared.folder_of(shared.package_name(package:buildhash())))
-            assert(#os.files(path.join(package:installdir("share"), shared.package_name(package:buildhash()) .. "_*.deb")) == 1,
+            libraries = path.join(package:installdir("share"), "root", shared.folder_of(shared.package_name("swift-runtime", package:buildhash())))
+            assert(#os.files(path.join(package:installdir("share"), shared.package_name("swift-runtime", package:buildhash()) .. "_*.deb")) == 1,
                    "the shared runtime wrote no package")
             assert(#os.files(path.join(install, "*.dylib")) == 0, "the shared runtime keeps a second copy of its libraries")
         end
