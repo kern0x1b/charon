@@ -150,6 +150,8 @@ id charon_spring_interpolate(id from, id to, double progress)
 
 @implementation CharonSpringCompletion
 
+@synthesize completion = _completion, running = _running, interrupted = _interrupted;
+
 - (void)animationDidStart:(CAAnimation *)animation
 {
     self.running++;

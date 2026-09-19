@@ -20,6 +20,10 @@
 
 @implementation CharonAlertPopoverPresentation
 
+@synthesize sourceView = _sourceView, sourceRect = _sourceRect, barButtonItem = _barButtonItem,
+            permittedArrowDirections = _permittedArrowDirections, delegate = _delegate, passthroughViews = _passthroughViews,
+            backgroundColor = _backgroundColor, popoverLayoutMargins = _popoverLayoutMargins;
+
 - (instancetype)init
 {
     if ((self = [super init]))

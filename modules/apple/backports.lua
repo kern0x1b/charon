@@ -103,7 +103,9 @@ end
 function compile(opt, source, object)
     local objective_c = not source:endswith(".c")
     local arguments = {"-Os", "-g0", "-Wall", "-Wno-unguarded-availability-new", "-Wno-unguarded-availability"}
-    if not objective_c then
+    if objective_c then
+        table.insert(arguments, "-Werror=objc-missing-property-synthesis")
+    else
         table.insert(arguments, "-fvisibility=hidden")
     end
     os.vrunv(clang(opt, table.join(arguments, {"-c", source, "-o", object}), objective_c))
