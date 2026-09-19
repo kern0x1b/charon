@@ -5,3 +5,12 @@ __pycache__/
 .xmake/
 build/
 tests/backports/device/url_expectations.h
+
+# Personal / device data — never tracked. Only the example is.
+device.env*
+device.*.env
+!device.env.example
+
+# Local screenshots may show device content
+**/shots/
+*-shots/
