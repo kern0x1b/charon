@@ -15,6 +15,7 @@ inputs.
     sh host/uikit2/run.sh
     sh host/keyedarchive11/run.sh  writes device/keyedarchive11-expectations.h when it passes
     sh host/foundation11/run.sh    writes device/foundation11-expectations.h when it passes
+    sh host/validatedformat/run.sh [pairs]
     sh host/directionaledges/run.sh  writes device/directionaledges-expectations.h when it passes
     sh host/directionalmargins/run.sh
     sh host/contentsize/run.sh
@@ -82,6 +83,17 @@ default content size category, which is the only category iOS 6 has: the
 rounding to the display scale, the `maximumPointSize` cap, a custom font
 keeping its family, the answer being a new object, and the wording of the
 refusal when the font is `nil`.
+
+`host/validatedformat/run.sh` fuzzes the validated format of `NSString`. It
+compiles the port into the test under other selectors, puts random pairs of
+format and allowed specifiers to the host's Foundation and to the port, and
+compares their verdicts and messages. Where the arguments are the ones the
+allowed string describes, it also compares every character of the output. Each
+pair runs in a process of its own, since the host's formatter itself can crash
+on a pair whose arguments it misreads. The Foundation tests that attach
+categories under a prefix at run time cannot hold this method: its entry points
+used to call the host's own initializer, so the port's check never ran on the
+host.
 
 `host/systemspacing/run.sh` holds the system spacing of a layout anchor to the
 host's UIKit, comparing the whole shape of the constraint each method returns -

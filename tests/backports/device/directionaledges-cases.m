@@ -1,6 +1,12 @@
 #import "directionaledges-cases.h"
 #import <objc/message.h>
 
+#if defined(__arm64__)
+#define charon_msgSend_insets objc_msgSend
+#else
+#define charon_msgSend_insets objc_msgSend_stret
+#endif
+
 @implementation DirectionalEdgesRecorder
 
 - (instancetype)init
@@ -48,14 +54,14 @@ void directionaledges_run(DirectionalEdgesImplementation implementation, Directi
         NSValue *value = ((id (*)(id, SEL, NSDirectionalEdgeInsets))objc_msgSend)([NSValue class],
             sel(@selector(valueWithDirectionalEdgeInsets:)), insets);
         [recorder record:@(value.objCType) named:[@"objCType." stringByAppendingString:label]];
-        [recorder record:text(((NSDirectionalEdgeInsets (*)(id, SEL))objc_msgSend)(value, sel(@selector(directionalEdgeInsetsValue))))
+        [recorder record:text(((NSDirectionalEdgeInsets (*)(id, SEL))charon_msgSend_insets)(value, sel(@selector(directionalEdgeInsetsValue))))
                    named:[@"value." stringByAppendingString:label]];
     }
 
     NSValue *wrong = [NSValue valueWithCGPoint:CGPointMake(1, 2)];
     NSString *refusal = @"nothing raised";
     @try {
-        ((NSDirectionalEdgeInsets (*)(id, SEL))objc_msgSend)(wrong, sel(@selector(directionalEdgeInsetsValue)));
+        ((NSDirectionalEdgeInsets (*)(id, SEL))charon_msgSend_insets)(wrong, sel(@selector(directionalEdgeInsetsValue)));
     } @catch (NSException *exception) {
         NSUInteger held = 0;
         NSGetSizeAndAlignment(wrong.objCType, &held, NULL);
@@ -86,9 +92,9 @@ void directionaledges_run(DirectionalEdgesImplementation implementation, Directi
 
         NSKeyedUnarchiver *reader = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
         reader.requiresSecureCoding = secure.boolValue;
-        [recorder record:text(((NSDirectionalEdgeInsets (*)(id, SEL, id))objc_msgSend)(reader, sel(@selector(decodeDirectionalEdgeInsetsForKey:)), @"insets"))
+        [recorder record:text(((NSDirectionalEdgeInsets (*)(id, SEL, id))charon_msgSend_insets)(reader, sel(@selector(decodeDirectionalEdgeInsetsForKey:)), @"insets"))
                    named:[NSString stringWithFormat:@"decode.secure%@", secure.boolValue ? @"YES" : @"NO"]];
-        [recorder record:text(((NSDirectionalEdgeInsets (*)(id, SEL, id))objc_msgSend)(reader, sel(@selector(decodeDirectionalEdgeInsetsForKey:)), @"absent"))
+        [recorder record:text(((NSDirectionalEdgeInsets (*)(id, SEL, id))charon_msgSend_insets)(reader, sel(@selector(decodeDirectionalEdgeInsetsForKey:)), @"absent"))
                    named:[NSString stringWithFormat:@"decodeMissing.secure%@", secure.boolValue ? @"YES" : @"NO"]];
     }
     directionaledges_prefix = nil;

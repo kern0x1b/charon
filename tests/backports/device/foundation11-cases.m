@@ -89,6 +89,12 @@ static void run_property_lists(Foundation11Recorder *recorder)
     NSError *invalidError = nil;
     BOOL invalid = ((BOOL (*)(id, SEL, id, NSError **))objc_msgSend)(@[[NSObject new]], sel(@selector(writeToURL:error:)), arrayURL, &invalidError);
     [recorder record:[NSString stringWithFormat:@"%d %@ %@", invalid, invalidError.domain, @(invalidError.code)] named:@"write.invalid"];
+    [recorder record:invalidError.userInfo[NSDebugDescriptionErrorKey] ?: @"none" named:@"write.invalid.reason"];
+
+    NSError *keyError = nil;
+    BOOL numberKey = ((BOOL (*)(id, SEL, id, NSError **))objc_msgSend)(@{@1: @"one"}, sel(@selector(writeToURL:error:)), dictURL, &keyError);
+    [recorder record:[NSString stringWithFormat:@"%d %@ %@ %@", numberKey, keyError.domain, @(keyError.code),
+                      keyError.userInfo[NSDebugDescriptionErrorKey] ?: @"none"] named:@"write.numberKey"];
 
     NSError *mutableError = nil;
     id mutable = ((id (*)(id, SEL, id, NSError **))objc_msgSend)([NSMutableArray alloc], sel(@selector(initWithContentsOfURL:error:)), arrayURL, &mutableError);
@@ -220,7 +226,14 @@ static void run_validated_format(Foundation11Recorder *recorder)
                        @[@"%0$@", @"%@"], @[@"%S", @"%s"], @[@"%@%@%@%@%@%@%@%@%@%@", @"%@%@%@%@%@%@%@%@%@%@"],
                        @[@"%@%@%@%@%@%@%@%@%@%@%@", @"%@%@%@%@%@%@%@%@%@%@"], @[@"%", @"%@"], @[@"%@ %", @"%@"],
                        @[@"%10$@", @"%@%@%@%@%@%@%@%@%@%@"], @[@"%11$@", @"%@%@%@%@%@%@%@%@%@%@"],
-                       @[@"%*d", @"%d"], @[@"%@", @"%%"], @[@"%%@", @"%@"]];
+                       @[@"%*d", @"%d"], @[@"%@", @"%%"], @[@"%%@", @"%@"],
+                       @[@"%1$@ %0$@", @"%@"], @[@"%9$@", @"%@%@%@%@%@%@%@%@%@"], @[@"%12$@ %1$@", @"%@%@%@%@%@%@%@%@%@%@%@%@"],
+                       @[@"%1$@ %10$@ %2$@", @"%@%@%@%@%@%@%@%@%@%@"], @[@"%#@key@ %@", @"%@ %@"], @[@"%[k]@ %@", @"%@ %@"],
+                       @[@"%#@key@ %@", @"%@"], @[@"%k %@", @"%@"], @[@"%1$@ %@ %@", @"%@ %@"], @[@"%2$@ %@ %@", @"%@ %@"],
+                       @[@"%@ %2$@ %@", @"%@ %@"], @[@"%@ %", @"%@ %"], @[@"%10@|%-10@|", @"%@ %@"],
+                       @[@"%.1@", @"%@"], @[@"%d", @"%C"], @[@"%s", @"%S"], @[@"%Ld", @"%d"], @[@"%d", @"%n"],
+                       @[@"%1$d %f", @"%1$d %f"], @[@"%hC%1$c", @"%hC%1$c"], @[@"%'10f", @"%@"], @[@"%#@", @"%#@"], @[@"%@ %1$", @"%@ %1$"],
+                       @[@"%@ %1", @"%@ %1"], @[@"%5$@", @"%@"]];
     for (NSArray *pair in pairs) {
         NSError *error = nil;
         NSString *made = nil;
@@ -240,6 +253,40 @@ static void run_validated_format(Foundation11Recorder *recorder)
     NSString *numbers = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
         sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), @"%ld and %.2f", @"%ld %f", &typed, (long)7, 2.5);
     [recorder record:numbers ?: @"nil" named:@"validated.numbers"];
+
+    static char cstring[] = "text";
+    static unichar wide[] = {'w', 'i', 'd', 'e', 0};
+    static unsigned char pascalString[] = {3, 'p', 'a', 's'};
+    NSError *typedError = nil;
+    NSString *stars = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), @"%*d|%-*d|%.*f|%*.*f|", @"%d%d%d%d%d%f%d%d%f", &typedError,
+        5, 7, 5, 7, 2, 2.5, 8, 3, 2.5);
+    [recorder record:stars ?: @"nil" named:@"validated.stars"];
+    NSString *positionalStars = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), @"%1$*2$d|%2$d|", @"%d %d", &typedError, 7, 5);
+    [recorder record:positionalStars ?: @"nil" named:@"validated.positionalStars"];
+    NSString *strings = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), @"%s|%.2s|%S|%P|%C|%c", @"%s%s%S%P%C%c", &typedError,
+        cstring, cstring, wide, pascalString, 0x416, 'x');
+    [recorder record:strings ?: @"nil" named:@"validated.strings"];
+    NSString *lengths = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), @"%hhd %hd %ld %lld %qd %jd %zd %td %Lf",
+        @"%hhd %hd %ld %lld %qd %jd %zd %td %Lf", &typedError, 300, 70000, 1L, 2LL, 3LL, (intmax_t)4, (size_t)5, (ptrdiff_t)6, (long double)2.5);
+    [recorder record:lengths ?: @"nil" named:@"validated.lengths"];
+    NSString *integers = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), @"%x %X %o %#x %#o %D %U %O %+d % d %05d %-5d|",
+        @"%d %d %d %d %d %d %d %d %d %d %d %d", &typedError, 255, 255, 8, 255, 8, 7, 7, 8, 7, 7, 7, 7);
+    [recorder record:integers ?: @"nil" named:@"validated.integers"];
+    NSString *floats = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), @"%e %E %g %G %a %A %F %.0f %#.0f",
+        @"%f %f %f %f %f %f %f %f %f", &typedError, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5);
+    [recorder record:floats ?: @"nil" named:@"validated.floats"];
+    NSString *counted = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), @"%@%n%@", @"%@%n%@", &typedError, @"A", NULL, @"C");
+    [recorder record:counted ?: @"nil" named:@"validated.counted"];
+    NSString *localized = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(localizedStringWithValidatedFormat:validFormatSpecifiers:error:)), @"%@ %d", @"%@ %d", &typedError, @"A", 7);
+    [recorder record:localized ?: @"nil" named:@"validated.localized"];
 
     NSString *raised = @"none";
     @try {

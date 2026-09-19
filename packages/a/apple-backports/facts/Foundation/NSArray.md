@@ -28,10 +28,27 @@ methods with the same shape, so both classes share this file.
    with no options.
 4. `-[NSData writeToURL:options:error:]` with `NSDataWritingAtomic`.
 
-Failures come out of those two calls unchanged: `3851`
-(`NSPropertyListWriteInvalidError`) for a value that is not a property list,
-`518` for a URL whose scheme cannot be written to, `4` for a path whose folder
-does not exist.
+Failures come out of those two calls unchanged:
+- `3851` for a value that is not a property list. The SDK names that number
+  `NSPropertyListWriteStreamError`, not `…WriteInvalidError`, which is `3852`.
+- `518` for a URL whose scheme cannot be written to.
+- `4` for a path whose folder does not exist.
+
+For a value that is not a property list, the serializer of iOS 6 fails without
+an error: it answers `nil`, leaves the error untouched, and only logs
+`Property list invalid for format: 100 (…)`. On that release the port makes the
+error itself. It checks the value the way the serializer does - strings, data,
+dates and numbers pass, arrays and dictionaries are walked, and a dictionary's
+keys must be strings - and fills in `NSCocoaErrorDomain` `3851` with the
+serializer's own words in `NSDebugDescription`:
+- `Property list invalid for format: 100 (property lists cannot contain objects of type '<type>')`
+- `Property list invalid for format: 100 (property list dictionaries may only have keys which are CFStrings, not '<type>')`
+
+Here `<type>` is CoreFoundation's name of the offending object's type, such as
+`CFType` for an `NSObject` or `CFNumber` for a number. When the walk finds
+nothing wrong but the serializer still failed silently, the error is `3851`
+with no description. On a release whose serializer does report an error, that
+error is passed on as it is.
 
 ## Reading
 

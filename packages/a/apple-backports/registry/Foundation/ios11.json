@@ -234,7 +234,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSString.md",
-      "source": "Foundation of iOS 11.0 arm64 at 0x1815863e0, 0x181586350 and 0x1815891ac; the matching rule read off the running implementation over three thousand random pairs"
+      "source": "Foundation of iOS 11.0 arm64 at 0x1815863e0, 0x181586350 and 0x1815891ac; the matching rule read off the host's Foundation over 120,000 random pairs against the port called directly, and the formatting held on iOS 6.0 to the host's output"
     },
     {
       "api": "+[NSString localizedStringWithValidatedFormat:validFormatSpecifiers:error:]",
@@ -243,7 +243,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSString.md",
-      "source": "Foundation of iOS 11.0 arm64 at 0x1815863e0, 0x181586350 and 0x1815891ac; the matching rule read off the running implementation over three thousand random pairs"
+      "source": "Foundation of iOS 11.0 arm64 at 0x1815863e0, 0x181586350 and 0x1815891ac; the matching rule read off the host's Foundation over 120,000 random pairs against the port called directly, and the formatting held on iOS 6.0 to the host's output"
     },
     {
       "api": "-[NSString initWithValidatedFormat:validFormatSpecifiers:error:]",
@@ -252,7 +252,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSString.md",
-      "source": "Foundation of iOS 11.0 arm64 at 0x1815863e0, 0x181586350 and 0x1815891ac; the matching rule read off the running implementation over three thousand random pairs"
+      "source": "Foundation of iOS 11.0 arm64 at 0x1815863e0, 0x181586350 and 0x1815891ac; the matching rule read off the host's Foundation over 120,000 random pairs against the port called directly, and the formatting held on iOS 6.0 to the host's output"
     },
     {
       "api": "-[NSString initWithValidatedFormat:validFormatSpecifiers:locale:error:]",
@@ -261,7 +261,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSString.md",
-      "source": "Foundation of iOS 11.0 arm64 at 0x1815863e0, 0x181586350 and 0x1815891ac; the matching rule read off the running implementation over three thousand random pairs"
+      "source": "Foundation of iOS 11.0 arm64 at 0x1815863e0, 0x181586350 and 0x1815891ac; the matching rule read off the host's Foundation over 120,000 random pairs against the port called directly, and the formatting held on iOS 6.0 to the host's output"
     },
     {
       "api": "-[NSString initWithValidatedFormat:validFormatSpecifiers:locale:arguments:error:]",
@@ -270,7 +270,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSString.md",
-      "source": "Foundation of iOS 11.0 arm64 at 0x1815863e0, 0x181586350 and 0x1815891ac; the matching rule read off the running implementation over three thousand random pairs"
+      "source": "Foundation of iOS 11.0 arm64 at 0x1815863e0, 0x181586350 and 0x1815891ac; the matching rule read off the host's Foundation over 120,000 random pairs against the port called directly, and the formatting held on iOS 6.0 to the host's output"
     }
   ]
 }
