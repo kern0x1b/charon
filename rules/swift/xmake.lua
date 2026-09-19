@@ -26,9 +26,11 @@ rule("swift")
             raise("target(%s) compiles Swift against the runtime it carries, which links the C++ runtime: add_requires(\"charon@libcxx\", {alias = \"libcxx\"})", target:name())
         end
         target:add("packages", "swift-runtime", "libcxx")
-        -- The runtime is nine shared libraries; the program carries them the way it carries any package's.
+        -- The runtime is shared libraries; the program carries them the way it carries any package's - a tweak or a
+        -- daemon in its package's folder, an application inside its bundle.
         for _, carried in ipairs({"swift-runtime", "libcxx"}) do
             target:add("values", "charon.libraries", carried)
+            target:add("values", "app.frameworks", carried)
         end
     end)
 
