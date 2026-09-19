@@ -287,6 +287,24 @@ postinst run with `DPKG_ROOT` set to it.
   Three of those checks are not about the safe area at all: they ask the
   release's own visual format parser what it does with the iOS 11 spacing
   option, which is a question only a real iOS 6 can answer.
+- `sblaunch/`: `charon-sblaunch`, one way to start an application on either
+  device without `uiopen`, which has twice left the iPhone 4S to its watchdog.
+  It takes one argument, the bundle identifier, the way the `sblaunch` already
+  installed on the 4S does, and asks SpringBoard through
+  `SBSLaunchApplicationWithIdentifier`, which it looks up with `dlsym` rather
+  than linking a private framework.
+  - Exit codes: 0 when the launch is accepted; 1 with SpringBoard's code, and
+    whether the screen is locked, on standard error when it is refused; 2 for a
+    wrong argument; 3 when the function is missing.
+  - SpringBoard refuses a caller without the entitlement
+    `com.apple.springboard.launchapplications`: without it the call returns 1
+    even from root. `sblaunch.entitlements` carries it.
+  - Build it with Charon's daemon rule, which installs it as
+    `/usr/libexec/charon-sblaunch`, and sign it with `charon.entitlements`
+    pointing at `sblaunch.entitlements`, relative to the project that builds
+    it.
+  - The iPad 2 has no `sblaunch`, and on 19 September 2026 this launcher
+    started Preferences there and on the iPhone 4S alike.
 - `uikit11/`: a MobileSubstrate tweak filtered to Preferences, for the iOS 11
   UIKit members that need a running application. It replays five host tests
   on the device: `interactions`, `systemspacing`, `gesturename`,
