@@ -76,9 +76,16 @@ back to ISO Latin 1 when they are not: `68 74 74 70 3a 2f 2f 68 2f e4 ff` become
 `http://h/%C3%A4%C3%BF`, and its data representation is those same eleven bytes again.
 The fallback is ISO Latin 1 and not Windows 1252 - `80 9f` becomes `%C2%80%C2%9F` - and it takes the
 whole data, not only the bytes that fail: `c3 a4 ff` becomes `%C3%83%C2%A4%C3%BF`.
-The check for UTF-8 is made on the bytes before a URL is made from them: CFURL on iOS 6 does not refuse
-bytes that are not UTF-8 but escapes them as they are, and on the device the same eleven bytes gave
-`http://h/%E4%FF` until the encoding was chosen first.
+
+On iOS 6 the same fallback happens - CFURL refuses those bytes as UTF-8 and takes them as ISO Latin 1 - and
+the URL agrees with the current one in everything but its string. Its path is `/äÿ`, its query and
+fragment stay escaped in ISO Latin 1 (`q=%FF`, `%E4`) as they do on the current release, its data
+representation and its absolute URL's are the original bytes, and a path component appended to it gives
+the same UTF-8 URL on both. What differs is the string: CFURL of iOS 6 escapes it in the encoding the URL
+was read in, so `e4 ff` gives `http://h/%E4%FF` where the current release gives `http://h/%C3%A4%C3%BF`.
+A later CFURL escapes that string in UTF-8 while it keeps the bytes in ISO Latin 1; iOS 6 has no public
+way to make a URL like that, so the backport answers with the release's own URL and this string is where
+it stays different. Measured with the same five inputs on macOS 27 and on iOS 6.0 in the emulator.
 
 ## The temporary resource value and the caches
 

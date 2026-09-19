@@ -995,15 +995,21 @@ static void run_relative_urls(Foundation2Recorder *recorder)
                    named:[NSString stringWithFormat:@"url.dataRepresentation.%lu", (unsigned long)index]];
     }
     NSArray *latins = @[[NSData dataWithBytes:"http://h/\xE4\xFF" length:11], [NSData dataWithBytes:"http://h/\x80\x9F" length:11],
-                        [NSData dataWithBytes:"http://h/\xC3\xA4\xFF" length:12]];
+                        [NSData dataWithBytes:"http://h/\xC3\xA4\xFF" length:12], [NSData dataWithBytes:"http://h/a\xE4?q=\xFF#\xE4" length:17]];
     NSMutableArray *latinResults = [NSMutableArray array];
+    NSMutableArray *latinStrings = [NSMutableArray array];
     for (NSData *raw in latins) {
         NSURL *fromRaw = ((id (*)(id, SEL, id, id))objc_msgSend)([NSURL class], sel(@selector(URLWithDataRepresentation:relativeToURL:)), raw, nil);
         NSURL *absolute = ((id (*)(id, SEL, id, id))objc_msgSend)([NSURL class], sel(@selector(absoluteURLWithDataRepresentation:relativeToURL:)), raw, [NSURL URLWithString:@"http://b/"]);
         NSData *rawBack = ((id (*)(id, SEL))objc_msgSend)(fromRaw, sel(@selector(dataRepresentation)));
-        [latinResults addObject:@[url_text(fromRaw, nil), url_text(absolute, nil), rawBack ? hex(rawBack) : @"<nil>"]];
+        NSData *absoluteBack = ((id (*)(id, SEL))objc_msgSend)(absolute.absoluteURL, sel(@selector(dataRepresentation)));
+        NSURL *appended = [fromRaw URLByAppendingPathComponent:@"x"];
+        [latinResults addObject:@[fromRaw.path ?: @"<nil>", fromRaw.query ?: @"<nil>", fromRaw.fragment ?: @"<nil>", rawBack ? hex(rawBack) : @"<nil>",
+                                  absoluteBack ? hex(absoluteBack) : @"<nil>", appended.absoluteString ?: @"<nil>"]];
+        [latinStrings addObject:@[url_text(fromRaw, nil), url_text(absolute, nil)]];
     }
     [recorder record:latinResults named:@"url.dataRepresentation.latin1"];
+    [recorder record:latinStrings named:@"url.dataRepresentation.latin1.string"];
 }
 
 
