@@ -65,5 +65,13 @@ int fuzz_finish(void)
             failing++;
     }
     printf("%d rounds, seed %llu, %lu categories differ, %d not tolerated\n", fuzz_rounds, fuzz_seed, (unsigned long)fuzz_counts.count, failing);
+    NSUInteger singletons = 0;
+    for (NSNumber *count in fuzz_counts.allValues)
+        if (count.integerValue == 1)
+            singletons++;
+    if (fuzz_counts.count)
+        printf("hint: %lu/%lu categories differed exactly once - a rough long-tail signal, not a Good-Turing estimate "
+               "(categories are not independent draws here) and not a stopping rule\n",
+               (unsigned long)singletons, (unsigned long)fuzz_counts.count);
     return failing != 0;
 }
