@@ -3,7 +3,6 @@
 
 NSProgressUserInfoKey const NSProgressEstimatedTimeRemainingKey = @"NSProgressEstimatedTimeRemainingKey";
 NSProgressFileOperationKind const NSProgressFileOperationKindReceiving = @"NSProgressFileOperationKindReceiving";
-NSProgressFileOperationKind const NSProgressFileOperationKindUploading = @"NSProgressFileOperationKindUploading";
 
 static id charon_progress_value(NSProgress *progress, NSString *key)
 {
