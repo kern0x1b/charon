@@ -556,7 +556,7 @@ PORT_NAMES = r"""
 
 #include "unfair_lock.h"
 
-/* XNU hands out odd thread port names, and libplatform's word format relies on it; iLEmu hands out even ones (0x10c00,
+/* XNU hands out odd thread port names, and libplatform's word format relies on it; Shade hands out even ones (0x10c00,
    spaced by 0x100). The shim sets the low bit itself, so both work; here each case runs with owner values the two kernels
    would give, through the same words the lock keeps. */
 

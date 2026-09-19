@@ -48,7 +48,7 @@ local function context()
     local guest = required("emulator-guest")
     local swiftshader = required("swiftshader")
     local tool = path.join(required("firmware-tools"):installdir(), "bin", "charon-firmware")
-    local program = path.join(shade:installdir(), "bin", "ilemu")
+    local program = path.join(shade:installdir(), "bin", "shade")
     local release = option.get("release") or config.get("apple_minimum") or raise("xmake emulate needs -r RELEASE or set_config(\"apple_minimum\", ...)")
     local chosen = emulator.choose(firmware.catalog().devices, emulator.profiles(program),
                                    {device = option.get("device"), architecture = config.arch(), release = release})
@@ -58,7 +58,7 @@ local function context()
     end
     local owner = (project.name() or path.filename(os.projectdir())) .. "-" .. hash.strhash32(os.projectdir())
     local image = path.join(emulator.root(), "images.noindex", owner, chosen.identifier .. "_" .. chosen.build)
-    return {ilemu = program, ilemu_hash = path.filename(shade:installdir()), guest = guest:installdir(), tool = tool,
+    return {shade = program, shade_hash = path.filename(shade:installdir()), guest = guest:installdir(), tool = tool,
             icd = path.join(swiftshader:installdir(), "share", "vulkan", "icd.d", "vk_swiftshader_icd.json"),
             identifier = chosen.identifier, version = chosen.version, build = chosen.build, image = image,
             deadline = tonumber(option.get("timeout")), network = network()}
@@ -140,7 +140,7 @@ local function run(ctx, argv)
     if not option.get("keep") then
         emulator.remove(rootfs)
         emulator.remove(path.join(folder, "runtime"))
-        emulator.remove(path.join(folder, ".ilemu-device-state"))
+        emulator.remove(path.join(folder, ".shade-device-state"))
     end
     for _, name in ipairs({"test.stdout", "test.stderr"}) do
         local file = path.join(folder, "results", name)

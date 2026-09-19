@@ -313,7 +313,7 @@ local function concurrency(folder, modules, found)
     io.writefile(path.join(firmware, "System", "Library", "CoreServices", "SystemVersion.plist"), "firmware")
     os.mkdir(path.join(firmware, "private", "var", "mobile"))
     local golden = script(folder, "golden", [[
-    local rootfs = emulator.golden({root = root, identifier = "iPhone3,1", build = "10A403", ilemu_hash = "fixture", deadline = 30,
+    local rootfs = emulator.golden({root = root, identifier = "iPhone3,1", build = "10A403", shade_hash = "fixture", deadline = 30,
                                     firmware = extra, boot = function (opt)
         io.writefile(path.join(root, "boot-" .. os.getpid()), "booted")
         os.sleep(3000)

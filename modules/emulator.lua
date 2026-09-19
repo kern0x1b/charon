@@ -54,17 +54,17 @@ function root()
     return path.join(path.directory(dyld.root()), "emulator")
 end
 
-function profiles(ilemu)
+function profiles(shade)
     local listed = {}
-    for line in os.iorunv(ilemu, {"profile", "--list"}):gmatch("[^\n]+") do
+    for line in os.iorunv(shade, {"profile", "--list"}):gmatch("[^\n]+") do
         table.insert(listed, line:trim())
     end
     return listed
 end
 
-function kernels(ilemu)
+function kernels(shade)
     local known = {}
-    for line in os.iorunv(ilemu, {"abi"}):gmatch("[^\n]+") do
+    for line in os.iorunv(shade, {"abi"}):gmatch("[^\n]+") do
         local name = line:match("^%s+(darwin%S+)$")
         if name then
             table.insert(known, name)
@@ -73,8 +73,8 @@ function kernels(ilemu)
     return known
 end
 
-function kernel(ilemu, build)
-    local output = try {function () return os.iorunv(ilemu, {"abi", "--ios-build", build}) end}
+function kernel(shade, build)
+    local output = try {function () return os.iorunv(shade, {"abi", "--ios-build", build}) end}
     return output and output:match("abi: (%S+)")
 end
 
@@ -266,7 +266,7 @@ function debugged(opt)
     end
     directory(opt.tmpdir)
     directory(opt.cache)
-    local proc = process.openv(opt.ilemu, argv, {stdout = log, stderr = errors, envs = envs})
+    local proc = process.openv(opt.shade, argv, {stdout = log, stderr = errors, envs = envs})
     local report = try {
         function ()
             local connection = gdb.connect(port, {patience = opt.patience or 120})
@@ -728,7 +728,7 @@ function boot(opt)
     directory(opt.tmpdir)
     directory(opt.cache)
     local started = os.mclock()
-    local proc = process.openv(opt.ilemu, argv, {stdin = input, stdout = log, stderr = errors, envs = envs})
+    local proc = process.openv(opt.shade, argv, {stdin = input, stdout = log, stderr = errors, envs = envs})
     input:close()
     local state, offset, reason = {}, 0, "deadline"
     local pending = ""
@@ -915,7 +915,7 @@ function retire(parent, opt, kept)
     for _, marker in ipairs(os.files(path.join(parent, opt.identifier .. "_" .. opt.build .. "_*", "golden.json"))) do
         local folder = path.directory(marker)
         local recorded = try {function () return json.loadfile(marker) end}
-        if path.filename(folder) ~= kept and recorded and recorded.ilemu ~= opt.ilemu_hash then
+        if path.filename(folder) ~= kept and recorded and recorded.shade ~= opt.shade_hash then
             local lock = io.openlock(folder .. ".lock")
             if lock and lock:trylock() then
                 remove(folder)
@@ -964,7 +964,7 @@ function clean(opt)
 end
 
 function golden(opt)
-    local key = string.format("%s_%s_%s", opt.identifier, opt.build, hash.strhash128(opt.ilemu_hash .. ";" .. table.concat(opt.steps or {"home"}, ";")))
+    local key = string.format("%s_%s_%s", opt.identifier, opt.build, hash.strhash128(opt.shade_hash .. ";" .. table.concat(opt.steps or {"home"}, ";")))
     local parent = path.join(opt.root or root(), "golden.noindex")
     local folder = path.join(parent, key)
     local marker = path.join(folder, "golden.json")
@@ -995,7 +995,7 @@ function golden(opt)
                 raise("%s %s did not get past %s within %d seconds; the emulator log is %s", opt.identifier, opt.build,
                       milestone(booted.state), opt.deadline, booted.log)
             end
-            json.savefile(path.join(staging, "golden.json"), {identifier = opt.identifier, build = opt.build, ilemu = opt.ilemu_hash, seconds = booted.seconds})
+            json.savefile(path.join(staging, "golden.json"), {identifier = opt.identifier, build = opt.build, shade = opt.shade_hash, seconds = booted.seconds})
             remove(folder)
             os.mv(staging, folder)
             retire(parent, opt, key)

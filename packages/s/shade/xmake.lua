@@ -5,17 +5,11 @@ package("shade")
     set_license("MPL-2.0")
 
     add_urls("https://github.com/kern0x1b/shade.git")
-    add_versions("2026.09.19", "ff7dc663dd9775782fa3dfad76ad6b7500cdf567")
-
-    -- What Charon has fixed since the fork: each a patch until Shade takes it.
-    local digests = {}
-    for _, patch in ipairs({"host-memory.patch", "voice-device.patch"}) do
-        local file = path.join("patches", "2026.09.19", patch)
-        local digest = hash.sha256(path.join(os.scriptdir(), file))
-        add_patches("2026.09.19", file, digest)
-        table.insert(digests, patch .. "=" .. digest)
-    end
-    add_configs("patches", {description = "The digest of the patches this package applies, so a changed patch is a different emulator.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
+    -- The revision is a config as well as the version: the version string names a release, and a
+    -- different commit under the same name must be a different install.
+    local revision = "30ffdb63b6b3fdd8bb0cd0bab3237f12bf735bff"
+    add_versions("2026.09.20", revision)
+    add_configs("revision", {description = "The Shade commit this package builds, so another commit is another emulator.", default = revision, type = "string", readonly = true})
     add_configs("sdl", {description = "Build the SDL2 window backend, for watching a guest on the desktop.", default = false, type = "boolean"})
     add_configs("ffmpeg", {description = "Build the FFmpeg audio decoder, for a guest that plays compressed audio.", default = false, type = "boolean"})
 
@@ -50,8 +44,8 @@ package("shade")
             table.insert(prefixes, package:dep(name):installdir())
         end
         local glslc = path.join(package:dep("shaderc"):installdir(), "bin", "glslc")
-        local configs = {"-DCMAKE_BUILD_TYPE=Release", "-DBUILD_TESTING=OFF", "-DILEMU_ENABLE_VULKAN=ON",
-                         "-DILEMU_ENABLE_SDL2=" .. (package:config("sdl") and "ON" or "OFF"),
+        local configs = {"-DCMAKE_BUILD_TYPE=Release", "-DBUILD_TESTING=OFF", "-DSHADE_ENABLE_VULKAN=ON",
+                         "-DSHADE_ENABLE_SDL2=" .. (package:config("sdl") and "ON" or "OFF"),
                          "-DCMAKE_PREFIX_PATH=" .. table.concat(prefixes, ";"),
                          "-DOPENSSL_ROOT_DIR=" .. package:dep("openssl"):installdir(),
                          "-DOPENSSL_USE_STATIC_LIBS=ON",
@@ -73,7 +67,7 @@ package("shade")
             envs.PKG_CONFIG_PATH = path.joinenv(paths)
             envs.PKG_CONFIG_LIBDIR = envs.PKG_CONFIG_PATH
         end
-        import("package.tools.cmake").build(package, configs, {builddir = "build", target = "ilemu", cmake_generator = "Ninja", envs = envs})
+        import("package.tools.cmake").build(package, configs, {builddir = "build", target = "shade", cmake_generator = "Ninja", envs = envs})
         local allowed = {"/usr/lib/", "/System/", "@rpath/libvulkan"}
         for _, name in ipairs({"libsdl2", "ffmpeg"}) do
             local dep = package:dep(name)
@@ -81,7 +75,7 @@ package("shade")
                 table.insert(allowed, dep:installdir())
             end
         end
-        local linked = os.iorunv("otool", {"-L", path.join("build", "ilemu")})
+        local linked = os.iorunv("otool", {"-L", path.join("build", "shade")})
         for line in linked:gmatch("[^\n]+") do
             local library = line:match("^%s+(%S+)")
             local known = false
@@ -92,11 +86,12 @@ package("shade")
                 raise("the emulator links %s, which is neither a system library nor one of its packages; the build found a library outside Charon", library)
             end
         end
-        os.cp(path.join("build", "ilemu"), package:installdir("bin") .. "/")
+        os.cp(path.join("build", "shade"), package:installdir("bin") .. "/")
         os.cp("LICENSE", package:installdir("licenses") .. "/")
+        os.cp("NOTICE", package:installdir("licenses") .. "/")
     end)
 
     on_test(function (package)
-        local listed = os.iorunv(path.join(package:installdir("bin"), "ilemu"), {"profile", "--list"})
+        local listed = os.iorunv(path.join(package:installdir("bin"), "shade"), {"profile", "--list"})
         assert(listed:find("iPhone3,1", 1, true))
     end)

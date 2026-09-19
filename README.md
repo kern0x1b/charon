@@ -621,7 +621,7 @@ exports them at or above it, where the system's own must be used. The word an
 `os_unfair_lock` holds is this copy's own format: the owner's Mach thread port
 name with the low bit set, which a waiter clears. libplatform writes the name as
 it is, because XNU's names are odd; the bit is set here so that the lock also
-works where a name is even, which is what iLEmu gives a thread it starts. A
+works where a name is even, which is what Shade gives a thread it starts. A
 release below iOS 10 has no os_unfair_lock of its own, so nothing else reads
 that word; from iOS 10 on the system's implementation is called instead. Two
 packages that each carry their own runtime do not share these locks, the same
