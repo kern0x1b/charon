@@ -16,7 +16,7 @@ package("swift-runtime")
     -- The libraries, in the order they are built: each one's modules are what the next ones compile against. The C library's
     -- Swift overlay comes from swift-6.2-RELEASE, the last release whose sources carry it, because Synchronization and
     -- Observation import Darwin and the SDK has only an interface for arm64.
-    local libraries = {"swiftCore", "swiftSwiftOnoneSupport", "swift_Concurrency", "swiftDarwin", "swiftObjectiveC",
+    local libraries = {"swiftCore", "swiftSwiftOnoneSupport", "swift_Concurrency", "swiftDarwin", "swiftObjectiveC", "swiftDispatch",
                        "swiftCoreFoundation", "swiftCoreGraphics",
                        "swiftSynchronization",
                        "swift_RegexParser", "swift_StringProcessing", "swiftRegexBuilder", "swiftObservation"}
@@ -34,8 +34,9 @@ package("swift-runtime")
          url = "https://github.com/swiftlang/swift.git", sparse = {"/stdlib/public/Platform/", "/LICENSE.txt"}},
         {name = "overlays", tag = "swift-5.4.3-RELEASE", commit = "282fe25d1757ff9974ade028d92111acdae6876a",
          url = "https://github.com/swiftlang/swift.git",
-         sparse = {"/stdlib/public/Darwin/ObjectiveC/", "/stdlib/public/Darwin/CoreFoundation/",
-                   "/stdlib/public/Darwin/CoreGraphics/", "/stdlib/public/SwiftShims/ObjectiveCOverlayShims.h", "/LICENSE.txt"}}
+         sparse = {"/stdlib/public/Darwin/ObjectiveC/", "/stdlib/public/Darwin/Dispatch/", "/stdlib/public/Darwin/CoreFoundation/",
+                   "/stdlib/public/Darwin/CoreGraphics/", "/stdlib/public/SwiftShims/ObjectiveCOverlayShims.h",
+                   "/stdlib/public/SwiftShims/DispatchOverlayShims.h", "/LICENSE.txt"}}
     }
 
     on_download(function (package, opt)
@@ -263,14 +264,6 @@ package("swift-runtime")
         -- autorelease pool. It is the release's own source, built against the C library's overlay as its own build did.
         -- Its shim goes in beside the shims the standard library installed, because those are the ones every build here
         -- reads and the ones a port is given; the standard library installs a list of its own and would not carry it.
-        local installed_shims = path.join(install, "shims")
-        os.vcp(path.join(path.absolute("overlays"), "stdlib", "public", "SwiftShims", "ObjectiveCOverlayShims.h"),
-               installed_shims .. "/")
-        local shim_modules = path.join(installed_shims, "module.modulemap")
-        if not io.readfile(shim_modules):find("_SwiftObjectiveCOverlayShims", 1, true) then
-            io.writefile(shim_modules, io.readfile(shim_modules) ..
-                         "\nmodule _SwiftObjectiveCOverlayShims {\n  header \"ObjectiveCOverlayShims.h\"\n}\n")
-        end
         -- The overlays above it are the release's own sources too, built by today's compiler in the language mode they were
         -- written for. What of them the SDK of today no longer lets them write is changed by the patches beside them.
         local overlays = path.absolute("overlays")
@@ -278,6 +271,16 @@ package("swift-runtime")
         table.sort(overlay_patches)
         for _, patch in ipairs(overlay_patches) do
             os.vrunv("patch", {"-p1", "-i", patch}, {curdir = overlays})
+        end
+        local installed_shims = path.join(install, "shims")
+        local shim_modules = path.join(installed_shims, "module.modulemap")
+        for _, name in ipairs({"ObjectiveC", "Dispatch"}) do
+            os.vcp(path.join(overlays, "stdlib", "public", "SwiftShims", name .. "OverlayShims.h"), installed_shims .. "/")
+            local module = "_Swift" .. name .. "OverlayShims"
+            if not io.readfile(shim_modules):find(module, 1, true) then
+                io.writefile(shim_modules, io.readfile(shim_modules) ..
+                             string.format("\nmodule %s {\n  header \"%sOverlayShims.h\"\n}\n", module, name))
+            end
         end
         local function overlay_sources_of(name, files)
             local found = {}
@@ -288,7 +291,7 @@ package("swift-runtime")
         end
         -- One overlay: its module, in the layout the others are installed in, and its library, which a port finds by the
         -- run path it carries.
-        local function build_overlay(name, overlay_sources, links)
+        local function build_overlay(name, overlay_sources, links, objects)
             local module = path.join(install, name .. ".swiftmodule")
             os.mkdir(module)
             local flags = table.join({"-target", triple, "-resource-dir", resources, "-module-name", name,
@@ -301,12 +304,24 @@ package("swift-runtime")
                      path.join(module, package:arch() .. "-apple-ios.swiftmodule"),
                      "-emit-object", "-module-link-name", "swift" .. name, "-o", object}, overlay_sources))
             os.vrunv(swiftc, table.join(flags, {"-emit-library", "-o", path.join(install, "libswift" .. name .. ".dylib"),
-                     object, "-Xlinker", "-install_name", "-Xlinker", "@rpath/libswift" .. name .. ".dylib",
+                     object, table.unpack(objects or {})}, {"-Xlinker", "-install_name", "-Xlinker", "@rpath/libswift" .. name .. ".dylib",
                      "-L" .. install, "-lswiftCore"}, links))
             offer(module)
             offer(path.join(install, "libswift" .. name .. ".dylib"))
         end
         build_overlay("ObjectiveC", overlay_sources_of("ObjectiveC", {"ObjectiveC.swift"}), {"-lswiftDarwin"})
+        -- Dispatch: its queues are Objective-C objects from iOS 6, which is what the overlay takes them for. Its constructor
+        -- is Objective-C++, compiled the way the port's own C is; Schedulers+DispatchQueue.swift is left out, being Combine's.
+        local dispatch_object = path.join(generated, "Dispatch.mm.o")
+        os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
+                 -- It adds the protocols of libdispatch's sources to their class, and reads them from the headers the way
+                 -- Swift does: the headers declare them only where OS_OBJECT_SWIFT3 is set, which importing them into Swift sets.
+                 toolchain:config("sdkdir"), "-Os", "-DOS_OBJECT_SWIFT3=1", "-c",
+                 path.join(overlays, "stdlib", "public", "Darwin", "Dispatch", "Dispatch.mm"),
+                 "-o", dispatch_object})
+        build_overlay("Dispatch", overlay_sources_of("Dispatch", {"Dispatch.swift", "Block.swift", "Data.swift", "IO.swift",
+                                                                  "Private.swift", "Queue.swift", "Source.swift", "Time.swift"}),
+                      {"-lswiftDarwin", "-lswiftObjectiveC"}, {dispatch_object})
         build_overlay("CoreFoundation", overlay_sources_of("CoreFoundation", {"CoreFoundation.swift"}),
                       {"-lswiftDarwin", "-framework", "CoreFoundation"})
         -- CGFloat is generated for the width of the target's pointer, as the release's own build generated it.
