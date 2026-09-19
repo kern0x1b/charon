@@ -57,6 +57,9 @@ static BOOL charon_url_same(NSString *first, NSString *second)
     NSString *_percentEncodedFragment;
 }
 
+@dynamic string, queryItems, percentEncodedQueryItems, encodedHost;
+@dynamic rangeOfScheme, rangeOfUser, rangeOfPassword, rangeOfHost, rangeOfPort, rangeOfPath, rangeOfQuery, rangeOfFragment;
+
 + (instancetype)componentsWithURL:(NSURL *)url resolvingAgainstBaseURL:(BOOL)resolve
 {
     return [[self alloc] initWithURL:url resolvingAgainstBaseURL:resolve];

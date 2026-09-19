@@ -1059,6 +1059,15 @@
     "status": "implemented"
   },
   {
+    "api": "NSURLComponents.encodedHost",
+    "kind": "property",
+    "introduced": "16.0",
+    "status": "absent",
+    "reason": "not carried: its setter accepts only a host already in IDNA or percent-encoded form, a check the backport's URL grammar does not make",
+    "effect": "the property is not there on the backport's class, so respondsToSelector: answers honestly and an unchecked call raises",
+    "source": "SDK 16.4, NSURL.h"
+  },
+  {
     "api": "NSURLErrorBackgroundTaskCancelledReasonKey",
     "kind": "constant",
     "introduced": "8.0",

@@ -182,6 +182,7 @@ static NSString *charon_size_class_name(UIUserInterfaceSizeClass sizeClass)
     charon_deliver_trait_changes(environments, change);
 }
 
+@dynamic forceTouchCapability;
 @dynamic layoutDirection;
 @dynamic preferredContentSizeCategory;
 @dynamic displayGamut;

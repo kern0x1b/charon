@@ -216,6 +216,8 @@ static NSString *charon_activation_mode_name(UIUserNotificationActivationMode mo
     BOOL _destructive;
 }
 
+@dynamic behavior, parameters;
+
 - (void)charon_setIdentifier:(NSString *)identifier
 {
     _identifier = [identifier copy];
