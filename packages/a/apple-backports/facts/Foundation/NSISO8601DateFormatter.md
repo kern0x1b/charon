@@ -3,8 +3,9 @@
 Introduced in iOS 10.0. Writes and reads the shapes of ISO 8601.
 
 Source: `CFDateFormatterCreateISO8601Formatter` and the class itself, in the
-armv7s cache of iOS 10.3.4; the pattern for every one of the 1024 combinations of
-the options is checked against the answers the real function gives.
+armv7s cache of iOS 10.3.4, and the host's Foundation for the option iOS 11 added;
+the pattern for every one of the 2048 combinations of the options is checked
+against the answers the real function gives.
 
 ## Why it is assembled rather than asked for
 
@@ -23,6 +24,7 @@ same parts, from the same fragments Apple's function uses.
 | week of year | `'W'ww` |
 | day | `dd` with a month, `DDD` without one, `ee` with a week |
 | time | `HHmmss`, or `HH:mm:ss` with the colon |
+| fractional seconds (iOS 11) | `.SSS` after the seconds, and only where the time is asked for |
 | zone | `XXXX`, or `XXXXX` with the colon |
 
 The fields are joined by `-` where dashes were asked for and by nothing where they
@@ -88,3 +90,19 @@ outside the known ones is set, and the assertion is Apple's own, silent in a
 release.
 
 A fresh formatter is in GMT and writes the internet date and time.
+
+## Fractional seconds
+
+`NSISO8601DateFormatWithFractionalSeconds` arrived in iOS 11; the pattern gains
+`.SSS`, so a date is written to the nearest millisecond - 1.0005 seconds as
+`.001`, 1.9999 as `02.000`, a quarter of a second before the epoch as
+`23:59:59.750`. It is strict both ways: asked for, a time without a fraction is
+not read; not asked for, a time with one is not read either. One, two or six
+digits are read, to the millisecond. The ICU of iOS 6.1.3 rounds and reads the
+same, which the device check holds on an iPhone4,1.
+
+The assertion of `-setFormatOptions:` names the bits it allows, this one among
+them, and its reason is the expression itself:
+`Invalid parameter not satisfying: formatOptions == 0 || !(formatOptions &
+~(NSISO8601DateFormatWithYear | … | NSISO8601DateFormatWithInternetDateTime))`,
+written out in full as Foundation writes it.

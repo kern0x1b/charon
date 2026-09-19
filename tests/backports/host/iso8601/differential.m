@@ -41,13 +41,14 @@ int main(void)
             NSISO8601DateFormatWithYear, NSISO8601DateFormatWithMonth, NSISO8601DateFormatWithWeekOfYear,
             NSISO8601DateFormatWithDay, NSISO8601DateFormatWithTime, NSISO8601DateFormatWithTimeZone,
             NSISO8601DateFormatWithSpaceBetweenDateAndTime, NSISO8601DateFormatWithDashSeparatorInDate,
-            NSISO8601DateFormatWithColonSeparatorInTime, NSISO8601DateFormatWithColonSeparatorInTimeZone };
+            NSISO8601DateFormatWithColonSeparatorInTime, NSISO8601DateFormatWithColonSeparatorInTimeZone,
+            NSISO8601DateFormatWithFractionalSeconds };
 
-        /* Every combination of the ten options, held to the pattern the real
+        /* Every combination of the eleven options, held to the pattern the real
            CFDateFormatterCreateISO8601Formatter builds. */
-        for (unsigned mask = 0; mask < 1024; mask++) {
+        for (unsigned mask = 0; mask < 2048; mask++) {
             NSISO8601DateFormatOptions options = 0;
-            for (unsigned bit = 0; bit < 10; bit++)
+            for (unsigned bit = 0; bit < 11; bit++)
                 if (mask & (1u << bit))
                     options |= flags[bit];
             CFDateFormatterRef theirs = CFDateFormatterCreateISO8601Formatter(NULL, (CFISO8601DateFormatOptions)options);
@@ -61,6 +62,8 @@ int main(void)
 
         /* And what the formatter makes of real dates, in several zones. */
         NSArray *dates = @[[NSDate dateWithTimeIntervalSinceReferenceDate:0],
+                           [NSDate dateWithTimeIntervalSinceReferenceDate:0.25],
+                           [NSDate dateWithTimeIntervalSinceReferenceDate:-0.25],
                            [NSDate dateWithTimeIntervalSinceReferenceDate:1234567.891],
                            [NSDate dateWithTimeIntervalSince1970:0],
                            [NSDate dateWithTimeIntervalSince1970:1600000000]];
@@ -73,7 +76,9 @@ int main(void)
             NSISO8601DateFormatWithYear | NSISO8601DateFormatWithMonth | NSISO8601DateFormatWithDay,
             NSISO8601DateFormatWithYear | NSISO8601DateFormatWithWeekOfYear | NSISO8601DateFormatWithDay
                 | NSISO8601DateFormatWithDashSeparatorInDate,
-            NSISO8601DateFormatWithTime | NSISO8601DateFormatWithColonSeparatorInTime };
+            NSISO8601DateFormatWithTime | NSISO8601DateFormatWithColonSeparatorInTime,
+            NSISO8601DateFormatWithInternetDateTime | NSISO8601DateFormatWithFractionalSeconds,
+            NSISO8601DateFormatWithTime | NSISO8601DateFormatWithFractionalSeconds };
         for (unsigned index = 0; index < sizeof(interesting) / sizeof(*interesting); index++)
             for (NSString *zoneName in zones)
                 for (NSDate *date in dates) {
@@ -110,6 +115,29 @@ int main(void)
                     [themPlain dateFromString:@"not a date"], @"a string that is not a date");
         same_object(((id (*)(id, SEL, id))objc_msgSend)(usPlain, @selector(dateFromString:), @""),
                     [themPlain dateFromString:@""], @"an empty string");
+
+        id usFraction = [[mine alloc] init];
+        NSISO8601DateFormatter *themFraction = [[NSISO8601DateFormatter alloc] init];
+        NSISO8601DateFormatOptions fraction = NSISO8601DateFormatWithInternetDateTime | NSISO8601DateFormatWithFractionalSeconds;
+        ((void (*)(id, SEL, NSUInteger))objc_msgSend)(usFraction, @selector(setFormatOptions:), fraction);
+        themFraction.formatOptions = fraction;
+        for (NSString *text in @[@"2001-01-01T12:00:00Z", @"2001-01-01T12:00:00.1Z", @"2001-01-01T12:00:00.12Z",
+                                 @"2001-01-01T12:00:00.123Z", @"2001-01-01T12:00:00.123456Z"]) {
+            same_object(((id (*)(id, SEL, id))objc_msgSend)(usFraction, @selector(dateFromString:), text),
+                        [themFraction dateFromString:text], [@"with fractional seconds, " stringByAppendingString:text]);
+            same_object(((id (*)(id, SEL, id))objc_msgSend)(usPlain, @selector(dateFromString:), text),
+                        [themPlain dateFromString:text], [@"without them, " stringByAppendingString:text]);
+        }
+        NSString *(^refusal)(void (^)(void)) = ^(void (^block)(void)) {
+            @try {
+                block();
+            } @catch (NSException *exception) {
+                return [NSString stringWithFormat:@"%@: %@", exception.name, exception.reason];
+            }
+            return @"nothing";
+        };
+        same_object(refusal(^{ ((void (*)(id, SEL, NSUInteger))objc_msgSend)(usPlain, @selector(setFormatOptions:), 1u << 20); }),
+                    refusal(^{ themPlain.formatOptions = 1u << 20; }), @"an option that is none of them");
 
         printf("%d checks, %d failures\n", checks, failures);
     }
