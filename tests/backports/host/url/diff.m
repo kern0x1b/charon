@@ -130,15 +130,6 @@ static NSCharacterSet *oursSet(NSString *name)
     return send([NSCharacterSet class], [NSString stringWithFormat:@"charonHost_URL%@AllowedCharacterSet", name]);
 }
 
-static NSCharacterSet *documentedSet(NSString *name)
-{
-    NSMutableCharacterSet *set = [systemSet(name) mutableCopy];
-    if ([name isEqualToString:@"Path"])
-        [set removeCharactersInString:@";"];
-    [set addCharactersInRange:NSMakeRange(0x100, 1)];
-    return set;
-}
-
 static Class Ours(void)
 {
     return NSClassFromString(@"CharonHostNSURLComponents");
@@ -172,7 +163,7 @@ static void testSets(void)
 {
     for (NSString *name in setNames()) {
         NSCharacterSet *system = systemSet(name);
-        NSCharacterSet *documented = documentedSet(name);
+        NSCharacterSet *documented = systemSet(name);
         NSCharacterSet *ours = oursSet(name);
         NSMutableArray *members = [NSMutableArray array];
         NSUInteger mismatches = 0;
@@ -182,8 +173,6 @@ static void testSets(void)
             if (expected != actual)
                 mismatches++;
             check(expected == actual, @"set", [NSString stringWithFormat:@"URL%@AllowedCharacterSet U+%04X expected %d", name, (unsigned)character, expected]);
-            if ([system longCharacterIsMember:character] != expected)
-                observe(@"URLPathAllowedCharacterSet: macOS 27 contains ';', the SDK header documents that it is percent-encoded", [NSString stringWithFormat:@"U+%04X", (unsigned)character]);
             if (expected)
                 [members addObject:@(character)];
         }
@@ -196,7 +185,7 @@ static NSDictionary *encodingSets(void)
 {
     NSMutableDictionary *sets = [NSMutableDictionary dictionary];
     for (NSString *name in setNames())
-        sets[name] = @[documentedSet(name), oursSet(name)];
+        sets[name] = @[systemSet(name), oursSet(name)];
     NSCharacterSet *empty = [NSCharacterSet characterSetWithCharactersInString:@""];
     sets[@"empty"] = @[empty, empty];
     sets[@"alphanumeric"] = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet alphanumericCharacterSet]];
@@ -240,9 +229,6 @@ static void testEncoding(void)
         [inputs enumerateObjectsUsingBlock:^(NSString *input, NSUInteger index, BOOL *stop) {
             NSString *expected = [input stringByAddingPercentEncodingWithAllowedCharacters:reference];
             NSString *actual = oursEncode(input, ours);
-            if ([name isEqualToString:@"Host"] && !same(expected, [input stringByAddingPercentEncodingWithAllowedCharacters:systemSet(name)]))
-                observe(@"-stringByAddingPercentEncodingWithAllowedCharacters: macOS 27 special-cases URLHostAllowedCharacterSet and encodes '[', ']' and ':' outside an IP literal although the set contains them",
-                        [NSString stringWithFormat:@"%@ -> %@", show(input), show([input stringByAddingPercentEncodingWithAllowedCharacters:systemSet(name)])]);
             check(same(expected, actual), @"encode", [NSString stringWithFormat:@"%@ %@ -> %@, expected %@", name, show(input), show(actual), show(expected)]);
             if ([device containsIndex:index])
                 expect(@"encode", @[name, portable(input), value(expected)]);
@@ -495,7 +481,7 @@ static void testSetters(void)
         NSString *capitalized = [[[property substringToIndex:1] uppercaseString] stringByAppendingString:[property substringFromIndex:1]];
         SEL setter = NSSelectorFromString([NSString stringWithFormat:@"set%@:", capitalized]);
         SEL encoded = NSSelectorFromString([@"percentEncoded" stringByAppendingString:capitalized]);
-        NSCharacterSet *set = documentedSet(setNamesByProperty[property]);
+        NSCharacterSet *set = systemSet(setNamesByProperty[property]);
         for (NSString *input in [setterValues() arrayByAddingObject:[NSNull null]]) {
             NSString *given = textOf(input);
             NSURLComponents *system = [NSURLComponents new];

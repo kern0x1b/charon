@@ -86,15 +86,26 @@ static void character_sets(void)
 }
 
 static NSString *allowed_name;
+static NSCharacterSet *allowed_ours;
+
+static NSCharacterSet *predefined(NSString *name, BOOL ours)
+{
+    SEL selector = NSSelectorFromString(ours ? [@"charonHost_" stringByAppendingString:name] : name);
+    NSCharacterSet *set = ((id (*)(id, SEL))objc_msgSend)([NSCharacterSet class], selector);
+    if (!ours)
+        allowed_ours = predefined(name, YES);
+    return set;
+}
 
 static NSCharacterSet *allowed_set(void)
 {
     uint32_t pick = roll(8);
+    allowed_ours = nil;
     allowed_name = @[@"query", @"path", @"host", @"alphanumeric", @"custom", @"inverted fragment", @"percent e-acute zhe space a", @"all of the BMP"][pick];
     switch (pick) {
-        case 0: return [NSCharacterSet URLQueryAllowedCharacterSet];
-        case 1: return [NSCharacterSet URLPathAllowedCharacterSet];
-        case 2: return [NSCharacterSet URLHostAllowedCharacterSet];
+        case 0: return predefined(@"URLQueryAllowedCharacterSet", NO);
+        case 1: return predefined(@"URLPathAllowedCharacterSet", NO);
+        case 2: return predefined(@"URLHostAllowedCharacterSet", NO);
         case 3: return [NSCharacterSet alphanumericCharacterSet];
         case 4: {
             NSString *members = text();
@@ -136,6 +147,16 @@ static NSString *base64_text(void)
     return made;
 }
 
+static NSString *padding_inside(NSString *encoded)
+{
+    NSCharacterSet *alphabet = [NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"];
+    NSRange padding = [encoded rangeOfString:@"="];
+    if (padding.location == NSNotFound)
+        return @"";
+    NSRange after = [encoded rangeOfCharacterFromSet:alphabet options:0 range:NSMakeRange(padding.location, encoded.length - padding.location)];
+    return after.location == NSNotFound ? @"" : @".paddingInside";
+}
+
 int main(int argc, char **argv)
 {
     @autoreleasepool {
@@ -149,7 +170,7 @@ int main(int argc, char **argv)
             fuzz_compare([@"adding." stringByAppendingString:[allowed_name hasPrefix:@"custom"] ? @"custom" : [allowed_name stringByReplacingOccurrencesOfString:@" " withString:@"_"]],
                          [NSString stringWithFormat:@"[%@] with the %@ set", shown(subject), allowed_name],
                     call(subject, @"stringByAddingPercentEncodingWithAllowedCharacters:", allowed, NO),
-                    call(subject, @"stringByAddingPercentEncodingWithAllowedCharacters:", allowed, YES));
+                    call(subject, @"stringByAddingPercentEncodingWithAllowedCharacters:", allowed_ours ? allowed_ours : allowed, YES));
             fuzz_compare(@"removing", [NSString stringWithFormat:@"[%@]", shown(subject)],
                     call(subject, @"stringByRemovingPercentEncoding", nil, NO), call(subject, @"stringByRemovingPercentEncoding", nil, YES));
             NSData *data = bytes();
@@ -167,13 +188,13 @@ int main(int argc, char **argv)
             NSUInteger decoding = roll(2) ? NSDataBase64DecodingIgnoreUnknownCharacters : 0;
             NSString *systemDecoded = shown([[NSData alloc] initWithBase64EncodedString:encoded options:decoding]);
             NSString *portDecoded = shown(((id (*)(id, SEL, id, NSUInteger))objc_msgSend)([NSData alloc], NSSelectorFromString(@"initCharonHostWithBase64EncodedString:options:"), encoded, decoding));
-            fuzz_compare([NSString stringWithFormat:@"decode.string.options%lu", (unsigned long)decoding], [NSString stringWithFormat:@"[%@]", shown(encoded)], systemDecoded, portDecoded);
+            fuzz_compare([NSString stringWithFormat:@"decode.string.options%lu%@", (unsigned long)decoding, padding_inside(encoded)], [NSString stringWithFormat:@"[%@]", shown(encoded)], systemDecoded, portDecoded);
             NSData *encodedData = [encoded dataUsingEncoding:NSUTF8StringEncoding];
             if (!encodedData)
                 continue;
             NSString *systemFromData = shown([[NSData alloc] initWithBase64EncodedData:encodedData options:decoding]);
             NSString *portFromData = shown(((id (*)(id, SEL, id, NSUInteger))objc_msgSend)([NSData alloc], NSSelectorFromString(@"initCharonHostWithBase64EncodedData:options:"), encodedData, decoding));
-            fuzz_compare([NSString stringWithFormat:@"decode.data.options%lu", (unsigned long)decoding], [NSString stringWithFormat:@"[%@]", shown(encoded)], systemFromData, portFromData);
+            fuzz_compare([NSString stringWithFormat:@"decode.data.options%lu%@", (unsigned long)decoding, padding_inside(encoded)], [NSString stringWithFormat:@"[%@]", shown(encoded)], systemFromData, portFromData);
         }
         return fuzz_finish();
     }

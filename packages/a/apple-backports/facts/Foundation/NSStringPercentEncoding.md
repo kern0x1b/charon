@@ -15,21 +15,26 @@ may carry:
 |---|---|
 | `URLUserAllowedCharacterSet`, `URLPasswordAllowedCharacterSet` | `!$&'()*+,;=` |
 | `URLHostAllowedCharacterSet` | `!$&'()*+,;=` and `:[]` |
-| `URLPathAllowedCharacterSet` | `!$&'()*+,=` and `:@/` |
+| `URLPathAllowedCharacterSet` | `!$&'()*+,;=` and `:@/` |
 | `URLQueryAllowedCharacterSet`, `URLFragmentAllowedCharacterSet` | `!$&'()*+,;=` and `:@/?` |
 
 Each set is made once and answered again, so a caller may compare them by identity.
 
-Two places where the newest implementation the host carries, macOS 27, is not what this says, and the
-differential records them as observations rather than failures:
+The path set contains `;`: that is the newest implementation, macOS 27, asked for each set's membership. A
+line here once kept `;` out because the SDK header documents it as percent-encoded in a path; the rule is
+the implementation, not its documentation, and the fuzzer of `tests/backports/host/fuzz` holds all six sets
+to the host over every scalar.
 
-- its `URLPathAllowedCharacterSet` contains `;`, while the SDK header the applications are built against
-  documents that `;` is percent-encoded in a path. iOS 7 cannot be asked - its Foundation builds these
-  sets rather than storing them, so no literal of the delimiters is in its image - so the backport keeps
-  what the header documents, and this line is here so the choice is not mistaken for a measurement.
-- its `-stringByAddingPercentEncodingWithAllowedCharacters:` special-cases the host set and encodes `[`,
-  `]` and `:` outside an IP literal although the set contains them. The backport encodes by the set it is
-  given, which is what the method says it does.
+`-stringByAddingPercentEncodingWithAllowedCharacters:` looks at which set it is handed, not only at what
+the set contains. Given the path set itself, it encodes `:` until the first `/` - `a:b/c:d` becomes
+`a%3Ab/c:d` - so that the first segment cannot be read as a scheme; given the host set itself, it encodes
+`:`, `[` and `]`, unless the whole string is an IP literal from `[` to `]`, which keeps them: `[::1]` stays
+and `[fe80::1%en0]` becomes `[fe80::1%25en0]`, while `host:80` becomes `host%3A80`. A copy of either set, or
+any other set, encodes by membership alone. These are the component masks of the newest implementation
+(`path`, `pathFirstSegment` and `host` of swift-foundation's URL parser), measured character by character
+at the start of a string and after a `/`. The backport compares the set with its own predefined object, which
+is the one an application on iOS 6 is handed, and `NSURLComponents`' setters, which encode with those sets,
+answer as macOS 27's do: `setHost:@"a:b"` gives `a%3Ab`, `setPath:@"a:b"` gives `a%3Ab`.
 
 ## What the two methods do
 

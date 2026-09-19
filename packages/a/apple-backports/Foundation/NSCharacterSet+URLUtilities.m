@@ -43,7 +43,7 @@ static NSCharacterSet *charon_url_set(NSString *delimiters)
     static NSCharacterSet *set;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        set = charon_url_set(@"!$&'()*+,=:@/");
+        set = charon_url_set(@"!$&'()*+,;=:@/");
     });
     return set;
 }

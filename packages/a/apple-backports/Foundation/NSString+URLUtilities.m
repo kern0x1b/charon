@@ -70,6 +70,12 @@ static NSUInteger charon_decode_utf8(const uint8_t *bytes, NSUInteger length, un
     BOOL allowed[128];
     for (unichar character = 0; character < 128; character++)
         allowed[character] = [allowedCharacters characterIsMember:character];
+    BOOL path = allowedCharacters == [NSCharacterSet URLPathAllowedCharacterSet];
+    if (allowedCharacters == [NSCharacterSet URLHostAllowedCharacterSet] && !([self hasPrefix:@"["] && [self hasSuffix:@"]"] && self.length > 1))
+        allowed[':'] = allowed['['] = allowed[']'] = NO;
+    BOOL colon = allowed[':'];
+    if (path)
+        allowed[':'] = NO;
     NSUInteger length = self.length;
     unichar *characters = malloc((length ? length : 1) * sizeof(unichar));
     unichar *output = malloc((length ? length : 1) * 9 * sizeof(unichar));
@@ -79,6 +85,8 @@ static NSUInteger charon_decode_utf8(const uint8_t *bytes, NSUInteger length, un
     NSUInteger index = 0;
     for (; index < length; index++) {
         unichar character = characters[index];
+        if (path && character == '/')
+            allowed[':'] = colon;
         if (character < 128 && allowed[character]) {
             output[used++] = character;
             continue;

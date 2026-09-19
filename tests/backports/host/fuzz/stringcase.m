@@ -89,8 +89,10 @@ int main(int argc, char **argv)
                         one(subject, selector, search, NO), one(subject, selector, search, YES));
             NSString *transform = transforms[roll((uint32_t)transforms.count)];
             BOOL reverse = roll(2);
-            fuzz_compare(@"stringByApplyingTransform:reverse:", [NSString stringWithFormat:@"%@ reverse %d [%@]", transform, reverse, shown(subject)],
-                    transformed(subject, transform, reverse, NO), transformed(subject, transform, reverse, YES));
+            NSString *system = transformed(subject, transform, reverse, NO), *port = transformed(subject, transform, reverse, YES);
+            BOOL twoWays = ![system isEqualToString:port] && [transformed(subject, transform, reverse, NO) isEqualToString:port];
+            fuzz_compare(twoWays ? @"stringByApplyingTransform:reverse:.hostAnswersTwoWays" : @"stringByApplyingTransform:reverse:",
+                         [NSString stringWithFormat:@"%@ reverse %d [%@]", transform, reverse, shown(subject)], system, port);
         }
         return fuzz_finish();
     }
