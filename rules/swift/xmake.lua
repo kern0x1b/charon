@@ -77,6 +77,12 @@ rule("swift")
             -- and needs none of the lowering Embedded Swift is put through. It reads the runtime's resource directory,
             -- and so takes that Swift rather than the one the SDK carries for the architecture.
             if target:pkg("swift-runtime") then
+                local modules = {}
+                for _, dependency in ipairs(target:orderpkgs()) do
+                    for _, folder in ipairs(table.wrap((dependency:envs() or {}).CHARON_SWIFT_MODULES)) do
+                        table.join2(modules, {"-I", folder})
+                    end
+                end
                 local argv = table.join(swift.runtime_flags({
                     architecture = target:arch(),
                     deployment = toolchain:config("deployment"),
@@ -88,7 +94,7 @@ rule("swift")
                     symbols = table.contains(table.wrap(target:get("symbols")), "debug"),
                     prefix_map = os.projectdir() .. "=/port",
                     has_main = has_main
-                }), table.wrap(target:values("swift.flags")), {"-c"}, sourcebatch.sourcefiles, {"-o", objectfile})
+                }), modules, table.wrap(target:values("swift.flags")), {"-c"}, sourcebatch.sourcefiles, {"-o", objectfile})
                 depend.on_changed(function ()
                     progress.show(jobopt.progress, "${color.build.object}compiling.swift %s", target:name())
                     os.mkdir(path.directory(objectfile))

@@ -541,6 +541,19 @@ against by name, so a program built against one build cannot be linked against
 another; the package's own test links a program both ways and expects the second
 to fail.
 
+A Swift library is a package the same way: it requires `charon@swift-runtime`,
+compiles its modules with the runtime's compiler and flags, installs them as
+static libraries with their `.swiftmodule`s, and names the folders a port's
+Swift finds them in with `package:setenv("CHARON_SWIFT_MODULES", ...)`; the
+swift rule adds those folders to the compile. `charon@opencombine` is the first:
+OpenCombine, OpenCombineDispatch and OpenCombineFoundation, with its C++ helper
+and that helper's module map. `DispatchTime.distance(to:)`, which the runtime's
+Dispatch overlay (from Swift 5.4.3) does not have, is added to it in the largest
+unit that fits an `Int`, and below iOS 7 the `URLSession` publishers are left out
+and a run loop timer's tolerance is read and set only behind `#available`. A port
+takes it with `add_requires("charon@opencombine", {alias = "opencombine"})` and
+`add_packages("opencombine")` beside the runtime and libcxx.
+
 apple-compat links its shims into whoever requires it and force-includes
 nothing on its own, because a shim's header brings its system header with it
 (`unlinkat.h` brings `<unistd.h>`, and with it `sync`). A target names the
