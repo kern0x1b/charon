@@ -106,9 +106,26 @@ static char** read_job(const char* file, char* self, int* count)
     return job;
 }
 
+// launchctl runs a bsexec line of launchd.conf as itself and waits for it to end before it loads the
+// daemons, so a runner that stays would hold the whole boot - SpringBoard, notifyd, configd - back
+// until its test is over. Started that way its parent is launchctl, not launchd: the runner then
+// leaves at once and carries on in a session of its own. Started by launchd itself it stays put.
+static void detach_from_launchctl(void)
+{
+    if (getppid() == 1)
+        return;
+    pid_t child = fork();
+    if (child < 0)
+        return;
+    if (child > 0)
+        _exit(0);
+    setsid();
+}
+
 int main(int argc, char** argv)
 {
     keep_own_output();
+    detach_from_launchctl();
     if (argc == 3 && strcmp(argv[1], "--job") == 0) {
         int count = 0;
         char** job = read_job(argv[2], argv[0], &count);
