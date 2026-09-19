@@ -614,7 +614,8 @@ end
 function build(opt)
     local release = loaded(opt.cache, opt.architecture)
     opt = table.join(opt, {triple = opt.architecture .. "-apple-ios" .. opt.deployment})
-    local attach, objects = compiled(opt)
+    local attach, objects, origins = compiled(opt)
+    check_releases(opt, objects, origins)
     local built = {}
     for _, library in ipairs(LIBRARIES) do
         if not opt.libraries or table.contains(opt.libraries, library.name) then
@@ -692,6 +693,18 @@ local function introduced(opt, source, object)
         raise("%s defines %s; an object carries API that arrived in one release, so split it", path.filename(source), table.concat(described, " and "))
     end
     return found[1]
+end
+
+function check_releases(opt, objects, origins)
+    for _, library in ipairs(LIBRARIES) do
+        if not opt.libraries or table.contains(opt.libraries, library.name) then
+            for _, object in ipairs(objects[library.name]) do
+                if #exported_symbols(object) > 0 then
+                    introduced(opt, origins[object], object)
+                end
+            end
+        end
+    end
 end
 
 -- A class the release carries but does not export is one a band cannot drop:
