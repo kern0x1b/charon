@@ -146,6 +146,10 @@ static void compare_cubic(void)
         UICubicTimingParameters *theirCopy = [them copy];
         same_long(((NSInteger (*)(id, SEL))objc_msgSend)(ourCopy, @selector(animationCurve)), theirCopy.animationCurve,
                   [what stringByAppendingString:@" survives a copy"]);
+        same_point(((CGPoint (*)(id, SEL))objc_msgSend)(ourCopy, @selector(controlPoint1)), theirCopy.controlPoint1,
+                   [what stringByAppendingString:@" copied keeps control point 1"]);
+        same_point(((CGPoint (*)(id, SEL))objc_msgSend)(ourCopy, @selector(controlPoint2)), theirCopy.controlPoint2,
+                   [what stringByAppendingString:@" copied keeps control point 2"]);
         id ourBack = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:us]];
         UICubicTimingParameters *theirBack = [NSKeyedUnarchiver unarchiveObjectWithData:
                                                  [NSKeyedArchiver archivedDataWithRootObject:them]];
