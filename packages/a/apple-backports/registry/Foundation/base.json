@@ -946,8 +946,8 @@
     "kind": "method",
     "introduced": "11.0",
     "status": "absent",
-    "reason": "NSProgress arrived after the release and the task reports its counts instead",
-    "effect": "the task does not answer -progress, although the SDK declares NSURLSessionTask as NSProgressReporting, so a call crashes unless it is guarded"
+    "reason": "the release has NSProgress but not the progress of a task: the newest release builds it as a progress of 100 units that carries a file kind, the kind of transfer and the byte counts in its user info, and its units and its fraction did not agree in the samples read (5 units completed at a fraction of 0.2875), so no rule for them was read",
+    "effect": "the task does not answer -progress, although the SDK declares NSURLSessionTask as NSProgressReporting, so a call crashes unless it is guarded; the counts the task keeps - countOfBytesReceived, countOfBytesSent and their expected values - are there to build a progress from"
   },
   {
     "api": "-[NSValue getValue:size:]",
