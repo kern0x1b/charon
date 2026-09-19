@@ -1974,10 +1974,8 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a departure from 11.0, which leaves backBarButtonItem alone",
-      "effect": "the title is kept as Apple keeps it, and is also put into a plain UIBarButtonItem in backBarButtonItem, which is where this release draws the back button from, unless the application has put an item there itself; so backBarButtonItem is no longer nil after a title is set",
       "facts": "facts/UIKit/UINavigationItemBackButtonTitle.md",
-      "source": "UIKit of iOS 11.0 arm64 at 0x18a043a9c, 0x18a043628 and 0x18a04e8e8; the value behaviour from the differential test against the host's UIKit"
+      "source": "the release's own -backButtonTitle and -setBackButtonTitle: of UINavigationItem, which UIKit has had privately on every release from 3.0 to 10.3.4; the behaviour held on an iPhone 4S (6.1.3) to UIKit 11.0 (-currentBackButtonTitle at 0x18a04e8e8) and to the host's UIKit"
     },
     {
       "api": "+[NSLayoutConstraint constraintsWithVisualFormat:options:metrics:views:]",

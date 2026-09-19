@@ -36,6 +36,36 @@ one side and an edge on the other — uses the same formula.
 Two views that carry no font at all fall back to the eight points, even when
 both anchors are baselines.
 
+## On iOS 6
+
+The port takes the items and attributes from
+`-[NSLayoutAnchor constraintEqualToAnchor:]` of the anchors it is given and adds
+only the constant. So on a release before iOS 8, a baseline has the attributes
+the anchors give it there, as `facts/UIKit/UIViewAnchors.md` describes in "A
+baseline anchor on a release before iOS 8":
+- a first baseline of a view that shows text is `NSLayoutAttributeBaseline`
+  (11), since `NSLayoutAttributeFirstBaseline` (12) does not exist before iOS 8;
+- the baselines of a view that shows none are its top (3) for the first and its
+  bottom (4) for the last.
+
+The constant follows the formula above with that release's fonts. On an iPhone
+4S running 6.1.3 the system font is `.HelveticaNeueUI`:
+
+| size | line height | descender |
+|---|---|---|
+| 17 | 21 | -3.91 |
+| 40 | 47 | -9.2 |
+| 9 | 12 | -2.07 |
+
+The screen scale is 2. The five pairs above therefore give 21, 19.5, 40, 26.5
+and 42, where the host's SF gives 20, 18, 40.5, 25 and 42.5. Mixed pairs give
+26.5 both ways. Two views without text keep the eight points.
+
+The device run holds every one of these to the formula computed from the
+device's own fonts, and to the attributes the device's anchors give. The
+comparisons that do not depend on fonts - the edges, the relations, the
+multipliers and the container - hold to the host's answers as they are.
+
 ## A multiplier below zero asks for nothing
 
 The multiplier scales the spacing, and the current implementation stops at

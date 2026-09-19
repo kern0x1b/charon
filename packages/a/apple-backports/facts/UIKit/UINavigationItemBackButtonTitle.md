@@ -8,41 +8,54 @@ Source: UIKit of the arm64 shared cache of iOS 11.0 (iPod7,1 15A372),
 `-[UINavigationItem backButtonTitle]` at `0x18a043a9c`, `-setBackButtonTitle:`
 at `0x18a043618` through `-_setBackButtonTitle:lineBreakMode:` at
 `0x18a043628`, and `-currentBackButtonTitle` at `0x18a04e8e8`, which is where
-the order below is decided; the value behaviour from the differential test
-against the host's UIKit (`tests/backports/host/backbuttontitle`).
+the order below is decided. Also: the method lists of `UINavigationItem` in
+every UIKit this package has, from 3.0 to 10.3.4, and a run on an iPhone 4S
+(6.1.3).
 
 ## What it is and what it is not
 
 The setter copies the string into an ivar of its own and tells the bar that the
 back button's content changed, so that it can draw again. It does **not**
-touch `backBarButtonItem`, and `backBarButtonItem` does not touch it: an item
-that was given only a title answers `nil` for the item, an item that was given
-only an item answers `nil` for the title, and an item given both keeps both,
-whichever came first.
+touch `backBarButtonItem`, and `backBarButtonItem` does not touch it:
+- an item given only a title answers `nil` for the item;
+- an item given only an item answers `nil` for the title;
+- an item given both keeps both, whichever came first.
 
 The two meet in `-currentBackButtonTitle`, which is what the bar actually
-draws: if `backBarButtonItem` is there, its `title` wins; otherwise the
-`backButtonTitle`; otherwise the item's own `title`, shortened if it has to be.
+draws:
+1. if `backBarButtonItem` is there, its `title` wins;
+2. otherwise the `backButtonTitle`;
+3. otherwise the item's own `title`, shortened if it has to be.
 
-## What the port does
+## The release carries it
 
-iOS 6 draws the back button from `backBarButtonItem` and from the previous
-item's title, and nothing else, so that is where the string has to go. The port
-keeps the title of its own, as Apple does, and when it is set it also builds a
-plain `UIBarButtonItem` of that title and puts it in `backBarButtonItem` - but
-only where that would not take an item away from the application: if the item
-there is one the application set, the port leaves it and only remembers the
-title. That is the same order UIKit resolves in, and it comes out the same way
-round on this release: an application's own item wins, a bare title is drawn,
-and a title set to `nil` takes the port's own item away again.
+`-backButtonTitle` and `-setBackButtonTitle:` are not new in iOS 11: UIKit has
+had them on `UINavigationItem` as private methods on every release this package
+reads - 3.0, 3.1.3, 3.2, 4.0, 4.3.5, 5.0, 5.1.1, 6.0, 6.1.3, 7.0, 8.0, 9.0,
+10.0.1 and 10.3.4. iOS 11 made them public. Categories are attached only where
+the class does not answer, so there is nothing for this package to attach, and
+it carries no code for this property: what an application gets is the
+release's own method.
 
-## The one divergence
+That method behaves as the iOS 11 one does, measured on an iPhone 4S running
+6.1.3.
 
-After setting a back button title, `backBarButtonItem` is no longer `nil` on
-this release, while on iOS 11 it stays `nil` - the port has to put the string
-where the release looks, and the release looks there. An application that reads
-`backBarButtonItem` to decide whether it has configured a back button sees an
-item it did not make. Everything the test measures about the title itself -
-what is stored, what the two properties answer about each other, the copy on
-the way in, the last write winning, clearing with `nil` - matches the system
-exactly.
+What the property answers, against the host's UIKit, which gave the same answer
+at every step:
+- a fresh item has none;
+- the title comes back as it was set, copied on the way in;
+- an item of the application's own is not a title;
+- a title and an item each stay whichever was set first;
+- the last title wins;
+- `nil` clears it.
+
+What the bar draws, read off the views of a real `UINavigationBar` with a second
+item pushed on the first:
+- the title set: `Up`;
+- a title and an application's own item, in either order: `Item`;
+- a title set and then set to `nil`: the item's own title, `Home`;
+- neither: `Home`.
+
+`backBarButtonItem` stays `nil` after a title is set.
+
+So on this release there is no divergence from iOS 11 to write down.

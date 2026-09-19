@@ -24,9 +24,35 @@ together.
 
 The port wraps iOS 6's own `-beginUpdates` and `-endUpdates`, which have grouped
 a table's changes since iOS 2, in a Core Animation transaction whose completion
-block carries the caller's completion. That gives the same order the test pins
-down: `before`, `inside`, `after the call`, then the completion after the run
-loop turns.
+block carries the caller's completion.
+
+## When the completion comes on iOS 6
+
+On an iPhone 4S running 6.1.3, a transaction's completion block does not run
+when that transaction commits. It runs when the **outermost** transaction
+commits, and in an application that is the implicit transaction of the current
+turn of the run loop, committed once the code that is running returns.
+
+So when `-performBatchUpdates:completion:` is called from an event, a timer or
+a queued block, the completion comes on the following turn, after the call has
+returned - the order Apple gives: `before`, `inside`, `after the call`,
+`completion`.
+
+The one case where the two differ is code that turns the run loop itself
+without returning, with `-runUntilDate:` inside the same handler. There the
+completion waits until the handler returns, while on the host it arrives inside
+that nested turn.
+
+Measured on the device with the table outside any window and inside a window,
+and with an empty transaction beside it: all three completions came together,
+1.5 and 3.1 seconds after the calls, once the handler had returned. None came
+inside a nested turn. The completion of a `UIView` animation on the same
+release does come inside a nested turn, which is why this is a property of
+Core Animation transactions and not of tables.
+
+The device test calls the method from inside a handler and checks the order
+only after that handler has returned. It expects `before | inside | after the
+call | completion finished 1`.
 
 ## The one thing the port cannot tell
 

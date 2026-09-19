@@ -26,7 +26,6 @@ inputs.
     sh host/batchupdates/run.sh
     sh host/interactions/run.sh
     sh host/traitstyle/run.sh
-    sh host/backbuttontitle/run.sh
     sh host/animatorscrub/run.sh
     sh host/usernotifications/run.sh  writes device/usernotifications-expectations.h when it passes
 
@@ -141,15 +140,6 @@ text, the next date of every trigger through the triggers' own
 fresh, filled, copied, set to nil and archived both ways, requests, sounds and
 the members of later releases the class must not answer. When it passes it
 writes the device's expectations.
-
-`host/backbuttontitle/run.sh` holds the back button title of a navigation item
-to the system's: what the item answers before and after it is given one, that
-the title and `backBarButtonItem` leave each other alone whichever is set
-first, the copy on the way in, the last write winning and clearing with `nil`.
-Three checks are the port's own, because they are the difference: the port puts
-the title into a plain `backBarButtonItem`, which is where this release draws
-the back button from, leaves an item the application set alone, and takes its
-own item away again when the title goes.
 
 `host/traitstyle/run.sh` is the contract for the user interface style of a
 trait collection, iOS 12 API on a class of the iOS 7-10 range: it runs one
@@ -284,6 +274,31 @@ postinst run with `DPKG_ROOT` set to it.
   Three of those checks are not about the safe area at all: they ask the
   release's own visual format parser what it does with the iOS 11 spacing
   option, which is a question only a real iOS 6 can answer.
+- `uikit11/`: a MobileSubstrate tweak filtered to Preferences, for the iOS 11
+  UIKit members that need a running application. It replays five host tests
+  on the device: `interactions`, `systemspacing`, `gesturename`,
+  `batchupdates` and `contentsize`.
+  - Each host test's `differential.m` is compiled into the tweak unchanged: its
+    `main` is renamed, its `printf` goes into the tweak's log through
+    `capture.h`, and `alias.m` gives every method of the backport libraries
+    the `charonHost` names the tests call their port side by.
+  - On iOS 6 the system side of every test is the port. Each answer is held to
+    the host's, which `refresh.sh` runs the host tests to write into
+    `uikit11-expectations.h`.
+  - A few answers depend on the release, and the tweak checks those against
+    the release instead. These are the baselines of system spacing, which
+    follow the formula with the device's fonts and the attributes its anchors
+    give, and the moment a batch update's completion arrives, which is checked
+    after the handler returns.
+  - It also reads the back button a real `UINavigationBar` draws for each way
+    of setting `backButtonTitle`: on every release this package supports, the
+    property is UIKit's own.
+  - Build it with Charon's tweak rule and `-fobjc-arc`, with `host/` and this
+    folder on the include path and `capture.h` included first
+    (`-include capture.h`). Launch Preferences with `sblaunch
+    com.apple.Preferences`. It writes `/private/var/backports/uikit11.log`,
+    one line per check, and `uikit11.done`. The last run on an iPhone 4S
+    (6.1.3) answered `PASS`.
 - `alert.m`, `layout.m`: applications (`alert-Info.plist`, `layout-Info.plist`)
   launched from SpringBoard; they write `/private/var/backports/NAME.log` and
   `NAME.done`, and `alert.m` logs a `SCREENSHOT <label>` line and pauses before
