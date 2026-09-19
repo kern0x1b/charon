@@ -90,8 +90,11 @@ static BOOL charon_icu_writes_offsets(void)
 static NSString *charon_iso_time_pattern(NSISO8601DateFormatOptions options)
 {
     NSMutableString *pattern = [[NSMutableString alloc] init];
-    if (options & NSISO8601DateFormatWithTime)
+    if (options & NSISO8601DateFormatWithTime) {
         [pattern appendString:(options & NSISO8601DateFormatWithColonSeparatorInTime) ? @"HH:mm:ss" : @"HHmmss"];
+        if (options & NSISO8601DateFormatWithFractionalSeconds)
+            [pattern appendString:@".SSS"];
+    }
     if (options & NSISO8601DateFormatWithTimeZone) {
         if (charon_icu_writes_offsets())
             [pattern appendString:(options & NSISO8601DateFormatWithColonSeparatorInTimeZone) ? @"XXXXX" : @"XXXX"];
@@ -224,9 +227,15 @@ NSString *charon_iso8601_pattern(NSISO8601DateFormatOptions options)
              | NSISO8601DateFormatWithWeekOfYear | NSISO8601DateFormatWithDay | NSISO8601DateFormatWithTime
              | NSISO8601DateFormatWithTimeZone | NSISO8601DateFormatWithSpaceBetweenDateAndTime
              | NSISO8601DateFormatWithDashSeparatorInDate | NSISO8601DateFormatWithColonSeparatorInTime
-             | NSISO8601DateFormatWithColonSeparatorInTimeZone | NSISO8601DateFormatWithFullDate
-             | NSISO8601DateFormatWithFullTime | NSISO8601DateFormatWithInternetDateTime)),
-             @"Invalid parameter not satisfying: %@", @(formatOptions));
+             | NSISO8601DateFormatWithColonSeparatorInTimeZone | NSISO8601DateFormatWithFractionalSeconds
+             | NSISO8601DateFormatWithFullDate | NSISO8601DateFormatWithFullTime | NSISO8601DateFormatWithInternetDateTime)),
+             @"Invalid parameter not satisfying: %@",
+             @"formatOptions == 0 || !(formatOptions & ~(NSISO8601DateFormatWithYear | NSISO8601DateFormatWithMonth"
+             @" | NSISO8601DateFormatWithWeekOfYear | NSISO8601DateFormatWithDay | NSISO8601DateFormatWithTime"
+             @" | NSISO8601DateFormatWithTimeZone | NSISO8601DateFormatWithSpaceBetweenDateAndTime"
+             @" | NSISO8601DateFormatWithDashSeparatorInDate | NSISO8601DateFormatWithColonSeparatorInTime"
+             @" | NSISO8601DateFormatWithColonSeparatorInTimeZone | NSISO8601DateFormatWithFractionalSeconds"
+             @" | NSISO8601DateFormatWithFullDate | NSISO8601DateFormatWithFullTime | NSISO8601DateFormatWithInternetDateTime))");
     _formatOptions = formatOptions;
     [self charon_updateFormatter];
 }
