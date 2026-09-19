@@ -259,6 +259,27 @@ function failures(opt)
         table.insert(found, "a method of a class the registry describes needs no entry of its own: the class carries its surface")
     end
     carried.members["-[UIStackView setSpacing:]"] = nil
+    io.writefile(path.join(registry, "UIKit", "absent.json"), [[
+        [{"api": "UIStackView.customSpacing", "kind": "property", "introduced": "11.0", "status": "absent",
+          "reason": "the release lays out no custom spacing", "effect": "the property is not there"}]
+    ]])
+    carried.answered = {["-[UIStackView setCustomSpacing:]"] = true}
+    errors = fixtures.refusal(function () backports.check_registry(folder, carried) end)
+    if not errors or not errors:find("listed as absent, but what is built answers it: UIStackView.customSpacing", 1, true) then
+        table.insert(found, "a member the registry calls absent must not be answered by what is built, as a property the compiler synthesised from the SDK's interface is: " .. tostring(errors))
+    end
+    carried.answered = {["-[UIBlurEffect effectWithStyle:]"] = true}
+    if fixtures.refusal(function () backports.check_registry(folder, carried) end) then
+        table.insert(found, "an absent class whose name nothing built carries is not refused for a method of that name elsewhere")
+    end
+    carried.classes.UIBlurEffect = true
+    errors = fixtures.refusal(function () backports.check_registry(folder, carried) end)
+    if not errors or not errors:find("listed as absent, but what is built answers it: UIBlurEffect", 1, true) then
+        table.insert(found, "a class the registry calls absent must not be built: " .. tostring(errors))
+    end
+    carried.classes.UIBlurEffect = nil
+    carried.answered = nil
+    os.rm(path.join(registry, "UIKit", "absent.json"))
     carried.classes.UIStackView = nil
     errors = fixtures.refusal(function () backports.check_registry(folder, carried) end)
     if not errors or not errors:find("UIStackView", 1, true) then

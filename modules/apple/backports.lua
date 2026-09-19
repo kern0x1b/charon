@@ -351,7 +351,7 @@ local function loaded(cache, architecture)
 end
 
 function surface(binaries, architecture)
-    local found = {classes = {}, members = {}, symbols = {}, registered = {}}
+    local found = {classes = {}, members = {}, symbols = {}, registered = {}, answered = {}}
     for _, binary in ipairs(binaries) do
         local ours = {}
         if macho.imported_symbols(binary, architecture)["objc_allocateClassPair"] then
@@ -372,6 +372,13 @@ function surface(binaries, architecture)
         for name, class in pairs(inventory and inventory.classes or {}) do
             if class.image and not name:startswith("Charon") then
                 found.classes[name] = true
+            end
+            if not name:startswith("Charon") then
+                for kind, sign in pairs({instance = "-", class = "+"}) do
+                    for selector in pairs(class[kind]) do
+                        found.answered[string.format("%s[%s %s]", sign, name, selector:sub(2))] = true
+                    end
+                end
             end
             if not class.image and not ours[name] then
                 for kind, sign in pairs({instance = "-", class = "+"}) do
@@ -496,6 +503,18 @@ function check_registry(root, found, complete, deployment, exports)
             end
         end
     end
+    local answered = {}
+    for name, entry in pairs(listed) do
+        if entry.status == "absent" then
+            local present = entry.kind == "class" and found.classes[name] or false
+            for spelling in pairs(spellings(name)) do
+                present = present or (spelling:match("^[-+]%[") and (found.answered or {})[spelling]) or false
+            end
+            if present then
+                table.insert(answered, name)
+            end
+        end
+    end
     local unbuilt = {}
     if complete ~= false then
         for name, entry in pairs(listed) do
@@ -518,7 +537,8 @@ function check_registry(root, found, complete, deployment, exports)
     end
     table.sort(unlisted)
     table.sort(unbuilt)
-    if #unlisted > 0 or #unbuilt > 0 or #incomplete > 0 then
+    table.sort(answered)
+    if #unlisted > 0 or #unbuilt > 0 or #answered > 0 or #incomplete > 0 then
         local lines = {"the registry does not describe what the backports carry:"}
         for _, described in ipairs(incomplete) do
             table.insert(lines, "  " .. described)
@@ -528,6 +548,9 @@ function check_registry(root, found, complete, deployment, exports)
         end
         if #unbuilt > 0 then
             table.insert(lines, "  listed as implemented, but nothing of that name is built: " .. table.concat(unbuilt, " "))
+        end
+        if #answered > 0 then
+            table.insert(lines, "  listed as absent, but what is built answers it: " .. table.concat(answered, " "))
         end
         raise(table.concat(lines, "\n"))
     end
