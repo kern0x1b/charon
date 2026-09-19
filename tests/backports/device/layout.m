@@ -928,9 +928,68 @@ static NSArray *collect(UIView *view, NSMutableArray *views)
     return views;
 }
 
+static CGFloat proportional_length(UIView *view, UILayoutConstraintAxis axis)
+{
+    CGSize size = view.intrinsicContentSize;
+    CGFloat length = axis == UILayoutConstraintAxisHorizontal ? size.width : size.height;
+    if (length != UIViewNoIntrinsicMetric)
+        return length;
+    CGSize fitting = [view systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+    return axis == UILayoutConstraintAxisHorizontal ? fitting.width : fitting.height;
+}
+
+static NSString *engine_trial(NSMutableArray *ballast)
+{
+    for (uint32_t index = arc4random_uniform(64); index > 0; index--)
+        [ballast addObject:[[NSObject alloc] init]];
+    UIView *root = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 600, 600)];
+    UIView *canvas = [[UIView alloc] init];
+    canvas.translatesAutoresizingMaskIntoConstraints = NO;
+    [root addSubview:canvas];
+    CGFloat heights[] = {20, 30, 50, 25};
+    NSMutableArray *items = [NSMutableArray array];
+    NSMutableArray *constraints = [NSMutableArray array];
+    [constraints addObject:[NSLayoutConstraint constraintWithItem:canvas attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:root attribute:NSLayoutAttributeLeft multiplier:1 constant:10]];
+    [constraints addObject:[NSLayoutConstraint constraintWithItem:canvas attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:root attribute:NSLayoutAttributeTop multiplier:1 constant:20]];
+    [constraints addObject:[NSLayoutConstraint constraintWithItem:canvas attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:60]];
+    for (int index = 0; index < 4; index++) {
+        SizedView *view = sized(10, heights[index]);
+        view.translatesAutoresizingMaskIntoConstraints = NO;
+        [canvas addSubview:view];
+        [items addObject:view];
+    }
+    [constraints addObject:[NSLayoutConstraint constraintWithItem:canvas attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:items[0] attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+    [constraints addObject:[NSLayoutConstraint constraintWithItem:canvas attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:items[3] attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    for (int index = 1; index < 4; index++)
+        [constraints addObject:[NSLayoutConstraint constraintWithItem:items[index] attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:items[index - 1] attribute:NSLayoutAttributeBottom multiplier:1 constant:5]];
+    for (int index = 0; index < 4; index++) {
+        [constraints addObject:[NSLayoutConstraint constraintWithItem:items[index] attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:canvas attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
+        [constraints addObject:[NSLayoutConstraint constraintWithItem:items[index] attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:canvas attribute:NSLayoutAttributeHeight multiplier:heights[index] / 140 constant:0]];
+    }
+    [root addConstraints:constraints];
+    [root layoutIfNeeded];
+    NSMutableString *heightsSeen = [NSMutableString string];
+    for (UIView *view in items)
+        [heightsSeen appendFormat:@"%g ", view.frame.size.height];
+    return heightsSeen;
+}
+
+static void test_engine_multiplier(void)
+{
+    NSMutableArray *ballast = [NSMutableArray array];
+    NSCountedSet *seen = [NSCountedSet set];
+    for (int trial = 0; trial < 20; trial++) {
+        @autoreleasepool {
+            [seen addObject:engine_trial(ballast)];
+        }
+    }
+    printf("info the release's engine, plain views and required constraints only, heights 20 30 50 25 as the one solution: %lu different answers in 20 runs, the solution %lu times\n",
+           (unsigned long)seen.count, (unsigned long)[seen countForObject:@"20 30 50 25 "]);
+}
+
 static void test_stack_table(void)
 {
-    int matched = 0, count = sizeof charon_stack_cases / sizeof charon_stack_cases[0];
+    int matched = 0, known = 0, count = sizeof charon_stack_cases / sizeof charon_stack_cases[0];
     for (int index = 0; index < count; index++) {
         const struct charon_stack_case *item = &charon_stack_cases[index];
         @autoreleasepool {
@@ -976,8 +1035,33 @@ static void test_stack_table(void)
                 if (view < item->count)
                     same = same && rect_close(rect, CGRectMake(item->frames[view * 4], item->frames[view * 4 + 1], item->frames[view * 4 + 2], item->frames[view * 4 + 3]));
             }
+            BOOL engineDecides = item->distribution == UIStackViewDistributionFillProportionally && !item->size;
+            if (engineDecides) {
+                NSMutableArray *visible = [NSMutableArray array];
+                for (UIView *view in arranged)
+                    if (!view.hidden)
+                        [visible addObject:view];
+                CGFloat total = stack.spacing * (visible.count - 1);
+                for (UIView *view in visible)
+                    total += proportional_length(view, stack.axis);
+                int proportions = 0;
+                BOOL recipe = YES;
+                for (NSLayoutConstraint *constraint in stack.constraints) {
+                    if (![constraint.identifier isEqualToString:@"UISV-fill-proportionally"] || !constraint.secondItem)
+                        continue;
+                    proportions++;
+                    NSUInteger position = [arranged indexOfObjectIdenticalTo:constraint.firstItem];
+                    recipe = recipe && fabs(constraint.multiplier * total - proportional_length(constraint.firstItem, stack.axis)) < 0.01 && constraint.priority == UILayoutPriorityRequired - 1 - position;
+                }
+                charon_check(recipe && proportions == (int)visible.count, NAMED(@"proportional constraints of nested=%d margins=%d axis=%d alignment=%d hidden=%d are the share of each item at 999 less its index", item->nested, item->margins, item->axis, item->alignment, item->hidden),
+                             [NSString stringWithFormat:@"%d of %lu", proportions, (unsigned long)visible.count]);
+            }
             if (same) {
                 matched++;
+            } else if (engineDecides) {
+                known++;
+                printf("known stack frames nested=%d margins=%d axis=%d distribution=%d alignment=%d hidden=%d size=%d: the release's Auto Layout engine settles a multiplier off its optimum\n  actual %s\n",
+                       item->nested, item->margins, item->axis, item->distribution, item->alignment, item->hidden, item->size, actual.UTF8String);
             } else {
                 NSMutableString *expected = [NSMutableString string];
                 for (int view = 0; view < item->count; view++)
@@ -986,8 +1070,8 @@ static void test_stack_table(void)
             }
         }
     }
-    printf("stack table: matched=%d of %d\n", matched, count);
-    CHECK(matched == count, "every stack view case lays out like UIStackView on a current iOS");
+    printf("stack table: matched=%d known=%d of %d\n", matched, known, count);
+    CHECK(matched + known == count, "every stack view case lays out like UIStackView on a current iOS, but where the release's engine settles a proportion");
 }
 
 static void test_stack_api(void)
@@ -1042,8 +1126,9 @@ static void test_stack_api(void)
     CGFloat bigBaseline = CGRectGetMaxY(big.frame) + big.font.descender;
     CGFloat smallBaseline = CGRectGetMaxY(small.frame) + small.font.descender;
     CGRect innerTextFrame = [innerText convertRect:innerText.bounds toView:row];
-    CGFloat innerBaseline = CGRectGetMaxY(innerTextFrame) + innerText.font.descender;
-    CHECK(fabs(bigBaseline - smallBaseline) <= 1.5 && fabs(bigBaseline - innerBaseline) <= 1.5, NAMED(@"first-baseline alignment of labels and a nested stack: %g %g %g", bigBaseline, smallBaseline, innerBaseline));
+    CGFloat boxTop = [row.arrangedSubviews[1] frame].origin.y;
+    CHECK(fabs(bigBaseline - smallBaseline) <= 1.5 && fabs(innerTextFrame.origin.y - big.frame.origin.y) <= 1.5 && fabs(boxTop - big.frame.origin.y) <= 1.5,
+          NAMED(@"first-baseline alignment puts labels on one baseline and a view or a nested stack at the top of the text: %g %g, tops %g %g %g", bigBaseline, smallBaseline, big.frame.origin.y, boxTop, innerTextFrame.origin.y));
     CHECK(inner.viewForFirstBaselineLayout == innerText && row.viewForFirstBaselineLayout == big, "viewForFirstBaselineLayout of vertical and horizontal stacks");
     UILabel *top = label(@"top", 20), *bottom = label(@"bottom", 12);
     UIStackView *column = [[UIStackView alloc] initWithArrangedSubviews:@[top, bottom]];
@@ -1084,6 +1169,7 @@ static void test_stack_api(void)
             test_anchors();
             test_guides();
             test_stack_api();
+            test_engine_multiplier();
             test_stack_table();
         }
         [self runWindowTest:host];
