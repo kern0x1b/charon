@@ -799,13 +799,15 @@
     "api": "UIAlertAction",
     "kind": "class",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIAlertController.md"
   },
   {
     "api": "UIAlertController",
     "kind": "class",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIAlertController.md"
   },
   {
     "api": "UIApplicationOpenURLOptionUniversalLinksOnly",
@@ -1064,13 +1066,15 @@
     "api": "UIMutableUserNotificationAction",
     "kind": "class",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIUserNotificationSettings.md"
   },
   {
     "api": "UIMutableUserNotificationCategory",
     "kind": "class",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIUserNotificationSettings.md"
   },
   {
     "api": "UIPopoverPresentationController",
@@ -1116,7 +1120,8 @@
     "api": "UIUserNotificationAction",
     "kind": "class",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIUserNotificationSettings.md"
   },
   {
     "api": "UIUserNotificationAction.behavior",
@@ -1140,13 +1145,15 @@
     "api": "UIUserNotificationCategory",
     "kind": "class",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIUserNotificationSettings.md"
   },
   {
     "api": "UIUserNotificationSettings",
     "kind": "class",
     "introduced": "8.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIUserNotificationSettings.md"
   },
   {
     "api": "UIVibrancyEffect",
