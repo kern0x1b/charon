@@ -147,32 +147,42 @@ static void run_checks(UIView *stage)
     [second pauseAnimation];
     CHECK(other.layer.speed == 1, "another layer's own animation is not frozen by an animator");
     CHECK(box.layer.speed == 1, "the animator stops its own animation, not the layer");
-    [second stopAnimation:YES];
+    [second stopAnimation:NO];
     [second finishAnimationAtPosition:UIViewAnimatingPositionCurrent];
 
     /* Stopping and finishing. */
     __block UIViewAnimatingPosition reported = (UIViewAnimatingPosition)-1;
     [animator addCompletion:^(UIViewAnimatingPosition position) { reported = position; }];
-    [animator stopAnimation:YES];
-    CHECK(animator.state == UIViewAnimatingStateStopped, "stopping without finishing leaves it stopped");
+    [animator stopAnimation:NO];
+    CHECK(animator.state == UIViewAnimatingStateStopped, "stopping to be finished leaves it stopped");
     CHECK(!animator.isRunning, "a stopped animator is not running");
-    CHECK(reported == (UIViewAnimatingPosition)-1, "stopping without finishing runs no completion");
+    CHECK(reported == (UIViewAnimatingPosition)-1, "stopping to be finished runs no completion yet");
     [animator finishAnimationAtPosition:UIViewAnimatingPositionEnd];
     CHECK(reported == UIViewAnimatingPositionEnd, "finishing runs the completion with the position given");
     CHECK(animator.state == UIViewAnimatingStateInactive, "a finished animator is inactive again");
     for (NSString *key in @[@"state", @"running", @"reversed", @"fractionComplete"])
         [animator removeObserver:observer forKeyPath:key];
 
-    /* Stopping and finishing in one go. */
+    /* Stopping without finishing drops the completions. */
     __block UIViewAnimatingPosition second_reported = (UIViewAnimatingPosition)-1;
     UIViewPropertyAnimator *third = [[UIViewPropertyAnimator alloc] initWithDuration:2 curve:UIViewAnimationCurveLinear
                                                                          animations:^{ box.center = CGPointMake(30, 30); }];
     [third addCompletion:^(UIViewAnimatingPosition position) { second_reported = position; }];
     [third startAnimation];
-    [third stopAnimation:NO];
-    CHECK(second_reported == UIViewAnimatingPositionCurrent,
-          "stopping and finishing at once reports the current position");
+    [third stopAnimation:YES];
+    CHECK(second_reported == (UIViewAnimatingPosition)-1, "stopping without finishing runs no completion");
     CHECK(third.state == UIViewAnimatingStateInactive, "and leaves the animator inactive");
+    CHECK(raises(^{ [third finishAnimationAtPosition:UIViewAnimatingPositionEnd]; }) == nil,
+          "finishing an inactive animator is quietly nothing");
+    CHECK(second_reported == (UIViewAnimatingPosition)-1, "and calls no completion");
+
+    /* Scrubbing an animator that has blocks and has not started starts it paused. */
+    UIViewPropertyAnimator *unstarted = [[UIViewPropertyAnimator alloc] initWithDuration:2 curve:UIViewAnimationCurveLinear
+                                                                             animations:^{ box.alpha = 0.5; }];
+    unstarted.fractionComplete = 0.25;
+    CHECK(unstarted.state == UIViewAnimatingStateActive && !unstarted.isRunning,
+          "scrubbing an animator that has not started leaves it active and paused");
+    [unstarted stopAnimation:YES];
 
     /* An animator that is not interruptible is left to Core Animation. */
     UIViewPropertyAnimator *plain = [[UIViewPropertyAnimator alloc] initWithDuration:1 curve:UIViewAnimationCurveLinear
@@ -181,6 +191,32 @@ static void run_checks(UIView *stage)
     CHECK(!plain.isInterruptible, "an animator can be made uninterruptible before it starts");
     [plain startAnimation];
     CHECK(plain.isRunning, "an uninterruptible animator runs");
+}
+
+static CGFloat scrubbed_to_a_quarter(UIView *stage, BOOL linearly)
+{
+    UIView *box = [[UIView alloc] initWithFrame:CGRectMake(0, 300, 20, 20)];
+    [stage addSubview:box];
+    UIViewPropertyAnimator *animator =
+        [[UIViewPropertyAnimator alloc] initWithDuration:2 curve:UIViewAnimationCurveEaseInOut
+                                              animations:^{ box.center = CGPointMake(210, 310); }];
+    animator.scrubsLinearly = linearly;
+    animator.fractionComplete = 0.25;
+    [CATransaction flush];
+    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    CGFloat x = [box.layer.presentationLayer position].x - 10;
+    [animator stopAnimation:YES];
+    [box removeFromSuperview];
+    return x;
+}
+
+static void measure_scrubbing_curve(UIView *stage)
+{
+    CGFloat linear = scrubbed_to_a_quarter(stage, YES), curved = scrubbed_to_a_quarter(stage, NO);
+    printf("a quarter of the fraction on ease-in-out: scrubbing linearly x = %g, along the curve x = %g\n", linear, curved);
+    CHECK(fabs(linear - 50) < 2, NAMED(@"scrubbing linearly puts a quarter a quarter of the way (x = %g)", linear));
+    CHECK(fabs(curved - 25.8) < 2,
+          NAMED(@"scrubbing along the curve puts a quarter where ease-in-out does, 0.129 of the way (x = %g)", curved));
 }
 
 /* What the correct scrubbing costs on this hardware. Rebuilding the animation
@@ -250,6 +286,7 @@ static void measure_scrubbing(UIView *stage)
     [_window makeKeyAndVisible];
     @try {
         run_checks(_window.rootViewController.view);
+        measure_scrubbing_curve(_window.rootViewController.view);
         measure_scrubbing(_window.rootViewController.view);
     } @catch (NSException *exception) {
         charon_check(NO, "the checks raise no exception",
