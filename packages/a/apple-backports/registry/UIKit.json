@@ -51,7 +51,8 @@
   "minimum": "6.0",
   "status": "implemented",
   "facts": "facts/UIKit/UIGraphicsImageRenderer.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4"
+  "source": "UIKit of the armv7s cache of iOS 10.3.4",
+  "effect": "on an iPhone4,1 running 6.1.3 CoreGraphics makes no sRGB space, so the renderer draws in device RGB, as the release's own UIKit does: the same pixels, and PNG and JPEG with no colour profile"
  },
  {
   "api": "+[UIGraphicsRenderer contextWithFormat:]",

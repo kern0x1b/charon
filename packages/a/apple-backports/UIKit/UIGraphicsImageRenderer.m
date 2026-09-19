@@ -6,6 +6,8 @@ static CGColorSpaceRef charon_renderer_color_space(void)
     static dispatch_once_t once;
     dispatch_once(&once, ^{
         space = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+        if (!space)
+            space = CGColorSpaceCreateDeviceRGB();
     });
     return space;
 }
