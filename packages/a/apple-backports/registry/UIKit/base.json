@@ -329,14 +329,16 @@
     "kind": "method",
     "introduced": "7.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UITextFieldDefaultTextAttributes.md"
   },
   {
     "api": "-[UITextField setDefaultTextAttributes:]",
     "kind": "method",
     "introduced": "7.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UITextFieldDefaultTextAttributes.md"
   },
   {
     "api": "-[UIToolbar barTintColor]",
@@ -739,28 +741,32 @@
     "kind": "class",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md"
   },
   {
     "api": "NSLayoutDimension",
     "kind": "class",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md"
   },
   {
     "api": "NSLayoutXAxisAnchor",
     "kind": "class",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md"
   },
   {
     "api": "NSLayoutYAxisAnchor",
     "kind": "class",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewAnchors.md"
   },
   {
     "api": "UIAccessibilitySpeechAttributeLanguage",
@@ -1037,7 +1043,8 @@
     "kind": "class",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIViewLayoutGuides.md"
   },
   {
     "api": "UIMotionEffect",
@@ -1086,7 +1093,8 @@
     "kind": "class",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIStackView.md"
   },
   {
     "api": "UITraitCollection",

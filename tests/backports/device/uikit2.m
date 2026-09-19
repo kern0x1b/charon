@@ -517,6 +517,24 @@ static NSString *traits_of(id environment)
             charon_check([[attributes objectForKey:NSParagraphStyleAttributeName] alignment] == NSTextAlignmentCenter, "defaultTextAttributes carries the alignment", [NSString stringWithFormat:@"%@", attributes]);
             field.defaultTextAttributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:20], NSForegroundColorAttributeName: [UIColor greenColor]};
             charon_check(field.font.pointSize == 20 && [field.textColor isEqual:[UIColor greenColor]], "setting defaultTextAttributes changes the field", [NSString stringWithFormat:@"%@ %@", field.font, field.textColor]);
+            UITextField *fresh = [[UITextField alloc] init];
+            NSParagraphStyle *freshParagraph = [fresh.defaultTextAttributes objectForKey:NSParagraphStyleAttributeName];
+            charon_check(freshParagraph.lineBreakMode == NSLineBreakByTruncatingTail && freshParagraph.alignment == fresh.textAlignment, "the paragraph style of a new field truncates the tail and follows the alignment",
+                         [NSString stringWithFormat:@"%ld %ld", (long)freshParagraph.lineBreakMode, (long)freshParagraph.alignment]);
+            NSMutableParagraphStyle *head = [[NSMutableParagraphStyle alloc] init];
+            head.alignment = NSTextAlignmentRight;
+            head.lineBreakMode = NSLineBreakByTruncatingHead;
+            field.defaultTextAttributes = @{NSParagraphStyleAttributeName: head, NSKernAttributeName: @2};
+            NSParagraphStyle *keptParagraph = [field.defaultTextAttributes objectForKey:NSParagraphStyleAttributeName];
+            charon_check(keptParagraph.lineBreakMode == NSLineBreakByTruncatingHead && field.textAlignment == NSTextAlignmentRight, "the paragraph style given is kept and its alignment applied",
+                         [NSString stringWithFormat:@"%ld %ld", (long)keptParagraph.lineBreakMode, (long)field.textAlignment]);
+            charon_check([[field.defaultTextAttributes objectForKey:NSKernAttributeName] isEqual:@2], "an attribute of another kind is kept", [NSString stringWithFormat:@"%@", field.defaultTextAttributes]);
+            charon_check([field.font isEqual:fresh.font] && [field.textColor isEqual:fresh.textColor], "an attribute left out goes back to what a new field has", [NSString stringWithFormat:@"%@ %@", field.font, field.textColor]);
+            field.defaultTextAttributes = @{};
+            charon_check([field.font isEqual:fresh.font] && [field.textColor isEqual:fresh.textColor] && field.textAlignment == fresh.textAlignment && ![field.defaultTextAttributes objectForKey:NSKernAttributeName], "an empty dictionary puts a new field's settings back",
+                         [NSString stringWithFormat:@"%@", field.defaultTextAttributes]);
+            field.defaultTextAttributes = nil;
+            charon_check([field.font isEqual:fresh.font], "nil is the same as an empty dictionary", [NSString stringWithFormat:@"%@", field.font]);
 
             charon_check(test.host.edgesForExtendedLayout == UIRectEdgeAll, "edgesForExtendedLayout starts as all edges", [NSString stringWithFormat:@"%lu", (unsigned long)test.host.edgesForExtendedLayout]);
             charon_check(!test.host.extendedLayoutIncludesOpaqueBars, "extendedLayoutIncludesOpaqueBars starts as NO", @"the default is YES");

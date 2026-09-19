@@ -176,6 +176,31 @@ int main(void)
         charon_check([[[ourField charonHostDefaultTextAttributes] objectForKey:NSKernAttributeName] isEqual:[systemField.defaultTextAttributes objectForKey:NSKernAttributeName]],
                      "setting the attributes keeps the other attributes", @"the kerning differs");
 
+        NSDictionary * (^summary)(NSDictionary *) = ^(NSDictionary *attributes) {
+            NSMutableDictionary *found = [NSMutableDictionary dictionary];
+            for (NSString *key in attributes) {
+                id value = [attributes objectForKey:key];
+                found[key] = [value isKindOfClass:[NSParagraphStyle class]] ? [NSString stringWithFormat:@"%ld/%ld", (long)[value alignment], (long)[value lineBreakMode]] : ([value isKindOfClass:[UIFont class]] ? [NSString stringWithFormat:@"%g", (double)[value pointSize]] : [value isKindOfClass:[UIColor class]] ? @"colour" : value);
+            }
+            return found;
+        };
+        UITextField *freshOurs = [[UITextField alloc] init], *freshSystem = [[UITextField alloc] init];
+        charon_check([summary([freshOurs charonHostDefaultTextAttributes]) isEqual:summary(freshSystem.defaultTextAttributes)], "the default attributes of a new field",
+                     [NSString stringWithFormat:@"%@ != %@", summary([freshOurs charonHostDefaultTextAttributes]), summary(freshSystem.defaultTextAttributes)]);
+        NSMutableParagraphStyle *head = [[NSMutableParagraphStyle alloc] init];
+        head.alignment = NSTextAlignmentRight;
+        head.lineBreakMode = NSLineBreakByTruncatingHead;
+        NSArray *sequence = @[@{NSFontAttributeName: [UIFont boldSystemFontOfSize:20], NSKernAttributeName: @2}, @{}, @{NSForegroundColorAttributeName: [UIColor redColor]},
+                              @{NSParagraphStyleAttributeName: head, NSUnderlineStyleAttributeName: @1}, [NSNull null], @{NSFontAttributeName: [UIFont systemFontOfSize:9], NSBackgroundColorAttributeName: [UIColor yellowColor]}];
+        UITextField *sequenceOurs = [[UITextField alloc] init], *sequenceSystem = [[UITextField alloc] init];
+        for (NSUInteger index = 0; index < sequence.count; index++) {
+            NSDictionary *attributes = sequence[index] == [NSNull null] ? nil : sequence[index];
+            [sequenceOurs setCharonHostDefaultTextAttributes:attributes];
+            sequenceSystem.defaultTextAttributes = attributes;
+            NSString *ourSummary = [NSString stringWithFormat:@"%@ %@ %ld", summary([sequenceOurs charonHostDefaultTextAttributes]), sequenceOurs.font.pointSize > 0 ? @(sequenceOurs.font.pointSize) : @0, (long)sequenceOurs.textAlignment];
+            NSString *systemSummary = [NSString stringWithFormat:@"%@ %@ %ld", summary(sequenceSystem.defaultTextAttributes), sequenceSystem.font.pointSize > 0 ? @(sequenceSystem.font.pointSize) : @0, (long)sequenceSystem.textAlignment];
+            charon_check([ourSummary isEqualToString:systemSummary], NAMED(@"default attributes after setting number %lu", (unsigned long)index), [NSString stringWithFormat:@"%@ != %@", ourSummary, systemSummary]);
+        }
         UIViewController *controller = [[UIViewController alloc] init];
         charon_check([controller charonHostEdgesForExtendedLayout] == controller.edgesForExtendedLayout, "edgesForExtendedLayout default", @"the default differs");
         charon_check([controller charonHostExtendedLayoutIncludesOpaqueBars] == controller.extendedLayoutIncludesOpaqueBars, "extendedLayoutIncludesOpaqueBars default", @"the default differs");
