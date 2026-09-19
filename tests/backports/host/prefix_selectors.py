@@ -140,7 +140,13 @@ class Rewriter:
             sign = "-" if node.get("instance", True) else "+"
             if (sign, context[1], node["name"]) in self.carried:
                 begin = node["range"]["begin"]["offset"]
-                close = self.source.index(")", begin)
+                close = self.source.index("(", begin)
+                depth = 0
+                while True:
+                    depth += {"(": 1, ")": -1}.get(self.source[close], 0)
+                    if depth == 0:
+                        break
+                    close += 1
                 self.inserts.add(self.keyword_after(close + 1))
                 self.signatures.append((context[1], sign, node))
             for item in node.get("inner", []):

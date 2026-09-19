@@ -1,0 +1,219 @@
+{
+  "framework": "Foundation",
+  "entries": [
+    {
+      "api": "+[NSProgress discreteProgressWithTotalUnitCount:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSProgress.md"
+    },
+    {
+      "api": "+[NSProgress progressWithTotalUnitCount:parent:pendingUnitCount:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSProgress.md"
+    },
+    {
+      "api": "-[NSProgress performAsCurrentWithPendingUnitCount:usingBlock:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSProgress.md"
+    },
+    {
+      "api": "-[NSProgress isFinished]",
+      "kind": "method",
+      "introduced": "9.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSProgress.md"
+    },
+    {
+      "api": "-[NSProgress cancellationHandler]",
+      "kind": "method",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSProgress.md"
+    },
+    {
+      "api": "-[NSProgress pausingHandler]",
+      "kind": "method",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSProgress.md"
+    },
+    {
+      "api": "NSProgress.estimatedTimeRemaining",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSProgress.md"
+    },
+    {
+      "api": "NSProgress.throughput",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSProgress.md"
+    },
+    {
+      "api": "NSProgress.fileOperationKind",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSProgress.md"
+    },
+    {
+      "api": "NSProgress.fileURL",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSProgress.md"
+    },
+    {
+      "api": "NSProgress.fileTotalCount",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSProgress.md"
+    },
+    {
+      "api": "NSProgress.fileCompletedCount",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSProgress.md"
+    },
+    {
+      "api": "NSProgressEstimatedTimeRemainingKey",
+      "kind": "constant",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSProgress.md"
+    },
+    {
+      "api": "NSProgressFileOperationKindReceiving",
+      "kind": "constant",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSProgress.md"
+    },
+    {
+      "api": "NSProgressFileOperationKindUploading",
+      "kind": "constant",
+      "introduced": "8.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSProgress.md"
+    },
+    {
+      "api": "-[NSProgress addChild:withPendingUnitCount:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "status": "absent",
+      "reason": "the release wires a progress to its parent when it is created, through the current progress, and gives an existing progress no way to be attached afterwards",
+      "effect": "the method is not there, so respondsToSelector: answers honestly and an unchecked call raises; +progressWithTotalUnitCount:parent:pendingUnitCount: is, and makes the child with its parent"
+    },
+    {
+      "api": "-[NSProgress resume]",
+      "kind": "method",
+      "introduced": "9.0",
+      "status": "absent",
+      "reason": "the release can pause a progress and has no way back from paused",
+      "effect": "the method is not there; pausing works, resuming raises"
+    },
+    {
+      "api": "NSProgress.resumingHandler",
+      "kind": "property",
+      "introduced": "9.0",
+      "status": "absent",
+      "reason": "the release has no resuming, so there is nothing that would call the handler",
+      "effect": "the accessors are not there"
+    },
+    {
+      "api": "NSProgress.localizedAdditionalDescription",
+      "kind": "property",
+      "introduced": "7.0",
+      "status": "absent",
+      "reason": "the release keeps no text of its own for it and the newest composes one from the counts, the throughput, the time remaining and the file counts in several localized forms, which cannot be read into a single rule",
+      "effect": "the accessors are not there"
+    },
+    {
+      "api": "-[NSProgress localizedDescription]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "the release's own method answers, and the port does not replace system implementations",
+      "effect": "the text is empty where the newest release describes the progress in words, such as 25% completed; nothing reports it",
+      "facts": "facts/Foundation/NSProgress.md",
+      "source": "the host's Foundation, and Foundation of iOS 6.0 and 6.1.3 read on the emulator and two devices"
+    },
+    {
+      "api": "-[NSProgress fractionCompleted]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "the release's own method answers, and the port does not replace system implementations",
+      "effect": "a progress whose total is zero answers not-a-number where the newest release answers 0; nothing reports it",
+      "facts": "facts/Foundation/NSProgress.md",
+      "source": "the host's Foundation, and Foundation of iOS 6.0 and 6.1.3 read on the emulator and two devices"
+    },
+    {
+      "api": "-[NSProgress isIndeterminate]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "the release's own method answers, and the port does not replace system implementations",
+      "effect": "a progress with a total of zero and nothing completed is not indeterminate for the release, and is for the newest one; nothing reports it",
+      "facts": "facts/Foundation/NSProgress.md",
+      "source": "the host's Foundation, and Foundation of iOS 6.0 and 6.1.3 read on the emulator and two devices"
+    },
+    {
+      "api": "-[NSProgress setCancellationHandler:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "the release's own method answers, and the port does not replace system implementations",
+      "effect": "a handler set on a progress that is already cancelled is never called, where the newest release calls it at once",
+      "facts": "facts/Foundation/NSProgress.md",
+      "source": "the host's Foundation, and Foundation of iOS 6.0 and 6.1.3 read on the emulator and two devices"
+    },
+    {
+      "api": "-[NSProgress initWithParent:userInfo:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "the release's own method answers, and the port does not replace system implementations",
+      "effect": "a parent that is not the current progress is accepted, where the newest release raises NSInvalidArgumentException",
+      "facts": "facts/Foundation/NSProgress.md",
+      "source": "the host's Foundation, and Foundation of iOS 6.0 and 6.1.3 read on the emulator and two devices"
+    },
+    {
+      "api": "-[NSProgress completedUnitCount]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "the release's own method answers, and the port does not replace system implementations",
+      "effect": "a parent does not count the units of a child that has finished as completed, where the newest release adds the child's pending units to its own count; the fraction is the same",
+      "facts": "facts/Foundation/NSProgress.md",
+      "source": "the host's Foundation, and Foundation of iOS 6.0 and 6.1.3 read on the emulator and two devices"
+    },
+    {
+      "api": "-[NSProgress resignCurrent]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "the release's own method answers, and the port does not replace system implementations",
+      "effect": "the pending units a progress took with becomeCurrentWithPendingUnitCount: stay uncounted when no child was made from them, where the newest release counts them as completed",
+      "facts": "facts/Foundation/NSProgress.md",
+      "source": "the host's Foundation, and Foundation of iOS 6.0 and 6.1.3 read on the emulator and two devices"
+    }
+  ]
+}

@@ -6,6 +6,7 @@ typedef struct {
     NSString *rootObjectKey;
     NSArray *ubiquityKeys;
     NSArray *transformNames;
+    NSArray *progressConstants;
 } Foundation2Implementation;
 
 @interface Foundation2Recorder : NSObject

@@ -41,13 +41,22 @@ static void check_sources(void)
                           @[@"NSProcessInfo", @"beginActivityWithOptions:reason:"], @[@"NSProcessInfo", @"endActivity:"], @[@"NSProcessInfo", @"performActivityWithOptions:reason:usingBlock:"],
                           @[@"NSString", @"localizedUppercaseString"], @[@"NSString", @"localizedLowercaseString"], @[@"NSString", @"localizedCapitalizedString"],
                           @[@"NSString", @"localizedStandardContainsString:"], @[@"NSString", @"localizedStandardRangeOfString:"], @[@"NSString", @"stringByApplyingTransform:reverse:"],
-                          @[@"NSMutableString", @"applyTransform:reverse:range:updatedRange:"]];
+                          @[@"NSMutableString", @"applyTransform:reverse:range:updatedRange:"],
+                          @[@"NSProgress", @"performAsCurrentWithPendingUnitCount:usingBlock:"], @[@"NSProgress", @"isFinished"], @[@"NSProgress", @"cancellationHandler"],
+                          @[@"NSProgress", @"pausingHandler"], @[@"NSProgress", @"estimatedTimeRemaining"], @[@"NSProgress", @"setEstimatedTimeRemaining:"],
+                          @[@"NSProgress", @"throughput"], @[@"NSProgress", @"setThroughput:"], @[@"NSProgress", @"fileOperationKind"], @[@"NSProgress", @"setFileOperationKind:"],
+                          @[@"NSProgress", @"fileURL"], @[@"NSProgress", @"setFileURL:"], @[@"NSProgress", @"fileTotalCount"], @[@"NSProgress", @"setFileTotalCount:"],
+                          @[@"NSProgress", @"fileCompletedCount"], @[@"NSProgress", @"setFileCompletedCount:"]];
     for (NSArray *pair in instance) {
         NSString *name = [NSString stringWithFormat:@"-[%@ %@] comes from the backports", pair[0], pair[1]];
         CHECK_EQUAL(image_of_method(NSClassFromString(pair[0]), NSSelectorFromString(pair[1]), NO), library, name.UTF8String);
     }
     CHECK_EQUAL(image_of_method([NSURL class], @selector(fileURLWithFileSystemRepresentation:isDirectory:relativeToURL:), YES), library, "+[NSURL fileURLWithFileSystemRepresentation:isDirectory:relativeToURL:] comes from the backports");
     CHECK_EQUAL(image_of_method([NSExpression class], @selector(expressionForConditional:trueExpression:falseExpression:), YES), library, "+[NSExpression expressionForConditional:trueExpression:falseExpression:] comes from the backports");
+    CHECK_EQUAL(image_of_method([NSProgress class], @selector(discreteProgressWithTotalUnitCount:), YES), library, "+[NSProgress discreteProgressWithTotalUnitCount:] comes from the backports");
+    CHECK_EQUAL(image_of_method([NSProgress class], @selector(progressWithTotalUnitCount:parent:pendingUnitCount:), YES), library, "+[NSProgress progressWithTotalUnitCount:parent:pendingUnitCount:] comes from the backports");
+    CHECK_EQUAL(image_of_pointer((void *)&NSProgressEstimatedTimeRemainingKey), library, "NSProgressEstimatedTimeRemainingKey comes from the backports");
+    CHECK([NSProgress instancesRespondToSelector:@selector(addChild:withPendingUnitCount:)] == NO, "addChild:withPendingUnitCount: is not offered where the release cannot attach a progress afterwards");
     CHECK_EQUAL(image_of_pointer(&CFAutorelease), library, "CFAutorelease comes from the backports");
     CHECK_EQUAL(image_of_pointer((void *)&NSKeyedArchiveRootObjectKey), library, "NSKeyedArchiveRootObjectKey comes from the backports");
 }
@@ -100,6 +109,8 @@ static NSString *device_tolerance(NSString *name)
         return @"iOS 6 carries older locale data than macOS 27";
     if ([name isEqualToString:@"calendar.edges.leapMonthValid"])
         return @"whether a leap month flag names a real month is the release's ICU, which iOS 6 ignores and macOS 27 checks per calendar";
+    if ([name isEqualToString:@"progress.resignCreditsPendingUnits"])
+        return @"iOS 6 resignCurrent leaves the pending units of a progress no child took uncounted, where the newest release counts them as completed";
     if ([name isEqualToString:@"url.dataRepresentation.latin1.string"])
         return @"iOS 6 CFURL escapes the string of a URL read as ISO Latin 1 in ISO Latin 1, not in UTF-8";
     if ([name isEqualToString:@"url.representation.5"] || [name isEqualToString:@"url.representation.8"])
@@ -125,7 +136,8 @@ int main(int argc, char **argv)
             .transformNames = @[NSStringTransformLatinToKatakana, NSStringTransformLatinToHiragana, NSStringTransformLatinToHangul, NSStringTransformLatinToArabic, NSStringTransformLatinToHebrew,
                                 NSStringTransformLatinToThai, NSStringTransformLatinToCyrillic, NSStringTransformLatinToGreek, NSStringTransformToLatin, NSStringTransformMandarinToLatin,
                                 NSStringTransformHiraganaToKatakana, NSStringTransformFullwidthToHalfwidth, NSStringTransformToXMLHex, NSStringTransformToUnicodeName,
-                                NSStringTransformStripCombiningMarks, NSStringTransformStripDiacritics]
+                                NSStringTransformStripCombiningMarks, NSStringTransformStripDiacritics],
+            .progressConstants = @[NSProgressEstimatedTimeRemainingKey, NSProgressFileOperationKindReceiving, NSProgressFileOperationKindUploading]
         };
         Foundation2Recorder *recorder = [[Foundation2Recorder alloc] init];
         foundation2_run(native, recorder);
@@ -150,6 +162,7 @@ int main(int argc, char **argv)
             mismatched++;
             charon_check(NO, name.UTF8String, [NSString stringWithFormat:@"device %@ != host %@", text(got), text(want)]);
         }
+        CHECK_EQUAL(recorder.records[@"progress.resignCreditsPendingUnits"], @0, "resignCurrent leaves the pending units of a progress with no child uncounted on this release");
         for (NSString *tolerance in tolerated)
             printf("tolerated %lu records: %s\n", (unsigned long)[tolerated countForObject:tolerance], tolerance.UTF8String);
         printf("records matched=%d mismatched=%d\n", matched, mismatched);

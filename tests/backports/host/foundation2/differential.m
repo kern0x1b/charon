@@ -7,6 +7,9 @@ void host_attach_prefixed(const char *prefix);
 
 extern CFTypeRef CharonHostCFAutorelease(CFTypeRef);
 extern NSString * const CharonHostNSKeyedArchiveRootObjectKey;
+extern NSString * const CharonHostNSProgressEstimatedTimeRemainingKey;
+extern NSString * const CharonHostNSProgressFileOperationKindReceiving;
+extern NSString * const CharonHostNSProgressFileOperationKindUploading;
 extern NSString * const CharonHostNSURLUbiquitousItemDownloadingStatusKey;
 extern NSString * const CharonHostNSURLUbiquitousItemDownloadingErrorKey;
 extern NSString * const CharonHostNSURLUbiquitousItemUploadingErrorKey;
@@ -65,7 +68,8 @@ int main(int argc, char **argv)
             .transformNames = @[NSStringTransformLatinToKatakana, NSStringTransformLatinToHiragana, NSStringTransformLatinToHangul, NSStringTransformLatinToArabic, NSStringTransformLatinToHebrew,
                                 NSStringTransformLatinToThai, NSStringTransformLatinToCyrillic, NSStringTransformLatinToGreek, NSStringTransformToLatin, NSStringTransformMandarinToLatin,
                                 NSStringTransformHiraganaToKatakana, NSStringTransformFullwidthToHalfwidth, NSStringTransformToXMLHex, NSStringTransformToUnicodeName,
-                                NSStringTransformStripCombiningMarks, NSStringTransformStripDiacritics]
+                                NSStringTransformStripCombiningMarks, NSStringTransformStripDiacritics],
+            .progressConstants = @[NSProgressEstimatedTimeRemainingKey, NSProgressFileOperationKindReceiving, NSProgressFileOperationKindUploading]
         };
         Foundation2Implementation charon = {
             .prefix = @"charonHost_",
@@ -77,7 +81,8 @@ int main(int argc, char **argv)
                                 CharonHostNSStringTransformLatinToHebrew, CharonHostNSStringTransformLatinToThai, CharonHostNSStringTransformLatinToCyrillic, CharonHostNSStringTransformLatinToGreek,
                                 CharonHostNSStringTransformToLatin, CharonHostNSStringTransformMandarinToLatin, CharonHostNSStringTransformHiraganaToKatakana,
                                 CharonHostNSStringTransformFullwidthToHalfwidth, CharonHostNSStringTransformToXMLHex, CharonHostNSStringTransformToUnicodeName,
-                                CharonHostNSStringTransformStripCombiningMarks, CharonHostNSStringTransformStripDiacritics]
+                                CharonHostNSStringTransformStripCombiningMarks, CharonHostNSStringTransformStripDiacritics],
+            .progressConstants = @[CharonHostNSProgressEstimatedTimeRemainingKey, CharonHostNSProgressFileOperationKindReceiving, CharonHostNSProgressFileOperationKindUploading]
         };
         Foundation2Recorder *theirs = [[Foundation2Recorder alloc] init];
         Foundation2Recorder *mine = [[Foundation2Recorder alloc] init];

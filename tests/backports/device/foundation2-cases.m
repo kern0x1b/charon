@@ -1032,6 +1032,110 @@ static void run_locale(Foundation2Recorder *recorder)
     }
 }
 
+static NSProgress *fresh_progress(int64_t total, int64_t completed)
+{
+    NSProgress *progress = ((id (*)(id, SEL, int64_t))objc_msgSend)([NSProgress class], sel(@selector(discreteProgressWithTotalUnitCount:)), total);
+    progress.completedUnitCount = completed;
+    return progress;
+}
+
+static void run_progress(Foundation2Recorder *recorder)
+{
+    NSMutableArray *finished = [NSMutableArray array];
+    int64_t totals[] = {0, 0, -1, -1, 5, 5, 5, 1, 10, 10};
+    int64_t completeds[] = {0, 3, 0, -1, 5, 5, 4, 1, 10, 0};
+    BOOL cancels[] = {NO, NO, NO, NO, NO, YES, YES, NO, NO, NO};
+    for (size_t index = 0; index < sizeof totals / sizeof *totals; index++) {
+        NSProgress *progress = fresh_progress(totals[index], completeds[index]);
+        if (cancels[index])
+            [progress cancel];
+        [finished addObject:@(((BOOL (*)(id, SEL))objc_msgSend)(progress, sel(@selector(isFinished))))];
+    }
+    [recorder record:finished named:@"progress.finished"];
+
+    NSProgress *discrete = fresh_progress(7, 2);
+    [recorder record:@[@(discrete.totalUnitCount), @(discrete.completedUnitCount), @([NSProgress currentProgress] == nil)] named:@"progress.discrete"];
+    NSProgress *outer = [NSProgress progressWithTotalUnitCount:10];
+    [outer becomeCurrentWithPendingUnitCount:6];
+    NSProgress *detached = fresh_progress(4, 4);
+    (void)detached;
+    double whileCurrent = outer.fractionCompleted;
+    [outer resignCurrent];
+    [recorder record:@(whileCurrent) named:@"progress.discreteIsNotAttached"];
+    [recorder record:@(outer.fractionCompleted) named:@"progress.resignCreditsPendingUnits"];
+
+    NSProgress *parent = [NSProgress progressWithTotalUnitCount:10];
+    NSProgress *child = ((id (*)(id, SEL, int64_t, id, int64_t))objc_msgSend)([NSProgress class], sel(@selector(progressWithTotalUnitCount:parent:pendingUnitCount:)), 4, parent, 6);
+    NSMutableArray *fractions = [NSMutableArray arrayWithObject:@(parent.fractionCompleted)];
+    child.completedUnitCount = 2;
+    [fractions addObject:@(parent.fractionCompleted)];
+    child.completedUnitCount = 4;
+    [fractions addObject:@(parent.fractionCompleted)];
+    [recorder record:@[fractions, @(child.totalUnitCount), @([NSProgress currentProgress] == nil)] named:@"progress.parentAndPending"];
+    NSProgress *orphan = ((id (*)(id, SEL, int64_t, id, int64_t))objc_msgSend)([NSProgress class], sel(@selector(progressWithTotalUnitCount:parent:pendingUnitCount:)), 3, nil, 1);
+    [recorder record:@[@(orphan.totalUnitCount), @([NSProgress currentProgress] == nil)] named:@"progress.noParent"];
+
+    NSProgress *host = [NSProgress progressWithTotalUnitCount:10];
+    __block BOOL insideIsHost = NO;
+    ((void (*)(id, SEL, int64_t, void (^)(void)))objc_msgSend)(host, sel(@selector(performAsCurrentWithPendingUnitCount:usingBlock:)), 5, ^{
+        insideIsHost = [NSProgress currentProgress] == host;
+        NSProgress *inner = [NSProgress progressWithTotalUnitCount:2];
+        inner.completedUnitCount = 2;
+    });
+    [recorder record:@[@(insideIsHost), @([NSProgress currentProgress] == nil), @(host.fractionCompleted)] named:@"progress.performAsCurrent"];
+
+    NSProgress *info = [NSProgress progressWithTotalUnitCount:10];
+    NSArray *keys = @[NSProgressThroughputKey, NSProgressFileOperationKindKey, NSProgressFileURLKey, NSProgressFileTotalCountKey, NSProgressFileCompletedCountKey];
+    NSArray *properties = @[@"estimatedTimeRemaining", @"throughput", @"fileOperationKind", @"fileURL", @"fileTotalCount", @"fileCompletedCount"];
+    NSURL *url = [NSURL fileURLWithPath:@"/tmp/progress-file"];
+    NSArray *values = @[@12.5, @100, NSProgressFileOperationKindCopying, url, @5, @2];
+    NSMutableArray *before = [NSMutableArray array];
+    for (NSString *property in properties)
+        [before addObject:((id (*)(id, SEL))objc_msgSend)(info, sel(NSSelectorFromString(property))) ?: @"<nil>"];
+    for (NSUInteger index = 0; index < properties.count; index++) {
+        SEL setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:", [[properties[index] substringToIndex:1] uppercaseString], [properties[index] substringFromIndex:1]]);
+        ((void (*)(id, SEL, id))objc_msgSend)(info, sel(setter), values[index]);
+    }
+    NSMutableArray *after = [NSMutableArray array];
+    for (NSString *property in properties) {
+        id value = ((id (*)(id, SEL))objc_msgSend)(info, sel(NSSelectorFromString(property))) ?: @"<nil>";
+        [after addObject:[value isKindOfClass:[NSURL class]] ? [value path] : value];
+    }
+    NSMutableArray *inInfo = [NSMutableArray array];
+    for (NSString *key in keys)
+        [inInfo addObject:info.userInfo[key] ? @YES : @NO];
+    [inInfo addObject:info.userInfo[foundation2_implementation.progressConstants[0]] ? @YES : @NO];
+    for (NSUInteger index = 0; index < properties.count; index++) {
+        SEL setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:", [[properties[index] substringToIndex:1] uppercaseString], [properties[index] substringFromIndex:1]]);
+        ((void (*)(id, SEL, id))objc_msgSend)(info, sel(setter), nil);
+    }
+    NSMutableArray *cleared = [NSMutableArray array];
+    for (NSString *property in properties)
+        [cleared addObject:((id (*)(id, SEL))objc_msgSend)(info, sel(NSSelectorFromString(property))) ?: @"<nil>"];
+    [recorder record:@[before, after, inInfo, cleared] named:@"progress.userInfoProperties"];
+
+    NSMutableArray *constants = [NSMutableArray array];
+    for (NSString *constant in foundation2_implementation.progressConstants)
+        [constants addObject:constant];
+    [recorder record:constants named:@"progress.constants"];
+
+    NSProgress *handled = [NSProgress progressWithTotalUnitCount:1];
+    __block int cancelled = 0, paused = 0;
+    NSArray *unset = @[@([handled respondsToSelector:sel(@selector(cancellationHandler))] && ((id (*)(id, SEL))objc_msgSend)(handled, sel(@selector(cancellationHandler))) != nil),
+                       @([handled respondsToSelector:sel(@selector(pausingHandler))] && ((id (*)(id, SEL))objc_msgSend)(handled, sel(@selector(pausingHandler))) != nil)];
+    handled.cancellationHandler = ^{ cancelled++; };
+    handled.pausingHandler = ^{ paused++; };
+    void (^cancelHandler)(void) = ((id (*)(id, SEL))objc_msgSend)(handled, sel(@selector(cancellationHandler)));
+    void (^pauseHandler)(void) = ((id (*)(id, SEL))objc_msgSend)(handled, sel(@selector(pausingHandler)));
+    cancelHandler();
+    pauseHandler();
+    pauseHandler();
+    [recorder record:@[unset, @(cancelHandler != nil), @(pauseHandler != nil), @(cancelled), @(paused)] named:@"progress.handlerGetters"];
+    handled.cancellationHandler = nil;
+    handled.pausingHandler = nil;
+    [recorder record:@[@(((id (*)(id, SEL))objc_msgSend)(handled, sel(@selector(cancellationHandler))) == nil), @(((id (*)(id, SEL))objc_msgSend)(handled, sel(@selector(pausingHandler))) == nil)] named:@"progress.handlerCleared"];
+}
+
 static void run_relative_urls(Foundation2Recorder *recorder)
 {
     NSString *directory = [[[NSURL fileURLWithPath:[[NSFileManager defaultManager] currentDirectoryPath] isDirectory:YES] absoluteString] stringByReplacingOccurrencesOfString:@"file://localhost/" withString:@"file:///"];
@@ -1197,6 +1301,8 @@ void foundation2_run(Foundation2Implementation implementation, Foundation2Record
         run_value(recorder);
         progress(@"locale");
         run_locale(recorder);
+        progress(@"progress");
+        run_progress(recorder);
         progress(@"relativeUrls");
         run_relative_urls(recorder);
         progress(@"scheduling");
