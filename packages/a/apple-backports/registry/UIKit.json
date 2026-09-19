@@ -173,9 +173,31 @@
   "minimum": "6.0",
   "status": "implemented",
   "reason": "the blocks run through UIView's own animation and, for an interruptible animator, are paused and scrubbed from there, which is what UIKit does; only the animations this animator added are held, by layer and key, so nothing else on those layers is stopped",
-  "effect": "the behaviour is held to on an emulated iPhone3,1 running iOS 6.0; what scrubbing costs on an A5 is not measured yet, and -charon_setFraction: is the one method that may change for it",
+  "effect": "the behaviour is held to on an emulated iPhone3,1 running iOS 6.0 and on an iPhone4,1 running 6.1.3, where one scrub step costs about a hundred microseconds against a frame of sixteen thousand",
   "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ",
   "facts": "facts/UIKit/UIViewPropertyAnimator.md"
+ },
+ {
+  "api": "UIViewPropertyAnimator.scrubsLinearly",
+  "kind": "property",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "maximum": "10.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UIViewPropertyAnimatorScrubbing.md",
+  "source": "UIKit of the arm64 caches of iOS 11.0, 12.0 and 18.0, the host's own UIKit measured beside the port",
+  "effect": "from 10.0 the release animates with its own class and the property is not there: respondsToSelector: answers NO"
+ },
+ {
+  "api": "UIViewPropertyAnimator.pausesOnCompletion",
+  "kind": "property",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "maximum": "10.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UIViewPropertyAnimatorScrubbing.md",
+  "source": "UIKit of the arm64 caches of iOS 11.0, 12.0 and 18.0, the host's own UIKit measured beside the port",
+  "effect": "from 10.0 the release animates with its own class and the property is not there: respondsToSelector: answers NO"
  },
  {
   "api": "-[NSCoder encodeCGVector:forKey:]",

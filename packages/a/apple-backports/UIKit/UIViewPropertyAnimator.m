@@ -56,6 +56,9 @@
     BOOL _interruptible;
     BOOL _userInteractionEnabled;
     BOOL _manualHitTestingEnabled;
+    BOOL _scrubsLinearly;
+    BOOL _pausesOnCompletion;
+    BOOL _blocksWaiting;
     CGFloat _fractionComplete;
     UIViewAnimatingPosition _finishingPosition;
     NSMutableArray *_animations;
@@ -135,6 +138,7 @@
     _state = UIViewAnimatingStateInactive;
     _interruptible = YES;
     _userInteractionEnabled = YES;
+    _scrubsLinearly = YES;
     _animations = [[NSMutableArray alloc] init];
     _layers = [[NSMutableArray alloc] init];
     if (animations)
@@ -249,6 +253,31 @@ static NSMapTable *charon_animation_keys(void)
     _interruptible = interruptible;
 }
 
+- (BOOL)scrubsLinearly
+{
+    return _scrubsLinearly;
+}
+
+- (void)setScrubsLinearly:(BOOL)scrubsLinearly
+{
+    if (_state == UIViewAnimatingStateActive && !_running) {
+        [NSException raise:NSInternalInconsistencyException
+                    format:@"Cannot modify scrubsLinearly while animation is already paused"];
+        return;
+    }
+    _scrubsLinearly = scrubsLinearly;
+}
+
+- (BOOL)pausesOnCompletion
+{
+    return _pausesOnCompletion;
+}
+
+- (void)setPausesOnCompletion:(BOOL)pausesOnCompletion
+{
+    _pausesOnCompletion = pausesOnCompletion;
+}
+
 - (BOOL)isUserInteractionEnabled
 {
     return _userInteractionEnabled;
@@ -283,6 +312,8 @@ static NSMapTable *charon_animation_keys(void)
     [_animations addObject:@[[animation copy], @(delayFactor)]];
     if (_state == UIViewAnimatingStateActive)
         [self charon_runBlock:animation afterFactor:delayFactor];
+    else if (_state == UIViewAnimatingStateInactive)
+        _blocksWaiting = YES;
 }
 
 - (void)addCompletion:(void (^)(UIViewAnimatingPosition))completion
@@ -341,10 +372,11 @@ static NSMapTable *charon_animation_keys(void)
     [self charon_settleAtCurrentPosition];
     [self charon_setRunning:NO];
     [self charon_setReversed:NO];
-    if (withoutFinishing) {
+    if (!withoutFinishing) {
         [self charon_setState:UIViewAnimatingStateStopped];
         return;
     }
+    _completions = nil;
     _finishingPosition = UIViewAnimatingPositionCurrent;
     [self charon_runCompletions];
     [self charon_setState:UIViewAnimatingStateInactive];
@@ -352,7 +384,7 @@ static NSMapTable *charon_animation_keys(void)
 
 - (void)finishAnimationAtPosition:(UIViewAnimatingPosition)finalPosition
 {
-    NSAssert(_state == UIViewAnimatingStateStopped,
+    NSAssert(_state == UIViewAnimatingStateStopped || (_state == UIViewAnimatingStateInactive && !_blocksWaiting),
              @"finishAnimationAtPosition: should only be called on a stopped animator!");
     if (_state != UIViewAnimatingStateStopped)
         return;
@@ -384,13 +416,24 @@ static NSMapTable *charon_animation_keys(void)
 
 - (void)setFractionComplete:(CGFloat)fractionComplete
 {
-    if (_state == UIViewAnimatingStateInactive)
+    fractionComplete = MIN(MAX(fractionComplete, 0), 1);
+    if (fractionComplete == _fractionComplete)
         return;
-    if (_running)
+    if (_state == UIViewAnimatingStateInactive) {
+        if (!_blocksWaiting)
+            return;
         [self pauseAnimation];
+    } else if (_state != UIViewAnimatingStateActive) {
+        return;
+    }
+    BOOL wasRunning = _running;
+    if (wasRunning)
+        [self charon_pause];
     [self willChangeValueForKey:@"fractionComplete"];
     [self charon_setFraction:fractionComplete];
     [self didChangeValueForKey:@"fractionComplete"];
+    if (wasRunning)
+        [self charon_resume];
 }
 
 - (BOOL)isReversed
@@ -451,6 +494,7 @@ static NSMapTable *charon_animation_keys(void)
 
 - (void)charon_start
 {
+    _blocksWaiting = NO;
     [self charon_setState:UIViewAnimatingStateActive];
     _finishingPosition = UIViewAnimatingPositionEnd;
     [_layers removeAllObjects];
@@ -502,6 +546,11 @@ static NSMapTable *charon_animation_keys(void)
 - (void)charon_setFraction:(CGFloat)fraction
 {
     _fractionComplete = MIN(MAX(fraction, 0), 1);
+    [self charon_show:_scrubsLinearly ? _fractionComplete : charon_curve_at(_timingParameters, _fractionComplete)];
+}
+
+- (void)charon_show:(CGFloat)progress
+{
     for (NSArray *tracked in _layers) {
         CALayer *layer = tracked[0];
         NSString *key = tracked[1];
@@ -509,7 +558,7 @@ static NSMapTable *charon_animation_keys(void)
         if (!animation)
             continue;
         animation.speed = 0;
-        animation.timeOffset = _fractionComplete * _internalDuration;
+        animation.timeOffset = progress * _internalDuration;
         animation.fillMode = kCAFillModeBoth;
         animation.removedOnCompletion = NO;
         [layer addAnimation:animation forKey:key];
@@ -522,12 +571,16 @@ static NSMapTable *charon_animation_keys(void)
     if (_reversed)
         elapsed = 1 - elapsed;
     double bounded = MIN(MAX(elapsed, 0.0), 1.0);
-    [self charon_setFraction:charon_curve_at(_timingParameters, bounded)];
+    double progress = charon_curve_at(_timingParameters, bounded);
+    _fractionComplete = _scrubsLinearly ? progress : bounded;
+    [self charon_show:progress];
     if ((!_reversed && elapsed < 1) || (_reversed && elapsed > 0))
         return;
     [self charon_setRunning:NO];
     [_driver invalidate];
     _driver = nil;
+    if (_pausesOnCompletion)
+        return;
     _finishingPosition = _reversed ? UIViewAnimatingPositionStart : UIViewAnimatingPositionEnd;
     [self charon_settleAtCurrentPosition];
     [self charon_runCompletions];

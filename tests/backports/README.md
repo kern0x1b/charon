@@ -261,6 +261,10 @@ postinst run with `DPKG_ROOT` set to it.
   frame of 16666.7. Reading the presentation layer needs `[CATransaction flush]`
   and a turn of the run loop first: before the first commit there is no
   presentation layer and the model value is what comes back.
+  It also reads where a quarter of the fraction puts a view on an ease-in-out
+  curve, which is the one thing `scrubsLinearly` changes and only a window
+  shows: a quarter of the way when the animator scrubs linearly, and short of
+  it, where the curve says, when it does not.
 - `haptics.m`: a process of its own for the feedback generators, linking UIKit
   but raising no window. It holds the port to what was read off iOS 10 rather
   than to a sensation: that the three generators are there and come from the

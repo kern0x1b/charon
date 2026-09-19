@@ -73,19 +73,45 @@ on automatic notification. `-_stateAsString` answers `inactive`, `stopped`,
 `<%@(%p) [%@]%@%@%@>` with ` running`, ` reversed` and ` interruptible` appended
 where they hold.
 
-`-stopAnimation:YES` leaves the animator **stopped** and runs no completion;
-`-finishAnimationAtPosition:` then runs them with the position given.
-`-stopAnimation:NO` finishes at once, reporting `UIViewAnimatingPositionCurrent`,
-and leaves the animator inactive.
+Inside, the state is one of five numbers, and `-state` maps them through a table
+(`0x20cf7e40`, mask `0x1b`): 0 and 3 read as `inactive`, 1 and 4 as `active`, 2 as
+`stopped`. The two inactive states are not the same. A new animator is 0;
+`-addAnimations:delayFactor:durationFactor:` moves an inactive one to 3
+(`movs r0, #3` at `0x20a446ea`), so an animator built with its blocks is 3 from
+the start. 1 is running and 4 is paused.
+
+`-setFractionComplete:` (`0x20a48b6c`) clamps to `[0, 1]`, does nothing if the
+value is the one it already has, and then:
+
+- at 3 it starts the animator paused and sets the fraction on it, so scrubbing an
+  animator that has blocks and has not started leaves it **active and not
+  running** at that fraction;
+- at 4 it moves the paused animation to the fraction;
+- at 1 it pauses, sets the fraction and carries on (`-pauseAnimationTransiently`,
+  `-setFractionComplete:`, `-_continueOrReverseAnimations:timingParameters:duration:`
+  with none and zero), so a running animator **jumps and keeps running**;
+- at 0 and 2 nothing happens.
+
+11.0, 12.0 and 18.0 do the same.
+
+`-stopAnimation:` (`0x20a48690`) acts only on an active animator. With **YES**
+it drops the completion blocks (`-_setCompletions:nil`), stops where it stands
+and leaves the animator **inactive**: no completion is ever called. With **NO**
+it stops where it stands and leaves the animator **stopped**, and
+`-finishAnimationAtPosition:` then calls the blocks with the position given.
+
+`-finishAnimationAtPosition:` (`0x20a441f0`) asserts that the state is 0 or 2
+(`orr r1, r0, #2; cmp r1, #2`), and works only at 2: on an inactive animator
+that has no blocks waiting it quietly does nothing, and on one that has blocks
+waiting it is the assertion.
 
 `-copyWithZone:` carries the duration, the curve, `userInteractionEnabled` and
 `interruptible`, and carries **neither** the blocks, the completions nor the
 state.
 
-## What is not measured yet
+## What it costs
 
-The behaviour above is held to on an emulated iPhone3,1 running iOS 6.0. What is
-**not** yet known is what the scrubbing costs on the hardware: whether rebuilding
-an animation every frame is affordable on an A5. The method that does it is
-`-charon_setFraction:`, and it is the one thing here that may still change; the
-behaviour around it will not.
+One scrub step rebuilds the animation, and on an iPhone4,1 running 6.1.3 that
+is about 109 microseconds against a display frame of 16667; freezing the layer
+instead would be 4.4 and wrong, since it stops animations this animator never
+started.
