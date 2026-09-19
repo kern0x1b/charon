@@ -608,6 +608,31 @@ static NSString *traits_of(id environment)
             charon_check([regular.fontName isEqualToString:[UIFont systemFontOfSize:15].fontName], "a medium weight maps to the iOS 6 system font", regular.fontName);
             charon_check([light.familyName isEqualToString:[UIFont systemFontOfSize:15].familyName], "a light weight stays in the system font family", light.familyName);
             charon_check(light.pointSize == 15 && bold.pointSize == 15, "the weighted fonts keep their size", @"the size differs");
+            struct { const char *name; NSString *style; CGFloat size; } styles[] = {
+                {"headline", UIFontTextStyleHeadline, 17}, {"subheadline", UIFontTextStyleSubheadline, 15}, {"body", UIFontTextStyleBody, 17},
+                {"footnote", UIFontTextStyleFootnote, 13}, {"caption 1", UIFontTextStyleCaption1, 12}, {"caption 2", UIFontTextStyleCaption2, 11},
+                {"callout", @"UICTFontTextStyleCallout", 16}, {"title 1", @"UICTFontTextStyleTitle1", 28}, {"title 2", @"UICTFontTextStyleTitle2", 22},
+                {"title 3", @"UICTFontTextStyleTitle3", 20}, {"title 0", @"UICTFontTextStyleTitle0", 34},
+            };
+            for (size_t index = 0; index < sizeof styles / sizeof *styles; index++)
+                charon_check([UIFont preferredFontForTextStyle:styles[index].style].pointSize == styles[index].size,
+                             [[NSString stringWithFormat:@"the %s text style is %g points", styles[index].name, (double)styles[index].size] UTF8String], @"the size differs");
+            charon_check([[UIFont preferredFontForTextStyle:@"not a style"] pointSize] == 12, "an unknown text style is 12 points", @"the size differs");
+            charon_check([UIFont preferredFontForTextStyle:@""].pointSize == 12, "the empty text style is 12 points", @"the size differs");
+            UIFont *nilStyle = [UIFont preferredFontForTextStyle:nil];
+            charon_check(nilStyle == nil, "a nil text style answers nil", [NSString stringWithFormat:@"%@ %@", nilStyle, [UIDevice currentDevice].systemVersion]);
+            charon_check([UIFontTextStyleHeadline isEqualToString:@"UICTFontTextStyleHeadline"] && [UIFontTextStyleSubheadline isEqualToString:@"UICTFontTextStyleSubhead"] &&
+                         [UIFontTextStyleBody isEqualToString:@"UICTFontTextStyleBody"] && [UIFontTextStyleFootnote isEqualToString:@"UICTFontTextStyleFootnote"] &&
+                         [UIFontTextStyleCaption1 isEqualToString:@"UICTFontTextStyleCaption1"] && [UIFontTextStyleCaption2 isEqualToString:@"UICTFontTextStyleCaption2"],
+                         "the text style constants carry the release's own names", @"a name differs");
+            UIFont *nearRegular = [UIFont systemFontOfSize:15 weight:-0.1];
+            UIFont *nearLight = [UIFont systemFontOfSize:15 weight:-0.3];
+            charon_check([nearRegular.fontName isEqualToString:[UIFont systemFontOfSize:15].fontName], "a weight just under regular stays regular", nearRegular.fontName);
+            charon_check([nearLight.fontName isEqualToString:light.fontName], "a weight nearer light than regular is light", nearLight.fontName);
+            charon_check([[UIFont systemFontOfSize:15 weight:UIFontWeightBlack].fontName isEqualToString:bold.fontName] && [[UIFont systemFontOfSize:15 weight:UIFontWeightUltraLight].fontName isEqualToString:light.fontName],
+                         "the extreme weights take the nearest weight the release has", @"an extreme weight differs");
+            charon_check(UIFontWeightUltraLight == -0.8f && UIFontWeightThin == -0.6f && UIFontWeightLight == -0.4f && UIFontWeightRegular == 0 && UIFontWeightMedium == 0.23f &&
+                         UIFontWeightSemibold == 0.3f && UIFontWeightBold == 0.4f && UIFontWeightHeavy == 0.56f && UIFontWeightBlack == 0.62f, "the weight constants are the release's values", @"a value differs");
 
             CGFloat blueRed = 0, blueGreen = 0, blueBlue = 0, blueAlpha = 0;
             [[UIColor systemBlueColor] getRed:&blueRed green:&blueGreen blue:&blueBlue alpha:&blueAlpha];

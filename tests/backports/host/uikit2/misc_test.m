@@ -97,6 +97,10 @@ int main(void)
         }
         UIFont *unknown = [UIFont charonHostPreferredFontForTextStyle:@"bogus"];
         charon_check(unknown.pointSize == [UIFont preferredFontForTextStyle:@"bogus"].pointSize, "an unknown text style", @"the fallback size differs");
+        charon_check([UIFont charonHostPreferredFontForTextStyle:@""].pointSize == [UIFont preferredFontForTextStyle:@""].pointSize, "the empty text style", @"the fallback size differs");
+        charon_check([UIFont charonHostPreferredFontForTextStyle:nil] == [UIFont preferredFontForTextStyle:nil], "a nil text style", @"the answer differs");
+        for (NSString *private in @[@"UICTFontTextStyleCallout", @"UICTFontTextStyleTitle0", @"UICTFontTextStyleTitle1", @"UICTFontTextStyleTitle2", @"UICTFontTextStyleTitle3"])
+            charon_check([UIFont charonHostPreferredFontForTextStyle:private].pointSize == [UIFont preferredFontForTextStyle:private].pointSize, NAMED(@"%@ size", private), @"the size differs");
 
         struct { const UIFontWeight *ours; UIFontWeight system; const char *name; } weights[] = {
             {&CharonHostUIFontWeightUltraLight, UIFontWeightUltraLight, "ultra light"}, {&CharonHostUIFontWeightThin, UIFontWeightThin, "thin"},

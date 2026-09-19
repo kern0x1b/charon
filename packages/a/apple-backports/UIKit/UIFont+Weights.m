@@ -18,7 +18,7 @@ const UIFontWeight UIFontWeightBlack = 0.62f;
 {
     if (weight > UIFontWeightMedium)
         return [UIFont boldSystemFontOfSize:fontSize];
-    if (weight >= UIFontWeightRegular)
+    if (weight > UIFontWeightLight / 2)
         return [UIFont systemFontOfSize:fontSize];
     UIFont *regular = [UIFont systemFontOfSize:fontSize];
     UIFont *lighter = [UIFont fontWithName:[regular.fontName stringByAppendingString:@"-Light"] size:fontSize];

@@ -13,6 +13,8 @@ UIFontTextStyle const UIFontTextStyleCaption2 = @"UICTFontTextStyleCaption2";
 
 + (UIFont *)preferredFontForTextStyle:(UIFontTextStyle)style
 {
+    if (!style)
+        return nil;
     if ([style isEqualToString:UIFontTextStyleHeadline])
         return [UIFont boldSystemFontOfSize:17];
     if ([style isEqualToString:UIFontTextStyleBody])

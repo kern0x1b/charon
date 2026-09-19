@@ -89,13 +89,15 @@
     "api": "+[UIFont preferredFontForTextStyle:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "+[UIFont systemFontOfSize:weight:]",
     "kind": "method",
     "introduced": "8.2",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "+[UITraitCollection traitCollectionWithUserInterfaceStyle:]",
@@ -912,91 +914,106 @@
     "api": "UIFontTextStyleBody",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "UIFontTextStyleCaption1",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "UIFontTextStyleCaption2",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "UIFontTextStyleFootnote",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "UIFontTextStyleHeadline",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "UIFontTextStyleSubheadline",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "UIFontWeightBlack",
     "kind": "constant",
     "introduced": "8.2",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "UIFontWeightBold",
     "kind": "constant",
     "introduced": "8.2",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "UIFontWeightHeavy",
     "kind": "constant",
     "introduced": "8.2",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "UIFontWeightLight",
     "kind": "constant",
     "introduced": "8.2",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "UIFontWeightMedium",
     "kind": "constant",
     "introduced": "8.2",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "UIFontWeightRegular",
     "kind": "constant",
     "introduced": "8.2",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "UIFontWeightSemibold",
     "kind": "constant",
     "introduced": "8.2",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "UIFontWeightThin",
     "kind": "constant",
     "introduced": "8.2",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "UIFontWeightUltraLight",
     "kind": "constant",
     "introduced": "8.2",
-    "status": "implemented"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIFontTextStyles.md"
   },
   {
     "api": "UIInterpolatingMotionEffect",
