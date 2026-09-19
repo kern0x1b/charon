@@ -28,11 +28,11 @@ package("swift-runtime")
     -- The overlays of the system's own frameworks, each taken from the last release whose sources carry it. The C
     -- library's went in swift-6.2 (the build of the SDK overlays on Apple platforms was removed in 15345ef2d5) and the
     -- SDK ships only an arm64 interface of that module; the overlays of Objective-C and the frameworks above it went
-    -- earlier, and swift-5.3.3 is the last release that has them.
+    -- earlier, and swift-5.4.3 is the last release that has them: swift-5.5 has no stdlib/public/Darwin at all.
     local sources = {
         {name = "platform", tag = "swift-6.2-RELEASE", commit = "1ff1cc1170617ab23ab74aa8b741c8daca1903f6",
          url = "https://github.com/swiftlang/swift.git", sparse = {"/stdlib/public/Platform/", "/LICENSE.txt"}},
-        {name = "overlays", tag = "swift-5.3.3-RELEASE", commit = "a51d2fefc70a41cf765853739c5037c182bdaad9",
+        {name = "overlays", tag = "swift-5.4.3-RELEASE", commit = "282fe25d1757ff9974ade028d92111acdae6876a",
          url = "https://github.com/swiftlang/swift.git",
          sparse = {"/stdlib/public/Darwin/ObjectiveC/", "/stdlib/public/Darwin/CoreFoundation/",
                    "/stdlib/public/Darwin/CoreGraphics/", "/stdlib/public/SwiftShims/ObjectiveCOverlayShims.h", "/LICENSE.txt"}}
