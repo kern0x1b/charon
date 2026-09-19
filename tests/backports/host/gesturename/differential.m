@@ -30,7 +30,7 @@ static void set_ours_name(UIGestureRecognizer *recognizer, NSString *name)
 int main(void)
 {
     @autoreleasepool {
-        host_attach_prefixed("charonHost_");
+        host_attach_prefixed("");
         UITapGestureRecognizer *system = [UITapGestureRecognizer new];
         UITapGestureRecognizer *ours = [UITapGestureRecognizer new];
 

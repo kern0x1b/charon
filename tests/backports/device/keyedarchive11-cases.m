@@ -34,7 +34,14 @@ static SEL sel(SEL selector)
 {
     if (!keyedarchive11_prefix.length)
         return selector;
-    return NSSelectorFromString([keyedarchive11_prefix stringByAppendingString:NSStringFromSelector(selector)]);
+    NSString *name = NSStringFromSelector(selector);
+    NSString *family = [keyedarchive11_prefix stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"_"]];
+    family = [[family substringToIndex:1].uppercaseString stringByAppendingString:[family substringFromIndex:1]];
+    for (NSString *word in @[@"mutableCopy", @"copy", @"init", @"new", @"alloc"]) {
+        if ([name hasPrefix:word] && (name.length == word.length || [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[name characterAtIndex:word.length]] || [name characterAtIndex:word.length] == ':'))
+            return NSSelectorFromString([NSString stringWithFormat:@"%@%@%@", word, family, [name substringFromIndex:word.length]]);
+    }
+    return NSSelectorFromString([keyedarchive11_prefix stringByAppendingString:name]);
 }
 
 static NSString *describe(NSError *error)
@@ -153,7 +160,8 @@ void keyedarchive11_run(NSString *prefix, KeyedArchive11Recorder *recorder)
         NSKeyedUnarchiver *unarchiver = ((id (*)(id, SEL, id, NSError **))objc_msgSend)(allocate([NSKeyedUnarchiver class]),
             sel(@selector(initForReadingFromData:error:)), data, &error);
         [recorder record:unarchiver.requiresSecureCoding ? @"YES" : @"NO" named:@"afterInit.requiresSecureCoding"];
-        [recorder record:unarchiver.decodingFailurePolicy == NSDecodingFailurePolicySetErrorAndReturn ? @"SetErrorAndReturn" : @"RaiseException"
+        NSDecodingFailurePolicy policy = ((NSDecodingFailurePolicy (*)(id, SEL))objc_msgSend)(unarchiver, sel(@selector(decodingFailurePolicy)));
+        [recorder record:policy == NSDecodingFailurePolicySetErrorAndReturn ? @"SetErrorAndReturn" : @"RaiseException"
                    named:@"afterInit.failurePolicy"];
     }
     {

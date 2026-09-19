@@ -34,10 +34,23 @@ ones the device runs, against the host's Foundation and against the renamed
 backports, compares the two and embeds the host's answers in
 `device/foundation2-expectations.h`; it attaches the categories itself
 (`host-attach.c`), since the host linker leaves `__objc_catlist` alone.
+
+A test that attaches categories under a prefix at run time only renames the
+methods it calls. If one method of the port calls another method the port also
+carries, by an ordinary message, the host answers that call with its own
+implementation, and the port's code never runs. `host/prefix_selectors.py`
+closes that. It reads each source through clang's syntax tree and renames both
+the port's method definitions and the messages sent to them, with their ARC
+family kept, for example `initWith…` becoming `initCharonHostWith…`. The tests
+then attach the renamed categories as they are. `foundation2`, `foundation11`,
+`keyedarchive11`, `systemspacing`, `gesturename`, `batchupdates` and
+`directionalmargins` are built this way. In the four UIKit ones the tool renames
+the definitions and nothing else: no method there calls another the port
+carries.
 `host/keyedarchive11/run.sh` holds the iOS 11 keyed archiving API to the host's
 own: it runs `device/keyedarchive11-cases.m` twice in one process, once against
-the system's methods and once against the backport's, attached under the
-`charonHost_` prefix by `host/foundation2/host-attach.c`, and compares the two
+the system's methods and once against the backport's, renamed by
+`host/prefix_selectors.py` and attached by `host/foundation2/host-attach.c`, and compares the two
 answer by answer. It writes `device/keyedarchive11-expectations.h` only when
 every answer agrees. What it holds the backport to, beyond the obvious round
 trip: `-encodedData` returns the archiver's own mutable buffer and the same
@@ -90,10 +103,10 @@ format and allowed specifiers to the host's Foundation and to the port, and
 compares their verdicts and messages. Where the arguments are the ones the
 allowed string describes, it also compares every character of the output. Each
 pair runs in a process of its own, since the host's formatter itself can crash
-on a pair whose arguments it misreads. The Foundation tests that attach
-categories under a prefix at run time cannot hold this method: its entry points
-used to call the host's own initializer, so the port's check never ran on the
-host.
+on a pair whose arguments it misreads. This method once slipped through the Foundation tests: its entry points
+called the host's own initializer, so the port's check never ran on the host.
+The port now does its work in one static function, and the fuzzer calls it
+directly.
 
 `host/systemspacing/run.sh` holds the system spacing of a layout anchor to the
 host's UIKit, comparing the whole shape of the constraint each method returns -

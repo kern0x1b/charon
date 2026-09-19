@@ -10,7 +10,7 @@ int main(int argc, char **argv)
             fprintf(stderr, "usage: %s expectations.json\n", argv[0]);
             return 2;
         }
-        host_attach_prefixed("charonHost_");
+        host_attach_prefixed("");
 
         KeyedArchive11Recorder *system = [KeyedArchive11Recorder new];
         keyedarchive11_run(@"", system);

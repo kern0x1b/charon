@@ -39,7 +39,7 @@ static void set_ours_directional(UIView *view, NSDirectionalEdgeInsets insets)
 int main(void)
 {
     @autoreleasepool {
-        host_attach_prefixed("charonHost_");
+        host_attach_prefixed("");
         for (NSNumber *attribute in @[@(UISemanticContentAttributeForceLeftToRight), @(UISemanticContentAttributeForceRightToLeft)]) {
             NSString *tag = attribute.integerValue == UISemanticContentAttributeForceRightToLeft ? @"right to left" : @"left to right";
             UIView *system = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];

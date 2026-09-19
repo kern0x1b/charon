@@ -7,7 +7,10 @@ sdk=$(xcrun --show-sdk-path)
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-incomplete-implementation -Wno-objc-protocol-method-implementation -Wno-nullability-completeness"
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 mkdir -p "$BUILD"
-xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -c "$UIKIT/UIGestureRecognizer+Name.m" -o "$BUILD/name.o"
+xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -c "$UIKIT/UIGestureRecognizer+Name.m" -o "$BUILD/plain.o"
+printf '#import <UIKit/UIKit.h>\n' > "$BUILD/declarations.h"
+python3 "$here/../prefix_selectors.py" "$UIKIT/UIGestureRecognizer+Name.m" "$BUILD/UIGestureRecognizer+Name.m" charonHost_ --declarations="$BUILD/declarations.h" -fobjc-arc $target $quiet -- "$BUILD/plain.o"
+xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -I"$UIKIT" -include "$BUILD/declarations.h" -c "$BUILD/UIGestureRecognizer+Name.m" -o "$BUILD/name.o"
 perl -0777 -pi -e 's/__objc_catlist\0\0/__charon_catlist/g' "$BUILD/name.o"
 xcrun clang -fobjc-arc $target $quiet "$here/differential.m" "$here/../foundation2/host-attach.c" "$BUILD/name.o" \
     -framework UIKit -framework Foundation -o "$BUILD/differential"

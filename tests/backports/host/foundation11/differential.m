@@ -10,7 +10,7 @@ int main(int argc, char **argv)
             fprintf(stderr, "usage: %s expectations.json\n", argv[0]);
             return 2;
         }
-        host_attach_prefixed("charonHost_");
+        host_attach_prefixed("");
 
         Foundation11Recorder *system = [Foundation11Recorder new];
         Foundation11Implementation systemImplementation = {.prefix = @"", .transformer = NSClassFromString(@"NSSecureUnarchiveFromDataTransformer")};

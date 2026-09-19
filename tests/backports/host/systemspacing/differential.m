@@ -36,7 +36,7 @@ static NSLayoutConstraint *ours_y(NSLayoutYAxisAnchor *anchor, SEL selector, NSL
 int main(void)
 {
     @autoreleasepool {
-        host_attach_prefixed("charonHost_");
+        host_attach_prefixed("");
         UIView *box = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
         UIView *plain = [UIView new], *another = [UIView new];
         UILabel *body = [UILabel new], *big = [UILabel new], *tiny = [UILabel new];

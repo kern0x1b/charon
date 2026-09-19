@@ -106,7 +106,7 @@ static void run(BOOL ours, NSMutableArray *order, NSInteger *rowsAfter)
 int main(void)
 {
     @autoreleasepool {
-        host_attach_prefixed("charonHost_");
+        host_attach_prefixed("");
         NSMutableArray *systemOrder = [NSMutableArray array], *ourOrder = [NSMutableArray array];
         NSInteger systemRows = 0, ourRows = 0;
         run(NO, systemOrder, &systemRows);
