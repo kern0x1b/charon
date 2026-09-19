@@ -137,6 +137,7 @@ typedef id (*F2InitBytesDeallocator)(__attribute__((ns_consumed)) id, SEL, void 
 typedef id (*F2InitFileSystem)(__attribute__((ns_consumed)) id, SEL, const char *, BOOL, id) __attribute__((ns_returns_retained));
 typedef id (*F2InitDataError)(__attribute__((ns_consumed)) id, SEL, id, NSError **) __attribute__((ns_returns_retained));
 typedef id (*F2InitFlag)(__attribute__((ns_consumed)) id, SEL, BOOL) __attribute__((ns_returns_retained));
+typedef id (*F2InitObjectObject)(__attribute__((ns_consumed)) id, SEL, id, id) __attribute__((ns_returns_retained));
 
 static NSData *decode_string(Class class, NSString *string, NSUInteger options)
 {
@@ -465,7 +466,7 @@ static void run_url(Foundation2Recorder *recorder)
     NSMutableArray *relatives = [NSMutableArray array];
     for (NSString *name in @[@"folder", @"file.txt", @"missing", @"folder/", @"link", @"link/inner", @"broken", @"~/inner", @"folder/../folder"]) {
         progress([@"url.relativeDirectory." stringByAppendingString:name]);
-        NSURL *made = ((id (*)(id, SEL, id, id))objc_msgSend)([NSURL alloc], sel(@selector(initFileURLWithPath:relativeToURL:)), name, anchor);
+        NSURL *made = ((F2InitObjectObject)objc_msgSend)([NSURL alloc], sel(@selector(initFileURLWithPath:relativeToURL:)), name, anchor);
         [relatives addObject:[NSString stringWithFormat:@"%@|%@", made.relativeString ?: @"<nil>", made.hasDirectoryPath ? @"directory" : @"file"]];
     }
     [recorder record:relatives named:@"url.relativeDirectory"];
