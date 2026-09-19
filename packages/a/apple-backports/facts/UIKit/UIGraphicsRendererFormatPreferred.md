@@ -63,10 +63,17 @@ A trait collection that says nothing about the display - an empty one, or one
 with only a size class - has a display scale of zero and an unspecified gamut.
 It gives the preferred format unchanged.
 
+`displayGamut` is an iOS 10 trait. The system's `UITraitCollection` of iOS 8
+and 9 does not answer it, and the one this package carries for iOS 6 and 7
+declares it without implementing it. On those releases, a trait collection
+that does not answer `displayGamut` is read as having an unspecified gamut: a
+release without the trait has no gamut to specify. Asking it anyway would end
+the process on an unrecognised selector for every trait collection but nil.
+
 On an iPhone 4S or an iPad 2 no trait collection the system builds carries P3.
 If an application builds one, the format stores `prefersExtendedRange` YES as
 the release would. What the renderer then draws is the iOS 10 range's business,
-and it draws sRGB (see below).
+and it never draws an extended range (see below).
 
 ## Why `preferredRange` is not carried
 
@@ -75,8 +82,11 @@ standard, extended or automatic. The owner of the class read the exports of
 CoreGraphics of iOS 6.0. No exported name holds `Extended`, and the colour
 spaces it knows are sRGB, generic RGB and its linear form, Adobe RGB 1998,
 display RGB, generic grey and grey at gamma 2.2, CMYK and the calibrated and
-user forms - no extended sRGB and no other space of extended range. The context
-this port builds is always sRGB. The property could only hold a value nobody
+user forms - no extended sRGB and no other space of extended range. Of those
+names, an iPhone 4S on 6.1.3 builds a space from `kCGColorSpaceGenericRGB`,
+`kCGColorSpaceGenericGray` and `kCGColorSpaceGenericCMYK` only; the others,
+`kCGColorSpaceSRGB` among them, are exported and give NULL. No context this
+port builds is of extended range. The property could only hold a value nobody
 would ever read. Standard would be true, but extended and automatic would be a
 promise the hardware cannot keep. So the property is not there, and
 `respondsToSelector:` answers NO.
@@ -84,7 +94,8 @@ promise the hardware cannot keep. So the property is not there, and
 ## How far this is checked
 
 `tests/backports/host/rendererformat` holds the port to the host's UIKit, 18
-checks:
+checks, and adds a nineteenth that only the port answers: a trait collection
+that knows its scale but not its gamut. The eighteen checks cover:
 - both preferred formats and the default one;
 - a nil trait collection;
 - an empty one;
@@ -92,3 +103,17 @@ checks:
 - each gamut;
 - scale and gamut together;
 - a collection with nothing about the display.
+
+The same cases ran on an iPhone 4S on 6.1.3 through a tweak loaded into
+Preferences. The system cannot build a P3 trait collection there, so the two
+gamut cases used an object that answers a display gamut. Every answer of the
+two factories matched the host's. The run also showed that this release's
+trait collections do not answer `displayGamut`, which is the case the port
+reads as unspecified.
+
+Two checks of that run belong to the classes rather than to these members:
+- `preferredRange` answered YES, because the compiler synthesises the property
+  the SDK declares on the class;
+- an image drawn by the renderer came out empty, because `kCGColorSpaceSRGB`
+  gives no space on this release.
+Both are for the owner of the classes.

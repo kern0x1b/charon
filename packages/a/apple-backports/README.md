@@ -199,7 +199,8 @@ already has.
 
 `preferredRange` of an image renderer format chooses between a standard and an
 extended colour range, and CoreGraphics of iOS 6 has no extended colour space at
-all. The context is always sRGB, so the property could only store a promise.
+all. No context it builds is of extended range, so the property could only
+store a promise.
 
 ### How it is proved
 

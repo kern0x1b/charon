@@ -99,7 +99,10 @@ format classes renamed together with the categories, and compares what each
 factory answers: its class, bounds, scale, whether it is opaque and whether it
 prefers an extended range. The trait collections cover nil, empty, six display
 scales on both sides of the two epsilons the releases have used, each display
-gamut, a scale with a gamut, and a size class alone.
+gamut, a scale with a gamut, and a size class alone. A last check, for the port
+alone, hands it an object that answers a display scale and not a display gamut,
+as the trait collections of iOS 6 to 9 do, and expects the scale taken and the
+gamut left unspecified.
 
 `host/gesturename/run.sh` holds the name of a gesture recognizer to the host's:
 that it starts empty, that it is copied rather than held, that clearing it

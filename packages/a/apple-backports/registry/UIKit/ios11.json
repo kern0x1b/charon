@@ -2023,8 +2023,8 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "preferredRange chooses the colour range a bitmap is drawn in, and CoreGraphics of iOS 6 knows no extended space - among its colour spaces there is no ExtendedSRGB nor any other of extended range, and the context this port builds is always sRGB. The property could only hold a value nobody would ever read: standard would be true, extended and automatic a promise the hardware does not keep. So the property is not there",
-      "effect": "the property is not declared, so respondsToSelector: answers NO; a format is drawn in sRGB whatever the application wanted",
+      "reason": "preferredRange chooses the colour range a bitmap is drawn in, and CoreGraphics of iOS 6 knows no extended space - among its colour spaces there is no ExtendedSRGB nor any other of extended range, and no context this port builds is of extended range. The property could only hold a value nobody would ever read: standard would be true, extended and automatic a promise the hardware does not keep. So the property is not there",
+      "effect": "the property is not declared, so respondsToSelector: answers NO; a format is drawn in a standard range whatever the application wanted",
       "facts": "facts/UIKit/UIGraphicsRendererFormatPreferred.md",
       "source": "the exports of CoreGraphics of iOS 6.0 as read by the owner of the class (the iOS 10 range), whose words the reason keeps"
     }

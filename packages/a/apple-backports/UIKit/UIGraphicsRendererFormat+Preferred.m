@@ -27,7 +27,7 @@
     CGFloat scale = traitCollection.displayScale;
     if (!(fabs(scale) < DBL_EPSILON))
         format.scale = scale;
-    UIDisplayGamut gamut = traitCollection.displayGamut;
+    UIDisplayGamut gamut = [traitCollection respondsToSelector:@selector(displayGamut)] ? traitCollection.displayGamut : UIDisplayGamutUnspecified;
     if (gamut != UIDisplayGamutUnspecified)
         format.prefersExtendedRange = gamut != UIDisplayGamutSRGB;
     return format;
