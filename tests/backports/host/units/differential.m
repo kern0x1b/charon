@@ -200,6 +200,123 @@ static void compare_intervals(void)
                 build(theirs, 5, 10).endDate.timeIntervalSinceReferenceDate, @"end date");
 }
 
+@interface CharonPartialArchive : NSObject <NSCoding>
+@property (nonatomic, copy) NSDictionary *keys;
+@end
+
+@implementation CharonPartialArchive
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    return nil;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [self.keys enumerateKeysAndObjectsUsingBlock:^(NSString *key, id value, BOOL *stop) {
+        if ([value isKindOfClass:[NSNumber class]])
+            [coder encodeDouble:[value doubleValue] forKey:key];
+        else
+            [coder encodeObject:value forKey:key];
+    }];
+}
+
+@end
+
+static id decode_as(NSString *className, NSDictionary *keys, Class decoded, NSError **error)
+{
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initRequiringSecureCoding:NO];
+    [archiver setClassName:className forClass:[CharonPartialArchive class]];
+    CharonPartialArchive *partial = [[CharonPartialArchive alloc] init];
+    partial.keys = keys;
+    [archiver encodeObject:partial forKey:NSKeyedArchiveRootObjectKey];
+    [archiver finishEncoding];
+    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:archiver.encodedData error:NULL];
+    unarchiver.requiresSecureCoding = NO;
+    unarchiver.decodingFailurePolicy = NSDecodingFailurePolicySetErrorAndReturn;
+    if (decoded)
+        [unarchiver setClass:decoded forClassName:className];
+    id object = [unarchiver decodeObjectForKey:NSKeyedArchiveRootObjectKey];
+    if (error)
+        *error = unarchiver.error;
+    [unarchiver finishDecoding];
+    return object;
+}
+
+static NSString *error_of(NSError *error)
+{
+    return error ? [NSString stringWithFormat:@"%@ %ld", error.domain, (long)error.code] : @"none";
+}
+
+static void compare_edges(void)
+{
+    Class theirs = [NSDateInterval class], mine = ours_of(theirs);
+    NSDate *start = [NSDate dateWithTimeIntervalSinceReferenceDate:10], *end = [NSDate dateWithTimeIntervalSinceReferenceDate:15];
+    NSDate *none = nil;
+    const struct { const char *what; NSDateInterval *(^make)(Class); } makes[] = {
+        {"no start and a duration", ^(Class c) { return [[c alloc] initWithStartDate:none duration:1]; }},
+        {"a negative duration", ^(Class c) { return [[c alloc] initWithStartDate:start duration:-1]; }},
+        {"no start and an end", ^(Class c) { return [[c alloc] initWithStartDate:none endDate:end]; }},
+        {"a start and no end", ^(Class c) { return [[c alloc] initWithStartDate:start endDate:none]; }},
+        {"a start after the end", ^(Class c) { return [[c alloc] initWithStartDate:end endDate:start]; }},
+    };
+    for (unsigned i = 0; i < sizeof(makes) / sizeof(*makes); i++) {
+        NSDateInterval *(^make)(Class) = makes[i].make;
+        same_object(reason_of(^{ make(mine); }), reason_of(^{ make(theirs); }),
+                    [NSString stringWithFormat:@"an interval of %s", makes[i].what]);
+    }
+
+    NSDateInterval *ours = [[mine alloc] initWithStartDate:start duration:5], *them = [[theirs alloc] initWithStartDate:start duration:5];
+    same_flag([ours containsDate:none], [them containsDate:none], @"an interval contains no date");
+    same_flag([ours intersectsDateInterval:(id)none], [them intersectsDateInterval:(id)none], @"an interval intersects no interval");
+    same_flag([ours intersectionWithDateInterval:(id)none] == nil, [them intersectionWithDateInterval:(id)none] == nil,
+              @"an interval's intersection with no interval");
+
+    NSData *(^plist)(NSDateInterval *) = ^(NSDateInterval *interval) {
+        return [NSKeyedArchiver archivedDataWithRootObject:interval requiringSecureCoding:NO error:NULL];
+    };
+    NSString *(^keys)(NSData *) = ^(NSData *data) {
+        NSDictionary *root = [NSPropertyListSerialization propertyListWithData:data options:0 format:NULL error:NULL];
+        NSMutableArray *found = [NSMutableArray array];
+        for (id object in root[@"$objects"])
+            if ([object isKindOfClass:[NSDictionary class]])
+                for (NSString *key in object)
+                    if ([key hasPrefix:@"NS."])
+                        [found addObject:key];
+        return [[found sortedArrayUsingSelector:@selector(compare:)] componentsJoinedByString:@","];
+    };
+    same_object(keys(plist(ours)), keys(plist(them)), @"the keys an interval is archived with");
+
+    const struct { const char *what; NSDictionary *keys; } partials[] = {
+        {"a start and a duration", @{@"NS.startDate": start, @"NS.duration": @5}},
+        {"a start and an end", @{@"NS.startDate": start, @"NS.endDate": end}},
+        {"a start alone", @{@"NS.startDate": start}},
+        {"an end alone", @{@"NS.endDate": end}},
+    };
+    for (unsigned i = 0; i < sizeof(partials) / sizeof(*partials); i++) {
+        NSError *ourError = nil, *theirError = nil;
+        NSDateInterval *a = decode_as(@"NSDateInterval", partials[i].keys, mine, &ourError);
+        NSDateInterval *b = decode_as(@"NSDateInterval", partials[i].keys, nil, &theirError);
+        NSString *what = [NSString stringWithFormat:@"an archive of %s", partials[i].what];
+        same_flag(a != nil, b != nil, [what stringByAppendingString:@" decodes"]);
+        same_double(a.duration, b.duration, [what stringByAppendingString:@" duration"]);
+        same_object(error_of(ourError), error_of(theirError), [what stringByAppendingString:@" error"]);
+    }
+
+    Class unit = ours_of([NSUnit class]);
+    same_object(reason_of(^{ (void)send([unit alloc], @selector(init)); }),
+                reason_of(^{ (void)send([NSUnit alloc], @selector(init)); }), @"a unit made with -init");
+    NSUnit *plainOurs = [[unit alloc] initWithSymbol:@"m"], *plainTheirs = [[NSUnit alloc] initWithSymbol:@"m"];
+    same_flag([plainOurs isEqual:send(ours_of([NSUnitLength class]), @selector(meters))],
+              [plainTheirs isEqual:[NSUnitLength meters]], @"a plain unit of m equals metres");
+    same_flag([send(ours_of([NSUnitLength class]), @selector(meters)) isEqual:plainOurs],
+              [[NSUnitLength meters] isEqual:plainTheirs], @"metres equal a plain unit of m");
+    NSError *ourError = nil, *theirError = nil;
+    id a = decode_as(@"NSUnit", @{}, unit, &ourError), b = decode_as(@"NSUnit", @{}, nil, &theirError);
+    same_flag(a != nil, b != nil, @"an archive of a unit with no symbol decodes");
+    same_object(error_of(ourError), error_of(theirError), @"an archive of a unit with no symbol error");
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -224,6 +341,7 @@ int main(void)
 
         compare_measurements();
         compare_intervals();
+        compare_edges();
         printf("%d checks, %d failures\n", checks, failures);
     }
     return failures;

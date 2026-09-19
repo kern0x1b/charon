@@ -7,6 +7,12 @@
     return YES;
 }
 
+- (instancetype)init
+{
+    [NSException raise:NSGenericException format:@"-init should never be called on NSUnit!"];
+    return nil;
+}
+
 - (instancetype)initWithSymbol:(NSString *)symbol
 {
     if ((self = [super init]))
@@ -20,7 +26,12 @@
         [NSException raise:NSInvalidArgumentException format:@"NSUnit cannot be decoded by non-keyed archivers"];
         return nil;
     }
-    return [self initWithSymbol:[coder decodeObjectOfClass:[NSString class] forKey:@"NS.symbol"]];
+    NSString *symbol = [coder decodeObjectOfClass:[NSString class] forKey:@"NS.symbol"];
+    if (!symbol) {
+        [coder failWithError:[NSError errorWithDomain:NSCocoaErrorDomain code:NSCoderValueNotFoundError userInfo:nil]];
+        return nil;
+    }
+    return [self initWithSymbol:symbol];
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
@@ -46,7 +57,7 @@
 {
     if (object == self)
         return YES;
-    if (![object isKindOfClass:[self class]])
+    if (![object isKindOfClass:[self class]] || [object class] != [self class])
         return NO;
     return [_symbol isEqual:[object symbol]];
 }
