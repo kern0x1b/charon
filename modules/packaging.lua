@@ -42,7 +42,7 @@ function universal(target, architectures, stage)
     for _, architecture in ipairs(architectures) do
         local source = platform.imports_source(target, architecture)
         local provided = architecture == target:arch() and platform.provided_libraries(target) or {}
-        dyld.check(source, table.join(merged, provided), installed)
+        dyld.check(source, table.join(merged, provided), installed, platform.import_options(target))
         platform.report_selectors(source, merged, architecture, installed, provided)
     end
 end
@@ -91,6 +91,7 @@ function write(opt)
         end
         if wanted then
             import("apple.platform")
+            os.setenv("CHARON_RELEASE", "1")
             local stage = path.join(config.builddir(), ".charon", "stage", path.basename(control))
             os.tryrm(stage)
             local depends = {}

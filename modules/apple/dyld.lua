@@ -703,7 +703,8 @@ function missing_imports(cachefile, binaries, root)
     return missing, #found, cache, dangling
 end
 
-function check(cachefile, binaries, folder)
+function check(cachefile, binaries, folder, opt)
+    opt = opt or {}
     if not os.exists(cachefile) then
         raise("there is no shared cache or library folder at %s to check imports against; a check that reports success having looked at nothing is worse than no check", cachefile)
     end
@@ -724,8 +725,13 @@ function check(cachefile, binaries, folder)
         local names = guarded[binary]
         local limit = option.get("verbose") and #names or 12
         local shown = table.concat(table.slice(names, 1, math.min(limit, #names)), " ") .. (#names > limit and string.format(" and %d more, all of them under xmake -v", #names - limit) or "")
-        wprint("%s weakly imports %d symbol%s the %s release it is checked against does not export, each of which is NULL there and must be called only behind a check for it: %s",
-               binary, #names, #names == 1 and "" or "s", cache.architecture, shown)
+        local text = string.format("weakly imports %d symbol%s the %s release it is checked against does not export, each of which is NULL there and must be called only behind a check for it: %s",
+                                   #names, #names == 1 and "" or "s", cache.architecture, shown)
+        if opt.release and not opt.waived then
+            table.insert(missing, {binary, text .. "; a released image is refused these unless the target waives the check with charon.waive.weak-imports and says why every call is guarded"})
+        else
+            wprint("%s %s", binary, text)
+        end
     end
     if #missing > 0 then
         table.sort(missing, function (a, b)

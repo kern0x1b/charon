@@ -115,7 +115,10 @@ the library its binding names and in what that library re-exports, so a
 symbol the device exports only from another library is refused. A weak import
 the checked release does not export is reported as a warning naming the binary
 and the first twelve symbols, because it is NULL on the device and only a check
-for it makes the call safe; for the symbols the compiler emits by itself -
+for it makes the call safe - and refused when the image is released, that is
+under `xmake deb`, in Charon's own guest programs, or with CHARON_RELEASE set,
+unless the target waives it with `charon.waive.weak-imports` and says why every
+call is guarded; for the symbols the compiler emits by itself -
 the ARC entry points, the block runtime, emulated TLS and the wide atomics,
 listed beside `ARRIVED` in `modules/apple/compat.lua` - it is refused instead,
 naming what should have carried it into the image, since no version check can

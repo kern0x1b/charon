@@ -17,6 +17,10 @@ function waivers(target)
     return waived
 end
 
+function import_options(target)
+    return {release = os.getenv("CHARON_RELEASE") ~= nil, waived = waivers(target)["weak-imports"]}
+end
+
 function deployment(target)
     local found = target:toolchain("apple-ios")
     found:load()
@@ -281,7 +285,7 @@ function verify(target, binary, opt)
     if opt.imports ~= false then
         local source = imports_source(target)
         local provided = provided_libraries(target)
-        dyld.check(source, table.join({binary}, provided))
+        dyld.check(source, table.join({binary}, provided), nil, import_options(target))
         report_selectors(source, {binary}, target:arch(), nil, provided)
         report_registry(target, binary)
     end
@@ -351,7 +355,7 @@ function verify_placed(target, installed)
     end
     local source = imports_source(target)
     local provided = provided_libraries(target)
-    dyld.check(source, table.join(binaries, provided), root)
+    dyld.check(source, table.join(binaries, provided), root, import_options(target))
     report_selectors(source, binaries, target:arch(), root, provided)
 end
 
@@ -425,7 +429,7 @@ function application(target)
     if not os.getenv("CHARON_SLICE") then
         local source = imports_source(target)
         local provided = provided_libraries(target)
-        dyld.check(source, table.join(binaries, provided), folder)
+        dyld.check(source, table.join(binaries, provided), folder, import_options(target))
         report_selectors(source, binaries, target:arch(), folder, provided)
     end
     return folder

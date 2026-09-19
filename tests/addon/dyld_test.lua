@@ -94,6 +94,13 @@ function failures(opt)
     if fixtures.refusal(function () dyld.check(armv7, {unprovided}) end) then
         table.insert(found, "a weak import a version check can stand in front of must be reported and pass")
     end
+    local released = fixtures.refusal(function () dyld.check(armv7, {unprovided}, nil, {release = true}) end) or ""
+    if not released:find("_arrived", 1, true) or not released:find("charon.waive.weak-imports", 1, true) then
+        table.insert(found, "a released image that weakly imports a symbol the release lacks must be refused, naming the symbol and the waiver: " .. released)
+    end
+    if fixtures.refusal(function () dyld.check(armv7, {unprovided}, nil, {release = true, waived = "each call is behind a check"}) end) then
+        table.insert(found, "a released image whose target waives weak-imports with a reason must pass")
+    end
     io.writefile(path.join(folder, "emitted.c"),
                  "extern void objc_storeStrong(void **, void *) __attribute__((weak_import));\nvoid use(void **slot) { if (objc_storeStrong) objc_storeStrong(slot, 0); }\n")
     local emitted = fixtures.link(folder, opt.ld64, "emitted.dylib", "armv7-apple-ios6.0", "emitted.c", {"-dynamiclib"})

@@ -28,7 +28,7 @@ package("emulator-guest")
         io.save(path.join(project, "xmake-addons.lock"), {__meta__ = {version = "1.0"}, charon = {version = charon.version}})
         local argv = {"-P", project, "-y"}
         os.vrunv(os.programfile(), table.join({"f", "-p", "iphoneos", "-a", package:arch(), "-m", "release"}, argv))
-        os.vrunv(os.programfile(), table.join({"build"}, argv))
+        os.vrunv(os.programfile(), table.join({"build"}, argv), {envs = {CHARON_RELEASE = "1"}})
         os.vrunv(os.programfile(), table.join({"install", "-o", package:installdir()}, argv))
         os.vcp(path.join(package:scriptdir(), "..", "..", "..", "LICENSE"), package:installdir("licenses"))
     end)
