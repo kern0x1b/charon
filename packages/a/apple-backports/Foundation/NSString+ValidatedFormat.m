@@ -22,6 +22,15 @@ typedef NS_ENUM(NSUInteger, CharonFormatLength) {
     CharonFormatLengthLongLong,
 };
 
+typedef NS_ENUM(NSUInteger, CharonFormatSize) {
+    CharonFormatSizeDefault,
+    CharonFormatSizeByte,
+    CharonFormatSizeShort,
+    CharonFormatSizeLong,
+    CharonFormatSizeLongLong,
+    CharonFormatSizeLongDouble,
+};
+
 typedef struct {
     CharonFormatKind kind;
     CharonFormatLength length;
@@ -30,6 +39,7 @@ typedef struct {
     NSUInteger start, end;
     unichar plain[128];
     NSUInteger plainLength;
+    CharonFormatSize size;
 } CharonFormatSpec;
 
 static BOOL charon_format_satisfies(CharonFormatKind wanted, CharonFormatKind allowed)
@@ -108,8 +118,19 @@ static NSUInteger charon_format_parse(NSString *format, NSUInteger index, Charon
                     keyed = YES;
                 }
                 break;
-            case ' ': case '-': case '+': case '0': case 'h':
+            case ' ': case '-': case '+': case '0':
                 charon_format_keep(spec, character);
+                break;
+            case 'h':
+                charon_format_keep(spec, character);
+                if (index < length && [format characterAtIndex:index] == 'h') {
+                    charon_format_keep(spec, 'h');
+                    index++;
+                    spec->end = index;
+                    spec->size = CharonFormatSizeByte;
+                } else {
+                    spec->size = CharonFormatSizeShort;
+                }
                 break;
             case 'l':
                 charon_format_keep(spec, character);
@@ -118,26 +139,32 @@ static NSUInteger charon_format_parse(NSString *format, NSUInteger index, Charon
                     index++;
                     spec->end = index;
                     spec->length = CharonFormatLengthLongLong;
+                    spec->size = CharonFormatSizeLongLong;
                 } else {
                     spec->length = CharonFormatLengthLong;
+                    spec->size = CharonFormatSizeLong;
                 }
                 break;
             case 'q': case 'j':
                 charon_format_keep(spec, character);
                 spec->length = CharonFormatLengthLongLong;
+                spec->size = CharonFormatSizeLongLong;
                 break;
             case 'z': case 't':
                 charon_format_keep(spec, character);
                 spec->length = CharonFormatLengthLong;
+                spec->size = CharonFormatSizeLong;
                 break;
             case 'L':
                 charon_format_keep(spec, character);
                 longDouble = YES;
+                spec->size = CharonFormatSizeLongDouble;
                 break;
             case 'c':
                 charon_format_keep(spec, character);
                 spec->kind = CharonFormatInteger;
                 spec->length = CharonFormatLengthPlain;
+                spec->size = CharonFormatSizeByte;
                 return index;
             case 'D': case 'd': case 'i': case 'U': case 'u': case 'O': case 'o': case 'x': case 'X':
                 charon_format_keep(spec, character);
@@ -342,72 +369,86 @@ static CharonFormatValue charon_format_read(NSArray *described, va_list *argumen
      : [[NSString alloc] initWithFormat:plain locale:locale, first, second, value])
 
 #define CHARON_FORMAT_C(value) \
-    (stars == 0 ? snprintf(buffer, sizeof buffer, raw, value) \
-     : stars == 1 ? snprintf(buffer, sizeof buffer, raw, first, value) \
-     : snprintf(buffer, sizeof buffer, raw, first, second, value))
+    (stars == 0 ? snprintf(buffer, size, raw, value) \
+     : stars == 1 ? snprintf(buffer, size, raw, first, value) \
+     : snprintf(buffer, size, raw, first, second, value))
 
-static NSString *charon_format_number(CharonFormatSpec *spec, int first, int second, NSUInteger stars, CharonFormatValue value)
+static BOOL charon_format_wide(CharonFormatSpec *spec)
+{
+    return spec->size == CharonFormatSizeLongLong || (spec->size == CharonFormatSizeLong && sizeof(long) == sizeof(long long));
+}
+
+static long long charon_format_sized(CharonFormatSize size, long long value)
+{
+    switch (size) {
+        case CharonFormatSizeByte:
+            return (int8_t)value;
+        case CharonFormatSizeShort:
+            return (int16_t)value;
+        case CharonFormatSizeLong:
+            return (long)value;
+        case CharonFormatSizeLongLong:
+            return value;
+        default:
+            return (int32_t)value;
+    }
+}
+
+static int charon_format_print(CharonFormatSpec *spec, const char *raw, char *buffer, size_t size, int first, int second, NSUInteger stars,
+                               CharonFormatValue value)
+{
+    switch (spec->kind) {
+        case CharonFormatFloating:
+            return CHARON_FORMAT_C((double)value.floating);
+        case CharonFormatLongFloating:
+            return CHARON_FORMAT_C((long double)value.floating);
+        case CharonFormatPointer:
+            return CHARON_FORMAT_C((void *)(intptr_t)value.integer);
+        case CharonFormatLongInteger:
+            return CHARON_FORMAT_C((long long)(int32_t)value.integer);
+        default:
+            if (charon_format_wide(spec))
+                return CHARON_FORMAT_C(value.integer);
+            return CHARON_FORMAT_C((long)(int32_t)value.integer);
+    }
+}
+
+static NSData *charon_format_number(CharonFormatSpec *spec, int first, int second, NSUInteger stars, CharonFormatValue value)
 {
     char raw[sizeof spec->plain / sizeof spec->plain[0] + 1], buffer[512];
     for (NSUInteger index = 0; index < spec->plainLength; index++)
         raw[index] = spec->plain[index] < 0x80 ? (char)spec->plain[index] : '?';
     raw[spec->plainLength] = 0;
-    int written;
-    switch (spec->kind) {
-        case CharonFormatFloating:
-            written = CHARON_FORMAT_C((double)value.floating);
-            break;
-        case CharonFormatLongFloating:
-            written = CHARON_FORMAT_C((long double)value.floating);
-            break;
-        case CharonFormatPointer:
-            written = CHARON_FORMAT_C((void *)(intptr_t)value.integer);
-            break;
-        default:
-            if (spec->length == CharonFormatLengthLongLong)
-                written = CHARON_FORMAT_C((long long)value.integer);
-            else if (spec->length == CharonFormatLengthLong)
-                written = CHARON_FORMAT_C((long)value.integer);
-            else
-                written = CHARON_FORMAT_C((int)value.integer);
-            break;
-    }
+    int written = charon_format_print(spec, raw, buffer, sizeof buffer, first, second, stars, value);
     if (written < 0)
-        return @"";
+        return [NSData data];
     if ((size_t)written < sizeof buffer)
-        return [[NSString alloc] initWithBytes:buffer length:(NSUInteger)written encoding:NSISOLatin1StringEncoding];
+        return [NSData dataWithBytes:buffer length:strlen(buffer)];
     NSMutableData *large = [NSMutableData dataWithLength:(NSUInteger)written + 1];
-    char *bytes = large.mutableBytes;
-    switch (spec->kind) {
-        case CharonFormatFloating:
-            written = stars == 0 ? snprintf(bytes, large.length, raw, (double)value.floating)
-                    : stars == 1 ? snprintf(bytes, large.length, raw, first, (double)value.floating)
-                    : snprintf(bytes, large.length, raw, first, second, (double)value.floating);
-            break;
-        default:
-            return @"";
-    }
-    return [[NSString alloc] initWithBytes:bytes length:(NSUInteger)written encoding:NSISOLatin1StringEncoding];
+    if (charon_format_print(spec, raw, large.mutableBytes, large.length, first, second, stars, value) < 0)
+        return [NSData data];
+    return [NSData dataWithBytes:large.bytes length:strlen(large.bytes)];
 }
 
-static NSString *charon_format_one(CharonFormatSpec *spec, id locale, int first, int second, NSUInteger stars, CharonFormatValue value)
+static id charon_format_one(CharonFormatSpec *spec, id locale, int first, int second, NSUInteger stars, CharonFormatValue value)
 {
     NSString *plain = [NSString stringWithCharacters:spec->plain length:spec->plainLength];
     BOOL number = spec->kind == CharonFormatInteger || spec->kind == CharonFormatLongInteger || spec->kind == CharonFormatFloating
                || spec->kind == CharonFormatLongFloating || spec->kind == CharonFormatPointer;
-    if (number && !locale)
+    BOOL character = spec->kind == CharonFormatInteger && spec->plain[spec->plainLength - 1] == 'c';
+    if (number && (!locale || character))
         return charon_format_number(spec, first, second, stars, value);
     switch (spec->kind) {
         case CharonFormatObject:
             return CHARON_FORMAT_ONE((__bridge id)(void *)(intptr_t)value.integer);
         case CharonFormatInteger:
+            if (charon_format_wide(spec))
+                return CHARON_FORMAT_ONE(value.integer);
+            return CHARON_FORMAT_ONE((long)(int32_t)value.integer);
         case CharonFormatWideCharacter:
-        case CharonFormatLongInteger:
-            if (spec->length == CharonFormatLengthLongLong)
-                return CHARON_FORMAT_ONE((long long)value.integer);
-            if (spec->length == CharonFormatLengthLong)
-                return CHARON_FORMAT_ONE((long)value.integer);
             return CHARON_FORMAT_ONE((int)value.integer);
+        case CharonFormatLongInteger:
+            return CHARON_FORMAT_ONE((long long)(int32_t)value.integer);
         case CharonFormatFloating:
             return CHARON_FORMAT_ONE((double)value.floating);
         case CharonFormatLongFloating:
@@ -429,7 +470,27 @@ static NSString *charon_format_render(NSString *format, NSString *valid, id loca
     for (NSUInteger slot = 0; slot < count; slot++)
         values[slot] = charon_format_read(slot < described.count ? described[slot] : @[], &walk);
     va_end(walk);
+    NSInteger *sizes = (NSInteger *)calloc(count ? count : 1, sizeof(NSInteger));
+    charon_format_walk(format, NO, nil, ^(CharonFormatSpec *spec, NSUInteger slot, NSUInteger widthSlot, NSUInteger precisionSlot) {
+        if (slot != NSNotFound && slot < count) {
+            if (spec->kind == CharonFormatInteger || spec->kind == CharonFormatLongInteger)
+                sizes[slot] = 1 + spec->size;
+            else if (spec->kind == CharonFormatWideCharacter)
+                sizes[slot] = 1 + CharonFormatSizeShort;
+            else
+                sizes[slot] = 0;
+        }
+        if (widthSlot != NSNotFound && widthSlot < count)
+            sizes[widthSlot] = 1 + CharonFormatSizeDefault;
+        if (precisionSlot != NSNotFound && precisionSlot < count)
+            sizes[precisionSlot] = 1 + CharonFormatSizeDefault;
+    });
+    for (NSUInteger slot = 0; slot < count; slot++)
+        if (sizes[slot])
+            values[slot].integer = charon_format_sized((CharonFormatSize)(sizes[slot] - 1), values[slot].integer);
+    free(sizes);
     NSMutableString *made = [NSMutableString string];
+    NSMutableIndexSet *bytes = [NSMutableIndexSet indexSet];
     charon_format_walk(format, NO, ^(NSRange range) {
         [made appendString:[format substringWithRange:range]];
     }, ^(CharonFormatSpec *spec, NSUInteger slot, NSUInteger widthSlot, NSUInteger precisionSlot) {
@@ -456,9 +517,29 @@ static NSString *charon_format_render(NSString *format, NSString *valid, id loca
                 first = (int)values[precisionSlot].integer;
             stars++;
         }
-        [made appendString:charon_format_one(spec, locale, first, second, stars, values[slot]) ?: @""];
+        id piece = charon_format_one(spec, locale, first, second, stars, values[slot]);
+        if ([piece isKindOfClass:[NSData class]]) {
+            const uint8_t *raw = [piece bytes];
+            for (NSUInteger index = 0; index < [piece length]; index++)
+                if (raw[index] >= 0x80)
+                    [bytes addIndex:made.length + index];
+            piece = [[NSString alloc] initWithData:piece encoding:NSISOLatin1StringEncoding];
+        }
+        [made appendString:piece ?: @""];
     });
     free(values);
+    BOOL wide = NO;
+    for (NSUInteger index = 0; index < made.length && !wide; index++)
+        wide = [made characterAtIndex:index] >= 0x80 && ![bytes containsIndex:index];
+    if (wide) {
+        NSStringEncoding system = CFStringConvertEncodingToNSStringEncoding(CFStringGetSystemEncoding());
+        [bytes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop) {
+            uint8_t byte = (uint8_t)[made characterAtIndex:index];
+            NSString *decoded = [[NSString alloc] initWithBytes:&byte length:1 encoding:system];
+            if (decoded.length == 1)
+                [made replaceCharactersInRange:NSMakeRange(index, 1) withString:decoded];
+        }];
+    }
     return made;
 }
 

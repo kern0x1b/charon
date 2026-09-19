@@ -294,6 +294,34 @@ static void run_validated_format(Foundation11Recorder *recorder)
     NSString *localized = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
         sel(@selector(localizedStringWithValidatedFormat:validFormatSpecifiers:error:)), @"%@ %d", @"%@ %d", &typedError, @"A", 7);
     [recorder record:localized ?: @"nil" named:@"validated.localized"];
+    NSString *characters = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), @"%c|%c|%c|", @"%c%c%c", &typedError, 0, 0xe9, 'A');
+    [recorder record:characters ?: @"nil" named:@"validated.characterBytes"];
+    NSString *widened = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), @"%c|%C|%c", @"%c%C%c", &typedError, 0xe9, 0x2603, 0xb0);
+    [recorder record:widened ?: @"nil" named:@"validated.characterBytesWidened"];
+    NSString *accented = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), @"\u00e9 %c", @"%c", &typedError, 0xe9);
+    [recorder record:accented ?: @"nil" named:@"validated.characterBytesAccented"];
+    NSString *release = [NSString stringWithFormat:@"%c|%C|%c", 0xe9, (unichar)0x2603, 0xb0];
+    [recorder record:release named:@"release.characterBytesWidened"];
+    NSString *localizedCharacters = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(localizedStringWithValidatedFormat:validFormatSpecifiers:error:)), @"%c%C", @"%c%C", &typedError, 0xe9, 0x2603);
+    [recorder record:localizedCharacters ?: @"nil" named:@"validated.characterBytesLocalized"];
+    NSString *wideCharacters = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), @"%lc|%lc", @"%c%c", &typedError, 0xe9, 'A');
+    [recorder record:wideCharacters ?: @"nil" named:@"validated.wideCharacters"];
+    NSString *shortened = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), @"%hhd %hd %hD %hx %hhx",
+        @"%d %d %d %d %d", &typedError, 0x2603, 0x1f600, 0x1f600, 0x1f600, 0x1f6ff);
+    [recorder record:shortened ?: @"nil" named:@"validated.shortened"];
+    NSString *sharedSlot = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), @"%1$x %c|%d %2$hhd", @"%c%d", &typedError, 0x1f641, 0x2603);
+    [recorder record:sharedSlot ?: @"nil" named:@"validated.sharedSlot"];
+    NSString *wideStar = ((id (*)(id, SEL, id, id, NSError **, ...))objc_msgSend)([NSString class],
+        sel(@selector(stringWithValidatedFormat:validFormatSpecifiers:error:)), @"%*d|", @"%d%d", &typedError, 600, 7);
+    [recorder record:wideStar ? [NSString stringWithFormat:@"%lu %@", (unsigned long)wideStar.length, [wideStar substringFromIndex:597]] : @"nil"
+               named:@"validated.wideStar"];
 
     NSString *raised = @"none";
     @try {

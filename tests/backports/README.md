@@ -15,7 +15,8 @@ inputs.
     sh host/uikit2/run.sh
     sh host/keyedarchive11/run.sh  writes device/keyedarchive11-expectations.h when it passes
     sh host/foundation11/run.sh    writes device/foundation11-expectations.h when it passes
-    sh host/validatedformat/run.sh [pairs]
+    sh host/validatedformat/run.sh [pairs] [seed]
+    sh host/validatedformat/run.sh --mutants [pairs] [seed]
     sh host/fuzz/run.sh percentencoding|stringcase|calendar [rounds] [seed]
     sh host/directionaledges/run.sh  writes device/directionaledges-expectations.h when it passes
     sh host/directionalmargins/run.sh
@@ -109,6 +110,27 @@ on a pair whose arguments it misreads. This method once slipped through the Foun
 called the host's own initializer, so the port's check never ran on the host.
 The port now does its work in one static function, and the fuzzer calls it
 directly.
+
+The pairs and the arguments come from a seeded generator, and the run prints
+its seed, so `run.sh <pairs> <seed>` repeats it. The integer and float arguments
+are drawn per pair, since a fixed argument hid three wrong strings for as long
+as it was 7. Every fifty pairs the fuzzer switches a random half of what it can
+write on or off - positionals, flags, widths, stars, precisions, lengths, odd
+specifiers, `%P`, text, text outside ASCII, `%%`, an unfinished `%` - so a rare
+combination is not always drowned by the common ones. A quarter of the pairs go
+through the localized form. When a pair differs, the fuzzer cuts both strings
+down, a piece at a time, for as long as they still differ, and prints the
+smallest pair next to the one it found: `[%1$D%c] against [%D]` instead of
+forty characters. Each pair runs in a child process that sends the host's answer
+before it asks the port, so a crash of the host's formatter is counted apart,
+and a crash of the port is a difference like any other.
+
+`run.sh --mutants` checks the fuzzer itself. Each line of `mutants.txt` names a
+rule of the port and a Perl substitution that breaks it; the script builds the
+port with that one change, runs the fuzzer over it with a fixed seed, and says
+`caught` with the smallest pair, `MISSED` when the fuzzer passes a broken port,
+and `STALE` or `BROKEN` when the change no longer applies or no longer
+compiles. It exits non-zero on anything but `caught`.
 
 `host/fuzz/run.sh` runs one of three fuzzers against the host's Foundation:
 `percentencoding` (percent encoding and the URL character sets, Base64 of

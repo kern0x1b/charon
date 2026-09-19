@@ -20,10 +20,21 @@ to CoreFoundation at `0x180b578fc`). Two more sources:
 How it was checked: a fuzzer put random pairs of format and allowed specifiers
 to the host's Foundation and to the port, called directly. It covered
 positionals, `*` and `*N$`, flags, widths, precisions, every length, unknown
-conversions, `%%`, external specifiers and a `%` left unfinished. Over 120,000
-pairs the two agreed on every verdict and message. For the roughly 62,000
-accepted pairs whose arguments are the ones the allowed string describes, they
-also agreed on every character of the output.
+conversions, `%%`, external specifiers, a `%` left unfinished, text outside
+ASCII and the localized form. The integer and float arguments are drawn per pair
+too: 0, bytes above 0x7F, characters outside Latin 1, -1, the largest 32-bit
+value and one past 32 bits. Over 180,000 pairs the two agreed on every verdict
+and message. For the roughly half of them whose arguments are the ones the
+allowed string describes, they also agreed on every character of the output.
+
+The fuzzer was checked in turn against twelve ports broken on purpose, one rule
+each (`tests/backports/host/validatedformat/mutants.txt`), and caught every one.
+
+Until the arguments were drawn at random, every integer the fuzzer passed was 7,
+and the port printed wrong strings that no check saw: a `%c` of 0 as a NUL
+character, `%hhD` of 0x2603 as `9731`, and a `%c` above 0x7F in Latin 1 where
+the string needed MacRoman. The section on the string below is what the port
+does since.
 
 An earlier version of these facts described a different rule. That comparison
 never ran the port: the host test reached the port only through its public
@@ -115,10 +126,37 @@ specifiers it formats the same way:
   Apple's releases of this API are 64-bit, where every argument fills eight
   bytes and the question does not arise.
 - A slot the allowed string leaves empty is read as a pointer.
+- Each slot's value is then cut to the size CoreFoundation reads it at: that
+  of the **last** specifier the format puts in the slot, as its formatter keeps
+  one size per argument and each specifier overwrites it.
+  - `hh` and `%c` keep 8 bits, `h` and `%C` 16, `l`, `z` and `t` a `long`,
+    `ll`, `q` and `j` 64 bits, and anything else 32 bits, all with their sign.
+  - A slot used as a width or precision after that is 32 bits.
+  - So `%hhD` of 0x2603 is `3`, `%1$x %c` of 0x1f641 is `41 A`, and `%u%1$c`
+    of 0xb0 is `4294967216`.
 - Each specifier is then formatted on its own with its positional numbers taken
   out.
   - Integers, floats and pointers go through `snprintf` with the text of the
-    specifier, as CoreFoundation does, and its bytes are read as ISO Latin 1.
+    specifier, as CoreFoundation does. An integer is passed as 64 bits when the
+    specifier's own size is 64 bits, and otherwise as its 32 bits, widened with
+    their sign to a `long`: that is what `%D`, `%U` and `%O` read, and it is what
+    the host's formatter passes them. On armv7 a `long` is 32 bits, so there
+    `%hU` of 0x1f600 prints `4294964736` where the host prints
+    `18446744073709549056`.
+  - As CoreFoundation appends the result as a C string, it ends at the first
+    NUL byte: `%c` of 0 prints nothing.
+  - Only `%c` and `%lc` make bytes above 0x7F. `%lc` of one prints nothing,
+    since `snprintf` refuses it in the C locale. A byte from `%c` stays ISO
+    Latin 1 while everything else in the string is ASCII. When anything else
+    in the string is not - the text of the format, a `%C`, an object, a `%S` -
+    CoreFoundation's string is widened to 16 bits, and the bytes are read in
+    the system's encoding instead, wherever they stand. The system's encoding
+    is MacRoman on the host, and on an iPhone 4S and an iPad 2 with 6.1.3 its own
+    `+stringWithFormat:` does the same: `%c|%C|%c` of 0xe9, 0x2603 and 0xb0 is
+    `È|☃|∞` there as on the host. The port asks the release for its
+    system encoding rather than assuming it.
+  - `%c` goes this way with a locale too, since CoreFoundation localizes only
+    `d i u D U` and the floats.
   - With a locale, as `+localizedStringWithValidatedFormat:` passes one, they go
     through the release's formatter with that locale instead.
   - Objects, `%s`, `%S`, `%P` and `%C` always go through the release's
@@ -133,4 +171,6 @@ specifiers it formats the same way:
 The device cases (`tests/backports/device/foundation11-cases.m`) hold the port
 on iOS 6 to the host's answers for every one of the formats above, and for
 stars, positional stars, `%s %S %P %C %c`, every length, the integer and float
-conversions with flags, `%n` and the localized form.
+conversions with flags, `%n` and the localized form, and for the bytes, sizes
+and shared slots above. One of those cases asks the release's own
+`+stringWithFormat:` for the MacRoman bytes, so the device answers for itself.
