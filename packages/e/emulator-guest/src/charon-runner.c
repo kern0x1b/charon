@@ -48,7 +48,7 @@ static void system_version(char* version, size_t size)
     CFURLRef url = CFURLCreateWithFileSystemPath(NULL, CFSTR("/System/Library/CoreServices/SystemVersion.plist"), kCFURLPOSIXPathStyle, false);
     CFReadStreamRef stream = CFReadStreamCreateWithFile(NULL, url);
     if (stream && CFReadStreamOpen(stream)) {
-        CFPropertyListRef list = CFPropertyListCreateWithStream(NULL, stream, 0, kCFPropertyListImmutable, NULL, NULL);
+        CFPropertyListRef list = CFPropertyListCreateFromStream(NULL, stream, 0, kCFPropertyListImmutable, NULL, NULL);
         if (list && CFGetTypeID(list) == CFDictionaryGetTypeID()) {
             CFStringRef product = CFDictionaryGetValue(list, CFSTR("ProductVersion"));
             CFStringRef build = CFDictionaryGetValue(list, CFSTR("ProductBuildVersion"));

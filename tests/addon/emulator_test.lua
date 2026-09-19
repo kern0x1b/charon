@@ -458,6 +458,13 @@ local function naming_step(emulator, found)
     end
 end
 
+local function runner_source(opt, found)
+    local source = io.readfile(path.join(opt.modules, "..", "packages", "e", "emulator-guest", "src", "charon-runner.c"))
+    if source:find("CFPropertyListCreateWithStream", 1, true) then
+        table.insert(found, "the runner reads SystemVersion.plist with a function iOS 3 does not have: CFPropertyListCreateWithStream arrived in 4.0, CFPropertyListCreateFromStream is there from 2.0")
+    end
+end
+
 function failures(opt)
     local emulator = import("emulator", {rootdir = opt.modules, anonymous = true})
     local debian = import("debian", {rootdir = opt.modules, anonymous = true})
@@ -467,6 +474,7 @@ function failures(opt)
     home_step(emulator, folder, found)
     deb_step(emulator, debian, folder, found)
     runner_job(emulator, folder, found)
+    runner_source(opt, found)
     timing_and_reports(emulator, folder, found)
     load_step(emulator, found)
     choice(emulator, found)
