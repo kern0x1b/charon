@@ -1989,6 +1989,44 @@
       "effect": "the option is dropped without a word: measured on an iPhone 4S running 6.1.3, the same format with and without the bit raises nothing and gives the same constraint, edge to edge, of the same constant and the same attributes - so a vertical format asking for baseline to baseline spacing is laid out edge to edge",
       "facts": "facts/UIKit/NSLayoutConstraintVisualFormat.md",
       "source": "the SDK's enumeration for the value, 1 << 19, and a run on an iPhone 4S (6.1.3, armv7) for what the release does with it"
+    },
+    {
+      "api": "+[UIGraphicsRendererFormat preferredFormat]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIGraphicsRendererFormatPreferred.md",
+      "source": "UIKit of iOS 11.0 arm64 at 0x18a654ef4, the same body as +defaultFormat at 0x18a654eb0; 12.0 and 18.0 read the same"
+    },
+    {
+      "api": "+[UIGraphicsImageRendererFormat preferredFormat]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIGraphicsRendererFormatPreferred.md",
+      "source": "UIKit of iOS 11.0 arm64 at 0x18a9e88c0, which sends +defaultFormat to the receiver and returns its answer; 12.0 and 18.0 read the same"
+    },
+    {
+      "api": "+[UIGraphicsImageRendererFormat formatForTraitCollection:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIGraphicsRendererFormatPreferred.md",
+      "source": "UIKit of iOS 11.0 arm64 at 0x18a9e88cc and of iOS 18.0 arm64e at 0x185a8292c, and the host's UIKit through Mac Catalyst"
+    },
+    {
+      "api": "UIGraphicsImageRendererFormat.preferredRange",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "preferredRange chooses the colour range a bitmap is drawn in, and CoreGraphics of iOS 6 knows no extended space - among its colour spaces there is no ExtendedSRGB nor any other of extended range, and the context this port builds is always sRGB. The property could only hold a value nobody would ever read: standard would be true, extended and automatic a promise the hardware does not keep. So the property is not there",
+      "effect": "the property is not declared, so respondsToSelector: answers NO; a format is drawn in sRGB whatever the application wanted",
+      "facts": "facts/UIKit/UIGraphicsRendererFormatPreferred.md",
+      "source": "the exports of CoreGraphics of iOS 6.0 as read by the owner of the class (the iOS 10 range), whose words the reason keeps"
     }
   ]
 }

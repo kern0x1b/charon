@@ -79,6 +79,12 @@ the content size categories, the large title text style, `UIFontMetrics`, the
 system spacing anchors, the name of a gesture recognizer, and
 `-performBatchUpdates:completion:`.
 
+The renderer formats get `+preferredFormat` and
+`+formatForTraitCollection:`. The preferred format is the default one: in 11.0,
+12.0 and 18.0 alike, the image format answers its own `+defaultFormat`. A trait
+collection sets the scale and whether the format prefers an extended range, and
+nothing else.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and
@@ -191,6 +197,10 @@ answers and which ignores the bit, so the keys come out unsorted; and
 honouring it would mean changing `-localizedDescription`, a method every release
 already has.
 
+`preferredRange` of an image renderer format chooses between a standard and an
+extended colour range, and CoreGraphics of iOS 6 has no extended colour space at
+all. The context is always sRGB, so the property could only store a promise.
+
 ### How it is proved
 
 Every implemented entry has a differential test under `tests/backports/host/`
@@ -200,6 +210,6 @@ implementation and the port run side by side in one process and the two answers
 are compared. The safe area, the scroll view's adjusted content inset, the
 directional margins and the font metrics were also checked on an iPhone 4S
 running 6.1.3, through a tweak loaded into an application the phone already
-has: forty-one checks in one run, no failures. That run is where the font cache
+has: forty-seven checks in one run, no failures. That run is where the font cache
 of this release showed up - a font scaled to the size it already has comes back
 as the same object, which no host can show.
