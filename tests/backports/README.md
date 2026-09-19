@@ -33,7 +33,12 @@ inputs.
     sh host/coredata/run.sh
     sh host/registry/run.sh <dyld_shared_cache_armv7>
     sh host/blocks/run.sh
+    sh host/oslog/run.sh  writes device/oslog-expectations.h when it passes
     sh host/imageflip/run.sh
+
+`host/oslog/run.sh` runs the same 61 calls through the host's os_log, asked for its
+developer output, and through the port's formatter, and compares the two texts; the calls both
+platforms can make become the expectations of the device test.
 
 `host/blocks/run.sh` runs the port's timers, threads and run loop blocks in one
 process with the system's own, compiled with the selectors prefixed, and compares
@@ -417,6 +422,10 @@ postinst run with `DPKG_ROOT` set to it.
   authorization, adds, replaces and removes requests, reads back what iOS 6 was
   given - the body and no title - checks which repeats are taken and which
   refused, and waits for a notification to arrive while it is in front.
+- `oslog.m`: a process of its own for `os_log`. It calls the macros the way a program built for iOS 6
+  does, on a battery of formats that `host/oslog` has run through the host's own os_log and embedded in
+  `oslog-expectations.h`, and reads the messages back from ASL to compare them with the host's text, with the level and the
+  facility they arrive at, and with what must not arrive.
 - `blocks.m`: a process of its own for the block methods of `NSTimer`, `NSThread`
   and `NSRunLoop` and for `temporaryDirectory`, linking the backports library. It
   holds the timers, the thread and the run loop to what the host's own Foundation

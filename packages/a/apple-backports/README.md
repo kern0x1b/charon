@@ -89,6 +89,13 @@ pasteboard service and a framework iOS 6 does not have and, with an expiration
 date, promise to clear the pasteboard after the application has gone, and the
 Display P3 colors, which need a color space iOS 6 cannot make.
 
+### os_log, written to the system log
+
+A program built for iOS 6 reaches `os_log` through the iOS 9 functions, `_os_log_internal` and `_os_log_create`,
+which the macros choose below a deployment target of 10.0. The port carries those and the log object they need, and
+writes each message, formatted as the release's own formatter writes it, to ASL. Nothing is redacted, and a few
+decorators for a reader, such as `iec-bytes`, are written plain; the facts say which.
+
 ### Images drawn where sRGB cannot be made
 
 `UIGraphicsImageRenderer` draws in sRGB, as iOS 10 does, so that its PNG and

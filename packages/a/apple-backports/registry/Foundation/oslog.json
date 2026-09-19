@@ -1,0 +1,131 @@
+[
+ {
+  "api": "_os_log_internal",
+  "kind": "function",
+  "introduced": "9.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "the release keeps a message in the unified log, whose reader formats it later; iOS 6 has none, so the message is formatted when the call is made and written to the system log (ASL)",
+  "effect": "the text is what the release's own formatter makes of the same call for every conversion of C, %@, %m, the public, private, bool, BOOL, errno, darwin.errno, time_t, darwin.mode, darwin.signal and uuid_t decorators and %P; a decorator that is not among those (iec-bytes, bitrate, timeval, timespec, the address and network ones) writes the plain value; nothing is redacted; a message goes to ASL at notice, error or critical level",
+  "facts": "facts/Foundation/OSLog.md",
+  "source": "libsystem_trace of the armv7s cache of iOS 10.3.4, read function by function, and the host's own os_log run beside the port",
+  "maximum": "9.0"
+ },
+ {
+  "api": "_os_log_create",
+  "kind": "function",
+  "introduced": "9.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/OSLog.md",
+  "source": "libsystem_trace of the armv7s cache of iOS 10.3.4, read function by function, and the host's own os_log run beside the port",
+  "maximum": "9.0"
+ },
+ {
+  "api": "_os_log_default",
+  "kind": "symbol",
+  "introduced": "9.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/OSLog.md",
+  "source": "libsystem_trace of the armv7s cache of iOS 10.3.4, read function by function, and the host's own os_log run beside the port",
+  "maximum": "9.0"
+ },
+ {
+  "api": "os_log_is_enabled",
+  "kind": "function",
+  "introduced": "9.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/OSLog.md",
+  "source": "libsystem_trace of the armv7s cache of iOS 10.3.4, read function by function, and the host's own os_log run beside the port",
+  "maximum": "9.0"
+ },
+ {
+  "api": "os_log_is_debug_enabled",
+  "kind": "function",
+  "introduced": "9.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/OSLog.md",
+  "source": "libsystem_trace of the armv7s cache of iOS 10.3.4, read function by function, and the host's own os_log run beside the port",
+  "maximum": "9.0"
+ },
+ {
+  "api": "os_log_create",
+  "kind": "function",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/OSLog.md",
+  "source": "libsystem_trace of the armv7s cache of iOS 10.3.4, read function by function, and the host's own os_log run beside the port",
+  "maximum": "10.0"
+ },
+ {
+  "api": "os_log_type_enabled",
+  "kind": "function",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "the release reads the enabled types of a log from preferences and from a log stream attached to the process; iOS 6 has neither",
+  "effect": "default, error and fault are enabled and info and debug are not, which is the release's answer with no preferences and no stream; no log is never enabled",
+  "facts": "facts/Foundation/OSLog.md",
+  "source": "libsystem_trace of the armv7s cache of iOS 10.3.4, read function by function, and the host's own os_log run beside the port",
+  "maximum": "10.0"
+ },
+ {
+  "api": "_os_log_impl",
+  "kind": "function",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the header reaches this function only when the program is built for a deployment target of 10.0 or later, and a program that runs on iOS 6 is built for a lower one, where the same macros call _os_log_internal; carrying it would mean reading the compiler's argument buffer, which nothing on iOS 6 can call",
+  "effect": "the function is not exported",
+  "facts": "facts/Foundation/OSLog.md",
+  "source": "libsystem_trace of the armv7s cache of iOS 10.3.4, read function by function, and the host's own os_log run beside the port"
+ },
+ {
+  "api": "_os_log_error_impl",
+  "kind": "function",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the header reaches this function only when the program is built for a deployment target of 11.0 or later, and a program that runs on iOS 6 is built for a lower one, where the same macros call _os_log_internal; carrying it would mean reading the compiler's argument buffer, which nothing on iOS 6 can call",
+  "effect": "the function is not exported",
+  "facts": "facts/Foundation/OSLog.md",
+  "source": "libsystem_trace of the armv7s cache of iOS 10.3.4, read function by function, and the host's own os_log run beside the port"
+ },
+ {
+  "api": "_os_log_fault_impl",
+  "kind": "function",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the header reaches this function only when the program is built for a deployment target of 11.0 or later, and a program that runs on iOS 6 is built for a lower one, where the same macros call _os_log_internal; carrying it would mean reading the compiler's argument buffer, which nothing on iOS 6 can call",
+  "effect": "the function is not exported",
+  "facts": "facts/Foundation/OSLog.md",
+  "source": "libsystem_trace of the armv7s cache of iOS 10.3.4, read function by function, and the host's own os_log run beside the port"
+ },
+ {
+  "api": "_os_log_debug_impl",
+  "kind": "function",
+  "introduced": "13.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the header reaches this function only when the program is built for a deployment target of 13.0 or later, and a program that runs on iOS 6 is built for a lower one, where the same macros call _os_log_internal; carrying it would mean reading the compiler's argument buffer, which nothing on iOS 6 can call",
+  "effect": "the function is not exported",
+  "facts": "facts/Foundation/OSLog.md",
+  "source": "libsystem_trace of the armv7s cache of iOS 10.3.4, read function by function, and the host's own os_log run beside the port"
+ },
+ {
+  "api": "_os_log_disabled",
+  "kind": "symbol",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "the object is the value of OS_LOG_DISABLED only in a program built for a deployment target of 11.0 or later, which does not run on iOS 6",
+  "effect": "the symbol is not exported",
+  "facts": "facts/Foundation/OSLog.md",
+  "source": "libsystem_trace of the armv7s cache of iOS 10.3.4, read function by function, and the host's own os_log run beside the port"
+ }
+]
