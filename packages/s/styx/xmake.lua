@@ -7,8 +7,12 @@ package("styx")
     add_urls("https://github.com/kern0x1b/styx.git")
     add_versions("2026.09.20", "f5fe6511d963d1a21f23c0f3ec820135a69168ff")
 
-    add_deps("charon@swift-runtime", {alias = "swift-runtime"})
-    add_deps("charon@libcxx", {alias = "libcxx"})
+    -- Styx is compiled against the runtime a port takes, and the port links one build of it: what the port asks of the runtime
+    -- it asks here too, and Styx passes it on, so that the modules are read against that runtime's own resource directory
+    -- and the C++ helper is linked against the libc++ the runtime is. (charon@swift rule refuses a link with two builds.)
+    add_configs("shared", {description = "Compile against a shared swift-runtime and its packaged libc++, for a port that requires them so.", default = false, type = "boolean"})
+    add_configs("backports", {description = "Compile against the swift-runtime built with the backports, for a port that requires it so.", default = false, type = "boolean"})
+    add_configs("backports_uikit", {description = "With backports: the runtime whose UIKit overlay is linked to the UIKit backports.", default = false, type = "boolean"})
 
     local digests = {}
     local sources = {path.join(os.scriptdir(), "xmake.lua"), path.join(os.scriptdir(), "files", "DispatchTimeDistance.swift")}
@@ -20,6 +24,9 @@ package("styx")
     local libraries = {"Combine", "CombineHelpers"}
 
     on_load("iphoneos", function (package)
+        package:add("deps", "charon@swift-runtime", {alias = "swift-runtime", configs = {shared = package:config("shared") or nil,
+                    backports = package:config("backports") or nil, backports_uikit = package:config("backports_uikit") or nil}})
+        package:add("deps", "charon@libcxx", {alias = "libcxx", configs = {packaged = package:config("shared") or nil}})
         for _, library in ipairs(libraries) do
             package:add("links", library)
         end

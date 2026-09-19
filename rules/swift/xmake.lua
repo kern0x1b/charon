@@ -29,6 +29,7 @@ rule("swift")
     end)
 
     on_config(function (target)
+        import("@self.apple.platform").verify_one_runtime(target)
         -- The runtime is shared libraries; the program carries them the way it carries any package's - a tweak or a
         -- daemon in its package's folder, an application inside its bundle. A shared runtime is a package of its own that
         -- the program depends on instead: it carries none of it, and its libc++ is the one in that package's folder.

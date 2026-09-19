@@ -70,11 +70,43 @@ local function waivers_step(platform, found)
     end
 end
 
+-- A program links one build of the runtime and one of libc++: a package that was compiled against another build is refused,
+-- naming both.
+local function one_runtime_step(platform, folder, found)
+    local function package(name, mark, linkdir)
+        return {name = function () return name end,
+                envs = function () return mark and {CHARON_SWIFT_RUNTIME_MARK = {mark}} or {} end,
+                get = function (_, key) return key == "linkdirs" and {linkdir} or nil end}
+    end
+    local function target(...)
+        local packages = {...}
+        return {name = function () return "port" end, orderpkgs = function () return packages end}
+    end
+    local first, second = path.join(folder, "packages", "libcxx", "a"), path.join(folder, "packages", "libcxx", "b")
+    for _, dir in ipairs({first, second}) do
+        os.mkdir(dir)
+        io.writefile(path.join(dir, "libc++.dylib"), "")
+    end
+    local none = path.join(folder, "empty")
+    if fixtures.refusal(function () platform.verify_one_runtime(target(package("swift-runtime", "charon_swift_runtime_one", none), package("styx", "charon_swift_runtime_one", none), package("libcxx", nil, first))) end) then
+        table.insert(found, "packages built against one runtime and one libc++ must pass")
+    end
+    local refused = fixtures.refusal(function () platform.verify_one_runtime(target(package("swift-runtime", "charon_swift_runtime_one", none), package("styx", "charon_swift_runtime_two", none))) end) or ""
+    if not refused:find("2 builds of swift-runtime", 1, true) or not refused:find("charon_swift_runtime_one (swift-runtime)", 1, true) or not refused:find("charon_swift_runtime_two (styx)", 1, true) then
+        table.insert(found, "a package built against another runtime must be refused, naming each build and who asks for it: " .. refused)
+    end
+    refused = fixtures.refusal(function () platform.verify_one_runtime(target(package("libcxx", nil, first), package("styx", nil, second))) end) or ""
+    if not refused:find("2 builds of libcxx", 1, true) or not refused:find("(styx)", 1, true) then
+        table.insert(found, "two builds of libc++ in one link must be refused: " .. refused)
+    end
+end
+
 function failures(opt)
     local platform = import("apple.platform", {rootdir = opt.modules, anonymous = true})
     local bundle = import("apple.bundle", {rootdir = opt.modules, anonymous = true})
     local found = {}
     packages_step(platform, found)
+    one_runtime_step(platform, fixtures.scratch(), found)
     waivers_step(platform, found)
     bundled_step(bundle, found)
     local folder = fixtures.scratch()

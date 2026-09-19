@@ -277,6 +277,40 @@ function report_registry(target, binary)
            path.filename(binary), #advised, table.concat(told, "\n"))
 end
 
+-- One build of the runtime, and one of the C++ runtime, to a program. A package compiled against the runtime (a library of
+-- Swift) asks for it with its own configs, and one that asks for another build than the program does puts two of them in the
+-- link: the program compiles against one, links libswiftCore from whichever folder comes first, and either fails on the mark
+-- or, when the first is the one it compiled against, quietly ignores the variant it asked for. Neither is the answer; refuse.
+-- Every package that was built against a runtime reports that runtime's mark in its environment, and a folder that holds
+-- libc++ is one build of it.
+function verify_one_runtime(target)
+    local marks, cxx = {}, {}
+    for _, dependency in ipairs(target:orderpkgs()) do
+        for _, mark in ipairs(table.wrap((dependency:envs() or {}).CHARON_SWIFT_RUNTIME_MARK)) do
+            marks[mark] = marks[mark] or {}
+            table.insert(marks[mark], dependency:name())
+        end
+        for _, folder in ipairs(table.wrap(dependency:get("linkdirs"))) do
+            if os.isfile(path.join(folder, "libc++.dylib")) then
+                cxx[folder] = cxx[folder] or {}
+                table.insert(cxx[folder], dependency:name())
+            end
+        end
+    end
+    for _, what in ipairs({"swift-runtime", "libcxx"}) do
+        local builds = what == "libcxx" and cxx or marks
+        local names = table.orderkeys(builds)
+        if #names > 1 then
+            local described = {}
+            for _, name in ipairs(names) do
+                table.insert(described, string.format("%s (%s)", name:match("packages/(.*)$") or name, table.concat(table.unique(builds[name]), ", ")))
+            end
+            raise("target(%s) links %d builds of %s at once: %s; a package compiled against it must ask for the same configs as the program does, so that there is one build: require it with the program's configs, or give its recipe the configs to pass on",
+                  target:name(), #names, what, table.concat(described, " and "))
+        end
+    end
+end
+
 function verify(target, binary, opt)
     opt = opt or {}
     verify_minimum(target, binary)
