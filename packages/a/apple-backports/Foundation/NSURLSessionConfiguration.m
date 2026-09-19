@@ -264,21 +264,9 @@ static NSURLCredentialStorage *charon_ephemeral_credential_storage(void)
     return _TLSMinimumSupportedProtocol;
 }
 
-- (void)setTLSMinimumSupportedProtocol:(SSLProtocol)protocol
-{
-    if (protocol != _TLSMinimumSupportedProtocol)
-        [NSException raise:NSInvalidArgumentException format:@"this release hands its requests to NSURLConnection, which does not let a handshake be bounded, so the lowest protocol it accepts stays %d", (int)_TLSMinimumSupportedProtocol];
-}
-
 - (SSLProtocol)TLSMaximumSupportedProtocol
 {
     return _TLSMaximumSupportedProtocol;
-}
-
-- (void)setTLSMaximumSupportedProtocol:(SSLProtocol)protocol
-{
-    if (protocol != _TLSMaximumSupportedProtocol)
-        [NSException raise:NSInvalidArgumentException format:@"this release hands its requests to NSURLConnection, which does not let a handshake be bounded, so the highest protocol it offers stays %d", (int)_TLSMaximumSupportedProtocol];
 }
 
 @dynamic allowsExpensiveNetworkAccess;
@@ -286,6 +274,7 @@ static NSURLCredentialStorage *charon_ephemeral_credential_storage(void)
 @dynamic requiresDNSSECValidation;
 @dynamic waitsForConnectivity;
 @dynamic sharedContainerIdentifier;
+@dynamic TLSMinimumSupportedProtocol, TLSMaximumSupportedProtocol;
 @dynamic TLSMinimumSupportedProtocolVersion;
 @dynamic TLSMaximumSupportedProtocolVersion;
 @dynamic shouldUseExtendedBackgroundIdleMode;

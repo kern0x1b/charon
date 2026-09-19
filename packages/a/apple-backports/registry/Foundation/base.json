@@ -906,7 +906,7 @@
     "introduced": "7.0",
     "status": "absent",
     "reason": "the release hands its requests to NSURLConnection, which takes no bound on the handshake",
-    "effect": "the setter raises NSInvalidArgumentException naming the reason; the getter answers the bound the platform really has",
+    "effect": "the setter is not there, so respondsToSelector: answers honestly and an unchecked call raises; the getter answers the bound the platform really has",
     "facts": "facts/Foundation/NSURLSession.md"
   },
   {
@@ -915,7 +915,7 @@
     "introduced": "7.0",
     "status": "absent",
     "reason": "the release hands its requests to NSURLConnection, which takes no bound on the handshake",
-    "effect": "the setter raises NSInvalidArgumentException naming the reason; the getter answers the bound the platform really has",
+    "effect": "the setter is not there, so respondsToSelector: answers honestly and an unchecked call raises; the getter answers the bound the platform really has",
     "facts": "facts/Foundation/NSURLSession.md"
   },
   {
