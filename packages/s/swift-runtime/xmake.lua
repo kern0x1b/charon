@@ -17,7 +17,7 @@ package("swift-runtime")
     -- Swift overlay comes from swift-6.2-RELEASE, the last release whose sources carry it, because Synchronization and
     -- Observation import Darwin and the SDK has only an interface for arm64.
     local libraries = {"swiftCore", "swiftSwiftOnoneSupport", "swift_Concurrency", "swiftDarwin", "swiftObjectiveC", "swiftDispatch",
-                       "swiftCoreFoundation", "swiftCoreGraphics", "swiftFoundation",
+                       "swiftCoreFoundation", "swiftCoreGraphics", "swiftFoundation", "swiftQuartzCore", "swiftUIKit",
                        "swiftSynchronization",
                        "swift_RegexParser", "swift_StringProcessing", "swiftRegexBuilder", "swiftObservation"}
 
@@ -38,7 +38,12 @@ package("swift-runtime")
                    "/stdlib/public/Darwin/CoreGraphics/", "/stdlib/public/SwiftShims/ObjectiveCOverlayShims.h",
                    "/stdlib/public/SwiftShims/DispatchOverlayShims.h", "/stdlib/public/Darwin/Foundation/",
                    "/stdlib/public/SwiftShims/Foundation*.h", "/stdlib/public/SwiftShims/NS*Shims.h",
-                   "/stdlib/public/SwiftShims/CoreFoundationOverlayShims.h", "/stdlib/public/SwiftShims/CF*Shims.h", "/LICENSE.txt"}}
+                   "/stdlib/public/SwiftShims/CoreFoundationOverlayShims.h", "/stdlib/public/SwiftShims/CF*Shims.h", "/LICENSE.txt"}},
+        -- UIKit's and QuartzCore's went before the others: swift-5.2.5 is the last release that has them.
+        {name = "uikit", tag = "swift-5.2.5-RELEASE", commit = "71d85a7c28eed8f46241649a723ddf23989139c6",
+         url = "https://github.com/swiftlang/swift.git",
+         sparse = {"/stdlib/public/Darwin/UIKit/", "/stdlib/public/Darwin/QuartzCore/", "/stdlib/public/SwiftShims/UIKitOverlayShims.h",
+                   "/LICENSE.txt"}}
     }
 
     on_download(function (package, opt)
@@ -291,6 +296,17 @@ package("swift-runtime")
             os.vcp(header, installed_shims .. "/")
         end
         os.vcp(path.join(overlays, "stdlib", "public", "SwiftShims", "FoundationShimSupport.h"), installed_shims .. "/")
+        local uikit = path.absolute("uikit")
+        local uikit_patches = os.files(path.join(package:scriptdir(), "patches", "uikit", "*.patch"))
+        table.sort(uikit_patches)
+        for _, patch in ipairs(uikit_patches) do
+            os.vrunv("patch", {"-p1", "-i", patch}, {curdir = uikit})
+        end
+        os.vcp(path.join(uikit, "stdlib", "public", "SwiftShims", "UIKitOverlayShims.h"), installed_shims .. "/")
+        if not io.readfile(shim_modules):find("_SwiftUIKitOverlayShims", 1, true) then
+            io.writefile(shim_modules, io.readfile(shim_modules) ..
+                         "\nmodule _SwiftUIKitOverlayShims {\n  header \"UIKitOverlayShims.h\"\n}\n")
+        end
         local function overlay_sources_of(name, files)
             local found = {}
             for _, file in ipairs(files) do
@@ -387,6 +403,27 @@ package("swift-runtime")
                        "-framework", "Foundation", "-framework", "CoreFoundation"}, foundation_objects,
                       -- URLSession has async calls, which want the concurrency library the runtime already carries.
                       {concurrency = true})
+
+        -- QuartzCore and UIKit, from the release that last had them: CATransform3D and UIKit's structures cross to NSValue,
+        -- UIKit's structures compare and are Codable, and its alert and action sheet take their buttons as variadic
+        -- arguments through an initializer its one file of Objective-C adds.
+        local function generated_from(folder, name)
+            local output = path.join(generated, name)
+            os.vrunv("python3", {path.join(source, "utils", "gyb.py"), "-DCMAKE_SIZEOF_VOID_P=" .. (package:arch() == "arm64" and "8" or "4"),
+                                 "--line-directive", "", "-o", output, path.join(uikit, "stdlib", "public", "Darwin", folder, name .. ".gyb")})
+            return output
+        end
+        local foundation_links = {"-lswiftDarwin", "-lswiftObjectiveC", "-lswiftDispatch", "-lswiftCoreFoundation",
+                                  "-lswiftCoreGraphics", "-lswiftFoundation", "-framework", "Foundation", "-framework", "CoreFoundation"}
+        build_overlay("QuartzCore", {generated_from("QuartzCore", "NSValue.swift")},
+                      table.join(foundation_links, {"-framework", "QuartzCore"}))
+        local initializers = path.join(generated, "DesignatedInitializers.mm.o")
+        os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
+                 toolchain:config("sdkdir"), "-Os", "-c", path.join(uikit, "stdlib", "public", "Darwin", "UIKit", "DesignatedInitializers.mm"),
+                 "-o", initializers})
+        build_overlay("UIKit", {path.join(uikit, "stdlib", "public", "Darwin", "UIKit", "UIKit.swift"),
+                                generated_from("UIKit", "UIKit_FoundationExtensions.swift")},
+                      table.join(foundation_links, {"-lswiftQuartzCore", "-framework", "QuartzCore", "-framework", "UIKit"}), {initializers})
 
         -- The supplemental libraries, each its own project, against the standard library built above.
         for _, library in ipairs({"Synchronization", "Observation", "StringProcessing"}) do
