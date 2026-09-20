@@ -1,0 +1,15 @@
+{
+  "framework": "ImageIO",
+  "entries": [
+    {
+      "api": "kCGImageSourceShouldCacheImmediately",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release's ImageIO decodes when an image is first drawn and has no option to decode at creation",
+      "effect": "the key is the string ImageIO gives it and the release's CGImageSourceCreateImageAtIndex ignores it, so the image is made as it is without the option and decoded when first used",
+      "source": "the host's own ImageIO, held against the port by tests/backports/host/imageio and the same test on a device running 6.1.3"
+    }
+  ]
+}

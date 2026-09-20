@@ -27,7 +27,7 @@ package("apple-backports")
     add_configs("security", {description = "Build libSecurityBackports.dylib, for a port that evaluates a trust with SecTrustEvaluateWithError; it loads Security into the process.", default = false, type = "boolean"})
 
     add_configs("webkit", {description = "Build libWebKitBackports.dylib, for an application that shows web content in a WKWebView; it draws it with the UIWebView of the release.", default = false, type = "boolean"})
-    add_configs("graphics", {description = "Build libGraphicsBackports.dylib, for a port that reads the name of a colour space, the code points of a video colour description or applies a block over a path or a PDF object; it loads CoreGraphics and CoreVideo into the process.", default = false, type = "boolean"})
+    add_configs("graphics", {description = "Build libGraphicsBackports.dylib, for a port that reads the name of a colour space, the code points of a video colour description or applies a block over a path or a PDF object; it loads CoreGraphics, CoreVideo and ImageIO into the process.", default = false, type = "boolean"})
 
     add_configs("localauthentication", {description = "Build libLocalAuthenticationBackports.dylib, for an application that asks for the owner's authentication; the device answers as one without a biometric sensor and without a way to ask for the passcode.", default = false, type = "boolean"})
 

@@ -648,3 +648,7 @@ in `device/invalidation-cases.m`, and `device/invalidation.m` compares the port 
 `host/presentation/run.sh` records what the host's `UIPresentationController` answers in
 `device/presentation-cases.m`, in a Mac Catalyst application with a window, and
 `device/presentation.m` compares the port record by record on the release.
+
+`host/imageio/run.sh` runs `device/imageio.m` against the host's ImageIO, and the same tool runs on
+the release against the port: the key `kCGImageSourceShouldCacheImmediately` is the string ImageIO
+gives it, and an image made with it set is the image made without it.
