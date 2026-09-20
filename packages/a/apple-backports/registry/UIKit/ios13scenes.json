@@ -394,6 +394,26 @@
    "source": "the SDK headers and the documented launch sequence",
    "reason": "the one session is never discarded",
    "effect": "the message is never sent"
+  },
+  {
+   "api": "UISceneOpenURLOptions.eventAttribution",
+   "kind": "property",
+   "introduced": "14.5",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "UIEventAttribution, the click attribution of ads, arrived in iOS 14.5 and iOS 6 has nothing like it",
+   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+   "source": "SDK 16.4, UIKit"
+  },
+  {
+   "api": "UISceneOpenExternalURLOptions.eventAttribution",
+   "kind": "property",
+   "introduced": "14.5",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "UIEventAttribution, the click attribution of ads, arrived in iOS 14.5 and iOS 6 has nothing like it",
+   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+   "source": "SDK 16.4, UIKit"
   }
  ]
 }

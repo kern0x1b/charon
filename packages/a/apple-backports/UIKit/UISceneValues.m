@@ -32,6 +32,8 @@
     BOOL _openInPlace;
 }
 
+@dynamic eventAttribution;
+
 - (instancetype)initCharonWithSourceApplication:(NSString *)sourceApplication annotation:(id)annotation openInPlace:(BOOL)openInPlace
 {
     if ((self = [super init])) {
@@ -403,6 +405,8 @@
     UIScene *_requestingScene;
 }
 
+@dynamic collectionJoinBehavior;
+
 - (UIScene *)requestingScene
 {
     return _requestingScene;
@@ -437,6 +441,8 @@
 @implementation UISceneOpenExternalURLOptions {
     BOOL _universalLinksOnly;
 }
+
+@dynamic eventAttribution;
 
 - (BOOL)universalLinksOnly
 {

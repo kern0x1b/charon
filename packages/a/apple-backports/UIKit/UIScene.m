@@ -8,6 +8,8 @@
     UISceneActivationConditions *_activationConditions;
 }
 
+@dynamic subtitle;
+
 - (instancetype)initWithSession:(UISceneSession *)session connectionOptions:(UISceneConnectionOptions *)connectionOptions
 {
     if ((self = [super init])) {

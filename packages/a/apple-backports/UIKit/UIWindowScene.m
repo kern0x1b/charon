@@ -62,6 +62,8 @@
     CharonScreenCoordinateSpace *_coordinateSpace;
 }
 
+@dynamic activityItemsConfigurationSource, effectiveGeometry, keyWindow, windowingBehaviors;
+
 - (instancetype)initWithSession:(UISceneSession *)session connectionOptions:(UISceneConnectionOptions *)connectionOptions
 {
     if ((self = [super initWithSession:session connectionOptions:connectionOptions])) {
