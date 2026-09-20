@@ -26,12 +26,13 @@ here pretends otherwise. On hardware with no motor at all, such as the iPad 2,
 every call plays nothing, which is what iOS 10 itself does on a device without a
 Taptic Engine.
 
-`UISelectionFeedbackGenerator` is **absent**. Measured on an iPhone4,1, a pulse
-of 20 ms does not start the motor and 40 ms is the shortest that moves it, while
-full amplitude needs upwards of 200 ms. A tick per detent of a turning picker is
-faster than that floor, so the class would have to imitate a sensation the
-hardware cannot make. `respondsToSelector:` and `NSClassFromString` answer
-honestly instead.
+`UISelectionFeedbackGenerator` is there and **does nothing**. Measured on an
+iPhone4,1, a pulse of 20 ms does not start the motor and 40 ms is the shortest
+that moves it, while full amplitude needs upwards of 200 ms. A tick per detent of
+a turning picker is faster than that floor, so the class cannot make the
+sensation it stands for; what iOS 10 does on a device without a Taptic Engine,
+where the class exists and `-selectionChanged` plays nothing, is what it does
+here. A program that names the class then finds it, as it would on iOS 10.
 
 The motor is reached through
 `AudioServicesPlaySystemSoundWithVibration`, the path the system itself uses, so
@@ -95,6 +96,12 @@ A program built for iOS 6 reaches `os_log` through the iOS 9 functions, `_os_log
 which the macros choose below a deployment target of 10.0. The port carries those and the log object they need, and
 writes each message, formatted as the release's own formatter writes it, to ASL. Nothing is redacted, and a few
 decorators for a reader, such as `iec-bytes`, are written plain; the facts say which.
+
+### Text content types, kept and never read
+
+The 23 `UITextContentType` constants of iOS 10 have the release's own strings, and
+`textContentType` of a text field, a text view and a search bar keeps a copy and
+gives it back. Nothing reads it: it hints at an autofill iOS 6 does not have.
 
 ### Images drawn where sRGB cannot be made
 

@@ -35,12 +35,17 @@ inputs.
     sh host/swipeactions/run.sh
     sh host/registry/run.sh <dyld_shared_cache_armv7>
     sh host/blocks/run.sh
+    sh host/textcontent/run.sh
     sh host/oslog/run.sh  writes device/oslog-expectations.h when it passes
     sh host/imageflip/run.sh
 
 `host/oslog/run.sh` runs the same 61 calls through the host's os_log, asked for its
 developer output, and through the port's formatter, and compares the two texts; the calls both
 platforms can make become the expectations of the device test.
+
+`host/textcontent/run.sh` compares the 23 text content type constants and the
+`textContentType` of a text field, a text view and a search bar with the host's own,
+through Mac Catalyst.
 
 `host/blocks/run.sh` runs the port's timers, threads and run loop blocks in one
 process with the system's own, compiled with the selectors prefixed, and compares
@@ -472,6 +477,11 @@ postinst run with `DPKG_ROOT` set to it.
   authorization, adds, replaces and removes requests, reads back what iOS 6 was
   given - the body and no title - checks which repeats are taken and which
   refused, and waits for a notification to arrive while it is in front.
+- `textcontent.m`: a process of its own for the text content types. It holds the 23
+  constants to the strings read off iOS 10.3.4, and the property of the three views
+  to its defaults and its copying. A process cannot make a text field, which needs a
+  running application, so it uses instances that are allocated and not initialized;
+  `host/textcontent` runs the same on real views.
 - `oslog.m`: a process of its own for `os_log`. It calls the macros the way a program built for iOS 6
   does, on a battery of formats that `host/oslog` has run through the host's own os_log and embedded in
   `oslog-expectations.h`, and reads the messages back from ASL to compare them with the host's text, with the level and the
@@ -491,7 +501,7 @@ postinst run with `DPKG_ROOT` set to it.
 - `haptics.m`: a process of its own for the feedback generators, linking UIKit
   but raising no window. It holds the port to what was read off iOS 10 rather
   than to a sensation: that the three generators are there and come from the
-  backports library, that `UISelectionFeedbackGenerator` is **not** declared,
+  backports library, that `UISelectionFeedbackGenerator` is declared and its `-selectionChanged` does nothing,
   that a style outside the three still builds a generator and simply plays
   nothing instead of raising, that the iOS 13 `-impactOccurredWithIntensity:` is
   not answered, and that every call returns without raising. It says nothing

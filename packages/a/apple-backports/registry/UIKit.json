@@ -252,9 +252,9 @@
   "kind": "class",
   "introduced": "10.0",
   "minimum": "6.0",
-  "status": "absent",
-  "reason": "it marks each detent of a turning picker with a tick, and the iPhone 4S motor needs 40 ms before it moves at all, which is slower than the detents it would mark; a buzz there would imitate a sensation the hardware cannot produce",
-  "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
+  "status": "inert",
+  "reason": "it marks each detent of a turning picker with a tick, which the Taptic Engine makes and an iPhone 4S motor cannot: the motor needs 40 ms before it moves at all, which is slower than the detents it would mark; the class exists on a device with no Taptic Engine and plays nothing there",
+  "effect": "the class is declared and -selectionChanged returns without playing anything; the corpus of nine applications names the class in six, five of them as a hard import that stops the program from loading where it is absent",
   "facts": "facts/UIKit/UIFeedbackGenerator.md",
   "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
  },
@@ -389,5 +389,323 @@
   "effect": "the method is not declared, so respondsToSelector: answers NO",
   "facts": "facts/UIKit/UIColorDisplayP3.md",
   "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method"
+ },
+ {
+  "api": "-[UISelectionFeedbackGenerator selectionChanged]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "maximum": "10.0",
+  "status": "inert",
+  "reason": "a tick per detent is below the floor of the iPhone 4S motor, and an iPad 2 has none",
+  "effect": "it returns at once and plays nothing, as the release does on a device with no Taptic Engine",
+  "facts": "facts/UIKit/UIFeedbackGenerator.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
+ },
+ {
+  "api": "UITextContentTypeName",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeNamePrefix",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeGivenName",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeMiddleName",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeFamilyName",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeNameSuffix",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeNickname",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeJobTitle",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeOrganizationName",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeLocation",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeFullStreetAddress",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeStreetAddressLine1",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeStreetAddressLine2",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeAddressCity",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeAddressState",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeAddressCityAndState",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeSublocality",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeCountryName",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypePostalCode",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeTelephoneNumber",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeEmailAddress",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeURL",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextContentTypeCreditCardNumber",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "UITextField.textContentType",
+  "kind": "property",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "maximum": "10.0",
+  "status": "inert",
+  "reason": "the type is a hint to the keyboard's autofill, which iOS 6 does not have",
+  "effect": "the string is kept as a copy, handed back and never read; the default is nil, as in the release",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the host's UIKit through Mac Catalyst"
+ },
+ {
+  "api": "UITextView.textContentType",
+  "kind": "property",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "maximum": "10.0",
+  "status": "inert",
+  "reason": "the type is a hint to the keyboard's autofill, which iOS 6 does not have",
+  "effect": "the string is kept as a copy, handed back and never read; the default is nil, as in the release",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the host's UIKit through Mac Catalyst"
+ },
+ {
+  "api": "UISearchBar.textContentType",
+  "kind": "property",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "maximum": "10.0",
+  "status": "inert",
+  "reason": "the type is a hint to the keyboard's autofill, which iOS 6 does not have",
+  "effect": "the string is kept as a copy, handed back and never read; the default is nil, as in the release",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKit of the armv7s cache of iOS 10.3.4, the host's UIKit through Mac Catalyst"
+ },
+ {
+  "api": "UITextContentTypeUsername",
+  "kind": "constant",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKitCore of the arm64 cache of iOS 12.0, the string username; the host's UIKit through Mac Catalyst",
+  "maximum": "11.0"
+ },
+ {
+  "api": "UITextContentTypePassword",
+  "kind": "constant",
+  "introduced": "11.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKitCore of the arm64 cache of iOS 12.0, the string password; the host's UIKit through Mac Catalyst",
+  "maximum": "11.0"
+ },
+ {
+  "api": "UITextContentTypeNewPassword",
+  "kind": "constant",
+  "introduced": "12.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKitCore of the arm64 cache of iOS 12.0, the string new-password; the host's UIKit through Mac Catalyst",
+  "maximum": "12.0"
+ },
+ {
+  "api": "UITextContentTypeOneTimeCode",
+  "kind": "constant",
+  "introduced": "12.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "UIKitCore of the arm64 cache of iOS 12.0, the string one-time-code; the host's UIKit through Mac Catalyst",
+  "maximum": "12.0"
  }
 ]

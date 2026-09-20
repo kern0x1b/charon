@@ -184,8 +184,12 @@ a device without a Taptic Engine.
 `-prepare` has nothing to warm on an ERM and does nothing. It is not a stub: its
 only contract is latency, and iOS 10's own does nothing when there is no engine.
 
-`UISelectionFeedbackGenerator` is **not declared**. Its whole point is a tick per
-detent as a picker turns, and the motor needs 40 ms before it moves at all -
+`UISelectionFeedbackGenerator` is declared and **inert**. Its whole point is a tick
+per detent as a picker turns, and the motor needs 40 ms before it moves at all -
 slower than the detents it would have to mark. A buzz there would be an imitation
-of a sensation the hardware cannot produce, so the class does not exist and
-`respondsToSelector:` and `NSClassFromString` answer honestly.
+of a sensation the hardware cannot produce, so `-selectionChanged` does nothing.
+That is what iOS 10 does on a device with no Taptic Engine, where the class exists
+and its `-selectionChanged` reaches an engine that is not there. The class was first
+left out; in a corpus of nine applications six name it, and a program that names a
+class that is not there fails where one that finds it does not, so it is carried
+and says plainly that it plays nothing. `-prepare` is the base class's.

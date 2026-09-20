@@ -22,7 +22,7 @@ static NSString *raises(void (^block)(void))
 
 static void run_checks(void)
 {
-    for (NSString *name in @[@"UIFeedbackGenerator", @"UIImpactFeedbackGenerator", @"UINotificationFeedbackGenerator"]) {
+    for (NSString *name in @[@"UIFeedbackGenerator", @"UIImpactFeedbackGenerator", @"UINotificationFeedbackGenerator", @"UISelectionFeedbackGenerator"]) {
         Class cls = NSClassFromString(name);
         CHECK(cls != Nil, NAMED(@"%@ is there", name));
         if (cls)
@@ -30,8 +30,12 @@ static void run_checks(void)
                   NAMED(@"%@ comes from the backports library (%@)", name, image_of(cls)));
     }
 
-    CHECK(NSClassFromString(@"UISelectionFeedbackGenerator") == Nil,
-          "UISelectionFeedbackGenerator is not declared, since a tick per detent is below the motor's floor");
+    UISelectionFeedbackGenerator *selection = [[UISelectionFeedbackGenerator alloc] init];
+    CHECK(selection != nil && [selection isKindOfClass:[UIFeedbackGenerator class]] && [selection respondsToSelector:@selector(selectionChanged)]
+          && [selection respondsToSelector:@selector(prepare)],
+          "a selection generator is a feedback generator that answers to selectionChanged and prepare");
+    CHECK_EQUAL(raises(^{ [selection prepare]; [selection selectionChanged]; [selection selectionChanged]; }), nil,
+                "and both return without raising, plays nothing, as on a device with no Taptic Engine");
 
     UIImpactFeedbackGenerator *heavy = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleHeavy];
     CHECK(heavy != nil, "an impact generator is built for a style it knows");
