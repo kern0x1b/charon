@@ -2293,5 +2293,227 @@
     "status": "implemented",
     "facts": "facts/UIKit/NSDataAsset.md",
     "source": "the host's own UIKit for what an asset answers and refuses, and its CoreUI for the data of a catalogue an application was built with; the iPhone 4S for what the release lacks"
+  },
+  {
+    "api": "UITransitionContextFromViewControllerKey",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
+    "reason": "the release starts no transition of iOS 7, so nothing is ever asked of the key",
+    "effect": "the name is there, and the context that would answer it is not"
+  },
+  {
+    "api": "UITransitionContextToViewControllerKey",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
+    "reason": "the release starts no transition of iOS 7, so nothing is ever asked of the key",
+    "effect": "the name is there, and the context that would answer it is not"
+  },
+  {
+    "api": "UITransitionContextFromViewKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
+    "reason": "the release starts no transition of iOS 7, so nothing is ever asked of the key",
+    "effect": "the name is there, and the context that would answer it is not"
+  },
+  {
+    "api": "UITransitionContextToViewKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
+    "reason": "the release starts no transition of iOS 7, so nothing is ever asked of the key",
+    "effect": "the name is there, and the context that would answer it is not"
+  },
+  {
+    "api": "UIApplicationUserDidTakeScreenshotNotification",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
+    "reason": "the release tells an application nothing of a screenshot",
+    "effect": "the name is there and nothing is ever posted under it"
+  },
+  {
+    "api": "UIApplicationBackgroundRefreshStatusDidChangeNotification",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
+    "reason": "the release has no background refresh switch of the owner",
+    "effect": "the name is there and nothing is ever posted under it"
+  },
+  {
+    "api": "UIApplicationBackgroundFetchIntervalMinimum",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
+  },
+  {
+    "api": "UIApplicationBackgroundFetchIntervalNever",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
+  },
+  {
+    "api": "UIActivityTypePostToFlickr",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
+  },
+  {
+    "api": "UIActivityTypePostToVimeo",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
+  },
+  {
+    "api": "UIActivityTypePostToTencentWeibo",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
+  },
+  {
+    "api": "UIActivityTypeAddToReadingList",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
+  },
+  {
+    "api": "UIAccessibilityConvertFrameToScreenCoordinates()",
+    "kind": "function",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
+  },
+  {
+    "api": "UIAccessibilityTraitTabBar",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
+  },
+  {
+    "api": "UICollectionViewFlowLayoutAutomaticSize",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
+    "reason": "the release's flow layout sizes no item by its content",
+    "effect": "the size is there to compare against and the layout never takes it as a request"
+  },
+  {
+    "api": "UIFontTextStyleCallout",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
+  },
+  {
+    "api": "UIFontTextStyleTitle1",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
+  },
+  {
+    "api": "UIFontTextStyleTitle2",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
+  },
+  {
+    "api": "UIFontTextStyleTitle3",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
+  },
+  {
+    "api": "UIKeyboardIsLocalUserInfoKey",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
+    "reason": "the release has one keyboard and posts no notification that says whose it is",
+    "effect": "the name is there and no notification carries it"
+  },
+  {
+    "api": "UIApplicationOpenURLOptionsOpenInPlaceKey",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
+    "reason": "the release opens a URL with -application:openURL:sourceApplication:annotation: and no options",
+    "effect": "the name is there and no call carries it"
+  },
+  {
+    "api": "UIApplicationOpenURLOptionsSourceApplicationKey",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
+    "reason": "the release opens a URL with -application:openURL:sourceApplication:annotation: and no options",
+    "effect": "the name is there and no call carries it"
+  },
+  {
+    "api": "UIActivityTypeOpenInIBooks",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
+  },
+  {
+    "api": "UIScreenEdgePanGestureRecognizer",
+    "kind": "class",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
+  },
+  {
+    "api": "UIPercentDrivenInteractiveTransition",
+    "kind": "class",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TransitionsAndEdges.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
+    "reason": "the release starts no transition of iOS 7 and hands no transition context to one",
+    "effect": "the object keeps its percent and passes the updates to the context it is given, which nothing gives it"
   }
 ]
