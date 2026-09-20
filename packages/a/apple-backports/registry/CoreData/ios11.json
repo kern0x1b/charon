@@ -1,0 +1,148 @@
+{
+  "framework": "CoreData",
+  "entries": [
+    {
+      "api": "NSPersistentHistoryChangeRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a request to fetch the history after a date, a token or a transaction, or to delete it before one; a fetch asks for transactions and changes, a delete for the status only and keeps that whatever it is set to; request type 8; a copy keeps the result type; the request is a value only: no store of this release answers it",
+      "facts": "facts/CoreData/PersistentHistory.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: -[NSPersistentHistoryChangeRequest initWithDate:delete:], -initWithToken:delete:, -setResultType:, -requestType and -description, read case by case; the host's Core Data for what comes out"
+    },
+    {
+      "api": "NSPersistentHistoryToken",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "no store of this release keeps a history, so no object of the concrete kind exists; an instance made with alloc and init is the abstract one, as it is in iOS 12",
+      "effect": "copies to itself and codes securely; encoding it or decoding it raises the exception iOS 12 raises for the abstract class",
+      "facts": "facts/CoreData/PersistentHistory.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: -[NSPersistentHistoryToken copyWithZone:], -encodeWithCoder: and -initWithCoder:, which ask for a concrete implementation"
+    },
+    {
+      "api": "NSPersistentHistoryTransaction",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "no store of this release keeps a history, so no object of the concrete kind exists; an instance made with alloc and init is the abstract one, as it is in iOS 12",
+      "effect": "copies to itself; every property, and -objectIDNotification, raises the exception iOS 12 raises for the abstract class",
+      "facts": "facts/CoreData/PersistentHistory.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: -[NSPersistentHistoryTransaction copyWithZone:] and its accessors, which ask for a concrete implementation"
+    },
+    {
+      "api": "NSPersistentHistoryChange",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "no store of this release keeps a history, so no object of the concrete kind exists; an instance made with alloc and init is the abstract one, as it is in iOS 12",
+      "effect": "copies to itself; every property raises the exception iOS 12 raises for the abstract class",
+      "facts": "facts/CoreData/PersistentHistory.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: -[NSPersistentHistoryChange copyWithZone:] and its accessors, which ask for a concrete implementation"
+    },
+    {
+      "api": "NSPersistentHistoryResult",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "holds the result and the result type it was made with, and is empty when made with init; nothing here makes one, since no history is answered",
+      "facts": "facts/CoreData/PersistentHistory.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: -[NSPersistentHistoryResult initWithResultType:andResult:] and its accessors"
+    },
+    {
+      "api": "NSPersistentHistoryTrackingKey",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the string NSPersistentHistoryTrackingKey; a store given it as an option keeps no history, since the release ignores the options it does not know",
+      "facts": "facts/CoreData/PersistentHistory.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: the string the store reads the option by, at 0x183ce640e"
+    },
+    {
+      "api": "NSBinaryStoreSecureDecodingClasses",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the string NSBinaryStoreSecureDecodingClasses; the binary store of this release decodes what it always did",
+      "facts": "facts/CoreData/PersistentHistory.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: the string, at 0x183ce650f"
+    },
+    {
+      "api": "NSBinaryStoreInsecureDecodingCompatibilityOption",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the string _NSBinaryStoreInsecureDecodingCompatibilityOption; the binary store of this release decodes what it always did",
+      "facts": "facts/CoreData/PersistentHistory.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: the string, at 0x183ce64dd"
+    },
+    {
+      "api": "NSCoreDataCoreSpotlightExporter",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the string NSCoreDataCoreSpotlightExporter; the release has no Core Spotlight for a store to export to",
+      "facts": "facts/CoreData/PersistentHistory.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: the string of the constant"
+    },
+    {
+      "api": "NSPersistentHistoryTokenKey",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the string historyToken, the key of the token in the user info of a remote change notification; nothing here posts one",
+      "facts": "facts/CoreData/PersistentHistory.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: the string, which the release uses for the same key of the store's own results"
+    },
+    {
+      "api": "NSPersistentStoreRemoteChangeNotification",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the string NSPersistentStoreRemoteChangeNotification; the notification is never posted, since no store here watches for changes made by another process",
+      "facts": "facts/CoreData/PersistentHistory.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: the string of the notification"
+    },
+    {
+      "api": "NSPersistentStoreURLKey",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the string storeURL, the key of the store's URL in the user info of a remote change notification; nothing here posts one",
+      "facts": "facts/CoreData/PersistentHistory.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: the string, at 0x183ce660b"
+    },
+    {
+      "api": "NSManagedObjectContext.transactionAuthor",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a string that the context keeps, copied, and nothing reads: no history is written to carry it",
+      "facts": "facts/CoreData/PersistentHistory.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: the accessors of the property; the host's Core Data for the copy"
+    },
+    {
+      "api": "-[NSPersistentStoreCoordinator currentPersistentHistoryTokenFromStores:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "answers nil: the release's stores answer no change token, and the method builds the token from those",
+      "facts": "facts/CoreData/PersistentHistory.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: -[NSPersistentStoreCoordinator currentPersistentHistoryTokenFromStores:] asks each store for its current change token and joins the answers; the host's Core Data for a store that has none"
+    }
+  ]
+}

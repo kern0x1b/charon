@@ -265,6 +265,8 @@ question - a token, a session, a setting, an anchor, a tag - is absent, and
 
 `ASWebAuthenticationSession` is carried in `libAuthenticationServicesBackports.dylib`, built with the `authenticationservices` config, which brings `libSafariServicesBackports.dylib`: it is a wrapper over the `SFAuthenticationSession` of that library, as it is in iOS 12, and gives the callback URL, or an error of `ASWebAuthenticationSessionErrorDomain` with code 1 for a cancel. The credential provider and the credential identity store are absent. `facts/AuthenticationServices/ASWebAuthenticationSession.md`.
 
+`NSPersistentHistoryChangeRequest` and the objects around it (`NSPersistentHistoryToken`, `NSPersistentHistoryTransaction`, `NSPersistentHistoryChange`, `NSPersistentHistoryResult`) are carried in `libCoreDataBackports.dylib` as what an application names and asks with: the request holds its date or token and result type as iOS 12 does, the abstract classes raise the exception iOS 12 raises, and no store of this release keeps a history, so nothing answers a request, `currentPersistentHistoryTokenFromStores:` answers `nil` and the remote change notification is never posted. `NSManagedObjectContext.transactionAuthor` is kept and read by nothing. `facts/CoreData/PersistentHistory.md`.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and
