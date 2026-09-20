@@ -39,7 +39,7 @@ int main(int argc, char **argv)
         layer.colorspace = space;
         CHECK(layer.colorspace == space, "the colour space is kept");
         CGColorSpaceRelease(space);
-        CHECK([layer nextDrawable] == nil, "there is never a drawable");
+        CHECK([layer nextDrawable] == nil, "a layer with no device has no drawable");
         CHECK(layer.preferredDevice == nil, "there is no preferred device");
         NSString *name = nil, *reason = nil;
         @try {

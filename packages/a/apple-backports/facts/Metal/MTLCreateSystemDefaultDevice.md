@@ -17,9 +17,11 @@ run iOS 6 have the A5.
 
 ## Where iOS 6 differs
 
-There is no Metal driver in iOS 6 and no graphics that would have one, so the list is empty
-and the function answers nil, as it does on a device of iOS 8 or later that Metal does not
-support. The rest of Metal is absent: no protocol, class or constant is there, and the
-framework has no device to make them with. MetalKit is absent with it, and an application that
-asks for a device and gets nil never makes a `MTKView`. The rows are in `registry/Metal/` and
-`registry/MetalKit/`.
+There is no Metal driver in iOS 6, and the graphics of the A4 and A5 could not have one: the iPhone 4S and the iPad 2 have a
+PowerVR SGX 543, which runs OpenGL ES 2.0 and nothing later. The function answers the one device of the port, a device
+whose commands run on OpenGL ES 2.0 in a context of its own. `supportsFeatureSet:` and `supportsFamily:` answer no for every set and
+family, so an application that asks for a family before it uses one that needs it takes its own fallback.
+
+What the graphics cannot do is refused where it is asked for, and RenderPath.md lists it: a compute pipeline answers an error, and a depth
+and stencil state and the compute and blit encoders answer nil, with a line in the log. MetalKit is absent: an application that makes a
+`MTKView` has none to make. The rows are in `registry/Metal/` and `registry/MetalKit/`.

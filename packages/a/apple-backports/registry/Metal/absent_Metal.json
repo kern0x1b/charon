@@ -32,26 +32,6 @@
       "source": "SDK 16.4, Metal"
     },
     {
-      "api": "MTLBuffer",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLCommandBuffer",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
-    },
-    {
       "api": "MTLCommandBufferErrorDomain",
       "kind": "constant",
       "introduced": "8.0",
@@ -59,26 +39,6 @@
       "status": "absent",
       "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
       "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLCommandEncoder",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLCommandQueue",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, Metal"
     },
     {
@@ -142,36 +102,6 @@
       "source": "SDK 16.4, Metal"
     },
     {
-      "api": "MTLDrawable",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLFunction",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLLibrary",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
-    },
-    {
       "api": "MTLLibraryErrorDomain",
       "kind": "constant",
       "introduced": "8.0",
@@ -192,57 +122,7 @@
       "source": "SDK 16.4, Metal"
     },
     {
-      "api": "MTLRenderCommandEncoder",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLRenderPassAttachmentDescriptor",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLRenderPassColorAttachmentDescriptor",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLRenderPassColorAttachmentDescriptorArray",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
-    },
-    {
       "api": "MTLRenderPassDepthAttachmentDescriptor",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLRenderPassDescriptor",
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
@@ -262,36 +142,6 @@
       "source": "SDK 16.4, Metal"
     },
     {
-      "api": "MTLRenderPipelineColorAttachmentDescriptor",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLRenderPipelineColorAttachmentDescriptorArray",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLRenderPipelineDescriptor",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
-    },
-    {
       "api": "MTLRenderPipelineReflection",
       "kind": "class",
       "introduced": "8.0",
@@ -299,46 +149,6 @@
       "status": "absent",
       "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLRenderPipelineState",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLResource",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLSamplerDescriptor",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLSamplerState",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, Metal"
     },
     {
@@ -363,16 +173,6 @@
     },
     {
       "api": "MTLStructType",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLTextureDescriptor",
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
@@ -1758,26 +1558,6 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLDevice",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLTexture",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, Metal"
     }

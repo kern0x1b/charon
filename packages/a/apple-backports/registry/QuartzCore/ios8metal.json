@@ -7,8 +7,8 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the class is carried for what an application does before it has a drawable: it makes the layer and sets its properties; iOS 6 has no Metal, so the layer never has a drawable",
-      "effect": "a CALayer that keeps the device, the pixel format, the framebuffer flag, the drawable size, the transaction flag and the colour space it is given, and whose nextDrawable is nil",
+      "reason": "the class is carried as a layer that hands out textures of an OpenGL ES 2.0 drawable: iOS 6 has no Metal, and the port draws Metal's render API on OpenGL ES",
+      "effect": "a CALayer that keeps the device, the pixel format, the framebuffer flag, the drawable size, the transaction flag and the colour space it is given, and whose nextDrawable is a drawable of the port's device drawn into an OpenGL ES layer beneath it, and nil for a layer whose device is not the port's",
       "facts": "facts/QuartzCore/CAMetalLayer.md",
       "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods and the exception; the header of iOS 16.4 for the defaults"
     },

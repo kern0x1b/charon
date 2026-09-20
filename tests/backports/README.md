@@ -50,6 +50,11 @@ identifier and a fragment function that samples a texture, and one with a second
 `metallib2es.py` over it, compares the shaders and the reflection with `expected/quad/` (`CHARON_WRITE_EXPECTED=1` rewrites
 them), has glslang validate both shaders as ES 1.00, and holds the second render target to its refusal.
 
+`device/metal.m` is the device test of Metal's render API over OpenGL ES 2.0, an application: it needs the folder `quad.metallib.es2` in its bundle, which is
+`host/air2es/expected/quad` under that name (`app.resources`). It makes the device, reads the library, draws the fixture's two functions into a texture with `drawPrimitives` and
+with `drawIndexedPrimitives`, reads the pixels back and compares them with what the fixture computes, blends, draws into the drawable of a `CAMetalLayer`, and holds
+what the port cannot do to its refusals.
+
 `host/oslog/run.sh` runs the same 61 calls through the host's os_log, asked for its
 developer output, and through the port's formatter, and compares the two texts; the calls both
 platforms can make become the expectations of the device test.

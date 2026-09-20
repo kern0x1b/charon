@@ -1,0 +1,247 @@
+{
+  "framework": "Metal",
+  "entries": [
+    {
+      "api": "MTLTextureDescriptor",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class is carried so that an application describes a texture, a sampler, a render pass or a pipeline the way it does with Metal; the port draws them with OpenGL ES 2.0, the only graphics the A5 has",
+      "effect": "an object that keeps the properties it is given; a value the port cannot draw with is refused where it is used, as facts/Metal/RenderPath.md lists",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLSamplerDescriptor",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class is carried so that an application describes a texture, a sampler, a render pass or a pipeline the way it does with Metal; the port draws them with OpenGL ES 2.0, the only graphics the A5 has",
+      "effect": "an object that keeps the properties it is given; a value the port cannot draw with is refused where it is used, as facts/Metal/RenderPath.md lists",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLRenderPassAttachmentDescriptor",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class is carried so that an application describes a texture, a sampler, a render pass or a pipeline the way it does with Metal; the port draws them with OpenGL ES 2.0, the only graphics the A5 has",
+      "effect": "an object that keeps the properties it is given; a value the port cannot draw with is refused where it is used, as facts/Metal/RenderPath.md lists",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLRenderPassColorAttachmentDescriptor",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class is carried so that an application describes a texture, a sampler, a render pass or a pipeline the way it does with Metal; the port draws them with OpenGL ES 2.0, the only graphics the A5 has",
+      "effect": "an object that keeps the properties it is given; a value the port cannot draw with is refused where it is used, as facts/Metal/RenderPath.md lists",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLRenderPassColorAttachmentDescriptorArray",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class is carried so that an application describes a texture, a sampler, a render pass or a pipeline the way it does with Metal; the port draws them with OpenGL ES 2.0, the only graphics the A5 has",
+      "effect": "an object that keeps the properties it is given; a value the port cannot draw with is refused where it is used, as facts/Metal/RenderPath.md lists",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLRenderPassDescriptor",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class is carried so that an application describes a texture, a sampler, a render pass or a pipeline the way it does with Metal; the port draws them with OpenGL ES 2.0, the only graphics the A5 has",
+      "effect": "an object that keeps the properties it is given; a value the port cannot draw with is refused where it is used, as facts/Metal/RenderPath.md lists",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLRenderPipelineColorAttachmentDescriptor",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class is carried so that an application describes a texture, a sampler, a render pass or a pipeline the way it does with Metal; the port draws them with OpenGL ES 2.0, the only graphics the A5 has",
+      "effect": "an object that keeps the properties it is given; a value the port cannot draw with is refused where it is used, as facts/Metal/RenderPath.md lists",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLRenderPipelineColorAttachmentDescriptorArray",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class is carried so that an application describes a texture, a sampler, a render pass or a pipeline the way it does with Metal; the port draws them with OpenGL ES 2.0, the only graphics the A5 has",
+      "effect": "an object that keeps the properties it is given; a value the port cannot draw with is refused where it is used, as facts/Metal/RenderPath.md lists",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLRenderPipelineDescriptor",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class is carried so that an application describes a texture, a sampler, a render pass or a pipeline the way it does with Metal; the port draws them with OpenGL ES 2.0, the only graphics the A5 has",
+      "effect": "an object that keeps the properties it is given; a value the port cannot draw with is refused where it is used, as facts/Metal/RenderPath.md lists",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLDevice",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
+      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLResource",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
+      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLBuffer",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
+      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLTexture",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
+      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLSamplerState",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
+      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLFunction",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
+      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLLibrary",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
+      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLRenderPipelineState",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
+      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLCommandQueue",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
+      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLCommandBuffer",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
+      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLCommandEncoder",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
+      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLRenderCommandEncoder",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
+      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLDrawable",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
+      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    }
+  ]
+}

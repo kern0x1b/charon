@@ -18,10 +18,11 @@ colour space, whether `nextDrawable` may time out (yes), a maximum of drawables 
 
 ## Where iOS 6 differs
 
-There is no Metal and no device, so a layer of this package holds what it is given and never has a drawable: `nextDrawable` answers
-`nil`, as the header says it does when no drawable is available, and an application that checks for one falls back to the
-OpenGL ES path it has. `preferredDevice` is `nil`. What is held is held as given, and setting a device that is `nil` is what an application
-that asked `MTLCreateSystemDefaultDevice()` and got `nil` does. The maximum of drawables raises the exception of iOS 12 for a value
-outside 2 to 3. The properties of iOS 16 (`wantsExtendedDynamicRangeContent`, `EDRMetadata`, `developerHUDProperties`) are declared dynamic,
-as a layer's properties are, and the release's `CALayer` gives such a property an accessor that keeps the value, so they are kept and used for
-nothing; the class `CAEDRMetadata` that would fill the second is absent.
+The layer of this package draws into OpenGL ES: the first `nextDrawable` of a layer whose device is the one of the port makes a
+layer of OpenGL ES beneath it, as large as the drawable size, and answers a drawable whose texture is that layer's framebuffer; the
+drawable is shown when the command buffer that presents it is committed. A layer with no device, or a device that is not the port's,
+answers `nil`, as the header says it does when no drawable is available. `preferredDevice` is `nil`. The maximum of drawables raises the
+exception of iOS 12 for a value outside 2 to 3, and the port keeps one framebuffer and answers a drawable of it each time. The properties of
+iOS 16 (`wantsExtendedDynamicRangeContent`, `EDRMetadata`, `developerHUDProperties`) are declared dynamic, as a layer's properties are, and the
+release's `CALayer` gives such a property an accessor that keeps the value, so they are kept and used for nothing; the class `CAEDRMetadata`
+that would fill the second is absent.
