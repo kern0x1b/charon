@@ -1,0 +1,605 @@
+{
+  "framework": "CoreGraphics",
+  "entries": [
+    {
+      "api": "CGColorCreateCopyByMatchingToColorSpace()",
+      "kind": "function",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGColorSpaceCreateWithPlatformColorSpace()",
+      "kind": "function",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGImageGetUTType()",
+      "kind": "function",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceACESCGLinear",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceDCIP3",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceGenericXYZ",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceITUR_2020",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceITUR_709",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceROMMRGB",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceDisplayP3",
+      "kind": "constant",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGColorConversionInfoCreate()",
+      "kind": "function",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGColorConversionInfoCreateFromList()",
+      "kind": "function",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGColorSpaceIsWideGamutRGB()",
+      "kind": "function",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorConversionBlackPointCompensation",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceExtendedGray",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceExtendedLinearGray",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceExtendedLinearSRGB",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceExtendedSRGB",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceLinearGray",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceLinearSRGB",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGColorConversionInfoCreateWithOptions()",
+      "kind": "function",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGColorCreateGenericGrayGamma2_2()",
+      "kind": "function",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGColorCreateSRGB()",
+      "kind": "function",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGPDFContextBeginTag()",
+      "kind": "function",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGPDFContextEndTag()",
+      "kind": "function",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGPDFTagTypeGetName()",
+      "kind": "function",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGPDFTagPropertyActualText",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGPDFTagPropertyAlternativeText",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGPDFTagPropertyLanguageText",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGPDFTagPropertyTitleText",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceDisplayP3_PQ",
+      "kind": "constant",
+      "introduced": "13.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceITUR_2020_PQ",
+      "kind": "constant",
+      "introduced": "13.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGColorSpaceCreateExtended()",
+      "kind": "function",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGColorSpaceCreateExtendedLinearized()",
+      "kind": "function",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGColorSpaceCreateLinearized()",
+      "kind": "function",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceExtendedDisplayP3",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceExtendedITUR_2020",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceITUR_2100_HLG",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceITUR_2100_PQ",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGPDFContextCreateLinearizedPDF",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGPDFContextCreatePDFA",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGColorSpaceCreateWithColorSyncProfile()",
+      "kind": "function",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceLinearDisplayP3",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceLinearITUR_2020",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceITUR_2020_sRGBGamma",
+      "kind": "constant",
+      "introduced": "15.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceITUR_709_HLG",
+      "kind": "constant",
+      "introduced": "15.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceITUR_709_PQ",
+      "kind": "constant",
+      "introduced": "15.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGAffineTransformDecompose()",
+      "kind": "function",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGAffineTransformMakeWithComponents()",
+      "kind": "function",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGColorSpaceCreateCopyWithStandardRange()",
+      "kind": "function",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGPathCreateCopyByFlattening()",
+      "kind": "function",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGPathCreateCopyByIntersectingPath()",
+      "kind": "function",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGPathCreateCopyByNormalizing()",
+      "kind": "function",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGPathCreateCopyBySubtractingPath()",
+      "kind": "function",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGPathCreateCopyBySymmetricDifferenceOfPath()",
+      "kind": "function",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGPathCreateCopyByUnioningPath()",
+      "kind": "function",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGPathCreateCopyOfLineByIntersectingPath()",
+      "kind": "function",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGPathCreateCopyOfLineBySubtractingPath()",
+      "kind": "function",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGPathCreateSeparateComponents()",
+      "kind": "function",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    },
+    {
+      "api": "CGPathIntersectsPath()",
+      "kind": "function",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreGraphics"
+    }
+  ]
+}
