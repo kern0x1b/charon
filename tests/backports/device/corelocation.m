@@ -1,8 +1,11 @@
 #import <CoreLocation/CoreLocation.h>
 #include <dlfcn.h>
+#import <objc/message.h>
+#import <objc/runtime.h>
 #import "check.h"
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
 
 static NSString *image_of(Class cls)
 {
@@ -56,9 +59,18 @@ static void check_availability(void)
 @property (nonatomic, copy) NSString *lastErrorDomain;
 @property (nonatomic) CLRegionState lastState;
 @property (nonatomic) NSUInteger lastCount;
+@property (nonatomic) int ranging;
+@property (nonatomic, strong) CLBeaconRegion *rangingRegion;
 @end
 
 @implementation CharonLocationProbe
+- (void)locationManager:(CLLocationManager *)manager rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region withError:(NSError *)error
+{
+    self.ranging++;
+    self.rangingRegion = region;
+    self.lastErrorCode = error.code;
+    self.lastErrorDomain = error.domain;
+}
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
     self.updates++;
@@ -144,6 +156,67 @@ static void check_region_state(void)
     printf("info requestStateForRegion: states %d state %ld\n", probe.states, (long)probe.lastState);
 }
 
+static void check_beacons(void)
+{
+    Class regions = NSClassFromString(@"CLBeaconRegion"), beacons = NSClassFromString(@"CLBeacon");
+    CHECK(regions != Nil && beacons != Nil, "the beacon classes exist");
+    CHECK_EQUAL(image_of(regions), @"libCoreLocationBackports.dylib", "CLBeaconRegion comes from the backports");
+    CHECK_EQUAL(image_of(beacons), @"libCoreLocationBackports.dylib", "CLBeacon comes from the backports");
+    NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:@"E2C56DB5-DFFB-48D2-B060-D0F5A71096E0"];
+    CLBeaconRegion *whole = [[CLBeaconRegion alloc] initWithProximityUUID:uuid identifier:@"whole"];
+    CLBeaconRegion *majored = [[CLBeaconRegion alloc] initWithProximityUUID:uuid major:513 identifier:@"majored"];
+    CLBeaconRegion *exact = [[CLBeaconRegion alloc] initWithProximityUUID:uuid major:513 minor:258 identifier:@"exact"];
+    CHECK([whole isKindOfClass:[CLRegion class]] && [exact isKindOfClass:[CLRegion class]], "a beacon region is a region");
+    CHECK_EQUAL(whole.proximityUUID, uuid, "the proximity UUID");
+    CHECK(whole.major == nil && whole.minor == nil, "a region of a UUID has no major and no minor");
+    CHECK([majored.major isEqual:@513] && majored.minor == nil, "a region of a major has no minor");
+    CHECK([exact.major isEqual:@513] && [exact.minor isEqual:@258], "the major and the minor");
+    CHECK_EQUAL(exact.identifier, @"exact", "the identifier");
+    CHECK(!exact.notifyEntryStateOnDisplay, "the entry state on display starts NO");
+    exact.notifyEntryStateOnDisplay = YES;
+    CHECK(exact.notifyEntryStateOnDisplay, "the entry state on display answers what was set");
+    CHECK(exact.notifyOnEntry && exact.notifyOnExit, "a beacon region notifies on entry and exit to start");
+    NSUUID *noUUID = nil;
+    NSString *raisedNil = raised(^{ [[CLBeaconRegion alloc] initWithProximityUUID:noUUID identifier:@"none"]; });
+    CHECK([raisedNil hasPrefix:@"NSInvalidArgumentException"], "a beacon region needs a UUID");
+    NSMutableDictionary *data = [exact peripheralDataWithMeasuredPower:@(-70)];
+    NSData *bytes = data[@"kCBAdvDataAppleBeaconKey"];
+    const unsigned char expected[] = {0xE2, 0xC5, 0x6D, 0xB5, 0xDF, 0xFB, 0x48, 0xD2, 0xB0, 0x60, 0xD0, 0xF5, 0xA7, 0x10, 0x96, 0xE0,
+                                      0x02, 0x01, 0x01, 0x02, 0xBA};
+    CHECK(data.count == 1 && bytes.length == sizeof expected && memcmp(bytes.bytes, expected, sizeof expected) == 0,
+          "the advertisement is the UUID, the major and the minor big endian and the measured power");
+    NSData *defaulted = [whole peripheralDataWithMeasuredPower:nil][@"kCBAdvDataAppleBeaconKey"];
+    CHECK(defaulted.length == 21 && ((const signed char *)defaulted.bytes)[20] == -59 && ((const unsigned char *)defaulted.bytes)[17] == 0,
+          "with no measured power the advertisement carries -59, and an absent major and minor are zero");
+    CLBeacon *beacon = [[CLBeacon alloc] init];
+    CHECK(beacon.proximity == CLProximityUnknown && beacon.accuracy == -1 && beacon.rssi == 0 && beacon.proximityUUID == nil,
+          "a beacon with nothing ranged is unknown, of no accuracy and no signal");
+    CHECK([[beacon copy] isKindOfClass:beacons], "a beacon copies");
+    CharonLocationProbe *probe = [[CharonLocationProbe alloc] init];
+    CLLocationManager *manager = [[CLLocationManager alloc] init];
+    manager.delegate = probe;
+    CHECK(![CLLocationManager isMonitoringAvailableForClass:regions], "a beacon region cannot be monitored");
+    [manager startRangingBeaconsInRegion:exact];
+    spin_until(^BOOL { return probe.ranging > 0; }, 10);
+    spin_until(^BOOL { return NO; }, 1);
+    CHECK(probe.ranging == 1 && probe.rangingRegion == exact, "ranging is refused once, for the region asked");
+    CHECK([probe.lastErrorDomain isEqualToString:kCLErrorDomain] && probe.lastErrorCode == kCLErrorRangingUnavailable,
+          "ranging is refused as unavailable");
+    CHECK([raised(^{ [manager stopRangingBeaconsInRegion:exact]; }) isEqualToString:@"nothing"], "stopping ranging raises nothing");
+    CLBeaconRegion *missing = nil;
+    CHECK([raised(^{ [manager startRangingBeaconsInRegion:missing]; }) hasPrefix:@"NSInternalInconsistencyException"], "no region is refused");
+    CHECK(manager.rangedRegions.count == 0, "no region is ranged");
+    CLRegionState state = 99;
+    CharonLocationProbe *statePart = [[CharonLocationProbe alloc] init];
+    manager.delegate = statePart;
+    [manager requestStateForRegion:exact];
+    spin_until(^BOOL { return statePart.states > 0; }, 5);
+    state = statePart.lastState;
+    CHECK(state == CLRegionStateUnknown, "the state of a beacon region is unknown");
+}
+
+
+
 int main(int argc, char **argv)
 {
     @autoreleasepool {
@@ -153,6 +226,7 @@ int main(int argc, char **argv)
         check_availability();
         check_single_location();
         check_region_state();
+        check_beacons();
         printf("%d checks, %d failed\n", charon_checks, charon_failures);
     }
     return charon_failures;
