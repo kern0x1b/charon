@@ -548,7 +548,8 @@ static CharonSwipeController *charon_controller(UITableView *table, BOOL create)
     void (*original)(id, SEL, id) = (void (*)(id, SEL, id))class_getMethodImplementation([UITableView class], selector);
     class_replaceMethod([UITableView class], selector, imp_implementationWithBlock(^(UITableView *table, id delegate) {
         original(table, selector, delegate);
-        [table charon_installSwipeActions];
+        if (delegate)
+            [table charon_installSwipeActions];
     }), method_getTypeEncoding(class_getInstanceMethod([UITableView class], selector)));
 
     [self closeBefore:@selector(reloadData) block:^IMP(IMP original, SEL selector) {

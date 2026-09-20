@@ -320,6 +320,52 @@ static void edges_scenario(void)
     });
 }
 
+static void lifetime_scenario(void)
+{
+    gesture_step(0.1, ^{
+        __weak UITableView *weakTable = nil;
+        for (int round = 0; round < 40; round++) {
+            @autoreleasepool {
+                SwipeSource *source = [[SwipeSource alloc] init];
+                UITableView *bare = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 400)];
+                (void)bare;
+                UITableView *withDelegate = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 400)];
+                withDelegate.dataSource = source;
+                withDelegate.delegate = source;
+                [withDelegate layoutIfNeeded];
+                UITableView *cleared = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 400)];
+                cleared.dataSource = source;
+                cleared.delegate = source;
+                cleared.delegate = nil;
+                weakTable = withDelegate;
+            }
+        }
+        CHECK(weakTable == nil, "tables made with, without and with a cleared delegate go away without a crash, and the last one is gone");
+        UITableView *empty = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 400)];
+        empty.delegate = nil;
+        CHECK(empty.gestureRecognizers.count > 0, "a table without a delegate still works");
+        SwipeSource *source = [[SwipeSource alloc] init];
+        UITableView *late = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 400)];
+        late.dataSource = source;
+        late.delegate = nil;
+        late.delegate = source;
+        [late layoutIfNeeded];
+        NSUInteger recognizers = 0;
+        for (UIGestureRecognizer *recognizer in late.gestureRecognizers)
+            if (strstr(class_getName([recognizer class]), "UIPanGestureRecognizer") && ![recognizer isKindOfClass:NSClassFromString(@"UIScrollViewPanGestureRecognizer")])
+                recognizers++;
+        CHECK(recognizers == 1, "a delegate set after a nil one gets the swipe recognizer, once");
+        late.delegate = source;
+        late.delegate = nil;
+        late.delegate = source;
+        recognizers = 0;
+        for (UIGestureRecognizer *recognizer in late.gestureRecognizers)
+            if (strstr(class_getName([recognizer class]), "UIPanGestureRecognizer") && ![recognizer isKindOfClass:NSClassFromString(@"UIScrollViewPanGestureRecognizer")])
+                recognizers++;
+        CHECK(recognizers == 1, "and setting the delegate again does not add another");
+    });
+}
+
 static void bare_scenario(void)
 {
     use_table([[SwipeBare alloc] init]);
@@ -384,6 +430,7 @@ static void configuration_scenario(void)
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         gesture_step(0.01, ^{ CHECK(gesture_ready(), "touches can be sent to the application through the HID event system"); });
         rows_scenario();
+        lifetime_scenario();
         bare_scenario();
         edges_scenario();
         configuration_scenario();
