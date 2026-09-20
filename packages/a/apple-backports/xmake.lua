@@ -31,6 +31,7 @@ package("apple-backports")
 
     add_configs("localauthentication", {description = "Build libLocalAuthenticationBackports.dylib, for an application that asks for the owner's authentication; the device answers as one without a biometric sensor and without a way to ask for the passcode.", default = false, type = "boolean"})
 
+    add_configs("opengles", {description = "Build libOpenGLESBackports.dylib, for an application that names the functions OpenGL ES 3.0 added; the release's driver is ES 2.0, so they answer through its extensions where it has one and with an error where it has none.", default = false, type = "boolean"})
     add_configs("safariservices", {description = "Build libSafariServicesBackports.dylib, for an application that shows a web page in an SFSafariViewController; the page is drawn by the UIWebView of the release, in bars of the application's own.", default = false, type = "boolean"})
 
     add_configs("authenticationservices", {description = "Build libAuthenticationServicesBackports.dylib, for an application that signs a user in through a web page with an ASWebAuthenticationSession; it brings libSafariServicesBackports.dylib, whose page it shows.", default = false, type = "boolean"})
