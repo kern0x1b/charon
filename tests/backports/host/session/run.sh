@@ -5,7 +5,7 @@ FOUNDATION=${FOUNDATION:-$here/../../../../packages/a/apple-backports/Foundation
 DEVICE=${DEVICE:-$here/../../device}
 CHECK=${CHECK:-$DEVICE}
 BUILD=${BUILD:-$(mktemp -d)}
-sources="NSURLSession.m NSURLSessionConfiguration.m NSURLSessionConfiguration+BackgroundIdentifier.m NSURLSessionTask+Priority.m NSURLSession+AllTasks.m"
+sources="NSURLSession.m NSURLSessionTaskMetrics.m NSURLSessionConfiguration.m NSURLSessionConfiguration+BackgroundIdentifier.m NSURLSessionTask+Priority.m NSURLSession+AllTasks.m"
 quiet="-Wno-deprecated-declarations -Wno-incomplete-implementation -Wno-objc-protocol-method-implementation"
 mkdir -p "$BUILD/plain" "$BUILD/renamed"
 for source in $sources; do

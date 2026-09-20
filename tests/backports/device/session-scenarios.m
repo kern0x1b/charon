@@ -250,6 +250,40 @@ static NSInteger status_of(NSURLResponse *response)
 
 @end
 
+@interface MetricsRecorder : SessionRecorder
+@end
+
+@implementation MetricsRecorder
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"metrics tx=%lu redirects=%lu", (unsigned long)metrics.transactionMetrics.count, (unsigned long)metrics.redirectCount];
+    NSDate *first = [metrics.transactionMetrics.firstObject fetchStartDate];
+    NSDate *last = [metrics.transactionMetrics.lastObject responseEndDate] ?: [metrics.transactionMetrics.lastObject fetchStartDate];
+    NSDateInterval *interval = metrics.taskInterval;
+    [text appendFormat:@" interval=%d", interval.duration >= 0 && [interval.startDate compare:first] != NSOrderedDescending && [interval.endDate compare:last] != NSOrderedAscending];
+    for (NSURLSessionTaskTransactionMetrics *transaction in metrics.transactionMetrics) {
+        NSMutableString *dates = [NSMutableString string];
+        NSDate *previous = nil;
+        BOOL ordered = YES;
+        NSArray *stamps = @[transaction.fetchStartDate ?: [NSNull null], transaction.requestStartDate ?: [NSNull null], transaction.requestEndDate ?: [NSNull null], transaction.responseStartDate ?: [NSNull null], transaction.responseEndDate ?: [NSNull null]];
+        NSArray *letters = @[@"F", @"Q", @"q", @"S", @"E"];
+        for (NSUInteger index = 0; index < stamps.count; index++) {
+            if ([stamps[index] isKindOfClass:[NSNull class]])
+                continue;
+            [dates appendString:letters[index]];
+            if (previous && [previous compare:stamps[index]] == NSOrderedDescending)
+                ordered = NO;
+            previous = stamps[index];
+        }
+        [text appendFormat:@" [%@ status=%ld type=%ld proto=%@ dates=%@ ordered=%d proxy=%d]", path_of(transaction.request.URL), (long)status_of(transaction.response), (long)transaction.resourceFetchType,
+         transaction.networkProtocolName ?: @"-", dates, ordered, transaction.proxyConnection];
+    }
+    [self record:text];
+}
+
+@end
+
 @interface CharonTestProtocol : NSURLProtocol
 @end
 
@@ -1021,6 +1055,24 @@ static NSArray *scenario_cache(SessionHarness *harness)
     return finish_session(harness, delegateSession, recorder, transcript);
 }
 
+static NSArray *scenario_metrics(SessionHarness *harness)
+{
+    NSMutableArray *transcript = [NSMutableArray array];
+    MetricsRecorder *recorder = [[MetricsRecorder alloc] init];
+    NSMutableSet *implemented = [recorder.implemented mutableCopy];
+    [implemented removeObject:@"URLSession:dataTask:willCacheResponse:completionHandler:"];
+    recorder.implemented = implemented;
+    NSURLSession *session = session_with(harness, [harness.configurationClass ephemeralSessionConfiguration], recorder);
+    [[session dataTaskWithURL:url_for(harness, @"/bytes?n=1000")] resume];
+    wait_for(harness, recorder.completed);
+    [[session dataTaskWithURL:url_for(harness, @"/redirect?code=302&to=/bytes?n=100")] resume];
+    wait_for(harness, recorder.completed);
+    [[session dataTaskWithURL:[NSURL URLWithString:@"http://127.0.0.1:1/refused"]] resume];
+    wait_for(harness, recorder.completed);
+    [transcript addObject:run_data_handler(harness, session, [NSURLRequest requestWithURL:url_for(harness, @"/status?code=404")], NULL, NULL)];
+    return finish_session(harness, session, recorder, transcript);
+}
+
 static NSArray *scenario_background(SessionHarness *harness)
 {
     NSMutableArray *transcript = [NSMutableArray array];
@@ -1051,6 +1103,7 @@ const SessionScenarioEntry session_scenarios[] = {
     {"tasks", scenario_tasks},
     {"cache", scenario_cache},
     {"background", scenario_background},
+    {"metrics", scenario_metrics},
 };
 
 const size_t session_scenario_count = sizeof(session_scenarios) / sizeof(session_scenarios[0]);
@@ -1337,6 +1390,22 @@ NSDictionary *session_expected_transcripts(void)
             @"declined body served 2",
             @"will-cache 8",
             @"complete nil state=3 same-error=1 status=200 received=8/8 sent=0/0",
+            @"invalid nil",
+        ],
+        @"metrics": @[
+            @"handler status=404 length=10 error=nil data=yes",
+            @"response 200 expected=1000 state=0",
+            @"data",
+            @"metrics tx=1 redirects=0 interval=1 [/bytes?n=1000 status=200 type=1 proto=http/1.1 dates=FQqSE ordered=1 proxy=0]",
+            @"complete nil state=3 same-error=1 status=200 received=1000/1000 sent=0/0",
+            @"redirect 302 GET /bytes?n=100 body=none custom=- type=- current=/redirect?code=302&to=/bytes?n=100",
+            @"response 200 expected=100 state=0",
+            @"data",
+            @"metrics tx=2 redirects=1 interval=1 [/redirect?code=302&to=/bytes?n=100 status=302 type=1 proto=http/1.1 dates=FQqSE ordered=1 proxy=0] [/bytes?n=100 status=200 type=1 proto=http/1.1 dates=FQqSE ordered=1 proxy=0]",
+            @"complete nil state=3 same-error=1 status=200 received=100/100 sent=0/0",
+            @"metrics tx=1 redirects=0 interval=1 [/refused status=0 type=1 proto=- dates=F ordered=1 proxy=0]",
+            @"complete NSURLErrorDomain/-1004 failing=/refused state=3 same-error=1 status=0 received=0/0 sent=0/0",
+            @"metrics tx=1 redirects=0 interval=1 [/status?code=404 status=404 type=1 proto=http/1.1 dates=FQqSE ordered=1 proxy=0]",
             @"invalid nil",
         ],
         @"background": @[

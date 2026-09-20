@@ -1,4 +1,4 @@
-#import <Foundation/Foundation.h>
+#import "CharonURLSessionMetrics.h"
 #include <limits.h>
 #include <pthread.h>
 #include <stdlib.h>
@@ -94,6 +94,9 @@ typedef NS_ENUM(NSInteger, CharonTaskBody) {
     NSString *_lastModified;
     BOOL _resumeInvalid;
     NSData *_producedResumeData;
+
+    NSMutableArray *_metricsTransactions;
+    NSDate *_metricsStart;
 }
 @end
 
@@ -631,12 +634,44 @@ static void charon_task_release_slot(NSURLSessionTask *task)
     }
 }
 
+static void charon_metrics_begin(NSURLSessionTask *task, NSURLRequest *request, NSURLSessionTaskMetricsResourceFetchType type)
+{
+    @synchronized (task) {
+        NSURLSessionTaskTransactionMetrics *last = task->_metricsTransactions.lastObject;
+        [last charon_finished];
+        [task->_metricsTransactions addObject:[[NSURLSessionTaskTransactionMetrics alloc] initCharonWithRequest:request fetchType:type]];
+    }
+}
+
+static void charon_metrics_response(NSURLSessionTask *task, NSURLResponse *response)
+{
+    @synchronized (task) {
+        [task->_metricsTransactions.lastObject charon_receivedResponse:response];
+    }
+}
+
+static void charon_metrics_finish(NSURLSessionTask *task)
+{
+    @synchronized (task) {
+        [task->_metricsTransactions.lastObject charon_finished];
+    }
+}
+
+static NSURLSessionTaskMetrics *charon_metrics_collect(NSURLSessionTask *task)
+{
+    @synchronized (task) {
+        [task->_metricsTransactions.lastObject charon_finished];
+        return [[NSURLSessionTaskMetrics alloc] initCharonWithTransactions:task->_metricsTransactions start:task->_metricsStart ?: [NSDate date] end:[NSDate date]];
+    }
+}
+
 static void charon_task_complete_event(NSURLSessionTask *task, NSError *error)
 {
     NSURLSession *session = task->_session;
     CharonDataHandler dataHandler = task->_dataHandler;
     CharonDownloadHandler downloadHandler = task->_downloadHandler;
     BOOL handlerCalled = task->_handlerCalled;
+    NSURLSessionTaskMetrics *metrics = charon_metrics_collect(task);
     NSData *data = error ? nil : (task->_receivedData ?: [NSData data]);
     NSURLResponse *response = error ? nil : task->_response;
     task->_dataHandler = nil;
@@ -647,6 +682,9 @@ static void charon_task_complete_event(NSURLSessionTask *task, NSError *error)
             task->_state = NSURLSessionTaskStateCompleted;
             task->_error = error;
         }
+        id metricsDelegate = charon_session_delegate(session);
+        if ([metricsDelegate respondsToSelector:@selector(URLSession:task:didFinishCollectingMetrics:)])
+            [metricsDelegate URLSession:session task:task didFinishCollectingMetrics:metrics];
         if (dataHandler) {
             dataHandler(data, response, error);
         } else if (downloadHandler) {
@@ -764,6 +802,7 @@ static void charon_data_finished(NSURLSessionTask *task)
 
 static void charon_task_finished_loading(NSURLSessionTask *task)
 {
+    charon_metrics_finish(task);
     if (charon_is_download(task))
         charon_download_finished(task);
     else
@@ -797,6 +836,8 @@ static void charon_task_become_download(NSURLSessionTask *task)
     download->_entityTag = charon_header(task->_response, @"ETag");
     download->_lastModified = charon_header(task->_response, @"Last-Modified");
     download->_deferredInput = task->_deferredInput;
+    download->_metricsTransactions = task->_metricsTransactions;
+    download->_metricsStart = task->_metricsStart;
     download->_loader = task->_loader;
     download->_loader->_task = download;
     task->_holdsSlot = NO;
@@ -887,6 +928,7 @@ static void charon_task_response(NSURLSessionTask *task, NSURLResponse *response
         task->_response = [response copy];
         task->_countOfBytesExpectedToReceive = response.expectedContentLength;
     }
+    charon_metrics_response(task, response);
     charon_store_cookies(task, response);
     if (charon_is_download(task)) {
         charon_download_response(task, response);
@@ -1043,6 +1085,8 @@ static void charon_task_redirect(NSURLSessionTask *task, NSURLRequest *next, NSU
     NSURLSession *session = task->_session;
     charon_task_restart_idle_timer(task);
     charon_store_cookies(task, response);
+    charon_metrics_response(task, response);
+    charon_metrics_finish(task);
     if (++task->_redirects > 20) {
         charon_task_finish(task, charon_task_error(task, NSURLErrorHTTPTooManyRedirects, @"too many HTTP redirects", response.URL));
         return;
@@ -1198,6 +1242,7 @@ static void charon_task_load(NSURLSessionTask *task, NSURLRequest *request)
     BOOL dontLoad;
     NSCachedURLResponse *cached = charon_custom_cached_response(task, request, &dontLoad);
     if (cached) {
+        charon_metrics_begin(task, request, NSURLSessionTaskMetricsResourceFetchTypeLocalCache);
         charon_perform(^{
             charon_task_input(loader, ^(NSURLSessionTask *current) {
                 charon_task_response(current, cached.response);
@@ -1217,6 +1262,7 @@ static void charon_task_load(NSURLSessionTask *task, NSURLRequest *request)
         charon_task_finish(task, charon_task_error(task, NSURLErrorResourceUnavailable, @"resource unavailable", nil));
         return;
     }
+    charon_metrics_begin(task, request, NSURLSessionTaskMetricsResourceFetchTypeNetworkLoad);
     NSURLRequest *wire = charon_wire_request(task, request);
     Class protocolClass = charon_protocol_class(task, request);
     if (protocolClass) {
@@ -1541,6 +1587,8 @@ static id charon_session_task(NSURLSession *session, Class kind, NSURLRequest *r
     task->_currentRequest = task->_originalRequest;
     task->_state = NSURLSessionTaskStateSuspended;
     task->_deferredInput = [NSMutableArray array];
+    task->_metricsTransactions = [NSMutableArray array];
+    task->_metricsStart = [NSDate date];
     return task;
 }
 

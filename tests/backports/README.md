@@ -747,3 +747,7 @@ deceleration does not take it. `swipeui.m` is the example.
 unlock track through the HID event system. An application that is launched while the screen is locked comes up inactive
 (`applicationState` 1) and receives no touch, and `charon-launch` is refused with "device locked" in
 `/private/var/charon/events.log`; a gesture test runs `wake` first and checks that the application is active before it touches.
+
+The `metrics` scenario of `session-scenarios.m` holds the task metrics of the port's `NSURLSession` to what the system's session
+reports for a data task, a redirect, a refused connection and a handler task, on an ephemeral configuration; `host/session/run.sh`
+runs it beside the others and a device runs it with the host's `server.py` reached through a reverse forward of the ssh tunnel.
