@@ -87,51 +87,6 @@ CGSize charon_fit_size(UICollectionReusableView *view, NSIndexPath *indexPath, N
     return CGSizeMake(estimatedWidth ? size.width : proposed.width, estimatedHeight ? size.height : proposed.height);
 }
 
-@implementation CharonCompositionalAttributes {
-    __weak UICollectionViewLayout *_charonLayout;
-}
-
-- (UICollectionViewLayout *)charonLayout
-{
-    return _charonLayout;
-}
-
-- (void)setCharonLayout:(UICollectionViewLayout *)layout
-{
-    _charonLayout = layout;
-}
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    CharonCompositionalAttributes *copy = [super copyWithZone:zone];
-    copy->_charonLayout = _charonLayout;
-    return copy;
-}
-
-@end
-
-@implementation UICollectionReusableView (CharonSelfSizing)
-
-- (void)charon_applyLayoutAttributes:(UICollectionViewLayoutAttributes *)attributes
-{
-    [self charon_applyLayoutAttributes:attributes];
-    if ([attributes isKindOfClass:[CharonCompositionalAttributes class]]) {
-        UICollectionViewLayout *layout = [(CharonCompositionalAttributes *)attributes charonLayout];
-        if (layout)
-            [layout charon_measureView:self attributes:attributes];
-    }
-}
-
-+ (void)load
-{
-    Method original = class_getInstanceMethod([UICollectionReusableView class], @selector(applyLayoutAttributes:));
-    Method replacement = class_getInstanceMethod([UICollectionReusableView class], @selector(charon_applyLayoutAttributes:));
-    if (original && replacement)
-        method_exchangeImplementations(original, replacement);
-}
-
-@end
-
 @implementation UICollectionView (CharonSelfSizing)
 
 - (void)charon_layoutSubviews
@@ -147,10 +102,17 @@ CGSize charon_fit_size(UICollectionReusableView *view, NSIndexPath *indexPath, N
 
 + (void)load
 {
-    Method original = class_getInstanceMethod([UICollectionView class], @selector(layoutSubviews));
-    Method replacement = class_getInstanceMethod([UICollectionView class], @selector(charon_layoutSubviews));
-    if (original && replacement)
-        method_exchangeImplementations(original, replacement);
+    SEL original = @selector(layoutSubviews), replacement = @selector(charon_layoutSubviews);
+    Method own = class_getInstanceMethod([UICollectionView class], replacement);
+    IMP replaced = method_getImplementation(own);
+    const char *types = method_getTypeEncoding(own);
+    Method inherited = class_getInstanceMethod([UICollectionView class], original);
+    if (!inherited)
+        return;
+    if (class_addMethod([UICollectionView class], original, replaced, types))
+        class_replaceMethod([UICollectionView class], replacement, method_getImplementation(inherited), types);
+    else
+        method_exchangeImplementations(inherited, own);
 }
 
 @end

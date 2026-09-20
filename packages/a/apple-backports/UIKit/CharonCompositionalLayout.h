@@ -134,13 +134,7 @@ static inline void charon_layout_say_once(NSString *key, NSString *text)
 - (void)detach;
 @end
 
-@interface CharonCompositionalAttributes : UICollectionViewLayoutAttributes
-- (UICollectionViewLayout *)charonLayout;
-- (void)setCharonLayout:(UICollectionViewLayout *)layout;
-@end
-
 @interface UICollectionViewLayout (CharonSelfSizing)
-- (void)charon_measureView:(UICollectionReusableView *)view attributes:(UICollectionViewLayoutAttributes *)attributes;
 - (BOOL)charon_settleMeasurements;
 @end
 

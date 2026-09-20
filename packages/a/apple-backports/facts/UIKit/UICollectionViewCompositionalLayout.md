@@ -148,7 +148,7 @@ frames that answers `sizeThatFits:`, and one that cannot size itself.
   measured ones push off screen is not measured; the rest is the estimate; a measured size stays until the layout is invalidated
   from outside (a reload, a change of the layout's size) or is measured at another width.
 - The count-fixed vertical group divides its estimate among its items and does not measure them.
-- A view is measured after the collection view has placed it (by the view's own layout pass, which is run again); a header or footer
+- A view is measured after the collection view has placed it (a hook on the collection view's own layout pass, which is run again; the layout notes what it returned); a header or footer
   the same way, in its kind and index path.
 
 ## What the port cannot do

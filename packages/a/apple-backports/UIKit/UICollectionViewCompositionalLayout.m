@@ -985,7 +985,7 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
     CharonOrthogonalController *_orthogonal;
     NSMutableDictionary *_measured;
     NSMutableDictionary *_measuredAgainst;
-    NSMutableArray *_pending;
+    NSMutableDictionary *_pending;
     BOOL _measuring;
 }
 
@@ -1164,25 +1164,36 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
     [_orthogonal updateSections:_solvedSections view:view environment:environment];
 }
 
-- (void)charon_measureView:(UICollectionReusableView *)view attributes:(UICollectionViewLayoutAttributes *)attributes
+- (void)charon_note:(CharonSolvedElement *)element attributes:(UICollectionViewLayoutAttributes *)attributes
 {
-    if (_measuring || attributes.representedElementCategory == UICollectionElementCategoryDecorationView)
+    if (_measuring || element->category == 2 || !(element->estimatedWidth || element->estimatedHeight))
         return;
-    BOOL cell = attributes.representedElementCategory == UICollectionElementCategoryCell;
-    NSString *kind = cell ? @"" : (attributes.representedElementKind ?: @"");
-    NSString *key = [NSString stringWithFormat:@"%d/%@/%ld/%ld", cell ? 0 : 1, kind, (long)attributes.indexPath.section, (long)attributes.indexPath.item];
+    BOOL cell = element->category == 0;
+    NSString *key = [NSString stringWithFormat:@"%d/%@/%ld/%ld", cell ? 0 : 1, cell ? @"" : element->kind, (long)element->indexPath.section, (long)element->indexPath.item];
     if (!_pending)
-        _pending = [NSMutableArray array];
-    for (NSDictionary *entry in _pending) {
-        if ([entry[@"key"] isEqual:key])
-            return;
+        _pending = [NSMutableDictionary dictionary];
+    _pending[key] = @{@"path" : element->indexPath, @"kind" : cell ? @"" : element->kind, @"cell" : @(cell), @"frame" : [NSValue valueWithCGRect:attributes.frame]};
+}
+
+- (UICollectionReusableView *)charon_shownSupplementaryOfKind:(NSString *)kind frame:(CGRect)frame
+{
+    UICollectionReusableView *best = nil;
+    CGFloat distance = CGFLOAT_MAX;
+    for (UIView *sub in self.collectionView.subviews) {
+        if (![sub isKindOfClass:[UICollectionReusableView class]] || [sub isKindOfClass:[UICollectionViewCell class]])
+            continue;
+        CGFloat d = fabs(sub.frame.origin.x - frame.origin.x) + fabs(sub.frame.origin.y - frame.origin.y) + fabs(sub.frame.size.width - frame.size.width) + fabs(sub.frame.size.height - frame.size.height);
+        if (d < distance) {
+            distance = d;
+            best = (UICollectionReusableView *)sub;
+        }
     }
-    [_pending addObject:@{@"key" : key, @"path" : attributes.indexPath, @"kind" : kind, @"cell" : @(cell), @"view" : [NSValue valueWithNonretainedObject:view]}];
+    return distance < 0.5 ? best : nil;
 }
 
 - (BOOL)charon_settleMeasurements
 {
-    NSArray *entries = [_pending sortedArrayUsingComparator:^NSComparisonResult(NSDictionary *a, NSDictionary *b) {
+    NSArray *entries = [_pending.allValues sortedArrayUsingComparator:^NSComparisonResult(NSDictionary *a, NSDictionary *b) {
         NSComparisonResult order = [@([b[@"cell"] boolValue]) compare:@([a[@"cell"] boolValue])];
         return order != NSOrderedSame ? order : [a[@"path"] compare:b[@"path"]];
     }];
@@ -1197,7 +1208,7 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
         NSIndexPath *path = entry[@"path"];
         BOOL cell = [entry[@"cell"] boolValue];
         NSString *kind = cell ? nil : entry[@"kind"];
-        UICollectionReusableView *shown = cell ? [view cellForItemAtIndexPath:path] : [entry[@"view"] nonretainedObjectValue];
+        UICollectionReusableView *shown = cell ? [view cellForItemAtIndexPath:path] : [self charon_shownSupplementaryOfKind:kind frame:[entry[@"frame"] CGRectValue]];
         CharonSolvedElement *element = _lookup[[self keyForCategory:cell ? 0 : 1 kind:kind indexPath:path]];
         if (!shown || !shown.superview || !element)
             continue;
@@ -1332,16 +1343,10 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
 - (UICollectionViewLayoutAttributes *)attributesForElement:(CharonSolvedElement *)element
 {
     UICollectionViewLayoutAttributes *attributes;
-    if (element->category == 0) {
-        attributes = [CharonCompositionalAttributes layoutAttributesForCellWithIndexPath:element->indexPath];
-        if (element->estimatedWidth || element->estimatedHeight)
-            [(CharonCompositionalAttributes *)attributes setCharonLayout:self];
-    }
-    else if (element->category == 1) {
-        attributes = [CharonCompositionalAttributes layoutAttributesForSupplementaryViewOfKind:element->kind withIndexPath:element->indexPath];
-        if (element->estimatedWidth || element->estimatedHeight)
-            [(CharonCompositionalAttributes *)attributes setCharonLayout:self];
-    }
+    if (element->category == 0)
+        attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:element->indexPath];
+    else if (element->category == 1)
+        attributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:element->kind withIndexPath:element->indexPath];
     else
         attributes = [UICollectionViewLayoutAttributes layoutAttributesForDecorationViewOfKind:element->kind withIndexPath:element->indexPath];
     CGRect frame = element->frame;
@@ -1401,6 +1406,7 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
                 if (element->category == 0 && element->hasOwner && !element->scrolls && !charon_within_owner(attributes.frame, element->owner, clipped))
                     continue;
                 [found addObject:attributes];
+                [self charon_note:element attributes:attributes];
             }
         }
     }
@@ -1408,8 +1414,10 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
         return found;
     for (CharonSolvedElement *element in _boundaryElements) {
         UICollectionViewLayoutAttributes *attributes = [self attributesForElement:element];
-        if (CGRectIntersectsRect(attributes.frame, clipped))
+        if (CGRectIntersectsRect(attributes.frame, clipped)) {
             [found addObject:attributes];
+            [self charon_note:element attributes:attributes];
+        }
     }
     return found;
 }
