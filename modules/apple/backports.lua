@@ -127,7 +127,16 @@ function sources(root, library)
     return found
 end
 
-function band(release_exports, objects)
+local function names_a_class(symbols)
+    for _, symbol in ipairs(symbols) do
+        if symbol:startswith("_OBJC_CLASS_$_") or symbol:startswith("_OBJC_METACLASS_$_") or symbol:startswith("_OBJC_IVAR_$_") then
+            return true
+        end
+    end
+    return false
+end
+
+function band(release_exports, objects, arrived)
     local kept, reexported = {}, {}
     for _, object in ipairs(objects) do
         local symbols = exported_symbols(object)
@@ -137,7 +146,7 @@ function band(release_exports, objects)
                 table.insert(present, symbol)
             end
         end
-        if #present == 0 then
+        if #present == 0 or (arrived and not names_a_class(present) and arrived(object)) then
             table.insert(kept, object)
         elseif #present == #symbols then
             table.join2(reexported, symbols)
@@ -278,7 +287,7 @@ local function carried_classes(cache)
 end
 
 local function link(opt, library, attach, objects, releases, outputdir, checked)
-    local kept, reexported = band(releases[1].exports, objects)
+    local kept, reexported = band(releases[1].exports, objects, checked and later_than(opt, checked.release))
     if not reexports(opt.deployment) then
         reexported = {}
     end
@@ -615,6 +624,7 @@ function build(opt)
     local release = loaded(opt.cache, opt.architecture)
     opt = table.join(opt, {triple = opt.architecture .. "-apple-ios" .. opt.deployment})
     local attach, objects, origins = compiled(opt)
+    opt = table.join(opt, {origins = origins})
     check_releases(opt, objects, origins)
     local built = {}
     for _, library in ipairs(LIBRARIES) do
@@ -665,7 +675,21 @@ local function listed(root)
     return LISTED[root]
 end
 
+local INTRODUCED = {}
+
 local function introduced(opt, source, object)
+    local key = object .. ":" .. hash.sha256(object)
+    INTRODUCED[key] = INTRODUCED[key] or introduced_in(opt, source, object)
+    return INTRODUCED[key]
+end
+
+function later_than(opt, release)
+    return function (object)
+        return dyld.compare_versions(introduced(opt, opt.origins[object], object), release) > 0
+    end
+end
+
+function introduced_in(opt, source, object)
     local names = availability_names(exported_symbols(object))
     local releases = {}
     for _, name in ipairs(table.orderkeys(names)) do
@@ -776,6 +800,7 @@ end
 function stage_bands(opt)
     opt = table.join(opt, {triple = opt.architecture .. "-apple-ios" .. opt.deployment})
     local attach, objects, origins = compiled(opt)
+    opt = table.join(opt, {origins = origins})
     local points = {[opt.deployment] = true}
     for _, library in ipairs(staged_libraries(opt)) do
         for _, object in ipairs(objects[library.name]) do
@@ -809,7 +834,7 @@ function stage_bands(opt)
             table.insert(caches, {cache = file, release = release})
             local reexported = {}
             for _, library in ipairs(staged_libraries(opt)) do
-                local _, symbols = band(found.exports, objects[library.name])
+                local _, symbols = band(found.exports, objects[library.name], later_than(opt, release))
                 table.join2(reexported, symbols)
             end
             signatures[release] = table.concat(reexported, " ")

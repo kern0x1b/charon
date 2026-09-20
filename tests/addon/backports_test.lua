@@ -103,6 +103,12 @@ local function surface_step(backports, opt, folder, found)
         table.insert(found, string.format("a release that has the class must re-export it instead of defining it again, not keep %d objects and re-export %s",
                                           #kept, table.concat(reexported, ",")))
     end
+    kept, reexported = backports.band(release_ten, {object}, function () return true end)
+    table.sort(reexported)
+    if #kept ~= 0 or table.concat(reexported, ",") ~= "_OBJC_CLASS_$_NSDateInterval,_OBJC_METACLASS_$_NSDateInterval" then
+        table.insert(found, string.format("a class the release exports is the release's whichever release the object arrived in, so the band must not keep %d objects and re-export %s",
+                                          #kept, table.concat(reexported, ",")))
+    end
 end
 
 -- A band drops what the release already carries and re-exports it in its place,
@@ -156,6 +162,19 @@ function failures(opt)
     table.sort(reexported)
     if table.concat(kept, ",") ~= table.concat({eight, methods}, ",") or table.concat(reexported, ",") ~= "_also_seven,_arrived_seven" then
         table.insert(found, "a release that exports every symbol of an object must drop the object and re-export its symbols, not keep " .. table.concat(kept, ",") .. " and re-export " .. table.concat(reexported, ","))
+    end
+    kept, reexported = backports.band(release_seven, {seven, eight, methods}, function (candidate) return candidate == seven end)
+    if table.concat(kept, ",") ~= table.concat({seven, eight, methods}, ",") or #reexported ~= 0 then
+        table.insert(found, "an object that arrived after the band's release is kept whatever the release exports, not re-exported as " .. table.concat(reexported, ","))
+    end
+    kept, reexported = backports.band(release_seven, {seven, eight, methods}, function (candidate) return false end)
+    table.sort(reexported)
+    if table.concat(reexported, ",") ~= "_also_seven,_arrived_seven" then
+        table.insert(found, "an object that arrived no later than the band's release is weighed by the release's exports: " .. table.concat(reexported, ","))
+    end
+    local kept_mixed = fixtures.refusal(function () kept = backports.band(release_seven, {mixed}, function () return true end) end)
+    if kept_mixed or #kept ~= 1 then
+        table.insert(found, "an object that arrived after the band's release is kept even where it holds names the release exports beside names it does not: " .. tostring(kept_mixed))
     end
     local errors = fixtures.refusal(function () backports.band(release_seven, {mixed}) end)
     if not errors or not errors:find("_arrived_seven_too", 1, true) or not errors:find("_arrived_eight_too", 1, true) then
