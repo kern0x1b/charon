@@ -109,6 +109,18 @@ with no tolerance; when all agree it writes the system's answers to `device/comp
 *n*'s two answers); they are a hunting tool, and rows that mix fractional and absolute widths still differ in a few. Give the
 group a temporary directory of its own and a bundle identifier of its own (the `windowed` function's) when others run at the same time.
 
+The `commands`, `activityitems`, `fontpicker`, `inert`, `traits13`, `controlactions`, `controlmenus`, `views13`, `images13`, `colors13`, `listmenus`, `appearing` and
+`textinteraction` groups of `host/uikit2/run.sh` hold the rest of iOS 13 and 14's UIKit to the host's. The classes that are new (`UICommand`, the key command, the activity
+items configuration, the font picker's configuration and picker, the interactions that never fire) are compared statement by statement with the system's as the menus are.
+The members added to classes the host has too cannot be renamed apart from them, so `windowed_expected` records the system's answers in a process that has none of the
+port's code and then runs the port's in another and compares them: `controlactions` (the events, the entries and the exceptions of an action on a control, and the primary
+action of eight kinds of control), `controlmenus` (menus and roles of buttons, bar button items with actions and menus, segmented controls of actions), `views13` (the members of
+views, controllers, controls and accessibility, and the attributed replacement of a text), `images13` (the tinted images drawn and compared by bytes, baselines,
+configurations, images of a bundle) and `colors13` (dynamic colours resolved against 27 collections, and the ten system colours the host and iOS 13 share). `traits13` compares
+the appearance traits with the host's over 400 random merges (2434 checks) beside the older `traits` group's 335. `listmenus`, `appearing` and `textinteraction` check the
+port's own behaviour where the host has none to compare: the interaction a table or collection view gets, the order of `viewIsAppearing:`, and the gestures of a text interaction on a
+text field. A category whose name has a digit in it is invisible to the `windowed_renamed` groups' scan for selectors; those groups' categories have none.
+
 `host/registry/run.sh` holds the build's check of the registry to a release's own
 Objective-C metadata. The build refuses an `absent` entry whose class, method,
 accessor or protocol the release carries, and an `ignored` entry the release
@@ -848,3 +860,10 @@ the system's `NSOperationQueue` over `device/underlying-cases.m` (twenty-one rec
 serial and of a concurrent queue with a limit, the refusal to change the queue when it is not empty, priority and dependencies,
 cancelling, suspending, counts, asynchronous operations), and writes what the system answered for `device/underlying.m`, which runs
 the same cases through the real `NSOperationQueue` on the release.
+  are asked whether they answer. It writes `/private/var/backports/lists.log` and `lists.done`.
+- `uirest.m` (`uirest-Info.plist`): an application with a window scene, the rest of iOS 13 and 14's UIKit: the commands, the activity items configuration and the sheet made of it, the font
+  picker, the interactions that never fire, the appearance traits and the current collection, dynamic and system colours (that a dynamic colour is its own colour and an ordinary
+  colour of the same value does not turn dynamic, and that a view painted with the system background is white), the actions of a control on real events, the primary action of
+  a button, a switch and a text field, the menus of a button and a bar button item shown as action sheets, the context menu of a table row, `viewIsAppearing:` in a presented and a
+  navigated controller, the unwind question, the change of orientation told to the scene delegate, `textFieldDidChangeSelection:` at the end of the run loop, tinted and
+  baseline images, images of a bundle, `showCGGlyphs`, the attributed replacement, and the members that are kept. It writes `/private/var/backports/uirest.log` and `uirest.done`.

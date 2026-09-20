@@ -97,6 +97,21 @@
 
 @end
 
+static BOOL charon_leaf(UIMenuElement *element)
+{
+    return [element isKindOfClass:[UIAction class]] || [element isKindOfClass:[UICommand class]];
+}
+
+static UIMenuElementAttributes charon_attributes(UIMenuElement *element)
+{
+    return [element isKindOfClass:[UIAction class]] ? ((UIAction *)element).attributes : ((UICommand *)element).attributes;
+}
+
+static UIMenuElementState charon_state(UIMenuElement *element)
+{
+    return [element isKindOfClass:[UIAction class]] ? ((UIAction *)element).state : ((UICommand *)element).state;
+}
+
 static void charon_collect_deferred(NSArray *elements, NSMutableArray *found)
 {
     for (UIMenuElement *element in elements) {
@@ -110,8 +125,8 @@ static void charon_collect_deferred(NSArray *elements, NSMutableArray *found)
 static BOOL charon_menu_has_content(UIMenu *menu, NSDictionary *resolved)
 {
     for (UIMenuElement *child in menu.children) {
-        if ([child isKindOfClass:[UIAction class]]) {
-            if (!(((UIAction *)child).attributes & (UIMenuElementAttributesDisabled | UIMenuElementAttributesHidden)))
+        if (charon_leaf(child)) {
+            if (!(charon_attributes(child) & (UIMenuElementAttributesDisabled | UIMenuElementAttributesHidden)))
                 return YES;
         } else if ([child isKindOfClass:[UIMenu class]]) {
             if (charon_menu_has_content((UIMenu *)child, resolved))
@@ -127,8 +142,8 @@ static BOOL charon_menu_has_content(UIMenu *menu, NSDictionary *resolved)
 static void charon_flatten(NSArray *elements, NSDictionary *resolved, NSMutableArray *out)
 {
     for (UIMenuElement *element in elements) {
-        if ([element isKindOfClass:[UIAction class]]) {
-            if (!(((UIAction *)element).attributes & (UIMenuElementAttributesDisabled | UIMenuElementAttributesHidden)))
+        if (charon_leaf(element)) {
+            if (!(charon_attributes(element) & (UIMenuElementAttributesDisabled | UIMenuElementAttributesHidden)))
                 [out addObject:element];
         } else if ([element isKindOfClass:[UIMenu class]]) {
             UIMenu *menu = (UIMenu *)element;
@@ -157,7 +172,7 @@ static NSString *charon_button_title(UIMenuElement *element)
         return nil;
     if ([element isKindOfClass:[UIMenu class]])
         return [title stringByAppendingString:@" ›"];
-    UIMenuElementState state = ((UIAction *)element).state;
+    UIMenuElementState state = charon_state(element);
     if (state == UIMenuElementStateOn)
         return [@"✓ " stringByAppendingString:title];
     if (state == UIMenuElementStateMixed)
@@ -169,7 +184,7 @@ static BOOL charon_destructive(UIMenuElement *element)
 {
     if ([element isKindOfClass:[UIMenu class]])
         return (((UIMenu *)element).options & UIMenuOptionsDestructive) != 0;
-    return (((UIAction *)element).attributes & UIMenuElementAttributesDestructive) != 0;
+    return (charon_attributes(element) & UIMenuElementAttributesDestructive) != 0;
 }
 
 @implementation UIContextMenuInteraction {
@@ -415,6 +430,8 @@ static BOOL charon_destructive(UIMenuElement *element)
     [animator finish];
     if ([chosen isKindOfClass:[UIAction class]])
         [(UIAction *)chosen charon_performWithSender:view];
+    else if ([chosen isKindOfClass:[UICommand class]])
+        [[UIApplication sharedApplication] sendAction:((UICommand *)chosen).action to:nil from:chosen forEvent:nil];
 }
 
 - (UIMenu *)charon_visibleMenu

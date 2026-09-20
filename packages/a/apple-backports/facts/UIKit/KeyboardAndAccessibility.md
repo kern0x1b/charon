@@ -13,7 +13,8 @@ their constants. `UIResponder.keyCommands` answers `nil` unless the application 
 
 iOS 6 does not ask a responder for its key commands: a hardware keyboard reaches an application as text through the
 first responder, and nothing calls a key command. The class and the property are `inert`. The properties iOS 13 added to the
-class are not declared, so `respondsToSelector:` answers no.
+class - the title, the image, the property list, the attributes, the state and the alternates - are carried with the class becoming a
+`UICommand` (`UICommand.md`); iOS 15's are in `UIKeyCommandPriority.md`.
 
 ## Custom accessibility actions (iOS 8)
 

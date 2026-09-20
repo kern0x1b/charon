@@ -95,6 +95,28 @@ windowed() {
     [ "$result" = 0 ] || status=1
 }
 
+windowed_expected() {
+    # $1: group name, $2: sources, $3: selectors to keep, $4: test source run against the port, $5: source that records what the system answers, in a process with none of the port's code
+    name=$1
+    files=$2
+    keep=$3
+    test=$4
+    recorder=$5
+    bundle="$build/$name-system.app"
+    rm -rf "$bundle"
+    mkdir -p "$bundle/Contents/MacOS"
+    xcrun clang $target -fobjc-arc -Wall -w -I"$harness" "$here/windowed.m" "$here/$recorder" "$harness/check.m" $frameworks -o "$bundle/Contents/MacOS/app"
+    cp "$here/windowed.plist" "$bundle/Contents/Info.plist"
+    codesign -s - --force "$bundle" > /dev/null 2>&1
+    expected="$build/$name.expected"
+    if CHARON_EXPECTED="$expected" "$bundle/Contents/MacOS/app" > "$build/$name-system.log" 2>&1; then result=0; else result=$?; fi
+    echo "$name-system: exit=$result log=$build/$name-system.log"
+    [ "$result" = 0 ] || status=1
+    CHARON_EXPECTED="$expected"
+    export CHARON_EXPECTED
+    windowed "$name" "$files" "$keep" "$test"
+}
+
 renamed_keep() {
     # $1: object files, $2: the selectors that are renamed; every other selector the objects define keeps its name
     printf '%s\n' $2 > "$build/rename.list"
@@ -156,8 +178,30 @@ renamed() {
     [ "$result" = 0 ] || status=1
 }
 
+windowed_renamed_expected() {
+    # $1: group name, $2: sources, $3: selectors that get renamed, $4: test source run against the port, $5: source that records what the system answers, in a process with none of the port's code
+    name=$1
+    files=$2
+    renamed=$3
+    test=$4
+    recorder=$5
+    bundle="$build/$name-system.app"
+    rm -rf "$bundle"
+    mkdir -p "$bundle/Contents/MacOS"
+    xcrun clang $target -fobjc-arc -Wall -w -I"$harness" "$here/windowed.m" "$here/$recorder" "$harness/check.m" $frameworks -o "$bundle/Contents/MacOS/app"
+    cp "$here/windowed.plist" "$bundle/Contents/Info.plist"
+    codesign -s - --force "$bundle" > /dev/null 2>&1
+    expected="$build/$name.expected"
+    if CHARON_EXPECTED="$expected" "$bundle/Contents/MacOS/app" > "$build/$name-system.log" 2>&1; then result=0; else result=$?; fi
+    echo "$name-system: exit=$result log=$build/$name-system.log"
+    [ "$result" = 0 ] || status=1
+    CHARON_EXPECTED="$expected"
+    export CHARON_EXPECTED
+    windowed_renamed "$name" "$files" "$renamed" "$test"
+}
+
 status=0
-group traits "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m" "*" traits_test.m
+group traits "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m UITraitCollection+Appearance13.m UITraitCollection+Appearance14.m UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m" "*" traits_test.m
 group notifications "UIUserNotificationSettings.m" "*" notifications_test.m
 group misc "UIScreen+NativeBounds.m UIFont+TextStyles.m UIFont+Weights.m UIColor+SystemColors.m UIColor+SystemPurpleColor.m UIImage+RenderingMode.m UITextField+DefaultTextAttributes.m UIViewController+ExtendedLayout.m" "systemFontOfSize" misc_test.m
 group motion "UIMotionEffect.m UIView+MotionEffects.m" "initWithKeyPath keyPath type minimumRelativeValue setMinimumRelativeValue maximumRelativeValue setMaximumRelativeValue keyPathsAndRelativeValuesForViewerOffset" motion_test.m
@@ -189,11 +233,26 @@ windowed snapshots "UIView+Snapshots.m" "" snapshots_test.m
 windowed menucontroller "UIMenuController+iOS13.m" "" menucontroller_test.m
 group symbols "UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImageSymbolGlyphs.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m" "traitCollection configurationWithTraitCollection configurationByApplyingConfiguration unspecifiedConfiguration configurationWithScale configurationWithPointSize configurationWithWeight configurationWithTextStyle configurationWithFont configurationWithoutTextStyle configurationWithoutScale configurationWithoutWeight configurationWithoutPointSizeAndWeight isEqualToConfiguration initCharonWithTraitCollection initCharonWithPointSize" symbols_test.m
 windowed menus "UIMenuElement.m UIAction.m UIAction+iOS14.m UIMenu.m UIMenu+iOS14.m UIDeferredMenuElement.m UIMenuIdentifiers.m UIMenuIdentifiers14.m UIMenuSystem.m UIContextMenuConfiguration.m UIContextMenuInteraction.m UIContextMenuInteraction+iOS14.m UIPreviewParameters.m UIPreviewParameters+iOS14.m UIPreviewTarget.m UITargetedPreview.m" "*" menus_test.m
+group symbols "UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m" "traitCollection configurationWithTraitCollection configurationByApplyingConfiguration unspecifiedConfiguration configurationWithScale configurationWithPointSize configurationWithWeight configurationWithTextStyle configurationWithFont configurationWithoutTextStyle configurationWithoutScale configurationWithoutWeight configurationWithoutPointSizeAndWeight isEqualToConfiguration initCharonWithTraitCollection initCharonWithPointSize" symbols_test.m
+windowed menus "UIMenuElement.m UIAction.m UIAction+iOS14.m UIMenu.m UIMenu+iOS14.m UIDeferredMenuElement.m UIMenuIdentifiers.m UIMenuIdentifiers14.m UIMenuSystem.m UIContextMenuConfiguration.m UIContextMenuInteraction.m UIContextMenuInteraction+iOS14.m UIPreviewParameters.m UIPreviewParameters+iOS14.m UIPreviewTarget.m UITargetedPreview.m UICommand.m" "*" menus_test.m
 windowed pointer "UIPointerRegion.m UIPointerStyle.m UIPointerInteraction.m UIHoverGestureRecognizer.m UIKey.m UIKeyInputKeys.m" "*" pointer_test.m
 windowed pointercategories "UIEvent+Pointer.m UIGestureRecognizer+Pointer.m UIButton+Pointer.m" "" pointercategories_test.m
 windowed search "UISearchToken.m UISearchTextField.m" "*" search_test.m
 windowed searchcategories "UISearchBar+SearchTextField.m UISearchController+ScopeBar.m" "" searchcategories_test.m
 windowed colors "UIColorWell.m UIColorPickerViewController.m" "*" colors_test.m
+group commands "UIMenuElement.m UICommand.m UIKeyCommand.m UIKeyCommand+Priority.m" "*" commands_test.m
+group activityitems "UIActivityItemsConfiguration.m" "*" activityitems_test.m
+windowed fontpicker "UIFontPickerViewController.m" "*" fontpicker_test.m
+windowed_renamed inert "UILargeContentViewer.m UIScreenshotService.m UITextFormattingCoordinator.m UITextPlaceholder.m UIScribbleInteraction.m UIPointerLockState.m" "showsLargeContentViewer setShowsLargeContentViewer largeContentTitle setLargeContentTitle largeContentImage setLargeContentImage scalesLargeContentImage setScalesLargeContentImage largeContentImageInsets setLargeContentImageInsets screenshotService pointerLockState childViewControllerForPointerLock prefersPointerLocked setNeedsUpdateOfPrefersPointerLocked" inert_test.m
+windowed_renamed traits13 "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m UITraitCollection+Appearance13.m UITraitCollection+Appearance14.m UIScreen+TraitEnvironment.m UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m" "traitCollection traitCollectionDidChange" traits13_test.m
+windowed_expected controlactions "UIMenuElement.m UIAction.m UIAction+iOS14.m UIMenu.m UIMenu+iOS14.m UIDeferredMenuElement.m UIMenuIdentifiers.m UIMenuIdentifiers14.m UIMenuSystem.m UIContextMenuConfiguration.m UIContextMenuInteraction.m UIContextMenuInteraction+iOS14.m UIPreviewParameters.m UIPreviewParameters+iOS14.m UIPreviewTarget.m UITargetedPreview.m UICommand.m UIControl+Actions14.m UIControl+Menus14.m UIButton+Actions14.m" "*" controlactions_test.m controlactions_system.m
+windowed_expected controlmenus "UIMenuElement.m UIAction.m UIAction+iOS14.m UIMenu.m UIMenu+iOS14.m UIDeferredMenuElement.m UIMenuIdentifiers.m UIMenuIdentifiers14.m UIMenuSystem.m UIContextMenuConfiguration.m UIContextMenuInteraction.m UIContextMenuInteraction+iOS14.m UIPreviewParameters.m UIPreviewParameters+iOS14.m UIPreviewTarget.m UITargetedPreview.m UICommand.m UIControl+Actions14.m UIControl+Menus14.m UIButton+Actions14.m UIButton+iOS13.m UIBarButtonItem+Actions14.m UISegmentedControl+Actions14.m" "*" controlmenus_test.m controlmenus_system.m
+windowed_expected views13 "UIView+iOS13.m UIViewController+iOS13.m UIDatePicker+Style134.m UIPanGestureRecognizer+ScrollTypes134.m UISwitch+Style14.m UIPageControl+Indicators14.m UILabel+LineBreakStrategy14.m UIView+FocusGroup14.m UIScrollView+IndicatorInsets13.m UISegmentedControl+SelectedTint13.m UISplitViewController+Background13.m UITextView+TextScaling13.m UISearchBar+ScopeBar13.m UIScreen+Latency13.m UIAccessibility13.m UIAccessibility14.m UIAccessibilityCustomAction+Handler13.m UIAccessibilityCustomAction+Image14.m NSLayoutManager+Text13.m UIResponder+ItemsConfiguration.m UIVibrancyEffect+Style13.m UIFontSystemDesign.m UIViewController+Appearing13.m UIViewController+Unwind13.m NSAttributedString+Constants13.m NSAttributedString+Tracking14.m UIPasteboard+Detection14.m UINavigationItem+BackDisplayMode14.m UITextInput+AttributedReplace13.m UICommand.m UIMenuElement.m" "*" views13_test.m views13_system.m
+windowed_expected images13 "UIImage+iOS13.m UIImage+Baseline13.m UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m" "*" images13_test.m images13_system.m
+windowed_renamed_expected colors13 "UIColorDynamic.m" "colorWithDynamicProvider initWithDynamicProvider resolvedColorWithTraitCollection labelColor secondaryLabelColor tertiaryLabelColor quaternaryLabelColor linkColor placeholderTextColor separatorColor opaqueSeparatorColor systemBackgroundColor secondarySystemBackgroundColor tertiarySystemBackgroundColor systemGroupedBackgroundColor secondarySystemGroupedBackgroundColor tertiarySystemGroupedBackgroundColor systemFillColor secondarySystemFillColor tertiarySystemFillColor quaternarySystemFillColor systemGray2Color systemGray3Color systemGray4Color systemGray5Color systemGray6Color systemBrownColor systemIndigoColor" colors13_test.m colors13_system.m
+windowed_renamed listmenus "UIMenuElement.m UIAction.m UIAction+iOS14.m UIMenu.m UIMenu+iOS14.m UIDeferredMenuElement.m UIMenuIdentifiers.m UIMenuIdentifiers14.m UIMenuSystem.m UIContextMenuConfiguration.m UIContextMenuInteraction.m UIContextMenuInteraction+iOS14.m UIPreviewParameters.m UIPreviewParameters+iOS14.m UIPreviewTarget.m UITargetedPreview.m UICommand.m CharonListMenu.m UITableView+ContextMenu14.m UICollectionView+ContextMenu132.m" "contextMenuInteraction" listmenus_test.m
+windowed_renamed appearing "UIViewController+Appearing13.m" "viewIsAppearing" appearing_test.m
+windowed textinteraction "UITextInteraction.m" "*" textinteraction_test.m
 group layoutvalues "NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m" "*" layoutvalues_test.m
 export CHARON_COMPOSITIONAL_EXPECTATIONS="$here/../../device/compositional-expectations.h"
 windowed compositionallayout "NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m" "*" compositionallayout_test.m

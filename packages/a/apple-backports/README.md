@@ -321,6 +321,34 @@ the background decoration item, the blur and shadow of a reordering row, `select
 (`configurationUpdateHandler`, `isPinned`, `separatorConfiguration`) are not answered. Facts: `facts/UIKit/UIListContentConfiguration.md`
 and its neighbours; the entries are in `registry/UIKit/ios14lists.json`.
 
+### Commands, actions and menus on controls, appearance traits, dynamic colours and the rest of what UIKit added
+
+`UICommand`, `UICommandAlternate` and a `UIKeyCommand` that is one are carried as the host has them (defaults, equality, copies, exceptions, archive: the `commands` group), and
+`UIActivityItemsConfiguration` with an `UIActivityViewController` made of it. What a control does with an action is real, not present: `addAction:forControlEvents:`,
+`removeAction:...`, `enumerateEventHandlers:`, `sendAction:` and every initialiser with a primary action work on any `UIControl` through proxy targets, the primary action
+is registered for the event that triggers it on this release (touch up inside, value changed, editing did end on exit), and a button, a bar button item and a segmented control
+made of actions and menus run them; a menu of a button or a bar button item is shown as the action sheet of the context menu interaction, and so is the menu a table row or
+collection view item asks for by its delegate. Tables and collection views get their interaction when the delegate is set, so `contextMenuInteraction` is never nil. The
+answers are held to the host's in processes that do not share the port's code (`controlactions`, `controlmenus`, `listmenus`); what differs is in
+`facts/UIKit/UIControlActions.md` and `UIControlMenus.md`: the pairs and the actions of `enumerateEventHandlers:` do not interleave, a menu as a primary action shows on touch up
+inside and not on touch down, and a bar button item's `target` and `action` are the port's.
+
+The four appearance traits and `+currentTraitCollection` are carried with the trait collection, held to the host over 2434 checks: the screen is light, normal, base and active,
+and `performAsCurrentTraitCollection:` nests. Dynamic colours and the 25 semantic colours are real too, with a limit that is not a difference the tests can see: a dynamic colour
+is a colour of the release with its provider beside it, so what reads it - a view, a label, `CGColor` - reads the light value, and only `resolvedColorWithTraitCollection:` reads
+another. The host's palette is the Mac's, so only the colours it shares with iOS 13 (the link, the fills, the grays) are held to it; the rest is Apple's published iOS 13 table
+(`facts/UIKit/UIColorDynamic.md`).
+
+`viewIsAppearing:`, `textFieldDidChangeSelection:`, the unwind segue question of iOS 13, the orientation message of a window scene delegate, `UITextInteraction` (tap, double tap, triple
+tap and long press on a text input, with no handles or loupe), `-replaceRange:withAttributedText:`, `showCGGlyphs:...`, `imageWithTintColor:` (drawn byte for byte as the host does),
+baselines, `+imageNamed:inBundle:withConfiguration:`, five system images the port draws itself, `UIBarButtonItem`'s space items and the monospaced system font are real. Kept
+and read back with nothing reading them - `inert`, each said once in the log - are what belongs to a device or a service iOS 6 has none of: the large content viewer, the Apple
+Pencil's scribble, the screenshot service, the font panel, the pointer lock, the override of the interface style, the modal that resists dismissal, the page control's images, the
+date picker's compact and inline styles (it draws wheels, and says so in `datePickerStyle`), the font picker (it cannot hand back a descriptor that iOS 6 does not have and offers
+Cancel), the pattern detection of the pasteboard (no pattern found), and a handful of properties that belong to the Mac idiom. `NSToolbar`, the columns of a split view
+controller, the storyboard creators, the document picker of content types and the accessibility name of a colour are absent; the delegate methods of things that do not fire are
+declared and never sent. `facts/UIKit/UIRestAbsent.md` gives the reason for each.
+
 ## iOS 11 and 12
 
 These two releases are read differently from the ones before them. The last

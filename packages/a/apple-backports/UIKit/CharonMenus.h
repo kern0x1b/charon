@@ -38,6 +38,10 @@ NSString *charon_menu_attributes_text(NSUInteger attributes);
 - (void)charon_performWithSender:(id)sender;
 @end
 
+@interface UICommand (CharonMenus)
+- (instancetype)initCharonWithTitle:(NSString *)title image:(UIImage *)image action:(SEL)action propertyList:(id)propertyList alternates:(NSArray *)alternates;
+@end
+
 @interface UIMenu (CharonMenus)
 - (instancetype)initCharonWithTitle:(NSString *)title image:(UIImage *)image identifier:(NSString *)identifier options:(UIMenuOptions)options
                             children:(NSArray<UIMenuElement *> *)children;
@@ -57,3 +61,12 @@ NSString *charon_menu_attributes_text(NSUInteger attributes);
 - (void)charon_beginAtLocation:(CGPoint)location;
 @end
 
+
+@interface CharonControlProxy : NSObject
+- (instancetype)initWithControl:(UIControl *)control action:(UIAction *)action;
+- (void)charon_fire:(id)sender;
+@property (nonatomic, weak) UIControl *control;
+@property (nonatomic, strong) UIAction *action;
+@end
+
+void charon_show_menu(UIMenu *menu);

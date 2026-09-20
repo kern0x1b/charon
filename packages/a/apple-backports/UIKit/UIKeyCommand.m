@@ -1,4 +1,10 @@
-#import <Foundation/Foundation.h>
+#import "CharonMenus.h"
+#import <objc/runtime.h>
+
+#pragma clang diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wobjc-protocol-property-synthesis"
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 NSString *const UIKeyInputUpArrow = @"UIKeyInputUpArrow";
 NSString *const UIKeyInputDownArrow = @"UIKeyInputDownArrow";
@@ -6,22 +12,28 @@ NSString *const UIKeyInputLeftArrow = @"UIKeyInputLeftArrow";
 NSString *const UIKeyInputRightArrow = @"UIKeyInputRightArrow";
 NSString *const UIKeyInputEscape = @"UIKeyInputEscape";
 
-API_AVAILABLE(ios(7.0))
-@interface UIKeyCommand : NSObject <NSCopying, NSSecureCoding>
-+ (instancetype)keyCommandWithInput:(NSString *)input modifierFlags:(NSInteger)modifierFlags action:(SEL)action;
-+ (instancetype)keyCommandWithInput:(NSString *)input modifierFlags:(NSInteger)modifierFlags action:(SEL)action discoverabilityTitle:(NSString *)discoverabilityTitle;
-@property (nullable, nonatomic, copy) NSString *discoverabilityTitle;
-@property (nullable, nonatomic, readonly) SEL action;
-@property (nullable, nonatomic, readonly) NSString *input;
-@property (nonatomic, readonly) NSInteger modifierFlags;
-@end
+static NSString *charon_modifier_text(NSInteger flags)
+{
+    static const struct {
+        NSInteger flag;
+        const char *name;
+    } names[] = {{UIKeyModifierAlphaShift, "AlphaShift"}, {UIKeyModifierNumericPad, "NumPad"}, {UIKeyModifierControl, "Ctrl"}, {UIKeyModifierAlternate, "Opt"},
+                 {UIKeyModifierShift, "Shift"}, {UIKeyModifierCommand, "Cmd"}};
+    NSMutableArray *found = [NSMutableArray array];
+    for (size_t index = 0; index < sizeof(names) / sizeof(names[0]); index++) {
+        if (flags & names[index].flag)
+            [found addObject:[NSString stringWithUTF8String:names[index].name]];
+    }
+    return [found componentsJoinedByString:@"-"];
+}
 
 @implementation UIKeyCommand {
+@private
     NSString *_input;
-    NSInteger _modifierFlags;
-    SEL _action;
-    NSString *_discoverabilityTitle;
+    UIKeyModifierFlags _modifierFlags;
 }
+
+@dynamic wantsPriorityOverSystemBehavior, allowsAutomaticLocalization, allowsAutomaticMirroring;
 
 + (BOOL)supportsSecureCoding
 {
@@ -30,47 +42,50 @@ API_AVAILABLE(ios(7.0))
 
 - (instancetype)init
 {
-    self = [super init];
-    if (self)
-        _action = sel_registerName("_nop");
-    return self;
+    return [self initCharonWithTitle:@"" image:nil action:sel_registerName("_nop") propertyList:nil alternates:nil];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
-    self = [self init];
-    if (self) {
-        _input = [coder decodeObjectOfClass:[NSString class] forKey:@"UIKeyCommandInput"];
-        _modifierFlags = [coder decodeIntegerForKey:@"UIKeyCommandModifierFlags"];
-        NSString *action = [coder decodeObjectOfClass:[NSString class] forKey:@"UIKeyCommandAction"];
-        if (action)
-            _action = NSSelectorFromString(action);
-        _discoverabilityTitle = [coder decodeObjectOfClass:[NSString class] forKey:@"UIKeyCommandDiscoverabilityTitle"];
+    if ((self = [super initWithCoder:coder])) {
+        _input = [[coder decodeObjectOfClass:[NSString class] forKey:@"input"] copy];
+        _modifierFlags = (UIKeyModifierFlags)[coder decodeIntegerForKey:@"modifierFlags"];
     }
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
 {
-    [coder encodeObject:_input forKey:@"UIKeyCommandInput"];
-    [coder encodeInteger:_modifierFlags forKey:@"UIKeyCommandModifierFlags"];
-    [coder encodeObject:NSStringFromSelector(_action) forKey:@"UIKeyCommandAction"];
-    [coder encodeObject:_discoverabilityTitle forKey:@"UIKeyCommandDiscoverabilityTitle"];
+    [super encodeWithCoder:coder];
+    if (_input)
+        [coder encodeObject:_input forKey:@"input"];
+    [coder encodeInteger:_modifierFlags forKey:@"modifierFlags"];
 }
 
-+ (instancetype)keyCommandWithInput:(NSString *)input modifierFlags:(NSInteger)modifierFlags action:(SEL)action
++ (instancetype)commandWithTitle:(NSString *)title image:(UIImage *)image action:(SEL)action input:(NSString *)input modifierFlags:(UIKeyModifierFlags)modifierFlags propertyList:(id)propertyList
 {
-    UIKeyCommand *command = [[self alloc] init];
+    return [self commandWithTitle:title image:image action:action input:input modifierFlags:modifierFlags propertyList:propertyList alternates:@[]];
+}
+
++ (instancetype)commandWithTitle:(NSString *)title image:(UIImage *)image action:(SEL)action input:(NSString *)input modifierFlags:(UIKeyModifierFlags)modifierFlags propertyList:(id)propertyList
+                      alternates:(NSArray<UICommandAlternate *> *)alternates
+{
+    UIKeyCommand *command = [[self alloc] initCharonWithTitle:title image:image action:action propertyList:propertyList alternates:alternates];
     command->_input = [input copy];
     command->_modifierFlags = modifierFlags;
-    command->_action = action;
     return command;
 }
 
-+ (instancetype)keyCommandWithInput:(NSString *)input modifierFlags:(NSInteger)modifierFlags action:(SEL)action discoverabilityTitle:(NSString *)discoverabilityTitle
++ (instancetype)keyCommandWithInput:(NSString *)input modifierFlags:(UIKeyModifierFlags)modifierFlags action:(SEL)action
+{
+    return [self commandWithTitle:@"" image:nil action:action input:input modifierFlags:modifierFlags propertyList:nil];
+}
+
++ (instancetype)keyCommandWithInput:(NSString *)input modifierFlags:(UIKeyModifierFlags)modifierFlags action:(SEL)action discoverabilityTitle:(NSString *)discoverabilityTitle
 {
     UIKeyCommand *command = [self keyCommandWithInput:input modifierFlags:modifierFlags action:action];
-    command->_discoverabilityTitle = [discoverabilityTitle copy];
+    command.discoverabilityTitle = discoverabilityTitle;
+    command.title = discoverabilityTitle ? discoverabilityTitle : @"";
     return command;
 }
 
@@ -79,33 +94,16 @@ API_AVAILABLE(ios(7.0))
     return _input;
 }
 
-- (NSInteger)modifierFlags
+- (UIKeyModifierFlags)modifierFlags
 {
     return _modifierFlags;
 }
 
-- (SEL)action
-{
-    return _action;
-}
-
-- (NSString *)discoverabilityTitle
-{
-    return _discoverabilityTitle;
-}
-
-- (void)setDiscoverabilityTitle:(NSString *)title
-{
-    _discoverabilityTitle = [title copy];
-}
-
 - (id)copyWithZone:(NSZone *)zone
 {
-    UIKeyCommand *copy = [[[self class] alloc] init];
+    UIKeyCommand *copy = [super copyWithZone:zone];
     copy->_input = [_input copy];
     copy->_modifierFlags = _modifierFlags;
-    copy->_action = _action;
-    copy->_discoverabilityTitle = [_discoverabilityTitle copy];
     return copy;
 }
 
@@ -116,12 +114,26 @@ API_AVAILABLE(ios(7.0))
     if (![other isKindOfClass:[UIKeyCommand class]])
         return NO;
     UIKeyCommand *command = other;
-    return (command->_input == _input || [command->_input isEqual:_input]) && command->_modifierFlags == _modifierFlags && command->_action == _action;
+    return command->_modifierFlags == _modifierFlags && (command->_input == _input || [command->_input isEqual:_input]);
 }
 
 - (NSUInteger)hash
 {
-    return _input.hash ^ (NSUInteger)_modifierFlags ^ (NSUInteger)(uintptr_t)_action;
+    return _input.hash ^ (NSUInteger)_modifierFlags;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: %p", [self class], self];
+    if (self.title.length)
+        [text appendFormat:@"; title = %@", self.title];
+    if (self.action)
+        [text appendFormat:@"; action: %@", NSStringFromSelector(self.action)];
+    [text appendFormat:@"; input: %@", _input ? _input : @"<none>"];
+    if (_modifierFlags)
+        [text appendFormat:@"; modifierFlags: %@", charon_modifier_text(_modifierFlags)];
+    [text appendString:@">"];
+    return text;
 }
 
 @end

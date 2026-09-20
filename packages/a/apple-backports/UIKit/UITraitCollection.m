@@ -44,6 +44,7 @@ static UITraitCollection *charon_trait_collection_for(UIUserInterfaceIdiom scree
 {
     UITraitCollection *collection = charon_make([UITraitCollection class], screenIdiom, scale, charon_horizontal_class(device, bounds.width), charon_vertical_class(device, bounds.height));
     charon_set_trait_style(collection, UIUserInterfaceStyleLight);
+    charon_apply_screen_trait_extras(collection);
     return collection;
 }
 
@@ -241,6 +242,7 @@ static NSString *charon_size_class_name(UIUserInterfaceSizeClass sizeClass)
     }
     UITraitCollection *merged = charon_make(self, idiom, scale, horizontal, vertical);
     charon_set_trait_style(merged, style);
+    charon_apply_trait_extras(merged, charon_merge_trait_extras(traitCollections));
     return merged;
 }
 
@@ -289,6 +291,7 @@ static UITraitCollection *charon_make(Class cls, UIUserInterfaceIdiom idiom, CGF
         _horizontalSizeClass = (UIUserInterfaceSizeClass)[coder decodeIntegerForKey:CharonHorizontalKey];
         _verticalSizeClass = (UIUserInterfaceSizeClass)[coder decodeIntegerForKey:CharonVerticalKey];
         charon_set_trait_style(self, (UIUserInterfaceStyle)[coder decodeIntegerForKey:CharonStyleKey]);
+        charon_decode_trait_extras(self, coder);
     }
     return self;
 }
@@ -305,6 +308,7 @@ static UITraitCollection *charon_make(Class cls, UIUserInterfaceIdiom idiom, CGF
         [coder encodeInteger:_verticalSizeClass forKey:CharonVerticalKey];
     if (charon_trait_style(self) != UIUserInterfaceStyleUnspecified)
         [coder encodeInteger:charon_trait_style(self) forKey:CharonStyleKey];
+    charon_encode_trait_extras(self, coder);
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -344,6 +348,8 @@ static UITraitCollection *charon_make(Class cls, UIUserInterfaceIdiom idiom, CGF
         return NO;
     if (charon_trait_style(trait) != UIUserInterfaceStyleUnspecified && charon_trait_style(trait) != charon_trait_style(self))
         return NO;
+    if (!charon_trait_extras_contained(self, trait))
+        return NO;
     return trait->_verticalSizeClass == UIUserInterfaceSizeClassUnspecified || trait->_verticalSizeClass == _verticalSizeClass;
 }
 
@@ -356,14 +362,14 @@ static UITraitCollection *charon_make(Class cls, UIUserInterfaceIdiom idiom, CGF
     UITraitCollection *other = object;
     return other->_userInterfaceIdiom == _userInterfaceIdiom && other->_displayScale == _displayScale &&
            other->_horizontalSizeClass == _horizontalSizeClass && other->_verticalSizeClass == _verticalSizeClass &&
-           charon_trait_style(other) == charon_trait_style(self);
+           charon_trait_style(other) == charon_trait_style(self) && charon_trait_extras_equal(self, other);
 }
 
 - (NSUInteger)hash
 {
     NSUInteger scale = (NSUInteger)(_displayScale * 100);
     return ((NSUInteger)(_userInterfaceIdiom + 1) << 24) ^ (scale << 8) ^ ((NSUInteger)_horizontalSizeClass << 4) ^ (NSUInteger)_verticalSizeClass ^
-           ((NSUInteger)charon_trait_style(self) << 20);
+           ((NSUInteger)charon_trait_style(self) << 20) ^ charon_trait_extras_hash(self);
 }
 
 - (NSString *)description
@@ -379,6 +385,7 @@ static UITraitCollection *charon_make(Class cls, UIUserInterfaceIdiom idiom, CGF
         [traits addObject:[@"VerticalSizeClass = " stringByAppendingString:charon_size_class_name(_verticalSizeClass)]];
     if (charon_trait_style(self) != UIUserInterfaceStyleUnspecified)
         [traits addObject:[@"UserInterfaceStyle = " stringByAppendingString:charon_trait_style(self) == UIUserInterfaceStyleDark ? @"Dark" : @"Light"]];
+    charon_add_trait_extras_description(self, traits);
     return [NSString stringWithFormat:@"<%@: %p; %@>", [self class], self, [traits componentsJoinedByString:@", "]];
 }
 

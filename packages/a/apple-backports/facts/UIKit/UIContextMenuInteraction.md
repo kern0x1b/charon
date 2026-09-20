@@ -50,3 +50,10 @@ Catalyst tool or a bare device tool; it is exercised on an iPhone 4S or an iPad 
 - `menuAppearance` is **compact** always, where the host answers rich before a menu shows: a rich menu is the one with a preview, and there is none.
 - A second touch or a rotation while the sheet shows is left to the sheet; the interaction does not follow the view as the host's menu does.
 - One `Destructive` button is red at most; another `Destructive` element is an ordinary button.
+
+## Commands in a menu
+
+A `UICommand` (`UICommand.md`) is listed as an action is, with its title, its state and the destructive and disabled attributes;
+choosing one sends its action down the responder chain from the application, with the command as the sender, where an action runs
+its handler. Tables and collection views, and the controls and bar button items that have a menu, use this interaction
+(`UIListContextMenus.md`, `UIControlMenus.md`).

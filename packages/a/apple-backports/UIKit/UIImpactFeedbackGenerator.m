@@ -21,9 +21,14 @@
 
 - (void)impactOccurred
 {
-    if (_milliseconds == 0)
+    [self charon_impactScaledBy:1];
+}
+
+- (void)charon_impactScaledBy:(float)scale
+{
+    if (_milliseconds == 0 || scale <= 0)
         return;
-    [self _charonPlayIntensity:_intensity milliseconds:&_milliseconds count:1];
+    [self _charonPlayIntensity:_intensity * (scale > 1 ? 1 : scale) milliseconds:&_milliseconds count:1];
 }
 
 @end
