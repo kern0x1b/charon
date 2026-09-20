@@ -636,3 +636,7 @@ nothing. An iPhoneOS SDK takes `--target arm64-apple-ios16.4` and has them.
 - `imageextract.m`: an application of its own, the files `tools/assets-extract` wrote from a catalogue (`IMAGE_EXTRACT_DIR` in the build script): every name of the index is found by the stock `+[UIImage imageNamed:]`, at the scale and size of the best file for the screen.
 - `uikitnames.m`: an application of its own, the names and small classes of iOS 7 to 10 - the transition context keys, the screenshot and background-refresh notifications, the activity types, the callout and title text styles, the edge pan recognizer and the percent-driven transition - read against the host's answers recorded by `host/uikitnames/run.sh` from `uikitnames-cases.m`.
 - `foundation8b.m`: the names of iCloud metadata and app extensions, the deallocator blocks and file access intents of iOS 7 to 10, read against the host's answers recorded by `host/foundation8b/run.sh`: the intents are coordinated on a real folder, alone, together and for an item that is not there.
+
+`host/previewaction/run.sh` records what the host's UIKit answers for `UIPreviewAction`,
+`UIPreviewActionGroup` and `-previewActionItems` in `device/previewaction-cases.m`, and
+`device/previewaction.m` runs the same cases against the port on the release, record by record.
