@@ -733,18 +733,14 @@
     "api": "-[NSProcessInfo beginActivityWithOptions:reason:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "inert",
-    "reason": "the release holds no power assertions for an activity, and its idle and throttling behaviour is not ours to change",
-    "effect": "it answers a token that ends the activity and asserts nothing; the options that ask to stay awake say so in the log once",
+    "status": "implemented",
     "facts": "facts/Foundation/NSProcessInfo.md"
   },
   {
     "api": "-[NSProcessInfo endActivity:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "inert",
-    "reason": "the release holds no power assertions for an activity",
-    "effect": "it ends an activity that asserted nothing",
+    "status": "implemented",
     "facts": "facts/Foundation/NSProcessInfo.md"
   },
   {

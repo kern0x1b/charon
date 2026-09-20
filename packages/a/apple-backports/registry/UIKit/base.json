@@ -2476,31 +2476,42 @@
     "api": "UIKeyboardIsLocalUserInfoKey",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "inert",
-    "facts": "facts/UIKit/TransitionsAndEdges.md",
-    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
-    "reason": "the release has one keyboard and posts no notification that says whose it is",
-    "effect": "the name is there and no notification carries it"
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardLocal.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
+  },
+  {
+    "api": "UIApplicationOpenURLOptionsAnnotationKey",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/OpenURLOptions.md",
+    "source": "the shared caches of iOS 9 and 10, and tests/backports/device/openurl.m on iOS 6"
+  },
+  {
+    "api": "-[UIApplicationDelegate application:openURL:options:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/OpenURLOptions.md",
+    "source": "the shared caches of iOS 9 and 10, and tests/backports/device/openurl.m on iOS 6"
   },
   {
     "api": "UIApplicationOpenURLOptionsOpenInPlaceKey",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "inert",
-    "facts": "facts/UIKit/TransitionsAndEdges.md",
-    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
-    "reason": "the release opens a URL with -application:openURL:sourceApplication:annotation: and no options",
-    "effect": "the name is there and no call carries it"
+    "status": "implemented",
+    "facts": "facts/UIKit/OpenURLOptions.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
   },
   {
     "api": "UIApplicationOpenURLOptionsSourceApplicationKey",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "inert",
-    "facts": "facts/UIKit/TransitionsAndEdges.md",
-    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
-    "reason": "the release opens a URL with -application:openURL:sourceApplication:annotation: and no options",
-    "effect": "the name is there and no call carries it"
+    "status": "implemented",
+    "facts": "facts/UIKit/OpenURLOptions.md",
+    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks"
   },
   {
     "api": "UIActivityTypeOpenInIBooks",
