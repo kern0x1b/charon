@@ -1,0 +1,49 @@
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "-[UIViewController setNeedsUpdateOfSupportedInterfaceOrientations]",
+      "kind": "method",
+      "introduced": "16.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewControllerOrientationUpdate.md",
+      "source": "UIKit 16.0 arm64e, -[UIViewController setNeedsUpdateOfSupportedInterfaceOrientations] at 0x189671fa0, and the SDK 16.4 header of UIViewController"
+    },
+    {
+      "api": "UITableView.sectionHeaderTopPadding",
+      "kind": "property",
+      "introduced": "15.0",
+      "status": "inert",
+      "reason": "a section header of iOS 6 has no padding above it, so there is none to set",
+      "effect": "the value is kept and answered back, a value of zero is what the release already draws, and a positive one says once in the log that it is not applied",
+      "facts": "facts/UIKit/UITableViewSectionHeaderTopPadding.md"
+    },
+    {
+      "api": "UIKeyCommand.wantsPriorityOverSystemBehavior",
+      "kind": "property",
+      "introduced": "15.0",
+      "status": "inert",
+      "reason": "the system's key shortcuts of iOS 6 are handled before an application sees a key, so a key command has none to take priority over",
+      "effect": "the value is kept, starts as NO and is answered back, and says once in the log when it is set to YES that it is not applied",
+      "facts": "facts/UIKit/UIKeyCommandPriority.md"
+    },
+    {
+      "api": "UIKeyCommand.allowsAutomaticLocalization",
+      "kind": "property",
+      "introduced": "15.0",
+      "status": "inert",
+      "reason": "the release maps no key of a command to the keyboard layout in use",
+      "effect": "the value is kept, starts as YES and is answered back, and the input of a command is the one it was made with whatever the layout",
+      "facts": "facts/UIKit/UIKeyCommandPriority.md"
+    },
+    {
+      "api": "UIKeyCommand.allowsAutomaticMirroring",
+      "kind": "property",
+      "introduced": "15.0",
+      "status": "inert",
+      "reason": "the release mirrors no key of a command for a right to left layout",
+      "effect": "the value is kept, starts as YES and is answered back, and the input of a command is the one it was made with whatever the layout direction",
+      "facts": "facts/UIKit/UIKeyCommandPriority.md"
+    }
+  ]
+}

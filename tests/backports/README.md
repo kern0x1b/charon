@@ -39,6 +39,7 @@ inputs.
     sh host/avcapture/run.sh
     sh host/oslog/run.sh  writes device/oslog-expectations.h when it passes
     sh host/imageflip/run.sh
+    sh host/ios1516/run.sh  writes device/ios1516-expectations.h when it passes
 
 `host/oslog/run.sh` runs the same 61 calls through the host's os_log, asked for its
 developer output, and through the port's formatter, and compares the two texts; the calls both
@@ -351,6 +352,9 @@ postinst run with `DPKG_ROOT` set to it.
   representations of data and files, and objects, and every answer held to what the system's classes did in
   `itemprovider-expectations.h`, which `host/itemprovider/run.sh` records under Mac Catalyst. The behaviour that does not
   depend on the UTI database is also held by the `itemprovider` and `itemproviderbuiltins` groups of `host/uikit2/run.sh`.
+- `ios1516.m`: a process of its own, what iOS 15 and 16 added that the port carries: `NSUUID`'s `compare:`, held to the answers
+  `host/ios1516/run.sh` writes into `ios1516-expectations.h` after holding the port's method to the host's own, the
+  orientation update of a view controller and the padding above a section header.
 - `corelocation.m`: a process of its own, the CoreLocation batch: the circular region as a class, its notify flags,
   and the answers of the class methods about monitoring and ranging. It needs the package built with
   `corelocation = true`; it is checked on the emulated 6.0 and on the iPad 2, where location services and region
