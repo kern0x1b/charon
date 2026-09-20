@@ -583,19 +583,20 @@
       "api": "UIDragInteraction",
       "kind": "class",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "dragging is carried by a system service the release does not run, and nothing of ours can stand in for it",
-      "effect": "the class is not there: NSClassFromString answers nil, and an application that asks before dragging keeps its own path",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "reason": "a departure from iOS 12 in one answer: a drag interaction is enabled by default only where a drag can happen, and nothing here carries a drag session, so +isEnabledByDefault answers NO on every device, an iPad included",
+      "effect": "the interaction is made with its delegate, held weakly, and is held by the view that adds it; enabled reads what was set, and NO if nothing was; the interaction never begins a drag and never asks the delegate anything",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: +[UIDragInteraction isEnabledByDefault] answers YES for the iPad idiom and reads a setting of the internal builds otherwise, -isEnabled answers the flag once it was set and the class default before, -initWithDelegate: stores the delegate weakly, -didMoveToView: stores the view weakly; the host's UIKit through Mac Catalyst for the rest",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UIDropInteraction",
       "kind": "class",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "a drop can only be delivered by the same system service that carries the drag",
-      "effect": "the class is not there, so a drop target is never installed rather than installed and silent",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "the interaction is made with its delegate, held weakly, and is held by the view that adds it; allowsSimultaneousDropSessions is NO until set; no session ever enters the view, so the delegate is never asked anything",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: -[UIDropInteraction initWithDelegate:] stores the delegate weakly; the host's UIKit through Mac Catalyst for the rest",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UISpringLoadedInteraction",
@@ -738,19 +739,19 @@
       "api": "UITableView.dragInteractionEnabled",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "there is no drag interaction on a table here to enable",
-      "effect": "the property is not there",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "reads what was set, and the class default of the drag interaction, NO, before that; setting it starts nothing",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: the accessors of the scroll view: the enabled flag is read before the class default of UIDragInteraction is asked, the delegates are stored, and the active state is that of a controller that no drag has started",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UIDragItem",
       "kind": "class",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
-      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "the item provider is kept by identity, as are the local object and the preview provider, which is copied; nothing reads them, since no drag begins",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: -[UIDragItem initWithItemProvider:] stores the provider strongly and asks nothing of it; the host's UIKit through Mac Catalyst for the rest",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UIDragPreview",
@@ -792,10 +793,10 @@
       "api": "UIDropProposal",
       "kind": "class",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
-      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "the operation, precise and prefersFullSizePreview a proposal was given; a new proposal prefers a full size preview and is not precise, and a copy carries all three",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: -[UIDropProposal initWithDropOperation:] sets the operation and prefersFullSizePreview to YES, -copyWithZone: makes a new proposal of the class and copies precise and prefersFullSizePreview",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UIDragSession",
@@ -1035,10 +1036,10 @@
       "api": "-[UICollectionViewCell dragStateDidChange:]",
       "kind": "method",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "the state it reports belongs to a drag this release never starts",
-      "effect": "the method is not there, and a cell is never told about a drag state",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "does nothing; no drag ever changes the state of a cell",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: the method is a hook a subclass overrides",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UITextDraggable",
@@ -1564,46 +1565,46 @@
       "api": "UICollectionView.dragDelegate",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "dragging is begun and carried by a system service this release does not run",
-      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "the delegate is kept, weakly, and nothing calls it",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: the accessors of the scroll view: the enabled flag is read before the class default of UIDragInteraction is asked, the delegates are stored, and the active state is that of a controller that no drag has started",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UICollectionView.dropDelegate",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "dragging is begun and carried by a system service this release does not run",
-      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "the delegate is kept, weakly, and nothing calls it",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: the accessors of the scroll view: the enabled flag is read before the class default of UIDragInteraction is asked, the delegates are stored, and the active state is that of a controller that no drag has started",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UICollectionView.dragInteractionEnabled",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "dragging is begun and carried by a system service this release does not run",
-      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "reads what was set, and the class default of the drag interaction, NO, before that; setting it starts nothing",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: the accessors of the scroll view: the enabled flag is read before the class default of UIDragInteraction is asked, the delegates are stored, and the active state is that of a controller that no drag has started",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UICollectionView.hasActiveDrag",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "dragging is begun and carried by a system service this release does not run",
-      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "NO: no drag begins",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: the accessors of the scroll view: the enabled flag is read before the class default of UIDragInteraction is asked, the delegates are stored, and the active state is that of a controller that no drag has started",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UICollectionView.hasActiveDrop",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "dragging is begun and carried by a system service this release does not run",
-      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "NO: no drop happens",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: the accessors of the scroll view: the enabled flag is read before the class default of UIDragInteraction is asked, the delegates are stored, and the active state is that of a controller that no drag has started",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UICollectionView.reorderingCadence",
@@ -1645,37 +1646,37 @@
       "api": "UITableView.dragDelegate",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "dragging is begun and carried by a system service this release does not run",
-      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "the delegate is kept, weakly, and nothing calls it",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: the accessors of the scroll view: the enabled flag is read before the class default of UIDragInteraction is asked, the delegates are stored, and the active state is that of a controller that no drag has started",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UITableView.dropDelegate",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "dragging is begun and carried by a system service this release does not run",
-      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "the delegate is kept, weakly, and nothing calls it",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: the accessors of the scroll view: the enabled flag is read before the class default of UIDragInteraction is asked, the delegates are stored, and the active state is that of a controller that no drag has started",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UITableView.hasActiveDrag",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "dragging is begun and carried by a system service this release does not run",
-      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "NO: no drag begins",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: the accessors of the scroll view: the enabled flag is read before the class default of UIDragInteraction is asked, the delegates are stored, and the active state is that of a controller that no drag has started",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UITableView.hasActiveDrop",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "dragging is begun and carried by a system service this release does not run",
-      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "NO: no drop happens",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: the accessors of the scroll view: the enabled flag is read before the class default of UIDragInteraction is asked, the delegates are stored, and the active state is that of a controller that no drag has started",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UITableView.separatorInsetReference",
@@ -1690,19 +1691,19 @@
       "api": "-[UITableViewCell dragStateDidChange:]",
       "kind": "method",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "dragging is begun and carried by a system service this release does not run",
-      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "does nothing; no drag ever changes the state of a cell",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: the method is a hook a subclass overrides",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UITableViewCell.userInteractionEnabledWhileDragging",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "dragging is begun and carried by a system service this release does not run",
-      "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "NO until set; nothing drags the cell, so it does not matter to a drag",
+      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: -[UITableViewCell userInteractionEnabledWhileDragging] reads its flag, which starts as NO",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "-[UIDocumentPickerDelegate documentPicker:didPickDocumentsAtURLs:]",

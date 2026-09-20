@@ -222,6 +222,8 @@ question - a token, a session, a setting, an anchor, a tag - is absent, and
 
 `CGColorSpaceGetName`, `CGPathApplyWithBlock`, `CGImageGetByteOrderInfo`, `CGImageGetPixelFormatInfo`, `CGPDFArrayApplyBlock` and `CGPDFDictionaryApplyBlock`, the six functions that turn the code points of a video colour description into names and back (`CVColorPrimaries`, `CVTransferFunction` and `CVYCbCrMatrix`, each way) and the constants iOS 11 and 12 added beside them come in `libGraphicsBackports.dylib`, built with the `graphics` config, so that a process which reads none of them loads neither CoreGraphics nor CoreVideo for them. The tables are the iOS 12 ones: a code point that release names nothing for gets the string it makes, `ColorPrimaries#7`, and reads back. iOS 6 names a generic RGB space as the device one, so that is the name `CGColorSpaceGetName` answers for it. The outline and access permission keys of a PDF, the colour conversion object, the info pointer of a data provider and the colour space constants of 12.3 and 12.6 are absent, each with its reason in the registry.
 
+`UIDragItem`, `UIDropProposal`, `UIDragInteraction` and `UIDropInteraction`, with the drag and drop delegates and switches of `UITableView` and `UICollectionView` and the drag hooks of their cells, are carried as the surface an application configures: everything is held and nothing ever begins, so no drag starts, no drop enters a view and no delegate is asked. `+[UIDragInteraction isEnabledByDefault]` answers NO on every device, an iPad included, where iOS 12 answers YES there.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and
