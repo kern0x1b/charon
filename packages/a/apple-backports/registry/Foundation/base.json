@@ -1499,5 +1499,351 @@
     "status": "implemented",
     "facts": "facts/Foundation/NSDateComponentsFormatter.md",
     "source": "the host's own Foundation, through the fuzz differential of tests/backports/host/uikit2 (datecomponentsformatter) and the recorded cases of tests/backports/host/datecomponents"
+  },
+  {
+    "api": "NSMetadataUbiquitousItemDownloadingStatusKey",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+    "effect": "the name is there and no metadata item carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousItemDownloadingStatusNotDownloaded",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+    "effect": "the name is there and no metadata item carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousItemDownloadingStatusDownloaded",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+    "effect": "the name is there and no metadata item carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousItemDownloadingStatusCurrent",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+    "effect": "the name is there and no metadata item carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousItemDownloadingErrorKey",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+    "effect": "the name is there and no metadata item carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousItemUploadingErrorKey",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+    "effect": "the name is there and no metadata item carries it"
+  },
+  {
+    "api": "NSMetadataQueryUpdateAddedItemsKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+    "effect": "the name is there and no metadata item or query update carries it"
+  },
+  {
+    "api": "NSMetadataQueryUpdateChangedItemsKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+    "effect": "the name is there and no metadata item or query update carries it"
+  },
+  {
+    "api": "NSMetadataQueryUpdateRemovedItemsKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+    "effect": "the name is there and no metadata item or query update carries it"
+  },
+  {
+    "api": "NSMetadataQueryAccessibleUbiquitousExternalDocumentsScope",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+    "effect": "the name is there and no metadata item or query update carries it"
+  },
+  {
+    "api": "NSMetadataItemContentTypeKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+    "effect": "the name is there and no metadata item or query update carries it"
+  },
+  {
+    "api": "NSMetadataItemContentTypeTreeKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+    "effect": "the name is there and no metadata item or query update carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousItemDownloadRequestedKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+    "effect": "the name is there and no metadata item or query update carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousItemIsExternalDocumentKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+    "effect": "the name is there and no metadata item or query update carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousItemContainerDisplayNameKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+    "effect": "the name is there and no metadata item or query update carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousItemURLInLocalContainerKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+    "effect": "the name is there and no metadata item or query update carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousItemIsSharedKey",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no shared iCloud items",
+    "effect": "the name is there and no metadata item carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousSharedItemCurrentUserRoleKey",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no shared iCloud items",
+    "effect": "the name is there and no metadata item carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousSharedItemCurrentUserPermissionsKey",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no shared iCloud items",
+    "effect": "the name is there and no metadata item carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousSharedItemOwnerNameComponentsKey",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no shared iCloud items",
+    "effect": "the name is there and no metadata item carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousSharedItemMostRecentEditorNameComponentsKey",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no shared iCloud items",
+    "effect": "the name is there and no metadata item carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousSharedItemRoleOwner",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no shared iCloud items",
+    "effect": "the name is there and no metadata item carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousSharedItemRoleParticipant",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no shared iCloud items",
+    "effect": "the name is there and no metadata item carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousSharedItemPermissionsReadOnly",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no shared iCloud items",
+    "effect": "the name is there and no metadata item carries it"
+  },
+  {
+    "api": "NSMetadataUbiquitousSharedItemPermissionsReadWrite",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no shared iCloud items",
+    "effect": "the name is there and no metadata item carries it"
+  },
+  {
+    "api": "NSExtensionHostDidBecomeActiveNotification",
+    "kind": "constant",
+    "introduced": "8.2",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no app extension and so no host to tell one of its state",
+    "effect": "the name is there and nothing is ever posted under it"
+  },
+  {
+    "api": "NSExtensionHostDidEnterBackgroundNotification",
+    "kind": "constant",
+    "introduced": "8.2",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no app extension and so no host to tell one of its state",
+    "effect": "the name is there and nothing is ever posted under it"
+  },
+  {
+    "api": "NSExtensionHostWillEnterForegroundNotification",
+    "kind": "constant",
+    "introduced": "8.2",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no app extension and so no host to tell one of its state",
+    "effect": "the name is there and nothing is ever posted under it"
+  },
+  {
+    "api": "NSExtensionHostWillResignActiveNotification",
+    "kind": "constant",
+    "introduced": "8.2",
+    "status": "inert",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+    "reason": "the release has no app extension and so no host to tell one of its state",
+    "effect": "the name is there and nothing is ever posted under it"
+  },
+  {
+    "api": "NSExtensionMain",
+    "kind": "function",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports"
+  },
+  {
+    "api": "NSDataDeallocatorVM",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports"
+  },
+  {
+    "api": "NSDataDeallocatorUnmap",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports"
+  },
+  {
+    "api": "NSDataDeallocatorFree",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports"
+  },
+  {
+    "api": "NSDataDeallocatorNone",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports"
+  },
+  {
+    "api": "NSFileAccessIntent",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports"
+  },
+  {
+    "api": "-[NSFileCoordinator coordinateAccessWithIntents:queue:byAccessor:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/CloudAndExtensions.md",
+    "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports"
   }
 ]
