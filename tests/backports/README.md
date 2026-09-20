@@ -730,6 +730,8 @@ first action, a tap elsewhere or a scroll closes it, a table whose delegate answ
 of iOS 11 does the same for both edges and a full swipe. There is no host oracle: the host's UIKit draws no swipe buttons. It
 writes `/private/var/backports/swipeui.log` and `swipeui.done`.
 
+`keycommand.m` (`keycommand-Info.plist`) is an application for both devices that checks the key commands of iOS 7 with key events made by `GSEventCreateKeyEvent` and handed to `-[UIApplication handleKeyEvent:]`, the entry the release gives a hardware key: the command of the nearest responder runs with the command as its sender, modifiers must match exactly, a key going up and a key that is no command do not run one, the arrows and escape are found by key code and by character, and a command its responder cannot perform is passed on. It has no host oracle (Mac Catalyst has no such entry) and no hardware keyboard was attached to a device, which `facts/UIKit/KeyCommands.md` says.
+
 `activity.m`, `keyboardlocal.m` and `openurl.m` (each with its `-Info.plist`) are applications for both devices with no host oracle, because a macOS process has no idle timer, no software keyboard and no URL delivery of this kind: `activity.m` reads `UIApplication.idleTimerDisabled` around `NSProcessInfo` activities (nested, ended twice, begun on another thread, the application's own setting kept), `keyboardlocal.m` shows the real keyboard and reads `UIKeyboardIsLocalUserInfoKey` in the four notifications UIKit posts, and `openurl.m` gives an application whose delegate has only `-application:openURL:options:` the old call and a real URL sent to its own scheme.
 
 `documentpicker.m` (`documentpicker-Info.plist`) is an application for both devices that drives `UIDocumentPickerViewController` with real

@@ -1473,12 +1473,10 @@
     "api": "UIKeyCommand",
     "kind": "class",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "implemented",
     "minimum": "6.0",
-    "reason": "the release does not look for the key commands of a responder: a hardware keyboard reaches an application only as text",
-    "effect": "the command is made, compared, copied and archived as the system's is; a responder's keyCommands are never asked for and no command fires",
-    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
-    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+    "facts": "facts/UIKit/KeyCommands.md",
+    "source": "the host's own UIKit for the values, the defaults and the copies, and tests/backports/device/keycommand.m on iOS 6"
   },
   {
     "api": "UIKeyInputDownArrow",
@@ -1606,12 +1604,10 @@
     "api": "UIResponder.keyCommands",
     "kind": "property",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "implemented",
     "minimum": "6.0",
-    "reason": "the release does not ask a responder for key commands",
-    "effect": "the property answers nil unless the application overrides it, and nothing asks",
-    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
-    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+    "facts": "facts/UIKit/KeyCommands.md",
+    "source": "the host's own UIKit for the values, the defaults and the copies, and tests/backports/device/keycommand.m on iOS 6"
   },
   {
     "api": "UIResponder.userActivity",
