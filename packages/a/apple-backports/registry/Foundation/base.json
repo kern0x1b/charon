@@ -70,6 +70,30 @@
     "facts": "facts/Foundation/NSKeyedUnarchiverTopLevel.md"
   },
   {
+    "api": "+[NSString objectWithItemProviderData:typeIdentifier:error:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSItemProvider.md",
+    "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+  },
+  {
+    "api": "+[NSString readableTypeIdentifiersForItemProvider]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSItemProvider.md",
+    "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+  },
+  {
+    "api": "+[NSString writableTypeIdentifiersForItemProvider]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSItemProvider.md",
+    "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+  },
+  {
     "api": "+[NSURL URLWithDataRepresentation:relativeToURL:]",
     "kind": "method",
     "introduced": "9.0",
@@ -108,6 +132,30 @@
     "status": "implemented",
     "facts": "facts/Foundation/NSURL.md",
     "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
+  },
+  {
+    "api": "+[NSURL objectWithItemProviderData:typeIdentifier:error:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSItemProvider.md",
+    "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+  },
+  {
+    "api": "+[NSURL readableTypeIdentifiersForItemProvider]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSItemProvider.md",
+    "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+  },
+  {
+    "api": "+[NSURL writableTypeIdentifiersForItemProvider]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSItemProvider.md",
+    "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
   },
   {
     "api": "-[NSArray firstObject]",
@@ -743,6 +791,14 @@
     "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
+    "api": "-[NSString loadDataWithTypeIdentifier:forItemProviderCompletionHandler:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSItemProvider.md",
+    "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+  },
+  {
     "api": "-[NSString localizedCapitalizedString]",
     "kind": "method",
     "introduced": "9.0",
@@ -813,6 +869,14 @@
     "status": "implemented",
     "facts": "facts/Foundation/NSStringPercentEncoding.md",
     "source": "the host's own Foundation, through the differential run of tests/backports/host/url"
+  },
+  {
+    "api": "-[NSString writableTypeIdentifiersForItemProvider]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSItemProvider.md",
+    "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
   },
   {
     "api": "-[NSThread qualityOfService]",
@@ -915,6 +979,14 @@
     "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
+    "api": "-[NSURL loadDataWithTypeIdentifier:forItemProviderCompletionHandler:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSItemProvider.md",
+    "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+  },
+  {
     "api": "-[NSURL removeAllCachedResourceValues]",
     "kind": "method",
     "introduced": "7.0",
@@ -940,6 +1012,14 @@
     "status": "implemented",
     "facts": "facts/Foundation/NSURL.md",
     "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
+  },
+  {
+    "api": "-[NSURL writableTypeIdentifiersForItemProvider]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSItemProvider.md",
+    "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
   },
   {
     "api": "-[NSURLSessionConfiguration setTLSMaximumSupportedProtocol:]",
@@ -1012,6 +1092,80 @@
     "introduced": "7.0",
     "status": "implemented",
     "facts": "facts/Foundation/NSTimer.md"
+  },
+  {
+    "api": "NSExtensionItem",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "inert",
+    "reason": "the release has no app extensions, so no extension is given an item and no item comes back from one",
+    "effect": "the item holds the title, the text, the attachments and the user info it was given, is copied and archived, and reaches no extension",
+    "facts": "facts/Foundation/NSExtensionItem.md",
+    "source": "the header of the SDK 16.4 and the coding keys the class uses"
+  },
+  {
+    "api": "NSExtensionItemAttachmentsKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSExtensionItem.md",
+    "source": "the header of the SDK 16.4"
+  },
+  {
+    "api": "NSExtensionItemAttributedContentTextKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSExtensionItem.md",
+    "source": "the header of the SDK 16.4"
+  },
+  {
+    "api": "NSExtensionItemAttributedTitleKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSExtensionItem.md",
+    "source": "the header of the SDK 16.4"
+  },
+  {
+    "api": "NSExtensionJavaScriptFinalizeArgumentKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSItemProvider.md",
+    "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+  },
+  {
+    "api": "NSExtensionJavaScriptPreprocessingResultsKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSItemProvider.md",
+    "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+  },
+  {
+    "api": "NSItemProvider",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSItemProvider.md",
+    "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+  },
+  {
+    "api": "NSItemProviderErrorDomain",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSItemProvider.md",
+    "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+  },
+  {
+    "api": "NSItemProviderPreferredImageSizeKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSItemProvider.md",
+    "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
   },
   {
     "api": "NSKeyedArchiveRootObjectKey",

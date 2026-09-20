@@ -346,6 +346,11 @@ postinst run with `DPKG_ROOT` set to it.
   held to what the system's `UISearchController` did in `searchcontroller-expectations.h`, which
   `host/searchcontroller/run.sh` records in an application under Mac Catalyst; nine records differ for a stated reason
   the test names.
+- `itemprovider.m` with `itemprovider-cases.m`: a process of its own, `NSItemProvider` and `NSExtensionItem` put through
+  what each type and each class asked for answers, the load handlers, the errors, a provider of a file, the
+  representations of data and files, and objects, and every answer held to what the system's classes did in
+  `itemprovider-expectations.h`, which `host/itemprovider/run.sh` records under Mac Catalyst. The behaviour that does not
+  depend on the UTI database is also held by the `itemprovider` and `itemproviderbuiltins` groups of `host/uikit2/run.sh`.
 - `corelocation.m`: a process of its own, the CoreLocation batch: the circular region as a class, its notify flags,
   and the answers of the class methods about monitoring and ranging. It needs the package built with
   `corelocation = true`; it is checked on the emulated 6.0 and on the iPad 2, where location services and region
