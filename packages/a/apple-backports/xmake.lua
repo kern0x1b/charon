@@ -47,8 +47,10 @@ package("apple-backports")
 
     add_configs("coretelephony", {description = "Build libCoreTelephonyBackports.dylib, for an application that reads the radio access technology of the phone and names the constants of it; iOS 6.0 has none of them and iOS 6.1 keeps the technology in a private class.", default = false, type = "boolean"})
 
+    add_configs("accelerate", {description = "Build libAccelerateBackports.dylib, for an application that fills a vImage_Buffer from a CGImage or makes a CGImage from one: vImageBuffer_Init, vImageBuffer_InitWithCGImage and vImageCreateCGImageFromBuffer of iOS 7, over CoreGraphics, for the 8-bit RGB and gray formats.", default = false, type = "boolean"})
+
     on_load("iphoneos", function (package)
-        package:add("links", table.join(package:config("uikit") and {"UIKitBackports"} or {}, package:config("corelocation") and {"CoreLocationBackports"} or {}, package:config("coredata") and {"CoreDataBackports"} or {}, package:config("security") and {"SecurityBackports"} or {}, package:config("avfoundation") and {"AVFoundationBackports"} or {}, package:config("webkit") and {"WebKitBackports"} or {}, package:config("graphics") and {"GraphicsBackports"} or {}, package:config("localauthentication") and {"LocalAuthenticationBackports"} or {}, (package:config("safariservices") or package:config("authenticationservices")) and {"SafariServicesBackports"} or {}, package:config("authenticationservices") and {"AuthenticationServicesBackports"} or {}, package:config("backgroundtasks") and {"BackgroundTasksBackports"} or {}, package:config("photos") and {"PhotosBackports"} or {}, package:config("gamecontroller") and {"GameControllerBackports"} or {}, package:config("metal") and {"MetalBackports"} or {}, package:config("coretelephony") and {"CoreTelephonyBackports"} or {}, package:config("opengles") and {"OpenGLESBackports"} or {}, {"FoundationBackports"}))
+        package:add("links", table.join(package:config("uikit") and {"UIKitBackports"} or {}, package:config("corelocation") and {"CoreLocationBackports"} or {}, package:config("coredata") and {"CoreDataBackports"} or {}, package:config("security") and {"SecurityBackports"} or {}, package:config("avfoundation") and {"AVFoundationBackports"} or {}, package:config("webkit") and {"WebKitBackports"} or {}, package:config("graphics") and {"GraphicsBackports"} or {}, package:config("localauthentication") and {"LocalAuthenticationBackports"} or {}, (package:config("safariservices") or package:config("authenticationservices")) and {"SafariServicesBackports"} or {}, package:config("authenticationservices") and {"AuthenticationServicesBackports"} or {}, package:config("backgroundtasks") and {"BackgroundTasksBackports"} or {}, package:config("photos") and {"PhotosBackports"} or {}, package:config("gamecontroller") and {"GameControllerBackports"} or {}, package:config("metal") and {"MetalBackports"} or {}, package:config("coretelephony") and {"CoreTelephonyBackports"} or {}, package:config("accelerate") and {"AccelerateBackports"} or {}, package:config("opengles") and {"OpenGLESBackports"} or {}, {"FoundationBackports"}))
     end)
 
     on_install("iphoneos", function (package)
@@ -80,7 +82,8 @@ package("apple-backports")
                                      package:config("gamecontroller") and {"GameControllerBackports"} or {},
                                      package:config("metal") and {"MetalBackports"} or {},
                                      package:config("opengles") and {"OpenGLESBackports"} or {},
-                                     package:config("coretelephony") and {"CoreTelephonyBackports"} or {})
+                                     package:config("coretelephony") and {"CoreTelephonyBackports"} or {},
+                                     package:config("accelerate") and {"AccelerateBackports"} or {})
         local common = {root = package:scriptdir(), architecture = package:arch(), deployment = deployment, sdkdir = toolchain:config("sdkdir"),
                         cc = assert(toolchain:tool("cc"), "the apple-ios toolchain names no compiler for " .. package:arch()),
                         ld = assert(linker, "the apple-ios toolchain names no ld64 for " .. package:arch()), libraries = libraries}

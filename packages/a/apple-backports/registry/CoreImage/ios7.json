@@ -1,0 +1,27 @@
+{
+  "framework": "CoreImage",
+  "entries": [
+    {
+      "api": "kCIInputAngleKey",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6 does not export the name; it is carried as the string the filters of iOS 7 name their angle by",
+      "effect": "the constant is the string inputAngle",
+      "facts": "facts/CoreImage/InputKeysAndSVG.md",
+      "source": "CoreImage and MobileCoreServices of the arm64 shared cache of iOS 12.0, the constant strings; an iPad 2 and the iOS 6.0 emulator for the exports of the release"
+    },
+    {
+      "api": "kCIInputRadiusKey",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6 does not export the name; it is carried as the string the filters of iOS 7 name their radius by",
+      "effect": "the constant is the string inputRadius",
+      "facts": "facts/CoreImage/InputKeysAndSVG.md",
+      "source": "CoreImage and MobileCoreServices of the arm64 shared cache of iOS 12.0, the constant strings; an iPad 2 and the iOS 6.0 emulator for the exports of the release"
+    }
+  ]
+}

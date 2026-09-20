@@ -1,0 +1,16 @@
+{
+  "framework": "MobileCoreServices",
+  "entries": [
+    {
+      "api": "kUTTypeScalableVectorGraphics",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6 does not export the name; it is carried as the identifier of iOS 8 for SVG images, which the type database of the release may not declare",
+      "effect": "the constant is the string public.svg-image",
+      "facts": "facts/CoreImage/InputKeysAndSVG.md",
+      "source": "CoreImage and MobileCoreServices of the arm64 shared cache of iOS 12.0, the constant strings; an iPad 2 and the iOS 6.0 emulator for the exports of the release"
+    }
+  ]
+}
