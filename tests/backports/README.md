@@ -603,6 +603,23 @@ kind whose selectors sit in a table of the shared cache that libobjc names in it
 (`pip3 install capstone`). `host/cachereader/run.sh` holds the two to a method a cache is known to
 have.
 
+## Asking a release which C names it exports
+
+`tools/surface-diff.py` knows the Objective-C classes and selectors the release carries, and no C name, so a
+constant or a function that iOS 6 already exports itself shows as a gap, and an `absent` written for it tells an
+application that a name is not there when it is. `tools/probe-exports.py` asks the release: it builds a small
+program, runs it in the emulator, loads every framework of the release and calls `dlsym` for each name.
+
+    python3 tools/probe-exports.py --registry --workdir "$TMPDIR/probe"
+    python3 tools/probe-exports.py --names names.txt --workdir "$TMPDIR/probe"
+
+`--registry` asks about every constant and function the registry lists as `absent`, and exits 1 when the release
+exports one, which is the mistake to correct (the entry is the release's own, and says so in a file of facts).
+`--names` takes one name a line, a function without its parentheses, for the names a pack of `absent` rows is about to
+list: run it before writing the pack. It runs `xmake emulate` with the `XMAKE_GLOBALDIR` of the caller, which must
+hold the `charon latest` addon of the tree named by `--charon`, and the emulator's answer for iOS 6.0 was the same as an
+iPad 2 and an iPhone 4S running 6.1.3 gave.
+
 ## Measuring how much of an SDK the registry has decided
 
 `tools/surface-diff.py` lists what an SDK declares for a framework - every class,
