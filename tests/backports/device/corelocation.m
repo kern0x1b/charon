@@ -215,6 +215,31 @@ static void check_beacons(void)
     CHECK(state == CLRegionStateUnknown, "the state of a beacon region is unknown");
 }
 
+static void check_floor_and_visits(void)
+{
+    Class floors = NSClassFromString(@"CLFloor"), visits = NSClassFromString(@"CLVisit");
+    CHECK(floors != Nil && visits != Nil, "the floor and visit classes exist");
+    CHECK_EQUAL(image_of(floors), @"libCoreLocationBackports.dylib", "CLFloor comes from the backports");
+    CHECK_EQUAL(image_of(visits), @"libCoreLocationBackports.dylib", "CLVisit comes from the backports");
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:37.33 longitude:-122.03];
+    CHECK([location floor] == nil, "a location has no floor");
+    CLVisit *visit = [[CLVisit alloc] init];
+    CHECK([visit.arrivalDate isEqual:[NSDate distantPast]] && [visit.departureDate isEqual:[NSDate distantFuture]],
+          "a visit with nothing known has no arrival and no departure");
+    CHECK(visit.horizontalAccuracy == -1, "a visit with nothing known has no accuracy");
+    CLVisit *copy = [visit copy];
+    CHECK([copy isKindOfClass:visits] && [copy.arrivalDate isEqual:visit.arrivalDate], "a visit copies");
+    NSData *archive = [NSKeyedArchiver archivedDataWithRootObject:visit];
+    CLVisit *decoded = [NSKeyedUnarchiver unarchiveObjectWithData:archive];
+    CHECK([decoded isKindOfClass:visits] && [decoded.departureDate isEqual:visit.departureDate], "a visit survives archiving");
+    CharonLocationProbe *probe = [[CharonLocationProbe alloc] init];
+    CLLocationManager *manager = [[CLLocationManager alloc] init];
+    manager.delegate = probe;
+    CHECK([raised(^{ [manager startMonitoringVisits]; [manager stopMonitoringVisits]; }) isEqualToString:@"nothing"],
+          "visit monitoring is accepted");
+    spin_until(^BOOL { return NO; }, 1);
+    CHECK(probe.updates == 0 && probe.failures == 0, "nothing is delivered for a visit");
+}
 
 
 int main(int argc, char **argv)
@@ -227,6 +252,7 @@ int main(int argc, char **argv)
         check_single_location();
         check_region_state();
         check_beacons();
+        check_floor_and_visits();
         printf("%d checks, %d failed\n", charon_checks, charon_failures);
     }
     return charon_failures;

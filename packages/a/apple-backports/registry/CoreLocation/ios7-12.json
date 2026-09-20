@@ -116,6 +116,57 @@
       "reason": "the release's location daemon cannot range beacons, so nothing ever finds one",
       "effect": "the selector is never sent, so a delegate that implements it is simply not called, and +isRangingAvailable answers NO",
       "facts": "facts/CoreLocation/CLBeacon.md"
+    },
+    {
+      "api": "CLFloor",
+      "kind": "class",
+      "introduced": "8.0",
+      "status": "implemented",
+      "facts": "facts/CoreLocation/CLVisit.md",
+      "source": "CoreLocation 12.0 arm64"
+    },
+    {
+      "api": "CLLocation.floor",
+      "kind": "property",
+      "introduced": "8.0",
+      "status": "implemented",
+      "facts": "facts/CoreLocation/CLVisit.md",
+      "source": "CoreLocation 12.0 arm64"
+    },
+    {
+      "api": "CLVisit",
+      "kind": "class",
+      "introduced": "8.0",
+      "status": "implemented",
+      "facts": "facts/CoreLocation/CLVisit.md",
+      "source": "CoreLocation 12.0 arm64"
+    },
+    {
+      "api": "-[CLLocationManager startMonitoringVisits]",
+      "kind": "method",
+      "introduced": "8.0",
+      "status": "inert",
+      "reason": "the release has no detection of visits: nothing watches where the device stays",
+      "effect": "the call returns at once and says so once in the log, and the delegate is never sent a visit",
+      "facts": "facts/CoreLocation/CLVisit.md"
+    },
+    {
+      "api": "-[CLLocationManager stopMonitoringVisits]",
+      "kind": "method",
+      "introduced": "8.0",
+      "status": "inert",
+      "reason": "the release has no detection of visits, so there is none to stop",
+      "effect": "the call returns at once",
+      "facts": "facts/CoreLocation/CLVisit.md"
+    },
+    {
+      "api": "-[CLLocationManagerDelegate locationManager:didVisit:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "status": "absent",
+      "reason": "the release detects no visits, so nothing is ever delivered",
+      "effect": "the selector is never sent, so a delegate that implements it is simply not called",
+      "facts": "facts/CoreLocation/CLVisit.md"
     }
   ]
 }
