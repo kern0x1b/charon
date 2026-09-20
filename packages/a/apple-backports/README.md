@@ -202,6 +202,15 @@ circular until given continuous, and a value that is neither makes it circular a
 arc only, so a continuous curve is kept and drawn circular, and the first layer set to it says so in the log. See
 `facts/QuartzCore/CALayerCornerCurve.md`.
 
+### Background tasks, accepted by no scheduler
+
+`BGTaskScheduler`, the refresh and processing requests and the task classes are carried in a library of their own, for an
+application that registers launch handlers and submits requests. iOS 6 launches an application in the background for none of
+them, so a handler for a permitted identifier is kept and never called, and a submission answers NO with the error the header
+gives for scheduling that is not available (code 1), or not permitted (code 3) when the identifier or the background mode is not
+listed in the Info.plist. There is no host framework to compare with; the device test holds the port to the headers. See
+`facts/BackgroundTasks/BGTaskScheduler.md`.
+
 ## iOS 11 and 12
 
 These two releases are read differently from the ones before them. The last
