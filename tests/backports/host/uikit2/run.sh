@@ -14,6 +14,10 @@ frameworks="-framework LocalAuthentication -framework SafariServices -framework 
 flags="-fobjc-arc -fvisibility=hidden -Wall -Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-objc-protocol-method-implementation -Wno-incomplete-implementation -Wno-objc-property-implementation"
 rm -rf "$build"
 mkdir -p "$build/plain"
+export CHARON_DATA_ASSETS="$here/../../device/data-assets/Assets.car"
+if [ -n "${CHARON_DATA_ASSET_CATALOG:-}" ] && [ -f "$CHARON_DATA_ASSET_CATALOG" ]; then
+    assetutil --info "$CHARON_DATA_ASSET_CATALOG" > "${TMPDIR:-/tmp}/charon-dataassets.json"
+fi
 
 renames() {
     # $1: newline separated object files, $2: selectors that must keep their name
@@ -108,6 +112,7 @@ group scenes "UISceneValues.m UISceneConstants.m" "*" scenes_test.m
 group relativedatetimeformatter "../Foundation/NSRelativeDateTimeFormatter.m" "*" relativedatetimeformatter_test.m
 group itemprovider "../Foundation/NSItemProvider.m" "*" itemprovider_test.m
 group itemproviderbuiltins "../Foundation/NSString+ItemProvider.m ../Foundation/NSURL+ItemProvider.m" "" itemproviderbuiltins_test.m
+group nsdataasset "NSDataAsset.m" "*" nsdataasset_test.m
 group safariviewcontroller "../SafariServices/CharonSafariPage.m ../SafariServices/SFSafariViewController.m ../SafariServices/SFSafariViewControllerConfiguration.m ../SafariServices/SFSafariViewControllerActivityButton.m ../SafariServices/SFSafariViewControllerPrewarmingToken.m ../SafariServices/SFAuthenticationSession.m ../SafariServices/SFAuthenticationErrorDomain.m" "*" safariviewcontroller_test.m
 windowed snapshots "UIView+Snapshots.m" "" snapshots_test.m
 windowed menucontroller "UIMenuController+iOS13.m" "" menucontroller_test.m
