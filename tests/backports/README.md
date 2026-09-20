@@ -40,6 +40,7 @@ inputs.
     sh host/oslog/run.sh  writes device/oslog-expectations.h when it passes
     sh host/imageflip/run.sh
     sh host/ios1516/run.sh  writes device/ios1516-expectations.h when it passes
+    sh host/cachereader/run.sh <dyld_shared_cache> <image> <class> <selector>
 
 `host/oslog/run.sh` runs the same 61 calls through the host's os_log, asked for its
 developer output, and through the port's formatter, and compares the two texts; the calls both
@@ -570,6 +571,25 @@ package builds for that release (`lib` of an installed `charon@apple-backports`,
 or the `bands/<release>` folder of its deb). A binary that already loads the
 backports by their install names is checked with those libraries supplied, so
 it has nothing left in the first list.
+
+## Reading what a release's library does
+
+The facts behind an `implemented`, `inert` or `ignored` entry come from the release's own library, and
+a shared cache holds it with no symbol for an Objective-C method. `tools/cache-methods.py` lists the
+methods of an image's classes with the address of each implementation, and `tools/cache-disasm.py`
+disassembles from an address, naming the string or the selector an `adrp` with an `add` or a `ldr`
+reaches:
+
+    python3 tools/cache-methods.py ~/.charon/dyld/12.0/dyld_shared_cache_arm64 CoreLocation CLLocationManager
+    python3 tools/cache-disasm.py  ~/.charon/dyld/12.0/dyld_shared_cache_arm64 0x187d5acd8 300
+
+They read the cache file and the sub-caches beside it (`.01`, `.02`, ...) themselves, so they need no
+symbol file: an arm64 cache of iOS 12 has its pointers as a slide chain whose bits they mask off, an
+arm64e cache of iOS 16 has authenticated pointers, and its method lists are the small, relative
+kind whose selectors sit in a table of the shared cache that libobjc names in its `__objc_opt_ro`.
+`tools/cache_reader.py` is the reader they share; `tools/cache-disasm.py` needs `capstone`
+(`pip3 install capstone`). `host/cachereader/run.sh` holds the two to a method a cache is known to
+have.
 
 ## Measuring how much of an SDK the registry has decided
 
