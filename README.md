@@ -604,7 +604,7 @@ script takes the flags from
 
 What the Swift runtime calls and an old release lacks is there as well:
 `memset_s` and `objc_allocWithZone` (iOS 7), `voucher_copy`, `voucher_adopt` and
-`qos_class_self` (8), `clock_getres`, `dispatch_activate` and
+`qos_class_self` and `dispatch_block_*` (8), `clock_getres`, `dispatch_activate` and
 `dispatch_assert_queue$V2` (10), and `os_unfair_lock_*` (10) and
 `os_unfair_recursive_lock_*` (12). A release that has one of them is asked for
 it by name in the library that defines it - libsystem_platform, libdispatch or
@@ -615,6 +615,14 @@ release exports it, but it took a class of service in place of a priority only
 in iOS 8, and answers NULL for a class before that; a caller that hands it a
 class renames it, `add_values("apple.compat", "dispatch_get_global_queue")`, and
 the shim maps the class to the priority it stands for.
+
+`dispatch_block_create` and its family (`DispatchWorkItem`, and `.enforceQoS` with it, are built on them) make the block
+libdispatch of iOS 8 makes: it carries a dispatch group that `dispatch_block_wait` and `dispatch_block_notify` wait on,
+and a cancelled block does not run. A release has no classes of service or vouchers, so the flags and the class that name
+them are accepted and change nothing, as `DISPATCH_BLOCK_ENFORCE_QOS_CLASS` does on a system with one class; and
+`DISPATCH_BLOCK_BARRIER` is not honoured, because the release's `dispatch_async` cannot read a block's flags: a barrier
+block runs as an ordinary one. `os_unfair_lock_assert_owner` and `_not_owner` read the word the shims' lock keeps, so they
+are hidden copies in each image, unlike the lock itself.
 
 The shims for calls whose state a whole process shares are not linked into each
 image. The waiters of an `os_unfair_lock` and the unlock that wakes them meet in

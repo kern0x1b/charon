@@ -827,6 +827,253 @@ int main(void)
 }
 """
 
+DISPATCH_BLOCKS = r"""
+#include <Block.h>
+#include <dispatch/dispatch.h>
+#include <dlfcn.h>
+#include <stdio.h>
+#include <string.h>
+
+/* The shim's own calls are the ones this program defines; Darwin's are the same calls in libdispatch, opened by path. Each
+   scenario runs against both and the two must answer alike. */
+typedef dispatch_block_t (*create_f)(unsigned long, dispatch_block_t);
+typedef dispatch_block_t (*create_qos_f)(unsigned long, unsigned int, int, dispatch_block_t);
+typedef void (*perform_f)(unsigned long, dispatch_block_t);
+typedef intptr_t (*wait_f)(dispatch_block_t, dispatch_time_t);
+typedef void (*notify_f)(dispatch_block_t, dispatch_queue_t, dispatch_block_t);
+typedef void (*cancel_f)(dispatch_block_t);
+typedef intptr_t (*testcancel_f)(dispatch_block_t);
+
+dispatch_block_t dispatch_block_create(unsigned long, dispatch_block_t);
+dispatch_block_t dispatch_block_create_with_qos_class(unsigned long, unsigned int, int, dispatch_block_t);
+void dispatch_block_perform(unsigned long, dispatch_block_t);
+intptr_t dispatch_block_wait(dispatch_block_t, dispatch_time_t);
+void dispatch_block_notify(dispatch_block_t, dispatch_queue_t, dispatch_block_t);
+void dispatch_block_cancel(dispatch_block_t);
+intptr_t dispatch_block_testcancel(dispatch_block_t);
+
+struct api {
+    create_f create; create_qos_f create_qos; perform_f perform; wait_f wait; notify_f notify; cancel_f cancel;
+    testcancel_f testcancel;
+};
+
+static int fails;
+static int ran;
+
+static void expect(int holds, const char *what)
+{
+    if (!holds) {
+        printf("FAIL  %s\n", what);
+        fails++;
+    }
+}
+
+static char *scenario(const struct api *api, char *log, size_t size)
+{
+    dispatch_queue_t queue = dispatch_queue_create("scenario", DISPATCH_QUEUE_SERIAL);
+    dispatch_queue_t parallel = dispatch_queue_create("parallel", DISPATCH_QUEUE_CONCURRENT);
+    size_t at = 0;
+#define LOG(...) at += snprintf(log + at, size - at, __VA_ARGS__)
+
+    ran = 0;
+    dispatch_block_t work = api->create(0, ^{ __atomic_add_fetch(&ran, 1, __ATOMIC_SEQ_CST); });
+    dispatch_async(queue, work);
+    LOG("run:wait=%ld ran=%d cancelled=%ld;", (long)api->wait(work, DISPATCH_TIME_FOREVER), ran, (long)api->testcancel(work));
+    Block_release(work);
+
+    ran = 0;
+    work = api->create(0, ^{ __atomic_add_fetch(&ran, 1, __ATOMIC_SEQ_CST); });
+    api->cancel(work);
+    LOG("cancel:test=%ld;", (long)api->testcancel(work));
+    dispatch_async(queue, work);
+    LOG("wait=%ld ran=%d;", (long)api->wait(work, DISPATCH_TIME_FOREVER), ran);
+    Block_release(work);
+
+    ran = 0;
+    work = api->create(0, ^{ __atomic_add_fetch(&ran, 1, __ATOMIC_SEQ_CST); });
+    LOG("timeout:wait=%d;", api->wait(work, dispatch_time(DISPATCH_TIME_NOW, 30 * NSEC_PER_MSEC)) != 0);
+    dispatch_async(queue, work);
+    LOG("again=%ld ran=%d;", (long)api->wait(work, DISPATCH_TIME_FOREVER), ran);
+    Block_release(work);
+
+    ran = 0;
+    __block int notified = 0;
+    dispatch_semaphore_t told = dispatch_semaphore_create(0);
+    work = api->create(0, ^{ __atomic_add_fetch(&ran, 1, __ATOMIC_SEQ_CST); });
+    api->notify(work, parallel, ^{ notified = ran; dispatch_semaphore_signal(told); });
+    dispatch_async(queue, work);
+    LOG("notify:got=%d ran-at-notice=%d;", dispatch_semaphore_wait(told, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC)) == 0, notified);
+    Block_release(work);
+
+    ran = 0;
+    api->perform(0, ^{ __atomic_add_fetch(&ran, 1, __ATOMIC_SEQ_CST); });
+    LOG("perform:ran=%d;", ran);
+
+    ran = 0;
+    work = api->create(0, ^{ __atomic_add_fetch(&ran, 1, __ATOMIC_SEQ_CST); });
+    work();
+    work();
+    LOG("direct:twice=%d;", ran);
+    Block_release(work);
+
+    dispatch_block_t some = ^{ };
+    LOG("valid:flags=%d qos=%d rel=%d ok=", api->create(0x100, some) == NULL, api->create_qos(0, 0x99, 0, some) == NULL,
+        api->create_qos(0, 0x21, -16, some) == NULL);
+    dispatch_block_t fine = api->create_qos(0x20, 0x21, -3, some);
+    LOG("%d;", fine != NULL);
+    if (fine)
+        Block_release(fine);
+    fine = api->create_qos(0, 0x00, 0, some);
+    LOG("unspecified=%d;", fine != NULL);
+    if (fine)
+        Block_release(fine);
+
+    dispatch_semaphore_t left = dispatch_semaphore_create(0);
+    work = api->create(0, ^{ });
+    api->notify(work, parallel, ^{ dispatch_semaphore_signal(left); });
+    Block_release(work);
+    LOG("dispose:notified=%d;", dispatch_semaphore_wait(left, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC)) == 0);
+
+    ran = 0;
+    work = api->create(DISPATCH_BLOCK_BARRIER | DISPATCH_BLOCK_ENFORCE_QOS_CLASS, ^{ __atomic_add_fetch(&ran, 1, __ATOMIC_SEQ_CST); });
+    dispatch_async(parallel, work);
+    LOG("flags:wait=%ld ran=%d;", (long)api->wait(work, DISPATCH_TIME_FOREVER), ran);
+    Block_release(work);
+
+    /* The work item a Swift program makes: created with a class, waited for after its queue runs it, or cancelled while it waits. */
+    ran = 0;
+    dispatch_semaphore_t gate = dispatch_semaphore_create(0);
+    dispatch_async(queue, ^{ dispatch_semaphore_wait(gate, DISPATCH_TIME_FOREVER); });
+    work = api->create_qos(DISPATCH_BLOCK_ENFORCE_QOS_CLASS, 0x15, 0, ^{ __atomic_add_fetch(&ran, 1, __ATOMIC_SEQ_CST); });
+    dispatch_async(queue, work);
+    api->cancel(work);
+    dispatch_semaphore_signal(gate);
+    LOG("cancelled-queued:wait=%ld ran=%d test=%ld;", (long)api->wait(work, DISPATCH_TIME_FOREVER), ran, (long)api->testcancel(work));
+    Block_release(work);
+    dispatch_release(queue);
+    dispatch_release(parallel);
+    return log;
+}
+
+int main(void)
+{
+    struct api ours = {dispatch_block_create, dispatch_block_create_with_qos_class, dispatch_block_perform, dispatch_block_wait,
+                       dispatch_block_notify, dispatch_block_cancel, dispatch_block_testcancel};
+    void *libdispatch = dlopen("/usr/lib/system/libdispatch.dylib", RTLD_LAZY | RTLD_LOCAL);
+    expect(libdispatch != NULL, "the test reaches Darwin's libdispatch beside the shim");
+    struct api darwins = {dlsym(libdispatch, "dispatch_block_create"), dlsym(libdispatch, "dispatch_block_create_with_qos_class"),
+                          dlsym(libdispatch, "dispatch_block_perform"), dlsym(libdispatch, "dispatch_block_wait"),
+                          dlsym(libdispatch, "dispatch_block_notify"), dlsym(libdispatch, "dispatch_block_cancel"),
+                          dlsym(libdispatch, "dispatch_block_testcancel")};
+    expect(darwins.create && (void *)darwins.create != (void *)ours.create, "Darwin's dispatch_block_create is not the shim");
+    char mine[2048], theirs[2048];
+    scenario(&ours, mine, sizeof mine);
+    scenario(&darwins, theirs, sizeof theirs);
+    if (strcmp(mine, theirs)) {
+        printf("FAIL  the shim and Darwin answer alike\n  shim:   %s\n  darwin: %s\n", mine, theirs);
+        fails++;
+    }
+    return fails != 0;
+}
+"""
+
+UNFAIR_ASSERT = r"""
+#include <dlfcn.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+typedef struct { uint32_t word; } lock_t;
+void os_unfair_lock_lock(lock_t *);
+void os_unfair_lock_unlock(lock_t *);
+void os_unfair_lock_assert_owner(const lock_t *);
+void os_unfair_lock_assert_not_owner(const lock_t *);
+
+static int fails;
+static lock_t held_elsewhere;
+static lock_t gate;
+
+static void expect(int holds, const char *what)
+{
+    if (!holds) {
+        printf("FAIL  %s\n", what);
+        fails++;
+    }
+}
+
+/* Does the call end the process? Run it in a child and see. A lock is a thread's, and the child's thread is another one than
+   the parent's, so the child takes the lock itself when the call is to find it held. */
+static int dies(void (*call)(const lock_t *), lock_t *lock, int take)
+{
+    fflush(stdout);
+    pid_t child = fork();
+    if (child == 0) {
+        freopen("/dev/null", "w", stderr);
+        if (take)
+            os_unfair_lock_lock(lock);
+        call(lock);
+        _exit(0);
+    }
+    int status = 0;
+    waitpid(child, &status, 0);
+    return WIFSIGNALED(status);
+}
+
+static void *other(void *unused)
+{
+    os_unfair_lock_lock(&held_elsewhere);
+    os_unfair_lock_lock(&gate);
+    os_unfair_lock_unlock(&gate);
+    os_unfair_lock_unlock(&held_elsewhere);
+    return NULL;
+}
+
+int main(void)
+{
+    void *platform = dlopen("/usr/lib/system/libsystem_platform.dylib", RTLD_LAZY | RTLD_LOCAL);
+    void (*darwin_owner)(const lock_t *) = platform ? dlsym(platform, "os_unfair_lock_assert_owner") : NULL;
+    void (*darwin_not_owner)(const lock_t *) = platform ? dlsym(platform, "os_unfair_lock_assert_not_owner") : NULL;
+    expect(darwin_owner && (void *)darwin_owner != (void *)os_unfair_lock_assert_owner, "the test reaches Darwin's assert beside the shim");
+    lock_t mine = {0};
+    struct { const char *name; void (*owner)(const lock_t *); void (*not_owner)(const lock_t *); } sides[] = {
+        {"the shim", os_unfair_lock_assert_owner, os_unfair_lock_assert_not_owner},
+        {"Darwin", darwin_owner, darwin_not_owner}};
+    for (int side = 0; side < 2; side++) {
+        char what[160];
+        sides[side].not_owner(&mine);
+        snprintf(what, sizeof what, "%s: an unlocked lock is not owned by this thread", sides[side].name);
+        expect(!dies(sides[side].not_owner, &mine, 0), what);
+        snprintf(what, sizeof what, "%s: assert_owner ends the process on an unlocked lock", sides[side].name);
+        expect(dies(sides[side].owner, &mine, 0), what);
+        snprintf(what, sizeof what, "%s: a lock this thread holds is owned by it", sides[side].name);
+        expect(!dies(sides[side].owner, &mine, 1), what);
+        snprintf(what, sizeof what, "%s: assert_not_owner ends the process on a lock this thread holds", sides[side].name);
+        expect(dies(sides[side].not_owner, &mine, 1), what);
+        os_unfair_lock_lock(&mine);
+        sides[side].owner(&mine);
+        os_unfair_lock_unlock(&mine);
+    }
+    os_unfair_lock_lock(&gate);
+    pthread_t thread;
+    pthread_create(&thread, NULL, other, NULL);
+    while (__atomic_load_n(&held_elsewhere.word, __ATOMIC_ACQUIRE) == 0)
+        usleep(1000);
+    for (int side = 0; side < 2; side++) {
+        char what[160];
+        snprintf(what, sizeof what, "%s: a lock another thread holds is not this thread's", sides[side].name);
+        expect(!dies(sides[side].not_owner, &held_elsewhere, 0), what);
+        snprintf(what, sizeof what, "%s: assert_owner ends the process on a lock another thread holds", sides[side].name);
+        expect(dies(sides[side].owner, &held_elsewhere, 0), what);
+    }
+    os_unfair_lock_unlock(&gate);
+    pthread_join(thread, NULL);
+    return fails != 0;
+}
+"""
+
 LATER_CALLS = r"""
 #define __STDC_WANT_LIB_EXT1__ 1
 #include <dispatch/dispatch.h>
@@ -1409,6 +1656,23 @@ def failures():
             found.append("the shims of later dispatch, clock and memory calls must compile: {}".format(built.stderr[-400:]))
         else:
             found += outcome("later calls", run(folder / "calls", cwd=folder))
+        blocks = [SHIMS / "{}.c".format(symbol) for symbol in ("dispatch_block_create", "dispatch_block_create_with_qos_class",
+                                                            "dispatch_block_perform", "dispatch_block_wait", "dispatch_block_notify",
+                                                            "dispatch_block_cancel", "dispatch_block_testcancel")]
+        (folder / "blocks.c").write_text(DISPATCH_BLOCKS)
+        built = run("xcrun", "clang", "-O2", "-w", "-fblocks", "-DCHARON_COMPAT_SYSTEM=0", *blocks, "blocks.c", "-o", "blocks", cwd=folder)
+        if built.returncode:
+            found.append("the dispatch_block shims must compile: {}".format(built.stderr[-400:]))
+        else:
+            found += outcome("dispatch_block", run("./blocks", cwd=folder))
+        asserts = [SHIMS / "{}.c".format(symbol) for symbol in ("os_unfair_lock_assert_owner", "os_unfair_lock_assert_not_owner")]
+        (folder / "asserts.c").write_text(UNFAIR_ASSERT)
+        built = run("xcrun", "clang", "-O2", "-w", "-DCHARON_COMPAT_SYSTEM=0", *asserts, *locks, *waits, "asserts.c", "-o", "asserts", cwd=folder)
+        if built.returncode:
+            found.append("the os_unfair_lock assert shims must compile: {}".format(built.stderr[-400:]))
+        else:
+            found += outcome("os_unfair_lock assert", run("./asserts", cwd=folder))
+
         (folder / "system-random.c").write_text(SYSTEM_RANDOM)
         built = run("xcrun", "clang", "-O2", "-w", SHIMS / "arc4random_buf.c", "system-random.c", "-o", "system-random", cwd=folder)
         if built.returncode:
@@ -1423,8 +1687,9 @@ def failures():
         else:
             found += outcome("objc_allocWithZone", run("./alloc", cwd=folder))
 
-        for symbol in [path.stem for path in locks] + later + ["objc_allocWithZone", "objc_opt_self"]:
-            process_wide = symbol.startswith("os_unfair_")
+        for symbol in [path.stem for path in locks] + later + [path.stem for path in blocks + asserts] + ["objc_allocWithZone", "objc_opt_self"]:
+            process_wide = symbol in ("os_unfair_lock_lock", "os_unfair_lock_trylock", "os_unfair_lock_unlock",
+                                      "os_unfair_recursive_lock_lock_with_options", "os_unfair_recursive_lock_unlock")
             if (SHIMS.parent / "include" / "charon" / "{}.h".format(symbol)).exists():
                 defined = "_charon_" + symbol
             else:

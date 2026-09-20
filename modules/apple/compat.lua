@@ -31,6 +31,15 @@ ARRIVED = {
     voucher_adopt = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
     voucher_copy = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
     qos_class_self = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
+    dispatch_block_create = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
+    dispatch_block_create_with_qos_class = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
+    dispatch_block_perform = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
+    dispatch_block_wait = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
+    dispatch_block_notify = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
+    dispatch_block_cancel = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
+    dispatch_block_testcancel = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
+    os_unfair_lock_assert_owner = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
+    os_unfair_lock_assert_not_owner = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
     dispatch_activate = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
     ["dispatch_assert_queue$V2"] = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"}
 }
