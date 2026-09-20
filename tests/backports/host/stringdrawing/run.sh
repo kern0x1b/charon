@@ -1,0 +1,14 @@
+#!/bin/sh
+# run.sh — records what the system's NSItemProvider does for every case of device/stringdrawing-cases.m, under Mac
+# Catalyst, and writes the answers where the device test reads them.
+set -eu
+here=$(cd "$(dirname "$0")" && pwd)
+device=${DEVICE:-$here/../../device}
+build=${BUILD:-$(mktemp -d)}
+sdk=$(xcrun --show-sdk-path)
+xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w -I"$device" \
+    "$here/record.m" "$device/stringdrawing-cases.m" -framework UIKit -framework Foundation -framework CoreGraphics -o "$build/record"
+(cd "$build" && ./record "$build/stringdrawing.json" > "$build/stringdrawing.log" 2>&1)
+python3 "$here/../foundation2/embed.py" "$build/stringdrawing.json" "$device/stringdrawing-expectations.h"
+sed -i.bak 's/foundation2_expectations/stringdrawing_expectations/' "$device/stringdrawing-expectations.h" && rm -f "$device/stringdrawing-expectations.h.bak"
+echo "records: $(python3 -c "import json; print(len(json.load(open('$build/stringdrawing.json'))))")"

@@ -1967,5 +1967,45 @@
     "status": "implemented",
     "facts": "facts/UIKit/NSAttributedStringText.md",
     "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "-[NSString sizeWithAttributes:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSStringDrawing.md",
+    "source": "the host's own UIKit, recorded by host/stringdrawing for the sizes, the boxes and the ink of the drawing, and read back on the iPad 2"
+  },
+  {
+    "api": "-[NSString boundingRectWithSize:options:attributes:context:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSStringDrawing.md",
+    "source": "the host's own UIKit, recorded by host/stringdrawing for the sizes, the boxes and the ink of the drawing, and read back on the iPad 2"
+  },
+  {
+    "api": "-[NSString drawAtPoint:withAttributes:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSStringDrawing.md",
+    "source": "the host's own UIKit, recorded by host/stringdrawing for the sizes, the boxes and the ink of the drawing, and read back on the iPad 2"
+  },
+  {
+    "api": "-[NSString drawInRect:withAttributes:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSStringDrawing.md",
+    "source": "the host's own UIKit, recorded by host/stringdrawing for the sizes, the boxes and the ink of the drawing, and read back on the iPad 2"
+  },
+  {
+    "api": "-[NSString drawWithRect:options:attributes:context:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSStringDrawing.md",
+    "source": "the host's own UIKit, recorded by host/stringdrawing for the sizes, the boxes and the ink of the drawing, and read back on the iPad 2"
   }
 ]
