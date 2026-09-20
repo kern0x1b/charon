@@ -893,6 +893,25 @@ static NSString *traits_of(id environment)
             [view removeFromSuperview];
             done();
         } copy],
+                [^(void (^done)(void)) {
+            UIBlurEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+            UIVisualEffectView *view = [[UIVisualEffectView alloc] initWithEffect:blur];
+            charon_check(view.effect == blur && view.contentView != nil && view.contentView.superview == view && view.contentView.autoresizingMask == (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight), "a visual effect view keeps its effect and has a content view that fills it", @"it does not");
+            view.frame = CGRectMake(0, 0, 100, 50);
+            charon_check(CGRectEqualToRect(view.contentView.frame, CGRectMake(0, 0, 100, 50)), "the content view follows the size of the view", NSStringFromCGRect(view.contentView.frame));
+            NSString *raised = @"none";
+            @try {
+                [view addSubview:[[UIView alloc] init]];
+            } @catch (NSException *exception) {
+                raised = exception.name;
+            }
+            charon_check([raised isEqualToString:NSInternalInconsistencyException] && view.subviews.count == 1, "a subview added to the view itself is refused", raised);
+            charon_check([blur isEqual:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]] && ![blur isEqual:[UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]] && [blur copy] == blur, "effects of one style are equal and a copy is the same object", @"they are not");
+            UIVibrancyEffect *vibrancy = [UIVibrancyEffect effectForBlurEffect:blur];
+            view.effect = vibrancy;
+            charon_check(view.effect == vibrancy && [vibrancy isKindOfClass:[UIVisualEffect class]], "a vibrancy effect can be set", @"it cannot");
+            done();
+        } copy],
         [^(void (^done)(void)) {
             UITableViewRowAction *destructive = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:@"Delete" handler:^(UITableViewRowAction *action, NSIndexPath *path) {}];
             UITableViewRowAction *normal = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"More" handler:nil];

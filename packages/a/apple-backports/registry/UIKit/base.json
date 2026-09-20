@@ -821,9 +821,11 @@
     "api": "UIBlurEffect",
     "kind": "class",
     "introduced": "8.0",
-    "status": "absent",
+    "status": "inert",
     "reason": "a live blur is drawn by the render server, which the release has no pass for",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile time reference crashes on first use"
+    "effect": "the effect is made, compared, copied and archived as the system's is, and the view it is given to draws nothing of it: what lies behind stays sharp and unmixed",
+    "facts": "facts/UIKit/UIVisualEffect.md",
+    "source": "the host's own UIKit through the differential run of tests/backports/host/uikit2 (visualeffect)"
   },
   {
     "api": "UIContentSizeCategoryAccessibilityExtraExtraExtraLarge",
@@ -1160,16 +1162,28 @@
     "api": "UIVibrancyEffect",
     "kind": "class",
     "introduced": "8.0",
-    "status": "absent",
+    "status": "inert",
     "reason": "vibrancy is drawn on top of a live blur, which the release cannot draw",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile time reference crashes on first use"
+    "effect": "the effect is made, compared, copied and archived as the system's is, and nothing is drawn of it",
+    "facts": "facts/UIKit/UIVisualEffect.md",
+    "source": "the host's own UIKit through the differential run of tests/backports/host/uikit2 (visualeffect)"
+  },
+  {
+    "api": "UIVisualEffect",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIVisualEffect.md",
+    "source": "the host's own UIKit through the differential run of tests/backports/host/uikit2 (visualeffect)"
   },
   {
     "api": "UIVisualEffectView",
     "kind": "class",
     "introduced": "8.0",
-    "status": "absent",
-    "reason": "a live blur is drawn by the render server, which the release has no pass for",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile time reference crashes on first use"
+    "status": "inert",
+    "reason": "the view mixes what lies behind it through a live blur, which the release has no pass for",
+    "effect": "it is a transparent view with a content view that fills it, refuses a subview added to itself as the system's does, and answers the effect it was given; nothing is blurred",
+    "facts": "facts/UIKit/UIVisualEffect.md",
+    "source": "the host's own UIKit through the differential run of tests/backports/host/uikit2 (visualeffect)"
   }
 ]
