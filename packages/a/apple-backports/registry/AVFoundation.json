@@ -1,0 +1,75 @@
+[
+ {
+  "api": "AVCaptureDeviceDiscoverySession",
+  "kind": "class",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "the release lists its devices in the order of the device types from iOS 11 on and unsorted for a program linked against iOS 10; a program built now is linked against a later release, so the port orders them as that one does",
+  "effect": "the devices come back in the order of the device types given, and inside one type by position, back before front",
+  "facts": "facts/AVFoundation/AVCaptureDeviceDiscovery.md",
+  "source": "AVFoundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own AVFoundation run beside the port through Mac Catalyst"
+ },
+ {
+  "api": "AVCaptureDevice.deviceType",
+  "kind": "property",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "the release reads the type from the capture source of the device, and the hardware of iOS 6 has one kind of camera and one microphone",
+  "effect": "a device that has video only is the wide angle camera, one that has audio only is the built-in microphone, and any other, which iOS 6 has none of, answers an empty string as the release's base class does",
+  "facts": "facts/AVFoundation/AVCaptureDeviceDiscovery.md",
+  "source": "AVFoundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own AVFoundation run beside the port through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "+[AVCaptureDevice defaultDeviceWithDeviceType:mediaType:position:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/AVFoundation/AVCaptureDeviceDiscovery.md",
+  "source": "AVFoundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own AVFoundation run beside the port through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "AVCaptureDeviceTypeBuiltInMicrophone",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/AVFoundation/AVCaptureDeviceDiscovery.md",
+  "source": "AVFoundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own AVFoundation run beside the port through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "AVCaptureDeviceTypeBuiltInWideAngleCamera",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/AVFoundation/AVCaptureDeviceDiscovery.md",
+  "source": "AVFoundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own AVFoundation run beside the port through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "AVCaptureDeviceTypeBuiltInTelephotoCamera",
+  "kind": "constant",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/AVFoundation/AVCaptureDeviceDiscovery.md",
+  "source": "AVFoundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own AVFoundation run beside the port through Mac Catalyst",
+  "maximum": "10.0"
+ },
+ {
+  "api": "AVCaptureDeviceTypeBuiltInDualCamera",
+  "kind": "constant",
+  "introduced": "10.2",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/AVFoundation/AVCaptureDeviceDiscovery.md",
+  "source": "AVFoundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own AVFoundation run beside the port through Mac Catalyst",
+  "maximum": "10.2"
+ }
+]

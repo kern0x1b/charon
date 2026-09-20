@@ -36,12 +36,17 @@ inputs.
     sh host/registry/run.sh <dyld_shared_cache_armv7>
     sh host/blocks/run.sh
     sh host/textcontent/run.sh
+    sh host/avcapture/run.sh
     sh host/oslog/run.sh  writes device/oslog-expectations.h when it passes
     sh host/imageflip/run.sh
 
 `host/oslog/run.sh` runs the same 61 calls through the host's os_log, asked for its
 developer output, and through the port's formatter, and compares the two texts; the calls both
 platforms can make become the expectations of the device test.
+
+`host/avcapture/run.sh` runs the discovery of capture devices, their types and the
+default device against the host's own, through Mac Catalyst, over every combination of
+types, media type and position; the microphone is compared on the device only.
 
 `host/textcontent/run.sh` compares the 23 text content type constants and the
 `textContentType` of a text field, a text view and a search bar with the host's own,
@@ -485,6 +490,11 @@ postinst run with `DPKG_ROOT` set to it.
   authorization, adds, replaces and removes requests, reads back what iOS 6 was
   given - the body and no title - checks which repeats are taken and which
   refused, and waits for a notification to arrive while it is in front.
+- `avcapture.m`: a process of its own for the discovery of capture devices, linking
+  `libAVFoundationBackports.dylib`. It holds a discovery session to the devices the
+  release lists, by type, media type and position, in the order of the types, and
+  the default device, the device types and the exception for a nil type to what was
+  read off 10.3.4.
 - `textcontent.m`: a process of its own for the text content types. It holds the 23
   constants to the strings read off iOS 10.3.4, and the property of the three views
   to its defaults and its copying. A process cannot make a text field, which needs a

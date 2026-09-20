@@ -667,7 +667,9 @@ renderer and its timing curves - to a minimum release that lacks it, as
 `libCoreLocationBackports.dylib`, which asks for location authorization the way
 iOS 6 gets it, by starting the updates the request stands for, and with the
 `coredata` config `libCoreDataBackports.dylib`, the persistent container of iOS
-10 over the release's own Core Data; all named
+10 over the release's own Core Data, and with the `avfoundation` config
+`libAVFoundationBackports.dylib`, the discovery of cameras and microphones of iOS
+10 over the release's own capture devices; all named
 `/usr/lib/charon/org.charon.apple-backports/`. Unlike a runtime a package
 carries, these are one per process: two copies of a class would be two classes.
 `xmake deb` of a port that uses the package writes

@@ -97,6 +97,13 @@ which the macros choose below a deployment target of 10.0. The port carries thos
 writes each message, formatted as the release's own formatter writes it, to ASL. Nothing is redacted, and a few
 decorators for a reader, such as `iec-bytes`, are written plain; the facts say which.
 
+### Finding the cameras and microphones, in a library of its own
+
+`AVCaptureDeviceDiscoverySession`, the device types of iOS 10 and `+[AVCaptureDevice defaultDeviceWithDeviceType:mediaType:position:]`
+are carried in `libAVFoundationBackports.dylib`, built with the `avfoundation` config, so that only a port that looks for
+cameras loads AVFoundation. They answer from the devices iOS 6 has: a camera is the wide angle one, the microphone is the
+built-in one, and a search for a telephoto or a dual camera finds nothing.
+
 ### Text content types, kept and never read
 
 The 23 `UITextContentType` constants of iOS 10 have the release's own strings, and
