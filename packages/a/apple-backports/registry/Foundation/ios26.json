@@ -1,0 +1,335 @@
+{
+  "framework": "Foundation",
+  "entries": [
+    {
+      "api": "NSHTTPCookieSetByJavaScript",
+      "kind": "constant",
+      "introduced": "18.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSMutableURLRequest.cookiePartitionIdentifier",
+      "kind": "property",
+      "introduced": "18.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSMutableURLRequest a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSURLRequest.cookiePartitionIdentifier",
+      "kind": "property",
+      "introduced": "18.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURLRequest a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSBundle localizedStringForKey:value:table:localizations:]",
+      "kind": "method",
+      "introduced": "18.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSBundle a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSCoder decodeBytesForKey:minimumLength:]",
+      "kind": "method",
+      "introduced": "18.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSCoder a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSCoder decodeBytesWithMinimumLength:]",
+      "kind": "method",
+      "introduced": "18.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSCoder a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSURLSessionConfiguration.usesClassicLoadingMode",
+      "kind": "property",
+      "introduced": "18.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURLSessionConfiguration a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSFileManager fetchLatestRemoteVersionOfItemAtURL:completionHandler:]",
+      "kind": "method",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSFileManager a method like it: it arrived in iOS 26",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSFileManager pauseSyncForUbiquitousItemAtURL:completionHandler:]",
+      "kind": "method",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSFileManager a method like it: it arrived in iOS 26",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSFileManager resumeSyncForUbiquitousItemAtURL:withBehavior:completionHandler:]",
+      "kind": "method",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSFileManager a method like it: it arrived in iOS 26",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSFileManager uploadLocalVersionOfUbiquitousItemAtURL:withConflictResolutionPolicy:completionHandler:]",
+      "kind": "method",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSFileManager a method like it: it arrived in iOS 26",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSCalendarIdentifierBangla",
+      "kind": "constant",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSCalendarIdentifierDangi",
+      "kind": "constant",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSCalendarIdentifierGujarati",
+      "kind": "constant",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSCalendarIdentifierKannada",
+      "kind": "constant",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSCalendarIdentifierMalayalam",
+      "kind": "constant",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSCalendarIdentifierMarathi",
+      "kind": "constant",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSCalendarIdentifierOdia",
+      "kind": "constant",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSCalendarIdentifierTamil",
+      "kind": "constant",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSCalendarIdentifierTelugu",
+      "kind": "constant",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSCalendarIdentifierVietnamese",
+      "kind": "constant",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSCalendarIdentifierVikram",
+      "kind": "constant",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSDateComponents.repeatedDay",
+      "kind": "property",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSDateComponents a property like it: it arrived in iOS 26",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSListItemDelimiterAttributeName",
+      "kind": "constant",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSURLSessionConfiguration.enablesEarlyData",
+      "kind": "property",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURLSessionConfiguration a property like it: it arrived in iOS 26",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSURLUbiquitousItemIsSyncPausedKey",
+      "kind": "constant",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSURLUbiquitousItemSupportedSyncControlsKey",
+      "kind": "constant",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSMutableURLRequest.allowsUltraConstrainedNetworkAccess",
+      "kind": "property",
+      "introduced": "26.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSMutableURLRequest a property like it: it arrived in iOS 26",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSProcessInfo.iOSAppOnVision",
+      "kind": "property",
+      "introduced": "26.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSProcessInfo a property like it: it arrived in iOS 26",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSURLRequest.allowsUltraConstrainedNetworkAccess",
+      "kind": "property",
+      "introduced": "26.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURLRequest a property like it: it arrived in iOS 26",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSURLSessionConfiguration.allowsUltraConstrainedNetworkAccess",
+      "kind": "property",
+      "introduced": "26.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURLSessionConfiguration a property like it: it arrived in iOS 26",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSPredicate allowEvaluationWithValidator:error:]",
+      "kind": "method",
+      "introduced": "26.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSPredicate a method like it: it arrived in iOS 26",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSPredicateValidating",
+      "kind": "protocol",
+      "introduced": "26.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 26, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26.5, Mac Catalyst, Foundation"
+    }
+  ]
+}
