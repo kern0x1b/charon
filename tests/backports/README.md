@@ -75,6 +75,14 @@ interaction at rest, the preview parameters, target and targeted preview with th
 two calls the new `UIMenuController` methods make to the old interface. `device/menus.m` is the device counterpart: it checks that the
 classes and constants come from `libUIKitBackports.dylib` and repeats the checks that need no window.
 
+The `pointer`, `pointercategories`, `search`, `searchcategories` and `colors` groups of `host/uikit2/run.sh` hold the pointer values (regions,
+requests, shapes, effects, styles, interactions), the hover recogniser, `UIKey` and the key input strings, the button, event and gesture members, the
+search token and search text field, the search bar's text field and the color well and picker to the host's own, as text, statement by statement, in
+windows where a view is needed; what differs on purpose (the members of later releases, the class of a search token, the positions of tokens, the size
+of a well, presenting a picker in a Mac Catalyst tool that never completes a presentation) is stated in the test and in the facts. `device/pointer.m` is the
+device counterpart: it checks that the classes come from `libUIKitBackports.dylib`, repeats the value checks, adds interactions and recognisers
+to real views, puts a search text field and a search bar's field on screen with tokens, and taps a color well to present, drive and dismiss the picker.
+
 The `symbols` group of `host/uikit2/run.sh` compares `UIImageConfiguration`, `UIImageSymbolConfiguration`, the two weight functions, the symbol members of `UIImage` on ordinary
 images and `UIImageView.preferredSymbolConfiguration` with the host's, over generated configurations and every pair of them; `device/symbols.m` checks on the device that the
 classes and functions come from `libUIKitBackports.dylib`, the value behaviours, and that `systemImageNamed:` answers nil.

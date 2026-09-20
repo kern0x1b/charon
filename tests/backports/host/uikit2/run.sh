@@ -126,6 +126,11 @@ windowed snapshots "UIView+Snapshots.m" "" snapshots_test.m
 windowed menucontroller "UIMenuController+iOS13.m" "" menucontroller_test.m
 group symbols "UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m" "traitCollection configurationWithTraitCollection configurationByApplyingConfiguration unspecifiedConfiguration configurationWithScale configurationWithPointSize configurationWithWeight configurationWithTextStyle configurationWithFont configurationWithoutTextStyle configurationWithoutScale configurationWithoutWeight configurationWithoutPointSizeAndWeight isEqualToConfiguration initCharonWithTraitCollection initCharonWithPointSize" symbols_test.m
 windowed menus "UIMenuElement.m UIAction.m UIAction+iOS14.m UIMenu.m UIMenu+iOS14.m UIDeferredMenuElement.m UIMenuIdentifiers.m UIMenuIdentifiers14.m UIMenuSystem.m UIContextMenuConfiguration.m UIContextMenuInteraction.m UIContextMenuInteraction+iOS14.m UIPreviewParameters.m UIPreviewParameters+iOS14.m UIPreviewTarget.m UITargetedPreview.m" "*" menus_test.m
+windowed pointer "UIPointerRegion.m UIPointerStyle.m UIPointerInteraction.m UIHoverGestureRecognizer.m UIKey.m UIKeyInputKeys.m" "*" pointer_test.m
+windowed pointercategories "UIEvent+Pointer.m UIGestureRecognizer+Pointer.m UIButton+Pointer.m" "" pointercategories_test.m
+windowed search "UISearchToken.m UISearchTextField.m" "*" search_test.m
+windowed searchcategories "UISearchBar+SearchTextField.m UISearchController+ScopeBar.m" "" searchcategories_test.m
+windowed colors "UIColorWell.m UIColorPickerViewController.m" "*" colors_test.m
 group layoutvalues "NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m" "*" layoutvalues_test.m
 export CHARON_COMPOSITIONAL_EXPECTATIONS="$here/../../device/compositional-expectations.h"
 windowed compositionallayout "NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m" "*" compositionallayout_test.m

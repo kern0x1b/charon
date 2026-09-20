@@ -197,6 +197,29 @@ key command menus to rebuild - and says so once in the log; `UIMenuBuilder` is a
 called. `facts/UIKit/UIContextMenuInteraction.md` has the whole table, and `facts/UIKit/UIPreviewParameters.md` the one place
 a value differs from the host: lines of text that touch are not joined into one outline.
 
+### Pointers, hover, keys, search tokens and color wells, present so that applications launch
+
+`UIPointerInteraction`, `UIPointerRegion`, `UIPointerRegionRequest`, `UIPointerStyle`, `UIPointerShape` and the four pointer effects,
+`UIHoverGestureRecognizer`, `UIKey` with the `UIKeyInputHome`, `UIKeyInputEnd` and `UIKeyInputF1` to `UIKeyInputF12` strings,
+the button, modifier and event members of `UIEvent`, `UIGestureRecognizer` and `UITapGestureRecognizer`, and
+`UIButton.pointerInteractionEnabled` and `.pointerStyleProvider` are carried so that applications that link them launch. iOS 6 has no
+pointing device, so what a pointer would do is **inert**: an interaction or a hover recogniser can be added to a view and never fires,
+the delegate is never asked for a region or a style, no event has modifiers or buttons, and the first interaction and the first hover
+recogniser say so once in the log. The values are the host's own to the last thing that can be asked - descriptions, equality, copies, the
+hashes that follow from the values, the exceptions - held by the `pointer` and `pointercategories` groups of `tests/backports/host/uikit2`.
+`UIPress.key` is absent, since `UIPress` is not on this release. See `facts/UIKit/UIPointerInteraction.md`, `UIPointerRegion.md`,
+`UIPointerStyle.md`, `UIHoverGestureRecognizer.md`, `UIKey.md` and `UIPointerEvents.md`.
+
+`UISearchTextField` and `UISearchToken` keep their tokens apart from the text, raise for a bad index with the system's own words and draw each token
+as a plain rounded chip before the text; a backspace at the start deletes the last one. Positions count the text only, since a token is not a
+character here, and tokens are not selected, copied or dragged. `UISearchBar.searchTextField` answers the search bar's own text field, extended at
+run time with the token members, which are kept there and not drawn. `UISearchController.automaticallyShowsScopeBar` is kept and **inert**.
+See `facts/UIKit/UISearchTextField.md`.
+
+`UIColorWell` and `UIColorPickerViewController` are real, if small: the well draws a swatch and, when tapped, presents a picker of a 12 by 10 grid
+of colors, an alpha slider and Done, which sets the well's color and sends value changed and tells the picker's delegate as the
+system's does, continuously while a finger moves. There is no spectrum, eyedropper, saved color or hex entry. See `facts/UIKit/UIColorWell.md`.
+
 ### Compositional layouts, laid out by the release's own collection view
 
 `UICollectionViewCompositionalLayout` and everything it is described with - `NSCollectionLayoutSection`, `Group`, `Item`,
