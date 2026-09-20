@@ -2,16 +2,6 @@
   "framework": "QuartzCore",
   "entries": [
     {
-      "api": "CAMetalLayer",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, QuartzCore"
-    },
-    {
       "api": "CAEAGLLayer.presentsWithTransaction",
       "kind": "property",
       "introduced": "9.0",

@@ -406,6 +406,8 @@ The eleven `CTRadioAccessTechnology...` names and `CTRadioAccessTechnologyDidCha
 
 `libAccelerateBackports.dylib`, built with the `accelerate` config, carries `vImageBuffer_Init`, `vImageBuffer_InitWithCGImage` and `vImageCreateCGImageFromBuffer` of iOS 7 over the release's CoreGraphics, for the 8-bit RGB formats (32 bits with alpha first or last, premultiplied or not or skipped, in the three byte orders; 24 bits), held to the host's vImage by `tests/backports/host/accelerate7` and `tests/backports/device/accelerate7.m`, with the differences that `facts/Accelerate/vImageBuffer.md` lists: a NULL colour space is the device RGB space, other formats answer `kvImageInvalidImageFormat`, and the rows are padded to 16 bytes. `libGraphicsBackports.dylib` carries `kCIInputAngleKey`, `kCIInputRadiusKey` and `kUTTypeScalableVectorGraphics` as their strings. `facts/CoreImage/InputKeysAndSVG.md`.
 
+`CAMetalLayer` is carried in `libMetalBackports.dylib`, as a layer that keeps its device, pixel format, drawable size and the rest of what it is given, and has no drawable: `nextDrawable` is nil and `preferredDevice` is nil, since iOS 6 has no Metal, so an application that asks for a drawable falls back to OpenGL ES; a maximum of drawables outside 2 to 3 raises the exception of iOS 12. The properties of iOS 16 are kept and used for nothing, and `CAEDRMetadata` is absent. `facts/QuartzCore/CAMetalLayer.md`.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and

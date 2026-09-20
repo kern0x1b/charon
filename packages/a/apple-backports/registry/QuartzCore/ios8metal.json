@@ -1,0 +1,159 @@
+{
+  "framework": "QuartzCore",
+  "entries": [
+    {
+      "api": "CAMetalLayer",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class is carried for what an application does before it has a drawable: it makes the layer and sets its properties; iOS 6 has no Metal, so the layer never has a drawable",
+      "effect": "a CALayer that keeps the device, the pixel format, the framebuffer flag, the drawable size, the transaction flag and the colour space it is given, and whose nextDrawable is nil",
+      "facts": "facts/QuartzCore/CAMetalLayer.md",
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods and the exception; the header of iOS 16.4 for the defaults"
+    },
+    {
+      "api": "-[CAMetalLayer nextDrawable]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the layer of this package holds what it is given and has no drawable to give, as iOS 6 has no Metal",
+      "effect": "answers nil, as the header says it does when no drawable is available",
+      "facts": "facts/QuartzCore/CAMetalLayer.md",
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods and the exception; the header of iOS 16.4 for the defaults"
+    },
+    {
+      "api": "CAMetalLayer.device",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the layer keeps the value: it has no Metal to hand it to",
+      "effect": "is the device it was given, nil to start",
+      "facts": "facts/QuartzCore/CAMetalLayer.md",
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods and the exception; the header of iOS 16.4 for the defaults"
+    },
+    {
+      "api": "CAMetalLayer.pixelFormat",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the layer keeps the value: it has no Metal to hand it to",
+      "effect": "is the pixel format it was given, MTLPixelFormatBGRA8Unorm to start",
+      "facts": "facts/QuartzCore/CAMetalLayer.md",
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods and the exception; the header of iOS 16.4 for the defaults"
+    },
+    {
+      "api": "CAMetalLayer.framebufferOnly",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the layer keeps the value: it has no Metal to hand it to",
+      "effect": "is what it was given, YES to start",
+      "facts": "facts/QuartzCore/CAMetalLayer.md",
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods and the exception; the header of iOS 16.4 for the defaults"
+    },
+    {
+      "api": "CAMetalLayer.drawableSize",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the layer keeps the value: it has no Metal to hand it to",
+      "effect": "is the size it was given, or the size of the bounds in pixels until then",
+      "facts": "facts/QuartzCore/CAMetalLayer.md",
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods and the exception; the header of iOS 16.4 for the defaults"
+    },
+    {
+      "api": "CAMetalLayer.presentsWithTransaction",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the layer keeps the value: it has no Metal to hand it to",
+      "effect": "is what it was given, NO to start",
+      "facts": "facts/QuartzCore/CAMetalLayer.md",
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods and the exception; the header of iOS 16.4 for the defaults"
+    },
+    {
+      "api": "CAMetalLayer.colorspace",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the layer keeps the value: it has no Metal to hand it to",
+      "effect": "is the colour space it was given, retained, NULL to start",
+      "facts": "facts/QuartzCore/CAMetalLayer.md",
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods and the exception; the header of iOS 16.4 for the defaults"
+    },
+    {
+      "api": "CAMetalLayer.allowsNextDrawableTimeout",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the layer keeps the value: it never waits for a drawable",
+      "effect": "is what it was given, YES to start",
+      "facts": "facts/QuartzCore/CAMetalLayer.md",
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods and the exception; the header of iOS 16.4 for the defaults"
+    },
+    {
+      "api": "CAMetalLayer.maximumDrawableCount",
+      "kind": "property",
+      "introduced": "11.2",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the layer keeps the value: it has no drawables to count",
+      "effect": "is 3 to start; a value outside 2 to 3 raises the exception of iOS 12, CAMetalLayerInvalidMaximumDrawableCount",
+      "facts": "facts/QuartzCore/CAMetalLayer.md",
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods and the exception; the header of iOS 16.4 for the defaults"
+    },
+    {
+      "api": "CAMetalLayer.preferredDevice",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "there is no device to prefer",
+      "effect": "is nil",
+      "facts": "facts/QuartzCore/CAMetalLayer.md",
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods and the exception; the header of iOS 16.4 for the defaults"
+    },
+    {
+      "api": "CAMetalLayer.wantsExtendedDynamicRangeContent",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the property is declared dynamic, as the layers of the release keep their properties, and the release's CALayer gives it an accessor that keeps the value; this layer has nothing to do with it",
+      "effect": "is kept as given, NO to start, and shows nothing more: no display of iOS 6 has an extended range",
+      "facts": "facts/QuartzCore/CAMetalLayer.md",
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods; the release's CALayer, which gives a property a class declares dynamic an accessor that keeps the value"
+    },
+    {
+      "api": "CAMetalLayer.EDRMetadata",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the property is declared dynamic, as the layers of the release keep their properties, and the release's CALayer gives it an accessor that keeps the value; this layer has nothing to do with it",
+      "effect": "is kept as given, nil to start, and used for nothing: the class of iOS 16 that would make one is absent",
+      "facts": "facts/QuartzCore/CAMetalLayer.md",
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods; the release's CALayer, which gives a property a class declares dynamic an accessor that keeps the value"
+    },
+    {
+      "api": "CAMetalLayer.developerHUDProperties",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the property is declared dynamic, as the layers of the release keep their properties, and the release's CALayer gives it an accessor that keeps the value; this layer has nothing to do with it",
+      "effect": "is kept as given, nil to start, and shows no HUD: there is no Metal to show one for",
+      "facts": "facts/QuartzCore/CAMetalLayer.md",
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods; the release's CALayer, which gives a property a class declares dynamic an accessor that keeps the value"
+    }
+  ]
+}
