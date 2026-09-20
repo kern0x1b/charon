@@ -38,7 +38,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "ignored",
+      "status": "implemented",
       "effect": "the header marks it unavailable and the release has no such method: the call reaches NSObject's, which makes an object with no view, whose snapshot is empty and whose applySnapshot only keeps what it is given",
       "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4"
@@ -48,7 +48,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "ignored",
+      "status": "implemented",
       "effect": "the header marks it unavailable and the release has no such method: the call reaches NSObject's, which is alloc and init, with the result of init above",
       "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4"
@@ -58,7 +58,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "ignored",
+      "status": "implemented",
       "effect": "the header marks it unavailable and the release has no such method: the call reaches NSObject's, which makes an object with no view, whose snapshot is empty and whose applySnapshot only keeps what it is given",
       "facts": "facts/UIKit/UITableViewDiffableDataSource.md",
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4"
@@ -68,7 +68,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "ignored",
+      "status": "implemented",
       "effect": "the header marks it unavailable and the release has no such method: the call reaches NSObject's, which is alloc and init, with the result of init above",
       "facts": "facts/UIKit/UITableViewDiffableDataSource.md",
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4"

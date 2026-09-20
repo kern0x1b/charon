@@ -134,7 +134,7 @@
       "kind": "protocol",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "ignored",
+      "status": "implemented",
       "reason": "a commit is a tap on the menu's preview, and no preview is shown",
       "effect": "the protocol is declared by the header and no object is ever handed to an application as one",
       "facts": "facts/UIKit/UIContextMenuInteraction.md",
