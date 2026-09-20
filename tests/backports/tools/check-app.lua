@@ -8,7 +8,7 @@ function main(release, band, ...)
         table.insert(provided, library)
     end
     local checked = table.join(binaries, provided)
-    local missing = dyld.missing_imports(cache, checked)
+    local missing, _, _, dangling = dyld.missing_imports(cache, checked)
     local exported = {}
     for _, library in ipairs(provided) do
         for symbol in os.iorunv("xcrun", {"nm", "-gU", library}):gmatch("[^\n]+ [TDSsdt] (_[^%s]+)") do
@@ -33,6 +33,23 @@ function main(release, band, ...)
     print("")
     print("not carried by the backports and not in the release (%d):", #absent)
     for _, line in ipairs(absent) do
+        print("  " .. line)
+    end
+    local weak_carried, weak_absent = {}, {}
+    for _, entry in ipairs(dangling) do
+        local name = entry[2]
+        if entry[1] ~= nil and not path.filename(entry[1]):find("Backports") then
+            table.insert(exported[name] and weak_carried or weak_absent, string.format("%s  %s", path.filename(entry[1]), name))
+        end
+    end
+    print("")
+    print("weakly imported, NULL on the release, and carried by the backports (%d):", #weak_carried)
+    for _, line in ipairs(weak_carried) do
+        print("  " .. line)
+    end
+    print("")
+    print("weakly imported, NULL on the release, and not carried (%d):", #weak_absent)
+    for _, line in ipairs(weak_absent) do
         print("  " .. line)
     end
 end
