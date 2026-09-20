@@ -317,6 +317,11 @@ postinst run with `DPKG_ROOT` set to it.
   Foundation batch; it holds each case to `foundation2-expectations.h` and
   names, for every backported method, the image its implementation comes from,
   so a method the release already has is never taken from the library.
+- `corelocation.m`: a process of its own, the CoreLocation batch: the circular region as a class, its notify flags,
+  and the answers of the class methods about monitoring and ranging. It needs the package built with
+  `corelocation = true`; it is checked on the emulated 6.0 and on the iPad 2, where location services and region
+  monitoring are on and the emulator has no location daemon, so what depends on the daemon is compared with the
+  release's own `+regionMonitoringAvailable`, not with a number.
 - `tolerance.m`: a process of its own, the timer tolerance, which is a property
   and two CoreFoundation functions.
 - `uikit2.m` (`uikit2-Info.plist`): an application for the second UIKit batch -

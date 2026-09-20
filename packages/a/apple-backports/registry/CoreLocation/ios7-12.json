@@ -1,0 +1,55 @@
+{
+  "framework": "CoreLocation",
+  "entries": [
+    {
+      "api": "CLCircularRegion",
+      "kind": "class",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/CoreLocation/CLCircularRegion.md",
+      "source": "CoreLocation 12.0 arm64"
+    },
+    {
+      "api": "CLRegion.notifyOnEntry",
+      "kind": "property",
+      "introduced": "7.0",
+      "status": "inert",
+      "reason": "the release tells the delegate about every entry into and exit from a monitored region, and the manager has no way to be told to leave one of them out",
+      "effect": "the value is kept, starts as YES and is answered back, but the delegate is told of entries whatever it says",
+      "facts": "facts/CoreLocation/CLCircularRegion.md"
+    },
+    {
+      "api": "CLRegion.notifyOnExit",
+      "kind": "property",
+      "introduced": "7.0",
+      "status": "inert",
+      "reason": "the release tells the delegate about every entry into and exit from a monitored region, and the manager has no way to be told to leave one of them out",
+      "effect": "the value is kept, starts as YES and is answered back, but the delegate is told of exits whatever it says",
+      "facts": "facts/CoreLocation/CLCircularRegion.md"
+    },
+    {
+      "api": "+[CLLocationManager isMonitoringAvailableForClass:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/CoreLocation/CLLocationManagerRegions.md",
+      "source": "CoreLocation 12.0 arm64"
+    },
+    {
+      "api": "+[CLLocationManager isRangingAvailable]",
+      "kind": "method",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/CoreLocation/CLLocationManagerRegions.md",
+      "source": "CoreLocation 12.0 arm64"
+    },
+    {
+      "api": "CLLocationManager.rangedRegions",
+      "kind": "property",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/CoreLocation/CLLocationManagerRegions.md",
+      "source": "CoreLocation 12.0 arm64"
+    }
+  ]
+}
