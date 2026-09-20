@@ -89,11 +89,10 @@ own container is left as it is.
 
 ## Not carried
 
-- **Query generations** - `NSQueryGenerationToken`, `queryGenerationToken`,
-  `-setQueryGenerationFromToken:error:` and `NSManagedObjectContextQueryGenerationKey`.
-  They pin a context to a snapshot of a SQLite store read through write-ahead
-  logging, and the store of iOS 6 keeps a rollback journal and reads the
-  latest rows only.
+- `NSManagedObjectContextQueryGenerationKey`, the option of a store that pins its
+  contexts to a snapshot, which the store of iOS 6 does not have. The query generation
+  token and the pinning of a context are carried, and read the latest rows:
+  `facts/CoreData/QueryGeneration.md`.
 - `NSPersistentStoreConnectionPoolMaxSizeKey`: the store of iOS 6 reads through
   one connection.
 - The notifications of object IDs - `NSManagedObjectContextDidSaveObjectIDsNotification`,

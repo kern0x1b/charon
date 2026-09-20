@@ -75,8 +75,10 @@ members iOS 10 gave the classes iOS 6 has: `-initWithContext:`, `+entity` and
 to add a store, and the merge policies as class properties. `-execute:` needs
 to know the context whose block is running, which iOS 6 does not record, so
 the library records it around `-performBlock:` and `-performBlockAndWait:`.
-Query generations are absent: they read a snapshot of a store kept with
-write-ahead logging, and the store of iOS 6 keeps a rollback journal.
+Query generations are carried without a snapshot to read: a context can be pinned to the
+current generation and reads the latest rows, as an in-memory store does in the newest
+Core Data, because the store of iOS 6 keeps a rollback journal and no write-ahead log
+(`facts/CoreData/QueryGeneration.md`).
 
 ### WKWebView, over the UIWebView of the release, in a library of its own
 
@@ -326,6 +328,8 @@ The rest of Photos and of PhotosUI is absent, each row in `registry/Photos/absen
 `NSFetchIndexDescription`, `NSFetchIndexElementDescription` and `NSEntityDescription.indexes` are carried and checked the way iOS 12 checks them, and not applied: the store of this release builds no index from them, which the documentation of `indexes` allows. `NSCoreDataCoreSpotlightDelegate` is absent, since there is no Core Spotlight. `facts/CoreData/FetchIndex.md`.
 
 `MTLCreateSystemDefaultDevice` is carried in `libMetalBackports.dylib`, built with the `metal` config, and answers nil, as Metal does where the hardware has no driver: iOS 6 runs on the A4 and A5, so an application that falls back to OpenGL ES when it is given no device does so. The rest of Metal and MetalKit is absent. `facts/Metal/MTLCreateSystemDefaultDevice.md`.
+
+`NSQueryGenerationToken`, `-[NSManagedObjectContext queryGenerationToken]` and `-setQueryGenerationFromToken:error:` are carried without a snapshot to read (see the container above), and `NSConstraintConflict` is carried as a value that nothing here makes, since the store of iOS 6 enforces no uniqueness constraint; `uniquenessConstraints` and the merge policy that resolves the conflicts are absent. `facts/CoreData/QueryGeneration.md`, `facts/CoreData/ConstraintConflict.md`.
 
 ### Carried with a difference
 

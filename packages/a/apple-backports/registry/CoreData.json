@@ -132,35 +132,35 @@
   "kind": "class",
   "introduced": "10.0",
   "minimum": "6.0",
-  "status": "absent",
-  "facts": "facts/CoreData/NSPersistentContainer.md",
-  "source": "CoreData of the armv7s cache of iOS 10.3.4, the host's own Core Data measured beside the port, and the Core Data of iOS 6.0",
-  "reason": "query generations pin a context to a snapshot of a SQLite store read through write-ahead logging, and the store of iOS 6 keeps a rollback journal and reads the latest rows only",
-  "effect": "the class is not there, so NSClassFromString answers nil"
+  "status": "implemented",
+  "facts": "facts/CoreData/QueryGeneration.md",
+  "source": "CoreData of the arm64 shared cache of iOS 12.0 and the host's Core Data beside the port, for what an unpinned store answers",
+  "reason": "iOS 6 has no write-ahead log to read a snapshot from, so a context pinned to a query generation reads the latest rows, as the newest Core Data does for a store that keeps no generations, an in-memory store; the pinning is kept and nothing isolates",
+  "effect": "the current token is the one instance that answers as current: it is its own copy, equals itself and codes as a singleton; the class has no other token to make, and a token made with alloc and init answers no coordinator; the class is there, so NSClassFromString answers it"
  },
  {
   "api": "NSManagedObjectContext.queryGenerationToken",
   "kind": "property",
   "introduced": "10.0",
   "minimum": "6.0",
-  "status": "absent",
-  "facts": "facts/CoreData/NSPersistentContainer.md",
-  "source": "CoreData of the armv7s cache of iOS 10.3.4, the host's own Core Data measured beside the port, and the Core Data of iOS 6.0",
+  "status": "implemented",
+  "facts": "facts/CoreData/QueryGeneration.md",
+  "source": "CoreData of the arm64 shared cache of iOS 12.0 and the host's Core Data beside the port, for what an unpinned store answers",
   "maximum": "10.0",
-  "reason": "query generations pin a context to a snapshot of a SQLite store read through write-ahead logging, and the store of iOS 6 keeps a rollback journal and reads the latest rows only",
-  "effect": "the property is not there, so respondsToSelector: answers NO"
+  "reason": "iOS 6 has no write-ahead log to read a snapshot from, so a context pinned to a query generation reads the latest rows, as the newest Core Data does for a store that keeps no generations, an in-memory store; the pinning is kept and nothing isolates",
+  "effect": "nil until a token was set, and the token that was set after; nothing else reads it"
  },
  {
   "api": "-[NSManagedObjectContext setQueryGenerationFromToken:error:]",
   "kind": "method",
   "introduced": "10.0",
   "minimum": "6.0",
-  "status": "absent",
-  "facts": "facts/CoreData/NSPersistentContainer.md",
-  "source": "CoreData of the armv7s cache of iOS 10.3.4, the host's own Core Data measured beside the port, and the Core Data of iOS 6.0",
+  "status": "implemented",
+  "facts": "facts/CoreData/QueryGeneration.md",
+  "source": "CoreData of the arm64 shared cache of iOS 12.0 and the host's Core Data beside the port, for what an unpinned store answers",
   "maximum": "10.0",
-  "reason": "query generations pin a context to a snapshot of a SQLite store read through write-ahead logging, and the store of iOS 6 keeps a rollback journal and reads the latest rows only",
-  "effect": "the method is not there, so respondsToSelector: answers NO"
+  "reason": "iOS 6 has no write-ahead log to read a snapshot from, so a context pinned to a query generation reads the latest rows, as the newest Core Data does for a store that keeps no generations, an in-memory store; the pinning is kept and nothing isolates",
+  "effect": "answers YES and keeps the token, nil unpinning; a context with no coordinator answers NO and the error 134060 that iOS 12 answers; the reads of the context are not isolated from later saves"
  },
  {
   "api": "NSManagedObjectContextQueryGenerationKey",

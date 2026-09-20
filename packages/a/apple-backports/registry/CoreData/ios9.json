@@ -51,6 +51,37 @@
       "effect": "a batch delete request removes what its fetch request finds from the store, and the objects of the calling context are left as they are, neither marked deleted nor refreshed; it answers a batch delete result of the request's result type, nil and the error when the fetch or the save fails; a fetch request answers the array of its results; any other request goes to the release's own coordinator",
       "facts": "facts/CoreData/BatchDelete.md",
       "source": "CoreData of the arm64 shared cache of iOS 12.0: -[NSManagedObjectContext executeRequest:error:] at 0x1839f0f58 reads the request type and hands a batch delete to the coordinator; the host's Core Data, run beside the port on a twin store, for what a batch delete removes and answers"
+    },
+    {
+      "api": "NSConstraintConflict",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "nothing here makes one: the store of iOS 6 checks no uniqueness constraint, so no save finds a conflict to describe",
+      "effect": "a value made with a constraint, the database object and snapshot, and the conflicting objects and snapshots; the constraint values are read from the last conflicting object, an NSNull for a nil; the description names the constraint, the database object's ID and the conflicting objects' IDs; encoding or decoding one raises an NSInvalidArgumentException, where iOS 12 logs and traps",
+      "facts": "facts/CoreData/ConstraintConflict.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: -[NSConstraintConflict initWithConstraint:databaseObject:databaseSnapshot:conflictingObjects:conflictingSnapshots:], -description and -encodeWithCoder:; the host's Core Data beside the port for the rest"
+    },
+    {
+      "api": "NSEntityDescription.uniquenessConstraints",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a constraint that the store does not enforce would let the duplicates in that the model says cannot exist, and the store of iOS 6 has nothing that could enforce it",
+      "effect": "the property is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of CoreData"
+    },
+    {
+      "api": "-[NSMergePolicy resolveConstraintConflicts:error:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "it resolves the conflicts of uniqueness constraints, which nothing here enforces, so there is none to hand it",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly; a subclass that overrides it is never called",
+      "source": "the SDK 16.4 headers of CoreData"
     }
   ]
 }
