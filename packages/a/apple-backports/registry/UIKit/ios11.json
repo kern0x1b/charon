@@ -2025,6 +2025,109 @@
       "effect": "the property is not declared, so respondsToSelector: answers NO; a format is drawn in a standard range whatever the application wanted",
       "facts": "facts/UIKit/UIGraphicsRendererFormatPreferred.md",
       "source": "the exports of CoreGraphics of iOS 6.0 as read by the owner of the class (the iOS 10 range), whose words the reason keeps"
+    },
+    {
+      "api": "UIImagePickerController.imageExportPreset",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the picker of iOS 6 hands over a JPEG or the camera's own file, so there is nothing to convert",
+      "effect": "the value is kept and handed back, and changes nothing",
+      "facts": "facts/UIKit/UIImagePickerControllerExportPresets.md",
+      "source": "the header of SDK 16.4 and the class metadata of UIKit of iOS 12.0 arm64"
+    },
+    {
+      "api": "UIImagePickerController.videoExportPreset",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the picker of iOS 6 transcodes a movie by its videoQuality and takes no export preset",
+      "effect": "the value is kept and handed back and not applied, and the first one set says so in the log",
+      "facts": "facts/UIKit/UIImagePickerControllerExportPresets.md",
+      "source": "the header of SDK 16.4 and the class metadata of UIKit of iOS 12.0 arm64"
+    },
+    {
+      "api": "UIImagePickerControllerPHAsset",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the Photos framework does not exist on this release, so there is no asset to hand over",
+      "effect": "the symbol is there with its own name as value, and the dictionary the picker delegate is given never holds it",
+      "facts": "facts/UIKit/UIImagePickerControllerExportPresets.md",
+      "source": "the header of SDK 16.4 and the strings of UIKit of iOS 12.0 arm64"
+    },
+    {
+      "api": "UIPencilInteraction",
+      "kind": "class",
+      "introduced": "12.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the Apple Pencil is a stylus with its own radio and sensors that no device of this release has",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers"
+    },
+    {
+      "api": "UIScrollView.horizontalScrollIndicatorInsets",
+      "kind": "property",
+      "introduced": "11.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the indicators of this release are placed by one set of insets in which the vertical indicator also takes its distance from the right edge, so two sets cannot be turned into it without moving an indicator",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises; scrollIndicatorInsets is the release's own and stays",
+      "source": "the SDK 16.4 headers"
+    },
+    {
+      "api": "UIScrollView.verticalScrollIndicatorInsets",
+      "kind": "property",
+      "introduced": "11.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the indicators of this release are placed by one set of insets in which the horizontal indicator also takes its distance from the bottom edge, so two sets cannot be turned into it without moving an indicator",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises; scrollIndicatorInsets is the release's own and stays",
+      "source": "the SDK 16.4 headers"
+    },
+    {
+      "api": "UIDocumentBrowserErrorDomain",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the document browser is not carried, so no error of that domain is made",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers"
+    },
+    {
+      "api": "-[UIDocumentPickerViewController initWithURLs:inMode:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the document picker came in iOS 8 and needs the documents service iOS 6 does not run",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers"
+    },
+    {
+      "api": "UIGuidedAccessConfigureAccessibilityFeatures()",
+      "kind": "function",
+      "introduced": "12.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "Guided Access of this release has no configuration an application can change",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers"
+    },
+    {
+      "api": "UIGuidedAccessErrorDomain",
+      "kind": "constant",
+      "introduced": "12.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "no error is made without the function that would fail",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers"
     }
   ]
 }

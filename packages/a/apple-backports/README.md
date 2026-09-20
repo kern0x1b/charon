@@ -165,6 +165,8 @@ application compares an error against, `DCErrorDomain`, `ARErrorDomain` and
 question - a token, a session, a setting, an anchor, a tag - is absent, and
 `respondsToSelector:` and `NSClassFromString` say so.
 
+`NSProcessInfo.thermalState` answers nominal and its notification is never posted, and the export presets of the image picker are kept and not applied: the release publishes no thermal pressure level a process can read, and its picker hands over a JPEG and transcodes a movie by its quality. All three are `inert`, and each says so once in the log.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and

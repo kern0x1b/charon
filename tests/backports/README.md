@@ -339,6 +339,12 @@ postinst run with `DPKG_ROOT` set to it.
   `foundation11-expectations.h`. Besides the cases it shares with the host, it
   names the image every backported method comes from and checks that the
   transformer answers to its name through `+[NSValueTransformer valueTransformerForName:]`.
+- `tail11.m`: a process of its own that links UIKit, for the small rows that answer
+  the same on every device: `-[NSProcessInfo thermalState]` answers nominal and its
+  notification is never posted, the export presets of the image picker are kept per
+  picker and the video one is copied, the key `UIImagePickerControllerPHAsset` carries
+  its own name, and what is absent stays absent. It ran on an iPad 2 (6.1.3): 22
+  checks and no failure; the log lines of the two `inert` answers came once each.
 - `probes.m`: a process of its own for the capability probes, run on an
   iPhone 4S and an iPad 2 (6.1.3). It checks that every class the probes carry
   comes from `libFoundationBackports.dylib`, that `+isSupported` and
