@@ -1,0 +1,465 @@
+{
+  "framework": "Foundation",
+  "entries": [
+    {
+      "api": "NSMutableURLRequest.requiresDNSSECValidation",
+      "kind": "property",
+      "introduced": "16.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSMutableURLRequest a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSURLRequest.requiresDNSSECValidation",
+      "kind": "property",
+      "introduced": "16.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURLRequest a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSURLFileIdentifierKey",
+      "kind": "constant",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSURLVolumeMountFromLocationKey",
+      "kind": "constant",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSURLVolumeSubtypeKey",
+      "kind": "constant",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSURLVolumeTypeNameKey",
+      "kind": "constant",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "+[NSAttributedString localizedAttributedStringWithFormat:context:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "+[NSAttributedString localizedAttributedStringWithFormat:options:context:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "+[NSURL URLWithString:encodingInvalidCharacters:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURL a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "+[NSURLComponents componentsWithString:encodingInvalidCharacters:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURLComponents a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSAttributedString initWithFormat:options:locale:context:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSAttributedString initWithFormat:options:locale:context:arguments:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSURL initWithString:encodingInvalidCharacters:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURL a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSURLComponents initWithString:encodingInvalidCharacters:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURLComponents a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSURLSession uploadTaskWithResumeData:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURLSession a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSURLSession uploadTaskWithResumeData:completionHandler:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURLSession a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSURLSessionTaskDelegate URLSession:task:didReceiveInformationalResponse:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a NSURLSessionTaskDelegate that sends anything like it: the message arrived in iOS 17",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSURLSessionTaskDelegate URLSession:task:needNewBodyStreamFromOffset:completionHandler:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a NSURLSessionTaskDelegate that sends anything like it: the message arrived in iOS 17",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSURLSessionUploadTask cancelByProducingResumeData:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURLSessionUploadTask a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSFileProtectionCompleteWhenUserInactive",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSInflectionAgreementArgumentAttributeName",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSInflectionAgreementConceptAttributeName",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSInflectionConceptsKey",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSInflectionReferentConceptAttributeName",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSLocale.languageIdentifier",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSLocale a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSLocale.regionCode",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSLocale a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSMorphologyPronoun",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSTermOfAddress",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSURLDirectoryEntryCountKey",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSURLFileProtectionCompleteWhenUserInactive",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSURLSessionUploadTaskResumeData",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSFilePresenter accommodatePresentedItemEvictionWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSFilePresenter a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSUndoManager.redoCount",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSUndoManager a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSUndoManager.undoCount",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSUndoManager a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSObject setSharedObservers:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSUndoManager redoActionUserInfoValueForKey:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSUndoManager a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSUndoManager setActionUserInfoValue:forKey:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSUndoManager a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "-[NSUndoManager undoActionUserInfoValueForKey:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSUndoManager a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSDateComponents.dayOfYear",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSDateComponents a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSKeyValueSharedObservers",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSKeyValueSharedObserversSnapshot",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSLocalizedNumberFormatAttributeName",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSLocalizedNumberFormatRule",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSMutableURLRequest.allowsPersistentDNS",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSMutableURLRequest a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSNumberFormatter.minimumGroupingDigits",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSNumberFormatter a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    },
+    {
+      "api": "NSURLRequest.allowsPersistentDNS",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURLRequest a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, Foundation"
+    }
+  ]
+}

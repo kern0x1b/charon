@@ -1,0 +1,4055 @@
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "UIHoverGestureRecognizer.zOffset",
+      "kind": "property",
+      "introduced": "16.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIHoverGestureRecognizer a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIHoverGestureRecognizer azimuthAngleInView:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIHoverGestureRecognizer a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIHoverGestureRecognizer azimuthUnitVectorInView:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIHoverGestureRecognizer a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIActivityItemsConfigurationInteractionCopy",
+      "kind": "constant",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIActivityTypeAddToHomeScreen",
+      "kind": "constant",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIHoverGestureRecognizer.altitudeAngle",
+      "kind": "property",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIHoverGestureRecognizer a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UISearchBar.enabled",
+      "kind": "property",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UISearchBar a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextInputContext",
+      "kind": "class",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[NSCollectionLayoutDimension uniformAcrossSiblingsWithEstimate:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSCollectionLayoutDimension a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[UIImageConfiguration configurationWithLocale:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageConfiguration a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[UIImageConfiguration configurationWithTraitCollection:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageConfiguration a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[UITraitCollection traitCollectionWithImageDynamicRange:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITraitCollection a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[UITraitCollection traitCollectionWithSceneCaptureState:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITraitCollection a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[UITraitCollection traitCollectionWithTypesettingLanguage:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITraitCollection a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[UIView animateWithSpringDuration:bounce:initialSpringVelocity:delay:options:animations:completion:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIApplication activateSceneSessionForRequest:errorHandler:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIApplication a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem addSymbolEffect:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem addSymbolEffect:options:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem addSymbolEffect:options:animated:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem removeAllSymbolEffectsWithOptions:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem removeAllSymbolEffectsWithOptions:animated:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem removeAllSymbolEffects]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem removeSymbolEffectOfType:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem removeSymbolEffectOfType:options:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem removeSymbolEffectOfType:options:animated:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem setSymbolImage:withContentTransition:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem setSymbolImage:withContentTransition:options:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImage imageRestrictedToStandardDynamicRange]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImage a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImageConfiguration configurationWithLocale:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageConfiguration a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImageView addSymbolEffect:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImageView addSymbolEffect:options:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImageView addSymbolEffect:options:animated:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImageView addSymbolEffect:options:animated:completion:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImageView removeAllSymbolEffectsWithOptions:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImageView removeAllSymbolEffectsWithOptions:animated:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImageView removeAllSymbolEffects]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImageView removeSymbolEffectOfType:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImageView removeSymbolEffectOfType:options:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImageView removeSymbolEffectOfType:options:animated:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImageView removeSymbolEffectOfType:options:animated:completion:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImageView setSymbolImage:withContentTransition:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImageView setSymbolImage:withContentTransition:options:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImageView setSymbolImage:withContentTransition:options:completion:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UISpringTimingParameters initWithDuration:bounce:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UISpringTimingParameters a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UISpringTimingParameters initWithDuration:bounce:initialVelocity:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UISpringTimingParameters a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITextViewDelegate textView:menuConfigurationForTextItem:defaultMenu:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 17",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITextViewDelegate textView:primaryActionForTextItem:defaultAction:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 17",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITextViewDelegate textView:textItemMenuWillDisplayForTextItem:animator:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 17",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITextViewDelegate textView:textItemMenuWillEndForTextItem:animator:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 17",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIView updateTraitsIfNeeded]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIViewController setNeedsUpdateContentUnavailableConfiguration]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIViewController a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIViewController updateContentUnavailableConfigurationUsingState:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIViewController a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIViewController updateTraitsIfNeeded]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIViewController a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSCollectionLayoutDimension.isUniformAcrossSiblings",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSCollectionLayoutDimension a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSCollectionLayoutSection.orthogonalScrollingProperties",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSCollectionLayoutSection a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSDefaultFontExcludedDocumentAttribute",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityActivateBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityActivationPointBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityAttributedHintBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityAttributedLabelBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityAttributedUserInputLabelsBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityAttributedValueBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityContainerTypeBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityCustomActionsBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityCustomRotorsBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityDecrementBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityDirectTouchOptions",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityElementsBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityElementsHiddenBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityFrameBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityHeaderElementsBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityHintBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityIdentifierBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityIncrementBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityLabelBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityLanguageBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityMagicTapBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityNavigationStyleBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityPathBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityPerformEscapeBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityRespondsToUserInteractionBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityShouldGroupAccessibilityChildrenBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityTextualContextBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityTraitsBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityUserInputLabelsBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityValueBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityViewIsModalBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.automationElements",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.automationElementsBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.isAccessibilityElementBlock",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSSymbolContentTransition",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSSymbolEffectOptions",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIAccessibilityPriorityDefault",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIAccessibilityPriorityHigh",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIAccessibilityPriorityLow",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIAccessibilitySpeechAttributeAnnouncementPriority",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIAccessibilityTraitSupportsZoom",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIAccessibilityTraitToggleButton",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIBarButtonItem.symbolAnimationEnabled",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UICGFloatTraitDefinition",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UICollectionLayoutSectionOrthogonalScrollingDecelerationRateAutomatic",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UICollectionLayoutSectionOrthogonalScrollingDecelerationRateFast",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UICollectionLayoutSectionOrthogonalScrollingDecelerationRateNormal",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UICollectionLayoutSectionOrthogonalScrollingProperties",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIContentUnavailableButtonProperties",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIContentUnavailableConfiguration",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIContentUnavailableConfigurationState",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIContentUnavailableImageProperties",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIContentUnavailableTextProperties",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIContentUnavailableView",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIControl.symbolAnimationEnabled",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIControl a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIDocumentViewController",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIFontTextStyleExtraLargeTitle",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIFontTextStyleExtraLargeTitle2",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIGraphicsImageRendererFormat.supportsHighDynamicRange",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIGraphicsImageRendererFormat a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIHoverAutomaticEffect",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIHoverEffect",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIHoverHighlightEffect",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIHoverLiftEffect",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIHoverStyle",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIImage.isHighDynamicRange",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImage a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIImageConfiguration.locale",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageConfiguration a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIImageHEICRepresentation()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIImageReader",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIImageReaderConfiguration",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIImageView.imageDynamicRange",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageView a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIImageView.preferredImageDynamicRange",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageView a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UILabel.preferredVibrancy",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UILabel a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UILetterformAwareAdjusting",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UILookToDictateCapable.lookToDictateEnabled",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UILookToDictateCapable a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIMenuAutoFill",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIMutableTraits",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UINSIntegerTraitDefinition",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIObjectTraitDefinition",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIPageControl.progress",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIPageControl a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIPageControlProgress",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIPageControlProgressDelegate",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIPageControlTimerProgress",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIPageControlTimerProgressDelegate",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIPresentationController.traitOverrides",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIPresentationController a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIResolvedShape",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UISceneSessionActivationRequest",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIScrollView.allowsKeyboardScrolling",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIScrollView a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UISearchBar.lookToDictateEnabled",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UISearchBar a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIShape",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIShapeProvider",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIShapeResolutionContext",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UISymbolEffectCompletionContext",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextContentTypeBirthdate",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextContentTypeBirthdateDay",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextContentTypeBirthdateMonth",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextContentTypeBirthdateYear",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextContentTypeCreditCardExpiration",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextContentTypeCreditCardExpirationMonth",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextContentTypeCreditCardExpirationYear",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextContentTypeCreditCardFamilyName",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextContentTypeCreditCardGivenName",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextContentTypeCreditCardMiddleName",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextContentTypeCreditCardName",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextContentTypeCreditCardSecurityCode",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextContentTypeCreditCardType",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextCursorView",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextInputTraits.inlinePredictionType",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextInputTraits a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextItem",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextItemMenuConfiguration",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextItemMenuPreview",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextItemTagAttributeName",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextLoupeSession",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextSelectionDisplayInteraction",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextSelectionDisplayInteractionDelegate",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextSelectionHandleView",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextSelectionHighlightView",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextView.borderStyle",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitAccessibilityContrast",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitActiveAppearance",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitChangeObservable",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitChangeRegistration",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitCollection.imageDynamicRange",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITraitCollection a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitCollection.sceneCaptureState",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITraitCollection a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitCollection.typesettingLanguage",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITraitCollection a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitDefinition",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitDisplayGamut",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitDisplayScale",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitForceTouchCapability",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitHorizontalSizeClass",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitImageDynamicRange",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitLayoutDirection",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitLegibilityWeight",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitOverrides",
+      "kind": "protocol",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 17, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitPreferredContentSizeCategory",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitSceneCaptureState",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitToolbarItemPresentationSize",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitTypesettingLanguage",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitUserInterfaceIdiom",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitUserInterfaceLevel",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitUserInterfaceStyle",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitVerticalSizeClass",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIView.traitOverrides",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIView a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIViewController.contentUnavailableConfiguration",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIViewController a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIViewController.contentUnavailableConfigurationState",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIViewController a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIViewController.traitOverrides",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIViewController a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIWindowScene.traitOverrides",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIWindowScene a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIWindowSceneDragInteraction",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIWindowScenePlacement",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIWindowSceneProminentPlacement",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIWindowSceneStandardPlacement",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIControl performPrimaryAction]",
+      "kind": "method",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIControl a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIDragItem setNeedsDropPreviewUpdate]",
+      "kind": "method",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIDragItem a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIScrollView stopScrollingAndZooming]",
+      "kind": "method",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIScrollView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIScrollView withScrollIndicatorsShownForContentOffsetChanges:]",
+      "kind": "method",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIScrollView a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITextInput caretTransformForPosition:]",
+      "kind": "method",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextInput a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIMenu.displayPreferences",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIMenu a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIMenuDisplayPreferences",
+      "kind": "class",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIScrollView.contentAlignmentPoint",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIScrollView a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIScrollView.scrollAnimating",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIScrollView a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIScrollView.transfersHorizontalScrollingToParent",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIScrollView a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIScrollView.transfersVerticalScrollingToParent",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIScrollView a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIScrollView.zoomAnimating",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIScrollView a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIStandardTextCursorView",
+      "kind": "class",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextContentTypeCellularEID",
+      "kind": "constant",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextContentTypeCellularIMEI",
+      "kind": "constant",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextCursorDropPositionAnimator",
+      "kind": "class",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextSelectionRect.transform",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextSelectionRect a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[UIFeedbackGenerator feedbackGeneratorForView:]",
+      "kind": "method",
+      "introduced": "17.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIFeedbackGenerator a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[UIImpactFeedbackGenerator feedbackGeneratorWithStyle:forView:]",
+      "kind": "method",
+      "introduced": "17.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImpactFeedbackGenerator a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImpactFeedbackGenerator impactOccurredAtLocation:]",
+      "kind": "method",
+      "introduced": "17.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImpactFeedbackGenerator a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIImpactFeedbackGenerator impactOccurredWithIntensity:atLocation:]",
+      "kind": "method",
+      "introduced": "17.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImpactFeedbackGenerator a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UINotificationFeedbackGenerator notificationOccurred:atLocation:]",
+      "kind": "method",
+      "introduced": "17.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINotificationFeedbackGenerator a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UISelectionFeedbackGenerator selectionChangedAtLocation:]",
+      "kind": "method",
+      "introduced": "17.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UISelectionFeedbackGenerator a method like it: it arrived in iOS 17",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UICanvasFeedbackGenerator",
+      "kind": "class",
+      "introduced": "17.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIHoverGestureRecognizer.rollAngle",
+      "kind": "property",
+      "introduced": "17.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIHoverGestureRecognizer a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIPencilHoverPose",
+      "kind": "class",
+      "introduced": "17.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIPencilInteractionSqueeze",
+      "kind": "class",
+      "introduced": "17.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIPencilInteractionTap",
+      "kind": "class",
+      "introduced": "17.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITouch.rollAngle",
+      "kind": "property",
+      "introduced": "17.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITouch a property like it: it arrived in iOS 17",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[NSAttributedString attributedStringWithAdaptiveImageGlyph:attributes:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[NSAttributedString attributedStringWithAttachment:attributes:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[UIBackgroundConfiguration listCellConfiguration]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBackgroundConfiguration a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[UIBackgroundConfiguration listFooterConfiguration]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBackgroundConfiguration a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[UIBackgroundConfiguration listHeaderConfiguration]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBackgroundConfiguration a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[UIListContentConfiguration footerConfiguration]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIListContentConfiguration a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[UIListContentConfiguration headerConfiguration]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIListContentConfiguration a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "+[UITraitCollection traitCollectionWithListEnvironment:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITraitCollection a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[NSAttributedString prefersRTFDInRange:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[NSObject accessibilityHitTest:withEvent:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIActivityItemSource activityViewControllerShareRecipients:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIActivityItemSource a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIColor colorWithProminence:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIColor a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UIListContentImageProperties resolvedStrokeColorForTintColor:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIListContentImageProperties a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITabBarController initWithTabs:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITabBarController a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITabBarController setTabBarHidden:animated:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITabBarController a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITabBarController setTabs:animated:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITabBarController a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITabBarController tabForIdentifier:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITabBarController a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITabBarControllerDelegate tabBarController:didSelectTab:previousTab:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITabBarControllerDelegate tabBarController:displayOrderDidChangeForGroup:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITabBarControllerDelegate tabBarController:displayedViewControllersForTab:proposedViewControllers:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITabBarControllerDelegate tabBarController:shouldSelectTab:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITabBarControllerDelegate tabBarController:tab:acceptItemsFromDropSession:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITabBarControllerDelegate tabBarController:tab:operationForAcceptingItemsFromDropSession:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITabBarControllerDelegate tabBarController:visibilityDidChangeForTabs:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITabBarControllerDelegate tabBarControllerDidEndEditing:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITabBarControllerDelegate tabBarControllerWillBeginEditing:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITabBarControllerDelegate that sends anything like it: the message arrived in iOS 18",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITextInput didDismissWritingTools]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextInput a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITextInput insertAdaptiveImageGlyph:replacementRange:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextInput a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITextInput willPresentWritingTools]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextInput a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITextView drawTextHighlightBackgroundForTextRange:origin:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextView a method like it: it arrived in iOS 18",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITextViewDelegate textView:didBeginFormattingWithViewController:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 18",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITextViewDelegate textView:didEndFormattingWithViewController:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 18",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITextViewDelegate textView:willBeginFormattingWithViewController:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 18",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITextViewDelegate textView:willEndFormattingWithViewController:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 18",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITextViewDelegate textView:writingToolsIgnoredRangesInEnclosingRange:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 18",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITextViewDelegate textViewWritingToolsDidEnd:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 18",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "-[UITextViewDelegate textViewWritingToolsWillBegin:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 18",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSAdaptiveImageGlyph",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSAdaptiveImageGlyphAttributeName",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityExpandedStatus",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityExpandedStatusBlock",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityNextTextNavigationElement",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityNextTextNavigationElementBlock",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityPreviousTextNavigationElement",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSObject.accessibilityPreviousTextNavigationElementBlock",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSTextHighlightColorSchemeAttributeName",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSTextHighlightColorSchemeBlue",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSTextHighlightColorSchemeDefault",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSTextHighlightColorSchemeMint",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSTextHighlightColorSchemeOrange",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSTextHighlightColorSchemePink",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSTextHighlightColorSchemePurple",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSTextHighlightStyleAttributeName",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSTextHighlightStyleDefault",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "NSTextKit1ListMarkerFormatDocumentOption",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIAccessibilityCustomAction.category",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIAccessibilityCustomAction a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIAccessibilityCustomActionCategoryEdit",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIActivityCollaborationModeRestriction",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIActivityItemsConfigurationMetadataKeyCollaborationModeRestrictions",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIActivityItemsConfigurationMetadataKeyShareRecipients",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIActivityViewController.excludedActivitySectionTypes",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIActivityViewController a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIBackgroundConfiguration.shadowProperties",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBackgroundConfiguration a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UICalendarSelectionWeekOfYear",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UICalendarSelectionWeekOfYearDelegate",
+      "kind": "protocol",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 18, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UICollectionLayoutListConfiguration.contentHuggingElements",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UICollectionLayoutListConfiguration a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIColor.prominence",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIColor a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIDocumentCreationIntentDefault",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIDocumentViewControllerLaunchOptions",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIListContentConfiguration.alpha",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIListContentConfiguration a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIListContentImageProperties.strokeColor",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIListContentImageProperties a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIListContentImageProperties.strokeColorTransformer",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIListContentImageProperties a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIListContentImageProperties.strokeWidth",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIListContentImageProperties a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UISceneSystemProtectionDidChangeNotification",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UISceneSystemProtectionManager",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UISearchTab",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIShadowProperties",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITab",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITabBarController.compactTabIdentifiers",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITabBarController.customizationIdentifier",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITabBarController.mode",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITabBarController.selectedTab",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITabBarController.sidebar",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITabBarController.tabBarHidden",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITabBarController.tabs",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITabBarControllerSidebar",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITabBarControllerSidebarAnimating",
+      "kind": "protocol",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 18, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITabBarControllerSidebarDelegate",
+      "kind": "protocol",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 18, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITabGroup",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITabSidebarItem",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITabSidebarItemRequest",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITabSidebarScrollTarget",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITableView.contentHuggingElements",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITableView a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewController",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerChangeValue",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerComponent",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerComponentGroup",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerConfiguration",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerDecreaseFontSizeChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerDecreaseIndentationChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerDelegate",
+      "kind": "protocol",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 18, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerFontAttributesComponentKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerFontChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerFontPickerComponentKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerFontPointSizeComponentKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerFontSizeChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerFontSizeComponentKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerFormattingDescriptor",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerFormattingStyle",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerFormattingStyleChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerFormattingStylesComponentKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerHighlightBlue",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerHighlightChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerHighlightComponentKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerHighlightDefault",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerHighlightMint",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerHighlightOrange",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerHighlightPickerComponentKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerHighlightPink",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerHighlightPurple",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerIncreaseFontSizeChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerIncreaseIndentationChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerLineHeightComponentKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerLineHeightPointSizeChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerListStylesComponentKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerRemoveBoldChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerRemoveItalicChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerRemoveStrikethroughChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerRemoveUnderlineChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerSetBoldChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerSetItalicChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerSetStrikethroughChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerSetUnderlineChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerTextAlignmentAndJustificationComponentKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerTextAlignmentCenter",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerTextAlignmentChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerTextAlignmentComponentKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerTextAlignmentJustified",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerTextAlignmentLeft",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerTextAlignmentNatural",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerTextAlignmentRight",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerTextColorChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerTextColorComponentKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerTextIndentationComponentKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerTextListChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerTextListDecimal",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerTextListDisc",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerTextListHyphen",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerTextListOther",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextFormattingViewControllerUndefinedChangeType",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextInput.editable",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextInput a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextInput.supportsAdaptiveImageGlyph",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextInput a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextInputTraits.allowedWritingToolsResultOptions",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextInputTraits a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextInputTraits.mathExpressionCompletionType",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextInputTraits a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextInputTraits.writingToolsBehavior",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextInputTraits a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextView.allowedWritingToolsResultOptions",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextView.textFormattingConfiguration",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextView.textHighlightAttributes",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextView.writingToolsActive",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITextView.writingToolsBehavior",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitCollection.listEnvironment",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITraitCollection a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UITraitListEnvironment",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIUpdateActionPhase",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIUpdateInfo",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIUpdateLink",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIViewController.preferredTransition",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIViewController a property like it: it arrived in iOS 18",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIViewControllerTransition",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIZoomTransitionAlignmentRectContext",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIZoomTransitionInteractionContext",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIZoomTransitionOptions",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    },
+    {
+      "api": "UIZoomTransitionSourceViewProviderContext",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26, Mac Catalyst, UIKit"
+    }
+  ]
+}
