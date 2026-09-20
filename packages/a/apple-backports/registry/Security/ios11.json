@@ -1,0 +1,674 @@
+{
+  "framework": "Security",
+  "entries": [
+    {
+      "api": "SecTrustEvaluateWithError()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a departure from 12.0 in what the error says: the reason is read from the four strings the release gives for a failed evaluation in English, and the index of the certificate in the underlying error is a guess for a chain longer than one",
+      "effect": "the verdict, the domain, the code and the description are what the newest Security answers for a name that does not match, an untrusted root and an expired certificate; a language in which the release names none of the three reasons gets the not trusted error",
+      "facts": "facts/Security/SecTrustEvaluateWithError.md",
+      "source": "Security of iOS 12.0 arm64, _SecTrustEvaluateWithError at 0x181bffe78, which evaluates and answers YES for the results unspecified and proceed; the host's Security for the errors; an iPad 2 running 6.1.3 for what the release reports"
+    },
+    {
+      "api": "SecCertificateCopyKey()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Security/SecTrustEvaluateWithError.md",
+      "source": "the host's Security, where it answers the public key of the certificate; the release's own SecCertificateCopyPublicKey answers the same"
+    },
+    {
+      "api": "SecCertificateCopySerialNumberData()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Security/SecTrustEvaluateWithError.md",
+      "source": "the host's Security, where it answers the content of the DER integer of the serial number, its leading zero kept; read from the certificate's own encoding here"
+    },
+    {
+      "api": "SecCopyErrorMessageString()",
+      "kind": "function",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the messages are the framework's own localized text for every status, which this package does not carry",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "SecTrustSetSignedCertificateTimestamps()",
+      "kind": "function",
+      "introduced": "12.1.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release evaluates no certificate transparency",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecAttrPersistentReference",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the keychain of iOS 6 was not read for this attribute",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecAttrPersistantReference",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the keychain of iOS 6 was not read for this attribute",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmECIESEncryptionCofactorVariableIVX963SHA224AESGCM",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmECIESEncryptionCofactorVariableIVX963SHA256AESGCM",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmECIESEncryptionCofactorVariableIVX963SHA384AESGCM",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmECIESEncryptionCofactorVariableIVX963SHA512AESGCM",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmECIESEncryptionStandardVariableIVX963SHA224AESGCM",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmECIESEncryptionStandardVariableIVX963SHA256AESGCM",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmECIESEncryptionStandardVariableIVX963SHA384AESGCM",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmECIESEncryptionStandardVariableIVX963SHA512AESGCM",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmRSASignatureDigestPSSSHA1",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmRSASignatureDigestPSSSHA224",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmRSASignatureDigestPSSSHA256",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmRSASignatureDigestPSSSHA384",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmRSASignatureDigestPSSSHA512",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmRSASignatureMessagePSSSHA1",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmRSASignatureMessagePSSSHA224",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmRSASignatureMessagePSSSHA256",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmRSASignatureMessagePSSSHA384",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "kSecKeyAlgorithmRSASignatureMessagePSSSHA512",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the algorithms are named for SecKeyCreateSignature and the calls beside it, which this release does not have",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_certificate_copy_ref()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_certificate_create()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_identity_copy_certificates_ref()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_identity_copy_ref()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_identity_create()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_identity_create_with_certificates()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_metadata_access_distinguished_names()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_metadata_access_ocsp_response()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_metadata_access_peer_certificate_chain()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_metadata_access_supported_signature_algorithms()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_metadata_challenge_parameters_are_equal()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_metadata_copy_peer_public_key()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_metadata_create_secret()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_metadata_create_secret_with_context()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_metadata_get_early_data_accepted()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_metadata_get_negotiated_ciphersuite()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_metadata_get_negotiated_protocol()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_metadata_get_negotiated_protocol_version()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_metadata_get_server_name()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_metadata_peers_are_equal()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_add_pre_shared_key()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_add_tls_application_protocol()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_add_tls_ciphersuite()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_add_tls_ciphersuite_group()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_set_challenge_block()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_set_key_update_block()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_set_local_identity()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_set_peer_authentication_required()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_diffie_hellman_parameters()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_false_start_enabled()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_is_fallback_attempt()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_max_version()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_min_version()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_ocsp_enabled()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_renegotiation_enabled()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_resumption_enabled()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_sct_enabled()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_server_name()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_tickets_enabled()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_protocol_options_set_verify_block()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_trust_copy_ref()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    },
+    {
+      "api": "sec_trust_create()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of Security"
+    }
+  ]
+}

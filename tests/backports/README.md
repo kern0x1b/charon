@@ -355,6 +355,14 @@ postinst run with `DPKG_ROOT` set to it.
   `foundation11-expectations.h`. Besides the cases it shares with the host, it
   names the image every backported method comes from and checks that the
   transformer answers to its name through `+[NSValueTransformer valueTransformerForName:]`.
+- `security12.m`: a process of its own for `SecTrustEvaluateWithError`, `SecCertificateCopyKey` and
+  the serial number of a certificate. It holds the trust evaluation to what the newest Security
+  answers - the verdict, the domain, the code, the description and the underlying error - for a
+  trusted certificate, an untrusted root, a name that does not match, an expired certificate
+  and the combinations of them, and the same file, compiled against the host's own Security,
+  passes all twenty-four of its checks, so the expectations are the host's answers and not
+  ours. It links `libSecurityBackports.dylib`. It ran on an iPad 2 (6.1.3): twenty-seven checks and
+  no failure.
 - `tail11.m`: a process of its own that links UIKit, for the small rows that answer
   the same on every device: `-[NSProcessInfo thermalState]` answers nominal and its
   notification is never posted, the export presets of the image picker are kept per

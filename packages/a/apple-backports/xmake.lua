@@ -23,9 +23,10 @@ package("apple-backports")
     add_configs("uikit", {description = "Build libUIKitBackports.dylib beside libFoundationBackports.dylib, for an application; a daemon or a tool leaves UIKit out of its process.", default = false, type = "boolean"})
     add_configs("corelocation", {description = "Build libCoreLocationBackports.dylib, for a port that asks for location authorization; it loads CoreLocation into the process.", default = false, type = "boolean"})
     add_configs("coredata", {description = "Build libCoreDataBackports.dylib, for a port that keeps its data with Core Data; it loads CoreData into the process.", default = false, type = "boolean"})
+    add_configs("security", {description = "Build libSecurityBackports.dylib, for a port that evaluates a trust with SecTrustEvaluateWithError; it loads Security into the process.", default = false, type = "boolean"})
 
     on_load("iphoneos", function (package)
-        package:add("links", table.join(package:config("uikit") and {"UIKitBackports"} or {}, package:config("corelocation") and {"CoreLocationBackports"} or {}, package:config("coredata") and {"CoreDataBackports"} or {}, {"FoundationBackports"}))
+        package:add("links", table.join(package:config("uikit") and {"UIKitBackports"} or {}, package:config("corelocation") and {"CoreLocationBackports"} or {}, package:config("coredata") and {"CoreDataBackports"} or {}, package:config("security") and {"SecurityBackports"} or {}, {"FoundationBackports"}))
     end)
 
     on_install("iphoneos", function (package)
@@ -44,7 +45,8 @@ package("apple-backports")
         local cache = firmware.ensure(package:arch(), deployment, {tool = tool})
         local libraries = table.join({"FoundationBackports"}, package:config("uikit") and {"UIKitBackports"} or {},
                                      package:config("corelocation") and {"CoreLocationBackports"} or {},
-                                     package:config("coredata") and {"CoreDataBackports"} or {})
+                                     package:config("coredata") and {"CoreDataBackports"} or {},
+                                     package:config("security") and {"SecurityBackports"} or {})
         local common = {root = package:scriptdir(), architecture = package:arch(), deployment = deployment, sdkdir = toolchain:config("sdkdir"),
                         cc = assert(toolchain:tool("cc"), "the apple-ios toolchain names no compiler for " .. package:arch()),
                         ld = assert(linker, "the apple-ios toolchain names no ld64 for " .. package:arch()), libraries = libraries}

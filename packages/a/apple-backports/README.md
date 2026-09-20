@@ -174,6 +174,8 @@ question - a token, a session, a setting, an anchor, a tag - is absent, and
 
 `NSProcessInfo.thermalState` answers nominal and its notification is never posted, and the export presets of the image picker are kept and not applied: the release publishes no thermal pressure level a process can read, and its picker hands over a JPEG and transcodes a movie by its quality. All three are `inert`, and each says so once in the log.
 
+`SecTrustEvaluateWithError` is carried over the release's own `SecTrustEvaluate`: the verdict is the newest Security's, and the error it makes says what the newest Security says for an untrusted root, a name that does not match and an expired certificate, read from the four English strings the release gives for a failed evaluation. A language in which the release words them differently gets the not trusted error. `SecCertificateCopyKey` and `SecCertificateCopySerialNumberData` come with it, in `libSecurityBackports.dylib`, built with the `security` config, so that a process which never evaluates a trust does not load Security for them.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and
