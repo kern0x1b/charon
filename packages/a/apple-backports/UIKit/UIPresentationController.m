@@ -1,0 +1,165 @@
+#import <UIKit/UIKit.h>
+
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+#pragma clang diagnostic ignored "-Wobjc-property-implementation"
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
+
+@implementation UIPresentationController {
+@private
+    UIViewController *_presentedViewController;
+    UIViewController *_presentingViewController;
+    __weak id<UIAdaptivePresentationControllerDelegate> _delegate;
+    UITraitCollection *_overrideTraitCollection;
+}
+
+- (instancetype)initWithPresentedViewController:(UIViewController *)presentedViewController presentingViewController:(UIViewController *)presentingViewController
+{
+    if ((self = [super init])) {
+        _presentedViewController = presentedViewController;
+        _presentingViewController = presentingViewController;
+    }
+    return self;
+}
+
+- (UIViewController *)presentedViewController
+{
+    return _presentedViewController;
+}
+
+- (UIViewController *)presentingViewController
+{
+    return _presentingViewController;
+}
+
+- (id<UIAdaptivePresentationControllerDelegate>)delegate
+{
+    return _delegate;
+}
+
+- (void)setDelegate:(id<UIAdaptivePresentationControllerDelegate>)delegate
+{
+    _delegate = delegate;
+}
+
+- (UITraitCollection *)overrideTraitCollection
+{
+    return _overrideTraitCollection;
+}
+
+- (void)setOverrideTraitCollection:(UITraitCollection *)collection
+{
+    _overrideTraitCollection = collection;
+}
+
+- (UIModalPresentationStyle)presentationStyle
+{
+    return _presentedViewController.modalPresentationStyle;
+}
+
+- (UIView *)containerView
+{
+    return nil;
+}
+
+- (UIView *)presentedView
+{
+    return _presentedViewController.view;
+}
+
+- (BOOL)shouldPresentInFullscreen
+{
+    return YES;
+}
+
+- (BOOL)shouldRemovePresentersView
+{
+    return NO;
+}
+
+- (UIModalPresentationStyle)adaptivePresentationStyle
+{
+    return UIModalPresentationNone;
+}
+
+- (UIModalPresentationStyle)adaptivePresentationStyleForTraitCollection:(UITraitCollection *)traitCollection
+{
+    return UIModalPresentationNone;
+}
+
+- (CGRect)frameOfPresentedViewInContainerView
+{
+    return CGRectZero;
+}
+
+- (CGSize)sizeForChildContentContainer:(id<UIContentContainer>)container withParentContainerSize:(CGSize)parentSize
+{
+    return parentSize;
+}
+
+- (void)presentationTransitionWillBegin
+{
+}
+
+- (void)presentationTransitionDidEnd:(BOOL)completed
+{
+}
+
+- (void)dismissalTransitionWillBegin
+{
+}
+
+- (void)dismissalTransitionDidEnd:(BOOL)completed
+{
+}
+
+- (void)containerViewWillLayoutSubviews
+{
+}
+
+- (void)containerViewDidLayoutSubviews
+{
+}
+
+- (UITraitCollection *)traitCollection
+{
+    return [_presentedViewController traitCollection];
+}
+
+- (CGSize)preferredContentSize
+{
+    return _presentedViewController.preferredContentSize;
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+{
+}
+
+- (void)preferredContentSizeDidChangeForChildContentContainer:(id<UIContentContainer>)container
+{
+}
+
+- (void)systemLayoutFittingSizeDidChangeForChildContentContainer:(id<UIContentContainer>)container
+{
+}
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+}
+
+- (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+}
+
+@end
+
+@interface UIViewController (CharonPresentationController)
+@end
+
+@implementation UIViewController (CharonPresentationController)
+
+- (UIPresentationController *)presentationController
+{
+    return nil;
+}
+
+@end

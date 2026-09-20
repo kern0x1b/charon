@@ -644,3 +644,7 @@ nothing. An iPhoneOS SDK takes `--target arm64-apple-ios16.4` and has them.
 `host/invalidation/run.sh` records what the host's UIKit answers for the collection view
 invalidation contexts and for `-invalidateLayout` routed through `-invalidateLayoutWithContext:`
 in `device/invalidation-cases.m`, and `device/invalidation.m` compares the port record by record.
+
+`host/presentation/run.sh` records what the host's `UIPresentationController` answers in
+`device/presentation-cases.m`, in a Mac Catalyst application with a window, and
+`device/presentation.m` compares the port record by record on the release.
