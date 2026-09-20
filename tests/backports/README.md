@@ -707,3 +707,10 @@ constants.
 `device/personname.m` compares the port on the release. `host/presses/run.sh` does the same in a Mac Catalyst application with a
 window for `UIPress`, `UIPressesEvent`, the presses messages of `UIResponder` and `UICollectionViewTransitionLayout`, and
 `device/presses.m` compares them.
+
+`swipeui.m` (`swipeui-Info.plist`) is an application for both devices that checks the swipe actions of a table with real touches:
+it sends digitizer events to the HID event system from a queue of timed steps and reads what the table, the delegate and the
+buttons do - the row slides and shows its buttons, a tap runs a handler with the index path, a swipe across the row runs the
+first action, a tap elsewhere or a scroll closes it, a table whose delegate answers nothing is left alone, and the configuration
+of iOS 11 does the same for both edges and a full swipe. There is no host oracle: the host's UIKit draws no swipe buttons. It
+writes `/private/var/backports/swipeui.log` and `swipeui.done`.

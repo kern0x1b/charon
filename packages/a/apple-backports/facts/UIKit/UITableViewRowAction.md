@@ -21,6 +21,11 @@ identity `isEqual:` of `NSObject`.
 ## What iOS 6 does with them
 
 The release's table asks its delegate for a delete confirmation only, and nothing in it sends
-`tableView:editActionsForRowAtIndexPath:`, so the actions an application builds are never shown: a swipe on a row
-offers the release's own delete button when the delegate lets the row be deleted, and nothing when it does not. The class is
-carried so that an application that builds and returns actions runs; the swipe buttons are not.
+`tableView:editActionsForRowAtIndexPath:`. The port puts a pan recognizer on every table whose delegate is set, and
+that recognizer begins only for a horizontal drag on a row when the delegate answers the message (or one of the two
+configuration messages of iOS 11), the data source's `canEditRowAtIndexPath:` does not refuse it and
+`editingStyleForRowAtIndexPath:` is not none. A table whose delegate answers none of them is left to the release's own
+swipe to delete.
+
+What the recognizer does is described in `UITableViewSwipeActions.md`. On a release that already sends the message (8.0
+and later) the port does nothing: the class and the message are the release's.

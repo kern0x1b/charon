@@ -438,8 +438,8 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the release's table never asks for a configuration, so what a configuration describes is never shown",
-      "effect": "the class holds its actions and the full swipe flag as UIKit's does, and a delegate that returns one is never asked for it: see the two delegate methods",
+      "reason": "the release's table never asks for a configuration, so the port's swipe recognizer asks the delegate for one",
+      "effect": "the class holds its actions and the full swipe flag as UIKit's does, and a table whose delegate answers the two configuration methods shows them on a swipe",
       "facts": "facts/UIKit/UIContextualAction.md",
       "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/swipeactions"
     },
@@ -449,8 +449,8 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the release's table never shows an action, so its handler is never called by a swipe",
-      "effect": "the class holds a style, title, image, background colour and handler as UIKit's does; nothing calls the handler",
+      "reason": "the release's table never shows an action, so the port's swipe recognizer shows and runs it",
+      "effect": "the class holds a style, title, image, background colour and handler as UIKit's does; a swipe shows the action as a button and a tap calls the handler with the action, the button as the source view and a completion block that closes the row",
       "facts": "facts/UIKit/UIContextualAction.md",
       "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/swipeactions"
     },
@@ -459,22 +459,22 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "the release's table asks its delegate for a delete confirmation and for nothing else, and it is the one that sends the message",
-      "effect": "the message is never sent: a swipe on a row shows the release's own delete button when the delegate allows deleting, and the application's actions are never shown, whatever the delegate answers",
+      "status": "implemented",
+      "reason": "the release's table asks its delegate for a delete confirmation and for nothing else; the port's swipe recognizer on the table sends the message",
+      "effect": "a drag to the right on a row shows the configuration's actions at the leading edge, the first at the edge, and a tap runs its handler; a full swipe runs the first when the configuration allows it",
       "facts": "facts/UIKit/UIContextualAction.md",
-      "source": "the SDK 16.4 header UITableView.h and the host's own UIKit"
+      "source": "the recognizer and buttons are the port's own, checked by tests/backports/device/swipeui.m on an iPhone 4S and an iPad 2; the values by the host's UIKit under Mac Catalyst"
     },
     {
       "api": "-[UITableViewDelegate tableView:trailingSwipeActionsConfigurationForRowAtIndexPath:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "the release's table asks its delegate for a delete confirmation and for nothing else, and it is the one that sends the message",
-      "effect": "the message is never sent: a swipe on a row shows the release's own delete button when the delegate allows deleting, and the application's actions are never shown, whatever the delegate answers",
+      "status": "implemented",
+      "reason": "the release's table asks its delegate for a delete confirmation and for nothing else; the port's swipe recognizer on the table sends the message",
+      "effect": "a drag to the left on a row shows the configuration's actions at the trailing edge, the first at the edge, and a tap runs its handler with the action's view as its source; a full swipe runs the first when the configuration allows it",
       "facts": "facts/UIKit/UIContextualAction.md",
-      "source": "the SDK 16.4 header UITableView.h and the host's own UIKit"
+      "source": "the recognizer and buttons are the port's own, checked by tests/backports/device/swipeui.m on an iPhone 4S and an iPad 2; the values by the host's UIKit under Mac Catalyst"
     },
     {
       "api": "-[UIView addInteraction:]",

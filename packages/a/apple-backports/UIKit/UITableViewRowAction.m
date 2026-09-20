@@ -1,4 +1,4 @@
-#import <UIKit/UIKit.h>
+#import "CharonSwipe.h"
 
 @implementation UITableViewRowAction {
     UITableViewRowActionStyle _style;
@@ -26,6 +26,12 @@
     copy->_backgroundColor = [_backgroundColor copy];
     copy->_handler = [_handler copy];
     return copy;
+}
+
+- (void)charon_performForIndexPath:(NSIndexPath *)indexPath
+{
+    if (_handler)
+        _handler(self, indexPath);
 }
 
 - (UITableViewRowActionStyle)style
