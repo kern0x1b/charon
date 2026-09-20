@@ -9,6 +9,8 @@ NSErrorDomain const ASWebAuthenticationSessionErrorDomain = @"com.apple.Authenti
     SFAuthenticationSession *_session;
 }
 
+@dynamic presentationContextProvider, prefersEphemeralWebBrowserSession, canStart;
+
 - (instancetype)initWithURL:(NSURL *)URL callbackURLScheme:(NSString *)callbackURLScheme completionHandler:(ASWebAuthenticationSessionCompletionHandler)completionHandler
 {
     self = [super init];

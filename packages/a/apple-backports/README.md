@@ -319,6 +319,8 @@ The rest of Photos and of PhotosUI is absent, each row in `registry/Photos/absen
 
 `GCController`, `GCMouse` and `GCKeyboard` are carried in `libGameControllerBackports.dylib`, built with the `gamecontroller` config, for what an application asks before there is a device: `+[GCController controllers]` and `+[GCMouse mice]` are empty, `+current` and `+coalescedKeyboard` are nil, the discovery ends at once and calls its handler on the main queue, and the notification names exist and are never posted. No device is ever attached, so no object of these classes exists and the profiles, elements, snapshots and the members of an instance are absent. `facts/GameController/GameController.md`.
 
+`NSBatchDeleteRequest` and `NSBatchDeleteResult`, with the `-[NSManagedObjectContext executeRequest:error:]` that runs them, are carried in `libCoreDataBackports.dylib`. The removal is done in a private context on the same coordinator, which leaves the calling context as iOS 12 does but runs delete rules and validation and posts a did save notification, which iOS 12 does not; a fetch request or a save request given to `executeRequest:error:` is executed by the release's own coordinator. `facts/CoreData/BatchDelete.md`.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and

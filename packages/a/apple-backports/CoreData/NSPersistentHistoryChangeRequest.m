@@ -7,6 +7,8 @@
     BOOL _delete;
 }
 
+@dynamic fetchRequest;
+
 + (instancetype)fetchHistoryAfterDate:(NSDate *)date
 {
     return [[self alloc] initWithDate:date delete:NO];
