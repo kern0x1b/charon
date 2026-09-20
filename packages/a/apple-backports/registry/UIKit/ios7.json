@@ -152,6 +152,44 @@
       "status": "implemented",
       "facts": "facts/UIKit/UIViewSnapshots.md",
       "source": "the host's own UIKit under Mac Catalyst, in an application with a window, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "UITableViewRowAction",
+      "kind": "class",
+      "introduced": "8.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewRowAction.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "-[UITableViewDelegate tableView:editActionsForRowAtIndexPath:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "the release's table asks its delegate for a delete confirmation and for nothing else, and it is the one that sends the message",
+      "effect": "the message is never sent: a swipe on a row shows the release's own delete button when the delegate allows deleting, and the application's actions are never shown, whatever the delegate answers",
+      "facts": "facts/UIKit/UITableViewRowAction.md",
+      "source": "UIKit of iOS 8.4 and the host's own UIKit"
+    },
+    {
+      "api": "UIFontDescriptor",
+      "kind": "class",
+      "introduced": "7.0",
+      "status": "absent",
+      "reason": "the release's own +[UIFont fontWithDescriptor:size:] takes a CTFontDescriptorRef and crashes on any other object, and the port does not replace system methods, so an application that hands a descriptor to it would crash",
+      "effect": "the class is not there: NSClassFromString answers nil, and an application that guards its use falls back to the fonts it names"
+    },
+    {
+      "api": "+[UIFont fontWithDescriptor:size:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "the release has a method of this name that takes a CTFontDescriptorRef, and the port does not replace system methods",
+      "effect": "an application that passes a UIFontDescriptor, the class of iOS 7, crashes in the release's method on iOS 6.0; the class is not carried, so a program that only guards for it never gets there",
+      "facts": "facts/UIKit/UIFontDescriptor.md",
+      "source": "UIFoundation of iOS 6.0 armv7 and the emulator"
     }
   ]
 }

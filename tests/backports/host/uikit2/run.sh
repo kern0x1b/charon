@@ -98,6 +98,7 @@ group sizes "UIContentSizeCategory.m UIContentSizeCategory+Unspecified.m" "" siz
 group tint "UIView+TintColor.m" "" tint_test.m
 group bars "UINavigationBar+BarAppearance.m UISearchBar+BarStyle.m UIToolbar+BarTintColor.m UITabBar+BarTintColor.m" "" bars_test.m
 group viewmisc "UIView+MaskView.m UIView+PerformWithoutAnimation.m UIView+SemanticContentAttribute.m UIViewController+ViewLoading.m UIViewController+PreferredContentSize.m UIViewController+StatusBarAppearance.m" "" viewmisc_test.m
+group rowaction "UITableViewRowAction.m" "rowActionWithStyle style title setTitle backgroundColor setBackgroundColor backgroundEffect setBackgroundEffect" rowaction_test.m
 windowed snapshots "UIView+Snapshots.m" "" snapshots_test.m
 
 # the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation

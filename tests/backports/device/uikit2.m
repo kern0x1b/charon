@@ -893,6 +893,22 @@ static NSString *traits_of(id environment)
             [view removeFromSuperview];
             done();
         } copy],
+        [^(void (^done)(void)) {
+            UITableViewRowAction *destructive = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:@"Delete" handler:^(UITableViewRowAction *action, NSIndexPath *path) {}];
+            UITableViewRowAction *normal = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"More" handler:nil];
+            charon_check(destructive.style == UITableViewRowActionStyleDestructive && [destructive.title isEqualToString:@"Delete"] && destructive.backgroundColor != nil && destructive.backgroundEffect == nil, "a row action keeps its style and title and has a colour", @"a field differs");
+            CGFloat red = 0, green = 0, blue = 0, alpha = 0;
+            [normal.backgroundColor getRed:&red green:&green blue:&blue alpha:&alpha];
+            charon_check(normal.style == UITableViewRowActionStyleNormal && fabs(red - 0.78) < 0.01 && fabs(blue - 0.8) < 0.01, "a normal row action is grey", [NSString stringWithFormat:@"%g %g %g", (double)red, (double)green, (double)blue]);
+            UITableViewRowAction *copy = [destructive copy];
+            charon_check(copy != destructive && [copy.title isEqualToString:@"Delete"] && copy.style == destructive.style && [copy.backgroundColor isEqual:destructive.backgroundColor], "a copy is another action with the same fields", @"the copy differs");
+            destructive.title = nil;
+            destructive.backgroundColor = nil;
+            charon_check(destructive.title == nil && destructive.backgroundColor == nil && [copy.title isEqualToString:@"Delete"], "the title and the colour clear on the action and not on its copy", @"a field differs");
+            charon_check(![UITableViewRowAction conformsToProtocol:@protocol(NSSecureCoding)] && [UITableViewRowAction conformsToProtocol:@protocol(NSCopying)], "a row action is copied and not archived", @"the protocols differ");
+            charon_check(NSClassFromString(@"UIFontDescriptor") == nil, "UIFontDescriptor is not carried", @"the class is there");
+            done();
+        } copy],
     ];
 }
 

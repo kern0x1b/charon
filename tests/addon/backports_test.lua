@@ -364,6 +364,21 @@ function failures(opt)
         table.insert(found, "what a port calls is reported quietest first, since a missing class crashes where a different answer never shows: " .. table.concat(order, " "))
     end
     os.rm(path.join(registry, "UIKit", "advice.json"))
+    io.writefile(path.join(registry, "UIKit", "declared.json"), [[
+        {"framework": "UIKit", "entries": [
+            {"api": "UIInteraction", "kind": "protocol", "introduced": "13.0", "minimum": "6.0", "status": "implemented",
+             "effect": "the declaration is in the header", "facts": "facts/UIKit/UIInteraction.md"},
+            {"api": "-[UIHeldDelegate held:]", "kind": "method", "introduced": "8.0", "minimum": "6.0", "status": "ignored",
+             "effect": "the message is never sent", "facts": "facts/UIKit/UIHeldDelegate.md"}
+        ]}
+    ]])
+    local declared_found = {classes = {}, members = {}, symbols = {}}
+    local declared_inventory = {classes = {}, protocols = {UIHeldDelegate = true}}
+    errors = fixtures.refusal(function () backports.check_registry(folder, declared_found, true, "6.0", {}, declared_inventory) end)
+    if errors and (errors:find("UIInteraction", 1, true) or errors:find("UIHeldDelegate", 1, true)) then
+        table.insert(found, "protocols exist only in a header, so an entry for one, or for a member of one the release does not carry, must not be refused for having nothing built or carried: " .. tostring(errors))
+    end
+    os.rm(path.join(registry, "UIKit", "declared.json"))
 
     local scripts = path.join(folder, "scripts")
     backports.write_scripts(scripts)

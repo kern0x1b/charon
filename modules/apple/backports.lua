@@ -508,9 +508,12 @@ local function carried_by_release(entry, inventory)
     if entry.kind == "class" then
         return inventory.classes[entry.api] ~= nil
     elseif entry.kind == "protocol" then
-        return inventory.protocols[entry.api] ~= nil
+        return nil
     elseif entry.kind == "method" then
         local sign, class, selector = entry.api:match("^([-+])%[([%w_]+) (.+)%]$")
+        if sign ~= nil and inventory.classes[class] == nil and (inventory.protocols or {})[class] ~= nil then
+            return nil
+        end
         return sign ~= nil and has(class, selector, sign)
     elseif entry.kind == "property" then
         local class, property = entry.api:match("^([%w_]+)%.([%w_]+)$")
@@ -582,7 +585,8 @@ function check_registry(root, found, complete, deployment, exports, inventory)
             local carried = deployment and entry.introduced and dyld.compare_versions(entry.introduced, deployment) <= 0
             carried = carried or (exports and exports["_" .. name:gsub("%(%)$", "")]) or false
             local ours = not (deployment and entry.maximum and dyld.compare_versions(deployment, entry.maximum) >= 0)
-            if entry.status == "implemented" and not built and not carried and ours then
+            local declared = entry.kind == "protocol" or (owner and listed[owner] and listed[owner].kind == "protocol")
+            if entry.status == "implemented" and not built and not carried and ours and not declared then
                 table.insert(unbuilt, name)
             elseif entry.status == "implemented" and not entry.facts then
                 table.insert(undocumented, name)
