@@ -325,6 +325,8 @@ The rest of Photos and of PhotosUI is absent, each row in `registry/Photos/absen
 
 `NSFetchIndexDescription`, `NSFetchIndexElementDescription` and `NSEntityDescription.indexes` are carried and checked the way iOS 12 checks them, and not applied: the store of this release builds no index from them, which the documentation of `indexes` allows. `NSCoreDataCoreSpotlightDelegate` is absent, since there is no Core Spotlight. `facts/CoreData/FetchIndex.md`.
 
+`MTLCreateSystemDefaultDevice` is carried in `libMetalBackports.dylib`, built with the `metal` config, and answers nil, as Metal does where the hardware has no driver: iOS 6 runs on the A4 and A5, so an application that falls back to OpenGL ES when it is given no device does so. The rest of Metal and MetalKit is absent. `facts/Metal/MTLCreateSystemDefaultDevice.md`.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and

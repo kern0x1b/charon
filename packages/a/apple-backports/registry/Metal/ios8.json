@@ -1,0 +1,16 @@
+{
+  "framework": "Metal",
+  "entries": [
+    {
+      "api": "MTLCreateSystemDefaultDevice()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the function is carried for what it answers on a device with no Metal driver: iOS 6 runs on the A4 and A5, whose graphics have none, so there is no device to give",
+      "effect": "answers nil, as the framework does when the list of devices it keeps is empty; an application that falls back to OpenGL ES when it is given no device does so",
+      "facts": "facts/Metal/MTLCreateSystemDefaultDevice.md",
+      "source": "Metal of the arm64 shared cache of iOS 12.0, _MTLCreateSystemDefaultDevice at 0x183053fa8, which runs once a routine at 0x183054090 that fills the list of devices and answers the first of the list"
+    }
+  ]
+}
