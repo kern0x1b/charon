@@ -26,8 +26,8 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "the header marks it unavailable, and the class has no initialiser of its own",
+      "status": "implemented",
+      "reason": "the header marks it unavailable; a call made at run time reaches NSObject and gives a configuration with nothing specified, as the host does",
       "effect": "a call made at run time reaches NSObject's -init and gives a configuration with nothing specified, as the host's does; nothing can be written against it in a modern SDK",
       "facts": "facts/UIKit/UIImageSymbolConfiguration.md",
       "source": "the header of SDK 16.4 and the host's own UIKit"
@@ -37,8 +37,8 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "the header marks it unavailable, and the class has no initialiser of its own",
+      "status": "implemented",
+      "reason": "the header marks it unavailable; a call made at run time reaches NSObject and gives a configuration with nothing specified, as the host does",
       "effect": "a call made at run time reaches NSObject's +new and gives a configuration with nothing specified, as the host's does; nothing can be written against it in a modern SDK",
       "facts": "facts/UIKit/UIImageSymbolConfiguration.md",
       "source": "the header of SDK 16.4 and the host's own UIKit"
@@ -75,8 +75,8 @@
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the symbols group); the header of SDK 16.4"
     },
     {
-      "api": "UIImage.symbolImage",
-      "kind": "property",
+      "api": "-[UIImage isSymbolImage]",
+      "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
