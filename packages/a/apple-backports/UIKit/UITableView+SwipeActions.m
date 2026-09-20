@@ -14,6 +14,15 @@ BOOL charon_swipe_class_is_backport(Class cls)
     return strstr(info.dli_fname, "UIKitBackports") != NULL;
 }
 
+static BOOL charon_delegate_answers(Class cls, SEL selector, id delegate)
+{
+    if (![delegate respondsToSelector:selector])
+        return NO;
+    Method own = class_getInstanceMethod([UITableViewController class], selector);
+    Method found = class_getInstanceMethod(cls, selector);
+    return !(own && found && method_getImplementation(own) == method_getImplementation(found));
+}
+
 @interface CharonSwipeController : NSObject <UIGestureRecognizerDelegate>
 @property (nonatomic, weak) UITableView *table;
 @property (nonatomic, strong) UIPanGestureRecognizer *pan;
@@ -263,7 +272,7 @@ BOOL charon_swipe_class_is_backport(Class cls)
     _movers = movers;
     _closeTap.enabled = YES;
     id delegate = _table.delegate;
-    if ([delegate respondsToSelector:@selector(tableView:willBeginEditingRowAtIndexPath:)])
+    if (charon_delegate_answers([delegate class], @selector(tableView:willBeginEditingRowAtIndexPath:), delegate))
         [delegate tableView:_table willBeginEditingRowAtIndexPath:path];
 }
 
@@ -282,7 +291,7 @@ BOOL charon_swipe_class_is_backport(Class cls)
     _resting = NO;
     _closeTap.enabled = NO;
     id delegate = _table.delegate;
-    if (path && [delegate respondsToSelector:@selector(tableView:didEndEditingRowAtIndexPath:)])
+    if (path && charon_delegate_answers([delegate class], @selector(tableView:didEndEditingRowAtIndexPath:), delegate))
         [delegate tableView:_table didEndEditingRowAtIndexPath:path];
 }
 

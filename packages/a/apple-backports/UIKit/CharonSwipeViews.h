@@ -13,6 +13,8 @@ static const NSTimeInterval CharonSwipeDuration = 0.28;
 
 @interface CharonSwipeButton : UIControl
 @property (nonatomic, strong) CharonSwipeItem *item;
+@property (nonatomic) CGFloat edgeInsetLeft;
+@property (nonatomic) CGFloat edgeInsetRight;
 - (instancetype)initWithItem:(CharonSwipeItem *)item;
 @end
 

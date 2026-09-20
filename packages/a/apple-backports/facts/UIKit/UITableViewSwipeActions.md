@@ -8,8 +8,8 @@
 Source: **there is no oracle for the interaction**. The host's UIKit under Mac Catalyst draws no swipe buttons, so the
 values (`UITableViewRowAction`, `UIContextualAction`, `UISwipeActionsConfiguration`) are held against it and the behaviour
 below is the port's own, checked by `tests/backports/device/swipeui.m` on an iPhone 4S and an iPad 2 running 6.1.3 with
-real touches: the test sends digitizer events to the HID event system, so UIKit's own gesture recognizers see a finger. The looks - the width of a button, its font, the fraction that makes a full
-swipe, the duration - are set from what the system's swipe looks like and are not measured.
+real touches: the test sends digitizer events to the HID event system, so UIKit's own gesture recognizers see a finger. The fraction that makes a full swipe and the duration are set from what the system's swipe looks like and are not measured; the look of a
+button is (see the next section).
 
 ## What is carried
 
@@ -53,3 +53,31 @@ Each is checked on the devices by `tests/backports/device/swipeui.m`, with a swi
 
 `backgroundEffect` of a row action, the slide out of a row after a destructive action, the haptics, and right to left layouts
 are not carried. An open row is closed by a scroll of the table or a tap, never held open across them.
+
+## The look of a button
+
+A button is drawn as the iOS 6 delete button is, from the release's own button read off an iPad 2 (768 x 1024, scale 1) by
+`tests/backports/device/swipelook.m`: a real swipe on a plain table shows the release's button, and the pixels of the screen
+are read. The measured button is a rounded rectangle 33 points high and 63 wide for the title "Delete", 6 points in from the
+right edge of the row and centred in its 44 point row, made of 33 rows: a dark top edge (91, 52, 54), one row of highlight
+(199, 111, 116), fifteen rows of gradient from (237, 130, 136) to (200, 54, 64), fifteen rows of flat red (189, 20, 33) and a
+darker bottom edge (147, 16, 26); the sides are (139, 69, 74) fading to (122, 13, 22) at the half; the corner radius is about
+4.5 points; the title is bold 13 point white, 40 points wide, with a black shadow at half strength one point up.
+
+The port draws that in a context, so it is sharp at every scale: the destructive style gets exactly those colours, and any
+other background colour gets a button of the same shape and brightness steps made from its hue and saturation (lower half
+80% of the brightness, the gradient from a paler tone to 90%, edges at 50 to 60%). A pressed button is 25% darker. A button
+is at least 63 points wide and as wide as its title and 11.5 points of padding on both sides; the buttons of a row are 6
+points apart, the one at the edge 6 points from it, and each is as tall as the release's 33 points however tall the row is
+(a shorter row leaves 2 points above and below). The full-swipe growth stretches the first button.
+
+`swipelook.m` puts the release's own delete button and this one on the same screen, takes both as pixels, and holds the
+gloss of the port's, from the first gradient row to the last flat one, to the release's within a channel difference of 24
+(it is 8 on the iPad 2).
+
+## Table view controllers
+
+A `UITableViewController` answers `-tableView:willBeginEditingRowAtIndexPath:` and `-tableView:didEndEditingRowAtIndexPath:`
+itself, and its answer puts the table in editing mode, which shows the minus controls and closes the swipe. The port no longer
+sends those two messages to a delegate whose implementation is the one of `UITableViewController`; a subclass that overrides
+them is sent them as before.

@@ -383,7 +383,7 @@ static void configuration_scenario(void)
         NSArray *buttons = buttons_of(1);
         CHECK(buttons.count == 2, "the trailing configuration shows its two actions");
         UIView *first = buttons.count == 2 ? buttons[0] : nil;
-        CHECK([first.backgroundColor isEqual:[UIColor blueColor]], "the first action is at the edge with the colour it was given");
+        CHECK([[[first valueForKey:@"item"] valueForKey:@"color"] isEqual:[UIColor blueColor]], "the first action is at the edge with the colour it was given");
     });
     gesture_tap(^{ return centre_of(buttons_of(1)[0]); }, 0.8);
     gesture_step(0.1, ^{
