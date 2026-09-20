@@ -1760,6 +1760,26 @@
       "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, Metal"
+    },
+    {
+      "api": "MTLDevice",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, Metal"
+    },
+    {
+      "api": "MTLTexture",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, Metal"
     }
   ]
 }
