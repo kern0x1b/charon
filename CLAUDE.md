@@ -55,6 +55,11 @@ Android) as it is here; iOS 6 is the first platform it targets, not its limit.
   prefixes or scope tags. Keep the AI-attribution trailer
   `Co-Authored-By: Claude <noreply@anthropic.com>` — the work is openly AI-built
   and we keep the mark.
+- **A recipe takes a dependency by platform, not by name.** `package:dep(name)` is keyed by the package's name, and a host tool
+  in the graph (ldid) brings its own dependencies with it, so a target's openssl and the host's meet at one key and the later
+  wins: tdlib linked a macOS libcrypto that way. Use `modules/apple/dependency.lua`'s `target_dependency(package, name)`
+  wherever a dependency's folder goes to CMake or a linker, and do not put a host tool or anything with library
+  dependencies into a recipe that other packages depend on: what it depends on, they depend on too.
 - **Build artifacts are never committed** (`build/`, `.xmake/`, and per-package
   build trees are gitignored) and are reproducible from the recipes.
 - This repository receives frequent merges through a separate flow; coordinate
