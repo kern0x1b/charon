@@ -8,8 +8,9 @@ local function object(folder, name, source)
 end
 
 -- The package keeps its install while its digest is the same, so the digest has
--- to cover everything a library is built from: a source left out is a change
--- that is built once and never again. The recipe works it out as the package
+-- to cover everything a library is built from and everything the build checks
+-- it against: a source left out is a change that is built once and never again,
+-- and a registry left out is a change that is never checked against the libraries. The recipe works it out as the package
 -- interpreter loads it, which offers no import(), so the test loads the recipe
 -- itself, in a tree of its own for each change.
 local function recipe_digest(folder, name, recipe, tree_files)
@@ -34,6 +35,8 @@ local function digest_step(opt, folder, found)
         [path.join("packages", "a", "apple-backports", "Foundation", "NSThing.m")] = "// a backport\n",
         [path.join("packages", "a", "apple-backports", "Foundation", "CharonThing.h")] = "// its header\n",
         [path.join("packages", "a", "apple-backports", "attach.c")] = "// the attach helper\n",
+        [path.join("packages", "a", "apple-backports", "registry", "UIKit", "thing.json")] = '{"framework": "UIKit", "entries": []}\n',
+        [path.join("packages", "a", "apple-backports", "registry", "flat.json")] = "[]\n",
         [path.join("packages", "a", "apple-backports", "notes.md")] = "notes\n",
         [path.join("modules", "apple", "backports.lua")] = "-- the build module\n",
         [path.join("addons", "c", "charon", "xmake.lua")] = 'add_versions("v0.8.4", "0")\n'
