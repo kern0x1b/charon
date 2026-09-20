@@ -752,3 +752,8 @@ unlock track through the HID event system. An application that is launched while
 The `metrics` scenario of `session-scenarios.m` holds the task metrics of the port's `NSURLSession` to what the system's session
 reports for a data task, a redirect, a refused connection and a handler task, on an ephemeral configuration; `host/session/run.sh`
 runs it beside the others and a device runs it with the host's `server.py` reached through a reverse forward of the ssh tunnel.
+
+`host/template/run.sh` records what the host's `UIImageView` and `UIButton` draw for template, original and automatic images
+(twenty-one pixels) in `device/template-cases.m`, in a Mac Catalyst application of its own bundle identifier - two of them
+with the same identifier do not run together - and `device/template.m` compares the port on the release, to within three in a
+channel.

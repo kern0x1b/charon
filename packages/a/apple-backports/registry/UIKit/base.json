@@ -226,17 +226,23 @@
     "api": "-[UIImage imageWithRenderingMode:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "inert",
-    "reason": "the release draws an image as it is, with no template pass that fills it with a tint colour",
-    "effect": "the mode is remembered and -renderingMode answers it, but a template image is drawn with its own colours"
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the release draws an image as it is, so the port fills a template image itself where an image view shows it",
+    "effect": "the mode is kept, and an image view (a button's image view too) that shows an always-template image draws it in the view's tint colour, with the image's alpha as the mask, and draws it again when the tint changes or the view moves under another; the derived images of a template keep the mode; automatic images are shown as they are, and the release's own bars and system buttons are untouched",
+    "facts": "facts/UIKit/UIImageRenderingMode.md",
+    "source": "the host's own UIKit under Mac Catalyst, in an application with a window, held against the backport by tests/backports/host/template and read again on an iPhone 4S and an iPad 2 running 6.1.3 by tests/backports/device/template.m"
   },
   {
     "api": "-[UIImage renderingMode]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "inert",
-    "reason": "the release draws an image as it is, with no template pass",
-    "effect": "it answers the mode that was set, which nothing else acts on"
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the release keeps no rendering mode",
+    "effect": "answers the mode that was set, automatic for an image nothing set one on, and a resizable or alignment inset copy of an image keeps it",
+    "facts": "facts/UIKit/UIImageRenderingMode.md",
+    "source": "the host's own UIKit under Mac Catalyst, in an application with a window, held against the backport by tests/backports/host/template and read again on an iPhone 4S and an iPad 2 running 6.1.3 by tests/backports/device/template.m"
   },
   {
     "api": "-[UINavigationBar backIndicatorImage]",
