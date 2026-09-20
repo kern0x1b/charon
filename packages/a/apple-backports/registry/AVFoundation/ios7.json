@@ -1,0 +1,27 @@
+{
+  "framework": "AVFoundation",
+  "entries": [
+    {
+      "api": "+[AVCaptureDevice authorizationStatusForMediaType:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a departure from 7.0 in where the answer comes from: iOS 6 has no permission for the camera or the microphone, so nothing is asked of a privacy service",
+      "effect": "the microphone and the camera are authorized, and the camera is restricted when ManagedConfiguration says allowCamera is off; never not determined or denied; a media type other than audio or video raises an NSInvalidArgumentException",
+      "facts": "facts/AVFoundation/AVCaptureDeviceAuthorization.md",
+      "source": "AVFoundation of the arm64 shared cache of iOS 12.0, +[AVCaptureDevice authorizationStatusForMediaType:] at 0x186f6376c and +requestAccessForMediaType:completionHandler: at 0x186f63900; ManagedConfiguration allowCamera on an iPad 2 running 6.1.3"
+    },
+    {
+      "api": "+[AVCaptureDevice requestAccessForMediaType:completionHandler:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a departure from 7.0 in that there is no prompt to show: iOS 6 asks nobody for the camera or the microphone",
+      "effect": "the handler is called once off the main thread, with YES for an authorized media type and NO for a restricted camera; a media type other than audio or video raises an NSInvalidArgumentException",
+      "facts": "facts/AVFoundation/AVCaptureDeviceAuthorization.md",
+      "source": "AVFoundation of the arm64 shared cache of iOS 12.0, +[AVCaptureDevice authorizationStatusForMediaType:] at 0x186f6376c and +requestAccessForMediaType:completionHandler: at 0x186f63900; ManagedConfiguration allowCamera on an iPad 2 running 6.1.3"
+    }
+  ]
+}

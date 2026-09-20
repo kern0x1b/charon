@@ -1,0 +1,175 @@
+{
+  "framework": "AVKit",
+  "entries": [
+    {
+      "api": "AVPlayerViewController",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, AVKit"
+    },
+    {
+      "api": "AVKitErrorDomain",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, AVKit"
+    },
+    {
+      "api": "AVPictureInPictureController",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, AVKit"
+    },
+    {
+      "api": "AVPictureInPictureControllerDelegate",
+      "kind": "protocol",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 9, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, AVKit"
+    },
+    {
+      "api": "AVRoutePickerView",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, AVKit"
+    },
+    {
+      "api": "-[AVPlayerViewControllerDelegate playerViewController:willBeginFullScreenPresentationWithAnimationCoordinator:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a AVPlayerViewControllerDelegate that sends anything like it: the message arrived in iOS 12",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, AVKit"
+    },
+    {
+      "api": "-[AVPlayerViewControllerDelegate playerViewController:willEndFullScreenPresentationWithAnimationCoordinator:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a AVPlayerViewControllerDelegate that sends anything like it: the message arrived in iOS 12",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, AVKit"
+    },
+    {
+      "api": "AVPlayerItem.externalMetadata",
+      "kind": "property",
+      "introduced": "12.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give AVPlayerItem a property like it: it arrived in iOS 12",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, AVKit"
+    },
+    {
+      "api": "-[AVPlayerViewControllerDelegate playerViewController:restoreUserInterfaceForFullScreenExitWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a AVPlayerViewControllerDelegate that sends anything like it: the message arrived in iOS 15",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, AVKit"
+    },
+    {
+      "api": "AVPictureInPictureControllerContentSource",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, AVKit"
+    },
+    {
+      "api": "AVPictureInPictureSampleBufferPlaybackDelegate",
+      "kind": "protocol",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, AVKit"
+    },
+    {
+      "api": "AVPictureInPictureVideoCallViewController",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, AVKit"
+    },
+    {
+      "api": "-[AVPlayerViewControllerDelegate playerViewController:didPresentInterstitialTimeRange:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a AVPlayerViewControllerDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, AVKit"
+    },
+    {
+      "api": "-[AVPlayerViewControllerDelegate playerViewController:willPresentInterstitialTimeRange:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a AVPlayerViewControllerDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, AVKit"
+    },
+    {
+      "api": "AVInterstitialTimeRange",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, AVKit"
+    },
+    {
+      "api": "AVPlaybackSpeed",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, AVKit"
+    },
+    {
+      "api": "AVPlayerItem.interstitialTimeRanges",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give AVPlayerItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, AVKit"
+    }
+  ]
+}

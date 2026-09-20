@@ -331,6 +331,8 @@ The rest of Photos and of PhotosUI is absent, each row in `registry/Photos/absen
 
 `NSQueryGenerationToken`, `-[NSManagedObjectContext queryGenerationToken]` and `-setQueryGenerationFromToken:error:` are carried without a snapshot to read (see the container above), and `NSConstraintConflict` is carried as a value that nothing here makes, since the store of iOS 6 enforces no uniqueness constraint; `uniquenessConstraints` and the merge policy that resolves the conflicts are absent. `facts/CoreData/QueryGeneration.md`, `facts/CoreData/ConstraintConflict.md`.
 
+`+[AVCaptureDevice authorizationStatusForMediaType:]` and `+requestAccessForMediaType:completionHandler:` are carried in `libAVFoundationBackports.dylib`: iOS 6 asks nobody for the camera or the microphone, so the microphone is authorized and the camera is authorized unless ManagedConfiguration says the camera is restricted, the request never shows a prompt, and a media type other than audio or video raises as iOS 12 does. The rest of AVFoundation and AVKit that iOS 6 lacks is absent, each row in `registry/AVFoundation/absent_AVFoundation.json` and `registry/AVKit/absent_AVKit.json`. `facts/AVFoundation/AVCaptureDeviceAuthorization.md`.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and
