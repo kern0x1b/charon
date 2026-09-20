@@ -38,7 +38,18 @@ swipe, the duration - are set from what the system's swipe looks like and are no
 - The delegate is told `willBeginEditingRowAtIndexPath:` when a row starts to open and `didEndEditingRowAtIndexPath:` when
   it has closed.
 
+## When the table changes under an open row
+
+An open row is closed at once, without animation, and the delegate is told `didEndEditingRowAtIndexPath:`, when:
+
+- the table enters editing mode (`setEditing:YES`), and while it is editing no swipe begins;
+- the table is reloaded, or rows or sections are inserted, deleted, reloaded or moved;
+- the table's width changes, as a rotation makes it change;
+- the row is no longer the cell of its index path, which is what a row that scrolled away and was reused looks like.
+
+Each is checked on the devices by `tests/backports/device/swipeui.m`, with a swipe that still opens a row afterwards.
+
 ## What is not carried
 
-`backgroundEffect` of a row action, the animation of a deleted row after a destructive action, the haptics, right to left
-layouts, and rows that are reloaded, moved or deleted while open are not handled.
+`backgroundEffect` of a row action, the slide out of a row after a destructive action, the haptics, and right to left layouts
+are not carried. An open row is closed by a scroll of the table or a tap, never held open across them.

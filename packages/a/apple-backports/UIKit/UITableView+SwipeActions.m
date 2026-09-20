@@ -129,12 +129,14 @@ BOOL charon_swipe_class_is_backport(Class cls)
 @property (nonatomic) CGFloat offset;
 @property (nonatomic) BOOL fullSwipe;
 @property (nonatomic) BOOL resting;
+@property (nonatomic) CGFloat cellWidth;
 @property (nonatomic, strong) NSIndexPath *pendingPath;
 @property (nonatomic, strong) NSArray<CharonSwipeItem *> *pendingItems;
 @property (nonatomic) NSInteger pendingSide;
 @property (nonatomic) BOOL pendingFullSwipe;
 - (BOOL)isOpen;
 - (void)closeAnimated:(BOOL)animated;
+- (void)validate;
 @end
 
 @implementation CharonSwipeController
@@ -151,6 +153,7 @@ BOOL charon_swipe_class_is_backport(Class cls)
 @synthesize offset = _offset;
 @synthesize fullSwipe = _fullSwipe;
 @synthesize resting = _resting;
+@synthesize cellWidth = _cellWidth;
 @synthesize pendingPath = _pendingPath;
 @synthesize pendingItems = _pendingItems;
 @synthesize pendingSide = _pendingSide;
@@ -305,6 +308,15 @@ BOOL charon_swipe_class_is_backport(Class cls)
         [self closeAnimated:YES];
 }
 
+- (void)validate
+{
+    if (![self isOpen])
+        return;
+    UITableViewCell *cell = _cell;
+    if (!cell || cell.superview != _table || ![[_table indexPathForCell:cell] isEqual:_path] || fabsf(cell.bounds.size.width - _cellWidth) > 0.5)
+        [self closeAnimated:NO];
+}
+
 - (void)applyOffset:(CGFloat)offset
 {
     _offset = offset;
@@ -321,6 +333,7 @@ BOOL charon_swipe_class_is_backport(Class cls)
     UITableViewCell *cell = [_table cellForRowAtIndexPath:path];
     _path = path;
     _cell = cell;
+    _cellWidth = cell.bounds.size.width;
     _side = side;
     _items = items;
     _fullSwipe = fullSwipe;
@@ -537,6 +550,73 @@ static CharonSwipeController *charon_controller(UITableView *table, BOOL create)
         original(table, selector, delegate);
         [table charon_installSwipeActions];
     }), method_getTypeEncoding(class_getInstanceMethod([UITableView class], selector)));
+
+    [self closeBefore:@selector(reloadData) block:^IMP(IMP original, SEL selector) {
+        return imp_implementationWithBlock(^(UITableView *table) {
+            [charon_controller(table, NO) closeAnimated:NO];
+            ((void (*)(id, SEL))original)(table, selector);
+        });
+    }];
+    [self closeBefore:@selector(deleteRowsAtIndexPaths:withRowAnimation:) block:^IMP(IMP original, SEL selector) {
+        return imp_implementationWithBlock(^(UITableView *table, NSArray *paths, NSInteger animation) {
+            [charon_controller(table, NO) closeAnimated:NO];
+            ((void (*)(id, SEL, NSArray *, NSInteger))original)(table, selector, paths, animation);
+        });
+    }];
+    [self closeBefore:@selector(insertRowsAtIndexPaths:withRowAnimation:) block:^IMP(IMP original, SEL selector) {
+        return imp_implementationWithBlock(^(UITableView *table, NSArray *paths, NSInteger animation) {
+            [charon_controller(table, NO) closeAnimated:NO];
+            ((void (*)(id, SEL, NSArray *, NSInteger))original)(table, selector, paths, animation);
+        });
+    }];
+    [self closeBefore:@selector(reloadRowsAtIndexPaths:withRowAnimation:) block:^IMP(IMP original, SEL selector) {
+        return imp_implementationWithBlock(^(UITableView *table, NSArray *paths, NSInteger animation) {
+            [charon_controller(table, NO) closeAnimated:NO];
+            ((void (*)(id, SEL, NSArray *, NSInteger))original)(table, selector, paths, animation);
+        });
+    }];
+    [self closeBefore:@selector(moveRowAtIndexPath:toIndexPath:) block:^IMP(IMP original, SEL selector) {
+        return imp_implementationWithBlock(^(UITableView *table, NSIndexPath *from, NSIndexPath *to) {
+            [charon_controller(table, NO) closeAnimated:NO];
+            ((void (*)(id, SEL, NSIndexPath *, NSIndexPath *))original)(table, selector, from, to);
+        });
+    }];
+    for (NSValue *value in @[[NSValue valueWithPointer:@selector(deleteSections:withRowAnimation:)], [NSValue valueWithPointer:@selector(insertSections:withRowAnimation:)], [NSValue valueWithPointer:@selector(reloadSections:withRowAnimation:)]]) {
+        [self closeBefore:[value pointerValue] block:^IMP(IMP original, SEL selector) {
+            return imp_implementationWithBlock(^(UITableView *table, NSIndexSet *sections, NSInteger animation) {
+                [charon_controller(table, NO) closeAnimated:NO];
+                ((void (*)(id, SEL, NSIndexSet *, NSInteger))original)(table, selector, sections, animation);
+            });
+        }];
+    }
+    [self closeBefore:@selector(moveSection:toSection:) block:^IMP(IMP original, SEL selector) {
+        return imp_implementationWithBlock(^(UITableView *table, NSInteger from, NSInteger to) {
+            [charon_controller(table, NO) closeAnimated:NO];
+            ((void (*)(id, SEL, NSInteger, NSInteger))original)(table, selector, from, to);
+        });
+    }];
+    [self closeBefore:@selector(setEditing:animated:) block:^IMP(IMP original, SEL selector) {
+        return imp_implementationWithBlock(^(UITableView *table, BOOL editing, BOOL animated) {
+            if (editing)
+                [charon_controller(table, NO) closeAnimated:NO];
+            ((void (*)(id, SEL, BOOL, BOOL))original)(table, selector, editing, animated);
+        });
+    }];
+    [self closeBefore:@selector(layoutSubviews) block:^IMP(IMP original, SEL selector) {
+        return imp_implementationWithBlock(^(UITableView *table) {
+            ((void (*)(id, SEL))original)(table, selector);
+            [charon_controller(table, NO) validate];
+        });
+    }];
+}
+
++ (void)closeBefore:(SEL)selector block:(IMP (^)(IMP original, SEL selector))make
+{
+    Method method = class_getInstanceMethod([UITableView class], selector);
+    if (!method)
+        return;
+    IMP original = class_getMethodImplementation([UITableView class], selector);
+    class_replaceMethod([UITableView class], selector, make(original, selector), method_getTypeEncoding(method));
 }
 
 @end

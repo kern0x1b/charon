@@ -7,20 +7,23 @@ static NSString *const results_folder = @"/private/var/backports";
 
 @interface SwipeSource : NSObject <UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) NSMutableArray *events;
+@property (nonatomic) NSInteger rows;
 @end
 
 @implementation SwipeSource
 
 - (instancetype)init
 {
-    if ((self = [super init]))
+    if ((self = [super init])) {
         _events = [NSMutableArray array];
+        _rows = 30;
+    }
     return self;
 }
 
 - (NSInteger)tableView:(UITableView *)table numberOfRowsInSection:(NSInteger)section
 {
-    return 30;
+    return _rows;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)table cellForRowAtIndexPath:(NSIndexPath *)path
@@ -247,6 +250,76 @@ static void rows_scenario(void)
     });
 }
 
+static void edges_scenario(void)
+{
+    use_table([[SwipeSource alloc] init]);
+    gesture_drag(^{ return row_point(1, table_width() - 30); }, ^{ return row_point(1, table_width() - 170); }, 6, 0.6);
+    gesture_step(0.1, ^{
+        CHECK(fabs(shift(1)) > 100, "a row is open");
+        [the_source.events removeAllObjects];
+        [the_table setEditing:YES animated:NO];
+    });
+    gesture_step(0.3, ^{
+        CHECK(!any_open() && buttons_of(1) == nil, "entering editing mode closes an open row");
+        CHECK([the_source.events containsObject:@"didEnd 1"], "and tells the delegate");
+    });
+    gesture_drag(^{ return row_point(2, table_width() - 30); }, ^{ return row_point(2, table_width() - 170); }, 6, 0.6);
+    gesture_step(0.1, ^{
+        CHECK(buttons_of(2) == nil, "a table that is editing shows no swipe actions");
+        [the_table setEditing:NO animated:NO];
+    });
+    gesture_step(0.3, ^{});
+    gesture_drag(^{ return row_point(2, table_width() - 30); }, ^{ return row_point(2, table_width() - 170); }, 6, 0.6);
+    gesture_step(0.1, ^{
+        CHECK(fabs(shift(2)) > 100, "and does again when it stops");
+        [the_source.events removeAllObjects];
+        [the_table reloadData];
+    });
+    gesture_step(0.3, ^{
+        CHECK(!any_open() && buttons_of(2) == nil && fabs(shift(2)) < 0.5, "reloading the table closes an open row");
+        CHECK([the_source.events containsObject:@"didEnd 2"], "and tells the delegate");
+    });
+    gesture_drag(^{ return row_point(3, table_width() - 30); }, ^{ return row_point(3, table_width() - 170); }, 6, 0.6);
+    gesture_step(0.1, ^{
+        CHECK(fabs(shift(3)) > 100, "a row opens after a reload");
+        the_source.rows = 29;
+        [the_table deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+    });
+    gesture_step(0.5, ^{
+        CHECK(!any_open(), "deleting the open row leaves no row open, and the row that takes its place is at rest");
+    });
+    gesture_drag(^{ return row_point(1, table_width() - 30); }, ^{ return row_point(1, table_width() - 170); }, 6, 0.6);
+    gesture_step(0.1, ^{
+        CHECK(fabs(shift(1)) > 100, "a row is open before the table is resized");
+        CGRect frame = the_table.frame;
+        frame.size.width -= 40;
+        the_table.frame = frame;
+        [the_table layoutIfNeeded];
+    });
+    gesture_step(0.5, ^{
+        CHECK(!any_open() && buttons_of(1) == nil, "a change of the table's width, as a rotation makes, closes it");
+        CGRect frame = the_table.frame;
+        frame.size.width += 40;
+        the_table.frame = frame;
+    });
+    gesture_step(0.3, ^{});
+    gesture_drag(^{ return row_point(1, table_width() - 30); }, ^{ return row_point(1, table_width() - 170); }, 6, 0.6);
+    gesture_step(0.1, ^{
+        CHECK(fabs(shift(1)) > 100, "a row is open before the table scrolls away from it");
+        [the_table scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:25 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+        [the_table layoutIfNeeded];
+        [the_table scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+        [the_table layoutIfNeeded];
+    });
+    gesture_step(0.5, ^{
+        CHECK(!any_open(), "a row that scrolls away and comes back is at rest");
+    });
+    gesture_drag(^{ return row_point(4, table_width() - 30); }, ^{ return row_point(4, table_width() - 170); }, 6, 0.6);
+    gesture_step(0.1, ^{
+        CHECK(fabs(shift(4)) > 100, "and a swipe still opens a row afterwards");
+    });
+}
+
 static void bare_scenario(void)
 {
     use_table([[SwipeBare alloc] init]);
@@ -312,6 +385,7 @@ static void configuration_scenario(void)
         gesture_step(0.01, ^{ CHECK(gesture_ready(), "touches can be sent to the application through the HID event system"); });
         rows_scenario();
         bare_scenario();
+        edges_scenario();
         configuration_scenario();
         gesture_run(^{
             printf("checks=%d failures=%d\n", charon_checks, charon_failures);
