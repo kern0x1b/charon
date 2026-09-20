@@ -337,6 +337,10 @@ postinst run with `DPKG_ROOT` set to it.
   is put through loads, history, decisions, JavaScript, scripts and messages, and every answer is held to what the
   system's `WKWebView` did in `webkit-expectations.h`, which `host/webkit/run.sh` records under Mac Catalyst. It needs
   the package built with `webkit = true`; three records that differ for a stated reason are tolerated by name.
+- `localauth.m`: a process of its own, the LocalAuthentication batch: a context answers as a device with no fingerprint
+  sensor and no way to ask for the passcode - the questions fail with the system's errors, an evaluation is answered
+  off the main thread and never succeeds. The behaviour a device shares with the host is held to it by the
+  `localauth` group of `host/uikit2/run.sh`. It needs the package built with `localauthentication = true`.
 - `corelocation.m`: a process of its own, the CoreLocation batch: the circular region as a class, its notify flags,
   and the answers of the class methods about monitoring and ranging. It needs the package built with
   `corelocation = true`; it is checked on the emulated 6.0 and on the iPad 2, where location services and region

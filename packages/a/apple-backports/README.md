@@ -93,6 +93,15 @@ the end of the document, the response of a navigation is never offered to the de
 and a redirect, an authentication challenge and the UI delegate's panels never reach the
 application. `facts/WebKit/WKWebView.md` has the whole table.
 
+### LocalAuthentication, answered as a device with no fingerprint sensor
+
+`LAContext` is carried in `libLocalAuthenticationBackports.dylib`, built with the `localauthentication` config. The devices
+iOS 6 runs on have no biometric sensor and give an application no way to ask for the passcode, so it answers as a device
+without a sensor: biometry is not available (`LAErrorBiometryNotAvailable`), the passcode cannot be asked for
+(`LAErrorNotInteractive`), and an evaluation is answered with that error and never succeeds. An application that asks
+first and falls back to its own passcode works; one that cannot do without the sensor says so. See
+`facts/LocalAuthentication/LAContext.md`.
+
 ### Blocks for timers, threads and run loops, and what stays out
 
 `NSTimer` gets the block factories and `-initWithFireDate:interval:repeats:block:`,

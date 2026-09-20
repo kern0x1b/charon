@@ -10,7 +10,7 @@ harness=${UIKIT2_HARNESS:-$here/../../device}
 build=${UIKIT2_BUILD:-${TMPDIR:-/tmp}/charon-uikit2-host}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
-frameworks="-framework UIKit -framework QuartzCore -framework CoreGraphics -framework Foundation"
+frameworks="-framework LocalAuthentication -framework UIKit -framework QuartzCore -framework CoreGraphics -framework Foundation"
 flags="-fobjc-arc -fvisibility=hidden -Wall -Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-objc-protocol-method-implementation -Wno-incomplete-implementation -Wno-objc-property-implementation"
 rm -rf "$build"
 mkdir -p "$build/plain"
@@ -101,6 +101,7 @@ group viewmisc "UIView+MaskView.m UIView+PerformWithoutAnimation.m UIView+Semant
 group rowaction "UITableViewRowAction.m" "rowActionWithStyle style title setTitle backgroundColor setBackgroundColor backgroundEffect setBackgroundEffect" rowaction_test.m
 group visualeffect "UIVisualEffect.m UIVisualEffectView.m" "effectWithStyle effectForBlurEffect initWithEffect effect setEffect contentView addSubview insertSubview initWithFrame" visualeffect_test.m
 group useractivity "../Foundation/NSUserActivity.m" "*" useractivity_test.m
+group localauth "../LocalAuthentication/LAContext.m ../LocalAuthentication/LAErrorDomain.m ../LocalAuthentication/LATouchIDAuthenticationMaximumAllowableReuseDuration.m" "*" localauth_test.m
 windowed snapshots "UIView+Snapshots.m" "" snapshots_test.m
 
 # the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation

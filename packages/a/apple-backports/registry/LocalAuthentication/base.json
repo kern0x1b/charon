@@ -1,0 +1,26 @@
+[
+  {
+    "api": "LAContext",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/LocalAuthentication/LAContext.md",
+    "source": "the host's own LocalAuthentication, through the differential run of tests/backports/host/uikit2 (localauth); the shared cache of iOS 8.0 for the text of the biometry error; the newest header of the SDK for the rest"
+  },
+  {
+    "api": "LAErrorDomain",
+    "kind": "constant",
+    "introduced": "8.3",
+    "status": "implemented",
+    "facts": "facts/LocalAuthentication/LAContext.md",
+    "source": "the host's own LocalAuthentication"
+  },
+  {
+    "api": "LATouchIDAuthenticationMaximumAllowableReuseDuration",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/LocalAuthentication/LAContext.md",
+    "source": "the host's own LocalAuthentication"
+  }
+]
