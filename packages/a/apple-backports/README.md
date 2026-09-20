@@ -289,6 +289,36 @@ with the stroke following the weight, the size the scale, point size or text sty
 drawings are the low end); any other name is nil, as an unknown name is on the host, and `facts/UIKit/UIImageSymbols.md` lists the names the host knows that are not drawn yet.
 Where the port differs from the host, `facts/UIKit/UIImageSymbolConfiguration.md` and `facts/UIKit/UIImageSymbols.md` say so: a font from `+preferredFontForTextStyle:` has no text style to give,
 a symbol weight below zero is Regular where the host reads the memory beside its table, and a symbol image is `AlwaysTemplate` where the host's is `Automatic`.
+### The difference of two collections, and diffable data sources
+
+`NSOrderedCollectionDifference` and `NSOrderedCollectionChange`, with `-differenceFromArray:`, `-arrayByApplyingDifference:`, their ordered set
+counterparts and `-applyDifference:`, are carried as the system's are: 320000 random differences of arrays and ordered sets, with every
+option, an equivalence test and the calls it received, and the exceptions of the ones built from changes and index sets, none differing from the
+host's (`tests/backports/host/uikit2`, the `orderedcollections` group). The shortest edit script is the Myers algorithm walked forward, so the
+indexes match, and the difference of two ordered sets is not the same algorithm but a walk of both with a cursor each, which keeps fewer elements and is
+the system's. `facts/Foundation/NSOrderedCollectionDifference.md`.
+
+`NSDiffableDataSourceSnapshot`, `UICollectionViewDiffableDataSource` and `UITableViewDiffableDataSource` build on it. The snapshot, with its
+exceptions and their reasons, is held to the system's over 50000 operations per run; the data sources are the view's data source and give a
+collection or table view one batch of inserts, deletes, moves and reloads per snapshot applied, the reloads in a second batch, and are run
+beside the system's in a window (the `diffabledatasource` group). They answer the same counts, index paths and identifiers after every apply,
+and a batch the port cannot prove consistent for iOS 6 - items moving between sections, section changes mixed with item changes - is a `reloadData`, losing the animation. The apply is synchronous on the main queue.
+`NSDiffableDataSourceSectionSnapshot`, `-applySnapshot:toSection:animatingDifferences:` and `-snapshotForSection:` come with iOS 14; the handlers
+for reordering and for expanding are **inert** and say so once in the log, and the transaction classes are absent, since iOS 6 has no interactive
+reordering and no outline cell. The members of iOS 15 are not answered. `facts/UIKit/NSDiffableDataSourceSnapshot.md`,
+`NSDiffableDataSourceSectionSnapshot.md`, `UICollectionViewDiffableDataSource.md`, `UITableViewDiffableDataSource.md`.
+
+### Lists and cell configurations, laid out from what the host measured
+
+`UIListContentConfiguration`, `UIBackgroundConfiguration`, the configuration states, `UIListContentView`, the `UICellAccessory` family,
+`UICollectionViewListCell`, `UICollectionLayoutListConfiguration` with the list section and layout, the cell registrations and the
+configuration of collection view cells, table cells and table headers are carried in full. The values come from the host's UIKit under Mac
+Catalyst, so the margins and sizes are those of the Mac idiom: the port follows them, except the row estimate of a list layout, which is 44
+and not the host's 40.04. This release has no self sizing cells, so a row stays that high. Not carried: the swipe actions (`inert`; the
+provider is kept and never asked, said once in the log), the animation of an outline's children, the background decoration item, the blur
+and shadow of a reordering row, `selectionFollowsFocus` and the system colour transformers (`absent`). Members of iOS 15 and later
+(`configurationUpdateHandler`, `isPinned`, `separatorConfiguration`) are not answered. Facts: `facts/UIKit/UIListContentConfiguration.md`
+and its neighbours; the entries are in `registry/UIKit/ios14lists.json`.
 
 ## iOS 11 and 12
 
