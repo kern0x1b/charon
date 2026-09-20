@@ -6,6 +6,9 @@ rule("apple-ios")
             raise("xmake found the project at %s, but this is the checkout at %s nested inside it; run xmake -P . here, or it builds and locks the outer project", os.projectdir(), toplevel)
         end
         local minimum = get_config("apple_minimum")
+        if minimum then
+            minimum = import("@self.apple.slices").slice_minimum(get_config("arch"), minimum, os.getenv("CHARON_SLICES"))
+        end
         if not minimum then
             raise("target(%s) builds for apple-ios and its project names no oldest release: set_config(\"apple_minimum\", \"6.0\")", target:name())
         end

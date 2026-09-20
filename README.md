@@ -101,7 +101,7 @@ Then:
 An application declared with `add_values("apple.architectures", "armv7", "arm64")`
 is packaged universal: `xmake deb` takes the slice of the configured
 architecture from the ordinary build and configures and builds each other one in
-its own folder under the build directory, merges the bundles with lipo - every
+its own folder under the build directory - each slice for the release its architecture first runs where `apple_minimum` is older and another slice keeps it (arm64 at 7.0 beside armv7 at 6.0; the port is told once, and an architecture built alone at a release it never ran is still refused; the configured architecture is the one to build for the oldest release) - merges the bundles with lipo - every
 other file has to be the same in every slice, so pin MinimumOSVersion in the
 plist - and signs and checks the merged binaries. A slice with no shared cache
 under ~/.charon/dyld is said to be unchecked. The reader understands every

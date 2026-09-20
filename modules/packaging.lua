@@ -16,7 +16,7 @@ function universal(target, architectures, stage)
             built = path.join(target:targetdir(), target:basename() .. ".app")
         else
             local builddir = path.join(config.builddir(), ".charon", "slices", architecture)
-            local envs = {XMAKE_CONFIGDIR = path.join(builddir, "config"), CHARON_SLICE = architecture}
+            local envs = {XMAKE_CONFIGDIR = path.join(builddir, "config"), CHARON_SLICE = architecture, CHARON_SLICES = table.concat(architectures, ",")}
             os.vexecv(os.programfile(), {"f", "-P", os.projectdir(), "-p", config.plat(), "-a", architecture, "-m", config.mode() or "release", "-o", builddir, "-y"}, {envs = envs})
             os.vexecv(os.programfile(), {"build", "-P", os.projectdir(), "-y", target:name()}, {envs = envs})
             built = path.join(builddir, config.plat(), architecture, config.mode() or "release", target:basename() .. ".app")

@@ -13,6 +13,19 @@ add_requireconfs("**.m4", {system = false})
 add_requireconfs("**.pkgconf", {system = false})
 
 local minimum = get_config("apple_minimum")
+
+-- The slice of a universal target is built for the release its architecture first runs, where apple_minimum is older and
+-- another slice keeps it (modules/apple/slices.lua says how); the port is told once per process.
+includes(path.join(os.scriptdir(), "..", "..", "modules", "apple", "slices.lua"))
+if minimum then
+    local declared = minimum
+    local other
+    minimum, other = slice_minimum(get_config("arch"), declared, os.getenv("CHARON_SLICES"))
+    if minimum ~= declared then
+        print("note: the %s slice is built for iOS %s, the first release an %s device runs; apple_minimum %s holds for the %s slice", get_config("arch"), minimum, get_config("arch"), declared, other)
+    end
+end
+
 if minimum then
     local root = path.join(os.scriptdir(), "..", "..")
     local digests = {}
