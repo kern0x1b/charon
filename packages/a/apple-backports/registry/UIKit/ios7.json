@@ -128,6 +128,30 @@
       "status": "implemented",
       "facts": "facts/UIKit/UIViewControllerViewLoading.md",
       "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "-[UIView snapshotViewAfterScreenUpdates:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewSnapshots.md",
+      "source": "the host's own UIKit under Mac Catalyst, in an application with a window, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "-[UIView resizableSnapshotViewFromRect:afterScreenUpdates:withCapInsets:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewSnapshots.md",
+      "source": "the host's own UIKit under Mac Catalyst, in an application with a window, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "-[UIView drawViewHierarchyInRect:afterScreenUpdates:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewSnapshots.md",
+      "source": "the host's own UIKit under Mac Catalyst, in an application with a window, held against the backport by tests/backports/host/uikit2"
     }
   ]
 }

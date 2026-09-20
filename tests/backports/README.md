@@ -45,6 +45,12 @@ process with the system's own, compiled with the selectors prefixed, and compare
 what each does and raises; `host/imageflip/run.sh` does the same for the flipped
 image through Mac Catalyst.
 
+`host/uikit2/run.sh` also runs a group that needs a window - the snapshots of a view, for one -
+as an application: its `windowed` function builds the group with `windowed.m`, which is `main`, a scene delegate and
+a window, into a Mac Catalyst bundle with `windowed.plist`, signs it ad hoc and runs it, and the group's
+`charon_windowed_run(window)` is called once the window is up. A test written for it compares the system's answers with
+the backport's the way the others do, for whatever UIKit will not do without a scene.
+
 `host/registry/run.sh` holds the build's check of the registry to a release's own
 Objective-C metadata. The build refuses an `absent` entry whose class, method,
 accessor or protocol the release carries, and an `ignored` entry the release

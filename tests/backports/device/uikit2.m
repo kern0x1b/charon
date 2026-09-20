@@ -821,6 +821,78 @@ static NSString *traits_of(id environment)
             [application setStatusBarHidden:hidden withAnimation:UIStatusBarAnimationNone];
             done();
         } copy],
+        [^(void (^done)(void)) {
+            UIView *base = test.host.view;
+            UIView *view = [[UIView alloc] initWithFrame:CGRectMake(10, 20, 100, 50)];
+            view.backgroundColor = [UIColor redColor];
+            UIView *blue = [[UIView alloc] initWithFrame:CGRectMake(50, 0, 50, 50)];
+            blue.backgroundColor = [UIColor blueColor];
+            [view addSubview:blue];
+            [base addSubview:view];
+            CGFloat scale = [UIScreen mainScreen].scale;
+            UIView *snapshot = [view snapshotViewAfterScreenUpdates:YES];
+            charon_check(snapshot != nil && CGRectEqualToRect(snapshot.frame, CGRectMake(0, 0, 100, 50)) && snapshot.subviews.count == 0, "a snapshot is a view the size of the rect with no subviews", NSStringFromCGRect(snapshot.frame));
+            CGImageRef image = (__bridge CGImageRef)snapshot.layer.contents;
+            charon_check(image != NULL && CGImageGetWidth(image) == (size_t)(100 * scale) && CGImageGetHeight(image) == (size_t)(50 * scale), "the snapshot holds the view at the screen's scale", image ? [NSString stringWithFormat:@"%zu x %zu", CGImageGetWidth(image), CGImageGetHeight(image)] : @"no image");
+            charon_check(snapshot.layer.contentsScale == scale && [snapshot.layer.contentsGravity isEqualToString:kCAGravityResize] && CGRectEqualToRect(snapshot.layer.contentsCenter, CGRectMake(0, 0, 1, 1)), "the snapshot resizes, at the screen's scale, over its whole image", NSStringFromCGRect(snapshot.layer.contentsCenter));
+            NSString *left = @"none", *right = @"none";
+            if (image) {
+                uint8_t data[4] = {0};
+                CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
+                CGContextRef context = CGBitmapContextCreate(data, 1, 1, 8, 4, space, kCGImageAlphaPremultipliedLast);
+                size_t width = CGImageGetWidth(image), height = CGImageGetHeight(image);
+                CGContextDrawImage(context, CGRectMake(-(double)(width / 4), -(double)(height / 2), width, height), image);
+                left = [NSString stringWithFormat:@"%d,%d,%d,%d", data[0], data[1], data[2], data[3]];
+                CGContextDrawImage(context, CGRectMake(-(double)(width * 3 / 4), -(double)(height / 2), width, height), image);
+                right = [NSString stringWithFormat:@"%d,%d,%d,%d", data[0], data[1], data[2], data[3]];
+                CGContextRelease(context);
+                CGColorSpaceRelease(space);
+            }
+            charon_check([left isEqualToString:@"255,0,0,255"] && [right isEqualToString:@"0,0,255,255"], "the snapshot shows the view and its subviews", [NSString stringWithFormat:@"%@ %@", left, right]);
+            UIView *capped = [view resizableSnapshotViewFromRect:CGRectMake(0, 0, 40, 40) afterScreenUpdates:YES withCapInsets:UIEdgeInsetsMake(10, 10, 10, 10)];
+            CGRect expected = CGRectMake((10 * scale + 1) / (40 * scale), (10 * scale + 1) / (40 * scale), (40 * scale - 20 * scale - 2) / (40 * scale), (40 * scale - 20 * scale - 2) / (40 * scale));
+            charon_check(fabs(capped.layer.contentsCenter.origin.x - expected.origin.x) < 1e-6 && fabs(capped.layer.contentsCenter.size.width - expected.size.width) < 1e-6 && CGRectEqualToRect(capped.frame, CGRectMake(0, 0, 40, 40)), "cap insets stretch the middle, a pixel in from each edge", NSStringFromCGRect(capped.layer.contentsCenter));
+            UIView *outside = [view resizableSnapshotViewFromRect:CGRectMake(-500, -500, 20, 20) afterScreenUpdates:NO withCapInsets:UIEdgeInsetsZero];
+            UIView *empty = [view resizableSnapshotViewFromRect:CGRectNull afterScreenUpdates:NO withCapInsets:UIEdgeInsetsZero];
+            charon_check(outside != nil && CGSizeEqualToSize(outside.frame.size, CGSizeMake(20, 20)) && empty != nil && CGSizeEqualToSize(empty.frame.size, CGSizeZero), "a rect outside the view or no rect at all still answers a view of that size", NSStringFromCGRect(outside.frame));
+
+            UIGraphicsBeginImageContextWithOptions(CGSizeMake(100, 50), NO, 1);
+            BOOL drew = [view drawViewHierarchyInRect:CGRectMake(0, 0, 100, 50) afterScreenUpdates:YES];
+            UIImage *picture = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+            uint8_t pixel[4] = {0};
+            CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
+            CGContextRef context = CGBitmapContextCreate(pixel, 1, 1, 8, 4, space, kCGImageAlphaPremultipliedLast);
+            CGContextDrawImage(context, CGRectMake(-75, -25, 100, 50), picture.CGImage);
+            charon_check(drew && pixel[0] == 0 && pixel[2] == 255 && pixel[3] == 255, "drawViewHierarchyInRect draws the view and its subviews", [NSString stringWithFormat:@"%d %d,%d,%d,%d", drew, pixel[0], pixel[1], pixel[2], pixel[3]]);
+            view.alpha = 0.5;
+            UIGraphicsBeginImageContextWithOptions(CGSizeMake(100, 50), NO, 1);
+            [view drawViewHierarchyInRect:CGRectMake(0, 0, 100, 50) afterScreenUpdates:YES];
+            picture = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+            memset(pixel, 0, sizeof pixel);
+            CGContextDrawImage(context, CGRectMake(-25, -25, 100, 50), picture.CGImage);
+            charon_check(pixel[3] >= 126 && pixel[3] <= 130 && pixel[0] >= 126 && pixel[0] <= 130, "a view of half alpha is drawn at half alpha", [NSString stringWithFormat:@"%d,%d,%d,%d", pixel[0], pixel[1], pixel[2], pixel[3]]);
+            view.alpha = 1;
+            view.hidden = YES;
+            UIGraphicsBeginImageContextWithOptions(CGSizeMake(100, 50), NO, 1);
+            BOOL hiddenAnswer = [view drawViewHierarchyInRect:CGRectMake(0, 0, 100, 50) afterScreenUpdates:YES];
+            picture = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+            memset(pixel, 0, sizeof pixel);
+            CGContextDrawImage(context, CGRectMake(-25, -25, 100, 50), picture.CGImage);
+            charon_check(hiddenAnswer && pixel[3] == 0, "a hidden view draws nothing and still answers yes", [NSString stringWithFormat:@"%d %d", hiddenAnswer, pixel[3]]);
+            view.hidden = NO;
+            UIView *away = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+            UIGraphicsBeginImageContextWithOptions(CGSizeMake(100, 50), NO, 1);
+            BOOL awayAnswer = [away drawViewHierarchyInRect:CGRectMake(0, 0, 40, 40) afterScreenUpdates:NO];
+            UIGraphicsEndImageContext();
+            charon_check(!awayAnswer, "a view outside a window is not drawn and answers no", @"it answered yes");
+            CGContextRelease(context);
+            CGColorSpaceRelease(space);
+            [view removeFromSuperview];
+            done();
+        } copy],
     ];
 }
 

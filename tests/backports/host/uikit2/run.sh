@@ -59,6 +59,36 @@ group() {
     [ "$result" = 0 ] || status=1
 }
 
+windowed() {
+    # $1: group name, $2: sources, $3: selectors to keep, $4: test source; the test runs in an application with a window
+    name=$1
+    files=$2
+    keep=$3
+    test=$4
+    objects=""
+    for file in $files; do
+        xcrun clang $target $flags -w -c "$sources/$file" -o "$build/plain/$name-$file.o"
+        objects="$objects $build/plain/$name-$file.o"
+    done
+    renames "$objects" "$keep" > "$build/$name.flags"
+    mkdir -p "$build/$name"
+    built=""
+    for file in $files; do
+        xcrun clang $target $flags $(cat "$build/$name.flags") -c "$sources/$file" -o "$build/$name/$file.o"
+        built="$built $build/$name/$file.o"
+    done
+    bundle="$build/$name.app"
+    rm -rf "$bundle"
+    mkdir -p "$bundle/Contents/MacOS"
+    xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/windowed.m" "$here/$test" "$harness/check.m" $built $frameworks -o "$bundle/Contents/MacOS/app"
+    cp "$here/windowed.plist" "$bundle/Contents/Info.plist"
+    codesign -s - --force "$bundle" > /dev/null 2>&1
+    if "$bundle/Contents/MacOS/app" > "$build/$name.log" 2>&1; then result=0; else result=$?; fi
+    grep -v '^ok ' "$build/$name.log" | grep -a 'FAIL\|checks=\|info' || true
+    echo "$name: exit=$result log=$build/$name.log"
+    [ "$result" = 0 ] || status=1
+}
+
 status=0
 group traits "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m" "*" traits_test.m
 group notifications "UIUserNotificationSettings.m" "*" notifications_test.m
@@ -68,6 +98,7 @@ group sizes "UIContentSizeCategory.m UIContentSizeCategory+Unspecified.m" "" siz
 group tint "UIView+TintColor.m" "" tint_test.m
 group bars "UINavigationBar+BarAppearance.m UISearchBar+BarStyle.m UIToolbar+BarTintColor.m UITabBar+BarTintColor.m" "" bars_test.m
 group viewmisc "UIView+MaskView.m UIView+PerformWithoutAnimation.m UIView+SemanticContentAttribute.m UIViewController+ViewLoading.m UIViewController+PreferredContentSize.m UIViewController+StatusBarAppearance.m" "" viewmisc_test.m
+windowed snapshots "UIView+Snapshots.m" "" snapshots_test.m
 
 # the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation
 xcrun clang $target -fobjc-arc -Wall -w -I"$harness" "$here/spring_uikit.m" $frameworks -o "$build/spring_uikit"
