@@ -143,6 +143,70 @@
       "effect": "answers nil: the release's stores answer no change token, and the method builds the token from those",
       "facts": "facts/CoreData/PersistentHistory.md",
       "source": "CoreData of the arm64 shared cache of iOS 12.0: -[NSPersistentStoreCoordinator currentPersistentHistoryTokenFromStores:] asks each store for its current change token and joins the answers; the host's Core Data for a store that has none"
+    },
+    {
+      "api": "NSFetchIndexElementDescription",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the description of an index is carried and checked, and not applied: the store of this release builds no index from it, which the documentation allows a store that does not natively support indexing to do",
+      "effect": "an element of one property with a collation type and a direction; ascending to begin with; rtree collation is refused for anything but an attribute of type integer 16, integer 32 or float; refuses a missing, an unnamed and a fetched property; its collation cannot change when it is the only element of its index; copies, compares and describes, and codes with NSPropertyName, NSFetchIndexElementType, NSAscending and NSFetchIndexDescription",
+      "facts": "facts/CoreData/FetchIndex.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: -[NSFetchIndexElementDescription initWithProperty:collationType:], -_validateCollationType:forProperty:, -setCollationType:, -description and the coding methods, read case by case with the strings of the messages; the host's Core Data beside the port for the rest"
+    },
+    {
+      "api": "NSFetchIndexDescription",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the description of an index is carried and checked, and not applied: the store of this release builds no index from it, which the documentation allows a store that does not natively support indexing to do",
+      "effect": "an index with a name and elements, and a predicate for a partial one; refuses a nil name and elements of more than one collation type; holds its elements, sets the index they belong to when it is made, and keeps its name and predicate as they are given; copies its elements, compares by name, elements and predicate, and codes with NSIndexName, NSIndexElements, NSEntity and NSPartialIndexPredicate",
+      "facts": "facts/CoreData/FetchIndex.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: -[NSFetchIndexDescription initWithName:elements:], -_checkElements:, -setName:, -setElements:, -_validateCollationTypeChangeFrom:to:, -description and the coding methods, read case by case; the host's Core Data beside the port for the rest"
+    },
+    {
+      "api": "NSEntityDescription.indexes",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the description of an index is carried and checked, and not applied: the store of this release builds no index from it, which the documentation allows a store that does not natively support indexing to do",
+      "effect": "the indexes of the entity, an empty array to begin with; setting them refuses two of one name and an element whose attribute or relationship the entity does not have, tells each index its entity, and raises for a model in use; nothing builds an index",
+      "facts": "facts/CoreData/FetchIndex.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: -[NSEntityDescription setIndexes:] and -_validateIndex:, which look each element's property up by name and check the name against the entity's other indexes"
+    },
+    {
+      "api": "NSEntityDescription.coreSpotlightDisplayNameExpression",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the expression names what Core Spotlight shows for an object, and this release has no Core Spotlight, so it is kept and nothing reads it",
+      "effect": "a kept expression, nil to begin with; setting it raises for a model in use",
+      "facts": "facts/CoreData/FetchIndex.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: the accessors of the property"
+    },
+    {
+      "api": "NSCoreDataCoreSpotlightDelegate",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "it indexes the objects of a store into Core Spotlight, which this release does not have, and a delegate that looked like it indexed would mislead",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of CoreData"
+    },
+    {
+      "api": "NSPersistentStore.coreSpotlightExporter",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the exporter feeds Core Spotlight, which this release does not have",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of CoreData"
     }
   ]
 }

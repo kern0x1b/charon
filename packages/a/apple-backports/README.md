@@ -323,6 +323,8 @@ The rest of Photos and of PhotosUI is absent, each row in `registry/Photos/absen
 
 `kSecAttrSynchronizable` and `kSecAttrSynchronizableAny` are carried in `libSecurityBackports.dylib`, as the strings `sync` and `syna`; the keychain of iOS 6 ignores the attribute, so an item marked synchronizable stays on the device and a query for either finds the items of the device. `kSecUseAuthenticationUI` and `kSecAttrTokenID` are not carried, as the release refuses them with -50. `facts/Security/kSecAttrSynchronizable.md`.
 
+`NSFetchIndexDescription`, `NSFetchIndexElementDescription` and `NSEntityDescription.indexes` are carried and checked the way iOS 12 checks them, and not applied: the store of this release builds no index from them, which the documentation of `indexes` allows. `NSCoreDataCoreSpotlightDelegate` is absent, since there is no Core Spotlight. `facts/CoreData/FetchIndex.md`.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and
