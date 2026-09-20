@@ -420,6 +420,116 @@
       "reason": "the release has no way to report a change of ubiquity attributes to the presenters of an item",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers"
+    },
+    {
+      "api": "+[NSLinguisticTagger availableTagSchemesForUnit:language:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "units above the word answer only the Language and Script schemes, from the words of iOS 6's own tagger; iOS 12 also tags them with lexical classes, and its language model is not carried",
+      "facts": "facts/Foundation/NSLinguisticTagger.md",
+      "source": "NSLinguisticTagger of iOS 12.0 arm64 read through disassembly, and the host's own tagger through the differential run of tests/backports/host/linguistic; on an iPad 2 running 6.1.3 through tests/backports/device/linguistic11.m"
+    },
+    {
+      "api": "+[NSLinguisticTagger dominantLanguageForString:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "units above the word answer only the Language and Script schemes, from the words of iOS 6's own tagger; iOS 12 also tags them with lexical classes, and its language model is not carried",
+      "facts": "facts/Foundation/NSLinguisticTagger.md",
+      "source": "NSLinguisticTagger of iOS 12.0 arm64 read through disassembly, and the host's own tagger through the differential run of tests/backports/host/linguistic; on an iPad 2 running 6.1.3 through tests/backports/device/linguistic11.m"
+    },
+    {
+      "api": "+[NSLinguisticTagger enumerateTagsForString:range:unit:scheme:options:orthography:usingBlock:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "units above the word answer only the Language and Script schemes, from the words of iOS 6's own tagger; iOS 12 also tags them with lexical classes, and its language model is not carried",
+      "facts": "facts/Foundation/NSLinguisticTagger.md",
+      "source": "NSLinguisticTagger of iOS 12.0 arm64 read through disassembly, and the host's own tagger through the differential run of tests/backports/host/linguistic; on an iPad 2 running 6.1.3 through tests/backports/device/linguistic11.m"
+    },
+    {
+      "api": "+[NSLinguisticTagger tagForString:atIndex:unit:scheme:orthography:tokenRange:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "units above the word answer only the Language and Script schemes, from the words of iOS 6's own tagger; iOS 12 also tags them with lexical classes, and its language model is not carried",
+      "facts": "facts/Foundation/NSLinguisticTagger.md",
+      "source": "NSLinguisticTagger of iOS 12.0 arm64 read through disassembly, and the host's own tagger through the differential run of tests/backports/host/linguistic; on an iPad 2 running 6.1.3 through tests/backports/device/linguistic11.m"
+    },
+    {
+      "api": "+[NSLinguisticTagger tagsForString:range:unit:scheme:options:orthography:tokenRanges:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "units above the word answer only the Language and Script schemes, from the words of iOS 6's own tagger; iOS 12 also tags them with lexical classes, and its language model is not carried",
+      "facts": "facts/Foundation/NSLinguisticTagger.md",
+      "source": "NSLinguisticTagger of iOS 12.0 arm64 read through disassembly, and the host's own tagger through the differential run of tests/backports/host/linguistic; on an iPad 2 running 6.1.3 through tests/backports/device/linguistic11.m"
+    },
+    {
+      "api": "-[NSLinguisticTagger enumerateTagsInRange:unit:scheme:options:usingBlock:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "units above the word answer only the Language and Script schemes, from the words of iOS 6's own tagger; iOS 12 also tags them with lexical classes, and its language model is not carried",
+      "facts": "facts/Foundation/NSLinguisticTagger.md",
+      "source": "NSLinguisticTagger of iOS 12.0 arm64 read through disassembly, and the host's own tagger through the differential run of tests/backports/host/linguistic; on an iPad 2 running 6.1.3 through tests/backports/device/linguistic11.m"
+    },
+    {
+      "api": "-[NSLinguisticTagger tagAtIndex:unit:scheme:tokenRange:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "units above the word answer only the Language and Script schemes, from the words of iOS 6's own tagger; iOS 12 also tags them with lexical classes, and its language model is not carried",
+      "facts": "facts/Foundation/NSLinguisticTagger.md",
+      "source": "NSLinguisticTagger of iOS 12.0 arm64 read through disassembly, and the host's own tagger through the differential run of tests/backports/host/linguistic; on an iPad 2 running 6.1.3 through tests/backports/device/linguistic11.m"
+    },
+    {
+      "api": "-[NSLinguisticTagger tagsInRange:unit:scheme:options:tokenRanges:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "units above the word answer only the Language and Script schemes, from the words of iOS 6's own tagger; iOS 12 also tags them with lexical classes, and its language model is not carried",
+      "facts": "facts/Foundation/NSLinguisticTagger.md",
+      "source": "NSLinguisticTagger of iOS 12.0 arm64 read through disassembly, and the host's own tagger through the differential run of tests/backports/host/linguistic; on an iPad 2 running 6.1.3 through tests/backports/device/linguistic11.m"
+    },
+    {
+      "api": "-[NSLinguisticTagger tokenRangeAtIndex:unit:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "units above the word answer only the Language and Script schemes, from the words of iOS 6's own tagger; iOS 12 also tags them with lexical classes, and its language model is not carried",
+      "facts": "facts/Foundation/NSLinguisticTagger.md",
+      "source": "NSLinguisticTagger of iOS 12.0 arm64 read through disassembly, and the host's own tagger through the differential run of tests/backports/host/linguistic; on an iPad 2 running 6.1.3 through tests/backports/device/linguistic11.m"
+    },
+    {
+      "api": "NSLinguisticTagger.dominantLanguage",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "units above the word answer only the Language and Script schemes, from the words of iOS 6's own tagger; iOS 12 also tags them with lexical classes, and its language model is not carried",
+      "facts": "facts/Foundation/NSLinguisticTagger.md",
+      "source": "NSLinguisticTagger of iOS 12.0 arm64 read through disassembly, and the host's own tagger through the differential run of tests/backports/host/linguistic; on an iPad 2 running 6.1.3 through tests/backports/device/linguistic11.m"
+    },
+    {
+      "api": "+[NSOrthography defaultOrthographyForLanguage:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the answer is a table of about 250 languages with their scripts inside iOS 12; guessing an orthography for a language the table does not list would be a different answer",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "NSOrthography of iOS 12.0 arm64"
     }
   ]
 }

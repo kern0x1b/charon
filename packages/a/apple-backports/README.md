@@ -376,6 +376,15 @@ the `NSURLComponents` backport underneath rather than from this code.
 completion says whether the animation ran to its end, and the Core Animation
 transaction the port groups the updates in does not hand that back.
 
+`NSLinguisticTagger` gets its units: word, sentence, paragraph and document
+across `tokenRangeAtIndex:unit:`, the enumeration, the tags, the class
+conveniences and `dominantLanguage`. Words are tagged by iOS 6's own tagger;
+above the word only the Language and Script schemes answer, from the words of
+the unit, where iOS 12 also gives lexical classes and lemmas. See
+`facts/Foundation/NSLinguisticTagger.md`. `+[NSOrthography
+defaultOrthographyForLanguage:]` stays absent: it is a table of about 250
+languages inside iOS 12.
+
 ### Not carried, and why
 
 Nothing here is a quiet stub. Where the behaviour cannot be produced, the API
