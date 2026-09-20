@@ -684,3 +684,7 @@ gives it, and an image made with it set is the image made without it.
 
 `host/inputview/run.sh` records what the host's `UIInputView` answers in `device/inputview-cases.m`,
 in a Mac Catalyst application with a window, and `device/inputview.m` compares the port on the release.
+
+`host/fontkeys/run.sh` records the strings of the eighteen `UIFontDescriptor` keys from the host's UIKit into
+`device/fontkeys-cases.m`, and `device/fontkeys.m` compares the port's on the release and against the release's own CoreText
+constants.
