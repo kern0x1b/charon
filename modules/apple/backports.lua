@@ -414,7 +414,7 @@ function surface(binaries, architecture)
                 for kind, sign in pairs({instance = "-", class = "+"}) do
                     for selector in pairs(class[kind]) do
                         local plain = selector:sub(2)
-                        if not plain:startswith("charon_") and not plain:startswith(".cxx_") then
+                        if not plain:startswith("charon_") and not plain:startswith(".cxx_") and plain ~= "load" then
                             found.members[string.format("%s[%s %s]", sign, name, plain)] = true
                         end
                     end
