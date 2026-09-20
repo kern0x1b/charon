@@ -285,6 +285,8 @@ question - a token, a session, a setting, an anchor, a tag - is absent, and
 
 `PHPhotoLibrary` is carried in `libPhotosBackports.dylib`, built with the `photos` config, for its authorization only: `+authorizationStatus` is the `ALAssetsLibrary` status, `+requestAuthorization:` shows the system prompt through a read of the saved-photos group and gives the handler the new status, and the two calls with an access level of iOS 14 answer the same, never limited. Changes, observers, cloud identifiers and the history of changes are absent, as the release has no Photos database. `facts/Photos/PHPhotoLibrary.md`.
 
+The rest of Photos and of PhotosUI is absent, each row in `registry/Photos/absent_Photos.json` and `registry/PhotosUI/absent_PhotosUI.json`: the assets, collections, fetch results, image and resource managers, live photos, content editing, the change requests and the picker of iOS 14 need the Photos database or the picker service, and nothing in iOS 6 does their work. `PHPhotoLibrary`, `PHAdjustmentData`, `PHContentEditingInput` and `PHContentEditingOutput` are declared by the headers of both frameworks, and are decided once, in the file of Photos, so the difference of PhotosUI alone shows those four classes as undecided.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and

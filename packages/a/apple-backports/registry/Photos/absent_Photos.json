@@ -1,0 +1,545 @@
+{
+  "framework": "Photos",
+  "entries": [
+    {
+      "api": "PHAsset",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHAssetChangeRequest",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHAssetCollection",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHAssetCollectionChangeRequest",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHCachingImageManager",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHChange",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHCollection",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHCollectionList",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHCollectionListChangeRequest",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHContentEditingInputCancelledKey",
+      "kind": "constant",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHContentEditingInputErrorKey",
+      "kind": "constant",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHContentEditingInputRequestOptions",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHContentEditingInputResultIsInCloudKey",
+      "kind": "constant",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHFetchOptions",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHFetchResult",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHFetchResultChangeDetails",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHImageCancelledKey",
+      "kind": "constant",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHImageErrorKey",
+      "kind": "constant",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHImageManager",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHImageManagerMaximumSize",
+      "kind": "constant",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHImageRequestOptions",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHImageResultIsDegradedKey",
+      "kind": "constant",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHImageResultIsInCloudKey",
+      "kind": "constant",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHImageResultRequestIDKey",
+      "kind": "constant",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHObject",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHObjectChangeDetails",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHObjectPlaceholder",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHVideoRequestOptions",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHAssetCreationRequest",
+      "kind": "class",
+      "introduced": "9",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHAssetResource",
+      "kind": "class",
+      "introduced": "9",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHAssetResourceCreationOptions",
+      "kind": "class",
+      "introduced": "9",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHAssetResourceManager",
+      "kind": "class",
+      "introduced": "9",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHAssetResourceRequestOptions",
+      "kind": "class",
+      "introduced": "9",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHLivePhoto",
+      "kind": "class",
+      "introduced": "9.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHLivePhotoInfoCancelledKey",
+      "kind": "constant",
+      "introduced": "9.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHLivePhotoInfoErrorKey",
+      "kind": "constant",
+      "introduced": "9.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHLivePhotoInfoIsDegradedKey",
+      "kind": "constant",
+      "introduced": "9.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHLivePhotoRequestOptions",
+      "kind": "class",
+      "introduced": "9.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHLivePhotoEditingContext",
+      "kind": "class",
+      "introduced": "10",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHLivePhotoFrame",
+      "kind": "protocol",
+      "introduced": "10",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 10, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHLivePhotoShouldRenderAtPlaybackTime",
+      "kind": "constant",
+      "introduced": "11",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHChangeRequest",
+      "kind": "class",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHPhotosErrorDomain",
+      "kind": "constant",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHCloudIdentifier",
+      "kind": "class",
+      "introduced": "15",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHCloudIdentifierMapping",
+      "kind": "class",
+      "introduced": "15",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHLocalIdentifierMapping",
+      "kind": "class",
+      "introduced": "15",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHLocalIdentifiersErrorKey",
+      "kind": "constant",
+      "introduced": "15",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHPersistentChange",
+      "kind": "class",
+      "introduced": "16",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHPersistentChangeFetchResult",
+      "kind": "class",
+      "introduced": "16",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHPersistentChangeToken",
+      "kind": "class",
+      "introduced": "16",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHPersistentObjectChangeDetails",
+      "kind": "class",
+      "introduced": "16",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHAdjustmentData",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHContentEditingInput",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    },
+    {
+      "api": "PHContentEditingOutput",
+      "kind": "class",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Photos"
+    }
+  ]
+}

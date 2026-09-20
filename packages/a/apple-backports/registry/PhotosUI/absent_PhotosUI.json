@@ -1,0 +1,105 @@
+{
+  "framework": "PhotosUI",
+  "entries": [
+    {
+      "api": "PHContentEditingController",
+      "kind": "protocol",
+      "introduced": "8",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, PhotosUI"
+    },
+    {
+      "api": "PHLivePhotoView",
+      "kind": "class",
+      "introduced": "9.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, PhotosUI"
+    },
+    {
+      "api": "PHLivePhotoViewDelegate",
+      "kind": "protocol",
+      "introduced": "9.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 9, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, PhotosUI"
+    },
+    {
+      "api": "PHPickerConfiguration",
+      "kind": "class",
+      "introduced": "14",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, PhotosUI"
+    },
+    {
+      "api": "PHPickerFilter",
+      "kind": "class",
+      "introduced": "14",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, PhotosUI"
+    },
+    {
+      "api": "PHPickerResult",
+      "kind": "class",
+      "introduced": "14",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, PhotosUI"
+    },
+    {
+      "api": "PHPickerViewController",
+      "kind": "class",
+      "introduced": "14",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, PhotosUI"
+    },
+    {
+      "api": "PHPickerViewControllerDelegate",
+      "kind": "protocol",
+      "introduced": "14",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, PhotosUI"
+    },
+    {
+      "api": "-[PHPhotoLibrary presentLimitedLibraryPickerFromViewController:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "there is no limited selection of photos in iOS 6, so there is no picker for it; the status is never limited",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, PhotosUI"
+    },
+    {
+      "api": "-[PHPhotoLibrary presentLimitedLibraryPickerFromViewController:completionHandler:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "there is no limited selection of photos in iOS 6, so there is no picker for it; the status is never limited",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, PhotosUI"
+    }
+  ]
+}
