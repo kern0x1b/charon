@@ -335,6 +335,8 @@ The rest of Photos and of PhotosUI is absent, each row in `registry/Photos/absen
 
 CoreGraphics of iOS 6 already exports `CGPathAddRoundedRect`, the `CGColorCreateGeneric...` functions, `CGColorGetConstantColor` and seven `kCGColorSpace...` names, and the registry records them as the release's own, held to the host's CoreGraphics by `tests/backports/device/coregraphics7.m`. `CGColorSpaceCreateWithName` makes a space for `kCGColorSpaceGenericRGB`, `...Gray` and `...CMYK` only, and answers NULL for `kCGColorSpaceSRGB` and the other names it exports, so a bitmap context made with an sRGB space by name is NULL. `libGraphicsBackports.dylib` carries `CGColorSpaceCopyICCData` (the release's `CGColorSpaceCopyICCProfile`) and `CGColorSpaceUsesExtendedRange`, `CGColorSpaceIsHDR`, `CGColorSpaceUsesITUR_2100TF`, `CGColorSpaceIsHLGBased` and `CGColorSpaceIsPQBased`, which answer NO for every space, as the release makes none of those. The names of the spaces it does not export are absent. `facts/CoreGraphics/CGColorSpace.md`.
 
+The rest of ImageIO and CoreVideo that arrived after iOS 6 is absent, each row in `registry/ImageIO/absent_ImageIO.json` and `registry/CoreVideo/absent_CoreVideo.json`; iOS 6 exports `CGImageSourceCopyMetadataAtIndex`, the eight `kCGImageMetadataNamespace...` names, `kCGImagePropertyPNGCompressionFilter` and `kCGImageSourceSubsampleFactor` itself, which the registry records as the release's own. `facts/ImageIO/ImageIOExports.md`.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and

@@ -1,0 +1,4225 @@
+{
+  "framework": "ImageIO",
+  "entries": [
+    {
+      "api": "CGImageDestinationAddImageAndMetadata()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageDestinationCopyImageSource()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataCopyStringValueWithPath()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataCopyTagMatchingImageProperty()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataCopyTagWithPath()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataCopyTags()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataCreateFromXMPData()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataCreateMutable()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataCreateMutableCopy()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataCreateXMPData()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataEnumerateTagsUsingBlock()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataRegisterNamespaceForPrefix()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataRemoveTagWithPath()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataSetTagWithPath()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataSetValueMatchingImageProperty()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataSetValueWithPath()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataTagCopyName()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataTagCopyNamespace()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataTagCopyPrefix()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataTagCopyQualifiers()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataTagCopyValue()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataTagCreate()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataTagGetType()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageMetadataTagGetTypeID()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageSourceRemoveCacheAtIndex()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageDestinationDateTime",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageDestinationMergeMetadata",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageDestinationMetadata",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageDestinationOrientation",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageMetadataEnumerateRecursively",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageMetadataNamespaceExifEX",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageMetadataPrefixDublinCore",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageMetadataPrefixExif",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageMetadataPrefixExifAux",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageMetadataPrefixExifEX",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageMetadataPrefixIPTCCore",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageMetadataPrefixPhotoshop",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageMetadataPrefixTIFF",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageMetadataPrefixXMPBasic",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageMetadataPrefixXMPRights",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageMetadataShouldExcludeXMP",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyExifISOSpeed",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyExifISOSpeedLatitudeyyy",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyExifISOSpeedLatitudezzz",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyExifRecommendedExposureIndex",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyExifSensitivityType",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyExifStandardOutputSensitivity",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyMakerAppleDictionary",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageDestinationEmbedThumbnail",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageDestinationImageMaxPixelSize",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageMetadataShouldExcludeGPS",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageProperty8BIMVersion",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyAPNGDelayTime",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyAPNGLoopCount",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyAPNGUnclampedDelayTime",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGPSHPositioningError",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyTIFFTileLength",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyTIFFTileWidth",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageDestinationOptimizeColorForSharing",
+      "kind": "constant",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGAsShotNeutral",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGAsShotWhiteXY",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGBaselineExposure",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGBaselineNoise",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGBaselineSharpness",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGBlackLevel",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGCalibrationIlluminant1",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGCalibrationIlluminant2",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGCameraCalibration1",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGCameraCalibration2",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGCameraCalibrationSignature",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGColorMatrix1",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGColorMatrix2",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGFixVignetteRadial",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGNoiseProfile",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGPrivateData",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGProfileCalibrationSignature",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGWarpFisheye",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGWarpRectilinear",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGWhiteLevel",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyExifSubsecTimeOriginal",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageDestinationAddAuxiliaryDataInfo()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageSourceCopyAuxiliaryDataInfoAtIndex()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageAuxiliaryDataInfoData",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageAuxiliaryDataInfoDataDescription",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageAuxiliaryDataInfoMetadata",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageAuxiliaryDataTypeDepth",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageAuxiliaryDataTypeDisparity",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyAuxiliaryData",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyAuxiliaryDataType",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyBytesPerRow",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyFileContentsDictionary",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyHeight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyImageCount",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyImages",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyNamedColorSpace",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyPNGTransparency",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyPixelFormat",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyPrimaryImage",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyThumbnailImages",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyWidth",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageMetadataNamespaceIPTCExtension",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageMetadataPrefixIPTCExtension",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtAboutCvTerm",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtAboutCvTermCvId",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtAboutCvTermId",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtAboutCvTermName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtAboutCvTermRefinedAbout",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtAddlModelInfo",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkCircaDateCreated",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkContentDescription",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkContributionDescription",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkCopyrightNotice",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkCopyrightOwnerID",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkCopyrightOwnerName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkCreator",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkCreatorID",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkDateCreated",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkLicensorID",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkLicensorName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkOrObject",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkPhysicalDescription",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkSource",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkSourceInvURL",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkSourceInventoryNo",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkStylePeriod",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtArtworkTitle",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtAudioBitrate",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtAudioBitrateMode",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtAudioChannelCount",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtCircaDateCreated",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtContainerFormat",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtContainerFormatIdentifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtContainerFormatName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtContributor",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtContributorIdentifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtContributorName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtContributorRole",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtControlledVocabularyTerm",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtCopyrightYear",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtCreator",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtCreatorIdentifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtCreatorName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtCreatorRole",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtDataOnScreen",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtDataOnScreenRegion",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtDataOnScreenRegionD",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtDataOnScreenRegionH",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtDataOnScreenRegionText",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtDataOnScreenRegionUnit",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtDataOnScreenRegionW",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtDataOnScreenRegionX",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtDataOnScreenRegionY",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtDigitalImageGUID",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtDigitalSourceFileType",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtDigitalSourceType",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtDopesheet",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtDopesheetLink",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtDopesheetLinkLink",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtDopesheetLinkLinkQualifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtEmbdEncRightsExpr",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtEmbeddedEncodedRightsExpr",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtEmbeddedEncodedRightsExprLangID",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtEmbeddedEncodedRightsExprType",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtEpisode",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtEpisodeIdentifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtEpisodeName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtEpisodeNumber",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtEvent",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtExternalMetadataLink",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtFeedIdentifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtGenre",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtGenreCvId",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtGenreCvTermId",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtGenreCvTermName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtGenreCvTermRefinedAbout",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtHeadline",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtIPTCLastEdited",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLinkedEncRightsExpr",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLinkedEncodedRightsExpr",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLinkedEncodedRightsExprLangID",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLinkedEncodedRightsExprType",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLocationCity",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLocationCountryCode",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLocationCountryName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLocationCreated",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLocationGPSAltitude",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLocationGPSLatitude",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLocationGPSLongitude",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLocationIdentifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLocationLocationId",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLocationLocationName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLocationProvinceState",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLocationShown",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLocationSublocation",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtLocationWorldRegion",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtMaxAvailHeight",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtMaxAvailWidth",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtModelAge",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtOrganisationInImageCode",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtOrganisationInImageName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPersonHeard",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPersonHeardIdentifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPersonHeardName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPersonInImage",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPersonInImageCharacteristic",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPersonInImageCvTermCvId",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPersonInImageCvTermId",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPersonInImageCvTermName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPersonInImageCvTermRefinedAbout",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPersonInImageDescription",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPersonInImageId",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPersonInImageName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPersonInImageWDetails",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtProductInImage",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtProductInImageDescription",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtProductInImageGTIN",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtProductInImageName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPublicationEvent",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPublicationEventDate",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPublicationEventIdentifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtPublicationEventName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRating",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingRatingRegion",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingRegionCity",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingRegionCountryCode",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingRegionCountryName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingRegionGPSAltitude",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingRegionGPSLatitude",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingRegionGPSLongitude",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingRegionIdentifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingRegionLocationId",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingRegionLocationName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingRegionProvinceState",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingRegionSublocation",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingRegionWorldRegion",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingScaleMaxValue",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingScaleMinValue",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingSourceLink",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingValue",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRatingValueLogoLink",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRegistryEntryRole",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRegistryID",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRegistryItemID",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtRegistryOrganisationID",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtReleaseReady",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtSeason",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtSeasonIdentifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtSeasonName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtSeasonNumber",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtSeries",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtSeriesIdentifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtSeriesName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtShownEvent",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtShownEventIdentifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtShownEventName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtStorylineIdentifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtStreamReady",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtStylePeriod",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtSupplyChainSource",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtSupplyChainSourceIdentifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtSupplyChainSourceName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtTemporalCoverage",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtTemporalCoverageFrom",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtTemporalCoverageTo",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtTranscript",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtTranscriptLink",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtTranscriptLinkLink",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtTranscriptLinkLinkQualifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtVideoBitrate",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtVideoBitrateMode",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtVideoDisplayAspectRatio",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtVideoEncodingProfile",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtVideoShotType",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtVideoShotTypeIdentifier",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtVideoShotTypeName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtVideoStreamsCount",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtVisualColor",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtWorkflowTag",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtWorkflowTagCvId",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtWorkflowTagCvTermId",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtWorkflowTagCvTermName",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyIPTCExtWorkflowTagCvTermRefinedAbout",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyOpenEXRAspectRatio",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyOpenEXRDictionary",
+      "kind": "constant",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGImageSourceGetPrimaryImageIndex()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageAuxiliaryDataTypePortraitEffectsMatte",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGActiveArea",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGAnalogBalance",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGAntiAliasStrength",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGAsShotICCProfile",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGAsShotPreProfileMatrix",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGAsShotProfileName",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGBaselineExposureOffset",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGBayerGreenSplit",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGBestQualityScale",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGBlackLevelDeltaH",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGBlackLevelDeltaV",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGBlackLevelRepeatDim",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGCFALayout",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGCFAPlaneColor",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGChromaBlurRadius",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGColorimetricReference",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGCurrentICCProfile",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGCurrentPreProfileMatrix",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGDefaultBlackRender",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGDefaultCropOrigin",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGDefaultCropSize",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGDefaultScale",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGDefaultUserCrop",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGExtraCameraProfiles",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGForwardMatrix1",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGForwardMatrix2",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGLinearResponseLimit",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGLinearizationTable",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGMakerNoteSafety",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGMaskedAreas",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGNewRawImageDigest",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGNoiseReductionApplied",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGOpcodeList1",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGOpcodeList2",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGOpcodeList3",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGOriginalBestQualityFinalSize",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGOriginalDefaultCropSize",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGOriginalDefaultFinalSize",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGOriginalRawFileData",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGOriginalRawFileDigest",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGOriginalRawFileName",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGPreviewApplicationName",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGPreviewApplicationVersion",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGPreviewColorSpace",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGPreviewDateTime",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGPreviewSettingsDigest",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGPreviewSettingsName",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGProfileCopyright",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGProfileEmbedPolicy",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGProfileHueSatMapData1",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGProfileHueSatMapData2",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGProfileHueSatMapDims",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGProfileHueSatMapEncoding",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGProfileLookTableData",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGProfileLookTableDims",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGProfileLookTableEncoding",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGProfileName",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGProfileToneCurve",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGRawDataUniqueID",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGRawImageDigest",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGRawToPreviewGain",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGReductionMatrix1",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGReductionMatrix2",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGRowInterleaveFactor",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGShadowScale",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyDNGSubTileBlockSize",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyPNGComment",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyPNGDisclaimer",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyPNGSource",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyPNGWarning",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGAnimateImageAtURLWithBlock()",
+      "kind": "function",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "CGAnimateImageDataWithBlock()",
+      "kind": "function",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageAnimationDelayTime",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageAnimationLoopCount",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageAnimationStartIndex",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageAuxiliaryDataTypeSemanticSegmentationSkinMatte",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageAuxiliaryDataTypeSemanticSegmentationTeethMatte",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyAPNGCanvasPixelHeight",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyAPNGCanvasPixelWidth",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyAPNGFrameInfoArray",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyExifOffsetTime",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyExifOffsetTimeDigitized",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyExifOffsetTimeOriginal",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGIFCanvasPixelHeight",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGIFCanvasPixelWidth",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGIFFrameInfoArray",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyHEICSCanvasPixelHeight",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyHEICSCanvasPixelWidth",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyHEICSDelayTime",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyHEICSDictionary",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyHEICSFrameInfoArray",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyHEICSLoopCount",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyHEICSUnclampedDelayTime",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyExifCompositeImage",
+      "kind": "constant",
+      "introduced": "13.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyExifSourceExposureTimesOfCompositeImage",
+      "kind": "constant",
+      "introduced": "13.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyExifSourceImageNumberOfCompositeImage",
+      "kind": "constant",
+      "introduced": "13.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyTGACompression",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyTGADictionary",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyWebPCanvasPixelHeight",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyWebPCanvasPixelWidth",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyWebPDelayTime",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyWebPDictionary",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyWebPFrameInfoArray",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyWebPLoopCount",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyWebPUnclampedDelayTime",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageAuxiliaryDataTypeHDRGainMap",
+      "kind": "constant",
+      "introduced": "14.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageAuxiliaryDataTypeSemanticSegmentationGlassesMatte",
+      "kind": "constant",
+      "introduced": "14.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageAuxiliaryDataTypeSemanticSegmentationSkyMatte",
+      "kind": "constant",
+      "introduced": "14.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImageDestinationPreserveGainMap",
+      "kind": "constant",
+      "introduced": "14.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGroupImageIndexLeft",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGroupImageIndexRight",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGroupImageIsAlternateImage",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGroupImageIsLeftImage",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGroupImageIsRightImage",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGroupImagesAlternate",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGroupIndex",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGroupType",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGroupTypeAlternate",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGroupTypeStereoPair",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGroups",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyImageIndex",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGroupImageBaseline",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyGroupImageDisparityAdjustment",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyHEIFDictionary",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kIIOCameraExtrinsics_CoordinateSystemID",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kIIOCameraExtrinsics_Position",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kIIOCameraExtrinsics_Rotation",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kIIOCameraModelType_GenericPinhole",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kIIOCameraModelType_SimplifiedPinhole",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kIIOCameraModel_Intrinsics",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kIIOCameraModel_ModelType",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kIIOMetadata_CameraExtrinsicsKey",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kIIOMetadata_CameraModelKey",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyOpenEXRCompression",
+      "kind": "constant",
+      "introduced": "16.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    },
+    {
+      "api": "kCGImagePropertyPNGPixelsAspectRatio",
+      "kind": "constant",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, ImageIO"
+    }
+  ]
+}

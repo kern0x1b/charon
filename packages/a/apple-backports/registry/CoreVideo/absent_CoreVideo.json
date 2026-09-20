@@ -1,0 +1,505 @@
+{
+  "framework": "CoreVideo",
+  "entries": [
+    {
+      "api": "CVMetalTextureCacheCreate()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "CVMetalTextureCacheCreateTextureFromImage()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "CVMetalTextureCacheFlush()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "CVMetalTextureCacheGetTypeID()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "CVMetalTextureGetCleanTexCoords()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "CVMetalTextureGetTexture()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "CVMetalTextureGetTypeID()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "CVMetalTextureIsFlipped()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVImageBufferAlphaChannelIsOpaque",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVMetalTextureCacheMaximumTextureAgeKey",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelBufferMetalCompatibilityKey",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelFormatContainsRGB",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelFormatContainsYCbCr",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVImageBufferColorPrimaries_DCI_P3",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVImageBufferColorPrimaries_ITU_R_2020",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVImageBufferColorPrimaries_P3_D65",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVImageBufferTransferFunction_ITU_R_2020",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVImageBufferYCbCrMatrix_DCI_P3",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVImageBufferYCbCrMatrix_ITU_R_2020",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVImageBufferYCbCrMatrix_P3_D65",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelBufferOpenGLESTextureCacheCompatibilityKey",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelFormatComponentRange",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelFormatComponentRange_FullRange",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelFormatComponentRange_VideoRange",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelFormatComponentRange_WideRange",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "CVImageBufferCreateColorSpaceFromAttachments()",
+      "kind": "function",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVImageBufferTransferFunction_SMPTE_ST_428_1",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVImageBufferAlphaChannelModeKey",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVImageBufferAlphaChannelMode_PremultipliedAlpha",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVImageBufferAlphaChannelMode_StraightAlpha",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVMetalTextureStorageMode",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelBufferProResRAWKey_BlackLevel",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelBufferProResRAWKey_ColorMatrix",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelBufferProResRAWKey_GainFactor",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelBufferProResRAWKey_RecommendedCrop",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelBufferProResRAWKey_SenselSitingOffsets",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelBufferProResRAWKey_WhiteBalanceBlueFactor",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelBufferProResRAWKey_WhiteBalanceCCT",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelBufferProResRAWKey_WhiteBalanceRedFactor",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelBufferProResRAWKey_WhiteLevel",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelBufferVersatileBayerKey_BayerPattern",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "CVBufferCopyAttachment()",
+      "kind": "function",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "CVBufferCopyAttachments()",
+      "kind": "function",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "CVBufferHasAttachment()",
+      "kind": "function",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "CVIsCompressedPixelFormatAvailable()",
+      "kind": "function",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "CVPixelBufferCopyCreationAttributes()",
+      "kind": "function",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVImageBufferAmbientViewingEnvironmentKey",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVImageBufferRegionOfInterestKey",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelBufferProResRAWKey_MetadataExtension",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    },
+    {
+      "api": "kCVPixelFormatContainsSenselArray",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, CoreVideo"
+    }
+  ]
+}
