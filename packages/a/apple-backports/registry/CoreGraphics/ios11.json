@@ -1,0 +1,258 @@
+{
+  "framework": "CoreGraphics",
+  "entries": [
+    {
+      "api": "CGColorSpaceGetName()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a departure from 12.0 in one name: iOS 6 makes a space named kCGColorSpaceGenericRGB out of its device RGB space, so the name it holds, and this function answers, is kCGColorSpaceDeviceRGB where iOS 12 answers kCGColorSpaceGenericRGB",
+      "effect": "the name of a space as the release's own CGColorSpaceCopyName gives it, without a retain, the same object for the same name every time; NULL for NULL and for a space that has no name; the names of a generic RGB space and a device RGB space are not told apart",
+      "facts": "facts/CoreGraphics/CGColorSpaceGetName.md",
+      "source": "CoreGraphics of iOS 12.0 arm64: _CGColorSpaceGetName at 0x182b69080, which answers the name a space holds without retaining it, and _CGColorSpaceCopyName at 0x182b69090, which answers the same name retained; an iPad 2 running 6.1.3 for what the release has and says"
+    },
+    {
+      "api": "kCGColorSpaceGenericLab",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the symbol is carried so that an application which names it loads; iOS 6 cannot make a Lab space by name",
+      "effect": "the constant is there with the value iOS 12 gives it; CGColorSpaceCreateWithName answers NULL for it, as it does for every name of the release that it cannot make, and an application that checks the result handles it",
+      "facts": "facts/CoreGraphics/CGColorSpaceGetName.md",
+      "source": "CoreGraphics of iOS 12.0 arm64: the string of the constant; an iPad 2 running 6.1.3, where CGColorSpaceCreateWithName answers NULL for the names the release does not make and has no such symbol"
+    },
+    {
+      "api": "CGPathApplyWithBlock()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the block is called once for each element of the path in the order of the path, with the element and its points, and not at all for a NULL path or a NULL block; it is carried over the release's own CGPathApply, which walks the same elements",
+      "facts": "facts/CoreGraphics/CGApplyBlocks.md",
+      "source": "CoreGraphics of iOS 12.0 arm64: _CGPathApplyWithBlock at 0x182d20840 and its block at 0x182d208f4, which call the path's own apply and hand each element to the block; the host's CoreGraphics through the differential test for what comes out"
+    },
+    {
+      "api": "CGImageGetByteOrderInfo()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the byte order bits of the bitmap info of the image, 0 for a NULL image",
+      "facts": "facts/CoreGraphics/CGApplyBlocks.md",
+      "source": "CoreGraphics of iOS 12.0 arm64: _CGImageGetByteOrderInfo at 0x182b15310, the bitmap info of the image masked with 0x7000"
+    },
+    {
+      "api": "CGImageGetPixelFormatInfo()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the pixel format bits of the bitmap info of the image, 0 for a NULL image",
+      "facts": "facts/CoreGraphics/CGApplyBlocks.md",
+      "source": "CoreGraphics of iOS 12.0 arm64: _CGImageGetPixelFormatInfo at 0x182b15320, the bitmap info of the image masked with 0xF0000"
+    },
+    {
+      "api": "CGPDFArrayApplyBlock()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the block is called for each element that can be read, in order, with the index, the object and the info pointer, and the walk stops when the block answers false; nothing is called for a NULL array or block",
+      "facts": "facts/CoreGraphics/CGApplyBlocks.md",
+      "source": "CoreGraphics of iOS 12.0 arm64: _CGPDFArrayApplyBlock at 0x182b43f74; the host's CoreGraphics through the differential test for what comes out"
+    },
+    {
+      "api": "CGPDFDictionaryApplyBlock()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a departure from 12.0 in what it cannot do: the release's own walk over a dictionary cannot be stopped, so after the block answers false the block is not called again and the walk runs to its end unseen",
+      "effect": "the block is called for each entry, in the order the release walks the dictionary, with the key, the object and the info pointer, and not again once it answered false; nothing is called for a NULL dictionary or block",
+      "facts": "facts/CoreGraphics/CGApplyBlocks.md",
+      "source": "CoreGraphics of iOS 12.0 arm64: _CGPDFDictionaryApplyBlock at 0x182cebb00; the host's CoreGraphics through the differential test for what comes out"
+    },
+    {
+      "api": "CGColorConversionInfoCreateFromListWithArguments()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no colour conversion object to build one from",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "kCGColorConversionTRCSize",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no colour conversion object that would read it",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "CGDataProviderGetInfo()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release keeps the info pointer of a data provider out of reach, and nothing of ours sees a provider made before it",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "CGPDFContextSetOutline()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release writes no outline into a document",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "CGPDFDocumentGetOutline()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release gives no outline of a document, and reading one from the catalog is not carried",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "CGPDFDocumentGetAccessPermissions()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release gives the access permissions of a document in no form this package reads",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "kCGPDFContextAccessPermissions",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release writes and gives no outline or access permissions, so the key names nothing",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "kCGPDFOutlineChildren",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release writes and gives no outline or access permissions, so the key names nothing",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "kCGPDFOutlineDestination",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release writes and gives no outline or access permissions, so the key names nothing",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "kCGPDFOutlineDestinationRect",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release writes and gives no outline or access permissions, so the key names nothing",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "kCGPDFOutlineTitle",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release writes and gives no outline or access permissions, so the key names nothing",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "kCGAdaptiveMaximumBitDepth",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no adaptive bit depth to name a limit of",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceExtendedLinearDisplayP3",
+      "kind": "constant",
+      "introduced": "12.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "it arrived in 12.3, later than the newest iOS 12 release this package reads, 12.0, so the value that release gives is not read, and the value of a later release is known to differ for the names of this family; iOS 6 cannot make a space of it either",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceExtendedLinearITUR_2020",
+      "kind": "constant",
+      "introduced": "12.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "it arrived in 12.3, later than the newest iOS 12 release this package reads, 12.0, so the value that release gives is not read, and the value of a later release is known to differ for the names of this family; iOS 6 cannot make a space of it either",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceDisplayP3_HLG",
+      "kind": "constant",
+      "introduced": "12.6",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "it arrived in 12.6, later than the newest iOS 12 release this package reads, 12.0, so the value that release gives is not read, and the value of a later release is known to differ for the names of this family; iOS 6 cannot make a space of it either",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceDisplayP3_PQ_EOTF",
+      "kind": "constant",
+      "introduced": "12.6",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "it arrived in 12.6, later than the newest iOS 12 release this package reads, 12.0, so the value that release gives is not read, and the value of a later release is known to differ for the names of this family; iOS 6 cannot make a space of it either",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceITUR_2020_HLG",
+      "kind": "constant",
+      "introduced": "12.6",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "it arrived in 12.6, later than the newest iOS 12 release this package reads, 12.0, so the value that release gives is not read, and the value of a later release is known to differ for the names of this family; iOS 6 cannot make a space of it either",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    },
+    {
+      "api": "kCGColorSpaceITUR_2020_PQ_EOTF",
+      "kind": "constant",
+      "introduced": "12.6",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "it arrived in 12.6, later than the newest iOS 12 release this package reads, 12.0, so the value that release gives is not read, and the value of a later release is known to differ for the names of this family; iOS 6 cannot make a space of it either",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreGraphics"
+    }
+  ]
+}
