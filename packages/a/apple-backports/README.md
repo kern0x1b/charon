@@ -317,6 +317,8 @@ question - a token, a session, a setting, an anchor, a tag - is absent, and
 
 The rest of Photos and of PhotosUI is absent, each row in `registry/Photos/absent_Photos.json` and `registry/PhotosUI/absent_PhotosUI.json`: the assets, collections, fetch results, image and resource managers, live photos, content editing, the change requests and the picker of iOS 14 need the Photos database or the picker service, and nothing in iOS 6 does their work. `PHPhotoLibrary`, `PHAdjustmentData`, `PHContentEditingInput` and `PHContentEditingOutput` are declared by the headers of both frameworks, and are decided once, in the file of Photos, so the difference of PhotosUI alone shows those four classes as undecided.
 
+`GCController`, `GCMouse` and `GCKeyboard` are carried in `libGameControllerBackports.dylib`, built with the `gamecontroller` config, for what an application asks before there is a device: `+[GCController controllers]` and `+[GCMouse mice]` are empty, `+current` and `+coalescedKeyboard` are nil, the discovery ends at once and calls its handler on the main queue, and the notification names exist and are never posted. No device is ever attached, so no object of these classes exists and the profiles, elements, snapshots and the members of an instance are absent. `facts/GameController/GameController.md`.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and
