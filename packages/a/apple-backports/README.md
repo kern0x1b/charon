@@ -497,6 +497,13 @@ a background session make a task that begins with no network say so through
 a background session and `willBeginDelayedRequest` lets the delegate continue, replace or cancel them. The size hints
 `countOfBytesClientExpects...` are kept and read by nothing. See `facts/Foundation/NSURLSessionConnectivity.md`.
 
+`NLTokenizer` and `NLLanguageRecognizer` of NaturalLanguage, with the 57 `NLLanguage` constants, are carried in
+the Foundation library: words, sentences and paragraphs come from the release's `CFStringTokenizer` with the
+attributes and emoji sequences of the system, and the recognizer votes sentence by sentence with the release's tagger.
+The scripts the release cuts with a smaller dictionary (Chinese) and the probabilities of the recognizer differ, and
+the rest of the framework (`NLTagger`, `NLModel`, embeddings) is not carried. See
+`facts/NaturalLanguage/NLTokenizer.md` and `NLLanguageRecognizer.md`.
+
 ### Not carried, and why
 
 Nothing here is a quiet stub. Where the behaviour cannot be produced, the API
