@@ -1,0 +1,355 @@
+{
+  "framework": "Foundation",
+  "entries": [
+    {
+      "api": "+[NSAttributedString localizedAttributedStringWithFormat:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "+[NSAttributedString localizedAttributedStringWithFormat:options:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "-[NSAttributedString attributedStringByInflectingString]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "-[NSAttributedString initWithContentsOfMarkdownFileAtURL:options:baseURL:error:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "-[NSAttributedString initWithFormat:options:locale:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "-[NSAttributedString initWithFormat:options:locale:arguments:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "-[NSAttributedString initWithMarkdown:options:baseURL:error:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "-[NSAttributedString initWithMarkdownString:options:baseURL:error:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "-[NSBundle localizedAttributedStringForKey:value:table:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSBundle a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "-[NSMutableAttributedString appendLocalizedFormat:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSMutableAttributedString a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSAlternateDescriptionAttributeName",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSAttributedStringMarkdownParsingOptions",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSImageURLAttributeName",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSInflectionAlternativeAttributeName",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSInflectionRule",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSInflectionRuleAttributeName",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSInflectionRuleExplicit",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSInlinePresentationIntentAttributeName",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSLanguageIdentifierAttributeName",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSMorphology",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSMorphologyAttributeName",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSMorphologyCustomPronoun",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSMutableURLRequest.attribution",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSMutableURLRequest a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSPersonNameComponentsFormatter.locale",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSPersonNameComponentsFormatter a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSPresentationIntent",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSPresentationIntentAttributeName",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSProgressFileOperationKindDuplicating",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSReplacementIndexAttributeName",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSURLRequest.attribution",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURLRequest a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSURLSessionTask.delegate",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURLSessionTask a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "-[NSString initWithValidatedFormat:validFormatSpecifiers:arguments:error:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSString a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "-[NSURLSessionTaskDelegate URLSession:didCreateTask:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a NSURLSessionTaskDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSAttributedStringMarkdownSourcePosition",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSMarkdownSourcePositionAttributeName",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Foundation"
+    },
+    {
+      "api": "NSURLSessionConfiguration.requiresDNSSECValidation",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSURLSessionConfiguration a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, Foundation"
+    }
+  ]
+}

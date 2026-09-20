@@ -1,0 +1,3415 @@
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "+[NSTextAttachment registerTextAttachmentViewProviderClass:forFileType:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSTextAttachment a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[NSTextAttachment textAttachmentViewProviderClassForFileType:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSTextAttachment a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UIAction captureTextFromCameraActionForResponder:identifier:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIAction a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UIButton buttonWithConfiguration:primaryAction:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIButton a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UIDeferredMenuElement elementWithUncachedProvider:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIDeferredMenuElement a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UIImageSymbolConfiguration configurationPreferringMulticolor]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageSymbolConfiguration a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UIImageSymbolConfiguration configurationWithHierarchicalColor:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageSymbolConfiguration a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UIImageSymbolConfiguration configurationWithPaletteColors:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageSymbolConfiguration a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UIListContentConfiguration extraProminentInsetGroupedHeaderConfiguration]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIListContentConfiguration a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UIListContentConfiguration prominentInsetGroupedHeaderConfiguration]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIListContentConfiguration a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UIPointerStyle systemPointerStyle]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIPointerStyle a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[NSDiffableDataSourceSnapshot reconfigureItemsWithIdentifiers:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSDiffableDataSourceSnapshot a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[NSTextAttachmentLayout attachmentBoundsForAttributes:location:textContainer:proposedLineFragment:position:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSTextAttachmentLayout a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[NSTextAttachmentLayout imageForBounds:attributes:location:textContainer:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSTextAttachmentLayout a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[NSTextAttachmentLayout viewProviderForParentView:location:textContainer:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSTextAttachmentLayout a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIAdaptivePresentationControllerDelegate presentationController:prepareAdaptivePresentationController:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UIAdaptivePresentationControllerDelegate that sends anything like it: the message arrived in iOS 15",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIApplicationDelegate applicationShouldAutomaticallyLocalizeKeyCommands:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UIApplicationDelegate that sends anything like it: the message arrived in iOS 15",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIButton setNeedsUpdateConfiguration]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIButton a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIButton updateConfiguration]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIButton a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UICollectionView reconfigureItemsAtIndexPaths:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UICollectionView a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UICollectionViewDelegate collectionView:sceneActivationConfigurationForItemAtIndexPath:point:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UICollectionViewDelegate that sends anything like it: the message arrived in iOS 15",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UICollectionViewDelegate collectionView:selectionFollowsFocusForItemAtIndexPath:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UICollectionViewDelegate that sends anything like it: the message arrived in iOS 15",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UICollectionViewDelegate collectionView:targetIndexPathForMoveOfItemFromOriginalIndexPath:atCurrentIndexPath:toProposedIndexPath:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UICollectionViewDelegate that sends anything like it: the message arrived in iOS 15",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UICollectionViewDiffableDataSource applySnapshotUsingReloadData:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UICollectionViewDiffableDataSource that sends anything like it: the message arrived in iOS 15",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UICollectionViewDiffableDataSource applySnapshotUsingReloadData:completion:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UICollectionViewDiffableDataSource that sends anything like it: the message arrived in iOS 15",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UICollectionViewDiffableDataSource indexForSectionIdentifier:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UICollectionViewDiffableDataSource that sends anything like it: the message arrived in iOS 15",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UICollectionViewDiffableDataSource sectionIdentifierForIndex:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UICollectionViewDiffableDataSource that sends anything like it: the message arrived in iOS 15",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIColorPickerViewControllerDelegate colorPickerViewController:didSelectColor:continuously:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UIColorPickerViewControllerDelegate that sends anything like it: the message arrived in iOS 15",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIImage imageByPreparingForDisplay]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImage a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIImage imageByPreparingThumbnailOfSize:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImage a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIImage prepareForDisplayWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImage a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIImage prepareThumbnailOfSize:completionHandler:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImage a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIResponder captureTextFromCamera:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIResponder a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIResponderStandardEditActions pasteAndGo:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIResponderStandardEditActions pasteAndMatchStyle:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIResponderStandardEditActions pasteAndSearch:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIResponderStandardEditActions print:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITableView reconfigureRowsAtIndexPaths:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITableView a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITableViewDelegate tableView:selectionFollowsFocusForRowAtIndexPath:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITableViewDelegate that sends anything like it: the message arrived in iOS 15",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITableViewDiffableDataSource applySnapshotUsingReloadData:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITableViewDiffableDataSource that sends anything like it: the message arrived in iOS 15",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITableViewDiffableDataSource applySnapshotUsingReloadData:completion:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITableViewDiffableDataSource that sends anything like it: the message arrived in iOS 15",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITableViewDiffableDataSource indexForSectionIdentifier:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITableViewDiffableDataSource that sends anything like it: the message arrived in iOS 15",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITableViewDiffableDataSource sectionIdentifierForIndex:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITableViewDiffableDataSource that sends anything like it: the message arrived in iOS 15",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIViewController contentScrollViewForEdge:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIViewController a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIViewController setContentScrollView:forEdge:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIViewController a method like it: it arrived in iOS 15",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSDiffableDataSourceSnapshot.reconfiguredItemIdentifiers",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSDiffableDataSourceSnapshot a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSDiffableDataSourceSnapshot.reloadedItemIdentifiers",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSDiffableDataSourceSnapshot a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSDiffableDataSourceSnapshot.reloadedSectionIdentifiers",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSDiffableDataSourceSnapshot a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSMutableParagraphStyle.usesDefaultHyphenation",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSMutableParagraphStyle a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSParagraphStyle.usesDefaultHyphenation",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSParagraphStyle a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextAttachment.allowsTextAttachmentView",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSTextAttachment a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextAttachment.lineLayoutPadding",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSTextAttachment a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextAttachment.usesTextAttachmentView",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSTextAttachment a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextAttachmentViewProvider",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextContainer.textLayoutManager",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSTextContainer a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextContentManager",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextContentManagerDelegate",
+      "kind": "protocol",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextContentStorage",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextContentStorageDelegate",
+      "kind": "protocol",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextContentStorageUnsupportedAttributeAddedNotification",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextElement",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextElementProvider",
+      "kind": "protocol",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextLayoutFragment",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextLayoutManager",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextLayoutManagerDelegate",
+      "kind": "protocol",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextLineFragment",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextLocation",
+      "kind": "protocol",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextParagraph",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextRange",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextSelection",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextSelectionDataSource",
+      "kind": "protocol",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextSelectionNavigation",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextStorage.textStorageObserver",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSTextStorage a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextStorageObserving",
+      "kind": "protocol",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextViewportLayoutController",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextViewportLayoutControllerDelegate",
+      "kind": "protocol",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIActionPaste",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIActionPasteAndGo",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIActionPasteAndMatchStyle",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIActionPasteAndSearch",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIActivityItemsConfigurationMetadataKeyLinkPresentationMetadata",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIActivityItemsConfigurationProviding",
+      "kind": "protocol",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIBackgroundConfiguration.image",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBackgroundConfiguration a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIBackgroundConfiguration.imageContentMode",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBackgroundConfiguration a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIBandSelectionInteraction",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIBarButtonItem.changesSelectionAsPrimaryAction",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIButton.automaticallyUpdatesConfiguration",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIButton.behavioralStyle",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIButton.changesSelectionAsPrimaryAction",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIButton.configuration",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIButton.configurationUpdateHandler",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIButton.held",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIButton.hovered",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIButton.preferredBehavioralStyle",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIButton.subtitleLabel",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIButtonConfiguration",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UICollectionLayoutListConfiguration.headerTopPadding",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UICollectionLayoutListConfiguration a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UICollectionView.allowsFocus",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UICollectionView a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UICollectionView.allowsFocusDuringEditing",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UICollectionView a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UICollectionViewCell.configurationUpdateHandler",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UICollectionViewCell a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UICollectionViewLayoutAutomaticDimension",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIColor.systemCyanColor",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIColor a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIColor.systemMintColor",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIColor a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIColor.tintColor",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIColor a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIControl.toolTip",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIControl a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIControl.toolTipInteraction",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIControl a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIDatePicker.roundsToMinuteInterval",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIDatePicker a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIFocusEffect",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIFocusHaloEffect",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIFocusItem.focusEffect",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIFocusItem a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIFocusItem.focusGroupPriority",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIFocusItem a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIFocusItem.isTransparentFocusItem",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIFocusItem a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIKeyInputDelete",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIKeyboardLayoutGuide",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIListSeparatorConfiguration.visualEffect",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIListSeparatorConfiguration a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIMenu.selectedElements",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIMenu a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIMenuElement.subtitle",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIMenuElement a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIMenuSidebar",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationBar.compactScrollEdgeAppearance",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationBar a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationItem.compactScrollEdgeAppearance",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPasteboardDetectionPatternCalendarEvent",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPasteboardDetectionPatternEmailAddress",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPasteboardDetectionPatternFlightNumber",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPasteboardDetectionPatternLink",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPasteboardDetectionPatternMoneyAmount",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPasteboardDetectionPatternPhoneNumber",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPasteboardDetectionPatternPostalAddress",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPasteboardDetectionPatternShipmentTrackingNumber",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPointerAccessory",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPointerAccessoryPositionBottom",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPointerAccessoryPositionBottomLeft",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPointerAccessoryPositionBottomRight",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPointerAccessoryPositionLeft",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPointerAccessoryPositionRight",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPointerAccessoryPositionTop",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPointerAccessoryPositionTopLeft",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPointerAccessoryPositionTopRight",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPointerStyle.accessories",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIPointerStyle a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPrintInteractionController.showsPaperOrientation",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIPrintInteractionController a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIScene.subtitle",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIScene a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISceneErrorDomain",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISheetPresentationController",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISheetPresentationControllerAutomaticDimension",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISheetPresentationControllerDelegate",
+      "kind": "protocol",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISheetPresentationControllerDetent",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISheetPresentationControllerDetentIdentifierLarge",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISheetPresentationControllerDetentIdentifierMedium",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISlider.behavioralStyle",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UISlider a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISlider.preferredBehavioralStyle",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UISlider a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITabBar.scrollEdgeAppearance",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITabBar a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITabBarItem.scrollEdgeAppearance",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITabBarItem a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITableView.allowsFocus",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITableView a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITableView.allowsFocusDuringEditing",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITableView a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITableView.fillerRowHeight",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITableView a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITableView.prefetchingEnabled",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITableView a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITableViewCell.configurationUpdateHandler",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITableViewCell a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITableViewHeaderFooterView.configurationUpdateHandler",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITableViewHeaderFooterView a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITextContentTypeDateTime",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITextContentTypeFlightNumber",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITextContentTypeShipmentTrackingNumber",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITextField.interactionState",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextField a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITextView.interactionState",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIToolTipConfiguration",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIToolTipInteraction",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIToolTipInteractionDelegate",
+      "kind": "protocol",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIToolbar.compactScrollEdgeAppearance",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIToolbar a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIToolbar.scrollEdgeAppearance",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIToolbar a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITrackingLayoutGuide",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIView.appliedContentSizeCategoryLimitsDescription",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIView a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIView.focusEffect",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIView a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIView.focusGroupPriority",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIView a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIView.keyboardLayoutGuide",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIView a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIView.maximumContentSizeCategory",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIView a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIView.minimumContentSizeCategory",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIView a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIViewConfigurationState.pinned",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIViewConfigurationState a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIViewController.focusGroupIdentifier",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIViewController a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIViewController.sheetPresentationController",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIViewController a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIWindow.canBecomeKeyWindow",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIWindow a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIWindowScene.activityItemsConfigurationSource",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIWindowScene a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIWindowScene.focusSystem",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIWindowScene a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIWindowScene.keyWindow",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIWindowScene a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIWindowSceneActivationAction",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIWindowSceneActivationConfiguration",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIWindowSceneActivationInteraction",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIWindowSceneActivationRequestOptions",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIActivityTypeSharePlay",
+      "kind": "constant",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIActivityViewController.allowsProminentActivity",
+      "kind": "property",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIActivityViewController a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIApplicationOpenNotificationSettingsURLString",
+      "kind": "constant",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UICellAccessoryDetail",
+      "kind": "class",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPrintFormatter.requiresMainThread",
+      "kind": "property",
+      "introduced": "16",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIPrintFormatter a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[NSCollectionLayoutGroup horizontalGroupWithLayoutSize:repeatingSubitem:count:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSCollectionLayoutGroup a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[NSCollectionLayoutGroup verticalGroupWithLayoutSize:repeatingSubitem:count:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSCollectionLayoutGroup a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UIBarButtonItemGroup fixedGroupWithRepresentativeItem:items:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItemGroup a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UIBarButtonItemGroup movableGroupWithCustomizationIdentifier:representativeItem:items:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItemGroup a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UIBarButtonItemGroup optionalGroupWithCustomizationIdentifier:inDefaultCustomization:representativeItem:items:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItemGroup a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UIFont systemFontOfSize:weight:width:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIFont a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UIImage imageNamed:inBundle:variableValue:withConfiguration:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImage a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UIImage systemImageNamed:variableValue:withConfiguration:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImage a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UIImageSymbolConfiguration configurationPreferringMonochrome]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIImageSymbolConfiguration a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "+[UITextView textViewUsingTextLayoutManager:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextView a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[NSTextList initWithMarkerFormat:options:startingItemNumber:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSTextList a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem creatingFixedGroup]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem creatingMovableGroupWithCustomizationIdentifier:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem creatingOptionalGroupWithCustomizationIdentifier:inDefaultCustomization:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem initWithBarButtonSystemItem:primaryAction:menu:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem initWithPrimaryAction:menu:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIBarButtonItem initWithTitle:image:target:action:menu:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UICollectionViewCell defaultBackgroundConfiguration]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UICollectionViewCell a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UICollectionViewDelegate collectionView:canPerformPrimaryActionForItemAtIndexPath:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UICollectionViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UICollectionViewDelegate collectionView:contextMenuConfiguration:dismissalPreviewForItemAtIndexPath:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UICollectionViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UICollectionViewDelegate collectionView:contextMenuConfiguration:highlightPreviewForItemAtIndexPath:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UICollectionViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UICollectionViewDelegate collectionView:contextMenuConfigurationForItemsAtIndexPaths:point:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UICollectionViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UICollectionViewDelegate collectionView:performPrimaryActionForItemAtIndexPath:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UICollectionViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIContentView supportsConfiguration:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIContentView a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIContextMenuInteractionDelegate contextMenuInteraction:configuration:dismissalPreviewForItemWithIdentifier:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UIContextMenuInteractionDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIContextMenuInteractionDelegate contextMenuInteraction:configuration:highlightPreviewForItemWithIdentifier:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UIContextMenuInteractionDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIPageControl currentPageIndicatorImageForPage:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIPageControl a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIPageControl setCurrentPageIndicatorImage:forPage:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIPageControl a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIResponderStandardEditActions duplicate:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIResponderStandardEditActions export:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIResponderStandardEditActions find:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIResponderStandardEditActions findAndReplace:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIResponderStandardEditActions findNext:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIResponderStandardEditActions findPrevious:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIResponderStandardEditActions move:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIResponderStandardEditActions rename:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIResponderStandardEditActions useSelectionForFind:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UISearchControllerDelegate searchController:didChangeFromSearchBarPlacement:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UISearchControllerDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UISearchControllerDelegate searchController:willChangeToSearchBarPlacement:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UISearchControllerDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UISearchResultsUpdating updateSearchResultsForSearchController:selectingSearchSuggestion:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UISearchResultsUpdating that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UISearchTextFieldDelegate searchTextField:didSelectSuggestion:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UISearchTextFieldDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITableViewCell defaultBackgroundConfiguration]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITableViewCell a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITableViewDelegate tableView:canPerformPrimaryActionForRowAtIndexPath:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITableViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITableViewDelegate tableView:performPrimaryActionForRowAtIndexPath:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITableViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITableViewHeaderFooterView defaultBackgroundConfiguration]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITableViewHeaderFooterView a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITextFieldDelegate textField:editMenuForCharactersInRange:suggestedActions:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextFieldDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITextFieldDelegate textField:willDismissEditMenuWithAnimator:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextFieldDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITextFieldDelegate textField:willPresentEditMenuWithAnimator:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextFieldDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITextInput editMenuForTextRange:suggestedActions:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextInput a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITextInput willDismissEditMenuWithAnimator:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextInput a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITextInput willPresentEditMenuWithAnimator:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextInput a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITextViewDelegate textView:editMenuForTextInRange:suggestedActions:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITextViewDelegate textView:willDismissEditMenuWithAnimator:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITextViewDelegate textView:willPresentEditMenuWithAnimator:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UIWindowScene requestGeometryUpdateWithPreferences:errorHandler:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIWindowScene a method like it: it arrived in iOS 16",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSCollectionLayoutSection.supplementaryContentInsetsReference",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSCollectionLayoutSection a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextList.ordered",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSTextList a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "NSTextListElement",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIActivityTypeCollaborationCopyLink",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIActivityTypeCollaborationInviteWithLink",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIAlertController.severity",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIAlertController a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIBarButtonItem.hidden",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIBarButtonItem.menuRepresentation",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIBarButtonItem.preferredMenuElementOrder",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIBarButtonItemGroup.alwaysAvailable",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItemGroup a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIBarButtonItemGroup.hidden",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItemGroup a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIBarButtonItemGroup.menuRepresentation",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIBarButtonItemGroup a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIButton.preferredMenuElementOrder",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UICalendarSelection",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UICalendarSelectionMultiDate",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UICalendarSelectionMultiDateDelegate",
+      "kind": "protocol",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UICalendarSelectionSingleDate",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UICalendarSelectionSingleDateDelegate",
+      "kind": "protocol",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UICalendarView",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UICalendarViewDecoration",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UICalendarViewDelegate",
+      "kind": "protocol",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UICellAccessoryPopUpMenu",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UICollectionView.selfSizingInvalidation",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UICollectionView a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIContextMenuConfiguration.badgeCount",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIContextMenuConfiguration a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIContextMenuConfiguration.preferredMenuElementOrder",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIContextMenuConfiguration a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIContextMenuConfiguration.secondaryItemIdentifiers",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIContextMenuConfiguration a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIDocumentProperties",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIEditMenuConfiguration",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIEditMenuInteraction",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIEditMenuInteractionAnimating",
+      "kind": "protocol",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIEditMenuInteractionDelegate",
+      "kind": "protocol",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIFindInteraction",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIFindInteractionDelegate",
+      "kind": "protocol",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIFindSession",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIFontWidthCompressed",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIFontWidthCondensed",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIFontWidthExpanded",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIFontWidthStandard",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIMenu.preferredElementSize",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIMenu a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIMenuDocument",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIMenuLeaf",
+      "kind": "protocol",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationBar.behavioralStyle",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationBar a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationBar.currentNSToolbarSection",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationBar a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationBar.preferredBehavioralStyle",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationBar a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationItem.additionalOverflowItems",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationItem.backAction",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationItem.centerItemGroups",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationItem.customizationIdentifier",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationItem.documentProperties",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationItem.leadingItemGroups",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationItem.overflowPresentationSource",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationItem.pinnedTrailingGroup",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationItem.preferredSearchBarPlacement",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationItem.renameDelegate",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationItem.searchBarPlacement",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationItem.style",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationItem.titleMenuProvider",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationItem.trailingItemGroups",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UINavigationItemRenameDelegate",
+      "kind": "protocol",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPageControl.direction",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIPageControl a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPageControl.preferredCurrentPageIndicatorImage",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIPageControl a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPasteControl",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPasteControlConfiguration",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIPopoverPresentationControllerSourceItem",
+      "kind": "protocol",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISceneWindowingBehaviors",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIScreen.currentEDRHeadroom",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIScreen a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIScreen.potentialEDRHeadroom",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIScreen a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIScreen.referenceDisplayModeStatus",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIScreen a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIScreenReferenceDisplayModeStatusDidChangeNotification",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISearchController.ignoresSearchSuggestionsForSearchBarPlacementStacked",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UISearchController a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISearchController.scopeBarActivation",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UISearchController a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISearchController.searchBarPlacement",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UISearchController a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISearchController.searchSuggestions",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UISearchController a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISearchSuggestion",
+      "kind": "protocol",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISearchSuggestionItem",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISearchTextField.searchSuggestions",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UISearchTextField a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISheetPresentationControllerDetentInactive",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UISheetPresentationControllerDetentResolutionContext",
+      "kind": "protocol",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITableView.selfSizingInvalidation",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITableView a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITextSearchAggregator",
+      "kind": "protocol",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITextSearchOptions",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITextSearching",
+      "kind": "protocol",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITextSearchingFindSession",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITextView.findInteraction",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITextView.findInteractionEnabled",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UITextView.textLayoutManager",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIView.anchorPoint",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIView a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIViewController.activePresentationController",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIViewController a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIViewController.interactionActivityTrackingBaseName",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIViewController a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIWindow.safeAreaAspectFitLayoutGuide",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIWindow a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIWindowScene.effectiveGeometry",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIWindowScene a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIWindowScene.windowingBehaviors",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give UIWindowScene a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIWindowSceneGeometry",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIWindowSceneGeometryPreferences",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIWindowSceneGeometryPreferencesIOS",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIWindowSceneSessionRoleExternalDisplayNonInteractive",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, UIKit"
+    }
+  ]
+}
