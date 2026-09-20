@@ -1,0 +1,270 @@
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "UIBarAppearance",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIBarAppearanceValues.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UINavigationBarAppearance",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIBarAppearanceValues.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UIToolbarAppearance",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIBarAppearanceValues.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UITabBarAppearance",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIBarAppearanceValues.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UIBarButtonItemAppearance",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIBarButtonItemAppearance.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UIBarButtonItemStateAppearance",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIBarButtonItemAppearance.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UITabBarItemAppearance",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITabBarItemAppearance.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UITabBarItemStateAppearance",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITabBarItemAppearance.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UINavigationBar.standardAppearance",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/BarAppearanceApplication.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UINavigationBar.compactAppearance",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/BarAppearanceApplication.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UIToolbar.standardAppearance",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/BarAppearanceApplication.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UIToolbar.compactAppearance",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/BarAppearanceApplication.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UITabBar.standardAppearance",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/BarAppearanceApplication.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UINavigationBar.scrollEdgeAppearance",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release draws a bar in one look and has no scroll position to choose another by",
+      "effect": "it keeps a copy, answers it, and the bar keeps the look of its standard appearance; the first use is said once in the log",
+      "facts": "facts/UIKit/BarAppearanceApplication.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UINavigationBar.compactScrollEdgeAppearance",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release draws a bar in one look and has no scroll position to choose another by",
+      "effect": "it keeps a copy, answers it, and the bar keeps the look of its standard appearance; the first use is said once in the log",
+      "facts": "facts/UIKit/BarAppearanceApplication.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UIToolbar.scrollEdgeAppearance",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release draws a bar in one look and has no scroll position to choose another by",
+      "effect": "it keeps a copy, answers it, and the bar keeps the look of its standard appearance; the first use is said once in the log",
+      "facts": "facts/UIKit/BarAppearanceApplication.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UIToolbar.compactScrollEdgeAppearance",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release draws a bar in one look and has no scroll position to choose another by",
+      "effect": "it keeps a copy, answers it, and the bar keeps the look of its standard appearance; the first use is said once in the log",
+      "facts": "facts/UIKit/BarAppearanceApplication.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UITabBar.scrollEdgeAppearance",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release draws a bar in one look and has no scroll position to choose another by",
+      "effect": "it keeps a copy, answers it, and the bar keeps the look of its standard appearance; the first use is said once in the log",
+      "facts": "facts/UIKit/BarAppearanceApplication.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UINavigationItem.standardAppearance",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release has no per-item look for a bar to take on when the item is shown, and no scroll position to choose one by",
+      "effect": "it keeps a copy, answers it, and the bar keeps the look of the appearance set on the bar itself; the first use is said once in the log",
+      "facts": "facts/UIKit/BarAppearanceApplication.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UINavigationItem.compactAppearance",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release has no per-item look for a bar to take on when the item is shown, and no scroll position to choose one by",
+      "effect": "it keeps a copy, answers it, and the bar keeps the look of the appearance set on the bar itself; the first use is said once in the log",
+      "facts": "facts/UIKit/BarAppearanceApplication.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UINavigationItem.scrollEdgeAppearance",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release has no per-item look for a bar to take on when the item is shown, and no scroll position to choose one by",
+      "effect": "it keeps a copy, answers it, and the bar keeps the look of the appearance set on the bar itself; the first use is said once in the log",
+      "facts": "facts/UIKit/BarAppearanceApplication.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UINavigationItem.compactScrollEdgeAppearance",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release has no per-item look for a bar to take on when the item is shown, and no scroll position to choose one by",
+      "effect": "it keeps a copy, answers it, and the bar keeps the look of the appearance set on the bar itself; the first use is said once in the log",
+      "facts": "facts/UIKit/BarAppearanceApplication.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UITabBarItem.standardAppearance",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release has no per-item look for a bar to take on when the item is shown, and no scroll position to choose one by",
+      "effect": "it keeps a copy, answers it, and the bar keeps the look of the appearance set on the bar itself; the first use is said once in the log",
+      "facts": "facts/UIKit/BarAppearanceApplication.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UITabBarItem.scrollEdgeAppearance",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release has no per-item look for a bar to take on when the item is shown, and no scroll position to choose one by",
+      "effect": "it keeps a copy, answers it, and the bar keeps the look of the appearance set on the bar itself; the first use is said once in the log",
+      "facts": "facts/UIKit/BarAppearanceApplication.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27"
+    },
+    {
+      "api": "UINavigationBarAppearance.prominentButtonAppearance",
+      "kind": "property",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIBarAppearanceValues.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27; the property is the done button appearance under its newer name"
+    },
+    {
+      "api": "UIToolbarAppearance.prominentButtonAppearance",
+      "kind": "property",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIBarAppearanceValues.md",
+      "source": "UIKit of the host under Mac Catalyst, held against the backport by tests/backports/host/uikit2, and the public SDK headers of iOS 13 to 27; the property is the done button appearance under its newer name"
+    },
+    {
+      "api": "UIBarAppearance.overrideUserInterfaceStyle",
+      "kind": "property",
+      "introduced": "27.0",
+      "status": "absent",
+      "reason": "the release has no dark appearance for a bar to be forced into or out of",
+      "effect": "the property is not there, so an application that checks for it first does not use it",
+      "source": "the public SDK headers of iOS 26 and 27"
+    }
+  ]
+}

@@ -1182,26 +1182,6 @@
       "source": "SDK 16.4, UIKit"
     },
     {
-      "api": "UINavigationBar.compactScrollEdgeAppearance",
-      "kind": "property",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationBar a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
-    },
-    {
-      "api": "UINavigationItem.compactScrollEdgeAppearance",
-      "kind": "property",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
-    },
-    {
       "api": "UIPasteboardDetectionPatternCalendarEvent",
       "kind": "constant",
       "introduced": "15.0",
@@ -1492,26 +1472,6 @@
       "source": "SDK 16.4, UIKit"
     },
     {
-      "api": "UITabBar.scrollEdgeAppearance",
-      "kind": "property",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITabBar a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
-    },
-    {
-      "api": "UITabBarItem.scrollEdgeAppearance",
-      "kind": "property",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITabBarItem a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
-    },
-    {
       "api": "UITableView.allowsFocus",
       "kind": "property",
       "introduced": "15.0",
@@ -1649,26 +1609,6 @@
       "status": "absent",
       "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
-    },
-    {
-      "api": "UIToolbar.compactScrollEdgeAppearance",
-      "kind": "property",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIToolbar a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
-    },
-    {
-      "api": "UIToolbar.scrollEdgeAppearance",
-      "kind": "property",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIToolbar a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
     {

@@ -1512,16 +1512,6 @@
       "source": "SDK 26.5, Mac Catalyst, UIKit"
     },
     {
-      "api": "UIToolbarAppearance.prominentButtonAppearance",
-      "kind": "property",
-      "introduced": "26.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIToolbarAppearance a property like it: it arrived in iOS 26",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26.5, Mac Catalyst, UIKit"
-    },
-    {
       "api": "UITraitCollection.hdrHeadroomUsageLimit",
       "kind": "property",
       "introduced": "26.0",

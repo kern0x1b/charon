@@ -211,6 +211,25 @@ gives for scheduling that is not available (code 1), or not permitted (code 3) w
 listed in the Info.plist. There is no host framework to compare with; the device test holds the port to the headers. See
 `facts/BackgroundTasks/BGTaskScheduler.md`.
 
+### Bar appearances, values on their own and applied where iOS 6 can draw them
+
+`UIBarAppearance`, `UINavigationBarAppearance`, `UIToolbarAppearance`, `UITabBarAppearance`, `UIBarButtonItemAppearance`
+and `UITabBarItemAppearance`, with their state objects, are carried as the value objects they are, against the host's own
+UIKit: the defaults, which of them are set and which are only defaults, how a button or a tab item state falls back to the
+normal one, the copies, the equality, the description and a secure archive are held to the host's answers over thousands of
+random sequences of changes. What differs is written in `facts/UIKit/UIBarAppearanceValues.md`: the system colours are
+plain light colours, a back indicator has no default image to answer, and the archive is the backport's own.
+
+The bars apply them. `standardAppearance` of a `UINavigationBar`, a `UIToolbar` and a `UITabBar`, and `compactAppearance` of
+the first two, become what iOS 6 has: a solid or an image background through `setBackgroundImage:forBarMetrics:`, a
+hairline shadow, the title attributes turned into the keys of iOS 6, the button and tab item attributes and images on the
+appearance proxies, the compact one on the landscape metrics. What iOS 6 cannot draw is kept in the object and
+recorded in the facts: the blur, the large title, the badge, the layout of the tab items. The scroll edge appearances and the
+appearances of a navigation item or a tab item are `inert`: kept, handed back, and said once in the log, since iOS 6 has no
+scroll position and no per-item look to choose a bar's look by. The subtitle attributes of iOS 26 and the override
+interface style of iOS 27 are absent. The buttons reach every bar of the class in the application, not one bar, and
+`facts/UIKit/BarAppearanceApplication.md` says why and what a device still has to prove.
+
 ## iOS 11 and 12
 
 These two releases are read differently from the ones before them. The last

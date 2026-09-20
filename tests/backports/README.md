@@ -59,6 +59,9 @@ process with the system's own, compiled with the selectors prefixed, and compare
 what each does and raises; `host/imageflip/run.sh` does the same for the flipped
 image through Mac Catalyst.
 
+`host/uikit2/run.sh` also runs the `appearances` group: random sequences of changes on the six bar appearance classes,
+and the bars that apply them, compared with the host's own, and it writes `device/appearances-expectations.h` when it passes.
+
 `host/uikit2/run.sh` also runs a group that needs a window - the snapshots of a view, for one -
 as an application: its `windowed` function builds the group with `windowed.m`, which is `main`, a scene delegate and
 a window, into a Mac Catalyst bundle with `windowed.plist`, signs it ad hoc and runs it, and the group's
