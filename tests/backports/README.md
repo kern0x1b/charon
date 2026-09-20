@@ -348,8 +348,12 @@ postinst run with `DPKG_ROOT` set to it.
   the same on every device: `-[NSProcessInfo thermalState]` answers nominal and its
   notification is never posted, the export presets of the image picker are kept per
   picker and the video one is copied, the key `UIImagePickerControllerPHAsset` carries
-  its own name, and what is absent stays absent. It ran on an iPad 2 (6.1.3): 22
-  checks and no failure; the log lines of the two `inert` answers came once each.
+  its own name, and what is absent stays absent. It also holds the four volume keys
+  of iOS 11 to what an iPad 2 answers - success and no value for a key it does not
+  know, the available capacity for the important usage key - the refusal of a
+  pattern that names a group, and `-trashItemAtURL:resultingItemURL:error:`
+  answering the feature unsupported error. It ran on an iPad 2 (6.1.3): 38 checks
+  and no failure; the log lines of the two `inert` answers came once each.
 - `probes.m`: a process of its own for the capability probes, run on an
   iPhone 4S and an iPad 2 (6.1.3). It checks that every class the probes carry
   comes from `libFoundationBackports.dylib`, that `+isSupported` and

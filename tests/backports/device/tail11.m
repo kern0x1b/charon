@@ -1,5 +1,6 @@
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
+#import <objc/message.h>
 #import <dlfcn.h>
 #import "check.h"
 
@@ -61,6 +62,47 @@ static void absences(void)
     CHECK(dlsym(RTLD_DEFAULT, "UIDocumentBrowserErrorDomain") == NULL, "UIDocumentBrowserErrorDomain is absent");
 }
 
+static void volume_keys(void)
+{
+    CHECK_EQUAL(NSURLVolumeAvailableCapacityForImportantUsageKey, NSURLVolumeAvailableCapacityKey, "the important usage key is the string of the available capacity key");
+    CHECK_EQUAL(NSURLVolumeAvailableCapacityForOpportunisticUsageKey, @"NSURLVolumeAvailableCapacityForOpportunisticUsageKey", "the opportunistic key carries its own name");
+    CHECK_EQUAL(NSURLVolumeSupportsImmutableFilesKey, @"NSURLVolumeSupportsImmutableFilesKey", "the immutable files key carries its own name");
+    CHECK_EQUAL(NSURLVolumeSupportsAccessPermissionsKey, @"NSURLVolumeSupportsAccessPermissionsKey", "the access permissions key carries its own name");
+    NSURL *root = [NSURL fileURLWithPath:@"/"];
+    NSNumber *available = nil, *important = nil, *opportunistic = nil, *immutable = nil;
+    NSError *error = nil;
+    BOOL got = [root getResourceValue:&available forKey:NSURLVolumeAvailableCapacityKey error:&error];
+    CHECK(got && available != nil, "the release answers the available capacity");
+    got = [root getResourceValue:&important forKey:NSURLVolumeAvailableCapacityForImportantUsageKey error:&error];
+    CHECK(got && important != nil, "the important usage key is answered");
+    CHECK(important != nil && available != nil && llabs(important.longLongValue - available.longLongValue) < (1 << 20), "the important usage capacity is the available capacity");
+    got = [root getResourceValue:&opportunistic forKey:NSURLVolumeAvailableCapacityForOpportunisticUsageKey error:&error];
+    CHECK(got && opportunistic == nil && error == nil, "the release answers success and no value for the opportunistic key");
+    got = [root getResourceValue:&immutable forKey:NSURLVolumeSupportsImmutableFilesKey error:&error];
+    CHECK(got && immutable == nil, "the release answers success and no value for the immutable files key");
+    NSDictionary *values = [root resourceValuesForKeys:@[NSURLVolumeAvailableCapacityForImportantUsageKey, NSURLVolumeAvailableCapacityForOpportunisticUsageKey] error:&error];
+    CHECK(values.count == 1 && values[NSURLVolumeAvailableCapacityForImportantUsageKey] != nil, "the dictionary holds the important usage capacity and leaves the other out");
+}
+
+static void regular_expressions(void)
+{
+    NSError *error = nil;
+    NSRegularExpression *named = [NSRegularExpression regularExpressionWithPattern:@"(?<word>a+)" options:0 error:&error];
+    CHECK(named == nil && error != nil, "a pattern that names a group does not compile on this release");
+    CHECK(![NSTextCheckingResult instancesRespondToSelector:NSSelectorFromString(@"rangeWithName:")], "rangeWithName: is absent");
+    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:@"charon-trash-check.txt"];
+    [@"x" writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+    SEL trash = NSSelectorFromString(@"trashItemAtURL:resultingItemURL:error:");
+    CHECK([NSFileManager instancesRespondToSelector:trash], "the release has trashItemAtURL:resultingItemURL:error: itself");
+    NSURL *moved = nil;
+    NSError *trashError = nil;
+    BOOL trashed = ((BOOL (*)(id, SEL, NSURL *, NSURL **, NSError **))objc_msgSend)([NSFileManager defaultManager], trash, [NSURL fileURLWithPath:path], &moved, &trashError);
+    CHECK(!trashed && moved == nil && trashError.code == 3328 && [trashError.domain isEqualToString:NSCocoaErrorDomain], "trashing answers the feature unsupported error");
+    CHECK([[NSFileManager defaultManager] fileExistsAtPath:path], "the item is still where it was");
+    [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
+    CHECK(NSClassFromString(@"NSFileProviderService") == Nil, "NSFileProviderService is absent");
+}
+
 int main(int argc, char **argv)
 {
     @autoreleasepool {
@@ -69,6 +111,8 @@ int main(int argc, char **argv)
         thermal_state();
         picker_presets();
         absences();
+        volume_keys();
+        regular_expressions();
         printf("%d of %d checks failed\n", charon_failures, charon_checks);
         return charon_failures;
     }
