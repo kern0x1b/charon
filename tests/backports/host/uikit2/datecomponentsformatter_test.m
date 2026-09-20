@@ -105,7 +105,7 @@ int main(int argc, char **argv)
             printf("  %s\n", sample.UTF8String);
         NSArray *keys = [mismatches.allKeys sortedArrayUsingComparator:^NSComparisonResult(NSString *a, NSString *b) { return [mismatches[b] compare:mismatches[a]]; }];
         for (NSString *key in [keys subarrayWithRange:NSMakeRange(0, MIN(keys.count, (NSUInteger)15))])
-            printf("  %s: %@\n", key.UTF8String, mismatches[key]);
+            printf("  %s: %ld\n", key.UTF8String, (long)[mismatches[key] integerValue]);
         charon_check(wrong * 100 <= total * 5, "the formatter answers as the system's for all but a few percent of random configurations", [NSString stringWithFormat:@"%lu of %lu differ", (unsigned long)wrong, (unsigned long)total]);
     }
     printf("checks=%d failures=%d\n", charon_checks, charon_failures);
