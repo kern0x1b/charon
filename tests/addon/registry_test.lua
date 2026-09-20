@@ -26,5 +26,35 @@ function failures(opt)
     if named == 0 then
         table.insert(found, "the registry of the repository names no API at all, which is not what it is for")
     end
+    wiring(backports, root, found)
     return found
+end
+
+-- The registry is checked against what the backports carry only when every library
+-- is built, so a library that no config of the package builds keeps that check from
+-- running for every config, and nothing says so. The recipe names each library in
+-- the list of links and again in the list it builds, and each config in both.
+function wiring(backports, root, found)
+    local recipe = io.readfile(path.join(root, "xmake.lua"))
+    local function count(text)
+        local n, from = 0, 1
+        while true do
+            local at = recipe:find(text, from, true)
+            if not at then
+                return n
+            end
+            n = n + 1
+            from = at + #text
+        end
+    end
+    for _, library in ipairs(backports.libraries()) do
+        if library.name ~= "FoundationBackports" and count('"' .. library.name .. '"') < 2 then
+            table.insert(found, library.name .. " is named fewer than twice in the recipe of the package, so no config builds it and the registry is never checked against the backports")
+        end
+    end
+    for name in recipe:gmatch('add_configs%("([%w]+)"') do
+        if name ~= "sources" and count('package:config("' .. name .. '")') < 2 then
+            table.insert(found, 'the config "' .. name .. '" is used fewer than twice in the recipe, so it builds no library, or does not link it')
+        end
+    end
 end
