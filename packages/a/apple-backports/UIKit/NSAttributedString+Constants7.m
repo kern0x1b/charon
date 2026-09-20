@@ -28,6 +28,4 @@ NSString *const NSTextLayoutSectionOrientation = @"NSTextLayoutSectionOrientatio
 NSString *const NSTextLayoutSectionRange = @"NSTextLayoutSectionRange";
 
 NSString *const NSDocumentTypeDocumentOption = @"DocumentType";
-NSString *const NSDefaultAttributesDocumentOption = @"DefaultAttributes";
-NSString *const NSCharacterEncodingDocumentOption = @"CharacterEncoding";
 NSString *const NSPaperMarginDocumentAttribute = @"PaperMargin";

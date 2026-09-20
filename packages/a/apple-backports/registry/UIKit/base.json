@@ -1939,18 +1939,18 @@
   {
     "api": "NSDefaultAttributesDocumentOption",
     "kind": "constant",
-    "introduced": "7.0",
+    "introduced": "9.0",
     "status": "implemented",
     "facts": "facts/UIKit/NSAttributedStringText.md",
-    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does; the shared caches of iOS 7.0 to 8.4.1, which do not export the name although they read the option by its string"
   },
   {
     "api": "NSCharacterEncodingDocumentOption",
     "kind": "constant",
-    "introduced": "7.0",
+    "introduced": "9.0",
     "status": "implemented",
     "facts": "facts/UIKit/NSAttributedStringText.md",
-    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does; the shared caches of iOS 7.0 to 8.4.1, which do not export the name although they read the option by its string"
   },
   {
     "api": "NSPaperMarginDocumentAttribute",
