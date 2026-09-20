@@ -589,3 +589,4 @@ nothing. An iPhoneOS SDK takes `--target arm64-apple-ios16.4` and has them.
 `--above` and `--up-to` cut the releases, `--list` prints every gap, and
 `--rows FILE` writes every declared row for other tools to read.
 - `safariviewcontroller.m`: an application of its own, the SafariServices batch: a controller is shown against a small server on the loopback address, and the delegate is asked for the initial load, a redirect, the activities and the dismissal. The rest of what a controller does before it is shown is held to the system's by the `safariviewcontroller` group of `host/uikit2/run.sh`. It needs the package built with `safariservices = true`.
+- `textkit7.m`: an application of its own, the text batch of iOS 7: the attribute names, the document types, `NSTextTab` and what the release's HTML, RTF and plain-text import gives, read against the host's answers recorded by `host/textkit7/run.sh` from `textkit7-cases.m`.

@@ -1721,5 +1721,251 @@
     "effect": "it is a transparent view with a content view that fills it, refuses a subview added to itself as the system's does, and answers the effect it was given; nothing is blurred",
     "facts": "facts/UIKit/UIVisualEffect.md",
     "source": "the host's own UIKit through the differential run of tests/backports/host/uikit2 (visualeffect)"
+  },
+  {
+    "api": "NSTextEffectAttributeName",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does",
+    "reason": "the release draws no letterpress",
+    "effect": "the attribute is kept on the string and read back, and the text is drawn without it"
+  },
+  {
+    "api": "NSTextEffectLetterpressStyle",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does",
+    "reason": "the release draws no letterpress",
+    "effect": "the attribute is kept on the string and read back, and the text is drawn without it"
+  },
+  {
+    "api": "NSUnderlineColorAttributeName",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does",
+    "reason": "the release draws every underline in the colour of the text",
+    "effect": "the attribute is kept on the string and read back, and the text is drawn without it"
+  },
+  {
+    "api": "NSStrikethroughColorAttributeName",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does",
+    "reason": "the release draws every strikethrough in the colour of the text",
+    "effect": "the attribute is kept on the string and read back, and the text is drawn without it"
+  },
+  {
+    "api": "NSObliquenessAttributeName",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does",
+    "reason": "the release does not skew glyphs",
+    "effect": "the attribute is kept on the string and read back, and the text is drawn without it"
+  },
+  {
+    "api": "NSExpansionAttributeName",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does",
+    "reason": "the release does not stretch glyphs",
+    "effect": "the attribute is kept on the string and read back, and the text is drawn without it"
+  },
+  {
+    "api": "NSWritingDirectionAttributeName",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does",
+    "reason": "the release lays a run out in the direction of its paragraph",
+    "effect": "the attribute is kept on the string and read back, and the text is drawn without it"
+  },
+  {
+    "api": "NSTabColumnTerminatorsAttributeName",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSPlainTextDocumentType",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSRTFTextDocumentType",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSRTFDTextDocumentType",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSHTMLTextDocumentType",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSDocumentTypeDocumentAttribute",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSDefaultAttributesDocumentAttribute",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSPaperSizeDocumentAttribute",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSViewSizeDocumentAttribute",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSViewZoomDocumentAttribute",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSViewModeDocumentAttribute",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSReadOnlyDocumentAttribute",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSHyphenationFactorDocumentAttribute",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSDefaultTabIntervalDocumentAttribute",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSTextLayoutSectionsAttribute",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSTextLayoutSectionOrientation",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSTextLayoutSectionRange",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSDocumentTypeDocumentOption",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSDefaultAttributesDocumentOption",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSCharacterEncodingDocumentOption",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSPaperMarginDocumentAttribute",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
+  },
+  {
+    "api": "NSTextTab",
+    "kind": "class",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/NSAttributedStringText.md",
+    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
   }
 ]

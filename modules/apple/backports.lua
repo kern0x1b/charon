@@ -745,13 +745,20 @@ end
 -- nothing says it is there in the symbols, and it cannot be re-exported. The
 -- library would define a second class of that name, and the runtime would take
 -- one of the two, so the band asks the release's Objective-C metadata as well
--- and refuses what it would duplicate.
+-- and refuses what it would duplicate. What it lets through is a proxy: an
+-- object that defines the class under a name of Charon's own and exports the
+-- release's name as an alias of it, for a port to link against while messages
+-- go to the release's class.
 function duplicated(objects, classes)
     local found = {}
     for _, object in ipairs(objects) do
+        local defined = {}
+        for _, symbol in ipairs(defined_symbols(object)) do
+            defined[symbol] = true
+        end
         for _, symbol in ipairs(exported_symbols(object)) do
             local class = symbol:match("^_OBJC_CLASS_%$_(.+)$")
-            if class and classes[class] then
+            if class and classes[class] and not defined["_OBJC_CLASS_$_Charon" .. class] then
                 found[class] = path.filename(object)
             end
         end

@@ -93,6 +93,17 @@ local function surface_step(backports, opt, folder, found)
     if #backports.duplicated({object}, {NSSomethingElse = {}}) ~= 0 then
         table.insert(found, "a class no release holds is the backport's to carry")
     end
+    -- A proxy defines the class under a name of Charon's own and exports the
+    -- release's name as an alias of it, which is not a second class.
+    local proxy_source = path.join(folder, "surface", "NSProxied.m")
+    io.writefile(proxy_source, "#import <Foundation/Foundation.h>\n" ..
+                               "@interface CharonNSProxied : NSObject\n@end\n@implementation CharonNSProxied\n@end\n" ..
+                               "__asm__(\".globl _OBJC_CLASS_$_NSProxied\\n.set _OBJC_CLASS_$_NSProxied, _OBJC_CLASS_$_CharonNSProxied\\n\");\n")
+    local proxy_object = path.join(folder, "surface", "NSProxied.o")
+    backports.compile({triple = "armv7-apple-ios6.0", sdkdir = opt.sdk, deployment = "6.0", cc = opt.clang}, proxy_source, proxy_object)
+    if #backports.duplicated({proxy_object}, {NSProxied = {image = "UIFoundation"}}) ~= 0 then
+        table.insert(found, "a proxy for a class the release holds without exporting it is not a second class")
+    end
     local refused = fixtures.refusal(function () kept, reexported = backports.band(release_ten, {object}) end)
     if refused then
         table.insert(found, "the helpers and ivars an object holds beside a class are not API, and weighing them against a release refuses it: " .. refused)
