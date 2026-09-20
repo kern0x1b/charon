@@ -283,6 +283,8 @@ question - a token, a session, a setting, an anchor, a tag - is absent, and
 
 `NSPersistentHistoryChangeRequest` and the objects around it (`NSPersistentHistoryToken`, `NSPersistentHistoryTransaction`, `NSPersistentHistoryChange`, `NSPersistentHistoryResult`) are carried in `libCoreDataBackports.dylib` as what an application names and asks with: the request holds its date or token and result type as iOS 12 does, the abstract classes raise the exception iOS 12 raises, and no store of this release keeps a history, so nothing answers a request, `currentPersistentHistoryTokenFromStores:` answers `nil` and the remote change notification is never posted. `NSManagedObjectContext.transactionAuthor` is kept and read by nothing. `facts/CoreData/PersistentHistory.md`.
 
+`PHPhotoLibrary` is carried in `libPhotosBackports.dylib`, built with the `photos` config, for its authorization only: `+authorizationStatus` is the `ALAssetsLibrary` status, `+requestAuthorization:` shows the system prompt through a read of the saved-photos group and gives the handler the new status, and the two calls with an access level of iOS 14 answer the same, never limited. Changes, observers, cloud identifiers and the history of changes are absent, as the release has no Photos database. `facts/Photos/PHPhotoLibrary.md`.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and
