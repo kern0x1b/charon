@@ -237,6 +237,22 @@
       "reason": "the status bar of the release shows a location arrow whenever location is in use and has no bar of its own for the background",
       "effect": "the value is kept and answered back and says so once in the log when set to YES, and no bar is drawn",
       "facts": "facts/CoreLocation/CLLocationManagerBackground.md"
+    },
+    {
+      "api": "-[CLLocationManagerDelegate locationManager:didDetermineState:forRegion:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/CoreLocation/CLLocationManagerSingleLocation.md",
+      "source": "CoreLocation 12.0 arm64"
+    },
+    {
+      "api": "-[CLLocationManagerDelegate locationManager:rangingBeaconsDidFailForRegion:withError:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/CoreLocation/CLBeacon.md",
+      "source": "CoreLocation 12.0 arm64"
     }
   ]
 }
