@@ -112,3 +112,10 @@ The six constants carry their own names as their values, which is how the releas
 `NSURLUbiquitousItemDownloadingStatusNotDownloaded`, `…Downloaded` and `…Current`. The release answers
 none of them for a file of its own; they are there so that an application that names the key builds and
 runs, and so that a status it reads compares equal to the one it was given.
+
+## Security-scoped resources
+
+`-startAccessingSecurityScopedResource` and `-stopAccessingSecurityScopedResource` (iOS 8) come with the document picker.
+The release has no sandbox scope to open, so the start answers YES for every URL and the stop does nothing. The system
+answers NO for a URL that is not security scoped, which an application sees only for a file it already owns; the port
+answers YES so that code which reads a picked document only when the start succeeded reads it.

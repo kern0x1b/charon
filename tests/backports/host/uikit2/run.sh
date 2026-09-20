@@ -10,7 +10,7 @@ harness=${UIKIT2_HARNESS:-$here/../../device}
 build=${UIKIT2_BUILD:-${TMPDIR:-/tmp}/charon-uikit2-host}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
-frameworks="-framework LocalAuthentication -framework SafariServices -framework UIKit -framework QuartzCore -framework CoreGraphics -framework Foundation"
+frameworks="-framework LocalAuthentication -framework MobileCoreServices -framework SafariServices -framework UIKit -framework QuartzCore -framework CoreGraphics -framework Foundation"
 flags="-fobjc-arc -fvisibility=hidden -Wall -Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-objc-protocol-method-implementation -Wno-incomplete-implementation -Wno-objc-property-implementation"
 rm -rf "$build"
 mkdir -p "$build/plain"
@@ -142,7 +142,7 @@ group rowaction "UITableViewRowAction.m" "rowActionWithStyle style title setTitl
 group visualeffect "UIVisualEffect.m UIVisualEffectView.m CharonBlur.m" "effectWithStyle effectForBlurEffect initWithEffect effect setEffect contentView addSubview insertSubview initWithFrame" visualeffect_test.m
 group useractivity "../Foundation/NSUserActivity.m" "*" useractivity_test.m
 group localauth "../LocalAuthentication/LAContext.m ../LocalAuthentication/LAErrorDomain.m ../LocalAuthentication/LATouchIDAuthenticationMaximumAllowableReuseDuration.m" "*" localauth_test.m
-group documentpicker "UIDocumentPickerViewController.m" "*" documentpicker_test.m
+group documentpicker "UIDocumentPickerViewController.m CharonDocumentBrowser.m" "*" documentpicker_test.m
 group datecomponentsformatter "../Foundation/NSDateComponentsFormatter.m" "*" datecomponentsformatter_test.m
 group scenes "UISceneValues.m UISceneConstants.m" "*" scenes_test.m
 group cornercurve "CALayer+CornerCurve.m" "" cornercurve_test.m

@@ -911,6 +911,22 @@
     "facts": "facts/Foundation/NSTimer.md"
   },
   {
+    "api": "-[NSURL startAccessingSecurityScopedResource]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "tests/backports/device/documentpicker.m on iOS 6"
+  },
+  {
+    "api": "-[NSURL stopAccessingSecurityScopedResource]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURL.md",
+    "source": "tests/backports/device/documentpicker.m on iOS 6"
+  },
+  {
     "api": "-[NSURL dataRepresentation]",
     "kind": "method",
     "introduced": "9.0",

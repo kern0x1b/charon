@@ -934,10 +934,8 @@ static NSString *traits_of(id environment)
             charon_check(picker.documentPickerMode == UIDocumentPickerModeImport && picker.delegate == recorder, "a document picker keeps its mode and its delegate", @"it does not");
             [test.host presentViewController:picker animated:NO completion:nil];
             after(0.5, ^{
-                UINavigationBar *bar = nil;
-                for (UIView *subview in picker.view.subviews)
-                    bar = [subview isKindOfClass:[UINavigationBar class]] ? (UINavigationBar *)subview : bar;
-                UIBarButtonItem *cancel = bar.items.firstObject.rightBarButtonItem;
+                UINavigationController *browser = picker.childViewControllers.firstObject;
+                UIBarButtonItem *cancel = browser.topViewController.navigationItem.rightBarButtonItem;
                 charon_check(picker.presentingViewController == test.host && cancel != nil && cancel.target != nil, "a document picker is shown with a cancel button", @"it is not");
                 [cancel.target performSelector:cancel.action withObject:cancel];
                 after(1, ^{

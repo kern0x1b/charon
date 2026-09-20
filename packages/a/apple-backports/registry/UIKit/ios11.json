@@ -1710,9 +1710,8 @@
       "api": "-[UIDocumentPickerDelegate documentPicker:didPickDocumentsAtURLs:]",
       "kind": "method",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "the plural callback belongs to a picker that can select several documents",
-      "effect": "the method is never called; the delegate of this release is asked for one URL",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDocumentPickerViewController.md",
       "source": "UIKit of iOS 11.0 arm64"
     },
     {

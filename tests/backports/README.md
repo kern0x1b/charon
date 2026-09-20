@@ -730,6 +730,12 @@ first action, a tap elsewhere or a scroll closes it, a table whose delegate answ
 of iOS 11 does the same for both edges and a full swipe. There is no host oracle: the host's UIKit draws no swipe buttons. It
 writes `/private/var/backports/swipeui.log` and `swipeui.done`.
 
+`documentpicker.m` (`documentpicker-Info.plist`) is an application for both devices that drives `UIDocumentPickerViewController` with real
+touches over a fixture tree it writes under `/private/var/backports/docpick`: open mode with a type filter, going into a folder and choosing a
+file, the locations page, import with several files and Done, cancelling, export and move into a folder, and a delegate that has only the
+singular callback. The `documentpicker` group of `host/uikit2/run.sh` holds the initializers to the system's and checks the type filter and what
+open, import, export and move hand back. It writes `/private/var/backports/documentpicker.log` and `documentpicker.done`.
+
 `device/gesture.h` and `gesture.m` are the helper for a test that needs a finger on a device running iOS 6: `gesture_touch`
 sends a digitizer event to the HID event system, and `gesture_drag` and `gesture_tap` queue a sequence of them as timed steps
 beside the checks a test puts between them with `gesture_step`, run by `gesture_run` from timers on the main queue. UIKit

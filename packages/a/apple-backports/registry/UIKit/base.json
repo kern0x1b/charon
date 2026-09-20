@@ -218,9 +218,8 @@
     "kind": "method",
     "introduced": "8.0",
     "minimum": "6.0",
-    "status": "absent",
-    "reason": "there is nothing to pick",
-    "effect": "the message is never sent"
+    "status": "implemented",
+    "facts": "facts/UIKit/UIDocumentPickerViewController.md"
   },
   {
     "api": "-[UIImage imageWithRenderingMode:]",
@@ -1342,14 +1341,21 @@
     "source": "the host's own UIKit; iOS 9.3.5 has neither the symbol nor the string"
   },
   {
+    "api": "UIDocumentPickerDelegate",
+    "kind": "protocol",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIDocumentPickerViewController.md",
+    "source": "tests/backports/device/documentpicker.m on iOS 6"
+  },
+  {
     "api": "UIDocumentPickerViewController",
     "kind": "class",
     "introduced": "8.0",
-    "status": "inert",
-    "reason": "the release has no document providers, no iCloud Drive and no file provider extensions, so there is nothing to pick from or to save to",
-    "effect": "the picker is made as the system's is and shows that no locations are available; the user cancels it, and the delegate hears documentPickerWasCancelled: once it is dismissed, and never hears of a document",
+    "status": "implemented",
+    "effect": "a real file browser over the device's own file system in place of the document providers of the later releases",
     "facts": "facts/UIKit/UIDocumentPickerViewController.md",
-    "source": "the host's own UIKit, through the differential run of tests/backports/host/uikit2 (documentpicker)"
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/uikit2 (documentpicker), and tests/backports/device/documentpicker.m on iOS 6"
   },
   {
     "api": "UIFontTextStyleBody",

@@ -1,4 +1,6 @@
 #import <UIKit/UIKit.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+#import "CharonDocumentBrowser.h"
 
 @implementation UIDocumentPickerViewController {
     UIDocumentPickerMode _documentPickerMode;
@@ -8,6 +10,7 @@
     NSURL *_directoryURL;
     NSArray<NSString *> *_documentTypes;
     NSArray<NSURL *> *_URLs;
+    UINavigationController *_browser;
 }
 
 - (instancetype)initWithDocumentTypes:(NSArray<NSString *> *)allowedUTIs inMode:(UIDocumentPickerMode)mode
@@ -112,22 +115,176 @@
 {
     UIView *view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    view.backgroundColor = [UIColor groupTableViewBackgroundColor];
-    UINavigationBar *bar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, view.bounds.size.width, 44)];
-    bar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    UINavigationItem *item = [[UINavigationItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"Locations", @"Localizable", [NSBundle bundleForClass:[UIView class]], nil)];
-    item.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(charon_cancel)];
-    bar.items = @[item];
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectInset(view.bounds, 24, 0)];
-    label.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    label.numberOfLines = 0;
-    label.textAlignment = NSTextAlignmentCenter;
-    label.textColor = [UIColor grayColor];
-    label.backgroundColor = [UIColor clearColor];
-    label.text = @"No document locations are available on this device.";
-    [view addSubview:label];
-    [view addSubview:bar];
+    view.backgroundColor = [UIColor whiteColor];
     self.view = view;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    if (_browser)
+        return;
+    UIViewController *root = [[CharonFileLocationsController alloc] initWithPicker:self];
+    _browser = [[UINavigationController alloc] initWithRootViewController:root];
+    NSString *start = [self charon_startFolder];
+    if (start) {
+        NSDictionary *base = nil;
+        for (NSDictionary *location in [self charon_locations]) {
+            NSString *path = location[@"path"];
+            BOOL inside = [start isEqualToString:path] || [start hasPrefix:[path hasSuffix:@"/"] ? path : [path stringByAppendingString:@"/"]];
+            if (inside && [path length] > [base[@"path"] length])
+                base = location;
+        }
+        NSMutableArray *chain = [NSMutableArray array];
+        NSString *walk = start;
+        NSString *floor = base[@"path"];
+        while (walk.length > 1 && ![walk isEqualToString:floor]) {
+            [chain insertObject:walk atIndex:0];
+            walk = [walk stringByDeletingLastPathComponent];
+        }
+        if (base)
+            [chain insertObject:floor atIndex:0];
+        NSMutableArray *stack = [NSMutableArray arrayWithObject:root];
+        for (NSString *path in chain)
+            [stack addObject:[[CharonFileFolderController alloc] initWithPath:path title:[path isEqualToString:floor] ? base[@"title"] : nil picker:self]];
+        _browser.viewControllers = stack;
+    }
+    [self addChildViewController:_browser];
+    _browser.view.frame = self.view.bounds;
+    _browser.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:_browser.view];
+    [_browser didMoveToParentViewController:self];
+}
+
+- (void)viewWillLayoutSubviews
+{
+    [super viewWillLayoutSubviews];
+    if (!CGRectEqualToRect(_browser.view.frame, self.view.bounds))
+        _browser.view.frame = self.view.bounds;
+}
+
+- (UIModalPresentationStyle)modalPresentationStyle
+{
+    return [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad ? UIModalPresentationFormSheet : UIModalPresentationFullScreen;
+}
+
+- (BOOL)charon_choosesFiles
+{
+    return _documentPickerMode == UIDocumentPickerModeImport || _documentPickerMode == UIDocumentPickerModeOpen;
+}
+
+- (BOOL)charon_allowsMultiple
+{
+    return _allowsMultipleSelection && [self charon_choosesFiles];
+}
+
+- (BOOL)charon_showsExtensions
+{
+    return _shouldShowFileExtensions;
+}
+
+- (NSString *)charon_destinationTitle
+{
+    return _documentPickerMode == UIDocumentPickerModeMoveToService ? @"Move" : @"Copy";
+}
+
+- (BOOL)charon_acceptsPath:(NSString *)path
+{
+    if (!_documentTypes.count)
+        return YES;
+    NSString *extension = path.pathExtension;
+    NSString *type = extension.length ? CFBridgingRelease(UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef)extension, NULL)) : nil;
+    for (NSString *allowed in _documentTypes) {
+        if ([allowed isEqualToString:@"public.item"] || ([allowed isEqualToString:@"public.data"] && type == nil))
+            return YES;
+        if (type && UTTypeConformsTo((__bridge CFStringRef)type, (__bridge CFStringRef)allowed))
+            return YES;
+    }
+    return NO;
+}
+
+- (NSArray<NSDictionary *> *)charon_locations
+{
+    NSMutableArray *locations = [NSMutableArray array];
+    NSString *home = NSHomeDirectory();
+    NSMutableArray *candidates = [NSMutableArray array];
+    [candidates addObject:@{@"title": @"On My Device", @"path": home}];
+    NSFileManager *manager = [NSFileManager defaultManager];
+    for (NSString *extra in @[@"/var/mobile/Media", @"/var/mobile/Documents", @"/var/mobile", @"/"]) {
+        if ([extra isEqualToString:home])
+            continue;
+        BOOL directory = NO;
+        if ([manager fileExistsAtPath:extra isDirectory:&directory] && directory && [manager isReadableFileAtPath:extra])
+            [candidates addObject:@{@"title": [extra isEqualToString:@"/"] ? @"Root" : extra.lastPathComponent, @"path": extra}];
+    }
+    for (NSDictionary *candidate in candidates)
+        if ([manager isReadableFileAtPath:candidate[@"path"]])
+            [locations addObject:candidate];
+    return locations;
+}
+
+- (NSString *)charon_startFolder
+{
+    NSString *path = _directoryURL.isFileURL ? _directoryURL.path : nil;
+    BOOL directory = NO;
+    if (path && [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&directory] && directory)
+        return path;
+    return nil;
+}
+
+- (UIBarButtonItem *)charon_cancelItem
+{
+    return [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(charon_cancel)];
+}
+
+- (void)charon_finish:(NSArray<NSURL *> *)urls
+{
+    id<UIDocumentPickerDelegate> delegate = _delegate;
+    void (^report)(void) = ^{
+        if ([delegate respondsToSelector:@selector(documentPicker:didPickDocumentsAtURLs:)])
+            [delegate documentPicker:self didPickDocumentsAtURLs:urls];
+        else if ([delegate respondsToSelector:@selector(documentPicker:didPickDocumentAtURL:)] && urls.count)
+            [delegate documentPicker:self didPickDocumentAtURL:urls.firstObject];
+    };
+    if (self.presentingViewController)
+        [self.presentingViewController dismissViewControllerAnimated:YES completion:report];
+    else
+        report();
+}
+
+- (void)charon_pickPaths:(NSArray<NSString *> *)paths
+{
+    NSMutableArray *urls = [NSMutableArray array];
+    NSFileManager *manager = [NSFileManager defaultManager];
+    for (NSString *path in paths) {
+        if (_documentPickerMode == UIDocumentPickerModeImport) {
+            NSString *folder = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSUUID UUID] UUIDString]];
+            [manager createDirectoryAtPath:folder withIntermediateDirectories:YES attributes:nil error:NULL];
+            NSString *copy = [folder stringByAppendingPathComponent:path.lastPathComponent];
+            if ([manager copyItemAtPath:path toPath:copy error:NULL])
+                [urls addObject:[NSURL fileURLWithPath:copy]];
+        } else {
+            [urls addObject:[NSURL fileURLWithPath:path]];
+        }
+    }
+    [self charon_finish:urls];
+}
+
+- (void)charon_chooseFolder:(NSString *)folder
+{
+    NSMutableArray *urls = [NSMutableArray array];
+    NSFileManager *manager = [NSFileManager defaultManager];
+    for (NSURL *source in _URLs) {
+        NSString *name = source.lastPathComponent;
+        NSString *target = [folder stringByAppendingPathComponent:name];
+        NSUInteger n = 2;
+        while ([manager fileExistsAtPath:target])
+            target = [folder stringByAppendingPathComponent:[NSString stringWithFormat:@"%@ %lu%@%@", name.stringByDeletingPathExtension, (unsigned long)n++, name.pathExtension.length ? @"." : @"", name.pathExtension]];
+        BOOL ok = _documentPickerMode == UIDocumentPickerModeMoveToService ? [manager moveItemAtPath:source.path toPath:target error:NULL] : [manager copyItemAtPath:source.path toPath:target error:NULL];
+        if (ok)
+            [urls addObject:[NSURL fileURLWithPath:target]];
+    }
+    [self charon_finish:urls];
 }
 
 - (void)charon_cancel
