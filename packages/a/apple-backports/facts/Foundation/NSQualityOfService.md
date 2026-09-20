@@ -24,9 +24,9 @@ A quality of service is a class the kernel of iOS 8 schedules by, and iOS 6 has 
 priority and nothing else. Mapping one onto the other would be a formula of our own, and the newest system
 shows that the two are kept apart - a thread of quality `Utility` keeps the default scheduling priority of 31
 there. So the backport keeps the values and answers them as above, and schedules nothing by them: that is a
-hint to a scheduler the release does not run. The same goes for an operation queue's quality of service and
-its `underlyingQueue`, which iOS 6's queue, running its operations on threads of its own, cannot hand them
-to; the queue says so once in the log. A thread that runs an operation answers its own quality of service,
+hint to a scheduler the release does not run. The same goes for an operation queue's quality of service, which iOS 6's queue,
+running its operations on threads of its own, cannot hand them to; the queue says so once in the log. Its
+`underlyingQueue` is another matter, and has its own entry: `NSOperationQueueUnderlyingQueue.md`. A thread that runs an operation answers its own quality of service,
 not the operation's, since the release starts that thread without it.
 
 The newest system raises no exception but crashes in `pthread_get_qos_class_np` when the quality of service

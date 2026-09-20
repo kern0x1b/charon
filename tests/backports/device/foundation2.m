@@ -56,7 +56,8 @@ static void check_sources(void)
     CHECK_EQUAL(image_of_method([NSProgress class], @selector(discreteProgressWithTotalUnitCount:), YES), library, "+[NSProgress discreteProgressWithTotalUnitCount:] comes from the backports");
     CHECK_EQUAL(image_of_method([NSProgress class], @selector(progressWithTotalUnitCount:parent:pendingUnitCount:), YES), library, "+[NSProgress progressWithTotalUnitCount:parent:pendingUnitCount:] comes from the backports");
     CHECK_EQUAL(image_of_pointer((void *)&NSProgressEstimatedTimeRemainingKey), library, "NSProgressEstimatedTimeRemainingKey comes from the backports");
-    CHECK([NSProgress instancesRespondToSelector:@selector(addChild:withPendingUnitCount:)] == NO, "addChild:withPendingUnitCount: is not offered where the release cannot attach a progress afterwards");
+    CHECK_EQUAL(image_of_method([NSProgress class], @selector(addChild:withPendingUnitCount:), NO), library, "-[NSProgress addChild:withPendingUnitCount:] comes from the backports");
+    CHECK([NSProgress instancesRespondToSelector:@selector(resume)] == NO, "resume is not offered where the release has no way back from paused");
     CHECK_EQUAL(image_of_pointer(&CFAutorelease), library, "CFAutorelease comes from the backports");
     CHECK_EQUAL(image_of_pointer((void *)&NSKeyedArchiveRootObjectKey), library, "NSKeyedArchiveRootObjectKey comes from the backports");
 }

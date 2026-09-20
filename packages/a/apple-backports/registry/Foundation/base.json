@@ -711,19 +711,23 @@
     "api": "-[NSOperationQueue setUnderlyingQueue:]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "inert",
-    "reason": "the release runs an operation queue on its own threads and cannot be told to run it on a dispatch queue",
-    "effect": "the queue is remembered, the operations run where they would have, and the library says so in the log once",
-    "facts": "facts/Foundation/NSQualityOfService.md"
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "see -[NSOperationQueue underlyingQueue]",
+    "effect": "sets the dispatch queue that runs the operations, raising NSInvalidArgumentException when the queue is not empty, as the newest release does",
+    "facts": "facts/Foundation/NSOperationQueueUnderlyingQueue.md",
+    "source": "the host's own Foundation, held against the port's scheduler by tests/backports/host/underlying and read again on an iPhone 4S and an iPad 2 running 6.1.3 by tests/backports/device/underlying.m"
   },
   {
     "api": "-[NSOperationQueue underlyingQueue]",
     "kind": "method",
     "introduced": "8.0",
-    "status": "inert",
-    "reason": "the release runs an operation queue on its own threads",
-    "effect": "it answers what was set",
-    "facts": "facts/Foundation/NSQualityOfService.md"
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the release runs an operation queue on threads of its own and cannot be told to run it on a dispatch queue, so the port schedules the operations of such a queue itself",
+    "effect": "with an underlying queue set, the queue's operations start on that dispatch queue, at most as many at a time as the limit allows, the ready ones by priority and then by arrival; the count, the operations, cancelling, suspending, waiting and +currentQueue answer for it; a queue that is not empty refuses a new underlying queue, and setting nil hands the queue back to the release",
+    "facts": "facts/Foundation/NSOperationQueueUnderlyingQueue.md",
+    "source": "the host's own Foundation, held against the port's scheduler by tests/backports/host/underlying and read again on an iPhone 4S and an iPad 2 running 6.1.3 by tests/backports/device/underlying.m"
   },
   {
     "api": "-[NSProcessInfo beginActivityWithOptions:reason:]",

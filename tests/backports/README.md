@@ -763,3 +763,9 @@ channel.
 sends one - and if none does, taps the places where the buttons of a centred alert are until one does, so an alert an earlier run left
 does not take every touch of a test. `unblock.m` checks it with an alert of its own. It restarts nothing: SpringBoard is never
 killed, and a screen that is locked is a matter for `wake`.
+
+`host/underlying/run.sh` runs the scheduler of the port's operation queue - the class that `-setUnderlyingQueue:` puts behind a queue - beside
+the system's `NSOperationQueue` over `device/underlying-cases.m` (twenty-one records: where an operation runs, the concurrency of a
+serial and of a concurrent queue with a limit, the refusal to change the queue when it is not empty, priority and dependencies,
+cancelling, suspending, counts, asynchronous operations), and writes what the system answered for `device/underlying.m`, which runs
+the same cases through the real `NSOperationQueue` on the release.
