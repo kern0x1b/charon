@@ -240,12 +240,12 @@ laid out at its estimate, and says so once. `-[NSCollectionLayoutGroup visualDes
 release. `facts/UIKit/UICollectionViewCompositionalLayout.md` has every rule and the few places where a very odd description is
 not held to the host's answer.
 
-### Corner curves, kept and drawn circular
+### Corner curves, drawn as a mask
 
 `kCACornerCurveCircular`, `kCACornerCurveContinuous` and `CALayer.cornerCurve` are carried as the host has them: a layer is
-circular until given continuous, and a value that is neither makes it circular again. iOS 6 rounds a corner with a circular
-arc only, so a continuous curve is kept and drawn circular, and the first layer set to it says so in the log. See
-`facts/QuartzCore/CALayerCornerCurve.md`.
+circular until given continuous, and a value that is neither makes it circular again. iOS 6 rounds a corner with a circular arc
+only, so a clipping layer set to continuous gets a mask of the continuous corner shape over its circular clip, within 1.5% of the
+area the system covers. See `facts/QuartzCore/CALayerCornerCurve.md`.
 
 ### Background tasks, accepted by no scheduler
 
