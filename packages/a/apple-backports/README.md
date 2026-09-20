@@ -195,6 +195,13 @@ key command menus to rebuild - and says so once in the log; `UIMenuBuilder` is a
 called. `facts/UIKit/UIContextMenuInteraction.md` has the whole table, and `facts/UIKit/UIPreviewParameters.md` the one place
 a value differs from the host: lines of text that touch are not joined into one outline.
 
+### Corner curves, kept and drawn circular
+
+`kCACornerCurveCircular`, `kCACornerCurveContinuous` and `CALayer.cornerCurve` are carried as the host has them: a layer is
+circular until given continuous, and a value that is neither makes it circular again. iOS 6 rounds a corner with a circular
+arc only, so a continuous curve is kept and drawn circular, and the first layer set to it says so in the log. See
+`facts/QuartzCore/CALayerCornerCurve.md`.
+
 ## iOS 11 and 12
 
 These two releases are read differently from the ones before them. The last

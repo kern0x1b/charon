@@ -1,0 +1,34 @@
+{
+ "framework": "QuartzCore",
+ "entries": [
+  {
+   "api": "kCACornerCurveCircular",
+   "kind": "constant",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/QuartzCore/CALayerCornerCurve.md",
+   "source": "the host's own QuartzCore"
+  },
+  {
+   "api": "kCACornerCurveContinuous",
+   "kind": "constant",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/QuartzCore/CALayerCornerCurve.md",
+   "source": "the host's own QuartzCore"
+  },
+  {
+   "api": "CALayer.cornerCurve",
+   "kind": "property",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "reason": "iOS 6 rounds a corner with a circular arc only",
+   "effect": "the value is kept and answered, and a layer set to continuous is drawn with circular corners; the first says so in the log",
+   "facts": "facts/QuartzCore/CALayerCornerCurve.md",
+   "source": "the host's own QuartzCore"
+  }
+ ]
+}
