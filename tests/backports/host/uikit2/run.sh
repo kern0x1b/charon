@@ -93,6 +93,42 @@ windowed() {
     [ "$result" = 0 ] || status=1
 }
 
+renamed_keep() {
+    # $1: object files, $2: the selectors that are renamed; every other selector the objects define keeps its name
+    printf '%s\n' $2 > "$build/rename.list"
+    nm $1 | sed -n 's/.*[-+]\[[A-Za-z_]*(*[A-Za-z]*)* \([A-Za-z_][A-Za-z0-9_]*\).*\]$/\1/p' | grep -v '^charon_' | sort -u | grep -v -x -f "$build/rename.list" | tr '\n' ' '
+}
+
+windowed_renamed() {
+    # $1: group name, $2: sources, $3: selectors that get renamed, $4: test source; as windowed, but only the classes and the named selectors are renamed
+    name=$1
+    files=$2
+    renamed=$3
+    test=$4
+    objects=""
+    for file in $files; do
+        xcrun clang $target $flags -w -c "$sources/$file" -o "$build/plain/$name-$(basename "$file").o"
+        objects="$objects $build/plain/$name-$(basename "$file").o"
+    done
+    renames "$objects" "$(renamed_keep "$objects" "$renamed")" > "$build/$name.flags"
+    mkdir -p "$build/$name"
+    built=""
+    for file in $files; do
+        xcrun clang $target $flags $(cat "$build/$name.flags") -c "$sources/$file" -o "$build/$name/$(basename "$file").o"
+        built="$built $build/$name/$(basename "$file").o"
+    done
+    bundle="$build/$name.app"
+    rm -rf "$bundle"
+    mkdir -p "$bundle/Contents/MacOS"
+    xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/windowed.m" "$here/$test" "$harness/check.m" $built $frameworks -o "$bundle/Contents/MacOS/app"
+    cp "$here/windowed.plist" "$bundle/Contents/Info.plist"
+    codesign -s - --force "$bundle" > /dev/null 2>&1
+    if "$bundle/Contents/MacOS/app" > "$build/$name.log" 2>&1; then result=0; else result=$?; fi
+    grep -v '^ok ' "$build/$name.log" | grep -a 'FAIL\|checks=\|info' || true
+    echo "$name: exit=$result log=$build/$name.log"
+    [ "$result" = 0 ] || status=1
+}
+
 status=0
 group traits "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m" "*" traits_test.m
 group notifications "UIUserNotificationSettings.m" "*" notifications_test.m
@@ -134,6 +170,9 @@ windowed colors "UIColorWell.m UIColorPickerViewController.m" "*" colors_test.m
 group layoutvalues "NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m" "*" layoutvalues_test.m
 export CHARON_COMPOSITIONAL_EXPECTATIONS="$here/../../device/compositional-expectations.h"
 windowed compositionallayout "NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m" "*" compositionallayout_test.m
+group listvalues "CharonLists.m UICellAccessory.m UIViewConfigurationState.m UIListContentProperties.m UIListContentConfiguration.m UIBackgroundConfiguration.m UIListContentView.m" "*" listvalues_test.m
+export CHARON_LISTS_EXPECTATIONS="$here/../../device/lists-expectations.h"
+windowed_renamed listcell "CharonLists.m CharonConfigurationHost.m UICellAccessory.m UIViewConfigurationState.m UIListContentProperties.m UIListContentConfiguration.m UIBackgroundConfiguration.m UIListContentView.m UICollectionViewCell+Configuration.m UITableViewCell+Configuration.m UITableViewHeaderFooterView+Configuration.m UICollectionViewListCell.m UICollectionView+Editing.m UICollectionViewRegistration.m UICollectionLayoutListConfiguration.m UICollectionViewCompositionalLayout+ListConfiguration.m NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m NSDiffableDataSourceSnapshot.m CharonDiffable.m UICollectionViewDiffableDataSource.m" "contentConfiguration setContentConfiguration automaticallyUpdatesContentConfiguration setAutomaticallyUpdatesContentConfiguration backgroundConfiguration setBackgroundConfiguration automaticallyUpdatesBackgroundConfiguration setAutomaticallyUpdatesBackgroundConfiguration configurationState setNeedsUpdateConfiguration updateConfigurationUsingState defaultContentConfiguration isEditing setEditing allowsSelectionDuringEditing setAllowsSelectionDuringEditing allowsMultipleSelectionDuringEditing setAllowsMultipleSelectionDuringEditing dequeueConfiguredReusableCellWithRegistration dequeueConfiguredReusableSupplementaryViewWithRegistration" listcell_test.m
 
 # the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation
 xcrun clang $target -fobjc-arc -Wall -w -I"$harness" "$here/spring_uikit.m" $frameworks -o "$build/spring_uikit"

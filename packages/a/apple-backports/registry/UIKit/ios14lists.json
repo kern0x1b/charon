@@ -1,0 +1,696 @@
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "UIViewConfigurationState",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the four flags of a view and its trait collection, with custom states; equal, copied, coded and printed as the host does",
+      "facts": "facts/UIKit/UIConfigurationState.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICellConfigurationState",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the flags of a view with editing, expanded, swiped, reordering and the drag and drop states",
+      "facts": "facts/UIKit/UIConfigurationState.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UIListContentTextProperties",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "font, colour, alignment, lines, scaling and the colour transformer of one label; a value that was set is kept when the state changes",
+      "facts": "facts/UIKit/UIListContentConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UIListContentImageProperties",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "size limits, reserved size, corner radius, tint and its transformer of the image",
+      "facts": "facts/UIKit/UIListContentConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UIListContentConfiguration",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the twelve styles, the text and image, the updates for a state, laid out by UIListContentView",
+      "facts": "facts/UIKit/UIListContentConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UIBackgroundConfiguration",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the seven styles, colour, stroke, insets, corner radius, effect and custom view, and the updates for a state",
+      "facts": "facts/UIKit/UIBackgroundConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UIListContentView",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "labels and an image view laid out as the host lays them, with the three layout guides",
+      "facts": "facts/UIKit/UIListContentView.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICellAccessory",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the base of the accessories: displayed state, hidden, reserved width and tint",
+      "facts": "facts/UIKit/UICellAccessory.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICellAccessoryCheckmark",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a check mark drawn in the tint colour",
+      "facts": "facts/UIKit/UICellAccessory.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICellAccessoryCustomView",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a view of the application at a placement and a position",
+      "facts": "facts/UIKit/UICellAccessory.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICellAccessoryDelete",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the round delete control of an editing row, with its handler",
+      "facts": "facts/UIKit/UICellAccessory.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICellAccessoryInsert",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the round insert control of an editing row, with its handler",
+      "facts": "facts/UIKit/UICellAccessory.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICellAccessoryDisclosureIndicator",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the chevron of a row that leads on",
+      "facts": "facts/UIKit/UICellAccessory.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICellAccessoryLabel",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a line of text at the trailing edge; nil text raises",
+      "facts": "facts/UIKit/UICellAccessory.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICellAccessoryMultiselect",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the selection circle of an editing row",
+      "facts": "facts/UIKit/UICellAccessory.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICellAccessoryOutlineDisclosure",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the expansion chevron of an outline row, with its handler; the row does not animate its children",
+      "facts": "facts/UIKit/UICellAccessory.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICellAccessoryReorder",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the grip of an editing row, with an optional vertical separator",
+      "facts": "facts/UIKit/UICellAccessory.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICollectionLayoutListConfiguration",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "appearance, separators, background and the header and footer modes; the swipe providers are kept and never asked",
+      "facts": "facts/UIKit/UICollectionLayoutListConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICollectionViewListCell",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a cell with the accessories laid out around its content, indentation, a separator layout guide and the row separator",
+      "facts": "facts/UIKit/UICollectionViewListCell.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICollectionViewCellRegistration",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a class or nib and the configuration handler, registered on first use by the collection view",
+      "facts": "facts/UIKit/UICollectionViewRegistration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICollectionViewSupplementaryRegistration",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a class or nib, an element kind and the configuration handler, registered on first use",
+      "facts": "facts/UIKit/UICollectionViewRegistration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewCell automaticallyUpdatesBackgroundConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewCell automaticallyUpdatesContentConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewCell backgroundConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewCell configurationState]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewCell contentConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewCell setAutomaticallyUpdatesBackgroundConfiguration:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewCell setAutomaticallyUpdatesContentConfiguration:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewCell setBackgroundConfiguration:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewCell setContentConfiguration:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewCell setNeedsUpdateConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewCell updateConfigurationUsingState:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewCell automaticallyUpdatesBackgroundConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewCell automaticallyUpdatesContentConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewCell backgroundConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewCell configurationState]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewCell contentConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewCell setAutomaticallyUpdatesBackgroundConfiguration:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewCell setAutomaticallyUpdatesContentConfiguration:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewCell setBackgroundConfiguration:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewCell setContentConfiguration:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewCell setNeedsUpdateConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewCell updateConfigurationUsingState:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewCell defaultContentConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewHeaderFooterView automaticallyUpdatesBackgroundConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewHeaderFooterView automaticallyUpdatesContentConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewHeaderFooterView backgroundConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewHeaderFooterView configurationState]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewHeaderFooterView contentConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewHeaderFooterView setAutomaticallyUpdatesBackgroundConfiguration:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewHeaderFooterView setAutomaticallyUpdatesContentConfiguration:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewHeaderFooterView setBackgroundConfiguration:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewHeaderFooterView setContentConfiguration:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewHeaderFooterView setNeedsUpdateConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewHeaderFooterView updateConfigurationUsingState:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewHeaderFooterView defaultContentConfiguration]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITableViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionView isEditing]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionView setEditing:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionView allowsSelectionDuringEditing]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionView setAllowsSelectionDuringEditing:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionView allowsMultipleSelectionDuringEditing]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionView setAllowsMultipleSelectionDuringEditing:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionView dequeueConfiguredReusableCellWithRegistration:forIndexPath:item:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewRegistration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionView dequeueConfiguredReusableSupplementaryViewWithRegistration:forIndexPath:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionViewRegistration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "+[NSCollectionLayoutSection sectionWithListConfiguration:layoutEnvironment:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionLayoutListConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "+[UICollectionViewCompositionalLayout layoutWithListConfiguration:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICollectionLayoutListConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICellAccessoryPositionBeforeAccessoryOfClass()",
+      "kind": "function",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICellAccessory.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICellAccessoryPositionAfterAccessoryOfClass()",
+      "kind": "function",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UICellAccessory.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
+    },
+    {
+      "api": "UICollectionLayoutListConfiguration.leadingSwipeActionsConfigurationProvider",
+      "kind": "property",
+      "introduced": "14.0",
+      "status": "inert",
+      "reason": "the release has no swipe gesture on a collection view row",
+      "effect": "the provider is kept and answered back, and is never asked for actions; a row does not swipe",
+      "facts": "facts/UIKit/UICollectionLayoutListConfiguration.md"
+    },
+    {
+      "api": "UICollectionLayoutListConfiguration.trailingSwipeActionsConfigurationProvider",
+      "kind": "property",
+      "introduced": "14.0",
+      "status": "inert",
+      "reason": "the release has no swipe gesture on a collection view row",
+      "effect": "the provider is kept and answered back, and is never asked for actions; a row does not swipe",
+      "facts": "facts/UIKit/UICollectionLayoutListConfiguration.md"
+    },
+    {
+      "api": "UICollectionView.selectionFollowsFocus",
+      "kind": "property",
+      "introduced": "14.0",
+      "status": "absent",
+      "reason": "the release has no focus system to move a selection",
+      "effect": "the property is not there: respondsToSelector: answers NO"
+    },
+    {
+      "api": "UITableView.selectionFollowsFocus",
+      "kind": "property",
+      "introduced": "14.0",
+      "status": "absent",
+      "reason": "the release has no focus system to move a selection",
+      "effect": "the property is not there: respondsToSelector: answers NO"
+    },
+    {
+      "api": "UIConfigurationColorTransformerGrayscale",
+      "kind": "constant",
+      "introduced": "14.0",
+      "status": "absent",
+      "reason": "the transformers of the system are not read in this window",
+      "effect": "the symbol is not there; a configuration takes a transformer of the application's own"
+    },
+    {
+      "api": "UIConfigurationColorTransformerMonochromeTint",
+      "kind": "constant",
+      "introduced": "14.0",
+      "status": "absent",
+      "reason": "the transformers of the system are not read in this window",
+      "effect": "the symbol is not there; a configuration takes a transformer of the application's own"
+    },
+    {
+      "api": "UIConfigurationColorTransformerPreferredTint",
+      "kind": "constant",
+      "introduced": "14.0",
+      "status": "absent",
+      "reason": "the transformers of the system are not read in this window",
+      "effect": "the symbol is not there; a configuration takes a transformer of the application's own"
+    }
+  ]
+}

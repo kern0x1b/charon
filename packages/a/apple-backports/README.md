@@ -304,6 +304,18 @@ for reordering and for expanding are **inert** and say so once in the log, and t
 reordering and no outline cell. The members of iOS 15 are not answered. `facts/UIKit/NSDiffableDataSourceSnapshot.md`,
 `NSDiffableDataSourceSectionSnapshot.md`, `UICollectionViewDiffableDataSource.md`, `UITableViewDiffableDataSource.md`.
 
+### Lists and cell configurations, laid out from what the host measured
+
+`UIListContentConfiguration`, `UIBackgroundConfiguration`, the configuration states, `UIListContentView`, the `UICellAccessory` family,
+`UICollectionViewListCell`, `UICollectionLayoutListConfiguration` with the list section and layout, the cell registrations and the
+configuration of collection view cells, table cells and table headers are carried in full. The values come from the host's UIKit under Mac
+Catalyst, so the margins and sizes are those of the Mac idiom: the port follows them, except the row estimate of a list layout, which is 44
+and not the host's 40.04. This release has no self sizing cells, so a row stays that high. Not carried: the swipe actions (`inert`; the
+provider is kept and never asked, said once in the log), the animation of an outline's children, the background decoration item, the blur
+and shadow of a reordering row, `selectionFollowsFocus` and the system colour transformers (`absent`). Members of iOS 15 and later
+(`configurationUpdateHandler`, `isPinned`, `separatorConfiguration`) are not answered. Facts: `facts/UIKit/UIListContentConfiguration.md`
+and its neighbours; the entries are in `registry/UIKit/ios14lists.json`.
+
 ## iOS 11 and 12
 
 These two releases are read differently from the ones before them. The last

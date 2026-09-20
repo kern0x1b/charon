@@ -738,3 +738,7 @@ deceleration does not take it. `swipeui.m` is the example.
 
 `host/progress/run.sh` records what the host's `NSProgress` does for children added with
 `-addChild:withPendingUnitCount:` in `device/progress-cases.m`, and `device/progress.m` compares the port on the release.
+- `lists.m` (`lists-Info.plist`): an application, the lists and cell configurations: values, content and cell geometry are held to `lists-expectations.h`,
+  which the windowed `listcell` group of `host/uikit2/run.sh` records from the host's UIKit (the `listvalues` group compares the values on 35000 more);
+  a real list layout is put on screen and its rows, header, selection, editing and default backgrounds are measured; the members that are not carried
+  are asked whether they answer. It writes `/private/var/backports/lists.log` and `lists.done`.
