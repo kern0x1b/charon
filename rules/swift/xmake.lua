@@ -29,6 +29,17 @@ rule("swift")
     end)
 
     on_config(function (target)
+        -- A static library of Swift is archived by the tool xmake keeps for the Swift language, whose flags are its own
+        -- (scarflags) and empty: the archiver was given the library's path and read it as options ("illegal option -- /").
+        -- The C languages' archiver has -cr; the Swift one is given the same.
+        target:add("scarflags", "-cr", {force = true})
+        -- Swift that Objective-C calls is a target whose header the compiler writes: what depends on it must compile after it, or
+        -- the Objective-C finds no header (the objects of a target and of the ones it depends on are otherwise built together).
+        for _, flag in ipairs(table.wrap(target:values("swift.flags"))) do
+            if flag == "-emit-objc-header" or flag == "-emit-objc-header-path" then
+                target:set("policy", "build.fence", true)
+            end
+        end
         import("@self.apple.platform").verify_one_runtime(target)
         -- The runtime is shared libraries; the program carries them the way it carries any package's - a tweak or a
         -- daemon in its package's folder, an application inside its bundle. A shared runtime is a package of its own that
@@ -89,8 +100,20 @@ rule("swift")
     -- UIKit, loads no UIKit, and depends on no package that holds it.
     before_link(function (target)
         local runtime = target:pkg("swift-runtime")
-        local objectfile = target:data("swift.objectfile")
-        if not (runtime and runtime:requireconf("configs", "shared") and objectfile and os.isfile(objectfile)) then
+        if not (runtime and runtime:requireconf("configs", "shared")) then
+            return
+        end
+        -- The Swift a program is made of is its own and that of the libraries of Swift it links: the imports of each object
+        -- are what the program needs of the runtime, and a program with no Swift of its own is one whose Swift is all in a
+        -- library.
+        local objectfiles = {}
+        for _, candidate in ipairs(table.join({target}, target:orderdeps())) do
+            local objectfile = candidate:data("swift.objectfile")
+            if objectfile and os.isfile(objectfile) then
+                table.insert(objectfiles, objectfile)
+            end
+        end
+        if #objectfiles == 0 then
             return
         end
         local macho = import("@self.apple.macho")
@@ -98,13 +121,15 @@ rule("swift")
         for _, name in ipairs((table.wrap((runtime:envs() or {}).CHARON_SHARED_PACKAGE)[1] or ""):split(";")) do
             table.insert(folders, path.join(runtime:installdir(), "share", "root", "usr", "lib", "charon", (name:match("^([^=]+)"))))
         end
-        for _, options in ipairs(macho.images(macho.read(objectfile))[1].linker_options) do
-            local library = #options == 1 and options[1]:match("^%-l(.+)$")
-            for _, folder in ipairs(library and folders or {}) do
-                if os.isfile(path.join(folder, "lib" .. library .. ".dylib")) then
-                    target:add("linkdirs", folder)
-                    target:add("links", library)
-                    break
+        for _, objectfile in ipairs(objectfiles) do
+            for _, options in ipairs(macho.images(macho.read(objectfile))[1].linker_options) do
+                local library = #options == 1 and options[1]:match("^%-l(.+)$")
+                for _, folder in ipairs(library and folders or {}) do
+                    if os.isfile(path.join(folder, "lib" .. library .. ".dylib")) then
+                        target:add("linkdirs", folder)
+                        target:add("links", library)
+                        break
+                    end
                 end
             end
         end
