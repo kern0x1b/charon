@@ -640,3 +640,7 @@ nothing. An iPhoneOS SDK takes `--target arm64-apple-ios16.4` and has them.
 `host/previewaction/run.sh` records what the host's UIKit answers for `UIPreviewAction`,
 `UIPreviewActionGroup` and `-previewActionItems` in `device/previewaction-cases.m`, and
 `device/previewaction.m` runs the same cases against the port on the release, record by record.
+
+`host/invalidation/run.sh` records what the host's UIKit answers for the collection view
+invalidation contexts and for `-invalidateLayout` routed through `-invalidateLayoutWithContext:`
+in `device/invalidation-cases.m`, and `device/invalidation.m` compares the port record by record.
