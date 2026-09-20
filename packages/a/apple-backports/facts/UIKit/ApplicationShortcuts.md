@@ -1,0 +1,23 @@
+# Application shortcut items and the shortcut bar over the keyboard, iOS 9
+
+Source: the host's own UIKit, recorded for the defaults, the copies and the archive, and held against the port by the checks
+of `tests/backports/device/uikit2.m`.
+
+## Shortcut items
+
+`UIApplicationShortcutItem` is made with a type and a localized title, and with a subtitle, an icon and a dictionary; it
+answers what it was made with, copies to another item, and `mutableCopy`s to a `UIMutableApplicationShortcutItem`, whose
+setters change the fields, and whose copy is an immutable item. The icon is made from a system type or a template image name.
+`UIApplication.shortcutItems` keeps the array it is given, and `nil` at first. The key `UIApplicationLaunchOptionsShortcutItemKey`
+is carried and never present in the launch options.
+
+A quick action needs a pressure-sensitive screen, which the devices this port runs on do not have, and a home screen that
+shows the items, which iOS 6 does not have; nothing shows a shortcut item and nothing performs one, so the classes and the
+property are `inert`, and `application:performActionForShortcutItem:completionHandler:` is never sent.
+
+## The bar over the keyboard
+
+`UIBarButtonItemGroup` keeps its items and its representative item, is archived, and says it is not displaying its
+representative item; each item knows its group. `UITextInputAssistantItem` keeps two arrays of groups and whether the system
+may hide the shortcuts, which it may; `UIResponder.inputAssistantItem` answers one item of its own for every responder.
+iOS 6 has no such bar, so nothing is shown and both are `inert`.

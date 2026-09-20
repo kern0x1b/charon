@@ -196,6 +196,15 @@
     "effect": "the message is never sent"
   },
   {
+    "api": "-[UIApplicationDelegate application:performActionForShortcutItem:completionHandler:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "absent",
+    "minimum": "6.0",
+    "reason": "no quick action is ever performed",
+    "effect": "the message is never sent"
+  },
+  {
     "api": "-[UIApplicationDelegate application:willContinueUserActivityWithType:]",
     "kind": "method",
     "introduced": "8.0",
@@ -837,6 +846,250 @@
     "facts": "facts/UIKit/UIViewAnchors.md"
   },
   {
+    "api": "NSObject.accessibilityCustomActions",
+    "kind": "property",
+    "introduced": "8.0",
+    "status": "inert",
+    "minimum": "6.0",
+    "reason": "VoiceOver of the release does not read them",
+    "effect": "the values are kept per object and nothing reads them",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "NSObject.accessibilityElements",
+    "kind": "property",
+    "introduced": "8.0",
+    "status": "inert",
+    "minimum": "6.0",
+    "reason": "VoiceOver of the release does not read them",
+    "effect": "the values are kept per object and nothing reads them",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "NSObject.accessibilityNavigationStyle",
+    "kind": "property",
+    "introduced": "8.0",
+    "status": "inert",
+    "minimum": "6.0",
+    "reason": "VoiceOver of the release does not read them",
+    "effect": "the values are kept per object and nothing reads them",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityAssistiveTechnologyKey",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityBoldTextStatusDidChangeNotification",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityCustomAction",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "inert",
+    "minimum": "6.0",
+    "reason": "VoiceOver of the release has no custom actions to list",
+    "effect": "the action is made with its name, target and selector, kept by an accessibility element and never offered or performed",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityDarkerSystemColorsEnabled()",
+    "kind": "function",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityDarkerSystemColorsStatusDidChangeNotification",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityElementFocusedNotification",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityFocusedElement()",
+    "kind": "function",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityFocusedElementKey",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityGrayscaleStatusDidChangeNotification",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityIsBoldTextEnabled()",
+    "kind": "function",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityIsGrayscaleEnabled()",
+    "kind": "function",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityIsReduceMotionEnabled()",
+    "kind": "function",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityIsReduceTransparencyEnabled()",
+    "kind": "function",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityIsShakeToUndoEnabled()",
+    "kind": "function",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityIsSpeakScreenEnabled()",
+    "kind": "function",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityIsSpeakSelectionEnabled()",
+    "kind": "function",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityIsSwitchControlRunning()",
+    "kind": "function",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityNotificationSwitchControlIdentifier",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityNotificationVoiceOverIdentifier",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityPauseAssistiveTechnologyNotification",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityReduceMotionStatusDidChangeNotification",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityReduceTransparencyStatusDidChangeNotification",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityResumeAssistiveTechnologyNotification",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityShakeToUndoDidChangeNotification",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilitySpeakScreenStatusDidChangeNotification",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilitySpeakSelectionStatusDidChangeNotification",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
     "api": "UIAccessibilitySpeechAttributeLanguage",
     "kind": "constant",
     "introduced": "7.0",
@@ -864,6 +1117,22 @@
     "effect": "the key carries the string UIKit gives it, so an attributed string can be built with it; the release's VoiceOver reads whether punctuation is spoken from no attribute and speaks the text as it would without one"
   },
   {
+    "api": "UIAccessibilitySwitchControlStatusDidChangeNotification",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIAccessibilityUnfocusedElementKey",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
     "api": "UIAlertAction",
     "kind": "class",
     "introduced": "8.0",
@@ -878,11 +1147,79 @@
     "facts": "facts/UIKit/UIAlertController.md"
   },
   {
+    "api": "UIApplication.shortcutItems",
+    "kind": "property",
+    "introduced": "9.0",
+    "status": "inert",
+    "minimum": "6.0",
+    "reason": "nothing shows the shortcut items of an application",
+    "effect": "the array is kept and never shown",
+    "facts": "facts/UIKit/ApplicationShortcuts.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIApplicationLaunchOptionsShortcutItemKey",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/ApplicationShortcuts.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIApplicationOpenSettingsURLString",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
     "api": "UIApplicationOpenURLOptionUniversalLinksOnly",
     "kind": "constant",
     "introduced": "10.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIApplicationOpenURL.md"
+  },
+  {
+    "api": "UIApplicationShortcutIcon",
+    "kind": "class",
+    "introduced": "9.0",
+    "status": "inert",
+    "minimum": "6.0",
+    "reason": "the devices this port runs on have no pressure-sensitive screen and the release has no home screen quick actions",
+    "effect": "the item is made, copied and mutated as the system's is, the application may set it, and nothing shows it or performs it",
+    "facts": "facts/UIKit/ApplicationShortcuts.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIApplicationShortcutItem",
+    "kind": "class",
+    "introduced": "9.0",
+    "status": "inert",
+    "minimum": "6.0",
+    "reason": "the devices this port runs on have no pressure-sensitive screen and the release has no home screen quick actions",
+    "effect": "the item is made, copied and mutated as the system's is, the application may set it, and nothing shows it or performs it",
+    "facts": "facts/UIKit/ApplicationShortcuts.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIBarButtonItem.buttonGroup",
+    "kind": "property",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/ApplicationShortcuts.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIBarButtonItemGroup",
+    "kind": "class",
+    "introduced": "9.0",
+    "status": "inert",
+    "minimum": "6.0",
+    "reason": "the release has no shortcut bar over the keyboard",
+    "effect": "the group keeps its items and its representative item, is archived, and is never shown",
+    "facts": "facts/UIKit/ApplicationShortcuts.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
   {
     "api": "UIBlurEffect",
@@ -1121,6 +1458,73 @@
     "facts": "facts/UIKit/UIMotionEffect.md"
   },
   {
+    "api": "UIKeyCommand",
+    "kind": "class",
+    "introduced": "7.0",
+    "status": "inert",
+    "minimum": "6.0",
+    "reason": "the release does not look for the key commands of a responder: a hardware keyboard reaches an application only as text",
+    "effect": "the command is made, compared, copied and archived as the system's is; a responder's keyCommands are never asked for and no command fires",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIKeyInputDownArrow",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIKeyInputEscape",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIKeyInputLeftArrow",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIKeyInputPageDown",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIKeyInputPageUp",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIKeyInputRightArrow",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIKeyInputUpArrow",
+    "kind": "constant",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
     "api": "UILayoutGuide",
     "kind": "class",
     "introduced": "9.0",
@@ -1143,6 +1547,17 @@
     "facts": "facts/UIKit/UIMotionEffect.md"
   },
   {
+    "api": "UIMutableApplicationShortcutItem",
+    "kind": "class",
+    "introduced": "9.0",
+    "status": "inert",
+    "minimum": "6.0",
+    "reason": "the devices this port runs on have no pressure-sensitive screen and the release has no home screen quick actions",
+    "effect": "the item is made, copied and mutated as the system's is, the application may set it, and nothing shows it or performs it",
+    "facts": "facts/UIKit/ApplicationShortcuts.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
     "api": "UIMutableUserNotificationAction",
     "kind": "class",
     "introduced": "8.0",
@@ -1163,6 +1578,28 @@
     "status": "absent",
     "reason": "the release presents a popover through UIPopoverController, whose surface is different",
     "effect": "the class is not there; -[UIAlertController popoverPresentationController] answers a stand-in of its own instead"
+  },
+  {
+    "api": "UIResponder.inputAssistantItem",
+    "kind": "property",
+    "introduced": "9.0",
+    "status": "inert",
+    "minimum": "6.0",
+    "reason": "the release has no shortcut bar over the keyboard",
+    "effect": "every responder answers one item of its own, with no groups",
+    "facts": "facts/UIKit/ApplicationShortcuts.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+  },
+  {
+    "api": "UIResponder.keyCommands",
+    "kind": "property",
+    "introduced": "7.0",
+    "status": "inert",
+    "minimum": "6.0",
+    "reason": "the release does not ask a responder for key commands",
+    "effect": "the property answers nil unless the application overrides it, and nothing asks",
+    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
   {
     "api": "UIResponder.userActivity",
@@ -1190,6 +1627,17 @@
     "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIStackView.md"
+  },
+  {
+    "api": "UITextInputAssistantItem",
+    "kind": "class",
+    "introduced": "9.0",
+    "status": "inert",
+    "minimum": "6.0",
+    "reason": "the release has no shortcut bar over the keyboard",
+    "effect": "the item keeps its groups and is never shown",
+    "facts": "facts/UIKit/ApplicationShortcuts.md",
+    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
   {
     "api": "UITraitCollection",
