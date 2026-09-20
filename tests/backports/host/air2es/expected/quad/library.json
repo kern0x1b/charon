@@ -1,0 +1,16 @@
+{
+ "functions": [
+  {
+   "name": "quadVertex",
+   "stage": "vertex",
+   "source": "module0.vert",
+   "reflection": "module0.json"
+  },
+  {
+   "name": "quadFragment",
+   "stage": "fragment",
+   "source": "module1.frag",
+   "reflection": "module1.json"
+  }
+ ]
+}
