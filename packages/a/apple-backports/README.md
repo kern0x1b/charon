@@ -321,6 +321,8 @@ The rest of Photos and of PhotosUI is absent, each row in `registry/Photos/absen
 
 `NSBatchDeleteRequest` and `NSBatchDeleteResult`, with the `-[NSManagedObjectContext executeRequest:error:]` that runs them, are carried in `libCoreDataBackports.dylib`. The removal is done in a private context on the same coordinator, which leaves the calling context as iOS 12 does but runs delete rules and validation and posts a did save notification, which iOS 12 does not; a fetch request or a save request given to `executeRequest:error:` is executed by the release's own coordinator. `facts/CoreData/BatchDelete.md`.
 
+`kSecAttrSynchronizable` and `kSecAttrSynchronizableAny` are carried in `libSecurityBackports.dylib`, as the strings `sync` and `syna`; the keychain of iOS 6 ignores the attribute, so an item marked synchronizable stays on the device and a query for either finds the items of the device. `kSecUseAuthenticationUI` and `kSecAttrTokenID` are not carried, as the release refuses them with -50. `facts/Security/kSecAttrSynchronizable.md`.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and
