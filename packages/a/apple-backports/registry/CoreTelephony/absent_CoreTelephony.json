@@ -1,0 +1,105 @@
+{
+  "framework": "CoreTelephony",
+  "entries": [
+    {
+      "api": "CTTelephonyNetworkInfo.serviceCurrentRadioAccessTechnology",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has one radio and no second service to key a technology by",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of CoreTelephony"
+    },
+    {
+      "api": "CTTelephonyNetworkInfo.serviceSubscriberCellularProviders",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has one subscriber, which subscriberCellularProvider answers",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of CoreTelephony"
+    },
+    {
+      "api": "CTTelephonyNetworkInfo.serviceSubscriberCellularProvidersDidUpdateNotifier",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has one subscriber, and subscriberCellularProviderDidUpdateNotifier serves it",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of CoreTelephony"
+    },
+    {
+      "api": "CTTelephonyNetworkInfo.dataServiceIdentifier",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has one data service and no identifier for it",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of CoreTelephony"
+    },
+    {
+      "api": "CTTelephonyNetworkInfo.delegate",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "nothing of the release sends the messages of the delegate",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of CoreTelephony"
+    },
+    {
+      "api": "CTTelephonyNetworkInfoDelegate",
+      "kind": "protocol",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "nothing of the release sends the messages of the delegate",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "the SDK 16.4 headers of CoreTelephony"
+    },
+    {
+      "api": "CTServiceRadioAccessTechnologyDidChangeNotification",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has one radio and no service to key a change by",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreTelephony"
+    },
+    {
+      "api": "CTRadioAccessTechnologyNRNSA",
+      "kind": "constant",
+      "introduced": "14.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no 5G",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreTelephony"
+    },
+    {
+      "api": "CTRadioAccessTechnologyNR",
+      "kind": "constant",
+      "introduced": "14.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no 5G",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreTelephony"
+    },
+    {
+      "api": "CTCellularData",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no restriction of cellular data by application to report",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of CoreTelephony"
+    }
+  ]
+}

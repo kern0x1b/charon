@@ -377,6 +377,8 @@ The rest of ImageIO and CoreVideo that arrived after iOS 6 is absent, each row i
 
 The rest of MetalPerformanceShaders, CoreML, Vision, CallKit, MediaPlayer, JavaScriptCore, LocalAuthentication, SafariServices, QuartzCore and Security that arrived after iOS 6 is absent, each row in `registry/<Framework>/absent_<Framework>.json`, decided once in the framework that owns it where two headers declare it. The C names that iOS 6 already exports itself are recorded as the release's own: thirteen of the JavaScriptCore C API (`facts/JavaScriptCore/JavaScriptCoreExports.md`) and five of Security (`facts/Security/SecurityExports.md`).
 
+The eleven `CTRadioAccessTechnology...` names and `CTRadioAccessTechnologyDidChangeNotification` are carried in `libCoreTelephonyBackports.dylib`, built with the `coretelephony` config, with `CTTelephonyNetworkInfo.currentRadioAccessTechnology`: iOS 6.0 has none of them, and iOS 6.1.3 exports all the names but WCDMA and keeps the technology in a private class, whose string is spelled `CTRadioAccessTechnologyWCMDA` for WCDMA, so the property answers the string with the value iOS 7 gives, and nil on iOS 6.0. The per-service dictionaries of iOS 12, the delegate of iOS 13, `CTCellularData` and the two 5G names are absent. `facts/CoreTelephony/CTRadioAccessTechnology.md`.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and
