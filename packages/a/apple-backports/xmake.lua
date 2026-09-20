@@ -31,8 +31,10 @@ package("apple-backports")
 
     add_configs("localauthentication", {description = "Build libLocalAuthenticationBackports.dylib, for an application that asks for the owner's authentication; the device answers as one without a biometric sensor and without a way to ask for the passcode.", default = false, type = "boolean"})
 
+    add_configs("safariservices", {description = "Build libSafariServicesBackports.dylib, for an application that shows a web page in an SFSafariViewController; the page is drawn by the UIWebView of the release, in bars of the application's own.", default = false, type = "boolean"})
+
     on_load("iphoneos", function (package)
-        package:add("links", table.join(package:config("uikit") and {"UIKitBackports"} or {}, package:config("corelocation") and {"CoreLocationBackports"} or {}, package:config("coredata") and {"CoreDataBackports"} or {}, package:config("security") and {"SecurityBackports"} or {}, package:config("avfoundation") and {"AVFoundationBackports"} or {}, package:config("webkit") and {"WebKitBackports"} or {}, package:config("graphics") and {"GraphicsBackports"} or {}, package:config("localauthentication") and {"LocalAuthenticationBackports"} or {}, {"FoundationBackports"}))
+        package:add("links", table.join(package:config("uikit") and {"UIKitBackports"} or {}, package:config("corelocation") and {"CoreLocationBackports"} or {}, package:config("coredata") and {"CoreDataBackports"} or {}, package:config("security") and {"SecurityBackports"} or {}, package:config("avfoundation") and {"AVFoundationBackports"} or {}, package:config("webkit") and {"WebKitBackports"} or {}, package:config("graphics") and {"GraphicsBackports"} or {}, package:config("localauthentication") and {"LocalAuthenticationBackports"} or {}, package:config("safariservices") and {"SafariServicesBackports"} or {}, {"FoundationBackports"}))
     end)
 
     on_install("iphoneos", function (package)
@@ -56,7 +58,8 @@ package("apple-backports")
                                      package:config("avfoundation") and {"AVFoundationBackports"} or {},
                                      package:config("webkit") and {"WebKitBackports"} or {},
                                      package:config("graphics") and {"GraphicsBackports"} or {},
-                                     package:config("localauthentication") and {"LocalAuthenticationBackports"} or {})
+                                     package:config("localauthentication") and {"LocalAuthenticationBackports"} or {},
+                                     package:config("safariservices") and {"SafariServicesBackports"} or {})
         local common = {root = package:scriptdir(), architecture = package:arch(), deployment = deployment, sdkdir = toolchain:config("sdkdir"),
                         cc = assert(toolchain:tool("cc"), "the apple-ios toolchain names no compiler for " .. package:arch()),
                         ld = assert(linker, "the apple-ios toolchain names no ld64 for " .. package:arch()), libraries = libraries}

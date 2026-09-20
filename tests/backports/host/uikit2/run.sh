@@ -10,7 +10,7 @@ harness=${UIKIT2_HARNESS:-$here/../../device}
 build=${UIKIT2_BUILD:-${TMPDIR:-/tmp}/charon-uikit2-host}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
-frameworks="-framework LocalAuthentication -framework UIKit -framework QuartzCore -framework CoreGraphics -framework Foundation"
+frameworks="-framework LocalAuthentication -framework SafariServices -framework UIKit -framework QuartzCore -framework CoreGraphics -framework Foundation"
 flags="-fobjc-arc -fvisibility=hidden -Wall -Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-objc-protocol-method-implementation -Wno-incomplete-implementation -Wno-objc-property-implementation"
 rm -rf "$build"
 mkdir -p "$build/plain"
@@ -106,6 +106,7 @@ group documentpicker "UIDocumentPickerViewController.m" "*" documentpicker_test.
 group datecomponentsformatter "../Foundation/NSDateComponentsFormatter.m" "*" datecomponentsformatter_test.m
 group itemprovider "../Foundation/NSItemProvider.m" "*" itemprovider_test.m
 group itemproviderbuiltins "../Foundation/NSString+ItemProvider.m ../Foundation/NSURL+ItemProvider.m" "" itemproviderbuiltins_test.m
+group safariviewcontroller "../SafariServices/SFSafariViewController.m ../SafariServices/SFSafariViewControllerConfiguration.m ../SafariServices/SFSafariViewControllerActivityButton.m ../SafariServices/SFSafariViewControllerPrewarmingToken.m" "*" safariviewcontroller_test.m
 windowed snapshots "UIView+Snapshots.m" "" snapshots_test.m
 
 # the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation

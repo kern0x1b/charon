@@ -588,3 +588,4 @@ a framework that exists only on iOS is not in it, and a run against it reports
 nothing. An iPhoneOS SDK takes `--target arm64-apple-ios16.4` and has them.
 `--above` and `--up-to` cut the releases, `--list` prints every gap, and
 `--rows FILE` writes every declared row for other tools to read.
+- `safariviewcontroller.m`: an application of its own, the SafariServices batch: a controller is shown against a small server on the loopback address, and the delegate is asked for the initial load, a redirect, the activities and the dismissal. The rest of what a controller does before it is shown is held to the system's by the `safariviewcontroller` group of `host/uikit2/run.sh`. It needs the package built with `safariservices = true`.

@@ -1,0 +1,82 @@
+[
+  {
+    "api": "SFSafariViewController",
+    "kind": "class",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/SafariServices/SFSafariViewController.md",
+    "source": "the newest header of the SDK, and the host's own SafariServices for what a controller answers before it is shown (tests/backports/host/uikit2, group safariviewcontroller)"
+  },
+  {
+    "api": "SFSafariViewControllerConfiguration",
+    "kind": "class",
+    "introduced": "11.0",
+    "status": "implemented",
+    "facts": "facts/SafariServices/SFSafariViewController.md",
+    "source": "the newest header of the SDK, and the host's own SafariServices for what a controller answers before it is shown (tests/backports/host/uikit2, group safariviewcontroller)"
+  },
+  {
+    "api": "SFSafariViewControllerActivityButton",
+    "kind": "class",
+    "introduced": "15.0",
+    "status": "implemented",
+    "facts": "facts/SafariServices/SFSafariViewController.md",
+    "source": "the newest header of the SDK, and the host's own SafariServices for what a controller answers before it is shown (tests/backports/host/uikit2, group safariviewcontroller)"
+  },
+  {
+    "api": "SFSafariViewControllerPrewarmingToken",
+    "kind": "class",
+    "introduced": "15.0",
+    "status": "implemented",
+    "facts": "facts/SafariServices/SFSafariViewController.md",
+    "source": "the newest header of the SDK, and the host's own SafariServices for what a controller answers before it is shown (tests/backports/host/uikit2, group safariviewcontroller)"
+  },
+  {
+    "api": "SFSafariViewControllerDelegate",
+    "kind": "protocol",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/SafariServices/SFSafariViewController.md",
+    "source": "the newest header of the SDK, and the host's own SafariServices for what a controller answers before it is shown (tests/backports/host/uikit2, group safariviewcontroller)"
+  },
+  {
+    "api": "+[SFSafariViewController prewarmConnectionsToURLs:]",
+    "kind": "method",
+    "introduced": "15.0",
+    "status": "inert",
+    "facts": "facts/SafariServices/SFSafariViewController.md",
+    "reason": "the UIWebView of the release keeps no connections ahead of a request",
+    "effect": "the call answers a token that can be invalidated, and the page loads as it would have",
+    "source": "the newest header of the SDK"
+  },
+  {
+    "api": "-[SFSafariViewControllerConfiguration setEntersReaderIfAvailable:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "inert",
+    "facts": "facts/SafariServices/SFSafariViewController.md",
+    "reason": "the release has no Safari Reader",
+    "effect": "the flag is kept and read back, and the page is shown as it is",
+    "source": "the newest header of the SDK"
+  },
+  {
+    "api": "-[SFSafariViewControllerConfiguration setBarCollapsingEnabled:]",
+    "kind": "method",
+    "introduced": "11.0",
+    "status": "inert",
+    "facts": "facts/SafariServices/SFSafariViewController.md",
+    "reason": "the bars of the port do not collapse",
+    "effect": "the flag is kept and read back, and the bars stay",
+    "source": "the newest header of the SDK"
+  },
+  {
+    "api": "-[SFSafariViewControllerConfiguration setActivityButton:]",
+    "kind": "method",
+    "introduced": "15.0",
+    "status": "inert",
+    "facts": "facts/SafariServices/SFSafariViewController.md",
+    "reason": "an extension of the application cannot be run from a button of the port",
+    "effect": "the button is kept and read back, and none is shown",
+    "source": "the newest header of the SDK"
+  }
+]

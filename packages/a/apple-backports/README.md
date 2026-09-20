@@ -146,6 +146,16 @@ makes no sRGB space - `CGColorSpaceCreateWithName(kCGColorSpaceSRGB)` answers
 UIKit draws every image context in. The pixels are the same; the files carry no
 colour profile, like every image that release makes itself.
 
+### SafariServices, a page in bars of the application's own
+
+`SFSafariViewController`, its configuration, its activity button and the prewarming token are carried in
+`libSafariServicesBackports.dylib`, built with the `safariservices` config. The page is drawn by the `UIWebView` of the
+release in the process of the application, under a navigation bar with the dismiss button and the address, over a toolbar
+with back, forward, the action sheet, the button that opens the page in the browser and reload. What is asked of the
+delegate, what is refused and with which words follow the system's, held by `host/uikit2` (`safariviewcontroller`) and
+run on an iPad 2 by `device/safariviewcontroller.m`; the cookies and passwords of Safari, Reader and the content blockers
+are not shared, as `facts/SafariServices/SFSafariViewController.md` sets out.
+
 ## iOS 11 and 12
 
 These two releases are read differently from the ones before them. The last
