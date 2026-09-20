@@ -197,6 +197,26 @@ key command menus to rebuild - and says so once in the log; `UIMenuBuilder` is a
 called. `facts/UIKit/UIContextMenuInteraction.md` has the whole table, and `facts/UIKit/UIPreviewParameters.md` the one place
 a value differs from the host: lines of text that touch are not joined into one outline.
 
+### Compositional layouts, laid out by the release's own collection view
+
+`UICollectionViewCompositionalLayout` and everything it is described with - `NSCollectionLayoutSection`, `Group`, `Item`,
+the supplementary, boundary and decoration items, the dimensions, sizes, spacings and anchors, the layout's configuration and
+the environments a section provider is given - are carried in full. iOS 6 has `UICollectionViewLayout` since 6.0, so the layout
+is one more subclass of it: it solves the description into frames and answers the calls the collection view already makes. The
+rules were **measured**, not read: the same description is laid out by the host's own layout under Mac Catalyst and by the
+port's, in a collection view in a real window, and 182 fixed layouts (fractional, absolute and estimated sizes, every kind of
+group, spacing, insets, edge spacing, supplementary, boundary and decoration items, pinned headers, several sections, scrolling
+both ways) agree frame for frame with no tolerance; their answers are the expectations of `tests/backports/device/compositional.m`.
+The value classes agree with the host on 139 statements - defaults, copies, equality, `-description`, exceptions.
+`contentInsetsReference` of 14.0 is carried in an object of its own.
+
+What iOS 6 cannot do is not faked. It has no nested scroll views, so a section with an `orthogonalScrollingBehavior` other than
+none is **laid out as an ordinary section**, its behavior and its `visibleItemsInvalidationHandler` kept and the handler never
+called, and the first one says so in the log; those two are `inert`. It asks a cell nothing about its size, so an estimated dimension is
+laid out at its estimate, and says so once. `-[NSCollectionLayoutGroup visualDescription]` is absent, and so is anything of a later
+release. `facts/UIKit/UICollectionViewCompositionalLayout.md` has every rule and the few places where a very odd description is
+not held to the host's answer.
+
 ### Corner curves, kept and drawn circular
 
 `kCACornerCurveCircular`, `kCACornerCurveContinuous` and `CALayer.cornerCurve` are carried as the host has them: a layer is

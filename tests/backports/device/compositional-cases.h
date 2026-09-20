@@ -1,0 +1,21 @@
+#import <UIKit/UIKit.h>
+
+typedef struct {
+    Class dimension, size, spacing, edgeSpacing, anchor, item, group, customItem, supplementary, boundary, decoration, section, configuration, layout;
+} CompositionalKit;
+
+@interface CompositionalCase : NSObject
+@property (nonatomic, strong) UICollectionViewLayout *layout;
+@property (nonatomic, strong) NSArray *counts;
+@property (nonatomic, strong) NSArray *kinds;
+@property (nonatomic, strong) NSArray *decorations;
+@property (nonatomic) CGSize size;
+@property (nonatomic) CGPoint offset;
+@property (nonatomic) UIEdgeInsets margins;
+@end
+
+CompositionalKit compositional_kit(NSString *prefix);
+NSUInteger compositional_case_count(void);
+NSString *compositional_case_name(NSUInteger index);
+NSString *compositional_case_dump(CompositionalKit kit, NSUInteger index, UIWindow *window);
+NSString *compositional_dump(CompositionalCase *built, UIWindow *window);

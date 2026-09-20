@@ -121,6 +121,9 @@ windowed snapshots "UIView+Snapshots.m" "" snapshots_test.m
 windowed menucontroller "UIMenuController+iOS13.m" "" menucontroller_test.m
 group symbols "UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m" "traitCollection configurationWithTraitCollection configurationByApplyingConfiguration unspecifiedConfiguration configurationWithScale configurationWithPointSize configurationWithWeight configurationWithTextStyle configurationWithFont configurationWithoutTextStyle configurationWithoutScale configurationWithoutWeight configurationWithoutPointSizeAndWeight isEqualToConfiguration initCharonWithTraitCollection initCharonWithPointSize" symbols_test.m
 windowed menus "UIMenuElement.m UIAction.m UIAction+iOS14.m UIMenu.m UIMenu+iOS14.m UIDeferredMenuElement.m UIMenuIdentifiers.m UIMenuIdentifiers14.m UIMenuSystem.m UIContextMenuConfiguration.m UIContextMenuInteraction.m UIContextMenuInteraction+iOS14.m UIPreviewParameters.m UIPreviewParameters+iOS14.m UIPreviewTarget.m UITargetedPreview.m" "*" menus_test.m
+group layoutvalues "NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m" "*" layoutvalues_test.m
+export CHARON_COMPOSITIONAL_EXPECTATIONS="$here/../../device/compositional-expectations.h"
+windowed compositionallayout "NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m" "*" compositionallayout_test.m
 
 # the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation
 xcrun clang $target -fobjc-arc -Wall -w -I"$harness" "$here/spring_uikit.m" $frameworks -o "$build/spring_uikit"

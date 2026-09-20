@@ -76,6 +76,15 @@ classes and constants come from `libUIKitBackports.dylib` and repeats the checks
 The `symbols` group of `host/uikit2/run.sh` compares `UIImageConfiguration`, `UIImageSymbolConfiguration`, the two weight functions, the symbol members of `UIImage` on ordinary
 images and `UIImageView.preferredSymbolConfiguration` with the host's, over generated configurations and every pair of them; `device/symbols.m` checks on the device that the
 classes and functions come from `libUIKitBackports.dylib`, the value behaviours, and that `systemImageNamed:` answers nil.
+The `layoutvalues` and `compositionallayout` groups of `host/uikit2/run.sh` hold the compositional layout's classes to the system's.
+`layoutvalues` runs 139 statements against the system's classes and the port's and compares the answers as text:
+defaults, copies, equality, `-description`, exceptions. `compositionallayout` is a `windowed` group: it puts each of 182 layouts
+(`device/compositional-cases.m`) in a collection view in a real window, once with the system's layout and once with the port's,
+and compares the content size, every attribute of the layout, the answers to six rectangles and the first item of every section,
+with no tolerance; when all agree it writes the system's answers to `device/compositional-expectations.h`. Set
+`CHARON_FUZZ_ROUNDS=300` to add random layouts (`CHARON_FUZZ_MASK` narrows the features they use, `CHARON_FUZZ_ONLY=n` prints round
+*n*'s two answers); they are a hunting tool, and rows that mix fractional and absolute widths still differ in a few. Give the
+group a temporary directory of its own and a bundle identifier of its own (the `windowed` function's) when others run at the same time.
 
 `host/registry/run.sh` holds the build's check of the registry to a release's own
 Objective-C metadata. The build refuses an `absent` entry whose class, method,
@@ -641,6 +650,7 @@ a framework that exists only on iOS is not in it, and a run against it reports
 nothing. An iPhoneOS SDK takes `--target arm64-apple-ios16.4` and has them.
 `--above` and `--up-to` cut the releases, `--list` prints every gap, and
 `--rows FILE` writes every declared row for other tools to read.
+- `compositional.m` (`compositional-Info.plist`) with `compositional-cases.m`: an application of its own, the compositional layout put in a collection view on a window and held to `compositional-expectations.h`, the system's answers for 182 layouts written by the `compositionallayout` group (the answers are those of a screen of scale 2: at another scale the layouts are not compared). It also checks that the environments a section provider and a custom group's provider are given have the sizes the facts say, that a section that scrolls the other way is laid out plainly, its handler kept and never called, and that what is absent answers no. The status bar is hidden by the property list, so the safe area is zero as the host's is. It writes `/private/var/backports/compositional.log` and `compositional.done`.
 - `safariviewcontroller.m`: an application of its own, the SafariServices batch: a controller is shown against a small server on the loopback address, and the delegate is asked for the initial load, a redirect, the activities and the dismissal. The rest of what a controller does before it is shown is held to the system's by the `safariviewcontroller` group of `host/uikit2/run.sh`. It needs the package built with `safariservices = true`.
 - `aswebauth.m` (`aswebauth-Info.plist`): an application of its own, the web authentication session of iOS 12 over the loopback server `safariviewcontroller.m` uses: the callback URL of a redirect, the error of its own domain with the code 1 for a cancel and for an address that is not a web address, the second start refused and a session with no handler.
 - `photos.m`: a command-line test of the photo authorization of `PHPhotoLibrary`: the status is the `ALAssetsLibrary` status, both access levels give it and never limited, and `+requestAuthorization:` is called only when the status is decided already, so no prompt is shown. It needs the package built with `photos = true`.
