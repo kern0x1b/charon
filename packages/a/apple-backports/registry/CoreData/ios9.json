@@ -47,10 +47,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a departure from 12.0 in how a batch delete is carried out and in what other requests answer: iOS 6 has no SQL for it, so the fetch request runs in a private context of its own, the objects it finds are deleted and saved, which applies their delete rules and validation and posts a did save notification of that context, none of which iOS 12 does; a fetch request given to it is executed as -executeFetchRequest:error: and answers the array, where iOS 12 wraps it in an asynchronous fetch result, and any other request is executed by the release's own coordinator and answers what that answers",
-      "effect": "a batch delete request removes what its fetch request finds from the store, and the objects of the calling context are left as they are, neither marked deleted nor refreshed; it answers a batch delete result of the request's result type, nil and the error when the fetch or the save fails; a fetch request answers the array of its results; any other request goes to the release's own coordinator",
-      "facts": "facts/CoreData/BatchDelete.md",
-      "source": "CoreData of the arm64 shared cache of iOS 12.0: -[NSManagedObjectContext executeRequest:error:] at 0x1839f0f58 reads the request type and hands a batch delete to the coordinator; the host's Core Data, run beside the port on a twin store, for what a batch delete removes and answers"
+      "reason": "a departure from 12.0 in how a batch request is carried out: iOS 6 has no SQL for it, so a batch delete finds the objects with its fetch request in a private context of its own and deletes and saves them, and a batch update finds them with its predicate and sets the values of the properties on them and saves; that applies delete rules, validation and the model's rules to the values, and posts a did save notification of that context, none of which iOS 12 does, and the objects of the calling context are already up to date afterwards where iOS 12 leaves them as they were until they are merged. A fetch request given to it is executed as -executeFetchRequest:error: and answers the array, and any other request is executed by the release's own coordinator and answers what that answers",
+      "effect": "an asynchronous fetch request answers its result at once and delivers the fetch to the request's block on the context's queue; a batch update request sets the values of what its predicate finds in the store; a batch delete request removes what its fetch request finds; both answer a result of the request's result type, nil and the error when the fetch or the save fails; a fetch request answers the array of its results; any other request goes to the release's own coordinator",
+      "facts": "facts/CoreData/BatchUpdate.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: -[NSManagedObjectContext executeRequest:error:] at 0x1839f0f58 reads the request type and hands a batch request to the coordinator, and -[NSManagedObjectContext _executeAsynchronousFetchRequest:] for the asynchronous fetch; the host's Core Data, run beside the port on a twin store, for what each request removes, sets, delivers and answers; an iPad 2 running 6.1.3"
     },
     {
       "api": "NSConstraintConflict",
@@ -82,6 +82,17 @@
       "reason": "it resolves the conflicts of uniqueness constraints, which nothing here enforces, so there is none to hand it",
       "effect": "the method is not declared, so respondsToSelector: answers honestly; a subclass that overrides it is never called",
       "source": "the SDK 16.4 headers of CoreData"
+    },
+    {
+      "api": "+[NSManagedObjectContext mergeChangesFromRemoteContextSave:intoContexts:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6 has the merge of a remote save in a method of its own, which the release's public method calls; it posts its change notification when the context next processes its changes and without the NSObjectsChangedByMergeChangesKey of the newest release, so the port processes them at once and the key is not in the notification",
+      "effect": "the objects the IDs name are refreshed with the changes merged, or marked deleted, in each context, on the context's queue, and the context posts its did change notification before the method returns",
+      "facts": "facts/CoreData/RemoteMerge.md",
+      "source": "CoreData of the arm64 shared cache of iOS 12.0: +[NSManagedObjectContext mergeChangesFromRemoteContextSave:intoContexts:], whose call at 0x183b28fec hands its arguments to +_mergeChangesFromRemoteContextSave:intoContexts:, the selector iOS 6 has; the host's Core Data and an iPad 2 running 6.1.3, through tests/backports/device/coredata9merge.m"
     }
   ]
 }

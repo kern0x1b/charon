@@ -1,4 +1,5 @@
 #import <CoreData/CoreData.h>
+#import "CharonStoreCoordinator.h"
 
 @interface NSBatchDeleteResult (CharonInit)
 - (instancetype)initWithResultType:(NSBatchDeleteRequestResultType)resultType andObject:(id)result;
@@ -11,7 +12,7 @@ static NSBatchDeleteResult *charon_batch_delete(NSManagedObjectContext *context,
     if (request.affectedStores)
         fetch.affectedStores = request.affectedStores;
     NSManagedObjectContext *worker = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-    worker.persistentStoreCoordinator = context.persistentStoreCoordinator;
+    worker.persistentStoreCoordinator = charon_store_coordinator(context);
     __block id outcome = nil;
     __block NSError *failure = nil;
     [worker performBlockAndWait:^{
@@ -40,12 +41,24 @@ static NSBatchDeleteResult *charon_batch_delete(NSManagedObjectContext *context,
     return [[NSBatchDeleteResult alloc] initWithResultType:request.resultType andObject:outcome];
 }
 
+@interface NSBatchUpdateRequest (CharonExecute)
+- (id)charonExecuteInContext:(NSManagedObjectContext *)context error:(NSError **)error;
+@end
+
+@interface NSAsynchronousFetchRequest (CharonExecute)
+- (id)charonExecuteInContext:(NSManagedObjectContext *)context error:(NSError **)error;
+@end
+
 @implementation NSManagedObjectContext (CharonExecuteRequest)
 
 - (id)executeRequest:(NSPersistentStoreRequest *)request error:(NSError **)error
 {
     if ([request isKindOfClass:[NSFetchRequest class]])
         return [self executeFetchRequest:(NSFetchRequest *)request error:error];
+    if ([request isKindOfClass:[NSAsynchronousFetchRequest class]])
+        return [(NSAsynchronousFetchRequest *)request charonExecuteInContext:self error:error];
+    if (request.requestType == 6)
+        return [(NSBatchUpdateRequest *)request charonExecuteInContext:self error:error];
     if (request.requestType == 7)
         return charon_batch_delete(self, (NSBatchDeleteRequest *)request, error);
     return [self.persistentStoreCoordinator executeRequest:request withContext:self error:error];

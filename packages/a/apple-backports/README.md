@@ -477,6 +477,15 @@ languages inside iOS 12.
 `OSStatus` and its number, as it does in iOS 12. The language of the device is not
 honoured. See `facts/Security/SecCopyErrorMessageString.md`.
 
+Core Data's batch update and asynchronous fetch are carried, both executed with
+`-executeRequest:error:`: a batch update sets the values of what its predicate finds, with
+the keys and values checked as iOS 12 checks them; an asynchronous fetch answers its result at
+once, fetches in a context of its own and delivers to its block on the context's queue, with a
+progress when there is a current one, and cancels. Neither writes SQL the way the release does:
+the objects are set and saved in a context of their own, so the model's rules apply to what a
+batch update sets. `+mergeChangesFromRemoteContextSave:intoContexts:` brings a context up to
+date afterwards. See `facts/CoreData/BatchUpdate.md`, `AsynchronousFetch.md` and `RemoteMerge.md`.
+
 ### Not carried, and why
 
 Nothing here is a quiet stub. Where the behaviour cannot be produced, the API
