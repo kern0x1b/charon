@@ -696,6 +696,17 @@
     "facts": "facts/Foundation/NSProcessInfo.md"
   },
   {
+    "api": "-[NSProcessInfo isLowPowerModeEnabled]",
+    "kind": "method",
+    "introduced": "9.0",
+    "minimum": "6.0",
+    "status": "inert",
+    "reason": "the release has no Low Power Mode: no setting turns it on and no process can read a state of it",
+    "effect": "it answers NO, as a device whose user has not turned the mode on does, and says so once in the log; an application is never told to save energy",
+    "facts": "facts/Foundation/NSProcessInfoPowerState.md",
+    "source": "the host's own Foundation; the caches of iOS 6.0 to 9.0 searched for the getter and the setting"
+  },
+  {
     "api": "-[NSProcessInfo isOperatingSystemAtLeastVersion:]",
     "kind": "method",
     "introduced": "8.0",
@@ -992,6 +1003,17 @@
     "facts": "facts/Foundation/NSKeyedArchiver.md"
   },
   {
+    "api": "NSProcessInfoPowerStateDidChangeNotification",
+    "kind": "constant",
+    "introduced": "9.0",
+    "minimum": "6.0",
+    "status": "inert",
+    "reason": "the state it reports never changes on this release",
+    "effect": "it is carried with the release's string and is never posted",
+    "facts": "facts/Foundation/NSProcessInfoPowerState.md",
+    "source": "the host's own Foundation"
+  },
+  {
     "api": "NSStringTransformFullwidthToHalfwidth",
     "kind": "constant",
     "introduced": "9.0",
@@ -1263,5 +1285,21 @@
     "status": "implemented",
     "facts": "facts/Foundation/NSURL.md",
     "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
+  },
+  {
+    "api": "__NSArray0__",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/EmptyCollections.md",
+    "source": "the host's own CoreFoundation, through dlsym"
+  },
+  {
+    "api": "__NSDictionary0__",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/EmptyCollections.md",
+    "source": "the host's own CoreFoundation, through dlsym"
   }
 ]

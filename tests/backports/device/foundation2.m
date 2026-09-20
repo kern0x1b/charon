@@ -179,6 +179,15 @@ int main(int argc, char **argv)
         NSDateComponents *roundTrip = [gregorian components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:[gregorian dateFromComponents:cutover]];
         CHECK(roundTrip.year == 1582 && roundTrip.month == 10 && roundTrip.day == 10, "the Gregorian calendar of this release has no gap in October 1582, so the 10th exists and is valid");
         CHECK_EQUAL(recorder.records[@"progress.resignCreditsPendingUnits"], @0, "resignCurrent leaves the pending units of a progress with no child uncounted on this release");
+        extern void *__NSArray0__, *__NSDictionary0__;
+        NSArray *emptyArray = (__bridge NSArray *)__NSArray0__;
+        NSDictionary *emptyDictionary = (__bridge NSDictionary *)__NSDictionary0__;
+        CHECK(emptyArray != nil && [emptyArray isKindOfClass:[NSArray class]] && emptyArray.count == 0 && ![emptyArray respondsToSelector:@selector(addObject:)], "__NSArray0__ holds an empty immutable array");
+        CHECK(emptyDictionary != nil && [emptyDictionary isKindOfClass:[NSDictionary class]] && emptyDictionary.count == 0 && ![emptyDictionary respondsToSelector:@selector(setObject:forKey:)], "__NSDictionary0__ holds an empty immutable dictionary");
+        CHECK([[emptyArray arrayByAddingObject:@1] isEqual:@[@1]] && [emptyDictionary objectForKey:@"a"] == nil, "the empty collections answer as the release's own");
+        CHECK([NSProcessInfo processInfo].isLowPowerModeEnabled == NO && [NSProcessInfoPowerStateDidChangeNotification isEqualToString:@"NSProcessInfoPowerStateDidChangeNotification"], "Low Power Mode is off, and the notification carries the release's name");
+        CHECK(emptyArray == [NSArray array] && emptyArray == [NSArray new] && emptyArray == [[NSArray alloc] init] && emptyArray == [[NSMutableArray array] copy], "the empty array of the release is the one __NSArray0__ holds, however it is made");
+        CHECK(emptyDictionary == [NSDictionary dictionary] && emptyDictionary == [NSDictionary new] && emptyDictionary == [[NSDictionary alloc] init], "and the empty dictionary is the one __NSDictionary0__ holds");
         for (NSString *tolerance in tolerated)
             printf("tolerated %lu records: %s\n", (unsigned long)[tolerated countForObject:tolerance], tolerance.UTF8String);
         printf("records matched=%d mismatched=%d\n", matched, mismatched);
