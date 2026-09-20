@@ -1,0 +1,225 @@
+{
+  "framework": "QuartzCore",
+  "entries": [
+    {
+      "api": "CAMetalLayer",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "CAEAGLLayer.presentsWithTransaction",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give CAEAGLLayer a property like it: it arrived in iOS 9",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "CASpringAnimation.initialVelocity",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give CASpringAnimation a property like it: it arrived in iOS 9",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "CASpringAnimation.settlingDuration",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give CASpringAnimation a property like it: it arrived in iOS 9",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "-[CALayerDelegate layerWillDraw:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports have a CALayerDelegate that sends anything like it: the message arrived in iOS 10",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "CADisplayLink.preferredFramesPerSecond",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give CADisplayLink a property like it: it arrived in iOS 10",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "CADisplayLink.targetTimestamp",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give CADisplayLink a property like it: it arrived in iOS 10",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "CALayer.contentsFormat",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give CALayer a property like it: it arrived in iOS 10",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "kCAContentsFormatGray8Uint",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "kCAContentsFormatRGBA16Float",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "kCAContentsFormatRGBA8Uint",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "+[CARenderer rendererWithMTLTexture:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give CARenderer a method like it: it arrived in iOS 11",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "CALayer.maskedCorners",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give CALayer a property like it: it arrived in iOS 11",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "kCAGradientLayerConic",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "kCARendererMetalCommandQueue",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "+[CALayer cornerCurveExpansionFactor:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give CALayer a method like it: it arrived in iOS 13",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "CAAnimation.preferredFrameRateRange",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give CAAnimation a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "CADisplayLink.preferredFrameRateRange",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give CADisplayLink a property like it: it arrived in iOS 15",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "CAFrameRateRangeDefault",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "CAFrameRateRangeIsEqualToRange()",
+      "kind": "function",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "CAFrameRateRangeMake()",
+      "kind": "function",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, QuartzCore"
+    },
+    {
+      "api": "CAEDRMetadata",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, QuartzCore"
+    }
+  ]
+}

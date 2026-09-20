@@ -1,0 +1,1225 @@
+{
+  "framework": "MediaPlayer",
+  "entries": [
+    {
+      "api": "MPMediaItem.albumTrackNumber",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 7",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.discNumber",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 7",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItemPropertyIsExplicit",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPVolumeView.volumeWarningSliderImage",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPVolumeView a property like it: it arrived in iOS 7",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPVolumeView.wirelessRouteActive",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPVolumeView a property like it: it arrived in iOS 7",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPVolumeView.wirelessRoutesAvailable",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPVolumeView a property like it: it arrived in iOS 7",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPVolumeViewWirelessRouteActiveDidChangeNotification",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPVolumeViewWirelessRoutesAvailableDidChangeNotification",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPChangePlaybackRateCommand",
+      "kind": "class",
+      "introduced": "7.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPChangePlaybackRateCommandEvent",
+      "kind": "class",
+      "introduced": "7.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPContentItem",
+      "kind": "class",
+      "introduced": "7.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPFeedbackCommand",
+      "kind": "class",
+      "introduced": "7.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPFeedbackCommandEvent",
+      "kind": "class",
+      "introduced": "7.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPPlayableContentDataSource",
+      "kind": "protocol",
+      "introduced": "7.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 7, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPPlayableContentDelegate",
+      "kind": "protocol",
+      "introduced": "7.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 7, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPPlayableContentManager",
+      "kind": "class",
+      "introduced": "7.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPRatingCommand",
+      "kind": "class",
+      "introduced": "7.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPRatingCommandEvent",
+      "kind": "class",
+      "introduced": "7.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPRemoteCommand",
+      "kind": "class",
+      "introduced": "7.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPRemoteCommandCenter",
+      "kind": "class",
+      "introduced": "7.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPRemoteCommandEvent",
+      "kind": "class",
+      "introduced": "7.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPSeekCommandEvent",
+      "kind": "class",
+      "introduced": "7.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPSkipIntervalCommand",
+      "kind": "class",
+      "introduced": "7.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPSkipIntervalCommandEvent",
+      "kind": "class",
+      "introduced": "7.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "-[MPMediaEntity objectForKeyedSubscript:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaEntity a method like it: it arrived in iOS 8",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPChangePlaybackPositionCommandEvent",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPChangeRepeatModeCommand",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPChangeRepeatModeCommandEvent",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPChangeShuffleModeCommand",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPChangeShuffleModeCommandEvent",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.albumArtistPersistentID",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 8",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.albumPersistentID",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 8",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.albumTrackCount",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 8",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.artistPersistentID",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 8",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.assetURL",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 8",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.beatsPerMinute",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 8",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.cloudItem",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 8",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.comments",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 8",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.compilation",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 8",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.composerPersistentID",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 8",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.discCount",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 8",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.genrePersistentID",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 8",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.lyrics",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 8",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.podcastPersistentID",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 8",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.userGrouping",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 8",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaPlaylist.seedItems",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaPlaylist a property like it: it arrived in iOS 8",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoPropertyDefaultPlaybackRate",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPPlayableContentManagerContext",
+      "kind": "class",
+      "introduced": "8.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPChangeLanguageOptionCommandEvent",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPChangePlaybackPositionCommand",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPLanguageOptionCharacteristicContainsOnlyForcedSubtitles",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPLanguageOptionCharacteristicDescribesMusicAndSound",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPLanguageOptionCharacteristicDescribesVideo",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPLanguageOptionCharacteristicDubbedTranslation",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPLanguageOptionCharacteristicEasyToRead",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPLanguageOptionCharacteristicIsAuxiliaryContent",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPLanguageOptionCharacteristicIsMainProgramContent",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPLanguageOptionCharacteristicLanguageTranslation",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPLanguageOptionCharacteristicTranscribesSpokenDialog",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPLanguageOptionCharacteristicVoiceOverTranslation",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaPlaylistPropertyCloudGlobalID",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoLanguageOption",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoLanguageOptionGroup",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoPropertyAvailableLanguageOptions",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoPropertyCurrentLanguageOptions",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.protectedAsset",
+      "kind": "property",
+      "introduced": "9.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 9",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItemPropertyHasProtectedAsset",
+      "kind": "constant",
+      "introduced": "9.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaPickerController.showsItemsWithProtectedAssets",
+      "kind": "property",
+      "introduced": "9.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaPickerController a property like it: it arrived in iOS 9",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "+[MPMediaLibrary authorizationStatus]",
+      "kind": "method",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaLibrary a method like it: it arrived in iOS 9",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "+[MPMediaLibrary requestAuthorization:]",
+      "kind": "method",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaLibrary a method like it: it arrived in iOS 9",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "-[MPMediaLibrary addItemWithProductID:completionHandler:]",
+      "kind": "method",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaLibrary a method like it: it arrived in iOS 9",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "-[MPMediaLibrary getPlaylistWithUUID:creationMetadata:completionHandler:]",
+      "kind": "method",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaLibrary a method like it: it arrived in iOS 9",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "-[MPMediaPlaylist addItemWithProductID:completionHandler:]",
+      "kind": "method",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaPlaylist a method like it: it arrived in iOS 9",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "-[MPMediaPlaylist addMediaItems:completionHandler:]",
+      "kind": "method",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaPlaylist a method like it: it arrived in iOS 9",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "-[MPMusicPlayerController setQueueWithStoreIDs:]",
+      "kind": "method",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMusicPlayerController a method like it: it arrived in iOS 9",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPErrorDomain",
+      "kind": "constant",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaPlaylist.authorDisplayName",
+      "kind": "property",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaPlaylist a property like it: it arrived in iOS 9",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaPlaylist.descriptionText",
+      "kind": "property",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaPlaylist a property like it: it arrived in iOS 9",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaPlaylistCreationMetadata",
+      "kind": "class",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaPlaylistPropertyAuthorDisplayName",
+      "kind": "constant",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaPlaylistPropertyDescriptionText",
+      "kind": "constant",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoCollectionIdentifier",
+      "kind": "constant",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "-[MPMediaItemArtwork initWithBoundsSize:requestHandler:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItemArtwork a method like it: it arrived in iOS 10",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.dateAdded",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 10",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.explicitItem",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 10",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItemPropertyDateAdded",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoPropertyExternalContentIdentifier",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoPropertyExternalUserProfileIdentifier",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoPropertyIsLiveStream",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoPropertyMediaType",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoPropertyPlaybackProgress",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "-[MPMusicPlayerController prepareToPlayWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "10.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMusicPlayerController a method like it: it arrived in iOS 10",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "-[MPMusicPlayerController setQueueWithDescriptor:]",
+      "kind": "method",
+      "introduced": "10.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMusicPlayerController a method like it: it arrived in iOS 10",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMusicPlayerMediaItemQueueDescriptor",
+      "kind": "class",
+      "introduced": "10.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMusicPlayerQueueDescriptor",
+      "kind": "class",
+      "introduced": "10.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMusicPlayerStoreQueueDescriptor",
+      "kind": "class",
+      "introduced": "10.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "NSUserActivity.externalMediaContentIdentifier",
+      "kind": "property",
+      "introduced": "10.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give NSUserActivity a property like it: it arrived in iOS 10",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "-[MPMusicPlayerController appendQueueDescriptor:]",
+      "kind": "method",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMusicPlayerController a method like it: it arrived in iOS 10",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "-[MPMusicPlayerController prependQueueDescriptor:]",
+      "kind": "method",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMusicPlayerController a method like it: it arrived in iOS 10",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.playbackStoreID",
+      "kind": "property",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 10",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItem.preorder",
+      "kind": "property",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 10",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItemPropertyPlaybackStoreID",
+      "kind": "constant",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMusicPlayerApplicationController",
+      "kind": "class",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMusicPlayerController.applicationQueuePlayer",
+      "kind": "property",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMusicPlayerController a property like it: it arrived in iOS 10",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMusicPlayerControllerMutableQueue",
+      "kind": "class",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMusicPlayerControllerQueue",
+      "kind": "class",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMusicPlayerControllerQueueDidChangeNotification",
+      "kind": "constant",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoPropertyAssetURL",
+      "kind": "constant",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "-[MPSystemMusicPlayerController openToPlayQueueDescriptor:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPSystemMusicPlayerController a method like it: it arrived in iOS 11",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMusicPlayerPlayParameters",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMusicPlayerPlayParametersQueueDescriptor",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoPropertyServiceIdentifier",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoPropertyCurrentPlaybackDate",
+      "kind": "constant",
+      "introduced": "11.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoCenter.playbackState",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPNowPlayingInfoCenter a property like it: it arrived in iOS 13",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaPlaylist.cloudGlobalID",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give MPMediaPlaylist a property like it: it arrived in iOS 14",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPMediaItemPropertyIsPreorder",
+      "kind": "constant",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "AVPlayerItem.nowPlayingInfo",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "neither iOS 6 nor the backports give AVPlayerItem a property like it: it arrived in iOS 16",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPAdTimeRange",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoPropertyAdTimeRanges",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingInfoPropertyCreditsStartTime",
+      "kind": "constant",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingSession",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MediaPlayer"
+    },
+    {
+      "api": "MPNowPlayingSessionDelegate",
+      "kind": "protocol",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, MediaPlayer"
+    }
+  ]
+}

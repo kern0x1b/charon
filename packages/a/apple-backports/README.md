@@ -337,6 +337,8 @@ CoreGraphics of iOS 6 already exports `CGPathAddRoundedRect`, the `CGColorCreate
 
 The rest of ImageIO and CoreVideo that arrived after iOS 6 is absent, each row in `registry/ImageIO/absent_ImageIO.json` and `registry/CoreVideo/absent_CoreVideo.json`; iOS 6 exports `CGImageSourceCopyMetadataAtIndex`, the eight `kCGImageMetadataNamespace...` names, `kCGImagePropertyPNGCompressionFilter` and `kCGImageSourceSubsampleFactor` itself, which the registry records as the release's own. `facts/ImageIO/ImageIOExports.md`.
 
+The rest of MetalPerformanceShaders, CoreML, Vision, CallKit, MediaPlayer, JavaScriptCore, LocalAuthentication, SafariServices, QuartzCore and Security that arrived after iOS 6 is absent, each row in `registry/<Framework>/absent_<Framework>.json`, decided once in the framework that owns it where two headers declare it. The C names that iOS 6 already exports itself are recorded as the release's own: thirteen of the JavaScriptCore C API (`facts/JavaScriptCore/JavaScriptCoreExports.md`) and five of Security (`facts/Security/SecurityExports.md`).
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and
