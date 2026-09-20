@@ -1,4 +1,5 @@
 #import "CharonTransitionCoordinator.h"
+#import "CharonCustomTransition.h"
 #import <objc/runtime.h>
 
 static const char charon_coordinator_key;
@@ -61,6 +62,48 @@ static void charon_end_after(CharonTransitionCoordinator *coordinator, UIViewCon
         dispatch_async(dispatch_get_main_queue(), finish);
 }
 
+static UIViewController *charon_presenting_root(UIViewController *controller)
+{
+    UIViewController *root = controller;
+    while (root.parentViewController && !root.definesPresentationContext)
+        root = root.parentViewController;
+    return root;
+}
+
+static id<UIViewControllerAnimatedTransitioning> charon_present_animator(UIViewController *presented, UIViewController *presenting, UIViewController *source)
+{
+    id<UIViewControllerTransitioningDelegate> delegate = presented.transitioningDelegate;
+    if (![delegate respondsToSelector:@selector(animationControllerForPresentedController:presentingController:sourceController:)])
+        return nil;
+    return [delegate animationControllerForPresentedController:presented presentingController:presenting sourceController:source];
+}
+
+static id<UIViewControllerAnimatedTransitioning> charon_dismiss_animator(UIViewController *presented)
+{
+    id<UIViewControllerTransitioningDelegate> delegate = presented.transitioningDelegate;
+    if (![delegate respondsToSelector:@selector(animationControllerForDismissedController:)])
+        return nil;
+    return [delegate animationControllerForDismissedController:presented];
+}
+
+static id<UIViewControllerAnimatedTransitioning> charon_navigation_animator(UINavigationController *navigation, UINavigationControllerOperation operation, UIViewController *from, UIViewController *to)
+{
+    id<UINavigationControllerDelegate> delegate = navigation.delegate;
+    if (![delegate respondsToSelector:@selector(navigationController:animationControllerForOperation:fromViewController:toViewController:)])
+        return nil;
+    return [delegate navigationController:navigation animationControllerForOperation:operation fromViewController:from toViewController:to];
+}
+
+static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewController *from, UIViewController *to, void (^completion)(void)))(BOOL)
+{
+    return ^(BOOL finished) {
+        charon_detach(from, coordinator);
+        charon_detach(to, coordinator);
+        if (completion)
+            completion();
+    };
+}
+
 @interface CharonTransitionCoordinatorInstaller : NSObject
 @end
 
@@ -72,7 +115,27 @@ static void charon_end_after(CharonTransitionCoordinator *coordinator, UIViewCon
     SEL present = @selector(presentViewController:animated:completion:);
     Method presentMethod = class_getInstanceMethod(controller, present);
     void (*presentOriginal)(id, SEL, UIViewController *, BOOL, void (^)(void)) = (void (*)(id, SEL, UIViewController *, BOOL, void (^)(void)))method_getImplementation(presentMethod);
+    SEL dismiss = @selector(dismissViewControllerAnimated:completion:);
+    Method dismissMethod = class_getInstanceMethod(controller, dismiss);
+    void (*dismissOriginal)(id, SEL, BOOL, void (^)(void)) = (void (*)(id, SEL, BOOL, void (^)(void)))method_getImplementation(dismissMethod);
     class_replaceMethod(controller, present, imp_implementationWithBlock(^(UIViewController *self, UIViewController *presented, BOOL animated, void (^completion)(void)) {
+        UIViewController *presenting = charon_presenting_root(self);
+        UIModalPresentationStyle style = presented.modalPresentationStyle;
+        id<UIViewControllerAnimatedTransitioning> animator = animated && (style == UIModalPresentationFullScreen || style >= 4) ? charon_present_animator(presented, presenting, self) : nil;
+        if (animator) {
+            CharonTransitionCoordinator *coordinator = charon_begin(presenting, presented, YES, YES, style);
+            BOOL started = charon_custom_transition(CharonTransitionPresent, presenting, presented, self, animator, nil, style, ^{
+                presented.modalPresentationStyle = style >= 4 ? UIModalPresentationFullScreen : style;
+                presentOriginal(self, present, presented, NO, nil);
+                presented.modalPresentationStyle = style;
+            }, ^{
+                dismissOriginal(presenting, dismiss, NO, nil);
+            }, charon_finisher(coordinator, presenting, presented, completion));
+            if (started)
+                return;
+            charon_detach(presenting, coordinator);
+            charon_detach(presented, coordinator);
+        }
         CharonTransitionCoordinator *coordinator = charon_begin(self, presented, animated, YES, presented.modalPresentationStyle);
         presentOriginal(self, present, presented, animated, ^{
             [coordinator finish];
@@ -83,12 +146,23 @@ static void charon_end_after(CharonTransitionCoordinator *coordinator, UIViewCon
         });
     }), method_getTypeEncoding(presentMethod));
 
-    SEL dismiss = @selector(dismissViewControllerAnimated:completion:);
-    Method dismissMethod = class_getInstanceMethod(controller, dismiss);
-    void (*dismissOriginal)(id, SEL, BOOL, void (^)(void)) = (void (*)(id, SEL, BOOL, void (^)(void)))method_getImplementation(dismissMethod);
     class_replaceMethod(controller, dismiss, imp_implementationWithBlock(^(UIViewController *self, BOOL animated, void (^completion)(void)) {
         UIViewController *presented = self.presentedViewController ?: self;
         UIViewController *presenting = presented.presentingViewController ?: self;
+        id<UIViewControllerAnimatedTransitioning> animator = animated && presented.presentingViewController ? charon_dismiss_animator(presented) : nil;
+        if (animator) {
+            CharonTransitionCoordinator *coordinator = charon_begin(presented, presenting, YES, YES, presented.modalPresentationStyle);
+            UIModalPresentationStyle style = presented.modalPresentationStyle;
+            BOOL started = charon_custom_transition(CharonTransitionDismiss, presented, presenting, self, animator, nil, style, ^{
+                dismissOriginal(self, dismiss, NO, nil);
+            }, ^{
+                presentOriginal(presenting, present, presented, NO, nil);
+            }, charon_finisher(coordinator, presented, presenting, completion));
+            if (started)
+                return;
+            charon_detach(presented, coordinator);
+            charon_detach(presenting, coordinator);
+        }
         CharonTransitionCoordinator *coordinator = charon_begin(presented, presenting, animated, YES, presented.modalPresentationStyle);
         dismissOriginal(self, dismiss, animated, ^{
             [coordinator finish];
@@ -103,8 +177,24 @@ static void charon_end_after(CharonTransitionCoordinator *coordinator, UIViewCon
     SEL push = @selector(pushViewController:animated:);
     Method pushMethod = class_getInstanceMethod(navigation, push);
     void (*pushOriginal)(id, SEL, UIViewController *, BOOL) = (void (*)(id, SEL, UIViewController *, BOOL))method_getImplementation(pushMethod);
+    SEL pop = @selector(popViewControllerAnimated:);
+    Method popMethod = class_getInstanceMethod(navigation, pop);
+    UIViewController *(*popOriginal)(id, SEL, BOOL) = (UIViewController *(*)(id, SEL, BOOL))method_getImplementation(popMethod);
     class_replaceMethod(navigation, push, imp_implementationWithBlock(^(UINavigationController *self, UIViewController *pushed, BOOL animated) {
         UIViewController *from = self.topViewController;
+        id<UIViewControllerAnimatedTransitioning> animator = animated && from ? charon_navigation_animator(self, UINavigationControllerOperationPush, from, pushed) : nil;
+        if (animator) {
+            CharonTransitionCoordinator *coordinator = charon_begin(from, pushed, YES, NO, UIModalPresentationNone);
+            BOOL started = charon_custom_transition(CharonTransitionPush, from, pushed, self, animator, nil, UIModalPresentationNone, ^{
+                pushOriginal(self, push, pushed, NO);
+            }, ^{
+                popOriginal(self, pop, NO);
+            }, charon_finisher(coordinator, from, pushed, nil));
+            if (started)
+                return;
+            charon_detach(from, coordinator);
+            charon_detach(pushed, coordinator);
+        }
         BOOL running = animated && from;
         CharonTransitionCoordinator *coordinator = running ? charon_begin(from, pushed, animated, NO, UIModalPresentationNone) : nil;
         pushOriginal(self, push, pushed, animated);
@@ -115,37 +205,56 @@ static void charon_end_after(CharonTransitionCoordinator *coordinator, UIViewCon
     SEL popTo = @selector(popToViewController:animated:);
     Method popToMethod = class_getInstanceMethod(navigation, popTo);
     NSArray *(*popToOriginal)(id, SEL, UIViewController *, BOOL) = (NSArray *(*)(id, SEL, UIViewController *, BOOL))method_getImplementation(popToMethod);
-    class_replaceMethod(navigation, popTo, imp_implementationWithBlock(^NSArray *(UINavigationController *self, UIViewController *target, BOOL animated) {
-        UIViewController *from = self.topViewController;
-        BOOL running = from && target && from != target && [self.viewControllers containsObject:target];
-        CharonTransitionCoordinator *coordinator = running ? charon_begin(from, target, animated, NO, UIModalPresentationNone) : nil;
-        NSArray *result = popToOriginal(self, popTo, target, animated);
-        if (coordinator)
-            charon_end_after(coordinator, from, target, animated, NO);
-        return result;
-    }), method_getTypeEncoding(popToMethod));
-
     SEL popRoot = @selector(popToRootViewControllerAnimated:);
     Method popRootMethod = class_getInstanceMethod(navigation, popRoot);
     NSArray *(*popRootOriginal)(id, SEL, BOOL) = (NSArray *(*)(id, SEL, BOOL))method_getImplementation(popRootMethod);
-    class_replaceMethod(navigation, popRoot, imp_implementationWithBlock(^NSArray *(UINavigationController *self, BOOL animated) {
+    NSArray *(^popping)(UINavigationController *, UIViewController *, BOOL, NSArray *(^)(BOOL)) = ^NSArray *(UINavigationController *self, UIViewController *target, BOOL animated, NSArray *(^native)(BOOL)) {
         UIViewController *from = self.topViewController;
-        UIViewController *root = self.viewControllers.firstObject;
-        BOOL running = from && root && from != root;
-        CharonTransitionCoordinator *coordinator = running ? charon_begin(from, root, animated, NO, UIModalPresentationNone) : nil;
-        NSArray *result = popRootOriginal(self, popRoot, animated);
+        BOOL running = from && target && from != target && [self.viewControllers containsObject:target];
+        id<UIViewControllerAnimatedTransitioning> animator = animated && running ? charon_navigation_animator(self, UINavigationControllerOperationPop, from, target) : nil;
+        if (animator) {
+            CharonTransitionCoordinator *coordinator = charon_begin(from, target, YES, NO, UIModalPresentationNone);
+            NSArray *stack = self.viewControllers;
+            NSUInteger index = [stack indexOfObject:target];
+            NSArray *popped = index != NSNotFound ? [stack subarrayWithRange:NSMakeRange(index + 1, stack.count - index - 1)] : @[];
+            BOOL started = charon_custom_transition(CharonTransitionPop, from, target, self, animator, nil, UIModalPresentationNone, ^{
+                native(NO);
+            }, nil, charon_finisher(coordinator, from, target, nil));
+            if (started)
+                return popped;
+            charon_detach(from, coordinator);
+            charon_detach(target, coordinator);
+        }
+        CharonTransitionCoordinator *coordinator = running ? charon_begin(from, target, animated, NO, UIModalPresentationNone) : nil;
+        NSArray *result = native(animated);
         if (coordinator)
-            charon_end_after(coordinator, from, root, animated, NO);
+            charon_end_after(coordinator, from, target, animated, NO);
         return result;
+    };
+    class_replaceMethod(navigation, popTo, imp_implementationWithBlock(^NSArray *(UINavigationController *self, UIViewController *target, BOOL animated) {
+        return popping(self, target, animated, ^NSArray *(BOOL flag) { return popToOriginal(self, popTo, target, flag); });
+    }), method_getTypeEncoding(popToMethod));
+    class_replaceMethod(navigation, popRoot, imp_implementationWithBlock(^NSArray *(UINavigationController *self, BOOL animated) {
+        return popping(self, self.viewControllers.firstObject, animated, ^NSArray *(BOOL flag) { return popRootOriginal(self, popRoot, flag); });
     }), method_getTypeEncoding(popRootMethod));
 
-    SEL pop = @selector(popViewControllerAnimated:);
-    Method popMethod = class_getInstanceMethod(navigation, pop);
-    UIViewController *(*popOriginal)(id, SEL, BOOL) = (UIViewController *(*)(id, SEL, BOOL))method_getImplementation(popMethod);
     class_replaceMethod(navigation, pop, imp_implementationWithBlock(^UIViewController *(UINavigationController *self, BOOL animated) {
         NSArray *stack = self.viewControllers;
         UIViewController *from = stack.count > 1 ? stack.lastObject : nil;
         UIViewController *to = stack.count > 1 ? stack[stack.count - 2] : nil;
+        id<UIViewControllerAnimatedTransitioning> animator = animated && from ? charon_navigation_animator(self, UINavigationControllerOperationPop, from, to) : nil;
+        if (animator) {
+            CharonTransitionCoordinator *coordinator = charon_begin(from, to, YES, NO, UIModalPresentationNone);
+            BOOL started = charon_custom_transition(CharonTransitionPop, from, to, self, animator, nil, UIModalPresentationNone, ^{
+                popOriginal(self, pop, NO);
+            }, ^{
+                pushOriginal(self, push, from, NO);
+            }, charon_finisher(coordinator, from, to, nil));
+            if (started)
+                return from;
+            charon_detach(from, coordinator);
+            charon_detach(to, coordinator);
+        }
         CharonTransitionCoordinator *coordinator = from ? charon_begin(from, to, animated, NO, UIModalPresentationNone) : nil;
         UIViewController *result = popOriginal(self, pop, animated);
         if (coordinator)

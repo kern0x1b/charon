@@ -2,6 +2,7 @@
 
 @interface CharonTransitionCoordinator : NSObject <UIViewControllerTransitionCoordinator>
 - (instancetype)initWithFrom:(UIViewController *)from to:(UIViewController *)to container:(UIView *)container animated:(BOOL)animated duration:(NSTimeInterval)duration style:(UIModalPresentationStyle)style;
+- (void)setContainer:(UIView *)container duration:(NSTimeInterval)duration;
 - (void)begin;
 - (void)finish;
 @end

@@ -38,11 +38,9 @@
       "kind": "property",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the release presents and pushes with its own animation and does not ask a transitioning delegate for one",
-      "effect": "the delegate is kept and answered back and is never asked",
-      "facts": "facts/UIKit/TransitionCoordinator.md",
-      "source": "tests/backports/device/transition.m on iOS 6"
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionAnimators.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and slidetransition.m on iOS 6"
     },
     {
       "api": "-[UIViewController transitionCoordinator]",
@@ -97,6 +95,60 @@
       "status": "implemented",
       "facts": "facts/UIKit/TransitionCoordinator.md",
       "source": "tests/backports/device/transition.m on iOS 6"
+    },
+    {
+      "api": "UIViewControllerAnimatedTransitioning",
+      "kind": "protocol",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionAnimators.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and slidetransition.m on iOS 6"
+    },
+    {
+      "api": "UIViewControllerContextTransitioning",
+      "kind": "protocol",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionAnimators.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and slidetransition.m on iOS 6"
+    },
+    {
+      "api": "UIViewControllerTransitioningDelegate",
+      "kind": "protocol",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionAnimators.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and slidetransition.m on iOS 6"
+    },
+    {
+      "api": "-[UIViewControllerTransitioningDelegate animationControllerForPresentedController:presentingController:sourceController:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionAnimators.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and slidetransition.m on iOS 6"
+    },
+    {
+      "api": "-[UIViewControllerTransitioningDelegate animationControllerForDismissedController:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionAnimators.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and slidetransition.m on iOS 6"
+    },
+    {
+      "api": "-[UINavigationControllerDelegate navigationController:animationControllerForOperation:fromViewController:toViewController:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionAnimators.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and slidetransition.m on iOS 6"
     }
   ]
 }

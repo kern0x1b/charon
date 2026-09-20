@@ -35,6 +35,12 @@ NSTimeInterval charon_default_duration(BOOL modal)
 {
 }
 
+- (void)setContainer:(UIView *)container duration:(NSTimeInterval)duration
+{
+    _container = container;
+    _duration = duration;
+}
+
 - (void)finish
 {
     if (_finished)

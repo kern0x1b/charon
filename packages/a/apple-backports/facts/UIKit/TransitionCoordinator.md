@@ -32,8 +32,8 @@ does the same for a view.
 There is no interaction (the swipe back of iOS 7 does not exist on this release) and no cancellation. A transition that
 is called and does nothing (a pop of the root controller, a dismissal with nothing presented) leaves the coordinator attached until
 three seconds have passed, and then it ends it. `setViewControllers:animated:` and the transitions the release runs by itself
-(a tab change) do not make a coordinator. `UIViewController.transitioningDelegate` is kept and answered back and is never asked
-(`inert`) - the custom animators come with `UIViewControllerAnimatedTransitioning` and are described where they are carried.
+(a tab change) do not make a coordinator. `UIViewController.transitioningDelegate` is asked for the animation controllers of a presentation and a dismissal, and
+the navigation controller's delegate for those of a push and a pop; `TransitionAnimators.md` describes it.
 
 Source: `tests/backports/device/transition.m` on iOS 6.1.3: it pushes, pops, presents and dismisses with and without animation,
 reads the coordinator in the appearance callbacks of both controllers, and checks that the alongside animation and its
