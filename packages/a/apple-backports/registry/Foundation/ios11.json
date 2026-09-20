@@ -744,6 +744,69 @@
       "status": "implemented",
       "facts": "facts/Foundation/NSDateComponentsFormatter.md",
       "source": "the host's own Foundation, compared with the port over 2773 configurations by tests/backports/host/referencedate (styles, units, five reference dates, intervals of both signs), and recorded for 265 cases that an iPad 2 running 6.1.3 holds the port to (tests/backports/device/datecomponents.m); -[NSDateComponentsFormatter copyWithZone:] of iOS 12.0 for what a copy takes"
+    },
+    {
+      "api": "NSURLSessionConfiguration.waitsForConnectivity",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a task of a session with it set waits, when the network is not there, for it to come back, and goes on then; a background session always waits",
+      "facts": "facts/Foundation/NSURLSessionConnectivity.md",
+      "source": "the host's own NSURLSession, held to the port through the delayed scenario of tests/backports/host/session (a background session's delayed requests with each disposition, the date, the foreground session that ignores it, the properties), and an iPad 2 running 6.1.3 through tests/backports/device/session.m and waitsconnectivity.m, which puts the network down and up"
+    },
+    {
+      "api": "-[NSURLSessionTaskDelegate URLSession:taskIsWaitingForConnectivity:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "called once for a task that begins while the network is not there and waits",
+      "facts": "facts/Foundation/NSURLSessionConnectivity.md",
+      "source": "the host's own NSURLSession, held to the port through the delayed scenario of tests/backports/host/session (a background session's delayed requests with each disposition, the date, the foreground session that ignores it, the properties), and an iPad 2 running 6.1.3 through tests/backports/device/session.m and waitsconnectivity.m, which puts the network down and up"
+    },
+    {
+      "api": "-[NSURLSessionTaskDelegate URLSession:task:willBeginDelayedRequest:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "called for every task of a background session just before its request goes out, after its earliest begin date, and may continue, replace the request or cancel",
+      "facts": "facts/Foundation/NSURLSessionConnectivity.md",
+      "source": "the host's own NSURLSession, held to the port through the delayed scenario of tests/backports/host/session (a background session's delayed requests with each disposition, the date, the foreground session that ignores it, the properties), and an iPad 2 running 6.1.3 through tests/backports/device/session.m and waitsconnectivity.m, which puts the network down and up"
+    },
+    {
+      "api": "NSURLSessionTask.earliestBeginDate",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a task of a background session begins no earlier than the date, and a task of any other session ignores it, as the system does",
+      "effect": "a background task waits for the date; the property is kept as it is set for the others",
+      "facts": "facts/Foundation/NSURLSessionConnectivity.md",
+      "source": "the host's own NSURLSession, held to the port through the delayed scenario of tests/backports/host/session (a background session's delayed requests with each disposition, the date, the foreground session that ignores it, the properties), and an iPad 2 running 6.1.3 through tests/backports/device/session.m and waitsconnectivity.m, which puts the network down and up"
+    },
+    {
+      "api": "NSURLSessionTask.countOfBytesClientExpectsToSend",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the hint is for the system's scheduling of discretionary background transfers, and iOS 6 has no such scheduler to give it to; the value is kept as set, minus one at first, as the system does",
+      "effect": "the value is answered back and used for nothing",
+      "facts": "facts/Foundation/NSURLSessionConnectivity.md",
+      "source": "the host's own NSURLSession, held to the port through the delayed scenario of tests/backports/host/session (a background session's delayed requests with each disposition, the date, the foreground session that ignores it, the properties), and an iPad 2 running 6.1.3 through tests/backports/device/session.m and waitsconnectivity.m, which puts the network down and up"
+    },
+    {
+      "api": "NSURLSessionTask.countOfBytesClientExpectsToReceive",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the hint is for the system's scheduling of discretionary background transfers, and iOS 6 has no such scheduler to give it to; the value is kept as set, minus one at first, as the system does",
+      "effect": "the value is answered back and used for nothing",
+      "facts": "facts/Foundation/NSURLSessionConnectivity.md",
+      "source": "the host's own NSURLSession, held to the port through the delayed scenario of tests/backports/host/session (a background session's delayed requests with each disposition, the date, the foreground session that ignores it, the properties), and an iPad 2 running 6.1.3 through tests/backports/device/session.m and waitsconnectivity.m, which puts the network down and up"
     }
   ]
 }

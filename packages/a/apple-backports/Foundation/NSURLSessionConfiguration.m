@@ -238,8 +238,10 @@ static NSURLCredentialStorage *charon_ephemeral_credential_storage(void)
 @private
     SSLProtocol _TLSMinimumSupportedProtocol;
     SSLProtocol _TLSMaximumSupportedProtocol;
+    BOOL _waitsForConnectivity;
 }
 
+@synthesize waitsForConnectivity = _waitsForConnectivity;
 @synthesize identifier = _identifier;
 @synthesize requestCachePolicy = _requestCachePolicy;
 @synthesize timeoutIntervalForRequest = _timeoutIntervalForRequest;
@@ -272,7 +274,6 @@ static NSURLCredentialStorage *charon_ephemeral_credential_storage(void)
 @dynamic allowsExpensiveNetworkAccess;
 @dynamic allowsConstrainedNetworkAccess;
 @dynamic requiresDNSSECValidation;
-@dynamic waitsForConnectivity;
 @dynamic sharedContainerIdentifier;
 @dynamic TLSMinimumSupportedProtocol, TLSMaximumSupportedProtocol;
 @dynamic TLSMinimumSupportedProtocolVersion;
@@ -346,6 +347,7 @@ static NSURLCredentialStorage *charon_ephemeral_credential_storage(void)
     copy->_allowsCellularAccess = self.allowsCellularAccess;
     copy->_discretionary = self.isDiscretionary;
     copy->_sessionSendsLaunchEvents = self.sessionSendsLaunchEvents;
+    copy->_waitsForConnectivity = self.waitsForConnectivity;
     copy->_connectionProxyDictionary = self.connectionProxyDictionary;
     copy->_TLSMinimumSupportedProtocol = self.TLSMinimumSupportedProtocol;
     copy->_TLSMaximumSupportedProtocol = self.TLSMaximumSupportedProtocol;

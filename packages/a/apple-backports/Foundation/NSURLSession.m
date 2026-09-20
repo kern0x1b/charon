@@ -1,5 +1,8 @@
 #import "CharonURLSessionMetrics.h"
 #include <limits.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <SystemConfiguration/SystemConfiguration.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -97,6 +100,14 @@ typedef NS_ENUM(NSInteger, CharonTaskBody) {
 
     NSMutableArray *_metricsTransactions;
     NSDate *_metricsStart;
+
+    NSDate *_earliestBeginDate;
+    int64_t _clientExpectsToSend;
+    int64_t _clientExpectsToReceive;
+    BOOL _connectivityNotified;
+    CFRunLoopTimerRef _delayTimer;
+    SCNetworkReachabilityRef _reachability;
+    void (^_pendingBegin)(void);
 }
 @end
 
@@ -414,6 +425,7 @@ static NSURLRequest *charon_wire_request(NSURLSessionTask *task, NSURLRequest *r
 }
 
 static void charon_task_finish(NSURLSessionTask *task, NSError *error);
+static void charon_task_stop_watching(NSURLSessionTask *task);
 static void charon_task_load(NSURLSessionTask *task, NSURLRequest *request);
 static void charon_task_flush_input(NSURLSessionTask *task);
 
@@ -710,6 +722,9 @@ static void charon_task_finish(NSURLSessionTask *task, NSError *error)
     task->_awaiting = NO;
     charon_timer_cancel(&task->_idleTimer);
     charon_timer_cancel(&task->_resourceTimer);
+    charon_timer_cancel(&task->_delayTimer);
+    charon_task_stop_watching(task);
+    task->_pendingBegin = nil;
     CharonURLSessionLoader *loader = task->_loader;
     task->_loader = nil;
     charon_loader_stop(loader);
@@ -1314,6 +1329,201 @@ static void charon_task_enqueue(NSURLSessionTask *task)
     [session->_waitingTasks insertObject:task atIndex:index];
 }
 
+
+static BOOL charon_task_waits_for_connectivity(NSURLSessionTask *task)
+{
+    NSURLSessionConfiguration *configuration = task->_session->_configuration;
+    return configuration.waitsForConnectivity || configuration.identifier != nil;
+}
+
+static SCNetworkReachabilityRef charon_reachability_for(NSURLSessionTask *task)
+{
+    NSString *host = task->_currentRequest.URL.host;
+    struct sockaddr_in address;
+    struct sockaddr_in6 address6;
+    memset(&address, 0, sizeof address);
+    memset(&address6, 0, sizeof address6);
+    address.sin_len = sizeof address;
+    address.sin_family = AF_INET;
+    address6.sin6_len = sizeof address6;
+    address6.sin6_family = AF_INET6;
+    if ([host caseInsensitiveCompare:@"localhost"] == NSOrderedSame)
+        host = @"127.0.0.1";
+    if (host.length && inet_pton(AF_INET, host.UTF8String, &address.sin_addr) == 1)
+        return SCNetworkReachabilityCreateWithAddress(kCFAllocatorDefault, (const struct sockaddr *)&address);
+    if (host.length && inet_pton(AF_INET6, host.UTF8String, &address6.sin6_addr) == 1)
+        return SCNetworkReachabilityCreateWithAddress(kCFAllocatorDefault, (const struct sockaddr *)&address6);
+    memset(&address, 0, sizeof address);
+    address.sin_len = sizeof address;
+    address.sin_family = AF_INET;
+    return SCNetworkReachabilityCreateWithAddress(kCFAllocatorDefault, (const struct sockaddr *)&address);
+}
+
+static BOOL charon_network_reachable(NSURLSessionTask *task, SCNetworkReachabilityRef reference)
+{
+    SCNetworkReachabilityFlags flags = 0;
+    if (!SCNetworkReachabilityGetFlags(reference, &flags))
+        return NO;
+    if (!(flags & kSCNetworkReachabilityFlagsReachable) || (flags & kSCNetworkReachabilityFlagsConnectionRequired))
+        return NO;
+#if TARGET_OS_IPHONE
+    if ((flags & kSCNetworkReachabilityFlagsIsWWAN) && !(task->_session->_configuration.allowsCellularAccess && task->_currentRequest.allowsCellularAccess))
+        return NO;
+#endif
+    return YES;
+}
+
+static void charon_task_stop_watching(NSURLSessionTask *task)
+{
+    SCNetworkReachabilityRef reference = task->_reachability;
+    if (!reference)
+        return;
+    task->_reachability = NULL;
+    SCNetworkReachabilitySetCallback(reference, NULL, NULL);
+    SCNetworkReachabilityUnscheduleFromRunLoop(reference, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
+    CFRelease(reference);
+}
+
+static void charon_reachability_changed(SCNetworkReachabilityRef reference, SCNetworkReachabilityFlags flags, void *info)
+{
+    NSURLSessionTask *task = (__bridge NSURLSessionTask *)info;
+    if (task->_finished || task->_reachability != reference || !charon_network_reachable(task, reference))
+        return;
+    void (^proceed)(void) = task->_pendingBegin;
+    task->_pendingBegin = nil;
+    charon_task_stop_watching(task);
+    if (proceed)
+        proceed();
+}
+
+static void charon_task_notify_waiting(NSURLSessionTask *task)
+{
+    if (task->_connectivityNotified)
+        return;
+    task->_connectivityNotified = YES;
+    NSURLSession *session = task->_session;
+    charon_session_deliver(session, ^{
+        id delegate = charon_session_delegate(session);
+        if ([delegate respondsToSelector:@selector(URLSession:taskIsWaitingForConnectivity:)])
+            [delegate URLSession:session taskIsWaitingForConnectivity:task];
+    });
+}
+
+static void charon_task_when_connected(NSURLSessionTask *task, void (^proceed)(void))
+{
+    if (task->_finished)
+        return;
+    if (!charon_task_waits_for_connectivity(task)) {
+        proceed();
+        return;
+    }
+    SCNetworkReachabilityRef reference = charon_reachability_for(task);
+    if (!reference) {
+        proceed();
+        return;
+    }
+    if (charon_network_reachable(task, reference)) {
+        CFRelease(reference);
+        proceed();
+        return;
+    }
+    charon_task_stop_watching(task);
+    task->_reachability = reference;
+    task->_pendingBegin = [proceed copy];
+    SCNetworkReachabilityContext context = {0, (__bridge void *)task, NULL, NULL, NULL};
+    if (!SCNetworkReachabilitySetCallback(reference, charon_reachability_changed, &context) || !SCNetworkReachabilityScheduleWithRunLoop(reference, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode)) {
+        task->_pendingBegin = nil;
+        charon_task_stop_watching(task);
+        proceed();
+        return;
+    }
+    charon_task_notify_waiting(task);
+    if (charon_network_reachable(task, reference))
+        charon_reachability_changed(reference, 0, (__bridge void *)task);
+}
+
+static void charon_task_await_delegate_begin(NSURLSessionTask *task, void (^proceed)(void))
+{
+    NSURLSession *session = task->_session;
+    NSURLRequest *request = task->_currentRequest;
+    charon_session_deliver(session, ^{
+        id delegate = charon_session_delegate(session);
+        if (![delegate respondsToSelector:@selector(URLSession:task:willBeginDelayedRequest:completionHandler:)]) {
+            charon_perform(proceed);
+            return;
+        }
+        __block BOOL answered = NO;
+        [delegate URLSession:session task:task willBeginDelayedRequest:request completionHandler:^(NSURLSessionDelayedRequestDisposition disposition, NSURLRequest *replacement) {
+            charon_perform(^{
+                if (answered || task->_finished)
+                    return;
+                answered = YES;
+                if (disposition == NSURLSessionDelayedRequestCancel) {
+                    charon_task_finish(task, charon_cancelled_error(task));
+                    return;
+                }
+                if (disposition == NSURLSessionDelayedRequestUseNewRequest && replacement) {
+                    @synchronized (task) {
+                        task->_currentRequest = replacement;
+                    }
+                }
+                proceed();
+            });
+        }];
+    });
+}
+
+
+static BOOL charon_task_retries_when_connected(NSURLSessionTask *task, NSError *error)
+{
+    if (!charon_task_waits_for_connectivity(task) || task->_response || task->_body == CharonTaskBodyStream || (charon_is_download(task) && task->_file))
+        return NO;
+    if (![error.domain isEqualToString:NSURLErrorDomain])
+        return NO;
+    switch (error.code) {
+    case NSURLErrorCannotFindHost:
+    case NSURLErrorCannotConnectToHost:
+    case NSURLErrorNotConnectedToInternet:
+    case NSURLErrorInternationalRoamingOff:
+    case NSURLErrorCallIsActive:
+    case NSURLErrorDataNotAllowed:
+        break;
+    default:
+        return NO;
+    }
+    SCNetworkReachabilityRef reference = charon_reachability_for(task);
+    if (!reference)
+        return NO;
+    BOOL reachable = charon_network_reachable(task, reference);
+    CFRelease(reference);
+    return !reachable;
+}
+
+static void charon_task_begin(NSURLSessionTask *task, void (^proceed)(void))
+{
+    BOOL background = task->_session->_configuration.identifier != nil;
+    void (^connect)(void) = ^{
+        charon_task_when_connected(task, proceed);
+    };
+    void (^afterDate)(void) = connect;
+    if (background) {
+        afterDate = ^{
+            charon_task_await_delegate_begin(task, connect);
+        };
+    }
+    NSDate *date = background ? task.earliestBeginDate : nil;
+    NSTimeInterval wait = date.timeIntervalSinceNow;
+    if (!date || wait <= 0) {
+        afterDate();
+        return;
+    }
+    task->_delayTimer = charon_timer_create(CFAbsoluteTimeGetCurrent() + wait, ^{
+        charon_timer_cancel(&task->_delayTimer);
+        if (!task->_finished)
+            afterDate();
+    });
+}
+
 static void charon_task_start(NSURLSessionTask *task)
 {
     NSURLSession *session = task->_session;
@@ -1344,13 +1554,16 @@ static void charon_task_start(NSURLSessionTask *task)
     @synchronized (task) {
         task->_countOfBytesExpectedToSend = charon_expected_body_length(task, request);
     }
-    if (task->_body == CharonTaskBodyStream) {
-        charon_task_request_body_stream(task, ^{
-            charon_task_enqueue(task);
-        });
-        return;
-    }
-    charon_task_enqueue(task);
+    void (^enqueue)(void) = ^{
+        if (task->_body == CharonTaskBodyStream) {
+            charon_task_request_body_stream(task, ^{
+                charon_task_enqueue(task);
+            });
+            return;
+        }
+        charon_task_enqueue(task);
+    };
+    charon_task_begin(task, enqueue);
 }
 
 @implementation CharonURLSessionLoader
@@ -1458,6 +1671,17 @@ static void charon_task_start(NSURLSessionTask *task)
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
     charon_task_input(self, ^(NSURLSessionTask *task) {
+        if (charon_task_retries_when_connected(task, error)) {
+            CharonURLSessionLoader *stale = task->_loader;
+            task->_loader = nil;
+            charon_loader_stop(stale);
+            [task->_deferredInput removeAllObjects];
+            charon_task_restart_idle_timer(task);
+            charon_task_when_connected(task, ^{
+                charon_task_load(task, task->_currentRequest);
+            });
+            return;
+        }
         charon_task_finish(task, error);
     });
 }
@@ -1871,9 +2095,6 @@ static NSURLSessionDownloadTask *charon_resumed_download_task(NSURLSession *sess
 
 @dynamic delegate;
 @dynamic progress;
-@dynamic earliestBeginDate;
-@dynamic countOfBytesClientExpectsToSend;
-@dynamic countOfBytesClientExpectsToReceive;
 @dynamic priority;
 @dynamic prefersIncrementalDelivery;
 
@@ -1884,7 +2105,54 @@ static NSURLSessionDownloadTask *charon_resumed_download_task(NSURLSession *sess
 
 - (instancetype)init
 {
-    return [super init];
+    if ((self = [super init])) {
+        _clientExpectsToSend = NSURLSessionTransferSizeUnknown;
+        _clientExpectsToReceive = NSURLSessionTransferSizeUnknown;
+    }
+    return self;
+}
+
+- (NSDate *)earliestBeginDate
+{
+    @synchronized (self) {
+        return _earliestBeginDate;
+    }
+}
+
+- (void)setEarliestBeginDate:(NSDate *)date
+{
+    NSDate *copy = [date copy];
+    @synchronized (self) {
+        _earliestBeginDate = copy;
+    }
+}
+
+- (int64_t)countOfBytesClientExpectsToSend
+{
+    @synchronized (self) {
+        return _clientExpectsToSend;
+    }
+}
+
+- (void)setCountOfBytesClientExpectsToSend:(int64_t)count
+{
+    @synchronized (self) {
+        _clientExpectsToSend = count;
+    }
+}
+
+- (int64_t)countOfBytesClientExpectsToReceive
+{
+    @synchronized (self) {
+        return _clientExpectsToReceive;
+    }
+}
+
+- (void)setCountOfBytesClientExpectsToReceive:(int64_t)count
+{
+    @synchronized (self) {
+        _clientExpectsToReceive = count;
+    }
 }
 
 - (NSUInteger)taskIdentifier

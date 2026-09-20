@@ -19,6 +19,6 @@ for source in $sources; do
     xcrun clang -fobjc-arc -fvisibility=hidden $quiet $renames -c "$FOUNDATION/$source" -o "$BUILD/renamed/$source.o"
 done
 xcrun clang -fobjc-arc $quiet -I"$DEVICE" -I"$CHECK" "$here/differential.m" "$DEVICE/session-scenarios.m" "$CHECK/check.m" "$BUILD"/renamed/*.o \
-    -framework Foundation -o "$BUILD/differential"
+    -framework Foundation -framework SystemConfiguration -o "$BUILD/differential"
 echo "renamed:$renames"
 exec "$here/with-server.sh" "$BUILD/differential" "$@"

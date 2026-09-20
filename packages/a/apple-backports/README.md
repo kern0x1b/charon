@@ -491,6 +491,12 @@ the objects are set and saved in a context of their own, so the model's rules ap
 batch update sets. `+mergeChangesFromRemoteContextSave:intoContexts:` brings a context up to
 date afterwards. See `facts/CoreData/BatchUpdate.md`, `AsynchronousFetch.md` and `RemoteMerge.md`.
 
+The port's `NSURLSession` waits for connectivity and delays requests as iOS 11 does: `waitsForConnectivity` and
+a background session make a task that begins with no network say so through
+`URLSession:taskIsWaitingForConnectivity:` and begin when it comes back, `earliestBeginDate` delays the tasks of
+a background session and `willBeginDelayedRequest` lets the delegate continue, replace or cancel them. The size hints
+`countOfBytesClientExpects...` are kept and read by nothing. See `facts/Foundation/NSURLSessionConnectivity.md`.
+
 ### Not carried, and why
 
 Nothing here is a quiet stub. Where the behaviour cannot be produced, the API

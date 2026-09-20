@@ -34,6 +34,11 @@
 @property (nonatomic) BOOL variableLength;
 @property (nonatomic, copy) NSString *tag;
 @property (nonatomic, strong) dispatch_semaphore_t dataArrived;
+@property (nonatomic) NSInteger delayedDisposition;
+@property (nonatomic, copy) NSString *delayedReplacement;
+@property (nonatomic, strong) NSDate *resumedAt;
+@property (nonatomic) NSTimeInterval minimumWait;
+@property (nonatomic, copy) NSString *base;
 @end
 
 static NSUInteger session_off_queue_callbacks;
@@ -51,7 +56,7 @@ static NSArray *session_delegate_selectors(void)
              @"URLSession:task:didCompleteWithError:", @"URLSession:dataTask:didReceiveResponse:completionHandler:",
              @"URLSession:dataTask:didBecomeDownloadTask:", @"URLSession:dataTask:didReceiveData:", @"URLSession:dataTask:willCacheResponse:completionHandler:",
              @"URLSession:downloadTask:didFinishDownloadingToURL:", @"URLSession:downloadTask:didWriteData:totalBytesWritten:totalBytesExpectedToWrite:",
-             @"URLSession:downloadTask:didResumeAtOffset:expectedTotalBytes:"];
+             @"URLSession:downloadTask:didResumeAtOffset:expectedTotalBytes:", @"URLSession:task:willBeginDelayedRequest:completionHandler:", @"URLSession:taskIsWaitingForConnectivity:"];
 }
 
 static NSData *pattern_bytes(NSUInteger start, NSUInteger end)
@@ -190,6 +195,19 @@ static NSInteger status_of(NSURLResponse *response)
                   received, task.countOfBytesSent, task.countOfBytesExpectedToSend]];
     _lastTask = task;
     dispatch_semaphore_signal(_completed);
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willBeginDelayedRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLSessionDelayedRequestDisposition, NSURLRequest *))completionHandler
+{
+    NSTimeInterval waited = _resumedAt ? -[_resumedAt timeIntervalSinceNow] : 0;
+    [self record:[NSString stringWithFormat:@"delayed-begin %@ waited=%d state=%ld", path_of(request.URL), waited >= _minimumWait, (long)task.state]];
+    NSURLRequest *replacement = _delayedReplacement ? [NSURLRequest requestWithURL:[NSURL URLWithString:[_base stringByAppendingString:_delayedReplacement]]] : nil;
+    completionHandler((NSURLSessionDelayedRequestDisposition)_delayedDisposition, replacement);
+}
+
+- (void)URLSession:(NSURLSession *)session taskIsWaitingForConnectivity:(NSURLSessionTask *)task
+{
+    [self record:@"waiting-for-connectivity"];
 }
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler
@@ -1073,6 +1091,65 @@ static NSArray *scenario_metrics(SessionHarness *harness)
     return finish_session(harness, session, recorder, transcript);
 }
 
+static NSArray *delayed_run(SessionHarness *harness, BOOL background, NSTimeInterval offset, BOOL setDate, NSInteger disposition, NSString *replacement, BOOL implementsDelegate, NSString *label, NSMutableArray *transcript)
+{
+    SessionRecorder *recorder = [[SessionRecorder alloc] init];
+    NSMutableArray *selectors = [NSMutableArray arrayWithArray:@[@"URLSession:didBecomeInvalidWithError:", @"URLSession:task:didCompleteWithError:", @"URLSession:downloadTask:didFinishDownloadingToURL:", @"URLSessionDidFinishEventsForBackgroundURLSession:"]];
+    if (implementsDelegate)
+        [selectors addObject:@"URLSession:task:willBeginDelayedRequest:completionHandler:"];
+    recorder.implemented = [NSSet setWithArray:selectors];
+    recorder.delayedDisposition = disposition;
+    recorder.delayedReplacement = replacement;
+    recorder.base = harness.base;
+    recorder.minimumWait = setDate && offset > 0 ? offset - 0.15 : 0;
+    Class configurations = harness.configurationClass;
+    NSURLSessionConfiguration *configuration = background ? [configurations backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"org.charon.delayed.%@.%@", label, harness.tag]] : [configurations defaultSessionConfiguration];
+    NSURLSession *session = session_with(harness, configuration, recorder);
+    NSURLSessionDownloadTask *task = [session downloadTaskWithURL:url_for(harness, @"/bytes?n=2000")];
+    if (setDate)
+        task.earliestBeginDate = [NSDate dateWithTimeIntervalSinceNow:offset];
+    recorder.resumedAt = [NSDate date];
+    [task resume];
+    wait_for(harness, recorder.completed);
+    NSTimeInterval total = -[recorder.resumedAt timeIntervalSinceNow];
+    [recorder record:[NSString stringWithFormat:@"%@ finished after wait=%d current=%@", label, setDate && offset > 0 ? total >= offset - 0.15 : 1, path_of(task.currentRequest.URL)]];
+    return finish_session(harness, session, recorder, transcript);
+}
+
+static NSArray *scenario_delayed(SessionHarness *harness)
+{
+    NSMutableArray *transcript = [NSMutableArray array];
+    Class configurations = harness.configurationClass;
+    delayed_run(harness, YES, 0, NO, 0, nil, YES, @"no-date", transcript);
+    delayed_run(harness, YES, 1, YES, 0, nil, YES, @"date", transcript);
+    delayed_run(harness, YES, -5, YES, 0, nil, YES, @"past", transcript);
+    delayed_run(harness, YES, 0.5, YES, 2, nil, YES, @"cancel", transcript);
+    delayed_run(harness, YES, 0.5, YES, 1, @"/bytes?n=100", YES, @"replace", transcript);
+    delayed_run(harness, YES, 0.5, YES, 0, nil, NO, @"no-delegate", transcript);
+    delayed_run(harness, NO, 1.5, YES, 0, nil, YES, @"foreground", transcript);
+    NSURLSession *session = [harness.sessionClass sessionWithConfiguration:[configurations defaultSessionConfiguration]];
+    NSURLSessionDataTask *task = [session dataTaskWithURL:url_for(harness, @"/bytes?n=10")];
+    NSDate *date = [NSDate dateWithTimeIntervalSinceNow:100];
+    NSMutableArray *properties = [NSMutableArray array];
+    [properties addObject:[NSString stringWithFormat:@"defaults date=%@ send=%lld receive=%lld", task.earliestBeginDate, task.countOfBytesClientExpectsToSend, task.countOfBytesClientExpectsToReceive]];
+    task.earliestBeginDate = date;
+    task.countOfBytesClientExpectsToSend = 5;
+    task.countOfBytesClientExpectsToReceive = 99;
+    [properties addObject:[NSString stringWithFormat:@"set same-date=%d send=%lld receive=%lld", task.earliestBeginDate == date, task.countOfBytesClientExpectsToSend, task.countOfBytesClientExpectsToReceive]];
+    task.countOfBytesClientExpectsToSend = -7;
+    task.earliestBeginDate = nil;
+    [properties addObject:[NSString stringWithFormat:@"negative send=%lld date=%@", task.countOfBytesClientExpectsToSend, task.earliestBeginDate]];
+    [task cancel];
+    [session invalidateAndCancel];
+    NSURLSessionConfiguration *configuration = [configurations defaultSessionConfiguration];
+    NSString *before = [NSString stringWithFormat:@"%d", configuration.waitsForConnectivity];
+    configuration.waitsForConnectivity = YES;
+    [properties addObject:[NSString stringWithFormat:@"configuration waits before=%@ after=%d copy=%d background=%d ephemeral=%d", before, configuration.waitsForConnectivity, [(NSURLSessionConfiguration *)[configuration copy] waitsForConnectivity],
+                           [[configurations backgroundSessionConfigurationWithIdentifier:@"org.charon.waits"] waitsForConnectivity], [[configurations ephemeralSessionConfiguration] waitsForConnectivity]]];
+    [transcript addObjectsFromArray:properties];
+    return transcript;
+}
+
 static NSArray *scenario_background(SessionHarness *harness)
 {
     NSMutableArray *transcript = [NSMutableArray array];
@@ -1103,6 +1180,7 @@ const SessionScenarioEntry session_scenarios[] = {
     {"tasks", scenario_tasks},
     {"cache", scenario_cache},
     {"background", scenario_background},
+    {"delayed", scenario_delayed},
     {"metrics", scenario_metrics},
 };
 
@@ -1407,6 +1485,44 @@ NSDictionary *session_expected_transcripts(void)
             @"complete NSURLErrorDomain/-1004 failing=/refused state=3 same-error=1 status=0 received=0/0 sent=0/0",
             @"metrics tx=1 redirects=0 interval=1 [/status?code=404 status=404 type=1 proto=http/1.1 dates=FQqSE ordered=1 proxy=0]",
             @"invalid nil",
+        ],
+        @"delayed": @[
+        @"delayed-begin /bytes?n=2000 waited=1 state=0",
+        @"finished size=2000 state=0",
+        @"complete nil state=3 same-error=1 status=200 received=2000/2000 sent=0/0",
+        @"no-date finished after wait=1 current=/bytes?n=2000",
+        @"invalid nil",
+        @"delayed-begin /bytes?n=2000 waited=1 state=0",
+        @"finished size=2000 state=0",
+        @"complete nil state=3 same-error=1 status=200 received=2000/2000 sent=0/0",
+        @"date finished after wait=1 current=/bytes?n=2000",
+        @"invalid nil",
+        @"delayed-begin /bytes?n=2000 waited=1 state=0",
+        @"finished size=2000 state=0",
+        @"complete nil state=3 same-error=1 status=200 received=2000/2000 sent=0/0",
+        @"past finished after wait=1 current=/bytes?n=2000",
+        @"invalid nil",
+        @"delayed-begin /bytes?n=2000 waited=1 state=0",
+        @"complete NSURLErrorDomain/-999 failing=/bytes?n=2000 state=3 same-error=1 status=0 received=0/0 sent=0/0",
+        @"cancel finished after wait=1 current=/bytes?n=2000",
+        @"invalid nil",
+        @"delayed-begin /bytes?n=2000 waited=1 state=0",
+        @"finished size=100 state=0",
+        @"complete nil state=3 same-error=1 status=200 received=100/100 sent=0/0",
+        @"replace finished after wait=1 current=/bytes?n=100",
+        @"invalid nil",
+        @"finished size=2000 state=0",
+        @"complete nil state=3 same-error=1 status=200 received=2000/2000 sent=0/0",
+        @"no-delegate finished after wait=1 current=/bytes?n=2000",
+        @"invalid nil",
+        @"finished size=2000 state=0",
+        @"complete nil state=3 same-error=1 status=200 received=2000/2000 sent=0/0",
+        @"foreground finished after wait=0 current=/bytes?n=2000",
+        @"invalid nil",
+        @"defaults date=(null) send=-1 receive=-1",
+        @"set same-date=1 send=5 receive=99",
+        @"negative send=-7 date=(null)",
+        @"configuration waits before=0 after=1 copy=1 background=0 ephemeral=0",
         ],
         @"background": @[
             @"finished size=5000 state=0",

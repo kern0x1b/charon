@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import base64
+import os
 import http.server
 import json
 import sys
@@ -188,7 +189,7 @@ class Server(http.server.ThreadingHTTPServer):
 
 def main():
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 0
-    server = Server(("127.0.0.1", port), Handler)
+    server = Server((os.environ.get("CHARON_SERVER_BIND", "127.0.0.1"), port), Handler)
     print("port %d" % server.server_address[1], flush=True)
     server.serve_forever()
 
