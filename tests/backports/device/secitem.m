@@ -29,6 +29,34 @@ static OSStatus copy(NSDictionary *query, NSData **data)
     return status;
 }
 
+static OSStatus add_with(NSString *account, NSDictionary *extra)
+{
+    NSMutableDictionary *d = [item(account, nil, YES) mutableCopy];
+    [d addEntriesFromDictionary:extra];
+    return SecItemAdd((__bridge CFDictionaryRef)d, NULL);
+}
+
+static void check_refusals(void)
+{
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
+        return;
+    SecItemDelete((__bridge CFDictionaryRef)item(@"r", nil, NO));
+    CHECK(add_with(@"r", @{(__bridge id)kSecAttrAccessible: (__bridge id)kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly}) == errSecParam, "the keychain of the release refuses the passcode accessibility with -50");
+    CHECK(add_with(@"r", @{(__bridge id)kSecAttrAccessControl: [NSData data]}) == errSecParam, "and an access control value");
+    CHECK(add_with(@"r", @{(__bridge id)kSecAttrAccessible: (__bridge id)kSecAttrAccessibleWhenUnlockedThisDeviceOnly}) == errSecSuccess, "and takes the unlocked accessibility of this device");
+    NSDictionary *base = item(@"r", nil, NO);
+    NSArray *keys = @[(__bridge id)kSecUseOperationPrompt, (__bridge id)kSecUseAuthenticationContext, (__bridge id)kSecUseAuthenticationUI];
+    for (id key in keys) {
+        NSMutableDictionary *q = [base mutableCopy];
+        q[(__bridge id)kSecReturnData] = @YES;
+        q[key] = key == (__bridge id)kSecUseAuthenticationUI ? (__bridge id)kSecUseAuthenticationUIFail : @"x";
+        CFTypeRef out = NULL;
+        OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)q, &out);
+        CHECK(status == errSecParam, [[@"a query with the key is refused with -50: " stringByAppendingString:key] UTF8String]);
+    }
+    SecItemDelete((__bridge CFDictionaryRef)base);
+}
+
 static void run(void)
 {
     Dl_info info;
@@ -51,6 +79,7 @@ static void run(void)
     CHECK(SecItemDelete((__bridge CFDictionaryRef)item(@"a", (__bridge id)kSecAttrSynchronizableAny, NO)) == errSecSuccess, "a delete for Any removes the item");
     CHECK(copy(item(@"a", nil, NO), &data) == errSecItemNotFound, "it is gone");
     CHECK(SecItemDelete((__bridge CFDictionaryRef)item(@"b", nil, NO)) == errSecSuccess, "the other item is removed");
+    check_refusals();
 }
 
 @interface Delegate : UIResponder <UIApplicationDelegate>

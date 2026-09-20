@@ -312,16 +312,6 @@
       "source": "SDK 16.4, Security"
     },
     {
-      "api": "SecAccessControlCreateWithFlags()",
-      "kind": "function",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
       "api": "SecAccessControlGetTypeID()",
       "kind": "function",
       "introduced": "8.0",
@@ -329,86 +319,6 @@
       "status": "absent",
       "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
       "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecAddSharedWebCredential()",
-      "kind": "function",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecCreateSharedWebCredentialPassword()",
-      "kind": "function",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecRequestSharedWebCredential()",
-      "kind": "function",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "kSecAttrAccessControl",
-      "kind": "constant",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly",
-      "kind": "constant",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "kSecSharedPassword",
-      "kind": "constant",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "kSecUseNoAuthenticationUI",
-      "kind": "constant",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "kSecUseOperationPrompt",
-      "kind": "constant",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, Security"
     },
     {
@@ -463,56 +373,6 @@
     },
     {
       "api": "kSecTrustCertificateTransparency",
-      "kind": "constant",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "kSecUseAuthenticationContext",
-      "kind": "constant",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "kSecUseAuthenticationUI",
-      "kind": "constant",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "kSecUseAuthenticationUIAllow",
-      "kind": "constant",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "kSecUseAuthenticationUIFail",
-      "kind": "constant",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "kSecUseAuthenticationUISkip",
       "kind": "constant",
       "introduced": "9.0",
       "minimum": "6.0",
