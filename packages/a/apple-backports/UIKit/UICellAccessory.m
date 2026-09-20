@@ -36,6 +36,33 @@ UICellAccessoryPosition UICellAccessoryPositionAfterAccessoryOfClass(Class acces
     } copy];
 }
 
+@interface CharonChevronView : UIView
+@end
+
+@implementation CharonChevronView
+
+- (void)tintColorDidChange
+{
+    [super tintColorDidChange];
+    [self setNeedsDisplay];
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    CGRect bounds = self.bounds;
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    path.lineCapStyle = kCGLineCapRound;
+    path.lineJoinStyle = kCGLineJoinRound;
+    path.lineWidth = 2;
+    [path moveToPoint:CGPointMake(CGRectGetMidX(bounds) - 2.5, 1)];
+    [path addLineToPoint:CGPointMake(CGRectGetMidX(bounds) + 2.5, CGRectGetMidY(bounds))];
+    [path addLineToPoint:CGPointMake(CGRectGetMidX(bounds) - 2.5, CGRectGetMaxY(bounds) - 1)];
+    [(self.tintColor ?: [UIColor blueColor]) setStroke];
+    [path stroke];
+}
+
+@end
+
 @interface CharonAccessoryView : UIControl
 @property (nonatomic) NSInteger kind;
 @property (nonatomic, copy) void (^charon_handler)(void);
@@ -50,6 +77,9 @@ UICellAccessoryPosition UICellAccessoryPositionAfterAccessoryOfClass(Class acces
     UIColor *_fill;
     BOOL _expanded;
     BOOL _marked;
+    CharonChevronView *_chevron;
+    UILongPressGestureRecognizer *_grip;
+    BOOL _wired;
 }
 
 - (NSInteger)kind
@@ -60,6 +90,77 @@ UICellAccessoryPosition UICellAccessoryPositionAfterAccessoryOfClass(Class acces
 - (void)setKind:(NSInteger)kind
 {
     _kind = kind;
+    if (!_wired) {
+        _wired = YES;
+        [self addTarget:self action:@selector(charon_fire) forControlEvents:UIControlEventTouchUpInside];
+    }
+    if (kind == 6 && !_chevron) {
+        _chevron = [[CharonChevronView alloc] initWithFrame:CGRectMake(0, 0, 14, 14)];
+        _chevron.backgroundColor = [UIColor clearColor];
+        _chevron.opaque = NO;
+        _chevron.userInteractionEnabled = NO;
+        [self addSubview:_chevron];
+    }
+    if (kind == 4 && !_grip) {
+        _grip = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(charon_gripped:)];
+        _grip.minimumPressDuration = 0;
+        _grip.allowableMovement = CGFLOAT_MAX;
+        [self addGestureRecognizer:_grip];
+    }
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    if (_chevron) {
+        _chevron.bounds = CGRectMake(0, 0, 14, 14);
+        _chevron.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    }
+}
+
+- (UICollectionViewCell *)charon_cell
+{
+    UIView *view = self.superview;
+    while (view && ![view isKindOfClass:[UICollectionViewCell class]])
+        view = view.superview;
+    return (UICollectionViewCell *)view;
+}
+
+- (void)charon_gripped:(UILongPressGestureRecognizer *)recognizer
+{
+    UICollectionViewCell *cell = [self charon_cell];
+    UIView *candidate = cell.superview;
+    while (candidate && ![candidate isKindOfClass:[UICollectionView class]])
+        candidate = candidate.superview;
+    UICollectionView *view = (UICollectionView *)candidate;
+    if (!cell || !view)
+        return;
+    CGPoint point = [recognizer locationInView:view];
+    CGPoint position = CGPointMake(cell.center.x, point.y);
+    switch (recognizer.state) {
+    case UIGestureRecognizerStateBegan: {
+        NSIndexPath *path = [view indexPathForCell:cell];
+        if (!path || ![view beginInteractiveMovementForItemAtIndexPath:path]) {
+            recognizer.enabled = NO;
+            recognizer.enabled = YES;
+            return;
+        }
+        view.panGestureRecognizer.enabled = NO;
+        [view updateInteractiveMovementTargetPosition:position];
+        break;
+    }
+    case UIGestureRecognizerStateChanged:
+        [view updateInteractiveMovementTargetPosition:position];
+        break;
+    case UIGestureRecognizerStateEnded:
+        view.panGestureRecognizer.enabled = YES;
+        [view endInteractiveMovement];
+        break;
+    default:
+        view.panGestureRecognizer.enabled = YES;
+        [view cancelInteractiveMovement];
+        break;
+    }
 }
 
 - (void (^)(void))charon_handler
@@ -70,15 +171,17 @@ UICellAccessoryPosition UICellAccessoryPositionAfterAccessoryOfClass(Class acces
 - (void)setCharon_handler:(void (^)(void))charon_handler
 {
     _handler = [charon_handler copy];
-    [self removeTarget:self action:@selector(charon_fire) forControlEvents:UIControlEventTouchUpInside];
-    if (_handler)
-        [self addTarget:self action:@selector(charon_fire) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)charon_fire
 {
-    if (_handler)
+    if (_handler) {
         _handler();
+        return;
+    }
+    UICollectionViewCell *cell = _kind == 6 ? [self charon_cell] : nil;
+    if ([cell respondsToSelector:@selector(charon_toggleExpansion)])
+        [(UICollectionViewListCell *)cell charon_toggleExpansion];
 }
 
 - (UIColor *)fill
@@ -99,7 +202,21 @@ UICellAccessoryPosition UICellAccessoryPositionAfterAccessoryOfClass(Class acces
 
 - (void)setExpanded:(BOOL)expanded
 {
+    [self charon_setExpanded:expanded animated:NO];
+}
+
+- (void)charon_setExpanded:(BOOL)expanded animated:(BOOL)animated
+{
     _expanded = expanded;
+    if (_chevron) {
+        void (^turn)(void) = ^{
+            self->_chevron.transform = expanded ? CGAffineTransformMakeRotation((CGFloat)M_PI_2) : CGAffineTransformIdentity;
+        };
+        if (animated)
+            [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:turn completion:nil];
+        else
+            turn();
+    }
     [self setNeedsDisplay];
 }
 
@@ -138,20 +255,14 @@ UICellAccessoryPosition UICellAccessoryPositionAfterAccessoryOfClass(Class acces
         [path stroke];
         break;
     }
-    case 1:
-    case 6: {
-        CGFloat inset = 4;
+    case 6:
+        break;
+    case 1: {
         path.lineWidth = 2;
-        if (_expanded) {
-            [path moveToPoint:CGPointMake(2, inset + 1)];
-            [path addLineToPoint:CGPointMake(CGRectGetMidX(bounds), CGRectGetMaxY(bounds) - inset - 1)];
-            [path addLineToPoint:CGPointMake(CGRectGetMaxX(bounds) - 2, inset + 1)];
-        } else {
-            [path moveToPoint:CGPointMake(CGRectGetMidX(bounds) - 2.5, 1)];
-            [path addLineToPoint:CGPointMake(CGRectGetMidX(bounds) + 2.5, CGRectGetMidY(bounds))];
-            [path addLineToPoint:CGPointMake(CGRectGetMidX(bounds) - 2.5, CGRectGetMaxY(bounds) - 1)];
-        }
-        [(_kind == 1 ? gray : tint) setStroke];
+        [path moveToPoint:CGPointMake(CGRectGetMidX(bounds) - 2.5, 1)];
+        [path addLineToPoint:CGPointMake(CGRectGetMidX(bounds) + 2.5, CGRectGetMidY(bounds))];
+        [path addLineToPoint:CGPointMake(CGRectGetMidX(bounds) - 2.5, CGRectGetMaxY(bounds) - 1)];
+        [gray setStroke];
         [path stroke];
         break;
     }

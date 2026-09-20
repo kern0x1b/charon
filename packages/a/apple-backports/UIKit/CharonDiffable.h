@@ -30,5 +30,20 @@ void charon_diffable_finish(void (^completion)(void));
 
 @interface UICollectionViewDiffableDataSource (CharonDiffable)
 - (NSDiffableDataSourceSnapshot *)charon_current;
+- (void)charon_replaceCurrent:(NSDiffableDataSourceSnapshot *)snapshot;
+- (UICollectionView *)charon_collectionView;
+- (void)charon_configureCell:(UICollectionViewCell *)cell item:(id)item indexPath:(NSIndexPath *)indexPath;
+- (NSDiffableDataSourceSnapshot *)charon_reorderInitial;
+- (void)charon_reorderBegan;
+- (void)charon_reorderEnded;
+- (void)charon_reorderCancelled;
 - (void)charon_rebaseSectionSnapshotsFrom:(NSDiffableDataSourceSnapshot *)previous onto:(NSDiffableDataSourceSnapshot *)snapshot;
+@end
+
+@interface NSDiffableDataSourceTransaction (CharonDiffable)
+- (instancetype)initCharonWithInitial:(NSDiffableDataSourceSnapshot *)initial final:(NSDiffableDataSourceSnapshot *)final;
+@end
+
+@interface NSDiffableDataSourceSectionTransaction (CharonDiffable)
+- (instancetype)initCharonWithSection:(id)section initial:(NSArray *)initial final:(NSArray *)final;
 @end

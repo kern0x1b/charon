@@ -84,8 +84,6 @@
 
 - (void)setLeadingSwipeActionsConfigurationProvider:(UICollectionLayoutListSwipeActionsConfigurationProvider)leadingSwipeActionsConfigurationProvider
 {
-    if (leadingSwipeActionsConfigurationProvider)
-        charon_menus_say_once(@"list swipe", @"UICollectionLayoutListConfiguration: swipe actions are not carried on this release; the provider is kept and never asked.");
     _leadingSwipeActionsConfigurationProvider = [leadingSwipeActionsConfigurationProvider copy];
 }
 
@@ -96,8 +94,6 @@
 
 - (void)setTrailingSwipeActionsConfigurationProvider:(UICollectionLayoutListSwipeActionsConfigurationProvider)trailingSwipeActionsConfigurationProvider
 {
-    if (trailingSwipeActionsConfigurationProvider)
-        charon_menus_say_once(@"list swipe", @"UICollectionLayoutListConfiguration: swipe actions are not carried on this release; the provider is kept and never asked.");
     _trailingSwipeActionsConfigurationProvider = [trailingSwipeActionsConfigurationProvider copy];
 }
 
@@ -174,6 +170,7 @@ static const CGFloat CharonListRowEstimate = 44;
         [boundaries addObject:boundary];
     }
     section.boundarySupplementaryItems = boundaries;
+    [section charon_setListConfiguration:[configuration copy]];
     return section;
 }
 

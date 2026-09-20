@@ -1,5 +1,10 @@
 #import "CharonCompositionalLayout.h"
 
+@interface UICollectionViewCompositionalLayout (CharonSectionNoting)
+- (void)charon_beginNotingSections;
+- (void)charon_noteSection:(NSCollectionLayoutSection *)section;
+@end
+
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 static const NSInteger CharonBoundaryIndexMax = NSIntegerMax;
@@ -988,11 +993,13 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
     CharonCollectionLayoutContainer *box = [[CharonCollectionLayoutContainer alloc] initWithContentSize:view.bounds.size insets:NSDirectionalEdgeInsetsZero];
     CharonCollectionLayoutEnvironment *environment = [[CharonCollectionLayoutEnvironment alloc] initWithContainer:box traitCollection:solver->traits];
     NSInteger sections = view.numberOfSections;
+    [self charon_beginNotingSections];
     CGFloat spacing = _configuration.interSectionSpacing;
     CGFloat cursor = 0;
     CGSize whole = view.bounds.size;
     for (NSInteger section = 0; section < sections; section++) {
         NSCollectionLayoutSection *definition = _section ?: (_provider ? _provider(section, environment) : nil);
+        [self charon_noteSection:definition];
         NSInteger count = [view numberOfItemsInSection:section];
         NSInteger reference = definition ? definition.charon_contentInsetsReference : 0;
         CGFloat before = 0, after = 0;

@@ -8,7 +8,7 @@
 
 ## Differences
 - The row estimate is 44 for every appearance where the host measured 40.04 for plain, because this release has no self sizing cells: a row is 44 high and does not grow to its text.
-- The swipe action providers are kept and never asked (`inert`, said once in the log). The background decoration item, the outline expansion animation and the separator handlers of iOS 15 (`separatorConfiguration`, `itemSeparatorHandler`, `headerTopPadding`, all `@dynamic`) are not carried.
+- The swipe action providers are asked when a row is dragged, see `UICollectionViewListSwipe.md`. The background decoration item and the separator handlers of iOS 15 (`separatorConfiguration`, `itemSeparatorHandler`, `headerTopPadding`, all `@dynamic`) are not carried.
 
 ## What the host measures that a phone would not
 

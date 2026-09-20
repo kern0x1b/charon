@@ -744,7 +744,11 @@ deceleration does not take it. `swipeui.m` is the example.
 - `lists.m` (`lists-Info.plist`): an application, the lists and cell configurations: values, content and cell geometry are held to `lists-expectations.h`,
   which the windowed `listcell` group of `host/uikit2/run.sh` records from the host's UIKit (the `listvalues` group compares the values on 35000 more);
   a real list layout is put on screen and its rows, header, selection, editing and default backgrounds are measured; the members that are not carried
-  are asked whether they answer. It writes `/private/var/backports/lists.log` and `lists.done`.
+  are asked whether they answer. Then, with real touches from `gesture.h` (it needs `gesture.m` linked and the screen awake), a list is swiped both ways
+  and its buttons are tapped and dragged across, an outline row is expanded and collapsed by a tap on its disclosure, and a row is dragged by its reorder
+  grip in editing; the handlers of the data source and the order of the rows are checked. The `listactions` group of `host/uikit2/run.sh` puts the port beside
+  the system's diffable data source in a window and compares the outline handlers (thirteen steps) and the reordering handlers and their transactions (six
+  drags) with the interactive movement API. It writes `/private/var/backports/lists.log` and `lists.done`.
 
 `device/wake.m` is a tool that wakes and unlocks a device that has no passcode, by sending the Home button and a slide along the
 unlock track through the HID event system. An application that is launched while the screen is locked comes up inactive

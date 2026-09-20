@@ -120,10 +120,9 @@
       "kind": "property",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "iOS 6 collection views cannot reorder items interactively",
-      "effect": "the handlers object is kept and copied on assignment, and the first assignment says so once in the log; no handler is ever called",
-      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "status": "implemented",
+      "effect": "the handlers object is kept and copied on assignment; an item is asked of canReorderItemHandler when a row is lifted, and the will and did handlers are given a transaction when the movement ends",
+      "facts": "facts/UIKit/UICollectionViewInteractiveMovement.md",
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffablesectiondatasource group); the header of SDK 16.4"
     },
     {
@@ -131,10 +130,9 @@
       "kind": "property",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "iOS 6 has no outline cell that expands or collapses an item",
-      "effect": "the handlers object is kept and copied on assignment, and the first assignment says so once in the log; no handler is ever called",
-      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "status": "implemented",
+      "effect": "the handlers object is kept and copied on assignment; a tap on the outline disclosure of a row asks and tells the handlers, and the section snapshot is expanded or collapsed",
+      "facts": "facts/UIKit/UICollectionViewOutline.md",
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffablesectiondatasource group); the header of SDK 16.4"
     },
     {
@@ -142,10 +140,9 @@
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "iOS 6 collection views cannot reorder items interactively",
-      "effect": "the object holds its three blocks and copies, and nothing ever calls them",
-      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "status": "implemented",
+      "effect": "the object holds its three blocks and copies, and the data source calls them when a row is reordered",
+      "facts": "facts/UIKit/UICollectionViewInteractiveMovement.md",
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffablesectiondatasource group); the header of SDK 16.4"
     },
     {
@@ -153,10 +150,9 @@
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "iOS 6 has no outline cell that expands or collapses an item",
-      "effect": "the object holds its five blocks and copies, and nothing ever calls them",
-      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "status": "implemented",
+      "effect": "the object holds its five blocks and copies, and the data source calls them when an outline row is expanded or collapsed",
+      "facts": "facts/UIKit/UICollectionViewOutline.md",
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffablesectiondatasource group); the header of SDK 16.4"
     },
     {
@@ -164,20 +160,20 @@
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a transaction is only ever made for the reordering and section snapshot handlers of the collection view's data source, and iOS 6 has no interaction that calls one",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4"
+      "status": "implemented",
+      "effect": "the initial and final snapshots and the difference with its moves inferred, made for the will and did handlers of a reorder; the section transactions list the changed sections, the last first",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4",
+      "facts": "facts/UIKit/UICollectionViewInteractiveMovement.md"
     },
     {
       "api": "NSDiffableDataSourceSectionTransaction",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a transaction is only ever made for the reordering and section snapshot handlers of the collection view's data source, and iOS 6 has no interaction that calls one",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4"
+      "status": "implemented",
+      "effect": "the initial and final snapshots and the difference with its moves inferred, made for the will and did handlers of a reorder; the section transactions list the changed sections, the last first",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4",
+      "facts": "facts/UIKit/UICollectionViewInteractiveMovement.md"
     }
   ]
 }

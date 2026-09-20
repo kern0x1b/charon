@@ -41,8 +41,21 @@ static NSString *const charon_source_file = @"UIDiffableDataSource.m";
     return _snapshot;
 }
 
+- (void)charon_replaceCurrent:(NSDiffableDataSourceSnapshot *)snapshot
+{
+    _snapshot = snapshot;
+}
+
+- (UICollectionView *)charon_collectionView
+{
+    return _collectionView;
+}
+
 - (NSDiffableDataSourceSnapshot *)snapshot
 {
+    NSDiffableDataSourceSnapshot *held = [self respondsToSelector:@selector(charon_reorderInitial)] ? [self charon_reorderInitial] : nil;
+    if (held)
+        return [held copy];
     return [[self charon_current] charon_copyWithoutReloads];
 }
 
@@ -170,6 +183,8 @@ static NSString *const charon_source_file = @"UIDiffableDataSource.m";
     UICollectionViewCell *cell = _cellProvider ? _cellProvider(collectionView, indexPath, item) : nil;
     if (!cell)
         charon_diffable_raise(@"_UIDiffableDataSourceImpl.m", 1533, [NSString stringWithFormat:@"UICollectionViewDiffableDataSource cell provider returned nil for index path %@ with item identifier '%@', which is not allowed. You must always return a cell to the collection view: %@", indexPath, item, collectionView]);
+    if ([self respondsToSelector:@selector(charon_configureCell:item:indexPath:)])
+        [self charon_configureCell:cell item:item indexPath:indexPath];
     return cell;
 }
 

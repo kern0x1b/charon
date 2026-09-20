@@ -177,8 +177,8 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "the expansion chevron of an outline row, with its handler; the row does not animate its children",
-      "facts": "facts/UIKit/UICellAccessory.md",
+      "effect": "the expansion chevron of an outline row, with its handler; a tap with no handler expands or collapses the item in the section snapshot of a diffable data source, and the chevron turns",
+      "facts": "facts/UIKit/UICollectionViewOutline.md",
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
     },
     {
@@ -187,8 +187,8 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "the grip of an editing row, with an optional vertical separator",
-      "facts": "facts/UIKit/UICellAccessory.md",
+      "effect": "the grip of an editing row, with an optional vertical separator; a finger on it drags the row through the interactive movement of the collection view",
+      "facts": "facts/UIKit/UICollectionViewInteractiveMovement.md",
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
     },
     {
@@ -197,7 +197,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "appearance, separators, background and the header and footer modes; the swipe providers are kept and never asked",
+      "effect": "appearance, separators, background and the header and footer modes; the swipe providers are asked when a row is dragged",
       "facts": "facts/UIKit/UICollectionLayoutListConfiguration.md",
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listvalues and listcell groups); the header of SDK 16.4"
     },
@@ -658,19 +658,21 @@
       "api": "UICollectionLayoutListConfiguration.leadingSwipeActionsConfigurationProvider",
       "kind": "property",
       "introduced": "14.0",
-      "status": "inert",
-      "reason": "the release has no swipe gesture on a collection view row",
-      "effect": "the provider is kept and answered back, and is never asked for actions; a row does not swipe",
-      "facts": "facts/UIKit/UICollectionLayoutListConfiguration.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "asked for the actions of a row when a horizontal drag begins on it; the row slides to show the buttons with their titles, images and colours, a tap runs the handler with the completion block, a full swipe runs the first action when the configuration says so, and a tap elsewhere or a scroll closes it",
+      "facts": "facts/UIKit/UICollectionViewListSwipe.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listactions group), and by real touches on an iPhone 4S in tests/backports/device/lists.m; the header of SDK 16.4"
     },
     {
       "api": "UICollectionLayoutListConfiguration.trailingSwipeActionsConfigurationProvider",
       "kind": "property",
       "introduced": "14.0",
-      "status": "inert",
-      "reason": "the release has no swipe gesture on a collection view row",
-      "effect": "the provider is kept and answered back, and is never asked for actions; a row does not swipe",
-      "facts": "facts/UIKit/UICollectionLayoutListConfiguration.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "asked for the actions of a row when a horizontal drag begins on it; the row slides to show the buttons with their titles, images and colours, a tap runs the handler with the completion block, a full swipe runs the first action when the configuration says so, and a tap elsewhere or a scroll closes it",
+      "facts": "facts/UIKit/UICollectionViewListSwipe.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listactions group), and by real touches on an iPhone 4S in tests/backports/device/lists.m; the header of SDK 16.4"
     },
     {
       "api": "UICollectionView.selectionFollowsFocus",
@@ -711,6 +713,66 @@
       "status": "absent",
       "reason": "the transformers of the system are not read in this window",
       "effect": "the symbol is not there; a configuration takes a transformer of the application's own"
+    },
+    {
+      "api": "-[UICollectionView beginInteractiveMovementForItemAtIndexPath:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "asks the data source whether the item can move and lifts it as an image that follows the target position; answers NO when nothing can move",
+      "facts": "facts/UIKit/UICollectionViewInteractiveMovement.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listactions group), and by real touches on an iPhone 4S in tests/backports/device/lists.m; the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionView updateInteractiveMovementTargetPosition:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "moves the lifted item to the position, and the item under it takes its place, scrolling the list at its edges",
+      "facts": "facts/UIKit/UICollectionViewInteractiveMovement.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listactions group), and by real touches on an iPhone 4S in tests/backports/device/lists.m; the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionView endInteractiveMovement]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "drops the item where it is and tells the data source once",
+      "facts": "facts/UIKit/UICollectionViewInteractiveMovement.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listactions group), and by real touches on an iPhone 4S in tests/backports/device/lists.m; the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionView cancelInteractiveMovement]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "puts the item back where it began",
+      "facts": "facts/UIKit/UICollectionViewInteractiveMovement.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listactions group), and by real touches on an iPhone 4S in tests/backports/device/lists.m; the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewDiffableDataSource collectionView:canMoveItemAtIndexPath:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "answers the canReorderItemHandler, and NO when there is none",
+      "facts": "facts/UIKit/UICollectionViewInteractiveMovement.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listactions group), and by real touches on an iPhone 4S in tests/backports/device/lists.m; the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewDiffableDataSource collectionView:moveItemAtIndexPath:toIndexPath:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "moves the item in the snapshot; the will and did handlers are told when the movement ends",
+      "facts": "facts/UIKit/UICollectionViewInteractiveMovement.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the listactions group), and by real touches on an iPhone 4S in tests/backports/device/lists.m; the header of SDK 16.4"
     }
   ]
 }

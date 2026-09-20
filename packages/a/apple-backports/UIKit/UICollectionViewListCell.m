@@ -1,4 +1,5 @@
 #import "CharonLists.h"
+#import "CharonSwipeViews.h"
 
 #pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 
@@ -25,6 +26,8 @@
     CharonRowSeparatorView *_separator;
     CGRect _separatorFrame;
     CharonVerticalSeparatorView *_reorderSeparator;
+    BOOL _expanded;
+    void (^_expansionHandler)(void);
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -54,6 +57,41 @@
 - (UIListContentConfiguration *)defaultContentConfiguration
 {
     return [UIListContentConfiguration cellConfiguration];
+}
+
+- (BOOL)charon_isExpanded
+{
+    return _expanded;
+}
+
+- (void)charon_setExpanded:(BOOL)expanded animated:(BOOL)animated
+{
+    if (_expanded == expanded)
+        return;
+    _expanded = expanded;
+    for (id view in _accessoryViews)
+        if ([view respondsToSelector:@selector(charon_setExpanded:animated:)])
+            [view charon_setExpanded:expanded animated:animated];
+    charon_request_update(self);
+}
+
+- (void)charon_setExpansionHandler:(void (^)(void))handler
+{
+    _expansionHandler = [handler copy];
+}
+
+- (void)charon_toggleExpansion
+{
+    if (_expansionHandler)
+        _expansionHandler();
+}
+
+- (void)prepareForReuse
+{
+    [super prepareForReuse];
+    _expansionHandler = nil;
+    if (_expanded)
+        [self charon_setExpanded:NO animated:NO];
 }
 
 - (NSInteger)indentationLevel
@@ -117,6 +155,8 @@
         [_accessoryViews addObject:view ?: (id)[NSNull null]];
         if (view)
             [self addSubview:view];
+        if (_expanded && [view respondsToSelector:@selector(charon_setExpanded:animated:)])
+            [(id)view charon_setExpanded:YES animated:NO];
     }
     [self setNeedsLayout];
 }
@@ -172,8 +212,7 @@
 
 - (BOOL)charon_inList
 {
-    UICollectionViewLayout *layout = charon_owning_collection_view(self).collectionViewLayout;
-    return [layout isKindOfClass:[UICollectionViewCompositionalLayout class]] && [(UICollectionViewCompositionalLayout *)layout charon_listConfiguration] != nil;
+    return [self charon_layoutListConfiguration] != nil;
 }
 
 - (void)didMoveToSuperview
@@ -182,6 +221,9 @@
     if (self.superview) {
         charon_request_update(self);
         [self setNeedsLayout];
+        UICollectionView *view = charon_owning_collection_view(self);
+        if (view)
+            charon_install_list_swipe(view);
     }
 }
 
@@ -250,8 +292,7 @@
         content.frame = self.contentView.bounds;
     CGFloat textLeading = [content isKindOfClass:[UIListContentView class]] ? contentStart + [(UIListContentView *)content charon_textLeading] : margins.left + indent;
     _separatorFrame = CGRectMake(textLeading, bounds.size.height - 1 / scale, MAX(bounds.size.width - margins.right - textLeading, 0), 1 / scale);
-    UICollectionLayoutListConfiguration *configuration = [(UICollectionViewCompositionalLayout *)charon_owning_collection_view(self).collectionViewLayout isKindOfClass:[UICollectionViewCompositionalLayout class]]
-                                                             ? [(UICollectionViewCompositionalLayout *)charon_owning_collection_view(self).collectionViewLayout charon_listConfiguration] : nil;
+    UICollectionLayoutListConfiguration *configuration = [self charon_layoutListConfiguration];
     if (configuration && [configuration charon_showsSeparators]) {
         if (!_separator) {
             _separator = [[CharonRowSeparatorView alloc] init];

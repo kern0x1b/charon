@@ -103,6 +103,18 @@ UIFont *charon_medium_font(CGFloat pointSize);
 @interface UICollectionViewCompositionalLayout (CharonLists)
 - (UICollectionLayoutListConfiguration *)charon_listConfiguration;
 - (void)charon_setListConfiguration:(UICollectionLayoutListConfiguration *)configuration;
+- (void)charon_beginNotingSections;
+- (void)charon_noteSection:(NSCollectionLayoutSection *)section;
+- (UICollectionLayoutListConfiguration *)charon_listConfigurationForSectionIndex:(NSInteger)index;
+@end
+
+@interface NSCollectionLayoutSection (CharonLists)
+- (UICollectionLayoutListConfiguration *)charon_listConfiguration;
+- (void)charon_setListConfiguration:(UICollectionLayoutListConfiguration *)configuration;
+@end
+
+@interface UICollectionViewCell (CharonListConfigurationLookup)
+- (UICollectionLayoutListConfiguration *)charon_layoutListConfiguration;
 @end
 
 @interface UIListContentView (CharonTextLeading)
@@ -139,4 +151,11 @@ UICollectionView *charon_owning_collection_view(UIView *view);
 
 @interface UICollectionViewCell (CharonLists)
 - (void)charon_setListPrepared;
+@end
+
+@interface UICollectionViewListCell (CharonOutline)
+- (BOOL)charon_isExpanded;
+- (void)charon_setExpanded:(BOOL)expanded animated:(BOOL)animated;
+- (void)charon_setExpansionHandler:(void (^)(void))handler;
+- (void)charon_toggleExpansion;
 @end

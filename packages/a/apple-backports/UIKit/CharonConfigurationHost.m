@@ -238,6 +238,8 @@ NSNumber *charon_host_table_style(UITableViewCell *cell)
         state.selected = cell.selected;
         state.highlighted = cell.highlighted;
         [(UICellConfigurationState *)state setEditing:[charon_owning_collection_view(self) charon_editing]];
+        if ([self respondsToSelector:@selector(charon_isExpanded)])
+            [(UICellConfigurationState *)state setExpanded:[(UICollectionViewListCell *)self charon_isExpanded]];
     } else if ([self isKindOfClass:[UITableViewCell class]]) {
         UITableViewCell *cell = (UITableViewCell *)self;
         state.selected = cell.selected;

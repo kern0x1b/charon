@@ -10,7 +10,7 @@ Accessories laid out at the edges of a UICollectionViewListCell.
 
 ## Differences
 - Two labels compare unequal where the host compares fonts by pointer and finds them equal.
-- The drawing is the port's own; the geometry is the host's.
+- The drawing is the port's own; the geometry is the host's. The outline disclosure expands its item, see `UICollectionViewOutline.md`, and the reorder grip drags the row, see `UICollectionViewInteractiveMovement.md`.
 
 ## What the host measures that a phone would not
 

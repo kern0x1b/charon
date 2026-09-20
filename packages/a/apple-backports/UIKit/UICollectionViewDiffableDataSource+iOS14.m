@@ -1,10 +1,10 @@
 #import "CharonDiffable.h"
-#import "CharonMenus.h"
+#import "CharonLists.h"
 #import <objc/runtime.h>
 
 #pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
 
-static const char charon_reordering_key = 0, charon_snapshot_handlers_key = 0, charon_sections_key = 0, charon_applying_key = 0;
+static const char charon_reordering_key = 0, charon_snapshot_handlers_key = 0, charon_sections_key = 0, charon_applying_key = 0, charon_reorder_initial_key = 0;
 
 @implementation UICollectionViewDiffableDataSource (CharonFourteen)
 
@@ -20,7 +20,6 @@ static const char charon_reordering_key = 0, charon_snapshot_handlers_key = 0, c
 
 - (void)setReorderingHandlers:(UICollectionViewDiffableDataSourceReorderingHandlers *)reorderingHandlers
 {
-    charon_menus_say_once(@"reorderingHandlers", @"UICollectionViewDiffableDataSource.reorderingHandlers: iOS 6 collection views cannot reorder items interactively, so the handlers are kept and never called");
     objc_setAssociatedObject(self, &charon_reordering_key, [reorderingHandlers copy], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
@@ -36,7 +35,6 @@ static const char charon_reordering_key = 0, charon_snapshot_handlers_key = 0, c
 
 - (void)setSectionSnapshotHandlers:(UICollectionViewDiffableDataSourceSectionSnapshotHandlers *)sectionSnapshotHandlers
 {
-    charon_menus_say_once(@"sectionSnapshotHandlers", @"UICollectionViewDiffableDataSource.sectionSnapshotHandlers: iOS 6 has no outline cell to expand or collapse, so the handlers are kept and never called");
     objc_setAssociatedObject(self, &charon_snapshot_handlers_key, [sectionSnapshotHandlers copy], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
@@ -110,13 +108,28 @@ static const char charon_reordering_key = 0, charon_snapshot_handlers_key = 0, c
     if ([updated indexOfSectionIdentifier:sectionIdentifier] == NSNotFound)
         [updated appendSectionsWithIdentifiers:@[sectionIdentifier]];
     [updated charon_replaceItems:snapshot.visibleItems inSectionAtIndex:(NSUInteger)[updated indexOfSectionIdentifier:sectionIdentifier]];
+    NSMutableDictionary *stored = [self charon_sectionSnapshots];
+    id previous = stored[sectionIdentifier];
+    stored[sectionIdentifier] = [snapshot copy];
     objc_setAssociatedObject(self, &charon_applying_key, @YES, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     @try {
         [self applySnapshot:updated animatingDifferences:animatingDifferences completion:completion];
+    } @catch (NSException *exception) {
+        if (previous)
+            stored[sectionIdentifier] = previous;
+        else
+            [stored removeObjectForKey:sectionIdentifier];
+        @throw;
     } @finally {
         objc_setAssociatedObject(self, &charon_applying_key, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-    [self charon_sectionSnapshots][sectionIdentifier] = [snapshot copy];
+    UICollectionView *view = [self charon_collectionView];
+    for (UICollectionViewCell *cell in view.visibleCells) {
+        NSIndexPath *path = [view indexPathForCell:cell];
+        id item = path ? [self itemIdentifierForIndexPath:path] : nil;
+        if (item)
+            [self charon_configureCell:cell item:item indexPath:path];
+    }
 }
 
 - (NSDiffableDataSourceSectionSnapshot *)snapshotForSection:(id)section
@@ -129,6 +142,127 @@ static const char charon_reordering_key = 0, charon_snapshot_handlers_key = 0, c
     if (section && [current indexOfSectionIdentifier:section] != NSNotFound)
         [snapshot appendItems:[current itemIdentifiersInSectionWithIdentifier:section]];
     return snapshot;
+}
+
+
+- (NSDiffableDataSourceSnapshot *)charon_reorderInitial
+{
+    return objc_getAssociatedObject(self, &charon_reorder_initial_key);
+}
+
+- (id)charon_sectionIdentifierAtIndex:(NSInteger)index
+{
+    NSArray *sections = [[self charon_current] sectionIdentifiers];
+    return index >= 0 && (NSUInteger)index < sections.count ? sections[(NSUInteger)index] : nil;
+}
+
+- (void)charon_configureCell:(UICollectionViewCell *)cell item:(id)item indexPath:(NSIndexPath *)indexPath
+{
+    if (![cell isKindOfClass:[UICollectionViewListCell class]])
+        return;
+    id section = [self charon_sectionIdentifierAtIndex:indexPath.section];
+    NSDiffableDataSourceSectionSnapshot *stored = section ? [self charon_sectionSnapshots][section] : nil;
+    UICollectionViewListCell *list = (UICollectionViewListCell *)cell;
+    if (!stored || ![stored containsItem:item]) {
+        [list charon_setExpansionHandler:nil];
+        return;
+    }
+    list.indentationLevel = [stored levelOfItem:item];
+    [list charon_setExpanded:[stored isExpanded:item] animated:NO];
+    __weak UICollectionViewDiffableDataSource *weakSelf = self;
+    [list charon_setExpansionHandler:^{
+        [weakSelf charon_toggleItem:item inSection:section];
+    }];
+}
+
+- (void)charon_refreshOutlineCellsAnimated:(BOOL)animated
+{
+    UICollectionView *view = [self charon_collectionView];
+    for (UICollectionViewCell *cell in view.visibleCells) {
+        NSIndexPath *path = [view indexPathForCell:cell];
+        id item = path ? [self itemIdentifierForIndexPath:path] : nil;
+        id section = path ? [self charon_sectionIdentifierAtIndex:path.section] : nil;
+        NSDiffableDataSourceSectionSnapshot *stored = section ? [self charon_sectionSnapshots][section] : nil;
+        if ([cell isKindOfClass:[UICollectionViewListCell class]] && item && [stored containsItem:item])
+            [(UICollectionViewListCell *)cell charon_setExpanded:[stored isExpanded:item] animated:animated];
+    }
+}
+
+- (void)charon_toggleItem:(id)item inSection:(id)section
+{
+    NSDiffableDataSourceSectionSnapshot *snapshot = [[self charon_sectionSnapshots][section] copy];
+    if (!snapshot || ![snapshot containsItem:item])
+        return;
+    UICollectionViewDiffableDataSourceSectionSnapshotHandlers *handlers = [self sectionSnapshotHandlers];
+    if (![snapshot isExpanded:item]) {
+        if (handlers.shouldExpandItemHandler && !handlers.shouldExpandItemHandler(item))
+            return;
+        if (handlers.willExpandItemHandler)
+            handlers.willExpandItemHandler(item);
+        if (handlers.snapshotForExpandingParentItemHandler) {
+            NSDiffableDataSourceSectionSnapshot *children = handlers.snapshotForExpandingParentItemHandler(item, [snapshot snapshotOfParentItem:item]);
+            if (children)
+                [snapshot replaceChildrenOfParentItem:item withSnapshot:children];
+        }
+        [snapshot expandItems:@[item]];
+    } else {
+        if (handlers.shouldCollapseItemHandler && !handlers.shouldCollapseItemHandler(item))
+            return;
+        if (handlers.willCollapseItemHandler)
+            handlers.willCollapseItemHandler(item);
+        [snapshot collapseItems:@[item]];
+    }
+    [self applySnapshot:snapshot toSection:section animatingDifferences:YES];
+    [self charon_refreshOutlineCellsAnimated:YES];
+}
+
+- (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    BOOL (^handler)(id) = [self reorderingHandlers].canReorderItemHandler;
+    id item = handler ? [self itemIdentifierForIndexPath:indexPath] : nil;
+    return item ? handler(item) : NO;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView moveItemAtIndexPath:(NSIndexPath *)source toIndexPath:(NSIndexPath *)destination
+{
+    NSDiffableDataSourceSnapshot *snapshot = [self charon_current];
+    id item = [snapshot charon_itemAtIndexPath:source], target = [snapshot charon_itemAtIndexPath:destination];
+    if (!item || !target || item == target)
+        return;
+    if (source.section == destination.section && source.item < destination.item)
+        [snapshot moveItemWithIdentifier:item afterItemWithIdentifier:target];
+    else
+        [snapshot moveItemWithIdentifier:item beforeItemWithIdentifier:target];
+}
+
+- (void)charon_reorderBegan
+{
+    objc_setAssociatedObject(self, &charon_reorder_initial_key, [self snapshot], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (void)charon_reorderCancelled
+{
+    objc_setAssociatedObject(self, &charon_reorder_initial_key, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (void)charon_reorderEnded
+{
+    NSDiffableDataSourceSnapshot *initial = objc_getAssociatedObject(self, &charon_reorder_initial_key);
+    objc_setAssociatedObject(self, &charon_reorder_initial_key, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    NSDiffableDataSourceSnapshot *final = [self snapshot];
+    if (!initial || [initial.itemIdentifiers isEqual:final.itemIdentifiers])
+        return;
+    NSDiffableDataSourceTransaction *transaction = [[NSDiffableDataSourceTransaction alloc] initCharonWithInitial:initial final:final];
+    UICollectionViewDiffableDataSourceReorderingHandlers *handlers = [self reorderingHandlers];
+    NSDiffableDataSourceSnapshot *live = [self charon_current];
+    if (handlers.willReorderHandler) {
+        [self charon_replaceCurrent:initial];
+        handlers.willReorderHandler(transaction);
+        [self charon_replaceCurrent:live];
+    }
+    [self charon_rebaseSectionSnapshotsFrom:initial onto:live];
+    if (handlers.didReorderHandler)
+        handlers.didReorderHandler(transaction);
 }
 
 @end

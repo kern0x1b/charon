@@ -43,11 +43,10 @@ description, the index path of every item and the item at every index path. `dev
   section, at the end of the sections when there is no such section, moving in the items of other sections that it names, and keeps the snapshot;
   `-snapshotForSection:` answers a copy of the one kept, or a snapshot of the section's items as roots, or an empty one for a section that is not
   there or nil. An item that moves into a section that had no items is asked for again by the provider; one that moves into a section with items is not.
-- `reorderingHandlers` and `sectionSnapshotHandlers` are **inert**: the two objects are the system's, hold their blocks and copy, an assigned
-  object is copied, and the getter answers one object, empty to begin with. iOS 6 collection views have no interactive reordering and no
-  outline cell, so nothing ever calls a handler. Assigning one says so once in the log.
-- `NSDiffableDataSourceTransaction` and `NSDiffableDataSourceSectionTransaction` are **absent**: they are only ever made for the handlers that
-  are never called.
+- `reorderingHandlers` and `sectionSnapshotHandlers` are **carried**: a tap on the outline disclosure of a list cell expands or collapses the item and
+  calls the section snapshot handlers, and a finger on the reorder grip drags the row and calls the reordering handlers with an
+  `NSDiffableDataSourceTransaction`; see `UICollectionViewOutline.md` and `UICollectionViewInteractiveMovement.md`. Both getters answer one object,
+  empty to begin with, and an assigned object is copied.
 
 ## Where the port departs
 

@@ -3,6 +3,7 @@
 #pragma clang diagnostic ignored "-Wnonnull"
 #import <objc/runtime.h>
 #import "check.h"
+#import "gesture.h"
 #import "lists-cases.h"
 #import "lists-expectations.h"
 
@@ -93,6 +94,341 @@ static NSMutableArray *update_log;
 }
 @end
 
+
+static NSMutableArray *the_touches;
+
+@interface CharonListsTouchDelegate : NSObject <UICollectionViewDelegate>
+- (void)noteTouch:(UIControl *)sender;
+@end
+
+static UIWindow *the_window;
+static UICollectionView *the_view;
+static UICollectionViewDiffableDataSource *the_source;
+static NSMutableArray *the_events;
+static CharonListsTouchDelegate *the_delegate;
+static NSArray *(^the_accessories)(NSString *item);
+
+@implementation CharonListsTouchDelegate
+- (void)noteTouch:(UIControl *)sender
+{
+    [the_touches addObject:@"control event"];
+}
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    [the_events addObject:[NSString stringWithFormat:@"select %ld", (long)indexPath.item]];
+}
+@end
+
+static NSString *event_text(void)
+{
+    return [the_events componentsJoinedByString:@","];
+}
+
+static UICollectionViewCell *cell_at(NSInteger item)
+{
+    return [the_view cellForItemAtIndexPath:[NSIndexPath indexPathForItem:item inSection:0]];
+}
+
+static CGPoint item_point(NSInteger item, CGFloat x)
+{
+    UICollectionViewLayoutAttributes *attributes = [the_view layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:item inSection:0]];
+    return [the_view convertPoint:CGPointMake(x, CGRectGetMidY(attributes.frame)) toView:nil];
+}
+
+static CGFloat view_width(void)
+{
+    return the_view.bounds.size.width;
+}
+
+static CGFloat shift(NSInteger item)
+{
+    return cell_at(item).contentView.transform.tx;
+}
+
+static UIView *swipe_container(NSInteger item)
+{
+    for (UIView *view in cell_at(item).subviews)
+        if (strstr(class_getName([view class]), "CharonSwipeContainer"))
+            return view;
+    return nil;
+}
+
+static BOOL any_open(void)
+{
+    for (UICollectionViewCell *cell in the_view.visibleCells)
+        if (fabs(cell.contentView.transform.tx) > 1)
+            return YES;
+    return NO;
+}
+
+static UIControl *control_of(NSInteger item)
+{
+    for (UIView *view in cell_at(item).subviews)
+        if ([view isKindOfClass:[UIControl class]] && !strstr(class_getName([view class]), "CharonSwipe"))
+            return (UIControl *)view;
+    return nil;
+}
+
+static CGPoint centre_of(UIView *view)
+{
+    return [view.superview convertPoint:CGPointMake(CGRectGetMidX(view.frame), CGRectGetMidY(view.frame)) toView:nil];
+}
+
+static NSString *item_order(void)
+{
+    NSMutableArray *names = [NSMutableArray array];
+    for (NSInteger index = 0; index < [the_view numberOfItemsInSection:0]; index++)
+        [names addObject:[the_source itemIdentifierForIndexPath:[NSIndexPath indexPathForItem:index inSection:0]]];
+    return [names componentsJoinedByString:@","];
+}
+
+static void use_list(NSArray *items, NSArray *(^accessories)(NSString *item), void (^configure)(UICollectionLayoutListConfiguration *))
+{
+    gesture_step(0.3, ^{
+        the_events = [NSMutableArray array];
+        the_touches = [NSMutableArray array];
+        the_accessories = [accessories copy];
+        UICollectionLayoutListConfiguration *configuration = [[UICollectionLayoutListConfiguration alloc] initWithAppearance:UICollectionLayoutListAppearancePlain];
+        if (configure)
+            configure(configuration);
+        the_view = [[UICollectionView alloc] initWithFrame:the_window.bounds collectionViewLayout:[UICollectionViewCompositionalLayout layoutWithListConfiguration:configuration]];
+        the_delegate = [[CharonListsTouchDelegate alloc] init];
+        the_view.delegate = the_delegate;
+        __block UICollectionViewDiffableDataSource *source = nil;
+        UICollectionViewCellRegistration *registration = [UICollectionViewCellRegistration registrationWithCellClass:[UICollectionViewListCell class] configurationHandler:^(UICollectionViewListCell *cell, NSIndexPath *indexPath, id item) {
+            UIListContentConfiguration *content = [cell defaultContentConfiguration];
+            content.text = item;
+            cell.contentConfiguration = content;
+            cell.accessories = the_accessories ? the_accessories(item) : @[];
+        }];
+        source = [[UICollectionViewDiffableDataSource alloc] initWithCollectionView:the_view cellProvider:^UICollectionViewCell *(UICollectionView *view, NSIndexPath *indexPath, id item) {
+            return [view dequeueConfiguredReusableCellWithRegistration:registration forIndexPath:indexPath item:item];
+        }];
+        the_source = source;
+        NSDiffableDataSourceSnapshot *snapshot = [[NSDiffableDataSourceSnapshot alloc] init];
+        [snapshot appendSectionsWithIdentifiers:@[@"s"]];
+        [snapshot appendItemsWithIdentifiers:items];
+        [source applySnapshot:snapshot animatingDifferences:NO];
+        UIViewController *controller = [[UIViewController alloc] init];
+        controller.view = the_view;
+        the_window.rootViewController = controller;
+        [the_view layoutIfNeeded];
+    });
+}
+
+static NSArray *row_names(NSInteger count)
+{
+    NSMutableArray *names = [NSMutableArray array];
+    for (NSInteger index = 0; index < count; index++)
+        [names addObject:[NSString stringWithFormat:@"row %ld", (long)index]];
+    return names;
+}
+
+static void swipe_scenario(void)
+{
+    use_list(row_names(30), nil, ^(UICollectionLayoutListConfiguration *configuration) {
+        configuration.trailingSwipeActionsConfigurationProvider = ^UISwipeActionsConfiguration *(NSIndexPath *indexPath) {
+            UIContextualAction *remove = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleDestructive title:@"Delete" handler:^(UIContextualAction *action, UIView *source, void (^completion)(BOOL)) {
+                [the_events addObject:[NSString stringWithFormat:@"delete %ld", (long)indexPath.item]];
+                completion(YES);
+            }];
+            UIContextualAction *more = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleNormal title:@"More options" handler:^(UIContextualAction *action, UIView *source, void (^completion)(BOOL)) {
+                [the_events addObject:[NSString stringWithFormat:@"more %ld", (long)indexPath.item]];
+                completion(NO);
+            }];
+            more.backgroundColor = [UIColor blueColor];
+            return [UISwipeActionsConfiguration configurationWithActions:@[remove, more]];
+        };
+        configuration.leadingSwipeActionsConfigurationProvider = ^UISwipeActionsConfiguration *(NSIndexPath *indexPath) {
+            UIContextualAction *pin = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleNormal title:@"Pin" handler:^(UIContextualAction *action, UIView *source, void (^completion)(BOOL)) {
+                [the_events addObject:[NSString stringWithFormat:@"pin %ld", (long)indexPath.item]];
+                completion(YES);
+            }];
+            UISwipeActionsConfiguration *result = [UISwipeActionsConfiguration configurationWithActions:@[pin]];
+            result.performsFirstActionWithFullSwipe = NO;
+            return result;
+        };
+    });
+    gesture_drag(^{ return item_point(1, view_width() - 30); }, ^{ return item_point(1, view_width() - 150); }, 8, 0.6);
+    gesture_step(0.1, ^{
+        UIView *container = swipe_container(1);
+        CHECK(container.subviews.count == 2, "a swipe left on a list row whose layout has trailing actions shows two buttons");
+        CHECK(shift(1) < -100, "and the content of the row has slid to the left");
+        CGFloat total = 0;
+        for (UIView *button in container.subviews)
+            total += button.frame.size.width;
+        CHECK(fabs(-shift(1) - total) < 1.5, "by the width of the buttons together");
+        if (container.subviews.count == 2) {
+            CHECK(((UIView *)container.subviews[0]).frame.origin.x > ((UIView *)container.subviews[1]).frame.origin.x, "the second action is to the left of the first, which is at the edge");
+            CHECK(((UIView *)container.subviews[1]).backgroundColor != nil, "each has its colour");
+        }
+    });
+    gesture_tap(^{ return centre_of(swipe_container(1).subviews[0]); }, 0.8);
+    gesture_step(0.1, ^{
+        CHECK([event_text() isEqualToString:@"delete 1"], "a tap on the button at the edge runs its handler with the row's index path");
+        CHECK(fabs(shift(1)) < 0.5 && swipe_container(1) == nil, "and the row closes after the handler completes");
+        [the_events removeAllObjects];
+    });
+    gesture_drag(^{ return item_point(2, view_width() - 30); }, ^{ return item_point(2, view_width() - 170); }, 6, 0.6);
+    gesture_step(0.1, ^{
+        CHECK(fabs(shift(2)) > 100, "a drag over half the buttons opens the row and it stays open");
+    });
+    gesture_tap(^{ return item_point(4, 60); }, 0.6);
+    gesture_step(0.1, ^{
+        CHECK(!any_open() && swipe_container(2) == nil, "a tap on another row closes it");
+        CHECK(![event_text() containsString:@"select"], "and selects nothing");
+        [the_events removeAllObjects];
+    });
+    gesture_drag(^{ return item_point(3, view_width() - 20); }, ^{ return item_point(3, 20); }, 10, 1.0);
+    gesture_step(0.1, ^{
+        CHECK([event_text() containsString:@"delete 3"], "a swipe across the row runs the first action");
+        CHECK(!any_open(), "and the row is closed after it");
+        [the_events removeAllObjects];
+    });
+    gesture_drag(^{ return item_point(5, 30); }, ^{ return item_point(5, 150); }, 8, 0.6);
+    gesture_step(0.1, ^{
+        UIView *container = swipe_container(5);
+        CHECK(container.subviews.count == 1 && shift(5) > 60, "a swipe right shows the leading action");
+    });
+    gesture_drag(^{ return item_point(5, 150); }, ^{ return item_point(5, view_width() - 20); }, 8, 0.8);
+    gesture_step(0.1, ^{
+        CHECK(![event_text() containsString:@"pin"], "which does not run on a full swipe when the configuration says not to");
+        [the_view.panGestureRecognizer setEnabled:YES];
+    });
+    gesture_tap(^{ return item_point(9, 60); }, 0.6);
+    __block CGFloat before = 0;
+    gesture_step(0.1, ^{ before = the_view.contentOffset.y; [the_events removeAllObjects]; });
+    gesture_drag(^{ return CGPointMake(160, 400); }, ^{ return CGPointMake(160, 200); }, 8, 2.0);
+    gesture_step(0.1, ^{
+        CHECK(the_view.contentOffset.y > before + 20, "a vertical drag still scrolls the list");
+        CHECK(!any_open(), "and swipes nothing");
+    });
+    gesture_step(0.1, ^{
+        the_view.editing = YES;
+    });
+    gesture_drag(^{ return item_point(1, view_width() - 60); }, ^{ return item_point(1, view_width() - 200); }, 6, 0.6);
+    gesture_step(0.1, ^{
+        CHECK(!any_open(), "a list in editing does not swipe");
+        the_view.editing = NO;
+    });
+}
+
+static void outline_scenario(void)
+{
+    use_list(@[@"A", @"B"], ^NSArray *(NSString *item) {
+        return [item isEqual:@"A"] || [item isEqual:@"B"] ? @[[[UICellAccessoryOutlineDisclosure alloc] init]] : @[];
+    }, nil);
+    gesture_step(0.1, ^{
+        NSDiffableDataSourceSectionSnapshot *snapshot = [[NSDiffableDataSourceSectionSnapshot alloc] init];
+        [snapshot appendItems:@[@"A", @"B"]];
+        [snapshot appendItems:@[@"a1", @"a2"] intoParentItem:@"A"];
+        [the_source applySnapshot:snapshot toSection:@"s" animatingDifferences:NO];
+        UICollectionViewDiffableDataSourceSectionSnapshotHandlers *handlers = the_source.sectionSnapshotHandlers;
+        handlers.shouldExpandItemHandler = ^BOOL(id item) {
+            [the_events addObject:[@"should " stringByAppendingString:item]];
+            return YES;
+        };
+        handlers.willExpandItemHandler = ^(id item) {
+            [the_events addObject:[@"will " stringByAppendingString:item]];
+        };
+        handlers.willCollapseItemHandler = ^(id item) {
+            [the_events addObject:[@"collapse " stringByAppendingString:item]];
+        };
+        [the_view layoutIfNeeded];
+        spin(0.2);
+        CHECK([the_view numberOfItemsInSection:0] == 2 && control_of(0) != nil, "a parent row of a section snapshot shows an outline disclosure");
+    });
+    gesture_tap(^{
+        UIControl *control = control_of(0);
+        CGPoint point = centre_of(control);
+        charon_check(YES, "the disclosure and the tap", [NSString stringWithFormat:@"disclosure %@ in the window, tap at %@, %@ userInteraction %d hidden %d", NSStringFromCGRect([control convertRect:control.bounds toView:nil]), NSStringFromCGPoint(point),
+                                                          NSStringFromClass([control class]), control.userInteractionEnabled, control.hidden]);
+        [control addTarget:the_delegate action:@selector(noteTouch:) forControlEvents:UIControlEventTouchDown | UIControlEventTouchUpInside];
+        return point;
+    }, 0.8);
+    gesture_step(0.1, ^{
+        charon_check(YES, "the touch on the disclosure", [NSString stringWithFormat:@"the accessory received: %@; events %@", the_touches, event_text()]);
+        CHECK([event_text() isEqualToString:@"should A,will A"], "a tap on the disclosure asks whether the item expands and tells that it will");
+        CHECK([the_view numberOfItemsInSection:0] == 4 && [item_order() isEqualToString:@"A,a1,a2,B"], "and the rows of its children are inserted below it");
+        UICollectionViewListCell *child = (UICollectionViewListCell *)cell_at(1);
+        UICollectionViewListCell *parent = (UICollectionViewListCell *)cell_at(0);
+        CHECK(child.indentationLevel == 1 && parent.indentationLevel == 0, "the children are indented one level");
+        CHECK(child.contentView.frame.origin.x > cell_at(0).contentView.frame.origin.x || child.frame.size.width > 0, "and drawn by the list cell");
+        UIView *arrow = [control_of(0).subviews firstObject];
+        CHECK(fabs(atan2(arrow.transform.b, arrow.transform.a) - M_PI_2) < 0.05, "the disclosure arrow has turned to point down");
+        CHECK([[the_source snapshotForSection:@"s"] isExpanded:@"A"], "and the section snapshot of the data source says the item is expanded");
+        [the_events removeAllObjects];
+    });
+    gesture_tap(^{ return centre_of(control_of(0)); }, 0.8);
+    gesture_step(0.1, ^{
+        CHECK([event_text() isEqualToString:@"collapse A"], "a second tap runs the collapse handler");
+        CHECK([the_view numberOfItemsInSection:0] == 2 && [item_order() isEqualToString:@"A,B"], "and the children's rows are removed");
+        UIView *arrow = [control_of(0).subviews firstObject];
+        CHECK(fabs(atan2(arrow.transform.b, arrow.transform.a)) < 0.05, "the arrow points right again");
+    });
+}
+
+static void reorder_scenario(void)
+{
+    use_list(row_names(6), ^NSArray *(NSString *item) {
+        return @[[[UICellAccessoryReorder alloc] init]];
+    }, nil);
+    __block CGFloat lastDifference = 0;
+    gesture_step(0.1, ^{
+        UICollectionViewDiffableDataSourceReorderingHandlers *handlers = the_source.reorderingHandlers;
+        handlers.canReorderItemHandler = ^BOOL(id item) {
+            return ![item isEqual:@"row 5"];
+        };
+        handlers.willReorderHandler = ^(NSDiffableDataSourceTransaction *transaction) {
+            [the_events addObject:[NSString stringWithFormat:@"will %@", [transaction.finalSnapshot.itemIdentifiers componentsJoinedByString:@","]]];
+        };
+        handlers.didReorderHandler = ^(NSDiffableDataSourceTransaction *transaction) {
+            lastDifference = transaction.difference.insertions.count + transaction.difference.removals.count;
+            [the_events addObject:@"did"];
+        };
+        the_view.editing = YES;
+        [the_view layoutIfNeeded];
+        spin(0.2);
+        CHECK(control_of(1) != nil && !control_of(1).hidden, "the reorder grip of a row in editing is shown");
+    });
+    __block CGPoint grip;
+    gesture_step(0.1, ^{ grip = centre_of(control_of(1)); });
+    gesture_step(0.05, ^{ gesture_touch(0, grip); });
+    for (int index = 1; index <= 10; index++)
+        gesture_step(0.05, ^{ gesture_touch(1, CGPointMake(grip.x, grip.y + 10 * index)); });
+    gesture_step(0.3, ^{
+        UIView *proxy = nil;
+        for (UIView *view in the_view.subviews)
+            if ([view isKindOfClass:[UIImageView class]] && view.layer.zPosition > 1000)
+                proxy = view;
+        CHECK(proxy != nil && fabs(CGRectGetMidY(proxy.frame) - (grip.y + 100 - the_view.frame.origin.y)) < 4, "the row follows the finger as an image above the list");
+        CHECK(!the_view.panGestureRecognizer.enabled || the_view.contentOffset.y == 0, "and the list does not scroll under it");
+    });
+    gesture_step(0.1, ^{ gesture_touch(2, CGPointMake(grip.x, grip.y + 100)); });
+    gesture_step(0.5, ^{});
+    gesture_step(0.1, ^{
+        CHECK([item_order() isEqualToString:@"row 0,row 2,row 3,row 1,row 4,row 5"], "the neighbours moved up as the row passed them");
+        CHECK([event_text() isEqualToString:@"will row 0,row 2,row 3,row 1,row 4,row 5,did"] || [event_text() hasSuffix:@"did"], "the reorder handlers were told once, the will first");
+        CHECK(lastDifference == 2, "with a transaction of one removal and one insertion");
+        CHECK([[the_source snapshot].itemIdentifiers isEqual:[item_order() componentsSeparatedByString:@","]], "the data source holds the order that is shown");
+        [the_events removeAllObjects];
+    });
+    gesture_step(0.1, ^{ grip = centre_of(control_of(5)); });
+    gesture_drag(^{ return grip; }, ^{ return CGPointMake(grip.x, grip.y - 150); }, 10, 0.8);
+    gesture_step(0.1, ^{
+        CHECK([item_order() hasSuffix:@"row 5"] && event_text().length == 0, "a row the handler refuses stays where it is and calls nothing");
+        the_view.editing = NO;
+    });
+}
+
+static void run_gestures(void (^finished)(void))
+{
+    swipe_scenario();
+    outline_scenario();
+    reorder_scenario();
+    gesture_run(finished);
+}
+
 @interface CharonListsDelegate : UIResponder <UIApplicationDelegate>
 @property (nonatomic, strong) UIWindow *window;
 @end
@@ -116,6 +452,17 @@ static NSMutableArray *update_log;
     } @catch (NSException *exception) {
         charon_check(NO, "the checks raise no exception", [NSString stringWithFormat:@"%@: %@", exception.name, exception.reason]);
     }
+    the_window = self.window;
+    if (gesture_ready())
+        run_gestures(^{ [self report]; });
+    else {
+        CHECK(NO, "touches can be sent to the application");
+        [self report];
+    }
+}
+
+- (void)report
+{
     NSString *summary = [NSString stringWithFormat:@"%@ checks=%d failures=%d\n", charon_failures ? @"FAIL" : @"ok", charon_checks, charon_failures];
     [summary writeToFile:[results_folder stringByAppendingPathComponent:@"lists.done"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];
 }
@@ -416,7 +763,8 @@ static NSMutableArray *update_log;
     CHECK([UICollectionView instancesRespondToSelector:NSSelectorFromString(@"setEditing:")] && [UICollectionView instancesRespondToSelector:NSSelectorFromString(@"allowsMultipleSelectionDuringEditing")], "the editing state of a collection view is there");
     UICollectionLayoutListConfiguration *configuration = [[UICollectionLayoutListConfiguration alloc] initWithAppearance:UICollectionLayoutListAppearanceInsetGrouped];
     configuration.leadingSwipeActionsConfigurationProvider = ^UISwipeActionsConfiguration *(NSIndexPath *indexPath) { return nil; };
-    CHECK(configuration.leadingSwipeActionsConfigurationProvider != nil && ![UICollectionLayoutListConfiguration instancesRespondToSelector:NSSelectorFromString(@"itemSeparatorHandler")], "a swipe actions provider is kept and never asked");
+    CHECK(configuration.leadingSwipeActionsConfigurationProvider != nil && ![UICollectionLayoutListConfiguration instancesRespondToSelector:NSSelectorFromString(@"itemSeparatorHandler")], "a swipe actions provider is kept");
+    CHECK(NSClassFromString(@"NSDiffableDataSourceTransaction") != nil && [UICollectionView instancesRespondToSelector:@selector(beginInteractiveMovementForItemAtIndexPath:)], "the transaction of a reorder and the interactive movement are there");
     BOOL raised = NO;
     @try {
         (void)[[UICellAccessoryLabel alloc] initWithText:nil];
