@@ -65,6 +65,11 @@ a window, into a Mac Catalyst bundle with `windowed.plist`, signs it ad hoc and 
 `charon_windowed_run(window)` is called once the window is up. A test written for it compares the system's answers with
 the backport's the way the others do, for whatever UIKit will not do without a scene.
 
+The `menus` group of `host/uikit2/run.sh` compares the menu elements, the menu identifiers, the context menu configuration and
+interaction at rest, the preview parameters, target and targeted preview with the host's, and the `menucontroller` group holds the
+two calls the new `UIMenuController` methods make to the old interface. `device/menus.m` is the device counterpart: it checks that the
+classes and constants come from `libUIKitBackports.dylib` and repeats the checks that need no window.
+
 `host/registry/run.sh` holds the build's check of the registry to a release's own
 Objective-C metadata. The build refuses an `absent` entry whose class, method,
 accessor or protocol the release carries, and an `ignored` entry the release

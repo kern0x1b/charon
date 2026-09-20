@@ -110,6 +110,8 @@ group itemprovider "../Foundation/NSItemProvider.m" "*" itemprovider_test.m
 group itemproviderbuiltins "../Foundation/NSString+ItemProvider.m ../Foundation/NSURL+ItemProvider.m" "" itemproviderbuiltins_test.m
 group safariviewcontroller "../SafariServices/CharonSafariPage.m ../SafariServices/SFSafariViewController.m ../SafariServices/SFSafariViewControllerConfiguration.m ../SafariServices/SFSafariViewControllerActivityButton.m ../SafariServices/SFSafariViewControllerPrewarmingToken.m ../SafariServices/SFAuthenticationSession.m ../SafariServices/SFAuthenticationErrorDomain.m" "*" safariviewcontroller_test.m
 windowed snapshots "UIView+Snapshots.m" "" snapshots_test.m
+windowed menucontroller "UIMenuController+iOS13.m" "" menucontroller_test.m
+windowed menus "UIMenuElement.m UIAction.m UIAction+iOS14.m UIMenu.m UIMenu+iOS14.m UIDeferredMenuElement.m UIMenuIdentifiers.m UIMenuIdentifiers14.m UIMenuSystem.m UIContextMenuConfiguration.m UIContextMenuInteraction.m UIContextMenuInteraction+iOS14.m UIPreviewParameters.m UIPreviewParameters+iOS14.m UIPreviewTarget.m UITargetedPreview.m" "*" menus_test.m
 
 # the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation
 xcrun clang $target -fobjc-arc -Wall -w -I"$harness" "$here/spring_uikit.m" $frameworks -o "$build/spring_uikit"

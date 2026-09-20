@@ -177,6 +177,24 @@ scene is answered with the error of a release that has none. `UIWindow(windowSce
 delegate's `window` is filled in for a storyboard. Not carried: state restoration by activity, Handoff, shortcut items and
 CloudKit shares in the connection options, and the disconnect of the scene. See `facts/UIKit/UIScene.md`.
 
+### Menus, context menus and previews, present so that applications launch
+
+`UIMenuElement`, `UIAction`, `UIMenu` and `UIDeferredMenuElement`, the 45 `UIMenu...` identifiers,
+`UIContextMenuConfiguration`, `UIPreviewParameters`, `UIPreviewTarget` and `UITargetedPreview` are carried as the value
+objects they are: defaults, copies, equality, `-description`, secure coding and the exceptions they raise are held to the host's
+own UIKit through Mac Catalyst (`tests/backports/host/uikit2`, the `menus` group), and the identifier constants string for
+string. `UIMenuController` gets `-showMenuFromView:rect:`, `-hideMenuFromView:` and `-hideMenu` over the calls iOS 6 has.
+
+What iOS 6 cannot do is not faked. It has no menu view, no preview morph and no highlight of the source view, so
+`UIContextMenuInteraction` puts a long press on its view and shows the menu **as an action sheet**: elements that are disabled
+or hidden are left out, inline submenus are flattened, other submenus open a second sheet, the first destructive element is the
+sheet's red button, and the chosen action's handler runs. The delegate hears of the menu through an animator that runs added
+animations at once, and the three preview callbacks and the preview provider are never called. Its `menuAppearance` is
+compact, since a rich menu is the one with a preview. `UIMenuSystem` is there and **inert** - iOS 6 has no menu bar and no
+key command menus to rebuild - and says so once in the log; `UIMenuBuilder` is absent, and `-buildMenuWithBuilder:` is never
+called. `facts/UIKit/UIContextMenuInteraction.md` has the whole table, and `facts/UIKit/UIPreviewParameters.md` the one place
+a value differs from the host: lines of text that touch are not joined into one outline.
+
 ## iOS 11 and 12
 
 These two releases are read differently from the ones before them. The last
