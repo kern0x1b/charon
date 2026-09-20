@@ -1222,56 +1222,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVTrackAssociationTypeAudioFallback",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVTrackAssociationTypeChapterList",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVTrackAssociationTypeForcedSubtitlesOnly",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVTrackAssociationTypeSelectionFollower",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVTrackAssociationTypeTimecode",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVVideoAllowFrameReorderingKey",
       "kind": "constant",
       "introduced": "7.0",
@@ -6082,47 +6032,7 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVVideoColorPrimariesKey",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVVideoColorPrimaries_ITU_R_709_2",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVVideoColorPrimaries_P3_D65",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVVideoColorPrimaries_SMPTE_C",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVVideoColorPropertiesKey",
       "kind": "constant",
       "introduced": "10.0",
       "minimum": "6.0",
@@ -6159,56 +6069,6 @@
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give AVVideoComposition a property like it: it arrived in iOS 10",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVVideoTransferFunctionKey",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVVideoTransferFunction_ITU_R_709_2",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVVideoYCbCrMatrixKey",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVVideoYCbCrMatrix_ITU_R_601_4",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVVideoYCbCrMatrix_ITU_R_709_2",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {

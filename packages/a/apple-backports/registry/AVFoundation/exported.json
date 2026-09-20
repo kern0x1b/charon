@@ -1,0 +1,159 @@
+{
+  "framework": "AVFoundation",
+  "entries": [
+    {
+      "api": "AVTrackAssociationTypeAudioFallback",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
+      "effect": "the symbol is the release's own and does what it does there; it was not compared with a newer release",
+      "source": "an iPad 2 running 6.1.3 and the iOS 6.0 emulator, asked with dlsym for every constant and function the registry lists as absent, after every framework of the release was loaded",
+      "facts": "facts/AVFoundation/AVFoundationExports.md"
+    },
+    {
+      "api": "AVTrackAssociationTypeChapterList",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
+      "effect": "the symbol is the release's own and does what it does there; it was not compared with a newer release",
+      "source": "an iPad 2 running 6.1.3 and the iOS 6.0 emulator, asked with dlsym for every constant and function the registry lists as absent, after every framework of the release was loaded",
+      "facts": "facts/AVFoundation/AVFoundationExports.md"
+    },
+    {
+      "api": "AVTrackAssociationTypeForcedSubtitlesOnly",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
+      "effect": "the symbol is the release's own and does what it does there; it was not compared with a newer release",
+      "source": "an iPad 2 running 6.1.3 and the iOS 6.0 emulator, asked with dlsym for every constant and function the registry lists as absent, after every framework of the release was loaded",
+      "facts": "facts/AVFoundation/AVFoundationExports.md"
+    },
+    {
+      "api": "AVTrackAssociationTypeSelectionFollower",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
+      "effect": "the symbol is the release's own and does what it does there; it was not compared with a newer release",
+      "source": "an iPad 2 running 6.1.3 and the iOS 6.0 emulator, asked with dlsym for every constant and function the registry lists as absent, after every framework of the release was loaded",
+      "facts": "facts/AVFoundation/AVFoundationExports.md"
+    },
+    {
+      "api": "AVTrackAssociationTypeTimecode",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
+      "effect": "the symbol is the release's own and does what it does there; it was not compared with a newer release",
+      "source": "an iPad 2 running 6.1.3 and the iOS 6.0 emulator, asked with dlsym for every constant and function the registry lists as absent, after every framework of the release was loaded",
+      "facts": "facts/AVFoundation/AVFoundationExports.md"
+    },
+    {
+      "api": "AVVideoColorPrimariesKey",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
+      "effect": "the symbol is the release's own and does what it does there; it was not compared with a newer release",
+      "source": "an iPad 2 running 6.1.3 and the iOS 6.0 emulator, asked with dlsym for every constant and function the registry lists as absent, after every framework of the release was loaded",
+      "facts": "facts/AVFoundation/AVFoundationExports.md"
+    },
+    {
+      "api": "AVVideoColorPrimaries_ITU_R_709_2",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
+      "effect": "the symbol is the release's own and does what it does there; it was not compared with a newer release",
+      "source": "an iPad 2 running 6.1.3 and the iOS 6.0 emulator, asked with dlsym for every constant and function the registry lists as absent, after every framework of the release was loaded",
+      "facts": "facts/AVFoundation/AVFoundationExports.md"
+    },
+    {
+      "api": "AVVideoColorPrimaries_SMPTE_C",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
+      "effect": "the symbol is the release's own and does what it does there; it was not compared with a newer release",
+      "source": "an iPad 2 running 6.1.3 and the iOS 6.0 emulator, asked with dlsym for every constant and function the registry lists as absent, after every framework of the release was loaded",
+      "facts": "facts/AVFoundation/AVFoundationExports.md"
+    },
+    {
+      "api": "AVVideoColorPropertiesKey",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
+      "effect": "the symbol is the release's own and does what it does there; it was not compared with a newer release",
+      "source": "an iPad 2 running 6.1.3 and the iOS 6.0 emulator, asked with dlsym for every constant and function the registry lists as absent, after every framework of the release was loaded",
+      "facts": "facts/AVFoundation/AVFoundationExports.md"
+    },
+    {
+      "api": "AVVideoTransferFunctionKey",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
+      "effect": "the symbol is the release's own and does what it does there; it was not compared with a newer release",
+      "source": "an iPad 2 running 6.1.3 and the iOS 6.0 emulator, asked with dlsym for every constant and function the registry lists as absent, after every framework of the release was loaded",
+      "facts": "facts/AVFoundation/AVFoundationExports.md"
+    },
+    {
+      "api": "AVVideoTransferFunction_ITU_R_709_2",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
+      "effect": "the symbol is the release's own and does what it does there; it was not compared with a newer release",
+      "source": "an iPad 2 running 6.1.3 and the iOS 6.0 emulator, asked with dlsym for every constant and function the registry lists as absent, after every framework of the release was loaded",
+      "facts": "facts/AVFoundation/AVFoundationExports.md"
+    },
+    {
+      "api": "AVVideoYCbCrMatrixKey",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
+      "effect": "the symbol is the release's own and does what it does there; it was not compared with a newer release",
+      "source": "an iPad 2 running 6.1.3 and the iOS 6.0 emulator, asked with dlsym for every constant and function the registry lists as absent, after every framework of the release was loaded",
+      "facts": "facts/AVFoundation/AVFoundationExports.md"
+    },
+    {
+      "api": "AVVideoYCbCrMatrix_ITU_R_601_4",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
+      "effect": "the symbol is the release's own and does what it does there; it was not compared with a newer release",
+      "source": "an iPad 2 running 6.1.3 and the iOS 6.0 emulator, asked with dlsym for every constant and function the registry lists as absent, after every framework of the release was loaded",
+      "facts": "facts/AVFoundation/AVFoundationExports.md"
+    },
+    {
+      "api": "AVVideoYCbCrMatrix_ITU_R_709_2",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
+      "effect": "the symbol is the release's own and does what it does there; it was not compared with a newer release",
+      "source": "an iPad 2 running 6.1.3 and the iOS 6.0 emulator, asked with dlsym for every constant and function the registry lists as absent, after every framework of the release was loaded",
+      "facts": "facts/AVFoundation/AVFoundationExports.md"
+    }
+  ]
+}
