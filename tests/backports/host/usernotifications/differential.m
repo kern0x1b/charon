@@ -324,6 +324,95 @@ static void compare_requests(void)
     same(call(call(back, @selector(trigger)), @selector(description)), b.trigger.description, @"an archived request's trigger");
 }
 
+static id make_action(Class cls, NSString *identifier, NSString *title, NSUInteger options)
+{
+    return ((id (*)(id, SEL, id, id, NSUInteger))objc_msgSend)(cls, @selector(actionWithIdentifier:title:options:), identifier, title, options);
+}
+
+static id make_text_action(Class cls, NSString *identifier, NSString *title, NSUInteger options, NSString *button, NSString *placeholder)
+{
+    return ((id (*)(id, SEL, id, id, NSUInteger, id, id))objc_msgSend)(
+        cls, @selector(actionWithIdentifier:title:options:textInputButtonTitle:textInputPlaceholder:), identifier, title, options, button, placeholder);
+}
+
+static id make_category(Class cls, NSString *identifier, NSArray *actions, NSArray *intents, NSUInteger options)
+{
+    return ((id (*)(id, SEL, id, id, id, NSUInteger))objc_msgSend)(
+        cls, @selector(categoryWithIdentifier:actions:intentIdentifiers:options:), identifier, actions, intents, options);
+}
+
+static NSString *tail(NSString *description)
+{
+    NSRange colon = [description rangeOfString:@"identifier:"];
+    NSString *from = colon.location == NSNotFound ? description : [description substringFromIndex:colon.location];
+    return [from stringByReplacingOccurrencesOfString:@" icon: (null)," withString:@""];
+}
+
+static void compare_actions(void)
+{
+    Class ourAction = ours([UNNotificationAction class]), theirAction = [UNNotificationAction class];
+    Class ourText = ours([UNTextInputNotificationAction class]), theirText = [UNTextInputNotificationAction class];
+    Class ourCategory = ours([UNNotificationCategory class]), theirCategory = [UNNotificationCategory class];
+    for (NSNumber *options in @[ @0, @1, @2, @4, @7 ]) {
+        NSUInteger o = options.unsignedIntegerValue;
+        id a = make_action(ourAction, @"id", @"Title", o);
+        UNNotificationAction *b = make_action(theirAction, @"id", @"Title", o);
+        NSString *what = [NSString stringWithFormat:@"an action with options %lu", (unsigned long)o];
+        same(call(a, @selector(identifier)), b.identifier, [what stringByAppendingString:@": identifier"]);
+        same(call(a, @selector(title)), b.title, [what stringByAppendingString:@": title"]);
+        same(@(((NSUInteger (*)(id, SEL))objc_msgSend)(a, @selector(options))), @(b.options), [what stringByAppendingString:@": options"]);
+        same(tail([a description]), tail(b.description), [what stringByAppendingString:@": description"]);
+        same(flag([a isEqual:make_action(ourAction, @"id", @"Title", o)]), flag([b isEqual:make_action(theirAction, @"id", @"Title", o)]),
+             [what stringByAppendingString:@": equal to its twin"]);
+        same(flag([a isEqual:make_action(ourAction, @"id", @"Other", o)]), flag([b isEqual:make_action(theirAction, @"id", @"Other", o)]),
+             [what stringByAppendingString:@": equal to another title"]);
+        same(flag([a hash] == [make_action(ourAction, @"id", @"Title", o) hash]), flag(b.hash == [make_action(theirAction, @"id", @"Title", o) hash]),
+             [what stringByAppendingString:@": hash of its twin"]);
+    }
+    same(flag([make_action(ourAction, @"a", @"t", 0) isEqual:make_action(ourAction, @"a", @"t", 1)]),
+         flag([make_action(theirAction, @"a", @"t", 0) isEqual:make_action(theirAction, @"a", @"t", 1)]), @"actions differing by options");
+    same(raised(^{ make_action(ourAction, nil, @"t", 0); }), raised(^{ make_action(theirAction, nil, @"t", 0); }), @"an action with no identifier");
+    same(raised(^{ make_action(ourAction, @"a", nil, 0); }), raised(^{ make_action(theirAction, @"a", nil, 0); }), @"an action with no title");
+    same(flag([ourAction supportsSecureCoding]), flag([theirAction supportsSecureCoding]), @"an action's secure coding");
+    same(flag([make_action(ourAction, @"a", @"t", 0) copy] != nil), @"YES", @"an action copies");
+    id action = make_action(ourAction, @"a", @"t", 3);
+    id copy = [action copy];
+    same(flag(copy == action), flag(({ id x = make_action(theirAction, @"a", @"t", 3); [x copy] == x; })), @"an immutable action copies to itself");
+    same(tail([round_trip(action, ourAction, @"UNNotificationAction") description]),
+         tail([round_trip(make_action(theirAction, @"a", @"t", 3), nil, nil) description]), @"an archived action");
+
+    id ta = make_text_action(ourText, @"t", @"Reply", 1, @"Send", @"Say");
+    UNTextInputNotificationAction *tb = make_text_action(theirText, @"t", @"Reply", 1, @"Send", @"Say");
+    same(call(ta, @selector(textInputButtonTitle)), tb.textInputButtonTitle, @"a text action's button");
+    same(call(ta, @selector(textInputPlaceholder)), tb.textInputPlaceholder, @"a text action's placeholder");
+    same(tail([ta description]), tail(tb.description), @"a text action's description");
+    same(flag([ta isEqual:make_text_action(ourText, @"t", @"Reply", 1, @"Send", @"Say")]),
+         flag([tb isEqual:make_text_action(theirText, @"t", @"Reply", 1, @"Send", @"Say")]), @"text actions alike");
+    same(flag([ta isEqual:make_text_action(ourText, @"t", @"Reply", 1, @"Go", @"Say")]),
+         flag([tb isEqual:make_text_action(theirText, @"t", @"Reply", 1, @"Go", @"Say")]), @"text actions differing by button");
+
+    NSArray *ourActions = @[ make_action(ourAction, @"a", @"A", 0), make_action(ourAction, @"b", @"B", 2) ];
+    NSArray *theirActions = @[ make_action(theirAction, @"a", @"A", 0), make_action(theirAction, @"b", @"B", 2) ];
+    for (NSNumber *options in @[ @0, @1, @2, @3 ]) {
+        NSUInteger o = options.unsignedIntegerValue;
+        id a = make_category(ourCategory, @"cat", ourActions, @[ @"i" ], o);
+        UNNotificationCategory *b = make_category(theirCategory, @"cat", theirActions, @[ @"i" ], o);
+        NSString *what = [NSString stringWithFormat:@"a category with options %lu", (unsigned long)o];
+        same(call(a, @selector(identifier)), b.identifier, [what stringByAppendingString:@": identifier"]);
+        same(@([call(a, @selector(actions)) count]), @(b.actions.count), [what stringByAppendingString:@": actions"]);
+        same(call(a, @selector(intentIdentifiers)), b.intentIdentifiers, [what stringByAppendingString:@": intents"]);
+        same(@(((NSUInteger (*)(id, SEL))objc_msgSend)(a, @selector(options))), @(b.options), [what stringByAppendingString:@": options"]);
+        same(flag([a isEqual:make_category(ourCategory, @"cat", ourActions, @[ @"i" ], o)]),
+             flag([b isEqual:make_category(theirCategory, @"cat", theirActions, @[ @"i" ], o)]), [what stringByAppendingString:@": equal to its twin"]);
+    }
+    same(flag([make_category(ourCategory, @"cat", ourActions, @[], 0) isEqual:make_category(ourCategory, @"dog", ourActions, @[], 0)]),
+         flag([make_category(theirCategory, @"cat", theirActions, @[], 0) isEqual:make_category(theirCategory, @"dog", theirActions, @[], 0)]),
+         @"categories differing by identifier");
+    same(raised(^{ make_category(ourCategory, nil, @[], @[], 0); }), raised(^{ make_category(theirCategory, nil, @[], @[], 0); }),
+         @"a category with no identifier");
+    same(flag([ourCategory supportsSecureCoding]), flag([theirCategory supportsSecureCoding]), @"a category's secure coding");
+}
+
 int main(int argc, char *argv[])
 {
     @autoreleasepool {
@@ -339,6 +428,7 @@ int main(int argc, char *argv[])
         compare_matching();
         compare_content();
         compare_requests();
+        compare_actions();
         printf("%d checks, %d failures\n", checks, failures);
     }
     return failures;

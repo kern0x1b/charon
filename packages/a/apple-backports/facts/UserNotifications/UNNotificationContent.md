@@ -48,7 +48,8 @@ and nothing else. Of the content:
   reads, and nothing in any release does that, so it is not done.
 - `categoryIdentifier` and `threadIdentifier` are kept and change nothing:
   iOS 6 has no categories, actions or threads. The first request that carries
-  one says so in the log.
+  one says so in the log. The category set an application registers is kept
+  (see `UNUserNotificationCenter.md`), and no action is ever shown.
 - `attachments` stays empty in practice: `UNNotificationAttachment` is not
   there, so there is nothing to attach.
 

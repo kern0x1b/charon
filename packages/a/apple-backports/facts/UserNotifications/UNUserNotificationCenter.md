@@ -105,6 +105,24 @@ says so, rather than scheduled to fire on dates it does not describe.
 - **Dismissed.** iOS 6 does not tell an application, so no dismissal is ever
   reported.
 
+## Actions and categories
+
+`UNNotificationAction`, `UNTextInputNotificationAction`, `UNNotificationCategory`,
+`UNTextInputNotificationResponse` and `UNNotificationServiceExtension` are
+present because applications link them by name. The values are real: identifier,
+title, options, the text-input fields, secure coding, equality and hash as
+10.3.4 makes them, and the descriptions in its format. Nothing shows an action,
+since iOS 6 local notifications have none.
+
+- `-setNotificationCategories:` archives the set into the application's defaults
+  and logs once for a non-empty set; an empty set removes the entry.
+- `-getNotificationCategoriesWithCompletionHandler:` unarchives the set and
+  completes on the center's queue.
+- The factory methods of later releases (`icon:`, `hiddenPreviewsBodyPlaceholder`,
+  `categorySummaryFormat`) are not there, so `respondsToSelector:` says NO.
+- The service extension's default hands the request's content on unchanged and
+  its expiry callback does nothing.
+
 ## How it is held
 
 On an iPhone4,1 running 6.1.3, an application launched by SpringBoard asks for

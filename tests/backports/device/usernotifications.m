@@ -68,6 +68,83 @@ static void check_matching(void)
                  [NSString stringWithFormat:@"%lu differ, the first %@", (unsigned long)wrong, first]);
 }
 
+static NSString *tail_of(NSString *description)
+{
+    NSRange found = [description rangeOfString:@"identifier:"];
+    return found.location == NSNotFound ? description : [description substringFromIndex:found.location];
+}
+
+static void check_actions(void)
+{
+    for (NSString *name in @[@"UNNotificationAction", @"UNTextInputNotificationAction", @"UNNotificationCategory",
+                             @"UNTextInputNotificationResponse", @"UNNotificationServiceExtension"])
+        CHECK_EQUAL(image_of(NSClassFromString(name)), @"libUIKitBackports.dylib",
+                    [name stringByAppendingString:@" comes from the backports library"].UTF8String);
+    UNNotificationAction *action = [UNNotificationAction actionWithIdentifier:@"a" title:@"Title"
+                                                                      options:UNNotificationActionOptionAuthenticationRequired | UNNotificationActionOptionForeground];
+    CHECK_EQUAL(tail_of(action.description), @"identifier: a, title: Title, isAuthenticationRequired: YES, isDestructive: NO, isForeground: YES>",
+                "an action describes itself as 10.3.4 does");
+    UNTextInputNotificationAction *text = [UNTextInputNotificationAction actionWithIdentifier:@"t" title:@"Reply" options:0
+                                                                         textInputButtonTitle:@"Send" textInputPlaceholder:@"Say"];
+    CHECK_EQUAL(tail_of(text.description),
+                @"identifier: t, title: Reply, isAuthenticationRequired: NO, isDestructive: NO, isForeground: NO, textInputButtonTitle: Send, textInputPlaceholder: Say>",
+                "and a text input action with its two fields");
+    CHECK([[action copy] isEqual:action] && [action copy] == action, "an action copies to itself");
+    CHECK(![text isEqual:action] && [action hash] == [[UNNotificationAction actionWithIdentifier:@"a" title:@"Title"
+                                                                                         options:UNNotificationActionOptionAuthenticationRequired | UNNotificationActionOptionForeground] hash],
+          "actions alike hash alike and a text action is not a plain one");
+    CHECK([UNNotificationAction supportsSecureCoding] && [UNNotificationCategory supportsSecureCoding], "both are secure coding");
+    UNNotificationCategory *category = [UNNotificationCategory categoryWithIdentifier:@"c" actions:@[action, text] intentIdentifiers:@[] options:0];
+    NSArray *both = @[action, text];
+    NSString *expectedCategory = [NSString stringWithFormat:@"identifier: c, actions: %@, minimalAction: (\n), intentIdentifiers: (\n), custom dismiss: NO, CarPlay: NO>", both];
+    NSString *actualCategory = tail_of(category.description);
+    CHECK_EQUAL(actualCategory, expectedCategory, "a category describes itself as 10.3.4 does");
+    NSData *archived = [NSKeyedArchiver archivedDataWithRootObject:category];
+    UNNotificationCategory *back = [NSKeyedUnarchiver unarchiveObjectWithData:archived];
+    CHECK([back isEqual:category] && [back.actions[1] isKindOfClass:[UNTextInputNotificationAction class]], "a category survives being archived");
+    for (NSString *later in @[@"actionWithIdentifier:title:options:icon:", @"categoryWithIdentifier:actions:intentIdentifiers:hiddenPreviewsBodyPlaceholder:options:"])
+        CHECK(![[UNNotificationAction class] respondsToSelector:NSSelectorFromString(later)]
+              && ![[UNNotificationCategory class] respondsToSelector:NSSelectorFromString(later)], [later stringByAppendingString:@" is not there"].UTF8String);
+    UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
+    content.body = @"b";
+    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:@"r" content:content trigger:nil];
+    __block UNNotificationContent *delivered = nil;
+    UNNotificationServiceExtension *extension = [[UNNotificationServiceExtension alloc] init];
+    [extension didReceiveNotificationRequest:request withContentHandler:^(UNNotificationContent *c) { delivered = c; }];
+    CHECK(delivered == request.content, "a service extension hands the content on as it is");
+
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    CHECK([center respondsToSelector:@selector(setNotificationCategories:)]
+          && [center respondsToSelector:@selector(getNotificationCategoriesWithCompletionHandler:)],
+          "the center keeps the categories the application registers");
+    NSSet *(^categories)(void) = ^{
+        __block NSSet *found = nil;
+        __block BOOL onMain = YES;
+        dispatch_semaphore_t finished = dispatch_semaphore_create(0);
+        [center getNotificationCategoriesWithCompletionHandler:^(NSSet *set) {
+            found = set;
+            onMain = [NSThread isMainThread];
+            dispatch_semaphore_signal(finished);
+        }];
+        BOOL answered = dispatch_semaphore_wait(finished, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC)) == 0;
+        return answered && !onMain ? found : nil;
+    };
+    [center setNotificationCategories:[NSSet set]];
+    CHECK(categories().count == 0, "no category is registered at first, and the answer comes off the main thread");
+    UNNotificationCategory *message = [UNNotificationCategory categoryWithIdentifier:@"message" actions:@[text, action]
+                                                                   intentIdentifiers:@[@"intent"]
+                                                                             options:UNNotificationCategoryOptionCustomDismissAction];
+    [center setNotificationCategories:[NSSet setWithObject:message]];
+    NSSet *stored = categories();
+    UNNotificationCategory *read = stored.anyObject;
+    CHECK(stored.count == 1 && [read isEqual:message], "a category registered is read back as it was");
+    CHECK(read.actions.count == 2 && [read.actions[0] isKindOfClass:[UNTextInputNotificationAction class]] && [read.actions[1] isEqual:action]
+          && [read.intentIdentifiers isEqual:@[@"intent"]] && read.options == UNNotificationCategoryOptionCustomDismissAction,
+          "with its actions, intents and options");
+    [center setNotificationCategories:[NSSet set]];
+    CHECK(categories().count == 0, "and an empty set clears them");
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -78,6 +155,7 @@ int main(void)
                         [name stringByAppendingString:@" comes from the backports library"].UTF8String);
 
         check_matching();
+        check_actions();
 
         CHECK_EQUAL(raised(^{ [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:0 repeats:NO]; }),
                     @"NSInternalInconsistencyException: time interval must be greater than 0", "a trigger of no time raises");

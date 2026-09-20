@@ -53,12 +53,15 @@ dates as the newest release does, held on 5760 dates on the host and on iOS
 What the release cannot show is kept rather than faked. The title and subtitle
 travel with the request everywhere and are never shown, since a local
 notification of iOS 6 has no title; the one place that would hand the title to
-the release is a single switch, off. Categories and threads are kept and change
-nothing. A repeat iOS 6 cannot follow - every 90 seconds, the 31st of every
+the release is a single switch, off. Categories, actions and threads are kept and change
+nothing: `UNNotificationAction`, `UNTextInputNotificationAction`,
+`UNNotificationCategory`, `UNTextInputNotificationResponse` and
+`UNNotificationServiceExtension` are there and inert, and the category set the
+application registers is stored and read back. A repeat iOS 6 cannot follow - every 90 seconds, the 31st of every
 month - is refused with an error rather than scheduled to fire on other dates.
 The settings report what the application asked for, since iOS 6 tells it
-nothing of what the user set. Attachments, categories, actions, location
-triggers, service extensions and the delivered notifications are absent: the
+nothing of what the user set. Attachments, location
+triggers and the delivered notifications are absent: the
 last live in BulletinBoard, which answers no application on this jailbreak.
 
 ### Core Data's container, in a library of its own

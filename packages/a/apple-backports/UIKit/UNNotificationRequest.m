@@ -237,3 +237,59 @@
 NSString *const UNNotificationDefaultActionIdentifier = @"com.apple.UNNotificationDefaultActionIdentifier";
 NSString *const UNNotificationDismissActionIdentifier = @"com.apple.UNNotificationDismissActionIdentifier";
 NSString *const UNErrorDomain = @"UNErrorDomain";
+
+@implementation UNTextInputNotificationResponse {
+@private
+    NSString *_userText;
+}
+
++ (instancetype)responseWithNotification:(UNNotification *)notification actionIdentifier:(NSString *)actionIdentifier userText:(NSString *)userText
+{
+    return [[self alloc] initCharonWithNotification:notification actionIdentifier:actionIdentifier userText:userText];
+}
+
+- (instancetype)initCharonWithNotification:(UNNotification *)notification actionIdentifier:(NSString *)actionIdentifier userText:(NSString *)userText
+{
+    if ((self = [super initCharonWithNotification:notification actionIdentifier:actionIdentifier]))
+        _userText = [userText copy];
+    return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super initWithCoder:coder]))
+        _userText = [coder decodeObjectOfClass:[NSString class] forKey:@"userText"];
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [super encodeWithCoder:coder];
+    [coder encodeObject:_userText forKey:@"userText"];
+}
+
+- (NSString *)userText
+{
+    return _userText;
+}
+
+- (BOOL)isEqual:(id)object
+{
+    if (object == self)
+        return YES;
+    return [object isKindOfClass:[UNTextInputNotificationResponse class]] && [super isEqual:object]
+        && (_userText == [object userText] || [_userText isEqual:[object userText]]);
+}
+
+- (NSUInteger)hash
+{
+    return [super hash] ^ _userText.hash;
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<%@: %p; actionIdentifier: %@, userText: %@, notification: %@>", [self class], self, [self actionIdentifier],
+                                      _userText, [self notification]];
+}
+
+@end

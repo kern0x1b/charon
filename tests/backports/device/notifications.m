@@ -91,10 +91,10 @@ static UNNotificationRequest *request_named(NSString *identifier, NSString *body
     CHECK(center.delegate == self, "it keeps its delegate");
     CHECK(!center.supportsContentExtensions, "it supports no content extensions, which iOS 6 has not got");
     for (NSString *later in @[@"getDeliveredNotificationsWithCompletionHandler:", @"removeAllDeliveredNotifications",
-                              @"setNotificationCategories:", @"setBadgeCount:withCompletionHandler:"])
+                              @"setBadgeCount:withCompletionHandler:"])
         charon_check(![center respondsToSelector:NSSelectorFromString(later)],
                      [later stringByAppendingString:@" is not there, since iOS 6 cannot do it"].UTF8String, @"it is");
-    CHECK(NSClassFromString(@"UNNotificationCategory") == Nil && NSClassFromString(@"UNNotificationAttachment") == Nil
+    CHECK(NSClassFromString(@"UNNotificationAttachment") == Nil
           && NSClassFromString(@"UNLocationNotificationTrigger") == Nil, "the classes iOS 6 cannot carry are not there");
 
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"org.charon.apple-backports.UIUserNotificationTypes"];

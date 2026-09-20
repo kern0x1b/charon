@@ -426,6 +426,30 @@ static void charon_hook_delegate(void)
     });
 }
 
+- (void)setNotificationCategories:(NSSet<UNNotificationCategory *> *)categories
+{
+    NSData *archived = categories.count ? [NSKeyedArchiver archivedDataWithRootObject:categories] : nil;
+    if (archived)
+        charon_say_once(@"categories", [NSString stringWithFormat:@"UNUserNotificationCenter: iOS %@ shows no actions on a notification, so the categories are kept and handed back and change nothing",
+                                                                  [UIDevice currentDevice].systemVersion]);
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (archived)
+        [defaults setObject:archived forKey:@"space.kern0x1b.charon.UNNotificationCategories"];
+    else
+        [defaults removeObjectForKey:@"space.kern0x1b.charon.UNNotificationCategories"];
+    [defaults synchronize];
+}
+
+- (void)getNotificationCategoriesWithCompletionHandler:(void (^)(NSSet<UNNotificationCategory *> *categories))completionHandler
+{
+    NSData *archived = [[NSUserDefaults standardUserDefaults] objectForKey:@"space.kern0x1b.charon.UNNotificationCategories"];
+    NSSet *categories = archived ? [NSKeyedUnarchiver unarchiveObjectWithData:archived] : nil;
+    void (^done)(NSSet *) = [completionHandler copy];
+    dispatch_async(charon_center_queue(), ^{
+        done(categories ?: [NSSet set]);
+    });
+}
+
 - (void)getPendingNotificationRequestsWithCompletionHandler:(void (^)(NSArray<UNNotificationRequest *> *requests))completionHandler
 {
     __block NSMutableArray *requests = [NSMutableArray array];
