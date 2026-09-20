@@ -1170,8 +1170,10 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
         return;
     BOOL cell = element->category == 0;
     NSString *key = [NSString stringWithFormat:@"%d/%@/%ld/%ld", cell ? 0 : 1, cell ? @"" : element->kind, (long)element->indexPath.section, (long)element->indexPath.item];
-    if (!_pending)
+    if (!_pending) {
         _pending = [NSMutableDictionary dictionary];
+        [self performSelector:@selector(charon_settleLater) withObject:nil afterDelay:0];
+    }
     _pending[key] = @{@"path" : element->indexPath, @"kind" : cell ? @"" : element->kind, @"cell" : @(cell), @"frame" : [NSValue valueWithCGRect:attributes.frame]};
 }
 
@@ -1189,6 +1191,12 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
         }
     }
     return distance < 0.5 ? best : nil;
+}
+
+- (void)charon_settleLater
+{
+    if (self.collectionView && _pending.count > 0)
+        [self charon_settleMeasurements];
 }
 
 - (BOOL)charon_settleMeasurements
@@ -1269,6 +1277,7 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
 
 - (void)dealloc
 {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [_orthogonal detach];
 }
 

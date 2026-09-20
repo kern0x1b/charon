@@ -634,6 +634,7 @@ NSString *compositional_dump(CompositionalCase *built, UIWindow *window)
         }
     }
     [out appendFormat:@"single %@\n", [singles componentsJoinedByString:@", "]];
+    view.dataSource = nil;
     [view removeFromSuperview];
     return out;
 }
@@ -873,6 +874,7 @@ NSString *compositional_sized_dump(CompositionalKit kit, NSUInteger index, UIWin
     [lines sortUsingSelector:@selector(compare:)];
     CGSize content = layout.collectionViewContentSize;
     NSString *result = [NSString stringWithFormat:@"content %@ %@\n%@\n", number(content.width), number(content.height), [lines componentsJoinedByString:@"\n"]];
+    view.dataSource = nil;
     [view removeFromSuperview];
     return result;
 }
@@ -950,6 +952,7 @@ static NSArray *orthogonal_lines(UIWindow *window, BOOL system)
                 [lines addObject:[NSString stringWithFormat:@"%@ at %@: %@", label, step, [cellLines componentsJoinedByString:@" | "]]];
                 [lines addObject:[NSString stringWithFormat:@"%@ handler: %@ // %@", label, handled[[label stringByAppendingString:@" s0"]], handled[[label stringByAppendingString:@" s1"]]]];
             }
+            view.dataSource = nil;
             [view removeFromSuperview];
         }
     }
@@ -1000,6 +1003,7 @@ static NSArray *modified_lines(UIWindow *window, BOOL system)
         [cellLines sortUsingSelector:@selector(compare:)];
         [lines addObject:[NSString stringWithFormat:@"modified at %@: %@", step, [cellLines componentsJoinedByString:@" | "]]];
     }
+    view.dataSource = nil;
     [view removeFromSuperview];
     return lines;
 }

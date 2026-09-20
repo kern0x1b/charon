@@ -171,6 +171,7 @@ static UICollectionView *drag_view;
 static UICollectionViewLayout *drag_layout;
 static NSMutableArray *drag_offsets;
 static CGFloat drag_before;
+static NSMutableArray *drag_keep;
 
 static CGFloat drag_section(NSInteger section)
 {
@@ -202,6 +203,11 @@ static CGFloat drag_section(NSInteger section)
         CompositionalSource *source = [[CompositionalSource alloc] init];
         source.counts = @[@8, @30];
         drag_view.dataSource = source;
+        if (!drag_keep)
+            drag_keep = [NSMutableArray array];
+        [drag_keep addObject:source];
+        [drag_keep addObject:drag_view];
+        [drag_keep addObject:drag_layout];
         [drag_view registerClass:[CompositionalCell class] forCellWithReuseIdentifier:@"c"];
         UIViewController *controller = [[UIViewController alloc] init];
         controller.view = drag_view;
