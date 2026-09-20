@@ -1705,15 +1705,6 @@
       "source": "UIKit of iOS 11.0 arm64"
     },
     {
-      "api": "UIDocumentPickerViewController.allowsMultipleSelection",
-      "kind": "property",
-      "introduced": "11.0",
-      "status": "absent",
-      "reason": "the picker of this release shows one document at a time through a document provider it does not have either",
-      "effect": "the property is not there",
-      "source": "UIKit of iOS 11.0 arm64"
-    },
-    {
       "api": "-[UIDocumentPickerDelegate documentPicker:didPickDocumentsAtURLs:]",
       "kind": "method",
       "introduced": "11.0",
@@ -2067,16 +2058,6 @@
       "status": "absent",
       "reason": "the document browser is not carried, so no error of that domain is made",
       "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the SDK 16.4 headers"
-    },
-    {
-      "api": "-[UIDocumentPickerViewController initWithURLs:inMode:]",
-      "kind": "method",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the document picker came in iOS 8 and needs the documents service iOS 6 does not run",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers"
     },
     {

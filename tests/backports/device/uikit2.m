@@ -114,6 +114,21 @@ static NSString *traits_of(id environment)
 
 @end
 
+@interface DocumentPickerRecorder : NSObject <UIDocumentPickerDelegate>
+@property (nonatomic) int cancelled;
+@property (nonatomic) BOOL dismissedWhenCancelled;
+@end
+
+@implementation DocumentPickerRecorder
+
+- (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller
+{
+    self.cancelled++;
+    self.dismissedWhenCancelled = controller.presentingViewController == nil;
+}
+
+@end
+
 @interface UIKitTestDelegate : UIResponder <UIApplicationDelegate>
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) RecordingController *host;
@@ -911,6 +926,32 @@ static NSString *traits_of(id environment)
             view.effect = vibrancy;
             charon_check(view.effect == vibrancy && [vibrancy isKindOfClass:[UIVisualEffect class]], "a vibrancy effect can be set", @"it cannot");
             done();
+        } copy],
+        [^(void (^done)(void)) {
+            UIDocumentPickerViewController *picker = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.text"] inMode:UIDocumentPickerModeImport];
+            DocumentPickerRecorder *recorder = [[DocumentPickerRecorder alloc] init];
+            picker.delegate = recorder;
+            charon_check(picker.documentPickerMode == UIDocumentPickerModeImport && picker.delegate == recorder, "a document picker keeps its mode and its delegate", @"it does not");
+            [test.host presentViewController:picker animated:NO completion:nil];
+            after(0.5, ^{
+                UINavigationBar *bar = nil;
+                for (UIView *subview in picker.view.subviews)
+                    bar = [subview isKindOfClass:[UINavigationBar class]] ? (UINavigationBar *)subview : bar;
+                UIBarButtonItem *cancel = bar.items.firstObject.rightBarButtonItem;
+                charon_check(picker.presentingViewController == test.host && cancel != nil && cancel.target != nil, "a document picker is shown with a cancel button", @"it is not");
+                [cancel.target performSelector:cancel.action withObject:cancel];
+                after(1, ^{
+                    charon_check(recorder.cancelled == 1 && recorder.dismissedWhenCancelled && test.host.presentedViewController == nil, "cancelling dismisses the picker and then tells the delegate", [NSString stringWithFormat:@"%d %d", recorder.cancelled, recorder.dismissedWhenCancelled]);
+                    NSString *raised = @"none";
+                    @try {
+                        (void)[[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[] inMode:UIDocumentPickerModeExportToService];
+                    } @catch (NSException *exception) {
+                        raised = exception.name;
+                    }
+                    charon_check([raised isEqualToString:NSInternalInconsistencyException], "a document picker of the wrong mode is refused", raised);
+                    done();
+                });
+            });
         } copy],
         [^(void (^done)(void)) {
             UITableViewRowAction *destructive = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:@"Delete" handler:^(UITableViewRowAction *action, NSIndexPath *path) {}];

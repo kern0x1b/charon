@@ -102,6 +102,7 @@ group rowaction "UITableViewRowAction.m" "rowActionWithStyle style title setTitl
 group visualeffect "UIVisualEffect.m UIVisualEffectView.m" "effectWithStyle effectForBlurEffect initWithEffect effect setEffect contentView addSubview insertSubview initWithFrame" visualeffect_test.m
 group useractivity "../Foundation/NSUserActivity.m" "*" useractivity_test.m
 group localauth "../LocalAuthentication/LAContext.m ../LocalAuthentication/LAErrorDomain.m ../LocalAuthentication/LATouchIDAuthenticationMaximumAllowableReuseDuration.m" "*" localauth_test.m
+group documentpicker "UIDocumentPickerViewController.m" "*" documentpicker_test.m
 windowed snapshots "UIView+Snapshots.m" "" snapshots_test.m
 
 # the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation

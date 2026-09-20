@@ -205,6 +205,15 @@
     "effect": "the message is never sent"
   },
   {
+    "api": "-[UIDocumentPickerDelegate documentPicker:didPickDocumentAtURL:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "there is nothing to pick",
+    "effect": "the message is never sent"
+  },
+  {
     "api": "-[UIImage imageWithRenderingMode:]",
     "kind": "method",
     "introduced": "7.0",
@@ -988,6 +997,16 @@
     "status": "implemented",
     "facts": "facts/UIKit/UIContentSizeCategory.md",
     "source": "the host's own UIKit; iOS 9.3.5 has neither the symbol nor the string"
+  },
+  {
+    "api": "UIDocumentPickerViewController",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "inert",
+    "reason": "the release has no document providers, no iCloud Drive and no file provider extensions, so there is nothing to pick from or to save to",
+    "effect": "the picker is made as the system's is and shows that no locations are available; the user cancels it, and the delegate hears documentPickerWasCancelled: once it is dismissed, and never hears of a document",
+    "facts": "facts/UIKit/UIDocumentPickerViewController.md",
+    "source": "the host's own UIKit, through the differential run of tests/backports/host/uikit2 (documentpicker)"
   },
   {
     "api": "UIFontTextStyleBody",
