@@ -714,3 +714,12 @@ buttons do - the row slides and shows its buttons, a tap runs a handler with the
 first action, a tap elsewhere or a scroll closes it, a table whose delegate answers nothing is left alone, and the configuration
 of iOS 11 does the same for both edges and a full swipe. There is no host oracle: the host's UIKit draws no swipe buttons. It
 writes `/private/var/backports/swipeui.log` and `swipeui.done`.
+
+`device/gesture.h` and `gesture.m` are the helper for a test that needs a finger on a device running iOS 6: `gesture_touch`
+sends a digitizer event to the HID event system, and `gesture_drag` and `gesture_tap` queue a sequence of them as timed steps
+beside the checks a test puts between them with `gesture_step`, run by `gesture_run` from timers on the main queue. UIKit
+then sees a real touch, gesture recognizers included; synthesising `UITouch` and `UIEvent` in the process does not work on
+this release (`-[UIApplication sendEvent:]` faults without a GSEvent, and `-[UIWindow sendEvent:]` reaches no recognizer). Two
+things a test has to do: it is an application whose plist lists both device families (an iPad runs a one-family application
+scaled by two, and the coordinates go wrong), and it waits about two seconds after a scroll before the next touch, so
+deceleration does not take it. `swipeui.m` is the example.
