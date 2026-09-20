@@ -50,6 +50,22 @@
       "status": "implemented",
       "facts": "facts/CoreLocation/CLLocationManagerRegions.md",
       "source": "CoreLocation 12.0 arm64"
+    },
+    {
+      "api": "-[CLLocationManager requestLocation]",
+      "kind": "method",
+      "introduced": "9.0",
+      "status": "implemented",
+      "facts": "facts/CoreLocation/CLLocationManagerSingleLocation.md",
+      "source": "CoreLocation 12.0 arm64"
+    },
+    {
+      "api": "-[CLLocationManager requestStateForRegion:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/CoreLocation/CLLocationManagerSingleLocation.md",
+      "source": "CoreLocation 12.0 arm64"
     }
   ]
 }
