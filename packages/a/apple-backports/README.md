@@ -229,6 +229,17 @@ appearances of a navigation item or a tab item are `inert`: kept, handed back, a
 scroll position and no per-item look to choose a bar's look by. The subtitle attributes of iOS 26 and the override
 interface style of iOS 27 are absent. The buttons reach every bar of the class in the application, not one bar, and
 `facts/UIKit/BarAppearanceApplication.md` says why and what a device still has to prove.
+### Symbol configurations, with no symbols to configure
+
+`UIImageConfiguration` and `UIImageSymbolConfiguration` are carried as the immutable value objects they are - the factories, `configurationByApplyingConfiguration:`, the
+four `without...` methods, traits, `isEqualToConfiguration:`, hash, description and secure coding - and `UIImageSymbolWeightForFontWeight()` with its inverse, all held to the host's own
+UIKit through Mac Catalyst (`tests/backports/host/uikit2`, the `symbols` group). `UIImage` gets `symbolConfiguration`, `isSymbolImage` and `imageByApplyingSymbolConfiguration:`,
+`UIImageView` a `preferredSymbolConfiguration` that is kept and read back.
+
+iOS 6 has no SF Symbols and nothing here draws one or makes one up. The three `+[UIImage systemImageNamed:...]` are **inert**: they answer nil, as the system does for a name it does not
+know, and say so once in the log; no image is ever a symbol image, so a configuration changes nothing that is drawn. A later batch could draw a subset and answer for those names.
+Where the port differs from the host, `facts/UIKit/UIImageSymbolConfiguration.md` and `facts/UIKit/UIImageSymbols.md` say so: a font from `+preferredFontForTextStyle:` has no text style to give,
+and a symbol weight below zero is Regular where the host reads the memory beside its table.
 
 ## iOS 11 and 12
 

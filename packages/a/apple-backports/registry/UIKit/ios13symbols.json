@@ -1,0 +1,144 @@
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "UIImageConfiguration",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "an immutable holder of a trait collection that is copied, compared and archived as UIKit's is; iOS 6 draws no symbol, so nothing but the application reads it",
+      "facts": "facts/UIKit/UIImageSymbolConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the symbols group); the header of SDK 16.4"
+    },
+    {
+      "api": "UIImageSymbolConfiguration",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "an immutable holder of a point size or text style, weight, scale and traits that is built, combined, compared, described and archived as UIKit's is; the values are kept and read back, and no symbol image exists on iOS 6 to be drawn by them",
+      "facts": "facts/UIKit/UIImageSymbolConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the symbols group); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UIImageConfiguration init]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "the header marks it unavailable, and the class has no initialiser of its own",
+      "effect": "a call made at run time reaches NSObject's -init and gives a configuration with nothing specified, as the host's does; nothing can be written against it in a modern SDK",
+      "facts": "facts/UIKit/UIImageSymbolConfiguration.md",
+      "source": "the header of SDK 16.4 and the host's own UIKit"
+    },
+    {
+      "api": "+[UIImageConfiguration new]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "the header marks it unavailable, and the class has no initialiser of its own",
+      "effect": "a call made at run time reaches NSObject's +new and gives a configuration with nothing specified, as the host's does; nothing can be written against it in a modern SDK",
+      "facts": "facts/UIKit/UIImageSymbolConfiguration.md",
+      "source": "the header of SDK 16.4 and the host's own UIKit"
+    },
+    {
+      "api": "UIImageSymbolWeightForFontWeight()",
+      "kind": "function",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "answers the symbol weight whose float boundary the font weight reaches, Unspecified below the lightest and Black from 0.62 up",
+      "facts": "facts/UIKit/UIImageSymbols.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the symbols group); the header of SDK 16.4"
+    },
+    {
+      "api": "UIFontWeightForImageSymbolWeight()",
+      "kind": "function",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the host reads memory beside its table for a symbol weight below zero, which is not carried over",
+      "effect": "answers the font weight of the table for 0 to 9 and 0 for any other symbol weight",
+      "facts": "facts/UIKit/UIImageSymbols.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the symbols group); the header of SDK 16.4"
+    },
+    {
+      "api": "UIImage.symbolConfiguration",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "nil for an image nobody applied a configuration to, and the applied one for an image made by -imageByApplyingSymbolConfiguration:",
+      "facts": "facts/UIKit/UIImageSymbols.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the symbols group); the header of SDK 16.4"
+    },
+    {
+      "api": "UIImage.symbolImage",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6 has no SF Symbols, so no image is a symbol image",
+      "effect": "-isSymbolImage answers NO for every image",
+      "facts": "facts/UIKit/UIImageSymbols.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the symbols group); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UIImage imageByApplyingSymbolConfiguration:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "nothing on iOS 6 draws by a symbol configuration",
+      "effect": "answers a copy of the image that holds the merged configuration for symbolConfiguration; the configuration changes nothing that is drawn",
+      "facts": "facts/UIKit/UIImageSymbols.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the symbols group); the header of SDK 16.4"
+    },
+    {
+      "api": "+[UIImage systemImageNamed:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "iOS 6 has no SF Symbols and the port draws none; nil is the answer of a name the system does not know, which an application already handles",
+      "effect": "answers nil for every name, and says once in the log that there are no symbols; a later batch may draw a subset of the symbols and answer for those names",
+      "facts": "facts/UIKit/UIImageSymbols.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the symbols group); the header of SDK 16.4"
+    },
+    {
+      "api": "+[UIImage systemImageNamed:compatibleWithTraitCollection:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "iOS 6 has no SF Symbols and the port draws none; nil is the answer of a name the system does not know, which an application already handles",
+      "effect": "answers nil for every name, and says once in the log that there are no symbols; a later batch may draw a subset of the symbols and answer for those names",
+      "facts": "facts/UIKit/UIImageSymbols.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the symbols group); the header of SDK 16.4"
+    },
+    {
+      "api": "+[UIImage systemImageNamed:withConfiguration:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "iOS 6 has no SF Symbols and the port draws none; nil is the answer of a name the system does not know, which an application already handles",
+      "effect": "answers nil for every name, and says once in the log that there are no symbols; a later batch may draw a subset of the symbols and answer for those names",
+      "facts": "facts/UIKit/UIImageSymbols.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the symbols group); the header of SDK 16.4"
+    },
+    {
+      "api": "UIImageView.preferredSymbolConfiguration",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "only a symbol image is drawn by it, and iOS 6 has none",
+      "effect": "the configuration is kept as given and read back, an equal one leaving the first in place; it changes nothing that is drawn",
+      "facts": "facts/UIKit/UIImageSymbols.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the symbols group); the header of SDK 16.4"
+    }
+  ]
+}

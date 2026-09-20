@@ -73,6 +73,10 @@ interaction at rest, the preview parameters, target and targeted preview with th
 two calls the new `UIMenuController` methods make to the old interface. `device/menus.m` is the device counterpart: it checks that the
 classes and constants come from `libUIKitBackports.dylib` and repeats the checks that need no window.
 
+The `symbols` group of `host/uikit2/run.sh` compares `UIImageConfiguration`, `UIImageSymbolConfiguration`, the two weight functions, the symbol members of `UIImage` on ordinary
+images and `UIImageView.preferredSymbolConfiguration` with the host's, over generated configurations and every pair of them; `device/symbols.m` checks on the device that the
+classes and functions come from `libUIKitBackports.dylib`, the value behaviours, and that `systemImageNamed:` answers nil.
+
 `host/registry/run.sh` holds the build's check of the registry to a release's own
 Objective-C metadata. The build refuses an `absent` entry whose class, method,
 accessor or protocol the release carries, and an `ignored` entry the release
