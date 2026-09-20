@@ -472,6 +472,11 @@ the unit, where iOS 12 also gives lexical classes and lemmas. See
 defaultOrthographyForLanguage:]` stays absent: it is a table of about 250
 languages inside iOS 12.
 
+`SecCopyErrorMessageString` answers the sentence for a status from a table of
+534 English texts carried in the Security library; a status the table lacks reads
+`OSStatus` and its number, as it does in iOS 12. The language of the device is not
+honoured. See `facts/Security/SecCopyErrorMessageString.md`.
+
 ### Not carried, and why
 
 Nothing here is a quiet stub. Where the behaviour cannot be produced, the API

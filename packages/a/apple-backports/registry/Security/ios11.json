@@ -35,10 +35,10 @@
       "kind": "function",
       "introduced": "11.3",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the messages are the framework's own localized text for every status, which this package does not carry",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "the SDK 16.4 headers of Security"
+      "status": "implemented",
+      "source": "Security of iOS 12.0 arm64, _SecCopyErrorMessageString at 0x181bb6fa4 (the tables SecErrorMessages and SecDebugErrorMessages by the key of the status, then the text OSStatus followed by the number), the English table read from the Security bundle of 16.0, the host's own function through the differential run of tests/backports/host/errmsg, and an iPad 2 running 6.1.3 through tests/backports/device/secmessage12.m",
+      "reason": "the text is English whatever the language of the device; iOS 12 also answers in the language of the device from the tables of its Security bundle, which iOS 6 does not have",
+      "facts": "facts/Security/SecCopyErrorMessageString.md"
     },
     {
       "api": "SecTrustSetSignedCertificateTimestamps()",
