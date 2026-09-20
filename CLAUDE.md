@@ -43,7 +43,7 @@ Android) as it is here; iOS 6 is the first platform it targets, not its limit.
 | `rules/` | build rules. |
 | `toolchains/` | toolchain definitions. |
 | `addons/`, `includes/` | xmake addon and shared includes. |
-| `tools/` | diagnostic/maintenance helpers (e.g. `sdk-usage.py`). |
+| `tools/` | diagnostic/maintenance helpers (e.g. `sdk-usage.py`, `assets-extract/`, which writes a compiled asset catalogue as loose files). |
 | `tests/` | the test suites. |
 
 ## Conventions
