@@ -758,3 +758,8 @@ runs it beside the others and a device runs it with the host's `server.py` reach
 (twenty-one pixels) in `device/template-cases.m`, in a Mac Catalyst application of its own bundle identifier - two of them
 with the same identifier do not run together - and `device/template.m` compares the port on the release, to within three in a
 channel.
+
+`gesture_unblock` of the gesture helper finds out whether a touch reaches the application - it puts a clear view over the window and
+sends one - and if none does, taps the places where the buttons of a centred alert are until one does, so an alert an earlier run left
+does not take every touch of a test. `unblock.m` checks it with an alert of its own. It restarts nothing: SpringBoard is never
+killed, and a screen that is locked is a matter for `wake`.

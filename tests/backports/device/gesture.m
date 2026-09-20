@@ -87,3 +87,58 @@ void gesture_tap(CGPoint (^point)(void), NSTimeInterval settle)
     gesture_step(0.08, ^{ at = point(); gesture_touch(0, at); });
     gesture_step(settle, ^{ gesture_touch(2, at); });
 }
+
+@interface GestureCanary : UIView
+@property (nonatomic) BOOL touched;
+@end
+
+@implementation GestureCanary
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    self.touched = YES;
+}
+
+@end
+
+static void unblock_attempt(UIWindow *window, GestureCanary *canary, NSMutableArray *candidates, BOOL wasBlocked, GestureUnblocked done)
+{
+    CGPoint probe = CGPointMake(CGRectGetMidX(window.bounds), CGRectGetHeight(window.bounds) * 0.25);
+    canary.touched = NO;
+    gesture_touch(0, probe);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        gesture_touch(2, probe);
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            if (canary.touched || !candidates.count) {
+                BOOL reached = canary.touched;
+                [canary removeFromSuperview];
+                done(wasBlocked, reached);
+                return;
+            }
+            NSValue *next = candidates[0];
+            [candidates removeObjectAtIndex:0];
+            CGPoint point = [next CGPointValue];
+            gesture_touch(0, point);
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                gesture_touch(2, point);
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    unblock_attempt(window, canary, candidates, YES, done);
+                });
+            });
+        });
+    });
+}
+
+void gesture_unblock(UIWindow *window, GestureUnblocked done)
+{
+    GestureCanary *canary = [[GestureCanary alloc] initWithFrame:window.bounds];
+    canary.backgroundColor = [UIColor clearColor];
+    [window addSubview:canary];
+    [window bringSubviewToFront:canary];
+    CGSize size = window.bounds.size;
+    NSMutableArray *candidates = [NSMutableArray array];
+    for (CGFloat offset = 40; offset <= 120; offset += 20)
+        for (NSNumber *side in @[@-70, @70, @-110, @110])
+            [candidates addObject:[NSValue valueWithCGPoint:CGPointMake(size.width / 2 + side.floatValue, size.height / 2 + offset)]];
+    unblock_attempt(window, canary, candidates, NO, done);
+}
