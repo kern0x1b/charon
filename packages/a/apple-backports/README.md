@@ -75,6 +75,21 @@ the library records it around `-performBlock:` and `-performBlockAndWait:`.
 Query generations are absent: they read a snapshot of a store kept with
 write-ahead logging, and the store of iOS 6 keeps a rollback journal.
 
+### WKWebView, over the UIWebView of the release, in a library of its own
+
+`WKWebView` and the classes around it - the configuration, the preferences, the user
+content controller with its scripts and message handlers, the navigation actions and
+the back-forward list - are carried in `libWebKitBackports.dylib`, built with the
+`webkit` config. The view holds a `UIWebView` and turns what that reports into what a
+`WKNavigationDelegate` is sent, in the order WebKit sends it: the decision, the start,
+the commit, the finish, with `URL`, `title` and `loading` observable. `evaluateJavaScript`
+answers numbers, strings, dates, arrays, dictionaries, `nil` and the two errors as
+WebKit does, and `window.webkit.messageHandlers` reaches the handlers. What the
+`UIWebView` cannot tell is absent or inert and listed: a script at document start runs at
+the end of the document, the response of a navigation is never offered to the delegate,
+and a redirect, an authentication challenge and the UI delegate's panels never reach the
+application. `facts/WebKit/WKWebView.md` has the whole table.
+
 ### Blocks for timers, threads and run loops, and what stays out
 
 `NSTimer` gets the block factories and `-initWithFireDate:interval:repeats:block:`,

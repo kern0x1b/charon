@@ -11,7 +11,8 @@ LIBRARIES = {
     {name = "CoreLocationBackports", folder = "CoreLocation", frameworks = {"CoreLocation", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CoreDataBackports", folder = "CoreData", frameworks = {"CoreData", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "SecurityBackports", folder = "Security", frameworks = {"Security", "Foundation"}, libraries = {"FoundationBackports"}},
-    {name = "AVFoundationBackports", folder = "AVFoundation", frameworks = {"AVFoundation", "Foundation"}, libraries = {"FoundationBackports"}}
+    {name = "AVFoundationBackports", folder = "AVFoundation", frameworks = {"AVFoundation", "Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "WebKitBackports", folder = "WebKit", frameworks = {"UIKit", "Foundation"}, libraries = {"FoundationBackports"}}
 }
 
 PACKAGE = "org.charon.apple-backports"

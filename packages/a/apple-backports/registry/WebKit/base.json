@@ -1,0 +1,380 @@
+[
+  {
+    "api": "-[WKNavigationDelegate webView:decidePolicyForNavigationResponse:decisionHandler:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "UIWebView reports a navigation before it is loaded and never the response that answers it",
+    "effect": "the message is never sent, so a page that the application would have refused by its response is shown"
+  },
+  {
+    "api": "-[WKNavigationDelegate webView:didReceiveAuthenticationChallenge:completionHandler:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "UIWebView answers an authentication challenge with its own panel",
+    "effect": "the message is never sent"
+  },
+  {
+    "api": "-[WKNavigationDelegate webView:didReceiveServerRedirectForProvisionalNavigation:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "UIWebView does not report a redirect",
+    "effect": "the message is never sent"
+  },
+  {
+    "api": "-[WKNavigationDelegate webViewWebContentProcessDidTerminate:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "the page of UIWebView lives in the process of the application, which is not terminated on its own",
+    "effect": "the message is never sent"
+  },
+  {
+    "api": "-[WKPreferences javaScriptCanOpenWindowsAutomatically]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "inert",
+    "reason": "the UIWebView of the release opens no windows",
+    "effect": "it answers what was set",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "-[WKPreferences javaScriptEnabled]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "inert",
+    "reason": "the UIWebView of the release cannot turn JavaScript off",
+    "effect": "it answers what was set, and scripts still run",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "-[WKPreferences minimumFontSize]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "inert",
+    "reason": "the UIWebView of the release has no minimum font size",
+    "effect": "it answers what was set",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "-[WKUIDelegate webView:createWebViewWithConfiguration:forNavigationAction:windowFeatures:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "UIWebView opens no windows of its own: a link that asks for a new one loads in the view",
+    "effect": "the message is never sent"
+  },
+  {
+    "api": "-[WKUIDelegate webView:runJavaScriptAlertPanelWithMessage:initiatedByFrame:completionHandler:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "UIWebView puts up its own alert for a JavaScript alert and does not ask its delegate",
+    "effect": "the message is never sent and the page's alert shows the release's own panel"
+  },
+  {
+    "api": "-[WKUIDelegate webView:runJavaScriptConfirmPanelWithMessage:initiatedByFrame:completionHandler:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "UIWebView puts up its own panel and does not ask its delegate",
+    "effect": "the message is never sent"
+  },
+  {
+    "api": "-[WKUIDelegate webView:runJavaScriptTextInputPanelWithPrompt:defaultText:initiatedByFrame:completionHandler:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "UIWebView puts up its own panel and does not ask its delegate",
+    "effect": "the message is never sent"
+  },
+  {
+    "api": "-[WKUIDelegate webViewDidClose:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "UIWebView opens no windows of its own",
+    "effect": "the message is never sent"
+  },
+  {
+    "api": "-[WKWebView allowsBackForwardNavigationGestures]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "inert",
+    "reason": "the UIWebView of the release has no swipe that goes back",
+    "effect": "it answers what was set, and nothing swipes",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "-[WKWebView allowsLinkPreview]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "inert",
+    "reason": "the release has no link preview",
+    "effect": "it answers what was set",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "-[WKWebView customUserAgent]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "inert",
+    "reason": "the UIWebView of the release sends the user agent of the system and has no way to name another for one view",
+    "effect": "it answers what was set, and the requests carry the system's",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "-[WKWebViewConfiguration allowsPictureInPictureMediaPlayback]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "inert",
+    "reason": "the release has no picture in picture",
+    "effect": "it answers what was set",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "-[WKWebViewConfiguration applicationNameForUserAgent]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "inert",
+    "reason": "the user agent of the release's UIWebView cannot be extended for one view",
+    "effect": "it answers what was set",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "-[WKWebViewConfiguration ignoresViewportScaleLimits]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "inert",
+    "reason": "the UIWebView of the release has no way to ignore a page's scale limits",
+    "effect": "it answers what was set",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "-[WKWebViewConfiguration selectionGranularity]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "inert",
+    "reason": "the UIWebView of the release has one granularity of selection",
+    "effect": "it answers what was set",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKBackForwardList",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKBackForwardListItem",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKErrorDomain",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKFrameInfo",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKNavigation",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKNavigationAction",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKNavigationResponse",
+    "kind": "class",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "inert",
+    "reason": "the UIWebView of the release hands its delegate the request and never the response that came back",
+    "effect": "the class is there and no navigation ever hands one to the delegate",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKPreferences",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKProcessPool",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKScriptMessage",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKUserContentController",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKUserScript",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKWebView",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKWebViewConfiguration",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKWebsiteDataStore",
+    "kind": "class",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKWebsiteDataTypeCookies",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKWebsiteDataTypeDiskCache",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKWebsiteDataTypeIndexedDBDatabases",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKWebsiteDataTypeLocalStorage",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKWebsiteDataTypeMemoryCache",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKWebsiteDataTypeOfflineWebApplicationCache",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKWebsiteDataTypeSessionStorage",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKWebsiteDataTypeWebSQLDatabases",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "facts": "facts/WebKit/WKWebView.md",
+    "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  }
+]
