@@ -723,3 +723,6 @@ this release (`-[UIApplication sendEvent:]` faults without a GSEvent, and `-[UIW
 things a test has to do: it is an application whose plist lists both device families (an iPad runs a one-family application
 scaled by two, and the coordinates go wrong), and it waits about two seconds after a scroll before the next touch, so
 deceleration does not take it. `swipeui.m` is the example.
+
+`host/progress/run.sh` records what the host's `NSProgress` does for children added with
+`-addChild:withPendingUnitCount:` in `device/progress-cases.m`, and `device/progress.m` compares the port on the release.

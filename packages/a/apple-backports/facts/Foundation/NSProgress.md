@@ -50,10 +50,24 @@ release does not.
 
 ## What the release cannot do
 
-An existing progress cannot be attached to a parent afterwards: the release links a child when it is created
-and keeps no list of children on the parent, and the link cannot be written into the object from outside -
-setting the two fields that hold it left the parent's fraction where it was. `-addChild:withPendingUnitCount:` is
-absent for that reason, and the class method above is the way to make a child with its parent.
+An existing progress cannot be attached to a parent in the release's own way: it links a child when it is created
+and keeps no list of children on the parent, and the link cannot be written into the object from outside - setting
+the two fields that hold it left the parent's fraction where it was. `-addChild:withPendingUnitCount:` is carried
+another way: the parent is made current with that part, the release makes a progress of the port's own under it, of a
+million units, and the port sets that progress's completed count to the child's fraction each time the child's
+`fractionCompleted` changes, watched by key value observing, and once at the start for a child that has some done. The
+parent's fraction then moves as the child's does, for a child that has children of its own too, and its observers are
+told; a child that reaches 1 is let go of. `-cancel` and `-pause` of a progress are replaced on a release that lacks
+`-addChild:withPendingUnitCount:` and hand the message on to the children added to it, after the release's own work. A child added a second time raises `NSInvalidArgumentException`, as in the newest release; a progress that
+the release made under another one is not known to be a child, so that one is not refused.
+
+One thing of the release shows through: a progress that something observes with key value observing - which the port does
+to every added child - is cancelled and paused on the next turn of the run loop, not at once, on iOS 6, observed by
+an application or not. The host does it at once, so a test that reads `isCancelled` right after `-cancel` sees it
+late, and one that lets the run loop turn does not.
+
+What stays different: the parent's `completedUnitCount` does not count the child's units (see the last list), and the
+child holds no reference to the parent it was added to.
 
 The release can pause a progress and has no way back, so `-resume` and `resumingHandler` are absent.
 
