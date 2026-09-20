@@ -437,40 +437,44 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the configuration means something only if UITableView applies it while swiping, and the port replaces no system implementation",
-      "effect": "the class is not declared, so NSClassFromString answers nil; carrying it only so that it could be created would leave an application believing it had configured a swipe that never happens",
-      "source": "SDK 16.4, UISwipeActionsConfiguration.h"
+      "status": "implemented",
+      "reason": "the release's table never asks for a configuration, so what a configuration describes is never shown",
+      "effect": "the class holds its actions and the full swipe flag as UIKit's does, and a delegate that returns one is never asked for it: see the two delegate methods",
+      "facts": "facts/UIKit/UIContextualAction.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/swipeactions"
     },
     {
       "api": "UIContextualAction",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the action is carried by a swipe configuration this release's table never applies",
-      "effect": "the class is not declared, so NSClassFromString answers nil",
-      "source": "SDK 16.4, UIContextualAction.h"
+      "status": "implemented",
+      "reason": "the release's table never shows an action, so its handler is never called by a swipe",
+      "effect": "the class holds a style, title, image, background colour and handler as UIKit's does; nothing calls the handler",
+      "facts": "facts/UIKit/UIContextualAction.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/swipeactions"
     },
     {
       "api": "-[UITableViewDelegate tableView:leadingSwipeActionsConfigurationForRowAtIndexPath:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "nothing in the release asks the delegate for a swipe configuration",
-      "effect": "the selector is never sent, so an application that checks respondsToSelector: falls back to the release's own swipe to delete",
-      "source": "SDK 16.4, UITableView.h"
+      "status": "ignored",
+      "reason": "the release's table asks its delegate for a delete confirmation and for nothing else, and it is the one that sends the message",
+      "effect": "the message is never sent: a swipe on a row shows the release's own delete button when the delegate allows deleting, and the application's actions are never shown, whatever the delegate answers",
+      "facts": "facts/UIKit/UIContextualAction.md",
+      "source": "the SDK 16.4 header UITableView.h and the host's own UIKit"
     },
     {
       "api": "-[UITableViewDelegate tableView:trailingSwipeActionsConfigurationForRowAtIndexPath:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the same: the release's table has one swipe gesture and its own delete",
-      "effect": "the selector is never sent, so an application that checks respondsToSelector: falls back to the release's own swipe to delete",
-      "source": "SDK 16.4, UITableView.h"
+      "status": "ignored",
+      "reason": "the release's table asks its delegate for a delete confirmation and for nothing else, and it is the one that sends the message",
+      "effect": "the message is never sent: a swipe on a row shows the release's own delete button when the delegate allows deleting, and the application's actions are never shown, whatever the delegate answers",
+      "facts": "facts/UIKit/UIContextualAction.md",
+      "source": "the SDK 16.4 header UITableView.h and the host's own UIKit"
     },
     {
       "api": "-[UIView addInteraction:]",
@@ -2127,6 +2131,37 @@
       "status": "absent",
       "reason": "no error is made without the function that would fail",
       "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers"
+    },
+    {
+      "api": "UIInteraction",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewInteractions.md",
+      "source": "UIKit of iOS 11.0 arm64, the two callbacks sent from the helper at 0x18a29452c by -[UIView addInteraction:]; the protocol is declared by the header and an application that adopts it is called by the port"
+    },
+    {
+      "api": "UIPencilInteractionDelegate",
+      "kind": "protocol",
+      "introduced": "12.1",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "no interaction sends its callback, since the class that would is not carried",
+      "effect": "the protocol is declared by the header and its metadata is compiled into the application, and an application that implements the method is never called by the release",
+      "facts": "facts/UIKit/CallbacksNeverSent.md",
+      "source": "the SDK 16.4 headers"
+    },
+    {
+      "api": "-[UIApplicationDelegate application:handleIntent:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "the release does not run the intents service that hands an application an intent",
+      "effect": "the protocol is declared by the header and its metadata is compiled into the application, and an application that implements the method is never called by the release",
+      "facts": "facts/UIKit/CallbacksNeverSent.md",
       "source": "the SDK 16.4 headers"
     }
   ]

@@ -84,6 +84,41 @@ static void volume_keys(void)
     CHECK(values.count == 1 && values[NSURLVolumeAvailableCapacityForImportantUsageKey] != nil, "the dictionary holds the important usage capacity and leaves the other out");
 }
 
+static void swipe_actions(void)
+{
+    NSString *library = @"libUIKitBackports.dylib";
+    CHECK_EQUAL(image_of_method([UIContextualAction class], @selector(title)), library, "-[UIContextualAction title] comes from the backports");
+    CHECK_EQUAL(image_of_method([UISwipeActionsConfiguration class], @selector(actions)), library, "-[UISwipeActionsConfiguration actions] comes from the backports");
+    UIContextualActionHandler handler = ^(UIContextualAction *action, UIView *view, void (^completion)(BOOL)) { completion(YES); };
+    UIContextualAction *normal = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleNormal title:@"Read" handler:handler];
+    UIContextualAction *destructive = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleDestructive title:nil handler:handler];
+    CGFloat red, green, blue, alpha;
+    CHECK(normal.style == UIContextualActionStyleNormal && [normal.title isEqualToString:@"Read"] && normal.handler == handler && normal.image == nil, "an action holds what it was made with");
+    CHECK([normal.backgroundColor getRed:&red green:&green blue:&blue alpha:&alpha] && red > 0.77 && red < 0.79 && blue > 0.79 && blue < 0.81, "a normal action is grey");
+    CHECK([destructive.backgroundColor getRed:&red green:&green blue:&blue alpha:&alpha] && red > 0.9 && green < 0.3, "a destructive action is red");
+    NSMutableString *title = [NSMutableString stringWithString:@"x"];
+    normal.title = title;
+    [title appendString:@"y"];
+    CHECK_EQUAL(normal.title, @"x", "the title is copied");
+    UIImage *image = [[UIImage alloc] init];
+    normal.image = image;
+    CHECK(normal.image == image, "the image is kept as it is");
+    normal.backgroundColor = [UIColor blueColor];
+    normal.backgroundColor = nil;
+    CHECK([normal.backgroundColor getRed:&red green:&green blue:&blue alpha:&alpha] && red > 0.77 && red < 0.79, "a nil background puts the style's colour back");
+    UIContextualAction *bare = [[UIContextualAction alloc] init];
+    CHECK(bare.backgroundColor == nil && bare.title == nil && bare.handler == nil, "an action made by init holds nothing");
+    NSMutableArray *held = [NSMutableArray arrayWithObject:normal];
+    UISwipeActionsConfiguration *configuration = [UISwipeActionsConfiguration configurationWithActions:held];
+    [held addObject:destructive];
+    CHECK(configuration.actions == held && configuration.actions.count == 2, "a configuration keeps the array it was given");
+    CHECK(configuration.performsFirstActionWithFullSwipe, "a full swipe performs the first action");
+    configuration.performsFirstActionWithFullSwipe = NO;
+    CHECK(!configuration.performsFirstActionWithFullSwipe, "a full swipe can be turned off");
+    CHECK([UISwipeActionsConfiguration configurationWithActions:nil].actions == nil, "a configuration given no actions has none");
+    CHECK(![normal respondsToSelector:@selector(copyWithZone:)], "an action is not copied");
+}
+
 static void regular_expressions(void)
 {
     NSError *error = nil;
@@ -112,6 +147,7 @@ int main(int argc, char **argv)
         picker_presets();
         absences();
         volume_keys();
+        swipe_actions();
         regular_expressions();
         printf("%d of %d checks failed\n", charon_failures, charon_checks);
         return charon_failures;

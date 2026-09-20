@@ -32,6 +32,7 @@ inputs.
     sh host/usernotifications/run.sh  writes device/usernotifications-expectations.h when it passes
     sh host/coredata/run.sh
     sh host/probes/run.sh
+    sh host/swipeactions/run.sh
     sh host/registry/run.sh <dyld_shared_cache_armv7>
     sh host/blocks/run.sh
     sh host/oslog/run.sh  writes device/oslog-expectations.h when it passes
@@ -189,6 +190,11 @@ from, and the strings of the three error domains. What the host cannot answer
 the same way is left to the device test: it has a daemon and hands out a token,
 where the port answers an error. The settings and session calls the port leaves
 out are checked to be absent, since the host has them.
+
+`host/swipeactions/run.sh` holds `UIContextualAction` and `UISwipeActionsConfiguration` to the
+host's UIKit through Mac Catalyst, with the two classes renamed: what an action holds, the
+colour each style gives it and the one it gets back from nil, the copies it makes and the
+one it does not, and a configuration that keeps the array it was given as it is.
 
 `host/systemspacing/run.sh` holds the system spacing of a layout anchor to the
 host's UIKit, comparing the whole shape of the constraint each method returns -
@@ -352,7 +358,8 @@ postinst run with `DPKG_ROOT` set to it.
   of iOS 11 to what an iPad 2 answers - success and no value for a key it does not
   know, the available capacity for the important usage key - the refusal of a
   pattern that names a group, and `-trashItemAtURL:resultingItemURL:error:`
-  answering the feature unsupported error. It ran on an iPad 2 (6.1.3): 38 checks
+  answering the feature unsupported error, and the swipe action classes, whose
+  answers it holds to those of the host. It ran on an iPad 2 (6.1.3): 52 checks
   and no failure; the log lines of the two `inert` answers came once each.
 - `probes.m`: a process of its own for the capability probes, run on an
   iPhone 4S and an iPad 2 (6.1.3). It checks that every class the probes carry

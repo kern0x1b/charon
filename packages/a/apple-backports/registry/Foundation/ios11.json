@@ -388,6 +388,38 @@
       "reason": "a File Provider daemon is needed and iOS 6 has none",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers"
+    },
+    {
+      "api": "-[NSFilePresenter observedPresentedItemUbiquityAttributes]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "the release reports no change of the ubiquity attributes of an item to a presenter",
+      "effect": "the protocol is declared by the header and its metadata is compiled into the application, and an application that implements the method is never called by the release",
+      "facts": "facts/Foundation/NSFilePresenterUbiquity.md",
+      "source": "the SDK 16.4 headers"
+    },
+    {
+      "api": "-[NSFilePresenter presentedItemDidChangeUbiquityAttributes:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "the release reports no change of the ubiquity attributes of an item to a presenter",
+      "effect": "the protocol is declared by the header and its metadata is compiled into the application, and an application that implements the method is never called by the release",
+      "facts": "facts/Foundation/NSFilePresenterUbiquity.md",
+      "source": "the SDK 16.4 headers"
+    },
+    {
+      "api": "-[NSFileCoordinator itemAtURL:didChangeUbiquityAttributes:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no way to report a change of ubiquity attributes to the presenters of an item",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers"
     }
   ]
 }
