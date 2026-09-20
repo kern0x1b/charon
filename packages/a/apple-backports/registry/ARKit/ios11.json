@@ -1,0 +1,1099 @@
+{
+  "framework": "ARKit",
+  "entries": [
+    {
+      "api": "ARConfiguration",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "only the question an application asks before it starts a session is carried: +isSupported",
+      "effect": "+isSupported answers NO; every setting is absent, so respondsToSelector: answers honestly and an unchecked call raises; a copy is a new object of the same class, since a configuration that cannot run holds no settings",
+      "facts": "facts/ARKit/ARConfiguration.md",
+      "source": "ARKit of iOS 12.0 arm64: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, which ask the hardware; the host's ARKit through Mac Catalyst answers NO for every configuration"
+    },
+    {
+      "api": "ARWorldTrackingConfiguration",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "only the question an application asks before it starts a session is carried: +isSupported",
+      "effect": "+isSupported answers NO; every setting is absent, so respondsToSelector: answers honestly and an unchecked call raises; a copy is a new object of the same class, since a configuration that cannot run holds no settings",
+      "facts": "facts/ARKit/ARConfiguration.md",
+      "source": "ARKit of iOS 12.0 arm64: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, which ask the hardware; the host's ARKit through Mac Catalyst answers NO for every configuration"
+    },
+    {
+      "api": "AROrientationTrackingConfiguration",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "only the question an application asks before it starts a session is carried: +isSupported",
+      "effect": "+isSupported answers NO; every setting is absent, so respondsToSelector: answers honestly and an unchecked call raises; a copy is a new object of the same class, since a configuration that cannot run holds no settings",
+      "facts": "facts/ARKit/ARConfiguration.md",
+      "source": "ARKit of iOS 12.0 arm64: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, which ask the hardware; the host's ARKit through Mac Catalyst answers NO for every configuration"
+    },
+    {
+      "api": "ARFaceTrackingConfiguration",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "only the question an application asks before it starts a session is carried: +isSupported",
+      "effect": "+isSupported answers NO; every setting is absent, so respondsToSelector: answers honestly and an unchecked call raises; a copy is a new object of the same class, since a configuration that cannot run holds no settings",
+      "facts": "facts/ARKit/ARConfiguration.md",
+      "source": "ARKit of iOS 12.0 arm64: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, which ask the hardware; the host's ARKit through Mac Catalyst answers NO for every configuration"
+    },
+    {
+      "api": "ARErrorDomain",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/ARKit/ARConfiguration.md",
+      "source": "ARKit of iOS 12.0 arm64, the string com.apple.arkit.error; the host's ARKit through Mac Catalyst"
+    },
+    {
+      "api": "ARConfiguration.worldAlignment",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARConfiguration.lightEstimationEnabled",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARConfiguration.providesAudioData",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARConfiguration.videoFormat",
+      "kind": "property",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARConfiguration.supportedVideoFormats",
+      "kind": "property",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARWorldTrackingConfiguration.planeDetection",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARWorldTrackingConfiguration.autoFocusEnabled",
+      "kind": "property",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARWorldTrackingConfiguration.detectionImages",
+      "kind": "property",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "AROrientationTrackingConfiguration.autoFocusEnabled",
+      "kind": "property",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARSession",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARFrame",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARAnchor",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARCamera",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARLightEstimate",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARDirectionalLightEstimate",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARPlaneAnchor",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARFaceAnchor",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARFaceGeometry",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARPointCloud",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARSCNView",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARSKView",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARSCNFaceGeometry",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARHitTestResult",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARImageAnchor",
+      "kind": "class",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARPlaneGeometry",
+      "kind": "class",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARSCNPlaneGeometry",
+      "kind": "class",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARVideoFormat",
+      "kind": "class",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARReferenceImage",
+      "kind": "class",
+      "introduced": "11.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARSessionObserver",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so no session is run and nothing calls a delegate",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARSessionDelegate",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so no session is run and nothing calls a delegate",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARSCNViewDelegate",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so no session is run and nothing calls a delegate",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARSKViewDelegate",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so no session is run and nothing calls a delegate",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARTrackable",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so no session is run and nothing calls a delegate",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARImageTrackingConfiguration",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "only the question an application asks before it starts a session is carried: +isSupported",
+      "effect": "+isSupported answers NO; every setting is absent, so respondsToSelector: answers honestly and an unchecked call raises; a copy is a new object of the same class, since a configuration that cannot run holds no settings",
+      "facts": "facts/ARKit/ARConfiguration.md",
+      "source": "ARKit of iOS 12.0 arm64: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, which ask the hardware; the host's ARKit through Mac Catalyst answers NO for every configuration"
+    },
+    {
+      "api": "ARObjectScanningConfiguration",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "only the question an application asks before it starts a session is carried: +isSupported",
+      "effect": "+isSupported answers NO; every setting is absent, so respondsToSelector: answers honestly and an unchecked call raises; a copy is a new object of the same class, since a configuration that cannot run holds no settings",
+      "facts": "facts/ARKit/ARConfiguration.md",
+      "source": "ARKit of iOS 12.0 arm64: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, which ask the hardware; the host's ARKit through Mac Catalyst answers NO for every configuration"
+    },
+    {
+      "api": "ARReferenceObjectArchiveExtension",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/ARKit/ARConfiguration.md",
+      "source": "ARKit of iOS 12.0 arm64, the string arobject; the host's ARKit through Mac Catalyst"
+    },
+    {
+      "api": "ARWorldTrackingConfiguration.environmentTexturing",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARWorldTrackingConfiguration.initialWorldMap",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARWorldTrackingConfiguration.maximumNumberOfTrackedImages",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARWorldTrackingConfiguration.detectionObjects",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARImageTrackingConfiguration.autoFocusEnabled",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARImageTrackingConfiguration.trackingImages",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARImageTrackingConfiguration.maximumNumberOfTrackedImages",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARObjectScanningConfiguration.autoFocusEnabled",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARObjectScanningConfiguration.planeDetection",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so a configuration keeps no setting",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "AREnvironmentProbeAnchor",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARObjectAnchor",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARReferenceObject",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARWorldMap",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARAnchorCopying",
+      "kind": "protocol",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "ARKit asks for an A9 chip or later, a camera pipeline and a motion coprocessor the hardware of this release does not have, so no session is run and nothing calls a delegate",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationBrowDownLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationBrowDownRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationBrowInnerUp",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationBrowOuterUpLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationBrowOuterUpRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationCheekPuff",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationCheekSquintLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationCheekSquintRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationEyeBlinkLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationEyeBlinkRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationEyeLookDownLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationEyeLookDownRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationEyeLookInLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationEyeLookInRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationEyeLookOutLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationEyeLookOutRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationEyeLookUpLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationEyeLookUpRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationEyeSquintLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationEyeSquintRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationEyeWideLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationEyeWideRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationJawForward",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationJawLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationJawOpen",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationJawRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthClose",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthDimpleLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthDimpleRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthFrownLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthFrownRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthFunnel",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthLowerDownLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthLowerDownRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthPressLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthPressRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthPucker",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthRollLower",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthRollUpper",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthShrugLower",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthShrugUpper",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthSmileLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthSmileRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthStretchLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthStretchRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthUpperUpLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationMouthUpperUpRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationNoseSneerLeft",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationNoseSneerRight",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARSCNDebugOptionShowFeaturePoints",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a debug option of a scene view, and the view is not carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARSCNDebugOptionShowWorldOrigin",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a debug option of a scene view, and the view is not carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    },
+    {
+      "api": "ARBlendShapeLocationTongueOut",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a blend shape is a coefficient of a face anchor, which needs a camera with a depth sensor and a session, and neither is carried",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of ARKit"
+    }
+  ]
+}

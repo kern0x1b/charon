@@ -1,0 +1,226 @@
+{
+  "framework": "CoreNFC",
+  "entries": [
+    {
+      "api": "NFCReaderSession",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "only the question an application asks before it starts a session is carried: +readingAvailable",
+      "effect": "+readingAvailable answers NO, on this class and on NFCNDEFReaderSession, which inherits it; everything else of a session is absent",
+      "facts": "facts/CoreNFC/NFCReaderSession.md",
+      "source": "the SDK 16.4 header NFCReaderSession.h, whose text says YES if the device supports NFC tag reading; the host's CoreNFC through Mac Catalyst answers NO"
+    },
+    {
+      "api": "NFCNDEFReaderSession",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "only the question an application asks before it starts a session is carried, through NFCReaderSession",
+      "effect": "+readingAvailable answers NO; a session cannot be made, since the designated initializer is absent",
+      "facts": "facts/CoreNFC/NFCReaderSession.md",
+      "source": "the SDK 16.4 header NFCNDEFReaderSession.h; the host's CoreNFC through Mac Catalyst, where NFCNDEFReaderSession inherits NFCReaderSession"
+    },
+    {
+      "api": "NFCErrorDomain",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/CoreNFC/NFCReaderSession.md",
+      "source": "the host's CoreNFC through Mac Catalyst, where the string is NFCError; CoreNFC is in no cache this package holds"
+    },
+    {
+      "api": "NFCReaderSession.delegate",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers NFCReaderSession.h and NFCNDEFReaderSession.h"
+    },
+    {
+      "api": "NFCReaderSession.sessionQueue",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers NFCReaderSession.h and NFCNDEFReaderSession.h"
+    },
+    {
+      "api": "NFCReaderSession.ready",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers NFCReaderSession.h and NFCNDEFReaderSession.h"
+    },
+    {
+      "api": "NFCReaderSession.alertMessage",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers NFCReaderSession.h and NFCNDEFReaderSession.h"
+    },
+    {
+      "api": "-[NFCReaderSession beginSession]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers NFCReaderSession.h and NFCNDEFReaderSession.h"
+    },
+    {
+      "api": "-[NFCReaderSession invalidateSession]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers NFCReaderSession.h and NFCNDEFReaderSession.h"
+    },
+    {
+      "api": "-[NFCNDEFReaderSession initWithDelegate:queue:invalidateAfterFirstRead:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers NFCReaderSession.h and NFCNDEFReaderSession.h"
+    },
+    {
+      "api": "NFCNDEFMessage",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a message read from a tag has no tag to come from on a release with no NFC hardware",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers NFCNDEFMessage.h and NFCNDEFPayload.h"
+    },
+    {
+      "api": "NFCNDEFPayload",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a message read from a tag has no tag to come from on a release with no NFC hardware",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers NFCNDEFMessage.h and NFCNDEFPayload.h"
+    },
+    {
+      "api": "NFCReaderSessionDelegate",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "no session is made, so nothing calls a delegate",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "the SDK 16.4 headers NFCReaderSession.h and NFCNDEFReaderSession.h"
+    },
+    {
+      "api": "NFCNDEFReaderSessionDelegate",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "no session is made, so nothing calls a delegate",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "the SDK 16.4 headers NFCReaderSession.h and NFCNDEFReaderSession.h"
+    },
+    {
+      "api": "NFCISO15693CustomCommandConfiguration",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of CoreNFC"
+    },
+    {
+      "api": "NFCISO15693ReadMultipleBlocksConfiguration",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of CoreNFC"
+    },
+    {
+      "api": "NFCISO15693ReaderSession",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of CoreNFC"
+    },
+    {
+      "api": "NFCTagCommandConfiguration",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of CoreNFC"
+    },
+    {
+      "api": "NFCISO15693Tag",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "the SDK 16.4 headers of CoreNFC"
+    },
+    {
+      "api": "NFCTag",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "the SDK 16.4 headers of CoreNFC"
+    },
+    {
+      "api": "NFCISO15693TagResponseErrorKey",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of CoreNFC"
+    },
+    {
+      "api": "NSUserActivity.ndefMessagePayload",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a tag read at the moment the application was opened by it arrives on a device with NFC hardware and a system that reads it, and the release has neither",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of CoreNFC"
+    }
+  ]
+}

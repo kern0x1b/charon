@@ -151,11 +151,35 @@ The renderer formats get `+preferredFormat` and
 collection sets the scale and whether the format prefers an extended range, and
 nothing else.
 
+A program built for a release that has these frameworks asks each of them one
+question before it does anything else, and a program recompiled for this one
+links the classes it asks it of. So the classes and the question are carried
+where the answer is a plain one: `DCDevice`, with the one shared object and
+`-isSupported` answering YES as the release's own constant does;
+`ARConfiguration` and the five subclasses of iOS 11 and 12, whose
+`+isSupported` answers NO, since ARKit asks for an A9 chip and these devices
+have an A5; and `NFCReaderSession` with `NFCNDEFReaderSession`, whose
+`+readingAvailable` answers NO on a device with no NFC. The error domains an
+application compares an error against, `DCErrorDomain`, `ARErrorDomain` and
+`NFCErrorDomain`, are carried with the release's strings. Everything behind the
+question - a token, a session, a setting, an anchor, a tag - is absent, and
+`respondsToSelector:` and `NSClassFromString` say so.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and
 departs from it in one named way; the facts file says so and the registry entry
 repeats it.
+
+`-[DCDevice generateTokenWithCompletionHandler:]` asks a daemon, `com.apple.devicecheckd`,
+that iOS 6 does not run. The handler hears `DCErrorFeatureUnsupported` - the
+header's word for DeviceCheck being unavailable on this device - from a
+background queue, after the call has returned, where the release's own path
+for a daemon it cannot reach answers `DCErrorUnknownSystemFailure`. That is the
+one departure, chosen because an application that reads the documentation
+handles the first as a settled answer and the second as a reason to retry.
+`facts/DeviceCheck/DCDevice.md` has what was read from the release, what came from
+the header and what the host answered.
 
 The safe area insets and the adjusted content inset are computed on every read
 rather than stored, because nothing here tells the port when they change. An

@@ -31,6 +31,7 @@ inputs.
     sh host/animatorscrub/run.sh
     sh host/usernotifications/run.sh  writes device/usernotifications-expectations.h when it passes
     sh host/coredata/run.sh
+    sh host/probes/run.sh
     sh host/registry/run.sh <dyld_shared_cache_armv7>
     sh host/blocks/run.sh
     sh host/oslog/run.sh  writes device/oslog-expectations.h when it passes
@@ -177,6 +178,17 @@ the port and a Perl substitution that breaks it, over a private copy of
 Foundation built for that one run; the script says `caught` with the category
 the run failed under, `MISSED` when the broken port still passes, and `STALE`
 or `BROKEN` when the change no longer applies or no longer compiles.
+
+`host/probes/run.sh` holds the capability probes of DeviceCheck, ARKit and CoreNFC
+to the host's own frameworks, which it reaches through Mac Catalyst since ARKit
+and CoreNFC are not native on the Mac. The five sources are compiled with their
+classes and constants renamed, and the port and the frameworks answer side by
+side: the shared object and `-isSupported` of `DCDevice`, `+isSupported` of every
+configuration, `+readingAvailable` of both sessions, the class each one derives
+from, and the strings of the three error domains. What the host cannot answer
+the same way is left to the device test: it has a daemon and hands out a token,
+where the port answers an error. The settings and session calls the port leaves
+out are checked to be absent, since the host has them.
 
 `host/systemspacing/run.sh` holds the system spacing of a layout anchor to the
 host's UIKit, comparing the whole shape of the constraint each method returns -
@@ -327,6 +339,16 @@ postinst run with `DPKG_ROOT` set to it.
   `foundation11-expectations.h`. Besides the cases it shares with the host, it
   names the image every backported method comes from and checks that the
   transformer answers to its name through `+[NSValueTransformer valueTransformerForName:]`.
+- `probes.m`: a process of its own for the capability probes, run on an
+  iPhone 4S and an iPad 2 (6.1.3). It checks that every class the probes carry
+  comes from `libFoundationBackports.dylib`, that `+isSupported` and
+  `+readingAvailable` answer as the facts say, the hierarchy, the domains, and
+  the one thing no host can show: `-generateTokenWithCompletionHandler:` is
+  not answered before it returns, is answered from a background queue with
+  `DCErrorFeatureUnsupported` and no user info, and a `nil` handler is ignored.
+  It also checks that what is absent answers no to `respondsToSelector:` and
+  `NSClassFromString`. The last full run answered 72 checks and no failure on
+  each device.
 - `directionaledges.m` with `directionaledges-cases.m`: a process of its own
   for `NSDirectionalEdgeInsets`, held to `directionaledges-expectations.h`. The
   structure's encoding is checked for its own name rather than against the
