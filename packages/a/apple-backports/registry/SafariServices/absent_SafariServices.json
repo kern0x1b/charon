@@ -62,86 +62,6 @@
       "source": "SDK 16.4, SafariServices"
     },
     {
-      "api": "SFSafariViewController.preferredBarTintColor",
-      "kind": "property",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give SFSafariViewController a property like it: it arrived in iOS 10",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, SafariServices"
-    },
-    {
-      "api": "SFSafariViewController.preferredControlTintColor",
-      "kind": "property",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give SFSafariViewController a property like it: it arrived in iOS 10",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, SafariServices"
-    },
-    {
-      "api": "-[SFSafariViewController initWithURL:configuration:]",
-      "kind": "method",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give SFSafariViewController a method like it: it arrived in iOS 11",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, SafariServices"
-    },
-    {
-      "api": "-[SFSafariViewControllerDelegate safariViewController:excludedActivityTypesForURL:title:]",
-      "kind": "method",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a SFSafariViewControllerDelegate that sends anything like it: the message arrived in iOS 11",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, SafariServices"
-    },
-    {
-      "api": "-[SFSafariViewControllerDelegate safariViewController:initialLoadDidRedirectToURL:]",
-      "kind": "method",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a SFSafariViewControllerDelegate that sends anything like it: the message arrived in iOS 11",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, SafariServices"
-    },
-    {
-      "api": "SFSafariViewController.configuration",
-      "kind": "property",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give SFSafariViewController a property like it: it arrived in iOS 11",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, SafariServices"
-    },
-    {
-      "api": "SFSafariViewController.dismissButtonStyle",
-      "kind": "property",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give SFSafariViewController a property like it: it arrived in iOS 11",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, SafariServices"
-    },
-    {
-      "api": "-[SFSafariViewControllerDelegate safariViewControllerWillOpenInBrowser:]",
-      "kind": "method",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a SFSafariViewControllerDelegate that sends anything like it: the message arrived in iOS 14",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, SafariServices"
-    },
-    {
       "api": "SFExtensionMessageKey",
       "kind": "constant",
       "introduced": "15.0",
@@ -149,16 +69,6 @@
       "status": "absent",
       "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
       "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, SafariServices"
-    },
-    {
-      "api": "SFSafariViewControllerConfiguration.eventAttribution",
-      "kind": "property",
-      "introduced": "15.2",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give SFSafariViewControllerConfiguration a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, SafariServices"
     },
     {
