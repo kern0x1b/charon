@@ -262,6 +262,24 @@ iOS 6 has no SF Symbols and nothing here draws one or makes one up. The three `+
 know, and say so once in the log; no image is ever a symbol image, so a configuration changes nothing that is drawn. A later batch could draw a subset and answer for those names.
 Where the port differs from the host, `facts/UIKit/UIImageSymbolConfiguration.md` and `facts/UIKit/UIImageSymbols.md` say so: a font from `+preferredFontForTextStyle:` has no text style to give,
 and a symbol weight below zero is Regular where the host reads the memory beside its table.
+### The difference of two collections, and diffable data sources
+
+`NSOrderedCollectionDifference` and `NSOrderedCollectionChange`, with `-differenceFromArray:`, `-arrayByApplyingDifference:`, their ordered set
+counterparts and `-applyDifference:`, are carried as the system's are: 320000 random differences of arrays and ordered sets, with every
+option, an equivalence test and the calls it received, and the exceptions of the ones built from changes and index sets, none differing from the
+host's (`tests/backports/host/uikit2`, the `orderedcollections` group). The shortest edit script is the Myers algorithm walked forward, so the
+indexes match, and the difference of two ordered sets is not the same algorithm but a walk of both with a cursor each, which keeps fewer elements and is
+the system's. `facts/Foundation/NSOrderedCollectionDifference.md`.
+
+`NSDiffableDataSourceSnapshot`, `UICollectionViewDiffableDataSource` and `UITableViewDiffableDataSource` build on it. The snapshot, with its
+exceptions and their reasons, is held to the system's over 50000 operations per run; the data sources are the view's data source and give a
+collection or table view one batch of inserts, deletes, moves and reloads per snapshot applied, the reloads in a second batch, and are run
+beside the system's in a window (the `diffabledatasource` group). They answer the same counts, index paths and identifiers after every apply,
+and a batch the port cannot prove consistent for iOS 6 - items moving between sections, section changes mixed with item changes - is a `reloadData`, losing the animation. The apply is synchronous on the main queue.
+`NSDiffableDataSourceSectionSnapshot`, `-applySnapshot:toSection:animatingDifferences:` and `-snapshotForSection:` come with iOS 14; the handlers
+for reordering and for expanding are **inert** and say so once in the log, and the transaction classes are absent, since iOS 6 has no interactive
+reordering and no outline cell. The members of iOS 15 are not answered. `facts/UIKit/NSDiffableDataSourceSnapshot.md`,
+`NSDiffableDataSourceSectionSnapshot.md`, `UICollectionViewDiffableDataSource.md`, `UITableViewDiffableDataSource.md`.
 
 ## iOS 11 and 12
 

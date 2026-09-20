@@ -41,6 +41,8 @@ inputs.
     sh host/imageflip/run.sh
     sh host/ios1516/run.sh  writes device/ios1516-expectations.h when it passes
     sh host/cachereader/run.sh <dyld_shared_cache> <image> <class> <selector>
+    sh host/orderedcollections/run.sh  writes device/orderedcollections-expectations.h
+    sh host/diffable/run.sh  writes device/diffable-expectations.h
 
 `host/oslog/run.sh` runs the same 61 calls through the host's os_log, asked for its
 developer output, and through the port's formatter, and compares the two texts; the calls both
@@ -688,3 +690,13 @@ in a Mac Catalyst application with a window, and `device/inputview.m` compares t
 `host/fontkeys/run.sh` records the strings of the eighteen `UIFontDescriptor` keys from the host's UIKit into
 `device/fontkeys-cases.m`, and `device/fontkeys.m` compares the port's on the release and against the release's own CoreText
 constants.
+- `orderedcollections.m`: a process of their own, Foundation only, the difference of two arrays and two ordered sets: 1600 cases of
+  `orderedcollections-cases.h` (differences with every option, their descriptions and inverses, applying, equivalence tests, and differences built from
+  changes that are refused) are held by fingerprint to `orderedcollections-expectations.h`, which `host/orderedcollections/run.sh` records from the host's
+  Foundation. The `orderedcollections` group of `host/uikit2/run.sh` compares the port to the system on 320000 more.
+- `diffable.m` (`diffable-Info.plist`): an application, the diffable data sources: 800 cases of `diffable-cases.h` - random sequences of snapshot
+  and section snapshot operations, with their exceptions - are held by fingerprint to `diffable-expectations.h`, which `host/diffable/run.sh` records
+  under Mac Catalyst; eleven scenarios say which cells the provider is asked for, the ones the system asks for; and forty random snapshots
+  are applied to a collection view and a table view, and the view has to be as the snapshot says after each. The `diffable`, `diffablesection`,
+  `diffabledatasource` and `diffablesectiondatasource` groups of `host/uikit2/run.sh` put the port beside the system's classes; the last two run
+  in a window. It writes `/private/var/backports/diffable.log` and `diffable.done`.

@@ -1,0 +1,183 @@
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "NSDiffableDataSourceSnapshot",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the sections and items of a snapshot, edited, refused, copied, compared and described as UIKit's are, with the exceptions and their reasons; the members of iOS 15 are not there",
+      "facts": "facts/UIKit/NSDiffableDataSourceSnapshot.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffable group); the header of SDK 16.4"
+    },
+    {
+      "api": "UICollectionViewDiffableDataSource",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the system works out the difference on a queue of its own; the port does it on the main queue before the call returns, and a batch that moves items between sections, mixes section changes with item changes or whose counts the port cannot prove is a reloadData, so the animation is lost and the provider is asked for every cell",
+      "effect": "the collection view's data source and the batch of inserts, deletes, moves and reloads that takes it from one snapshot to the next",
+      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4"
+    },
+    {
+      "api": "UITableViewDiffableDataSource",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the system works out the difference on a queue of its own; the port does it on the main queue, and a batch that moves rows between sections, mixes section changes with row changes or whose counts the port cannot prove is a reloadData",
+      "effect": "the table view's data source and the batch of inserts, deletes, moves and reloads that takes it from one snapshot to the next, with defaultRowAnimation",
+      "facts": "facts/UIKit/UITableViewDiffableDataSource.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewDiffableDataSource init]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "effect": "the header marks it unavailable and the release has no such method: the call reaches NSObject's, which makes an object with no view, whose snapshot is empty and whose applySnapshot only keeps what it is given",
+      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4"
+    },
+    {
+      "api": "+[UICollectionViewDiffableDataSource new]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "effect": "the header marks it unavailable and the release has no such method: the call reaches NSObject's, which is alloc and init, with the result of init above",
+      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UITableViewDiffableDataSource init]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "effect": "the header marks it unavailable and the release has no such method: the call reaches NSObject's, which makes an object with no view, whose snapshot is empty and whose applySnapshot only keeps what it is given",
+      "facts": "facts/UIKit/UITableViewDiffableDataSource.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4"
+    },
+    {
+      "api": "+[UITableViewDiffableDataSource new]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "effect": "the header marks it unavailable and the release has no such method: the call reaches NSObject's, which is alloc and init, with the result of init above",
+      "facts": "facts/UIKit/UITableViewDiffableDataSource.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4"
+    },
+    {
+      "api": "NSDiffableDataSourceSectionSnapshot",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "-description groups the items in runs as long as they can be, where UIKit's are the runs the items were appended in; and replaceChildrenOfParentItem:withSnapshot: with items already in the tree raises where UIKit leaves a tree with the children under the wrong items",
+      "effect": "the tree of one section's items, with its levels, its expanded items and its hierarchy description, edited, refused and copied as UIKit's is",
+      "facts": "facts/UIKit/NSDiffableDataSourceSectionSnapshot.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffablesection group); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewDiffableDataSource applySnapshot:toSection:animatingDifferences:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the visible items of the section snapshot become the items of the section, which is made at the end when it is not there, and the tree is kept",
+      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffablesectiondatasource group); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewDiffableDataSource applySnapshot:toSection:animatingDifferences:completion:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "as above, and the completion is called after the batch, or after the next turn of the main queue when there is nothing to batch",
+      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffablesectiondatasource group); the header of SDK 16.4"
+    },
+    {
+      "api": "-[UICollectionViewDiffableDataSource snapshotForSection:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a regular apply that changes the items of a section with a tree keeps the tree in fewer cases than UIKit does",
+      "effect": "a copy of the tree that was applied to the section, or its items as roots, or an empty snapshot for a section that is not there",
+      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffablesectiondatasource group); the header of SDK 16.4"
+    },
+    {
+      "api": "UICollectionViewDiffableDataSource.reorderingHandlers",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "iOS 6 collection views cannot reorder items interactively",
+      "effect": "the handlers object is kept and copied on assignment, and the first assignment says so once in the log; no handler is ever called",
+      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffablesectiondatasource group); the header of SDK 16.4"
+    },
+    {
+      "api": "UICollectionViewDiffableDataSource.sectionSnapshotHandlers",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "iOS 6 has no outline cell that expands or collapses an item",
+      "effect": "the handlers object is kept and copied on assignment, and the first assignment says so once in the log; no handler is ever called",
+      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffablesectiondatasource group); the header of SDK 16.4"
+    },
+    {
+      "api": "UICollectionViewDiffableDataSourceReorderingHandlers",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "iOS 6 collection views cannot reorder items interactively",
+      "effect": "the object holds its three blocks and copies, and nothing ever calls them",
+      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffablesectiondatasource group); the header of SDK 16.4"
+    },
+    {
+      "api": "UICollectionViewDiffableDataSourceSectionSnapshotHandlers",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "iOS 6 has no outline cell that expands or collapses an item",
+      "effect": "the object holds its five blocks and copies, and nothing ever calls them",
+      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffablesectiondatasource group); the header of SDK 16.4"
+    },
+    {
+      "api": "NSDiffableDataSourceTransaction",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a transaction is only ever made for the reordering and section snapshot handlers of the collection view's data source, and iOS 6 has no interaction that calls one",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4"
+    },
+    {
+      "api": "NSDiffableDataSourceSectionTransaction",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a transaction is only ever made for the reordering and section snapshot handlers of the collection view's data source, and iOS 6 has no interaction that calls one",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4"
+    }
+  ]
+}
