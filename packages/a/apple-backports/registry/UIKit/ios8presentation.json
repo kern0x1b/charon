@@ -32,6 +32,71 @@
       "reason": "the class is the principal class of a custom keyboard app extension, and this release has neither app extensions nor a keyboard that loads one",
       "effect": "the class is not there; a keyboard extension target does not run on this release, and an application that names the class fails at load",
       "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+    },
+    {
+      "api": "UIViewController.transitioningDelegate",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release presents and pushes with its own animation and does not ask a transitioning delegate for one",
+      "effect": "the delegate is kept and answered back and is never asked",
+      "facts": "facts/UIKit/TransitionCoordinator.md",
+      "source": "tests/backports/device/transition.m on iOS 6"
+    },
+    {
+      "api": "-[UIViewController transitionCoordinator]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionCoordinator.md",
+      "source": "tests/backports/device/transition.m on iOS 6"
+    },
+    {
+      "api": "UIViewControllerTransitionCoordinator",
+      "kind": "protocol",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionCoordinator.md",
+      "source": "tests/backports/device/transition.m on iOS 6"
+    },
+    {
+      "api": "UIViewControllerTransitionCoordinatorContext",
+      "kind": "protocol",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionCoordinator.md",
+      "source": "tests/backports/device/transition.m on iOS 6"
+    },
+    {
+      "api": "-[UIViewControllerTransitionCoordinator animateAlongsideTransition:completion:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionCoordinator.md",
+      "source": "tests/backports/device/transition.m on iOS 6"
+    },
+    {
+      "api": "-[UIViewControllerTransitionCoordinator animateAlongsideTransitionInView:animation:completion:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionCoordinator.md",
+      "source": "tests/backports/device/transition.m on iOS 6"
+    },
+    {
+      "api": "-[UIViewControllerTransitionCoordinator notifyWhenInteractionEndsUsingBlock:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionCoordinator.md",
+      "source": "tests/backports/device/transition.m on iOS 6"
     }
   ]
 }
