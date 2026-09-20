@@ -1,0 +1,232 @@
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "UIPress",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release has no remote or hardware button events, so nothing ever makes a press or sends one",
+      "effect": "the class is there with the defaults UIKit answers for a press nobody made: phase began, type up arrow, no window, no responder, no recognizers, force 0; nothing on this release creates one",
+      "facts": "facts/UIKit/UIPress.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/presses; the header of SDK 16.4"
+    },
+    {
+      "api": "UIPressesEvent",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release has no remote or hardware button events, so nothing ever makes a press or sends one",
+      "effect": "an event of type presses that holds no press; nothing on this release sends one",
+      "facts": "facts/UIKit/UIPress.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/presses; the header of SDK 16.4"
+    },
+    {
+      "api": "-[UIResponder pressesBegan:withEvent:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release has no remote or hardware button events, so nothing ever makes a press or sends one",
+      "effect": "hands a non-empty set of presses on to the next responder, as UIKit's does, and does nothing for an empty one; the release never sends the message, so an override is called only by an application that calls it, and super may be called from one",
+      "facts": "facts/UIKit/UIPress.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/presses; the header of SDK 16.4"
+    },
+    {
+      "api": "-[UIResponder pressesChanged:withEvent:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release has no remote or hardware button events, so nothing ever makes a press or sends one",
+      "effect": "hands a non-empty set of presses on to the next responder, as UIKit's does, and does nothing for an empty one; the release never sends the message, so an override is called only by an application that calls it, and super may be called from one",
+      "facts": "facts/UIKit/UIPress.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/presses; the header of SDK 16.4"
+    },
+    {
+      "api": "-[UIResponder pressesEnded:withEvent:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release has no remote or hardware button events, so nothing ever makes a press or sends one",
+      "effect": "hands a non-empty set of presses on to the next responder, as UIKit's does, and does nothing for an empty one; the release never sends the message, so an override is called only by an application that calls it, and super may be called from one",
+      "facts": "facts/UIKit/UIPress.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/presses; the header of SDK 16.4"
+    },
+    {
+      "api": "-[UIResponder pressesCancelled:withEvent:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release has no remote or hardware button events, so nothing ever makes a press or sends one",
+      "effect": "hands a non-empty set of presses on to the next responder, as UIKit's does, and does nothing for an empty one; the release never sends the message, so an override is called only by an application that calls it, and super may be called from one",
+      "facts": "facts/UIKit/UIPress.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/presses; the header of SDK 16.4"
+    },
+    {
+      "api": "UICollectionViewTransitionLayout",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release's collection view has no layout to layout transition, so it never makes a transition layout or drives its progress",
+      "effect": "the class keeps the two layouts and a progress an application sets, and answers 0 for every animated key; it lays out nothing itself, so an application that makes one gets a layout with no attributes",
+      "facts": "facts/UIKit/UIPress.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/presses; the header of SDK 16.4"
+    },
+    {
+      "api": "UIPress.key",
+      "kind": "property",
+      "introduced": "13.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "UIKey arrived in iOS 13.4 and is not carried",
+      "effect": "the property is not there: a press answers no key",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIDynamicAnimator",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
+      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+    },
+    {
+      "api": "UIDynamicBehavior",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
+      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+    },
+    {
+      "api": "UIDynamicItemBehavior",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
+      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+    },
+    {
+      "api": "UIGravityBehavior",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
+      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+    },
+    {
+      "api": "UICollisionBehavior",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
+      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+    },
+    {
+      "api": "UIAttachmentBehavior",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
+      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+    },
+    {
+      "api": "UIPushBehavior",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
+      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+    },
+    {
+      "api": "UISnapBehavior",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
+      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+    },
+    {
+      "api": "UIFieldBehavior",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
+      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+    },
+    {
+      "api": "UIRegion",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
+      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+    },
+    {
+      "api": "UIDynamicItemGroup",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
+      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+    },
+    {
+      "api": "UILexicon",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a lexicon is only handed to a keyboard extension through -[UIInputViewController requestSupplementaryLexiconWithCompletion:], and that class is absent",
+      "effect": "the class is not there: NSClassFromString answers nil",
+      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+    },
+    {
+      "api": "UILexiconEntry",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a lexicon is only handed to a keyboard extension through -[UIInputViewController requestSupplementaryLexiconWithCompletion:], and that class is absent",
+      "effect": "the class is not there: NSClassFromString answers nil",
+      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+    },
+    {
+      "api": "NSFileProviderExtension",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a file provider is an app extension, and this release has none",
+      "effect": "the class is not there: NSClassFromString answers nil; an extension target does not run",
+      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+    }
+  ]
+}

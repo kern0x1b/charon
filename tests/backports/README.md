@@ -700,3 +700,9 @@ constants.
   are applied to a collection view and a table view, and the view has to be as the snapshot says after each. The `diffable`, `diffablesection`,
   `diffabledatasource` and `diffablesectiondatasource` groups of `host/uikit2/run.sh` put the port beside the system's classes; the last two run
   in a window. It writes `/private/var/backports/diffable.log` and `diffable.done`.
+
+
+`host/personname/run.sh` records what the host's `NSPersonNameComponents` does in `device/personname-cases.m`, and
+`device/personname.m` compares the port on the release. `host/presses/run.sh` does the same in a Mac Catalyst application with a
+window for `UIPress`, `UIPressesEvent`, the presses messages of `UIResponder` and `UICollectionViewTransitionLayout`, and
+`device/presses.m` compares them.
