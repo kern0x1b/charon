@@ -32,3 +32,17 @@ and not acted on.
 Rare combinations differ: with negative spans, with weeks together with years or months, and with a collapse that
 meets a year or a week, the system's own answer follows from its calendar arithmetic and the port's is the nearest
 whole reading. The random comparison measures 3.6% of 36000 answers differing.
+
+## The reference date, iOS 11
+
+`referenceDate` is the date the formatter counts from when it is asked for a span of time and not for two dates
+(`stringFromTimeInterval:` and `stringFromDateComponents:`), so 45 days written as months and days is one month and 14
+days from the first of January and one month and 16 from the first of February. Set to `nil`, it is the reference date of
+the system, 1 January 2001, in every time zone, and not the current date: the port counted from the current date until
+`tests/backports/host/referencedate` asked the system, over 2773 configurations, what nil stands for.
+
+A span that is negative is counted backwards from the reference date, so that -45 days from 1 March 2020 is one month and
+two weeks and two days, where counting forwards from the date 45 days earlier gives another number of days; the
+magnitudes are written with the sign on the first unit shown. A copy of the formatter takes its units style, allowed units,
+zero formatting behaviour, calendar, maximum unit count and the flags, and not the reference date or the formatting
+context, as `-copyWithZone:` of iOS 12.0 does.

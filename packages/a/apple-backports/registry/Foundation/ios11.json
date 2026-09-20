@@ -530,6 +530,220 @@
       "reason": "the answer is a table of about 250 languages with their scripts inside iOS 12; guessing an orthography for a language the table does not list would be a different answer",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "NSOrthography of iOS 12.0 arm64"
+    },
+    {
+      "api": "-[NSItemProvider canLoadObjectOfClass:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "-[NSItemProvider hasRepresentationConformingToTypeIdentifier:fileOptions:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "-[NSItemProvider initWithObject:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "-[NSItemProvider loadDataRepresentationForTypeIdentifier:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "-[NSItemProvider loadFileRepresentationForTypeIdentifier:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "-[NSItemProvider loadInPlaceFileRepresentationForTypeIdentifier:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "-[NSItemProvider loadObjectOfClass:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "-[NSItemProvider registerDataRepresentationForTypeIdentifier:visibility:loadHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "-[NSItemProvider registerFileRepresentationForTypeIdentifier:fileOptions:visibility:loadHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "-[NSItemProvider registerObject:visibility:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "-[NSItemProvider registerObjectOfClass:visibility:loadHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "-[NSItemProvider registeredTypeIdentifiersWithFileOptions:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "NSItemProvider.suggestedName",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "NSItemProviderReading",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "a protocol of the SDK's headers that an application's own classes adopt and that the port's item provider reads through the selectors it names; no call passes through this package that could be answered differently",
+      "effect": "the class of the application answers the selector and the port's NSItemProvider calls it: registerObject:visibility: and loadObjectOfClass:completionHandler: read the type identifiers and load the data through them",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "NSItemProviderWriting",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "a protocol of the SDK's headers that an application's own classes adopt and that the port's item provider reads through the selectors it names; no call passes through this package that could be answered differently",
+      "effect": "the class of the application answers the selector and the port's NSItemProvider calls it: registerObject:visibility: and loadObjectOfClass:completionHandler: read the type identifiers and load the data through them",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "+[NSItemProviderReading objectWithItemProviderData:typeIdentifier:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "a protocol of the SDK's headers that an application's own classes adopt and that the port's item provider reads through the selectors it names; no call passes through this package that could be answered differently",
+      "effect": "the class of the application answers the selector and the port's NSItemProvider calls it: registerObject:visibility: and loadObjectOfClass:completionHandler: read the type identifiers and load the data through them",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "+[NSItemProviderWriting itemProviderVisibilityForRepresentationWithTypeIdentifier:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "a protocol of the SDK's headers that an application's own classes adopt and that the port's item provider reads through the selectors it names; no call passes through this package that could be answered differently",
+      "effect": "the class of the application answers the selector and the port's NSItemProvider calls it: registerObject:visibility: and loadObjectOfClass:completionHandler: read the type identifiers and load the data through them",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "-[NSItemProviderWriting itemProviderVisibilityForRepresentationWithTypeIdentifier:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "a protocol of the SDK's headers that an application's own classes adopt and that the port's item provider reads through the selectors it names; no call passes through this package that could be answered differently",
+      "effect": "the class of the application answers the selector and the port's NSItemProvider calls it: registerObject:visibility: and loadObjectOfClass:completionHandler: read the type identifiers and load the data through them",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "-[NSItemProviderWriting loadDataWithTypeIdentifier:forItemProviderCompletionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "a protocol of the SDK's headers that an application's own classes adopt and that the port's item provider reads through the selectors it names; no call passes through this package that could be answered differently",
+      "effect": "the class of the application answers the selector and the port's NSItemProvider calls it: registerObject:visibility: and loadObjectOfClass:completionHandler: read the type identifiers and load the data through them",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "NSItemProviderReading.readableTypeIdentifiersForItemProvider",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "a protocol of the SDK's headers that an application's own classes adopt and that the port's item provider reads through the selectors it names; no call passes through this package that could be answered differently",
+      "effect": "the class of the application answers the selector and the port's NSItemProvider calls it: registerObject:visibility: and loadObjectOfClass:completionHandler: read the type identifiers and load the data through them",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "NSItemProviderWriting.writableTypeIdentifiersForItemProvider",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "ignored",
+      "reason": "a protocol of the SDK's headers that an application's own classes adopt and that the port's item provider reads through the selectors it names; no call passes through this package that could be answered differently",
+      "effect": "the class of the application answers the selector and the port's NSItemProvider calls it: registerObject:visibility: and loadObjectOfClass:completionHandler: read the type identifiers and load the data through them",
+      "facts": "facts/Foundation/NSItemProvider.md",
+      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+    },
+    {
+      "api": "NSDateComponentsFormatter.referenceDate",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSDateComponentsFormatter.md",
+      "source": "the host's own Foundation, compared with the port over 2773 configurations by tests/backports/host/referencedate (styles, units, five reference dates, intervals of both signs), and recorded for 265 cases that an iPad 2 running 6.1.3 holds the port to (tests/backports/device/datecomponents.m); -[NSDateComponentsFormatter copyWithZone:] of iOS 12.0 for what a copy takes"
     }
   ]
 }

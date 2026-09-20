@@ -75,18 +75,16 @@ static NSDateComponents *charon_single(NSCalendarUnit unit, NSInteger value)
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    NSDateComponentsFormatter *copy = [super copyWithZone:zone];
+    NSDateComponentsFormatter *copy = [[[self class] allocWithZone:zone] init];
     copy->_unitsStyle = _unitsStyle;
     copy->_zeroFormattingBehavior = _zeroFormattingBehavior;
     copy->_allowedUnits = _allowedUnits;
     copy->_calendar = [_calendar copy];
-    copy->_referenceDate = [_referenceDate copy];
     copy->_allowsFractionalUnits = _allowsFractionalUnits;
     copy->_maximumUnitCount = _maximumUnitCount;
     copy->_collapsesLargestUnit = _collapsesLargestUnit;
     copy->_includesApproximationPhrase = _includesApproximationPhrase;
     copy->_includesTimeRemainingPhrase = _includesTimeRemainingPhrase;
-    copy->_formattingContext = _formattingContext;
     return copy;
 }
 
@@ -225,7 +223,7 @@ static NSDateComponents *charon_single(NSCalendarUnit unit, NSInteger value)
 {
     if (isnan(interval) || isinf(interval))
         [NSException raise:NSInternalInconsistencyException format:@"Invalid parameter not satisfying: isfinite(timeInterval) && !isnan(timeInterval)"];
-    NSDate *start = _referenceDate ?: [NSDate date];
+    NSDate *start = _referenceDate ?: [NSDate dateWithTimeIntervalSinceReferenceDate:0];
     return [self stringFromDate:start toDate:[start dateByAddingTimeInterval:interval]];
 }
 
@@ -234,7 +232,7 @@ static NSDateComponents *charon_single(NSCalendarUnit unit, NSInteger value)
     if (!components)
         [NSException raise:NSInternalInconsistencyException format:@"Invalid parameter not satisfying: components != nil"];
     NSCalendar *calendar = _calendar ?: [NSCalendar currentCalendar];
-    NSDate *start = _referenceDate ?: [NSDate date];
+    NSDate *start = _referenceDate ?: [NSDate dateWithTimeIntervalSinceReferenceDate:0];
     NSDate *end = [calendar dateByAddingComponents:components toDate:start options:0];
     BOOL any = NO;
     for (NSUInteger index = 0; index < charon_unit_count && !any; index++)
@@ -248,9 +246,8 @@ static NSDateComponents *charon_single(NSCalendarUnit unit, NSInteger value)
 {
     NSCalendar *calendar = _calendar ?: [NSCalendar currentCalendar];
     BOOL negative = [endDate compare:startDate] == NSOrderedAscending;
-    NSDate *from = negative ? endDate : startDate, *to = negative ? startDate : endDate;
     NSCalendarUnit allowed = _allowedUnits ?: charon_all_units;
-    NSString *body = [self charon_format:from to:to calendar:calendar allowed:allowed negative:negative];
+    NSString *body = [self charon_format:startDate to:endDate calendar:calendar allowed:allowed negative:negative];
     if (_includesApproximationPhrase)
         body = [NSString stringWithFormat:@"About %@", body];
     if (_includesTimeRemainingPhrase)
@@ -264,7 +261,7 @@ static NSDateComponents *charon_single(NSCalendarUnit unit, NSInteger value)
     NSMutableArray *values = [NSMutableArray array];
     for (NSUInteger index = 0; index < charon_unit_count; index++) {
         if (allowed & charon_units[index].unit)
-            [values addObject:@(charon_value(components, charon_units[index].unit))];
+            [values addObject:@(llabs((long long)charon_value(components, charon_units[index].unit)))];
     }
     return values;
 }
@@ -373,7 +370,7 @@ static NSDateComponents *charon_single(NSCalendarUnit unit, NSInteger value)
             NSInteger leading = [nonzero[_maximumUnitCount] integerValue];
             NSDateComponents *kept = [[NSDateComponents alloc] init];
             for (NSInteger index = 0; index < leading; index++)
-                [self charon_add:[values[index] integerValue] unit:[units[index] unsignedIntegerValue] to:kept];
+                [self charon_add:(negative ? -1 : 1) * [values[index] integerValue] unit:[units[index] unsignedIntegerValue] to:kept];
             if (leading > 0 && [self charon_rounds:[values[leading] integerValue] unit:[units[leading] unsignedIntegerValue] larger:[units[leading - 1] unsignedIntegerValue] base:[calendar dateByAddingComponents:kept toDate:from options:0] calendar:calendar]) {
                 for (NSInteger index = leading; index < count; index++)
                     values[index] = @0;
@@ -413,11 +410,11 @@ static NSDateComponents *charon_single(NSCalendarUnit unit, NSInteger value)
             if (collapsible) {
                 NSDateComponents *kept = [[NSDateComponents alloc] init];
                 for (NSInteger index = 0; index <= largest; index++)
-                    [self charon_add:[values[index] integerValue] unit:[units[index] unsignedIntegerValue] to:kept];
+                    [self charon_add:(negative ? -1 : 1) * [values[index] integerValue] unit:[units[index] unsignedIntegerValue] to:kept];
                 NSDate *base = [calendar dateByAddingComponents:kept toDate:from options:0];
-                NSDate *nextWhole = [calendar dateByAddingComponents:charon_single(unit, 1) toDate:base options:0];
-                NSDate *nextUnit = [calendar dateByAddingComponents:charon_single(following, 1) toDate:base options:0];
-                NSTimeInterval ratio = [nextWhole timeIntervalSinceDate:base] / MAX(1, [nextUnit timeIntervalSinceDate:base]);
+                NSDate *nextWhole = [calendar dateByAddingComponents:charon_single(unit, negative ? -1 : 1) toDate:base options:0];
+                NSDate *nextUnit = [calendar dateByAddingComponents:charon_single(following, negative ? -1 : 1) toDate:base options:0];
+                NSTimeInterval ratio = fabs([nextWhole timeIntervalSinceDate:base]) / MAX(1, fabs([nextUnit timeIntervalSinceDate:base]));
                 double fraction = [values[largest + 1] integerValue] / ratio;
                 if (ratio > 0 && (fraction < 0.1 || fraction > 0.9))
                     return [self charon_format:from to:to calendar:calendar allowed:allowed & ~unit negative:negative];
