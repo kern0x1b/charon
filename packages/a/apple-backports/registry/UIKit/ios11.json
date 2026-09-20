@@ -628,18 +628,20 @@
       "api": "UINavigationItem.searchController",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "the search bar in a navigation bar is placed by the bar's own layout, together with the large title",
-      "effect": "the property is not there; an application puts its search bar in its own view as this release expects",
-      "source": "UIKit of iOS 11.0 arm64"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UISearchController.md",
+      "source": "UIKit of iOS 11.0 arm64 for the property; the placement is the port's own, see the facts"
     },
     {
       "api": "UINavigationItem.hidesSearchBarWhenScrolling",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "there is no search bar in the navigation bar here to hide",
-      "effect": "the property is not there",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the search bar of a navigation item sits in the title of the navigation bar of the release, which does not scroll away",
+      "effect": "it answers what was set and the bar stays where it is",
+      "facts": "facts/UIKit/UISearchController.md",
       "source": "UIKit of iOS 11.0 arm64"
     },
     {

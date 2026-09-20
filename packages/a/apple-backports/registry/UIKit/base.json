@@ -1160,9 +1160,9 @@
     "api": "UISearchController",
     "kind": "class",
     "introduced": "8.0",
-    "status": "absent",
-    "reason": "not backported yet; the release has UISearchDisplayController, whose behaviour differs enough to need its own work",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile time reference crashes on first use"
+    "status": "implemented",
+    "facts": "facts/UIKit/UISearchController.md",
+    "source": "UIKit of iOS 10.0.1 armv7s, read for the presentation flow, the delegate calls and the dimming"
   },
   {
     "api": "UIStackView",

@@ -341,6 +341,11 @@ postinst run with `DPKG_ROOT` set to it.
   sensor and no way to ask for the passcode - the questions fail with the system's errors, an evaluation is answered
   off the main thread and never succeeds. The behaviour a device shares with the host is held to it by the
   `localauth` group of `host/uikit2/run.sh`. It needs the package built with `localauthentication = true`.
+- `searchcontroller.m` with `searchcontroller-cases.m`: an application, the search controller of iOS 8 put through its
+  presentation, its delegate's messages, typing, cancelling and the navigation item that holds it, and every answer
+  held to what the system's `UISearchController` did in `searchcontroller-expectations.h`, which
+  `host/searchcontroller/run.sh` records in an application under Mac Catalyst; nine records differ for a stated reason
+  the test names.
 - `corelocation.m`: a process of its own, the CoreLocation batch: the circular region as a class, its notify flags,
   and the answers of the class methods about monitoring and ranging. It needs the package built with
   `corelocation = true`; it is checked on the emulated 6.0 and on the iPad 2, where location services and region
