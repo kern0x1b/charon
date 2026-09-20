@@ -7,6 +7,9 @@ static NSString *const CharonScheme = @"The specified URL has an unsupported sch
 
 @implementation SFSafariViewController
 
+@synthesize charon_callbackMatcher = _callbackMatcher;
+@synthesize charon_callback = _callback;
+
 
 + (SFSafariViewControllerPrewarmingToken *)prewarmConnectionsToURLs:(NSArray<NSURL *> *)URLs
 {

@@ -233,6 +233,11 @@
 {
     NSURL *URL = request.URL;
     BOOL mainFrame = [request.mainDocumentURL isEqual:URL];
+    if (self.charon_callbackMatcher && self.charon_callbackMatcher(URL)) {
+        [_webView stopLoading];
+        self.charon_callback(URL);
+        return NO;
+    }
     NSString *scheme = URL.scheme.lowercaseString;
     if (![scheme isEqualToString:@"http"] && ![scheme isEqualToString:@"https"] && ![scheme isEqualToString:@"about"] && ![scheme isEqualToString:@"data"] && ![scheme isEqualToString:@"file"]) {
         if (mainFrame && (type == UIWebViewNavigationTypeLinkClicked || type == UIWebViewNavigationTypeFormSubmitted) && [[UIApplication sharedApplication] canOpenURL:URL])
@@ -280,6 +285,12 @@
 {
     if ([error.domain isEqualToString:NSURLErrorDomain] && error.code == NSURLErrorCancelled)
         return;
+    NSString *failing = error.userInfo[NSURLErrorFailingURLStringErrorKey];
+    NSURL *failingURL = failing ? [NSURL URLWithString:failing] : nil;
+    if (failingURL && self.charon_callbackMatcher && self.charon_callbackMatcher(failingURL)) {
+        self.charon_callback(failingURL);
+        return;
+    }
     if ([error.domain isEqualToString:@"WebKitErrorDomain"] && error.code == 102)
         return;
     if (webView.loading)

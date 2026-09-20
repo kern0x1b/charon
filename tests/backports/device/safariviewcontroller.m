@@ -28,7 +28,9 @@ static void serve_client(int client)
     char path[256] = "/";
     sscanf(buffer, "GET %255s", path);
     NSString *response;
-    if (!strcmp(path, "/redirect"))
+    if (!strcmp(path, "/oauth"))
+        response = @"HTTP/1.1 302 Found\r\nLocation: myapp://cb?code=42\r\nContent-Length: 0\r\nConnection: close\r\n\r\n";
+    else if (!strcmp(path, "/redirect"))
         response = @"HTTP/1.1 302 Found\r\nLocation: /page\r\nContent-Length: 0\r\nConnection: close\r\n\r\n";
     else {
         NSString *body = !strcmp(path, "/second") ? @"<html><head><title>Second Page</title></head><body><h1>Second</h1></body></html>"
@@ -132,6 +134,13 @@ static void screenshot(UIWindow *window, NSString *name)
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     [UIImagePNGRepresentation(image) writeToFile:[results_folder stringByAppendingPathComponent:name] atomically:YES];
+}
+
+static UIViewController *topmost(UIViewController *controller)
+{
+    while (controller.presentedViewController)
+        controller = controller.presentedViewController;
+    return controller;
 }
 
 typedef void (^Step)(void (^done)(void));
@@ -270,6 +279,95 @@ typedef void (^Step)(void (^done)(void));
                     after(1, ^{
                         [root dismissViewControllerAnimated:NO completion:nil];
                         after(1, done);
+                    });
+                });
+            });
+        } copy],
+        [^(void (^done)(void)) {
+            NSMutableArray *log = [NSMutableArray array];
+            SFAuthenticationSession *session = [[SFAuthenticationSession alloc] initWithURL:local(@"/oauth") callbackURLScheme:@"myapp" completionHandler:^(NSURL *URL, NSError *error) {
+                [log addObject:[NSString stringWithFormat:@"%@ %@ presented=%d", URL.absoluteString ?: @"nil", error ? [NSString stringWithFormat:@"%@/%ld", error.domain, (long)error.code] : @"noerror", root.presentedViewController != nil]];
+            }];
+            CHECK([session start], "a session starts");
+            CHECK(![session start], "and does not start twice while it runs");
+            after(5, ^{
+                CHECK_EQUAL(log, (@[@"myapp://cb?code=42 noerror presented=0"]), "a redirect to the callback scheme ends the session with the callback URL, after the page is dismissed, once");
+                after(2, ^{
+                    CHECK(root.presentedViewController == nil, "and the page is gone");
+                    done();
+                });
+            });
+        } copy],
+        [^(void (^done)(void)) {
+            NSMutableArray *log = [NSMutableArray array];
+            SFAuthenticationSession *session = [[SFAuthenticationSession alloc] initWithURL:local(@"/page") callbackURLScheme:@"myapp" completionHandler:^(NSURL *URL, NSError *error) {
+                [log addObject:[NSString stringWithFormat:@"%@ %@/%ld", URL.absoluteString ?: @"nil", error.domain, (long)error.code]];
+            }];
+            [session start];
+            after(4, ^{
+                UIViewController *shown = topmost(root);
+                CHECK([shown isKindOfClass:[SFSafariViewController class]] && log.count == 0, "the login page is shown and the session waits");
+                UIWebView *web = find_web_view(shown.view);
+                [web stringByEvaluatingJavaScriptFromString:@"location.href='other://x'"];
+                after(1, ^{
+                    CHECK(log.count == 0, "a scheme that is not the callback's does not end it");
+                    [web stringByEvaluatingJavaScriptFromString:@"location.href='MYAPP://Later?a=1'"];
+                    after(3, ^{
+                        CHECK_EQUAL(log, (@[@"myapp://Later?a=1 (null)/0"]), "a callback scheme in any case is taken, and the URL is handed over as the web view has it, with the scheme in lower case");
+                        done();
+                    });
+                });
+            });
+        } copy],
+        [^(void (^done)(void)) {
+            NSMutableArray *log = [NSMutableArray array];
+            SFAuthenticationSession *session = [[SFAuthenticationSession alloc] initWithURL:local(@"/page") callbackURLScheme:@"myapp" completionHandler:^(NSURL *URL, NSError *error) {
+                [log addObject:[NSString stringWithFormat:@"%@ %@/%ld presented=%d", URL ? @"url" : @"nil", error.domain, (long)error.code, root.presentedViewController != nil]];
+            }];
+            [session start];
+            after(4, ^{
+                SFSafariViewController *shown = (SFSafariViewController *)topmost(root);
+                UIBarButtonItem *item = left_item(shown);
+                CHECK(item != nil, "the cancel button is there");
+                [item.target performSelector:item.action withObject:item];
+                after(3, ^{
+                    CHECK_EQUAL(log, (@[@"nil com.apple.SafariServices.Authentication/1 presented=0"]), "cancelling ends the session with the canceled-login error, after the page is dismissed");
+                    CHECK([session start], "a session that has ended can be started again");
+                    after(4, ^{
+                        [session cancel];
+                        after(3, ^{
+                            CHECK_EQUAL(@(log.count), @2, "and cancel from the application ends it with the same error");
+                            CHECK(root.presentedViewController == nil, "and dismisses the page");
+                            done();
+                        });
+                    });
+                });
+            });
+        } copy],
+        [^(void (^done)(void)) {
+            NSMutableArray *log = [NSMutableArray array];
+            SFAuthenticationSession *first = [[SFAuthenticationSession alloc] initWithURL:local(@"/page") callbackURLScheme:@"a" completionHandler:^(NSURL *URL, NSError *error) {
+                [log addObject:[NSString stringWithFormat:@"first %ld", (long)error.code]];
+            }];
+            [first start];
+            after(3, ^{
+                SFAuthenticationSession *second = [[SFAuthenticationSession alloc] initWithURL:local(@"/second") callbackURLScheme:@"b" completionHandler:^(NSURL *URL, NSError *error) {
+                    [log addObject:@"second"];
+                }];
+                [second start];
+                after(4, ^{
+                    CHECK_EQUAL(log, (@[@"first 1"]), "starting a session ends the one that was showing");
+                    [second cancel];
+                    after(3, ^{
+                        CHECK_EQUAL(@(root.presentedViewController != nil), @NO, "and the last one can be cancelled");
+                        SFAuthenticationSession *bad = [[SFAuthenticationSession alloc] initWithURL:[NSURL URLWithString:@"ftp://x"] callbackURLScheme:@"c" completionHandler:^(NSURL *URL, NSError *error) {
+                            [log addObject:[NSString stringWithFormat:@"bad %ld", (long)error.code]];
+                        }];
+                        CHECK([bad start], "a session for an address that is not a web address starts");
+                        after(2, ^{
+                            CHECK_EQUAL(log.lastObject, @"bad 1", "and ends at once with the canceled-login error");
+                            done();
+                        });
                     });
                 });
             });

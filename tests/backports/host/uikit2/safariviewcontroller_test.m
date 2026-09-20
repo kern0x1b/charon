@@ -26,6 +26,12 @@
 @property (nonatomic, readonly, copy) NSString *extensionIdentifier;
 @end
 
+@interface CharonHostSFAuthenticationSession : NSObject
+- (instancetype)initWithURL:(NSURL *)URL callbackURLScheme:(NSString *)scheme completionHandler:(void (^)(NSURL *, NSError *))handler;
+- (BOOL)start;
+- (void)cancel;
+@end
+
 static NSString *outcome(id (^block)(void))
 {
     @try {
@@ -104,6 +110,27 @@ int main(void)
         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:button requiringSecureCoding:YES error:NULL];
         id decoded = [NSKeyedUnarchiver unarchivedObjectOfClass:[CharonHostSFSafariViewControllerActivityButton class] fromData:data error:NULL];
         CHECK([[decoded extensionIdentifier] isEqualToString:@"x.y"], "and survives a secure archive");
+        Class systemSession = [SFAuthenticationSession class], ourSession = [CharonHostSFAuthenticationSession class];
+        NSString *(^session)(Class, NSString *, NSString *, int) = ^NSString *(Class sessionClass, NSString *address, NSString *scheme, int script) {
+            NSMutableArray *log = [NSMutableArray array];
+            CharonHostSFAuthenticationSession *made = [[sessionClass alloc] initWithURL:address.length ? [NSURL URLWithString:address] : nil callbackURLScheme:scheme completionHandler:^(NSURL *URL, NSError *error) {
+                [log addObject:[NSString stringWithFormat:@"handler url=%@ error=%@/%ld/%@", URL, error.domain, (long)error.code, error.userInfo ?: @"none"]];
+            }];
+            if (script == 1)
+                [made cancel];
+            [log addObject:[NSString stringWithFormat:@"start=%d", [made start]]];
+            if (script == 2)
+                [log addObject:[NSString stringWithFormat:@"again=%d", [made start]]];
+            return [log componentsJoinedByString:@" | "];
+        };
+        for (NSString *address in @[@"https://example.com/login", @"ftp://example.com", @"example.com", @"", @"myapp://x"]) {
+            for (int script = 0; script < 3; script++) {
+                NSString *name = [NSString stringWithFormat:@"a session for %@, script %d", address, script];
+                CHECK_EQUAL(session(ourSession, address, @"myapp", script), session(systemSession, address, @"myapp", script), name.UTF8String);
+            }
+        }
+        CHECK_EQUAL(session(ourSession, @"https://example.com", nil, 0), session(systemSession, @"https://example.com", nil, 0), "no scheme is accepted");
+        CHECK_EQUAL(outcome(^{ return [[ourSession alloc] performSelector:NSSelectorFromString(@"init")]; }), outcome(^{ return [[systemSession alloc] performSelector:NSSelectorFromString(@"init")]; }), "init of a session");
         printf("checks=%d failures=%d\n", charon_checks, charon_failures);
     }
     return charon_failures;

@@ -78,5 +78,21 @@
     "reason": "an extension of the application cannot be run from a button of the port",
     "effect": "the button is kept and read back, and none is shown",
     "source": "the newest header of the SDK"
+  },
+  {
+    "api": "SFAuthenticationSession",
+    "kind": "class",
+    "introduced": "11.0",
+    "status": "implemented",
+    "facts": "facts/SafariServices/SFAuthenticationSession.md",
+    "source": "the newest header of the SDK, and the host's own SafariServices for what a session answers when it is made, started twice and cancelled (tests/backports/host/uikit2, group safariviewcontroller)"
+  },
+  {
+    "api": "SFAuthenticationErrorDomain",
+    "kind": "constant",
+    "introduced": "11.0",
+    "status": "implemented",
+    "facts": "facts/SafariServices/SFAuthenticationSession.md",
+    "source": "the newest header of the SDK, and the host's own SafariServices for what a session answers when it is made, started twice and cancelled (tests/backports/host/uikit2, group safariviewcontroller)"
   }
 ]
