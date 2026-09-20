@@ -2007,5 +2007,283 @@
     "status": "implemented",
     "facts": "facts/UIKit/NSStringDrawing.md",
     "source": "the host's own UIKit, recorded by host/stringdrawing for the sizes, the boxes and the ink of the drawing, and read back on the iPad 2"
+  },
+  {
+    "api": "-[NSLayoutManager CGGlyphAtIndex:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
+  },
+  {
+    "api": "-[NSLayoutManager CGGlyphAtIndex:isValidIndex:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
+  },
+  {
+    "api": "-[NSLayoutManager enumerateEnclosingRectsForGlyphRange:withinSelectedGlyphRange:inTextContainer:usingBlock:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
+  },
+  {
+    "api": "-[NSLayoutManager enumerateLineFragmentsForGlyphRange:usingBlock:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
+  },
+  {
+    "api": "-[NSLayoutManager getGlyphsInRange:glyphs:properties:characterIndexes:bidiLevels:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
+  },
+  {
+    "api": "-[NSLayoutManager processEditingForTextStorage:edited:range:changeInLength:invalidatedRange:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
+  },
+  {
+    "api": "-[NSLayoutManager propertyForGlyphAtIndex:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
+  },
+  {
+    "api": "-[NSLayoutManager truncatedGlyphRangeInLineFragmentForGlyphAtIndex:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
+    "reason": "the release does not say what it truncated",
+    "effect": "the value is kept and read back, and the text is laid out without it"
+  },
+  {
+    "api": "-[NSMutableParagraphStyle setAllowsDefaultTighteningForTruncation:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
+    "reason": "the release's layout never tightens a truncated line",
+    "effect": "the value is kept and read back, and the text is laid out without it"
+  },
+  {
+    "api": "-[NSMutableParagraphStyle setLineBreakStrategy:]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
+    "reason": "the release's layout knows no line break strategy",
+    "effect": "the value is kept and read back, and the text is laid out without it"
+  },
+  {
+    "api": "-[NSParagraphStyle allowsDefaultTighteningForTruncation]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
+    "reason": "the release's layout never tightens a truncated line",
+    "effect": "the value is kept and read back, and the text is laid out without it"
+  },
+  {
+    "api": "-[NSParagraphStyle lineBreakStrategy]",
+    "kind": "method",
+    "introduced": "9.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
+    "reason": "the release's layout knows no line break strategy",
+    "effect": "the value is kept and read back, and the text is laid out without it"
+  },
+  {
+    "api": "-[NSTextAttachment bounds]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
+    "reason": "the release lays an attachment out at the size of its image",
+    "effect": "the value is kept and read back, and the text is laid out without it"
+  },
+  {
+    "api": "-[NSTextAttachment contents]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
+  },
+  {
+    "api": "-[NSTextAttachment fileType]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
+  },
+  {
+    "api": "-[NSTextAttachment setBounds:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
+    "reason": "the release lays an attachment out at the size of its image",
+    "effect": "the value is kept and read back, and the text is laid out without it"
+  },
+  {
+    "api": "-[NSTextAttachment setContents:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
+  },
+  {
+    "api": "-[NSTextAttachment setFileType:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
+  },
+  {
+    "api": "-[NSTextAttachment setFileWrapper:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
+  },
+  {
+    "api": "-[NSTextContainer exclusionPaths]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
+    "reason": "the release's layout knows no exclusion paths",
+    "effect": "the value is kept and read back, and the text is laid out without it"
+  },
+  {
+    "api": "-[NSTextContainer heightTracksTextView]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
+    "reason": "the release's container has no text view of iOS 7 to follow",
+    "effect": "the value is kept and read back, and the text is laid out without it"
+  },
+  {
+    "api": "-[NSTextContainer initWithSize:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
+  },
+  {
+    "api": "-[NSTextContainer lineBreakMode]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
+    "reason": "the release's layout breaks a container's lines by the paragraph style only",
+    "effect": "the value is kept and read back, and the text is laid out without it"
+  },
+  {
+    "api": "-[NSTextContainer lineFragmentRectForProposedRect:atIndex:writingDirection:remainingRect:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
+  },
+  {
+    "api": "-[NSTextContainer setExclusionPaths:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
+    "reason": "the release's layout knows no exclusion paths",
+    "effect": "the value is kept and read back, and the text is laid out without it"
+  },
+  {
+    "api": "-[NSTextContainer setHeightTracksTextView:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
+    "reason": "the release's container has no text view of iOS 7 to follow",
+    "effect": "the value is kept and read back, and the text is laid out without it"
+  },
+  {
+    "api": "-[NSTextContainer setLineBreakMode:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
+    "reason": "the release's layout breaks a container's lines by the paragraph style only",
+    "effect": "the value is kept and read back, and the text is laid out without it"
+  },
+  {
+    "api": "-[NSTextContainer setSize:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
+  },
+  {
+    "api": "-[NSTextContainer setWidthTracksTextView:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
+    "reason": "the release's container has no text view of iOS 7 to follow",
+    "effect": "the value is kept and read back, and the text is laid out without it"
+  },
+  {
+    "api": "-[NSTextContainer size]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
+  },
+  {
+    "api": "-[NSTextContainer widthTracksTextView]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "inert",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
+    "reason": "the release's container has no text view of iOS 7 to follow",
+    "effect": "the value is kept and read back, and the text is laid out without it"
   }
 ]

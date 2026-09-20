@@ -15,6 +15,8 @@ static void charon_draw_in_rect(NSString *self, SEL selector, CGRect rect, NSDic
 
 + (void)load
 {
+    if ([NSString instancesRespondToSelector:@selector(sizeWithAttributes:)])
+        return;
     Method native = class_getInstanceMethod([NSString class], @selector(drawInRect:withAttributes:));
     if (native)
         method_setImplementation(native, (IMP)charon_draw_in_rect);
