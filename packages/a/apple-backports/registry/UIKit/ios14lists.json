@@ -2,6 +2,26 @@
   "framework": "UIKit",
   "entries": [
     {
+      "api": "UICellAccessoryStandardDimension",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the marker value of a reserved layout width that asks for the accessory's standard width, as the host's constant is",
+      "facts": "facts/UIKit/UICellAccessory.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2 (the listvalues group)"
+    },
+    {
+      "api": "UIListContentImageStandardDimension",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the marker value of a reserved layout size that asks for the standard size of the image, as the host's constant is",
+      "facts": "facts/UIKit/UIListContentConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2 (the listvalues group)"
+    },
+    {
       "api": "UIViewConfigurationState",
       "kind": "class",
       "introduced": "14.0",

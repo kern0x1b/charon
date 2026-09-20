@@ -25,9 +25,7 @@ static void charon_collection_set_editing(UICollectionView *view, BOOL editing)
     }
 }
 
-@implementation UICollectionView (CharonEditing)
-
-+ (void)load
+__attribute__((constructor)) static void charon_install_collection_editing(void)
 {
     if ([[[UIDevice currentDevice] systemVersion] compare:@"14.0" options:NSNumericSearch] != NSOrderedAscending)
         return;
@@ -39,6 +37,8 @@ static void charon_collection_set_editing(UICollectionView *view, BOOL editing)
         charon_collection_set_editing(view, editing);
     }), "v@:c");
 }
+
+@implementation UICollectionView (CharonEditing)
 
 - (BOOL)isEditing
 {
