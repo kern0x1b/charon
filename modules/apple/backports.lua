@@ -585,7 +585,7 @@ function check_registry(root, found, complete, deployment, exports, inventory)
             local carried = deployment and entry.introduced and dyld.compare_versions(entry.introduced, deployment) <= 0
             carried = carried or (exports and exports["_" .. name:gsub("%(%)$", "")]) or false
             local ours = not (deployment and entry.maximum and dyld.compare_versions(deployment, entry.maximum) >= 0)
-            local declared = entry.kind == "protocol" or (owner and listed[owner] and listed[owner].kind == "protocol")
+            local declared = entry.kind == "protocol" or (owner and ((listed[owner] and listed[owner].kind == "protocol") or (inventory and inventory.protocols and inventory.protocols[owner] ~= nil)))
             if entry.status == "implemented" and not built and not carried and ours and not declared then
                 table.insert(unbuilt, name)
             elseif entry.status == "implemented" and not entry.facts then
