@@ -420,6 +420,8 @@ The eleven `CTRadioAccessTechnology...` names and `CTRadioAccessTechnologyDidCha
 
 `CAMetalLayer` is carried in `libMetalBackports.dylib`, as a layer that keeps its device, pixel format, drawable size and the rest of what it is given, and has no drawable: `nextDrawable` is nil and `preferredDevice` is nil, since iOS 6 has no Metal, so an application that asks for a drawable falls back to OpenGL ES; a maximum of drawables outside 2 to 3 raises the exception of iOS 12. The properties of iOS 16 are kept and used for nothing, and `CAEDRMetadata` is absent. `facts/QuartzCore/CAMetalLayer.md`.
 
+`PHPickerViewController`, `PHPickerConfiguration`, `PHPickerFilter` and `PHPickerResult` are carried in `libPhotosBackports.dylib` over the release's `UIImagePickerController`, which the controller holds as a child for the media types of the filter: one item at most (a `selectionLimit` of more is kept and not honoured), an image offered as JPEG or, by the address the release gives it, PNG, GIF or TIFF, made from the image the picker returns, a video offered as the file the picker made, and `assetIdentifier` nil; the filters of iOS 15 and 16 and the selection of iOS 15 are absent. `UIImage` reads and writes itself through `NSItemProvider` as in iOS 11, in `libUIKitBackports.dylib`. `facts/Photos/PHPicker.md`, `facts/UIKit/UIImageItemProvider.md`.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and

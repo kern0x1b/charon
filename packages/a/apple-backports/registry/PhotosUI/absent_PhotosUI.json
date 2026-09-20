@@ -32,56 +32,6 @@
       "source": "SDK 16.4, PhotosUI"
     },
     {
-      "api": "PHPickerConfiguration",
-      "kind": "class",
-      "introduced": "14",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, PhotosUI"
-    },
-    {
-      "api": "PHPickerFilter",
-      "kind": "class",
-      "introduced": "14",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, PhotosUI"
-    },
-    {
-      "api": "PHPickerResult",
-      "kind": "class",
-      "introduced": "14",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, PhotosUI"
-    },
-    {
-      "api": "PHPickerViewController",
-      "kind": "class",
-      "introduced": "14",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, PhotosUI"
-    },
-    {
-      "api": "PHPickerViewControllerDelegate",
-      "kind": "protocol",
-      "introduced": "14",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, PhotosUI"
-    },
-    {
       "api": "-[PHPhotoLibrary presentLimitedLibraryPickerFromViewController:]",
       "kind": "method",
       "introduced": "14.0",
@@ -100,6 +50,156 @@
       "reason": "there is no limited selection of photos in iOS 6, so there is no picker for it; the status is never limited",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, PhotosUI"
+    },
+    {
+      "api": "+[PHPickerFilter allFilterMatchingSubfilters:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 offers no way to ask for items that match every one of several kinds",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of PhotosUI"
+    },
+    {
+      "api": "+[PHPickerFilter notFilterOfSubfilter:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 offers no way to ask for what a kind does not match",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of PhotosUI"
+    },
+    {
+      "api": "+[PHPickerFilter playbackStyleFilter:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 keeps no playback style of an item to filter by",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of PhotosUI"
+    },
+    {
+      "api": "PHPickerFilter.panoramasFilter",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no way to show only panoramas",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of PhotosUI"
+    },
+    {
+      "api": "PHPickerFilter.screenshotsFilter",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no way to show only screenshots",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of PhotosUI"
+    },
+    {
+      "api": "PHPickerFilter.screenRecordingsFilter",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no screen recordings",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of PhotosUI"
+    },
+    {
+      "api": "PHPickerFilter.slomoVideosFilter",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no slow motion videos to show by themselves",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of PhotosUI"
+    },
+    {
+      "api": "PHPickerFilter.timelapseVideosFilter",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no time lapse videos to show by themselves",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of PhotosUI"
+    },
+    {
+      "api": "PHPickerConfiguration.selection",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6's picker chooses one item, so there is no order of a selection to keep",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of PhotosUI"
+    },
+    {
+      "api": "PHPickerConfiguration.preselectedAssetIdentifiers",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6's picker cannot show items as chosen already",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of PhotosUI"
+    },
+    {
+      "api": "PHPickerFilter.burstsFilter",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no way to show only bursts",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of PhotosUI"
+    },
+    {
+      "api": "PHPickerFilter.cinematicVideosFilter",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no cinematic videos",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of PhotosUI"
+    },
+    {
+      "api": "PHPickerFilter.depthEffectPhotosFilter",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no depth effect photos",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of PhotosUI"
+    },
+    {
+      "api": "-[PHPickerViewController deselectAssetsWithIdentifiers:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release's picker holds no selection to take items out of",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of PhotosUI"
+    },
+    {
+      "api": "-[PHPickerViewController moveAssetWithIdentifier:afterAssetWithIdentifier:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release's picker holds no selection to put in order",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the SDK 16.4 headers of PhotosUI"
     }
   ]
 }

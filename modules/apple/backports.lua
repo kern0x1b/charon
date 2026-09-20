@@ -19,7 +19,7 @@ LIBRARIES = {
     {name = "SafariServicesBackports", folder = "SafariServices", frameworks = {"UIKit", "Foundation", "CoreGraphics", "QuartzCore"}, libraries = {"FoundationBackports"}},
     {name = "AuthenticationServicesBackports", folder = "AuthenticationServices", frameworks = {"UIKit", "Foundation"}, libraries = {"FoundationBackports", "SafariServicesBackports"}},
     {name = "BackgroundTasksBackports", folder = "BackgroundTasks", frameworks = {"UIKit", "Foundation"}, libraries = {"FoundationBackports"}},
-    {name = "PhotosBackports", folder = "Photos", frameworks = {"AssetsLibrary", "Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "PhotosBackports", folder = "Photos", frameworks = {"AssetsLibrary", "UIKit", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "GameControllerBackports", folder = "GameController", frameworks = {"Foundation"}, libraries = {"FoundationBackports"}},
     {name = "MetalBackports", folder = "Metal", frameworks = {"QuartzCore", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CoreTelephonyBackports", folder = "CoreTelephony", frameworks = {"CoreTelephony", "Foundation"}, libraries = {"FoundationBackports"}},
