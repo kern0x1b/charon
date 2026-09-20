@@ -185,6 +185,33 @@ int main(int argc, char **argv)
         CHECK(emptyArray != nil && [emptyArray isKindOfClass:[NSArray class]] && emptyArray.count == 0 && ![emptyArray respondsToSelector:@selector(addObject:)], "__NSArray0__ holds an empty immutable array");
         CHECK(emptyDictionary != nil && [emptyDictionary isKindOfClass:[NSDictionary class]] && emptyDictionary.count == 0 && ![emptyDictionary respondsToSelector:@selector(setObject:forKey:)], "__NSDictionary0__ holds an empty immutable dictionary");
         CHECK([[emptyArray arrayByAddingObject:@1] isEqual:@[@1]] && [emptyDictionary objectForKey:@"a"] == nil, "the empty collections answer as the release's own");
+        {
+            NSUserActivity *activity = [[NSUserActivity alloc] initWithActivityType:@"com.charon.test"];
+            CHECK([activity.activityType isEqualToString:@"com.charon.test"] && activity.userInfo.count == 0 && activity.needsSave && activity.eligibleForHandoff && !activity.eligibleForSearch, "a new activity has the system's defaults");
+            [activity addUserInfoEntriesFromDictionary:@{@"k": @1}];
+            CHECK([activity.userInfo isEqual:@{@"k": @1}], "user info can be added to");
+            NSString *raised = @"none";
+            @try {
+                activity.webpageURL = [NSURL URLWithString:@"ftp://x"];
+            } @catch (NSException *exception) {
+                raised = exception.name;
+            }
+            CHECK([raised isEqualToString:NSInvalidArgumentException], "a web page URL of another scheme is refused");
+            __block int saved = 0;
+            __block BOOL needsSaveWhenAsked = YES;
+            Class delegateClass = objc_allocateClassPair([NSObject class], "CharonActivityDelegate", 0);
+            class_addMethod(delegateClass, @selector(userActivityWillSave:), imp_implementationWithBlock(^(id self_, NSUserActivity *a) { saved++; needsSaveWhenAsked = a.needsSave; }), "v@:@");
+            objc_registerClassPair(delegateClass);
+            id delegate = [[delegateClass alloc] init];
+            activity.delegate = delegate;
+            [activity becomeCurrent];
+            CHECK(saved == 0, "the delegate is not asked while becomeCurrent runs");
+            [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.5]];
+            CHECK(saved == 1 && !needsSaveWhenAsked && !activity.needsSave, "the delegate is asked once, with needsSave off");
+            __block NSInteger code = 0;
+            [activity getContinuationStreamsWithCompletionHandler:^(NSInputStream *i, NSOutputStream *o, NSError *e) { code = e.code; }];
+            CHECK(code == 3328, "the streams of an activity nobody continues fail");
+        }
         CHECK([NSProcessInfo processInfo].isLowPowerModeEnabled == NO && [NSProcessInfoPowerStateDidChangeNotification isEqualToString:@"NSProcessInfoPowerStateDidChangeNotification"], "Low Power Mode is off, and the notification carries the release's name");
         CHECK(emptyArray == [NSArray array] && emptyArray == [NSArray new] && emptyArray == [[NSArray alloc] init] && emptyArray == [[NSMutableArray array] copy], "the empty array of the release is the one __NSArray0__ holds, however it is made");
         CHECK(emptyDictionary == [NSDictionary dictionary] && emptyDictionary == [NSDictionary new] && emptyDictionary == [[NSDictionary alloc] init], "and the empty dictionary is the one __NSDictionary0__ holds");

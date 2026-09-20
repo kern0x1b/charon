@@ -968,6 +968,24 @@
     "effect": "the task does not answer -progress, although the SDK declares NSURLSessionTask as NSProgressReporting, so a call crashes unless it is guarded; the counts the task keeps - countOfBytesReceived, countOfBytesSent and their expected values - are there to build a progress from"
   },
   {
+    "api": "-[NSUserActivityDelegate userActivity:didReceiveInputStream:outputStream:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no other device opens a stream to an activity",
+    "effect": "the message is never sent, and getContinuationStreamsWithCompletionHandler: answers the error of an activity nobody continues"
+  },
+  {
+    "api": "-[NSUserActivityDelegate userActivityWasContinued:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no other device continues an activity from this one",
+    "effect": "the message is never sent"
+  },
+  {
     "api": "-[NSValue getValue:size:]",
     "kind": "method",
     "introduced": "11.0",
@@ -1285,6 +1303,24 @@
     "status": "implemented",
     "facts": "facts/Foundation/NSURL.md",
     "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
+  },
+  {
+    "api": "NSUserActivity",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "inert",
+    "reason": "the release has no Handoff, no Spotlight index of activities and no continuation: nothing on the device advertises an activity or takes one in",
+    "effect": "the activity is made, holds what it was given, asks its delegate to save once after becomeCurrent as the system does, and is never advertised, indexed or continued",
+    "facts": "facts/Foundation/NSUserActivity.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/uikit2 (useractivity)"
+  },
+  {
+    "api": "NSUserActivityTypeBrowsingWeb",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSUserActivity.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/uikit2 (useractivity)"
   },
   {
     "api": "__NSArray0__",

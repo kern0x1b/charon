@@ -169,6 +169,42 @@
     "facts": "facts/UIKit/UIApplicationNotificationRegistration.md"
   },
   {
+    "api": "-[UIApplicationDelegate application:continueUserActivity:restorationHandler:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no device hands an activity to an application",
+    "effect": "the message is never sent"
+  },
+  {
+    "api": "-[UIApplicationDelegate application:didFailToContinueUserActivityWithType:error:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no device hands an activity to an application",
+    "effect": "the message is never sent"
+  },
+  {
+    "api": "-[UIApplicationDelegate application:didUpdateUserActivity:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "the release does not report an activity that was updated",
+    "effect": "the message is never sent"
+  },
+  {
+    "api": "-[UIApplicationDelegate application:willContinueUserActivityWithType:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no device hands an activity to an application",
+    "effect": "the message is never sent"
+  },
+  {
     "api": "-[UIImage imageWithRenderingMode:]",
     "kind": "method",
     "introduced": "7.0",
@@ -233,6 +269,28 @@
     "introduced": "7.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIBarAppearance.md"
+  },
+  {
+    "api": "-[UIResponder restoreUserActivityState:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "inert",
+    "reason": "the release never continues an activity into a responder",
+    "effect": "the message does nothing when a responder calls it on super, and the release never sends it",
+    "facts": "facts/UIKit/UIResponderUserActivity.md",
+    "source": "the host's own UIKit"
+  },
+  {
+    "api": "-[UIResponder updateUserActivityState:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "inert",
+    "reason": "the release never asks a responder to update its activity",
+    "effect": "the message does nothing when a responder calls it on super, and the release never sends it",
+    "facts": "facts/UIKit/UIResponderUserActivity.md",
+    "source": "the host's own UIKit"
   },
   {
     "api": "-[UIScreen nativeBounds]",
@@ -1086,6 +1144,17 @@
     "status": "absent",
     "reason": "the release presents a popover through UIPopoverController, whose surface is different",
     "effect": "the class is not there; -[UIAlertController popoverPresentationController] answers a stand-in of its own instead"
+  },
+  {
+    "api": "UIResponder.userActivity",
+    "kind": "property",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "inert",
+    "reason": "the release has no Handoff, so nothing takes an activity from a responder",
+    "effect": "the responder keeps the activity it was given and hands it to nobody",
+    "facts": "facts/UIKit/UIResponderUserActivity.md",
+    "source": "the host's own UIKit"
   },
   {
     "api": "UISearchController",

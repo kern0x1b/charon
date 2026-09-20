@@ -925,6 +925,15 @@ static NSString *traits_of(id environment)
             destructive.backgroundColor = nil;
             charon_check(destructive.title == nil && destructive.backgroundColor == nil && [copy.title isEqualToString:@"Delete"], "the title and the colour clear on the action and not on its copy", @"a field differs");
             charon_check(![UITableViewRowAction conformsToProtocol:@protocol(NSSecureCoding)] && [UITableViewRowAction conformsToProtocol:@protocol(NSCopying)], "a row action is copied and not archived", @"the protocols differ");
+            NSUserActivity *activity = [[NSUserActivity alloc] initWithActivityType:@"com.charon.test"];
+            UIView *responder = [[UIView alloc] init];
+            charon_check(responder.userActivity == nil, "a responder has no activity at first", @"it has one");
+            responder.userActivity = activity;
+            [responder updateUserActivityState:activity];
+            [responder restoreUserActivityState:activity];
+            charon_check(responder.userActivity == activity, "a responder keeps the activity it was given and takes the two messages", @"it does not");
+            responder.userActivity = nil;
+            charon_check(responder.userActivity == nil, "and gives it up", @"it did not");
             charon_check(NSClassFromString(@"UIFontDescriptor") == nil, "UIFontDescriptor is not carried", @"the class is there");
             done();
         } copy],

@@ -42,15 +42,15 @@ group() {
     test=$4
     objects=""
     for file in $files; do
-        xcrun clang $target $flags -w -c "$sources/$file" -o "$build/plain/$name-$file.o"
-        objects="$objects $build/plain/$name-$file.o"
+        xcrun clang $target $flags -w -c "$sources/$file" -o "$build/plain/$name-$(basename "$file").o"
+        objects="$objects $build/plain/$name-$(basename "$file").o"
     done
     renames "$objects" "$keep" > "$build/$name.flags"
     mkdir -p "$build/$name"
     built=""
     for file in $files; do
-        xcrun clang $target $flags $(cat "$build/$name.flags") -c "$sources/$file" -o "$build/$name/$file.o"
-        built="$built $build/$name/$file.o"
+        xcrun clang $target $flags $(cat "$build/$name.flags") -c "$sources/$file" -o "$build/$name/$(basename "$file").o"
+        built="$built $build/$name/$(basename "$file").o"
     done
     xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/$test" "$harness/check.m" $built $frameworks -o "$build/$name-test"
     if "$build/$name-test" > "$build/$name.log" 2>&1; then result=0; else result=$?; fi
@@ -67,15 +67,15 @@ windowed() {
     test=$4
     objects=""
     for file in $files; do
-        xcrun clang $target $flags -w -c "$sources/$file" -o "$build/plain/$name-$file.o"
-        objects="$objects $build/plain/$name-$file.o"
+        xcrun clang $target $flags -w -c "$sources/$file" -o "$build/plain/$name-$(basename "$file").o"
+        objects="$objects $build/plain/$name-$(basename "$file").o"
     done
     renames "$objects" "$keep" > "$build/$name.flags"
     mkdir -p "$build/$name"
     built=""
     for file in $files; do
-        xcrun clang $target $flags $(cat "$build/$name.flags") -c "$sources/$file" -o "$build/$name/$file.o"
-        built="$built $build/$name/$file.o"
+        xcrun clang $target $flags $(cat "$build/$name.flags") -c "$sources/$file" -o "$build/$name/$(basename "$file").o"
+        built="$built $build/$name/$(basename "$file").o"
     done
     bundle="$build/$name.app"
     rm -rf "$bundle"
@@ -100,6 +100,7 @@ group bars "UINavigationBar+BarAppearance.m UISearchBar+BarStyle.m UIToolbar+Bar
 group viewmisc "UIView+MaskView.m UIView+PerformWithoutAnimation.m UIView+SemanticContentAttribute.m UIViewController+ViewLoading.m UIViewController+PreferredContentSize.m UIViewController+StatusBarAppearance.m" "" viewmisc_test.m
 group rowaction "UITableViewRowAction.m" "rowActionWithStyle style title setTitle backgroundColor setBackgroundColor backgroundEffect setBackgroundEffect" rowaction_test.m
 group visualeffect "UIVisualEffect.m UIVisualEffectView.m" "effectWithStyle effectForBlurEffect initWithEffect effect setEffect contentView addSubview insertSubview initWithFrame" visualeffect_test.m
+group useractivity "../Foundation/NSUserActivity.m" "*" useractivity_test.m
 windowed snapshots "UIView+Snapshots.m" "" snapshots_test.m
 
 # the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation
