@@ -742,3 +742,8 @@ deceleration does not take it. `swipeui.m` is the example.
   which the windowed `listcell` group of `host/uikit2/run.sh` records from the host's UIKit (the `listvalues` group compares the values on 35000 more);
   a real list layout is put on screen and its rows, header, selection, editing and default backgrounds are measured; the members that are not carried
   are asked whether they answer. It writes `/private/var/backports/lists.log` and `lists.done`.
+
+`device/wake.m` is a tool that wakes and unlocks a device that has no passcode, by sending the Home button and a slide along the
+unlock track through the HID event system. An application that is launched while the screen is locked comes up inactive
+(`applicationState` 1) and receives no touch, and `charon-launch` is refused with "device locked" in
+`/private/var/charon/events.log`; a gesture test runs `wake` first and checks that the application is active before it touches.
