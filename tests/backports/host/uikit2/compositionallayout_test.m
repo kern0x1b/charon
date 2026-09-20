@@ -318,7 +318,7 @@ void charon_windowed_run(UIWindow *window)
     NSString *(^head)(NSArray *) = ^NSString *(NSArray *answers) { return [[answers subarrayWithRange:NSMakeRange(0, 4)] componentsJoinedByString:@"|"]; };
     CHECK_EQUAL(head(systemEnvironment), @"0 320 480 320 480 1|1 320 480 320 480 1|320 80 314 76 2 1|1", "the system gives the environments the device test expects");
     CHECK_EQUAL(head(portEnvironment), head(systemEnvironment), "the port gives the same environments");
-    CHECK_EQUAL([[portEnvironment subarrayWithRange:NSMakeRange(4, 2)] componentsJoinedByString:@"|"], @"1|0", "the port lays a section that scrolls the other way out plainly and never calls its handler");
+    CHECK_EQUAL([[portEnvironment subarrayWithRange:NSMakeRange(4, 2)] componentsJoinedByString:@"|"], @"0|1", "the port nests a section that scrolls the other way and calls its handler");
     CHECK_EQUAL([[systemEnvironment subarrayWithRange:NSMakeRange(4, 2)] componentsJoinedByString:@"|"], @"0|1", "the system nests such a section and calls the handler");
     NSMutableArray *answers = [NSMutableArray array];
     BOOL all = YES;

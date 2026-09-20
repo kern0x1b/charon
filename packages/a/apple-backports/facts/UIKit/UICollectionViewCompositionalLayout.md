@@ -22,7 +22,7 @@ Sizes and rounding.
 - A layout is solved for the size of the collection view's bounds. A fraction is a fraction of the width, or of the height, of
   the box its item is laid out in, and the answer is rounded **down** to a pixel of the screen (half a point at scale 2), where
   a value that is a hair below a pixel counts as on it. Positions are rounded to the **nearest** pixel. An absolute length is
-  kept as it is and an estimated one is its estimate.
+  kept as it is and an estimated one is its estimate until the cell has been measured (Self-sizing, below).
 - A section is laid out in the size of the collection view less its content insets. A group of a section is sized in the
   section's width less the insets and the **whole** height when the layout scrolls down, and in the whole width and the height
   less the insets when it scrolls sideways: the size along the scroll axis is not cleared of the insets. A group of a group is
@@ -62,6 +62,10 @@ What a group holds.
   relative to the group's own outer corner, and the group is repeated for the items that are left. An estimated size in a custom
   group says no content insets, as UIKit's does.
 - When a group's height is estimated and its items are not, the group is as tall as its tallest item.
+- A group whose size **along its own axis** is estimated holds exactly one run of its subitems, each once, however much room the
+  estimate leaves, and is as long as what it holds (a vertical group of two subitems of 30 in an estimate of 100 is 65 long, with
+  the spacing); a group of a fixed count holds that count and is as long as what it holds, the count's items each taking their
+  share of the estimate. The last group, with fewer items, is as long as those it has.
 
 Sections and the layout.
 
@@ -100,14 +104,67 @@ Sections and the layout.
   `Invalid section definition. Please specify a valid section definition when content is to be rendered for a section.
   This is a client error.`
 
+## Orthogonal scrolling
+
+Measured against the host's private scroll view of the section (`_UICollectionViewOrthogonalScrollView`), by moving it to the
+offsets of the differential test (`tests/backports/host/uikit2/orthogonal_test.m`: every behavior, four kinds of group and spacing, a header,
+seven offsets each) and comparing the cells that are shown and what the handler is told, with no tolerance.
+
+- A section with a behavior other than none has its groups laid out along the X axis in a row as tall as its tallest group (the
+  section's groups run sideways, sized as in a layout that scrolls sideways), its insets around the row, and boundary items around
+  them that do not scroll. It is as tall as the row, and its offset is the distance the row has moved.
+- The offset runs from zero to the row's width less the viewport's (the collection view's width less the section's insets, but
+  see Group paging centered), and a row that fits does not scroll. An offset set beyond it is clamped; the port's
+  hidden `charon_scrollSection:toOffset:settle:` (used by the tests) is the setter.
+- Continuous: any offset. Continuous group leading boundary and group paging: an offset at rest is a group's leading edge (clamped).
+  Paging: a multiple of the viewport's width, the nearest one, and the end of the row if the offset is at or past it. Group paging
+  centered: a group centered in the viewport, the row's ends given that much room.
+- What a finger does is **not** measured against the host, whose scroll view only takes a real touch: it is the port's own, made to
+  feel as a scroll view does. The offset follows the finger; a drag ends where the finger's speed carries it (a deceleration of
+  0.998 for each millisecond, a scroll view's normal rate) and, for the paging behaviors, settles on the next stop in the drag's
+  direction (a single group or page at most, by a spring); past an end the offset gives with a scroll view's rubber band and returns. A
+  drag begins only in the section, moving more along the row than across it, and the collection view's own scrolling waits for
+  that to be decided; the device test drags with real touches.
+- The handler is called when the layout is solved (for the last section first) and at every change of the offset, with the visible
+  items (cells first, in the order the host gives them, then the supplementary items, then the rest), the offset (only `x` is held to the
+  host) and the section's environment. A visible item has its `frame`, `bounds`, `center`, `alpha`, `zIndex`, `hidden`, `transform`
+  (which is `transform3D`'s two dimensional part, and setting one sets the other), `name` (nil), `indexPath` and its element
+  category and kind. What the handler sets is kept and shown, and is on the same object the next call: the frame follows the
+  center.
+- Nothing is solved again when the offset changes.
+
+## Self-sizing
+
+Measured the same way, with cells of three kinds (`compositional-cases.m`): one of constraints (a label of any number of lines), one of
+frames that answers `sizeThatFits:`, and one that cannot size itself.
+
+- An item whose dimension is estimated is as large as the cell asks for on that axis, in the size the layout gives the other:
+  a cell of constraints by fitting its content view compressed to that size (with the labels wrapping to the width they have been
+  given), a cell of frames by `-sizeThatFits:` asked in the slot's size, and a cell that implements
+  `-preferredLayoutAttributesFittingAttributes:` by what it answers. A cell that cannot size itself keeps the estimate.
+- The item's insets are not taken from the estimated axis. A group's cross axis grows to its tallest item, whose neighbors keep
+  their own heights. A fixed group keeps its size, and its items are measured all the same.
+- Only what is in sight is measured, from the top of the visible items downward, each change of size moving the rest, so an item the
+  measured ones push off screen is not measured; the rest is the estimate; a measured size stays until the layout is invalidated
+  from outside (a reload, a change of the layout's size) or is measured at another width.
+- The count-fixed vertical group divides its estimate among its items and does not measure them.
+- A view is measured after the collection view has placed it (by the view's own layout pass, which is run again); a header or footer
+  the same way, in its kind and index path.
+
 ## What the port cannot do
 
-- **No nested scrolling.** `orthogonalScrollingBehavior` is kept, and every value but none is laid out as a plain section: the
-  groups run along the scroll axis of the layout and are not a scroll view of their own. The first such section says so in the
-  log. `visibleItemsInvalidationHandler` is kept and never called, since UIKit calls it only for such sections, and
-  `NSCollectionLayoutVisibleItem`, which it receives, is never made.
-- **No self-sizing.** iOS 6 asks a cell nothing about its size. An estimated dimension is laid out at its estimate; the first one
-  says so in the log.
+- **Nested scrolling is the port's own.** iOS 6 has no scroll view to nest in a section, so the port moves the section itself: a pan
+  recognizer on the collection view drives an offset for each such section (see Orthogonal scrolling, below). Where it differs from
+  the host: the cells are children of the collection view and not of a scroll view of the section's own, so a cell is not clipped
+  to the section's frame, and one the handler moves entirely off the collection view's bounds is not shown (the host shows it,
+  outside its scroll view's bounds, where nothing can be seen anyway); the offset `y` and the container the handler is given while
+  the section scrolls are the host's scroll view's own (the section's position and a container of its own size), the port gives
+  `(offset, 0)` and the collection view's container; a list of visible items may hold, as the host's does, an item that has just
+  scrolled out, and the port's holds only what is in sight; there is no scroll indicator, and no `orthogonalScrollingProperties`
+  (17.0).
+- **Self-sizing is done by measuring displayed cells** and, of the estimates, only those of items and of the boundary supplementary
+  items (headers and footers) are measured: an estimate on a supplementary item of an item or of a group stays its estimate. A
+  view is measured only after the collection view has laid it out, once for each width (or height) it was measured at.
 - The layout runs left to right: leading is left, and `flipsHorizontallyInOtherLayoutDirection` is not carried.
 - iOS 6's collection view has no invalidation contexts, so a bounds change is answered by `-shouldInvalidateLayoutForBoundsChange:`
   and `-invalidateLayout` only.
@@ -126,8 +183,5 @@ do, nearly all in the situations below, which the fixed layouts do not reach:
 - A nested group whose first item does not fit in it: the port leaves the nested group empty; the host's answer varies.
 - A layout with boundary items whose sections are all empty, and boundary items given offsets in a section with no room.
 - An item whose insets exceed its slot on both sides in a very narrow slot.
-- An estimated size on the axis a group runs along is laid out at its estimate; the host's answer for a vertical group with an
-  estimated height is one group holding every item, and for a horizontal group with an estimated width a group of one item, as it
-  grows the group to its content.
 - The host keeps the pinned positions of sections that are out of sight from the last time they were in sight; the port computes
   them all. Nothing in sight differs, and the differential test only compares what is in sight.

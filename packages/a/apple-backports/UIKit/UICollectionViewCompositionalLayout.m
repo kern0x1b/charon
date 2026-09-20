@@ -155,32 +155,7 @@ static const NSInteger CharonPinnedZIndex = 1000000000;
 
 #pragma mark - Solving
 
-@interface CharonSolvedElement : NSObject {
-@public
-    NSInteger category;
-    NSString *kind;
-    NSIndexPath *indexPath;
-    CGRect frame;
-    NSInteger zIndex;
-    BOOL pinned;
-    NSRectAlignment alignment;
-    CGFloat pinLow;
-    CGFloat pinHigh;
-    BOOL hasOwner;
-    CGRect owner;
-}
-@end
-
 @implementation CharonSolvedElement
-@end
-
-@interface CharonSolvedSection : NSObject {
-@public
-    NSInteger section;
-    CGRect extent;
-    NSMutableArray *elements;
-    CGFloat crossSize;
-}
 @end
 
 @implementation CharonSolvedSection
@@ -204,6 +179,8 @@ static const NSInteger CharonPinnedZIndex = 1000000000;
     NSMutableArray *supplementaries;
     CGPoint slotEdge;
     CGRect owner;
+    BOOL estimatedWidth;
+    BOOL estimatedHeight;
 }
 @end
 
@@ -223,6 +200,7 @@ static const NSInteger CharonPinnedZIndex = 1000000000;
     NSMutableArray *groupSupplementaries;
     BOOL dry;
     BOOL unfit;
+    NSDictionary *measured;
 }
 @end
 
@@ -240,8 +218,6 @@ static const NSInteger CharonPinnedZIndex = 1000000000;
 
 - (CGFloat)resolve:(NSCollectionLayoutDimension *)dimension width:(CGFloat)baseWidth height:(CGFloat)baseHeight
 {
-    if (dimension.isEstimated)
-        charon_layout_say_once(@"estimated", @"UICollectionViewCompositionalLayout: this release has no self-sizing cells, so an estimated dimension is laid out at its estimate.");
     if (dimension.isFractionalWidth)
         return [self floorPixels:dimension.dimension * baseWidth];
     if (dimension.isFractionalHeight)
@@ -329,7 +305,11 @@ static BOOL charon_edge_flexible(NSCollectionLayoutEdgeSpacing *edges, NSInteger
     };
     NSUInteger chosen = 0;
     CGFloat base = main;
-    if (fixedCount > 0) {
+    BOOL mainEstimated = horizontal ? group.layoutSize.widthDimension.isEstimated : group.layoutSize.heightDimension.isEstimated;
+    if (fixedCount == 0 && mainEstimated) {
+        chosen = cycle;
+        base = MAX(0, main - (chosen - 1) * between);
+    } else if (fixedCount > 0) {
         chosen = (NSUInteger)fixedCount;
         base = MAX(0, main - (chosen - 1) * between);
     } else if (!widthFactorCross) {
@@ -411,6 +391,47 @@ static BOOL charon_edge_flexible(NSCollectionLayoutEdgeSpacing *edges, NSInteger
     return slots;
 }
 
+- (NSArray *)measuredSlots:(NSArray *)slots group:(NSCollectionLayoutGroup *)group horizontal:(BOOL)horizontal first:(NSInteger)first found:(BOOL *)found
+{
+    for (CharonSlot *slot in slots) {
+        if ([slot->item isKindOfClass:[NSCollectionLayoutGroup class]])
+            return slots;
+    }
+    BOOL counted = group.charon_repeatCount > 0;
+    NSMutableArray *result = [NSMutableArray arrayWithCapacity:slots.count];
+    CGFloat shift = 0;
+    for (NSUInteger index = 0; index < slots.count; index++) {
+        CharonSlot *slot = slots[index];
+        CharonSlot *copy = [[CharonSlot alloc] init];
+        copy->item = slot->item;
+        copy->slot = slot->slot;
+        copy->edge = slot->edge;
+        NSValue *value = measured[[NSString stringWithFormat:@"%ld/%ld", (long)sectionIndex, (long)(first + (NSInteger)index)]];
+        if (horizontal)
+            copy->slot.origin.x += shift;
+        else
+            copy->slot.origin.y += shift;
+        if (value) {
+            CGSize size = value.CGSizeValue;
+            BOOL width = slot->item.layoutSize.widthDimension.isEstimated && !(horizontal && counted);
+            BOOL height = slot->item.layoutSize.heightDimension.isEstimated && !(!horizontal && counted);
+            if (width) {
+                copy->slot.size.width = size.width;
+                if (horizontal)
+                    shift += size.width - slot->slot.size.width;
+            }
+            if (height) {
+                copy->slot.size.height = size.height;
+                if (!horizontal)
+                    shift += size.height - slot->slot.size.height;
+            }
+            *found = *found || width || height;
+        }
+        [result addObject:copy];
+    }
+    return result;
+}
+
 - (NSString *)counterKey:(NSString *)kind
 {
     return [NSString stringWithFormat:@"%ld/%@", (long)sectionIndex, kind];
@@ -419,6 +440,8 @@ static BOOL charon_edge_flexible(NSCollectionLayoutEdgeSpacing *edges, NSInteger
 - (CGRect)supplementaryFrame:(NSCollectionLayoutSupplementaryItem *)supplementary relativeTo:(CGRect)frame base:(CGSize)base
 {
     NSCollectionLayoutSize *layoutSize = supplementary.layoutSize;
+    if (layoutSize.widthDimension.isEstimated || layoutSize.heightDimension.isEstimated)
+        charon_layout_say_once(@"estimated-supplementary", @"UICollectionViewCompositionalLayout: a supplementary item of an item or of a group is laid out at its estimate; only the boundary items of a section or the layout are measured.");
     CGFloat width = [self resolve:layoutSize.widthDimension width:base.width height:base.height];
     CGFloat height = [self resolve:layoutSize.heightDimension width:base.width height:base.height];
     NSCollectionLayoutAnchor *containerAnchor = supplementary.containerAnchor, *itemAnchor = supplementary.itemAnchor ?: supplementary.containerAnchor;
@@ -490,6 +513,10 @@ static BOOL charon_edge_flexible(NSCollectionLayoutEdgeSpacing *edges, NSInteger
             unfit = unfit || top;
             return actual;
         }
+        BOOL sized = NO;
+        BOOL mainEstimatedGroup = horizontal ? group.layoutSize.widthDimension.isEstimated : group.layoutSize.heightDimension.isEstimated;
+        if (measured.count > 0 && !dry)
+            slots = [self measuredSlots:slots group:group horizontal:horizontal first:(NSInteger)items.count found:&sized];
         CGFloat crossExtent = 0;
         for (CharonSlot *slot in slots)
             crossExtent = MAX(crossExtent, horizontal ? CGRectGetMaxY(slot->slot) : CGRectGetMaxX(slot->slot));
@@ -515,10 +542,17 @@ static BOOL charon_edge_flexible(NSCollectionLayoutEdgeSpacing *edges, NSInteger
                     ran = YES;
             } else {
                 NSDirectionalEdgeInsets itemInsets = item.contentInsets;
+                BOOL estimatedWidth = item.layoutSize.widthDimension.isEstimated, estimatedHeight = item.layoutSize.heightDimension.isEstimated;
+                if (estimatedWidth)
+                    itemInsets.leading = itemInsets.trailing = 0;
+                if (estimatedHeight)
+                    itemInsets.top = itemInsets.bottom = 0;
                 CGRect body = CGRectMake(frame.origin.x + itemInsets.leading, frame.origin.y + itemInsets.top, fabs(frame.size.width - itemInsets.leading - itemInsets.trailing),
                                          fabs(frame.size.height - itemInsets.top - itemInsets.bottom));
                 CharonLeaf *leaf = [[CharonLeaf alloc] init];
                 leaf->frame = body;
+                leaf->estimatedWidth = estimatedWidth;
+                leaf->estimatedHeight = estimatedHeight;
                 leaf->slotEdge = CGPointMake(CGRectGetMaxX(body) + charon_edge_min(item.edgeSpacing, 2), CGRectGetMaxY(body) + charon_edge_min(item.edgeSpacing, 3));
                 leaf->supplementaries = [NSMutableArray array];
                 [items addObject:leaf];
@@ -529,9 +563,20 @@ static BOOL charon_edge_flexible(NSCollectionLayoutEdgeSpacing *edges, NSInteger
                 (*remaining)--;
             }
         }
+        if (mainEstimatedGroup) {
+            CGFloat used = 0;
+            for (NSUInteger index = firstLeaf; index < items.count; index++) {
+                CharonLeaf *leaf = items[index];
+                used = MAX(used, horizontal ? leaf->slotEdge.x - innerOrigin.x : leaf->slotEdge.y - innerOrigin.y);
+            }
+            if (horizontal)
+                actual.width = used + insets.leading + insets.trailing;
+            else
+                actual.height = used + insets.top + insets.bottom;
+        }
         if (partial)
             *partial = ran;
-        if (ran && top) {
+        if (ran && top && !mainEstimatedGroup) {
             CGPoint used = CGPointZero, pattern = CGPointZero;
             for (NSUInteger index = firstLeaf; index < items.count; index++) {
                 CharonLeaf *leaf = items[index];
@@ -656,6 +701,14 @@ static CharonAlignmentParts charon_alignment_parts(NSRectAlignment alignment)
         NSCollectionLayoutSize *layoutSize = boundary.layoutSize;
         CGSize size = CGSizeMake([self resolve:layoutSize.widthDimension width:baseWidth height:baseHeight], [self resolve:layoutSize.heightDimension width:baseWidth height:baseHeight]);
         CharonAlignmentParts parts = charon_alignment_parts(boundary.alignment);
+        NSIndexPath *boundaryPath = fixedIndexPath ?: [NSIndexPath indexPathForItem:0 inSection:section];
+        NSValue *known = measured[[NSString stringWithFormat:@"b/%@/%ld/%ld", boundary.elementKind, (long)boundaryPath.section, (long)boundaryPath.item]];
+        if (known) {
+            if (layoutSize.widthDimension.isEstimated)
+                size.width = known.CGSizeValue.width;
+            if (layoutSize.heightDimension.isEstimated)
+                size.height = known.CGSizeValue.height;
+        }
         if (parts.horizontal == 2)
             size = CGSizeZero;
         if (boundary.extendsBoundary && vertical && parts.horizontal != 2 && parts.vertical == 0)
@@ -713,6 +766,10 @@ static CharonAlignmentParts charon_alignment_parts(NSRectAlignment alignment)
         element->alignment = boundary.alignment;
         element->pinned = boundary.pinToVisibleBounds && (vertical ? parts.vertical != 0 && parts.vertical != 2 : parts.horizontal != 0 && parts.horizontal != 2);
         element->indexPath = fixedIndexPath ?: [NSIndexPath indexPathForItem:0 inSection:section];
+        if (parts.horizontal != 2) {
+            element->estimatedWidth = boundary.layoutSize.widthDimension.isEstimated;
+            element->estimatedHeight = boundary.layoutSize.heightDimension.isEstimated;
+        }
         [placed addObject:element];
     }
     for (CharonSolvedElement *element in placed) {
@@ -736,12 +793,16 @@ static CharonAlignmentParts charon_alignment_parts(NSRectAlignment alignment)
     if (!definition || !definition.charon_group)
         [NSException raise:NSInternalInconsistencyException format:@"Invalid section definition. Please specify a valid section definition when content is to be rendered for a section. This is a client error."];
     charon_check_unique_kinds(definition);
-    if (definition.orthogonalScrollingBehavior != UICollectionLayoutSectionOrthogonalScrollingBehaviorNone)
-        charon_layout_say_once(@"orthogonal", @"UICollectionViewCompositionalLayout: this release has no nested scrolling, so a section with an orthogonal scrolling behavior is laid out as an ordinary section.");
+    BOOL restoreVertical = vertical;
+    BOOL orthogonal = definition.orthogonalScrollingBehavior != UICollectionLayoutSectionOrthogonalScrollingBehaviorNone && vertical;
+    if (definition.orthogonalScrollingBehavior != UICollectionLayoutSectionOrthogonalScrollingBehaviorNone && !vertical)
+        charon_layout_say_once(@"orthogonal", @"UICollectionViewCompositionalLayout: a section that scrolls across a layout that scrolls sideways is laid out as an ordinary section.");
     NSArray *boundaries = definition.boundarySupplementaryItems;
     if (itemCount == 0 && boundaries.count == 0)
         return nil;
     sectionIndex = section;
+    if (orthogonal)
+        vertical = NO;
     NSDirectionalEdgeInsets insets = definition.contentInsets;
     CGSize effective = CGSizeMake(container.width - insets.leading - insets.trailing, container.height - insets.top - insets.bottom);
     CGSize groupContainer = vertical ? CGSizeMake(effective.width, container.height) : CGSizeMake(container.width, effective.height);
@@ -756,6 +817,7 @@ static CharonAlignmentParts charon_alignment_parts(NSRectAlignment alignment)
     CGFloat cursor = mainStart;
     NSInteger remaining = itemCount, groups = 0;
     CGFloat widest = 0;
+    NSMutableArray *leads = [NSMutableArray array], *widths = [NSMutableArray array];
     CGFloat between = definition.interGroupSpacing;
     NSCollectionLayoutEdgeSpacing *edges = group.edgeSpacing;
     while (remaining > 0) {
@@ -785,6 +847,8 @@ static CharonAlignmentParts charon_alignment_parts(NSRectAlignment alignment)
             break;
         CGRect groupFrame = CGRectMake(origin.x, origin.y, actual.width, actual.height);
         widest = MAX(widest, vertical ? actual.width : actual.height);
+        [leads addObject:@(origin.x - insets.leading)];
+        [widths addObject:@(actual.width)];
         for (NSUInteger index = firstLeaf; index < itemLeaves.count; index++)
             ((CharonLeaf *)itemLeaves[index])->owner = groupFrame;
         for (NSUInteger index = firstSupplement; index < groupSupplementaries.count; index++) {
@@ -796,8 +860,18 @@ static CharonAlignmentParts charon_alignment_parts(NSRectAlignment alignment)
         cursor += mainLead + mainSize + mainTrail + between;
         groups++;
     }
-    if (groups == 0 && boundaries.count == 0)
+    if (groups == 0 && boundaries.count == 0) {
+        vertical = restoreVertical;
         return nil;
+    }
+    CGFloat contentWidth = groups > 0 ? cursor - between - insets.leading : 0;
+    CGFloat rowHeight = widest;
+    if (orthogonal) {
+        vertical = restoreVertical;
+        widest = 0;
+        cursor = insets.top + rowHeight + between;
+        mainStart = insets.top;
+    }
     CGFloat groupsEnd = groups > 0 ? cursor - between : mainStart;
     CGFloat mainSize = groupsEnd + (vertical ? insets.bottom : insets.trailing);
     CGRect region = vertical ? CGRectMake(0, 0, container.width, mainSize) : CGRectMake(0, 0, mainSize, container.height);
@@ -810,6 +884,15 @@ static CharonAlignmentParts charon_alignment_parts(NSRectAlignment alignment)
     CharonSolvedSection *solved = [[CharonSolvedSection alloc] init];
     solved->section = section;
     solved->crossSize = widest;
+    if (orthogonal) {
+        solved->orthogonal = YES;
+        solved->viewport = CGRectMake(insets.leading, extents[0] + insets.top, effective.width, rowHeight);
+        solved->contentWidth = contentWidth;
+        solved->groupLeads = leads;
+        solved->groupWidths = widths;
+        solved->behavior = definition.orthogonalScrollingBehavior;
+        solved->handler = [definition.visibleItemsInvalidationHandler copy];
+    }
     solved->extent = vertical ? CGRectMake(0, 0, container.width, total) : CGRectMake(0, 0, total, container.height);
     BOOL raised = definition.decorationItems.count > 0;
     NSInteger index = 0;
@@ -822,6 +905,9 @@ static CharonAlignmentParts charon_alignment_parts(NSRectAlignment alignment)
         element->indexPath = [NSIndexPath indexPathForItem:index inSection:section];
         element->hasOwner = YES;
         element->owner = CGRectOffset(leaf->owner, shiftX, shiftY);
+        element->scrolls = orthogonal;
+        element->estimatedWidth = leaf->estimatedWidth;
+        element->estimatedHeight = leaf->estimatedHeight;
         [ordered addObject:element];
         NSMutableArray *found = [NSMutableArray array];
         [self addSupplementaries:leaf->supplementaries anchoredTo:leaf->frame base:leaf->frame.size into:found];
@@ -829,6 +915,7 @@ static CharonAlignmentParts charon_alignment_parts(NSRectAlignment alignment)
             supplementary->frame = CGRectOffset(supplementary->frame, shiftX, shiftY);
             supplementary->hasOwner = YES;
             supplementary->owner = element->owner;
+            supplementary->scrolls = orthogonal;
             [ordered addObject:supplementary];
         }
         index++;
@@ -836,6 +923,7 @@ static CharonAlignmentParts charon_alignment_parts(NSRectAlignment alignment)
     for (CharonSolvedElement *supplementary in groupSupplementaries) {
         supplementary->frame = CGRectOffset(supplementary->frame, shiftX, shiftY);
         supplementary->owner = CGRectOffset(supplementary->owner, shiftX, shiftY);
+        supplementary->scrolls = orthogonal;
         [ordered addObject:supplementary];
     }
     for (CharonSolvedElement *boundary in elements) {
@@ -894,6 +982,11 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
     BOOL _keepSolution;
     BOOL _boundsOnlyChange;
     BOOL _hasPinned;
+    CharonOrthogonalController *_orthogonal;
+    NSMutableDictionary *_measured;
+    NSMutableDictionary *_measuredAgainst;
+    NSMutableArray *_pending;
+    BOOL _measuring;
 }
 
 - (instancetype)initCharonWithSection:(NSCollectionLayoutSection *)section provider:(UICollectionViewCompositionalLayoutSectionProvider)provider
@@ -940,6 +1033,10 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
 
 - (void)invalidateLayout
 {
+    if (!_boundsOnlyChange && !_measuring) {
+        _measured = [NSMutableDictionary dictionary];
+        _measuredAgainst = [NSMutableDictionary dictionary];
+    }
     if (_boundsOnlyChange && _solved) {
         _keepSolution = YES;
     } else {
@@ -985,7 +1082,13 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
     _contentSize = CGSizeZero;
     if (!view)
         return;
+    [self charon_solveView:view];
+}
+
+- (void)charon_solveView:(UICollectionView *)view
+{
     CharonSolver *solver = [[CharonSolver alloc] init];
+    solver->measured = _measured;
     solver->scale = _scale = [self screenScale];
     solver->container = view.bounds.size;
     solver->vertical = _vertical = _configuration.scrollDirection == UICollectionViewScrollDirectionVertical;
@@ -1053,6 +1156,109 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
         cross = MAX(cross, solved->crossSize);
     _contentSize = _vertical ? CGSizeMake([self roundedPixels:cross], [self roundedPixels:total]) : CGSizeMake([self roundedPixels:total], [self roundedPixels:cross]);
     _solved = YES;
+    BOOL any = NO;
+    for (CharonSolvedSection *solved in _solvedSections)
+        any = any || solved->orthogonal;
+    if (any && !_orthogonal)
+        _orthogonal = [[CharonOrthogonalController alloc] initWithLayout:self];
+    [_orthogonal updateSections:_solvedSections view:view environment:environment];
+}
+
+- (void)charon_measureView:(UICollectionReusableView *)view attributes:(UICollectionViewLayoutAttributes *)attributes
+{
+    if (_measuring || attributes.representedElementCategory == UICollectionElementCategoryDecorationView)
+        return;
+    BOOL cell = attributes.representedElementCategory == UICollectionElementCategoryCell;
+    NSString *kind = cell ? @"" : (attributes.representedElementKind ?: @"");
+    NSString *key = [NSString stringWithFormat:@"%d/%@/%ld/%ld", cell ? 0 : 1, kind, (long)attributes.indexPath.section, (long)attributes.indexPath.item];
+    if (!_pending)
+        _pending = [NSMutableArray array];
+    for (NSDictionary *entry in _pending) {
+        if ([entry[@"key"] isEqual:key])
+            return;
+    }
+    [_pending addObject:@{@"key" : key, @"path" : attributes.indexPath, @"kind" : kind, @"cell" : @(cell), @"view" : [NSValue valueWithNonretainedObject:view]}];
+}
+
+- (BOOL)charon_settleMeasurements
+{
+    NSArray *entries = [_pending sortedArrayUsingComparator:^NSComparisonResult(NSDictionary *a, NSDictionary *b) {
+        NSComparisonResult order = [@([b[@"cell"] boolValue]) compare:@([a[@"cell"] boolValue])];
+        return order != NSOrderedSame ? order : [a[@"path"] compare:b[@"path"]];
+    }];
+    _pending = nil;
+    if (entries.count == 0 || !_solved)
+        return NO;
+    UICollectionView *view = self.collectionView;
+    BOOL changed = NO;
+    NSUInteger position = 0;
+    for (NSDictionary *entry in entries) {
+        position++;
+        NSIndexPath *path = entry[@"path"];
+        BOOL cell = [entry[@"cell"] boolValue];
+        NSString *kind = cell ? nil : entry[@"kind"];
+        UICollectionReusableView *shown = cell ? [view cellForItemAtIndexPath:path] : [entry[@"view"] nonretainedObjectValue];
+        CharonSolvedElement *element = _lookup[[self keyForCategory:cell ? 0 : 1 kind:kind indexPath:path]];
+        if (!shown || !shown.superview || !element)
+            continue;
+        CGRect frame = element->scrolls ? [_orthogonal shiftedFrame:element->frame section:path.section] : element->frame;
+        if (!CGRectIntersectsRect(frame, view.bounds))
+            continue;
+        if ([self charon_measureView:shown element:element kind:kind]) {
+            changed = YES;
+            if (position < entries.count)
+                [self charon_solveView:view];
+        }
+    }
+    if (changed) {
+        _measuring = YES;
+        [self invalidateLayout];
+        _measuring = NO;
+    }
+    return changed;
+}
+
+- (BOOL)charon_measureView:(UICollectionReusableView *)view element:(CharonSolvedElement *)element kind:(NSString *)kind
+{
+    if (_measuring || !_solved || !(element->estimatedWidth || element->estimatedHeight))
+        return NO;
+    if (!_measured) {
+        _measured = [NSMutableDictionary dictionary];
+        _measuredAgainst = [NSMutableDictionary dictionary];
+    }
+    NSString *key = kind ? [NSString stringWithFormat:@"b/%@/%ld/%ld", kind, (long)element->indexPath.section, (long)element->indexPath.item]
+                         : [NSString stringWithFormat:@"%ld/%ld", (long)element->indexPath.section, (long)element->indexPath.item];
+    CGFloat fixed = element->estimatedWidth ? (element->estimatedHeight ? 0 : element->frame.size.height) : element->frame.size.width;
+    NSNumber *against = _measuredAgainst[key];
+    if (against && fabs(against.doubleValue - fixed) < 0.01)
+        return NO;
+    _measuring = YES;
+    CGSize size = charon_fit_size(view, element->indexPath, kind, element->frame.size, element->estimatedWidth, element->estimatedHeight, _scale);
+    _measuring = NO;
+    _measured[key] = [NSValue valueWithCGSize:size];
+    _measuredAgainst[key] = @(fixed);
+    return fabs(size.width - element->frame.size.width) > 0.01 || fabs(size.height - element->frame.size.height) > 0.01;
+}
+
+- (void)charon_offsetsDidChange
+{
+    _boundsOnlyChange = YES;
+    [self invalidateLayout];
+}
+
+- (void)charon_scrollSection:(NSInteger)section toOffset:(CGFloat)offset settle:(BOOL)settle
+{
+    [_orthogonal scrollSection:section toOffset:offset settle:settle];
+}
+
+- (CGFloat)charon_offsetOfSection:(NSInteger)section
+{
+    return [_orthogonal offsetOfSection:section];
+}
+
+- (void)dealloc
+{
+    [_orthogonal detach];
 }
 
 - (void)referenceInsets:(NSInteger)reference lead:(CGFloat *)lead trail:(CGFloat *)trail
@@ -1072,6 +1278,7 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
     if (shift == 0)
         return;
     CGFloat dx = _vertical ? shift : 0, dy = _vertical ? 0 : shift;
+    solved->viewport = CGRectOffset(solved->viewport, dx, dy);
     for (CharonSolvedElement *element in solved->elements) {
         element->frame = CGRectOffset(element->frame, dx, dy);
         element->owner = CGRectOffset(element->owner, dx, dy);
@@ -1098,6 +1305,7 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
 {
     CGFloat dx = _vertical ? 0 : shift, dy = _vertical ? shift : 0;
     solved->extent = CGRectOffset(solved->extent, dx, dy);
+    solved->viewport = CGRectOffset(solved->viewport, dx, dy);
     for (CharonSolvedElement *element in solved->elements) {
         element->frame = CGRectOffset(element->frame, dx, dy);
         element->owner = CGRectOffset(element->owner, dx, dy);
@@ -1124,10 +1332,16 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
 - (UICollectionViewLayoutAttributes *)attributesForElement:(CharonSolvedElement *)element
 {
     UICollectionViewLayoutAttributes *attributes;
-    if (element->category == 0)
-        attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:element->indexPath];
-    else if (element->category == 1)
-        attributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:element->kind withIndexPath:element->indexPath];
+    if (element->category == 0) {
+        attributes = [CharonCompositionalAttributes layoutAttributesForCellWithIndexPath:element->indexPath];
+        if (element->estimatedWidth || element->estimatedHeight)
+            [(CharonCompositionalAttributes *)attributes setCharonLayout:self];
+    }
+    else if (element->category == 1) {
+        attributes = [CharonCompositionalAttributes layoutAttributesForSupplementaryViewOfKind:element->kind withIndexPath:element->indexPath];
+        if (element->estimatedWidth || element->estimatedHeight)
+            [(CharonCompositionalAttributes *)attributes setCharonLayout:self];
+    }
     else
         attributes = [UICollectionViewLayoutAttributes layoutAttributesForDecorationViewOfKind:element->kind withIndexPath:element->indexPath];
     CGRect frame = element->frame;
@@ -1150,6 +1364,8 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
     }
     attributes.frame = frame;
     attributes.zIndex = z;
+    if (element->scrolls)
+        [_orthogonal applyToAttributes:attributes element:element];
     return attributes;
 }
 
@@ -1168,13 +1384,21 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
                 [found addObject:[self attributesForElement:element]];
                 continue;
             }
-            if (flat || (element->hasOwner && (element->owner.size.width <= 0 || element->owner.size.height <= 0 || !CGRectIntersectsRect(element->owner, clipped))))
-                continue;
-            if (element->pinned || CGRectIntersectsRect(element->frame, clipped)) {
-                UICollectionViewLayoutAttributes *attributes = [self attributesForElement:element];
-                if (!CGRectIntersectsRect(attributes.frame, clipped))
+            CGRect ownerNow = element->owner, frameNow = element->frame;
+            if (element->scrolls) {
+                NSInteger own = element->indexPath.section;
+                frameNow = [_orthogonal shiftedFrame:frameNow section:own];
+                ownerNow = [_orthogonal shiftedFrame:ownerNow section:own];
+                if (![_orthogonal viewportShows:frameNow section:own])
                     continue;
-                if (element->category == 0 && element->hasOwner && !charon_within_owner(attributes.frame, element->owner, clipped))
+            }
+            if (flat || (element->hasOwner && (ownerNow.size.width <= 0 || ownerNow.size.height <= 0 || !CGRectIntersectsRect(ownerNow, clipped))))
+                continue;
+            if (element->pinned || CGRectIntersectsRect(frameNow, clipped)) {
+                UICollectionViewLayoutAttributes *attributes = [self attributesForElement:element];
+                if (!element->scrolls && !CGRectIntersectsRect(attributes.frame, clipped))
+                    continue;
+                if (element->category == 0 && element->hasOwner && !element->scrolls && !charon_within_owner(attributes.frame, element->owner, clipped))
                     continue;
                 [found addObject:attributes];
             }

@@ -53,9 +53,9 @@ Source: the host's own UIKit under Mac Catalyst (macOS 27.0), asked each questio
 - `+[NSCollectionLayoutGroup horizontalGroupWithLayoutSize:repeatingSubitem:count:]` and its vertical twin (16.0),
   `supplementaryContentInsetsReference` (16.0) and `orthogonalScrollingProperties` (17.0): they belong to later releases.
 - The host answers `-setSupplementaryItems:` on an item too, which the header declares read-only; the port does not.
-- `orthogonalScrollingBehavior` and `visibleItemsInvalidationHandler` are kept and never acted on: see the layout's facts.
-- `NSCollectionLayoutVisibleItem` is a protocol nothing here adopts, since the only place it reaches an application is the
-  invalidation handler of a section that scrolls the other way.
+- `orthogonalScrollingBehavior` and `visibleItemsInvalidationHandler` are acted on: see Orthogonal scrolling in the layout's facts.
+- `NSCollectionLayoutVisibleItem` is adopted by an object of the port's own that the handler is given, with the members the header
+  has.
 
 ## Where the port differs
 

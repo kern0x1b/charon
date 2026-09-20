@@ -1,8 +1,12 @@
 #import <UIKit/UIKit.h>
 #include <dlfcn.h>
+#import <objc/message.h>
 #import "check.h"
 #import "compositional-cases.m"
+#import "gesture.h"
 #import "compositional-expectations.h"
+#import "compositional-sized-expectations.h"
+#import "compositional-orthogonal-expectations.h"
 
 static NSString *const results_folder = @"/private/var/backports";
 
@@ -26,9 +30,16 @@ static NSString *const results_folder = @"/private/var/backports";
 {
     @try {
         [self run];
+        [self runGestures:^{ [self report]; }];
+        return;
     } @catch (NSException *exception) {
         charon_check(NO, "the checks raise no exception", [NSString stringWithFormat:@"%@: %@", exception.name, exception.reason]);
     }
+    [self report];
+}
+
+- (void)report
+{
     NSString *summary = [NSString stringWithFormat:@"%@ checks=%d failures=%d\n", charon_failures ? @"FAIL" : @"ok", charon_checks, charon_failures];
     [summary writeToFile:[results_folder stringByAppendingPathComponent:@"compositional.done"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];
 }
@@ -65,8 +76,42 @@ static NSString *const results_folder = @"/private/var/backports";
         charon_check(NO, name.UTF8String, detail);
     }
     CHECK(wrong == 0, "all recorded layouts are laid out as the system does");
+    [self checkSized:recorded kit:kit];
+    [self checkOrthogonal:recorded kit:kit];
     [self checkEnvironments];
     [self checkHonesty];
+}
+
+- (void)checkSized:(BOOL)recorded kit:(CompositionalKit)kit
+{
+    CHECK(sizeof compositional_sized_expectations / sizeof compositional_sized_expectations[0] == compositional_sized_count(), "there is one recorded answer for every self-sizing layout");
+    size_t wrong = 0;
+    for (NSUInteger index = 0; recorded && index < compositional_sized_count(); index++) {
+        NSString *actual = compositional_sized_dump(kit, index, self.window);
+        NSString *expected = @(compositional_sized_expectations[index]);
+        if ([actual isEqualToString:expected])
+            continue;
+        wrong++;
+        NSString *name = [NSString stringWithFormat:@"self-sizing %@ is laid out as the system does", compositional_sized_name(index)];
+        charon_check(NO, name.UTF8String, [NSString stringWithFormat:@"\n    device %@\n    system %@", actual, expected]);
+    }
+    CHECK(wrong == 0, "all estimated dimensions are measured from the cells as the system measures them");
+}
+
+- (void)checkOrthogonal:(BOOL)recorded kit:(CompositionalKit)kit
+{
+    NSArray *actual = compositional_orthogonal_lines(kit, self.window, NO);
+    CHECK(actual.count == sizeof compositional_orthogonal_expectations / sizeof compositional_orthogonal_expectations[0], "there is one recorded answer for every scripted offset of a section that scrolls the other way");
+    size_t wrong = 0;
+    for (NSUInteger index = 0; recorded && index < MIN(actual.count, sizeof compositional_orthogonal_expectations / sizeof compositional_orthogonal_expectations[0]); index++) {
+        NSString *expected = @(compositional_orthogonal_expectations[index]);
+        if ([actual[index] isEqualToString:expected])
+            continue;
+        wrong++;
+        NSString *name = [NSString stringWithFormat:@"orthogonal %@ is as the system's", [expected substringToIndex:MIN(40u, (unsigned)expected.length)]];
+        charon_check(NO, name.UTF8String, [NSString stringWithFormat:@"\n    device %@\n    system %@", actual[index], expected]);
+    }
+    CHECK(wrong == 0, "every behavior of a section that scrolls the other way shows, at every scripted offset, the cells and the handler arguments the system shows");
 }
 
 - (void)checkEnvironments
@@ -117,9 +162,126 @@ static NSString *const results_folder = @"/private/var/backports";
     orthogonal.decorations = @[];
     orthogonal.size = CGSizeMake(320, 480);
     NSString *flat = compositional_dump(orthogonal, self.window);
-    CHECK([flat rangeOfString:@"0 - 0.2 0 40 160 40"].location != NSNotFound, "a section that scrolls the other way is laid out as an ordinary section");
-    CHECK(handled == 0 && section.visibleItemsInvalidationHandler != nil && section.orthogonalScrollingBehavior == UICollectionLayoutSectionOrthogonalScrollingBehaviorPaging,
-          "its behavior and its handler are kept, and the handler is never called");
+    CHECK([flat rangeOfString:@"0 - 0.2 0 40 160 40"].location == NSNotFound, "a section that scrolls the other way is not laid out as an ordinary section");
+    CHECK(handled >= 1 && section.visibleItemsInvalidationHandler != nil && section.orthogonalScrollingBehavior == UICollectionLayoutSectionOrthogonalScrollingBehaviorPaging,
+          "its behavior and its handler are kept, and the handler is called");
+}
+
+static UICollectionView *drag_view;
+static UICollectionViewLayout *drag_layout;
+static NSMutableArray *drag_offsets;
+static CGFloat drag_before;
+
+static CGFloat drag_section(NSInteger section)
+{
+    return ((CGFloat (*)(id, SEL, NSInteger))objc_msgSend)(drag_layout, NSSelectorFromString(@"charon_offsetOfSection:"), section);
+}
+
+- (void)useDragView:(NSInteger)behavior
+{
+    gesture_step(0.3, ^{
+        K = compositional_kit(@"");
+        NSCollectionLayoutSection *(^section)(NSInteger, NSInteger) = ^NSCollectionLayoutSection *(NSInteger index, NSInteger mode) {
+            if (index == 1) {
+                NSCollectionLayoutSection *list = SEC(VG(FW(1), AB(100), @[IT(FW(1), FH(1))]));
+                return list;
+            }
+            NSCollectionLayoutSection *row = SEC(HG(AB(200), AB(100), @[IT(FW(1), FH(1))]));
+            row.orthogonalScrollingBehavior = (UICollectionLayoutSectionOrthogonalScrollingBehavior)mode;
+            row.interGroupSpacing = 10;
+            row.visibleItemsInvalidationHandler = ^(NSArray *items, CGPoint offset, id<NSCollectionLayoutEnvironment> environment) {
+                [drag_offsets addObject:@(offset.x)];
+            };
+            return row;
+        };
+        drag_offsets = [NSMutableArray array];
+        drag_layout = [[UICollectionViewCompositionalLayout alloc] initWithSectionProvider:^NSCollectionLayoutSection *(NSInteger index, id<NSCollectionLayoutEnvironment> environment) {
+            return section(index, behavior);
+        }];
+        drag_view = [[UICollectionView alloc] initWithFrame:self.window.bounds collectionViewLayout:drag_layout];
+        CompositionalSource *source = [[CompositionalSource alloc] init];
+        source.counts = @[@8, @30];
+        drag_view.dataSource = source;
+        [drag_view registerClass:[CompositionalCell class] forCellWithReuseIdentifier:@"c"];
+        UIViewController *controller = [[UIViewController alloc] init];
+        controller.view = drag_view;
+        self.window.rootViewController = controller;
+        [drag_view layoutIfNeeded];
+    });
+}
+
+- (void)runGestures:(void (^)(void))finished
+{
+    CHECK(gesture_ready(), "the HID event system is there to send touches");
+    CHECK([UIApplication sharedApplication].applicationState == UIApplicationStateActive, "the application is active, so that it receives touches");
+    if (!gesture_ready()) {
+        finished();
+        return;
+    }
+    [self useDragView:1];
+    gesture_step(0.1, ^{
+        CHECK(drag_section(0) == 0 && drag_view.contentOffset.y == 0, "a section that scrolls the other way starts at its beginning");
+        drag_before = 0;
+    });
+    gesture_drag(^{ return CGPointMake(280, 50); }, ^{ return CGPointMake(100, 50); }, 10, 2.5);
+    gesture_step(0.1, ^{
+        CGFloat offset = drag_section(0);
+        CHECK(offset > 150, "a finger dragged along the section moves it (and it carries on for a while after the finger lifts)");
+        CHECK(drag_view.contentOffset.y == 0, "and the collection view does not scroll with it");
+        CHECK(drag_offsets.count > 3 && [drag_offsets.lastObject doubleValue] == offset, "the handler was told each offset, and the last is the section's");
+        UICollectionViewCell *first = [drag_view cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+        CHECK(first == nil || first.frame.origin.x < 0, "the cells moved with the offset");
+        drag_before = offset;
+    });
+    gesture_drag(^{ return CGPointMake(160, 400); }, ^{ return CGPointMake(160, 200); }, 8, 2.5);
+    gesture_step(0.1, ^{
+        CHECK(drag_view.contentOffset.y > 100, "a finger dragged up outside the section scrolls the collection view");
+        CHECK(drag_section(0) == drag_before, "and leaves the section where it was");
+    });
+    gesture_drag(^{ return CGPointMake(160, 400); }, ^{ return CGPointMake(160, 500); }, 8, 2.5);
+    gesture_step(0.1, ^{
+        CHECK(drag_view.contentOffset.y >= 0, "the collection view scrolls back down");
+        drag_view.contentOffset = CGPointZero;
+        [drag_view layoutIfNeeded];
+    });
+    gesture_step(0.3, ^{});
+    gesture_drag(^{ return CGPointMake(150, 20); }, ^{ return CGPointMake(120, 90); }, 8, 2.5);
+    gesture_step(0.1, ^{
+        CHECK(drag_section(0) == drag_before, "a drag that is mostly vertical, begun in the section, scrolls the collection view and leaves the section");
+        drag_layout = drag_layout;
+    });
+    gesture_drag(^{ return CGPointMake(20, 50); }, ^{ return CGPointMake(200, 50); }, 10, 0.05);
+    gesture_step(0.05, ^{
+        CHECK(drag_section(0) < drag_before, "a section dragged back moves back");
+    });
+    gesture_step(2.5, ^{});
+    [self useDragView:5];
+    gesture_step(0.1, ^{ CHECK(drag_section(0) == 0, "a group-paging section starts at its first group"); });
+    gesture_drag(^{ return CGPointMake(250, 50); }, ^{ return CGPointMake(170, 50); }, 6, 2.5);
+    gesture_step(0.1, ^{
+        CGFloat offset = drag_section(0), rest = fmod(offset, 210);
+        CHECK(offset > 0 && (fabs(rest) < 0.5 || fabs(rest - 210) < 0.5), "a group-paging section comes to rest with a group at its leading edge");
+    });
+    [self useDragView:3];
+    gesture_drag(^{ return CGPointMake(250, 50); }, ^{ return CGPointMake(150, 50); }, 6, 2.5);
+    gesture_step(0.1, ^{
+        CGFloat offset = drag_section(0), rest = fmod(offset, 320);
+        CHECK(offset > 0 && (fabs(rest) < 0.5 || fabs(rest - 320) < 0.5), "a paging section comes to rest on a page");
+    });
+    [self useDragView:1];
+    gesture_step(0.1, ^{ drag_before = 0; });
+    gesture_drag(^{ return CGPointMake(100, 50); }, ^{ return CGPointMake(250, 50); }, 8, 0.4);
+    gesture_step(0.05, ^{
+        CHECK(drag_section(0) == 0 || drag_section(0) < 0, "a section pulled past its start gives, as a scroll view does, and never runs off");
+    });
+    gesture_step(1.5, ^{
+        CHECK(fabs(drag_section(0)) < 0.5, "and comes back to its start once the finger lifts");
+    });
+    gesture_run(^{
+        drag_view = nil;
+        drag_layout = nil;
+        finished();
+    });
 }
 
 - (void)checkHonesty

@@ -82,3 +82,66 @@ static inline void charon_layout_say_once(NSString *key, NSString *text)
 @interface NSCollectionLayoutDimension (CharonLayout)
 - (instancetype)initCharonWithKind:(CharonDimensionKind)kind value:(CGFloat)value;
 @end
+
+@interface CharonSolvedElement : NSObject {
+@public
+    NSInteger category;
+    NSString *kind;
+    NSIndexPath *indexPath;
+    CGRect frame;
+    NSInteger zIndex;
+    BOOL pinned;
+    NSRectAlignment alignment;
+    CGFloat pinLow;
+    CGFloat pinHigh;
+    BOOL hasOwner;
+    CGRect owner;
+    BOOL scrolls;
+    BOOL estimatedWidth;
+    BOOL estimatedHeight;
+}
+@end
+
+@interface CharonSolvedSection : NSObject {
+@public
+    NSInteger section;
+    CGRect extent;
+    NSMutableArray *elements;
+    CGFloat crossSize;
+    BOOL orthogonal;
+    CGRect viewport;
+    CGFloat contentWidth;
+    NSArray *groupLeads;
+    NSArray *groupWidths;
+    NSInteger behavior;
+    id handler;
+}
+@end
+
+
+@interface UICollectionViewLayout (CharonOrthogonal)
+- (void)charon_offsetsDidChange;
+@end
+
+@interface CharonOrthogonalController : NSObject <UIGestureRecognizerDelegate>
+- (instancetype)initWithLayout:(UICollectionViewLayout *)layout;
+- (void)updateSections:(NSArray *)sections view:(UICollectionView *)view environment:(id<NSCollectionLayoutEnvironment>)environment;
+- (CGFloat)offsetOfSection:(NSInteger)section;
+- (void)scrollSection:(NSInteger)section toOffset:(CGFloat)offset settle:(BOOL)settle;
+- (CGRect)shiftedFrame:(CGRect)frame section:(NSInteger)section;
+- (BOOL)viewportShows:(CGRect)shifted section:(NSInteger)section;
+- (void)applyToAttributes:(UICollectionViewLayoutAttributes *)attributes element:(CharonSolvedElement *)element;
+- (void)detach;
+@end
+
+@interface CharonCompositionalAttributes : UICollectionViewLayoutAttributes
+- (UICollectionViewLayout *)charonLayout;
+- (void)setCharonLayout:(UICollectionViewLayout *)layout;
+@end
+
+@interface UICollectionViewLayout (CharonSelfSizing)
+- (void)charon_measureView:(UICollectionReusableView *)view attributes:(UICollectionViewLayoutAttributes *)attributes;
+- (BOOL)charon_settleMeasurements;
+@end
+
+CGSize charon_fit_size(UICollectionReusableView *view, NSIndexPath *indexPath, NSString *kind, CGSize proposed, BOOL estimatedWidth, BOOL estimatedHeight, CGFloat scale);

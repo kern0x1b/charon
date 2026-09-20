@@ -233,10 +233,16 @@ both ways) agree frame for frame with no tolerance; their answers are the expect
 The value classes agree with the host on 139 statements - defaults, copies, equality, `-description`, exceptions.
 `contentInsetsReference` of 14.0 is carried in an object of its own.
 
-What iOS 6 cannot do is not faked. It has no nested scroll views, so a section with an `orthogonalScrollingBehavior` other than
-none is **laid out as an ordinary section**, its behavior and its `visibleItemsInvalidationHandler` kept and the handler never
-called, and the first one says so in the log; those two are `inert`. It asks a cell nothing about its size, so an estimated dimension is
-laid out at its estimate, and says so once. `-[NSCollectionLayoutGroup visualDescription]` is absent, and so is anything of a later
+What iOS 6 has no API for is done by the port. A section with an `orthogonalScrollingBehavior` scrolls sideways on its own inside
+the collection view, in all five behaviors: a pan recognizer on the collection view drives an offset for the section (it follows
+the finger, decelerates, gives at the ends, snaps to a group or a page), the groups are laid out in a row as the host's private scroll
+view lays them, `visibleItemsInvalidationHandler` is called with real `NSCollectionLayoutVisibleItem` objects and what it sets on them is
+shown, and the offsets are held to the host frame for frame. An estimated dimension is measured: the displayed cell is asked (its
+constraints, `-sizeThatFits:` or `-preferredLayoutAttributesFittingAttributes:`), and so is a header or footer, and the layout is solved
+again with what they answer, as the host's is; sizes are held to the host's on 19 layouts. Both are `implemented`. What is not the
+host's: the cells of a section that scrolls the other way are not clipped to it, what a finger does is the port's own (the host's
+scroll view takes only a real touch, so only the device test drags it), and an estimate on a supplementary item of an item or a group
+is not measured. `-[NSCollectionLayoutGroup visualDescription]` is absent, and so is anything of a later
 release. `facts/UIKit/UICollectionViewCompositionalLayout.md` has every rule and the few places where a very odd description is
 not held to the host's answer.
 
