@@ -167,6 +167,76 @@
       "reason": "the release detects no visits, so nothing is ever delivered",
       "effect": "the selector is never sent, so a delegate that implements it is simply not called",
       "facts": "facts/CoreLocation/CLVisit.md"
+    },
+    {
+      "api": "-[CLGeocoder geocodeAddressString:inRegion:preferredLocale:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "implemented",
+      "facts": "facts/CoreLocation/CLGeocoderLocale.md",
+      "source": "CoreLocation 12.0 arm64"
+    },
+    {
+      "api": "-[CLGeocoder reverseGeocodeLocation:preferredLocale:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "implemented",
+      "facts": "facts/CoreLocation/CLGeocoderLocale.md",
+      "source": "CoreLocation 12.0 arm64"
+    },
+    {
+      "api": "-[CLGeocoder geocodePostalAddress:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the address is a CNPostalAddress, a class of the Contacts framework, which the release does not have",
+      "effect": "the selector is not there, so respondsToSelector: answers NO and a call raises unrecognized selector",
+      "facts": "facts/CoreLocation/CLGeocoderLocale.md"
+    },
+    {
+      "api": "-[CLGeocoder geocodePostalAddress:preferredLocale:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the address is a CNPostalAddress, a class of the Contacts framework, which the release does not have",
+      "effect": "the selector is not there, so respondsToSelector: answers NO and a call raises unrecognized selector",
+      "facts": "facts/CoreLocation/CLGeocoderLocale.md"
+    },
+    {
+      "api": "CLPlacemark.postalAddress",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "the value is a CNPostalAddress, a class of the Contacts framework, which the release does not have",
+      "effect": "the accessor is not there, so respondsToSelector: answers NO and a call raises unrecognized selector",
+      "facts": "facts/CoreLocation/CLGeocoderLocale.md"
+    },
+    {
+      "api": "CLPlacemark.timeZone",
+      "kind": "property",
+      "introduced": "9.0",
+      "status": "inert",
+      "reason": "the placemark of the release carries no time zone and the port has no source for one",
+      "effect": "it answers nil, which the property allows, and says so once in the log",
+      "facts": "facts/CoreLocation/CLGeocoderLocale.md"
+    },
+    {
+      "api": "CLLocationManager.allowsBackgroundLocationUpdates",
+      "kind": "property",
+      "introduced": "9.0",
+      "status": "inert",
+      "reason": "the release lets an application locate in the background by the location entry of UIBackgroundModes alone, with no switch on the manager",
+      "effect": "the value is kept and answered back and says so once in the log when set to YES, and background location follows the property list",
+      "facts": "facts/CoreLocation/CLLocationManagerBackground.md"
+    },
+    {
+      "api": "CLLocationManager.showsBackgroundLocationIndicator",
+      "kind": "property",
+      "introduced": "11.0",
+      "status": "inert",
+      "reason": "the status bar of the release shows a location arrow whenever location is in use and has no bar of its own for the background",
+      "effect": "the value is kept and answered back and says so once in the log when set to YES, and no bar is drawn",
+      "facts": "facts/CoreLocation/CLLocationManagerBackground.md"
     }
   ]
 }

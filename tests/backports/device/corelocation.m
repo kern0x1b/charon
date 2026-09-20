@@ -241,6 +241,23 @@ static void check_floor_and_visits(void)
     CHECK(probe.updates == 0 && probe.failures == 0, "nothing is delivered for a visit");
 }
 
+static void check_geocoder_and_background(void)
+{
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    CHECK([geocoder respondsToSelector:@selector(geocodeAddressString:inRegion:preferredLocale:completionHandler:)] &&
+          [geocoder respondsToSelector:@selector(reverseGeocodeLocation:preferredLocale:completionHandler:)], "the geocoder takes a preferred locale");
+    CHECK(![geocoder respondsToSelector:NSSelectorFromString(@"geocodePostalAddress:completionHandler:")], "a postal address is not geocoded");
+    CLPlacemark *placemark = ((id (*)(id, SEL))objc_msgSend)([CLPlacemark alloc], sel_registerName("init"));
+    CHECK([placemark timeZone] == nil, "a placemark has no time zone");
+    CHECK(![placemark respondsToSelector:NSSelectorFromString(@"postalAddress")], "a placemark has no postal address");
+    CLLocationManager *manager = [[CLLocationManager alloc] init];
+    CHECK(!manager.allowsBackgroundLocationUpdates && !manager.showsBackgroundLocationIndicator, "the background switches start NO");
+    manager.allowsBackgroundLocationUpdates = YES;
+    manager.showsBackgroundLocationIndicator = YES;
+    CHECK(manager.allowsBackgroundLocationUpdates && manager.showsBackgroundLocationIndicator, "the background switches answer what was set");
+    manager.allowsBackgroundLocationUpdates = NO;
+    CHECK(!manager.allowsBackgroundLocationUpdates && manager.showsBackgroundLocationIndicator, "each background switch is its own");
+}
 
 int main(int argc, char **argv)
 {
@@ -253,6 +270,7 @@ int main(int argc, char **argv)
         check_region_state();
         check_beacons();
         check_floor_and_visits();
+        check_geocoder_and_background();
         printf("%d checks, %d failed\n", charon_checks, charon_failures);
     }
     return charon_failures;
