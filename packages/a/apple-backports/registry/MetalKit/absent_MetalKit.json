@@ -2,46 +2,6 @@
   "framework": "MetalKit",
   "entries": [
     {
-      "api": "MTLDevice",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, MetalKit"
-    },
-    {
-      "api": "MTLTexture",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, MetalKit"
-    },
-    {
-      "api": "MTLDevice",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, MetalKit"
-    },
-    {
-      "api": "MTLTexture",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, MetalKit"
-    },
-    {
       "api": "MTKMesh",
       "kind": "class",
       "introduced": "9.0",
