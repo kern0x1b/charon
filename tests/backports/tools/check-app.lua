@@ -15,16 +15,29 @@ function main(release, band, ...)
             exported[symbol] = true
         end
     end
-    local linkage, absent = {}, {}
+    local linkage, absent, skipped = {}, {}, {}
     for _, entry in ipairs(missing) do
+        if entry[2]:find("^%(no slice") then
+            table.insert(skipped, entry[1])
+            goto continue
+        end
         local line = string.format("%s  %s", path.filename(entry[1]), entry[2]:gsub("%s*%(.*$", ""))
         if exported[entry[2]:match("^(%S+)")] then
             table.insert(linkage, line)
         else
             table.insert(absent, line)
         end
+        ::continue::
     end
-    print("%d binaries checked against the shared cache of iOS %s and the libraries in %s", #binaries, release, band)
+    if #skipped > 0 then
+        print("NOT ANALYSED: %d binaries have no armv7 slice an iOS %s device loads, so nothing below says anything about them", #skipped, release)
+        print("(an arm64-only application has to be lifted to armv7 before it can be checked)")
+        for _, name in ipairs(skipped) do
+            print("  " .. name)
+        end
+        print("")
+    end
+    print("%d binaries checked against the shared cache of iOS %s and the libraries in %s", #binaries - #skipped, release, band)
     print("")
     print("carried by the backports, and unresolved only because the stock library is bound first (%d):", #linkage)
     for _, line in ipairs(linkage) do
