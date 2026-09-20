@@ -7,6 +7,14 @@
 #define NAMED(...) ([NSString stringWithFormat:__VA_ARGS__].UTF8String)
 
 
+@interface UINavigationBar (CharonAppearanceRefresh)
+- (void)charon_refreshForced:(BOOL)force;
+@end
+
+@interface UITabBar (CharonAppearanceRefresh)
+- (void)charon_refreshForced:(BOOL)force;
+@end
+
 @interface UINavigationBar (CharonHostAppearances)
 - (id)charonHostStandardAppearance;
 - (void)setCharonHostStandardAppearance:(id)appearance;
@@ -551,9 +559,59 @@ static void check_application(void)
     [scroll configureWithOpaqueBackground];
     [scroll setBackgroundColor:[UIColor yellowColor]];
     [navigation setCharonHostScrollEdgeAppearance:scroll];
-    [navigation setCharonHostCompactScrollEdgeAppearance:scroll];
-    charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"0 0 255 255"] && [navigation charonHostScrollEdgeAppearance] != nil && [navigation charonHostCompactScrollEdgeAppearance] != nil,
-                 "the scroll edge appearances are kept and change nothing", @"the bar changed");
+    charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"255 255 0 255"] && [navigation charonHostScrollEdgeAppearance] != nil,
+                 "a bar with no scroll view is at its edge and takes the scroll edge appearance", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
+    id compactEdge = make_kind(@"UINavigationBarAppearance", YES);
+    [compactEdge configureWithOpaqueBackground];
+    [compactEdge setBackgroundColor:[UIColor purpleColor]];
+    [navigation setCharonHostCompactScrollEdgeAppearance:compactEdge];
+    charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsLandscapePhone]) hasPrefix:@"128 0 128 255"], "the compact scroll edge appearance goes to the landscape metrics at the edge", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsLandscapePhone]));
+    [navigation setCharonHostCompactScrollEdgeAppearance:nil];
+    [navigation setCharonHostScrollEdgeAppearance:nil];
+    charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"0 0 255 255"] && [navigation backgroundImageForBarMetrics:UIBarMetricsLandscapePhone] == nil, "without a scroll edge appearance the standard one is used at the edge", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
+
+    UINavigationItem *first = [[UINavigationItem alloc] initWithTitle:@"one"], *second = [[UINavigationItem alloc] initWithTitle:@"two"];
+    [navigation pushNavigationItem:first animated:NO];
+    [navigation pushNavigationItem:second animated:NO];
+    id itemGreen = make_kind(@"UINavigationBarAppearance", YES);
+    [itemGreen configureWithOpaqueBackground];
+    [itemGreen setBackgroundColor:[UIColor greenColor]];
+    [second setCharonHostStandardAppearance:itemGreen];
+    [navigation charon_refreshForced:NO];
+    charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"0 255 0 255"], "the appearance of the top item is the bar's", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
+    [[second charonHostStandardAppearance] setBackgroundColor:[UIColor purpleColor]];
+    settle();
+    charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"128 0 128 255"], "a change to the appearance of the top item is applied", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
+    id itemEdge = make_kind(@"UINavigationBarAppearance", YES);
+    [itemEdge configureWithOpaqueBackground];
+    [itemEdge setBackgroundColor:[UIColor orangeColor]];
+    [second setCharonHostScrollEdgeAppearance:itemEdge];
+    charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"255 128 0 255"], "the scroll edge appearance of the top item comes before its standard one at the edge", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
+    [second setCharonHostScrollEdgeAppearance:nil];
+    [navigation popNavigationItemAnimated:NO];
+    [navigation charon_refreshForced:NO];
+    charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"0 0 255 255"], "popping the item returns the bar to its own appearance", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
+    [first setCharonHostStandardAppearance:itemGreen];
+    charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"0 255 0 255"], "setting the appearance of the top item applies it at once", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
+    [first setCharonHostStandardAppearance:nil];
+    charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"0 0 255 255"], "clearing it returns the bar to its own", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
+
+    UITabBar *itemTabs = [[UITabBar alloc] init];
+    UITabBarItem *tabOne = [[UITabBarItem alloc] initWithTitle:@"a" image:nil tag:0], *tabTwo = [[UITabBarItem alloc] initWithTitle:@"b" image:nil tag:1];
+    itemTabs.items = @[tabOne, tabTwo];
+    id tabOwn = make_kind(@"UITabBarAppearance", YES), tabItemApp = make_kind(@"UITabBarAppearance", YES);
+    [tabOwn configureWithOpaqueBackground];
+    [tabOwn setBackgroundColor:[UIColor redColor]];
+    [tabItemApp configureWithOpaqueBackground];
+    [tabItemApp setBackgroundColor:[UIColor greenColor]];
+    [itemTabs setCharonHostStandardAppearance:tabOwn];
+    [tabTwo setCharonHostStandardAppearance:tabItemApp];
+    itemTabs.selectedItem = tabOne;
+    [itemTabs charon_refreshForced:NO];
+    charon_check([pixel(itemTabs.backgroundImage) hasPrefix:@"255 0 0 255"], "a tab bar with an item that has no appearance keeps its own", pixel(itemTabs.backgroundImage));
+    itemTabs.selectedItem = tabTwo;
+    [itemTabs charon_refreshForced:NO];
+    charon_check([pixel(itemTabs.backgroundImage) hasPrefix:@"0 255 0 255"], "the appearance of the selected tab item is the bar's", pixel(itemTabs.backgroundImage));
 
     id transparent = make_kind(@"UINavigationBarAppearance", YES);
     [navigation setCharonHostStandardAppearance:transparent];

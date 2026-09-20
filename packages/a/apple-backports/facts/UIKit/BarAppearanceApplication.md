@@ -5,15 +5,44 @@ Source: the public SDK headers of iOS 13 to 27; the host's own UIKit, under Mac 
 accessors of the host's bars, what the port sets); and the iOS 6 calls the port maps them onto, which the device test
 cannot exercise, since it makes no views.
 
-## The four properties
+## The properties
 
-`UINavigationBar` and `UIToolbar` answer `standardAppearance` and `compactAppearance`, `UITabBar` answers
-`standardAppearance`, and all are applied. The rest are kept and applied to nothing: `scrollEdgeAppearance` of the
-navigation bar, `scrollEdgeAppearance` and `compactScrollEdgeAppearance` of the toolbar, `scrollEdgeAppearance` of the
-tab bar and `compactScrollEdgeAppearance` of the navigation bar, and the four of a `UINavigationItem` and the two of a
-`UITabBarItem`. They are `inert`: each keeps a copy, hands it back, and says once in the log that iOS 6 has no scroll
-position and no per-item look to choose one by. A bar that is not at a scroll edge in iOS 13 uses the standard
-appearance, and so does this one, always.
+`UINavigationBar` and `UIToolbar` answer `standardAppearance`, `compactAppearance`, `scrollEdgeAppearance` and
+`compactScrollEdgeAppearance`; `UITabBar` answers `standardAppearance` and `scrollEdgeAppearance`; `UINavigationItem` the
+four and `UITabBarItem` the two. All are applied. Which appearance a bar shows is chosen as the SDK's own comment on
+`UINavigationBar.standardAppearance` says, and the same for the other bars with what they lack left out:
+
+| state | first that is set, in this order |
+|---|---|
+| normal size, not at the edge | top item's standard, bar's standard |
+| compact size, not at the edge | top item's compact, bar's compact, then the normal size's |
+| at the edge | top item's scroll edge, bar's scroll edge, then the normal size's |
+| compact at the edge | top item's compact scroll edge, bar's compact scroll edge, top item's scroll edge, bar's scroll edge, top item's compact, bar's compact, then the normal size's |
+
+The normal size goes on `UIBarMetricsDefault` and the compact size on `UIBarMetricsLandscapePhone`; with nothing set for
+the compact size the landscape metrics are cleared and show the default image. The top item of a tab bar is its selected
+item. When nothing is set at the edge, the standard appearance is used, the way the coordinator asked for; the SDK says
+"a modified standardAppearance" and the iOS 13 look of that is a transparent one, which the port does not draw.
+
+**The edge.** The content scroll view of a bar is the first scroll view found, breadth first and not inside another
+bar, in the view of the view controller the bar belongs to: the controller whose view holds the bar, then down through a
+navigation controller's top view controller and a tab bar controller's selected one. A navigation bar is at the edge
+when `contentOffset.y + adjustedContentInset.top <= 0.5`; a tab bar and a toolbar when the bottom of the content is in
+view, `contentOffset.y + bounds.height - adjustedContentInset.bottom >= contentSize.height - 0.5`. A bar with no scroll
+view, or whose controller has not loaded its view, is at the edge, as it is in iOS 15 and later. The port watches
+`contentOffset`, `contentSize` and `contentInset` of that scroll view by key-value observing and re-chooses only when the
+answer to "at the edge" changes, so nothing is redrawn while a table scrolls; the observation is dropped when the bar's
+content scroll view or top item changes, and when the bar goes.
+
+**The item.** UIKit is reached at four places, since a `UINavigationController` may call the bar in more than one way:
+`pushNavigationItem:animated:`, `popNavigationItemAnimated:` and `setItems:animated:` of the navigation bar, `setSelectedItem:`
+and `setItems:animated:` of the tab bar, and `layoutSubviews` and `didMoveToWindow` of all three, which a push, a pop and
+a selection all cause. Each re-chooses once at once and once on the next turn of the run loop, when a pushed controller has
+loaded its view, and does nothing when the choice is the same as the last, so the bar changes when the item does and
+never twice. Setting an appearance on the top item, or changing the one it keeps, is applied at once.
+
+The methods are replaced only in a process where the appearance classes are the backports': they are not on a release that
+has them.
 
 What the host answers, and the backport answers as well:
 

@@ -94,4 +94,34 @@ void charon_schedule(id owner, SEL apply, const void *pendingKey);
 void charon_apply_navigation_bar(UINavigationBar *bar, UINavigationBarAppearance *standard, UINavigationBarAppearance *compact);
 void charon_apply_toolbar(UIToolbar *bar, UIToolbarAppearance *standard, UIToolbarAppearance *compact);
 void charon_apply_tab_bar(UITabBar *bar, UITabBarAppearance *standard);
-void charon_note_stored_appearance(NSString *what);
+
+@interface UINavigationBar (CharonAppearanceRefresh)
+- (void)charon_refreshForced:(BOOL)force;
+- (void)charon_otherChanged;
+@end
+
+@interface UIToolbar (CharonAppearanceRefresh)
+- (void)charon_refreshForced:(BOOL)force;
+- (void)charon_otherChanged;
+@end
+
+@interface UITabBar (CharonAppearanceRefresh)
+- (void)charon_refreshForced:(BOOL)force;
+- (void)charon_otherChanged;
+@end
+
+@interface UINavigationItem (CharonAppearanceRefresh)
+- (void)charon_appearanceChanged;
+@end
+
+@interface UITabBarItem (CharonAppearanceRefresh)
+- (void)charon_appearanceChanged;
+@end
+
+id charon_first_appearance(id first, id second, id third, id fourth, id fifth, id sixth);
+BOOL charon_bar_at_edge(UIView *bar, BOOL bottom);
+UIScrollView *charon_bar_scroll_view(UIView *bar);
+void charon_track_bar(UIView *bar);
+void charon_refresh_bars_showing(id item);
+BOOL charon_bar_needs_refresh(UIView *bar, NSString *signature);
+void charon_appearance_store_observed(id owner, const void *key, id appearance, SEL changed);

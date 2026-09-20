@@ -12,9 +12,8 @@ static const void *CharonCompactScrollEdgeKey = &CharonCompactScrollEdgeKey;
 
 - (void)setCompactScrollEdgeAppearance:(UINavigationBarAppearance *)compactScrollEdgeAppearance
 {
-    charon_appearance_store(self, CharonCompactScrollEdgeKey, [compactScrollEdgeAppearance copy]);
-    if (compactScrollEdgeAppearance)
-        charon_note_stored_appearance(@"UINavigationBar.compactScrollEdgeAppearance");
+    charon_appearance_store_observed(self, CharonCompactScrollEdgeKey, compactScrollEdgeAppearance, @selector(charon_otherChanged));
+    [self charon_refreshForced:YES];
 }
 
 @end
@@ -28,9 +27,8 @@ static const void *CharonCompactScrollEdgeKey = &CharonCompactScrollEdgeKey;
 
 - (void)setScrollEdgeAppearance:(UIToolbarAppearance *)scrollEdgeAppearance
 {
-    charon_appearance_store(self, CharonScrollEdgeKey, [scrollEdgeAppearance copy]);
-    if (scrollEdgeAppearance)
-        charon_note_stored_appearance(@"UIToolbar.scrollEdgeAppearance");
+    charon_appearance_store_observed(self, CharonScrollEdgeKey, scrollEdgeAppearance, @selector(charon_otherChanged));
+    [self charon_refreshForced:YES];
 }
 
 - (UIToolbarAppearance *)compactScrollEdgeAppearance
@@ -40,9 +38,8 @@ static const void *CharonCompactScrollEdgeKey = &CharonCompactScrollEdgeKey;
 
 - (void)setCompactScrollEdgeAppearance:(UIToolbarAppearance *)compactScrollEdgeAppearance
 {
-    charon_appearance_store(self, CharonCompactScrollEdgeKey, [compactScrollEdgeAppearance copy]);
-    if (compactScrollEdgeAppearance)
-        charon_note_stored_appearance(@"UIToolbar.compactScrollEdgeAppearance");
+    charon_appearance_store_observed(self, CharonCompactScrollEdgeKey, compactScrollEdgeAppearance, @selector(charon_otherChanged));
+    [self charon_refreshForced:YES];
 }
 
 @end
@@ -56,9 +53,8 @@ static const void *CharonCompactScrollEdgeKey = &CharonCompactScrollEdgeKey;
 
 - (void)setScrollEdgeAppearance:(UITabBarAppearance *)scrollEdgeAppearance
 {
-    charon_appearance_store(self, CharonScrollEdgeKey, [scrollEdgeAppearance copy]);
-    if (scrollEdgeAppearance)
-        charon_note_stored_appearance(@"UITabBar.scrollEdgeAppearance");
+    charon_appearance_store_observed(self, CharonScrollEdgeKey, scrollEdgeAppearance, @selector(charon_otherChanged));
+    [self charon_refreshForced:YES];
 }
 
 @end
@@ -72,9 +68,8 @@ static const void *CharonCompactScrollEdgeKey = &CharonCompactScrollEdgeKey;
 
 - (void)setCompactScrollEdgeAppearance:(UINavigationBarAppearance *)compactScrollEdgeAppearance
 {
-    charon_appearance_store(self, CharonCompactScrollEdgeKey, [compactScrollEdgeAppearance copy]);
-    if (compactScrollEdgeAppearance)
-        charon_note_stored_appearance(@"UINavigationItem.compactScrollEdgeAppearance");
+    charon_appearance_store_observed(self, CharonCompactScrollEdgeKey, compactScrollEdgeAppearance, @selector(charon_appearanceChanged));
+    charon_refresh_bars_showing(self);
 }
 
 @end
@@ -88,9 +83,8 @@ static const void *CharonCompactScrollEdgeKey = &CharonCompactScrollEdgeKey;
 
 - (void)setScrollEdgeAppearance:(UITabBarAppearance *)scrollEdgeAppearance
 {
-    charon_appearance_store(self, CharonScrollEdgeKey, [scrollEdgeAppearance copy]);
-    if (scrollEdgeAppearance)
-        charon_note_stored_appearance(@"UITabBarItem.scrollEdgeAppearance");
+    charon_appearance_store_observed(self, CharonScrollEdgeKey, scrollEdgeAppearance, @selector(charon_appearanceChanged));
+    charon_refresh_bars_showing(self);
 }
 
 @end

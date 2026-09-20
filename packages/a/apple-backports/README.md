@@ -270,8 +270,10 @@ the first two, become what iOS 6 has: a solid or an image background through `se
 hairline shadow, the title attributes turned into the keys of iOS 6, the button and tab item attributes and images on the
 appearance proxies, the compact one on the landscape metrics. What iOS 6 cannot draw is kept in the object and
 recorded in the facts: the blur, the large title, the badge, the layout of the tab items. The scroll edge appearances and the
-appearances of a navigation item or a tab item are `inert`: kept, handed back, and said once in the log, since iOS 6 has no
-scroll position and no per-item look to choose a bar's look by. The subtitle attributes of iOS 26 and the override
+appearances of a navigation item or a tab item are applied too: the bar watches the content scroll view of its view
+controller by key-value observing and takes the scroll edge appearance at the top (the bottom, for a tab bar and a toolbar)
+and the standard one elsewhere, and takes the appearance of its top item, or of the selected tab item, while that item
+is shown, as the SDK's comment orders them. The subtitle attributes of iOS 26 and the override
 interface style of iOS 27 are absent. The buttons reach every bar of the class in the application, not one bar, and
 `facts/UIKit/BarAppearanceApplication.md` says why and what a device still has to prove.
 ### Symbol configurations, with no symbols to configure

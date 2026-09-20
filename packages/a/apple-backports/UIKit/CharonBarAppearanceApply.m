@@ -68,12 +68,6 @@ void charon_schedule(id owner, SEL apply, const void *pendingKey)
     });
 }
 
-void charon_note_stored_appearance(NSString *what)
-{
-    charon_bar_say_once(what, [NSString stringWithFormat:@"%@: iOS %@ has no scroll position and no per-item look to choose a bar's look by, so the appearance is kept and handed back and the bar keeps the look of the standard appearance set on the bar itself",
-                                                         what, [UIDevice currentDevice].systemVersion]);
-}
-
 NSDictionary *charon_bar_text_attributes(NSDictionary *attributes)
 {
     if (!attributes.count)
