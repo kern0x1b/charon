@@ -118,13 +118,21 @@ static UIWebView *find_web_view(UIView *view)
     return nil;
 }
 
-static UIBarButtonItem *left_item(SFSafariViewController *controller)
+static UINavigationBar *find_navigation_bar(UIView *view)
 {
-    UINavigationBar *bar = nil;
-    for (UIView *view in controller.view.subviews)
-        if ([view isKindOfClass:[UINavigationBar class]])
-            bar = (UINavigationBar *)view;
-    return bar.topItem.leftBarButtonItem;
+    if ([view isKindOfClass:[UINavigationBar class]])
+        return (UINavigationBar *)view;
+    for (UIView *child in view.subviews) {
+        UINavigationBar *found = find_navigation_bar(child);
+        if (found)
+            return found;
+    }
+    return nil;
+}
+
+static UIBarButtonItem *left_item(UIViewController *controller)
+{
+    return find_navigation_bar(controller.view).topItem.leftBarButtonItem;
 }
 
 static void screenshot(UIWindow *window, NSString *name)
@@ -270,7 +278,7 @@ typedef void (^Step)(void (^done)(void));
             controller.delegate = recorder;
             [root presentViewController:controller animated:NO completion:nil];
             after(4, ^{
-                [controller performSelector:NSSelectorFromString(@"charon_action:") withObject:nil];
+                [controller.childViewControllers.firstObject performSelector:NSSelectorFromString(@"charon_action:") withObject:nil];
                 after(2, ^{
                     CHECK_EQUAL([recorder.log subarrayWithRange:NSMakeRange(1, recorder.log.count - 1)], (@[@"activities /page Hello Page", @"excluded"]), "the action button asks the delegate for activities and exclusions, with the page's URL and title");
                     CHECK(controller.presentedViewController != nil || UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad, "and shows the sheet");
@@ -306,7 +314,7 @@ typedef void (^Step)(void (^done)(void));
             [session start];
             after(4, ^{
                 UIViewController *shown = topmost(root);
-                CHECK([shown isKindOfClass:[SFSafariViewController class]] && log.count == 0, "the login page is shown and the session waits");
+                CHECK(shown != root && find_web_view(shown.view) != nil && log.count == 0, "the login page is shown and the session waits");
                 UIWebView *web = find_web_view(shown.view);
                 [web stringByEvaluatingJavaScriptFromString:@"location.href='other://x'"];
                 after(1, ^{
@@ -326,7 +334,7 @@ typedef void (^Step)(void (^done)(void));
             }];
             [session start];
             after(4, ^{
-                SFSafariViewController *shown = (SFSafariViewController *)topmost(root);
+                UIViewController *shown = topmost(root);
                 UIBarButtonItem *item = left_item(shown);
                 CHECK(item != nil, "the cancel button is there");
                 [item.target performSelector:item.action withObject:item];

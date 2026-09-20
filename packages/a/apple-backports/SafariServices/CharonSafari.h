@@ -1,32 +1,30 @@
 #import <SafariServices/SafariServices.h>
 
-@interface SFSafariViewController () {
+@protocol CharonWebView <NSObject>
+@property (nonatomic, assign) id delegate;
+@property (nonatomic) BOOL scalesPageToFit;
+@property (nonatomic, readonly) BOOL canGoBack;
+@property (nonatomic, readonly) BOOL canGoForward;
+@property (nonatomic, readonly, getter=isLoading) BOOL loading;
+- (void)loadRequest:(NSURLRequest *)request;
+- (void)loadHTMLString:(NSString *)string baseURL:(NSURL *)baseURL;
+- (NSString *)stringByEvaluatingJavaScriptFromString:(NSString *)script;
+- (void)goBack;
+- (void)goForward;
+- (void)reload;
+- (void)stopLoading;
+@end
 
-    NSURL *_initialURL;
-    SFSafariViewControllerConfiguration *_configuration;
-    id _webView;
-    UINavigationBar *_navigationBar;
-    UINavigationItem *_barItem;
-    UILabel *_addressLabel;
-    UIProgressView *_progressView;
-    UIToolbar *_toolbar;
-    UIBarButtonItem *_backItem;
-    UIBarButtonItem *_forwardItem;
-    UIBarButtonItem *_actionItem;
-    UIBarButtonItem *_reloadItem;
-    UIBarButtonItem *_stopItem;
-    UIPopoverController *_popover;
-    NSURL *_currentURL;
-    NSString *_pageTitle;
-    BOOL _initialLoadPending;
-    BOOL _showingError;
-    BOOL _dismissing;
-    NSTimer *_progressTimer;
-}
-@property (nonatomic, copy) BOOL (^charon_callbackMatcher)(NSURL *URL);
-@property (nonatomic, copy) void (^charon_callback)(NSURL *URL);
-- (void)charon_applyColors;
-- (void)charon_applyDismissButton;
+@interface CharonSafariPage : UIViewController
+- (instancetype)initWithURL:(NSURL *)URL;
+@property (nonatomic, readonly) NSURL *initialURL;
+@property (nonatomic, weak) id<SFSafariViewControllerDelegate> delegate;
+@property (nonatomic, weak) UIViewController *owner;
+@property (nonatomic, strong) UIColor *preferredBarTintColor;
+@property (nonatomic, strong) UIColor *preferredControlTintColor;
+@property (nonatomic) SFSafariViewControllerDismissButtonStyle dismissButtonStyle;
+@property (nonatomic, copy) BOOL (^callbackMatcher)(NSURL *URL);
+@property (nonatomic, copy) void (^callback)(NSURL *URL);
 @end
 
 @interface SFAuthenticationSession ()

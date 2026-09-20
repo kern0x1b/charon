@@ -5,11 +5,11 @@ extern SFSafariViewControllerPrewarmingToken *charon_prewarmingToken(void);
 static NSString *const CharonMisuse = @"Misuse of SFSafariViewController interface. Use -initWithURL: or -initWithURL:configuration: instead.";
 static NSString *const CharonScheme = @"The specified URL has an unsupported scheme. Only HTTP and HTTPS URLs are supported.";
 
-@implementation SFSafariViewController
-
-@synthesize charon_callbackMatcher = _callbackMatcher;
-@synthesize charon_callback = _callback;
-
+@implementation SFSafariViewController {
+    NSURL *_initialURL;
+    SFSafariViewControllerConfiguration *_configuration;
+    CharonSafariPage *_page;
+}
 
 + (SFSafariViewControllerPrewarmingToken *)prewarmConnectionsToURLs:(NSArray<NSURL *> *)URLs
 {
@@ -60,8 +60,8 @@ static NSString *const CharonScheme = @"The specified URL has an unsupported sch
     if (self) {
         _initialURL = [URL copy];
         _configuration = [configuration copy];
-        _currentURL = _initialURL;
-        _initialLoadPending = YES;
+        _page = [[CharonSafariPage alloc] initWithURL:URL];
+        _page.owner = self;
         self.modalPresentationStyle = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? UIModalPresentationFormSheet : UIModalPresentationFullScreen;
     }
     return self;
@@ -77,32 +77,56 @@ static NSString *const CharonScheme = @"The specified URL has an unsupported sch
     return _configuration;
 }
 
-- (void)dealloc
+- (id<SFSafariViewControllerDelegate>)delegate
 {
-    [_progressTimer invalidate];
-    [_webView setDelegate:nil];
-    [_webView stopLoading];
+    return _page.delegate;
+}
+
+- (void)setDelegate:(id<SFSafariViewControllerDelegate>)delegate
+{
+    _page.delegate = delegate;
+}
+
+- (UIColor *)preferredBarTintColor
+{
+    return _page.preferredBarTintColor;
 }
 
 - (void)setPreferredBarTintColor:(UIColor *)color
 {
-    _preferredBarTintColor = color;
-    if (self.isViewLoaded)
-        [self charon_applyColors];
+    _page.preferredBarTintColor = color;
+}
+
+- (UIColor *)preferredControlTintColor
+{
+    return _page.preferredControlTintColor;
 }
 
 - (void)setPreferredControlTintColor:(UIColor *)color
 {
-    _preferredControlTintColor = color;
-    if (self.isViewLoaded)
-        [self charon_applyColors];
+    _page.preferredControlTintColor = color;
+}
+
+- (SFSafariViewControllerDismissButtonStyle)dismissButtonStyle
+{
+    return _page.dismissButtonStyle;
 }
 
 - (void)setDismissButtonStyle:(SFSafariViewControllerDismissButtonStyle)style
 {
-    _dismissButtonStyle = style;
-    if (self.isViewLoaded)
-        [self charon_applyDismissButton];
+    _page.dismissButtonStyle = style;
+}
+
+- (void)loadView
+{
+    UIView *root = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+    root.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.view = root;
+    [self addChildViewController:_page];
+    _page.view.frame = root.bounds;
+    _page.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [root addSubview:_page.view];
+    [_page didMoveToParentViewController:self];
 }
 
 @end

@@ -75,7 +75,7 @@ static void dismiss_then_attempt(UIViewController *shown, int attempts, dispatch
     NSString *_callbackScheme;
     SFAuthenticationCompletionHandler _handler;
     BOOL _running;
-    SFSafariViewController *_controller;
+    CharonSafariPage *_controller;
 }
 
 @synthesize charon_presentationWindow = _presentationWindow;
@@ -133,7 +133,7 @@ static void dismiss_then_attempt(UIViewController *shown, int attempts, dispatch
     return NO;
 }
 
-- (void)charon_present:(SFSafariViewController *)controller from:(UIViewController *)presenter attempts:(int)attempts
+- (void)charon_present:(CharonSafariPage *)controller from:(UIViewController *)presenter attempts:(int)attempts
 {
     when_settled(presenter, attempts, ^{
         if (self->_controller != controller)
@@ -165,18 +165,18 @@ static void dismiss_then_attempt(UIViewController *shown, int attempts, dispatch
         });
         return YES;
     }
-    SFSafariViewController *controller = [[SFSafariViewController alloc] initWithURL:_URL];
+    CharonSafariPage *controller = [[CharonSafariPage alloc] initWithURL:_URL];
     controller.delegate = self;
     controller.dismissButtonStyle = SFSafariViewControllerDismissButtonStyleCancel;
     __weak SFAuthenticationSession *weak = self;
-    controller.charon_callbackMatcher = ^BOOL(NSURL *URL) {
+    controller.callbackMatcher = ^BOOL(NSURL *URL) {
         return [weak charon_acceptsScheme:URL.scheme];
     };
-    controller.charon_callback = ^(NSURL *URL) {
+    controller.callback = ^(NSURL *URL) {
         SFAuthenticationSession *session = weak;
         if (!session || !session->_running)
             return;
-        SFSafariViewController *shown = session->_controller;
+        CharonSafariPage *shown = session->_controller;
         session->_controller = nil;
         shown.delegate = nil;
         when_settled(shown, 50, ^{
@@ -195,7 +195,7 @@ static void dismiss_then_attempt(UIViewController *shown, int attempts, dispatch
 {
     if (!_running)
         return;
-    SFSafariViewController *shown = _controller;
+    CharonSafariPage *shown = _controller;
     shown.delegate = nil;
     void (^finish)(void) = ^{
         [self charon_completeWithURL:nil error:[self charon_canceledError]];

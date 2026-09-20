@@ -1,25 +1,106 @@
 #import "CharonSafari.h"
 
-@interface SFSafariViewController (CharonPage) <UIWebViewDelegate>
-@end
+enum {
+    CharonNavigationLinkClicked = 0,
+    CharonNavigationFormSubmitted = 1,
+    CharonNavigationBackForward = 2,
+    CharonNavigationReload = 3,
+};
 
-@implementation SFSafariViewController (CharonPage)
+@implementation CharonSafariPage {
+    NSURL *_initialURL;
+    id<CharonWebView> _webView;
+    UINavigationBar *_navigationBar;
+    UINavigationItem *_barItem;
+    UILabel *_addressLabel;
+    UIProgressView *_progressView;
+    UIToolbar *_toolbar;
+    UIBarButtonItem *_backItem;
+    UIBarButtonItem *_forwardItem;
+    UIBarButtonItem *_actionItem;
+    UIBarButtonItem *_reloadItem;
+    UIBarButtonItem *_stopItem;
+    UIPopoverController *_popover;
+    NSURL *_currentURL;
+    NSString *_pageTitle;
+    BOOL _initialLoadPending;
+    BOOL _showingError;
+    BOOL _dismissing;
+    NSTimer *_progressTimer;
+}
+
+@synthesize delegate = _delegate;
+@synthesize owner = _owner;
+@synthesize callbackMatcher = _callbackMatcher;
+@synthesize callback = _callback;
+@synthesize preferredBarTintColor = _preferredBarTintColor;
+@synthesize preferredControlTintColor = _preferredControlTintColor;
+@synthesize dismissButtonStyle = _dismissButtonStyle;
+
+- (instancetype)initWithURL:(NSURL *)URL
+{
+    self = [super initWithNibName:nil bundle:nil];
+    if (self) {
+        _initialURL = [URL copy];
+        _currentURL = _initialURL;
+        _initialLoadPending = YES;
+    }
+    return self;
+}
+
+- (NSURL *)initialURL
+{
+    return _initialURL;
+}
+
+- (SFSafariViewController *)charon_sender
+{
+    return (SFSafariViewController *)(_owner ?: self);
+}
+
+- (void)dealloc
+{
+    [_progressTimer invalidate];
+    [_webView setDelegate:nil];
+    [_webView stopLoading];
+}
+
+- (void)setPreferredBarTintColor:(UIColor *)color
+{
+    _preferredBarTintColor = color;
+    if (self.isViewLoaded)
+        [self charon_applyColors];
+}
+
+- (void)setPreferredControlTintColor:(UIColor *)color
+{
+    _preferredControlTintColor = color;
+    if (self.isViewLoaded)
+        [self charon_applyColors];
+}
+
+- (void)setDismissButtonStyle:(SFSafariViewControllerDismissButtonStyle)style
+{
+    _dismissButtonStyle = style;
+    if (self.isViewLoaded)
+        [self charon_applyDismissButton];
+}
 
 - (void)charon_applyColors
 {
-    UIColor *bar = self.preferredBarTintColor;
+    UIColor *bar = _preferredBarTintColor;
     _navigationBar.tintColor = bar;
     _toolbar.tintColor = bar;
-    _progressView.progressTintColor = self.preferredControlTintColor;
+    _progressView.progressTintColor = _preferredControlTintColor;
     for (UIBarButtonItem *item in @[_backItem, _forwardItem, _actionItem, _reloadItem, _stopItem, _barItem.leftBarButtonItem ?: (id)[NSNull null]])
         if ([item isKindOfClass:[UIBarButtonItem class]])
-            item.tintColor = self.preferredControlTintColor;
+            item.tintColor = _preferredControlTintColor;
 }
 
 - (void)charon_applyDismissButton
 {
     UIBarButtonItem *button;
-    switch (self.dismissButtonStyle) {
+    switch (_dismissButtonStyle) {
     case SFSafariViewControllerDismissButtonStyleCancel:
         button = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(charon_done)];
         break;
@@ -31,7 +112,7 @@
         button = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(charon_done)];
         break;
     }
-    button.tintColor = self.preferredControlTintColor;
+    button.tintColor = _preferredControlTintColor;
     [_barItem setLeftBarButtonItem:button animated:self.view.window != nil];
 }
 
@@ -70,11 +151,11 @@
     _toolbar.items = @[_backItem, space, _forwardItem, space, _actionItem, space, safari, space, _reloadItem];
     [root addSubview:_toolbar];
 
-    _webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 44, bounds.size.width, bounds.size.height - 88)];
-    ((UIWebView *)_webView).autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    ((UIWebView *)_webView).scalesPageToFit = YES;
-    ((UIWebView *)_webView).delegate = self;
-    [root insertSubview:_webView atIndex:0];
+    _webView = (id<CharonWebView>)[[NSClassFromString(@"UIWebView") alloc] initWithFrame:CGRectMake(0, 44, bounds.size.width, bounds.size.height - 88)];
+    [(UIView *)_webView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+    _webView.scalesPageToFit = YES;
+    _webView.delegate = self;
+    [root insertSubview:(UIView *)_webView atIndex:0];
 
     _progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
     _progressView.frame = CGRectMake(0, 44, bounds.size.width, 3);
@@ -96,7 +177,7 @@
         top = [[(id)self topLayoutGuide] length];
     CGRect bounds = self.view.bounds;
     _navigationBar.frame = CGRectMake(0, top, bounds.size.width, 44);
-    ((UIWebView *)_webView).frame = CGRectMake(0, top + 44, bounds.size.width, bounds.size.height - top - 88);
+    [(UIView *)_webView setFrame:CGRectMake(0, top + 44, bounds.size.width, bounds.size.height - top - 88)];
     _progressView.frame = CGRectMake(0, top + 44, bounds.size.width, 3);
 }
 
@@ -108,12 +189,12 @@
 
 - (void)charon_updateButtons
 {
-    _backItem.enabled = ((UIWebView *)_webView).canGoBack;
-    _forwardItem.enabled = ((UIWebView *)_webView).canGoForward;
+    _backItem.enabled = _webView.canGoBack;
+    _forwardItem.enabled = _webView.canGoForward;
     _actionItem.enabled = _currentURL != nil;
     NSMutableArray *items = [_toolbar.items mutableCopy];
     NSUInteger last = items.count - 1;
-    UIBarButtonItem *wanted = ((UIWebView *)_webView).loading ? _stopItem : _reloadItem;
+    UIBarButtonItem *wanted = _webView.loading ? _stopItem : _reloadItem;
     if (items[last] != wanted) {
         items[last] = wanted;
         [_toolbar setItems:items animated:NO];
@@ -155,12 +236,13 @@
         self->_dismissing = NO;
         id<SFSafariViewControllerDelegate> delegate = self.delegate;
         if ([delegate respondsToSelector:@selector(safariViewControllerDidFinish:)])
-            [delegate safariViewControllerDidFinish:self];
+            [delegate safariViewControllerDidFinish:[self charon_sender]];
     };
-    if (self.presentingViewController)
-        [self.presentingViewController dismissViewControllerAnimated:YES completion:finished];
-    else if (self.navigationController && self.navigationController.topViewController == self) {
-        [self.navigationController popViewControllerAnimated:YES];
+    UIViewController *target = _owner ?: self;
+    if (target.presentingViewController)
+        [target.presentingViewController dismissViewControllerAnimated:YES completion:finished];
+    else if (target.navigationController && target.navigationController.topViewController == target) {
+        [target.navigationController popViewControllerAnimated:YES];
         finished();
     } else
         finished();
@@ -170,7 +252,7 @@
 {
     id<SFSafariViewControllerDelegate> delegate = self.delegate;
     if ([delegate respondsToSelector:@selector(safariViewControllerWillOpenInBrowser:)])
-        [delegate safariViewControllerWillOpenInBrowser:self];
+        [delegate safariViewControllerWillOpenInBrowser:[self charon_sender]];
     if (_currentURL)
         [[UIApplication sharedApplication] openURL:_currentURL];
 }
@@ -183,9 +265,9 @@
     NSArray *activities = nil, *excluded = nil;
     NSString *title = _pageTitle.length ? _pageTitle : nil;
     if ([delegate respondsToSelector:@selector(safariViewController:activityItemsForURL:title:)])
-        activities = [delegate safariViewController:self activityItemsForURL:_currentURL title:title];
+        activities = [delegate safariViewController:[self charon_sender] activityItemsForURL:_currentURL title:title];
     if ([delegate respondsToSelector:@selector(safariViewController:excludedActivityTypesForURL:title:)])
-        excluded = [delegate safariViewController:self excludedActivityTypesForURL:_currentURL title:title];
+        excluded = [delegate safariViewController:[self charon_sender] excludedActivityTypesForURL:_currentURL title:title];
     UIActivityViewController *sheet = [[UIActivityViewController alloc] initWithActivityItems:@[_currentURL] applicationActivities:activities];
     if (excluded.count)
         sheet.excludedActivityTypes = excluded;
@@ -194,7 +276,7 @@
         _popover = [[UIPopoverController alloc] initWithContentViewController:sheet];
         [_popover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
     } else
-        [self presentViewController:sheet animated:YES completion:nil];
+        [_owner ?: self presentViewController:sheet animated:YES completion:nil];
 }
 
 - (void)charon_startProgress
@@ -226,45 +308,45 @@
     _initialLoadPending = NO;
     id<SFSafariViewControllerDelegate> delegate = self.delegate;
     if ([delegate respondsToSelector:@selector(safariViewController:didCompleteInitialLoad:)])
-        [delegate safariViewController:self didCompleteInitialLoad:success];
+        [delegate safariViewController:[self charon_sender] didCompleteInitialLoad:success];
 }
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)type
+- (BOOL)webView:(id<CharonWebView>)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(NSInteger)type
 {
     NSURL *URL = request.URL;
     BOOL mainFrame = [request.mainDocumentURL isEqual:URL];
-    if (self.charon_callbackMatcher && self.charon_callbackMatcher(URL)) {
+    if (self.callbackMatcher && self.callbackMatcher(URL)) {
         [_webView stopLoading];
-        self.charon_callback(URL);
+        self.callback(URL);
         return NO;
     }
     NSString *scheme = URL.scheme.lowercaseString;
     if (![scheme isEqualToString:@"http"] && ![scheme isEqualToString:@"https"] && ![scheme isEqualToString:@"about"] && ![scheme isEqualToString:@"data"] && ![scheme isEqualToString:@"file"]) {
-        if (mainFrame && (type == UIWebViewNavigationTypeLinkClicked || type == UIWebViewNavigationTypeFormSubmitted) && [[UIApplication sharedApplication] canOpenURL:URL])
+        if (mainFrame && (type == CharonNavigationLinkClicked || type == CharonNavigationFormSubmitted) && [[UIApplication sharedApplication] canOpenURL:URL])
             [[UIApplication sharedApplication] openURL:URL];
         return NO;
     }
     if (mainFrame && !_showingError && ![URL isEqual:_currentURL] && ![scheme isEqualToString:@"about"]) {
-        BOOL userInitiated = type == UIWebViewNavigationTypeLinkClicked || type == UIWebViewNavigationTypeFormSubmitted || type == UIWebViewNavigationTypeBackForward || type == UIWebViewNavigationTypeReload;
+        BOOL userInitiated = type == CharonNavigationLinkClicked || type == CharonNavigationFormSubmitted || type == CharonNavigationBackForward || type == CharonNavigationReload;
         BOOL onlyFragment = URL.fragment && [[URL absoluteString] hasPrefix:[[_currentURL absoluteString] componentsSeparatedByString:@"#"][0]];
         if (!userInitiated && !onlyFragment) {
             id<SFSafariViewControllerDelegate> delegate = self.delegate;
             if ([delegate respondsToSelector:@selector(safariViewController:initialLoadDidRedirectToURL:)])
-                [delegate safariViewController:self initialLoadDidRedirectToURL:URL];
+                [delegate safariViewController:[self charon_sender] initialLoadDidRedirectToURL:URL];
         }
         _currentURL = URL;
     }
     return YES;
 }
 
-- (void)webViewDidStartLoad:(UIWebView *)webView
+- (void)webViewDidStartLoad:(id<CharonWebView>)webView
 {
     if (!_showingError)
         [self charon_startProgress];
     [self charon_updateButtons];
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
+- (void)webViewDidFinishLoad:(id<CharonWebView>)webView
 {
     if (webView.loading)
         return;
@@ -281,14 +363,14 @@
     [self charon_updateButtons];
 }
 
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+- (void)webView:(id<CharonWebView>)webView didFailLoadWithError:(NSError *)error
 {
     if ([error.domain isEqualToString:NSURLErrorDomain] && error.code == NSURLErrorCancelled)
         return;
     NSString *failing = error.userInfo[NSURLErrorFailingURLStringErrorKey];
     NSURL *failingURL = failing ? [NSURL URLWithString:failing] : nil;
-    if (failingURL && self.charon_callbackMatcher && self.charon_callbackMatcher(failingURL)) {
-        self.charon_callback(failingURL);
+    if (failingURL && self.callbackMatcher && self.callbackMatcher(failingURL)) {
+        self.callback(failingURL);
         return;
     }
     if ([error.domain isEqualToString:@"WebKitErrorDomain"] && error.code == 102)
