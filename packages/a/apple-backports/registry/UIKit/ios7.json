@@ -1,0 +1,133 @@
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "UIView.maskView",
+      "kind": "property",
+      "introduced": "8.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewMaskView.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "+[UIView performWithoutAnimation:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewMaskView.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "UIView.semanticContentAttribute",
+      "kind": "property",
+      "introduced": "9.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewSemanticContentAttribute.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "UIView.effectiveUserInterfaceLayoutDirection",
+      "kind": "property",
+      "introduced": "10.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewSemanticContentAttribute.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "+[UIView userInterfaceLayoutDirectionForSemanticContentAttribute:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewSemanticContentAttribute.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "+[UIView userInterfaceLayoutDirectionForSemanticContentAttribute:relativeToLayoutDirection:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewSemanticContentAttribute.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "UIViewController.preferredStatusBarStyle",
+      "kind": "property",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewControllerStatusBarAppearance.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "UIViewController.prefersStatusBarHidden",
+      "kind": "property",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewControllerStatusBarAppearance.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "UIViewController.preferredStatusBarUpdateAnimation",
+      "kind": "property",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewControllerStatusBarAppearance.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "UIViewController.childViewControllerForStatusBarStyle",
+      "kind": "property",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewControllerStatusBarAppearance.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "UIViewController.childViewControllerForStatusBarHidden",
+      "kind": "property",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewControllerStatusBarAppearance.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "UIViewController.modalPresentationCapturesStatusBarAppearance",
+      "kind": "property",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewControllerStatusBarAppearance.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "-[UIViewController setNeedsStatusBarAppearanceUpdate]",
+      "kind": "method",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewControllerStatusBarAppearance.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "UIViewController.preferredContentSize",
+      "kind": "property",
+      "introduced": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewControllerViewLoading.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "-[UIViewController loadViewIfNeeded]",
+      "kind": "method",
+      "introduced": "9.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewControllerViewLoading.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    },
+    {
+      "api": "UIViewController.viewIfLoaded",
+      "kind": "property",
+      "introduced": "9.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewControllerViewLoading.md",
+      "source": "the host's own UIKit under Mac Catalyst, held against the backport by tests/backports/host/uikit2"
+    }
+  ]
+}

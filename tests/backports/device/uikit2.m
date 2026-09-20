@@ -124,6 +124,29 @@ static NSString *traits_of(id environment)
 @property (nonatomic) BOOL finished;
 @end
 
+@interface StatusProbe : UIViewController
+@property (nonatomic, strong) UIViewController *child;
+@end
+
+@implementation StatusProbe
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleBlackTranslucent;
+}
+
+- (BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
+
+- (UIViewController *)childViewControllerForStatusBarStyle
+{
+    return self.child;
+}
+
+@end
+
 @implementation UIKitTestDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)options
@@ -749,6 +772,54 @@ static NSString *traits_of(id environment)
                 printf("info authorization status after the request: %d\n", [CLLocationManager authorizationStatus]);
                 done();
             });
+        } copy],
+        [^(void (^done)(void)) {
+            UIApplication *application = [UIApplication sharedApplication];
+            UIView *host = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 50)];
+            UIView *mask = [[UIView alloc] initWithFrame:CGRectMake(5, 5, 10, 10)];
+            charon_check(host.maskView == nil, "no mask view at first", @"a mask view is there");
+            host.maskView = mask;
+            charon_check(host.maskView == mask && host.layer.mask == mask.layer && host.subviews.count == 0, "the mask view is the layer's mask and no subview", @"the mask differs");
+            host.maskView = nil;
+            charon_check(host.layer.mask == nil, "no mask view, no mask", @"the mask stays");
+            NSString *raised = nil;
+            @try { host.maskView = host; } @catch (NSException *exception) { raised = exception.name; }
+            charon_check([raised isEqualToString:NSInvalidArgumentException], "a view as its own mask raises", raised ?: @"nothing");
+            __block BOOL inside = YES;
+            [UIView performWithoutAnimation:^{ inside = [UIView areAnimationsEnabled]; }];
+            charon_check(!inside && [UIView areAnimationsEnabled], "animations are off inside performWithoutAnimation and back after it", @"the setting differs");
+            UIView *attributed = [[UIView alloc] init];
+            charon_check(attributed.semanticContentAttribute == 0 && attributed.effectiveUserInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionLeftToRight, "a new view is unspecified and left to right", @"the direction differs");
+            attributed.semanticContentAttribute = (UISemanticContentAttribute)4;
+            charon_check(attributed.semanticContentAttribute == 4 && attributed.effectiveUserInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft, "force right to left is right to left", @"the direction differs");
+            charon_check([UIView userInterfaceLayoutDirectionForSemanticContentAttribute:(UISemanticContentAttribute)1 relativeToLayoutDirection:UIUserInterfaceLayoutDirectionRightToLeft] == UIUserInterfaceLayoutDirectionLeftToRight &&
+                         [UIView userInterfaceLayoutDirectionForSemanticContentAttribute:(UISemanticContentAttribute)0 relativeToLayoutDirection:UIUserInterfaceLayoutDirectionRightToLeft] == UIUserInterfaceLayoutDirectionRightToLeft,
+                         "playback stays left to right and unspecified follows the application", @"the table differs");
+            UIViewController *plain = [[UIViewController alloc] init];
+            charon_check(plain.viewIfLoaded == nil && !plain.isViewLoaded, "viewIfLoaded does not load the view", @"the view loaded");
+            [plain loadViewIfNeeded];
+            charon_check(plain.isViewLoaded && plain.viewIfLoaded == plain.view, "loadViewIfNeeded loads the view", @"the view did not load");
+            charon_check(CGSizeEqualToSize(plain.preferredContentSize, CGSizeZero), "the preferred content size starts at zero", NSStringFromCGSize(plain.preferredContentSize));
+            plain.preferredContentSize = CGSizeMake(300, 400);
+            charon_check(CGSizeEqualToSize(plain.preferredContentSize, CGSizeMake(300, 400)), "the preferred content size is kept", NSStringFromCGSize(plain.preferredContentSize));
+            charon_check(plain.preferredStatusBarStyle == UIStatusBarStyleDefault && !plain.prefersStatusBarHidden && plain.preferredStatusBarUpdateAnimation == UIStatusBarAnimationFade &&
+                         plain.childViewControllerForStatusBarStyle == nil && !plain.modalPresentationCapturesStatusBarAppearance, "the status bar preferences of a new controller", @"a preference differs");
+            UIWindow *window = application.keyWindow;
+            UIViewController *original = window.rootViewController;
+            UIStatusBarStyle style = application.statusBarStyle;
+            BOOL hidden = application.statusBarHidden;
+            StatusProbe *probe = [[StatusProbe alloc] init];
+            window.rootViewController = probe;
+            [probe setNeedsStatusBarAppearanceUpdate];
+            charon_check((application.statusBarStyle == UIStatusBarStyleBlackTranslucent || (application.statusBarStyle == UIStatusBarStyleBlackOpaque && [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)) && application.statusBarHidden, "the status bar takes the style and visibility of the controller in charge", [NSString stringWithFormat:@"%ld %d", (long)application.statusBarStyle, application.statusBarHidden]);
+            UIViewController *child = [[UIViewController alloc] init];
+            probe.child = child;
+            [probe setNeedsStatusBarAppearanceUpdate];
+            charon_check(application.statusBarStyle == UIStatusBarStyleDefault, "a controller that names a child for the style hands it over", [NSString stringWithFormat:@"%ld", (long)application.statusBarStyle]);
+            window.rootViewController = original;
+            [application setStatusBarStyle:style animated:NO];
+            [application setStatusBarHidden:hidden withAnimation:UIStatusBarAnimationNone];
+            done();
         } copy],
     ];
 }

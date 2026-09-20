@@ -121,6 +121,9 @@ class Surface:
                 continue
             if depth == 1 and kind in ("ObjCMethodDecl", "ObjCPropertyDecl") and self.owner and owned:
                 self.finish_target()
+                if kind == "ObjCMethodDecl" and " implicit " in rest.split("'")[0]:
+                    self.target = None
+                    continue
                 if kind == "ObjCMethodDecl":
                     sign, name = member_name(kind, rest)
                     api = "%s[%s %s]" % (sign, self.owner, name)
@@ -163,6 +166,41 @@ def registry_names(root, framework):
     return names
 
 
+class Release:
+    def __init__(self, release):
+        path = os.path.join(os.path.expanduser("~"), ".charon", "dyld", release, "classes_armv7.json")
+        if not os.path.exists(path):
+            sys.exit("no class inventory of iOS %s at %s" % (release, path))
+        with open(path) as stream:
+            self.classes = json.load(stream)["classes"]
+
+    def has(self, api, kind):
+        if kind == "class":
+            return api in self.classes
+        found = re.match(r"^([-+])\[(\w+) (.+)\]$", api)
+        if found:
+            side = "instance" if found.group(1) == "-" else "class"
+            selector, owner = found.group(3), found.group(2)
+        elif kind == "property":
+            owner, name = api.split(".", 1)
+            selectors = [name, "set" + name[0].upper() + name[1:] + ":"]
+            side = "instance"
+            return self.answers(owner, side, selectors[0])
+        else:
+            return False
+        return self.answers(owner, side, selector)
+
+    def answers(self, owner, side, selector):
+        seen = set()
+        while owner in self.classes and owner not in seen:
+            seen.add(owner)
+            entry = self.classes[owner]
+            if selector in (entry.get(side) or []):
+                return True
+            owner = entry.get("superclass")
+        return False
+
+
 def covered(api, kind, version, registry):
     if api in registry:
         return True
@@ -190,6 +228,7 @@ def main():
     parser.add_argument("--registry", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "packages", "a", "apple-backports", "registry"))
     parser.add_argument("--above", default="6.0", help="only what arrived after this release")
     parser.add_argument("--up-to", default=None, help="only what arrived up to and including this release")
+    parser.add_argument("--release", default=None, help="a release whose classes the release itself carries, from ~/.charon/dyld/<release>/classes_armv7.json: what it answers is not a gap")
     parser.add_argument("--list", action="store_true", help="print every gap")
     parser.add_argument("--rows", default=None, help="write every declared row, tab separated, to this file")
     options = parser.parse_args()
@@ -198,6 +237,7 @@ def main():
     above = parse_version(options.above)
     up_to = parse_version(options.up_to) if options.up_to else None
     print("SDK %s, target %s, API that arrived after iOS %s%s" % (os.path.basename(sdk), target, options.above, " up to %s" % options.up_to if up_to else ""))
+    inventory = Release(options.release) if options.release else None
     written = open(options.rows, "w") if options.rows else None
     for framework in options.frameworks:
         rows = declared(sdk, framework, target)
@@ -207,18 +247,23 @@ def main():
         registry = registry_names(options.registry, framework)
         totals = collections.Counter()
         gaps = collections.Counter()
+        carried = collections.Counter()
         listed = []
         for api, (kind, version) in sorted(rows.items()):
             if version is None or version <= above or version == (999,) or (up_to and version[:2] > up_to + (0,) * (2 - len(up_to)) and version > up_to):
                 continue
             release = "%d" % version[0]
             totals[release] += 1
-            if not covered(api, kind, version, registry):
+            if not covered(api, kind, version, registry) and inventory and inventory.has(api, kind):
+                carried[release] += 1
+            elif not covered(api, kind, version, registry):
                 gaps[release] += 1
                 listed.append((version, api, kind))
-        print("\n%s: %d declared after iOS %s, %d not in the registry" % (framework, sum(totals.values()), options.above, sum(gaps.values())))
+        print("\n%s: %d declared after iOS %s, %d not decided%s" % (framework, sum(totals.values()), options.above, sum(gaps.values()),
+              ", %d of the rest carried by iOS %s itself" % (sum(carried.values()), options.release) if inventory else ""))
         for release in sorted(totals, key=int):
-            print("  iOS %-3s declared %5d   in the registry %5d   gap %5d" % (release, totals[release], totals[release] - gaps[release], gaps[release]))
+            print("  iOS %-3s declared %5d   decided %5d%s   gap %5d" % (release, totals[release], totals[release] - gaps[release] - carried[release],
+                  "   carried by the release %5d" % carried[release] if inventory else "", gaps[release]))
         if options.list:
             for version, api, kind in sorted(listed):
                 print("    %-6s %-9s %s" % (show_version(version), kind, api))
