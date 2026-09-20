@@ -1,6 +1,7 @@
 #import <UIKit/UIKit.h>
 #include <dlfcn.h>
 #import "check.h"
+#import "symbols-expectations.h"
 
 #pragma clang diagnostic ignored "-Wnonnull"
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
@@ -142,10 +143,71 @@ static void run_checks(void)
         CHECK([applied imageByApplyingSymbolConfiguration:nil] == applied && [ordinary imageByApplyingSymbolConfiguration:nil] != ordinary && [ordinary imageByApplyingSymbolConfiguration:nil].symbolConfiguration == nil,
               "applying nil keeps the image that has a configuration, and copies one that has none");
 
-        CHECK([UIImage systemImageNamed:@"star"] == nil && [UIImage systemImageNamed:@""] == nil && [UIImage systemImageNamed:nil] == nil, "iOS 6 has no symbol, so systemImageNamed: answers nil for every name");
-        CHECK([UIImage systemImageNamed:@"star" compatibleWithTraitCollection:display] == nil && [UIImage systemImageNamed:@"star" withConfiguration:size] == nil
-                  && [UIImage systemImageNamed:nil withConfiguration:nil] == nil,
-              "in each of its three forms");
+        CHECK([UIImage systemImageNamed:@"nonexistent.symbol.zz"] == nil && [UIImage systemImageNamed:@""] == nil && [UIImage systemImageNamed:nil] == nil, "a name that is not a symbol answers nil");
+        UIImage *star = [UIImage systemImageNamed:@"star"];
+        CHECK(star != nil && star.symbolImage && star.renderingMode == UIImageRenderingModeAlwaysTemplate && star.symbolConfiguration != nil && star.hasBaseline, "a symbol is drawn: a template symbol image with a configuration and a baseline");
+        CHECK([UIImage systemImageNamed:@"star" compatibleWithTraitCollection:display] != nil && [UIImage systemImageNamed:@"star" withConfiguration:size] != nil, "in each of the three forms");
+        UIImage *bigger = [star imageByApplyingSymbolConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:60]];
+        CHECK(bigger.size.width > star.size.width * 3 && bigger.symbolImage, "applying a point size draws the symbol again at that size");
+
+        int mismatches = 0, insetMisses = 0, baselineMisses = 0, cellFailures = 0;
+        NSMutableArray *worst = [NSMutableArray array];
+        static const double configs[3][3] = {{17, 4, 2}, {34, 7, 3}, {12, 1, 1}};
+        size_t count = sizeof CharonSymbolExpectations / sizeof CharonSymbolExpectations[0];
+        for (size_t index = 0; index < count; index++) {
+            NSString *name = @(CharonSymbolExpectations[index].name);
+            for (int c = 0; c < 3; c++) {
+                UIImage *image = [UIImage systemImageNamed:name withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:configs[c][0] weight:(UIImageSymbolWeight)configs[c][1] scale:(UIImageSymbolScale)configs[c][2]]];
+                const float *want = CharonSymbolExpectations[index].metrics[c];
+                if (!image || fabs(image.size.width - want[0]) > 1 || fabs(image.size.height - want[1]) > 1)
+                    mismatches++;
+                if (image) {
+                    UIEdgeInsets insets = image.alignmentRectInsets;
+                    if (fabs(insets.top - want[2]) > 1 || fabs(insets.left - want[3]) > 1 || fabs(insets.bottom - want[4]) > 1 || fabs(insets.right - want[5]) > 1)
+                        insetMisses++;
+                    if (fabs(image.baselineOffsetFromBottom - want[6]) > 1)
+                        baselineMisses++;
+                }
+            }
+            UIImage *image = [UIImage systemImageNamed:name withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:17 weight:UIImageSymbolWeightRegular scale:UIImageSymbolScaleMedium]];
+            if (!image) {
+                cellFailures++;
+                continue;
+            }
+            size_t width = (size_t)ceil(image.size.width * 8), height = (size_t)ceil(image.size.height * 8);
+            uint8_t *pixels = calloc(width * height, 1);
+            CGContextRef context = CGBitmapContextCreate(pixels, width, height, 8, width, NULL, (CGBitmapInfo)kCGImageAlphaOnly);
+            UIGraphicsPushContext(context);
+            CGContextTranslateCTM(context, 0, height);
+            CGContextScaleCTM(context, 8, -8);
+            [image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+            UIGraphicsPopContext();
+            CGContextRelease(context);
+            int both = 0, either = 0;
+            for (int gy = 0; gy < 16; gy++)
+                for (int gx = 0; gx < 16; gx++) {
+                    double sum = 0;
+                    long cells = 0;
+                    for (size_t y = gy * height / 16; y < (gy + 1) * height / 16; y++)
+                        for (size_t x = gx * width / 16; x < (gx + 1) * width / 16; x++) {
+                            sum += pixels[y * width + x];
+                            cells++;
+                        }
+                    BOOL ours = cells && sum / cells >= 127.5, theirs = (CharonSymbolExpectations[index].grid[gy] >> (15 - gx)) & 1;
+                    both += ours && theirs;
+                    either += ours || theirs;
+                }
+            free(pixels);
+            double overlap = either ? (double)both / either : 1;
+            if (overlap < 0.35) {
+                cellFailures++;
+                if (worst.count < 6)
+                    [worst addObject:[NSString stringWithFormat:@"%@ %.2f", name, overlap]];
+            }
+        }
+        CHECK(count >= 500 && mismatches == 0, NAMED(@"every recorded symbol has the host's size at three configurations (%d beyond a point of %zu names)", mismatches, count));
+        CHECK(insetMisses == 0 && baselineMisses == 0, NAMED(@"and its alignment insets and baseline (%d and %d beyond a point)", insetMisses, baselineMisses));
+        CHECK(cellFailures <= (int)(count / 8), NAMED(@"and at 17 points a 16 by 16 grid that overlaps the host's by 0.35 for all but an eighth of them (%d do not; %@)", cellFailures, worst));
 
         UIImageView *view = [[UIImageView alloc] init];
         CHECK(view.preferredSymbolConfiguration == nil, "an image view has no preferred symbol configuration");
@@ -157,6 +219,12 @@ static void run_checks(void)
         CHECK(view.preferredSymbolConfiguration == light, "another replaces it, and the image does not touch it");
         view.preferredSymbolConfiguration = nil;
         CHECK(view.preferredSymbolConfiguration == nil, "and nil takes it away");
+        UIImageView *symbolView = [[UIImageView alloc] init];
+        symbolView.preferredSymbolConfiguration = [UIImageSymbolConfiguration configurationWithPointSize:40];
+        symbolView.image = star;
+        CHECK(symbolView.image.size.width > star.size.width * 2, "a symbol image put in a view with a preferred configuration is drawn at that size");
+        symbolView.preferredSymbolConfiguration = nil;
+        CHECK(symbolView.image.size.width <= star.size.width * 1.5, "and at its own again when the preferred configuration is taken away");
 
         CHECK([UIImageSymbolConfiguration respondsToSelector:@selector(configurationWithPaletteColors:)] == NO && [UIImageSymbolConfiguration respondsToSelector:@selector(configurationPreferringMulticolor)] == NO,
               "the members of later releases are not there");

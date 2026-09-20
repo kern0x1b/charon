@@ -234,6 +234,22 @@ static NSString *charon_scale_name(NSInteger scale)
     return [super configurationByApplyingConfiguration:otherConfiguration];
 }
 
+- (double)charon_symbolPointSize
+{
+    double size = _hasPointSize ? _pointSize : _textStyle ? charon_text_style_size(_textStyle) : CharonDefaultPointSize;
+    return size > 0 ? size : CharonDefaultPointSize;
+}
+
+- (NSInteger)charon_symbolWeight
+{
+    return _weight >= 1 && _weight <= 9 ? _weight : 4;
+}
+
+- (NSInteger)charon_symbolScale
+{
+    return _scale >= 1 && _scale <= 3 ? _scale : 2;
+}
+
 - (instancetype)configurationWithoutTextStyle
 {
     if (!_textStyle)

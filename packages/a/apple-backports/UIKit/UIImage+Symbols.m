@@ -4,11 +4,46 @@
 #pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
 
 static char charon_symbol_configuration_key;
+static char charon_symbol_name_key;
+static char charon_symbol_baseline_key;
 
-static UIImage *charon_no_symbol(void)
+static UITraitCollection *charon_screen_traits(void)
 {
-    charon_menus_say_once(@"symbols", @"UIImage symbol images: iOS 6 has no SF Symbols, so +systemImageNamed: answers nil for every name.");
-    return nil;
+    return [UIScreen instancesRespondToSelector:@selector(traitCollection)] ? [UIScreen mainScreen].traitCollection : nil;
+}
+
+static UIImageSymbolConfiguration *charon_environment_configuration(UITraitCollection *extra)
+{
+    UITraitCollection *traits = charon_screen_traits();
+    if (extra)
+        traits = traits ? [UITraitCollection traitCollectionWithTraitsFromCollections:@[traits, extra]] : extra;
+    return [[UIImageSymbolConfiguration unspecifiedConfiguration] configurationWithTraitCollection:traits];
+}
+
+static UIImage *charon_symbol_image(NSString *name, UIImageSymbolConfiguration *configuration)
+{
+    if (!charon_symbol_known(name)) {
+        if ([name isKindOfClass:[NSString class]] && name.length)
+            charon_menus_say_once(@"symbol", [NSString stringWithFormat:@"UIImage: no drawing for the symbol \"%@\": +systemImageNamed: answers nil for it and for every other name that has none.", name]);
+        return nil;
+    }
+    double pointSize = [configuration charon_symbolPointSize];
+    NSInteger weight = [configuration charon_symbolWeight], scale = [configuration charon_symbolScale];
+    CGFloat displayScale = configuration.traitCollection.displayScale;
+    if (displayScale <= 0)
+        displayScale = [UIScreen mainScreen].scale;
+    CGSize size;
+    UIEdgeInsets insets;
+    CGFloat baseline;
+    UIImage *drawn = charon_symbol_bitmap(name, pointSize, weight, scale, displayScale);
+    if (!drawn || !charon_symbol_metrics(name, pointSize, weight, scale, &size, &insets, &baseline))
+        return nil;
+    UIImage *image = [drawn imageWithAlignmentRectInsets:insets];
+    image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    objc_setAssociatedObject(image, &charon_symbol_name_key, name, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(image, &charon_symbol_configuration_key, configuration, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(image, &charon_symbol_baseline_key, @(baseline), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    return image;
 }
 
 static UIImage *charon_image_with_configuration(UIImage *image, UIImageSymbolConfiguration *configuration)
@@ -39,22 +74,23 @@ static UIImage *charon_image_with_configuration(UIImage *image, UIImageSymbolCon
 
 + (UIImage *)systemImageNamed:(NSString *)name
 {
-    return charon_no_symbol();
+    return charon_symbol_image(name, charon_environment_configuration(nil));
 }
 
 + (UIImage *)systemImageNamed:(NSString *)name compatibleWithTraitCollection:(UITraitCollection *)traitCollection
 {
-    return charon_no_symbol();
+    return charon_symbol_image(name, charon_environment_configuration(traitCollection));
 }
 
 + (UIImage *)systemImageNamed:(NSString *)name withConfiguration:(UIImageConfiguration *)configuration
 {
-    return charon_no_symbol();
+    UIImageSymbolConfiguration *effective = [charon_environment_configuration(nil) configurationByApplyingConfiguration:configuration];
+    return charon_symbol_image(name, effective);
 }
 
 - (BOOL)isSymbolImage
 {
-    return NO;
+    return objc_getAssociatedObject(self, &charon_symbol_name_key) != nil;
 }
 
 - (UIImageSymbolConfiguration *)symbolConfiguration
@@ -62,16 +98,28 @@ static UIImage *charon_image_with_configuration(UIImage *image, UIImageSymbolCon
     return objc_getAssociatedObject(self, &charon_symbol_configuration_key);
 }
 
+- (BOOL)hasBaseline
+{
+    return objc_getAssociatedObject(self, &charon_symbol_baseline_key) != nil;
+}
+
+- (CGFloat)baselineOffsetFromBottom
+{
+    return [objc_getAssociatedObject(self, &charon_symbol_baseline_key) doubleValue];
+}
+
 - (UIImage *)imageByApplyingSymbolConfiguration:(UIImageSymbolConfiguration *)configuration
 {
     UIImageSymbolConfiguration *current = self.symbolConfiguration;
     if (!configuration)
         return current ? self : charon_image_with_configuration(self, nil);
-    if (!current) {
-        UITraitCollection *environment = [UIScreen instancesRespondToSelector:@selector(traitCollection)] ? [UIScreen mainScreen].traitCollection : nil;
-        current = [[UIImageSymbolConfiguration unspecifiedConfiguration] configurationWithTraitCollection:environment];
-    }
-    return charon_image_with_configuration(self, [current configurationByApplyingConfiguration:configuration]);
+    if (!current)
+        current = charon_environment_configuration(nil);
+    UIImageSymbolConfiguration *merged = [current configurationByApplyingConfiguration:configuration];
+    NSString *name = objc_getAssociatedObject(self, &charon_symbol_name_key);
+    if (name)
+        return charon_symbol_image(name, merged) ?: self;
+    return charon_image_with_configuration(self, merged);
 }
 
 @end

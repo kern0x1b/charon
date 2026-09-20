@@ -1,6 +1,7 @@
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 #import "check.h"
+#import "symbols_record.h"
 
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 #pragma clang diagnostic ignored "-Wnonnull"
@@ -39,6 +40,8 @@ UIFontWeight CharonHostUIFontWeightForImageSymbolWeight(UIImageSymbolWeight symb
 - (BOOL)isCharonHostSymbolImage;
 - (id)charonHostSymbolConfiguration;
 - (UIImage *)charonHostImageByApplyingSymbolConfiguration:(id)configuration;
+- (BOOL)charonHostHasBaseline;
+- (CGFloat)charonHostBaselineOffsetFromBottom;
 @end
 
 @interface UIImageView (CharonHostSymbols)
@@ -450,6 +453,121 @@ static NSArray *view_lines(BOOL port, Class cls)
     return lines;
 }
 
+
+static NSArray *lines_of(NSString *file)
+{
+    NSString *path = [[@__FILE__ stringByDeletingLastPathComponent] stringByAppendingPathComponent:file];
+    NSMutableArray *lines = [NSMutableArray array];
+    for (NSString *line in [[NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil] componentsSeparatedByString:@"\n"])
+        if (line.length)
+            [lines addObject:line];
+    return lines;
+}
+
+// How much of the union of two drawings is in both, the drawings placed in the middle of one canvas.
+static double overlap(UIImage *port, UIImage *host)
+{
+    CGSize canvas = CGSizeMake(MAX(port.size.width, host.size.width), MAX(port.size.height, host.size.height));
+    CGRect a = CGRectMake((canvas.width - port.size.width) / 2, (canvas.height - port.size.height) / 2, port.size.width, port.size.height);
+    CGRect b = CGRectMake((canvas.width - host.size.width) / 2, (canvas.height - host.size.height) / 2, host.size.width, host.size.height);
+    NSData *first = record_alpha(port, canvas, a, 4), *second = record_alpha(host, canvas, b, 4);
+    const uint8_t *x = first.bytes, *y = second.bytes;
+    long both = 0, either = 0;
+    for (NSUInteger i = 0; i < first.length; i++) {
+        BOOL p = x[i] > 127, h = y[i] > 127;
+        both += p && h;
+        either += p || h;
+    }
+    return either ? (double)both / either : 1;
+}
+
+static void symbol_checks(Class port)
+{
+    NSArray *names = lines_of(@"symbols-names.txt"), *absent = lines_of(@"symbols-absent.txt");
+    static const double sizes[4] = {12, 17, 32, 64};
+    static const double configs[8][3] = {{17, 4, 2}, {34, 7, 3}, {12, 1, 1}, {100, 9, 1}, {24, 2, 3}, {48, 6, 2}, {10, 5, 2}, {17, 4, 0}};
+    NSMutableArray *missing = [NSMutableArray array], *notImages = [NSMutableArray array], *rendered = [NSMutableArray array];
+    NSMutableArray *sizeMisses = [NSMutableArray array], *insetMisses = [NSMutableArray array], *baselineMisses = [NSMutableArray array];
+    NSMutableArray *scores = [NSMutableArray array], *weak = [NSMutableArray array];
+    double worstSize = 0, worstInset = 0, worstBaseline = 0;
+    NSMutableString *tsv = [NSMutableString string];
+    for (NSString *name in names) {
+        UIImage *drawn = [UIImage charonHostSystemImageNamed:name];
+        if (!drawn) {
+            [missing addObject:name];
+            continue;
+        }
+        if (!drawn.charonHostSymbolConfiguration || ![drawn isCharonHostSymbolImage] || drawn.renderingMode != UIImageRenderingModeAlwaysTemplate || ![drawn charonHostHasBaseline])
+            [notImages addObject:name];
+        for (int c = 0; c < 8; c++) {
+            id configuration = [port configurationWithPointSize:configs[c][0] weight:(UIImageSymbolWeight)configs[c][1] scale:(UIImageSymbolScale)configs[c][2]];
+            UIImage *ours = [UIImage charonHostSystemImageNamed:name withConfiguration:configuration];
+            UIImage *host = [UIImage systemImageNamed:name withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:configs[c][0] weight:(UIImageSymbolWeight)configs[c][1] scale:(UIImageSymbolScale)configs[c][2]]];
+            double size = MAX(fabs(ours.size.width - host.size.width), fabs(ours.size.height - host.size.height));
+            UIEdgeInsets a = ours.alignmentRectInsets, b = host.alignmentRectInsets;
+            double inset = MAX(MAX(fabs(a.top - b.top), fabs(a.left - b.left)), MAX(fabs(a.bottom - b.bottom), fabs(a.right - b.right)));
+            double baseline = fabs([ours charonHostBaselineOffsetFromBottom] - host.baselineOffsetFromBottom);
+            worstSize = MAX(worstSize, size); worstInset = MAX(worstInset, inset); worstBaseline = MAX(worstBaseline, baseline);
+            NSString *at = [NSString stringWithFormat:@"%@ at %g/%g/%g", name, configs[c][0], configs[c][1], configs[c][2]];
+            if (size > 1) [sizeMisses addObject:[NSString stringWithFormat:@"%@: %g", at, size]];
+            if (inset > 1) [insetMisses addObject:[NSString stringWithFormat:@"%@: %g", at, inset]];
+            if (baseline > 1) [baselineMisses addObject:[NSString stringWithFormat:@"%@: %g", at, baseline]];
+        }
+        double sum = 0;
+        NSMutableString *row = [NSMutableString stringWithString:name];
+        for (int k = 0; k < 4; k++) {
+            UIImage *ours = [UIImage charonHostSystemImageNamed:name withConfiguration:[port configurationWithPointSize:sizes[k] weight:UIImageSymbolWeightRegular scale:UIImageSymbolScaleMedium]];
+            UIImage *host = [UIImage systemImageNamed:name withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:sizes[k] weight:UIImageSymbolWeightRegular scale:UIImageSymbolScaleMedium]];
+            double value = overlap(ours, host);
+            sum += value;
+            [row appendFormat:@"\t%.3f", value];
+        }
+        [tsv appendFormat:@"%@\t%.3f\n", row, sum / 4];
+        [scores addObject:@(sum / 4)];
+        if (sum / 4 < 0.3)
+            [weak addObject:[NSString stringWithFormat:@"%@ %.2f", name, sum / 4]];
+    }
+    for (NSString *name in absent)
+        if ([UIImage charonHostSystemImageNamed:name] || ![UIImage systemImageNamed:name])
+            [rendered addObject:name];
+    charon_check(names.count >= 500 && !missing.count, "every recorded symbol name is drawn", missing.description);
+    charon_check(!absent.count || !rendered.count, "the names listed as not drawn are the host's and are answered nil", rendered.description);
+    charon_check(!notImages.count, "a drawn symbol is a template symbol image with its configuration and a baseline", notImages.description);
+    printf("info size: worst difference %g points over %lu names in 8 configurations, %lu beyond 1 point\n", worstSize, (unsigned long)names.count, (unsigned long)sizeMisses.count);
+    printf("info alignment insets: worst difference %g points, %lu beyond 1 point; baseline: worst %g, %lu beyond 1 point\n", worstInset, (unsigned long)insetMisses.count, worstBaseline, (unsigned long)baselineMisses.count);
+    charon_check(!sizeMisses.count, "the size of every symbol is the host's within a point", [sizeMisses.description substringToIndex:MIN(400, sizeMisses.description.length)]);
+    charon_check(!insetMisses.count, "the alignment insets of every symbol are the host's within a point", [insetMisses.description substringToIndex:MIN(400, insetMisses.description.length)]);
+    charon_check(!baselineMisses.count, "the baseline offset of every symbol is the host's within a point", [baselineMisses.description substringToIndex:MIN(400, baselineMisses.description.length)]);
+    NSArray *sorted = [scores sortedArrayUsingSelector:@selector(compare:)];
+    double minimum = sorted.count ? [sorted[0] doubleValue] : 0, median = sorted.count ? [sorted[sorted.count / 2] doubleValue] : 0;
+    NSUInteger below = 0, belowHalf = 0;
+    for (NSNumber *score in sorted) {
+        below += score.doubleValue < 0.3;
+        belowHalf += score.doubleValue < 0.5;
+    }
+    printf("info overlap with the host's drawing at 12, 17, 32 and 64 points (union over intersection, mean of the four): %lu symbols, minimum %.3f, median %.3f, %lu below 0.5, %lu below 0.3\n",
+           (unsigned long)sorted.count, minimum, median, (unsigned long)belowHalf, (unsigned long)below);
+    charon_check(minimum >= 0.10 && median >= 0.60, "the drawings overlap the host's at least 0.10 each and 0.60 at the median", [NSString stringWithFormat:@"%g %g", minimum, median]);
+    const char *write = getenv("CHARON_WRITE_SYMBOLS");
+    if (write) {
+        NSString *dir = @(write);
+        NSArray *recorded = record_names([[@__FILE__ stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"symbols-names.txt"]);
+        [record_metrics_header(recorded) writeToFile:[dir stringByAppendingPathComponent:@"CharonSymbolMetrics.h"] atomically:YES encoding:NSUTF8StringEncoding error:nil];
+        [record_expectations_header(recorded) writeToFile:[dir stringByAppendingPathComponent:@"symbols-expectations.h"] atomically:YES encoding:NSUTF8StringEncoding error:nil];
+        [tsv writeToFile:[dir stringByAppendingPathComponent:@"symbols-overlap.tsv"] atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    }
+    UIImage *small = [UIImage charonHostSystemImageNamed:@"star" withConfiguration:[port configurationWithPointSize:12 weight:UIImageSymbolWeightRegular scale:UIImageSymbolScaleMedium]];
+    UIImage *again = [small charonHostImageByApplyingSymbolConfiguration:[port configurationWithPointSize:48 weight:UIImageSymbolWeightBold scale:UIImageSymbolScaleMedium]];
+    UIImage *host = [[UIImage systemImageNamed:@"star" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:12 weight:UIImageSymbolWeightRegular scale:UIImageSymbolScaleMedium]]
+                        imageByApplyingSymbolConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:48 weight:UIImageSymbolWeightBold scale:UIImageSymbolScaleMedium]];
+    charon_check(fabs(again.size.width - host.size.width) <= 1 && fabs(again.size.height - host.size.height) <= 1 && [again isCharonHostSymbolImage],
+                 "applying a configuration to a symbol image draws it again at the new size", NSStringFromCGSize(again.size));
+    NSString *merged = norm([again charonHostSymbolConfiguration]);
+    charon_check([without_traits([again charonHostSymbolConfiguration]) isEqualToString:@"pointSize=48, weight=Bold, scale=Medium"], "and holds the merged configuration", merged);
+    charon_check([UIImage charonHostSystemImageNamed:@"nonexistent.symbol.zz"] == nil && [UIImage charonHostSystemImageNamed:@"star.fill.fill"] == nil && [UIImage charonHostSystemImageNamed:@""] == nil,
+                 "a name that is not a symbol is nil", @"");
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -489,6 +607,8 @@ int main(void)
                      "a font of a text style gives its size and weight, where the host keeps the text style", norm([port configurationWithFont:body]));
         for (NSInteger weight = -6; weight <= -1; weight++)
             charon_check(CharonHostUIFontWeightForImageSymbolWeight((UIImageSymbolWeight)weight) == 0, NAMED(@"symbol weight %ld out of range is Regular where the host reads beside its table", (long)weight), @"");
+
+        symbol_checks(port);
 
         printf("checks=%d failures=%d\n", charon_checks, charon_failures);
         return charon_failures ? 1 : 0;

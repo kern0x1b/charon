@@ -84,8 +84,9 @@ device counterpart: it checks that the classes come from `libUIKitBackports.dyli
 to real views, puts a search text field and a search bar's field on screen with tokens, and taps a color well to present, drive and dismiss the picker.
 
 The `symbols` group of `host/uikit2/run.sh` compares `UIImageConfiguration`, `UIImageSymbolConfiguration`, the two weight functions, the symbol members of `UIImage` on ordinary
-images and `UIImageView.preferredSymbolConfiguration` with the host's, over generated configurations and every pair of them; `device/symbols.m` checks on the device that the
-classes and functions come from `libUIKitBackports.dylib`, the value behaviours, and that `systemImageNamed:` answers nil.
+images and `UIImageView.preferredSymbolConfiguration` with the host's, over generated configurations and every pair of them, and draws the 549 symbols of `symbols-names.txt` against the host's at
+eight configurations (size, insets, baseline within a point) and four sizes (overlap of the bitmaps); `CHARON_WRITE_SYMBOLS=<directory>` rewrites `CharonSymbolMetrics.h`, `symbols-expectations.h` and the
+scores. `device/symbols.m` checks on the device that the classes and functions come from `libUIKitBackports.dylib`, the value behaviours, and every symbol against `symbols-expectations.h`.
 The `layoutvalues` and `compositionallayout` groups of `host/uikit2/run.sh` hold the compositional layout's classes to the system's.
 `layoutvalues` runs 139 statements against the system's classes and the port's and compares the answers as text:
 defaults, copies, equality, `-description`, exceptions. `compositionallayout` is a `windowed` group: it puts each of 182 layouts
