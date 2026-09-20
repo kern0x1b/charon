@@ -1,4 +1,4 @@
-#import <UIKit/UIKit.h>
+#import "CharonBlur.h"
 
 @implementation UIVisualEffect
 
@@ -23,9 +23,6 @@
 
 @end
 
-@interface UIBlurEffect (CharonStyle)
-- (UIBlurEffectStyle)charon_style;
-@end
 
 @implementation UIBlurEffect {
     UIBlurEffectStyle _style;

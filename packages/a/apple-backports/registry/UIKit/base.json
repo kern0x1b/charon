@@ -1231,11 +1231,11 @@
     "api": "UIBlurEffect",
     "kind": "class",
     "introduced": "8.0",
-    "status": "inert",
-    "reason": "a live blur is drawn by the render server, which the release has no pass for",
-    "effect": "the effect is made, compared, copied and archived as the system's is, and the view it is given to draws nothing of it: what lies behind stays sharp and unmixed",
+    "status": "implemented",
+    "reason": "a departure from 8.0 in how the blur is made: the release has no pass of the render server that blurs what lies behind a layer, so the view it is given blurs a snapshot of the window behind it",
+    "effect": "the effect is made, compared, copied and archived as the system's is, and the view it is given shows a blurred, saturated and tinted picture of what lies behind it, taken a few times a second",
     "facts": "facts/UIKit/UIVisualEffect.md",
-    "source": "the host's own UIKit through the differential run of tests/backports/host/uikit2 (visualeffect)"
+    "source": "the host's own UIKit through the differential run of tests/backports/host/uikit2 (visualeffect) for the value; tests/backports/device/visualeffect.m for the blur on the devices; the styles' tint and saturation are those of the ImageEffects sample of iOS 7, and the 0.3 of the light tint was read in UIKitCore of iOS 12.0"
   },
   {
     "api": "UIContentSizeCategoryAccessibilityExtraExtraExtraLarge",
@@ -1705,8 +1705,8 @@
     "kind": "class",
     "introduced": "8.0",
     "status": "inert",
-    "reason": "vibrancy is drawn on top of a live blur, which the release cannot draw",
-    "effect": "the effect is made, compared, copied and archived as the system's is, and nothing is drawn of it",
+    "reason": "vibrancy adapts the colours of a view to the blur behind it in the render server, which the release has no pass for",
+    "effect": "the effect is made, compared, copied and archived as the system's is, and the views in the content view of the effect view are drawn as they are, not adapted to the blur",
     "facts": "facts/UIKit/UIVisualEffect.md",
     "source": "the host's own UIKit through the differential run of tests/backports/host/uikit2 (visualeffect)"
   },
@@ -1722,11 +1722,11 @@
     "api": "UIVisualEffectView",
     "kind": "class",
     "introduced": "8.0",
-    "status": "inert",
-    "reason": "the view mixes what lies behind it through a live blur, which the release has no pass for",
-    "effect": "it is a transparent view with a content view that fills it, refuses a subview added to itself as the system's does, and answers the effect it was given; nothing is blurred",
+    "status": "implemented",
+    "reason": "a departure from 8.0 in how the blur is made: the view blurs a snapshot of what lies behind it, taken at a quarter of the size a few times a second, since the release cannot blur live",
+    "effect": "a view with a blur effect shows the window behind it blurred, saturated and tinted by its style, follows what changes behind it within about a tenth of a second, and is transparent when it has no effect; it has a content view that fills it, refuses a subview added to itself as the system's does, and answers the effect it was given",
     "facts": "facts/UIKit/UIVisualEffect.md",
-    "source": "the host's own UIKit through the differential run of tests/backports/host/uikit2 (visualeffect)"
+    "source": "the host's own UIKit through the differential run of tests/backports/host/uikit2 (visualeffect); tests/backports/device/visualeffect.m on an iPhone 4S and an iPad 2"
   },
   {
     "api": "NSTextEffectAttributeName",

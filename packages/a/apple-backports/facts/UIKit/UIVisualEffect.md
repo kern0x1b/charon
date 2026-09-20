@@ -20,16 +20,32 @@ three `insertSubview:` methods, raises `NSInternalInconsistencyException` tellin
 which is what the system does for an application that ignores the documented contract; nothing an application that
 follows the contract does raises. A view comes back from an archive with its content view in place.
 
+## What the port does for the blur
+
+The release has no pass in the render server that blurs what lies behind a layer, so a view with a blur effect makes the picture itself.
+Each time it is due, the view hides itself, draws the layers of its window into a bitmap a quarter of the size of the area behind it (the area of the
+view, grown by the blur radius), shows itself again, blurs the bitmap with three passes of a box filter whose width is the one the ImageEffects sample of
+iOS 7 uses for a Gaussian of the style's radius, raises its saturation, mixes the style's tint over it and gives it to a layer under the content view,
+cut to the size of the view and stretched smoothly to it. A picture that has not changed since the last one is not blurred again.
+
+The styles are those of the ImageEffects sample: extra light (radius 20, near-white tint at 0.82, saturation 1.8), light (radius 30, white at 0.3, saturation
+1.8) and dark (radius 20, near-black at 0.73, saturation 1.8); the light tint of 0.3 is the alpha `_UIBackdropViewSettingsLight` sets in UIKitCore of iOS 12.0
+(`0x1ad2c310c`), and the other values are the sample's, which was not compared with the newer release. The regular and prominent styles of iOS 10 are drawn as
+light and extra light, and the materials of iOS 13 as light or dark by their name, which is an approximation and not what those releases draw.
+
+It is taken when the view first has a window, when its size or its effect changes, and by a timer of ten times a second that waits three times as long as a
+picture took, and half a second when nothing behind has changed, and that stops when the view leaves its window, is hidden or clear, or the application is in
+the background. On the iPhone 4S the picture of a view the width of the screen took under a millisecond to take when nothing had changed, and the test holds
+a refresh to a quarter of a second.
+
 ## What it cannot do
 
-The release has no pass in the render server that blurs what lies behind a layer, and the port draws nothing in its
-place: no translucent white or dark fill stands in for the blur, because that would look like an effect and be a
-different one. A view with an effect is transparent, and what lies behind it stays sharp. An application that put text
-on a blurred bar for legibility gets text over the unblurred picture; the ones that give the bar a background colour
-of their own, as most of them do for a device without the effect, are unaffected. That is why the classes are `inert`
-and the view's ceiling is stated here.
+The blur is not live: what moves behind the view is followed a few times a second, not on every frame, and a fast animation shows the blur late. What the
+window draws with OpenGL ES is not in a layer's bitmap, so an application that blurs a game or a video drawn that way blurs whatever else is under it, not the
+picture. The blur is the port's, made by a box filter, and not the render server's Gaussian filter, so its edges and its saturation differ from the system's.
+Vibrancy is not carried: the views in the content view of a vibrancy effect are drawn as they are.
 
-The system's view has three private subviews (the backdrop, an effect subview and the content view) and the port has
-one, the content view, so an application that walks `subviews` of a visual effect view sees fewer. The styles that iOS 10
+The system's view has three private subviews (the backdrop, an effect subview and the content view) and the port has one, the content view, and a layer for the
+picture, so an application that walks `subviews` of a visual effect view sees fewer. The styles that iOS 10
 added (regular and prominent) are accepted and kept; how the newest UIKit archives them is not what iOS 10 does, so
 the archive of those two styles is not held to the host.

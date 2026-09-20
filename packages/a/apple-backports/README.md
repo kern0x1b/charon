@@ -424,6 +424,8 @@ The eleven `CTRadioAccessTechnology...` names and `CTRadioAccessTechnologyDidCha
 
 `PHPickerViewController`, `PHPickerConfiguration`, `PHPickerFilter` and `PHPickerResult` are carried in `libPhotosBackports.dylib` over the release's `UIImagePickerController`, which the controller holds as a child for the media types of the filter: one item at most (a `selectionLimit` of more is kept and not honoured), an image offered as JPEG or, by the address the release gives it, PNG, GIF or TIFF, made from the image the picker returns, a video offered as the file the picker made, and `assetIdentifier` nil; the filters of iOS 15 and 16 and the selection of iOS 15 are absent. `UIImage` reads and writes itself through `NSItemProvider` as in iOS 11, in `libUIKitBackports.dylib`. `facts/Photos/PHPicker.md`, `facts/UIKit/UIImageItemProvider.md`.
 
+`UIVisualEffectView` with a `UIBlurEffect` blurs what lies behind it, for real and not live: the view draws the layers of its window into a bitmap a quarter of the size, blurs it with a box filter, raises its saturation and mixes the tint of its style in, and shows the picture behind its content view, again about ten times a second while what is behind changes; the picture cannot hold what the window draws with OpenGL ES, and vibrancy is not carried. `facts/UIKit/UIVisualEffect.md`.
+
 ### Carried with a difference
 
 Each of these is implemented, tested against the real implementation, and
