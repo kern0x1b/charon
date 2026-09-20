@@ -1491,5 +1491,13 @@
     "status": "implemented",
     "facts": "facts/Foundation/EmptyCollections.md",
     "source": "the host's own CoreFoundation, through dlsym"
+  },
+  {
+    "api": "NSDateComponentsFormatter",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSDateComponentsFormatter.md",
+    "source": "the host's own Foundation, through the fuzz differential of tests/backports/host/uikit2 (datecomponentsformatter) and the recorded cases of tests/backports/host/datecomponents"
   }
 ]
