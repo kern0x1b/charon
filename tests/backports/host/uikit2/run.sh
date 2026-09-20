@@ -104,6 +104,7 @@ group useractivity "../Foundation/NSUserActivity.m" "*" useractivity_test.m
 group localauth "../LocalAuthentication/LAContext.m ../LocalAuthentication/LAErrorDomain.m ../LocalAuthentication/LATouchIDAuthenticationMaximumAllowableReuseDuration.m" "*" localauth_test.m
 group documentpicker "UIDocumentPickerViewController.m" "*" documentpicker_test.m
 group datecomponentsformatter "../Foundation/NSDateComponentsFormatter.m" "*" datecomponentsformatter_test.m
+group scenes "UISceneValues.m UISceneConstants.m" "*" scenes_test.m
 group relativedatetimeformatter "../Foundation/NSRelativeDateTimeFormatter.m" "*" relativedatetimeformatter_test.m
 group itemprovider "../Foundation/NSItemProvider.m" "*" itemprovider_test.m
 group itemproviderbuiltins "../Foundation/NSString+ItemProvider.m ../Foundation/NSURL+ItemProvider.m" "" itemproviderbuiltins_test.m

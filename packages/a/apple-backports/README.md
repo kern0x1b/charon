@@ -156,6 +156,27 @@ delegate, what is refused and with which words follow the system's (and `SFAuthe
 run on an iPad 2 by `device/safariviewcontroller.m`; the cookies and passwords of Safari, Reader and the content blockers
 are not shared, as `facts/SafariServices/SFSafariViewController.md` sets out.
 
+## iOS 13 and 14
+
+### Relative dates, in English
+
+`NSRelativeDateTimeFormatter` writes the distance between two dates as "in 2 hours", "3 days ago", "yesterday", "next week",
+in the numeric and named styles and the four unit styles, over the calendar of the formatter. It is written from the host's
+own formatter: the fuzz differential agrees on 56000 answers, and 1600 recorded cases are held against the port on the
+device. The words are English whatever the language of the device; the numbers go through the locale's number formatter.
+See `facts/Foundation/NSRelativeDateTimeFormatter.md`.
+
+### Scenes, over the one window an application has
+
+`UIScene`, `UIWindowScene`, `UISceneSession`, `UISceneConfiguration`, the connection options, the URL contexts and their
+options, the activation conditions, the request options, `UIStatusBarManager`, the scene notifications and the roles are
+carried as a facade over the application's single window stack: one implicit scene, taken from the scene manifest of the
+Info.plist or from the application delegate, connected after launch, and moved through its activation states by the
+application's own notifications. `connectedScenes` holds it, `supportsMultipleScenes` is NO, and a request for a second
+scene is answered with the error of a release that has none. `UIWindow(windowScene:)` makes a window of it and the scene
+delegate's `window` is filled in for a storyboard. Not carried: state restoration by activity, Handoff, shortcut items and
+CloudKit shares in the connection options, and the disconnect of the scene. See `facts/UIKit/UIScene.md`.
+
 ## iOS 11 and 12
 
 These two releases are read differently from the ones before them. The last

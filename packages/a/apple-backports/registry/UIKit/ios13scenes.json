@@ -1,0 +1,399 @@
+{
+ "framework": "UIKit",
+ "entries": [
+  {
+   "api": "UIScene",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence; the constants against the host's own UIKit"
+  },
+  {
+   "api": "UIWindowScene",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence; the constants against the host's own UIKit"
+  },
+  {
+   "api": "UISceneSession",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence; the constants against the host's own UIKit"
+  },
+  {
+   "api": "UISceneConfiguration",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence; the constants against the host's own UIKit"
+  },
+  {
+   "api": "UIOpenURLContext",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence; the constants against the host's own UIKit"
+  },
+  {
+   "api": "UISceneOpenURLOptions",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence; the constants against the host's own UIKit"
+  },
+  {
+   "api": "UISceneOpenExternalURLOptions",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence; the constants against the host's own UIKit"
+  },
+  {
+   "api": "UISceneActivationConditions",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence; the constants against the host's own UIKit"
+  },
+  {
+   "api": "UISceneActivationRequestOptions",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence; the constants against the host's own UIKit"
+  },
+  {
+   "api": "UISceneDestructionRequestOptions",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence; the constants against the host's own UIKit"
+  },
+  {
+   "api": "UIWindowSceneDestructionRequestOptions",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence; the constants against the host's own UIKit"
+  },
+  {
+   "api": "UISceneSizeRestrictions",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence; the constants against the host's own UIKit"
+  },
+  {
+   "api": "UIStatusBarManager",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence; the constants against the host's own UIKit"
+  },
+  {
+   "api": "UISceneConnectionOptions",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence; the constants against the host's own UIKit",
+   "reason": "the notification response, the shortcut item, the handoff type, the user activities and the CloudKit share cannot reach a scene on iOS 6",
+   "effect": "those properties answer nil or an empty set"
+  },
+  {
+   "api": "UISceneWillConnectNotification",
+   "kind": "constant",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence"
+  },
+  {
+   "api": "UISceneDidDisconnectNotification",
+   "kind": "constant",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence"
+  },
+  {
+   "api": "UISceneDidActivateNotification",
+   "kind": "constant",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence"
+  },
+  {
+   "api": "UISceneWillDeactivateNotification",
+   "kind": "constant",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence"
+  },
+  {
+   "api": "UISceneWillEnterForegroundNotification",
+   "kind": "constant",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence"
+  },
+  {
+   "api": "UISceneDidEnterBackgroundNotification",
+   "kind": "constant",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence"
+  },
+  {
+   "api": "UIWindowSceneSessionRoleApplication",
+   "kind": "constant",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence"
+  },
+  {
+   "api": "UIWindowSceneSessionRoleExternalDisplay",
+   "kind": "constant",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence"
+  },
+  {
+   "api": "UIApplication.connectedScenes",
+   "kind": "property",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence",
+   "reason": "the one scene is a facade over the application's window stack",
+   "effect": "the set holds one scene"
+  },
+  {
+   "api": "UIApplication.openSessions",
+   "kind": "property",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence",
+   "reason": "the one scene is a facade over the application's window stack",
+   "effect": "the set holds one session"
+  },
+  {
+   "api": "UIApplication.supportsMultipleScenes",
+   "kind": "property",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence",
+   "reason": "iOS 6 has one window stack",
+   "effect": "always NO"
+  },
+  {
+   "api": "-[UIApplication requestSceneSessionActivation:userActivity:options:errorHandler:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence",
+   "reason": "there is one scene",
+   "effect": "the error handler is called with UISceneErrorDomain code 0 unless the session is the one there is"
+  },
+  {
+   "api": "-[UIApplication requestSceneSessionDestruction:options:errorHandler:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence",
+   "reason": "the one scene cannot be destroyed",
+   "effect": "the error handler is called with UISceneErrorDomain code 1"
+  },
+  {
+   "api": "-[UIApplication requestSceneSessionRefresh:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence",
+   "reason": "iOS 6 keeps no scene snapshot to refresh",
+   "effect": "does nothing and says so once in the log"
+  },
+  {
+   "api": "UIWindow.windowScene",
+   "kind": "property",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence"
+  },
+  {
+   "api": "-[UIWindow initWithWindowScene:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence"
+  },
+  {
+   "api": "-[UISceneDelegate sceneDidDisconnect:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence",
+   "reason": "the one scene never disconnects, and iOS 6 has no scene state restoration or Handoff",
+   "effect": "the message is never sent"
+  },
+  {
+   "api": "-[UISceneDelegate stateRestorationActivityForScene:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence",
+   "reason": "the one scene never disconnects, and iOS 6 has no scene state restoration or Handoff",
+   "effect": "the message is never sent"
+  },
+  {
+   "api": "-[UISceneDelegate scene:restoreInteractionStateWithUserActivity:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence",
+   "reason": "the one scene never disconnects, and iOS 6 has no scene state restoration or Handoff",
+   "effect": "the message is never sent"
+  },
+  {
+   "api": "-[UISceneDelegate scene:willContinueUserActivityWithType:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence",
+   "reason": "the one scene never disconnects, and iOS 6 has no scene state restoration or Handoff",
+   "effect": "the message is never sent"
+  },
+  {
+   "api": "-[UISceneDelegate scene:continueUserActivity:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence",
+   "reason": "the one scene never disconnects, and iOS 6 has no scene state restoration or Handoff",
+   "effect": "the message is never sent"
+  },
+  {
+   "api": "-[UISceneDelegate scene:didFailToContinueUserActivityWithType:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence",
+   "reason": "the one scene never disconnects, and iOS 6 has no scene state restoration or Handoff",
+   "effect": "the message is never sent"
+  },
+  {
+   "api": "-[UISceneDelegate scene:didUpdateUserActivity:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence",
+   "reason": "the one scene never disconnects, and iOS 6 has no scene state restoration or Handoff",
+   "effect": "the message is never sent"
+  },
+  {
+   "api": "-[UIWindowSceneDelegate windowScene:performActionForShortcutItem:completionHandler:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence",
+   "reason": "no quick action is ever performed",
+   "effect": "the message is never sent"
+  },
+  {
+   "api": "-[UIWindowSceneDelegate windowScene:userDidAcceptCloudKitShareWithMetadata:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence",
+   "reason": "CloudKit shares are not carried",
+   "effect": "the message is never sent"
+  },
+  {
+   "api": "-[UIApplicationDelegate application:didDiscardSceneSessions:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the SDK headers and the documented launch sequence",
+   "reason": "the one session is never discarded",
+   "effect": "the message is never sent"
+  }
+ ]
+}
