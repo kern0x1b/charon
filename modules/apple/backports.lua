@@ -55,7 +55,7 @@ local function internal_symbol(name)
     return bare:startswith("charon_") or bare:startswith("Charon")
 end
 
-local function defined_symbols(file)
+local function defined_symbols(file, hidden)
     local data = macho.read(file)
     local found = {}
     for _, image in ipairs(macho.images(data)) do
@@ -64,7 +64,7 @@ local function defined_symbols(file)
             local entry = image.wide and 16 or 12
             for index = 0, nsyms - 1 do
                 local strx, kind = string.unpack("<I4B", data, image.base + symoff + index * entry + 1)
-                if kind & 0xE0 == 0 and kind & 0x10 == 0 and kind & 0x0E == 0x0E and kind & 0x01 ~= 0 then
+                if kind & 0xE0 == 0 and kind & 0x0E == 0x0E and (hidden or (kind & 0x10 == 0 and kind & 0x01 ~= 0)) then
                     local finish = data:find("\0", image.base + stroff + strx + 1, true)
                     found[data:sub(image.base + stroff + strx + 1, finish - 1)] = true
                 end
@@ -753,7 +753,7 @@ function duplicated(objects, classes)
     local found = {}
     for _, object in ipairs(objects) do
         local defined = {}
-        for _, symbol in ipairs(defined_symbols(object)) do
+        for _, symbol in ipairs(defined_symbols(object, true)) do
             defined[symbol] = true
         end
         for _, symbol in ipairs(exported_symbols(object)) do

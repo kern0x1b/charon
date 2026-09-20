@@ -104,6 +104,11 @@ local function surface_step(backports, opt, folder, found)
     if #backports.duplicated({proxy_object}, {NSProxied = {image = "UIFoundation"}}) ~= 0 then
         table.insert(found, "a proxy for a class the release holds without exporting it is not a second class")
     end
+    local hidden_object = path.join(folder, "surface", "NSProxiedHidden.o")
+    fixtures.run(folder, "xcrun", {"clang", "-target", "armv7-apple-ios6.0", "-isysroot", opt.sdk, "-fobjc-arc", "-fvisibility=hidden", "-c", proxy_source, "-o", hidden_object})
+    if #backports.duplicated({hidden_object}, {NSProxied = {image = "UIFoundation"}}) ~= 0 then
+        table.insert(found, "a proxy is one whether or not the compiler hid the class it defines under Charon's name")
+    end
     local refused = fixtures.refusal(function () kept, reexported = backports.band(release_ten, {object}) end)
     if refused then
         table.insert(found, "the helpers and ivars an object holds beside a class are not API, and weighing them against a release refuses it: " .. refused)
