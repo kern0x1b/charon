@@ -1,0 +1,116 @@
+{
+  "framework": "AuthenticationServices",
+  "entries": [
+    {
+      "api": "ASWebAuthenticationSession",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a departure from 12.0 in the start: iOS 12 starts the wrapped session through a method of its own that this release does not have, so the session is started as the SFAuthenticationSession of iOS 11 is, over the page of this package",
+      "effect": "the session is made with a URL, a callback scheme and a completion handler, and is started with -start, which answers YES once and NO while it runs; the handler is given the callback URL with no error when the page reaches the scheme, or nil and an error of ASWebAuthenticationSessionErrorDomain with the code 1 for a cancel, for an address that is not a web address and for a page dismissed by the user; -cancel ends a running session the same way and does nothing to one that has not started",
+      "facts": "facts/AuthenticationServices/ASWebAuthenticationSession.md",
+      "source": "AuthenticationServices of the arm64 shared cache of iOS 12.0: -[ASWebAuthenticationSession initWithURL:callbackURLScheme:completionHandler:] at 0x1aa076000 makes an SFAuthenticationSession whose handler hands the callback URL on and turns any error into code 1 of the domain, -start and -cancel at 0x1aa076200 and 0x1aa076218 forward to it; an iPad 2 running 6.1.3 with a loopback server for what comes out"
+    },
+    {
+      "api": "ASWebAuthenticationSessionErrorDomain",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the string com.apple.AuthenticationServices.WebAuthenticationSession, which iOS 12 gives the constant",
+      "facts": "facts/AuthenticationServices/ASWebAuthenticationSession.md",
+      "source": "AuthenticationServices of the arm64 shared cache of iOS 12.0: the string the error of the session is made with, at 0x1aa07c65e"
+    },
+    {
+      "api": "ASCredentialIdentityStore",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no credential provider extension or identity store for the system's AutoFill to consult, and a password that only looks kept would mislead",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of AuthenticationServices"
+    },
+    {
+      "api": "ASCredentialIdentityStoreState",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no credential provider extension or identity store for the system's AutoFill to consult, and a password that only looks kept would mislead",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of AuthenticationServices"
+    },
+    {
+      "api": "ASCredentialProviderExtensionContext",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no credential provider extension or identity store for the system's AutoFill to consult, and a password that only looks kept would mislead",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of AuthenticationServices"
+    },
+    {
+      "api": "ASCredentialProviderViewController",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no credential provider extension or identity store for the system's AutoFill to consult, and a password that only looks kept would mislead",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of AuthenticationServices"
+    },
+    {
+      "api": "ASCredentialServiceIdentifier",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no credential provider extension or identity store for the system's AutoFill to consult, and a password that only looks kept would mislead",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of AuthenticationServices"
+    },
+    {
+      "api": "ASPasswordCredential",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no credential provider extension or identity store for the system's AutoFill to consult, and a password that only looks kept would mislead",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of AuthenticationServices"
+    },
+    {
+      "api": "ASPasswordCredentialIdentity",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release has no credential provider extension or identity store for the system's AutoFill to consult, and a password that only looks kept would mislead",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "the SDK 16.4 headers of AuthenticationServices"
+    },
+    {
+      "api": "ASCredentialIdentityStoreErrorDomain",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "it names the errors of the credential provider, which is absent",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of AuthenticationServices"
+    },
+    {
+      "api": "ASExtensionErrorDomain",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "it names the errors of the credential provider, which is absent",
+      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "source": "the SDK 16.4 headers of AuthenticationServices"
+    }
+  ]
+}
