@@ -126,6 +126,15 @@
       "effect": "the protocol comes from the SDK's header and its metadata is compiled into the application, so an application that adopts it builds and runs; the method is never called, by the release or by the port",
       "facts": "facts/UIKit/UIViewControllerPreviewing.md",
       "source": "the host's own UIKit under Mac Catalyst, which asks it no more than the release does"
+    },
+    {
+      "api": "UIProgressView.observedProgress",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIProgressViewObservedProgress.md",
+      "source": "-[UIProgressView setObservedProgress:] in the armv7 cache of iOS 9.3.5 and the selectors UIKit of that release refers to; the host does not move its own bar for an observed progress and is no oracle for it"
     }
   ]
 }
