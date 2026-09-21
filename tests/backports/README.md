@@ -752,6 +752,8 @@ writes `/private/var/backports/swipeui.log` and `swipeui.done`.
 
 `host/imagenamed/run.sh` compares `+imageNamed:inBundle:compatibleWithTraitCollection:` with the host's own, through Mac Catalyst, on a folder of loose files (extensions, scales 1 to 3, the pad's files, a JPEG, absent and empty names) under no traits and under every pair of scale and idiom, and writes `device/imagenamed-expectations.h`; `device/imagenamed.m` holds the port to them on the iPhone 4S and the iPad 2 and checks the files for the phone itself.
 
+`host/appgroup/run.sh` compares `-containerURLForSecurityApplicationGroupIdentifier:` with the host's own Foundation, through Mac Catalyst, over 20 identifiers (with the home directory moved, so both write under one place), and writes `device/appgroup-expectations.h`; `device/appgroup.m` holds the port to them on the iPhone 4S and the iPad 2 and checks that the container is a directory that can be written and is found again.
+
 `host/touchtypes/run.sh` records what the host's UIKit answers for `allowedTouchTypes`, `requiresExclusiveTouchType` and `allowedPressTypes` of a gesture recognizer (the defaults, an array set, an empty array, duplicates) into `device/touchtypes-expectations.h`, and `device/touchtypes.m` holds the port to them on a device and then taps with a real finger on views whose tap recognizers allow different touch types.
 
 `host/textalign/run.sh` records what the host's UIKit does when `textAlignment` of a label, a text field and a text view is set to left, centre, right and natural (the value read back, and the side the ink of the rendered control is on, for a Latin and a Hebrew text), into `device/textalign-expectations.h`, and `device/textalign.m` holds the port to the same records on a device.
