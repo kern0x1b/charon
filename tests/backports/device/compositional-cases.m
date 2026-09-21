@@ -709,6 +709,62 @@ static NSString *sized_text(NSInteger index)
 @implementation SizedPlainCell
 @end
 
+@interface SizedIntrinsicView : UIView
+@end
+
+@implementation SizedIntrinsicView
+- (CGSize)intrinsicContentSize
+{
+    return CGSizeMake(120, 37);
+}
+@end
+
+@interface SizedIntrinsicCell : UICollectionViewCell
+@end
+
+@implementation SizedIntrinsicCell
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    if ((self = [super initWithFrame:frame])) {
+        UIView *fixed = [[SizedIntrinsicView alloc] init];
+        fixed.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.contentView addSubview:fixed];
+        NSDictionary *views = @{@"v" : fixed};
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-8-[v]-8-|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-4-[v]-4-|" options:0 metrics:nil views:views]];
+    }
+    return self;
+}
+@end
+
+@interface SizedOverrideCell : UICollectionViewCell
+@end
+
+@implementation SizedOverrideCell
+- (UICollectionViewLayoutAttributes *)preferredLayoutAttributesFittingAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes
+{
+    UICollectionViewLayoutAttributes *preferred = [layoutAttributes copy];
+    CGRect frame = preferred.frame;
+    frame.size.height = 77;
+    preferred.frame = frame;
+    return preferred;
+}
+@end
+
+@interface SizedSuperCell : SizedLabelCell
+@end
+
+@implementation SizedSuperCell
+- (UICollectionViewLayoutAttributes *)preferredLayoutAttributesFittingAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes
+{
+    UICollectionViewLayoutAttributes *preferred = [super preferredLayoutAttributesFittingAttributes:layoutAttributes];
+    CGRect frame = preferred.frame;
+    frame.size.height += 10;
+    preferred.frame = frame;
+    return preferred;
+}
+@end
+
 @interface SizedHeader : UICollectionReusableView
 @property (nonatomic, strong) UILabel *label;
 @end
@@ -781,6 +837,9 @@ typedef struct {
 static Class sized_label(void) { return [SizedLabelCell class]; }
 static Class sized_frame(void) { return [SizedFrameCell class]; }
 static Class sized_plain(void) { return [SizedPlainCell class]; }
+static Class sized_intrinsic(void) { return [SizedIntrinsicCell class]; }
+static Class sized_override(void) { return [SizedOverrideCell class]; }
+static Class sized_super(void) { return [SizedSuperCell class]; }
 
 static const SizedCase sized_cases[] = {
     {"list of self-sizing label cells", sized_label, 5, 320, 0, 0},
@@ -802,10 +861,38 @@ static const SizedCase sized_cases[] = {
     {"grid, first screen", sized_label, 40, 320, 0, 1},
     {"grid, scrolled a little", sized_label, 40, 320, 100, 1},
     {"grid, scrolled down", sized_label, 40, 320, 300, 1},
+    {"list of cells with a fixed intrinsic content size", sized_intrinsic, 5, 320, 0, 0},
+    {"grid of cells with a fixed intrinsic content size", sized_intrinsic, 5, 320, 0, 1},
+    {"list of cells whose preferred attributes set the height", sized_override, 5, 320, 0, 0},
+    {"grid of cells whose preferred attributes set the height", sized_override, 5, 320, 0, 1},
+    {"list of cells that add to the preferred attributes of their superclass", sized_super, 5, 320, 0, 0},
+    {"grid of cells that add to the preferred attributes of their superclass", sized_super, 5, 320, 0, 1},
 };
 
 NSUInteger compositional_sized_count(void) { return sizeof sized_cases / sizeof sized_cases[0]; }
 NSString *compositional_sized_name(NSUInteger index) { return @(sized_cases[index].name); }
+
+BOOL compositional_release_while_pending(CompositionalKit kit, UIWindow *window)
+{
+    K = kit;
+    @autoreleasepool {
+        NSDirectionalEdgeInsets none = NSDirectionalEdgeInsetsZero;
+        NSCollectionLayoutSection *section = sized_section(YES, FW(1), ES(44), FW(1), ES(44), 0, 3, none, none);
+        UICollectionViewLayout *layout = LAYOUT(section, nil);
+        UICollectionView *view = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, 320, 480) collectionViewLayout:layout];
+        SizedSource *source = [[SizedSource alloc] init];
+        source.count = 5;
+        view.dataSource = source;
+        [view registerClass:[SizedLabelCell class] forCellWithReuseIdentifier:@"c"];
+        [window.rootViewController.view addSubview:view];
+        [view layoutIfNeeded];
+        view.dataSource = nil;
+        [view removeFromSuperview];
+    }
+    for (int pass = 0; pass < 3; pass++)
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];
+    return YES;
+}
 
 NSString *compositional_sized_dump(CompositionalKit kit, NSUInteger index, UIWindow *window)
 {

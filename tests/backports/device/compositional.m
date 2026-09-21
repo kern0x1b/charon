@@ -96,6 +96,7 @@ static NSString *const results_folder = @"/private/var/backports";
         charon_check(NO, name.UTF8String, [NSString stringWithFormat:@"\n    device %@\n    system %@", actual, expected]);
     }
     CHECK(wrong == 0, "all estimated dimensions are measured from the cells as the system measures them");
+    CHECK(compositional_release_while_pending(kit, self.window), "a layout and a data source released while a measurement is waiting are not touched");
 }
 
 - (void)checkOrthogonal:(BOOL)recorded kit:(CompositionalKit)kit

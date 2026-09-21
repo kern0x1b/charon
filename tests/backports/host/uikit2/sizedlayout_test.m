@@ -34,6 +34,7 @@ void charon_windowed_run(UIWindow *window)
         NSString *name = [NSString stringWithFormat:@"sized %@", compositional_sized_name(index)];
         charon_check(same, name.UTF8String, same ? @"" : [NSString stringWithFormat:@"\n  port\n%@\n  system\n%@", actual, expected]);
     }
+    charon_check(compositional_release_while_pending(port, window), "a layout and a data source released while a measurement is waiting are not touched", @"");
     if (all)
         record_sized(answers);
 }

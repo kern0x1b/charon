@@ -20,6 +20,7 @@ NSString *compositional_case_name(NSUInteger index);
 NSString *compositional_case_dump(CompositionalKit kit, NSUInteger index, UIWindow *window);
 NSString *compositional_dump(CompositionalCase *built, UIWindow *window);
 NSUInteger compositional_sized_count(void);
+BOOL compositional_release_while_pending(CompositionalKit kit, UIWindow *window);
 NSString *compositional_sized_name(NSUInteger index);
 NSString *compositional_sized_dump(CompositionalKit kit, NSUInteger index, UIWindow *window);
 NSArray *compositional_orthogonal_lines(CompositionalKit kit, UIWindow *window, BOOL system);
