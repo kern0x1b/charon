@@ -6,8 +6,6 @@
 #pragma clang diagnostic ignored "-Wobjc-property-implementation"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-static const char charon_menu_alert_key;
-
 @interface CharonDocumentMenuOption : NSObject
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) void (^handler)(void);
@@ -139,14 +137,3 @@ static const char charon_menu_alert_key;
 }
 
 @end
-
-BOOL charon_document_menu_present(UIViewController *presenting, UIViewController *presented, BOOL animated, void (^completion)(void))
-{
-    if (![presented isKindOfClass:[UIDocumentMenuViewController class]])
-        return NO;
-    UIDocumentMenuViewController *menu = (UIDocumentMenuViewController *)presented;
-    UIAlertController *alert = [menu charon_alertForPresenter:presenting];
-    objc_setAssociatedObject(menu, &charon_menu_alert_key, alert, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    [presenting presentViewController:alert animated:animated completion:completion];
-    return YES;
-}
