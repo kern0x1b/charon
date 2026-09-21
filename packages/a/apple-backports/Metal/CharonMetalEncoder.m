@@ -4,39 +4,6 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-static GLenum blendFactor(MTLBlendFactor f)
-{
-    switch (f) {
-    case MTLBlendFactorZero: return GL_ZERO;
-    case MTLBlendFactorOne: return GL_ONE;
-    case MTLBlendFactorSourceColor: return GL_SRC_COLOR;
-    case MTLBlendFactorOneMinusSourceColor: return GL_ONE_MINUS_SRC_COLOR;
-    case MTLBlendFactorSourceAlpha: return GL_SRC_ALPHA;
-    case MTLBlendFactorOneMinusSourceAlpha: return GL_ONE_MINUS_SRC_ALPHA;
-    case MTLBlendFactorDestinationColor: return GL_DST_COLOR;
-    case MTLBlendFactorOneMinusDestinationColor: return GL_ONE_MINUS_DST_COLOR;
-    case MTLBlendFactorDestinationAlpha: return GL_DST_ALPHA;
-    case MTLBlendFactorOneMinusDestinationAlpha: return GL_ONE_MINUS_DST_ALPHA;
-    case MTLBlendFactorSourceAlphaSaturated: return GL_SRC_ALPHA_SATURATE;
-    case MTLBlendFactorBlendColor: return GL_CONSTANT_COLOR;
-    case MTLBlendFactorOneMinusBlendColor: return GL_ONE_MINUS_CONSTANT_COLOR;
-    case MTLBlendFactorBlendAlpha: return GL_CONSTANT_ALPHA;
-    case MTLBlendFactorOneMinusBlendAlpha: return GL_ONE_MINUS_CONSTANT_ALPHA;
-    default: return GL_ONE;
-    }
-}
-
-static GLenum blendOperation(MTLBlendOperation o)
-{
-    switch (o) {
-    case MTLBlendOperationSubtract: return GL_FUNC_SUBTRACT;
-    case MTLBlendOperationReverseSubtract: return GL_FUNC_REVERSE_SUBTRACT;
-    case MTLBlendOperationMin: return GL_MIN_EXT;
-    case MTLBlendOperationMax: return GL_MAX_EXT;
-    default: return GL_FUNC_ADD;
-    }
-}
-
 static float halfToFloat(uint16_t h)
 {
     uint32_t sign = (h >> 15) & 1, exponent = (h >> 10) & 31, mantissa = h & 1023;
@@ -66,6 +33,13 @@ static float halfToFloat(uint16_t h)
     MTLWinding _winding;
     BOOL _ended;
     NSUInteger _instance;
+    const CharonPlan *_applied;
+    BOOL _uniformsDirty, _attributesDirty, _texturesDirty, _viewportDirty;
+    int _cullApplied;
+    MTLWinding _windingApplied;
+    uint32_t _enabled;
+    GLuint _boundTexture[16];
+    NSUInteger _epoch;
 }
 
 @synthesize label;
@@ -81,6 +55,8 @@ static float halfToFloat(uint16_t h)
         [_device acquire];
         _target = texture;
         _winding = MTLWindingClockwise;
+        _cullApplied = -1;
+        _viewportDirty = _viewportSet;
         glBindFramebuffer(GL_FRAMEBUFFER, [texture renderTarget]);
         glViewport(0, 0, (GLsizei)texture.width, (GLsizei)texture.height);
         glDisable(GL_SCISSOR_TEST);
@@ -102,12 +78,14 @@ static float halfToFloat(uint16_t h)
 - (void)setRenderPipelineState:(id<MTLRenderPipelineState>)pipelineState
 {
     _pipeline = (CharonMetalPipeline *)pipelineState;
+    _uniformsDirty = _attributesDirty = _texturesDirty = YES;
 }
 
 - (void)setViewport:(MTLViewport)viewport
 {
     _viewport = viewport;
     _viewportSet = YES;
+    _viewportDirty = YES;
 }
 
 - (void)setCullMode:(MTLCullMode)cullMode
@@ -142,6 +120,7 @@ static float halfToFloat(uint16_t h)
     if (index < 31) {
         _vertexBuffers[index] = (CharonMetalBuffer *)buffer;
         _vertexOffsets[index] = offset;
+        _uniformsDirty = _attributesDirty = YES;
     }
 }
 
@@ -155,6 +134,7 @@ static float halfToFloat(uint16_t h)
     if (index < 31) {
         _fragmentBuffers[index] = (CharonMetalBuffer *)buffer;
         _fragmentOffsets[index] = offset;
+        _uniformsDirty = YES;
     }
 }
 
@@ -166,50 +146,85 @@ static float halfToFloat(uint16_t h)
 - (void)setFragmentTexture:(id<MTLTexture>)texture atIndex:(NSUInteger)index
 {
     if (index < 16)
+    {
         _fragmentTextures[index] = (CharonMetalTexture *)texture;
+        _texturesDirty = YES;
+    }
 }
 
 - (void)setFragmentSamplerState:(id<MTLSamplerState>)sampler atIndex:(NSUInteger)index
 {
     if (index < 16)
+    {
         _fragmentSamplers[index] = (CharonMetalSampler *)sampler;
+        _texturesDirty = YES;
+    }
 }
 
-- (void)uploadUniforms:(NSArray *)uniforms buffers:(CharonMetalBuffer *__strong *)buffers offsets:(NSUInteger *)offsets
+static void uploadUniforms(const CharonUniformPlan *plans, unsigned count, CharonMetalBuffer *__strong *buffers, const NSUInteger *offsets, NSUInteger instance)
 {
-    for (NSDictionary *u in uniforms) {
-        NSUInteger index = [u[@"buffer"] unsignedIntegerValue];
-        CharonMetalBuffer *buffer = index < 31 ? buffers[index] : nil;
-        GLint location = [_pipeline locationForName:u[@"name"]];
-        if (!buffer || location < 0)
+    for (unsigned k = 0; k < count; k++) {
+        const CharonUniformPlan *u = &plans[k];
+        CharonMetalBuffer *buffer = u->buffer < 31 ? buffers[u->buffer] : nil;
+        if (!buffer)
             continue;
-        const uint8_t *p = (const uint8_t *)buffer.bytes + offsets[index] + [u[@"offset"] unsignedIntegerValue] + [u[@"instanceStride"] unsignedIntegerValue] * _instance;
-        NSString *scalar = u[@"scalar"];
-        int n = [u[@"components"] intValue];
-        if ([scalar isEqualToString:@"float"] || [scalar isEqualToString:@"half"]) {
+        const uint8_t *p = (const uint8_t *)buffer.bytes + offsets[u->buffer] + u->offset + u->instanceStride * instance;
+        int n = u->components;
+        if (u->scalar == CharonScalarFloat || u->scalar == CharonScalarHalf) {
             GLfloat converted[4];
             const GLfloat *f = (const GLfloat *)p;
-            if ([scalar isEqualToString:@"half"]) {
+            if (u->scalar == CharonScalarHalf) {
                 for (int i = 0; i < n; i++)
                     converted[i] = halfToFloat(((const uint16_t *)p)[i]);
                 f = converted;
             }
-            if (n == 1) glUniform1fv(location, 1, f);
-            else if (n == 2) glUniform2fv(location, 1, f);
-            else if (n == 3) glUniform3fv(location, 1, f);
-            else glUniform4fv(location, 1, f);
+            switch (n) {
+            case 1: glUniform1fv(u->location, 1, f); break;
+            case 2: glUniform2fv(u->location, 1, f); break;
+            case 3: glUniform3fv(u->location, 1, f); break;
+            default: glUniform4fv(u->location, 1, f); break;
+            }
         } else {
             GLint v[4] = {0, 0, 0, 0};
-            for (int i = 0; i < n; i++) {
-                if ([scalar isEqualToString:@"i32"]) v[i] = ((const int32_t *)p)[i];
-                else if ([scalar isEqualToString:@"i16"]) v[i] = ((const int16_t *)p)[i];
-                else v[i] = ((const int8_t *)p)[i];
+            for (int i = 0; i < n; i++)
+                v[i] = u->scalar == CharonScalarI32 ? ((const int32_t *)p)[i] : u->scalar == CharonScalarI16 ? ((const int16_t *)p)[i] : ((const int8_t *)p)[i];
+            switch (n) {
+            case 1: glUniform1iv(u->location, 1, v); break;
+            case 2: glUniform2iv(u->location, 1, v); break;
+            case 3: glUniform3iv(u->location, 1, v); break;
+            default: glUniform4iv(u->location, 1, v); break;
             }
-            if (n == 1) glUniform1iv(location, 1, v);
-            else if (n == 2) glUniform2iv(location, 1, v);
-            else if (n == 3) glUniform3iv(location, 1, v);
-            else glUniform4iv(location, 1, v);
         }
+    }
+}
+
+static GLfloat *ramp;
+static NSUInteger rampCount;
+
+static const GLfloat *rampOf(NSUInteger count)
+{
+    if (count > rampCount) {
+        NSUInteger size = rampCount ? rampCount : 1024;
+        while (size < count)
+            size *= 2;
+        GLfloat *grown = realloc(ramp, size * sizeof(GLfloat));
+        for (NSUInteger i = rampCount; i < size; i++)
+            grown[i] = (GLfloat)i;
+        ramp = grown;
+        rampCount = size;
+    }
+    return ramp;
+}
+
+- (void)setAttribute:(GLint)location enabled:(BOOL)enabled
+{
+    uint32_t bit = 1u << (location & 31);
+    if (enabled && !(_enabled & bit)) {
+        glEnableVertexAttribArray(location);
+        _enabled |= bit;
+    } else if (!enabled && (_enabled & bit)) {
+        glDisableVertexAttribArray(location);
+        _enabled &= ~bit;
     }
 }
 
@@ -217,112 +232,115 @@ static float halfToFloat(uint16_t h)
 {
     if (!_pipeline)
         return NO;
-    MTLRenderPipelineColorAttachmentDescriptor *blend = _pipeline.descriptor.colorAttachments[0];
-    glUseProgram(_pipeline.program);
-    if (blend.blendingEnabled) {
-        glEnable(GL_BLEND);
-        glBlendFuncSeparate(blendFactor(blend.sourceRGBBlendFactor), blendFactor(blend.destinationRGBBlendFactor), blendFactor(blend.sourceAlphaBlendFactor), blendFactor(blend.destinationAlphaBlendFactor));
-        glBlendEquationSeparate(blendOperation(blend.rgbBlendOperation), blendOperation(blend.alphaBlendOperation));
-    } else {
-        glDisable(GL_BLEND);
+    const CharonPlan *plan = _pipeline.plan;
+    if (plan != _applied) {
+        glUseProgram(plan->program);
+        if (plan->blending) {
+            glEnable(GL_BLEND);
+            glBlendFuncSeparate(plan->sourceRGB, plan->destinationRGB, plan->sourceAlpha, plan->destinationAlpha);
+            glBlendEquationSeparate(plan->equationRGB, plan->equationAlpha);
+        } else {
+            glDisable(GL_BLEND);
+        }
+        glColorMask(plan->mask[0], plan->mask[1], plan->mask[2], plan->mask[3]);
+        if (plan->flip >= 0)
+            glUniform1f(plan->flip, _target.screen ? 1.0f : -1.0f);
+        if (plan->instance >= 0)
+            glUniform1f(plan->instance, (GLfloat)_instance);
+        _applied = plan;
+        _uniformsDirty = _attributesDirty = _texturesDirty = YES;
+        _cullApplied = -1;
     }
-    glColorMask((blend.writeMask & MTLColorWriteMaskRed) != 0, (blend.writeMask & MTLColorWriteMaskGreen) != 0, (blend.writeMask & MTLColorWriteMaskBlue) != 0, (blend.writeMask & MTLColorWriteMaskAlpha) != 0);
-    if (_viewportSet) {
+    if (_viewportDirty) {
         GLint y = _target.screen ? (GLint)(_target.height - _viewport.originY - _viewport.height) : (GLint)_viewport.originY;
         glViewport((GLint)_viewport.originX, y, (GLsizei)_viewport.width, (GLsizei)_viewport.height);
+        _viewportDirty = NO;
     }
-    BOOL flipped = !_target.screen;
-    GLint flip = [_pipeline locationForName:@"charon_flip"];
-    if (flip >= 0)
-        glUniform1f(flip, flipped ? -1.0f : 1.0f);
-    if (_cull == MTLCullModeNone) {
-        glDisable(GL_CULL_FACE);
-    } else {
-        glEnable(GL_CULL_FACE);
-        glFrontFace((_winding == MTLWindingClockwise) != flipped ? GL_CW : GL_CCW);
-        glCullFace(_cull == MTLCullModeFront ? GL_FRONT : GL_BACK);
-    }
-
-    NSDictionary *vertex = _pipeline.vertexReflection;
-    GLint instance = [_pipeline locationForName:@"charon_instance"];
-    if (instance >= 0)
-        glUniform1f(instance, (GLfloat)_instance);
-    GLint idLocation = -1;
-    if ([vertex[@"usesVertexId"] boolValue]) {
-        idLocation = [_pipeline attributeForName:@"a_vertex_id"];
-        if (idLocation >= 0) {
-            GLfloat *ramp = malloc(count * sizeof(GLfloat));
-            for (NSUInteger i = 0; i < count; i++)
-                ramp[i] = (GLfloat)i;
-            NSData *keep = [NSData dataWithBytesNoCopy:ramp length:count * sizeof(GLfloat) freeWhenDone:YES];
-            objc_setAssociatedObject(self, "ramp", keep, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-            glEnableVertexAttribArray(idLocation);
-            glVertexAttribPointer(idLocation, 1, GL_FLOAT, GL_FALSE, 0, ramp);
-        }
-    }
-    for (NSDictionary *a in vertex[@"attributes"]) {
-        GLint location = [_pipeline attributeForName:a[@"name"]];
-        NSUInteger index = [a[@"buffer"] unsignedIntegerValue];
-        CharonMetalBuffer *buffer = index < 31 ? _vertexBuffers[index] : nil;
-        if (location < 0)
-            continue;
-        if (!buffer) {
-            glDisableVertexAttribArray(location);
-            continue;
-        }
-        NSString *scalar = a[@"scalar"];
-        GLenum type = [scalar isEqualToString:@"float"] ? GL_FLOAT : [scalar isEqualToString:@"i8"] ? GL_UNSIGNED_BYTE : GL_SHORT;
-        glEnableVertexAttribArray(location);
-        glVertexAttribPointer(location, [a[@"components"] intValue], type, GL_FALSE, (GLsizei)[a[@"stride"] unsignedIntegerValue], (const uint8_t *)buffer.bytes + _vertexOffsets[index] + [a[@"offset"] unsignedIntegerValue]);
-    }
-    MTLVertexDescriptor *descriptor = _pipeline.descriptor.vertexDescriptor;
-    for (NSDictionary *input in vertex[@"inputs"]) {
-        GLint location = [_pipeline attributeForName:input[@"name"]];
-        MTLVertexAttributeDescriptor *attribute = descriptor.attributes[[input[@"location"] unsignedIntegerValue]];
-        MTLVertexBufferLayoutDescriptor *layout = descriptor.layouts[attribute.bufferIndex];
-        CharonMetalBuffer *buffer = attribute.bufferIndex < 31 ? _vertexBuffers[attribute.bufferIndex] : nil;
-        CharonVertexFormat format;
-        if (location < 0 || !buffer || attribute.format == MTLVertexFormatInvalid || !CharonMetalVertexFormat(attribute.format, &format)) {
-            if (location >= 0)
-                glDisableVertexAttribArray(location);
-            continue;
-        }
-        const uint8_t *base = (const uint8_t *)buffer.bytes + _vertexOffsets[attribute.bufferIndex] + attribute.offset;
-        if (layout.stepFunction == MTLVertexStepFunctionPerVertex) {
-            glEnableVertexAttribArray(location);
-            glVertexAttribPointer(location, format.size, format.type, format.normalized, (GLsizei)layout.stride, base);
+    if (_cullApplied != (int)_cull || (_cull != MTLCullModeNone && _windingApplied != _winding)) {
+        BOOL flipped = !_target.screen;
+        if (_cull == MTLCullModeNone) {
+            glDisable(GL_CULL_FACE);
         } else {
-            NSUInteger element = layout.stepFunction == MTLVertexStepFunctionConstant ? 0 : _instance / layout.stepRate;
-            GLfloat v[4];
-            CharonMetalDecodeVertex(attribute.format, base + element * layout.stride, v);
-            glDisableVertexAttribArray(location);
-            glVertexAttrib4f(location, v[0], v[1], v[2], v[3]);
+            glEnable(GL_CULL_FACE);
+            glFrontFace((_winding == MTLWindingClockwise) != flipped ? GL_CW : GL_CCW);
+            glCullFace(_cull == MTLCullModeFront ? GL_FRONT : GL_BACK);
         }
+        _cullApplied = (int)_cull;
+        _windingApplied = _winding;
     }
-    [self uploadUniforms:vertex[@"uniforms"] buffers:_vertexBuffers offsets:_vertexOffsets];
-    [self uploadUniforms:_pipeline.fragmentReflection[@"uniforms"] buffers:_fragmentBuffers offsets:_fragmentOffsets];
-    for (NSDictionary *t in _pipeline.fragmentReflection[@"textures"]) {
-        NSUInteger unit = [t[@"index"] unsignedIntegerValue];
-        if (unit >= 8 || !_fragmentTextures[unit])
-            continue;
-        glActiveTexture(GL_TEXTURE0 + (GLenum)unit);
-        glBindTexture(GL_TEXTURE_2D, _fragmentTextures[unit].name);
-        CharonMetalSampler *sampler = _fragmentSamplers[unit];
-        if (sampler) {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, sampler.minFilter);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, sampler.magFilter);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, sampler.wrapS);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, sampler.wrapT);
+    if (plan->vertexId >= 0) {
+        [self setAttribute:plan->vertexId enabled:YES];
+        glVertexAttribPointer(plan->vertexId, 1, GL_FLOAT, GL_FALSE, 0, rampOf(count));
+    }
+    if (_attributesDirty) {
+        for (unsigned k = 0; k < plan->attributeCount; k++) {
+            const CharonAttributePlan *a = &plan->attributes[k];
+            CharonMetalBuffer *buffer = a->buffer < 31 ? _vertexBuffers[a->buffer] : nil;
+            if (!buffer) {
+                [self setAttribute:a->location enabled:NO];
+                continue;
+            }
+            [self setAttribute:a->location enabled:YES];
+            glVertexAttribPointer(a->location, a->components, a->type, GL_FALSE, (GLsizei)a->stride, (const uint8_t *)buffer.bytes + _vertexOffsets[a->buffer] + a->offset);
         }
-        GLint location = [_pipeline locationForName:t[@"name"]];
-        if (location >= 0)
-            glUniform1i(location, (GLint)unit);
+        for (unsigned k = 0; k < plan->inputCount; k++) {
+            const CharonInputPlan *in = &plan->inputs[k];
+            CharonMetalBuffer *buffer = in->buffer < 31 ? _vertexBuffers[in->buffer] : nil;
+            if (!buffer) {
+                [self setAttribute:in->location enabled:NO];
+                continue;
+            }
+            const uint8_t *base = (const uint8_t *)buffer.bytes + _vertexOffsets[in->buffer] + in->offset;
+            if (in->step == MTLVertexStepFunctionPerVertex) {
+                [self setAttribute:in->location enabled:YES];
+                glVertexAttribPointer(in->location, in->decoded.size, in->decoded.type, in->decoded.normalized, (GLsizei)in->stride, base);
+            } else {
+                NSUInteger element = in->step == MTLVertexStepFunctionConstant ? 0 : _instance / in->stepRate;
+                GLfloat v[4];
+                CharonMetalDecodeVertex(in->format, base + element * in->stride, v);
+                [self setAttribute:in->location enabled:NO];
+                glVertexAttrib4f(in->location, v[0], v[1], v[2], v[3]);
+            }
+        }
+        _attributesDirty = NO;
     }
-    for (NSDictionary *size in _pipeline.fragmentReflection[@"sizes"]) {
-        NSUInteger unit = [size[@"texture"] unsignedIntegerValue];
-        GLint location = [_pipeline locationForName:size[@"name"]];
-        if (location >= 0 && unit < 16 && _fragmentTextures[unit])
-            glUniform2f(location, (GLfloat)_fragmentTextures[unit].width, (GLfloat)_fragmentTextures[unit].height);
+    if (_uniformsDirty) {
+        uploadUniforms(plan->vertexUniforms, plan->vertexUniformCount, _vertexBuffers, _vertexOffsets, _instance);
+        uploadUniforms(plan->fragmentUniforms, plan->fragmentUniformCount, _fragmentBuffers, _fragmentOffsets, _instance);
+        _uniformsDirty = NO;
+    }
+    if (_epoch != CharonMetalBindEpoch) {
+        memset(_boundTexture, 0, sizeof _boundTexture);
+        _epoch = CharonMetalBindEpoch;
+        _texturesDirty = YES;
+    }
+    if (_texturesDirty) {
+        for (unsigned k = 0; k < plan->textureCount; k++) {
+            unsigned unit = plan->textures[k].unit;
+            CharonMetalTexture *texture = unit < 8 ? _fragmentTextures[unit] : nil;
+            if (!texture)
+                continue;
+            glActiveTexture(GL_TEXTURE0 + unit);
+            if (_boundTexture[unit] != texture.name) {
+                glBindTexture(GL_TEXTURE_2D, texture.name);
+                _boundTexture[unit] = texture.name;
+            }
+            CharonMetalSampler *sampler = _fragmentSamplers[unit];
+            if (sampler && texture.appliedSampler != sampler) {
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, sampler.minFilter);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, sampler.magFilter);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, sampler.wrapS);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, sampler.wrapT);
+                texture.appliedSampler = sampler;
+            }
+            glUniform1i(plan->textures[k].location, (GLint)unit);
+        }
+        for (unsigned k = 0; k < plan->sizeCount; k++) {
+            unsigned unit = plan->sizes[k].unit;
+            if (unit < 16 && _fragmentTextures[unit])
+                glUniform2f(plan->sizes[k].location, (GLfloat)_fragmentTextures[unit].width, (GLfloat)_fragmentTextures[unit].height);
+        }
+        _texturesDirty = NO;
     }
     return YES;
 }
@@ -347,16 +365,26 @@ static GLenum primitive(MTLPrimitiveType type)
 
 - (void)drawPrimitives:(MTLPrimitiveType)primitiveType vertexStart:(NSUInteger)vertexStart vertexCount:(NSUInteger)vertexCount instanceCount:(NSUInteger)instanceCount
 {
-    for (_instance = 0; _instance < instanceCount; _instance++)
+    for (_instance = 0; _instance < instanceCount; _instance++) {
+        if (_applied && _applied->instance >= 0)
+            glUniform1f(_applied->instance, (GLfloat)_instance);
+        _uniformsDirty = _attributesDirty = YES;
         [self drawPrimitives:primitiveType vertexStart:vertexStart vertexCount:vertexCount];
+    }
     _instance = 0;
+    _uniformsDirty = _attributesDirty = YES;
 }
 
 - (void)drawIndexedPrimitives:(MTLPrimitiveType)primitiveType indexCount:(NSUInteger)indexCount indexType:(MTLIndexType)indexType indexBuffer:(id<MTLBuffer>)indexBuffer indexBufferOffset:(NSUInteger)indexBufferOffset instanceCount:(NSUInteger)instanceCount
 {
-    for (_instance = 0; _instance < instanceCount; _instance++)
+    for (_instance = 0; _instance < instanceCount; _instance++) {
+        if (_applied && _applied->instance >= 0)
+            glUniform1f(_applied->instance, (GLfloat)_instance);
+        _uniformsDirty = _attributesDirty = YES;
         [self drawIndexedPrimitives:primitiveType indexCount:indexCount indexType:indexType indexBuffer:indexBuffer indexBufferOffset:indexBufferOffset];
+    }
     _instance = 0;
+    _uniformsDirty = _attributesDirty = YES;
 }
 
 - (void)drawIndexedPrimitives:(MTLPrimitiveType)primitiveType indexCount:(NSUInteger)indexCount indexType:(MTLIndexType)indexType indexBuffer:(id<MTLBuffer>)indexBuffer indexBufferOffset:(NSUInteger)indexBufferOffset
@@ -364,7 +392,7 @@ static GLenum primitive(MTLPrimitiveType type)
     CharonMetalBuffer *buffer = (CharonMetalBuffer *)indexBuffer;
     const uint8_t *indices = (const uint8_t *)buffer.bytes + indexBufferOffset;
     NSUInteger maximum = 0;
-    for (NSUInteger i = 0; i < indexCount; i++) {
+    for (NSUInteger i = 0; _pipeline.plan->vertexId >= 0 && i < indexCount; i++) {
         NSUInteger v = indexType == MTLIndexTypeUInt16 ? ((const uint16_t *)indices)[i] : ((const uint32_t *)indices)[i];
         if (v > maximum)
             maximum = v;

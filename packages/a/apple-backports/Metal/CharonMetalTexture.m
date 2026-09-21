@@ -22,6 +22,8 @@ static BOOL formatFor(MTLPixelFormat pixelFormat, CharonFormat *out)
     }
 }
 
+NSUInteger CharonMetalBindEpoch;
+
 @implementation CharonMetalTexture {
     GLuint _name;
     GLuint _framebuffer;
@@ -30,6 +32,7 @@ static BOOL formatFor(MTLPixelFormat pixelFormat, CharonFormat *out)
     NSUInteger _width;
     NSUInteger _height;
     MTLTextureUsage _usage;
+    __unsafe_unretained CharonMetalSampler *_appliedSampler;
 }
 
 @synthesize label;
@@ -48,6 +51,7 @@ static BOOL formatFor(MTLPixelFormat pixelFormat, CharonFormat *out)
         _usage = descriptor.usage;
         CharonMetalDevice *device = [CharonMetalDevice shared];
         [device acquire];
+        CharonMetalBindEpoch++;
         glGenTextures(1, &_name);
         glBindTexture(GL_TEXTURE_2D, _name);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -84,6 +88,16 @@ static BOOL formatFor(MTLPixelFormat pixelFormat, CharonFormat *out)
         glDeleteTextures(1, &_name);
         [device relinquish];
     }
+}
+
+- (CharonMetalSampler *)appliedSampler
+{
+    return _appliedSampler;
+}
+
+- (void)setAppliedSampler:(CharonMetalSampler *)sampler
+{
+    _appliedSampler = sampler;
 }
 
 - (GLuint)name
@@ -185,6 +199,7 @@ static BOOL formatFor(MTLPixelFormat pixelFormat, CharonFormat *out)
         return;
     CharonMetalDevice *device = [CharonMetalDevice shared];
     [device acquire];
+    CharonMetalBindEpoch++;
     glBindTexture(GL_TEXTURE_2D, _name);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     NSUInteger rowBytes = region.size.width * format.bytes;

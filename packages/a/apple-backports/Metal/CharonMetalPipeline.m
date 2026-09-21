@@ -111,7 +111,64 @@ void CharonMetalDecodeVertex(MTLVertexFormat format, const uint8_t *bytes, GLflo
     }
 }
 
+static GLenum blendFactor(MTLBlendFactor f)
+{
+    switch (f) {
+    case MTLBlendFactorZero: return GL_ZERO;
+    case MTLBlendFactorOne: return GL_ONE;
+    case MTLBlendFactorSourceColor: return GL_SRC_COLOR;
+    case MTLBlendFactorOneMinusSourceColor: return GL_ONE_MINUS_SRC_COLOR;
+    case MTLBlendFactorSourceAlpha: return GL_SRC_ALPHA;
+    case MTLBlendFactorOneMinusSourceAlpha: return GL_ONE_MINUS_SRC_ALPHA;
+    case MTLBlendFactorDestinationColor: return GL_DST_COLOR;
+    case MTLBlendFactorOneMinusDestinationColor: return GL_ONE_MINUS_DST_COLOR;
+    case MTLBlendFactorDestinationAlpha: return GL_DST_ALPHA;
+    case MTLBlendFactorOneMinusDestinationAlpha: return GL_ONE_MINUS_DST_ALPHA;
+    case MTLBlendFactorSourceAlphaSaturated: return GL_SRC_ALPHA_SATURATE;
+    case MTLBlendFactorBlendColor: return GL_CONSTANT_COLOR;
+    case MTLBlendFactorOneMinusBlendColor: return GL_ONE_MINUS_CONSTANT_COLOR;
+    case MTLBlendFactorBlendAlpha: return GL_CONSTANT_ALPHA;
+    case MTLBlendFactorOneMinusBlendAlpha: return GL_ONE_MINUS_CONSTANT_ALPHA;
+    default: return GL_ONE;
+    }
+}
+
+static GLenum blendOperation(MTLBlendOperation o)
+{
+    switch (o) {
+    case MTLBlendOperationSubtract: return GL_FUNC_SUBTRACT;
+    case MTLBlendOperationReverseSubtract: return GL_FUNC_REVERSE_SUBTRACT;
+    case MTLBlendOperationMin: return GL_MIN_EXT;
+    case MTLBlendOperationMax: return GL_MAX_EXT;
+    default: return GL_FUNC_ADD;
+    }
+}
+
+static int scalarKind(NSString *scalar)
+{
+    if ([scalar isEqualToString:@"float"]) return CharonScalarFloat;
+    if ([scalar isEqualToString:@"half"]) return CharonScalarHalf;
+    if ([scalar isEqualToString:@"i32"]) return CharonScalarI32;
+    if ([scalar isEqualToString:@"i16"]) return CharonScalarI16;
+    return CharonScalarI8;
+}
+
+static CharonUniformPlan *uniformPlans(CharonMetalPipeline *pipeline, NSArray *uniforms, unsigned *count)
+{
+    CharonUniformPlan *plans = calloc(uniforms.count ? uniforms.count : 1, sizeof(CharonUniformPlan));
+    unsigned n = 0;
+    for (NSDictionary *u in uniforms) {
+        GLint location = [pipeline locationForName:u[@"name"]];
+        if (location < 0)
+            continue;
+        plans[n++] = (CharonUniformPlan){location, (unsigned)[u[@"buffer"] unsignedIntegerValue], [u[@"offset"] unsignedIntegerValue], [u[@"instanceStride"] unsignedIntegerValue], scalarKind(u[@"scalar"]), [u[@"components"] intValue]};
+    }
+    *count = n;
+    return plans;
+}
+
 @implementation CharonMetalPipeline {
+    CharonPlan _plan;
     GLuint _program;
     NSDictionary *_vertexReflection, *_fragmentReflection;
     MTLRenderPipelineDescriptor *_descriptor;
@@ -193,13 +250,83 @@ void CharonMetalDecodeVertex(MTLVertexFormat format, const uint8_t *bytes, GLflo
             [device relinquish];
             return nil;
         }
+        [self buildPlan];
         [device relinquish];
     }
     return self;
 }
 
+- (void)buildPlan
+{
+    _plan.program = _program;
+    _plan.flip = [self locationForName:@"charon_flip"];
+    _plan.instance = [self locationForName:@"charon_instance"];
+    _plan.vertexId = [_vertexReflection[@"usesVertexId"] boolValue] ? [self attributeForName:@"a_vertex_id"] : -1;
+    _plan.vertexUniforms = uniformPlans(self, _vertexReflection[@"uniforms"], &_plan.vertexUniformCount);
+    _plan.fragmentUniforms = uniformPlans(self, _fragmentReflection[@"uniforms"], &_plan.fragmentUniformCount);
+    NSArray *attributes = _vertexReflection[@"attributes"];
+    _plan.attributes = calloc(attributes.count ? attributes.count : 1, sizeof(CharonAttributePlan));
+    for (NSDictionary *a in attributes) {
+        GLint location = [self attributeForName:a[@"name"]];
+        if (location < 0)
+            continue;
+        NSString *scalar = a[@"scalar"];
+        _plan.attributes[_plan.attributeCount++] = (CharonAttributePlan){location, (unsigned)[a[@"buffer"] unsignedIntegerValue], [a[@"offset"] unsignedIntegerValue], [a[@"stride"] unsignedIntegerValue],
+                                                                        [scalar isEqualToString:@"float"] ? GL_FLOAT : [scalar isEqualToString:@"i8"] ? GL_UNSIGNED_BYTE : GL_SHORT, [a[@"components"] intValue]};
+    }
+    NSArray *inputs = _vertexReflection[@"inputs"];
+    _plan.inputs = calloc(inputs.count ? inputs.count : 1, sizeof(CharonInputPlan));
+    MTLVertexDescriptor *descriptor = _descriptor.vertexDescriptor;
+    for (NSDictionary *input in inputs) {
+        GLint location = [self attributeForName:input[@"name"]];
+        MTLVertexAttributeDescriptor *attribute = descriptor.attributes[[input[@"location"] unsignedIntegerValue]];
+        CharonVertexFormat decoded;
+        if (location < 0 || !attribute || attribute.format == MTLVertexFormatInvalid || !CharonMetalVertexFormat(attribute.format, &decoded))
+            continue;
+        MTLVertexBufferLayoutDescriptor *layout = descriptor.layouts[attribute.bufferIndex];
+        _plan.inputs[_plan.inputCount++] = (CharonInputPlan){location, attribute.format, decoded, (unsigned)attribute.bufferIndex, attribute.offset, layout.stride, layout.stepRate ? layout.stepRate : 1, layout.stepFunction};
+    }
+    NSArray *textures = _fragmentReflection[@"textures"];
+    _plan.textures = calloc(textures.count ? textures.count : 1, sizeof(CharonTexturePlan));
+    for (NSDictionary *t in textures) {
+        GLint location = [self locationForName:t[@"name"]];
+        if (location >= 0)
+            _plan.textures[_plan.textureCount++] = (CharonTexturePlan){location, (unsigned)[t[@"index"] unsignedIntegerValue]};
+    }
+    NSArray *sizes = _fragmentReflection[@"sizes"];
+    _plan.sizes = calloc(sizes.count ? sizes.count : 1, sizeof(CharonSizePlan));
+    for (NSDictionary *size in sizes) {
+        GLint location = [self locationForName:size[@"name"]];
+        if (location >= 0)
+            _plan.sizes[_plan.sizeCount++] = (CharonSizePlan){location, (unsigned)[size[@"texture"] unsignedIntegerValue]};
+    }
+    MTLRenderPipelineColorAttachmentDescriptor *blend = _descriptor.colorAttachments[0];
+    _plan.blending = blend.blendingEnabled;
+    _plan.sourceRGB = blendFactor(blend.sourceRGBBlendFactor);
+    _plan.destinationRGB = blendFactor(blend.destinationRGBBlendFactor);
+    _plan.sourceAlpha = blendFactor(blend.sourceAlphaBlendFactor);
+    _plan.destinationAlpha = blendFactor(blend.destinationAlphaBlendFactor);
+    _plan.equationRGB = blendOperation(blend.rgbBlendOperation);
+    _plan.equationAlpha = blendOperation(blend.alphaBlendOperation);
+    _plan.mask[0] = (blend.writeMask & MTLColorWriteMaskRed) != 0;
+    _plan.mask[1] = (blend.writeMask & MTLColorWriteMaskGreen) != 0;
+    _plan.mask[2] = (blend.writeMask & MTLColorWriteMaskBlue) != 0;
+    _plan.mask[3] = (blend.writeMask & MTLColorWriteMaskAlpha) != 0;
+}
+
+- (const CharonPlan *)plan
+{
+    return &_plan;
+}
+
 - (void)dealloc
 {
+    free(_plan.vertexUniforms);
+    free(_plan.fragmentUniforms);
+    free(_plan.attributes);
+    free(_plan.inputs);
+    free(_plan.textures);
+    free(_plan.sizes);
     if (_program) {
         CharonMetalDevice *device = [CharonMetalDevice shared];
         [device acquire];

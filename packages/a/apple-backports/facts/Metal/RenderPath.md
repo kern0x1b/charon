@@ -35,6 +35,13 @@ unsigned and float values, by index or by name, become definitions at the head o
 A constant that is not given is not defined: `is_function_constant_defined` answers false and its value is zero. A vertex input that a constant
 switches on and off need not be in the vertex descriptor when the constant leaves it off.
 
+## What it costs
+
+Measured on the iPad 2 (the SGX 543 of the iPhone 4S), drawing a screen-sized target: a texture read costs about 2.7 ns for each pixel, a read whose coordinate depends on the last
+read about twice that; sixteen dependent `sin` calls cost 160 ns for each pixel, and computing the same with half floats (`mediump`) or with a polynomial in place of `sin` was not faster,
+so the port keeps the precision the library asks for and the built-in functions. What the port itself adds is on the CPU: a draw with the same pipeline costs about 10 microseconds
+to encode, against 130 before the pipeline's bindings were worked out once when it is made and the state that had not changed was left alone.
+
 ## What is not
 
 * Vertex formats of half floats, 32 bit integers, the packed 10 bit formats and the BGRA one: a pipeline that uses one is refused, since ES 2.0 has no attribute of them. A layout whose step function is per vertex with a step rate other than one, or per patch, is refused too.
