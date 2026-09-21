@@ -33,11 +33,10 @@ interface in the handler needs.
 The notification names are there and are never posted. `shouldMonitorBackgroundEvents` keeps
 the flag it is given and changes nothing.
 
-No object of `GCController`, `GCMouse` or `GCKeyboard` is ever made, so the members of an
-instance (the profiles, the motion, the battery, the light, the haptics, the player index, the
-snapshot and the capture) are absent, and so are the classes of the profiles, the
-elements and the snapshots, the inputs and the functions of the snapshot data. An application that reads the controller list gets nothing to read them from.
-The rows are in `registry/GameController/`.
+No object of `GCController`, `GCMouse` or `GCKeyboard` is attached: the release has nothing that would attach one. The
+mouse and keyboard members of an instance stay absent. What an application can make is a controller of software,
+with `+controllerWithExtendedGamepad` and `+controllerWithMicroGamepad`, which the model in `ControllerModel.md` gives
+its profiles, elements and motion.
 
 ## The names of inputs and keys
 

@@ -2,126 +2,6 @@
   "framework": "GameController",
   "entries": [
     {
-      "api": "GCController.attachedToDevice",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "no object of the class exists on this device, so there is nothing to answer it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCController.controllerPausedHandler",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "no object of the class exists on this device, so there is nothing to answer it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCController.extendedGamepad",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "no object of the class exists on this device, so there is nothing to answer it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCController.gamepad",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "no object of the class exists on this device, so there is nothing to answer it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCController.microGamepad",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "no object of the class exists on this device, so there is nothing to answer it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCController.playerIndex",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "no object of the class exists on this device, so there is nothing to answer it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCControllerAxisInput",
-      "kind": "class",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCControllerButtonInput",
-      "kind": "class",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCControllerDirectionPad",
-      "kind": "class",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCControllerElement",
-      "kind": "class",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCExtendedGamepad",
-      "kind": "class",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCGamepad",
-      "kind": "class",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
       "api": "GCGamepadSnapShotDataV100FromNSData()",
       "kind": "function",
       "introduced": "7.0",
@@ -149,26 +29,6 @@
       "status": "absent",
       "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
       "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCController.motion",
-      "kind": "property",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "no object of the class exists on this device, so there is nothing to answer it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCMotion",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, GameController"
     },
     {
@@ -229,16 +89,6 @@
       "status": "absent",
       "reason": "the function arrived in iOS 9, and nothing in iOS 6 has what it names",
       "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCMicroGamepad",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, GameController"
     },
     {
@@ -312,46 +162,6 @@
       "source": "SDK 16.4, GameController"
     },
     {
-      "api": "+[GCController controllerWithExtendedGamepad]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "no object of the class exists on this device, so there is nothing to answer it: it arrived in iOS 13",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "+[GCController controllerWithMicroGamepad]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "no object of the class exists on this device, so there is nothing to answer it: it arrived in iOS 13",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "-[GCController capture]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "no object of the class exists on this device, so there is nothing to answer it: it arrived in iOS 13",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCController.snapshot",
-      "kind": "property",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "no object of the class exists on this device, so there is nothing to answer it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, GameController"
-    },
-    {
       "api": "GCColor",
       "kind": "class",
       "introduced": "14.0",
@@ -359,46 +169,6 @@
       "status": "absent",
       "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCController.battery",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "no object of the class exists on this device, so there is nothing to answer it: it arrived in iOS 14",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCController.haptics",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "no object of the class exists on this device, so there is nothing to answer it: it arrived in iOS 14",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCController.light",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "no object of the class exists on this device, so there is nothing to answer it: it arrived in iOS 14",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCController.physicalInputProfile",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "no object of the class exists on this device, so there is nothing to answer it: it arrived in iOS 14",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, GameController"
     },
     {
@@ -503,16 +273,6 @@
     },
     {
       "api": "GCMouseInput",
-      "kind": "class",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCPhysicalInputProfile",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",

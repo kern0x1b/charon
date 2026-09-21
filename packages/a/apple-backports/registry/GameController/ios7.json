@@ -40,8 +40,8 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "only the class is carried, for what an application asks before there is a controller: the list, the discovery and the notification names; iOS 6 has no support for a game controller, so no object of the class is ever made",
-      "effect": "the class is there, +controllers is empty and nothing makes an instance",
+      "reason": "the class is carried with what needs no device: the list, the discovery, the notification names and the controllers that software makes; iOS 6 has no support for a game controller, so no controller is ever attached",
+      "effect": "+controllers is empty and nothing attaches one; +controllerWithExtendedGamepad and +controllerWithMicroGamepad make a controller that is a snapshot, with a profile whose elements an application can set",
       "source": "GameController of the arm64 shared cache of iOS 12.0 and the arm64e cache of iOS 16.0: +[GCController controllers], +startWirelessControllerDiscoveryWithCompletionHandler: and +stopWirelessControllerDiscovery, and of iOS 16.0 +[GCMouse mice], +[GCMouse current] and +[GCKeyboard coalescedKeyboard]",
       "facts": "facts/GameController/GameController.md"
     },
