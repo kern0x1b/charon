@@ -55,3 +55,9 @@ Measured against the host's own Foundation, and held by the differential transcr
   response has come without a length; before any response it answers 0.
 - `NSURLSessionDownloadTaskResumeData` is its own name, and it is the key under which a cancelled download's
   error carries the data to resume from.
+- `prefersIncrementalDelivery` of iOS 14.5 is kept on the task and read back, and starts as `YES`, which is
+  the release's default. It changes nothing: this port's loader has one path, which hands each part of a
+  body to `URLSession:dataTask:didReceiveData:` as it arrives, and the release's CFNetwork has no switch
+  that would hold a response back and deliver it whole. `YES` is therefore the behaviour the property asks
+  for; `NO` is a preference the port does not take, which the name of the property allows and which a
+  release itself answers on a transfer it cannot coalesce.

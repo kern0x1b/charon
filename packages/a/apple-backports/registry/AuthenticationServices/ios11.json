@@ -111,6 +111,59 @@
       "reason": "it names the errors of the credential provider, which is absent",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "the SDK 16.4 headers of AuthenticationServices"
+    },
+    {
+      "api": "ASWebAuthenticationSession.presentationContextProvider",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the provider exists so the release can pick the window to present the page over; this release runs one application with one window, and the page is shown over that window whoever the provider names",
+      "effect": "the provider is kept and read back, weakly as the release holds it, and is never asked: presentationAnchorForWebAuthenticationSession: is not sent. A session with no provider still starts, where iOS 13 raises for a missing provider",
+      "facts": "facts/AuthenticationServices/ASWebAuthenticationSession.md",
+      "source": "the headers of SDK 16.4; AuthenticationServices of the arm64 shared cache of iOS 13.0 for what the release does, and the SFAuthenticationSession of iOS 11 this package's session is built on for what it can do"
+    },
+    {
+      "api": "-[ASWebAuthenticationPresentationContextProviding presentationAnchorForWebAuthenticationSession:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "there is one window to present over, so the port never has to ask which one",
+      "effect": "the message is never sent",
+      "facts": "facts/AuthenticationServices/ASWebAuthenticationSession.md",
+      "source": "the headers of SDK 16.4; AuthenticationServices of the arm64 shared cache of iOS 13.0 for what the release does, and the SFAuthenticationSession of iOS 11 this package's session is built on for what it can do"
+    },
+    {
+      "api": "ASWebAuthenticationSession.prefersEphemeralWebBrowserSession",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the page is drawn by the UIWebView of this release, which shares the application's cookie and cache store and has no private mode. The isolation is buildable - the release has one cookie jar per process and no store per web view, so emptying it around a modal sign-in would really isolate one - but doing it without a journal makes every cookie the application owns depend on the process surviving the login, and on a device with a 282 MB jetsam ceiling being killed mid-flow is ordinary; losing every session the user was signed into is worse than not offering the feature. The work is planned, not refused: write the jar to disk before emptying it and restore from that journal at the next launch. Even then it would isolate cookies and the URL cache and not local or database storage, and would have to say so",
+      "effect": "the property is not there: respondsToSelector: answers NO, so an application can see it cannot have an ephemeral session instead of being told it has one",
+      "source": "the headers of SDK 16.4; AuthenticationServices of the arm64 shared cache of iOS 13.0 for what the release does, and the SFAuthenticationSession of iOS 11 this package's session is built on for what it can do",
+      "facts": "facts/AuthenticationServices/ASWebAuthenticationSession.md"
+    },
+    {
+      "api": "ASWebAuthenticationSession.canStart",
+      "kind": "property",
+      "introduced": "13.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "YES until the session has been started or cancelled, NO after, which is what a session that has been spent answers; it is read from the port's own state, since SFAuthenticationSession has nothing to ask",
+      "facts": "facts/AuthenticationServices/ASWebAuthenticationSession.md",
+      "source": "the headers of SDK 16.4; AuthenticationServices of the arm64 shared cache of iOS 13.0 for what the release does, and the SFAuthenticationSession of iOS 11 this package's session is built on for what it can do"
+    },
+    {
+      "api": "ASAuthorizationAppleIDCredential.authorizationCode",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "Sign in with Apple is not carried: the release has no Apple ID authorization service, no ASAuthorization controller and no way to reach the identity provider, so there is no credential to read a code from",
+      "effect": "the class and the property are not there",
+      "source": "the headers of SDK 16.4; nothing of a release was read, as the release has none of the classes"
     }
   ]
 }

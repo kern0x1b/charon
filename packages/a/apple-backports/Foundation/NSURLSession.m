@@ -104,6 +104,7 @@ typedef NS_ENUM(NSInteger, CharonTaskBody) {
     NSDate *_earliestBeginDate;
     int64_t _clientExpectsToSend;
     int64_t _clientExpectsToReceive;
+    BOOL _prefersIncrementalDelivery;
     BOOL _connectivityNotified;
     CFRunLoopTimerRef _delayTimer;
     SCNetworkReachabilityRef _reachability;
@@ -2100,7 +2101,6 @@ static NSURLSessionDownloadTask *charon_resumed_download_task(NSURLSession *sess
 @dynamic delegate;
 @dynamic progress;
 @dynamic priority;
-@dynamic prefersIncrementalDelivery;
 
 + (instancetype)new
 {
@@ -2112,6 +2112,7 @@ static NSURLSessionDownloadTask *charon_resumed_download_task(NSURLSession *sess
     if ((self = [super init])) {
         _clientExpectsToSend = NSURLSessionTransferSizeUnknown;
         _clientExpectsToReceive = NSURLSessionTransferSizeUnknown;
+        _prefersIncrementalDelivery = YES;
     }
     return self;
 }
@@ -2128,6 +2129,20 @@ static NSURLSessionDownloadTask *charon_resumed_download_task(NSURLSession *sess
     NSDate *copy = [date copy];
     @synchronized (self) {
         _earliestBeginDate = copy;
+    }
+}
+
+- (BOOL)prefersIncrementalDelivery
+{
+    @synchronized (self) {
+        return _prefersIncrementalDelivery;
+    }
+}
+
+- (void)setPrefersIncrementalDelivery:(BOOL)prefersIncrementalDelivery
+{
+    @synchronized (self) {
+        _prefersIncrementalDelivery = prefersIncrementalDelivery;
     }
 }
 

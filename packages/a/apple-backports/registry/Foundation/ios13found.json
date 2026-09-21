@@ -1357,6 +1357,17 @@
       "status": "implemented",
       "facts": "facts/Foundation/NSURLResourceKeys.md",
       "source": "the host's own Foundation, through tests/backports/host/uikit2 (the foundation14 groups) and the device test tests/backports/device/foundation14.m"
+    },
+    {
+      "api": "NSURLSessionTask.prefersIncrementalDelivery",
+      "kind": "property",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the flag asks the loader to hold a response back and hand it over in one piece instead of in parts; this port's loader has one delivery path, which hands each part to the delegate as it arrives, and there is nothing in the release's CFNetwork to ask for the other one",
+      "effect": "the flag is kept and read back, YES by default as in the release, and the body is always delivered in parts through URLSession:dataTask:didReceiveData:. YES is therefore honoured; NO is a preference the port does not take, which is what the name of the property allows and what a release answers on a transfer it cannot coalesce",
+      "facts": "facts/Foundation/NSURLSession.md",
+      "source": "the header of SDK 16.4 for the declaration and the default; the port's own loader for what it delivers"
     }
   ]
 }
