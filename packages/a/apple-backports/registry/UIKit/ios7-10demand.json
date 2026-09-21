@@ -82,6 +82,50 @@
       "source": "UIKit of iOS 10.0.1 armv7s, read for the effect a vibrancy takes from a blur",
       "reason": "the release draws no vibrancy: the views in the content view of a vibrancy effect are drawn as they are",
       "effect": "the effect is made, takes the style of the blur it was given, is archived and compares equal like the system's, and nothing is drawn differently for it"
+    },
+    {
+      "api": "-[UIViewController registerForPreviewingWithDelegate:sourceView:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "no screen this package runs on measures the force of a touch, so nothing can decide that a press is a peek",
+      "effect": "a context is registered and answered, keyed by the source view and keeping its delegate and source view, and the delegate is never asked for a view controller; the first registration says so once in the log",
+      "facts": "facts/UIKit/UIViewControllerPreviewing.md",
+      "source": "the host's own UIKit under Mac Catalyst, which reports the same unavailable force touch capability, through tests/backports/host/previewing"
+    },
+    {
+      "api": "-[UIViewController unregisterForPreviewingWithContext:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "it takes back a registration that was never going to fire",
+      "effect": "the context is forgotten; a context that was never registered, and a second unregistration of the same one, are quiet",
+      "facts": "facts/UIKit/UIViewControllerPreviewing.md",
+      "source": "the host's own UIKit under Mac Catalyst, through tests/backports/host/previewing"
+    },
+    {
+      "api": "-[UIViewControllerPreviewingDelegate previewingContext:viewControllerForLocation:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no UIViewControllerPreviewingDelegate of its own and nothing in the port sends the message: a preview never begins on a screen that does not measure force, so there is no caller for it",
+      "effect": "the protocol comes from the SDK's header and its metadata is compiled into the application, so an application that adopts it builds and runs; the method is never called, by the release or by the port",
+      "facts": "facts/UIKit/UIViewControllerPreviewing.md",
+      "source": "the host's own UIKit under Mac Catalyst, which asks it no more than the release does"
+    },
+    {
+      "api": "-[UIViewControllerPreviewingDelegate previewingContext:commitViewController:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no UIViewControllerPreviewingDelegate of its own and nothing in the port sends the message: a preview never begins on a screen that does not measure force, so there is no caller for it",
+      "effect": "the protocol comes from the SDK's header and its metadata is compiled into the application, so an application that adopts it builds and runs; the method is never called, by the release or by the port",
+      "facts": "facts/UIKit/UIViewControllerPreviewing.md",
+      "source": "the host's own UIKit under Mac Catalyst, which asks it no more than the release does"
     }
   ]
 }
