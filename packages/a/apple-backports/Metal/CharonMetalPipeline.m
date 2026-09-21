@@ -167,12 +167,21 @@ static CharonUniformPlan *uniformPlans(CharonMetalPipeline *pipeline, NSArray *u
     return plans;
 }
 
+static NSMutableDictionary *programs(void)
+{
+    static NSMutableDictionary *cache;
+    if (!cache)
+        cache = [NSMutableDictionary dictionary];
+    return cache;
+}
+
 @implementation CharonMetalPipeline {
     CharonPlan _plan;
     GLuint _program;
     NSDictionary *_vertexReflection, *_fragmentReflection;
     MTLRenderPipelineDescriptor *_descriptor;
     NSMutableDictionary *_locations;
+    NSString *_cacheKey;
 }
 
 @synthesize label;
@@ -216,39 +225,49 @@ static CharonUniformPlan *uniformPlans(CharonMetalPipeline *pipeline, NSArray *u
         _locations = [NSMutableDictionary dictionary];
         CharonMetalDevice *device = [CharonMetalDevice shared];
         [device acquire];
-        NSString *log = nil;
-        GLuint v = compile(GL_VERTEX_SHADER, vertex.source, &log);
-        GLuint f = v ? compile(GL_FRAGMENT_SHADER, fragment.source, &log) : 0;
-        if (!v || !f) {
-            if (error)
-                *error = CharonMetalError(7, [NSString stringWithFormat:@"shader did not compile: %@", log]);
-            [device relinquish];
-            return nil;
-        }
-        _program = glCreateProgram();
-        glAttachShader(_program, v);
-        glAttachShader(_program, f);
-        GLuint index = 0;
-        if ([_vertexReflection[@"usesVertexId"] boolValue])
-            glBindAttribLocation(_program, index++, "a_vertex_id");
-        for (NSDictionary *a in _vertexReflection[@"attributes"])
-            glBindAttribLocation(_program, index++, [a[@"name"] UTF8String]);
-        for (NSDictionary *a in _vertexReflection[@"inputs"])
-            glBindAttribLocation(_program, index++, [a[@"name"] UTF8String]);
-        glLinkProgram(_program);
-        GLint ok = 0;
-        glGetProgramiv(_program, GL_LINK_STATUS, &ok);
-        glDeleteShader(v);
-        glDeleteShader(f);
-        if (!ok) {
-            char buffer[1024] = {0};
-            glGetProgramInfoLog(_program, sizeof buffer - 1, NULL, buffer);
-            if (error)
-                *error = CharonMetalError(8, [NSString stringWithFormat:@"program did not link: %s", buffer]);
-            glDeleteProgram(_program);
-            _program = 0;
-            [device relinquish];
-            return nil;
+        _cacheKey = [[vertex.source stringByAppendingString:@"\0"] stringByAppendingString:fragment.source];
+        NSMutableDictionary *cached = programs()[_cacheKey];
+        if (cached) {
+            _program = [cached[@"program"] unsignedIntValue];
+            cached[@"count"] = @([cached[@"count"] unsignedIntegerValue] + 1);
+        } else {
+            NSString *log = nil;
+            GLuint v = compile(GL_VERTEX_SHADER, vertex.source, &log);
+            GLuint f = v ? compile(GL_FRAGMENT_SHADER, fragment.source, &log) : 0;
+            if (!v || !f) {
+                if (error)
+                    *error = CharonMetalError(7, [NSString stringWithFormat:@"shader did not compile: %@", log]);
+                [device relinquish];
+                _cacheKey = nil;
+                return nil;
+            }
+            GLuint program = glCreateProgram();
+            glAttachShader(program, v);
+            glAttachShader(program, f);
+            GLuint index = 0;
+            if ([_vertexReflection[@"usesVertexId"] boolValue])
+                glBindAttribLocation(program, index++, "a_vertex_id");
+            for (NSDictionary *a in _vertexReflection[@"attributes"])
+                glBindAttribLocation(program, index++, [a[@"name"] UTF8String]);
+            for (NSDictionary *a in _vertexReflection[@"inputs"])
+                glBindAttribLocation(program, index++, [a[@"name"] UTF8String]);
+            glLinkProgram(program);
+            GLint ok = 0;
+            glGetProgramiv(program, GL_LINK_STATUS, &ok);
+            glDeleteShader(v);
+            glDeleteShader(f);
+            if (!ok) {
+                char buffer[1024] = {0};
+                glGetProgramInfoLog(program, sizeof buffer - 1, NULL, buffer);
+                if (error)
+                    *error = CharonMetalError(8, [NSString stringWithFormat:@"program did not link: %s", buffer]);
+                glDeleteProgram(program);
+                [device relinquish];
+                _cacheKey = nil;
+                return nil;
+            }
+            _program = program;
+            programs()[_cacheKey] = [@{@"program": @(program), @"count": @1} mutableCopy];
         }
         [self buildPlan];
         [device relinquish];
@@ -369,7 +388,14 @@ static CharonUniformPlan *uniformPlans(CharonMetalPipeline *pipeline, NSArray *u
     if (_program) {
         CharonMetalDevice *device = [CharonMetalDevice shared];
         [device acquire];
-        glDeleteProgram(_program);
+        NSMutableDictionary *cached = _cacheKey ? programs()[_cacheKey] : nil;
+        NSUInteger count = [cached[@"count"] unsignedIntegerValue];
+        if (count > 1) {
+            cached[@"count"] = @(count - 1);
+        } else {
+            [programs() removeObjectForKey:_cacheKey];
+            glDeleteProgram(_program);
+        }
         [device relinquish];
     }
 }
