@@ -1,0 +1,16 @@
+{
+  "framework": "CoreMedia",
+  "entries": [
+    {
+      "api": "CMVideoFormatDescriptionGetH264ParameterSetAtIndex()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6 has the video format description and its avcC atom, and only lacks the function that reads the parameter sets out of it",
+      "effect": "answers the SPS, PPS and extension sets of the avcC atom by index with the count and the NAL unit header length, and the errors -12710 and -12712 the host answers for the same descriptions",
+      "facts": "facts/CoreMedia/H264ParameterSets.md",
+      "source": "the host's own CoreMedia, which the port is held against, case by case, by tests/backports/host/coremedia; an iPad 2 running 6.1.3, asked with dlsym, for what iOS 6 exports"
+    }
+  ]
+}
