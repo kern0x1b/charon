@@ -75,6 +75,14 @@ points apart, the one at the edge 6 points from it, and each is as tall as the r
 gloss of the port's, from the first gradient row to the last flat one, to the release's within a channel difference of 24
 (it is 8 on the iPad 2).
 
+## The button on an iPhone
+
+The release's delete button is not the same on an iPhone: read off an iPhone 4S (scale 2, 640 x 960) by the same test it is 32 points high
+(1 dark top edge, 1 highlight row, 15 rows of gradient from (245, 149, 152) to (214, 74, 78), 14 rows of flat red (207, 43, 45), and a
+darker bottom edge (123, 25, 27); the sides go from (107, 59, 61) to (95, 20, 21)) and 63 points wide for "Delete", where the iPad 2's is 33 points and a
+deeper red. The port draws the iPhone's on an iPhone (by `userInterfaceIdiom`) and the iPad's on an iPad. Colours other than the
+destructive red are made from the same steps on either.
+
 ## Table view controllers
 
 A `UITableViewController` answers `-tableView:willBeginEditingRowAtIndexPath:` and `-tableView:didEndEditingRowAtIndexPath:`

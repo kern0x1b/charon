@@ -87,7 +87,7 @@ static void compare_with_native(void)
     CHECK(worst <= 24, "the gloss, from the first gradient row to the last flat one, is the system's within a channel difference of 24");
     BOOL lighter_top = facade_values[3][1] > facade_values[14][1] + 30 && facade_values[14][1] > facade_values[20][1] + 20;
     CHECK(lighter_top, "the top half is a lighter gradient over a darker flat lower half");
-    BOOL flat_and_edge = abs(facade_values[24][0] - 189) <= 10 && abs(facade_values[24][1] - 20) <= 10 && facade_values[32][0] < 165;
+    BOOL flat_and_edge = abs(facade_values[24][0] - native_values[24][0]) <= 10 && abs(facade_values[24][1] - native_values[24][1]) <= 10 && facade_values[32][0] < 165;
     CHECK(flat_and_edge, "the lower half is the flat red of the system and the lower edge is darker");
 }
 
