@@ -595,6 +595,12 @@ call finds its implementation only where that library is loaded, and a message t
 a library that is not there is an unrecognized selector at run time, not a link
 error.
 
+A port that needs an API newer than its release takes the lift, not the compiler's
+`-Xfrontend -disable-availability-checking`: that flag also turns every
+`#available(iOS N, *)` into true, so a check written correctly is taken on a release
+that lacks the API, and the call fails there. With the lift the mark of an implemented
+API is lowered and every other stays, so `#available` remains a real test.
+
 apple-compat links its shims into whoever requires it and force-includes
 nothing on its own, because a shim's header brings its system header with it
 (`unlinkat.h` brings `<unistd.h>`, and with it `sync`). A target names the
