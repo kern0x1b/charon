@@ -62,16 +62,6 @@
       "source": "the SDK 16.4 headers of CoreTelephony"
     },
     {
-      "api": "CTServiceRadioAccessTechnologyDidChangeNotification",
-      "kind": "constant",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "iOS 6 has one radio and no service to key a change by",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the SDK 16.4 headers of CoreTelephony"
-    },
-    {
       "api": "CTRadioAccessTechnologyNRNSA",
       "kind": "constant",
       "introduced": "14.1",

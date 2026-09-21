@@ -72,36 +72,6 @@
       "source": "SDK 16.4, QuartzCore"
     },
     {
-      "api": "kCAContentsFormatGray8Uint",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, QuartzCore"
-    },
-    {
-      "api": "kCAContentsFormatRGBA16Float",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, QuartzCore"
-    },
-    {
-      "api": "kCAContentsFormatRGBA8Uint",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, QuartzCore"
-    },
-    {
       "api": "+[CARenderer rendererWithMTLTexture:options:]",
       "kind": "method",
       "introduced": "11.0",
@@ -119,26 +89,6 @@
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give CALayer a property like it: it arrived in iOS 11",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, QuartzCore"
-    },
-    {
-      "api": "kCAGradientLayerConic",
-      "kind": "constant",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, QuartzCore"
-    },
-    {
-      "api": "kCARendererMetalCommandQueue",
-      "kind": "constant",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, QuartzCore"
     },
     {
