@@ -1,0 +1,112 @@
+#import <Foundation/Foundation.h>
+#import <objc/runtime.h>
+
+typedef id (^CharonUserInfoValueProvider)(NSError *error, NSErrorUserInfoKey key);
+
+static NSMutableDictionary *charon_providers(void)
+{
+    static NSMutableDictionary *providers;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{ providers = [NSMutableDictionary dictionary]; });
+    return providers;
+}
+
+static id charon_provided(NSError *error, NSErrorUserInfoKey key)
+{
+    if ([error.userInfo objectForKey:key])
+        return nil;
+    CharonUserInfoValueProvider provider;
+    @synchronized(charon_providers()) {
+        provider = charon_providers()[error.domain];
+    }
+    return provider ? provider(error, key) : nil;
+}
+
+@implementation NSError (CharonUserInfoValueProvider)
+
++ (void)setUserInfoValueProviderForDomain:(NSErrorDomain)errorDomain provider:(id (^)(NSError *err, NSErrorUserInfoKey userInfoKey))provider
+{
+    if (!errorDomain)
+        return;
+    @synchronized(charon_providers()) {
+        if (provider)
+            charon_providers()[errorDomain] = [provider copy];
+        else
+            [charon_providers() removeObjectForKey:errorDomain];
+    }
+}
+
+- (NSString *)localizedDescription
+{
+    return charon_provided(self, NSLocalizedDescriptionKey) ?: [NSString stringWithFormat:@"%@ %ld", self.domain, (long)self.code];
+}
+
+- (NSString *)localizedFailureReason
+{
+    return charon_provided(self, NSLocalizedFailureReasonErrorKey);
+}
+
+- (NSString *)localizedRecoverySuggestion
+{
+    return charon_provided(self, NSLocalizedRecoverySuggestionErrorKey);
+}
+
+- (NSArray *)localizedRecoveryOptions
+{
+    return charon_provided(self, NSLocalizedRecoveryOptionsErrorKey);
+}
+
+- (id)recoveryAttempter
+{
+    return charon_provided(self, NSRecoveryAttempterErrorKey);
+}
+
+- (NSString *)helpAnchor
+{
+    return charon_provided(self, NSHelpAnchorErrorKey);
+}
+
+@end
+
+@interface CharonErrorProviderInstaller : NSObject
+@end
+
+@implementation CharonErrorProviderInstaller
+
++ (void)load
+{
+    if ([NSError respondsToSelector:@selector(setUserInfoValueProviderForDomain:provider:)])
+        return;
+    NSDictionary *keys = @{
+        @"localizedDescription": NSLocalizedDescriptionKey,
+        @"localizedFailureReason": NSLocalizedFailureReasonErrorKey,
+        @"localizedRecoverySuggestion": NSLocalizedRecoverySuggestionErrorKey,
+        @"localizedRecoveryOptions": NSLocalizedRecoveryOptionsErrorKey,
+        @"recoveryAttempter": NSRecoveryAttempterErrorKey,
+        @"helpAnchor": NSHelpAnchorErrorKey,
+    };
+    for (NSString *name in keys) {
+        NSErrorUserInfoKey key = keys[name];
+        SEL selector = NSSelectorFromString(name);
+        Method method = class_getInstanceMethod([NSError class], selector);
+        if (!method)
+            continue;
+        id (*original)(id, SEL) = (id (*)(id, SEL))method_getImplementation(method);
+        BOOL description = [name isEqualToString:@"localizedDescription"];
+        method_setImplementation(method, imp_implementationWithBlock(^id(NSError *self_) {
+            id value = charon_provided(self_, key);
+            if (value)
+                return value;
+            if (description && ![self_.userInfo objectForKey:NSLocalizedFailureReasonErrorKey]) {
+                NSString *reason = charon_provided(self_, NSLocalizedFailureReasonErrorKey);
+                if (reason) {
+                    NSError *composed = [NSError errorWithDomain:self_.domain code:self_.code userInfo:@{NSLocalizedFailureReasonErrorKey: reason}];
+                    return original(composed, selector);
+                }
+            }
+            return original(self_, selector);
+        }));
+    }
+}
+
+@end

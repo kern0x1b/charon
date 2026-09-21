@@ -867,3 +867,5 @@ cancelling, suspending, counts, asynchronous operations), and writes what the sy
 the same cases through the real `NSOperationQueue` on the release.
 
 `device/viewtransition.m` changes the status bar orientation of a window whose root controller has a child and checks the size each is told through `viewWillTransitionToSize:withTransitionCoordinator:`, the quarter turn the coordinator carries, the alongside block and the completion, and that the same orientation twice tells nobody. It holds its own expectations: the system has no rotation to record.
+
+`host/errorprovider/run.sh` records what the system's `NSError` asks a user info value provider and what it does with the answers - the keys asked per getter, the user info that stays empty, the value in the user info that wins, another domain, a replaced and a removed provider, a copy - and `device/errorprovider.m` runs the same cases on iOS 6.
