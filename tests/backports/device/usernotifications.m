@@ -102,9 +102,16 @@ static void check_actions(void)
     NSData *archived = [NSKeyedArchiver archivedDataWithRootObject:category];
     UNNotificationCategory *back = [NSKeyedUnarchiver unarchiveObjectWithData:archived];
     CHECK([back isEqual:category] && [back.actions[1] isKindOfClass:[UNTextInputNotificationAction class]], "a category survives being archived");
-    for (NSString *later in @[@"actionWithIdentifier:title:options:icon:", @"categoryWithIdentifier:actions:intentIdentifiers:hiddenPreviewsBodyPlaceholder:options:"])
+    for (NSString *later in @[@"actionWithIdentifier:title:options:icon:"])
         CHECK(![[UNNotificationAction class] respondsToSelector:NSSelectorFromString(later)]
               && ![[UNNotificationCategory class] respondsToSelector:NSSelectorFromString(later)], [later stringByAppendingString:@" is not there"].UTF8String);
+    UNNotificationCategory *hidden = [UNNotificationCategory categoryWithIdentifier:@"c" actions:@[action] intentIdentifiers:@[@"i"] hiddenPreviewsBodyPlaceholder:@"Hidden" options:UNNotificationCategoryOptionCustomDismissAction];
+    CHECK([hidden.hiddenPreviewsBodyPlaceholder isEqual:@"Hidden"] && [hidden.categorySummaryFormat isEqual:@""] && [hidden.identifier isEqual:@"c"] && hidden.options == UNNotificationCategoryOptionCustomDismissAction, "a category made with a placeholder answers it, and no summary format");
+    UNNotificationCategory *summarized = [UNNotificationCategory categoryWithIdentifier:@"c" actions:@[action] intentIdentifiers:@[@"i"] hiddenPreviewsBodyPlaceholder:@"Hidden" categorySummaryFormat:@"%u more" options:0];
+    CHECK([summarized.categorySummaryFormat isEqual:@"%u more"] && [summarized.hiddenPreviewsBodyPlaceholder isEqual:@"Hidden"], "one made with a summary format answers it");
+    CHECK([category.hiddenPreviewsBodyPlaceholder isEqual:@""] && [category.categorySummaryFormat isEqual:@""], "a category made as in iOS 10 answers the empty string for both");
+    CHECK(![hidden isEqual:[UNNotificationCategory categoryWithIdentifier:@"c" actions:@[action] intentIdentifiers:@[@"i"] hiddenPreviewsBodyPlaceholder:@"Other" options:UNNotificationCategoryOptionCustomDismissAction]], "categories that differ by placeholder are not equal");
+    CHECK([[hidden copy] isEqual:hidden] && [hidden copy] == hidden, "a category copies to itself");
     UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
     content.body = @"b";
     UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:@"r" content:content trigger:nil];

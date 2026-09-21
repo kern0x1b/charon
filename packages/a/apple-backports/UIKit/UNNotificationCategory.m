@@ -81,7 +81,9 @@
         return NO;
     UNNotificationCategory *other = object;
     return (_actions == other.actions || [_actions isEqual:other.actions]) && (_intentIdentifiers == other.intentIdentifiers || [_intentIdentifiers isEqual:other.intentIdentifiers])
-        && (_identifier == other.identifier || [_identifier isEqual:other.identifier]) && _options == other.options;
+        && (_identifier == other.identifier || [_identifier isEqual:other.identifier]) && _options == other.options
+        && (self.hiddenPreviewsBodyPlaceholder == other.hiddenPreviewsBodyPlaceholder || [self.hiddenPreviewsBodyPlaceholder isEqualToString:other.hiddenPreviewsBodyPlaceholder])
+        && (self.categorySummaryFormat == other.categorySummaryFormat || [self.categorySummaryFormat isEqualToString:other.categorySummaryFormat]);
 }
 
 - (NSUInteger)hash

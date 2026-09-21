@@ -348,6 +348,51 @@ static NSString *tail(NSString *description)
     return [from stringByReplacingOccurrencesOfString:@" icon: (null)," withString:@""];
 }
 
+static id make_hidden(Class cls, NSArray *actions, NSString *placeholder, NSUInteger options)
+{
+    return ((id (*)(id, SEL, id, id, id, id, NSUInteger))objc_msgSend)(cls, @selector(categoryWithIdentifier:actions:intentIdentifiers:hiddenPreviewsBodyPlaceholder:options:),
+                                                                        @"cat", actions, @[ @"i" ], placeholder, options);
+}
+
+static id make_summary(Class cls, NSArray *actions, NSString *placeholder, NSString *format, NSUInteger options)
+{
+    return ((id (*)(id, SEL, id, id, id, id, id, NSUInteger))objc_msgSend)(cls, @selector(categoryWithIdentifier:actions:intentIdentifiers:hiddenPreviewsBodyPlaceholder:categorySummaryFormat:options:),
+                                                                            @"cat", actions, @[ @"i" ], placeholder, format, options);
+}
+
+static void compare_hidden_previews(Class ourCategory, Class theirCategory, NSArray *ourActions, NSArray *theirActions)
+{
+    id plain_ours = make_category(ourCategory, @"cat", ourActions, @[ @"i" ], 1);
+    id plain_theirs = make_category(theirCategory, @"cat", theirActions, @[ @"i" ], 1);
+    same(call(plain_ours, @selector(hiddenPreviewsBodyPlaceholder)), call(plain_theirs, @selector(hiddenPreviewsBodyPlaceholder)), @"the placeholder of a category made without one");
+    same(call(plain_ours, @selector(categorySummaryFormat)), call(plain_theirs, @selector(categorySummaryFormat)), @"the summary format of a category made without one");
+    for (NSString *placeholder in @[ @"Hidden", @"", @"%u new" ]) {
+        id a = make_hidden(ourCategory, ourActions, placeholder, 9);
+        id b = make_hidden(theirCategory, theirActions, placeholder, 9);
+        NSString *what = [NSString stringWithFormat:@"a category with the placeholder %@", placeholder];
+        same(call(a, @selector(hiddenPreviewsBodyPlaceholder)), call(b, @selector(hiddenPreviewsBodyPlaceholder)), [what stringByAppendingString:@": placeholder"]);
+        same(call(a, @selector(categorySummaryFormat)), call(b, @selector(categorySummaryFormat)), [what stringByAppendingString:@": summary format"]);
+        same(call(a, @selector(identifier)), call(b, @selector(identifier)), [what stringByAppendingString:@": identifier"]);
+        same(@(((NSUInteger (*)(id, SEL))objc_msgSend)(a, @selector(options))), @(((NSUInteger (*)(id, SEL))objc_msgSend)(b, @selector(options))), [what stringByAppendingString:@": options"]);
+        same(call(a, @selector(intentIdentifiers)), call(b, @selector(intentIdentifiers)), [what stringByAppendingString:@": intents"]);
+        same(flag([a copy] == a), flag([b copy] == b), [what stringByAppendingString:@": copies to itself"]);
+    }
+    for (NSString *format in @[ @"%u more notifications", @"" ]) {
+        id a = make_summary(ourCategory, ourActions, @"Hidden", format, 3);
+        id b = make_summary(theirCategory, theirActions, @"Hidden", format, 3);
+        NSString *what = [NSString stringWithFormat:@"a category with the summary format %@", format];
+        same(call(a, @selector(hiddenPreviewsBodyPlaceholder)), call(b, @selector(hiddenPreviewsBodyPlaceholder)), [what stringByAppendingString:@": placeholder"]);
+        same(call(a, @selector(categorySummaryFormat)), call(b, @selector(categorySummaryFormat)), [what stringByAppendingString:@": summary format"]);
+    }
+    same(call(make_hidden(ourCategory, ourActions, nil, 0), @selector(hiddenPreviewsBodyPlaceholder)), call(make_hidden(theirCategory, theirActions, nil, 0), @selector(hiddenPreviewsBodyPlaceholder)), @"a nil placeholder");
+    same(call(make_summary(ourCategory, ourActions, @"h", nil, 0), @selector(categorySummaryFormat)), call(make_summary(theirCategory, theirActions, @"h", nil, 0), @selector(categorySummaryFormat)), @"a nil summary format");
+    same(raised(^{ make_hidden(ourCategory, ourActions, @"h", 0); }), raised(^{ make_hidden(theirCategory, theirActions, @"h", 0); }), @"a hidden category is made");
+    same(flag([make_hidden(ourCategory, ourActions, @"a", 0) isEqual:make_hidden(ourCategory, ourActions, @"a", 0)]),
+         flag([make_hidden(theirCategory, theirActions, @"a", 0) isEqual:make_hidden(theirCategory, theirActions, @"a", 0)]), @"hidden categories alike");
+    same(flag([make_hidden(ourCategory, ourActions, @"a", 0) isEqual:make_hidden(ourCategory, ourActions, @"b", 0)]),
+         flag([make_hidden(theirCategory, theirActions, @"a", 0) isEqual:make_hidden(theirCategory, theirActions, @"b", 0)]), @"hidden categories differing by placeholder");
+}
+
 static void compare_actions(void)
 {
     Class ourAction = ours([UNNotificationAction class]), theirAction = [UNNotificationAction class];
@@ -411,6 +456,7 @@ static void compare_actions(void)
     same(raised(^{ make_category(ourCategory, nil, @[], @[], 0); }), raised(^{ make_category(theirCategory, nil, @[], @[], 0); }),
          @"a category with no identifier");
     same(flag([ourCategory supportsSecureCoding]), flag([theirCategory supportsSecureCoding]), @"a category's secure coding");
+    compare_hidden_previews(ourCategory, theirCategory, ourActions, theirActions);
 }
 
 int main(int argc, char *argv[])
