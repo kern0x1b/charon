@@ -760,6 +760,8 @@ writes `/private/var/backports/swipeui.log` and `swipeui.done`.
 
 `device/keyboarddismiss.m` opens the keyboard on a text field outside a scroll view and drags a real finger over the scroll view in the four modes (none keeps the keyboard, on drag dismisses it, interactive keeps it above the keyboard and dismisses it when the finger reaches it).
 
+`device/interactivepop.m` drags a real finger from the left edge of a navigation controller: a drag past the middle pops a page and the top page follows the finger, a short drag leaves it, a disabled recognizer and a delegate that says no keep the page, and the root page stays.
+
 `host/touchtypes/run.sh` records what the host's UIKit answers for `allowedTouchTypes`, `requiresExclusiveTouchType` and `allowedPressTypes` of a gesture recognizer (the defaults, an array set, an empty array, duplicates) into `device/touchtypes-expectations.h`, and `device/touchtypes.m` holds the port to them on a device and then taps with a real finger on views whose tap recognizers allow different touch types.
 
 `host/textalign/run.sh` records what the host's UIKit does when `textAlignment` of a label, a text field and a text view is set to left, centre, right and natural (the value read back, and the side the ink of the rendered control is on, for a Latin and a Hebrew text), into `device/textalign-expectations.h`, and `device/textalign.m` holds the port to the same records on a device.

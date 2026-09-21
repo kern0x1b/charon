@@ -107,16 +107,18 @@ static id<UIViewControllerInteractiveTransitioning> charon_navigation_interactor
 {
     id<UINavigationControllerDelegate> delegate = navigation.delegate;
     if (![delegate respondsToSelector:@selector(navigationController:interactionControllerForAnimationController:)])
-        return nil;
+        return animator == charon_edge_pop_animator(navigation) ? charon_edge_pop_interactor(navigation) : nil;
     return [delegate navigationController:navigation interactionControllerForAnimationController:animator];
 }
 
 static id<UIViewControllerAnimatedTransitioning> charon_navigation_animator(UINavigationController *navigation, UINavigationControllerOperation operation, UIViewController *from, UIViewController *to)
 {
     id<UINavigationControllerDelegate> delegate = navigation.delegate;
-    if (![delegate respondsToSelector:@selector(navigationController:animationControllerForOperation:fromViewController:toViewController:)])
-        return nil;
-    return [delegate navigationController:navigation animationControllerForOperation:operation fromViewController:from toViewController:to];
+    id<UIViewControllerAnimatedTransitioning> animator = [delegate respondsToSelector:@selector(navigationController:animationControllerForOperation:fromViewController:toViewController:)]
+        ? [delegate navigationController:navigation animationControllerForOperation:operation fromViewController:from toViewController:to] : nil;
+    if (!animator && operation == UINavigationControllerOperationPop)
+        animator = charon_edge_pop_animator(navigation);
+    return animator;
 }
 
 static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewController *from, UIViewController *to, void (^completion)(void)))(BOOL)
