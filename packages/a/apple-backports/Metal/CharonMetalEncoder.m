@@ -37,6 +37,19 @@ static GLenum blendOperation(MTLBlendOperation o)
     }
 }
 
+static float halfToFloat(uint16_t h)
+{
+    uint32_t sign = (h >> 15) & 1, exponent = (h >> 10) & 31, mantissa = h & 1023;
+    float value;
+    if (exponent == 0)
+        value = ldexpf((float)mantissa, -24);
+    else if (exponent == 31)
+        value = mantissa ? NAN : INFINITY;
+    else
+        value = ldexpf((float)(mantissa | 1024), (int)exponent - 25);
+    return sign ? -value : value;
+}
+
 @implementation CharonMetalEncoder {
     CharonMetalDevice *_device;
     CharonMetalPipeline *_pipeline;
@@ -173,8 +186,14 @@ static GLenum blendOperation(MTLBlendOperation o)
         const uint8_t *p = (const uint8_t *)buffer.bytes + offsets[index] + [u[@"offset"] unsignedIntegerValue] + [u[@"instanceStride"] unsignedIntegerValue] * _instance;
         NSString *scalar = u[@"scalar"];
         int n = [u[@"components"] intValue];
-        if ([scalar isEqualToString:@"float"]) {
+        if ([scalar isEqualToString:@"float"] || [scalar isEqualToString:@"half"]) {
+            GLfloat converted[4];
             const GLfloat *f = (const GLfloat *)p;
+            if ([scalar isEqualToString:@"half"]) {
+                for (int i = 0; i < n; i++)
+                    converted[i] = halfToFloat(((const uint16_t *)p)[i]);
+                f = converted;
+            }
             if (n == 1) glUniform1fv(location, 1, f);
             else if (n == 2) glUniform2fv(location, 1, f);
             else if (n == 3) glUniform3fv(location, 1, f);

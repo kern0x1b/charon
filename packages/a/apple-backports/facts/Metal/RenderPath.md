@@ -31,6 +31,7 @@ the top left, which the port keeps by turning the vertical axis of a target that
 * Multiple render targets, tessellation, texture arrays, cubes, depth and 3D textures, sampling with an offset or gradients, and the function constants
   are not translated, and a function that needs one is not in the library.
 * A vertex texture: the SGX 543 has none.
+* A loop in a shader runs at most 64 rounds, since ES 1.00 wants a constant bound; a loop inside a loop is not translated. Branches and phis are.
 * Instances are drawn one by one; a draw with a base instance is not done.
 * A sampler with the address mode clamp to zero or clamp to border, mirror clamp to edge, or with pixel coordinates, answers nil with a line in the log, and a texture
   of another type, pixel format or with more than one sample does the same.

@@ -1,3 +1,4 @@
+#include <llvm/ADT/PostOrderIterator.h>
 #include <llvm/Bitcode/BitcodeReader.h>
 #include <llvm/IR/Constants.h>
 #include <llvm/IR/DataLayout.h>
@@ -22,6 +23,8 @@
 using namespace llvm;
 
 namespace {
+
+const int LoopLimit = 64;
 
 struct Failure {
     std::string message;
@@ -125,6 +128,18 @@ struct Translator {
     std::vector<std::string> attributeDecls, uniformDecls, samplerDecls;
     std::vector<std::string> attributeJson, uniformJson, textureJson, samplerJson, varyingJson, sizeJson;
     std::map<int, std::string> textureNames;
+    struct Loop {
+        const BasicBlock *header = nullptr;
+        std::set<const BasicBlock *> blocks;
+        std::string brk, cont, index;
+        std::map<const PHINode *, std::string> next;
+    };
+    std::vector<Loop> loops;
+    std::map<const BasicBlock *, unsigned> loopOf;
+    bool hoist = false;
+    std::string indent = "    ";
+    std::vector<std::string> declarations;
+    std::map<const BasicBlock *, std::string> reach;
     bool usesVertexId = false;
     bool usesInstanceId = false;
     bool usesFlip = false;
@@ -155,7 +170,12 @@ struct Translator {
         else if (scalar->isIntegerTy())
             base = n == 1 ? "int" : "ivec";
         else
-            fail("type " + std::string(scalar->isDoubleTy() ? "double" : "unsupported") + " has no GLSL ES 1.00 form");
+        {
+            std::string described;
+            raw_string_ostream stream(described);
+            t->print(stream);
+            fail("type " + stream.str() + " has no GLSL ES 1.00 form");
+        }
         if (n > 4)
             fail("vector wider than four components");
         return n == 1 ? base : base + std::to_string(n);
@@ -241,14 +261,24 @@ struct Translator {
         return "(" + get(v).text + ")";
     }
 
-    std::string define(const Instruction *i, const std::string &expr)
+    std::string temp(Type *type, const std::string &expr)
     {
         std::string name = fresh();
-        body.push_back("    " + qualified(i->getType()) + " " + name + " = " + expr + ";");
-        Value_ r;
-        r.text = name;
-        values[i] = r;
+        if (hoist) {
+            declarations.push_back("    " + qualified(type) + " " + name + ";");
+            body.push_back(indent + name + " = " + expr + ";");
+        } else {
+            body.push_back("    " + qualified(type) + " " + name + " = " + expr + ";");
+        }
         return name;
+    }
+
+    std::string define(const Instruction *i, const std::string &expr)
+    {
+        Value_ r;
+        r.text = temp(i->getType(), expr);
+        values[i] = r;
+        return r.text;
     }
 
     void setup()
@@ -427,8 +457,6 @@ struct Translator {
             return name;
         }
         std::string name = "u" + suffix + (p.instanceIndexed ? "i" : "");
-        if (type->getScalarType()->isHalfTy())
-            fail("half typed load from a constant buffer");
         if (!declared.count(name)) {
             declared.insert(name);
             uniformDecls.push_back("uniform highp " + glsl + " " + name + ";");
@@ -465,6 +493,37 @@ struct Translator {
         return isa<FixedVectorType>(t) ? cast<FixedVectorType>(t)->getNumElements() : 1;
     }
 
+    std::string sizeUniform(int binding)
+    {
+        std::string uniform = "tsize" + std::to_string(binding);
+        if (!declared.count(uniform)) {
+            declared.insert(uniform);
+            uniformDecls.push_back("uniform highp vec2 " + uniform + ";");
+            sizeJson.push_back("{\"name\":\"" + uniform + "\",\"texture\":" + std::to_string(binding) + "}");
+        }
+        return uniform;
+    }
+
+    void read(const CallInst *ci)
+    {
+        if (vertex)
+            fail("reading a texture in a vertex function, which the SGX 543 has no texture units for");
+        auto tp = pointers.find(ci->getArgOperand(0));
+        if (tp == pointers.end() || tp->second.kind != Pointer::Texture)
+            fail("reading a texture that is not an argument");
+        for (unsigned k : {3u, 4u, 5u}) {
+            auto *c = dyn_cast<Constant>(ci->getArgOperand(k));
+            if (!c || !c->isNullValue())
+                fail("reading a texture with an offset, a level or an array slice");
+        }
+        std::string size = sizeUniform(tp->second.binding);
+        std::string coord = "(vec2(" + get(ci->getArgOperand(2)).text + ") + vec2(0.5)) / " + size;
+        Value_ r;
+        r.aggregate = true;
+        r.fields = {temp(cast<StructType>(ci->getType())->getElementType(0), "texture2D(" + textureNames[tp->second.binding] + ", " + coord + ")"), "1"};
+        values[ci] = r;
+    }
+
     std::string call(const CallInst *ci)
     {
         Function *callee = ci->getCalledFunction();
@@ -474,13 +533,18 @@ struct Translator {
         auto arg = [&](unsigned i) { return text(ci->getArgOperand(i)); };
         auto has = [&](const char *prefix) { return name.rfind(prefix, 0) == 0; };
         Type *rt = ci->getType();
-        std::string type = rt->isVoidTy() ? "" : glslType(rt);
+        std::string type = rt->isVoidTy() || rt->isStructTy() ? "" : glslType(rt);
         if (has("air.sample_texture_2d.")) {
             if (vertex)
                 fail("sampling a texture in a vertex function, which the SGX 543 has no texture units for");
             auto tp = pointers.find(ci->getArgOperand(0));
             if (tp == pointers.end() || tp->second.kind != Pointer::Texture)
                 fail("sampling a texture that is not an argument");
+            {
+                Type *result = ci->getType()->isStructTy() ? cast<StructType>(ci->getType())->getElementType(0) : ci->getType();
+                if (result->getScalarType()->isIntegerTy())
+                    fail("sampling a texture of integers");
+            }
             if (isa<ConstantInt>(ci->getArgOperand(3)) && cast<ConstantInt>(ci->getArgOperand(3))->isZero())
                 fail("sampling with pixel coordinates");
             const Value *offset = ci->getArgOperand(4);
@@ -489,12 +553,17 @@ struct Translator {
             auto *flag = dyn_cast<ConstantInt>(ci->getArgOperand(5));
             if (!flag)
                 fail("sample control that is not constant");
+            if (ci->arg_size() == 9) {
+                auto *clamp = dyn_cast<Constant>(ci->getArgOperand(7));
+                if (!clamp || !clamp->isNullValue())
+                    fail("sampling with a minimum level of detail clamp");
+            }
             std::string sampled;
             std::string t = textureNames[tp->second.binding];
             if (flag->isZero()) {
                 sampled = "texture2D(" + t + ", " + arg(2) + ")";
             } else {
-                auto *kind = dyn_cast<ConstantInt>(ci->getArgOperand(7));
+                auto *kind = dyn_cast<ConstantInt>(ci->getArgOperand(ci->arg_size() - 1));
                 if (!kind)
                     fail("sample control kind that is not constant");
                 if (kind->getZExtValue() == 0)
@@ -515,12 +584,7 @@ struct Translator {
             auto tp = pointers.find(ci->getArgOperand(0));
             if (tp == pointers.end() || tp->second.kind != Pointer::Texture)
                 fail("texture size of a value that is not a texture argument");
-            std::string uniform = "tsize" + std::to_string(tp->second.binding);
-            if (!declared.count(uniform)) {
-                declared.insert(uniform);
-                uniformDecls.push_back("uniform highp vec2 " + uniform + ";");
-                sizeJson.push_back("{\"name\":\"" + uniform + "\",\"texture\":" + std::to_string(tp->second.binding) + "}");
-            }
+            std::string uniform = sizeUniform(tp->second.binding);
             return std::string("int(") + uniform + (has("air.get_width_texture_2d") ? ".x)" : ".y)");
         }
         if (has("air.convert.")) {
@@ -561,8 +625,8 @@ struct Translator {
                 return "(sign(" + a[0] + ") * floor(abs(" + a[0] + ")))";
             if (fn == "round")
                 return "floor(" + a[0] + " + 0.5)";
-            if ((fn == "max" || fn == "min") && rt->getScalarType()->isIntegerTy())
-                fail("integer min or max");
+            if (rt->getScalarType()->isIntegerTy())
+                fail("an integer " + base);
             std::string s = fn + "(";
             for (size_t i = 0; i < a.size(); i++)
                 s += (i ? ", " : "") + a[i];
@@ -751,39 +815,248 @@ struct Translator {
                 if (id == Intrinsic::lifetime_start || id == Intrinsic::lifetime_end || id == Intrinsic::assume)
                     return;
             }
+            if (ci->getCalledFunction() && ci->getCalledFunction()->getName() == "air.discard_fragment") {
+                if (vertex)
+                    fail("discard in a vertex function");
+                body.push_back(indent + "discard;");
+                return;
+            }
+            if (ci->getCalledFunction() && ci->getCalledFunction()->getName().starts_with("air.read_texture_2d.")) {
+                read(ci);
+                return;
+            }
+            if (ci->getType()->isStructTy() && ci->getCalledFunction() && ci->getCalledFunction()->getName().starts_with("air.sample_texture_2d.")) {
+                Value_ r;
+                r.aggregate = true;
+                r.fields = {temp(cast<StructType>(ci->getType())->getElementType(0), call(ci)), "1"};
+                values[ci] = r;
+                return;
+            }
             define(&i, call(ci));
             return;
         }
         case Instruction::Ret:
             finish(cast<ReturnInst>(&i));
             return;
-        case Instruction::PHI: case Instruction::UncondBr: case Instruction::CondBr: case Instruction::Switch:
-            fail("control flow across basic blocks");
+        case Instruction::PHI:
+            return;
+        case Instruction::UncondBr: case Instruction::CondBr: case Instruction::Switch:
+            branch(i);
+            return;
+        case Instruction::Unreachable:
+            return;
         default:
             fail(std::string("instruction ") + i.getOpcodeName());
         }
+    }
+
+    std::vector<std::string> edge(const BasicBlock *from, const BasicBlock *to)
+    {
+        std::vector<std::string> lines;
+        auto inside = loopOf.find(from);
+        if (inside != loopOf.end()) {
+            Loop &loop = loops[inside->second];
+            if (to == loop.header) {
+                for (auto &phi : to->phis())
+                    lines.push_back(loop.next.at(&phi) + " = " + get(phi.getIncomingValueForBlock(from)).text + ";");
+                lines.push_back(loop.cont + " = true;");
+                return lines;
+            }
+            auto target = loopOf.find(to);
+            if (target == loopOf.end() || target->second != inside->second)
+                lines.push_back(loop.brk + " = true;");
+        }
+        lines.push_back(reach.at(to) + " = true;");
+        for (auto &phi : to->phis())
+            lines.push_back(get(&phi).text + " = " + get(phi.getIncomingValueForBlock(from)).text + ";");
+        return lines;
+    }
+
+    void branch(const Instruction &t)
+    {
+        const BasicBlock *from = t.getParent();
+        auto emit = [&](const std::vector<std::string> &lines) {
+            for (auto &l : lines)
+                body.push_back(indent + "    " + l);
+        };
+        if (t.getNumSuccessors() == 1) {
+            for (auto &l : edge(from, t.getSuccessor(0)))
+                body.push_back(indent + l);
+            return;
+        }
+        if (auto *sw = dyn_cast<SwitchInst>(&t)) {
+            if (isa<VectorType>(sw->getCondition()->getType()))
+                fail("switch on a vector");
+            std::string value = text(sw->getCondition());
+            bool first = true;
+            for (auto &c : sw->cases()) {
+                body.push_back(indent + (first ? "if (" : "} else if (") + value + " == " + std::to_string(c.getCaseValue()->getSExtValue()) + ") {");
+                first = false;
+                emit(edge(from, c.getCaseSuccessor()));
+            }
+            if (first) {
+                for (auto &l : edge(from, sw->getDefaultDest()))
+                    body.push_back(indent + l);
+                return;
+            }
+            body.push_back(indent + "} else {");
+            emit(edge(from, sw->getDefaultDest()));
+            body.push_back(indent + "}");
+            return;
+        }
+        body.push_back(indent + "if (" + get(cast<CondBrInst>(&t)->getCondition()).text + ") {");
+        emit(edge(from, t.getSuccessor(0)));
+        body.push_back(indent + "} else {");
+        emit(edge(from, t.getSuccessor(1)));
+        body.push_back(indent + "}");
+    }
+
+    void structure()
+    {
+        ReversePostOrderTraversal<Function *> order(&function);
+        std::vector<BasicBlock *> blocks(order.begin(), order.end());
+        std::map<const BasicBlock *, unsigned> position;
+        for (unsigned n = 0; n < blocks.size(); n++)
+            position[blocks[n]] = n;
+        std::map<const BasicBlock *, std::vector<const BasicBlock *>> latches;
+        for (BasicBlock *b : blocks)
+            for (unsigned k = 0; k < b->getTerminator()->getNumSuccessors(); k++) {
+                BasicBlock *to = b->getTerminator()->getSuccessor(k);
+                if (position.at(to) <= position.at(b))
+                    latches[to].push_back(b);
+            }
+        for (auto &entry : latches) {
+            Loop loop;
+            loop.header = entry.first;
+            loop.blocks.insert(entry.first);
+            std::vector<const BasicBlock *> work(entry.second.begin(), entry.second.end());
+            while (!work.empty()) {
+                const BasicBlock *b = work.back();
+                work.pop_back();
+                if (!loop.blocks.insert(b).second)
+                    continue;
+                for (const BasicBlock *pred : predecessors(b))
+                    work.push_back(pred);
+            }
+            for (const BasicBlock *b : loop.blocks)
+                if (loopOf.count(b))
+                    fail("a loop inside a loop");
+            for (const BasicBlock *b : loop.blocks)
+                loopOf[b] = (unsigned)loops.size();
+            std::string id = std::to_string(loops.size());
+            loop.brk = "brk" + id;
+            loop.cont = "cont" + id;
+            loop.index = "it" + id;
+            loops.push_back(loop);
+        }
+        hoist = blocks.size() > 1;
+        if (hoist) {
+            for (BasicBlock *b : blocks) {
+                if (b != &function.getEntryBlock()) {
+                    std::string name = "r" + std::to_string(position.at(b));
+                    reach[b] = name;
+                    declarations.push_back("    bool " + name + " = false;");
+                }
+                for (auto &phi : b->phis()) {
+                    std::string name = fresh();
+                    declarations.push_back("    " + qualified(phi.getType()) + " " + name + ";");
+                    Value_ r;
+                    r.text = name;
+                    values[&phi] = r;
+                    auto in = loopOf.find(b);
+                    if (in != loopOf.end() && loops[in->second].header == b) {
+                        std::string next = fresh();
+                        declarations.push_back("    " + qualified(phi.getType()) + " " + next + ";");
+                        loops[in->second].next[&phi] = next;
+                    }
+                }
+            }
+            for (auto &loop : loops) {
+                declarations.push_back("    bool " + loop.brk + " = false;");
+                declarations.push_back("    bool " + loop.cont + " = false;");
+            }
+        }
+        std::set<const BasicBlock *> done;
+        for (BasicBlock *b : blocks) {
+            if (done.count(b))
+                continue;
+            auto in = loopOf.find(b);
+            if (in == loopOf.end()) {
+                block(b);
+                done.insert(b);
+                continue;
+            }
+            Loop &loop = loops[in->second];
+            body.push_back("    for (int " + loop.index + " = 0; " + loop.index + " < " + std::to_string(LoopLimit) + "; " + loop.index + "++) {");
+            std::string outer = indent;
+            for (BasicBlock *l : blocks) {
+                if (!loop.blocks.count(l))
+                    continue;
+                if (l != loop.header)
+                    body.push_back("        " + reach.at(l) + " = false;");
+            }
+            for (BasicBlock *l : blocks) {
+                if (!loop.blocks.count(l))
+                    continue;
+                block(l, "    ");
+                done.insert(l);
+            }
+            body.push_back("        if (" + loop.brk + " || !" + loop.cont + ")");
+            body.push_back("            break;");
+            for (auto &phi : loop.header->phis())
+                body.push_back("        " + values.at(&phi).text + " = " + loop.next.at(&phi) + ";");
+            body.push_back("        " + loop.cont + " = false;");
+            body.push_back("    }");
+            indent = outer;
+        }
+    }
+
+    void block(BasicBlock *b, const std::string &extra = "")
+    {
+        bool guarded = hoist && b != &function.getEntryBlock();
+        std::string outer = indent;
+        indent = extra + indent;
+        if (guarded) {
+            body.push_back(indent + "if (" + reach.at(b) + ") {");
+            indent += "    ";
+        }
+        for (auto &i : *b)
+            instruction(i);
+        if (guarded) {
+            indent = indent.substr(0, indent.size() - 4);
+            body.push_back(indent + "}");
+        }
+        indent = outer;
     }
 
     void finish(const ReturnInst *ret)
     {
         Value_ &r = get(ret->getReturnValue());
         std::vector<std::string> fields = r.aggregate ? r.fields : std::vector<std::string>{r.text};
+        for (size_t k = 0; k < fields.size(); k++)
+            if (fields[k].empty()) {
+                Type *t = r.aggregate ? cast<StructType>(ret->getReturnValue()->getType())->getElementType((unsigned)k) : ret->getReturnValue()->getType();
+                fields[k] = constant(Constant::getNullValue(t));
+            }
         if (vertex) {
             for (size_t k = 0; k < fields.size() && k < outputs.size(); k++) {
                 const ArgInfo &o = outputs[k];
                 if (o.kind == "air.position") {
-                    body.push_back("    gl_Position = " + fields[k] + ";");
-                    body.push_back("    gl_Position.y *= charon_flip;");
+                    body.push_back(indent + "gl_Position = " + fields[k] + ";");
+                    body.push_back(indent + "gl_Position.y *= charon_flip;");
                 } else if (o.kind == "air.point_size") {
-                    body.push_back("    gl_PointSize = " + fields[k] + ";");
+                    body.push_back(indent + "gl_PointSize = " + fields[k] + ";");
                 } else if (o.kind == "air.vertex_output") {
                     std::string name = varyingName(o, (unsigned)k);
                     Type *t = r.aggregate ? cast<StructType>(ret->getReturnValue()->getType())->getElementType((unsigned)k) : ret->getReturnValue()->getType();
                     std::string declaredType = t->isIntegerTy() ? "float" : glslType(t);
-                    samplerDecls.push_back("varying " + std::string(halfLike(t) ? "mediump " : "highp ") + declaredType + " " + name + ";");
+                    if (!declared.count(name)) {
+                        declared.insert(name);
+                        samplerDecls.push_back("varying " + std::string(halfLike(t) ? "mediump " : "highp ") + declaredType + " " + name + ";");
+                        varyingJson.push_back("{\"name\":\"" + name + "\",\"argument\":" + std::to_string(k) + ",\"flat\":false}");
+                    }
                     std::string value = t->isIntegerTy(1) ? "(" + fields[k] + " ? 1.0 : 0.0)" : t->isIntegerTy() ? "float(" + fields[k] + ")" : fields[k];
-                    body.push_back("    " + name + " = " + value + ";");
-                    varyingJson.push_back("{\"name\":\"" + name + "\",\"argument\":" + std::to_string(k) + ",\"flat\":false}");
+                    body.push_back(indent + "" + name + " = " + value + ";");
                 } else {
                     fail("vertex output " + o.kind + " is not supported");
                 }
@@ -798,7 +1071,18 @@ struct Translator {
                 if (any)
                     fail("more than one fragment output");
                 any = true;
-                body.push_back("    gl_FragColor = " + fields[k] + ";");
+                Type *t = r.aggregate ? cast<StructType>(ret->getReturnValue()->getType())->getElementType((unsigned)k) : ret->getReturnValue()->getType();
+                if (t->getScalarType()->isIntegerTy())
+                    fail("fragment output of an integer type");
+                unsigned n = width(t);
+                std::string colour = fields[k];
+                if (n == 1)
+                    colour = "vec4(" + fields[k] + ", 0.0, 0.0, 1.0)";
+                else if (n == 2)
+                    colour = "vec4(" + fields[k] + ", 0.0, 1.0)";
+                else if (n == 3)
+                    colour = "vec4(" + fields[k] + ", 1.0)";
+                body.push_back(indent + "gl_FragColor = " + colour + ";");
             }
             if (!any)
                 fail("fragment shader with no colour output");
@@ -808,10 +1092,7 @@ struct Translator {
     std::string run()
     {
         setup();
-        if (function.size() != 1)
-            fail("control flow across basic blocks");
-        for (auto &i : function.getEntryBlock())
-            instruction(i);
+        structure();
         for (auto &line : body) {
             if (line.find("charon_flip") != std::string::npos && !vertex)
                 usesFlip = true;
@@ -841,6 +1122,8 @@ struct Translator {
         for (auto &d : samplerDecls)
             out << d << "\n";
         out << "void main()\n{\n";
+        for (auto &l : declarations)
+            out << l << "\n";
         for (auto &l : body)
             out << l << "\n";
         out << "}\n";

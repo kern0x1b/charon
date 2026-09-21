@@ -170,7 +170,7 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
     NSError *error = nil;
     self.library = [self.device newLibraryWithFile:[folder stringByDeletingPathExtension] error:&error];
     CHECK(self.library != nil, "a library is read from beside its file");
-    CHECK([[[self.library functionNames] sortedArrayUsingSelector:@selector(compare:)] isEqualToArray:(@[@"quadFragment", @"quadVertex", @"stageInVertex"])], "it holds its three functions");
+    CHECK([[[self.library functionNames] sortedArrayUsingSelector:@selector(compare:)] isEqualToArray:(@[@"flowFragment", @"quadFragment", @"quadVertex", @"stageInVertex"])], "it holds its four functions");
     CHECK([self.library newFunctionWithName:@"missing"] == nil, "a name it does not hold gives nil");
     CHECK([[self.library newFunctionWithName:@"quadVertex"] functionType] == MTLFunctionTypeVertex, "the vertex function is a vertex function");
     CHECK([[self.library newFunctionWithName:@"quadFragment"] functionType] == MTLFunctionTypeFragment, "and the fragment function a fragment function");
@@ -246,6 +246,40 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
     {
         const uint8_t *stl = out + (16 * 64 + 16) * 4, *sbl = out + (48 * 64 + 16) * 4;
         CHECK(near(stl, 0, 255, 0, 1) && near(sbl, 255, 255, 255, 1), "the second instance shifts the coordinate by half and is drawn over the first");
+    }
+
+    {
+        MTLRenderPipelineDescriptor *fd = [[MTLRenderPipelineDescriptor alloc] init];
+        fd.vertexFunction = [self.library newFunctionWithName:@"quadVertex"];
+        fd.fragmentFunction = [self.library newFunctionWithName:@"flowFragment"];
+        fd.colorAttachments[0].pixelFormat = MTLPixelFormatRGBA8Unorm;
+        NSError *flowError = nil;
+        id<MTLRenderPipelineState> flow = [self.device newRenderPipelineStateWithDescriptor:fd error:&flowError];
+        CHECK(flow != nil, "a fragment function with a loop and branches is made");
+        struct { int32_t n; float k; } cases[3] = {{3, 0.5f}, {12, 0.25f}, {1, 1.0f}};
+        const int expected[3] = {77, 38, 51};
+        const char *names[3] = {"a loop of three rounds and the branch below the threshold", "a loop of twelve rounds and the branch above it", "a loop of one round"};
+        for (int c = 0; c < 3; c++) {
+            MTLRenderPassDescriptor *pass = [MTLRenderPassDescriptor renderPassDescriptor];
+            pass.colorAttachments[0].texture = target;
+            pass.colorAttachments[0].loadAction = MTLLoadActionClear;
+            pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1);
+            Corner quad[6] = {{{-1, 1}, {0, 0}}, {{1, 1}, {1, 0}}, {{-1, -1}, {0, 1}}, {{1, 1}, {1, 0}}, {{1, -1}, {1, 1}}, {{-1, -1}, {0, 1}}};
+            float unit = 1;
+            id<MTLCommandBuffer> flowBuffer = [self.queue commandBuffer];
+            id<MTLRenderCommandEncoder> flowEncoder = [flowBuffer renderCommandEncoderWithDescriptor:pass];
+            [flowEncoder setRenderPipelineState:flow];
+            [flowEncoder setVertexBytes:quad length:sizeof quad atIndex:0];
+            [flowEncoder setVertexBytes:&unit length:sizeof unit atIndex:1];
+            [flowEncoder setFragmentBytes:&cases[c] length:sizeof cases[c] atIndex:0];
+            [flowEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6];
+            [flowEncoder endEncoding];
+            [flowBuffer commit];
+            [flowBuffer waitUntilCompleted];
+            [self read:target width:64 height:64 into:out];
+            const uint8_t *middle = out + (32 * 64 + 32) * 4;
+            CHECK(near(middle, expected[c], expected[c], expected[c], 2), names[c]);
+        }
     }
 
     const float faint[4] = {0.5f, 0.5f, 0.5f, 0.4f};

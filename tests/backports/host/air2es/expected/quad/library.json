@@ -17,6 +17,12 @@
    "stage": "vertex",
    "source": "module2.vert",
    "reflection": "module2.json"
+  },
+  {
+   "name": "flowFragment",
+   "stage": "fragment",
+   "source": "module3.frag",
+   "reflection": "module3.json"
   }
  ]
 }
