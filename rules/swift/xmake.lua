@@ -113,6 +113,14 @@ rule("swift")
                 table.insert(objectfiles, objectfile)
             end
         end
+        -- Swift compiled outside the build and added as objects (add_files("x.o")) is a program's Swift as much as any other.
+        for _, candidate in ipairs(table.join({target}, target:orderdeps())) do
+            for _, objectfile in ipairs(candidate:objectfiles() or {}) do
+                if objectfile:endswith(".o") and os.isfile(objectfile) then
+                    table.insert(objectfiles, objectfile)
+                end
+            end
+        end
         if #objectfiles == 0 then
             return
         end

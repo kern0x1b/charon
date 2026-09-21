@@ -12,6 +12,9 @@ function failures(opt)
     if not hook:find("target:orderdeps()", 1, true) or not hook:find("swift.objectfile", 1, true) then
         table.insert(found, "a program whose Swift is all in a library must name the runtime libraries that library imports, or they come after the frameworks on the link line and bind to the system's Foundation")
     end
+    if not hook:find(":objectfiles()", 1, true) then
+        table.insert(found, "before_link must read the imports of the objects added with add_files, which Swift compiled outside the build is")
+    end
     if not text:find('target:set("policy", "build.fence", true)', 1, true) or not text:find("-emit-objc-header", 1, true) then
         table.insert(found, "a target that has the compiler write an Objective-C header must be built before what depends on it compiles, or the Objective-C finds no header")
     end
