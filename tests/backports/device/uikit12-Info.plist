@@ -5,15 +5,15 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Home Indicator</string>
+	<string>UIKit 12</string>
 	<key>CFBundleExecutable</key>
-	<string>homeindicator</string>
+	<string>uikit12</string>
 	<key>CFBundleIdentifier</key>
-	<string>local.charon.backports.homeindicator</string>
+	<string>local.charon.backports.uikit12</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>homeindicator</string>
+	<string>uikit12</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

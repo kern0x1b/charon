@@ -1322,10 +1322,10 @@
       "api": "UICollectionViewFlowLayout.sectionInsetReference",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "the reference says whether a section's insets start at the content area, the safe area or the layout margins, and the flow layout that reads it is UIKit's own",
-      "effect": "the property is not there: sections are laid out from the content area as this release's flow layout always does",
-      "source": "UIKit of iOS 11.0 arm64"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "UIKit of iOS 11.0 and 12.0 arm64, -[UICollectionViewFlowLayout _adjustedSectionInsetForSectionInset:forAxis:] and its caller read at their addresses, and the host's own UIKit under Mac Catalyst through tests/backports/host/insetref (32 records of a flow layout), and tests/backports/device/insetref-cases.m on iOS 6",
+      "facts": "facts/UIKit/UICollectionViewSectionInsetReference.md"
     },
     {
       "api": "+[UIColor colorNamed:inBundle:compatibleWithTraitCollection:]",

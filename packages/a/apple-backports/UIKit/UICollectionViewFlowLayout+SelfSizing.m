@@ -9,6 +9,7 @@ static const char charon_measured_key;
 static const char charon_pending_key;
 static const char charon_width_key;
 static const char charon_applied_key;
+static const char charon_reference_key;
 
 @interface CharonFlowModel : NSObject
 @property (nonatomic, strong) NSMutableDictionary<NSIndexPath *, UICollectionViewLayoutAttributes *> *items;
@@ -30,7 +31,12 @@ static CGSize charon_estimate(UICollectionViewFlowLayout *layout)
     return size;
 }
 
-static BOOL charon_active(UICollectionViewLayout *layout)
+static NSInteger charon_reference_kind(UICollectionViewFlowLayout *layout)
+{
+    return [objc_getAssociatedObject(layout, &charon_reference_key) integerValue];
+}
+
+static BOOL charon_estimating(UICollectionViewLayout *layout)
 {
     if (![layout isKindOfClass:[UICollectionViewFlowLayout class]])
         return NO;
@@ -39,6 +45,16 @@ static BOOL charon_active(UICollectionViewLayout *layout)
     if (!value || CGSizeEqualToSize(value.CGSizeValue, CGSizeZero))
         return NO;
     return flow.scrollDirection == UICollectionViewScrollDirectionVertical;
+}
+
+static BOOL charon_active(UICollectionViewLayout *layout)
+{
+    if (charon_estimating(layout))
+        return YES;
+    if (![layout isKindOfClass:[UICollectionViewFlowLayout class]])
+        return NO;
+    UICollectionViewFlowLayout *flow = (UICollectionViewFlowLayout *)layout;
+    return charon_reference_kind(flow) != 0 && flow.scrollDirection == UICollectionViewScrollDirectionVertical && CGSizeEqualToSize(flow.estimatedItemSize, CGSizeZero);
 }
 
 static NSMutableDictionary *charon_measured(UICollectionViewLayout *layout)
@@ -60,7 +76,16 @@ static id charon_delegate(UICollectionViewFlowLayout *layout, SEL selector)
 static UIEdgeInsets charon_inset(UICollectionViewFlowLayout *layout, NSInteger section)
 {
     id delegate = charon_delegate(layout, @selector(collectionView:layout:insetForSectionAtIndex:));
-    return delegate ? [delegate collectionView:layout.collectionView layout:layout insetForSectionAtIndex:section] : layout.sectionInset;
+    UIEdgeInsets inset = delegate ? [delegate collectionView:layout.collectionView layout:layout insetForSectionAtIndex:section] : layout.sectionInset;
+    NSInteger reference = charon_reference_kind(layout);
+    if (reference == 0)
+        return inset;
+    UICollectionView *view = layout.collectionView;
+    UIEdgeInsets against = reference == 2 ? view.layoutMargins : view.safeAreaInsets;
+    UIEdgeInsets adjusted = view.adjustedContentInset;
+    inset.left = MAX(inset.left + against.left - adjusted.left, 0);
+    inset.right = MAX(inset.right + against.right - adjusted.right, 0);
+    return inset;
 }
 
 static CGFloat charon_line_spacing(UICollectionViewFlowLayout *layout, NSInteger section)
@@ -93,7 +118,7 @@ static CGSize charon_item_size(UICollectionViewFlowLayout *layout, NSIndexPath *
     id delegate = charon_delegate(layout, @selector(collectionView:layout:sizeForItemAtIndexPath:));
     if (delegate)
         return [delegate collectionView:layout.collectionView layout:layout sizeForItemAtIndexPath:path];
-    return charon_estimate(layout);
+    return charon_estimating(layout) ? charon_estimate(layout) : layout.itemSize;
 }
 
 static UICollectionViewLayoutAttributes *charon_attributes(UICollectionViewFlowLayout *layout, NSIndexPath *path, NSString *kind, CGRect frame)
@@ -133,7 +158,8 @@ static void charon_build(UICollectionViewFlowLayout *layout)
     model.items = [NSMutableDictionary dictionary];
     model.headers = [NSMutableDictionary dictionary];
     model.footers = [NSMutableDictionary dictionary];
-    CGFloat width = view.bounds.size.width;
+    UIEdgeInsets adjustment = view.adjustedContentInset;
+    CGFloat width = view.bounds.size.width - adjustment.left - adjustment.right;
     CGFloat y = 0;
     for (NSInteger section = 0; section < view.numberOfSections; section++) {
         NSIndexPath *sectionPath = [NSIndexPath indexPathForItem:0 inSection:section];
@@ -236,6 +262,17 @@ static void charon_install_cell_hook(void);
     [self invalidateLayout];
 }
 
+- (UICollectionViewFlowLayoutSectionInsetReference)sectionInsetReference
+{
+    return (UICollectionViewFlowLayoutSectionInsetReference)charon_reference_kind(self);
+}
+
+- (void)setSectionInsetReference:(UICollectionViewFlowLayoutSectionInsetReference)reference
+{
+    charon_install_layout_hooks();
+    objc_setAssociatedObject(self, &charon_reference_key, @(reference), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 @end
 
 @implementation UICollectionViewLayout (CharonPreferredAttributes)
@@ -304,7 +341,7 @@ static void charon_measure(UICollectionViewCell *cell, UICollectionViewLayoutAtt
         superview = superview.superview;
     UICollectionView *view = (UICollectionView *)superview;
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)view.collectionViewLayout;
-    if (!view || !charon_active(layout) || !attributes.indexPath || attributes.representedElementCategory != UICollectionElementCategoryCell)
+    if (!view || !charon_estimating(layout) || !attributes.indexPath || attributes.representedElementCategory != UICollectionElementCategoryCell)
         return;
     UICollectionViewLayoutAttributes *preferred = [cell preferredLayoutAttributesFittingAttributes:attributes];
     if (!preferred)
