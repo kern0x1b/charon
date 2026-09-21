@@ -43,3 +43,8 @@ An item that is not displayed keeps its estimate, or the size the delegate answe
 - The text a cell measures is the release's own: the widths of text differ from the host's by up to a pixel, so the scenarios
   whose cells take their width from their text are compared to a point, and the others to the pixel of the screen.
 - Supplementary views do not self-size.
+
+A compositional layout (`UICollectionViewCompositionalLayout.md`) measures its estimated items on the same steps and shares the
+default `preferredLayoutAttributesFittingAttributes:`: a layout that answers `-charon_estimatedAxesForAttributes:` tells the default
+which axes are free, and the default holds the others at the size the layout gave, as the release's does with the width of the
+attributes. A cell that overrides the method works for both layouts.

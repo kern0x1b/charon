@@ -136,6 +136,9 @@ static inline void charon_layout_say_once(NSString *key, NSString *text)
 
 @interface UICollectionViewLayout (CharonSelfSizing)
 - (BOOL)charon_settleMeasurements;
+- (NSUInteger)charon_estimatedAxesForAttributes:(UICollectionViewLayoutAttributes *)attributes;
 @end
 
-CGSize charon_fit_size(UICollectionReusableView *view, NSIndexPath *indexPath, NSString *kind, CGSize proposed, BOOL estimatedWidth, BOOL estimatedHeight, CGFloat scale);
+UICollectionViewLayoutAttributes *charon_default_preferred(UICollectionReusableView *view, UICollectionViewLayoutAttributes *attributes, BOOL estimatedWidth, BOOL estimatedHeight);
+UICollectionViewLayoutAttributes *charon_preferred_attributes(UICollectionReusableView *view, UICollectionViewLayoutAttributes *attributes, BOOL estimatedWidth, BOOL estimatedHeight, CGFloat scale);
+void charon_layout_perform(UICollectionViewLayout *layout, void (^work)(UICollectionViewLayout *layout));

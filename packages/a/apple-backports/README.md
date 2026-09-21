@@ -237,9 +237,9 @@ What iOS 6 has no API for is done by the port. A section with an `orthogonalScro
 the collection view, in all five behaviors: a pan recognizer on the collection view drives an offset for the section (it follows
 the finger, decelerates, gives at the ends, snaps to a group or a page), the groups are laid out in a row as the host's private scroll
 view lays them, `visibleItemsInvalidationHandler` is called with real `NSCollectionLayoutVisibleItem` objects and what it sets on them is
-shown, and the offsets are held to the host frame for frame. An estimated dimension is measured: the displayed cell is asked (its
-constraints, `-sizeThatFits:` or `-preferredLayoutAttributesFittingAttributes:`), and so is a header or footer, and the layout is solved
-again with what they answer, as the host's is; sizes are held to the host's on 19 layouts. Both are `implemented`. What is not the
+shown, and the offsets are held to the host frame for frame. An estimated dimension is measured on the steps of a self-sizing flow layout: the displayed cell is asked
+`-preferredLayoutAttributesFittingAttributes:` (its default fits the constraints or asks `-sizeThatFits:`, and a cell that overrides it works for both layouts), and so is a header or footer, the layout is asked whether to invalidate and
+is invalidated with the context that method builds, and it is solved again with what they answer, as the host's is; sizes are held to the host's on 25 layouts, cells of a fixed intrinsic content size and cells that set the height in their attributes among them. Both are `implemented`. What is not the
 host's: the cells of a section that scrolls the other way are not clipped to it, what a finger does is the port's own (the host's
 scroll view takes only a real touch, so only the device test drags it), and an estimate on a supplementary item of an item or a group
 is not measured. `-[NSCollectionLayoutGroup visualDescription]` is absent, and so is anything of a later

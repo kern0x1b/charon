@@ -986,7 +986,9 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
     NSMutableDictionary *_measured;
     NSMutableDictionary *_measuredAgainst;
     NSMutableDictionary *_pending;
+    NSMutableArray *_preferredContexts;
     BOOL _measuring;
+    BOOL _applyingPreferred;
 }
 
 - (instancetype)initCharonWithSection:(NSCollectionLayoutSection *)section provider:(UICollectionViewCompositionalLayoutSectionProvider)provider
@@ -1172,7 +1174,9 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
     NSString *key = [NSString stringWithFormat:@"%d/%@/%ld/%ld", cell ? 0 : 1, cell ? @"" : element->kind, (long)element->indexPath.section, (long)element->indexPath.item];
     if (!_pending) {
         _pending = [NSMutableDictionary dictionary];
-        [self performSelector:@selector(charon_settleLater) withObject:nil afterDelay:0];
+        charon_layout_perform(self, ^(UICollectionViewLayout *layout) {
+            [(UICollectionViewCompositionalLayout *)layout charon_settleLater];
+        });
     }
     _pending[key] = @{@"path" : element->indexPath, @"kind" : cell ? @"" : element->kind, @"cell" : @(cell), @"frame" : [NSValue valueWithCGRect:attributes.frame]};
 }
@@ -1229,9 +1233,14 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
                 [self charon_solveView:view];
         }
     }
+    NSArray *contexts = _preferredContexts;
+    _preferredContexts = nil;
     if (changed) {
         _measuring = YES;
-        [self invalidateLayout];
+        _applyingPreferred = YES;
+        for (UICollectionViewLayoutInvalidationContext *context in contexts)
+            [self invalidateLayoutWithContext:context];
+        _applyingPreferred = NO;
         _measuring = NO;
     }
     return changed;
@@ -1251,12 +1260,46 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
     NSNumber *against = _measuredAgainst[key];
     if (against && fabs(against.doubleValue - fixed) < 0.01)
         return NO;
+    UICollectionViewLayoutAttributes *original = kind ? [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kind withIndexPath:element->indexPath]
+                                                       : [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:element->indexPath];
+    original.frame = element->frame;
     _measuring = YES;
-    CGSize size = charon_fit_size(view, element->indexPath, kind, element->frame.size, element->estimatedWidth, element->estimatedHeight, _scale);
+    UICollectionViewLayoutAttributes *preferred = charon_preferred_attributes(view, original, element->estimatedWidth, element->estimatedHeight, _scale);
     _measuring = NO;
-    _measured[key] = [NSValue valueWithCGSize:size];
     _measuredAgainst[key] = @(fixed);
-    return fabs(size.width - element->frame.size.width) > 0.01 || fabs(size.height - element->frame.size.height) > 0.01;
+    if (![self shouldInvalidateLayoutForPreferredLayoutAttributes:preferred withOriginalAttributes:original]) {
+        _measured[key] = [NSValue valueWithCGSize:element->frame.size];
+        return NO;
+    }
+    _measured[key] = [NSValue valueWithCGSize:preferred.frame.size];
+    if (!_preferredContexts)
+        _preferredContexts = [NSMutableArray array];
+    [_preferredContexts addObject:[self invalidationContextForPreferredLayoutAttributes:preferred withOriginalAttributes:original]];
+    return YES;
+}
+
+- (NSUInteger)charon_estimatedAxesForAttributes:(UICollectionViewLayoutAttributes *)attributes
+{
+    NSString *kind = attributes.representedElementCategory == UICollectionElementCategoryCell ? nil : attributes.representedElementKind;
+    CharonSolvedElement *element = _lookup[[self keyForCategory:kind ? 1 : 0 kind:kind indexPath:attributes.indexPath]];
+    if (!element)
+        return 0;
+    return (element->estimatedWidth ? 1u : 0u) | (element->estimatedHeight ? 2u : 0u);
+}
+
+- (BOOL)shouldInvalidateLayoutForPreferredLayoutAttributes:(UICollectionViewLayoutAttributes *)preferredAttributes withOriginalAttributes:(UICollectionViewLayoutAttributes *)originalAttributes
+{
+    CGSize preferred = preferredAttributes.frame.size, original = originalAttributes.frame.size;
+    return fabs(preferred.width - original.width) > 0.01 || fabs(preferred.height - original.height) > 0.01;
+}
+
+- (void)invalidateLayoutWithContext:(UICollectionViewLayoutInvalidationContext *)context
+{
+    if (_applyingPreferred) {
+        _solved = NO;
+        _keepSolution = NO;
+    }
+    [super invalidateLayoutWithContext:context];
 }
 
 - (void)charon_offsetsDidChange
@@ -1277,7 +1320,6 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
 
 - (void)dealloc
 {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [_orthogonal detach];
 }
 

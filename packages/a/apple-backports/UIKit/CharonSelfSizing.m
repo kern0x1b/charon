@@ -60,16 +60,12 @@ static BOOL charon_overrides_preferred(UICollectionReusableView *view)
     return mine != class_getMethodImplementation([UICollectionReusableView class], selector) && mine != class_getMethodImplementation([UICollectionViewCell class], selector);
 }
 
-CGSize charon_fit_size(UICollectionReusableView *view, NSIndexPath *indexPath, NSString *kind, CGSize proposed, BOOL estimatedWidth, BOOL estimatedHeight, CGFloat scale)
+UICollectionViewLayoutAttributes *charon_default_preferred(UICollectionReusableView *view, UICollectionViewLayoutAttributes *attributes, BOOL estimatedWidth, BOOL estimatedHeight)
 {
     UIView *content = [view respondsToSelector:@selector(contentView)] ? [(UICollectionViewCell *)view contentView] : view;
+    CGSize proposed = attributes.frame.size;
     CGSize size;
-    if (charon_overrides_preferred(view)) {
-        UICollectionViewLayoutAttributes *attributes = kind ? [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kind withIndexPath:indexPath]
-                                                            : [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
-        attributes.frame = CGRectMake(0, 0, proposed.width, proposed.height);
-        size = [view preferredLayoutAttributesFittingAttributes:attributes].size;
-    } else if (content.constraints.count > 0) {
+    if (content.constraints.count > 0) {
         size = charon_constrained_fit(content, proposed, estimatedWidth, estimatedHeight);
     } else {
         CGRect frame = view.frame;
@@ -78,13 +74,46 @@ CGSize charon_fit_size(UICollectionReusableView *view, NSIndexPath *indexPath, N
         size = [view sizeThatFits:proposed];
         view.frame = frame;
     }
+    UICollectionViewLayoutAttributes *preferred = [attributes copy];
+    CGRect frame = preferred.frame;
+    frame.size = size;
+    preferred.frame = frame;
+    return preferred;
+}
+
+UICollectionViewLayoutAttributes *charon_preferred_attributes(UICollectionReusableView *view, UICollectionViewLayoutAttributes *attributes, BOOL estimatedWidth, BOOL estimatedHeight, CGFloat scale)
+{
+    UICollectionViewLayoutAttributes *preferred;
+    if (charon_overrides_preferred(view)) {
+        [view layoutIfNeeded];
+        preferred = [view preferredLayoutAttributesFittingAttributes:attributes];
+    } else {
+        preferred = charon_default_preferred(view, attributes, estimatedWidth, estimatedHeight);
+    }
+    CGSize proposed = attributes.frame.size;
+    CGSize size = preferred.frame.size;
     if (!(size.width > 0) || !(size.height > 0) || !isfinite(size.width) || !isfinite(size.height))
-        return proposed;
-    if (scale > 0) {
+        size = proposed;
+    else if (scale > 0) {
         size.width = ceil(size.width * scale - 0.001) / scale;
         size.height = ceil(size.height * scale - 0.001) / scale;
     }
-    return CGSizeMake(estimatedWidth ? size.width : proposed.width, estimatedHeight ? size.height : proposed.height);
+    UICollectionViewLayoutAttributes *result = [attributes copy];
+    CGRect frame = result.frame;
+    frame.size = CGSizeMake(estimatedWidth ? size.width : proposed.width, estimatedHeight ? size.height : proposed.height);
+    result.frame = frame;
+    return result;
+}
+
+void charon_layout_perform(UICollectionViewLayout *layout, void (^work)(UICollectionViewLayout *layout))
+{
+    __weak UICollectionViewLayout *weak = layout;
+    CFRunLoopPerformBlock(CFRunLoopGetMain(), kCFRunLoopCommonModes, ^{
+        UICollectionViewLayout *strong = weak;
+        if (strong)
+            work(strong);
+    });
+    CFRunLoopWakeUp(CFRunLoopGetMain());
 }
 
 @implementation UICollectionView (CharonSelfSizing)

@@ -1,5 +1,6 @@
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
+#import "CharonCompositionalLayout.h"
 
 extern const CGSize UICollectionViewFlowLayoutAutomaticSize;
 
@@ -297,6 +298,15 @@ static void charon_install_cell_hook(void);
 
 - (UICollectionViewLayoutAttributes *)preferredLayoutAttributesFittingAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes
 {
+    UIView *owner = self.superview;
+    while (owner && ![owner isKindOfClass:[UICollectionView class]])
+        owner = owner.superview;
+    UICollectionViewLayout *layout = [(UICollectionView *)owner collectionViewLayout];
+    if ([layout respondsToSelector:@selector(charon_estimatedAxesForAttributes:)]) {
+        NSUInteger axes = [layout charon_estimatedAxesForAttributes:layoutAttributes];
+        if (axes)
+            return charon_default_preferred(self, layoutAttributes, (axes & 1) != 0, (axes & 2) != 0);
+    }
     UICollectionViewLayoutAttributes *preferred = [layoutAttributes copy];
     UIView *target = [self isKindOfClass:[UICollectionViewCell class]] ? [(UICollectionViewCell *)self contentView] : self;
     CGSize fitted = [target systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
@@ -321,17 +331,12 @@ static void charon_schedule_invalidation(UICollectionViewFlowLayout *layout, UIC
     }
     pending = [NSMutableArray arrayWithObject:context];
     objc_setAssociatedObject(layout, &charon_pending_key, pending, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    __weak UICollectionViewFlowLayout *weak = layout;
-    CFRunLoopPerformBlock(CFRunLoopGetMain(), kCFRunLoopCommonModes, ^{
-        UICollectionViewFlowLayout *strong = weak;
-        if (!strong)
-            return;
+    charon_layout_perform(layout, ^(UICollectionViewLayout *strong) {
         NSArray *contexts = objc_getAssociatedObject(strong, &charon_pending_key);
         objc_setAssociatedObject(strong, &charon_pending_key, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         for (UICollectionViewLayoutInvalidationContext *item in contexts)
             [strong invalidateLayoutWithContext:item];
     });
-    CFRunLoopWakeUp(CFRunLoopGetMain());
 }
 
 static void charon_measure(UICollectionViewCell *cell, UICollectionViewLayoutAttributes *attributes)

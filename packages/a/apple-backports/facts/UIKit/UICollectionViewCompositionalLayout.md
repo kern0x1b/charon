@@ -135,8 +135,9 @@ seven offsets each) and comparing the cells that are shown and what the handler 
 
 ## Self-sizing
 
-Measured the same way, with cells of three kinds (`compositional-cases.m`): one of constraints (a label of any number of lines), one of
-frames that answers `sizeThatFits:`, and one that cannot size itself.
+Measured the same way, with cells of these kinds (`compositional-cases.m`): one of constraints (a label of any number of lines), one
+of frames that answers `sizeThatFits:`, one that cannot size itself, one whose only subview has a fixed intrinsic content size, one
+whose `-preferredLayoutAttributesFittingAttributes:` sets the height, and one that adds to what its superclass answers.
 
 - An item whose dimension is estimated is as large as the cell asks for on that axis, in the size the layout gives the other:
   a cell of constraints by fitting its content view compressed to that size (with the labels wrapping to the width they have been
@@ -148,12 +149,20 @@ frames that answers `sizeThatFits:`, and one that cannot size itself.
   measured ones push off screen is not measured; the rest is the estimate; a measured size stays until the layout is invalidated
   from outside (a reload, a change of the layout's size) or is measured at another width.
 - The count-fixed vertical group divides its estimate among its items and does not measure them.
-- A view is measured after the collection view has placed it (a hook on the collection view's own layout pass, which is run again; the layout notes what it returned); a header or footer
-  the same way, in its kind and index path.
+- A view is measured on the same steps as a cell of a self-sizing flow layout (`UICollectionViewSelfSizing.md`): the view is asked
+  for `-preferredLayoutAttributesFittingAttributes:` with the attributes the layout returned, the layout is asked
+  `-shouldInvalidateLayoutForPreferredLayoutAttributes:withOriginalAttributes:`, and the size is kept and the layout invalidated
+  with the context `-invalidationContextForPreferredLayoutAttributes:withOriginalAttributes:` builds. The default of the cell
+  (`-preferredLayoutAttributesFittingAttributes:` without an override) fits its content view with the estimated axes free and the
+  others held at the size the layout gave, so a cell that overrides it and calls the superclass gets the same. The views are those
+  the layout returned and are measured after the collection view has placed them (a hook on the collection view's own layout pass,
+  which is run again, and one turn of the run loop after the layout); no cell is hooked. A header or footer the same way, in its
+  kind and index path. What is waiting for a turn of the run loop holds the layout weakly, so a layout that is released first
+  is not measured.
 
 ## What the port cannot do
 
-- **Nested scrolling is the port's own.** iOS 6 has no scroll view to nest in a section, so the port moves the section itself: a pan
+- **Nested scrolling is done, and is the port's own.** iOS 6 has no scroll view to nest in a section, so the port moves the section itself: a pan
   recognizer on the collection view drives an offset for each such section (see Orthogonal scrolling, below). Where it differs from
   the host: the cells are children of the collection view and not of a scroll view of the section's own, so a cell is not clipped
   to the section's frame, and one the handler moves entirely off the collection view's bounds is not shown (the host shows it,
@@ -162,12 +171,13 @@ frames that answers `sizeThatFits:`, and one that cannot size itself.
   `(offset, 0)` and the collection view's container; a list of visible items may hold, as the host's does, an item that has just
   scrolled out, and the port's holds only what is in sight; there is no scroll indicator, and no `orthogonalScrollingProperties`
   (17.0).
-- **Self-sizing is done by measuring displayed cells** and, of the estimates, only those of items and of the boundary supplementary
+- **Self-sizing is done by measuring displayed views** and, of the estimates, only those of items and of the boundary supplementary
   items (headers and footers) are measured: an estimate on a supplementary item of an item or of a group stays its estimate. A
   view is measured only after the collection view has laid it out, once for each width (or height) it was measured at.
 - The layout runs left to right: leading is left, and `flipsHorizontallyInOtherLayoutDirection` is not carried.
-- iOS 6's collection view has no invalidation contexts, so a bounds change is answered by `-shouldInvalidateLayoutForBoundsChange:`
-  and `-invalidateLayout` only.
+- iOS 6's collection view has no invalidation contexts of its own (`UICollectionViewInvalidation.md`): a bounds change is
+  answered by `-shouldInvalidateLayoutForBoundsChange:` and `-invalidateLayout`, and the context of a measured view is applied with
+  `-invalidateLayoutWithContext:`, which solves the layout again.
 - The port does not supply the attributes for appearing and disappearing items that the host's layout does; the base class answers.
 - `visualDescription`, and the members of later releases, are absent (`NSCollectionLayoutItem.md`).
 
