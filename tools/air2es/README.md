@@ -30,6 +30,12 @@ edges set the flags and assign the phi values of the block they lead to, and a b
 a `for` of 64 rounds with a `break` when the loop's exit is taken; ES 1.00 wants a constant bound, so a loop that would run more than
 64 rounds stops at 64, and nothing marks the shader when it does. A loop inside a loop is refused. `discard` is carried.
 
+## The colour attachment
+
+A fragment function that takes the colour it is drawing over as an argument (`[[color(0)]]`) reads `gl_LastFragData[0]`, with
+`GL_EXT_shader_framebuffer_fetch`, which the SGX 543 has: the framebuffer is read where the tile is, and there is no copy of it to a texture. Only the first
+colour attachment can be read, and only as four floats.
+
 ## Function constants
 
 A function constant is a global the library fills in when a function is made, and a predicate a static initialiser computes from the constants. The
@@ -40,7 +46,7 @@ when it makes the function, and the initialiser is translated ahead of the funct
 ## What it refuses
 
 A function it cannot translate is refused with the reason, and no file is written: a loop inside a loop,
-a texture read in a vertex function (the SGX 543 has no vertex texture units), integer bit operations, `min`, `max`, `clamp` and the like on integers,
+a texture read in a vertex function (the SGX 543 has no vertex texture units), integer bit operations, reading a texture of integers, `min`, `max`, `clamp` and the like on integers,
 a fragment output of an integer type, an output to a second render target (there are no multiple render targets in ES 2.0), texture arrays, cubes,
 depth textures and textures of integers, sampling with gradients or an explicit level, with a minimum level clamp, with an offset or in pixel coordinates,
 reading a texture at a level or with an offset, `half` reads from a vertex buffer, dynamic indices into a buffer element, local arrays, a function

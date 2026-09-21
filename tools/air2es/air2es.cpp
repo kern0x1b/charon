@@ -59,6 +59,7 @@ struct Pointer {
 struct Value_ {
     std::string text;
     std::vector<std::string> fields;
+    std::vector<std::string> comps;
     bool aggregate = false;
 };
 
@@ -108,6 +109,10 @@ ArgInfo parseArg(const MDNode *node, bool indexed)
             info.flat = true;
         } else if (s == "air.function_constant") {
             info.optional = true;
+        } else if (s == "air.render_target" && info.kind.empty()) {
+            info.kind = s;
+            if (i + 1 < node->getNumOperands() && intOf(node->getOperand(i + 1), number))
+                info.location = (int)number;
         } else if (s.rfind("air.", 0) == 0 && info.kind.empty() && s != "air.read" && s != "air.write" && s != "air.center" &&
                    s != "air.perspective" && s != "air.no_perspective" && s != "air.sample" && s != "air.buffer_size") {
             info.kind = s;
@@ -256,9 +261,35 @@ struct Translator {
         if (auto *c = dyn_cast<Constant>(v)) {
             Value_ r;
             r.text = constant(c);
+            if (auto *vt = dyn_cast<FixedVectorType>(c->getType()))
+                for (unsigned k = 0; k < vt->getNumElements(); k++)
+                    r.comps.push_back(constant(c->getAggregateElement(k)));
             return values[v] = r;
         }
         fail("value used before definition");
+    }
+
+    std::vector<std::string> components(const Value *v)
+    {
+        Value_ &r = get(v);
+        unsigned n = isa<FixedVectorType>(v->getType()) ? cast<FixedVectorType>(v->getType())->getNumElements() : 1;
+        if (r.comps.size() == n)
+            return r.comps;
+        std::vector<std::string> out;
+        for (unsigned k = 0; k < n; k++)
+            out.push_back(n == 1 ? r.text : "(" + r.text + ")." + std::string(1, "xyzw"[k]));
+        return out;
+    }
+
+    Value_ composed(Type *type, const std::vector<std::string> &comps)
+    {
+        Value_ r;
+        r.comps = comps;
+        r.text = glslType(type) + "(";
+        for (size_t k = 0; k < comps.size(); k++)
+            r.text += (k ? ", " : "") + comps[k];
+        r.text += ")";
+        return r;
     }
 
     std::string text(const Value *v)
@@ -332,6 +363,13 @@ struct Translator {
                     r.text = n == 1 ? "int(" + name + " + 0.5)" : "ivec" + std::to_string(n) + "(" + name + " + 0.5)";
                 else
                     r.text = name;
+                values[&arg] = r;
+            } else if (info.kind == "air.render_target" && !vertex) {
+                if (info.location != 0)
+                    fail("reading render target " + std::to_string(info.location) + " (there is one colour attachment to read in ES 2.0)");
+                r.text = glslType(arg.getType()) == "vec4" ? "gl_LastFragData[0]" : "";
+                if (r.text.empty())
+                    fail("reading the colour attachment as a type that is not a four component float");
                 values[&arg] = r;
             } else if (info.kind == "air.front_facing" && !vertex) {
                 r.text = "(gl_FrontFacing != (charon_flip < 0.0))";
@@ -555,6 +593,8 @@ struct Translator {
         auto tp = pointers.find(ci->getArgOperand(0));
         if (tp == pointers.end() || tp->second.kind != Pointer::Texture)
             fail("reading a texture that is not an argument");
+        if (cast<StructType>(ci->getType())->getElementType(0)->getScalarType()->isIntegerTy())
+            fail("reading a texture of integers");
         for (unsigned k : {3u, 4u, 5u}) {
             auto *c = dyn_cast<Constant>(ci->getArgOperand(k));
             if (!c || !c->isNullValue())
@@ -788,35 +828,34 @@ struct Translator {
             auto *c = dyn_cast<ConstantInt>(i.getOperand(1));
             if (!c)
                 fail("extract with a dynamic index");
-            define(&i, component(text(i.getOperand(0)), (unsigned)c->getZExtValue(), width(i.getOperand(0)->getType())));
+            Value_ r;
+            r.text = components(i.getOperand(0)).at((size_t)c->getZExtValue());
+            values[&i] = r;
             return;
         }
         case Instruction::InsertElement: {
             auto *c = dyn_cast<ConstantInt>(i.getOperand(2));
             if (!c)
                 fail("insert with a dynamic index");
-            unsigned n = width(i.getType());
-            std::string v = text(i.getOperand(0)), e = text(i.getOperand(1));
-            std::string s = glslType(i.getType()) + "(";
-            for (unsigned k = 0; k < n; k++)
-                s += (k ? ", " : "") + (k == c->getZExtValue() ? e : component(v, k, n));
-            define(&i, s + ")");
+            std::vector<std::string> comps = components(i.getOperand(0));
+            comps.at((size_t)c->getZExtValue()) = get(i.getOperand(1)).text;
+            values[&i] = composed(i.getType(), comps);
             return;
         }
         case Instruction::ShuffleVector: {
             auto *sv = cast<ShuffleVectorInst>(&i);
             unsigned n = width(i.getOperand(0)->getType());
-            std::string a = text(i.getOperand(0)), b = text(i.getOperand(1));
+            std::vector<std::string> a = components(i.getOperand(0)), b = components(i.getOperand(1));
             unsigned outWidth = width(i.getType());
             if (outWidth == 1)
                 fail("shuffle producing a scalar");
-            std::string s = glslType(i.getType()) + "(";
+            std::vector<std::string> comps;
+            std::string zero = constant(Constant::getNullValue(cast<FixedVectorType>(i.getType())->getElementType()));
             for (unsigned k = 0; k < outWidth; k++) {
                 int m = sv->getMaskValue(k);
-                std::string c = m < 0 ? "0.0" : (unsigned)m < n ? component(a, m, n) : component(b, m - n, n);
-                s += (k ? ", " : "") + c;
+                comps.push_back(m < 0 ? zero : (unsigned)m < n ? a[m] : b[m - n]);
             }
-            define(&i, s + ")");
+            values[&i] = composed(i.getType(), comps);
             return;
         }
         case Instruction::InsertValue: {
@@ -882,6 +921,15 @@ struct Translator {
                 if (vertex)
                     fail("discard in a vertex function");
                 body.push_back(indent + "discard;");
+                return;
+            }
+            if (ci->getCalledFunction() && ci->getCalledFunction()->getName().starts_with("air.get_read_sampler")) {
+                Pointer sampler;
+                sampler.kind = Pointer::Sampler;
+                pointers[ci] = sampler;
+                Value_ r;
+                r.text = "0";
+                values[ci] = r;
                 return;
             }
             if (ci->getCalledFunction() && ci->getCalledFunction()->getName().starts_with("air.read_texture_2d.")) {
@@ -1189,6 +1237,11 @@ struct Translator {
         out << "#version 100\n";
         if (usesDerivatives)
             out << "#extension GL_OES_standard_derivatives : enable\n";
+        for (auto &line : body)
+            if (line.find("gl_LastFragData") != std::string::npos) {
+                out << "#extension GL_EXT_shader_framebuffer_fetch : require\n";
+                break;
+            }
         if (!vertex) {
             out << "#ifdef GL_FRAGMENT_PRECISION_HIGH\nprecision highp float;\n#else\nprecision mediump float;\n#endif\n";
             out << "precision highp int;\n";

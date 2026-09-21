@@ -23,6 +23,11 @@ wrapping (clamp to edge, repeat, mirrored repeat); blending, the write mask, cul
 the top left, which the port keeps by turning the vertical axis of a target that is a texture; textures of RGBA8, BGRA8, R8 and RG8. Reading a texture back with
 `getBytes:` reads the target.
 
+## The colour attachment
+
+A fragment function that takes the colour it draws over as an argument reads the framebuffer in the shader (`GL_EXT_shader_framebuffer_fetch` of the SGX 543), which keeps
+a pass in one tile without a texture to read back; only the first attachment, as four floats.
+
 ## Function constants
 
 A function that has function constants is specialised by `newFunctionWithName:constantValues:error:` with an `MTLFunctionConstantValues`: the bool, int,

@@ -212,7 +212,7 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
     NSError *error = nil;
     self.library = [self.device newLibraryWithFile:[folder stringByDeletingPathExtension] error:&error];
     CHECK(self.library != nil, "a library is read from beside its file");
-    CHECK([[[self.library functionNames] sortedArrayUsingSelector:@selector(compare:)] isEqualToArray:(@[@"constFragment", @"flowFragment", @"quadFragment", @"quadVertex", @"stageInVertex"])], "it holds its five functions");
+    CHECK([[[self.library functionNames] sortedArrayUsingSelector:@selector(compare:)] isEqualToArray:(@[@"constFragment", @"fetchFragment", @"flowFragment", @"quadFragment", @"quadVertex", @"stageInVertex"])], "it holds its six functions");
     CHECK([self.library newFunctionWithName:@"missing"] == nil, "a name it does not hold gives nil");
     CHECK([[self.library newFunctionWithName:@"quadVertex"] functionType] == MTLFunctionTypeVertex, "the vertex function is a vertex function");
     CHECK([[self.library newFunctionWithName:@"quadFragment"] functionType] == MTLFunctionTypeFragment, "and the fragment function a fragment function");
@@ -348,6 +348,35 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
         CHECK([self.library newFunctionWithName:@"constFragment" constantValues:wrong error:&constantError] == nil && constantError != nil, "a value of another type than the constant is an error");
         constantError = nil;
         CHECK([self.library newFunctionWithName:@"missing" constantValues:both error:&constantError] == nil && constantError != nil, "a function that is not there is an error with values too");
+    }
+
+    {
+        MTLRenderPipelineDescriptor *fd = [[MTLRenderPipelineDescriptor alloc] init];
+        fd.vertexFunction = [self.library newFunctionWithName:@"quadVertex"];
+        fd.fragmentFunction = [self.library newFunctionWithName:@"fetchFragment"];
+        fd.colorAttachments[0].pixelFormat = MTLPixelFormatRGBA8Unorm;
+        NSError *fetchError = nil;
+        id<MTLRenderPipelineState> fetch = [self.device newRenderPipelineStateWithDescriptor:fd error:&fetchError];
+        CHECK(fetch != nil, "a fragment function that reads the colour attachment is made");
+        MTLRenderPassDescriptor *pass = [MTLRenderPassDescriptor renderPassDescriptor];
+        pass.colorAttachments[0].texture = target;
+        pass.colorAttachments[0].loadAction = MTLLoadActionClear;
+        pass.colorAttachments[0].clearColor = MTLClearColorMake(0.2, 0.4, 0.6, 1);
+        Corner quad[6] = {{{-1, 1}, {0, 0}}, {{1, 1}, {1, 0}}, {{-1, -1}, {0, 1}}, {{1, 1}, {1, 0}}, {{1, -1}, {1, 1}}, {{-1, -1}, {0, 1}}};
+        float unit = 1;
+        const float red[4] = {1, 0, 0, 1};
+        id<MTLCommandBuffer> fetchBuffer = [self.queue commandBuffer];
+        id<MTLRenderCommandEncoder> fetchEncoder = [fetchBuffer renderCommandEncoderWithDescriptor:pass];
+        [fetchEncoder setRenderPipelineState:fetch];
+        [fetchEncoder setVertexBytes:quad length:sizeof quad atIndex:0];
+        [fetchEncoder setVertexBytes:&unit length:sizeof unit atIndex:1];
+        [fetchEncoder setFragmentBytes:red length:16 atIndex:0];
+        [fetchEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6];
+        [fetchEncoder endEncoding];
+        [fetchBuffer commit];
+        [fetchBuffer waitUntilCompleted];
+        [self read:target width:64 height:64 into:out];
+        CHECK(near(out + (32 * 64 + 32) * 4, 153, 51, 77, 2), "the colour attachment is read in the shader: half of what was there and half of the tint");
     }
 
     const float faint[4] = {0.5f, 0.5f, 0.5f, 0.4f};

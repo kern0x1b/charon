@@ -29,6 +29,12 @@
    "stage": "fragment",
    "source": "module4.frag",
    "reflection": "module4.json"
+  },
+  {
+   "name": "fetchFragment",
+   "stage": "fragment",
+   "source": "module5.frag",
+   "reflection": "module5.json"
   }
  ]
 }

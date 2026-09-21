@@ -29,10 +29,6 @@ void main()
     bool v10;
     float v11;
     float v12;
-    vec4 v13;
-    vec4 v14;
-    vec4 v15;
-    vec4 v16;
     v5 = u0_0;
     v6 = u0_4;
     r1 = true;
@@ -77,10 +73,6 @@ void main()
         v4 = v12;
     }
     if (r5) {
-        v13 = vec4((v4), (vec4(0.0)).y, (vec4(0.0)).z, (vec4(0.0)).w);
-        v14 = vec4((v13).x, (v4), (v13).z, (v13).w);
-        v15 = vec4((v14).x, (v14).y, (v4), (v14).w);
-        v16 = vec4((v15).x, (v15).y, (v15).z, (1.0));
-        gl_FragColor = v16;
+        gl_FragColor = vec4(v4, v4, v4, 1.0);
     }
 }
