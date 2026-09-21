@@ -16,4 +16,5 @@ void tail2_run(Tail2Recorder record)
     record(@"a controller in an application has none", [NSString stringWithFormat:@"%d %d", controller.extensionContext == nil, child.extensionContext == nil]);
     record(@"constants", [@[NSExtensionItemsAndErrorsKey, NSExtensionHostWillEnterForegroundNotification, NSExtensionHostDidEnterBackgroundNotification, NSExtensionHostWillResignActiveNotification, NSExtensionHostDidBecomeActiveNotification] componentsJoinedByString:@","]);
     record(@"a class of its own", [NSString stringWithFormat:@"%d %d", [context isKindOfClass:[NSObject class]], [NSExtensionContext instancesRespondToSelector:@selector(inputItems)]]);
+    record(@"pasteboard option keys", [@[UIPasteboardOptionExpirationDate, UIPasteboardOptionLocalOnly] componentsJoinedByString:@","]);
 }

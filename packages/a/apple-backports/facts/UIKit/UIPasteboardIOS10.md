@@ -22,3 +22,7 @@ Source: UIKit of the armv7s cache of iOS 10.3.4 and the Pasteboard framework it 
   choose a representation by the class of the value; it means nothing without that method.
 
 So none is carried: `respondsToSelector:` answers NO for each.
+
+## The option keys are exported
+
+The two option keys exist as `NSString`s with the system's own values (`expirationDate` and `localOnly`, as `host/tail2/run.sh` reads them), so an application that refers to the symbols directly, without a check of the release, loads and does not read a null pointer. Nothing reads them: `-setItems:options:` stays undeclared for the reason above, so an application that asks whether the pasteboard responds to it does not hand over a secret that the port could not clear.

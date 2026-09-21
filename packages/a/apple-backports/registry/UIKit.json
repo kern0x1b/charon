@@ -340,22 +340,22 @@
   "kind": "constant",
   "introduced": "10.0",
   "minimum": "6.0",
-  "status": "absent",
-  "reason": "the key is read only by -setItems:options:, which is not carried",
-  "effect": "the symbol is not exported",
+  "status": "inert",
+  "reason": "the keys are read only by -setItems:options:, which is not carried, so nothing reads them here",
+  "effect": "the symbol is exported with the system's own string, so code that refers to it loads; -setItems:options: is still not declared, so an application that checks for it does not give an option that the port could not keep",
   "facts": "facts/UIKit/UIPasteboardIOS10.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
+  "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
  },
  {
   "api": "UIPasteboardOptionExpirationDate",
   "kind": "constant",
   "introduced": "10.0",
   "minimum": "6.0",
-  "status": "absent",
-  "reason": "the key is read only by -setItems:options:, which is not carried",
-  "effect": "the symbol is not exported",
+  "status": "inert",
+  "reason": "the keys are read only by -setItems:options:, which is not carried, so nothing reads them here",
+  "effect": "the symbol is exported with the system's own string, so code that refers to it loads; -setItems:options: is still not declared, so an application that checks for it does not give an option that the port could not keep",
   "facts": "facts/UIKit/UIPasteboardIOS10.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
+  "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
  },
  {
   "api": "UIPasteboardTypeAutomatic",
