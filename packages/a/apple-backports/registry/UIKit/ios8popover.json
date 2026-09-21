@@ -1,0 +1,162 @@
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "UIViewController.popoverPresentationController",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S"
+    },
+    {
+      "api": "UIPopoverPresentationController.delegate",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S"
+    },
+    {
+      "api": "UIPopoverPresentationController.permittedArrowDirections",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S"
+    },
+    {
+      "api": "UIPopoverPresentationController.sourceView",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S"
+    },
+    {
+      "api": "UIPopoverPresentationController.sourceRect",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S"
+    },
+    {
+      "api": "UIPopoverPresentationController.barButtonItem",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S"
+    },
+    {
+      "api": "UIPopoverPresentationController.arrowDirection",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S"
+    },
+    {
+      "api": "UIPopoverPresentationController.passthroughViews",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S"
+    },
+    {
+      "api": "UIPopoverPresentationController.backgroundColor",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S",
+      "reason": "the popover of the release draws its own arrow and body and takes no colour for them",
+      "effect": "the colour is kept and handed back and changes nothing"
+    },
+    {
+      "api": "UIPopoverPresentationController.popoverLayoutMargins",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S"
+    },
+    {
+      "api": "UIPopoverPresentationController.popoverBackgroundViewClass",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S"
+    },
+    {
+      "api": "UIPopoverPresentationController.canOverlapSourceViewRect",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S",
+      "reason": "the popover of the release always keeps clear of the source rectangle",
+      "effect": "the value is kept and handed back and changes nothing"
+    },
+    {
+      "api": "UIPopoverPresentationControllerDelegate",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S"
+    },
+    {
+      "api": "-[UIPopoverPresentationControllerDelegate prepareForPopoverPresentation:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S"
+    },
+    {
+      "api": "-[UIPopoverPresentationControllerDelegate popoverPresentationControllerShouldDismissPopover:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S"
+    },
+    {
+      "api": "-[UIPopoverPresentationControllerDelegate popoverPresentationControllerDidDismissPopover:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S"
+    },
+    {
+      "api": "-[UIPopoverPresentationControllerDelegate popoverPresentationController:willRepositionPopoverToRect:inView:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPopoverPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S"
+    }
+  ]
+}

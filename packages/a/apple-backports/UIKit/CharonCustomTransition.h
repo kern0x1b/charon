@@ -25,3 +25,6 @@ void charon_presentation_dismiss(UIViewController *presented, UIViewController *
 
 id<UIViewControllerAnimatedTransitioning> charon_edge_pop_animator(UINavigationController *navigation);
 id<UIViewControllerInteractiveTransitioning> charon_edge_pop_interactor(UINavigationController *navigation);
+
+BOOL charon_popover_present(UIViewController *presenting, UIViewController *presented, BOOL animated, void (^completion)(void));
+BOOL charon_popover_dismiss(UIViewController *controller, BOOL animated, void (^completion)(void));

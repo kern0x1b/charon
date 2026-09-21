@@ -146,6 +146,8 @@ static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewCo
     Method dismissMethod = class_getInstanceMethod(controller, dismiss);
     void (*dismissOriginal)(id, SEL, BOOL, void (^)(void)) = (void (*)(id, SEL, BOOL, void (^)(void)))method_getImplementation(dismissMethod);
     class_replaceMethod(controller, present, imp_implementationWithBlock(^(UIViewController *self, UIViewController *presented, BOOL animated, void (^completion)(void)) {
+        if (charon_popover_present(self, presented, animated, completion))
+            return;
         UIViewController *presenting = charon_presenting_root(self);
         UIModalPresentationStyle style = presented.modalPresentationStyle;
         UIPresentationController *presentation = charon_presentation_for(presented, presenting, self);
@@ -185,6 +187,8 @@ static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewCo
     }), method_getTypeEncoding(presentMethod));
 
     class_replaceMethod(controller, dismiss, imp_implementationWithBlock(^(UIViewController *self, BOOL animated, void (^completion)(void)) {
+        if (charon_popover_dismiss(self, animated, completion))
+            return;
         UIViewController *presented = self.presentedViewController ?: self;
         UIViewController *presenting = presented.presentingViewController ?: self;
         UIPresentationController *presentation = presented.presentingViewController ? charon_presentation_controller_of(presented) : nil;

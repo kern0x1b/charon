@@ -1585,9 +1585,10 @@
     "api": "UIPopoverPresentationController",
     "kind": "class",
     "introduced": "8.0",
-    "status": "absent",
-    "reason": "the release presents a popover through UIPopoverController, whose surface is different",
-    "effect": "the class is not there; -[UIAlertController popoverPresentationController] answers a stand-in of its own instead"
+    "minimum": "6.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIPopoverPresentationController.md",
+    "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover (28 answers of the defaults and what is kept), and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S"
   },
   {
     "api": "UIResponder.inputAssistantItem",
