@@ -1,0 +1,1911 @@
+{
+  "framework": "Vision",
+  "entries": [
+    {
+      "api": "VNBarcodeObservation",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNClassificationObservation",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNCoreMLFeatureValueObservation",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNCoreMLModel",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNCoreMLRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectBarcodesRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectFaceLandmarksRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectFaceRectanglesRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectHorizonRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectRectanglesRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectTextRectanglesRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectedObjectObservation",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarkRegion",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarkRegion2D",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarks",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarks2D",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceObservation",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNHomographicImageRegistrationRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNHorizonObservation",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNImageAlignmentObservation",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNImageBasedRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNImageHomographicAlignmentObservation",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNImageRegistrationRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNImageRequestHandler",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNImageTranslationAlignmentObservation",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNObservation",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNPixelBufferObservation",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRecognizedObjectObservation",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRectangleObservation",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNSequenceRequestHandler",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNTargetedImageRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNTextObservation",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNTrackObjectRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNTrackRectangleRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNTrackingRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNTranslationalImageRegistrationRequest",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyAztec",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyCode128",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyCode39",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyCode39Checksum",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyCode39FullASCII",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyCode39FullASCIIChecksum",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyCode93",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyCode93i",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyDataMatrix",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyEAN13",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyEAN8",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyI2of5",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyI2of5Checksum",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyITF14",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyPDF417",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyQR",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeSymbologyUPCE",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNErrorDomain",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNImageOptionCIContext",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNImageOptionCameraIntrinsics",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNImageOptionProperties",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNNormalizedIdentityRect",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNVisionVersionNumber",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNImagePointForFaceLandmarkPoint()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNImagePointForNormalizedPoint()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNImageRectForNormalizedRect()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNNormalizedFaceBoundingBoxPointForLandmarkPoint()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNNormalizedRectForImageRect()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNNormalizedRectIsIdentityRect()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "+[VNCoreMLModel modelForMLModel:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "+[VNDetectFaceLandmarksRequest revision:supportsConstellation:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the method arrived in iOS 13 with the constellation of face landmarks, which the port does not detect",
+      "effect": "the method is not there",
+      "source": "Vision of the arm64 shared cache of iOS 12.0, which has no such method"
+    },
+    {
+      "api": "+[VNDetectedObjectObservation observationWithBoundingBox:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "+[VNDetectedObjectObservation observationWithRequestRevision:boundingBox:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "+[VNFaceLandmarkRegion new]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
+      "effect": "the method is not there of its own; the class answers what its superclass does",
+      "source": "Vision of iOS 16.4, marked unavailable in the header"
+    },
+    {
+      "api": "+[VNFaceObservation faceObservationWithRequestRevision:boundingBox:roll:yaw:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNCoreMLModel init]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
+      "effect": "the method is not there of its own; the class answers what its superclass does",
+      "source": "Vision of iOS 16.4, marked unavailable in the header"
+    },
+    {
+      "api": "-[VNCoreMLRequest initWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
+      "effect": "the method is not there of its own; the class answers what its superclass does",
+      "source": "Vision of iOS 16.4, marked unavailable in the header"
+    },
+    {
+      "api": "-[VNCoreMLRequest initWithModel:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNCoreMLRequest initWithModel:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNCoreMLRequest init]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
+      "effect": "the method is not there of its own; the class answers what its superclass does",
+      "source": "Vision of iOS 16.4, marked unavailable in the header"
+    },
+    {
+      "api": "-[VNFaceLandmarkRegion init]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
+      "effect": "the method is not there of its own; the class answers what its superclass does",
+      "source": "Vision of iOS 16.4, marked unavailable in the header"
+    },
+    {
+      "api": "-[VNFaceLandmarkRegion2D pointsInImageOfSize:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNFaceLandmarks init]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
+      "effect": "the method is not there of its own; the class answers what its superclass does",
+      "source": "Vision of iOS 16.4, marked unavailable in the header"
+    },
+    {
+      "api": "-[VNImageRequestHandler initWithCGImage:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNImageRequestHandler initWithCGImage:orientation:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNImageRequestHandler initWithCIImage:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNImageRequestHandler initWithCIImage:orientation:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNImageRequestHandler initWithCVPixelBuffer:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNImageRequestHandler initWithCVPixelBuffer:orientation:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNImageRequestHandler initWithData:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNImageRequestHandler initWithData:orientation:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNImageRequestHandler initWithURL:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNImageRequestHandler initWithURL:orientation:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNImageRequestHandler init]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
+      "effect": "the method is not there of its own; the class answers what its superclass does",
+      "source": "Vision of iOS 16.4, marked unavailable in the header"
+    },
+    {
+      "api": "-[VNImageRequestHandler performRequests:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNRequest initWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNRequest init]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNSequenceRequestHandler init]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNSequenceRequestHandler performRequests:onCGImage:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNSequenceRequestHandler performRequests:onCGImage:orientation:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNSequenceRequestHandler performRequests:onCIImage:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNSequenceRequestHandler performRequests:onCIImage:orientation:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNSequenceRequestHandler performRequests:onCVPixelBuffer:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNSequenceRequestHandler performRequests:onCVPixelBuffer:orientation:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNSequenceRequestHandler performRequests:onImageData:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNSequenceRequestHandler performRequests:onImageData:orientation:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNSequenceRequestHandler performRequests:onImageURL:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNSequenceRequestHandler performRequests:onImageURL:orientation:error:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
+      "effect": "the method is not there of its own; the class answers what its superclass does",
+      "source": "Vision of iOS 16.4, marked unavailable in the header"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedCGImage:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedCGImage:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedCGImage:orientation:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedCGImage:orientation:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedCIImage:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedCIImage:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedCIImage:orientation:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedCIImage:orientation:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedCVPixelBuffer:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedCVPixelBuffer:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedCVPixelBuffer:orientation:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedCVPixelBuffer:orientation:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedImageData:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedImageData:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedImageData:orientation:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedImageData:orientation:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedImageURL:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedImageURL:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedImageURL:orientation:options:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest initWithTargetedImageURL:orientation:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTargetedImageRequest init]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
+      "effect": "the method is not there of its own; the class answers what its superclass does",
+      "source": "Vision of iOS 16.4, marked unavailable in the header"
+    },
+    {
+      "api": "-[VNTrackObjectRequest initWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
+      "effect": "the method is not there of its own; the class answers what its superclass does",
+      "source": "Vision of iOS 16.4, marked unavailable in the header"
+    },
+    {
+      "api": "-[VNTrackObjectRequest initWithDetectedObjectObservation:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTrackObjectRequest initWithDetectedObjectObservation:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTrackObjectRequest init]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
+      "effect": "the method is not there of its own; the class answers what its superclass does",
+      "source": "Vision of iOS 16.4, marked unavailable in the header"
+    },
+    {
+      "api": "-[VNTrackRectangleRequest initWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
+      "effect": "the method is not there of its own; the class answers what its superclass does",
+      "source": "Vision of iOS 16.4, marked unavailable in the header"
+    },
+    {
+      "api": "-[VNTrackRectangleRequest initWithRectangleObservation:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTrackRectangleRequest initWithRectangleObservation:completionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNTrackRectangleRequest init]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
+      "effect": "the method is not there of its own; the class answers what its superclass does",
+      "source": "Vision of iOS 16.4, marked unavailable in the header"
+    },
+    {
+      "api": "-[VNTrackingRequest initWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
+      "effect": "the method is not there of its own; the class answers what its superclass does",
+      "source": "Vision of iOS 16.4, marked unavailable in the header"
+    },
+    {
+      "api": "-[VNTrackingRequest init]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
+      "effect": "the method is not there of its own; the class answers what its superclass does",
+      "source": "Vision of iOS 16.4, marked unavailable in the header"
+    },
+    {
+      "api": "VNBarcodeObservation.barcodeDescriptor",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeObservation.payloadStringValue",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNBarcodeObservation.symbology",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNClassificationObservation.identifier",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNCoreMLFeatureValueObservation.featureValue",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNCoreMLRequest.imageCropAndScaleOption",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNCoreMLRequest.model",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectBarcodesRequest.results",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectBarcodesRequest.supportedSymbologies",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectBarcodesRequest.symbologies",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectFaceLandmarksRequest.results",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectFaceRectanglesRequest.results",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectHorizonRequest.results",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectRectanglesRequest.maximumAspectRatio",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectRectanglesRequest.maximumObservations",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectRectanglesRequest.minimumAspectRatio",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectRectanglesRequest.minimumConfidence",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectRectanglesRequest.minimumSize",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectRectanglesRequest.quadratureTolerance",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectRectanglesRequest.results",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectTextRectanglesRequest.reportCharacterBoxes",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectTextRectanglesRequest.results",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectedObjectObservation.boundingBox",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarkRegion.pointCount",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarkRegion2D.normalizedPoints",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarks.confidence",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarks2D.allPoints",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarks2D.faceContour",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarks2D.innerLips",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarks2D.leftEye",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarks2D.leftEyebrow",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarks2D.leftPupil",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarks2D.medianLine",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarks2D.nose",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarks2D.noseCrest",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarks2D.outerLips",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarks2D.rightEye",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarks2D.rightEyebrow",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceLandmarks2D.rightPupil",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceObservation.landmarks",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceObservation.roll",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceObservation.yaw",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceObservationAccepting.inputFaceObservations",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNHomographicImageRegistrationRequest.results",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNHorizonObservation.angle",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNHorizonObservation.transform",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNImageBasedRequest.regionOfInterest",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNImageHomographicAlignmentObservation.warpTransform",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNImageTranslationAlignmentObservation.alignmentTransform",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNObservation.confidence",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNObservation.uuid",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNPixelBufferObservation.pixelBuffer",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRecognizedObjectObservation.labels",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRectangleObservation.bottomLeft",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRectangleObservation.bottomRight",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRectangleObservation.topLeft",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRectangleObservation.topRight",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRequest.completionHandler",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRequest.currentRevision",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRequest.defaultRevision",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRequest.preferBackgroundProcessing",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRequest.results",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRequest.revision",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRequest.supportedRevisions",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRequest.usesCPUOnly",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRequestRevisionProviding.requestRevision",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNTextObservation.characterBoxes",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNTrackingRequest.inputObservation",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNTrackingRequest.lastFrame",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNTrackingRequest.trackingLevel",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNTranslationalImageRegistrationRequest.results",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNFaceObservationAccepting",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRequestRevisionProviding",
+      "kind": "protocol",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Vision/Vision.md",
+      "source": "Vision of the arm64 shared cache of iOS 12.0"
+    }
+  ]
+}

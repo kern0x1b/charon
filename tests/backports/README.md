@@ -40,6 +40,7 @@ inputs.
     sh host/avcapture/run.sh
     sh host/oslog/run.sh  writes device/oslog-expectations.h when it passes
     sh host/homeindicator/run.sh  writes device/homeindicator-expectations.h when it passes, then holds the port's categories to it with mutants
+    sh host/vision/run.sh  writes device/vision-expectations.h when it passes, then holds the port's Vision classes, under names of their own, to it with mutants
     sh host/insetref/run.sh  writes device/insetref-expectations.h when it passes, then holds the port's flow layout to it with mutants
     sh host/imageflip/run.sh
     sh host/ios1516/run.sh  writes device/ios1516-expectations.h when it passes

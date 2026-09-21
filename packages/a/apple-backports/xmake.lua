@@ -43,6 +43,8 @@ package("apple-backports")
 
     add_configs("gamecontroller", {description = "Build libGameControllerBackports.dylib, for an application that looks for game controllers, mice and keyboards through the GameController framework; iOS 6 has no such device support, so the lists are empty, no controller is ever announced and discovery ends at once.", default = false, type = "boolean"})
 
+    add_configs("vision", {description = "Build libVisionBackports.dylib, for an application that names the Vision framework of iOS 11 and 12: its constants, geometry functions and classes are there, and a request the port cannot run comes back from a request handler as an error, not as a crash.", default = false, type = "boolean"})
+
     add_configs("metal", {description = "Build libMetalBackports.dylib, for an application that asks for the default Metal device before it draws; iOS 6 runs on graphics with no Metal, so the answer is nil and the application takes its OpenGL ES path.", default = false, type = "boolean"})
 
     add_configs("coretelephony", {description = "Build libCoreTelephonyBackports.dylib, for an application that reads the radio access technology of the phone and names the constants of it; iOS 6.0 has none of them and iOS 6.1 keeps the technology in a private class.", default = false, type = "boolean"})
@@ -50,7 +52,7 @@ package("apple-backports")
     add_configs("accelerate", {description = "Build libAccelerateBackports.dylib, for an application that fills a vImage_Buffer from a CGImage or makes a CGImage from one: vImageBuffer_Init, vImageBuffer_InitWithCGImage and vImageCreateCGImageFromBuffer of iOS 7, over CoreGraphics, for the 8-bit RGB and gray formats.", default = false, type = "boolean"})
 
     on_load("iphoneos", function (package)
-        package:add("links", table.join(package:config("uikit") and {"UIKitBackports"} or {}, package:config("corelocation") and {"CoreLocationBackports"} or {}, package:config("coredata") and {"CoreDataBackports"} or {}, package:config("security") and {"SecurityBackports"} or {}, package:config("avfoundation") and {"AVFoundationBackports"} or {}, package:config("webkit") and {"WebKitBackports"} or {}, package:config("graphics") and {"GraphicsBackports"} or {}, package:config("localauthentication") and {"LocalAuthenticationBackports"} or {}, (package:config("safariservices") or package:config("authenticationservices")) and {"SafariServicesBackports"} or {}, package:config("authenticationservices") and {"AuthenticationServicesBackports"} or {}, package:config("backgroundtasks") and {"BackgroundTasksBackports"} or {}, package:config("photos") and {"PhotosBackports"} or {}, package:config("gamecontroller") and {"GameControllerBackports"} or {}, package:config("metal") and {"MetalBackports"} or {}, package:config("coretelephony") and {"CoreTelephonyBackports"} or {}, package:config("accelerate") and {"AccelerateBackports"} or {}, package:config("opengles") and {"OpenGLESBackports"} or {}, {"FoundationBackports"}))
+        package:add("links", table.join(package:config("uikit") and {"UIKitBackports"} or {}, package:config("corelocation") and {"CoreLocationBackports"} or {}, package:config("coredata") and {"CoreDataBackports"} or {}, package:config("security") and {"SecurityBackports"} or {}, package:config("avfoundation") and {"AVFoundationBackports"} or {}, package:config("webkit") and {"WebKitBackports"} or {}, package:config("graphics") and {"GraphicsBackports"} or {}, package:config("localauthentication") and {"LocalAuthenticationBackports"} or {}, (package:config("safariservices") or package:config("authenticationservices")) and {"SafariServicesBackports"} or {}, package:config("authenticationservices") and {"AuthenticationServicesBackports"} or {}, package:config("backgroundtasks") and {"BackgroundTasksBackports"} or {}, package:config("photos") and {"PhotosBackports"} or {}, package:config("gamecontroller") and {"GameControllerBackports"} or {}, package:config("vision") and {"VisionBackports"} or {}, package:config("metal") and {"MetalBackports"} or {}, package:config("coretelephony") and {"CoreTelephonyBackports"} or {}, package:config("accelerate") and {"AccelerateBackports"} or {}, package:config("opengles") and {"OpenGLESBackports"} or {}, {"FoundationBackports"}))
     end)
 
     on_install("iphoneos", function (package)
@@ -80,6 +82,7 @@ package("apple-backports")
                                      package:config("backgroundtasks") and {"BackgroundTasksBackports"} or {},
                                      package:config("photos") and {"PhotosBackports"} or {},
                                      package:config("gamecontroller") and {"GameControllerBackports"} or {},
+                                     package:config("vision") and {"VisionBackports"} or {},
                                      package:config("metal") and {"MetalBackports"} or {},
                                      package:config("opengles") and {"OpenGLESBackports"} or {},
                                      package:config("coretelephony") and {"CoreTelephonyBackports"} or {},
