@@ -66,17 +66,23 @@ refresh at UIKit's moments, and reaching those means replacing `-layoutSubviews`
 read, the answer is always current, and the recursion up the superview chain is
 what UIKit does anyway, once per level.
 
-**The callbacks are not declared at all.** `-safeAreaInsetsDidChange`,
-`-viewSafeAreaInsetsDidChange` and `-safeAreaLayoutGuide` would each be a
-promise the port cannot keep: the first two are called from the moment of
-change, which the port never sees, and the guide's frame is kept live by the
-layout engine, which the port is not part of. A declared method that is never
-called is the quietest kind of lie, so `respondsToSelector:` answers honestly
-instead. They are in the registry as `absent` with that reason, and so is
-`insetsLayoutMarginsFromSafeArea`: it would only mean something if it changed
-what `-layoutMargins` answers, and that method belongs to the iOS 8 backport,
-not to this one. A flag that layout reads and believes, while nothing acts on
-it, is worse than no flag.
+**The callbacks are not declared.** `-safeAreaInsetsDidChange` and `-viewSafeAreaInsetsDidChange` would each be a promise the port
+cannot keep: they are called from the moment of change, which the port never sees. They are in the registry as `absent` with that
+reason, and so is `insetsLayoutMarginsFromSafeArea`: it would only mean something if it changed what `-layoutMargins` answers, and that
+method belongs to the iOS 8 backport, not to this one. A flag that layout reads and believes, while nothing acts on it, is worse than no
+flag.
+
+**`-safeAreaLayoutGuide` is carried.** An application that constrains to the guide (`view.safeAreaLayoutGuide.topAnchor`) failed on iOS 6 with an
+unrecognized selector, and the guide can be kept live now that the port has layout guides. The property answers one `UILayoutGuide` per view, owned
+by the view, whose left, right, top and bottom edges are constrained to the view's edges by the four insets of `-safeAreaInsets`
+(the same constraints as the layout margins guide has on this release). The constants are read again just before the view lays out, when
+the view is put into a window and when the status bar changes its frame, so a guide follows a navigation bar that is hidden or shown, a
+change of the status bar and a view that moves; a change of the insets that none of these sees (a bar that another controller
+changes) is picked up at the next layout of the view. Nothing is sent when the insets change, so `-safeAreaInsetsDidChange` is not called.
+Held against the host's UIKit by `tests/backports/host/safeguide/run.sh` (7 records: the guide's identity and owner, its frame
+against the view's bounds inset by `safeAreaInsets`, a view pinned to it, a navigation bar hidden and shown, an inner view, a view
+outside a window) which `tests/backports/device/safeguide.m` compares on the iPad 2 and the iPhone 4S. The insets themselves are the
+port's and differ from the host's numbers (the host's window has none of the bars of iOS 6), which is why the records are the relations, not the numbers.
 
 ## Where the insets come from on iOS 6
 

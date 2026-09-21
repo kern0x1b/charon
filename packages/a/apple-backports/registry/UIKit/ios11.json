@@ -111,11 +111,9 @@
       "kind": "property",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the guide's frame is kept live by the layout engine, and the port is not part of it; a guide that does not move is worse than no guide",
-      "effect": "the property is not declared, so respondsToSelector: answers honestly; constraints against the guide cannot be written, and the safe area is read from -safeAreaInsets instead",
+      "status": "implemented",
       "facts": "facts/UIKit/UIViewSafeArea.md",
-      "source": "UIKit of iOS 11.0 arm64, -[UIView safeAreaLayoutGuide] at 0x18a27cda8"
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/safeguide, and tests/backports/device/safeguide.m on iOS 6"
     },
     {
       "api": "UIView.directionalLayoutMargins",
@@ -235,22 +233,19 @@
       "kind": "property",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the guide's frame is kept live by the layout engine, which the port is not part of, as with safeAreaLayoutGuide",
-      "effect": "the property is not declared, so respondsToSelector: answers honestly; constraints against the guide cannot be written",
-      "facts": "facts/UIKit/UIScrollViewAdjustedContentInset.md",
-      "source": "UIKit of iOS 11.0 arm64, UIScrollView.h of SDK 16.4"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIScrollViewLayoutGuides.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/scrollguide, and tests/backports/device/scrollguide.m on iOS 6"
     },
     {
       "api": "UIScrollView.frameLayoutGuide",
       "kind": "property",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the same: a guide whose frame nothing updates is worse than no guide",
-      "effect": "the property is not declared, so respondsToSelector: answers honestly; constraints against the guide cannot be written",
-      "facts": "facts/UIKit/UIScrollViewAdjustedContentInset.md",
-      "source": "UIKit of iOS 11.0 arm64, UIScrollView.h of SDK 16.4"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIScrollViewLayoutGuides.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/scrollguide, and tests/backports/device/scrollguide.m on iOS 6",
+      "effect": "the guide has the scroll view's size and follows a change of its frame; it stays at the content's origin, so a view pinned to its top or left edge scrolls with the content where the system's stays put"
     },
     {
       "api": "UIFontMetrics",
