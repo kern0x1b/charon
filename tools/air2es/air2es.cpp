@@ -155,6 +155,7 @@ struct Translator {
     bool usesFlip = false;
     bool usesTarget = false;
     bool usesDerivatives = false;
+    bool usesOutput = false;
     std::vector<std::string> inputJson;
     std::set<const Value *> instanceIds;
     int counter = 0;
@@ -365,6 +366,8 @@ struct Translator {
                     r.text = name;
                 values[&arg] = r;
             } else if (info.kind == "air.render_target" && !vertex) {
+                if (outputs.size() > 1)
+                    fail("reading the colour attachment in a function that writes several render targets");
                 if (info.location != 0)
                     fail("reading render target " + std::to_string(info.location) + " (there is one colour attachment to read in ES 2.0)");
                 r.text = glslType(arg.getType()) == "vec4" ? "gl_LastFragData[0]" : "";
@@ -1188,15 +1191,12 @@ struct Translator {
                 }
             }
         } else {
-            bool any = false;
+            std::vector<std::string> colours(outputs.size());
             for (size_t k = 0; k < outputs.size(); k++) {
                 if (outputs[k].kind != "air.render_target")
                     fail("fragment output " + outputs[k].kind + " is not supported");
-                if (outputs[k].location != 0)
-                    fail("fragment output to render target " + std::to_string(outputs[k].location) + " (no multiple render targets in ES 2.0)");
-                if (any)
-                    fail("more than one fragment output");
-                any = true;
+                if (outputs[k].location != (int)k || outputs.size() > 4)
+                    fail("fragment outputs to render targets that are not the first four in order");
                 Type *t = r.aggregate ? cast<StructType>(ret->getReturnValue()->getType())->getElementType((unsigned)k) : ret->getReturnValue()->getType();
                 if (t->getScalarType()->isIntegerTy())
                     fail("fragment output of an integer type");
@@ -1208,7 +1208,17 @@ struct Translator {
                     colour = "vec4(" + fields[k] + ", 0.0, 1.0)";
                 else if (n == 3)
                     colour = "vec4(" + fields[k] + ", 1.0)";
-                body.push_back(indent + "gl_FragColor = " + colour + ";");
+                colours[k] = colour;
+            }
+            bool any = !colours.empty();
+            if (colours.size() > 1) {
+                usesOutput = true;
+                std::string chain = colours.back();
+                for (size_t k = colours.size() - 1; k-- > 0;)
+                    chain = "(charon_output == " + std::to_string(k) + " ? " + colours[k] + " : " + chain + ")";
+                body.push_back(indent + "gl_FragColor = " + chain + ";");
+            } else if (any) {
+                body.push_back(indent + "gl_FragColor = " + colours[0] + ";");
             }
             if (!any)
                 fail("fragment shader with no colour output");
@@ -1251,6 +1261,8 @@ struct Translator {
             out << "uniform highp float charon_flip;\n";
         if (usesTarget)
             out << "uniform highp vec2 charon_target;\n";
+        if (usesOutput)
+            out << "uniform highp int charon_output;\n";
         if (usesInstanceId)
             out << "uniform highp float charon_instance;\n";
         if (vertex && usesVertexId)
@@ -1280,7 +1292,7 @@ struct Translator {
         };
         return "{\"stage\":\"" + std::string(vertex ? "vertex" : "fragment") + "\",\"entry\":\"" + function.getName().str() + "\",\"usesVertexId\":" +
                (usesVertexId ? "true" : "false") + ",\"attributes\":" + join(attributeJson) + ",\"uniforms\":" + join(uniformJson) + ",\"textures\":" + join(textureJson) +
-               ",\"varyings\":" + join(varyingJson) + ",\"constants\":" + join(constantJson) + ",\"inputs\":" + join(inputJson) + ",\"sizes\":" + join(sizeJson) + ",\"usesInstanceId\":" + (usesInstanceId ? "true" : "false") + "}\n";
+               ",\"varyings\":" + join(varyingJson) + ",\"constants\":" + join(constantJson) + ",\"inputs\":" + join(inputJson) + ",\"sizes\":" + join(sizeJson) + ",\"outputs\":" + std::to_string(vertex ? 0 : outputs.size()) + ",\"usesInstanceId\":" + (usesInstanceId ? "true" : "false") + "}\n";
     }
 };
 

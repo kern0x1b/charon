@@ -64,6 +64,12 @@ typedef struct {
 } CharonSizePlan;
 
 typedef struct {
+    BOOL blending;
+    GLenum sourceRGB, destinationRGB, sourceAlpha, destinationAlpha, equationRGB, equationAlpha;
+    GLboolean mask[4];
+} CharonBlend;
+
+typedef struct {
     GLuint program;
     GLint flip;
     GLint instance;
@@ -83,6 +89,9 @@ typedef struct {
     BOOL blending;
     GLenum sourceRGB, destinationRGB, sourceAlpha, destinationAlpha, equationRGB, equationAlpha;
     GLboolean mask[4];
+    unsigned outputs;
+    GLint output;
+    CharonBlend blends[4];
 } CharonPlan;
 
 

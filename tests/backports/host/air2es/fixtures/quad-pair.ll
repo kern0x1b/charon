@@ -1,10 +1,11 @@
 target triple = "air64-apple-ios12.0.0"
 
 define <{ <4 x float>, <4 x float> }> @pairFragment(<4 x float> %0, ptr addrspace(2) readonly "air-buffer-no-alias" %1) {
-  %3 = load <4 x float>, ptr addrspace(2) %1, align 16
-  %4 = insertvalue <{ <4 x float>, <4 x float> }> undef, <4 x float> %3, 0
-  %5 = insertvalue <{ <4 x float>, <4 x float> }> %4, <4 x float> %0, 1
-  ret <{ <4 x float>, <4 x float> }> %5
+  %tint = load <4 x float>, ptr addrspace(2) %1, align 16
+  %half = fmul fast <4 x float> %tint, <float 5.000000e-01, float 5.000000e-01, float 5.000000e-01, float 5.000000e-01>
+  %first = insertvalue <{ <4 x float>, <4 x float> }> undef, <4 x float> %tint, 0
+  %both = insertvalue <{ <4 x float>, <4 x float> }> %first, <4 x float> %half, 1
+  ret <{ <4 x float>, <4 x float> }> %both
 }
 
 !air.version = !{!0}

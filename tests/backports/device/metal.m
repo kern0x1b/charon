@@ -211,7 +211,7 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
     NSError *error = nil;
     self.library = [self.device newLibraryWithFile:[folder stringByDeletingPathExtension] error:&error];
     CHECK(self.library != nil, "a library is read from beside its file");
-    CHECK([[[self.library functionNames] sortedArrayUsingSelector:@selector(compare:)] isEqualToArray:(@[@"colorFragment", @"constFragment", @"depthVertex", @"fetchFragment", @"flowFragment", @"quadFragment", @"quadVertex", @"stageInVertex"])], "it holds its eight functions");
+    CHECK([[[self.library functionNames] sortedArrayUsingSelector:@selector(compare:)] isEqualToArray:(@[@"colorFragment", @"constFragment", @"depthVertex", @"fetchFragment", @"flowFragment", @"pairFragment", @"quadFragment", @"quadVertex", @"stageInVertex"])], "it holds its nine functions");
     CHECK([self.library newFunctionWithName:@"missing"] == nil, "a name it does not hold gives nil");
     CHECK([[self.library newFunctionWithName:@"quadVertex"] functionType] == MTLFunctionTypeVertex, "the vertex function is a vertex function");
     CHECK([[self.library newFunctionWithName:@"quadFragment"] functionType] == MTLFunctionTypeFragment, "and the fragment function a fragment function");
@@ -494,6 +494,45 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
         };
         stencilRun(packedTexture, packedTexture, "a stencil that is set where a quad was drawn lets a second quad in there only, with depth and stencil in one texture");
         stencilRun(nil, stencilOnly, "and with a texture of stencil alone");
+    }
+
+    {
+        MTLRenderPipelineDescriptor *pd2 = [[MTLRenderPipelineDescriptor alloc] init];
+        pd2.vertexFunction = [self.library newFunctionWithName:@"quadVertex"];
+        pd2.fragmentFunction = [self.library newFunctionWithName:@"pairFragment"];
+        pd2.colorAttachments[0].pixelFormat = MTLPixelFormatRGBA8Unorm;
+        pd2.colorAttachments[1].pixelFormat = MTLPixelFormatRGBA8Unorm;
+        NSError *pairError = nil;
+        id<MTLRenderPipelineState> pair = [self.device newRenderPipelineStateWithDescriptor:pd2 error:&pairError];
+        CHECK(pair != nil, "a fragment function that writes two render targets is made");
+        MTLTextureDescriptor *td2 = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA8Unorm width:64 height:64 mipmapped:NO];
+        td2.usage = MTLTextureUsageRenderTarget;
+        id<MTLTexture> second = [self.device newTextureWithDescriptor:td2];
+        MTLRenderPassDescriptor *pass = [MTLRenderPassDescriptor renderPassDescriptor];
+        pass.colorAttachments[0].texture = target;
+        pass.colorAttachments[0].loadAction = MTLLoadActionClear;
+        pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1);
+        pass.colorAttachments[1].texture = second;
+        pass.colorAttachments[1].loadAction = MTLLoadActionClear;
+        pass.colorAttachments[1].clearColor = MTLClearColorMake(0, 0, 1, 1);
+        Corner quad[6] = {{{-0.5f, 0.5f}, {0, 0}}, {{0.5f, 0.5f}, {1, 0}}, {{-0.5f, -0.5f}, {0, 1}}, {{0.5f, 0.5f}, {1, 0}}, {{0.5f, -0.5f}, {1, 1}}, {{-0.5f, -0.5f}, {0, 1}}};
+        float unit = 1;
+        const float orange[4] = {1, 0.5f, 0, 1};
+        id<MTLCommandBuffer> pairBuffer = [self.queue commandBuffer];
+        id<MTLRenderCommandEncoder> pairEncoder = [pairBuffer renderCommandEncoderWithDescriptor:pass];
+        [pairEncoder setRenderPipelineState:pair];
+        [pairEncoder setVertexBytes:quad length:sizeof quad atIndex:0];
+        [pairEncoder setVertexBytes:&unit length:sizeof unit atIndex:1];
+        [pairEncoder setFragmentBytes:orange length:16 atIndex:0];
+        [pairEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6];
+        [pairEncoder endEncoding];
+        [pairBuffer commit];
+        [pairBuffer waitUntilCompleted];
+        [self read:target width:64 height:64 into:out];
+        CHECK(near(out + (32 * 64 + 32) * 4, 255, 128, 0, 2) && near(out + (4 * 64 + 4) * 4, 0, 0, 0, 1), "the first render target has the first colour where the quad is");
+        static uint8_t outSecond[64 * 64 * 4];
+        [second getBytes:outSecond bytesPerRow:256 fromRegion:MTLRegionMake2D(0, 0, 64, 64) mipmapLevel:0];
+        CHECK(near(outSecond + (32 * 64 + 32) * 4, 128, 64, 0, 2) && near(outSecond + (4 * 64 + 4) * 4, 0, 0, 255, 1), "and the second has the second colour there and its own clear colour outside");
     }
 
     const float faint[4] = {0.5f, 0.5f, 0.5f, 0.4f};

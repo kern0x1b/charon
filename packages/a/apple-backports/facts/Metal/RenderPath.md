@@ -28,6 +28,12 @@ the top left, which the port keeps by turning the vertical axis of a target that
 A fragment function that takes the colour it draws over as an argument reads the framebuffer in the shader (`GL_EXT_shader_framebuffer_fetch` of the SGX 543), which keeps
 a pass in one tile without a texture to read back; only the first attachment, as four floats.
 
+## Several render targets
+
+A pass with up to four colour attachments and a pipeline whose fragment function writes as many are drawn with one draw for each target, each into its own framebuffer with its own
+blending and write mask, the fragment function told which of its colours to write; depth and stencil are written by the last draw only, so all the draws see the same buffers. A draw
+costs as many times as it has targets. A function that both reads the colour attachment and writes several targets is not translated.
+
 ## Depth and stencil
 
 A pass takes a depth texture and a stencil texture, cleared or loaded, and a depth and stencil state sets the depth test, whether depth is written, and the stencil test and operations for the front and the
@@ -54,7 +60,7 @@ to encode, against 130 before the pipeline's bindings were worked out once when 
 
 * Vertex formats of half floats, 32 bit integers, the packed 10 bit formats and the BGRA one: a pipeline that uses one is refused, since ES 2.0 has no attribute of them. A layout whose step function is per vertex with a step rate other than one, or per patch, is refused too.
 * Compute: a compute pipeline answers an error, and the compute encoder answers nil. The graphics of the A5 run no compute functions.
-* Multiple render targets, tessellation, texture arrays, cubes, depth and 3D textures, sampling with an offset or gradients, and a function constant of a vector type
+* Tessellation, texture arrays, cubes, depth and 3D textures, sampling with an offset or gradients, and a function constant of a vector type
   are not translated, and a function that needs one is not in the library.
 * A vertex texture: the SGX 543 has none.
 * A loop in a shader runs at most 64 rounds, since ES 1.00 wants a constant bound; a loop inside a loop is not translated. Branches and phis are.

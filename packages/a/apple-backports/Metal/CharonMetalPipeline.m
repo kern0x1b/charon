@@ -300,6 +300,27 @@ static CharonUniformPlan *uniformPlans(CharonMetalPipeline *pipeline, NSArray *u
         if (location >= 0)
             _plan.sizes[_plan.sizeCount++] = (CharonSizePlan){location, (unsigned)[size[@"texture"] unsignedIntegerValue]};
     }
+    _plan.outputs = [_fragmentReflection[@"outputs"] unsignedIntValue];
+    if (_plan.outputs < 1)
+        _plan.outputs = 1;
+    if (_plan.outputs > 4)
+        _plan.outputs = 4;
+    _plan.output = [self locationForName:@"charon_output"];
+    for (unsigned i = 0; i < _plan.outputs; i++) {
+        MTLRenderPipelineColorAttachmentDescriptor *b = _descriptor.colorAttachments[i];
+        CharonBlend *out = &_plan.blends[i];
+        out->blending = b.blendingEnabled;
+        out->sourceRGB = blendFactor(b.sourceRGBBlendFactor);
+        out->destinationRGB = blendFactor(b.destinationRGBBlendFactor);
+        out->sourceAlpha = blendFactor(b.sourceAlphaBlendFactor);
+        out->destinationAlpha = blendFactor(b.destinationAlphaBlendFactor);
+        out->equationRGB = blendOperation(b.rgbBlendOperation);
+        out->equationAlpha = blendOperation(b.alphaBlendOperation);
+        out->mask[0] = (b.writeMask & MTLColorWriteMaskRed) != 0;
+        out->mask[1] = (b.writeMask & MTLColorWriteMaskGreen) != 0;
+        out->mask[2] = (b.writeMask & MTLColorWriteMaskBlue) != 0;
+        out->mask[3] = (b.writeMask & MTLColorWriteMaskAlpha) != 0;
+    }
     MTLRenderPipelineColorAttachmentDescriptor *blend = _descriptor.colorAttachments[0];
     _plan.blending = blend.blendingEnabled;
     _plan.sourceRGB = blendFactor(blend.sourceRGBBlendFactor);
