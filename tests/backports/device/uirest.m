@@ -4,6 +4,11 @@
 #include <dlfcn.h>
 #import "check.h"
 
+static void log_line(NSString *line)
+{
+    charon_check(YES, [line UTF8String], @"");
+}
+
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
 #pragma clang diagnostic ignored "-Wnonnull"
@@ -708,17 +713,26 @@ static UIWindow *the_window;
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     UIImage *tinted = [image imageWithTintColor:[UIColor redColor]];
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(10, 10), NO, 1);
+    // Read the pixels through a bitmap of a known layout: the layout of a UIKit image differs between releases.
+    UInt8 bytes[10 * 10 * 4];
+    memset(bytes, 0, sizeof(bytes));
+    CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
+    CGContextRef bitmap = CGBitmapContextCreate(bytes, 10, 10, 8, 40, space, (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
+    CGColorSpaceRelease(space);
+    CGContextTranslateCTM(bitmap, 0, 10);
+    CGContextScaleCTM(bitmap, 1, -1);
+    UIGraphicsPushContext(bitmap);
     [tinted drawInRect:CGRectMake(0, 0, 10, 10)];
-    UIImage *rendered = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    CFDataRef data = CGDataProviderCopyData(CGImageGetDataProvider(rendered.CGImage));
-    const UInt8 *bytes = CFDataGetBytePtr(data);
+    UIGraphicsPopContext();
+    CGContextRelease(bitmap);
+    log_line([NSString stringWithFormat:@"tint pixels top %d %d %d %d, bottom alpha %d", bytes[0], bytes[1], bytes[2], bytes[3], bytes[4 * 10 * 8 + 3]]);
     CHECK((tinted.size.width == 10 && bytes[0] > 250 && bytes[1] < 5 && bytes[2] < 5 && bytes[3] > 250 && bytes[4 * 10 * 8 + 3] == 0), "a tinted image is red where it was opaque and empty where it was");
-    CFRelease(data);
     CHECK((tinted.renderingMode == UIImageRenderingModeAutomatic && [image imageWithTintColor:[UIColor redColor] renderingMode:UIImageRenderingModeAlwaysTemplate].renderingMode == UIImageRenderingModeAlwaysTemplate), "its rendering mode is the one asked for");
     UIImage *based = [image imageWithBaselineOffsetFromBottom:3];
-    CHECK((!image.hasBaseline && based.hasBaseline && based.baselineOffsetFromBottom == 3 && ![based imageWithoutBaseline].hasBaseline && [based imageWithTintColor:[UIColor redColor]].hasBaseline), "a baseline is kept, dropped and carried by a tint");
+    CHECK((!image.hasBaseline && based != image), "a baseline is set on a copy, not on the image");
+    CHECK((based.hasBaseline && based.baselineOffsetFromBottom == 3), "the copy has the baseline");
+    CHECK((![based imageWithoutBaseline].hasBaseline && based.hasBaseline), "a baseline is dropped on a copy");
+    CHECK(([based imageWithTintColor:[UIColor redColor]].hasBaseline), "a baseline is carried by a tint");
     CHECK(([[image configuration] isKindOfClass:[UIImageConfiguration class]] && [image imageWithConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:20]].symbolConfiguration != nil), "an image has a configuration and takes a symbol one");
     UIImage *glyphs[] = {[UIImage checkmarkImage], [UIImage strokedCheckmarkImage], [UIImage addImage], [UIImage removeImage], [UIImage actionsImage]};
     BOOL drawn = YES;
@@ -766,8 +780,11 @@ static UIWindow *the_window;
     textView.attributedText = text;
     UITextPosition *from = [textView positionFromPosition:textView.beginningOfDocument offset:3], *to = [textView positionFromPosition:textView.beginningOfDocument offset:8];
     [textView replaceRange:[textView textRangeFromPosition:from toPosition:to] withAttributedText:[[NSAttributedString alloc] initWithString:@"XY" attributes:@{NSForegroundColorAttributeName: [UIColor blueColor]}]];
-    CHECK(([textView.attributedText.string isEqual:@"helXYrld"] && close_to([textView.attributedText attribute:NSForegroundColorAttributeName atIndex:3 effectiveRange:NULL], 0, 0, 1, 1) &&
-              close_to([textView.attributedText attribute:NSForegroundColorAttributeName atIndex:6 effectiveRange:NULL], 1, 0, 0, 1) && textView.selectedRange.location == 5 && textView.selectedRange.length == 0), "replacing a range with attributed text keeps the runs and puts the caret after it");
+    CHECK(([textView.attributedText.string isEqual:@"helXYrld"]), "replacing a range with attributed text changes the text");
+    CHECK((close_to([textView.attributedText attribute:NSForegroundColorAttributeName atIndex:3 effectiveRange:NULL], 0, 0, 1, 1) &&
+              close_to([textView.attributedText attribute:NSForegroundColorAttributeName atIndex:6 effectiveRange:NULL], 1, 0, 0, 1)), "the runs are kept");
+    log_line([NSString stringWithFormat:@"caret %lu length %lu", (unsigned long)textView.selectedRange.location, (unsigned long)textView.selectedRange.length]);
+    CHECK((textView.selectedRange.location == 5 && textView.selectedRange.length == 0), "and the caret is after the inserted text");
 }
 
 - (void)members
