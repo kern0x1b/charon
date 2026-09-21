@@ -23,3 +23,11 @@ The backport has no layer of its own to hang a guide on, so each guide is backed
 takes no touches: it is a subview of the owning view, `hidden` is YES, `userInteractionEnabled` is NO,
 and hit testing never answers it. `layoutFrame` reports that view's rectangle in the owner's coordinates,
 which is what the system reports for a guide. A guide's identifier survives archiving.
+
+The release's own Auto Layout asks the items of a constraint questions that a guide has to answer: `_UIViewConstraintWithItemsIsPotentiallyDangly`
+sends `-superview` to each item, and the constraint code asks `_supportsContentDimensionVariables`, tells the item `_rememberDependentConstraint:`
+and `_setWantsAutolayout`. A guide answers as the view it stands for: its `-superview` is the owning view (nil for a guide with no owner), it has
+no content dimension variables, it keeps the constraints that depend on it weakly, and `_setWantsAutolayout` goes to the owning view. The
+constraint classes of the port already put the backing view in place of a guide where they can; this is for the ones that reach the release with
+the guide itself, as an application recompiled from another architecture makes them. `device/layoutguide.m` asks the four on the iPhone 4S and
+the iPad 2 and solves a constraint on a guide.

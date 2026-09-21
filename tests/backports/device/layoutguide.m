@@ -32,6 +32,22 @@ static NSString *const results_folder = @"/private/var/backports";
             else
                 charon_check(NO, name.UTF8String, [NSString stringWithFormat:@"\n    device %@\n    host   %@", records[name], expected[name]]);
         }
+        UIView *host = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 100)];
+        UILayoutGuide *guide = [[UILayoutGuide alloc] init];
+        CHECK([(id)guide superview] == nil, "a guide with no owner has no superview");
+        [host addLayoutGuide:guide];
+        CHECK([(id)guide superview] == host, "a guide's superview is its owning view, which the release asks of a constraint's items");
+        CHECK(![(id)guide _supportsContentDimensionVariables], "a guide has no content dimension variables");
+        NSLayoutConstraint *constraint = [guide.widthAnchor constraintEqualToConstant:50];
+        BOOL raised = NO;
+        @try {
+            [(id)guide _rememberDependentConstraint:constraint];
+            [(id)guide _setWantsAutolayout];
+        } @catch (NSException *e) { raised = YES; }
+        CHECK(!raised, "the calls the release makes on the item of a constraint are answered");
+        constraint.active = YES;
+        [host layoutIfNeeded];
+        CHECK(fabs(guide.layoutFrame.size.width - 50) < 0.5, "and a constraint on the guide is solved");
         printf("checks=%d failures=%d\n", charon_checks, charon_failures);
         NSString *summary = [NSString stringWithFormat:@"%@ checks=%d failures=%d\n", charon_failures ? @"FAIL" : @"ok", charon_checks, charon_failures];
         [summary writeToFile:[results_folder stringByAppendingPathComponent:@"layoutguide.done"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];

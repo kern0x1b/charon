@@ -24,6 +24,7 @@
     UIView *_view;
     __weak UIView *_owningView;
     NSString *_identifier;
+    NSHashTable *_dependents;
 }
 
 - (instancetype)init
@@ -152,6 +153,34 @@ static id charon_anchor(UILayoutGuide *guide, SEL name, Class type, NSLayoutAttr
 - (NSLayoutYAxisAnchor *)centerYAnchor
 {
     return charon_anchor(self, _cmd, [NSLayoutYAxisAnchor class], NSLayoutAttributeCenterY);
+}
+
+- (UIView *)superview
+{
+    return _owningView;
+}
+
+- (BOOL)_supportsContentDimensionVariables
+{
+    return NO;
+}
+
+- (void)_rememberDependentConstraint:(NSLayoutConstraint *)constraint
+{
+    if (!_dependents)
+        _dependents = [NSHashTable weakObjectsHashTable];
+    [_dependents addObject:constraint];
+}
+
+- (void)_setWantsAutolayout
+{
+    if ([_owningView respondsToSelector:@selector(_setWantsAutolayout)])
+        [_owningView performSelector:@selector(_setWantsAutolayout)];
+}
+
+- (void)_setWantsAutolayout:(BOOL)wants
+{
+    [self _setWantsAutolayout];
 }
 
 - (NSString *)description
