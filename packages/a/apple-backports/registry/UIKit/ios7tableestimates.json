@@ -1,0 +1,38 @@
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "UITableView.estimatedRowHeight",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release's table asks its delegate for the height of every row and header up front and lays them out from the answers, so an estimate has nothing to stand in for",
+      "effect": "the value is kept, read back, refused when it is negative and not automatic, and settable by key-value coding; the table is laid out from the heights it is given",
+      "facts": "facts/UIKit/UITableViewEstimatedHeights.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/tableestimates (the defaults, kept values, the refusal of a negative one, key-value coding), and tests/backports/device/tableestimates.m on iOS 6"
+    },
+    {
+      "api": "UITableView.estimatedSectionHeaderHeight",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release's table asks its delegate for the height of every row and header up front and lays them out from the answers, so an estimate has nothing to stand in for",
+      "effect": "the value is kept, read back, refused when it is negative and not automatic, and settable by key-value coding; the table is laid out from the heights it is given",
+      "facts": "facts/UIKit/UITableViewEstimatedHeights.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/tableestimates (the defaults, kept values, the refusal of a negative one, key-value coding), and tests/backports/device/tableestimates.m on iOS 6"
+    },
+    {
+      "api": "UITableView.estimatedSectionFooterHeight",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release's table asks its delegate for the height of every row and header up front and lays them out from the answers, so an estimate has nothing to stand in for",
+      "effect": "the value is kept, read back, refused when it is negative and not automatic, and settable by key-value coding; the table is laid out from the heights it is given",
+      "facts": "facts/UIKit/UITableViewEstimatedHeights.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/tableestimates (the defaults, kept values, the refusal of a negative one, key-value coding), and tests/backports/device/tableestimates.m on iOS 6"
+    }
+  ]
+}
