@@ -652,15 +652,21 @@ static UIWindow *the_window;
     CHECK((wait_until(^BOOL { return [first.events containsObject:@"did"]; }, 10)), "a presented controller appears");
     NSArray *expected = @[@"will", @"will done", @"is", @"did"];
     CHECK(([first.events isEqual:expected]), "viewIsAppearing comes once, after viewWillAppear has finished and before viewDidAppear");
+    static NSMutableArray *keep;
+    if (!keep)
+        keep = [NSMutableArray array];
+    [keep addObject:first];
     [first dismissViewControllerAnimated:NO completion:nil];
-    wait_until(^BOOL { return NO; }, 0.5);
+    wait_until(^BOOL { return NO; }, 1.5);
     Appearing *second = [[Appearing alloc] init];
     second.events = [NSMutableArray array];
     UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:second];
     [root presentViewController:navigation animated:NO completion:nil];
     CHECK((wait_until(^BOOL { return [second.events containsObject:@"did"]; }, 10) && [second.events isEqual:expected]), "a controller in a navigation controller is called too");
+    [keep addObject:navigation];
+    [keep addObject:second];
     [navigation dismissViewControllerAnimated:NO completion:nil];
-    wait_until(^BOOL { return NO; }, 0.5);
+    wait_until(^BOOL { return NO; }, 1.5);
 
     UnwindOverride *override = [[UnwindOverride alloc] init];
     UIViewController *from = [[UIViewController alloc] init];
