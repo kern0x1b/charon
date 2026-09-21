@@ -8,6 +8,7 @@ typedef NS_ENUM(NSInteger, CharonTransitionKind) {
 };
 
 @interface CharonTransitionContext : NSObject <UIViewControllerContextTransitioning>
+- (id<UIViewControllerAnimatedTransitioning>)charon_animator;
 @end
 
 BOOL charon_custom_transition(CharonTransitionKind kind, UIViewController *from, UIViewController *to, UIViewController *source, id<UIViewControllerAnimatedTransitioning> animator, id<UIViewControllerInteractiveTransitioning> interactor, UIModalPresentationStyle style, void (^native)(void), void (^undo)(void), void (^completion)(BOOL finished));

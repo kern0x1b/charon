@@ -55,7 +55,8 @@ static const char charon_deferral_key;
 typedef NS_ENUM(NSInteger, CharonDeferralMode) {
     CharonDeferralPass,
     CharonDeferralNative,
-    CharonDeferralSwallow
+    CharonDeferralSwallow,
+    CharonDeferralDidOnly
 };
 
 @interface CharonDeferral : NSObject
@@ -90,9 +91,9 @@ static Class charon_deferring_class(Class cls)
             BOOL did = [selectorName hasPrefix:@"viewDid"];
             class_addMethod(created, selector, imp_implementationWithBlock(^(UIViewController *self, BOOL animated) {
                 CharonDeferral *deferral = objc_getAssociatedObject(self, &charon_deferral_key);
-                if (deferral.mode == CharonDeferralSwallow)
+                if (deferral.mode == CharonDeferralSwallow || (deferral.mode == CharonDeferralDidOnly && !did))
                     return;
-                if (deferral.mode == CharonDeferralNative && did) {
+                if ((deferral.mode == CharonDeferralNative || deferral.mode == CharonDeferralDidOnly) && did) {
                     [deferral.pending addObject:@[self, selectorName]];
                     return;
                 }
@@ -189,6 +190,14 @@ static void charon_release_deferral(NSArray *begun)
     UIModalPresentationStyle _style;
     CGRect _initialFrom, _finalFrom, _initialTo, _finalTo;
     void (^_finish)(BOOL didComplete);
+    id<UIViewControllerAnimatedTransitioning> _animator;
+    id<UIViewControllerInteractiveTransitioning> _interactor;
+    __weak CharonTransitionCoordinator *_coordinator;
+}
+
+- (id<UIViewControllerAnimatedTransitioning>)charon_animator
+{
+    return _animator;
 }
 
 - (UIView *)containerView { return _container; }
@@ -200,14 +209,18 @@ static void charon_release_deferral(NSArray *begun)
 
 - (void)updateInteractiveTransition:(CGFloat)percentComplete
 {
+    [_coordinator charon_setPercent:percentComplete];
 }
 
 - (void)finishInteractiveTransition
 {
+    [_coordinator charon_interactionEndedCancelled:NO];
 }
 
 - (void)cancelInteractiveTransition
 {
+    _cancelled = YES;
+    [_coordinator charon_interactionEndedCancelled:YES];
 }
 
 - (void)pauseInteractiveTransition
@@ -253,6 +266,141 @@ static void charon_release_deferral(NSArray *begun)
 
 @end
 
+static void charon_interactive_transition(CharonTransitionKind kind, UIViewController *from, UIViewController *to, id<UIViewControllerAnimatedTransitioning> animator, id<UIViewControllerInteractiveTransitioning> interactor, UIModalPresentationStyle style, void (^native)(void), void (^completion)(BOOL finished))
+{
+    UIView *fromView = from.view;
+    UIView *toView = to.view;
+    UIWindow *window = fromView.window ?: [UIApplication sharedApplication].keyWindow;
+    BOOL modal = kind == CharonTransitionPresent || kind == CharonTransitionDismiss;
+    BOOL keepsPresenter = kind == CharonTransitionPresent && (style == 4 || style == 5 || style == 6);
+    UIView *fromParent = fromView.superview;
+    UIView *host = modal ? window : (fromParent.superview ?: fromParent);
+    CharonViewState *fromPre = [CharonViewState captureView:fromView];
+    CGRect initialFrom = fromParent ? [fromParent convertRect:fromView.frame toView:host] : window.bounds;
+    CGRect finalTo = initialFrom;
+    if (kind == CharonTransitionPresent)
+        finalTo = [window convertRect:window.screen.applicationFrame fromWindow:nil];
+    else if (kind == CharonTransitionDismiss)
+        finalTo = window.bounds;
+
+    NSMutableArray *controllers = [NSMutableArray array];
+    charon_collect(from, controllers);
+    charon_collect(to, controllers);
+    NSArray *begun = charon_begin_deferral(controllers);
+    charon_set_mode(begun, CharonDeferralNative);
+    [from viewWillDisappear:YES];
+    [to viewWillAppear:YES];
+    charon_set_mode(begun, CharonDeferralSwallow);
+
+    UIView *container = [[UIView alloc] initWithFrame:host.bounds];
+    container.backgroundColor = [UIColor clearColor];
+    container.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [host addSubview:container];
+    [container addSubview:fromView];
+    fromView.frame = initialFrom;
+    toView.frame = finalTo;
+
+    CharonTransitionContext *context = [[CharonTransitionContext alloc] init];
+    context->_container = container;
+    context->_from = from;
+    context->_to = to;
+    context->_animated = YES;
+    context->_style = modal ? (kind == CharonTransitionPresent ? to.modalPresentationStyle : from.modalPresentationStyle) : (UIModalPresentationStyle)-1;
+    context->_initialFrom = initialFrom;
+    context->_finalFrom = kind == CharonTransitionDismiss ? initialFrom : CGRectZero;
+    context->_initialTo = CGRectZero;
+    context->_finalTo = finalTo;
+    context->_interactive = YES;
+    context->_animator = animator;
+    context->_interactor = interactor;
+    NSTimeInterval duration = [animator transitionDuration:context];
+    id<UIViewControllerTransitionCoordinator> coordinator = to.transitionCoordinator ?: from.transitionCoordinator;
+    if ([coordinator isKindOfClass:[CharonTransitionCoordinator class]]) {
+        [(CharonTransitionCoordinator *)coordinator setContainer:container duration:duration];
+        [(CharonTransitionCoordinator *)coordinator charon_setInteractive:YES];
+        context->_coordinator = (CharonTransitionCoordinator *)coordinator;
+    }
+
+    void (^finalize)(BOOL) = ^(BOOL didComplete) {
+        [container removeFromSuperview];
+        NSArray *pending = charon_take_pending(begun);
+        charon_set_mode(begun, CharonDeferralPass);
+        if (!didComplete) {
+            [to viewWillDisappear:YES];
+            [to viewDidDisappear:YES];
+            [from viewWillAppear:YES];
+            [from viewDidAppear:YES];
+            pending = @[];
+        }
+        NSMutableArray *appear = [NSMutableArray array], *disappear = [NSMutableArray array];
+        for (NSArray *entry in pending) {
+            NSMutableArray *target = [entry[1] hasSuffix:@"Appear:"] ? appear : disappear;
+            [target addObject:entry];
+        }
+        NSArray *ordered = modal ? [appear arrayByAddingObjectsFromArray:disappear] : [disappear arrayByAddingObjectsFromArray:appear];
+        for (NSArray *entry in ordered)
+            ((void (*)(id, SEL, BOOL))objc_msgSend)(entry[0], NSSelectorFromString(entry[1]), YES);
+        charon_set_mode(begun, CharonDeferralSwallow);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                for (NSArray *entry in begun)
+                    if ([entry[1] owners] == 1)
+                        [entry[1] setMode:CharonDeferralPass];
+                charon_release_deferral(begun);
+            });
+        });
+        if ([coordinator isKindOfClass:[CharonTransitionCoordinator class]]) {
+            [(CharonTransitionCoordinator *)coordinator charon_setCancelled:!didComplete];
+            [(CharonTransitionCoordinator *)coordinator finish];
+        }
+        if (completion)
+            completion(didComplete);
+        if ([animator respondsToSelector:@selector(animationEnded:)])
+            [animator animationEnded:didComplete];
+    };
+    context->_finish = ^(BOOL didComplete) {
+        if (!didComplete) {
+            [toView removeFromSuperview];
+            [fromView removeFromSuperview];
+            [fromPre restoreView:fromView];
+            finalize(NO);
+            return;
+        }
+        charon_set_mode(begun, CharonDeferralDidOnly);
+        UIView *nativeParent = modal ? nil : toView.superview;
+        (void)nativeParent;
+        native();
+        if (!keepsPresenter)
+            [fromView removeFromSuperview];
+        void (^settle)(void) = ^{
+            if (toView.superview == container) {
+                [toView removeFromSuperview];
+                if (kind == CharonTransitionDismiss)
+                    [window insertSubview:toView atIndex:0];
+                else
+                    [host addSubview:toView];
+                toView.frame = finalTo;
+            }
+            [fromView removeFromSuperview];
+            if (keepsPresenter)
+                [fromPre restoreView:fromView];
+            finalize(YES);
+        };
+        if (modal)
+            settle();
+        else
+            dispatch_async(dispatch_get_main_queue(), settle);
+    };
+    [interactor startInteractiveTransition:context];
+}
+
+static NSArray *charon_group(UIViewController *controller)
+{
+    NSMutableArray *group = [NSMutableArray array];
+    charon_collect(controller, group);
+    return group;
+}
+
 BOOL charon_custom_transition(CharonTransitionKind kind, UIViewController *from, UIViewController *to, UIViewController *source, id<UIViewControllerAnimatedTransitioning> animator, id<UIViewControllerInteractiveTransitioning> interactor, UIModalPresentationStyle style, void (^native)(void), void (^undo)(void), void (^completion)(BOOL finished))
 {
     UIView *fromView = from.view;
@@ -263,6 +411,10 @@ BOOL charon_custom_transition(CharonTransitionKind kind, UIViewController *from,
     BOOL modal = kind == CharonTransitionPresent || kind == CharonTransitionDismiss;
     BOOL keepsPresenter = kind == CharonTransitionPresent && (style == 4 || style == 5 || style == 6);
 
+    if (interactor && !([interactor respondsToSelector:@selector(wantsInteractiveStart)] && ![interactor wantsInteractiveStart])) {
+        charon_interactive_transition(kind, from, to, animator, interactor, style, native, completion);
+        return YES;
+    }
     CharonViewState *fromPre = [CharonViewState captureView:fromView];
     UIView *fromParent = fromView.superview;
     CGRect initialFrom = fromParent ? [fromParent convertRect:fromView.frame toView:modal ? window : (fromParent.superview ?: fromParent)] : fromView.frame;
@@ -311,57 +463,80 @@ BOOL charon_custom_transition(CharonTransitionKind kind, UIViewController *from,
         context->_finalFrom = kind == CharonTransitionDismiss ? initialFrom : CGRectZero;
         context->_initialTo = CGRectZero;
         context->_finalTo = finalTo;
-        context->_interactive = interactor != nil;
+        BOOL interactive = interactor != nil && !([interactor respondsToSelector:@selector(wantsInteractiveStart)] && ![interactor wantsInteractiveStart]);
+        context->_interactive = interactive;
+        context->_animator = animator;
+        context->_interactor = interactor;
 
         NSTimeInterval duration = [animator transitionDuration:context];
         id<UIViewControllerTransitionCoordinator> coordinator = to.transitionCoordinator ?: from.transitionCoordinator;
-        if ([coordinator isKindOfClass:[CharonTransitionCoordinator class]])
+        if ([coordinator isKindOfClass:[CharonTransitionCoordinator class]]) {
             [(CharonTransitionCoordinator *)coordinator setContainer:container duration:duration];
+            [(CharonTransitionCoordinator *)coordinator charon_setInteractive:interactive];
+            context->_coordinator = (CharonTransitionCoordinator *)coordinator;
+        }
 
         context->_finish = ^(BOOL didComplete) {
+            void (^finalize)(void) = ^{
+                [container removeFromSuperview];
+                NSArray *pending = charon_take_pending(begun);
+                charon_set_mode(begun, CharonDeferralPass);
+                if (!didComplete) {
+                    [to viewWillDisappear:YES];
+                    [to viewDidDisappear:YES];
+                    [from viewWillAppear:YES];
+                    [from viewDidAppear:YES];
+                    pending = @[];
+                }
+                NSMutableArray *appear = [NSMutableArray array], *disappear = [NSMutableArray array];
+                for (NSArray *entry in pending) {
+                    NSMutableArray *target = [entry[1] hasSuffix:@"Appear:"] ? appear : disappear;
+                    [target addObject:entry];
+                }
+                NSArray *ordered = modal ? [appear arrayByAddingObjectsFromArray:disappear] : [disappear arrayByAddingObjectsFromArray:appear];
+                for (NSArray *entry in ordered)
+                    ((void (*)(id, SEL, BOOL))objc_msgSend)(entry[0], NSSelectorFromString(entry[1]), YES);
+                charon_set_mode(begun, CharonDeferralSwallow);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        for (NSArray *entry in begun)
+                            if ([entry[1] owners] == 1)
+                                [entry[1] setMode:CharonDeferralPass];
+                        charon_release_deferral(begun);
+                    });
+                });
+                if ([coordinator isKindOfClass:[CharonTransitionCoordinator class]]) {
+                    [(CharonTransitionCoordinator *)coordinator charon_setCancelled:!didComplete];
+                    [(CharonTransitionCoordinator *)coordinator finish];
+                }
+                if (completion)
+                    completion(didComplete);
+                if ([animator respondsToSelector:@selector(animationEnded:)])
+                    [animator animationEnded:didComplete];
+            };
             if (didComplete) {
                 [toView removeFromSuperview];
                 [toPost restoreView:toView];
                 [fromView removeFromSuperview];
                 if (keepsPresenter)
                     [fromPre restoreView:fromView];
-            } else {
-                [toView removeFromSuperview];
+                finalize();
+                return;
+            }
+            [toView removeFromSuperview];
+            if (modal)
+                [toPost restoreView:toView];
+            dispatch_async(dispatch_get_main_queue(), ^{
                 if (undo)
                     undo();
-                [fromView removeFromSuperview];
-                [fromPre restoreView:fromView];
-            }
-            [container removeFromSuperview];
-            NSArray *pending = charon_take_pending(begun);
-            charon_set_mode(begun, CharonDeferralPass);
-            NSMutableArray *appear = [NSMutableArray array], *disappear = [NSMutableArray array];
-            for (NSArray *entry in pending)
-            {
-                NSMutableArray *target = [entry[1] hasSuffix:@"Appear:"] ? appear : disappear;
-                [target addObject:entry];
-            }
-            NSArray *ordered = modal ? [appear arrayByAddingObjectsFromArray:disappear] : [disappear arrayByAddingObjectsFromArray:appear];
-            for (NSArray *entry in ordered)
-                ((void (*)(id, SEL, BOOL))objc_msgSend)(entry[0], NSSelectorFromString(entry[1]), YES);
-            charon_set_mode(begun, CharonDeferralSwallow);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    for (NSArray *entry in begun)
-                        if ([entry[1] owners] == 1)
-                            [entry[1] setMode:CharonDeferralPass];
-                    charon_release_deferral(begun);
-                });
+                if (modal)
+                    finalize();
+                else
+                    dispatch_async(dispatch_get_main_queue(), finalize);
             });
-            if ([coordinator isKindOfClass:[CharonTransitionCoordinator class]])
-                [(CharonTransitionCoordinator *)coordinator finish];
-            if (completion)
-                completion(didComplete);
-            if ([animator respondsToSelector:@selector(animationEnded:)])
-                [animator animationEnded:didComplete];
         };
 
-        if (interactor)
+        if (interactive)
             [interactor startInteractiveTransition:context];
         else
             [animator animateTransition:context];

@@ -45,4 +45,4 @@ A delegate that answers nil, an operation without animation, and a presentation 
   the animator (the release changes it at once).
 - A presentation with a custom style (4 to 6) is shown by the release as a full screen one; with `UIModalPresentationCustom`, `OverFullScreen` and
   `OverCurrentContext` the presenting view is put back under the presented one when the animation ends.
-- There is no interaction yet, and no `UIPresentationController`.
+- Interaction is described in `TransitionInteractive.md`; there is no `UIPresentationController` yet.

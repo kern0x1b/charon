@@ -15,6 +15,11 @@ NSTimeInterval charon_default_duration(BOOL modal)
     UIModalPresentationStyle _style;
     NSMutableArray *_completions;
     BOOL _finished;
+    BOOL _interactive;
+    BOOL _initiallyInteractive;
+    BOOL _cancelled;
+    CGFloat _percent;
+    NSMutableArray *_interactionHandlers;
 }
 
 - (instancetype)initWithFrom:(UIViewController *)from to:(UIViewController *)to container:(UIView *)container animated:(BOOL)animated duration:(NSTimeInterval)duration style:(UIModalPresentationStyle)style
@@ -79,19 +84,51 @@ NSTimeInterval charon_default_duration(BOOL modal)
 
 - (void)notifyWhenInteractionEndsUsingBlock:(void (^)(id<UIViewControllerTransitionCoordinatorContext>))handler
 {
+    [self notifyWhenInteractionChangesUsingBlock:handler];
 }
 
 - (void)notifyWhenInteractionChangesUsingBlock:(void (^)(id<UIViewControllerTransitionCoordinatorContext>))handler
 {
+    if (!handler)
+        return;
+    if (!_interactionHandlers)
+        _interactionHandlers = [NSMutableArray array];
+    [_interactionHandlers addObject:[handler copy]];
+}
+
+- (void)charon_setInteractive:(BOOL)interactive
+{
+    _interactive = interactive;
+    _initiallyInteractive = interactive;
+}
+
+- (void)charon_setCancelled:(BOOL)cancelled
+{
+    _cancelled = cancelled;
+}
+
+- (void)charon_setPercent:(CGFloat)percent
+{
+    _percent = percent;
+}
+
+- (void)charon_interactionEndedCancelled:(BOOL)cancelled
+{
+    _interactive = NO;
+    _cancelled = cancelled;
+    NSArray *handlers = [_interactionHandlers copy];
+    [_interactionHandlers removeAllObjects];
+    for (void (^handler)(id<UIViewControllerTransitionCoordinatorContext>) in handlers)
+        handler(self);
 }
 
 - (BOOL)isAnimated { return _animated; }
 - (UIModalPresentationStyle)presentationStyle { return _style; }
-- (BOOL)initiallyInteractive { return NO; }
-- (BOOL)isInteractive { return NO; }
-- (BOOL)isCancelled { return NO; }
+- (BOOL)initiallyInteractive { return _initiallyInteractive; }
+- (BOOL)isInteractive { return _interactive; }
+- (BOOL)isCancelled { return _cancelled; }
 - (NSTimeInterval)transitionDuration { return _animated ? _duration : 0; }
-- (CGFloat)percentComplete { return _finished ? 1 : 0; }
+- (CGFloat)percentComplete { return _finished ? (_cancelled ? 0 : 1) : _percent; }
 - (CGFloat)completionVelocity { return 1; }
 - (UIViewAnimationCurve)completionCurve { return UIViewAnimationCurveEaseInOut; }
 - (UIView *)containerView { return _container; }

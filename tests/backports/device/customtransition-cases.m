@@ -36,6 +36,7 @@ static NSString *frame_text(CGRect rect)
 @property (nonatomic, copy) CustomTransitionRecorder record;
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic) NSInteger durationCalls;
+@property (nonatomic) NSTimeInterval duration;
 @end
 
 @implementation CaseAnimator
@@ -43,7 +44,7 @@ static NSString *frame_text(CGRect rect)
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)context
 {
     self.durationCalls++;
-    return 0.3;
+    return self.duration ?: 0.3;
 }
 
 - (void)animateTransition:(id<UIViewControllerContextTransitioning>)context
@@ -74,7 +75,10 @@ static NSString *frame_text(CGRect rect)
         [self.events addObject:@"completeTransition"];
         [context completeTransition:![context transitionWasCancelled]];
         UIView *final = toView;
-        self.record([self.name stringByAppendingString:@".afterComplete"], [NSString stringWithFormat:@"toWindow=%d fromWindow=%d toAlpha=%.0f", final.window != nil, fromView.window != nil, final.alpha]);
+        if ([self.name isEqualToString:@"icancel"])
+            self.record([self.name stringByAppendingString:@".afterComplete"], [NSString stringWithFormat:@"fromWindow=%d toAlpha=%.0f", fromView.window != nil, final.alpha]);
+        else
+            self.record([self.name stringByAppendingString:@".afterComplete"], [NSString stringWithFormat:@"toWindow=%d fromWindow=%d toAlpha=%.0f", final.window != nil, fromView.window != nil, final.alpha]);
     }];
 }
 
@@ -87,6 +91,7 @@ static NSString *frame_text(CGRect rect)
 
 @interface CaseDelegate : NSObject <UIViewControllerTransitioningDelegate, UINavigationControllerDelegate>
 @property (nonatomic, strong) CaseAnimator *presentAnimator, *dismissAnimator, *pushAnimator, *popAnimator;
+@property (nonatomic, strong) UIPercentDrivenInteractiveTransition *interactor;
 @end
 
 @implementation CaseDelegate
@@ -97,6 +102,18 @@ static NSString *frame_text(CGRect rect)
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed
 {
     return self.dismissAnimator;
+}
+- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForPresentation:(id<UIViewControllerAnimatedTransitioning>)animator
+{
+    return self.interactor;
+}
+- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>)animator
+{
+    return self.interactor;
+}
+- (id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController interactionControllerForAnimationController:(id<UIViewControllerAnimatedTransitioning>)animationController
+{
+    return self.interactor;
 }
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC
 {
@@ -165,8 +182,90 @@ void customtransition_run(UIWindow *window, CustomTransitionRecorder record, voi
     step(1.0, ^{
         record(@"pop.events", [events componentsJoinedByString:@","]);
         record(@"pop.end", [NSString stringWithFormat:@"top=%d baseWindow=%d secondWindow=%d count=%lu", navigation.topViewController == base, base.view.window != nil, second.view.window != nil, (unsigned long)navigation.viewControllers.count]);
-        done();
     });
+    NSTimeInterval slow = 0.8;
+    for (NSString *name in @[@"idismiss", @"icancel", @"ipop", @"ipopcancel"]) {
+        CaseAnimator *animator = [[CaseAnimator alloc] init];
+        animator.name = name;
+        animator.events = events;
+        animator.record = record;
+        animator.window = window;
+        animator.duration = slow;
+        animators[name] = animator;
+    }
+    void (^interactiveDismiss)(NSString *, BOOL) = ^(NSString *name, BOOL finish) {
+        step(0.3, ^{
+            [events removeAllObjects];
+            delegate.interactor = nil;
+            [navigation presentViewController:modal animated:YES completion:nil];
+        });
+        step(1.2, ^{
+            delegate.dismissAnimator = animators[name];
+            delegate.interactor = [[UIPercentDrivenInteractiveTransition alloc] init];
+            [events removeAllObjects];
+            [navigation dismissViewControllerAnimated:YES completion:^{ [events addObject:@"completion"]; }];
+        });
+        step(0.3, ^{
+            [delegate.interactor updateInteractiveTransition:0.4];
+            record([name stringByAppendingString:@".percent"], [NSString stringWithFormat:@"%.2f", delegate.interactor.percentComplete]);
+            record([name stringByAppendingString:@".duration"], [NSString stringWithFormat:@"%.2f", delegate.interactor.duration]);
+        });
+        step(0.2, ^{
+            if (finish)
+                [delegate.interactor finishInteractiveTransition];
+            else
+                [delegate.interactor cancelInteractiveTransition];
+        });
+        step(1.6, ^{
+            record([name stringByAppendingString:@".events"], [events componentsJoinedByString:@","]);
+            record([name stringByAppendingString:@".end"], [NSString stringWithFormat:@"presented=%d modalWindow=%d modalAlpha=%.0f", navigation.presentedViewController != nil, modal.view.window != nil, modal.view.alpha]);
+            delegate.interactor = nil;
+            delegate.dismissAnimator = animators[@"dismiss"];
+            if (navigation.presentedViewController)
+                [navigation dismissViewControllerAnimated:NO completion:nil];
+        });
+    };
+    interactiveDismiss(@"idismiss", YES);
+    interactiveDismiss(@"icancel", NO);
+    void (^interactivePop)(NSString *, BOOL) = ^(NSString *name, BOOL finish) {
+        step(0.4, ^{
+            delegate.interactor = nil;
+            [navigation pushViewController:second animated:NO];
+        });
+        step(0.6, ^{
+            delegate.popAnimator = animators[name];
+            delegate.interactor = [[UIPercentDrivenInteractiveTransition alloc] init];
+            [events removeAllObjects];
+            [navigation popViewControllerAnimated:YES];
+        });
+        step(0.4, ^{ [delegate.interactor updateInteractiveTransition:0.4]; });
+        step(0.2, ^{
+            if (finish)
+                [delegate.interactor finishInteractiveTransition];
+            else
+                [delegate.interactor cancelInteractiveTransition];
+        });
+        step(1.6, ^{
+            record([name stringByAppendingString:@".events"], [events componentsJoinedByString:@","]);
+            {
+                NSMutableString *chain = [NSMutableString string];
+                for (UIView *v = base.view; v; v = v.superview)
+                    [chain appendFormat:@"%@>", NSStringFromClass([v class])];
+                NSMutableString *chain2 = [NSMutableString string];
+                for (UIView *v = second.view; v; v = v.superview)
+                    [chain2 appendFormat:@"%@>", NSStringFromClass([v class])];
+                record([@"info." stringByAppendingString:[name stringByAppendingString:@".chains"]], [NSString stringWithFormat:@"base %@ second %@", chain, chain2]);
+            }
+            record([name stringByAppendingString:@".end"], [NSString stringWithFormat:@"top=%@ baseWindow=%d secondWindow=%d count=%lu", navigation.topViewController.title, base.view.window != nil, second.view.window != nil, (unsigned long)navigation.viewControllers.count]);
+            delegate.interactor = nil;
+            delegate.popAnimator = animators[@"pop"];
+            if (navigation.viewControllers.count > 1)
+                [navigation popViewControllerAnimated:NO];
+        });
+    };
+    interactivePop(@"ipop", YES);
+    interactivePop(@"ipopcancel", NO);
+    step(0.5, ^{ done(); });
     __block void (^run)(NSUInteger);
     run = ^(NSUInteger index) {
         if (index >= steps.count)

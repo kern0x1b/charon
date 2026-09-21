@@ -2521,10 +2521,8 @@
     "api": "UIPercentDrivenInteractiveTransition",
     "kind": "class",
     "introduced": "7.0",
-    "status": "inert",
-    "facts": "facts/UIKit/TransitionsAndEdges.md",
-    "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
-    "reason": "the release starts no transition of iOS 7 and hands no transition context to one",
-    "effect": "the object keeps its percent and passes the updates to the context it is given, which nothing gives it"
+    "status": "implemented",
+    "facts": "facts/UIKit/TransitionInteractive.md",
+    "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and interactivepan.m (real touches) on iOS 6"
   }
 ]

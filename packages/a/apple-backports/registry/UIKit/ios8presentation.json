@@ -149,6 +149,62 @@
       "status": "implemented",
       "facts": "facts/UIKit/TransitionAnimators.md",
       "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and slidetransition.m on iOS 6"
+    },
+    {
+      "api": "UIViewControllerInteractiveTransitioning",
+      "kind": "protocol",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionInteractive.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and interactivepan.m (real touches) on iOS 6"
+    },
+    {
+      "api": "-[UIViewControllerTransitioningDelegate interactionControllerForPresentation:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionInteractive.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and interactivepan.m (real touches) on iOS 6"
+    },
+    {
+      "api": "-[UIViewControllerTransitioningDelegate interactionControllerForDismissal:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionInteractive.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and interactivepan.m (real touches) on iOS 6"
+    },
+    {
+      "api": "-[UINavigationControllerDelegate navigationController:interactionControllerForAnimationController:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionInteractive.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and interactivepan.m (real touches) on iOS 6"
+    },
+    {
+      "api": "-[UIViewControllerTransitionCoordinator notifyWhenInteractionChangesUsingBlock:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TransitionInteractive.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and interactivepan.m (real touches) on iOS 6"
+    },
+    {
+      "api": "UIPercentDrivenInteractiveTransition.timingCurve",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "facts": "facts/UIKit/TransitionInteractive.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and interactivepan.m (real touches) on iOS 6",
+      "reason": "the transition is driven by linear time of the container's layer, and the release has no timing curve provider to set on an animation",
+      "effect": "the curve is kept and answered back and does not change how a finishing or cancelled transition runs"
     }
   ]
 }

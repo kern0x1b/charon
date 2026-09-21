@@ -86,6 +86,22 @@ static id<UIViewControllerAnimatedTransitioning> charon_dismiss_animator(UIViewC
     return [delegate animationControllerForDismissedController:presented];
 }
 
+static id<UIViewControllerInteractiveTransitioning> charon_interactor_for(id<UIViewControllerTransitioningDelegate> delegate, id<UIViewControllerAnimatedTransitioning> animator, BOOL presenting)
+{
+    SEL selector = presenting ? @selector(interactionControllerForPresentation:) : @selector(interactionControllerForDismissal:);
+    if (![delegate respondsToSelector:selector])
+        return nil;
+    return presenting ? [delegate interactionControllerForPresentation:animator] : [delegate interactionControllerForDismissal:animator];
+}
+
+static id<UIViewControllerInteractiveTransitioning> charon_navigation_interactor(UINavigationController *navigation, id<UIViewControllerAnimatedTransitioning> animator)
+{
+    id<UINavigationControllerDelegate> delegate = navigation.delegate;
+    if (![delegate respondsToSelector:@selector(navigationController:interactionControllerForAnimationController:)])
+        return nil;
+    return [delegate navigationController:navigation interactionControllerForAnimationController:animator];
+}
+
 static id<UIViewControllerAnimatedTransitioning> charon_navigation_animator(UINavigationController *navigation, UINavigationControllerOperation operation, UIViewController *from, UIViewController *to)
 {
     id<UINavigationControllerDelegate> delegate = navigation.delegate;
@@ -124,7 +140,7 @@ static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewCo
         id<UIViewControllerAnimatedTransitioning> animator = animated && (style == UIModalPresentationFullScreen || style >= 4) ? charon_present_animator(presented, presenting, self) : nil;
         if (animator) {
             CharonTransitionCoordinator *coordinator = charon_begin(presenting, presented, YES, YES, style);
-            BOOL started = charon_custom_transition(CharonTransitionPresent, presenting, presented, self, animator, nil, style, ^{
+            BOOL started = charon_custom_transition(CharonTransitionPresent, presenting, presented, self, animator, charon_interactor_for(presented.transitioningDelegate, animator, YES), style, ^{
                 presented.modalPresentationStyle = style >= 4 ? UIModalPresentationFullScreen : style;
                 presentOriginal(self, present, presented, NO, nil);
                 presented.modalPresentationStyle = style;
@@ -153,7 +169,7 @@ static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewCo
         if (animator) {
             CharonTransitionCoordinator *coordinator = charon_begin(presented, presenting, YES, YES, presented.modalPresentationStyle);
             UIModalPresentationStyle style = presented.modalPresentationStyle;
-            BOOL started = charon_custom_transition(CharonTransitionDismiss, presented, presenting, self, animator, nil, style, ^{
+            BOOL started = charon_custom_transition(CharonTransitionDismiss, presented, presenting, self, animator, charon_interactor_for(presented.transitioningDelegate, animator, NO), style, ^{
                 dismissOriginal(self, dismiss, NO, nil);
             }, ^{
                 presentOriginal(presenting, present, presented, NO, nil);
@@ -185,7 +201,7 @@ static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewCo
         id<UIViewControllerAnimatedTransitioning> animator = animated && from ? charon_navigation_animator(self, UINavigationControllerOperationPush, from, pushed) : nil;
         if (animator) {
             CharonTransitionCoordinator *coordinator = charon_begin(from, pushed, YES, NO, UIModalPresentationNone);
-            BOOL started = charon_custom_transition(CharonTransitionPush, from, pushed, self, animator, nil, UIModalPresentationNone, ^{
+            BOOL started = charon_custom_transition(CharonTransitionPush, from, pushed, self, animator, charon_navigation_interactor(self, animator), UIModalPresentationNone, ^{
                 pushOriginal(self, push, pushed, NO);
             }, ^{
                 popOriginal(self, pop, NO);
@@ -217,7 +233,7 @@ static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewCo
             NSArray *stack = self.viewControllers;
             NSUInteger index = [stack indexOfObject:target];
             NSArray *popped = index != NSNotFound ? [stack subarrayWithRange:NSMakeRange(index + 1, stack.count - index - 1)] : @[];
-            BOOL started = charon_custom_transition(CharonTransitionPop, from, target, self, animator, nil, UIModalPresentationNone, ^{
+            BOOL started = charon_custom_transition(CharonTransitionPop, from, target, self, animator, charon_navigation_interactor(self, animator), UIModalPresentationNone, ^{
                 native(NO);
             }, nil, charon_finisher(coordinator, from, target, nil));
             if (started)
@@ -245,7 +261,7 @@ static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewCo
         id<UIViewControllerAnimatedTransitioning> animator = animated && from ? charon_navigation_animator(self, UINavigationControllerOperationPop, from, to) : nil;
         if (animator) {
             CharonTransitionCoordinator *coordinator = charon_begin(from, to, YES, NO, UIModalPresentationNone);
-            BOOL started = charon_custom_transition(CharonTransitionPop, from, to, self, animator, nil, UIModalPresentationNone, ^{
+            BOOL started = charon_custom_transition(CharonTransitionPop, from, to, self, animator, charon_navigation_interactor(self, animator), UIModalPresentationNone, ^{
                 popOriginal(self, pop, NO);
             }, ^{
                 pushOriginal(self, push, from, NO);
