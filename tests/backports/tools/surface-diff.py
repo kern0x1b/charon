@@ -174,6 +174,32 @@ class Release:
         with open(path) as stream:
             self.classes = json.load(stream)["classes"]
 
+    def selectors(self):
+        if not hasattr(self, "_selectors"):
+            found = set()
+            for entry in self.classes.values():
+                found.update(entry.get("instance") or [])
+                found.update(entry.get("class") or [])
+            self._selectors = found
+        return self._selectors
+
+    def protocols(self):
+        if not hasattr(self, "_protocols"):
+            found = set()
+            for entry in self.classes.values():
+                found.update(entry.get("protocols") or [])
+            self._protocols = found
+        return self._protocols
+
+    def knows_selector(self, api, kind):
+        found = re.match(r"^[-+]\[\w+ (.+)\]$", api)
+        if found:
+            return found.group(1) in self.selectors()
+        if kind == "property":
+            name = api.split(".", 1)[1]
+            return name in self.selectors()
+        return False
+
     def has(self, api, kind):
         if kind == "class":
             return api in self.classes
@@ -249,8 +275,16 @@ def main():
         gaps = collections.Counter()
         carried = collections.Counter()
         listed = []
+        unversioned = []
         for api, (kind, version) in sorted(rows.items()):
-            if version is None or version <= above or version == (999,) or (up_to and version[:2] > up_to + (0,) * (2 - len(up_to)) and version > up_to):
+            if version is None:
+                owner = re.match(r"^[-+]\[(\w+) ", api)
+                owner = owner.group(1) if owner else api.split(".")[0]
+                gone = owner not in inventory.classes and owner not in inventory.protocols() if inventory else False
+                if inventory and kind in ("method", "property") and not covered(api, kind, None, registry) and not inventory.knows_selector(api, kind) and gone:
+                    unversioned.append((api, kind))
+                continue
+            if version <= above or version == (999,) or (up_to and version[:2] > up_to + (0,) * (2 - len(up_to)) and version > up_to):
                 continue
             release = "%d" % version[0]
             totals[release] += 1
@@ -264,9 +298,13 @@ def main():
         for release in sorted(totals, key=int):
             print("  iOS %-3s declared %5d   decided %5d%s   gap %5d" % (release, totals[release], totals[release] - gaps[release] - carried[release],
                   "   carried by the release %5d" % carried[release] if inventory else "", gaps[release]))
+        if inventory:
+            print("  no recorded availability: %d members of a class or protocol iOS %s does not have, that no class of it answers and the registry does not decide" % (len(unversioned), options.release))
         if options.list:
             for version, api, kind in sorted(listed):
                 print("    %-6s %-9s %s" % (show_version(version), kind, api))
+            for api, kind in unversioned:
+                print("    %-6s %-9s %s" % ("?", kind, api))
 
 
 if __name__ == "__main__":
