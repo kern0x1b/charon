@@ -79,7 +79,7 @@ class Surface:
             rest = match.group(3)
             for path in PATH.findall(rest):
                 self.file = path
-            owned = self.file is not None and ("/%s.framework/" % self.framework) in self.file
+            owned = self.file is not None and (("/%s.framework/" % self.framework) in self.file or "/SubFrameworks/" in self.file)
             if kind == "AvailabilityAttr":
                 if self.target is not None and depth == self.target_depth + 1:
                     found = ATTRIBUTE.search(rest)
