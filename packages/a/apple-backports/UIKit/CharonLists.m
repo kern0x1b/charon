@@ -55,12 +55,5 @@ CGFloat charon_pixel_round(CGFloat value, CGFloat scale)
 
 UIFont *charon_medium_font(CGFloat pointSize)
 {
-    if (NSClassFromString(@"UIFontDescriptor")) {
-        UIFontDescriptor *descriptor = [[UIFont preferredFontForTextStyle:UIFontTextStyleBody].fontDescriptor
-            fontDescriptorByAddingAttributes:@{UIFontDescriptorTraitsAttribute: @{UIFontWeightTrait: @(UIFontWeightMedium)}}];
-        UIFont *font = [UIFont fontWithDescriptor:descriptor size:pointSize];
-        if (font)
-            return font;
-    }
     return [UIFont systemFontOfSize:pointSize weight:UIFontWeightMedium];
 }

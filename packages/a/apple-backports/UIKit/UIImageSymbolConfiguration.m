@@ -49,7 +49,7 @@ static double charon_font_weight_trait(UIFont *font)
     });
     if (!font || !createWithName || !copyTraits || !weightKey)
         return 0;
-    BOOL bridged = [font respondsToSelector:@selector(fontDescriptor)];
+    BOOL bridged = kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_7_0;
     CFTypeRef coreText = bridged ? (__bridge CFTypeRef)font : createWithName((__bridge CFStringRef)font.fontName, font.pointSize, NULL);
     if (!coreText)
         return 0;
