@@ -6,6 +6,11 @@ documents at the root; this file is the map to them and to the tree.
 
 ## What this is
 
+If the effort has to be rebuilt from nothing — every session gone — read
+[COORDINATION.md](COORDINATION.md) first. It carries the team structure, the flow patches
+travel through, the traps already paid for, and the restart procedure. This file stays the
+map of the code.
+
 Charon builds legacy Apple platforms for [xmake](https://xmake.io) and Conan:
 armv6 (iPhone OS 2.0–4.2.1), armv7 (from iPhone OS 3.0), armv7s (from iOS 6) and
 arm64 (from iOS 7), driven by clang from the `llvm` package with no Xcode. A
