@@ -44,7 +44,7 @@ static void check_spring(NSDictionary *expectations)
 {
     for (NSString *name in @[@"initialVelocity", @"setInitialVelocity:", @"settlingDuration"])
         CHECK_EQUAL(image_of_method([CASpringAnimation class], NSSelectorFromString(name)), @"libUIKitBackports.dylib",
-                    [@"-[CASpringAnimation " stringByAppendingFormat:@"%@] comes from the backports library", name].UTF8String);
+                    ([NSString stringWithFormat:@"-[CASpringAnimation %@] comes from the backports library", name].UTF8String));
 
     CASpringAnimation *alias = [CASpringAnimation animation];
     alias.initialVelocity = 7.5;
@@ -79,7 +79,7 @@ static void check_display_link(void)
 {
     for (NSString *name in @[@"targetTimestamp", @"preferredFramesPerSecond", @"setPreferredFramesPerSecond:"])
         CHECK_EQUAL(image_of_method([CADisplayLink class], NSSelectorFromString(name)), @"libUIKitBackports.dylib",
-                    [@"-[CADisplayLink " stringByAppendingFormat:@"%@] comes from the backports library", name].UTF8String);
+                    ([NSString stringWithFormat:@"-[CADisplayLink %@] comes from the backports library", name].UTF8String));
 
     CADisplayLinkTarget *target = [[CADisplayLinkTarget alloc] init];
     CADisplayLink *link = [CADisplayLink displayLinkWithTarget:target selector:@selector(tick:)];

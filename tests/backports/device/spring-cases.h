@@ -19,8 +19,8 @@ static const struct spring_case spring_cases[] = {
     {"underdamped/uikit thrown", 3, 1000, 500, 8},
     {"underdamped/light", 0.25, 40, 1.5, 2},
     {"underdamped/slow", 12, 7, 1, 0},
-    {"underdamped/faint", 1, 100, 0.1, 0},
-    {"underdamped/fainter", 1, 100, 0.001, 0},
+    {"underdamped/faint", 1, 100, 0.125, 0},
+    {"underdamped/fainter", 1, 100, 0.0009765625, 0},
     {"critical", 1, 100, 20, 0},
     {"critical/thrown", 1, 100, 20, 6},
     {"critical/back", 1, 100, 20, -6},
@@ -36,7 +36,7 @@ static const struct spring_case spring_cases[] = {
     {"overdamped/stiff", 1, 1000, 500, 1},
     {"overdamped/slow", 12, 7, 100, 0},
     {"overdamped/slow thrown", 12, 7, 100, 0.5},
-    {"overdamped/tiny mass", 0.05, 900, 30, 0},
+    {"overdamped/tiny mass", 0.0625, 900, 30, 0},
     {"undamped", 1, 100, 0, 0},
     {"undamped/thrown", 1, 100, 0, 4}
 };

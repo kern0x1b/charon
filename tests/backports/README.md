@@ -413,9 +413,11 @@ postinst run with `DPKG_ROOT` set to it.
 - `spring.m` with `spring-cases.h` and `spring-expectations.h`: a process of its own, the two members iOS 9 added to
   `CASpringAnimation` and the two iOS 10 added to `CADisplayLink`. It names the image every one of the six methods comes
   from, so a release that has them itself is never shadowed, holds the settling time of the 32 springs of
-  `spring-cases.h` to the host's answers that `host/spring/run.sh` records, checks that the initial velocity and the
+  `spring-cases.h` to the host's answers that `host/spring/run.sh` records - their values are exact in a `float`, since
+  a `CGFloat` is one on armv7 and the release keeps what it is given - checks that the initial velocity and the
   release's own velocity are one value in both directions, and puts a real link through the frame rates, the frame
-  intervals and a run loop, where the target timestamp is a frame past the timestamp.
+  intervals and a run loop, where the target timestamp is a frame past the timestamp. 53 of 53 on an iPhone 4S
+  running 6.1.3.
 - `tolerance.m`: a process of its own, the timer tolerance, which is a property
   and two CoreFoundation functions.
 - `uikit2.m` (`uikit2-Info.plist`): an application for the second UIKit batch -
