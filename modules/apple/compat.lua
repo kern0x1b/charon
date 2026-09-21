@@ -41,7 +41,14 @@ ARRIVED = {
     os_unfair_lock_assert_owner = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
     os_unfair_lock_assert_not_owner = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
     dispatch_activate = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
-    ["dispatch_assert_queue$V2"] = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"}
+    ["dispatch_assert_queue$V2"] = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
+    ["dispatch_assert_queue_not$V2"] = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
+    dispatch_assert_queue_barrier = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
+    ["dispatch_queue_create_with_target$V2"] = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
+    dispatch_queue_attr_make_initially_inactive = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
+    dispatch_queue_attr_make_with_autorelease_frequency = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
+    dispatch_queue_attr_make_with_qos_class = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
+    dispatch_queue_get_qos_class = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"}
 }
 
 -- Calls whose state every image in a process shares: a lock one image takes and another releases waits and wakes through one
