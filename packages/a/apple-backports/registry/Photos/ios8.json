@@ -38,19 +38,23 @@
       "api": "-[PHPhotoLibrary performChanges:completionHandler:]",
       "kind": "method",
       "introduced": "8.0",
-      "status": "absent",
-      "reason": "changes are made against the Photos database, which this release does not have; the ALAssetsLibrary writes are separate calls with other results",
+      "status": "implemented",
+      "reason": "changes are made through ALAssetsLibrary, which can add an image or a video to the saved photos and nothing else",
       "minimum": "6.0",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises"
+      "effect": "the block is run and its requests are checked and then written, one after another; the completion handler is called once off the main thread with the success and an error of PHPhotosErrorDomain; a change that deletes or edits fails as a whole before anything is written",
+      "facts": "facts/Photos/Changes.md",
+      "source": "the header of iOS 16.4 for the declarations; the host's Photos for the defaults, constants and exception text; an iPad 2 running 6.1.3 and the iOS 6.0 emulator for what ALAssetsLibrary gives and the release does not export"
     },
     {
       "api": "-[PHPhotoLibrary performChangesAndWait:error:]",
       "kind": "method",
       "introduced": "8.0",
-      "status": "absent",
-      "reason": "changes are made against the Photos database, which this release does not have",
+      "status": "implemented",
+      "reason": "changes are made through ALAssetsLibrary, which can add an image or a video to the saved photos and nothing else",
       "minimum": "6.0",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises"
+      "effect": "the block is run and its requests are checked and then written, one after another; the completion handler is called once off the main thread with the success and an error of PHPhotosErrorDomain; a change that deletes or edits fails as a whole before anything is written",
+      "facts": "facts/Photos/Changes.md",
+      "source": "the header of iOS 16.4 for the declarations; the host's Photos for the defaults, constants and exception text; an iPad 2 running 6.1.3 and the iOS 6.0 emulator for what ALAssetsLibrary gives and the release does not export"
     },
     {
       "api": "-[PHPhotoLibrary registerChangeObserver:]",

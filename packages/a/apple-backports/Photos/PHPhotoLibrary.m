@@ -1,5 +1,5 @@
 #import <AssetsLibrary/AssetsLibrary.h>
-#import <Photos/Photos.h>
+#import "CharonPhotos.h"
 #import <objc/message.h>
 #import <objc/runtime.h>
 
@@ -53,6 +53,16 @@ static void charon_deliver_authorization(void (^handler)(PHAuthorizationStatus s
     } failureBlock:^(NSError *error) {
         answer();
     }];
+}
+
+- (void)performChanges:(dispatch_block_t)changeBlock completionHandler:(void (^)(BOOL success, NSError *error))completionHandler
+{
+    [CharonPhotosTransaction run:changeBlock then:completionHandler];
+}
+
+- (BOOL)performChangesAndWait:(dispatch_block_t)changeBlock error:(NSError **)error
+{
+    return [CharonPhotosTransaction runAndWait:changeBlock error:error];
 }
 
 + (PHAuthorizationStatus)authorizationStatusForAccessLevel:(PHAccessLevel)accessLevel
