@@ -26,13 +26,14 @@ Every `kCGColorSpace...` name the release exports is a string equal to its own n
 | `kCGColorSpaceGenericGrayGamma2_2` | yes | NULL |
 
 Every other name (Display P3, the extended, linear and ITU-R spaces, the HLG and PQ ones,
-ACES, DCI P3, ROMM, generic XYZ and Lab) is not exported at all, so a weak reference to it is NULL.
+ACES, DCI P3, ROMM, generic XYZ and Lab) is not exported by the release, and this package carries the constants: each is the string the host's CoreGraphics gives it, an
+application that names one loads, and `CGColorSpaceCreateWithName` answers NULL for it, as the release does for `kCGColorSpaceSRGB`.
 `CGColorSpaceCreateDeviceRGB` makes a space, and it is what a bitmap that must draw on this release
 is made with. A bitmap context made with a space that came back NULL is NULL, and draws nothing.
 
-The names that are exported and answered NULL are the release's own and not carried here, and the
-missing ones are absent: a name with no space behind it, which an application would be told
-exists and make nothing of, is worse than a name that is not there.
+The names that are exported and answered NULL are the release's own. The names the release does not export were absent at first, on the reasoning that a name with no space behind it is worse than one that
+is not there; measured across the applications that name them, a strong reference to a missing constant stops an application before its `main`,
+and the header says `CGColorSpaceCreateWithName` may answer NULL, so they are carried, as `kCGColorSpaceGenericLab` was.
 
 ## What the release already has
 

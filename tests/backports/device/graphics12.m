@@ -48,6 +48,47 @@ static void names(void)
     CHECK_EQUAL(image_of((void *)&CGColorSpaceGetName), @"libGraphicsBackports.dylib", "CGColorSpaceGetName comes from the backports");
 #endif
     CHECK_EQUAL(text(kCGColorSpaceGenericLab), @"kCGColorSpaceGenericLab", "the Lab constant");
+#ifndef CHARON_HOST
+    {
+        static const struct { const CFStringRef *constant; NSString *text; } named[] = {
+        {&kCGColorSpaceACESCGLinear, @"kCGColorSpaceACESCGLinear"},
+        {&kCGColorSpaceDCIP3, @"kCGColorSpaceDCIP3"},
+        {&kCGColorSpaceGenericXYZ, @"kCGColorSpaceGenericXYZ"},
+        {&kCGColorSpaceITUR_2020, @"kCGColorSpaceITUR_2020"},
+        {&kCGColorSpaceITUR_709, @"kCGColorSpaceITUR_709"},
+        {&kCGColorSpaceROMMRGB, @"kCGColorSpaceROMMRGB"},
+        {&kCGColorSpaceDisplayP3, @"kCGColorSpaceDisplayP3"},
+        {&kCGColorSpaceExtendedGray, @"kCGColorSpaceExtendedGray"},
+        {&kCGColorSpaceExtendedLinearGray, @"kCGColorSpaceExtendedLinearGray"},
+        {&kCGColorSpaceExtendedLinearSRGB, @"kCGColorSpaceExtendedLinearSRGB"},
+        {&kCGColorSpaceExtendedSRGB, @"kCGColorSpaceExtendedSRGB"},
+        {&kCGColorSpaceLinearGray, @"kCGColorSpaceLinearGray"},
+        {&kCGColorSpaceLinearSRGB, @"kCGColorSpaceLinearSRGB"},
+        {&kCGColorSpaceDisplayP3_PQ, @"kCGColorSpaceDisplayP3_PQ"},
+        {&kCGColorSpaceITUR_2020_PQ, @"kCGColorSpaceITUR_2100_PQ"},
+        {&kCGColorSpaceExtendedDisplayP3, @"kCGColorSpaceExtendedDisplayP3"},
+        {&kCGColorSpaceExtendedITUR_2020, @"kCGColorSpaceExtendedITUR_2020"},
+        {&kCGColorSpaceITUR_2100_HLG, @"kCGColorSpaceITUR_2100_HLG"},
+        {&kCGColorSpaceITUR_2100_PQ, @"kCGColorSpaceITUR_2100_PQ"},
+        {&kCGColorSpaceLinearDisplayP3, @"kCGColorSpaceLinearDisplayP3"},
+        {&kCGColorSpaceLinearITUR_2020, @"kCGColorSpaceLinearITUR_2020"},
+        {&kCGColorSpaceITUR_2020_sRGBGamma, @"kCGColorSpaceITUR_2020_sRGBGamma"},
+        {&kCGColorSpaceITUR_709_HLG, @"kCGColorSpaceITUR_709_HLG"},
+        {&kCGColorSpaceITUR_709_PQ, @"kCGColorSpaceITUR_709_PQ"},
+        };
+        int carried = 0, unmade = 0, valued = 0;
+        for (size_t i = 0; i < sizeof named / sizeof named[0]; i++) {
+            carried += [image_of((void *)named[i].constant) isEqualToString:@"libGraphicsBackports.dylib"];
+            valued += [text(*named[i].constant) isEqualToString:named[i].text];
+            CGColorSpaceRef made = CGColorSpaceCreateWithName(*named[i].constant);
+            unmade += made == NULL;
+            CGColorSpaceRelease(made);
+        }
+        CHECK(carried == 24, "the 24 colour space names the release lacks come from the backports");
+        CHECK(valued == 24, "each has the string the host gives it");
+        CHECK(unmade == 24, "and CGColorSpaceCreateWithName makes no space of any of them");
+    }
+#endif
     CGColorSpaceRelease(generic);
     CGColorSpaceRelease(rgb);
     CGColorSpaceRelease(gray);
