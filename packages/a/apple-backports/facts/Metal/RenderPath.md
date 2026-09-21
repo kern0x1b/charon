@@ -39,8 +39,7 @@ costs as many times as it has targets. A function that both reads the colour att
 A pass takes a depth texture and a stencil texture, cleared or loaded, and a depth and stencil state sets the depth test, whether depth is written, and the stencil test and operations for the front and the
 back faces, with the reference value of the encoder. Depth textures of `Depth16Unorm`, `Depth32Float` and, packed with stencil, `Depth24Unorm_Stencil8` and `Depth32Float_Stencil8` are made from ES 2.0's depth
 textures, and `Stencil8` from a renderbuffer. The depth of Metal's clip space (0 to w) is turned into ES's (minus w to w) in the vertex shader, so depth holds what Metal's would. Differences:
-depth of `Depth32Float` is kept with 24 bits, since ES 2.0 has no float depth; the clamp of a depth bias is ignored; a triangle fill mode of lines and a depth clip mode are refused with a line in the log; a translated shader
-cannot read a depth texture yet (a `depth2d` argument is refused).
+depth of `Depth32Float` is kept with 24 bits, since ES 2.0 has no float depth; the clamp of a depth bias is ignored; a triangle fill mode of lines and a depth clip mode are refused with a line in the log; depth textures are read with nearest filtering only, since ES 2.0's depth textures allow no other; a comparing read takes the comparison function of the sampler state it is given, and a sampler that is constant in the library is refused.
 
 ## Function constants
 
@@ -60,7 +59,7 @@ to encode, against 130 before the pipeline's bindings were worked out once when 
 
 * Vertex formats of half floats, 32 bit integers, the packed 10 bit formats and the BGRA one: a pipeline that uses one is refused, since ES 2.0 has no attribute of them. A layout whose step function is per vertex with a step rate other than one, or per patch, is refused too.
 * Compute: a compute pipeline answers an error, and the compute encoder answers nil. The graphics of the A5 run no compute functions.
-* Tessellation, texture arrays, cubes, depth and 3D textures, sampling with an offset or gradients, and a function constant of a vector type
+* Tessellation, texture arrays, cubes, 3D textures, sampling with an offset or gradients, and a function constant of a vector type
   are not translated, and a function that needs one is not in the library.
 * A vertex texture: the SGX 543 has none.
 * A loop in a shader runs at most 64 rounds, since ES 1.00 wants a constant bound; a loop inside a loop is not translated. Branches and phis are.

@@ -36,6 +36,7 @@ NSUInteger CharonMetalBindEpoch;
     int _kind;
     GLuint _renderbuffer;
     GLuint _checkedDepth, _checkedStencil;
+    int _appliedCompare;
 }
 
 @synthesize label;
@@ -82,6 +83,16 @@ static int depthKind(MTLPixelFormat pixelFormat)
         [device relinquish];
     }
     return self;
+}
+
+- (int)appliedCompare
+{
+    return _appliedCompare;
+}
+
+- (void)setAppliedCompare:(int)value
+{
+    _appliedCompare = value;
 }
 
 - (GLuint)checkedDepth
@@ -323,6 +334,7 @@ static int depthKind(MTLPixelFormat pixelFormat)
 
 @implementation CharonMetalSampler {
     GLint _minFilter, _magFilter, _wrapS, _wrapT;
+    GLenum _compareFunction;
 }
 
 @synthesize label;
@@ -348,10 +360,25 @@ static BOOL wrapFor(MTLSamplerAddressMode mode, GLint *out)
             NSLog(@"Metal: sampler with pixel coordinates has no OpenGL ES 2.0 form");
             return nil;
         }
+        switch (descriptor.compareFunction) {
+        case MTLCompareFunctionLess: _compareFunction = GL_LESS; break;
+        case MTLCompareFunctionEqual: _compareFunction = GL_EQUAL; break;
+        case MTLCompareFunctionLessEqual: _compareFunction = GL_LEQUAL; break;
+        case MTLCompareFunctionGreater: _compareFunction = GL_GREATER; break;
+        case MTLCompareFunctionNotEqual: _compareFunction = GL_NOTEQUAL; break;
+        case MTLCompareFunctionGreaterEqual: _compareFunction = GL_GEQUAL; break;
+        case MTLCompareFunctionAlways: _compareFunction = GL_ALWAYS; break;
+        default: _compareFunction = GL_NEVER; break;
+        }
         _minFilter = descriptor.minFilter == MTLSamplerMinMagFilterNearest ? GL_NEAREST : GL_LINEAR;
         _magFilter = descriptor.magFilter == MTLSamplerMinMagFilterNearest ? GL_NEAREST : GL_LINEAR;
     }
     return self;
+}
+
+- (GLenum)compareFunction
+{
+    return _compareFunction;
 }
 
 - (GLint)minFilter

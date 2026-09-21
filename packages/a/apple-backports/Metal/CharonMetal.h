@@ -56,6 +56,8 @@ typedef struct {
 typedef struct {
     GLint location;
     unsigned unit;
+    BOOL depth;
+    BOOL compare;
 } CharonTexturePlan;
 
 typedef struct {
@@ -73,6 +75,7 @@ typedef struct {
     GLuint program;
     GLint flip;
     GLint instance;
+    GLint target;
     GLint vertexId;
     CharonUniformPlan *vertexUniforms;
     unsigned vertexUniformCount;
@@ -123,6 +126,7 @@ typedef struct {
 @property (nonatomic) GLuint checkedDepth;
 @property (nonatomic) GLuint checkedStencil;
 @property (nonatomic, unsafe_unretained) CharonMetalSampler *appliedSampler;
+@property (nonatomic) int appliedCompare;
 @end
 
 @interface CharonMetalSampler : NSObject <MTLSamplerState>
@@ -130,6 +134,7 @@ typedef struct {
 @property (nonatomic, readonly) GLint magFilter;
 @property (nonatomic, readonly) GLint wrapS;
 @property (nonatomic, readonly) GLint wrapT;
+@property (nonatomic, readonly) GLenum compareFunction;
 - (instancetype)initWithDescriptor:(MTLSamplerDescriptor *)descriptor;
 @end
 

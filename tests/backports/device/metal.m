@@ -211,7 +211,7 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
     NSError *error = nil;
     self.library = [self.device newLibraryWithFile:[folder stringByDeletingPathExtension] error:&error];
     CHECK(self.library != nil, "a library is read from beside its file");
-    CHECK([[[self.library functionNames] sortedArrayUsingSelector:@selector(compare:)] isEqualToArray:(@[@"colorFragment", @"constFragment", @"depthVertex", @"fetchFragment", @"flowFragment", @"pairFragment", @"quadFragment", @"quadVertex", @"stageInVertex"])], "it holds its nine functions");
+    CHECK([[[self.library functionNames] sortedArrayUsingSelector:@selector(compare:)] isEqualToArray:(@[@"colorFragment", @"constFragment", @"depthRead", @"depthVertex", @"fetchFragment", @"flowFragment", @"pairFragment", @"quadFragment", @"quadVertex", @"shadowCompare", @"stageInVertex"])], "it holds its eleven functions");
     CHECK([self.library newFunctionWithName:@"missing"] == nil, "a name it does not hold gives nil");
     CHECK([[self.library newFunctionWithName:@"quadVertex"] functionType] == MTLFunctionTypeVertex, "the vertex function is a vertex function");
     CHECK([[self.library newFunctionWithName:@"quadFragment"] functionType] == MTLFunctionTypeFragment, "and the fragment function a fragment function");
@@ -533,6 +533,79 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
         static uint8_t outSecond[64 * 64 * 4];
         [second getBytes:outSecond bytesPerRow:256 fromRegion:MTLRegionMake2D(0, 0, 64, 64) mipmapLevel:0];
         CHECK(near(outSecond + (32 * 64 + 32) * 4, 128, 64, 0, 2) && near(outSecond + (4 * 64 + 4) * 4, 0, 0, 255, 1), "and the second has the second colour there and its own clear colour outside");
+    }
+
+    {
+        MTLTextureDescriptor *dd = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:(MTLPixelFormat)252 width:64 height:64 mipmapped:NO];
+        dd.usage = MTLTextureUsageRenderTarget | MTLTextureUsageShaderRead;
+        id<MTLTexture> shadowMap = [self.device newTextureWithDescriptor:dd];
+        MTLRenderPipelineDescriptor *wp = [[MTLRenderPipelineDescriptor alloc] init];
+        wp.vertexFunction = [self.library newFunctionWithName:@"depthVertex"];
+        wp.fragmentFunction = [self.library newFunctionWithName:@"colorFragment"];
+        wp.colorAttachments[0].pixelFormat = MTLPixelFormatRGBA8Unorm;
+        id<MTLRenderPipelineState> writer = [self.device newRenderPipelineStateWithDescriptor:wp error:NULL];
+        MTLDepthStencilDescriptor *writes = [[MTLDepthStencilDescriptor alloc] init];
+        writes.depthCompareFunction = MTLCompareFunctionAlways;
+        writes.depthWriteEnabled = YES;
+        MTLRenderPassDescriptor *depthOnly = [MTLRenderPassDescriptor renderPassDescriptor];
+        depthOnly.colorAttachments[0].texture = target;
+        depthOnly.colorAttachments[0].loadAction = MTLLoadActionClear;
+        depthOnly.depthAttachment.texture = shadowMap;
+        depthOnly.depthAttachment.loadAction = MTLLoadActionClear;
+        id<MTLCommandBuffer> wb = [self.queue commandBuffer];
+        id<MTLRenderCommandEncoder> we = [wb renderCommandEncoderWithDescriptor:depthOnly];
+        [we setRenderPipelineState:writer];
+        [we setDepthStencilState:[self.device newDepthStencilStateWithDescriptor:writes]];
+        float p[6][4] = {{-1, 1, 0.5f, 1}, {1, 1, 0.5f, 1}, {-1, -1, 0.5f, 1}, {1, 1, 0.5f, 1}, {1, -1, 0.5f, 1}, {-1, -1, 0.5f, 1}};
+        float c[6][4] = {{0}};
+        [we setVertexBytes:p length:sizeof p atIndex:0];
+        [we setVertexBytes:c length:sizeof c atIndex:1];
+        [we drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6];
+        [we endEncoding];
+        [wb commit];
+        [wb waitUntilCompleted];
+        CHECK([shadowMap usage] & MTLTextureUsageShaderRead, "a depth texture that is drawn into can be read by a shader");
+
+        MTLSamplerDescriptor *plainSampler = [[MTLSamplerDescriptor alloc] init];
+        id<MTLSamplerState> nearestSampler = [self.device newSamplerStateWithDescriptor:plainSampler];
+        MTLSamplerDescriptor *comparing = [[MTLSamplerDescriptor alloc] init];
+        comparing.compareFunction = MTLCompareFunctionLess;
+        id<MTLSamplerState> comparingSampler = [self.device newSamplerStateWithDescriptor:comparing];
+        Corner quad[6] = {{{-1, 1}, {0, 0}}, {{1, 1}, {1, 0}}, {{-1, -1}, {0, 1}}, {{1, 1}, {1, 0}}, {{1, -1}, {1, 1}}, {{-1, -1}, {0, 1}}};
+        float unit = 1;
+        const Corner *quadPointer = quad;
+        float (^readBack)(NSString *, id<MTLSamplerState>, float) = ^float(NSString *fragment, id<MTLSamplerState> sampler, float reference) {
+            MTLRenderPipelineDescriptor *rp = [[MTLRenderPipelineDescriptor alloc] init];
+            rp.vertexFunction = [self.library newFunctionWithName:@"quadVertex"];
+            rp.fragmentFunction = [self.library newFunctionWithName:fragment];
+            rp.colorAttachments[0].pixelFormat = MTLPixelFormatRGBA8Unorm;
+            NSError *e = nil;
+            id<MTLRenderPipelineState> state = [self.device newRenderPipelineStateWithDescriptor:rp error:&e];
+            if (!state)
+                return -1;
+            MTLRenderPassDescriptor *pass = [MTLRenderPassDescriptor renderPassDescriptor];
+            pass.colorAttachments[0].texture = target;
+            pass.colorAttachments[0].loadAction = MTLLoadActionClear;
+            pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1);
+            id<MTLCommandBuffer> b = [self.queue commandBuffer];
+            id<MTLRenderCommandEncoder> enc = [b renderCommandEncoderWithDescriptor:pass];
+            [enc setRenderPipelineState:state];
+            [enc setVertexBytes:quadPointer length:6 * sizeof(Corner) atIndex:0];
+            [enc setVertexBytes:&unit length:sizeof unit atIndex:1];
+            [enc setFragmentTexture:shadowMap atIndex:0];
+            [enc setFragmentSamplerState:sampler atIndex:0];
+            [enc setFragmentBytes:&reference length:4 atIndex:0];
+            [enc drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6];
+            [enc endEncoding];
+            [b commit];
+            [b waitUntilCompleted];
+            uint8_t pixel[4];
+            [target getBytes:pixel bytesPerRow:4 fromRegion:MTLRegionMake2D(32, 32, 1, 1) mipmapLevel:0];
+            return pixel[0];
+        };
+        CHECK(fabsf(readBack(@"depthRead", nearestSampler, 0) - 128) <= 2, "a shader reads the depth that was written, half of the range");
+        CHECK(readBack(@"shadowCompare", comparingSampler, 0.3f) > 253, "a compared reference nearer than the depth is lit");
+        CHECK(readBack(@"shadowCompare", comparingSampler, 0.7f) < 2, "and one farther than the depth is not");
     }
 
     const float faint[4] = {0.5f, 0.5f, 0.5f, 0.4f};

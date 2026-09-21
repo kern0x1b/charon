@@ -53,6 +53,18 @@
    "stage": "fragment",
    "source": "module8.frag",
    "reflection": "module8.json"
+  },
+  {
+   "name": "depthRead",
+   "stage": "fragment",
+   "source": "module9.frag",
+   "reflection": "module9.json"
+  },
+  {
+   "name": "shadowCompare",
+   "stage": "fragment",
+   "source": "module10.frag",
+   "reflection": "module10.json"
   }
  ]
 }

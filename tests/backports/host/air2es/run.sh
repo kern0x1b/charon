@@ -20,14 +20,14 @@ def module(name):
     return subprocess.run([llvm + '/bin/llvm-as', '%s/%s.ll' % (fixtures, name), '-o', '-'], check=True, capture_output=True).stdout
 
 
-for library, names in (('quad', ('quad-vertex', 'quad-fragment', 'quad-stagein', 'quad-flow', 'quad-constants', 'quad-fetch', 'depth-vertex', 'depth-fragment', 'quad-pair')), ('pair', ('fetch-pair',))):
+for library, names in (('quad', ('quad-vertex', 'quad-fragment', 'quad-stagein', 'quad-flow', 'quad-constants', 'quad-fetch', 'depth-vertex', 'depth-fragment', 'quad-pair', 'depth-read', 'depth-compare')), ('pair', ('fetch-pair',))):
     open('%s/%s.metallib' % (work, library), 'wb').write(b'MTLB' + bytes(16) + b''.join(module(name) for name in names))
 PY
 
 python3 "$root/tools/air2es/metallib2es.py" "$work/air2es" "$work/quad.metallib" "$work/quad.es2" >"$work/quad.out"
 cat "$work/quad.out"
 
-for file in library.json module0.vert module0.json module1.frag module1.json module2.vert module2.json module3.frag module3.json module4.frag module4.json module5.frag module5.json module6.vert module6.json module7.frag module7.json module8.frag module8.json; do
+for file in library.json module0.vert module0.json module1.frag module1.json module2.vert module2.json module3.frag module3.json module4.frag module4.json module5.frag module5.json module6.vert module6.json module7.frag module7.json module8.frag module8.json module9.frag module9.json module10.frag module10.json; do
     if [ -n "${CHARON_WRITE_EXPECTED:-}" ]; then
         mkdir -p "$here/expected/quad"
         cp "$work/quad.es2/$file" "$here/expected/quad/$file"
@@ -50,6 +50,10 @@ glslangValidator -S frag "$work/fetching.frag"
 glslangValidator -S vert "$work/quad.es2/module6.vert"
 glslangValidator -S frag "$work/quad.es2/module7.frag"
 glslangValidator -S frag "$work/quad.es2/module8.frag"
+glslangValidator -S frag "$work/quad.es2/module9.frag"
+sed '/GL_EXT_shadow_samplers/d; s/sampler2DShadow/sampler2D/; s/shadow2DEXT(\([a-z0-9]*\), vec3(\([^;]*\)));/texture2D(\1, vec2(0.0)).r;/' "$work/quad.es2/module10.frag" >"$work/shadow.frag"
+glslangValidator -S frag "$work/shadow.frag"
+grep -q "shadow2DEXT" "$work/quad.es2/module10.frag"
 grep -q "GL_EXT_shader_framebuffer_fetch" "$work/quad.es2/module5.frag"
 
 if python3 "$root/tools/air2es/metallib2es.py" "$work/air2es" "$work/pair.metallib" "$work/pair.es2" >"$work/pair.out"; then

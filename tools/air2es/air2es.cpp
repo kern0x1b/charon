@@ -136,6 +136,7 @@ struct Translator {
     std::vector<std::string> attributeDecls, uniformDecls, samplerDecls;
     std::vector<std::string> attributeJson, uniformJson, textureJson, samplerJson, varyingJson, sizeJson;
     std::map<int, std::string> textureNames;
+    std::set<int> depthBindings, compareBindings;
     struct Loop {
         const BasicBlock *header = nullptr;
         std::set<const BasicBlock *> blocks;
@@ -390,13 +391,14 @@ struct Translator {
                 p.kind = Pointer::Texture;
                 p.binding = info.location;
                 pointers[&arg] = p;
-                if (info.typeName.find("texture2d<") != 0 && info.typeName.find("texture2d ") != 0)
-                    fail("texture type " + info.typeName + " is not texture2d");
+                bool depthTexture = info.typeName.find("depth2d<") == 0;
+                if (!depthTexture && info.typeName.find("texture2d<") != 0 && info.typeName.find("texture2d ") != 0)
+                    fail("texture type " + info.typeName + " is not texture2d or depth2d");
                 std::string name = "t" + std::to_string(info.location);
                 if (!textureNames.count(info.location)) {
                     textureNames[info.location] = name;
-                    samplerDecls.push_back("uniform sampler2D " + name + ";");
-                    textureJson.push_back("{\"name\":\"" + name + "\",\"index\":" + std::to_string(info.location) + "}");
+                    if (depthTexture)
+                        depthBindings.insert(info.location);
                 }
             } else if (info.kind == "air.sampler") {
                 Pointer p;
@@ -621,6 +623,38 @@ struct Translator {
         auto has = [&](const char *prefix) { return name.rfind(prefix, 0) == 0; };
         Type *rt = ci->getType();
         std::string type = rt->isVoidTy() || rt->isStructTy() ? "" : glslType(rt);
+        if (has("air.sample_depth_2d.") || has("air.sample_compare_depth_2d.")) {
+            bool compare = has("air.sample_compare_depth_2d.");
+            if (vertex)
+                fail("sampling a texture in a vertex function, which the SGX 543 has no texture units for");
+            auto tp = pointers.find(ci->getArgOperand(0));
+            if (tp == pointers.end() || tp->second.kind != Pointer::Texture)
+                fail("sampling a depth texture that is not an argument");
+            unsigned c = compare ? 5 : 4;
+            auto *normalised = dyn_cast<ConstantInt>(ci->getArgOperand(c));
+            auto *offset = dyn_cast<Constant>(ci->getArgOperand(c + 1));
+            auto *control = dyn_cast<ConstantInt>(ci->getArgOperand(c + 2));
+            auto *clamp = dyn_cast<Constant>(ci->getArgOperand(c + 4));
+            if (!normalised || normalised->isZero())
+                fail("sampling a depth texture in pixel coordinates");
+            if (!offset || !offset->isNullValue())
+                fail("sampling a depth texture with an offset");
+            if (!control || !control->isZero())
+                fail("sampling a depth texture with a level of detail or gradients");
+            if (!clamp || !clamp->isNullValue())
+                fail("sampling a depth texture with a minimum level of detail clamp");
+            std::string t = textureNames[tp->second.binding];
+            if (compare) {
+                auto sampler = pointers.find(ci->getArgOperand(1));
+                if (sampler == pointers.end() || sampler->second.kind != Pointer::Sampler)
+                    fail("comparing a depth texture with a sampler that is constant in the library");
+                if (!depthBindings.count(tp->second.binding))
+                    fail("comparing a texture that is not a depth texture");
+                compareBindings.insert(tp->second.binding);
+                return "shadow2DEXT(" + t + ", vec3(" + arg(3) + ", " + arg(4) + "))";
+            }
+            return "texture2D(" + t + ", " + arg(3) + ").r";
+        }
         if (has("air.sample_texture_2d.")) {
             if (vertex)
                 fail("sampling a texture in a vertex function, which the SGX 543 has no texture units for");
@@ -939,7 +973,9 @@ struct Translator {
                 read(ci);
                 return;
             }
-            if (ci->getType()->isStructTy() && ci->getCalledFunction() && ci->getCalledFunction()->getName().starts_with("air.sample_texture_2d.")) {
+            if (ci->getType()->isStructTy() && ci->getCalledFunction() && (ci->getCalledFunction()->getName().starts_with("air.sample_texture_2d.") ||
+                                                                            ci->getCalledFunction()->getName().starts_with("air.sample_depth_2d.") ||
+                                                                            ci->getCalledFunction()->getName().starts_with("air.sample_compare_depth_2d."))) {
                 Value_ r;
                 r.aggregate = true;
                 r.fields = {temp(cast<StructType>(ci->getType())->getElementType(0), call(ci)), "1"};
@@ -1248,6 +1284,8 @@ struct Translator {
         out << "#version 100\n";
         if (usesDerivatives)
             out << "#extension GL_OES_standard_derivatives : enable\n";
+        if (!compareBindings.empty())
+            out << "#extension GL_EXT_shadow_samplers : require\n";
         for (auto &line : body)
             if (line.find("gl_LastFragData") != std::string::npos) {
                 out << "#extension GL_EXT_shader_framebuffer_fetch : require\n";
@@ -1271,6 +1309,11 @@ struct Translator {
             out << d << "\n";
         for (auto &d : uniformDecls)
             out << d << "\n";
+        for (auto &t : textureNames) {
+            out << "uniform " << (compareBindings.count(t.first) ? "sampler2DShadow " : "sampler2D ") << t.second << ";\n";
+            textureJson.push_back("{\"name\":\"" + t.second + "\",\"index\":" + std::to_string(t.first) + ",\"depth\":" + (depthBindings.count(t.first) ? "true" : "false") +
+                                  ",\"compare\":" + (compareBindings.count(t.first) ? "true" : "false") + "}");
+        }
         for (auto &d : samplerDecls)
             out << d << "\n";
         out << "void main()\n{\n";

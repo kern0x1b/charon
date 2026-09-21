@@ -6,8 +6,8 @@ precision mediump float;
 #endif
 precision highp int;
 uniform highp vec4 u0_0;
-varying highp vec2 vary_generated_5coordDv2_f_;
 uniform sampler2D t0;
+varying highp vec2 vary_generated_5coordDv2_f_;
 void main()
 {
     vec4 v0 = texture2D(t0, (vary_generated_5coordDv2_f_));

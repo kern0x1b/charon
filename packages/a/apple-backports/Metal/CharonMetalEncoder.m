@@ -356,6 +356,8 @@ static const GLfloat *rampOf(NSUInteger count)
             glUniform1f(plan->flip, _target.screen ? 1.0f : -1.0f);
         if (plan->instance >= 0)
             glUniform1f(plan->instance, (GLfloat)_instance);
+        if (plan->target >= 0)
+            glUniform2f(plan->target, (GLfloat)_target.width, (GLfloat)_target.height);
         _applied = plan;
         _uniformsDirty = _attributesDirty = _texturesDirty = YES;
         _cullApplied = -1;
@@ -437,12 +439,20 @@ static const GLfloat *rampOf(NSUInteger count)
                 _boundTexture[unit] = texture.name;
             }
             CharonMetalSampler *sampler = _fragmentSamplers[unit];
-            if (sampler && texture.appliedSampler != sampler) {
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, sampler.minFilter);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, sampler.magFilter);
+            int compare = plan->textures[k].compare ? 1 : 0;
+            if (sampler && (texture.appliedSampler != sampler || texture.appliedCompare != compare)) {
+                BOOL depth = texture.attachmentKind != 0;
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, depth ? GL_NEAREST : sampler.minFilter);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, depth ? GL_NEAREST : sampler.magFilter);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, sampler.wrapS);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, sampler.wrapT);
+                if (depth) {
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_EXT, compare ? GL_COMPARE_REF_TO_TEXTURE_EXT : GL_NONE);
+                    if (compare)
+                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_EXT, sampler.compareFunction);
+                }
                 texture.appliedSampler = sampler;
+                texture.appliedCompare = compare;
             }
             glUniform1i(plan->textures[k].location, (GLint)unit);
         }

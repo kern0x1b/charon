@@ -261,6 +261,7 @@ static CharonUniformPlan *uniformPlans(CharonMetalPipeline *pipeline, NSArray *u
     _plan.program = _program;
     _plan.flip = [self locationForName:@"charon_flip"];
     _plan.instance = [self locationForName:@"charon_instance"];
+    _plan.target = [self locationForName:@"charon_target"];
     _plan.vertexId = [_vertexReflection[@"usesVertexId"] boolValue] ? [self attributeForName:@"a_vertex_id"] : -1;
     _plan.vertexUniforms = uniformPlans(self, _vertexReflection[@"uniforms"], &_plan.vertexUniformCount);
     _plan.fragmentUniforms = uniformPlans(self, _fragmentReflection[@"uniforms"], &_plan.fragmentUniformCount);
@@ -291,7 +292,7 @@ static CharonUniformPlan *uniformPlans(CharonMetalPipeline *pipeline, NSArray *u
     for (NSDictionary *t in textures) {
         GLint location = [self locationForName:t[@"name"]];
         if (location >= 0)
-            _plan.textures[_plan.textureCount++] = (CharonTexturePlan){location, (unsigned)[t[@"index"] unsignedIntegerValue]};
+            _plan.textures[_plan.textureCount++] = (CharonTexturePlan){location, (unsigned)[t[@"index"] unsignedIntegerValue], [t[@"depth"] boolValue], [t[@"compare"] boolValue]};
     }
     NSArray *sizes = _fragmentReflection[@"sizes"];
     _plan.sizes = calloc(sizes.count ? sizes.count : 1, sizeof(CharonSizePlan));
