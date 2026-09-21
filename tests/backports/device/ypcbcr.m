@@ -3,6 +3,7 @@
 #include <dlfcn.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 #import "check.h"
 
 static NSString *image_of(const void *address)
@@ -193,6 +194,72 @@ int main(void)
         vImage_Buffer bigger = make(width * 2, height, 1);
         CHECK(vImageExtractChannel_ARGB8888(&source, &bigger, 0, kvImageNoFlags) == kvImageRoiLargerThanInputBuffer,
               "a destination wider than the source is refused");
+
+        vImage_Buffer packed = make(width, height, 2), expanded = make(width, height, 4);
+        for (vImagePixelCount row = 0; row < height; row++) {
+            uint8_t *line = (uint8_t *)packed.data + row * packed.rowBytes;
+            for (vImagePixelCount column = 0; column < width * 2; column++)
+                line[column] = next_byte();
+        }
+        CHECK(vImageConvert_RGB565toBGRA8888(0xC3, &packed, &expanded, kvImageNoFlags) == kvImageNoError,
+              "RGB565 becomes BGRA8888");
+        BOOL exact = YES;
+        for (vImagePixelCount row = 0; row < height && exact; row++) {
+            const uint8_t *in = (const uint8_t *)packed.data + row * packed.rowBytes;
+            const uint8_t *out = (const uint8_t *)expanded.data + row * expanded.rowBytes;
+            for (vImagePixelCount column = 0; column < width; column++) {
+                uint16_t word;
+                memcpy(&word, in + column * 2, sizeof word);
+                unsigned red = (word >> 11) & 0x1F, green = (word >> 5) & 0x3F, blue = word & 0x1F;
+                if (out[column * 4] != (blue * 255 + 15) / 31 || out[column * 4 + 1] != (green * 255 + 31) / 63
+                    || out[column * 4 + 2] != (red * 255 + 15) / 31 || out[column * 4 + 3] != 0xC3) {
+                    exact = NO;
+                    break;
+                }
+            }
+        }
+        CHECK(exact, "every BGRA8888 pixel is the arithmetic of the header exactly");
+
+        vImage_Buffer repacked = make(width, height, 2);
+        CHECK(vImageConvert_BGRA8888toRGB565(&expanded, &repacked, kvImageNoFlags) == kvImageNoError,
+              "BGRA8888 becomes RGB565");
+        exact = YES;
+        for (vImagePixelCount row = 0; row < height && exact; row++) {
+            const uint8_t *in = (const uint8_t *)expanded.data + row * expanded.rowBytes;
+            const uint8_t *out = (const uint8_t *)repacked.data + row * repacked.rowBytes;
+            for (vImagePixelCount column = 0; column < width; column++) {
+                uint16_t word;
+                memcpy(&word, out + column * 2, sizeof word);
+                unsigned wanted = (((in[column * 4 + 2] * 31 + 127) / 255) << 11)
+                                  | (((in[column * 4 + 1] * 63 + 127) / 255) << 5)
+                                  | ((in[column * 4] * 31 + 127) / 255);
+                if (word != wanted) {
+                    exact = NO;
+                    break;
+                }
+            }
+        }
+        CHECK(exact, "every RGB565 word is the arithmetic of the header exactly");
+
+        vImage_Buffer deep = make(width, height, 8), three = make(width, height, 6);
+        for (vImagePixelCount row = 0; row < height; row++) {
+            uint8_t *line = (uint8_t *)deep.data + row * deep.rowBytes;
+            for (vImagePixelCount column = 0; column < width * 8; column++)
+                line[column] = next_byte();
+        }
+        CHECK(vImageConvert_ARGB16UtoRGB16U(&deep, &three, kvImageNoFlags) == kvImageNoError, "ARGB16U loses its alpha");
+        exact = YES;
+        for (vImagePixelCount row = 0; row < height && exact; row++) {
+            const uint8_t *in = (const uint8_t *)deep.data + row * deep.rowBytes;
+            const uint8_t *out = (const uint8_t *)three.data + row * three.rowBytes;
+            for (vImagePixelCount column = 0; column < width; column++)
+                if (memcmp(out + column * 6, in + column * 8 + 2, 6) != 0) {
+                    exact = NO;
+                    break;
+                }
+        }
+        CHECK(exact, "the RGB16U is the bytes of the ARGB16U without its alpha");
+        free(packed.data); free(expanded.data); free(repacked.data); free(deep.data); free(three.data);
 
         free(source.data); free(luma.data); free(chroma.data); free(picture.data);
         free(cb.data); free(cr.data); free(planarLuma.data); free(plane.data); free(bigger.data);

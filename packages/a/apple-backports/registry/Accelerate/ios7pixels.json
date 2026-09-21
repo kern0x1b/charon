@@ -1,0 +1,49 @@
+{
+  "framework": "Accelerate",
+  "entries": [
+    {
+      "api": "vImageConvert_RGB565toBGRA8888()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the header writes the arithmetic of the five and six bit channels out, and it is exact integer arithmetic with no room for a difference",
+      "effect": "byte for byte the system's answer: blue, green, red from (channel * 255 + half) / max, then the alpha the caller gives, in that order; the refusals are the system's own, kvImageRoiLargerThanInputBuffer for a destination larger than the source, which is what the release answers although the header's comment names another code, kvImageUnknownFlagsBit for a flag outside DoNotTile, GetTempBufferSize and PrintDiagnostics, and 0 for GetTempBufferSize",
+      "facts": "facts/Accelerate/vImagePixels.md",
+      "source": "the header of iOS 16.4, which writes the per-channel arithmetic out; the host's own Accelerate, compared byte for byte and refusal for refusal in tests/backports/host/ypcbcr"
+    },
+    {
+      "api": "vImageConvert_BGRA8888toRGB565()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the mirror of the other, again exact integer arithmetic the header writes out",
+      "effect": "byte for byte the system's answer: (channel * 31 or 63 + 127) / 255 packed as red, green, blue into a native 16-bit word; kvImageRoiLargerThanInputBuffer for a destination larger than the source, and the same flag answers",
+      "facts": "facts/Accelerate/vImagePixels.md",
+      "source": "the header of iOS 16.4; the host's own Accelerate, compared byte for byte in tests/backports/host/ypcbcr"
+    },
+    {
+      "api": "vImageConvert_ARGB16UtoRGB16U()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the alpha is the first channel and the function drops it, which is a move of six bytes per pixel and nothing else",
+      "effect": "byte for byte the system's answer, and it works in place as the header says it does",
+      "facts": "facts/Accelerate/vImagePixels.md",
+      "source": "the header of iOS 16.4; the host's own Accelerate, compared byte for byte in tests/backports/host/ypcbcr"
+    },
+    {
+      "api": "vImageConvert_ARGBFFFFtoRGBFFF()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the same drop of the first channel, twelve bytes per pixel",
+      "effect": "byte for byte the system's answer, and it works in place as the header says it does",
+      "facts": "facts/Accelerate/vImagePixels.md",
+      "source": "the header of iOS 16.4; the host's own Accelerate, compared byte for byte in tests/backports/host/ypcbcr"
+    }
+  ]
+}

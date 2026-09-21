@@ -14,6 +14,10 @@ extern vImage_Error charonHost_vImageConvert_420Yp8_Cb8_Cr8ToARGB8888(const vIma
 extern vImage_Error charonHost_vImageConvert_ARGB8888To420Yp8_CbCr8(const vImage_Buffer *, const vImage_Buffer *, const vImage_Buffer *, const vImage_ARGBToYpCbCr *, const uint8_t[4], vImage_Flags);
 extern vImage_Error charonHost_vImageConvert_ARGB8888To420Yp8_Cb8_Cr8(const vImage_Buffer *, const vImage_Buffer *, const vImage_Buffer *, const vImage_Buffer *, const vImage_ARGBToYpCbCr *, const uint8_t[4], vImage_Flags);
 extern vImage_Error charonHost_vImageExtractChannel_ARGB8888(const vImage_Buffer *, const vImage_Buffer *, long, vImage_Flags);
+extern vImage_Error charonHost_vImageConvert_RGB565toBGRA8888(Pixel_8, const vImage_Buffer *, const vImage_Buffer *, vImage_Flags);
+extern vImage_Error charonHost_vImageConvert_BGRA8888toRGB565(const vImage_Buffer *, const vImage_Buffer *, vImage_Flags);
+extern vImage_Error charonHost_vImageConvert_ARGB16UtoRGB16U(const vImage_Buffer *, const vImage_Buffer *, vImage_Flags);
+extern vImage_Error charonHost_vImageConvert_ARGBFFFFtoRGBFFF(const vImage_Buffer *, const vImage_Buffer *, vImage_Flags);
 
 static int failures, checks;
 
@@ -221,6 +225,72 @@ static void run_refusals(void)
     free(bigger.data);
 }
 
+static void run_pixels(void)
+{
+    const vImagePixelCount width = 37, height = 11;
+    vImage_Buffer packed = make(width, height, 2), theirWide = make(width, height, 4), ourWide = make(width, height, 4);
+    fill(packed, 2);
+    vImage_Error theirs = vImageConvert_RGB565toBGRA8888(0xC3, &packed, &theirWide, kvImageNoFlags);
+    vImage_Error ours = charonHost_vImageConvert_RGB565toBGRA8888(0xC3, &packed, &ourWide, kvImageNoFlags);
+    report(theirs == ours && theirs == kvImageNoError, "RGB565 becomes BGRA8888",
+           ([NSString stringWithFormat:@"%ld against %ld", (long)theirs, (long)ours]));
+    NSString *difference = compare(theirWide, ourWide, 4);
+    report(difference == nil, "the BGRA8888 from RGB565 is within the last bit", difference ?: @"");
+
+    vImage_Buffer wide = make(width, height, 4), theirPacked = make(width, height, 2), ourPacked = make(width, height, 2);
+    fill(wide, 4);
+    theirs = vImageConvert_BGRA8888toRGB565(&wide, &theirPacked, kvImageNoFlags);
+    ours = charonHost_vImageConvert_BGRA8888toRGB565(&wide, &ourPacked, kvImageNoFlags);
+    report(theirs == ours && theirs == kvImageNoError, "BGRA8888 becomes RGB565",
+           ([NSString stringWithFormat:@"%ld against %ld", (long)theirs, (long)ours]));
+    difference = compare(theirPacked, ourPacked, 2);
+    report(difference == nil, "the RGB565 from BGRA8888 is within the last bit", difference ?: @"");
+
+    vImage_Buffer deep = make(width, height, 8), theirThree = make(width, height, 6), ourThree = make(width, height, 6);
+    fill(deep, 8);
+    theirs = vImageConvert_ARGB16UtoRGB16U(&deep, &theirThree, kvImageNoFlags);
+    ours = charonHost_vImageConvert_ARGB16UtoRGB16U(&deep, &ourThree, kvImageNoFlags);
+    report(theirs == ours && theirs == kvImageNoError, "ARGB16U loses its alpha",
+           ([NSString stringWithFormat:@"%ld against %ld", (long)theirs, (long)ours]));
+    difference = compare(theirThree, ourThree, 6);
+    report(difference == nil, "the RGB16U is the bytes of the ARGB16U", difference ?: @"");
+
+    vImage_Buffer floats = make(width, height, 16), theirFloats = make(width, height, 12), ourFloats = make(width, height, 12);
+    fill(floats, 16);
+    theirs = vImageConvert_ARGBFFFFtoRGBFFF(&floats, &theirFloats, kvImageNoFlags);
+    ours = charonHost_vImageConvert_ARGBFFFFtoRGBFFF(&floats, &ourFloats, kvImageNoFlags);
+    report(theirs == ours && theirs == kvImageNoError, "ARGBFFFF loses its alpha",
+           ([NSString stringWithFormat:@"%ld against %ld", (long)theirs, (long)ours]));
+    difference = compare(theirFloats, ourFloats, 12);
+    report(difference == nil, "the RGBFFF is the bytes of the ARGBFFFF", difference ?: @"");
+
+    vImage_Buffer small = make(4, 4, 4);
+    theirs = vImageConvert_BGRA8888toRGB565(&small, &theirPacked, kvImageNoFlags);
+    ours = charonHost_vImageConvert_BGRA8888toRGB565(&small, &ourPacked, kvImageNoFlags);
+    report(theirs == ours, "a destination larger than the source is refused alike by RGB565",
+           ([NSString stringWithFormat:@"the system answers %ld, the backport answers %ld", (long)theirs, (long)ours]));
+    vImage_Buffer tinyPacked = make(4, 4, 2);
+    theirs = vImageConvert_RGB565toBGRA8888(0, &tinyPacked, &theirWide, kvImageNoFlags);
+    ours = charonHost_vImageConvert_RGB565toBGRA8888(0, &tinyPacked, &ourWide, kvImageNoFlags);
+    report(theirs == ours, "a destination larger than the source is refused alike by the 565 expansion",
+           ([NSString stringWithFormat:@"the system answers %ld, the backport answers %ld", (long)theirs, (long)ours]));
+    free(tinyPacked.data);
+    theirs = vImageConvert_RGB565toBGRA8888(0, &packed, &theirWide, (vImage_Flags)0x40000000);
+    ours = charonHost_vImageConvert_RGB565toBGRA8888(0, &packed, &ourWide, (vImage_Flags)0x40000000);
+    report(theirs == ours, "an unknown flag is refused alike by RGB565",
+           ([NSString stringWithFormat:@"the system answers %ld, the backport answers %ld", (long)theirs, (long)ours]));
+    theirs = vImageConvert_RGB565toBGRA8888(0, &packed, &theirWide, kvImageGetTempBufferSize);
+    ours = charonHost_vImageConvert_RGB565toBGRA8888(0, &packed, &ourWide, kvImageGetTempBufferSize);
+    report(theirs == ours, "asked for a temporary buffer both answer the same",
+           ([NSString stringWithFormat:@"the system answers %ld, the backport answers %ld", (long)theirs, (long)ours]));
+
+    free(packed.data); free(theirWide.data); free(ourWide.data);
+    free(wide.data); free(theirPacked.data); free(ourPacked.data);
+    free(deep.data); free(theirThree.data); free(ourThree.data);
+    free(floats.data); free(theirFloats.data); free(ourFloats.data);
+    free(small.data);
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -240,6 +310,7 @@ int main(void)
                          permutations[which], (uint8_t)(0x20 * which + 15));
             }
         run_refusals();
+        run_pixels();
 
         report(memcmp(kvImage_YpCbCrToARGBMatrix_ITU_R_601_4, charonHost_kvImage_YpCbCrToARGBMatrix_ITU_R_601_4, sizeof(vImage_YpCbCrToARGBMatrix)) == 0,
                "the 601-4 YpCbCr to ARGB matrix is the system's own", @"the coefficients differ");

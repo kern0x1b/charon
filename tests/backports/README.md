@@ -36,7 +36,7 @@ inputs.
     sh host/swipeactions/run.sh
     sh host/registry/run.sh <dyld_shared_cache_armv7>
     sh host/spring/run.sh  writes device/spring-expectations.h when it passes
-    sh host/ypcbcr/run.sh  the 420 Y'CbCr conversions against the host's own vImage
+    sh host/ypcbcr/run.sh  the 420 Y'CbCr conversions and the four pixel conversions of iOS 7 against the host's own vImage
     sh host/blocks/run.sh
     sh host/textcontent/run.sh
     sh host/avcapture/run.sh
@@ -432,7 +432,8 @@ postinst run with `DPKG_ROOT` set to it.
   functions comes from, checks the four matrices against the coefficients the newer release holds, holds every luma and
   chroma byte of a 34 by 18 picture to the arithmetic the header writes out within the last bit, checks that the luma
   and chroma are the same whichever chroma layout is asked for, that the alpha the caller gives reaches every pixel,
-  that each of the four channels is extracted byte for byte, and that the refusals are the documented ones. It needs the
+  that each of the four channels is extracted byte for byte, and that the refusals are the documented ones. It then
+  holds the four pixel conversions of iOS 7 to the header's integer arithmetic exactly, with no tolerance. It needs the
   package built with `accelerate = true`.
 - `tolerance.m`: a process of its own, the timer tolerance, which is a property
   and two CoreFoundation functions.
