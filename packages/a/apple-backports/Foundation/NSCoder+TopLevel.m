@@ -10,7 +10,7 @@ NSError *charon_coder_error(NSException *exception, NSInteger code)
     return [NSError errorWithDomain:NSCocoaErrorDomain code:code userInfo:reason ? @{NSDebugDescriptionErrorKey: reason} : nil];
 }
 
-id charon_decode_top_level(NSCoder *coder, id (^decode)(void), NSError **error)
+id charon_decode_top_level(NSCoder *coder, NSString *key, id (^decode)(void), NSError **error)
 {
     id decoded = nil;
     NSError *failure = nil;
@@ -26,7 +26,8 @@ id charon_decode_top_level(NSCoder *coder, id (^decode)(void), NSError **error)
     if (!failure)
         failure = objc_getAssociatedObject(coder, &CharonCoderErrorKey);
     if (!failure && !decoded)
-        failure = [NSError errorWithDomain:NSCocoaErrorDomain code:4865 userInfo:nil];
+        failure = [NSError errorWithDomain:NSCocoaErrorDomain code:NSCoderValueNotFoundError
+                                  userInfo:key ? @{NSDebugDescriptionErrorKey: [NSString stringWithFormat:@"requested key: '%@'", key]} : nil];
     if (failure) {
         decoded = nil;
         if (error)
@@ -63,28 +64,28 @@ id charon_decode_top_level(NSCoder *coder, id (^decode)(void), NSError **error)
 
 - (id)decodeTopLevelObjectAndReturnError:(NSError **)error
 {
-    return charon_decode_top_level(self, ^{
+    return charon_decode_top_level(self, nil, ^{
         return [self decodeObject];
     }, error);
 }
 
 - (id)decodeTopLevelObjectForKey:(NSString *)key error:(NSError **)error
 {
-    return charon_decode_top_level(self, ^{
+    return charon_decode_top_level(self, key, ^{
         return [self decodeObjectForKey:key];
     }, error);
 }
 
 - (id)decodeTopLevelObjectOfClass:(Class)aClass forKey:(NSString *)key error:(NSError **)error
 {
-    return charon_decode_top_level(self, ^{
+    return charon_decode_top_level(self, key, ^{
         return [self decodeObjectOfClass:aClass forKey:key];
     }, error);
 }
 
 - (id)decodeTopLevelObjectOfClasses:(NSSet *)classes forKey:(NSString *)key error:(NSError **)error
 {
-    return charon_decode_top_level(self, ^{
+    return charon_decode_top_level(self, key, ^{
         return [self decodeObjectOfClasses:classes forKey:key];
     }, error);
 }

@@ -19,9 +19,6 @@ static id charon_unarchive(NSSet *classes, NSData *data, NSError **error)
             *error = failure;
         return nil;
     }
-    if (!decoded && error)
-        *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSCoderValueNotFoundError
-                                 userInfo:@{NSDebugDescriptionErrorKey: [NSString stringWithFormat:@"requested key: '%@'", NSKeyedArchiveRootObjectKey]}];
     return decoded;
 }
 
