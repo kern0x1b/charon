@@ -863,3 +863,5 @@ the system's `NSOperationQueue` over `device/underlying-cases.m` (twenty-one rec
 serial and of a concurrent queue with a limit, the refusal to change the queue when it is not empty, priority and dependencies,
 cancelling, suspending, counts, asynchronous operations), and writes what the system answered for `device/underlying.m`, which runs
 the same cases through the real `NSOperationQueue` on the release.
+
+`device/viewtransition.m` changes the status bar orientation of a window whose root controller has a child and checks the size each is told through `viewWillTransitionToSize:withTransitionCoordinator:`, the quarter turn the coordinator carries, the alongside block and the completion, and that the same orientation twice tells nobody. It holds its own expectations: the system has no rotation to record.
