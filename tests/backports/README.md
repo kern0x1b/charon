@@ -756,6 +756,8 @@ writes `/private/var/backports/swipeui.log` and `swipeui.done`.
 
 `host/fitting/run.sh` records what the host's UIKit answers for `systemLayoutSizeFittingSize:withHorizontalFittingPriority:verticalFittingPriority:` on a view whose label wraps (widths, the compressed and expanded sizes, required and low priorities) and `device/fitting.m` holds the port to it.
 
+`host/flowauto/run.sh` records the frame of every item and the content size of a flow layout that self-sizes, in 16 scenarios (fixed-width cells, height-only cells, cells of their own width, insets, spacing, headers, a delegate's sizes, the automatic size, last lines, cells with no constraints); `device/flowauto.m` builds them on iOS 6 and compares to the pixel, or to a point where the cell's width comes from its text.
+
 `host/touchtypes/run.sh` records what the host's UIKit answers for `allowedTouchTypes`, `requiresExclusiveTouchType` and `allowedPressTypes` of a gesture recognizer (the defaults, an array set, an empty array, duplicates) into `device/touchtypes-expectations.h`, and `device/touchtypes.m` holds the port to them on a device and then taps with a real finger on views whose tap recognizers allow different touch types.
 
 `host/textalign/run.sh` records what the host's UIKit does when `textAlignment` of a label, a text field and a text view is set to left, centre, right and natural (the value read back, and the side the ink of the rendered control is on, for a Latin and a Hebrew text), into `device/textalign-expectations.h`, and `device/textalign.m` holds the port to the same records on a device.
