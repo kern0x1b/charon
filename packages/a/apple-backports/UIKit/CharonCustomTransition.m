@@ -189,6 +189,8 @@ static void charon_release_deferral(NSArray *begun)
     BOOL _completed;
     UIModalPresentationStyle _style;
     CGRect _initialFrom, _finalFrom, _initialTo, _finalTo;
+    BOOL _fromViewKeyHidden;
+    BOOL _toViewKeyHidden;
     void (^_finish)(BOOL didComplete);
     id<UIViewControllerAnimatedTransitioning> _animator;
     id<UIViewControllerInteractiveTransitioning> _interactor;
@@ -248,9 +250,9 @@ static void charon_release_deferral(NSArray *begun)
 - (UIView *)viewForKey:(UITransitionContextViewKey)key
 {
     if ([key isEqualToString:UITransitionContextFromViewKey])
-        return _from.view;
+        return _fromViewKeyHidden ? nil : _from.view;
     if ([key isEqualToString:UITransitionContextToViewKey])
-        return _to.view;
+        return _toViewKeyHidden ? nil : _to.view;
     return nil;
 }
 
@@ -546,4 +548,188 @@ BOOL charon_custom_transition(CharonTransitionKind kind, UIViewController *from,
     else
         dispatch_async(dispatch_get_main_queue(), run);
     return YES;
+}
+
+static const char charon_presentation_key;
+
+UIPresentationController *charon_presentation_controller_of(UIViewController *controller)
+{
+    return objc_getAssociatedObject(controller, &charon_presentation_key);
+}
+
+void charon_set_presentation_controller(UIViewController *controller, UIPresentationController *presentation)
+{
+    objc_setAssociatedObject(controller, &charon_presentation_key, presentation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+@interface CharonPresentationContainer : UIView
+@property (nonatomic, weak) UIPresentationController *presentation;
+@end
+
+@implementation CharonPresentationContainer
+@synthesize presentation = _presentation;
+
+- (void)layoutSubviews
+{
+    [_presentation containerViewWillLayoutSubviews];
+    [super layoutSubviews];
+    [_presentation containerViewDidLayoutSubviews];
+}
+
+@end
+
+@interface CharonImmediateAnimator : NSObject <UIViewControllerAnimatedTransitioning>
+@end
+
+@implementation CharonImmediateAnimator
+- (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)context { return 0; }
+- (void)animateTransition:(id<UIViewControllerContextTransitioning>)context
+{
+    UIViewController *to = [context viewControllerForKey:UITransitionContextToViewControllerKey];
+    UIView *toView = [context viewForKey:UITransitionContextToViewKey];
+    if (toView && toView.superview != context.containerView && [context finalFrameForViewController:to].size.width > 0) {
+        toView.frame = [context finalFrameForViewController:to];
+        [context.containerView addSubview:toView];
+    }
+    [context completeTransition:YES];
+}
+@end
+
+static void charon_presentation_run(BOOL presenting, UIViewController *from, UIViewController *to, UIPresentationController *presentation, id<UIViewControllerAnimatedTransitioning> animator, void (^native)(void), void (^completion)(BOOL finished))
+{
+    UIWindow *window = (presenting ? from.view.window : from.view.window) ?: [UIApplication sharedApplication].keyWindow;
+    BOOL removes = [presentation shouldRemovePresentersView];
+    UIView *presenterView = presenting ? from.view : to.view;
+    UIView *presentedView = presenting ? to.view : from.view;
+    BOOL immediate = animator == nil;
+    if (immediate)
+        animator = [[CharonImmediateAnimator alloc] init];
+
+    CharonPresentationContainer *container = presenting ? nil : (CharonPresentationContainer *)presentation.containerView;
+    CharonViewState *presenterPre = [CharonViewState captureView:presenterView];
+    NSMutableArray *controllers = [NSMutableArray array];
+    charon_collect(from, controllers);
+    charon_collect(to, controllers);
+    NSArray *begun = charon_begin_deferral(controllers);
+    charon_set_mode(begun, CharonDeferralSwallow);
+
+    if (presenting) {
+        container = [[CharonPresentationContainer alloc] initWithFrame:window.bounds];
+        container.presentation = presentation;
+        container.backgroundColor = [UIColor clearColor];
+        container.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        [window addSubview:container];
+        [presentation charon_setContainerView:container];
+        if (removes) {
+            [presenterView removeFromSuperview];
+            presenterView.frame = window.bounds;
+            [container addSubview:presenterView];
+        }
+        charon_set_mode(begun, CharonDeferralPass);
+        [presentation presentationTransitionWillBegin];
+        charon_set_mode(begun, CharonDeferralSwallow);
+        native();
+        [presentedView removeFromSuperview];
+        if (removes) {
+            [presenterView removeFromSuperview];
+            presenterView.frame = window.bounds;
+            [container addSubview:presenterView];
+        } else {
+            [presenterPre restoreView:presenterView];
+        }
+        charon_set_mode(begun, CharonDeferralPass);
+        if (removes)
+            [from viewWillDisappear:YES];
+        [to viewWillAppear:YES];
+        charon_set_mode(begun, CharonDeferralSwallow);
+    } else {
+        charon_set_mode(begun, CharonDeferralPass);
+        [presentation dismissalTransitionWillBegin];
+        [from viewWillDisappear:YES];
+        if (removes)
+            [to viewWillAppear:YES];
+        charon_set_mode(begun, CharonDeferralSwallow);
+    }
+
+    CGRect presentedFrame = [presentation frameOfPresentedViewInContainerView];
+    CharonTransitionContext *context = [[CharonTransitionContext alloc] init];
+    context->_container = container;
+    context->_from = from;
+    context->_to = to;
+    context->_animated = !immediate;
+    context->_style = presentation.presentationStyle;
+    context->_initialFrom = presenting ? presentedFrame : presentedFrame;
+    context->_finalFrom = presenting ? (removes ? CGRectZero : container.bounds) : presentedFrame;
+    context->_initialTo = CGRectZero;
+    context->_finalTo = presenting ? presentedFrame : container.bounds;
+    context->_animator = animator;
+    context->_fromViewKeyHidden = presenting ? !removes : NO;
+    context->_toViewKeyHidden = presenting ? NO : !removes;
+    NSTimeInterval duration = [animator transitionDuration:context];
+    id<UIViewControllerTransitionCoordinator> coordinator = to.transitionCoordinator ?: from.transitionCoordinator;
+    if ([coordinator isKindOfClass:[CharonTransitionCoordinator class]])
+        [(CharonTransitionCoordinator *)coordinator setContainer:container duration:duration];
+
+    __block UIViewController *(^unused)(void) = nil;
+    (void)unused;
+    context->_finish = ^(BOOL didComplete) {
+        UIView *shown = presentation.presentedView;
+        if (presenting) {
+            if (shown.superview != container) {
+                [shown removeFromSuperview];
+                [container addSubview:shown];
+            }
+            shown.frame = presentedFrame;
+            [presentation presentationTransitionDidEnd:didComplete];
+            if (removes)
+                [presenterView removeFromSuperview];
+        } else {
+            [presentation dismissalTransitionDidEnd:didComplete];
+            native();
+            [container removeFromSuperview];
+            [presentation charon_setContainerView:nil];
+            if (!presenterView.window && window) {
+                [presenterView removeFromSuperview];
+                presenterView.frame = window.bounds;
+                [window insertSubview:presenterView atIndex:0];
+            }
+        }
+        charon_set_mode(begun, CharonDeferralPass);
+        if (presenting) {
+            [to viewDidAppear:YES];
+            if (removes)
+                [from viewDidDisappear:YES];
+        } else {
+            if (removes)
+                [to viewDidAppear:YES];
+            [from viewDidDisappear:YES];
+        }
+        charon_set_mode(begun, CharonDeferralSwallow);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                for (NSArray *entry in begun)
+                    if ([entry[1] owners] == 1)
+                        [entry[1] setMode:CharonDeferralPass];
+                charon_release_deferral(begun);
+            });
+        });
+        if ([coordinator isKindOfClass:[CharonTransitionCoordinator class]])
+            [(CharonTransitionCoordinator *)coordinator finish];
+        if (completion)
+            completion(didComplete);
+        if (!immediate && [animator respondsToSelector:@selector(animationEnded:)])
+            [animator animationEnded:didComplete];
+    };
+    [animator animateTransition:context];
+}
+
+void charon_presentation_present(UIViewController *presenting, UIViewController *presented, UIPresentationController *presentation, id<UIViewControllerAnimatedTransitioning> animator, void (^native)(void), void (^completion)(BOOL finished))
+{
+    charon_set_presentation_controller(presented, presentation);
+    charon_presentation_run(YES, presenting, presented, presentation, animator, native, completion);
+}
+
+void charon_presentation_dismiss(UIViewController *presented, UIViewController *presenting, UIPresentationController *presentation, id<UIViewControllerAnimatedTransitioning> animator, void (^native)(void), void (^completion)(BOOL finished))
+{
+    charon_presentation_run(NO, presented, presenting, presentation, animator, native, completion);
 }

@@ -27,19 +27,39 @@ running 6.1.3.
 - The six transition hooks do nothing, and a subclass that overrides them and calls `super`
   is called in the order it is asked.
 
-## What the port answers, and what iOS 6 does with it
+## What the port does
 
-The release presents a view controller itself - a full screen, a page sheet or a form sheet -
-and has no presentation controller. Nothing makes a `UIPresentationController`, shows one or
-calls its hooks. An application that subclasses it for a custom presentation links and runs,
-and the release presents that controller by its `modalPresentationStyle` as it always has:
-`UIModalPresentationCustom` is not a style of the release, so the presentation is the full
-screen one.
+The release presents a view controller itself - a full screen, a page sheet or a form sheet - and has no presentation controller.
+For a presentation in the style `UIModalPresentationCustom` (4), `OverFullScreen` (5) or `OverCurrentContext` (6), the port asks the
+presented controller's `transitioningDelegate` for `-presentationControllerForPresentedViewController:presentingViewController:sourceViewController:`,
+and when it answers a `UIPresentationController` the presentation is that object's, as on iOS 8; otherwise the
+release presents as it always has (a style that is not its own is its full screen one). What is different from the system's is written below;
+everything else was recorded from the host by `tests/backports/host/custompresentation/run.sh` (48 records, four variants: a
+presentation that keeps the presenter's view and animates, one that removes it, one without an animator and one that says
+`shouldPresentInFullscreen`) and is held on the iPad 2 by `tests/backports/device/custompresentation.m` (38 checks).
 
-`-[UIViewController presentationController]` answers nil for every controller. UIKit answers
-an object of its own for every style except custom and none; on this release there is none to
-answer, and a message to nil - the usual `presentationController.delegate = self` - does
-nothing.
+- `containerView` is a view on the window that the port makes, the same for the presentation and the dismissal, and is nil before
+  the presentation begins and after the dismissal ends. It stays while the controller is presented, and it holds what the
+  presentation controller adds to it (a dimming view, for one) and the presented view. Its `layoutSubviews` sends
+  `containerViewWillLayoutSubviews` and `containerViewDidLayoutSubviews`.
+- The order of a presentation is: the delegate is asked for the presentation controller, `presentationTransitionWillBegin`,
+  `viewWillDisappear:` of the presenting controller (only when `shouldRemovePresentersView` is YES) and `viewWillAppear:` of the
+  presented one, `animateTransition:` of the animator (when the delegate answers one), `completeTransition:`,
+  `presentationTransitionDidEnd:`, `viewDidAppear:` of the presented controller and `viewDidDisappear:` of the presenting one, the
+  completion handler and `animationEnded:`. A dismissal is `dismissalTransitionWillBegin`, `viewWillDisappear:` of the presented
+  controller (and `viewWillAppear:` of the presenting one when it was removed), the animator, `completeTransition:`,
+  `dismissalTransitionDidEnd:`, `viewDidAppear:` (when removed) and `viewDidDisappear:`, the completion handler and
+  `animationEnded:`. With no animator there is no animation at all and no `animationEnded:`, as on the host.
+- The context of the animator: the presented view goes in `viewForKey:` of the to controller and it is not in the container yet;
+  the presenting view is the from view only when `shouldRemovePresentersView` is YES (it is in the container then), else `nil`; `presentationStyle`
+  is the style of the presented controller; the final frame of the presented controller is
+  `frameOfPresentedViewInContainerView` (the container's bounds by default, which is also what the class answers once it has a container).
+  `shouldPresentInFullscreen` is asked and changes nothing the port shows.
+- While the controller is presented `presentedViewController.presentationController` is that object and
+  `presentationStyle` answers the style; the presented view is at `frameOfPresentedViewInContainerView` in the container, and
+  the presenting view stays in the window under it unless it is to be removed.
 
-Not carried: the focus and trait-change protocol methods beyond `traitCollectionDidChange:`,
-`preferredContentSize` and the two size-change messages, none of which anything sends.
+Not carried: a presentation controller for any other style (the release's own presentation is kept, and
+`presentationController` answers nil for it), adaptive presentation (`adaptivePresentationStyle` is kept and never acts), and the trait
+and content-size messages, which nothing sends. A `presentedView` that is not the presented controller's view is used as the view in the
+container, but its content is the subclass's to build.

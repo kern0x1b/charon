@@ -1,4 +1,6 @@
 #import <UIKit/UIKit.h>
+#import <objc/runtime.h>
+#import "CharonCustomTransition.h"
 
 #pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 #pragma clang diagnostic ignored "-Wobjc-property-implementation"
@@ -10,6 +12,7 @@
     UIViewController *_presentingViewController;
     __weak id<UIAdaptivePresentationControllerDelegate> _delegate;
     UITraitCollection *_overrideTraitCollection;
+    UIView *_containerView;
 }
 
 - (instancetype)initWithPresentedViewController:(UIViewController *)presentedViewController presentingViewController:(UIViewController *)presentingViewController
@@ -58,7 +61,12 @@
 
 - (UIView *)containerView
 {
-    return nil;
+    return _containerView;
+}
+
+- (void)charon_setContainerView:(UIView *)view
+{
+    _containerView = view;
 }
 
 - (UIView *)presentedView
@@ -88,7 +96,7 @@
 
 - (CGRect)frameOfPresentedViewInContainerView
 {
-    return CGRectZero;
+    return _containerView ? _containerView.bounds : CGRectZero;
 }
 
 - (CGSize)sizeForChildContentContainer:(id<UIContentContainer>)container withParentContainerSize:(CGSize)parentSize
@@ -159,7 +167,7 @@
 
 - (UIPresentationController *)presentationController
 {
-    return nil;
+    return charon_presentation_controller_of(self);
 }
 
 @end

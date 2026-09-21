@@ -78,6 +78,15 @@ static id<UIViewControllerAnimatedTransitioning> charon_present_animator(UIViewC
     return [delegate animationControllerForPresentedController:presented presentingController:presenting sourceController:source];
 }
 
+static UIPresentationController *charon_presentation_for(UIViewController *presented, UIViewController *presenting, UIViewController *source)
+{
+    UIModalPresentationStyle style = presented.modalPresentationStyle;
+    id<UIViewControllerTransitioningDelegate> delegate = presented.transitioningDelegate;
+    if (!(style >= 4 && style <= 6) || ![delegate respondsToSelector:@selector(presentationControllerForPresentedViewController:presentingViewController:sourceViewController:)])
+        return nil;
+    return [delegate presentationControllerForPresentedViewController:presented presentingViewController:presenting sourceViewController:source];
+}
+
 static id<UIViewControllerAnimatedTransitioning> charon_dismiss_animator(UIViewController *presented)
 {
     id<UIViewControllerTransitioningDelegate> delegate = presented.transitioningDelegate;
@@ -137,6 +146,17 @@ static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewCo
     class_replaceMethod(controller, present, imp_implementationWithBlock(^(UIViewController *self, UIViewController *presented, BOOL animated, void (^completion)(void)) {
         UIViewController *presenting = charon_presenting_root(self);
         UIModalPresentationStyle style = presented.modalPresentationStyle;
+        UIPresentationController *presentation = charon_presentation_for(presented, presenting, self);
+        if (presentation) {
+            id<UIViewControllerAnimatedTransitioning> presentationAnimator = animated ? charon_present_animator(presented, presenting, self) : nil;
+            CharonTransitionCoordinator *coordinator = charon_begin(presenting, presented, animated, YES, style);
+            charon_presentation_present(presenting, presented, presentation, presentationAnimator, ^{
+                presented.modalPresentationStyle = UIModalPresentationFullScreen;
+                presentOriginal(self, present, presented, NO, nil);
+                presented.modalPresentationStyle = style;
+            }, charon_finisher(coordinator, presenting, presented, completion));
+            return;
+        }
         id<UIViewControllerAnimatedTransitioning> animator = animated && (style == UIModalPresentationFullScreen || style >= 4) ? charon_present_animator(presented, presenting, self) : nil;
         if (animator) {
             CharonTransitionCoordinator *coordinator = charon_begin(presenting, presented, YES, YES, style);
@@ -165,6 +185,15 @@ static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewCo
     class_replaceMethod(controller, dismiss, imp_implementationWithBlock(^(UIViewController *self, BOOL animated, void (^completion)(void)) {
         UIViewController *presented = self.presentedViewController ?: self;
         UIViewController *presenting = presented.presentingViewController ?: self;
+        UIPresentationController *presentation = presented.presentingViewController ? charon_presentation_controller_of(presented) : nil;
+        if (presentation && presentation.containerView) {
+            id<UIViewControllerAnimatedTransitioning> presentationAnimator = animated ? charon_dismiss_animator(presented) : nil;
+            CharonTransitionCoordinator *coordinator = charon_begin(presented, presenting, animated, YES, presented.modalPresentationStyle);
+            charon_presentation_dismiss(presented, presenting, presentation, presentationAnimator, ^{
+                dismissOriginal(self, dismiss, NO, nil);
+            }, charon_finisher(coordinator, presented, presenting, completion));
+            return;
+        }
         id<UIViewControllerAnimatedTransitioning> animator = animated && presented.presentingViewController ? charon_dismiss_animator(presented) : nil;
         if (animator) {
             CharonTransitionCoordinator *coordinator = charon_begin(presented, presenting, YES, YES, presented.modalPresentationStyle);

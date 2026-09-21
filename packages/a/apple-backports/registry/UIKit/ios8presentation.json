@@ -6,22 +6,19 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the release presents a view controller itself and has no presentation controller to hand a custom presentation to",
-      "effect": "the class holds a presented and a presenting view controller, a delegate and the defaults UIKit answers; nothing on this release makes one, shows one or calls its hooks, so a subclass links and its overrides are called only by an application that calls them",
+      "status": "implemented",
       "facts": "facts/UIKit/UIPresentationController.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/presentation; the header of SDK 16.4"
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/custompresentation and host/presentation, and tests/backports/device/custompresentation.m and presentation.m on iOS 6"
     },
     {
       "api": "UIViewController.presentationController",
       "kind": "property",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the release presents a view controller itself and has no presentation controller to hand a custom presentation to",
-      "effect": "every controller answers nil, so a message to it - setting its delegate, for one - does nothing; UIKit answers an object of its own for every style but custom and none",
+      "status": "implemented",
+      "effect": "the controller of a presentation that a transitioning delegate gave (a custom, over full screen or over current context one) while it is presented, and nil for every other presentation, where the system answers its own",
       "facts": "facts/UIKit/UIPresentationController.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/presentation; the header of SDK 16.4"
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/custompresentation and host/presentation, and tests/backports/device/custompresentation.m and presentation.m on iOS 6"
     },
     {
       "api": "UIInputViewController",
@@ -205,6 +202,15 @@
       "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and interactivepan.m (real touches) on iOS 6",
       "reason": "the transition is driven by linear time of the container's layer, and the release has no timing curve provider to set on an animation",
       "effect": "the curve is kept and answered back and does not change how a finishing or cancelled transition runs"
+    },
+    {
+      "api": "-[UIViewControllerTransitioningDelegate presentationControllerForPresentedViewController:presentingViewController:sourceViewController:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPresentationController.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/custompresentation and host/presentation, and tests/backports/device/custompresentation.m and presentation.m on iOS 6"
     }
   ]
 }
