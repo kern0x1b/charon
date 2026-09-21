@@ -36,6 +36,17 @@ the flag it is given and changes nothing.
 No object of `GCController`, `GCMouse` or `GCKeyboard` is ever made, so the members of an
 instance (the profiles, the motion, the battery, the light, the haptics, the player index, the
 snapshot and the capture) are absent, and so are the classes of the profiles, the
-elements and the snapshots, the inputs, the constants of their names and the functions of the
-snapshot data. An application that reads the controller list gets nothing to read them from.
+elements and the snapshots, the inputs and the functions of the snapshot data. An application that reads the controller list gets nothing to read them from.
 The rows are in `registry/GameController/`.
+
+## The names of inputs and keys
+
+The constants that name the inputs of a profile (`GCInputButtonA`, `GCInputLeftThumbstick` and the rest), the key
+codes and key names of a keyboard (`GCKeyCode...`, `GCKey...`), the localities of the haptics and the notification of a
+customization are carried with the values the host's GameController gives them: a string equal to what the header says the name
+is (`GCInputButtonA` is `Button A`), the number of the key on the keyboard usage page for a key code, and 1000000 for the
+infinite duration of a haptic. An application that names one loads, as it does on a release that has them; there is no
+device whose input it names, so it finds no element. The names of the snapshot data versions go with the
+snapshots, which are absent.
+
+Source for the values: the host's GameController; for the release that added each name, the header of iOS 16.4.
