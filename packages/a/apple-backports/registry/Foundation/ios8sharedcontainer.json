@@ -1,0 +1,16 @@
+{
+  "framework": "Foundation",
+  "entries": [
+    {
+      "api": "NSURLSessionConfiguration.sharedContainerIdentifier",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release has no app groups and no shared container that a background transfer could be handed to",
+      "effect": "the identifier is kept and read back, copied with the configuration and given to no container; transfers run in the application's own container as before",
+      "facts": "facts/Foundation/NSURLSessionConfigurationSharedContainer.md",
+      "source": "the host's own Foundation under Mac Catalyst through tests/backports/host/tail3, and tests/backports/device/tail3.m on iOS 6"
+    }
+  ]
+}

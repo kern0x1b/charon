@@ -879,3 +879,5 @@ the same cases through the real `NSOperationQueue` on the release.
 `host/tail2/run.sh` records what the system does with an `NSExtensionContext` made by an application (no input items, no calls of its handlers, the controllers of an application having none) and `device/tail2.m` runs the same cases on iOS 6.
 
 `device/textfieldreason.m` ends the editing of a real text field with a delegate that has only `-textFieldDidEndEditing:reason:`, one that has only the old method, and none. It has no host record: a text field of a headless scene does not become the first responder.
+
+`host/tail3/run.sh` records what the system does with `sharedContainerIdentifier` of an `NSURLSessionConfiguration` - default, set, copied, cleared, on a background configuration, kept by a session - and `device/tail3.m` runs the same cases on iOS 6.

@@ -274,7 +274,6 @@ static NSURLCredentialStorage *charon_ephemeral_credential_storage(void)
 @dynamic allowsExpensiveNetworkAccess;
 @dynamic allowsConstrainedNetworkAccess;
 @dynamic requiresDNSSECValidation;
-@dynamic sharedContainerIdentifier;
 @dynamic TLSMinimumSupportedProtocol, TLSMaximumSupportedProtocol;
 @dynamic TLSMinimumSupportedProtocolVersion;
 @dynamic TLSMaximumSupportedProtocolVersion;
@@ -336,6 +335,11 @@ static NSURLCredentialStorage *charon_ephemeral_credential_storage(void)
     return self;
 }
 
+- (id)mutableCopyWithZone:(NSZone *)zone
+{
+    return [self copyWithZone:zone];
+}
+
 - (id)copyWithZone:(NSZone *)zone
 {
     NSURLSessionConfiguration *copy = [[[self class] alloc] init];
@@ -360,6 +364,7 @@ static NSURLCredentialStorage *charon_ephemeral_credential_storage(void)
     copy->_URLCredentialStorage = self.URLCredentialStorage;
     copy->_URLCache = self.URLCache;
     copy->_protocolClasses = self.protocolClasses;
+    copy.sharedContainerIdentifier = self.sharedContainerIdentifier;
     return copy;
 }
 
