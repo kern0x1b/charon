@@ -44,6 +44,7 @@ inputs.
     sh host/homeindicator/run.sh  writes device/homeindicator-expectations.h when it passes, then holds the port's categories to it with mutants
     sh host/vision/run.sh  writes device/vision-expectations.h when it passes, then holds the port's Vision classes, under names of their own, to it with mutants
     sh host/traits11/run.sh  writes device/traits11-expectations.h when it passes, then holds the port's text input traits, password rules and view flag to it with mutants
+    sh host/callkit/run.sh  writes device/callkit-expectations.h, then holds the port's CallKit classes, under names of their own, to it with mutants
     sh host/insetref/run.sh  writes device/insetref-expectations.h when it passes, then holds the port's flow layout to it with mutants
     sh host/imageflip/run.sh
     sh host/ios1516/run.sh  writes device/ios1516-expectations.h when it passes
@@ -123,6 +124,15 @@ accessor or protocol the release carries, and an `ignored` entry the release
 does not carry, within the releases the entry covers. The script gives the check
 entries made up for the purpose, against the cache it is passed, and needs no
 device.
+
+`host/callkit/run.sh` holds the port's CallKit to the host's under Mac Catalyst: the four error domains, the defaults and the copy of a
+provider configuration, the deadline each action class carries, the completeness of a transaction, the equality, hashing and secure
+coding of a handle, and what a copy of each object is. A tool has no VoIP entitlement, so anything that reaches callservicesd comes back
+`CXErrorCodeRequestTransactionErrorUnentitled` and no delegate method is ever called; the transactions the port really performs, the
+timeouts and the refusals are held on the device by `device/callkit.m` instead. Two records are expected to differ and are named in the
+script: the host's CallKit is that of iOS 14 and later, which drops the deprecated localized name from a configuration's copy and keeps a
+ringtone as a resolved URL, where the iOS 10 header the port implements has two plain properties. The test fails if they ever stop
+differing, and the device is held to the port's answer for those two and to the host's for the rest.
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed

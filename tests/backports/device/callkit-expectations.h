@@ -1,0 +1,17 @@
+static const char callkit_expectations[] =
+    "{\"action.classes\":\"CXCallAction CXAction NSObject 1\",\"action.copy\":\"same=0 class=CXStartCallAction uuid=1 callUUID=1 contact=person video=1 handle=+1\",\"action.d"
+    "efaults\":\"complete=0 video=0 contact=0 handle=+1\",\"action.failUnheld\":\"0\",\"action.fulfillUnheld\":\"0\",\"action.fulfillWithDateUnheld\":\"0\",\"action.identity\":\"callU"
+    "UID=1 ownUUID=0 ownNonNil=1\",\"action.kinds\":\"answer=1 end=1 held=1 muted=1 group=1 digits=123 type=2\",\"action.secureCoding\":\"1\",\"action.setters\":\"held=0 muted=0"
+    " group=0 digits=45 type=3\",\"action.timeouts\":\"CXAction=5 CXStartCallAction=600 CXAnswerCallAction=60 CXEndCallAction=5 CXSetHeldCallAction=5 CXSetMutedCallActio"
+    "n=5 CXSetGroupCallAction=5 CXPlayDTMFCallAction=5\",\"configuration.copy\":\"same=0 groups=7 perGroup=9 video=1 recents=0 handles=2\",\"configuration.copy.detached\":\""
+    "7\",\"configuration.defaults\":\"groups=2 perGroup=5 video=0 recents=1 handles=0 ringtone=0 icon=0\",\"configuration.deprecatedName\":\"set=Charon copied=Charon\",\"confi"
+    "guration.ringtone\":\"set=ring.caf copied=ring.caf\",\"configuration.titled\":\"Charon groups=2\",\"configuration.unnamed\":\"1\",\"controller.observer\":\"nonNil=1 stable=1 "
+    "calls=0\",\"controller.queued\":\"nonNil=1 shared=0\",\"domain.base\":\"com.apple.CallKit.error\",\"domain.directory\":\"com.apple.CallKit.error.calldirectorymanager\",\"doma"
+    "in.incoming\":\"com.apple.CallKit.error.incomingcall\",\"domain.transaction\":\"com.apple.CallKit.error.requesttransaction\",\"handle.copy\":\"same=0 equal=1\",\"handle.equ"
+    "ality\":\"same=1 isEqual=1 hash=1 type=0 self=1\",\"handle.hashSpread\":\"type=1 value=1 both=1\",\"handle.notAHandle\":\"0\",\"handle.roundTrip\":\"archived=1 equal=1 error="
+    "0\",\"handle.secureCoding\":\"1\",\"handle.values\":\"2 +15551234 1 +15551234 3 a@b.c\",\"observer.empty\":\"0\",\"observer.nilDelegate\":\"0\",\"provider.configuration\":\"same=0 "
+    "groups=7 pending=0\",\"provider.pendingOfClass\":\"0\",\"transaction.added\":\"actions=2 complete=0\",\"transaction.copy\":\"same=0 actions=2 firstIdentical=0 firstClass=CX"
+    "EndCallAction uuid=1\",\"transaction.empty\":\"complete=1 actions=0 uuid=1\",\"transaction.one\":\"complete=0 actions=1 identical=1\",\"transaction.secureCoding\":\"1\",\"upd"
+    "ate.copy\":\"same=0 handle=who name=Who hold=1 group=1 ungroup=1 dtmf=1 video=1\",\"update.copy.detached\":\"Who\",\"update.defaults\":\"handle=0 name=0 hold=0 group=0 un"
+    "group=0 dtmf=0 video=0\"}"
+;
