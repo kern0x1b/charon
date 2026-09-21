@@ -6,7 +6,7 @@ void charon_set_trait_style(UITraitCollection *collection, UIUserInterfaceStyle 
 typedef struct {
     __unsafe_unretained NSString *name;
     NSInteger screenDefault;
-    BOOL described;
+    int described;
     __unsafe_unretained NSString *first;
     __unsafe_unretained NSString *second;
 } CharonTraitKind;

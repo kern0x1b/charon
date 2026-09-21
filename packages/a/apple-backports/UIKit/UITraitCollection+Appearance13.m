@@ -119,7 +119,11 @@ void charon_add_trait_extras_description(UITraitCollection *collection, NSMutabl
         if (!kind.described)
             return;
         NSInteger value = charon_trait_extra(collection, kind.name);
-        if (value == 0 || value == 1)
+        if (kind.described == 2) {
+            NSArray *names = [kind.first componentsSeparatedByString:@","];
+            if (value >= 0 && value < (NSInteger)names.count)
+                [traits addObject:[NSString stringWithFormat:@"%@ = %@", kind.name, names[value]]];
+        } else if (value == 0 || value == 1)
             [traits addObject:[NSString stringWithFormat:@"%@ = %@", kind.name, value ? kind.second : kind.first]];
     });
 }
