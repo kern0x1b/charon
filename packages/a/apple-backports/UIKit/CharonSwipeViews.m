@@ -9,7 +9,7 @@ static BOOL charon_swipe_phone(void)
 
 static CGFloat charon_swipe_pad_height(void)
 {
-    return charon_swipe_phone() ? 32 : 33;
+    return 33;
 }
 
 static const CGFloat CharonSwipeGap = 3;
@@ -17,7 +17,7 @@ static const CGFloat CharonSwipeEdge = 6;
 
 static UIFont *charon_swipe_font(void)
 {
-    return [UIFont boldSystemFontOfSize:13];
+    return [UIFont boldSystemFontOfSize:14];
 }
 
 CGFloat charon_swipe_width(NSString *title)
@@ -39,6 +39,7 @@ static UIColor *charon_swipe_hsv(CGFloat h, CGFloat s, CGFloat v)
 typedef struct {
     CGFloat top[3], highlight[3], gradientTop[3], gradientBottom[3], flat[3], borderTop[3], borderUpper[3], borderSide[3], borderBottom[3];
     CGFloat rows;
+    CGFloat borderRows;
     CGFloat gradientRows;
 } CharonSwipePalette;
 
@@ -62,7 +63,8 @@ static void charon_swipe_derive(CGFloat out[3], CGFloat h, CGFloat s, CGFloat v)
 static CharonSwipePalette charon_swipe_palette(UIColor *base)
 {
     CharonSwipePalette palette;
-    palette.rows = charon_swipe_pad_height();
+    palette.rows = 33;
+    palette.borderRows = 1;
     palette.gradientRows = 15;
     CGFloat r = 1, g = 0.23f, b = 0.19f;
     [base getRed:&r green:&g blue:&b alpha:NULL];
@@ -70,14 +72,17 @@ static CharonSwipePalette charon_swipe_palette(UIColor *base)
     CGFloat sr, sg, sb;
     [system getRed:&sr green:&sg blue:&sb alpha:NULL];
     if (fabsf(r - sr) < 0.02f && fabsf(g - sg) < 0.02f && fabsf(b - sb) < 0.02f && charon_swipe_phone()) {
-        charon_swipe_set(palette.borderTop, 75, 55, 55);
-        charon_swipe_set(palette.highlight, 183, 102, 105);
-        charon_swipe_set(palette.gradientTop, 245, 149, 152);
+        palette.rows = 66;
+        palette.borderRows = 2;
+        palette.gradientRows = 31;
+        charon_swipe_set(palette.borderTop, 44, 28, 28);
+        charon_swipe_set(palette.highlight, 205, 128, 131);
+        charon_swipe_set(palette.gradientTop, 246, 152, 156);
         charon_swipe_set(palette.gradientBottom, 214, 74, 78);
         charon_swipe_set(palette.flat, 207, 43, 45);
         charon_swipe_set(palette.borderUpper, 107, 59, 61);
         charon_swipe_set(palette.borderSide, 95, 20, 21);
-        charon_swipe_set(palette.borderBottom, 123, 25, 27);
+        charon_swipe_set(palette.borderBottom, 114, 24, 25);
         return palette;
     }
     if (fabsf(r - sr) < 0.02f && fabsf(g - sg) < 0.02f && fabsf(b - sb) < 0.02f) {
@@ -115,35 +120,34 @@ static void charon_swipe_pad(CGContextRef context, CGRect pad, UIColor *base, BO
     CharonSwipePalette palette = charon_swipe_palette(base);
     CGFloat radius = 4.5f;
     CGContextSaveGState(context);
-    UIBezierPath *outline = [UIBezierPath bezierPathWithRoundedRect:pad cornerRadius:radius];
-    [outline addClip];
-    CGFloat row = pad.size.height / palette.rows;
+    [[UIBezierPath bezierPathWithRoundedRect:pad cornerRadius:radius] addClip];
+    CGFloat unit = pad.size.height / palette.rows;
+    CGFloat edge = palette.borderRows * unit;
     CGFloat gradient_rows = palette.gradientRows;
     CGFloat x = pad.origin.x, y = pad.origin.y, w = pad.size.width;
-    CGRect upper = CGRectMake(x, y, w, row * (2 + gradient_rows));
-    CGRect lower = CGRectMake(x, y + row * (2 + gradient_rows), w, pad.size.height - row * (2 + gradient_rows));
-    charon_swipe_fill(context, lower, palette.borderSide);
+    CGFloat gradientStart = edge + unit;
+    CGFloat flatStart = gradientStart + gradient_rows * unit;
+    charon_swipe_fill(context, CGRectMake(x, y + flatStart, w, pad.size.height - flatStart), palette.borderSide);
     CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
     CGFloat borderColors[8] = {palette.borderTop[0], palette.borderTop[1], palette.borderTop[2], 1, palette.borderUpper[0], palette.borderUpper[1], palette.borderUpper[2], 1};
     CGGradientRef borderGradient = CGGradientCreateWithColorComponents(space, borderColors, NULL, 2);
-    CGContextDrawLinearGradient(context, borderGradient, CGPointMake(x, y), CGPointMake(x, y + row * (2 + gradient_rows)), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+    CGContextDrawLinearGradient(context, borderGradient, CGPointMake(x, y), CGPointMake(x, y + flatStart), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
     CGGradientRelease(borderGradient);
-    charon_swipe_fill(context, CGRectMake(x, y + pad.size.height - row, w, row), palette.borderBottom);
+    charon_swipe_fill(context, CGRectMake(x, y + pad.size.height - edge, w, edge), palette.borderBottom);
     CGContextRestoreGState(context);
 
     CGContextSaveGState(context);
-    CGRect inner = CGRectMake(x + row, y + row, w - 2 * row, pad.size.height - 2 * row);
-    [[UIBezierPath bezierPathWithRoundedRect:inner cornerRadius:MAX(0, radius - row)] addClip];
-    (void)upper;
-    charon_swipe_fill(context, CGRectMake(x, y + row, w, row), palette.highlight);
+    CGRect inner = CGRectMake(x + edge, y + edge, w - 2 * edge, pad.size.height - 2 * edge);
+    [[UIBezierPath bezierPathWithRoundedRect:inner cornerRadius:MAX(0, radius - edge)] addClip];
+    charon_swipe_fill(context, CGRectMake(x, y + edge, w, unit), palette.highlight);
     CGFloat gradient[8] = {palette.gradientTop[0], palette.gradientTop[1], palette.gradientTop[2], 1, palette.gradientBottom[0], palette.gradientBottom[1], palette.gradientBottom[2], 1};
     CGGradientRef fill = CGGradientCreateWithColorComponents(space, gradient, NULL, 2);
     CGContextSaveGState(context);
-    CGContextClipToRect(context, CGRectMake(x, y + 2 * row, w, gradient_rows * row));
-    CGContextDrawLinearGradient(context, fill, CGPointMake(x, y + 2 * row), CGPointMake(x, y + (2 + gradient_rows) * row), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+    CGContextClipToRect(context, CGRectMake(x, y + gradientStart, w, gradient_rows * unit));
+    CGContextDrawLinearGradient(context, fill, CGPointMake(x, y + gradientStart), CGPointMake(x, y + flatStart), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
     CGContextRestoreGState(context);
     CGGradientRelease(fill);
-    charon_swipe_fill(context, CGRectMake(x, y + (2 + gradient_rows) * row, w, pad.size.height - (3 + gradient_rows) * row), palette.flat);
+    charon_swipe_fill(context, CGRectMake(x, y + flatStart, w, pad.size.height - flatStart - edge), palette.flat);
     if (pressed) {
         CGContextSetRGBFillColor(context, 0, 0, 0, 0.25f);
         CGContextFillRect(context, pad);

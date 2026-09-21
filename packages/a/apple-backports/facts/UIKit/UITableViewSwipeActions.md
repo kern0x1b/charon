@@ -62,7 +62,7 @@ are read. The measured button is a rounded rectangle 33 points high and 63 wide 
 right edge of the row and centred in its 44 point row, made of 33 rows: a dark top edge (91, 52, 54), one row of highlight
 (199, 111, 116), fifteen rows of gradient from (237, 130, 136) to (200, 54, 64), fifteen rows of flat red (189, 20, 33) and a
 darker bottom edge (147, 16, 26); the sides are (139, 69, 74) fading to (122, 13, 22) at the half; the corner radius is about
-4.5 points; the title is bold 13 point white, 40 points wide, with a black shadow at half strength one point up.
+4.5 points; the title is bold 14 point white, 40 points wide, with a black shadow at half strength one point up.
 
 The port draws that in a context, so it is sharp at every scale: the destructive style gets exactly those colours, and any
 other background colour gets a button of the same shape and brightness steps made from its hue and saturation (lower half
@@ -77,11 +77,12 @@ gloss of the port's, from the first gradient row to the last flat one, to the re
 
 ## The button on an iPhone
 
-The release's delete button is not the same on an iPhone: read off an iPhone 4S (scale 2, 640 x 960) by the same test it is 32 points high
-(1 dark top edge, 1 highlight row, 15 rows of gradient from (245, 149, 152) to (214, 74, 78), 14 rows of flat red (207, 43, 45), and a
-darker bottom edge (123, 25, 27); the sides go from (107, 59, 61) to (95, 20, 21)) and 63 points wide for "Delete", where the iPad 2's is 33 points and a
-deeper red. The port draws the iPhone's on an iPhone (by `userInterfaceIdiom`) and the iPad's on an iPad. Colours other than the
-destructive red are made from the same steps on either.
+The release's delete button is not the same on an iPhone: read off an iPhone 4S (scale 2, 640 x 960) by the same test it is as
+high (33 points) and as wide (63 points for "Delete") but a lighter red, in half points: 2 rows of dark top edge (44, 28, 28), 1 of
+highlight (205, 128, 131), 31 of gradient from (246, 152, 156) to (214, 74, 78), 30 of flat red (207, 43, 45) and 2 of darker
+bottom edge (114, 24, 25); the sides go from (107, 59, 61) to (95, 20, 21). The iPad 2's is deeper (flat 189, 20, 33). The port
+draws the iPhone's on an iPhone (by `userInterfaceIdiom`) and the iPad's on an iPad. Colours other than the destructive red are
+made from the same steps on either.
 
 ## Table view controllers
 

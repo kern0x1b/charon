@@ -48,8 +48,21 @@ static BOOL red_pad(Screen screen, int *left, int *top, int *right, int *bottom)
                 minX = MIN(minX, x); maxX = MAX(maxX, x); minY = MIN(minY, y); maxY = MAX(maxY, y);
             }
         }
-    *left = minX; *right = maxX; *top = minY; *bottom = maxY;
-    return maxX >= minX;
+    if (maxX < minX)
+        return NO;
+    int scale = (int)[UIScreen mainScreen].scale;
+    int column = minX + 8 * scale;
+    int first = -1, last = -1;
+    for (int y = MAX(0, minY - 8 * scale); y < MIN(screen.height, maxY + 8 * scale); y++) {
+        const unsigned char *p = screen.pixels + ((size_t)y * screen.width + column) * 4;
+        if (p[0] + p[1] + p[2] < 620) {
+            if (first < 0)
+                first = y;
+            last = y;
+        }
+    }
+    *left = minX; *right = maxX; *top = first; *bottom = last;
+    return first >= 0;
 }
 
 static void profile(Screen screen, int left, int top, int bottom, int rows, int column_offset, int values[][3])
