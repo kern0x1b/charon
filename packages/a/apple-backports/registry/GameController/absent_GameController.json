@@ -52,16 +52,6 @@
       "source": "SDK 16.4, GameController"
     },
     {
-      "api": "GCEventViewController",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
       "api": "GCExtendedGamepadSnapShotDataV100FromNSData()",
       "kind": "function",
       "introduced": "9.0",
@@ -162,26 +152,6 @@
       "source": "SDK 16.4, GameController"
     },
     {
-      "api": "GCColor",
-      "kind": "class",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCControllerTouchpad",
-      "kind": "class",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
       "api": "GCDevice",
       "kind": "protocol",
       "introduced": "14.0",
@@ -189,56 +159,6 @@
       "status": "absent",
       "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCDeviceBattery",
-      "kind": "class",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCDeviceCursor",
-      "kind": "class",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCDeviceHaptics",
-      "kind": "class",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCDeviceLight",
-      "kind": "class",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCDualShockGamepad",
-      "kind": "class",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, GameController"
     },
     {
@@ -252,16 +172,6 @@
       "source": "SDK 16.4, GameController"
     },
     {
-      "api": "GCKeyboardInput",
-      "kind": "class",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
       "api": "GCMouse.mouseInput",
       "kind": "property",
       "introduced": "14.0",
@@ -269,56 +179,6 @@
       "status": "absent",
       "reason": "no object of the class exists on this device, so there is nothing to answer it: it arrived in iOS 14",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCMouseInput",
-      "kind": "class",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCXboxGamepad",
-      "kind": "class",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCDirectionalGamepad",
-      "kind": "class",
-      "introduced": "14.3",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCDualSenseAdaptiveTrigger",
-      "kind": "class",
-      "introduced": "14.5",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, GameController"
-    },
-    {
-      "api": "GCDualSenseGamepad",
-      "kind": "class",
-      "introduced": "14.5",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, GameController"
     },
     {
@@ -500,6 +360,486 @@
       "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, GameController"
+    },
+    {
+      "api": "GCXboxGamepad.paddleButton1",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCXboxGamepad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCXboxGamepad.paddleButton2",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCXboxGamepad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCXboxGamepad.paddleButton3",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCXboxGamepad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCXboxGamepad.paddleButton4",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCXboxGamepad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCXboxGamepad.buttonShare",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCXboxGamepad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCDualShockGamepad.touchpadButton",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualShockGamepad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCDualShockGamepad.touchpadPrimary",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualShockGamepad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCDualShockGamepad.touchpadSecondary",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualShockGamepad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCDualSenseGamepad.touchpadButton",
+      "kind": "property",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualSenseGamepad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCDualSenseGamepad.touchpadPrimary",
+      "kind": "property",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualSenseGamepad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCDualSenseGamepad.touchpadSecondary",
+      "kind": "property",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualSenseGamepad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCDualSenseGamepad.leftTrigger",
+      "kind": "property",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualSenseGamepad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCDualSenseGamepad.rightTrigger",
+      "kind": "property",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualSenseGamepad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCControllerTouchpad.button",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCControllerTouchpad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCControllerTouchpad.touchDown",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCControllerTouchpad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCControllerTouchpad.touchMoved",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCControllerTouchpad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCControllerTouchpad.touchUp",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCControllerTouchpad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCControllerTouchpad.touchSurface",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCControllerTouchpad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCControllerTouchpad.touchState",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCControllerTouchpad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCControllerTouchpad.reportsAbsoluteTouchSurfaceValues",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCControllerTouchpad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "-[GCControllerTouchpad setValueForXAxis:yAxis:touchDown:buttonValue:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCControllerTouchpad is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCDeviceBattery.batteryLevel",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDeviceBattery is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCDeviceBattery.batteryState",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDeviceBattery is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCDeviceLight.color",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDeviceLight is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCDeviceHaptics.supportedLocalities",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDeviceHaptics is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "-[GCDeviceHaptics createEngineWithLocality:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDeviceHaptics is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCKeyboardInput.keyChangedHandler",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCKeyboardInput is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCKeyboardInput.anyKeyPressed",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCKeyboardInput is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "-[GCKeyboardInput buttonForKeyCode:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCKeyboardInput is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCMouseInput.mouseMovedHandler",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCMouseInput is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCMouseInput.scroll",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCMouseInput is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCMouseInput.leftButton",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCMouseInput is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCMouseInput.rightButton",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCMouseInput is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCMouseInput.middleButton",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCMouseInput is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCMouseInput.auxiliaryButtons",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCMouseInput is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCDualSenseAdaptiveTrigger.mode",
+      "kind": "property",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualSenseAdaptiveTrigger is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCDualSenseAdaptiveTrigger.status",
+      "kind": "property",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualSenseAdaptiveTrigger is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "GCDualSenseAdaptiveTrigger.armPosition",
+      "kind": "property",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualSenseAdaptiveTrigger is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "-[GCDualSenseAdaptiveTrigger setModeSlopeFeedbackWithStartPosition:endPosition:startStrength:endStrength:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualSenseAdaptiveTrigger is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "-[GCDualSenseAdaptiveTrigger setModeFeedbackWithStartPosition:resistiveStrength:]",
+      "kind": "method",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualSenseAdaptiveTrigger is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "-[GCDualSenseAdaptiveTrigger setModeFeedbackWithResistiveStrengths:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualSenseAdaptiveTrigger is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "-[GCDualSenseAdaptiveTrigger setModeWeaponWithStartPosition:endPosition:resistiveStrength:]",
+      "kind": "method",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualSenseAdaptiveTrigger is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "-[GCDualSenseAdaptiveTrigger setModeVibrationWithStartPosition:amplitude:frequency:]",
+      "kind": "method",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualSenseAdaptiveTrigger is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "-[GCDualSenseAdaptiveTrigger setModeVibrationWithAmplitudes:frequency:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualSenseAdaptiveTrigger is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "-[GCDualSenseAdaptiveTrigger setModeOff]",
+      "kind": "method",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the member belongs to a device that iOS 6 never has, and no object of GCDualSenseAdaptiveTrigger is made",
+      "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; nothing makes an instance to ask it of",
+      "source": "the header of iOS 16.4 for the class and the release that added the member"
+    },
+    {
+      "api": "-[GCGamepad saveSnapshot]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a snapshot is a class whose data format the host and the release keep to themselves, and the snapshot classes are absent",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the header of iOS 16.4"
+    },
+    {
+      "api": "-[GCExtendedGamepad saveSnapshot]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a snapshot is a class whose data format the host and the release keep to themselves, and the snapshot classes are absent",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the header of iOS 16.4"
+    },
+    {
+      "api": "-[GCMicroGamepad saveSnapshot]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a snapshot is a class whose data format the host and the release keep to themselves, and the snapshot classes are absent",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "the header of iOS 16.4"
     }
   ]
 }
