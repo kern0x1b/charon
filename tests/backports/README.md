@@ -877,3 +877,5 @@ the same cases through the real `NSOperationQueue` on the release.
 `host/tail1/run.sh` records what the system's `UITraitCollection` does with a layout direction, a display gamut and a preferred content size category (constructing, reading, merging, containing, equality, description, coding), the digits of `+monospacedDigitSystemFontOfSize:weight:` and the date formats `-setLocalizedDateFormatFromTemplate:` gives for a few templates and locales; `device/tail1.m` runs the same cases on iOS 6.
 
 `host/tail2/run.sh` records what the system does with an `NSExtensionContext` made by an application (no input items, no calls of its handlers, the controllers of an application having none) and `device/tail2.m` runs the same cases on iOS 6.
+
+`device/textfieldreason.m` ends the editing of a real text field with a delegate that has only `-textFieldDidEndEditing:reason:`, one that has only the old method, and none. It has no host record: a text field of a headless scene does not become the first responder.
