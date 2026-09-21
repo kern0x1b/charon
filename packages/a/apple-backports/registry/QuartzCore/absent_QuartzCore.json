@@ -12,26 +12,6 @@
       "source": "SDK 16.4, QuartzCore"
     },
     {
-      "api": "CASpringAnimation.initialVelocity",
-      "kind": "property",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give CASpringAnimation a property like it: it arrived in iOS 9",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, QuartzCore"
-    },
-    {
-      "api": "CASpringAnimation.settlingDuration",
-      "kind": "property",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give CASpringAnimation a property like it: it arrived in iOS 9",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, QuartzCore"
-    },
-    {
       "api": "-[CALayerDelegate layerWillDraw:]",
       "kind": "method",
       "introduced": "10.0",
@@ -39,26 +19,6 @@
       "status": "absent",
       "reason": "neither iOS 6 nor the backports have a CALayerDelegate that sends anything like it: the message arrived in iOS 10",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, QuartzCore"
-    },
-    {
-      "api": "CADisplayLink.preferredFramesPerSecond",
-      "kind": "property",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give CADisplayLink a property like it: it arrived in iOS 10",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, QuartzCore"
-    },
-    {
-      "api": "CADisplayLink.targetTimestamp",
-      "kind": "property",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give CADisplayLink a property like it: it arrived in iOS 10",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, QuartzCore"
     },
     {

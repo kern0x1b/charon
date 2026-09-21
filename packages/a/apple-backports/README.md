@@ -247,6 +247,22 @@ circular until given continuous, and a value that is neither makes it circular a
 only, so a clipping layer set to continuous gets a mask of the continuous corner shape over its circular clip, within 1.5% of the
 area the system covers. See `facts/QuartzCore/CALayerCornerCurve.md`.
 
+### The spring and the display link of Core Animation
+
+`CASpringAnimation` is the release's own class - the armv7 caches of iOS 6.0 and 6.1.3 already carry it, privately, with its mass,
+stiffness, damping and velocity - so `initialVelocity` and `setInitialVelocity:` are carried as iOS 9 carries them, one call to
+`velocity` and `setVelocity:`, and `settlingDuration` as `durationForEpsilon:` with 0.001: the closed form below critical damping
+and, at or above it, the system's own walk in steps of 0.1 second over a critically damped spring, held to the host's answers
+over 32 named springs and 4000 random ones. A spring that cannot settle answers `MAXFLOAT`. See
+`facts/QuartzCore/CASpringAnimation.md`.
+
+`CADisplayLink.targetTimestamp` is the timestamp plus the duration of a display frame times the frame interval, the expression
+iOS 12 ends in one instruction. `CADisplayLink.preferredFramesPerSecond` is kept beside the link and sets the release's own frame
+interval to `max(1, round(1 / (frame duration * rate)))`, as the newer release does; it starts at zero, the documented default,
+and reads back as 60 divided by the frame interval where an application moves the interval itself. The port leaves
+`setFrameInterval:` alone, so an interval that is not a divisor of 60 stays where the application put it. See
+`facts/QuartzCore/CADisplayLink.md`.
+
 ### Background tasks, accepted by no scheduler
 
 `BGTaskScheduler`, the refresh and processing requests and the task classes are carried in a library of their own, for an

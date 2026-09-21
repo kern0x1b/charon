@@ -35,6 +35,7 @@ inputs.
     sh host/probes/run.sh
     sh host/swipeactions/run.sh
     sh host/registry/run.sh <dyld_shared_cache_armv7>
+    sh host/spring/run.sh  writes device/spring-expectations.h when it passes
     sh host/blocks/run.sh
     sh host/textcontent/run.sh
     sh host/avcapture/run.sh
@@ -409,6 +410,12 @@ postinst run with `DPKG_ROOT` set to it.
   `corelocation = true`; it is checked on the emulated 6.0 and on the iPad 2, where location services and region
   monitoring are on and the emulator has no location daemon, so what depends on the daemon is compared with the
   release's own `+regionMonitoringAvailable`, not with a number.
+- `spring.m` with `spring-cases.h` and `spring-expectations.h`: a process of its own, the two members iOS 9 added to
+  `CASpringAnimation` and the two iOS 10 added to `CADisplayLink`. It names the image every one of the six methods comes
+  from, so a release that has them itself is never shadowed, holds the settling time of the 32 springs of
+  `spring-cases.h` to the host's answers that `host/spring/run.sh` records, checks that the initial velocity and the
+  release's own velocity are one value in both directions, and puts a real link through the frame rates, the frame
+  intervals and a run loop, where the target timestamp is a frame past the timestamp.
 - `tolerance.m`: a process of its own, the timer tolerance, which is a property
   and two CoreFoundation functions.
 - `uikit2.m` (`uikit2-Info.plist`): an application for the second UIKit batch -
