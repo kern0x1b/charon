@@ -19,8 +19,7 @@ the system.
 So the broker is per process. `CharonCallBroker` is the one place in an application that knows which calls exist, and the provider, the call controller and
 the call observer of that application meet there. An application sees its own calls and no others, which is what a single application using CallKit for its
 own VoIP calls - the case the ports have - sees anyway. Two applications do not see each other's calls, and that is the one place the port cannot follow the
-release. The cellular calls of the release are a separate matter: iOS 6 has `CTCallCenter`, and handing its calls to the observers beside the
-application's own is the next band, not this one.
+release. The cellular calls of the release are the one thing that does cross the boundary, and they come in through `CTCallCenter`.
 
 ## What the port does
 
@@ -68,12 +67,31 @@ application's own is the next band, not this one.
 - A `CXCallObserver` answers the calls of the broker and tells its delegate, on the queue it was given or the main queue, whenever one appears, changes or
   ends. What the delegate is handed is a snapshot taken while the broker held its lock, so the call does not change under it. A `CXCall` is equal to another
   with the same UUID and hashes with it.
+- The observer reports the calls of the device and not only the application's, which on iOS 6 means the cellular ones. `CTCallCenter` is there from iPhone
+  OS 4 and is the whole of what a third party may see of them - an identifier and one of four states - and it is what the port watches. Making the first
+  `CXCallObserver` of the process is what starts the watch, so an application that never asks for one never loads the call centre. A call CoreTelephony
+  first shows as `CTCallStateDialing` is outgoing and one it first shows as `CTCallStateIncoming` is incoming; `CTCallStateConnected` connects it and
+  `CTCallStateDisconnected` ends it as `CXCallEndedReasonRemoteEnded`. A cellular call gets a UUID of the port's making, kept for as long as the call
+  lasts, since CoreTelephony's identifier is a string and CallKit's is a UUID.
+- A cellular call belongs to no provider of this process, and an action the call controller is asked for against one is refused as
+  `CXErrorCodeRequestTransactionErrorUnknownCallProvider` - which is what is true - rather than handed to a delegate that never made that call. The same
+  refusal covers a call of another provider in the same process.
+- CallKit does not configure an application's audio, and neither does the port: the application sets its own category and mode while it performs the
+  action, and what the system does is activate the session and say so. A call of a provider connecting activates the shared `AVAudioSession` and the
+  delegate is told `provider:didActivateAudioSession:`; the provider's last connected call going away deactivates it, with
+  `AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation`, and the delegate is told `provider:didDeactivateAudioSession:`. iOS 6 has the category, the
+  mode and `-setActive:withOptions:error:` the contract needs. A cellular call is none of the application's audio and moves nothing.
 
 ## What is not carried
 
 The call directory - `CXCallDirectoryManager`, `CXCallDirectoryProvider`, `CXCallDirectoryExtensionContext` and its delegate - is absent: it is an
 application extension, and iOS 6 loads no extensions. `+[CXProvider reportNewIncomingVoIPPushPayload:completion:]` is absent: it arrived in iOS 14.5 and
 reports a call out of a PushKit payload this release has no push of. `CXErrorDomainNotificationServiceExtension` is absent for the same reason.
+
+What the release does with a cellular call beyond the four states is out of reach: `CTCallCenter` gives no direction for a connected call, no hold state and
+no handle, so a cellular call of the port has `onHold` NO and an update of nothing. CoreTelephony of iOS 6 does export `CTCallDial`, `CTCallAnswer`,
+`CTCallHold` and `CTCallDisconnect`, so acting on a cellular call is reachable in principle; whether CommCenter lets an unentitled process do it is
+untested, and until it is tested the port refuses rather than pretends.
 
 Two behaviours the host would not answer, because a tool without the VoIP entitlement never gets past CallKit's own entitlement check (every request came
 back `CXErrorCodeRequestTransactionErrorUnentitled`, code 1, and no delegate method was ever called): the order in which a transaction is refused, and

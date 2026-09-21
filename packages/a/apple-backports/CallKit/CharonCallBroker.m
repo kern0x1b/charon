@@ -128,11 +128,24 @@
 
 - (void)removeCall:(CXCall *)call
 {
+    BOOL wasConnected = call.hasConnected;
+    CXProvider *provider = call.charon_provider;
     [call charon_setHasEnded:YES];
     @synchronized (self) {
         [_calls removeObjectIdenticalTo:call];
     }
     [self callChanged:call];
+    if (wasConnected && provider)
+        [[CharonCallAudio shared] callEndedFor:provider];
+}
+
+// A call of this application connecting is what activates the audio session,
+// and the provider is told once it is active. A cellular call of the release
+// has no provider and is none of the application's audio.
+- (void)callConnected:(CXCall *)call
+{
+    if (call.charon_provider)
+        [[CharonCallAudio shared] callConnectedFor:call.charon_provider];
 }
 
 - (void)callChanged:(CXCall *)call
@@ -175,6 +188,7 @@
         call.charon_dateConnected = date;
         [call charon_setHasConnected:YES];
         [self callChanged:call];
+        [self callConnected:call];
     } else if ([action isKindOfClass:[CXEndCallAction class]]) {
         // The user of this device ended the call, so there is no reason to
         // carry: a reason is what the provider reports when the call ended for

@@ -120,6 +120,32 @@
     (void)call;
 }
 
+- (void)charon_audioSessionActivated:(id)session
+{
+    id<CXProviderDelegate> delegate = [self charon_delegate];
+    dispatch_queue_t queue = [self charon_queue];
+    if (!delegate || !queue)
+        return;
+    dispatch_async(queue, ^{
+        id<CXProviderDelegate> held = delegate;
+        if ([held respondsToSelector:@selector(provider:didActivateAudioSession:)])
+            [held provider:self didActivateAudioSession:session];
+    });
+}
+
+- (void)charon_audioSessionDeactivated:(id)session
+{
+    id<CXProviderDelegate> delegate = [self charon_delegate];
+    dispatch_queue_t queue = [self charon_queue];
+    if (!delegate || !queue)
+        return;
+    dispatch_async(queue, ^{
+        id<CXProviderDelegate> held = delegate;
+        if ([held respondsToSelector:@selector(provider:didDeactivateAudioSession:)])
+            [held provider:self didDeactivateAudioSession:session];
+    });
+}
+
 - (void)reportCallWithUUID:(NSUUID *)UUID updated:(CXCallUpdate *)update
 {
     CXCall *call = [[CharonCallBroker shared] callWithUUID:UUID];
@@ -155,9 +181,12 @@
     CXCall *call = [[CharonCallBroker shared] callWithUUID:UUID];
     if (!call || call.charon_provider != self || !call.isOutgoing)
         return;
+    BOOL first = !call.hasConnected;
     call.charon_dateConnected = dateConnected ?: [NSDate date];
     [call charon_setHasConnected:YES];
     [[CharonCallBroker shared] callChanged:call];
+    if (first)
+        [[CharonCallBroker shared] callConnected:call];
 }
 
 // Invalidating a provider ends every call it holds and drops every

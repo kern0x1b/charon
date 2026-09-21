@@ -61,6 +61,8 @@ typedef NS_ENUM(NSInteger, CharonCallEvent) {
 - (void)charon_removeTransaction:(CXTransaction *)transaction;
 - (void)charon_actionTimedOut:(CXAction *)action;
 - (BOOL)charon_isValid;
+- (void)charon_audioSessionActivated:(id)session;
+- (void)charon_audioSessionDeactivated:(id)session;
 - (id<CXProviderDelegate>)charon_delegate;
 // Where the system call screen is put up for a call the provider reports. The
 // framework on its own draws nothing: the screen belongs to SpringBoard, and
@@ -96,9 +98,26 @@ typedef NS_ENUM(NSInteger, CharonCallEvent) {
 - (void)applyAction:(CXAction *)action;
 - (void)removeCall:(CXCall *)call;
 - (void)callChanged:(CXCall *)call;
+- (void)callConnected:(CXCall *)call;
 
 - (NSUInteger)groupsOfProvider:(CXProvider *)provider;
 
+@end
+
+// The cellular calls of the release, put into the broker beside the
+// application's own. iOS 6 has CTCallCenter, which is the whole of what a
+// third party may see of them.
+@interface CharonCallTelephony : NSObject
++ (instancetype)shared;
+- (void)start;
+@end
+
+// The audio session a call needs, activated and deactivated as CallKit does
+// it, with the delegate told each time.
+@interface CharonCallAudio : NSObject
++ (instancetype)shared;
+- (void)callConnectedFor:(CXProvider *)provider;
+- (void)callEndedFor:(CXProvider *)provider;
 @end
 
 extern NSError *charon_callkit_error(NSString *domain, NSInteger code);

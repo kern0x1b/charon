@@ -16,7 +16,7 @@ mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)
 frameworks="-iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk $frameworks -fobjc-arc -w"
-libs="-framework Foundation"
+libs="-framework Foundation -framework CoreTelephony -framework AVFoundation"
 
 # Two records the host cannot be an oracle for: its CallKit is that of iOS 14 and later, which dropped the localized name of a
 # configuration from its copy and keeps a ringtone as a resolved URL rather than the name it was given. The port implements the iOS 10
@@ -33,9 +33,7 @@ python3 "$here/rename.py" "$registry" "$build/rename.h"
 port() {
     dir=$1
     xcrun clang $common -include "$build/rename.h" -I"$device" -I"$callkit" "$here/record.m" "$device/callkit-cases.m" \
-        "$dir/CXErrorDomains10.m" "$dir/CXHandle10.m" "$dir/CXActions10.m" "$dir/CXTransaction10.m" "$dir/CXCallUpdate10.m" \
-        "$dir/CXProviderConfiguration10.m" "$dir/CXCall10.m" "$dir/CXProvider10.m" "$dir/CXCallController10.m" \
-        "$dir/CharonCallBroker.m" $libs -o "$dir/run"
+        "$dir"/*.m $libs -o "$dir/run"
 }
 rm -rf "$build/port"; mkdir -p "$build/port"
 cp "$callkit"/*.m "$callkit/CharonCallKit.h" "$build/port/"

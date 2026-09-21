@@ -55,6 +55,12 @@
             groups++;
         } else if (!call) {
             return charon_callkit_error(CXErrorDomainRequestTransaction, CXErrorCodeRequestTransactionErrorUnknownCallUUID);
+        } else if (call.charon_provider != provider) {
+            // A cellular call of the release, which the observer reports and
+            // no provider of this process owns. CallKit would take the action
+            // to whatever is hosting the call; here there is nothing to take
+            // it to, and saying no provider knows the call is what is true.
+            return charon_callkit_error(CXErrorDomainRequestTransaction, CXErrorCodeRequestTransactionErrorUnknownCallProvider);
         }
     }
     return nil;

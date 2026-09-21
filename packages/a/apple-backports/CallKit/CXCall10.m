@@ -119,10 +119,15 @@
     dispatch_queue_t _queue;
 }
 
+// Making an observer is what starts the watch on the release's own calls: an
+// application that never asks for one never loads CoreTelephony's call
+// centre.
 - (instancetype)init
 {
-    if ((self = [super init]))
+    if ((self = [super init])) {
         [[CharonCallBroker shared] addObserver:self];
+        [[CharonCallTelephony shared] start];
+    }
     return self;
 }
 

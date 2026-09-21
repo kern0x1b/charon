@@ -1,4 +1,6 @@
 #import <CallKit/CallKit.h>
+#import <CoreTelephony/CTCallCenter.h>
+#import <AVFoundation/AVAudioSession.h>
 #include <dlfcn.h>
 #import "check.h"
 #import "callkit-cases.h"
@@ -25,6 +27,8 @@ static void spin(NSTimeInterval seconds)
 @property (nonatomic) BOOL takesTransactions;
 @property (nonatomic) BOOL failsEverything;
 @property (nonatomic) BOOL leavesActionsAlone;
+@property (nonatomic) AVAudioSession *activated;
+@property (nonatomic) AVAudioSession *deactivated;
 @end
 
 @implementation CharonCallDelegate
@@ -86,6 +90,18 @@ static void spin(NSTimeInterval seconds)
 - (void)provider:(CXProvider *)provider timedOutPerformingAction:(CXAction *)action
 {
     [_log addObject:@"timedOut"];
+}
+
+- (void)provider:(CXProvider *)provider didActivateAudioSession:(AVAudioSession *)audioSession
+{
+    _activated = audioSession;
+    [_log addObject:@"audioActivated"];
+}
+
+- (void)provider:(CXProvider *)provider didDeactivateAudioSession:(AVAudioSession *)audioSession
+{
+    _deactivated = audioSession;
+    [_log addObject:@"audioDeactivated"];
 }
 
 - (void)callObserver:(CXCallObserver *)callObserver callChanged:(CXCall *)call
@@ -350,6 +366,60 @@ static void a_timeout(void)
     spin(0.1);
 }
 
+
+// CallKit activates the audio session when a call of the application connects
+// and deactivates it when the last one has gone, and tells the delegate each
+// time; the application sets its own category and mode, and nothing here
+// touches those.
+static void the_audio_session(void)
+{
+    CharonCallDelegate *delegate = [[CharonCallDelegate alloc] init];
+    CXProvider *provider = provider_with(delegate);
+    CXCallController *controller = [[CXCallController alloc] init];
+    AVAudioSession *session = [AVAudioSession sharedInstance];
+    NSString *category = session.category;
+
+    NSUUID *call = [NSUUID UUID];
+    CXCallUpdate *update = [[CXCallUpdate alloc] init];
+    update.remoteHandle = [[CXHandle alloc] initWithType:CXHandleTypeGeneric value:@"a"];
+    [provider reportNewIncomingCallWithUUID:call update:update completion:^(NSError *error) { (void)error; }];
+    spin(0.1);
+    CHECK(delegate.activated == nil, "reporting a call does not activate the audio session");
+
+    [controller requestTransactionWithAction:[[CXAnswerCallAction alloc] initWithCallUUID:call]
+                                  completion:^(NSError *error) { (void)error; }];
+    spin(0.3);
+    CHECK(delegate.activated == session, "answering it activates the shared audio session");
+    CHECK([delegate.log containsObject:@"audioActivated"], "and the delegate is told");
+    CHECK_EQUAL(session.category, category, "the category is the application's own and is not changed");
+
+    [controller requestTransactionWithAction:[[CXEndCallAction alloc] initWithCallUUID:call]
+                                  completion:^(NSError *error) { (void)error; }];
+    spin(0.3);
+    CHECK(delegate.deactivated == session, "ending the last call deactivates it");
+    CHECK([delegate.log containsObject:@"audioDeactivated"], "and the delegate is told that too");
+
+    [provider invalidate];
+    spin(0.1);
+}
+
+// The observer watches the release's own calls as well. Nothing here can
+// place a cellular call, so what is held is that the watch is live, that it
+// reports nothing when there is no call, and that an action on a call no
+// provider of this process owns is refused rather than handed to a delegate
+// that never made it.
+static void the_release_own_calls(void)
+{
+    CHECK(NSClassFromString(@"CTCallCenter") != Nil, "the release has CTCallCenter, which is what the observer watches");
+    CXCallObserver *observer = [[CXCallObserver alloc] init];
+    spin(0.2);
+    CTCallCenter *centre = [[CTCallCenter alloc] init];
+    NSUInteger cellular = centre.currentCalls.count;
+    CHECK(observer.calls.count == cellular, "the observer reports exactly the calls CoreTelephony holds");
+    if (cellular == 0)
+        charon_check(YES, "no call is in progress, so the cellular path is only held to being live", nil);
+}
+
 int main(int argc, char **argv)
 {
     @autoreleasepool {
@@ -362,6 +432,8 @@ int main(int argc, char **argv)
         a_failed_action();
         an_unanswered_method();
         a_timeout();
+        the_audio_session();
+        the_release_own_calls();
         printf("checks=%d failures=%d\n", charon_checks, charon_failures);
     }
     return charon_failures ? 1 : 0;
