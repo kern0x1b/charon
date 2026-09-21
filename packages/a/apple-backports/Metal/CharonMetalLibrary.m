@@ -41,6 +41,41 @@
     return _reflection;
 }
 
+static NSString *literal(NSDictionary *entry, NSString *type)
+{
+    NSNumber *value = entry[@"value"];
+    if ([type isEqualToString:@"float"]) {
+        NSString *s = [NSString stringWithFormat:@"%.9g", value.floatValue];
+        return [s rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@".eEn"]].location == NSNotFound ? [s stringByAppendingString:@".0"] : s;
+    }
+    return [NSString stringWithFormat:@"%d", value.intValue];
+}
+
+- (CharonMetalFunction *)specializedWith:(MTLFunctionConstantValues *)values error:(NSError **)error
+{
+    NSMutableString *defines = [NSMutableString string];
+    for (NSDictionary *constant in _reflection[@"constants"]) {
+        NSUInteger index = [constant[@"index"] unsignedIntegerValue];
+        NSDictionary *given = [values valueAtIndex:index name:constant[@"name"]];
+        NSString *type = constant[@"type"];
+        MTLDataType expected = [type isEqualToString:@"bool"] ? MTLDataTypeBool : [type isEqualToString:@"float"] ? MTLDataTypeFloat : MTLDataTypeInt;
+        if (given) {
+            MTLDataType data = (MTLDataType)[given[@"type"] integerValue];
+            BOOL integer = expected == MTLDataTypeInt && (data == MTLDataTypeInt || data == MTLDataTypeUInt);
+            if (data != expected && !integer) {
+                if (error)
+                    *error = CharonMetalError(12, [NSString stringWithFormat:@"the function constant %@ is given a value of another type", constant[@"name"]]);
+                return nil;
+            }
+        }
+        NSString *value = given ? literal(given, type) : ([type isEqualToString:@"float"] ? @"0.0" : @"0");
+        [defines appendFormat:@"#define charon_fc%lu %@\n#define charon_fc%lu_defined %d\n", (unsigned long)index, value, (unsigned long)index, given ? 1 : 0];
+    }
+    NSRange line = [_source rangeOfString:@"\n"];
+    NSString *source = defines.length && line.location != NSNotFound ? [_source stringByReplacingCharactersInRange:NSMakeRange(line.location + 1, 0) withString:defines] : _source;
+    return [[CharonMetalFunction alloc] initWithName:_name stage:_stage source:source reflection:_reflection];
+}
+
 - (MTLFunctionType)functionType
 {
     return [_stage isEqualToString:@"vertex"] ? MTLFunctionTypeVertex : MTLFunctionTypeFragment;
@@ -94,7 +129,26 @@
 
 - (id<MTLFunction>)newFunctionWithName:(NSString *)functionName
 {
-    return (id<MTLFunction>)_functions[functionName];
+    CharonMetalFunction *function = _functions[functionName];
+    return (id<MTLFunction>)[function specializedWith:nil error:NULL];
+}
+
+- (id<MTLFunction>)newFunctionWithName:(NSString *)name constantValues:(MTLFunctionConstantValues *)constantValues error:(NSError **)error
+{
+    CharonMetalFunction *function = _functions[name];
+    if (!function) {
+        if (error)
+            *error = CharonMetalError(13, [NSString stringWithFormat:@"the library holds no function named %@", name]);
+        return nil;
+    }
+    return (id<MTLFunction>)[function specializedWith:constantValues error:error];
+}
+
+- (void)newFunctionWithName:(NSString *)name constantValues:(MTLFunctionConstantValues *)constantValues completionHandler:(void (^)(id<MTLFunction> function, NSError *error))completionHandler
+{
+    NSError *error = nil;
+    id<MTLFunction> function = [self newFunctionWithName:name constantValues:constantValues error:&error];
+    completionHandler(function, error);
 }
 
 @end

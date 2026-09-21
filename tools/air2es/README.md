@@ -30,14 +30,21 @@ edges set the flags and assign the phi values of the block they lead to, and a b
 a `for` of 64 rounds with a `break` when the loop's exit is taken; ES 1.00 wants a constant bound, so a loop that would run more than
 64 rounds stops at 64, and nothing marks the shader when it does. A loop inside a loop is refused. `discard` is carried.
 
+## Function constants
+
+A function constant is a global the library fills in when a function is made, and a predicate a static initialiser computes from the constants. The
+shader carries them as the names `charon_fcN` (the value) and `charon_fcN_defined` (whether it was given), for the port to define at the head of the source
+when it makes the function, and the initialiser is translated ahead of the function. `PREFIX.json` lists the constants with their index, name and type
+(`bool`, `int` or `float`), and marks a vertex input that a constant switches as optional.
+
 ## What it refuses
 
 A function it cannot translate is refused with the reason, and no file is written: a loop inside a loop,
 a texture read in a vertex function (the SGX 543 has no vertex texture units), integer bit operations, `min`, `max`, `clamp` and the like on integers,
 a fragment output of an integer type, an output to a second render target (there are no multiple render targets in ES 2.0), texture arrays, cubes,
 depth textures and textures of integers, sampling with gradients or an explicit level, with a minimum level clamp, with an offset or in pixel coordinates,
-reading a texture at a level or with an offset, `half` reads from a vertex buffer, dynamic indices into a buffer element, local arrays, function
-constants, tessellation, compute kernels, and any AIR intrinsic without an ES 1.00 form.
+reading a texture at a level or with an offset, `half` reads from a vertex buffer, dynamic indices into a buffer element, local arrays, a function
+constant of a vector type, argument buffers, tessellation, compute kernels, and any AIR intrinsic without an ES 1.00 form.
 
 A `flat` varying is interpolated, since ES 2.0 has no flat qualifier; the result is exact where the value is the
 same at the three vertices of every triangle, and the JSON marks the varying so a port can tell.

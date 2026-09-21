@@ -282,7 +282,7 @@ static float halfToFloat(uint16_t h)
         MTLVertexBufferLayoutDescriptor *layout = descriptor.layouts[attribute.bufferIndex];
         CharonMetalBuffer *buffer = attribute.bufferIndex < 31 ? _vertexBuffers[attribute.bufferIndex] : nil;
         CharonVertexFormat format;
-        if (location < 0 || !buffer || !CharonMetalVertexFormat(attribute.format, &format)) {
+        if (location < 0 || !buffer || attribute.format == MTLVertexFormatInvalid || !CharonMetalVertexFormat(attribute.format, &format)) {
             if (location >= 0)
                 glDisableVertexAttribArray(location);
             continue;

@@ -43,6 +43,7 @@ struct ArgInfo {
     std::string typeName;
     std::string name;
     bool flat = false;
+    bool optional = false;
     int size = 0;
 };
 
@@ -105,6 +106,8 @@ ArgInfo parseArg(const MDNode *node, bool indexed)
                 info.size = (int)number;
         } else if (s == "air.flat") {
             info.flat = true;
+        } else if (s == "air.function_constant") {
+            info.optional = true;
         } else if (s.rfind("air.", 0) == 0 && info.kind.empty() && s != "air.read" && s != "air.write" && s != "air.center" &&
                    s != "air.perspective" && s != "air.no_perspective" && s != "air.sample" && s != "air.buffer_size") {
             info.kind = s;
@@ -140,6 +143,8 @@ struct Translator {
     std::string indent = "    ";
     std::vector<std::string> declarations;
     std::map<const BasicBlock *, std::string> reach;
+    std::map<const GlobalVariable *, std::string> globals;
+    std::vector<std::string> constantJson;
     bool usesVertexId = false;
     bool usesInstanceId = false;
     bool usesFlip = false;
@@ -322,7 +327,7 @@ struct Translator {
                 attributeDecls.push_back("attribute highp " + declared + " " + name + ";");
                 unsigned n = width(t);
                 std::string scalar = t->getScalarType()->isHalfTy() ? "half" : t->getScalarType()->isFloatTy() ? "float" : "i" + std::to_string(t->getScalarType()->getIntegerBitWidth());
-                inputJson.push_back("{\"name\":\"" + name + "\",\"location\":" + std::to_string(info.location) + ",\"scalar\":\"" + scalar + "\",\"components\":" + std::to_string(n) + "}");
+                inputJson.push_back("{\"name\":\"" + name + "\",\"location\":" + std::to_string(info.location) + ",\"scalar\":\"" + scalar + "\",\"components\":" + std::to_string(n) + ",\"optional\":" + (info.optional ? "true" : "false") + "}");
                 if (t->getScalarType()->isIntegerTy())
                     r.text = n == 1 ? "int(" + name + " + 0.5)" : "ivec" + std::to_string(n) + "(" + name + " + 0.5)";
                 else
@@ -493,6 +498,45 @@ struct Translator {
         return isa<FixedVectorType>(t) ? cast<FixedVectorType>(t)->getNumElements() : 1;
     }
 
+    static bool constantOf(const Value *pointer, int &index, std::string &name)
+    {
+        auto *g = dyn_cast<GlobalVariable>(pointer);
+        if (!g || g->getSection() != "air.fc_initializer")
+            return false;
+        std::string n = g->getName().str();
+        size_t tag = n.find(".MTL_FC_INIT_");
+        if (n.rfind("_Z", 0) != 0 || tag == std::string::npos)
+            fail("function constant with an unknown name " + n);
+        size_t at = 2;
+        size_t length = 0;
+        while (at < n.size() && isdigit((unsigned char)n[at]))
+            length = length * 10 + (n[at++] - '0');
+        name = n.substr(at, length);
+        index = atoi(n.c_str() + tag + 13);
+        return true;
+    }
+
+    std::string constantMacro(const Value *pointer, const char *suffix)
+    {
+        int index;
+        std::string name;
+        if (!constantOf(pointer, index, name))
+            fail("a function constant that is not a global of the library");
+        std::string macro = "charon_fc" + std::to_string(index) + suffix;
+        if (!declared.count(macro)) {
+            declared.insert(macro);
+            if (!*suffix) {
+                auto *g = cast<GlobalVariable>(pointer);
+                Type *t = g->getValueType();
+                if (t->isVectorTy() || t->isStructTy() || t->isArrayTy())
+                    fail("a function constant of a vector or aggregate type");
+                std::string type = t->isIntegerTy(8) || t->isIntegerTy(1) ? "bool" : t->isIntegerTy() ? "int" : "float";
+                constantJson.push_back("{\"index\":" + std::to_string(index) + ",\"name\":\"" + name + "\",\"type\":\"" + type + "\"}");
+            }
+        }
+        return macro;
+    }
+
     std::string sizeUniform(int binding)
     {
         std::string uniform = "tsize" + std::to_string(binding);
@@ -575,6 +619,10 @@ struct Translator {
             }
             return sampled;
         }
+        if (name == "air.is_function_constant_defined")
+            return "(" + constantMacro(ci->getArgOperand(0), "_defined") + " != 0)";
+        if (has("air.normalize_function_constant_predicate."))
+            return "(" + arg(0) + " != 0 ? 1 : 0)";
         if (has("air.dfdx.") || has("air.dfdy.") || has("air.fwidth.")) {
             usesDerivatives = true;
             const char *fn = has("air.dfdx.") ? "dFdx" : has("air.dfdy.") ? "dFdy" : "fwidth";
@@ -802,6 +850,21 @@ struct Translator {
             return;
         case Instruction::Load: {
             auto *load = cast<LoadInst>(&i);
+            {
+                int index;
+                std::string name;
+                if (constantOf(load->getPointerOperand(), index, name)) {
+                    define(&i, constantMacro(load->getPointerOperand(), ""));
+                    return;
+                }
+                if (auto *g = dyn_cast<GlobalVariable>(load->getPointerOperand())) {
+                    auto found = globals.find(g);
+                    if (found == globals.end())
+                        fail("a load from a global that nothing stores to");
+                    define(&i, found->second);
+                    return;
+                }
+            }
             auto it = pointers.find(load->getPointerOperand());
             if (it == pointers.end())
                 fail("load from memory that is not a buffer argument");
@@ -833,6 +896,20 @@ struct Translator {
                 return;
             }
             define(&i, call(ci));
+            return;
+        }
+        case Instruction::Store: {
+            auto *store = cast<StoreInst>(&i);
+            auto *g = dyn_cast<GlobalVariable>(store->getPointerOperand());
+            if (!g || g->getSection() == "air.fc_initializer")
+                fail("a store that is not to a global of the library");
+            auto found = globals.find(g);
+            if (found == globals.end()) {
+                std::string name = "g" + std::to_string(globals.size());
+                declarations.push_back("    " + qualified(store->getValueOperand()->getType()) + " " + name + ";");
+                found = globals.emplace(g, name).first;
+            }
+            body.push_back(indent + found->second + " = " + get(store->getValueOperand()).text + ";");
             return;
         }
         case Instruction::Ret:
@@ -1092,6 +1169,15 @@ struct Translator {
     std::string run()
     {
         setup();
+        for (auto &f : module) {
+            if (f.getSection() != "air.static_init")
+                continue;
+            if (f.size() != 1)
+                fail("static initialisation with control flow");
+            for (auto &i : f.getEntryBlock())
+                if (!isa<ReturnInst>(i))
+                    instruction(i);
+        }
         structure();
         for (auto &line : body) {
             if (line.find("charon_flip") != std::string::npos && !vertex)
@@ -1140,7 +1226,7 @@ struct Translator {
         };
         return "{\"stage\":\"" + std::string(vertex ? "vertex" : "fragment") + "\",\"entry\":\"" + function.getName().str() + "\",\"usesVertexId\":" +
                (usesVertexId ? "true" : "false") + ",\"attributes\":" + join(attributeJson) + ",\"uniforms\":" + join(uniformJson) + ",\"textures\":" + join(textureJson) +
-               ",\"varyings\":" + join(varyingJson) + ",\"inputs\":" + join(inputJson) + ",\"sizes\":" + join(sizeJson) + ",\"usesInstanceId\":" + (usesInstanceId ? "true" : "false") + "}\n";
+               ",\"varyings\":" + join(varyingJson) + ",\"constants\":" + join(constantJson) + ",\"inputs\":" + join(inputJson) + ",\"sizes\":" + join(sizeJson) + ",\"usesInstanceId\":" + (usesInstanceId ? "true" : "false") + "}\n";
     }
 };
 

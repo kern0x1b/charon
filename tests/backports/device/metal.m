@@ -139,6 +139,36 @@ static BOOL comes_from_backports(Class cls)
     [buffer waitUntilCompleted];
 }
 
+- (int)centerOfFragment:(id<MTLFunction>)fragment into:(id<MTLTexture>)target
+{
+    MTLRenderPipelineDescriptor *d = [[MTLRenderPipelineDescriptor alloc] init];
+    d.vertexFunction = [self.library newFunctionWithName:@"quadVertex"];
+    d.fragmentFunction = fragment;
+    d.colorAttachments[0].pixelFormat = MTLPixelFormatRGBA8Unorm;
+    NSError *error = nil;
+    id<MTLRenderPipelineState> state = [self.device newRenderPipelineStateWithDescriptor:d error:&error];
+    if (!state)
+        return -1;
+    MTLRenderPassDescriptor *pass = [MTLRenderPassDescriptor renderPassDescriptor];
+    pass.colorAttachments[0].texture = target;
+    pass.colorAttachments[0].loadAction = MTLLoadActionClear;
+    pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1);
+    Corner quad[6] = {{{-1, 1}, {0, 0}}, {{1, 1}, {1, 0}}, {{-1, -1}, {0, 1}}, {{1, 1}, {1, 0}}, {{1, -1}, {1, 1}}, {{-1, -1}, {0, 1}}};
+    float unit = 1;
+    id<MTLCommandBuffer> buffer = [self.queue commandBuffer];
+    id<MTLRenderCommandEncoder> encoder = [buffer renderCommandEncoderWithDescriptor:pass];
+    [encoder setRenderPipelineState:state];
+    [encoder setVertexBytes:quad length:sizeof quad atIndex:0];
+    [encoder setVertexBytes:&unit length:sizeof unit atIndex:1];
+    [encoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6];
+    [encoder endEncoding];
+    [buffer commit];
+    [buffer waitUntilCompleted];
+    uint8_t pixel[4];
+    [target getBytes:pixel bytesPerRow:4 fromRegion:MTLRegionMake2D(32, 32, 1, 1) mipmapLevel:0];
+    return pixel[0];
+}
+
 - (void)read:(id<MTLTexture>)texture width:(NSUInteger)w height:(NSUInteger)h into:(uint8_t *)out
 {
     [texture getBytes:out bytesPerRow:w * 4 fromRegion:MTLRegionMake2D(0, 0, w, h) mipmapLevel:0];
@@ -182,7 +212,7 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
     NSError *error = nil;
     self.library = [self.device newLibraryWithFile:[folder stringByDeletingPathExtension] error:&error];
     CHECK(self.library != nil, "a library is read from beside its file");
-    CHECK([[[self.library functionNames] sortedArrayUsingSelector:@selector(compare:)] isEqualToArray:(@[@"flowFragment", @"quadFragment", @"quadVertex", @"stageInVertex"])], "it holds its four functions");
+    CHECK([[[self.library functionNames] sortedArrayUsingSelector:@selector(compare:)] isEqualToArray:(@[@"constFragment", @"flowFragment", @"quadFragment", @"quadVertex", @"stageInVertex"])], "it holds its five functions");
     CHECK([self.library newFunctionWithName:@"missing"] == nil, "a name it does not hold gives nil");
     CHECK([[self.library newFunctionWithName:@"quadVertex"] functionType] == MTLFunctionTypeVertex, "the vertex function is a vertex function");
     CHECK([[self.library newFunctionWithName:@"quadFragment"] functionType] == MTLFunctionTypeFragment, "and the fragment function a fragment function");
@@ -292,6 +322,32 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
             const uint8_t *middle = out + (32 * 64 + 32) * 4;
             CHECK(near(middle, expected[c], expected[c], expected[c], 2), names[c]);
         }
+    }
+
+    {
+        BOOL yes = YES, no = NO;
+        float gain = 0.5f;
+        NSError *constantError = nil;
+        MTLFunctionConstantValues *both = [[MTLFunctionConstantValues alloc] init];
+        [both setConstantValue:&yes type:MTLDataTypeBool atIndex:0];
+        [both setConstantValue:&gain type:MTLDataTypeFloat atIndex:1];
+        id<MTLFunction> specialised = [self.library newFunctionWithName:@"constFragment" constantValues:both error:&constantError];
+        CHECK(specialised != nil, "a function is specialised with its constants");
+        CHECK(abs([self centerOfFragment:specialised into:target] - 128) <= 2, "a bool constant that is set and a float constant give the gain");
+        MTLFunctionConstantValues *off = [[MTLFunctionConstantValues alloc] init];
+        [off setConstantValue:&no type:MTLDataTypeBool withName:@"use_tint"];
+        [off setConstantValue:&gain type:MTLDataTypeFloat withName:@"gain"];
+        CHECK(abs([self centerOfFragment:[self.library newFunctionWithName:@"constFragment" constantValues:off error:&constantError] into:target] - 191) <= 2, "the constants are given by name, and a bool that is clear takes the other branch");
+        MTLFunctionConstantValues *undefinedGain = [[MTLFunctionConstantValues alloc] init];
+        [undefinedGain setConstantValue:&yes type:MTLDataTypeBool atIndex:0];
+        CHECK(abs([self centerOfFragment:[self.library newFunctionWithName:@"constFragment" constantValues:undefinedGain error:&constantError] into:target] - 64) <= 2, "a constant that is not given is not defined");
+        CHECK(abs([self centerOfFragment:[self.library newFunctionWithName:@"constFragment"] into:target] - 191) <= 2, "a function made with no values has none defined");
+        MTLFunctionConstantValues *wrong = [[MTLFunctionConstantValues alloc] init];
+        [wrong setConstantValue:&yes type:MTLDataTypeBool atIndex:1];
+        constantError = nil;
+        CHECK([self.library newFunctionWithName:@"constFragment" constantValues:wrong error:&constantError] == nil && constantError != nil, "a value of another type than the constant is an error");
+        constantError = nil;
+        CHECK([self.library newFunctionWithName:@"missing" constantValues:both error:&constantError] == nil && constantError != nil, "a function that is not there is an error with values too");
     }
 
     const float faint[4] = {0.5f, 0.5f, 0.5f, 0.4f};

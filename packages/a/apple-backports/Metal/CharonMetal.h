@@ -45,6 +45,7 @@
 @property (nonatomic, readonly) NSString *source;
 @property (nonatomic, readonly) NSDictionary *reflection;
 - (instancetype)initWithName:(NSString *)name stage:(NSString *)stage source:(NSString *)source reflection:(NSDictionary *)reflection;
+- (CharonMetalFunction *)specializedWith:(MTLFunctionConstantValues *)values error:(NSError **)error;
 @end
 
 @interface CharonMetalLibrary : NSObject <MTLLibrary>
@@ -85,6 +86,10 @@ typedef struct {
 
 BOOL CharonMetalVertexFormat(MTLVertexFormat format, CharonVertexFormat *out);
 void CharonMetalDecodeVertex(MTLVertexFormat format, const uint8_t *bytes, GLfloat out[4]);
+
+@interface MTLFunctionConstantValues (CharonValues)
+- (NSDictionary *)valueAtIndex:(NSUInteger)index name:(NSString *)name;
+@end
 
 extern NSString *const CharonMetalErrorDomain;
 NSError *CharonMetalError(NSInteger code, NSString *message);

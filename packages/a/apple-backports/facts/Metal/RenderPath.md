@@ -23,12 +23,19 @@ wrapping (clamp to edge, repeat, mirrored repeat); blending, the write mask, cul
 the top left, which the port keeps by turning the vertical axis of a target that is a texture; textures of RGBA8, BGRA8, R8 and RG8. Reading a texture back with
 `getBytes:` reads the target.
 
+## Function constants
+
+A function that has function constants is specialised by `newFunctionWithName:constantValues:error:` with an `MTLFunctionConstantValues`: the bool, int,
+unsigned and float values, by index or by name, become definitions at the head of the shader's source, and the driver folds the branches they decide.
+A constant that is not given is not defined: `is_function_constant_defined` answers false and its value is zero. A vertex input that a constant
+switches on and off need not be in the vertex descriptor when the constant leaves it off.
+
 ## What is not
 
 * Vertex formats of half floats, 32 bit integers, the packed 10 bit formats and the BGRA one: a pipeline that uses one is refused, since ES 2.0 has no attribute of them. A layout whose step function is per vertex with a step rate other than one, or per patch, is refused too.
 * Compute: a compute pipeline answers an error, and the compute encoder answers nil. The graphics of the A5 run no compute functions.
 * Depth and stencil: a depth and stencil state answers nil with a line in the log, and there is no depth attachment.
-* Multiple render targets, tessellation, texture arrays, cubes, depth and 3D textures, sampling with an offset or gradients, and the function constants
+* Multiple render targets, tessellation, texture arrays, cubes, depth and 3D textures, sampling with an offset or gradients, and a function constant of a vector type
   are not translated, and a function that needs one is not in the library.
 * A vertex texture: the SGX 543 has none.
 * A loop in a shader runs at most 64 rounds, since ES 1.00 wants a constant bound; a loop inside a loop is not translated. Branches and phis are.

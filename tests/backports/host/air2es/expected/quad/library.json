@@ -23,6 +23,12 @@
    "stage": "fragment",
    "source": "module3.frag",
    "reflection": "module3.json"
+  },
+  {
+   "name": "constFragment",
+   "stage": "fragment",
+   "source": "module4.frag",
+   "reflection": "module4.json"
   }
  ]
 }

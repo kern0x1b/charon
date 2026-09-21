@@ -297,6 +297,17 @@
       "effect": "an object that keeps the properties it is given; a format or step function the port cannot draw with is refused when the pipeline is made, as facts/Metal/RenderPath.md lists",
       "facts": "facts/Metal/RenderPath.md",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLFunctionConstantValues",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class is carried so that an application specialises a function of its library the way it does with Metal; the port turns the values into definitions the shader is compiled with",
+      "effect": "an object that keeps the bool, int, unsigned and float values it is given by index and by name; a value of another type than the constant's is an error when the function is made",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     }
   ]
 }

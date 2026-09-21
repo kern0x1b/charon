@@ -132,6 +132,8 @@ void CharonMetalDecodeVertex(MTLVertexFormat format, const uint8_t *bytes, GLflo
     for (NSDictionary *input in vertex.reflection[@"inputs"]) {
         MTLVertexAttributeDescriptor *attribute = descriptor.vertexDescriptor ? descriptor.vertexDescriptor.attributes[[input[@"location"] unsignedIntegerValue]] : nil;
         CharonVertexFormat format;
+        if ((!attribute || attribute.format == MTLVertexFormatInvalid) && [input[@"optional"] boolValue])
+            continue;
         if (!attribute || attribute.format == MTLVertexFormatInvalid) {
             if (error)
                 *error = CharonMetalError(6, [NSString stringWithFormat:@"the vertex function reads an input at attribute %@, and the vertex descriptor has none there", input[@"location"]]);
