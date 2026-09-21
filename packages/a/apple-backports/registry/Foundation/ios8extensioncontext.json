@@ -1,0 +1,69 @@
+{
+  "framework": "Foundation",
+  "entries": [
+    {
+      "api": "NSExtensionContext",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release has no app extensions, so there is no host to hand a request back to",
+      "effect": "a context made by the application has no input items and completing, cancelling and opening a URL through it do nothing, as with a context that has no host",
+      "facts": "facts/Foundation/NSExtensionContext.md",
+      "source": "the host's own Foundation under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
+    },
+    {
+      "api": "NSExtensionContext.inputItems",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release has no app extensions, so there is no host to hand a request back to",
+      "effect": "the array is empty",
+      "facts": "facts/Foundation/NSExtensionContext.md",
+      "source": "the host's own Foundation under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
+    },
+    {
+      "api": "-[NSExtensionContext completeRequestReturningItems:completionHandler:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release has no app extensions, so there is no host to hand a request back to",
+      "effect": "nothing happens and the handler is not called",
+      "facts": "facts/Foundation/NSExtensionContext.md",
+      "source": "the host's own Foundation under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
+    },
+    {
+      "api": "-[NSExtensionContext cancelRequestWithError:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release has no app extensions, so there is no host to hand a request back to",
+      "effect": "nothing happens",
+      "facts": "facts/Foundation/NSExtensionContext.md",
+      "source": "the host's own Foundation under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
+    },
+    {
+      "api": "-[NSExtensionContext openURL:completionHandler:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release has no app extensions, so there is no host to hand a request back to",
+      "effect": "nothing happens and the handler is not called",
+      "facts": "facts/Foundation/NSExtensionContext.md",
+      "source": "the host's own Foundation under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
+    },
+    {
+      "api": "NSExtensionItemsAndErrorsKey",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSExtensionContext.md",
+      "source": "the host's own Foundation under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
+    }
+  ]
+}

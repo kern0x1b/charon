@@ -1,0 +1,16 @@
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "UIViewController.extensionContext",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release has no app extensions, so there is no host to hand a request back to",
+      "effect": "a controller answers nil, as one in an application does",
+      "facts": "facts/Foundation/NSExtensionContext.md",
+      "source": "the host's own Foundation under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
+    }
+  ]
+}

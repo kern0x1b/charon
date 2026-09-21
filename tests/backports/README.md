@@ -875,3 +875,5 @@ the same cases through the real `NSOperationQueue` on the release.
 `host/errorprovider/run.sh` records what the system's `NSError` asks a user info value provider and what it does with the answers - the keys asked per getter, the user info that stays empty, the value in the user info that wins, another domain, a replaced and a removed provider, a copy - and `device/errorprovider.m` runs the same cases on iOS 6.
 
 `host/tail1/run.sh` records what the system's `UITraitCollection` does with a layout direction, a display gamut and a preferred content size category (constructing, reading, merging, containing, equality, description, coding), the digits of `+monospacedDigitSystemFontOfSize:weight:` and the date formats `-setLocalizedDateFormatFromTemplate:` gives for a few templates and locales; `device/tail1.m` runs the same cases on iOS 6.
+
+`host/tail2/run.sh` records what the system does with an `NSExtensionContext` made by an application (no input items, no calls of its handlers, the controllers of an application having none) and `device/tail2.m` runs the same cases on iOS 6.
