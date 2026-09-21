@@ -792,6 +792,8 @@ writes `/private/var/backports/swipeui.log` and `swipeui.done`.
 
 `host/documentmenu/run.sh` records what the host's UIKit does with `UIDocumentMenuViewController` - the presentation style, the delegate, the popover presentation controller, the modes each initializer takes and the words it refuses the others in (an export needs a file that is there), the plain init - into `device/documentmenu-expectations.h`; `device/documentmenu.m` repeats them and shows the menu on the device: the options of the application around the way to the picker and Cancel last, and each choice answering its handler or the delegate.
 
+`host/imagetraits/run.sh` records the trait collection the host's UIKit answers for `UIImage.traitCollection` of images at scales 1, 2 and 3, remade at another scale and resizable, into `device/imagetraits-expectations.h`; `device/imagetraits.m` holds the port to them.
+
 `host/touchtypes/run.sh` records what the host's UIKit answers for `allowedTouchTypes`, `requiresExclusiveTouchType` and `allowedPressTypes` of a gesture recognizer (the defaults, an array set, an empty array, duplicates) into `device/touchtypes-expectations.h`, and `device/touchtypes.m` holds the port to them on a device and then taps with a real finger on views whose tap recognizers allow different touch types.
 
 `host/textalign/run.sh` records what the host's UIKit does when `textAlignment` of a label, a text field and a text view is set to left, centre, right and natural (the value read back, and the side the ink of the rendered control is on, for a Latin and a Hebrew text), into `device/textalign-expectations.h`, and `device/textalign.m` holds the port to the same records on a device.
