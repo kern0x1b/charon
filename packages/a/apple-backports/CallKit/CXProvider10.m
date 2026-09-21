@@ -117,7 +117,7 @@
 
 - (void)charon_presentIncomingCall:(CXCall *)call
 {
-    (void)call;
+    [[CharonCallScreen shared] present:call of:self];
 }
 
 - (void)charon_audioSessionActivated:(id)session

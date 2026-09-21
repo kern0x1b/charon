@@ -135,6 +135,7 @@
         [_calls removeObjectIdenticalTo:call];
     }
     [self callChanged:call];
+    [[CharonCallScreen shared] dismiss:call];
     if (wasConnected && provider)
         [[CharonCallAudio shared] callEndedFor:provider];
 }
@@ -185,6 +186,10 @@
         call.charon_dateStartedConnecting = call.charon_dateStartedConnecting ?: date;
         [self callChanged:call];
     } else if ([action isKindOfClass:[CXAnswerCallAction class]]) {
+        // The screen comes down as soon as the call is taken, not when it
+        // ends: from here on it is a call in progress, which is the
+        // application's own interface.
+        [[CharonCallScreen shared] dismiss:call];
         call.charon_dateConnected = date;
         [call charon_setHasConnected:YES];
         [self callChanged:call];

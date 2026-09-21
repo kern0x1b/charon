@@ -120,4 +120,14 @@ typedef NS_ENUM(NSInteger, CharonCallEvent) {
 - (void)callEndedFor:(CXProvider *)provider;
 @end
 
+// The application's side of the system call screen, which SpringBoard draws
+// and a tweak of the port raises. Without that tweak nothing here is heard
+// and the calls of the application work as they do with no screen at all.
+@interface CharonCallScreen : NSObject
++ (instancetype)shared;
+- (void)present:(CXCall *)call of:(CXProvider *)provider;
+- (void)dismiss:(CXCall *)call;
+@end
+
+extern NSString *const charon_call_screen_folder;
 extern NSError *charon_callkit_error(NSString *domain, NSInteger code);

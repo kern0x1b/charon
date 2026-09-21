@@ -103,5 +103,20 @@ entitlement to hold an application to.
 The port's `-description` is its own. The release's carries the ivars of a CallKit far newer than iOS 10 - `state`, `commitDate`, `handles`, a dozen flags
 the iOS 10 header has no property for - and there is nothing to be gained from following a text no application reads.
 
-There is no system call screen in this band. `-[CXProvider charon_presentIncomingCall:]` is where one would be put up, and it does nothing here: the screen
-belongs to SpringBoard, and what reaches it is a tweak's business, not a library's.
+## The system call screen
+
+The screen an incoming call is shown on belongs to SpringBoard, which no library loaded into an application can draw in, so what the library carries is one
+side of a bridge and the screen itself is a tweak's business. The two sides speak in Darwin notifications and a file, because that is what crosses the
+boundary on this release: a notification reaches every process whatever its sandbox and carries nothing, and a file carries the call but only where both
+sides may reach it - `/var/mobile/Library/Caches/org.charon.callkit`, made by whichever side runs first and writable by everyone, since an application and
+SpringBoard are not the same user and share no group.
+
+A provider reporting an incoming call writes the UUID, the caller's name, the handle and its type, whether there is video, the application's bundle
+identifier and the configured ringtone, and posts `org.charon.callkit.incoming`. What the person does on the screen comes back as
+`org.charon.callkit.answered` or `org.charon.callkit.declined` with the UUID in a file beside it, and the library turns it into an ordinary
+`CXAnswerCallAction` or `CXEndCallAction` run through the provider - so the delegate is called exactly as it is when the application answers from its own
+interface, and there is one path through the state machine instead of two. The screen is taken down when the call is answered, since from there on it is
+the application's own interface, and when the call ends.
+
+Without that tweak none of this is heard: the library writes a file nobody reads and posts a notification nobody hears, and the calls of the application
+work exactly as they do with no screen. Nothing on this path can refuse, raise or fail a call.
