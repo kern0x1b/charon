@@ -1736,10 +1736,10 @@
     "kind": "constant",
     "introduced": "7.0",
     "status": "inert",
-    "facts": "facts/UIKit/NSAttributedStringText.md",
-    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does",
-    "reason": "the release draws no letterpress",
-    "effect": "the attribute is kept on the string and read back, and the text is drawn without it"
+    "facts": "facts/UIKit/TextAttributes7.md",
+    "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/textattr (42 renderings of one text with each attribute, drawn three ways: drawAtPoint:, a label and a layout manager), and tests/backports/device/textattr.m on iOS 6",
+    "reason": "the release's drawing has no letterpress effect",
+    "effect": "the string keeps the attribute and reads it back and the text is drawn without it, as the measurement of the release's drawing shows"
   },
   {
     "api": "NSTextEffectLetterpressStyle",
@@ -1755,51 +1755,46 @@
     "api": "NSUnderlineColorAttributeName",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "inert",
-    "facts": "facts/UIKit/NSAttributedStringText.md",
-    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does",
-    "reason": "the release draws every underline in the colour of the text",
-    "effect": "the attribute is kept on the string and read back, and the text is drawn without it"
+    "status": "implemented",
+    "facts": "facts/UIKit/TextAttributes7.md",
+    "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/textattr (42 renderings of one text with each attribute, drawn three ways: drawAtPoint:, a label and a layout manager), and tests/backports/device/textattr.m on iOS 6",
+    "effect": "the release draws the underline in this colour"
   },
   {
     "api": "NSStrikethroughColorAttributeName",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "inert",
-    "facts": "facts/UIKit/NSAttributedStringText.md",
-    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does",
-    "reason": "the release draws every strikethrough in the colour of the text",
-    "effect": "the attribute is kept on the string and read back, and the text is drawn without it"
+    "status": "implemented",
+    "facts": "facts/UIKit/TextAttributes7.md",
+    "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/textattr (42 renderings of one text with each attribute, drawn three ways: drawAtPoint:, a label and a layout manager), and tests/backports/device/textattr.m on iOS 6",
+    "effect": "the release draws the strikethrough in this colour"
   },
   {
     "api": "NSObliquenessAttributeName",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "inert",
-    "facts": "facts/UIKit/NSAttributedStringText.md",
-    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does",
-    "reason": "the release does not skew glyphs",
-    "effect": "the attribute is kept on the string and read back, and the text is drawn without it"
+    "status": "implemented",
+    "facts": "facts/UIKit/TextAttributes7.md",
+    "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/textattr (42 renderings of one text with each attribute, drawn three ways: drawAtPoint:, a label and a layout manager), and tests/backports/device/textattr.m on iOS 6",
+    "effect": "the release skews the glyphs, so the ink is as much wider as the host's"
   },
   {
     "api": "NSExpansionAttributeName",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "inert",
-    "facts": "facts/UIKit/NSAttributedStringText.md",
-    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does",
-    "reason": "the release does not stretch glyphs",
-    "effect": "the attribute is kept on the string and read back, and the text is drawn without it"
+    "status": "implemented",
+    "facts": "facts/UIKit/TextAttributes7.md",
+    "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/textattr (42 renderings of one text with each attribute, drawn three ways: drawAtPoint:, a label and a layout manager), and tests/backports/device/textattr.m on iOS 6",
+    "effect": "the release spaces the glyphs by this proportion of the font size"
   },
   {
     "api": "NSWritingDirectionAttributeName",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "inert",
-    "facts": "facts/UIKit/NSAttributedStringText.md",
-    "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does",
-    "reason": "the release lays a run out in the direction of its paragraph",
-    "effect": "the attribute is kept on the string and read back, and the text is drawn without it"
+    "status": "implemented",
+    "facts": "facts/UIKit/TextAttributes7.md",
+    "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/textattr (42 renderings of one text with each attribute, drawn three ways: drawAtPoint:, a label and a layout manager), and tests/backports/device/textattr.m on iOS 6",
+    "effect": "the release lays the run out in the direction the array says, an override reversing Latin text"
   },
   {
     "api": "NSTabColumnTerminatorsAttributeName",

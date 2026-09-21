@@ -20,8 +20,7 @@ and margin, view size, zoom and mode, read only, hyphenation, default tab interv
 default attributes, character encoding) are defined as the strings the host has. The release reads a document type and an encoding by
 those strings already, so `initWithData:options:documentAttributes:error:` with `NSHTMLTextDocumentType` does what it does on iOS 7:
 inside an application it reads HTML into runs with fonts, colours, links, underline, strikethrough, lists, headings and sub- and
-superscripts, and RTF and plain text as well. The names of the six attributes are `inert`: the string keeps them and reads them
-back, and the release draws the text without them.
+superscripts, and RTF and plain text as well. What the release draws of the six attributes is in `TextAttributes7.md`: five are drawn, and one - the letterpress effect - is not.
 
 ## NSTextTab
 
