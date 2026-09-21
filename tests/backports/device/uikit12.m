@@ -4,6 +4,8 @@
 #import "homeindicator-expectations.h"
 #import "insetref-cases.h"
 #import "insetref-expectations.h"
+#import "traits11-cases.h"
+#import "traits11-expectations.h"
 
 static NSString *const results_folder = @"/private/var/backports";
 
@@ -60,7 +62,35 @@ static BOOL close_enough(NSString *expected, NSString *actual, double tolerance)
             CHECK(records.count == expected.count, [[label stringByAppendingString:@": the device answers every record the host did and no other"] UTF8String]);
         };
         compare(homeindicator_expectations, 0, ^(UIWindow *window, void (^record)(NSString *, NSString *)) { homeindicator_run(window, record); }, @"home indicator");
+        compare(traits11_expectations, 0, ^(UIWindow *window, void (^record)(NSString *, NSString *)) { traits11_run(window, record); }, @"traits");
         compare(insetref_expectations, 0.5, ^(UIWindow *window, void (^record)(NSString *, NSString *)) { insetref_run(window, record); }, @"inset reference");
+        UIScrollView *scroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 200, 300)];
+        scroll.contentSize = CGSizeMake(200, 1200);
+        scroll.scrollIndicatorInsets = UIEdgeInsetsMake(1, 2, 3, 4);
+        scroll.verticalScrollIndicatorInsets = UIEdgeInsetsMake(5, 6, 7, 8);
+        CHECK(UIEdgeInsetsEqualToEdgeInsets(scroll.scrollIndicatorInsets, UIEdgeInsetsMake(1, 2, 3, 4)), "the scroll indicator insets stay what was set beside a vertical set");
+        scroll.horizontalScrollIndicatorInsets = UIEdgeInsetsMake(9, 10, 11, 12);
+        CHECK(UIEdgeInsetsEqualToEdgeInsets(scroll.scrollIndicatorInsets, UIEdgeInsetsMake(1, 2, 3, 4)) && UIEdgeInsetsEqualToEdgeInsets(scroll.horizontalScrollIndicatorInsets, UIEdgeInsetsMake(9, 10, 11, 12)), "and beside a horizontal one");
+        scroll.scrollIndicatorInsets = UIEdgeInsetsMake(20, 21, 22, 23);
+        CHECK(UIEdgeInsetsEqualToEdgeInsets(scroll.verticalScrollIndicatorInsets, UIEdgeInsetsMake(20, 21, 22, 23)) && UIEdgeInsetsEqualToEdgeInsets(scroll.horizontalScrollIndicatorInsets, UIEdgeInsetsMake(20, 21, 22, 23)), "setting them again takes both back to them");
+        UIScrollView *shifted = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 200, 300)];
+        UIScrollView *plain = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 200, 300)];
+        shifted.contentSize = plain.contentSize = CGSizeMake(200, 1200);
+        shifted.verticalScrollIndicatorInsets = UIEdgeInsetsMake(10, 0, 50, 5);
+        plain.scrollIndicatorInsets = UIEdgeInsetsMake(10, 0, 50, 5);
+        [shifted flashScrollIndicators];
+        [plain flashScrollIndicators];
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.3]];
+        UIView *shiftedBar = nil, *plainBar = nil;
+        @try {
+            shiftedBar = [shifted valueForKey:@"_verticalScrollIndicator"];
+            plainBar = [plain valueForKey:@"_verticalScrollIndicator"];
+        } @catch (NSException *exception) {
+        }
+        if (shiftedBar && plainBar)
+            CHECK(CGRectEqualToRect(shiftedBar.frame, plainBar.frame) && shiftedBar.frame.size.height > 0, "the vertical indicator sits where the same insets of the release put it");
+        else
+            printf("skipped: the vertical indicator is not reachable\n");
         UIViewController *root = [[UIViewController alloc] init];
         UIViewController *top = [[UIViewController alloc] init];
         UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:root];

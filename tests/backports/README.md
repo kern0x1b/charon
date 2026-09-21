@@ -43,6 +43,7 @@ inputs.
     sh host/oslog/run.sh  writes device/oslog-expectations.h when it passes
     sh host/homeindicator/run.sh  writes device/homeindicator-expectations.h when it passes, then holds the port's categories to it with mutants
     sh host/vision/run.sh  writes device/vision-expectations.h when it passes, then holds the port's Vision classes, under names of their own, to it with mutants
+    sh host/traits11/run.sh  writes device/traits11-expectations.h when it passes, then holds the port's text input traits, password rules and view flag to it with mutants
     sh host/insetref/run.sh  writes device/insetref-expectations.h when it passes, then holds the port's flow layout to it with mutants
     sh host/imageflip/run.sh
     sh host/ios1516/run.sh  writes device/ios1516-expectations.h when it passes
@@ -870,7 +871,7 @@ deceleration does not take it. `swipeui.m` is the example.
   the system's diffable data source in a window and compares the outline handlers (thirteen steps) and the reordering handlers and their transactions (six
   drags) with the interactive movement API. It writes `/private/var/backports/lists.log` and `lists.done`.
 
-`uikit12.m` (`uikit12-Info.plist`, `homeindicator-cases.m`, `insetref-cases.m`): an application of its own that holds the home indicator, edge gesture and large title accessors, and the section inset reference of a flow layout, to the records of the host's UIKit; it needs `/private/var/backports` made by root, the screen on (`wake`), and the application registered, which a device does after a reboot.
+`uikit12.m` (`uikit12-Info.plist`, `homeindicator-cases.m`, `insetref-cases.m`, `traits11-cases.m`): an application of its own that holds the home indicator, edge gesture and large title accessors, and the section inset reference of a flow layout, to the records of the host's UIKit; it needs `/private/var/backports` made by root, the screen on (`wake`), and the application registered, which a device does after a reboot.
 
 `device/wake.m` is a tool that wakes and unlocks a device that has no passcode, by sending the Home button and a slide along the
 unlock track through the HID event system. An application that is launched while the screen is locked comes up inactive

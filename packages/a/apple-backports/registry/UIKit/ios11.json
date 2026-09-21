@@ -356,36 +356,6 @@
       "source": "SDK 16.4, UIControl.h"
     },
     {
-      "api": "UITextInputTraits.smartQuotesType",
-      "kind": "property",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "smart quotes are substituted by the keyboard, and this release's keyboard knows no such rule",
-      "effect": "the property is not declared, so respondsToSelector: answers honestly; text is typed with the quotes the keyboard gives",
-      "source": "SDK 16.4, UITextInputTraits.h"
-    },
-    {
-      "api": "UITextInputTraits.smartDashesType",
-      "kind": "property",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the dash substitution belongs to the keyboard, which does not have it here",
-      "effect": "the property is not declared, so respondsToSelector: answers honestly",
-      "source": "SDK 16.4, UITextInputTraits.h"
-    },
-    {
-      "api": "UITextInputTraits.smartInsertDeleteType",
-      "kind": "property",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "inserting and deleting spaces around a selection is the keyboard's behaviour, absent in this release",
-      "effect": "the property is not declared, so respondsToSelector: answers honestly",
-      "source": "SDK 16.4, UITextInputTraits.h"
-    },
-    {
       "api": "UIBarItem.largeContentSizeImage",
       "kind": "property",
       "introduced": "11.0",
@@ -689,13 +659,13 @@
       "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
     },
     {
-      "api": "UIScreen.captured",
-      "kind": "property",
+      "api": "-[UIScreen isCaptured]",
+      "kind": "method",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "whether a screen is being recorded, mirrored or sent to AirPlay is reported by a system service this release does not run",
-      "effect": "the property is not there, so an application that hides content while captured is told nothing rather than told NO",
-      "source": "UIKit of iOS 11.0 arm64"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIScreenCaptured.md",
+      "source": "UIKit of iOS 12.0 arm64 (the accessor and the ivar it reads) and the host's UIKit through Mac Catalyst, tests/backports/device/traits11-cases.m on an iPad 2 on iOS 6.1.3"
     },
     {
       "api": "+[UIColor colorNamed:]",
@@ -710,28 +680,21 @@
       "api": "UIView.accessibilityIgnoresInvertColors",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "inverting colours is done by the render server for the whole screen, and exempting one view means telling that server about it",
-      "effect": "the property is not there; this release's own inversion of colours applies to everything as it always did",
-      "source": "UIKit of iOS 11.0 arm64"
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "iOS 6 inverts the colours of the whole screen in the render server and has no way to leave one view out",
+      "effect": "the property answers what was set, NO until then, and the view is inverted with the rest of the screen",
+      "facts": "facts/UIKit/UIViewIgnoresInvertColors.md",
+      "source": "UIKit of iOS 12.0 arm64 (a flag of the view, read at its address) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
     },
     {
       "api": "UITextInputPasswordRules",
       "kind": "class",
       "introduced": "12.0",
-      "status": "absent",
-      "reason": "the rules are read by the keyboard's password generator, which this release does not have",
-      "effect": "the class is not there, so an application does not hand rules to a field that would ignore them",
-      "source": "UIKit of iOS 12.0 arm64"
-    },
-    {
-      "api": "UITextInputTraits.passwordRules",
-      "kind": "property",
-      "introduced": "12.0",
-      "status": "absent",
-      "reason": "the property only means something to a keyboard that offers a generated password",
-      "effect": "the property is not there",
-      "source": "UIKit of iOS 12.0 arm64"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/TextInputTraits11.md",
+      "source": "UIKit of iOS 12.0 arm64 (+passwordRulesWithDescriptor:, copy, isEqual:, description and the coding of the descriptor read at their addresses) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
     },
     {
       "api": "UITableView.insetsContentViewsToSafeArea",
@@ -1815,10 +1778,10 @@
       "api": "UIScreenCapturedDidChangeNotification",
       "kind": "constant",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "nothing in this release watches recording, mirroring or AirPlay, so nothing posts it",
-      "effect": "the name is not there. As with the focus notifications, an application that registers for it without checking UIScreen for -isCaptured first passes a nil name and observes every notification",
-      "source": "UIKit of iOS 11.0 arm64"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIScreenCaptured.md",
+      "source": "UIKit of iOS 12.0 arm64 (the accessor and the ivar it reads) and the host's UIKit through Mac Catalyst, tests/backports/device/traits11-cases.m on an iPad 2 on iOS 6.1.3"
     },
     {
       "api": "UIInputViewController.hasFullAccess",
@@ -2093,20 +2056,18 @@
       "kind": "property",
       "introduced": "11.1",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the indicators of this release are placed by one set of insets in which the vertical indicator also takes its distance from the right edge, so two sets cannot be turned into it without moving an indicator",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises; scrollIndicatorInsets is the release's own and stays",
-      "source": "the SDK 16.4 headers"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIScrollViewIndicatorInsets11.md",
+      "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of both insets, -setScrollIndicatorInsets: and -_effectiveVerticalScrollIndicatorInsets read at their addresses) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11, and tests/backports/device/uikit12.m on an iPad 2 on iOS 6.1.3"
     },
     {
       "api": "UIScrollView.verticalScrollIndicatorInsets",
       "kind": "property",
       "introduced": "11.1",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the indicators of this release are placed by one set of insets in which the horizontal indicator also takes its distance from the bottom edge, so two sets cannot be turned into it without moving an indicator",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises; scrollIndicatorInsets is the release's own and stays",
-      "source": "the SDK 16.4 headers"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIScrollViewIndicatorInsets11.md",
+      "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of both insets, -setScrollIndicatorInsets: and -_effectiveVerticalScrollIndicatorInsets read at their addresses) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11, and tests/backports/device/uikit12.m on an iPad 2 on iOS 6.1.3"
     },
     {
       "api": "UIDocumentBrowserErrorDomain",
@@ -2168,6 +2129,138 @@
       "effect": "the protocol is declared by the header and its metadata is compiled into the application, and an application that implements the method is never called by the release",
       "facts": "facts/UIKit/CallbacksNeverSent.md",
       "source": "the SDK 16.4 headers"
+    },
+    {
+      "api": "UITextField.smartQuotesType",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the keyboard of iOS 6 makes no smart substitution of quotes, dashes or spaces, so there is nothing for the value to switch",
+      "effect": "the property answers what was set, default until then, on a text field, a text view and a search bar, and typing is as before",
+      "facts": "facts/UIKit/TextInputTraits11.md",
+      "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
+    },
+    {
+      "api": "UITextView.smartQuotesType",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the keyboard of iOS 6 makes no smart substitution of quotes, dashes or spaces, so there is nothing for the value to switch",
+      "effect": "the property answers what was set, default until then, on a text field, a text view and a search bar, and typing is as before",
+      "facts": "facts/UIKit/TextInputTraits11.md",
+      "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
+    },
+    {
+      "api": "UISearchBar.smartQuotesType",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the keyboard of iOS 6 makes no smart substitution of quotes, dashes or spaces, so there is nothing for the value to switch",
+      "effect": "the property answers what was set, default until then, on a text field, a text view and a search bar, and typing is as before",
+      "facts": "facts/UIKit/TextInputTraits11.md",
+      "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
+    },
+    {
+      "api": "UITextField.smartDashesType",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the keyboard of iOS 6 makes no smart substitution of quotes, dashes or spaces, so there is nothing for the value to switch",
+      "effect": "the property answers what was set, default until then, on a text field, a text view and a search bar, and typing is as before",
+      "facts": "facts/UIKit/TextInputTraits11.md",
+      "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
+    },
+    {
+      "api": "UITextView.smartDashesType",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the keyboard of iOS 6 makes no smart substitution of quotes, dashes or spaces, so there is nothing for the value to switch",
+      "effect": "the property answers what was set, default until then, on a text field, a text view and a search bar, and typing is as before",
+      "facts": "facts/UIKit/TextInputTraits11.md",
+      "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
+    },
+    {
+      "api": "UISearchBar.smartDashesType",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the keyboard of iOS 6 makes no smart substitution of quotes, dashes or spaces, so there is nothing for the value to switch",
+      "effect": "the property answers what was set, default until then, on a text field, a text view and a search bar, and typing is as before",
+      "facts": "facts/UIKit/TextInputTraits11.md",
+      "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
+    },
+    {
+      "api": "UITextField.smartInsertDeleteType",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the keyboard of iOS 6 makes no smart substitution of quotes, dashes or spaces, so there is nothing for the value to switch",
+      "effect": "the property answers what was set, default until then, on a text field, a text view and a search bar, and typing is as before",
+      "facts": "facts/UIKit/TextInputTraits11.md",
+      "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
+    },
+    {
+      "api": "UITextView.smartInsertDeleteType",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the keyboard of iOS 6 makes no smart substitution of quotes, dashes or spaces, so there is nothing for the value to switch",
+      "effect": "the property answers what was set, default until then, on a text field, a text view and a search bar, and typing is as before",
+      "facts": "facts/UIKit/TextInputTraits11.md",
+      "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
+    },
+    {
+      "api": "UISearchBar.smartInsertDeleteType",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the keyboard of iOS 6 makes no smart substitution of quotes, dashes or spaces, so there is nothing for the value to switch",
+      "effect": "the property answers what was set, default until then, on a text field, a text view and a search bar, and typing is as before",
+      "facts": "facts/UIKit/TextInputTraits11.md",
+      "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
+    },
+    {
+      "api": "UITextField.passwordRules",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the keyboard of iOS 6 has no generated password to shape by rules",
+      "effect": "the property answers a copy of what was set, nil until then, and no password is generated",
+      "facts": "facts/UIKit/TextInputTraits11.md",
+      "source": "UIKit of iOS 12.0 arm64 and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
+    },
+    {
+      "api": "UITextView.passwordRules",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the keyboard of iOS 6 has no generated password to shape by rules",
+      "effect": "the property answers a copy of what was set, nil until then, and no password is generated",
+      "facts": "facts/UIKit/TextInputTraits11.md",
+      "source": "UIKit of iOS 12.0 arm64 and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
+    },
+    {
+      "api": "UISearchBar.passwordRules",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the keyboard of iOS 6 has no generated password to shape by rules",
+      "effect": "the property answers a copy of what was set, nil until then, and no password is generated",
+      "facts": "facts/UIKit/TextInputTraits11.md",
+      "source": "UIKit of iOS 12.0 arm64 and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
     }
   ]
 }
