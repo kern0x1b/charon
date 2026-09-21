@@ -8,6 +8,8 @@
 #pragma clang diagnostic ignored "-Wobjc-method-access"
 #pragma clang diagnostic ignored "-Wnonnull"
 
+extern CGImageRef UIGetScreenImage(void);
+
 static NSString *const results_folder = @"/private/var/backports";
 
 typedef struct { float position[2]; float texture[2]; } Corner;
@@ -140,6 +142,16 @@ static BOOL comes_from_backports(Class cls)
 - (void)read:(id<MTLTexture>)texture width:(NSUInteger)w height:(NSUInteger)h into:(uint8_t *)out
 {
     [texture getBytes:out bytesPerRow:w * 4 fromRegion:MTLRegionMake2D(0, 0, w, h) mipmapLevel:0];
+}
+
+static void screen_pixel(CGImageRef image, CGFloat x, CGFloat y, uint8_t out[4])
+{
+    CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(out, 1, 1, 8, 4, rgb, kCGImageAlphaPremultipliedLast);
+    CGContextTranslateCTM(context, -x, -(CGFloat)CGImageGetHeight(image) + y + 1);
+    CGContextDrawImage(context, CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image)), image);
+    CGContextRelease(context);
+    CGColorSpaceRelease(rgb);
 }
 
 static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
@@ -316,6 +328,47 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
     [frame commit];
     [frame waitUntilCompleted];
     CHECK(abs(pixel[0] - 128) <= 1 && pixel[1] == 0 && pixel[2] == 255, "the drawable holds what the pass cleared it to, in the order of its BGRA format");
+    {
+        UIView *host = self.window.rootViewController.view;
+        CAMetalLayer *shown = [CAMetalLayer layer];
+        shown.frame = CGRectMake(20, 40, 100, 100);
+        shown.contentsScale = [UIScreen mainScreen].scale;
+        shown.device = self.device;
+        shown.pixelFormat = MTLPixelFormatBGRA8Unorm;
+        [host.layer addSublayer:shown];
+        id<CAMetalDrawable> frame2 = [shown nextDrawable];
+        MTLRenderPassDescriptor *shownPass = [MTLRenderPassDescriptor renderPassDescriptor];
+        shownPass.colorAttachments[0].texture = frame2.texture;
+        shownPass.colorAttachments[0].loadAction = MTLLoadActionClear;
+        shownPass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1);
+        Corner quad[6] = {{{-1, 1}, {0, 0}}, {{1, 1}, {1, 0}}, {{-1, -1}, {0, 1}}, {{1, 1}, {1, 0}}, {{1, -1}, {1, 1}}, {{-1, -1}, {0, 1}}};
+        float unit = 1;
+        MTLSamplerDescriptor *sd = [[MTLSamplerDescriptor alloc] init];
+        sd.minFilter = MTLSamplerMinMagFilterNearest;
+        sd.magFilter = MTLSamplerMinMagFilterNearest;
+        id<MTLCommandBuffer> shownBuffer = [self.queue commandBuffer];
+        id<MTLRenderCommandEncoder> shownEncoder = [shownBuffer renderCommandEncoderWithDescriptor:shownPass];
+        [shownEncoder setRenderPipelineState:plain];
+        [shownEncoder setVertexBytes:quad length:sizeof quad atIndex:0];
+        [shownEncoder setVertexBytes:&unit length:sizeof unit atIndex:1];
+        [shownEncoder setFragmentTexture:picture atIndex:0];
+        [shownEncoder setFragmentSamplerState:[self.device newSamplerStateWithDescriptor:sd] atIndex:0];
+        [shownEncoder setFragmentBytes:white length:16 atIndex:0];
+        [shownEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6];
+        [shownEncoder endEncoding];
+        [shownBuffer presentDrawable:frame2];
+        [shownBuffer commit];
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
+        CGImageRef screen = UIGetScreenImage();
+        CGFloat scale = [UIScreen mainScreen].scale;
+        CGRect rect = [self.window convertRect:shown.frame fromView:host];
+        uint8_t tlp[4], trp[4], blp[4], brp[4];
+        screen_pixel(screen, (rect.origin.x + 25) * scale, (rect.origin.y + 25) * scale, tlp);
+        screen_pixel(screen, (rect.origin.x + 75) * scale, (rect.origin.y + 25) * scale, trp);
+        screen_pixel(screen, (rect.origin.x + 25) * scale, (rect.origin.y + 75) * scale, blp);
+        screen_pixel(screen, (rect.origin.x + 75) * scale, (rect.origin.y + 75) * scale, brp);
+        CHECK(near(tlp, 0, 0, 255, 2) && near(trp, 0, 255, 0, 2) && near(blp, 255, 0, 0, 2) && near(brp, 255, 255, 255, 2), "the drawable is on the screen with the first texel at the top left, as Metal shows it");
+    }
     id<CAMetalDrawable> second = [layer nextDrawable];
     CHECK(second != nil && second != drawable, "the next drawable is another");
 
