@@ -53,6 +53,98 @@ static NSString *charon_session_identifier(void)
     return identifier;
 }
 
+static NSString *charon_restoration_key(void)
+{
+    return [@"space.kern0x1b.charon.UISceneStateRestoration." stringByAppendingString:charon_session_identifier()];
+}
+
+static NSSet *charon_restoration_classes(void)
+{
+    static NSSet *classes;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        classes = [NSSet setWithObjects:[NSDictionary class], [NSArray class], [NSSet class], [NSString class],
+                                        [NSNumber class], [NSDate class], [NSData class], [NSURL class], [NSUUID class], [NSNull class], nil];
+    });
+    return classes;
+}
+
+static NSData *charon_archive_activity(NSUserActivity *activity)
+{
+    NSMutableDictionary *record = [NSMutableDictionary dictionary];
+    record[@"type"] = activity.activityType;
+    if (activity.title)
+        record[@"title"] = activity.title;
+    if (activity.userInfo)
+        record[@"userInfo"] = activity.userInfo;
+    if (activity.webpageURL)
+        record[@"webpageURL"] = activity.webpageURL;
+    if (activity.requiredUserInfoKeys)
+        record[@"requiredUserInfoKeys"] = activity.requiredUserInfoKeys;
+    if (activity.expirationDate)
+        record[@"expirationDate"] = activity.expirationDate;
+    if (activity.keywords)
+        record[@"keywords"] = activity.keywords;
+    NSError *error = nil;
+    NSData *data = nil;
+    @try {
+        data = [NSKeyedArchiver archivedDataWithRootObject:record requiringSecureCoding:YES error:&error];
+    } @catch (NSException *exception) {
+        return nil;
+    }
+    return data;
+}
+
+static id charon_kept(id value, Class wanted)
+{
+    return [value isKindOfClass:wanted] ? value : nil;
+}
+
+static NSUserActivity *charon_unarchive_activity(NSData *data)
+{
+    NSError *error = nil;
+    NSDictionary *record = nil;
+    @try {
+        record = [NSKeyedUnarchiver unarchivedObjectOfClasses:charon_restoration_classes() fromData:data error:&error];
+    } @catch (NSException *exception) {
+        return nil;
+    }
+    if (![record isKindOfClass:[NSDictionary class]] || ![record[@"type"] isKindOfClass:[NSString class]])
+        return nil;
+    NSUserActivity *activity = [[NSUserActivity alloc] initWithActivityType:record[@"type"]];
+    activity.title = charon_kept(record[@"title"], [NSString class]);
+    NSDictionary *userInfo = charon_kept(record[@"userInfo"], [NSDictionary class]);
+    if (userInfo)
+        activity.userInfo = userInfo;
+    activity.webpageURL = charon_kept(record[@"webpageURL"], [NSURL class]);
+    activity.requiredUserInfoKeys = charon_kept(record[@"requiredUserInfoKeys"], [NSSet class]);
+    activity.expirationDate = charon_kept(record[@"expirationDate"], [NSDate class]);
+    activity.keywords = charon_kept(record[@"keywords"], [NSSet class]);
+    return activity;
+}
+
+static void charon_save_restoration(void)
+{
+    UIScene *scene = charon_scene_object;
+    id<UISceneDelegate> delegate = scene.delegate;
+    if (!scene || !charon_connected || ![delegate respondsToSelector:@selector(stateRestorationActivityForScene:)])
+        return;
+    NSUserActivity *activity = [delegate stateRestorationActivityForScene:scene];
+    NSData *data = activity ? charon_archive_activity(activity) : nil;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (data)
+        [defaults setObject:data forKey:charon_restoration_key()];
+    else
+        [defaults removeObjectForKey:charon_restoration_key()];
+    [defaults synchronize];
+}
+
+static NSUserActivity *charon_saved_restoration(void)
+{
+    NSData *data = [[NSUserDefaults standardUserDefaults] dataForKey:charon_restoration_key()];
+    return data ? charon_unarchive_activity(data) : nil;
+}
+
 UIWindowScene *charon_scene(void)
 {
     @synchronized([UIApplication class]) {
@@ -145,6 +237,9 @@ static void charon_connect(NSDictionary *launchOptions)
     UIWindowScene *scene = charon_scene();
     if (!scene)
         return;
+    NSUserActivity *restored = charon_saved_restoration();
+    if (restored)
+        scene.session.stateRestorationActivity = restored;
     UISceneConfiguration *configuration = scene.session.configuration;
     Class delegateClass = configuration.delegateClass;
     if (delegateClass && !scene.delegate)
@@ -160,6 +255,8 @@ static void charon_connect(NSDictionary *launchOptions)
     charon_connected = YES;
     if ([delegate respondsToSelector:@selector(scene:willConnectToSession:options:)])
         [delegate scene:scene willConnectToSession:scene.session options:charon_launch_options];
+    if (restored && [delegate respondsToSelector:@selector(scene:restoreInteractionStateWithUserActivity:)])
+        [delegate scene:scene restoreInteractionStateWithUserActivity:restored];
     [scene charon_setActivationState:UISceneActivationStateBackground];
     charon_post(UISceneWillConnectNotification, scene);
     if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground)
@@ -197,6 +294,10 @@ static void charon_connect(NSDictionary *launchOptions)
             charon_transition(UISceneActivationStateForegroundInactive, @selector(sceneWillResignActive:), UISceneWillDeactivateNotification);
         if (charon_scene_object.activationState == UISceneActivationStateForegroundInactive)
             charon_transition(UISceneActivationStateBackground, @selector(sceneDidEnterBackground:), UISceneDidEnterBackgroundNotification);
+        charon_save_restoration();
+    }];
+    [center addObserverForName:UIApplicationWillTerminateNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+        charon_save_restoration();
     }];
 }
 

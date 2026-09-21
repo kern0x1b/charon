@@ -50,6 +50,16 @@ scenes; the port sends the delegate call first.
   `requestSceneSessionDestruction:options:errorHandler:` with code 1 (denied); `requestSceneSessionRefresh:` does nothing.
 - The application delegate still hears `applicationDidBecomeActive:` and its siblings; the release with scenes stops
   sending them once a scene delegate is there.
-- `sceneDidDisconnect:` is never sent, as the one scene lives as long as the application. State restoration by activity,
-  Handoff, shortcut items, CloudKit shares and the notification response of the connection options are not carried: the
-  options answer nil or an empty set for them, and the delegate methods that would receive them are never sent.
+- `sceneDidDisconnect:` is never sent, as the one scene lives as long as the application. Handoff, shortcut items, CloudKit
+  shares and the notification response of the connection options are not carried: the options answer nil or an empty set
+  for them, and the delegate methods that would receive them are never sent.
+- State restoration by activity is carried. When the application enters the background and when it terminates, the scene
+  delegate is asked `stateRestorationActivityForScene:`; the activity (type, title, user info, web page URL, required keys,
+  expiration date and keywords) is archived in the application's user defaults under the session identifier, and an answer
+  of nil removes what was kept. On the next launch the session's `stateRestorationActivity` is that activity before
+  `scene:willConnectToSession:options:` is sent, and `scene:restoreInteractionStateWithUserActivity:` follows it. The
+  archive requires secure coding, as the release's own does, and is read back naming the property list classes an
+  activity's user info is documented to hold - dictionary, array, set, string, number, date, data, URL, UUID and null. A
+  user info that holds anything else does not archive and nothing is kept for that launch; a value that comes back as the
+  wrong kind is dropped rather than assigned. The session's `stateRestorationActivity` is not archived with the session
+  itself, which keeps only its role, configuration and persistent identifier.

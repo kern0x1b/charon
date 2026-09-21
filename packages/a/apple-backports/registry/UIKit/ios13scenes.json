@@ -301,22 +301,30 @@
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
+   "effect": "sent by the scene host when the application goes to the background and when it terminates; the activity the delegate answers is kept, and nil removes what was kept",
    "facts": "facts/UIKit/UIScene.md",
-   "source": "the SDK headers and the documented launch sequence",
-   "reason": "the one scene never disconnects, and iOS 6 has no scene state restoration or Handoff",
-   "effect": "the message is never sent"
+   "source": "the header of SDK 16.4; held on a device by tests/backports/device/scenes.m"
   },
   {
    "api": "-[UISceneDelegate scene:restoreInteractionStateWithUserActivity:]",
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
+   "effect": "sent by the scene host at the next launch, after scene:willConnectToSession:options:, with the activity kept at the last background or termination",
    "facts": "facts/UIKit/UIScene.md",
-   "source": "the SDK headers and the documented launch sequence",
-   "reason": "the one scene never disconnects, and iOS 6 has no scene state restoration or Handoff",
-   "effect": "the message is never sent"
+   "source": "the header of SDK 16.4; held on a device by tests/backports/device/scenes.m"
+  },
+  {
+   "api": "UISceneSession.stateRestorationActivity",
+   "kind": "property",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "set by the scene host to the activity kept at the last launch before the delegate is told the scene will connect, and readable and writable by the application; it is not archived with the session",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the header of SDK 16.4; held on a device by tests/backports/device/scenes.m"
   },
   {
    "api": "-[UISceneDelegate scene:willContinueUserActivityWithType:]",

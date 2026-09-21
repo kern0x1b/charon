@@ -20,6 +20,10 @@ static NSUInteger scenes_seen_at_launch = NSNotFound;
 static BOOL configuration_asked;
 static NSString *asked_for_role;
 static BOOL wrong_delegate_used;
+static NSUserActivity *activity_at_connect;
+static NSUserActivity *activity_restored;
+static BOOL give_no_activity;
+static NSString *const restoration_marker = @"space.kern0x1b.test.restoration.marker";
 
 @interface CharonWrongSceneDelegate : UIResponder <UIWindowSceneDelegate>
 @end
@@ -42,11 +46,27 @@ static BOOL wrong_delegate_used;
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)options
 {
     [events addObject:@"willConnect"];
+    activity_at_connect = session.stateRestorationActivity;
     connected_scene = scene;
     connection_options = options;
     self.window = [[UIWindow alloc] initWithWindowScene:(UIWindowScene *)scene];
     self.window.rootViewController = [[UIViewController alloc] init];
     [self.window makeKeyAndVisible];
+}
+
+- (NSUserActivity *)stateRestorationActivityForScene:(UIScene *)scene
+{
+    if (give_no_activity)
+        return nil;
+    NSUserActivity *activity = [[NSUserActivity alloc] initWithActivityType:@"space.kern0x1b.test.page"];
+    activity.title = @"Page 7";
+    activity.userInfo = @{@"page": @7, @"name": @"seven", @"scroll": @[@1.5, @2.5]};
+    return activity;
+}
+
+- (void)scene:(UIScene *)scene restoreInteractionStateWithUserActivity:(NSUserActivity *)activity
+{
+    activity_restored = activity;
 }
 
 - (void)sceneWillEnterForeground:(UIScene *)scene
@@ -176,6 +196,35 @@ static BOOL wrong_delegate_used;
     for (NSDictionary *note in notifications)
         sceneObject = sceneObject && note[@"object"] == connected_scene;
     CHECK(sceneObject, "each has the scene as its object");
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    BOOL secondLaunch = [defaults boolForKey:restoration_marker];
+    NSString *keptKey = nil;
+    for (NSString *key in [[defaults dictionaryRepresentation] allKeys])
+        if ([key hasPrefix:@"space.kern0x1b.charon.UISceneStateRestoration."])
+            keptKey = key;
+    if (!secondLaunch) {
+        CHECK(activity_at_connect == nil && activity_restored == nil, "a first launch has nothing to restore");
+        CHECK(keptKey != nil && [defaults dataForKey:keptKey].length > 0, "entering the background keeps what the scene delegate answered");
+        [defaults setBool:YES forKey:restoration_marker];
+        [defaults synchronize];
+    } else {
+        CHECK(activity_at_connect != nil && [activity_at_connect.activityType isEqual:@"space.kern0x1b.test.page"] && [activity_at_connect.title isEqual:@"Page 7"]
+                  && [activity_at_connect.userInfo[@"page"] isEqual:@7] && [activity_at_connect.userInfo[@"name"] isEqual:@"seven"]
+                  && [activity_at_connect.userInfo[@"scroll"] isEqual:(@[@1.5, @2.5])],
+              "the next launch has the kept activity in the session before the scene connects");
+        CHECK(activity_restored == activity_at_connect || [activity_restored.userInfo isEqual:activity_at_connect.userInfo], "and the delegate is asked to restore it");
+        give_no_activity = YES;
+        [center postNotificationName:UIApplicationWillResignActiveNotification object:application];
+        [center postNotificationName:UIApplicationDidEnterBackgroundNotification object:application];
+        keptKey = nil;
+        for (NSString *key in [[defaults dictionaryRepresentation] allKeys])
+            if ([key hasPrefix:@"space.kern0x1b.charon.UISceneStateRestoration."])
+                keptKey = key;
+        CHECK(keptKey == nil, "an answer of nil removes what was kept");
+        [defaults removeObjectForKey:restoration_marker];
+        [defaults synchronize];
+    }
 }
 
 @end
