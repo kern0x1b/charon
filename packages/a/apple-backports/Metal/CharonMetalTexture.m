@@ -33,12 +33,92 @@ NSUInteger CharonMetalBindEpoch;
     NSUInteger _height;
     MTLTextureUsage _usage;
     __unsafe_unretained CharonMetalSampler *_appliedSampler;
+    int _kind;
+    GLuint _renderbuffer;
+    GLuint _checkedDepth, _checkedStencil;
 }
 
 @synthesize label;
 
+static int depthKind(MTLPixelFormat pixelFormat)
+{
+    switch ((NSUInteger)pixelFormat) {
+    case 250: case 252: return 1;
+    case 253: return 3;
+    case 255: case 260: return 2;
+    default: return 0;
+    }
+}
+
+- (instancetype)initWithDepthDescriptor:(MTLTextureDescriptor *)descriptor kind:(int)kind
+{
+    if (descriptor.textureType != MTLTextureType2D || descriptor.sampleCount != 1 || descriptor.width == 0 || descriptor.height == 0)
+        return nil;
+    if ((self = [super init])) {
+        _pixelFormat = descriptor.pixelFormat;
+        _width = descriptor.width;
+        _height = descriptor.height;
+        _usage = descriptor.usage;
+        _kind = kind;
+        CharonMetalDevice *device = [CharonMetalDevice shared];
+        [device acquire];
+        if (kind == 3) {
+            glGenRenderbuffers(1, &_renderbuffer);
+            glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, (GLsizei)_width, (GLsizei)_height);
+        } else {
+            CharonMetalBindEpoch++;
+            glGenTextures(1, &_name);
+            glBindTexture(GL_TEXTURE_2D, _name);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            if (kind == 2)
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_STENCIL_OES, (GLsizei)_width, (GLsizei)_height, 0, GL_DEPTH_STENCIL_OES, GL_UNSIGNED_INT_24_8_OES, NULL);
+            else
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, (GLsizei)_width, (GLsizei)_height, 0, GL_DEPTH_COMPONENT, (NSUInteger)descriptor.pixelFormat == 250 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT, NULL);
+        }
+        [device relinquish];
+    }
+    return self;
+}
+
+- (GLuint)checkedDepth
+{
+    return _checkedDepth;
+}
+
+- (void)setCheckedDepth:(GLuint)value
+{
+    _checkedDepth = value;
+}
+
+- (GLuint)checkedStencil
+{
+    return _checkedStencil;
+}
+
+- (void)setCheckedStencil:(GLuint)value
+{
+    _checkedStencil = value;
+}
+
+- (int)attachmentKind
+{
+    return _kind;
+}
+
+- (GLuint)renderbuffer
+{
+    return _renderbuffer;
+}
+
 - (instancetype)initWithDescriptor:(MTLTextureDescriptor *)descriptor
 {
+    int depth = depthKind(descriptor.pixelFormat);
+    if (depth)
+        return [self initWithDepthDescriptor:descriptor kind:depth];
     CharonFormat format;
     if (descriptor.textureType != MTLTextureType2D || !formatFor(descriptor.pixelFormat, &format) || descriptor.sampleCount != 1 || descriptor.width == 0 || descriptor.height == 0) {
         NSLog(@"Metal: texture of type %d, pixel format %d, %d samples has no OpenGL ES 2.0 form", (int)descriptor.textureType, (int)descriptor.pixelFormat, (int)descriptor.sampleCount);
@@ -80,12 +160,15 @@ NSUInteger CharonMetalBindEpoch;
 
 - (void)dealloc
 {
-    if (!_screen && _name) {
+    if (!_screen && (_name || _renderbuffer)) {
         CharonMetalDevice *device = [CharonMetalDevice shared];
         [device acquire];
         if (_framebuffer)
             glDeleteFramebuffers(1, &_framebuffer);
-        glDeleteTextures(1, &_name);
+        if (_name)
+            glDeleteTextures(1, &_name);
+        if (_renderbuffer)
+            glDeleteRenderbuffers(1, &_renderbuffer);
         [device relinquish];
     }
 }
@@ -195,7 +278,7 @@ NSUInteger CharonMetalBindEpoch;
 - (void)replaceRegion:(MTLRegion)region mipmapLevel:(NSUInteger)level withBytes:(const void *)pointer bytesPerRow:(NSUInteger)bytesPerRow
 {
     CharonFormat format;
-    if (_screen || level != 0 || !formatFor(_pixelFormat, &format))
+    if (_screen || _kind || level != 0 || !formatFor(_pixelFormat, &format))
         return;
     CharonMetalDevice *device = [CharonMetalDevice shared];
     [device acquire];
@@ -215,7 +298,7 @@ NSUInteger CharonMetalBindEpoch;
 - (void)getBytes:(void *)pointer bytesPerRow:(NSUInteger)bytesPerRow fromRegion:(MTLRegion)region mipmapLevel:(NSUInteger)level
 {
     CharonFormat format;
-    if (level != 0 || !formatFor(_pixelFormat, &format))
+    if (_kind || level != 0 || !formatFor(_pixelFormat, &format))
         return;
     CharonMetalDevice *device = [CharonMetalDevice shared];
     [device acquire];

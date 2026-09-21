@@ -61,8 +61,39 @@
 
 @end
 
+@implementation MTLRenderPassDepthAttachmentDescriptor
+
+- (instancetype)init
+{
+    if ((self = [super init]))
+        self.clearDepth = 1.0;
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    MTLRenderPassDepthAttachmentDescriptor *d = [super copyWithZone:zone];
+    d.clearDepth = self.clearDepth;
+    return d;
+}
+
+@end
+
+@implementation MTLRenderPassStencilAttachmentDescriptor
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    MTLRenderPassStencilAttachmentDescriptor *d = [super copyWithZone:zone];
+    d.clearStencil = self.clearStencil;
+    return d;
+}
+
+@end
+
 @implementation MTLRenderPassDescriptor {
     MTLRenderPassColorAttachmentDescriptorArray *_colorAttachments;
+    MTLRenderPassDepthAttachmentDescriptor *_depthAttachment;
+    MTLRenderPassStencilAttachmentDescriptor *_stencilAttachment;
 }
 
 + (MTLRenderPassDescriptor *)renderPassDescriptor
@@ -72,9 +103,32 @@
 
 - (instancetype)init
 {
-    if ((self = [super init]))
+    if ((self = [super init])) {
         _colorAttachments = [[MTLRenderPassColorAttachmentDescriptorArray alloc] init];
+        _depthAttachment = [[MTLRenderPassDepthAttachmentDescriptor alloc] init];
+        _stencilAttachment = [[MTLRenderPassStencilAttachmentDescriptor alloc] init];
+    }
     return self;
+}
+
+- (MTLRenderPassDepthAttachmentDescriptor *)depthAttachment
+{
+    return _depthAttachment;
+}
+
+- (void)setDepthAttachment:(MTLRenderPassDepthAttachmentDescriptor *)depthAttachment
+{
+    _depthAttachment = depthAttachment ? [depthAttachment copy] : [[MTLRenderPassDepthAttachmentDescriptor alloc] init];
+}
+
+- (MTLRenderPassStencilAttachmentDescriptor *)stencilAttachment
+{
+    return _stencilAttachment;
+}
+
+- (void)setStencilAttachment:(MTLRenderPassStencilAttachmentDescriptor *)stencilAttachment
+{
+    _stencilAttachment = stencilAttachment ? [stencilAttachment copy] : [[MTLRenderPassStencilAttachmentDescriptor alloc] init];
 }
 
 - (MTLRenderPassColorAttachmentDescriptorArray *)colorAttachments
@@ -87,6 +141,8 @@
     MTLRenderPassDescriptor *d = [[MTLRenderPassDescriptor alloc] init];
     for (int i = 0; i < 8; i++)
         d.colorAttachments[i] = self.colorAttachments[i];
+    d.depthAttachment = self.depthAttachment;
+    d.stencilAttachment = self.stencilAttachment;
     return d;
 }
 

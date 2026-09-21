@@ -196,7 +196,6 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
     CHECK(comes_from_backports(NSClassFromString(@"MTLRenderPipelineDescriptor")), "the render pipeline descriptor comes from the backports");
     CHECK(comes_from_backports(NSClassFromString(@"MTLSamplerDescriptor")), "the sampler descriptor comes from the backports");
     CHECK(NSClassFromString(@"MTKView") == Nil, "MetalKit is not there");
-    CHECK(NSClassFromString(@"MTLDepthStencilDescriptor") == Nil, "depth and stencil descriptors are not there");
 
     self.device = MTLCreateSystemDefaultDevice();
     CHECK(self.device != nil, "there is a default device");
@@ -212,7 +211,7 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
     NSError *error = nil;
     self.library = [self.device newLibraryWithFile:[folder stringByDeletingPathExtension] error:&error];
     CHECK(self.library != nil, "a library is read from beside its file");
-    CHECK([[[self.library functionNames] sortedArrayUsingSelector:@selector(compare:)] isEqualToArray:(@[@"constFragment", @"fetchFragment", @"flowFragment", @"quadFragment", @"quadVertex", @"stageInVertex"])], "it holds its six functions");
+    CHECK([[[self.library functionNames] sortedArrayUsingSelector:@selector(compare:)] isEqualToArray:(@[@"colorFragment", @"constFragment", @"depthVertex", @"fetchFragment", @"flowFragment", @"quadFragment", @"quadVertex", @"stageInVertex"])], "it holds its eight functions");
     CHECK([self.library newFunctionWithName:@"missing"] == nil, "a name it does not hold gives nil");
     CHECK([[self.library newFunctionWithName:@"quadVertex"] functionType] == MTLFunctionTypeVertex, "the vertex function is a vertex function");
     CHECK([[self.library newFunctionWithName:@"quadFragment"] functionType] == MTLFunctionTypeFragment, "and the fragment function a fragment function");
@@ -228,7 +227,7 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
     CHECK([self.device newRenderPipelineStateWithDescriptor:incomplete error:&error] == nil && error != nil, "a pipeline with no functions is an error");
     error = nil;
     CHECK([self.device newComputePipelineStateWithFunction:[self.library newFunctionWithName:@"quadVertex"] error:&error] == nil && error != nil, "a compute pipeline is an error");
-    CHECK([self.device newDepthStencilStateWithDescriptor:nil] == nil, "a depth and stencil state is nil");
+    CHECK(NSClassFromString(@"MTLDepthStencilDescriptor") != Nil, "the depth and stencil descriptor is there");
     MTLSamplerDescriptor *border = [[MTLSamplerDescriptor alloc] init];
     border.sAddressMode = MTLSamplerAddressModeClampToZero;
     CHECK([self.device newSamplerStateWithDescriptor:border] == nil, "a sampler that clamps to zero is nil");
@@ -377,6 +376,124 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
         [fetchBuffer waitUntilCompleted];
         [self read:target width:64 height:64 into:out];
         CHECK(near(out + (32 * 64 + 32) * 4, 153, 51, 77, 2), "the colour attachment is read in the shader: half of what was there and half of the tint");
+    }
+
+    {
+        MTLTextureDescriptor *dd = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:(MTLPixelFormat)252 width:64 height:64 mipmapped:NO];
+        dd.usage = MTLTextureUsageRenderTarget;
+        id<MTLTexture> depthTexture = [self.device newTextureWithDescriptor:dd];
+        MTLTextureDescriptor *sd = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:(MTLPixelFormat)260 width:64 height:64 mipmapped:NO];
+        sd.usage = MTLTextureUsageRenderTarget;
+        id<MTLTexture> packedTexture = [self.device newTextureWithDescriptor:sd];
+        MTLTextureDescriptor *only = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:(MTLPixelFormat)253 width:64 height:64 mipmapped:NO];
+        only.usage = MTLTextureUsageRenderTarget;
+        id<MTLTexture> stencilOnly = [self.device newTextureWithDescriptor:only];
+        CHECK(depthTexture != nil && packedTexture != nil && stencilOnly != nil, "a depth texture, a texture of depth and stencil and a stencil texture are made");
+        MTLRenderPassDescriptor *fresh = [MTLRenderPassDescriptor renderPassDescriptor];
+        CHECK(fresh.depthAttachment.clearDepth == 1.0 && fresh.stencilAttachment.clearStencil == 0, "a pass clears depth to one and stencil to zero to start");
+
+        MTLRenderPipelineDescriptor *dp = [[MTLRenderPipelineDescriptor alloc] init];
+        dp.vertexFunction = [self.library newFunctionWithName:@"depthVertex"];
+        dp.fragmentFunction = [self.library newFunctionWithName:@"colorFragment"];
+        dp.colorAttachments[0].pixelFormat = MTLPixelFormatRGBA8Unorm;
+        dp.depthAttachmentPixelFormat = (MTLPixelFormat)252;
+        NSError *depthError = nil;
+        id<MTLRenderPipelineState> depthPipeline = [self.device newRenderPipelineStateWithDescriptor:dp error:&depthError];
+        CHECK(depthPipeline != nil, "a pipeline of the depth functions is made");
+
+        MTLDepthStencilDescriptor *lessWrite = [[MTLDepthStencilDescriptor alloc] init];
+        lessWrite.depthCompareFunction = MTLCompareFunctionLess;
+        lessWrite.depthWriteEnabled = YES;
+        MTLDepthStencilDescriptor *always = [[MTLDepthStencilDescriptor alloc] init];
+        always.depthCompareFunction = MTLCompareFunctionAlways;
+        always.depthWriteEnabled = YES;
+        MTLDepthStencilDescriptor *lessOnly = [[MTLDepthStencilDescriptor alloc] init];
+        lessOnly.depthCompareFunction = MTLCompareFunctionLess;
+        lessOnly.depthWriteEnabled = NO;
+        id<MTLDepthStencilState> lessWriteState = [self.device newDepthStencilStateWithDescriptor:lessWrite];
+        id<MTLDepthStencilState> alwaysState = [self.device newDepthStencilStateWithDescriptor:always];
+        id<MTLDepthStencilState> lessOnlyState = [self.device newDepthStencilStateWithDescriptor:lessOnly];
+        CHECK(lessWriteState != nil && alwaysState != nil && lessOnlyState != nil, "depth and stencil states are made");
+
+        const float red[4] = {1, 0, 0, 1}, green[4] = {0, 1, 0, 1};
+        void (^quad)(id<MTLRenderCommandEncoder>, float, float, const float *) = ^(id<MTLRenderCommandEncoder> e, float z, float half, const float *color) {
+            float p[6][4] = {{-half, half, z, 1}, {half, half, z, 1}, {-half, -half, z, 1}, {half, half, z, 1}, {half, -half, z, 1}, {-half, -half, z, 1}};
+            float c[6][4];
+            for (int i = 0; i < 6; i++)
+                memcpy(c[i], color, 16);
+            [e setVertexBytes:p length:sizeof p atIndex:0];
+            [e setVertexBytes:c length:sizeof c atIndex:1];
+            [e drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6];
+        };
+        MTLRenderPassDescriptor *(^depthPass)(void) = ^MTLRenderPassDescriptor *{
+            MTLRenderPassDescriptor *pass = [MTLRenderPassDescriptor renderPassDescriptor];
+            pass.colorAttachments[0].texture = target;
+            pass.colorAttachments[0].loadAction = MTLLoadActionClear;
+            pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1);
+            pass.depthAttachment.texture = depthTexture;
+            pass.depthAttachment.loadAction = MTLLoadActionClear;
+            pass.depthAttachment.clearDepth = 1.0;
+            return pass;
+        };
+        struct { id<MTLDepthStencilState> state; float firstZ, secondZ; int expectRed; const char *name; } cases[4] = {
+            {lessWriteState, 0.5f, 0.8f, 1, "the nearer quad drawn first keeps the pixel against a farther one"},
+            {lessWriteState, 0.8f, 0.5f, 0, "the nearer quad drawn second takes the pixel"},
+            {alwaysState, 0.5f, 0.8f, 0, "a depth test that always passes lets the later quad over"},
+            {lessOnlyState, 0.5f, 0.8f, 0, "a quad drawn without writing depth leaves the depth alone"}};
+        for (int k = 0; k < 4; k++) {
+            id<MTLCommandBuffer> b = [self.queue commandBuffer];
+            id<MTLRenderCommandEncoder> e = [b renderCommandEncoderWithDescriptor:depthPass()];
+            [e setRenderPipelineState:depthPipeline];
+            [e setDepthStencilState:cases[k].state];
+            quad(e, cases[k].firstZ, 1.0f, red);
+            quad(e, cases[k].secondZ, 1.0f, green);
+            [e endEncoding];
+            [b commit];
+            [b waitUntilCompleted];
+            [self read:target width:64 height:64 into:out];
+            const uint8_t *middle = out + (32 * 64 + 32) * 4;
+            CHECK(cases[k].expectRed ? near(middle, 255, 0, 0, 1) : near(middle, 0, 255, 0, 1), cases[k].name);
+        }
+
+        MTLStencilDescriptor *mark = [[MTLStencilDescriptor alloc] init];
+        mark.stencilCompareFunction = MTLCompareFunctionAlways;
+        mark.depthStencilPassOperation = MTLStencilOperationReplace;
+        MTLDepthStencilDescriptor *marking = [[MTLDepthStencilDescriptor alloc] init];
+        marking.frontFaceStencil = mark;
+        marking.backFaceStencil = mark;
+        MTLStencilDescriptor *equal = [[MTLStencilDescriptor alloc] init];
+        equal.stencilCompareFunction = MTLCompareFunctionEqual;
+        MTLDepthStencilDescriptor *masked = [[MTLDepthStencilDescriptor alloc] init];
+        masked.frontFaceStencil = equal;
+        masked.backFaceStencil = equal;
+        id<MTLDepthStencilState> markingState = [self.device newDepthStencilStateWithDescriptor:marking];
+        id<MTLDepthStencilState> maskedState = [self.device newDepthStencilStateWithDescriptor:masked];
+        const float *redColor = red, *greenColor = green;
+        void (^stencilRun)(id<MTLTexture>, id<MTLTexture>, const char *) = ^(id<MTLTexture> depthAttach, id<MTLTexture> stencilAttach, const char *name) {
+            MTLRenderPassDescriptor *stencilPass = [MTLRenderPassDescriptor renderPassDescriptor];
+            stencilPass.colorAttachments[0].texture = target;
+            stencilPass.colorAttachments[0].loadAction = MTLLoadActionClear;
+            stencilPass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1);
+            stencilPass.depthAttachment.texture = depthAttach;
+            stencilPass.depthAttachment.loadAction = MTLLoadActionClear;
+            stencilPass.stencilAttachment.texture = stencilAttach;
+            stencilPass.stencilAttachment.loadAction = MTLLoadActionClear;
+            id<MTLCommandBuffer> sb = [self.queue commandBuffer];
+            id<MTLRenderCommandEncoder> se = [sb renderCommandEncoderWithDescriptor:stencilPass];
+            [se setRenderPipelineState:depthPipeline];
+            [se setDepthStencilState:markingState];
+            [se setStencilReferenceValue:1];
+            quad(se, 0.5f, 0.5f, redColor);
+            [se setDepthStencilState:maskedState];
+            quad(se, 0.5f, 1.0f, greenColor);
+            [se endEncoding];
+            [sb commit];
+            [sb waitUntilCompleted];
+            [self read:target width:64 height:64 into:out];
+            CHECK(near(out + (32 * 64 + 32) * 4, 0, 255, 0, 1) && near(out + (4 * 64 + 4) * 4, 0, 0, 0, 1), name);
+        };
+        stencilRun(packedTexture, packedTexture, "a stencil that is set where a quad was drawn lets a second quad in there only, with depth and stencil in one texture");
+        stencilRun(nil, stencilOnly, "and with a texture of stencil alone");
     }
 
     const float faint[4] = {0.5f, 0.5f, 0.5f, 0.4f};

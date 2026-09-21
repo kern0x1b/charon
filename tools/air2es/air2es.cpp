@@ -1169,6 +1169,7 @@ struct Translator {
                 if (o.kind == "air.position") {
                     body.push_back(indent + "gl_Position = " + fields[k] + ";");
                     body.push_back(indent + "gl_Position.y *= charon_flip;");
+                    body.push_back(indent + "gl_Position.z = gl_Position.z * 2.0 - gl_Position.w;");
                 } else if (o.kind == "air.point_size") {
                     body.push_back(indent + "gl_PointSize = " + fields[k] + ";");
                 } else if (o.kind == "air.vertex_output") {

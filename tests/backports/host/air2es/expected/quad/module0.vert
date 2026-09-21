@@ -15,5 +15,6 @@ void main()
     vec2 v5 = a0_8;
     gl_Position = vec4(v3, v4, 0.0, 1.0);
     gl_Position.y *= charon_flip;
+    gl_Position.z = gl_Position.z * 2.0 - gl_Position.w;
     vary_generated_5coordDv2_f_ = v5;
 }

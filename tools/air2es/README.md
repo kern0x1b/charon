@@ -19,7 +19,7 @@ comes from, the uniforms with the buffer and offset each is loaded from (and the
 index is an instance identifier), the textures, the sizes of textures the function asks for, the varyings (with a
 `flat` mark) and the vertex inputs of a vertex descriptor.
 
-`half` becomes `mediump`. The vertex shader ends with `gl_Position.y *= charon_flip`, which the runtime sets to -1 for
+`half` becomes `mediump`. The vertex shader turns the depth of Metal's clip space, 0 to w, into ES's, minus w to w (`gl_Position.z = gl_Position.z * 2.0 - gl_Position.w`), so the depth buffer holds what Metal's would, and ends with `gl_Position.y *= charon_flip`, which the runtime sets to -1 for
 a render target that is a texture, since Metal's window has its origin at the top and ES's framebuffer object at the
 bottom.
 

@@ -154,10 +154,9 @@ NSError *CharonMetalError(NSInteger code, NSString *message)
     completionHandler(state, error);
 }
 
-- (id<MTLDepthStencilState>)newDepthStencilStateWithDescriptor:(id)descriptor
+- (id<MTLDepthStencilState>)newDepthStencilStateWithDescriptor:(MTLDepthStencilDescriptor *)descriptor
 {
-    NSLog(@"Metal: a depth and stencil state has no form in this port yet");
-    return nil;
+    return (id<MTLDepthStencilState>)[[CharonMetalDepthStencil alloc] initWithDescriptor:descriptor];
 }
 
 - (id<MTLLibrary>)newDefaultLibrary

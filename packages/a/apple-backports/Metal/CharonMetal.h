@@ -109,6 +109,10 @@ typedef struct {
 - (instancetype)initWithDescriptor:(MTLTextureDescriptor *)descriptor;
 - (instancetype)initScreenWithFramebuffer:(GLuint)framebuffer width:(NSUInteger)width height:(NSUInteger)height pixelFormat:(MTLPixelFormat)format;
 - (GLuint)renderTarget;
+@property (nonatomic, readonly) int attachmentKind;
+@property (nonatomic, readonly) GLuint renderbuffer;
+@property (nonatomic) GLuint checkedDepth;
+@property (nonatomic) GLuint checkedStencil;
 @property (nonatomic, unsafe_unretained) CharonMetalSampler *appliedSampler;
 @end
 
@@ -159,6 +163,23 @@ typedef struct {
 @end
 
 
+
+typedef struct {
+    GLenum function, failure, depthFailure, pass;
+    uint32_t readMask, writeMask;
+} CharonStencil;
+
+typedef struct {
+    GLenum depthFunction;
+    GLboolean depthWrite;
+    BOOL stencilEnabled;
+    CharonStencil front, back;
+} CharonDepthStencil;
+
+@interface CharonMetalDepthStencil : NSObject <MTLDepthStencilState>
+- (instancetype)initWithDescriptor:(MTLDepthStencilDescriptor *)descriptor;
+- (const CharonDepthStencil *)state;
+@end
 
 extern NSUInteger CharonMetalBindEpoch;
 

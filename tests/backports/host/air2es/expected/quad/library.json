@@ -35,6 +35,18 @@
    "stage": "fragment",
    "source": "module5.frag",
    "reflection": "module5.json"
+  },
+  {
+   "name": "depthVertex",
+   "stage": "vertex",
+   "source": "module6.vert",
+   "reflection": "module6.json"
+  },
+  {
+   "name": "colorFragment",
+   "stage": "fragment",
+   "source": "module7.frag",
+   "reflection": "module7.json"
   }
  ]
 }

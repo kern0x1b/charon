@@ -17,6 +17,7 @@ void main()
     float v5 = ((vin1).x) + (v4);
     gl_Position = vec4(v1, v2, 0.0, 1.0);
     gl_Position.y *= charon_flip;
+    gl_Position.z = gl_Position.z * 2.0 - gl_Position.w;
     vary_generated_5coordDv2_f_ = vec2(v5, (vin1).y);
     vary_generated_5shadeDv4_f_ = vin2;
 }

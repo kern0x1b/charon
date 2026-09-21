@@ -40,6 +40,9 @@ static float halfToFloat(uint16_t h)
     uint32_t _enabled;
     GLuint _boundTexture[16];
     NSUInteger _epoch;
+    BOOL _hasDepth, _hasStencil, _depthDirty;
+    CharonMetalDepthStencil *_depthStencil;
+    uint32_t _frontReference, _backReference;
 }
 
 @synthesize label;
@@ -58,14 +61,54 @@ static float halfToFloat(uint16_t h)
         _cullApplied = -1;
         _viewportDirty = _viewportSet;
         glBindFramebuffer(GL_FRAMEBUFFER, [texture renderTarget]);
+        CharonMetalTexture *depth = (CharonMetalTexture *)descriptor.depthAttachment.texture;
+        CharonMetalTexture *stencil = (CharonMetalTexture *)descriptor.stencilAttachment.texture;
+        if (![depth isKindOfClass:[CharonMetalTexture class]] || !(depth.attachmentKind == 1 || depth.attachmentKind == 2))
+            depth = nil;
+        if (![stencil isKindOfClass:[CharonMetalTexture class]] || !(stencil.attachmentKind == 2 || stencil.attachmentKind == 3))
+            stencil = nil;
+        if (depth)
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth.name, 0);
+        else
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
+        if (stencil && stencil.attachmentKind == 2)
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, stencil.name, 0);
+        else if (stencil)
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, stencil.renderbuffer);
+        else
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, 0);
+        if ((depth || stencil) && (texture.checkedDepth != (depth ? depth.name : 0) || texture.checkedStencil != (stencil ? (stencil.attachmentKind == 3 ? stencil.renderbuffer : stencil.name) : 0))) {
+            texture.checkedDepth = depth ? depth.name : 0;
+            texture.checkedStencil = stencil ? (stencil.attachmentKind == 3 ? stencil.renderbuffer : stencil.name) : 0;
+            GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+            if (status != GL_FRAMEBUFFER_COMPLETE)
+                NSLog(@"Metal: the colour, depth and stencil attachments make a framebuffer OpenGL ES 2.0 calls incomplete (0x%x); a stencil that is not packed with depth may be the cause", status);
+        }
+        _hasDepth = depth != nil;
+        _hasStencil = stencil != nil;
+        _depthDirty = YES;
         glViewport(0, 0, (GLsizei)texture.width, (GLsizei)texture.height);
         glDisable(GL_SCISSOR_TEST);
+        glDisable(GL_POLYGON_OFFSET_FILL);
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+        GLbitfield clear = 0;
         if (color.loadAction == MTLLoadActionClear) {
             MTLClearColor c = color.clearColor;
             glClearColor(c.red, c.green, c.blue, c.alpha);
-            glClear(GL_COLOR_BUFFER_BIT);
+            clear |= GL_COLOR_BUFFER_BIT;
         }
+        if (depth && descriptor.depthAttachment.loadAction == MTLLoadActionClear) {
+            glDepthMask(GL_TRUE);
+            glClearDepthf((GLfloat)descriptor.depthAttachment.clearDepth);
+            clear |= GL_DEPTH_BUFFER_BIT;
+        }
+        if (stencil && descriptor.stencilAttachment.loadAction == MTLLoadActionClear) {
+            glStencilMask(0xFFFFFFFF);
+            glClearStencil((GLint)descriptor.stencilAttachment.clearStencil);
+            clear |= GL_STENCIL_BUFFER_BIT;
+        }
+        if (clear)
+            glClear(clear);
     }
     return self;
 }
@@ -103,10 +146,39 @@ static float halfToFloat(uint16_t h)
     glBlendColor(red, green, blue, alpha);
 }
 
-- (void)setDepthStencilState:(id)depthStencilState
+- (void)setDepthStencilState:(id<MTLDepthStencilState>)depthStencilState
 {
-    if (depthStencilState)
-        NSLog(@"Metal: a depth and stencil state has no form in this port yet");
+    _depthStencil = (CharonMetalDepthStencil *)depthStencilState;
+    _depthDirty = YES;
+}
+
+- (void)setStencilReferenceValue:(uint32_t)referenceValue
+{
+    _frontReference = _backReference = referenceValue;
+    _depthDirty = YES;
+}
+
+- (void)setStencilFrontReferenceValue:(uint32_t)frontReferenceValue backReferenceValue:(uint32_t)backReferenceValue
+{
+    _frontReference = frontReferenceValue;
+    _backReference = backReferenceValue;
+    _depthDirty = YES;
+}
+
+- (void)setDepthBias:(float)depthBias slopeScale:(float)slopeScale clamp:(float)clamp
+{
+    if (depthBias == 0 && slopeScale == 0) {
+        glDisable(GL_POLYGON_OFFSET_FILL);
+    } else {
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonOffset(slopeScale, depthBias);
+    }
+}
+
+- (void)setTriangleFillMode:(MTLTriangleFillMode)fillMode
+{
+    if (fillMode != MTLTriangleFillModeFill)
+        NSLog(@"Metal: a triangle fill mode of lines has no form in OpenGL ES 2.0");
 }
 
 - (void)setScissorRect:(MTLScissorRect)rect
@@ -256,17 +328,39 @@ static const GLfloat *rampOf(NSUInteger count)
         glViewport((GLint)_viewport.originX, y, (GLsizei)_viewport.width, (GLsizei)_viewport.height);
         _viewportDirty = NO;
     }
-    if (_cullApplied != (int)_cull || (_cull != MTLCullModeNone && _windingApplied != _winding)) {
+    if (_cullApplied != (int)_cull || _windingApplied != _winding) {
         BOOL flipped = !_target.screen;
+        glFrontFace((_winding == MTLWindingClockwise) != flipped ? GL_CW : GL_CCW);
         if (_cull == MTLCullModeNone) {
             glDisable(GL_CULL_FACE);
         } else {
             glEnable(GL_CULL_FACE);
-            glFrontFace((_winding == MTLWindingClockwise) != flipped ? GL_CW : GL_CCW);
             glCullFace(_cull == MTLCullModeFront ? GL_FRONT : GL_BACK);
         }
         _cullApplied = (int)_cull;
         _windingApplied = _winding;
+    }
+    if (_depthDirty) {
+        const CharonDepthStencil *state = _depthStencil.state;
+        if (_hasDepth) {
+            glEnable(GL_DEPTH_TEST);
+            glDepthFunc(state ? state->depthFunction : GL_ALWAYS);
+            glDepthMask(state ? state->depthWrite : GL_FALSE);
+        } else {
+            glDisable(GL_DEPTH_TEST);
+        }
+        if (_hasStencil && state && state->stencilEnabled) {
+            glEnable(GL_STENCIL_TEST);
+            glStencilFuncSeparate(GL_FRONT, state->front.function, (GLint)_frontReference, state->front.readMask);
+            glStencilFuncSeparate(GL_BACK, state->back.function, (GLint)_backReference, state->back.readMask);
+            glStencilOpSeparate(GL_FRONT, state->front.failure, state->front.depthFailure, state->front.pass);
+            glStencilOpSeparate(GL_BACK, state->back.failure, state->back.depthFailure, state->back.pass);
+            glStencilMaskSeparate(GL_FRONT, state->front.writeMask);
+            glStencilMaskSeparate(GL_BACK, state->back.writeMask);
+        } else {
+            glDisable(GL_STENCIL_TEST);
+        }
+        _depthDirty = NO;
     }
     if (plan->vertexId >= 0) {
         [self setAttribute:plan->vertexId enabled:YES];

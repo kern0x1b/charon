@@ -28,6 +28,14 @@ the top left, which the port keeps by turning the vertical axis of a target that
 A fragment function that takes the colour it draws over as an argument reads the framebuffer in the shader (`GL_EXT_shader_framebuffer_fetch` of the SGX 543), which keeps
 a pass in one tile without a texture to read back; only the first attachment, as four floats.
 
+## Depth and stencil
+
+A pass takes a depth texture and a stencil texture, cleared or loaded, and a depth and stencil state sets the depth test, whether depth is written, and the stencil test and operations for the front and the
+back faces, with the reference value of the encoder. Depth textures of `Depth16Unorm`, `Depth32Float` and, packed with stencil, `Depth24Unorm_Stencil8` and `Depth32Float_Stencil8` are made from ES 2.0's depth
+textures, and `Stencil8` from a renderbuffer. The depth of Metal's clip space (0 to w) is turned into ES's (minus w to w) in the vertex shader, so depth holds what Metal's would. Differences:
+depth of `Depth32Float` is kept with 24 bits, since ES 2.0 has no float depth; the clamp of a depth bias is ignored; a triangle fill mode of lines and a depth clip mode are refused with a line in the log; a translated shader
+cannot read a depth texture yet (a `depth2d` argument is refused).
+
 ## Function constants
 
 A function that has function constants is specialised by `newFunctionWithName:constantValues:error:` with an `MTLFunctionConstantValues`: the bool, int,
@@ -46,7 +54,6 @@ to encode, against 130 before the pipeline's bindings were worked out once when 
 
 * Vertex formats of half floats, 32 bit integers, the packed 10 bit formats and the BGRA one: a pipeline that uses one is refused, since ES 2.0 has no attribute of them. A layout whose step function is per vertex with a step rate other than one, or per patch, is refused too.
 * Compute: a compute pipeline answers an error, and the compute encoder answers nil. The graphics of the A5 run no compute functions.
-* Depth and stencil: a depth and stencil state answers nil with a line in the log, and there is no depth attachment.
 * Multiple render targets, tessellation, texture arrays, cubes, depth and 3D textures, sampling with an offset or gradients, and a function constant of a vector type
   are not translated, and a function that needs one is not in the library.
 * A vertex texture: the SGX 543 has none.

@@ -20,14 +20,14 @@ def module(name):
     return subprocess.run([llvm + '/bin/llvm-as', '%s/%s.ll' % (fixtures, name), '-o', '-'], check=True, capture_output=True).stdout
 
 
-for library, names in (('quad', ('quad-vertex', 'quad-fragment', 'quad-stagein', 'quad-flow', 'quad-constants', 'quad-fetch')), ('pair', ('pair',))):
+for library, names in (('quad', ('quad-vertex', 'quad-fragment', 'quad-stagein', 'quad-flow', 'quad-constants', 'quad-fetch', 'depth-vertex', 'depth-fragment')), ('pair', ('pair',))):
     open('%s/%s.metallib' % (work, library), 'wb').write(b'MTLB' + bytes(16) + b''.join(module(name) for name in names))
 PY
 
 python3 "$root/tools/air2es/metallib2es.py" "$work/air2es" "$work/quad.metallib" "$work/quad.es2" >"$work/quad.out"
 cat "$work/quad.out"
 
-for file in library.json module0.vert module0.json module1.frag module1.json module2.vert module2.json module3.frag module3.json module4.frag module4.json module5.frag module5.json; do
+for file in library.json module0.vert module0.json module1.frag module1.json module2.vert module2.json module3.frag module3.json module4.frag module4.json module5.frag module5.json module6.vert module6.json module7.frag module7.json; do
     if [ -n "${CHARON_WRITE_EXPECTED:-}" ]; then
         mkdir -p "$here/expected/quad"
         cp "$work/quad.es2/$file" "$here/expected/quad/$file"
@@ -47,6 +47,8 @@ sed '1a\
 glslangValidator -S frag "$work/specialised.frag"
 sed '/GL_EXT_shader_framebuffer_fetch/d; s/gl_LastFragData\[0\]/vec4(0.0)/' "$work/quad.es2/module5.frag" >"$work/fetching.frag"
 glslangValidator -S frag "$work/fetching.frag"
+glslangValidator -S vert "$work/quad.es2/module6.vert"
+glslangValidator -S frag "$work/quad.es2/module7.frag"
 grep -q "GL_EXT_shader_framebuffer_fetch" "$work/quad.es2/module5.frag"
 
 if python3 "$root/tools/air2es/metallib2es.py" "$work/air2es" "$work/pair.metallib" "$work/pair.es2" >"$work/pair.out"; then
