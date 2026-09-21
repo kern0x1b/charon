@@ -48,6 +48,7 @@ inputs.
     sh host/cachereader/run.sh <dyld_shared_cache> <image> <class> <selector>
     sh host/orderedcollections/run.sh  writes device/orderedcollections-expectations.h
     sh host/diffable/run.sh  writes device/diffable-expectations.h
+    sh host/pasteboard10/run.sh  writes device/pasteboard10-expectations.h
     sh host/air2es/run.sh    builds tools/air2es against the llvm package and needs glslangValidator
 
 `host/air2es/run.sh` assembles the AIR fixtures written for the test (a vertex function that reads its buffer by vertex
@@ -900,5 +901,7 @@ the same cases through the real `NSOperationQueue` on the release.
 `device/textfieldreason.m` ends the editing of a real text field with a delegate that has only `-textFieldDidEndEditing:reason:`, one that has only the old method, and none. It has no host record: a text field of a headless scene does not become the first responder.
 
 `host/tail3/run.sh` records what the system does with `sharedContainerIdentifier` of an `NSURLSessionConfiguration` - default, set, copied, cleared, on a background configuration, kept by a session - and `device/tail3.m` runs the same cases on iOS 6.
+
+`host/pasteboard10/run.sh` records what the system's `UIPasteboard` answers to `hasStrings`, `hasURLs`, `hasImages` and `hasColors` over the thirteen contents of `device/pasteboard10-cases.m` - a string, a string that reads as a URL, a URL, an image, a colour, two of each, an image set over a string, a string and an image in items of their own, the bytes of a PNG under `public.png`, bytes under a type of the application's own, and a pasteboard emptied - and records beside each answer whether `-strings`, `-URLs`, `-images` and `-colors` return anything, so the predicate is held to what the pasteboard can really hand over; `device/pasteboard10.m` runs the same cases on iOS 6 as a process of its own, and first asks `dladdr` which image each of the four answers and each of the four type lists comes from, so a predicate taken from the release instead of the port, or a type list the port had to invent, is a failure and not a silent pass.
 
 `host/show/run.sh` records what the system does when a controller shows another one - pushed by a navigation controller, presented with no container or in a tab bar controller, sent to a parent that overrides the method, `showDetailViewController:sender:` with no split view - and which controller `targetViewControllerForAction:sender:` and `targetForAction:withSender:` answer; `device/show.m` runs the same cases on iOS 6.

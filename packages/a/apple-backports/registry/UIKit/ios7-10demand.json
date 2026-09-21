@@ -1,0 +1,87 @@
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "UISearchController.obscuresBackgroundDuringPresentation",
+      "kind": "property",
+      "introduced": "9.1",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UISearchController.md",
+      "source": "UIKit of iOS 10.0.1 armv7s, read for the dimming view the controller puts over what lies under it"
+    },
+    {
+      "api": "UITextInputAssistantItem.leadingBarButtonGroups",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "iOS 6 draws no shortcuts bar over the keyboard, so there is nowhere to put a group",
+      "effect": "the groups are kept and read back, nothing is shown, and the first setting of a group that is not empty says so once in the log",
+      "facts": "facts/UIKit/ApplicationShortcuts.md",
+      "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+    },
+    {
+      "api": "UITextInputAssistantItem.trailingBarButtonGroups",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "iOS 6 draws no shortcuts bar over the keyboard, so there is nowhere to put a group",
+      "effect": "the groups are kept and read back, nothing is shown, and the first setting of a group that is not empty says so once in the log",
+      "facts": "facts/UIKit/ApplicationShortcuts.md",
+      "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+    },
+    {
+      "api": "-[UIFeedbackGenerator prepare]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "its only contract is latency, and an eccentric rotating mass has nothing to warm; iOS 10's own does nothing on hardware with no Taptic Engine either",
+      "effect": "it returns at once and the next impact or notification plays with the motor's own spin-up, about 40 ms, ahead of it",
+      "facts": "facts/UIKit/UIFeedbackGenerator.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
+    },
+    {
+      "api": "+[UIKeyCommand keyCommandWithInput:modifierFlags:action:discoverabilityTitle:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/KeyCommands.md",
+      "source": "the host's own UIKit, and UIKit of iOS 10.0.1 armv7s for the title a command carries"
+    },
+    {
+      "api": "-[UIAccessibilityCustomAction initWithName:target:selector:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+      "source": "the host's own UIKit, recorded for what the action keeps and how it is performed",
+      "reason": "VoiceOver on iOS 6 has no rotor of custom actions, so an action has nowhere to be offered",
+      "effect": "the action is made and keeps the name, the target it holds weakly and the selector, and -accessibilityCustomActions is read back; nothing ever performs it"
+    },
+    {
+      "api": "+[UITraitCollection traitCollectionWithForceTouchCapability:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITraitEnvironment.md",
+      "source": "the host's own UIKit, and the release, which has no force touch, so the capability of a collection nobody set is unavailable"
+    },
+    {
+      "api": "+[UIVibrancyEffect effectForBlurEffect:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "facts": "facts/UIKit/UIVisualEffect.md",
+      "source": "UIKit of iOS 10.0.1 armv7s, read for the effect a vibrancy takes from a blur",
+      "reason": "the release draws no vibrancy: the views in the content view of a vibrancy effect are drawn as they are",
+      "effect": "the effect is made, takes the style of the blur it was given, is archived and compares equal like the system's, and nothing is drawn differently for it"
+    }
+  ]
+}

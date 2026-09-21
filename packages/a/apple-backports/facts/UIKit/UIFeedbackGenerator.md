@@ -193,3 +193,16 @@ and its `-selectionChanged` reaches an engine that is not there. The class was f
 left out; in a corpus of nine applications six name it, and a program that names a
 class that is not there fails where one that finds it does not, so it is carried
 and says plainly that it plays nothing. `-prepare` is the base class's.
+
+## Where this departs from the release, and when that would be revisited
+
+On hardware with no Taptic Engine iOS 10 plays nothing at all, and this port plays its own measured pattern on the
+eccentric rotating mass of an iPhone 4S. That is a real departure and it is declared rather than quiet: the patterns
+above are named as ours, they were read off a live iPhone4,1 rather than guessed, and on an iPad 2, which has no motor,
+`FigVibratorIsVibratorAvailable` answers no and every call is silent, which is the release's own behaviour there.
+
+The path that would have made the departure costly is already closed: `UISelectionFeedbackGenerator` is inert, because
+a tick per detent is below the motor's 40 ms floor, and that is the call an emulator front end makes often.
+
+This stays open, not settled. If a real application shows the impact feedback buzzing intrusively on a 4S, or draining
+the battery, the answer is strict silence on every device, as the release has it.

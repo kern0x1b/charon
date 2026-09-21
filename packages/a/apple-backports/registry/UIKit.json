@@ -285,44 +285,36 @@
   "kind": "property",
   "introduced": "10.0",
   "minimum": "6.0",
-  "status": "absent",
-  "reason": "the answer is decided by the Pasteboard framework's PBItemCollection over type identifiers held by the pasteboard service, which iOS 6 has neither of; a check of the types iOS 6 does have would decide differently from the release for the same contents",
-  "effect": "the property is not declared, so respondsToSelector: answers honestly",
+  "status": "implemented",
   "facts": "facts/UIKit/UIPasteboardIOS10.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
+  "source": "UIKit of the armv7s cache of iOS 10.3.4 for the question the release asks, UIKit of iOS 6.1.3 armv7 for the type lists and -containsPasteboardTypes: that answer it, and the host's own UIKit under Mac Catalyst through tests/backports/host/pasteboard10"
  },
  {
   "api": "UIPasteboard.hasURLs",
   "kind": "property",
   "introduced": "10.0",
   "minimum": "6.0",
-  "status": "absent",
-  "reason": "the answer is decided by the Pasteboard framework's PBItemCollection over type identifiers held by the pasteboard service, which iOS 6 has neither of; a check of the types iOS 6 does have would decide differently from the release for the same contents",
-  "effect": "the property is not declared, so respondsToSelector: answers honestly",
+  "status": "implemented",
   "facts": "facts/UIKit/UIPasteboardIOS10.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
+  "source": "UIKit of the armv7s cache of iOS 10.3.4 for the question the release asks, UIKit of iOS 6.1.3 armv7 for the type lists and -containsPasteboardTypes: that answer it, and the host's own UIKit under Mac Catalyst through tests/backports/host/pasteboard10"
  },
  {
   "api": "UIPasteboard.hasImages",
   "kind": "property",
   "introduced": "10.0",
   "minimum": "6.0",
-  "status": "absent",
-  "reason": "the answer is decided by the Pasteboard framework's PBItemCollection over type identifiers held by the pasteboard service, which iOS 6 has neither of; a check of the types iOS 6 does have would decide differently from the release for the same contents",
-  "effect": "the property is not declared, so respondsToSelector: answers honestly",
+  "status": "implemented",
   "facts": "facts/UIKit/UIPasteboardIOS10.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
+  "source": "UIKit of the armv7s cache of iOS 10.3.4 for the question the release asks, UIKit of iOS 6.1.3 armv7 for the type lists and -containsPasteboardTypes: that answer it, and the host's own UIKit under Mac Catalyst through tests/backports/host/pasteboard10"
  },
  {
   "api": "UIPasteboard.hasColors",
   "kind": "property",
   "introduced": "10.0",
   "minimum": "6.0",
-  "status": "absent",
-  "reason": "the answer is decided by the Pasteboard framework's PBItemCollection over type identifiers held by the pasteboard service, which iOS 6 has neither of; a check of the types iOS 6 does have would decide differently from the release for the same contents",
-  "effect": "the property is not declared, so respondsToSelector: answers honestly",
+  "status": "implemented",
   "facts": "facts/UIKit/UIPasteboardIOS10.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
+  "source": "UIKit of the armv7s cache of iOS 10.3.4 for the question the release asks, UIKit of iOS 6.1.3 armv7 for the type lists and -containsPasteboardTypes: that answer it, and the host's own UIKit under Mac Catalyst through tests/backports/host/pasteboard10"
  },
  {
   "api": "-[UIPasteboard setItems:options:]",

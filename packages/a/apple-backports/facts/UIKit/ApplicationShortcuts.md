@@ -20,4 +20,7 @@ property are `inert`, and `application:performActionForShortcutItem:completionHa
 `UIBarButtonItemGroup` keeps its items and its representative item, is archived, and says it is not displaying its
 representative item; each item knows its group. `UITextInputAssistantItem` keeps two arrays of groups and whether the system
 may hide the shortcuts, which it may; `UIResponder.inputAssistantItem` answers one item of its own for every responder.
-iOS 6 has no such bar, so nothing is shown and both are `inert`.
+iOS 6 has no such bar, so nothing is shown and both are `inert`. The first time an application puts a group that is not
+empty into `leadingBarButtonGroups` or `trailingBarButtonGroups` the port says so once in the log, since an item kept and
+never drawn is the kind of inaction an application has no other way of noticing; an empty array says nothing, because
+clearing the groups asks for nothing to be drawn.

@@ -28,6 +28,12 @@ learns that it cannot, and one that narrows them without asking stops at the cal
 
 ## The key a background session would have answered under
 
+`+backgroundSessionConfigurationWithIdentifier:` is the name iOS 8 gave the factory iOS 7 shipped as
+`+backgroundSessionConfiguration:`, with nothing else changed, so the port answers it with the older one: an
+application written against either name gets the same configuration, and the identifier it is given is the
+identifier the configuration holds. What the configuration cannot do is below - the transfers run in the process,
+since the release has no daemon to hand them to.
+
 `NSURLErrorBackgroundTaskCancelledReasonKey` carries its own name as its value, read from the host's own
 Foundation. It is the key an error's `userInfo` holds when the system cancels a background transfer, and
 nothing in this release cancels one, because the backport's background configuration runs in the process
