@@ -49,3 +49,22 @@ UIKit of iOS 6.1.3 armv7, read for what the release already has; and the host's 
 ## The option keys are exported
 
 The two option keys exist as `NSString`s with the system's own values (`expirationDate` and `localOnly`, as `host/tail2/run.sh` reads them), so an application that refers to the symbols directly, without a check of the release, loads and does not read a null pointer. Nothing reads them: `-setItems:options:` stays undeclared for the reason above, so an application that asks whether the pasteboard responds to it does not hand over a secret that the port could not clear.
+
+## What the device run reached, and what it could not
+
+`device/pasteboard10.m` on an emulated iOS 6.0 (iPhone3,1, 10A403), as a process of its own:
+
+- All eight provenance checks pass. `-hasStrings`, `-hasURLs`, `-hasImages` and `-hasColors` come from
+  `libUIKitBackports.dylib`, and `UIPasteboardTypeListString`, `...URL`, `...Image` and `...Color` come from the
+  release's own UIKit, which is the point: the port answers the question and the release supplies the lists.
+- `+pasteboardWithUniqueName` answers a pasteboard, and an empty one reads `0000 | 0000` - the four predicates and
+  the four accessors agree with the host.
+- Everything the test *writes* comes back empty. A process with no application does not reach the pasteboard
+  store on this release: `-setString:`, `-setURL:`, `-setImage:` and `-setColor:` take without complaint and
+  nothing is there afterwards, and `-setStrings:` raises inside UIKit building a dictionary from a store it could
+  not read. That is the release's own environment and not the port: the predicate is answered by
+  `-containsPasteboardTypes:`, which is the release's, over items the release did not keep.
+
+So the content half of the cases needs an application, or a device, and is not carried by the emulated run. The
+test reports the exception instead of dying on it, so what was reached and what was not is legible in the output
+rather than a signal.

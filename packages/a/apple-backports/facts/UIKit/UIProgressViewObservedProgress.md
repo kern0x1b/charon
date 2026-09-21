@@ -43,3 +43,12 @@ Setting `progress` by hand while an observation is in place is allowed and is no
 moves, which is then what wins; the observation is not dropped by it. Clearing the observed progress stops the
 following and leaves the bar where it stood. `device/observedprogress.m` holds all of that on iOS 6, and asks
 `dladdr` that both accessors come from `libUIKitBackports.dylib`.
+
+## What the device run shows
+
+`device/observedprogress.m` on an emulated iOS 6.0 (iPhone3,1, 10A403): eighteen checks, no failures. Both
+accessors come from `libUIKitBackports.dylib`; the fraction is taken at once on assignment; the bar follows the
+progress; a value set by hand stands until the progress next moves and does not drop the observation; setting the
+same progress again changes nothing; a second progress replaces the first and the first stops moving the bar;
+clearing the observation leaves the bar where it stood; and a progress view that is deallocated while observing
+takes its observation with it, with no complaint from key-value observing when the progress moves afterwards.

@@ -2,12 +2,26 @@
 
 static UIImage *square(void)
 {
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(4, 4), YES, 1);
-    [[UIColor greenColor] setFill];
-    UIRectFill(CGRectMake(0, 0, 4, 4));
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
+    CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(NULL, 4, 4, 8, 0, space, kCGImageAlphaNoneSkipLast);
+    CGColorSpaceRelease(space);
+    if (!context)
+        return nil;
+    CGContextSetRGBFillColor(context, 0, 1, 0, 1);
+    CGContextFillRect(context, CGRectMake(0, 0, 4, 4));
+    CGImageRef bitmap = CGBitmapContextCreateImage(context);
+    CGContextRelease(context);
+    if (!bitmap)
+        return nil;
+    UIImage *image = [UIImage imageWithCGImage:bitmap];
+    CGImageRelease(bitmap);
     return image;
+}
+
+static NSData *square_png(void)
+{
+    NSData *png = UIImagePNGRepresentation(square());
+    return png ?: [NSData data];
 }
 
 static NSString *flags(UIPasteboard *pasteboard)
@@ -65,11 +79,11 @@ void pasteboard10_run(Pasteboard10Recorder record)
     pasteboard.image = square();
     take(pasteboard, @"an image set over a string", record);
 
-    pasteboard.items = @[@{(NSString *)@"public.utf8-plain-text": @"beside"}, @{(NSString *)@"public.png": UIImagePNGRepresentation(square())}];
+    pasteboard.items = @[@{(NSString *)@"public.utf8-plain-text": @"beside"}, @{(NSString *)@"public.png": square_png()}];
     take(pasteboard, @"a string in one item and an image in another", record);
 
     pasteboard.items = @[];
-    [pasteboard setData:UIImagePNGRepresentation(square()) forPasteboardType:@"public.png"];
+    [pasteboard setData:square_png() forPasteboardType:@"public.png"];
     take(pasteboard, @"the bytes of a PNG under public.png", record);
 
     pasteboard.items = @[];

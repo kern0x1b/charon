@@ -37,10 +37,15 @@ int main(int argc, char **argv)
         (void)argv;
         check_sources();
         NSDictionary *expected = [NSJSONSerialization JSONObjectWithData:[NSData dataWithBytes:pasteboard10_expectations length:strlen(pasteboard10_expectations)] options:0 error:NULL];
+        charon_check([UIPasteboard generalPasteboard] != nil, "the release hands out a pasteboard at all", nil);
         NSMutableDictionary *records = [NSMutableDictionary dictionary];
-        pasteboard10_run(^(NSString *name, NSString *value) {
-            records[name] = value;
-        });
+        @try {
+            pasteboard10_run(^(NSString *name, NSString *value) {
+                records[name] = value;
+            });
+        } @catch (NSException *exception) {
+            charon_check(NO, "the cases run to the end", [NSString stringWithFormat:@"%@: %@ after %lu of them", exception.name, exception.reason, (unsigned long)records.count]);
+        }
         for (NSString *name in [expected.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
             NSString *want = expected[name];
             NSString *got = records[name];
