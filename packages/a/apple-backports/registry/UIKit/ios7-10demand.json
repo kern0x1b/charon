@@ -135,6 +135,68 @@
       "status": "implemented",
       "facts": "facts/UIKit/UIProgressViewObservedProgress.md",
       "source": "-[UIProgressView setObservedProgress:] in the armv7 cache of iOS 9.3.5 and the selectors UIKit of that release refers to; the host does not move its own bar for an observed progress and is no oracle for it"
+    },
+    {
+      "api": "UIFocusAnimationCoordinator",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIFocusAnimationCoordinator.md",
+      "source": "SDK 16.4, UIFocusAnimationCoordinator.h for the contract, and the release, which has no focus engine to hand one out"
+    },
+    {
+      "api": "-[UIFocusAnimationCoordinator addCoordinatedAnimations:completion:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIFocusAnimationCoordinator.md",
+      "source": "SDK 16.4, UIFocusAnimationCoordinator.h; the blocks are run rather than dropped, since dropping them would swallow the application's own animation"
+    },
+    {
+      "api": "UIContentSizeCategoryAdjusting",
+      "kind": "protocol",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "iOS 6 has no Dynamic Type: no category ever changes, so there is nothing for a view to adjust to",
+      "effect": "the three views that adopt it keep the flag and read it back, conform to the protocol, and leave the font as the application set it",
+      "facts": "facts/UIKit/UIContentSizeCategoryAdjusting.md",
+      "source": "the release, which posts no content size category change"
+    },
+    {
+      "api": "UILabel.adjustsFontForContentSizeCategory",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "iOS 6 has no Dynamic Type: no category ever changes, so there is nothing to adjust the font to",
+      "effect": "the flag is kept and read back and the font is left as it was set; the first time it is turned on the port says so once in the log",
+      "facts": "facts/UIKit/UIContentSizeCategoryAdjusting.md",
+      "source": "the release, which posts no content size category change"
+    },
+    {
+      "api": "UITextField.adjustsFontForContentSizeCategory",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "iOS 6 has no Dynamic Type: no category ever changes, so there is nothing to adjust the font to",
+      "effect": "the flag is kept and read back and the font is left as it was set; the first time it is turned on the port says so once in the log",
+      "facts": "facts/UIKit/UIContentSizeCategoryAdjusting.md",
+      "source": "the release, which posts no content size category change"
+    },
+    {
+      "api": "UITextView.adjustsFontForContentSizeCategory",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "iOS 6 has no Dynamic Type: no category ever changes, so there is nothing to adjust the font to",
+      "effect": "the flag is kept and read back and the font is left as it was set; the first time it is turned on the port says so once in the log",
+      "facts": "facts/UIKit/UIContentSizeCategoryAdjusting.md",
+      "source": "the release, which posts no content size category change"
     }
   ]
 }
