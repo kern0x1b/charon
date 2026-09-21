@@ -504,6 +504,12 @@ The scripts the release cuts with a smaller dictionary (Chinese) and the probabi
 the rest of the framework (`NLTagger`, `NLModel`, embeddings) is not carried. See
 `facts/NaturalLanguage/NLTokenizer.md` and `NLLanguageRecognizer.md`.
 
+The path monitor of Network is carried in the Foundation library: `nw_path_monitor_*`, `nw_path_*` and `nw_interface_*`
+of iOS 12, over the reachability of iOS 6, so that `NWPathMonitor` and `NWPath` have something to stand on. It reports
+the path when it starts and when it changes, on the queue it was given, and says satisfied, unsatisfied or
+satisfiable, the interface (`en0`, or cellular and expensive) and the addresses. Connections and the rest of Network are
+not carried. See `facts/Network/NWPathMonitor.md`.
+
 ### Not carried, and why
 
 Nothing here is a quiet stub. Where the behaviour cannot be produced, the API
