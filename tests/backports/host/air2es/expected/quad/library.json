@@ -11,6 +11,12 @@
    "stage": "fragment",
    "source": "module1.frag",
    "reflection": "module1.json"
+  },
+  {
+   "name": "stageInVertex",
+   "stage": "vertex",
+   "source": "module2.vert",
+   "reflection": "module2.json"
   }
  ]
 }

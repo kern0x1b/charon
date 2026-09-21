@@ -242,6 +242,61 @@
       "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
       "facts": "facts/Metal/RenderPath.md",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLVertexAttributeDescriptor",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class is carried so that an application describes how its vertex buffers feed a vertex function that reads its inputs by attribute, the way it does with Metal; the port binds them as OpenGL ES 2.0 vertex attributes",
+      "effect": "an object that keeps the properties it is given; a format or step function the port cannot draw with is refused when the pipeline is made, as facts/Metal/RenderPath.md lists",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLVertexAttributeDescriptorArray",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class is carried so that an application describes how its vertex buffers feed a vertex function that reads its inputs by attribute, the way it does with Metal; the port binds them as OpenGL ES 2.0 vertex attributes",
+      "effect": "an object that keeps the properties it is given; a format or step function the port cannot draw with is refused when the pipeline is made, as facts/Metal/RenderPath.md lists",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLVertexBufferLayoutDescriptor",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class is carried so that an application describes how its vertex buffers feed a vertex function that reads its inputs by attribute, the way it does with Metal; the port binds them as OpenGL ES 2.0 vertex attributes",
+      "effect": "an object that keeps the properties it is given; a format or step function the port cannot draw with is refused when the pipeline is made, as facts/Metal/RenderPath.md lists",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLVertexBufferLayoutDescriptorArray",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class is carried so that an application describes how its vertex buffers feed a vertex function that reads its inputs by attribute, the way it does with Metal; the port binds them as OpenGL ES 2.0 vertex attributes",
+      "effect": "an object that keeps the properties it is given; a format or step function the port cannot draw with is refused when the pipeline is made, as facts/Metal/RenderPath.md lists",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
+    },
+    {
+      "api": "MTLVertexDescriptor",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class is carried so that an application describes how its vertex buffers feed a vertex function that reads its inputs by attribute, the way it does with Metal; the port binds them as OpenGL ES 2.0 vertex attributes",
+      "effect": "an object that keeps the properties it is given; a format or step function the port cannot draw with is refused when the pipeline is made, as facts/Metal/RenderPath.md lists",
+      "facts": "facts/Metal/RenderPath.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     }
   ]
 }

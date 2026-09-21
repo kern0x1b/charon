@@ -89,6 +89,7 @@
     for (int i = 0; i < 8; i++)
         d.colorAttachments[i] = self.colorAttachments[i];
     d.depthAttachmentPixelFormat = self.depthAttachmentPixelFormat;
+    d.vertexDescriptor = self.vertexDescriptor;
     return d;
 }
 

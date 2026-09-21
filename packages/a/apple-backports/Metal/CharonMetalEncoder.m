@@ -256,6 +256,30 @@ static GLenum blendOperation(MTLBlendOperation o)
         glEnableVertexAttribArray(location);
         glVertexAttribPointer(location, [a[@"components"] intValue], type, GL_FALSE, (GLsizei)[a[@"stride"] unsignedIntegerValue], (const uint8_t *)buffer.bytes + _vertexOffsets[index] + [a[@"offset"] unsignedIntegerValue]);
     }
+    MTLVertexDescriptor *descriptor = _pipeline.descriptor.vertexDescriptor;
+    for (NSDictionary *input in vertex[@"inputs"]) {
+        GLint location = [_pipeline attributeForName:input[@"name"]];
+        MTLVertexAttributeDescriptor *attribute = descriptor.attributes[[input[@"location"] unsignedIntegerValue]];
+        MTLVertexBufferLayoutDescriptor *layout = descriptor.layouts[attribute.bufferIndex];
+        CharonMetalBuffer *buffer = attribute.bufferIndex < 31 ? _vertexBuffers[attribute.bufferIndex] : nil;
+        CharonVertexFormat format;
+        if (location < 0 || !buffer || !CharonMetalVertexFormat(attribute.format, &format)) {
+            if (location >= 0)
+                glDisableVertexAttribArray(location);
+            continue;
+        }
+        const uint8_t *base = (const uint8_t *)buffer.bytes + _vertexOffsets[attribute.bufferIndex] + attribute.offset;
+        if (layout.stepFunction == MTLVertexStepFunctionPerVertex) {
+            glEnableVertexAttribArray(location);
+            glVertexAttribPointer(location, format.size, format.type, format.normalized, (GLsizei)layout.stride, base);
+        } else {
+            NSUInteger element = layout.stepFunction == MTLVertexStepFunctionConstant ? 0 : _instance / layout.stepRate;
+            GLfloat v[4];
+            CharonMetalDecodeVertex(attribute.format, base + element * layout.stride, v);
+            glDisableVertexAttribArray(location);
+            glVertexAttrib4f(location, v[0], v[1], v[2], v[3]);
+        }
+    }
     [self uploadUniforms:vertex[@"uniforms"] buffers:_vertexBuffers offsets:_vertexOffsets];
     [self uploadUniforms:_pipeline.fragmentReflection[@"uniforms"] buffers:_fragmentBuffers offsets:_fragmentOffsets];
     for (NSDictionary *t in _pipeline.fragmentReflection[@"textures"]) {

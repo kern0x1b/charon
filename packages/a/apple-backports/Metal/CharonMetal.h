@@ -75,6 +75,17 @@
 - (instancetype)initWithTexture:(CharonMetalTexture *)texture layer:(CAMetalLayer *)layer context:(EAGLContext *)context;
 @end
 
+typedef struct {
+    GLenum type;
+    GLint size;
+    GLboolean normalized;
+    NSUInteger bytes;
+    BOOL floating;
+} CharonVertexFormat;
+
+BOOL CharonMetalVertexFormat(MTLVertexFormat format, CharonVertexFormat *out);
+void CharonMetalDecodeVertex(MTLVertexFormat format, const uint8_t *bytes, GLfloat out[4]);
+
 extern NSString *const CharonMetalErrorDomain;
 NSError *CharonMetalError(NSInteger code, NSString *message);
 id<CAMetalDrawable> CharonMetalNextDrawable(CAMetalLayer *layer);

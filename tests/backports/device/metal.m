@@ -83,6 +83,60 @@ static BOOL comes_from_backports(Class cls)
     [buffer waitUntilCompleted];
 }
 
+- (MTLVertexDescriptor *)stagedDescriptor
+{
+    MTLVertexDescriptor *v = [MTLVertexDescriptor vertexDescriptor];
+    v.attributes[0].format = MTLVertexFormatFloat2;
+    v.attributes[0].offset = 0;
+    v.attributes[0].bufferIndex = 0;
+    v.attributes[1].format = MTLVertexFormatFloat2;
+    v.attributes[1].offset = 8;
+    v.attributes[1].bufferIndex = 0;
+    v.attributes[2].format = MTLVertexFormatFloat4;
+    v.attributes[2].offset = 16;
+    v.attributes[2].bufferIndex = 0;
+    v.layouts[0].stride = 32;
+    return v;
+}
+
+- (id<MTLRenderPipelineState>)stagedPipeline:(MTLVertexDescriptor *)descriptor error:(NSError **)error
+{
+    MTLRenderPipelineDescriptor *d = [[MTLRenderPipelineDescriptor alloc] init];
+    d.vertexFunction = [self.library newFunctionWithName:@"stageInVertex"];
+    d.fragmentFunction = [self.library newFunctionWithName:@"quadFragment"];
+    d.colorAttachments[0].pixelFormat = MTLPixelFormatRGBA8Unorm;
+    d.vertexDescriptor = descriptor;
+    return [self.device newRenderPipelineStateWithDescriptor:d error:error];
+}
+
+- (void)drawStaged:(id<MTLTexture>)target pipeline:(id<MTLRenderPipelineState>)pipeline instances:(NSUInteger)instances picture:(id<MTLTexture>)picture
+{
+    MTLRenderPassDescriptor *pass = [MTLRenderPassDescriptor renderPassDescriptor];
+    pass.colorAttachments[0].texture = target;
+    pass.colorAttachments[0].loadAction = MTLLoadActionClear;
+    pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1);
+    MTLSamplerDescriptor *sd = [[MTLSamplerDescriptor alloc] init];
+    sd.minFilter = MTLSamplerMinMagFilterNearest;
+    sd.magFilter = MTLSamplerMinMagFilterNearest;
+    float vertices[6][8] = {
+        {-1, 1, 0, 0, 1, 0, 0, 1}, {1, 1, 1, 0, 0, 1, 0, 1}, {-1, -1, 0, 1, 0, 0, 1, 1},
+        {1, 1, 1, 0, 0, 1, 0, 1}, {1, -1, 1, 1, 1, 1, 1, 1}, {-1, -1, 0, 1, 0, 0, 1, 1}};
+    float scale = 1;
+    const float white[4] = {1, 1, 1, 1};
+    id<MTLCommandBuffer> buffer = [self.queue commandBuffer];
+    id<MTLRenderCommandEncoder> encoder = [buffer renderCommandEncoderWithDescriptor:pass];
+    [encoder setRenderPipelineState:pipeline];
+    [encoder setVertexBytes:vertices length:sizeof vertices atIndex:0];
+    [encoder setVertexBytes:&scale length:sizeof scale atIndex:1];
+    [encoder setFragmentTexture:picture atIndex:0];
+    [encoder setFragmentSamplerState:[self.device newSamplerStateWithDescriptor:sd] atIndex:0];
+    [encoder setFragmentBytes:white length:16 atIndex:0];
+    [encoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6 instanceCount:instances];
+    [encoder endEncoding];
+    [buffer commit];
+    [buffer waitUntilCompleted];
+}
+
 - (void)read:(id<MTLTexture>)texture width:(NSUInteger)w height:(NSUInteger)h into:(uint8_t *)out
 {
     [texture getBytes:out bytesPerRow:w * 4 fromRegion:MTLRegionMake2D(0, 0, w, h) mipmapLevel:0];
@@ -116,7 +170,7 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
     NSError *error = nil;
     self.library = [self.device newLibraryWithFile:[folder stringByDeletingPathExtension] error:&error];
     CHECK(self.library != nil, "a library is read from beside its file");
-    CHECK([[[self.library functionNames] sortedArrayUsingSelector:@selector(compare:)] isEqualToArray:(@[@"quadFragment", @"quadVertex"])], "it holds its two functions");
+    CHECK([[[self.library functionNames] sortedArrayUsingSelector:@selector(compare:)] isEqualToArray:(@[@"quadFragment", @"quadVertex", @"stageInVertex"])], "it holds its three functions");
     CHECK([self.library newFunctionWithName:@"missing"] == nil, "a name it does not hold gives nil");
     CHECK([[self.library newFunctionWithName:@"quadVertex"] functionType] == MTLFunctionTypeVertex, "the vertex function is a vertex function");
     CHECK([[self.library newFunctionWithName:@"quadFragment"] functionType] == MTLFunctionTypeFragment, "and the fragment function a fragment function");
@@ -161,6 +215,37 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
         CHECK(near(tr, 0, 255, 0, 1), indexed ? "indexed: top right is the second texel" : "arrays: top right is the second texel");
         CHECK(near(bl, 255, 0, 0, 1), indexed ? "indexed: bottom left is the third texel, swapped" : "arrays: bottom left is the third texel, swapped");
         CHECK(near(br, 255, 255, 255, 1), indexed ? "indexed: bottom right is the fourth texel" : "arrays: bottom right is the fourth texel");
+    }
+
+    NSError *staged = nil;
+    CHECK([self stagedPipeline:nil error:&staged] == nil && staged != nil, "a function with inputs and no vertex descriptor is an error");
+    staged = nil;
+    MTLVertexDescriptor *missing = [self stagedDescriptor];
+    missing.attributes[2].format = MTLVertexFormatInvalid;
+    CHECK([self stagedPipeline:missing error:&staged] == nil && staged != nil, "an input with no attribute in the descriptor is an error");
+    staged = nil;
+    MTLVertexDescriptor *half = [self stagedDescriptor];
+    half.attributes[1].format = MTLVertexFormatHalf2;
+    CHECK([self stagedPipeline:half error:&staged] == nil && staged != nil, "a half float format is an error");
+    staged = nil;
+    MTLVertexDescriptor *rate = [self stagedDescriptor];
+    rate.layouts[0].stepRate = 2;
+    CHECK([self stagedPipeline:rate error:&staged] == nil && staged != nil, "a per vertex step rate other than one is an error");
+    MTLVertexDescriptor *copied = [[self stagedDescriptor] copy];
+    CHECK(copied.attributes[2].offset == 16 && copied.layouts[0].stride == 32, "a copy of a descriptor keeps its attributes and layouts");
+    id<MTLRenderPipelineState> stagedPipeline = [self stagedPipeline:[self stagedDescriptor] error:&staged];
+    CHECK(stagedPipeline != nil, "a pipeline with a vertex descriptor is made");
+    [self drawStaged:target pipeline:stagedPipeline instances:1 picture:picture];
+    [self read:target width:64 height:64 into:out];
+    {
+        const uint8_t *stl = out + (16 * 64 + 16) * 4, *str = out + (16 * 64 + 48) * 4, *sbl = out + (48 * 64 + 16) * 4, *sbr = out + (48 * 64 + 48) * 4;
+        CHECK(near(stl, 0, 0, 255, 1) && near(str, 0, 255, 0, 1) && near(sbl, 255, 0, 0, 1) && near(sbr, 255, 255, 255, 1), "staged inputs draw the four texels as the buffer reads did");
+    }
+    [self drawStaged:target pipeline:stagedPipeline instances:2 picture:picture];
+    [self read:target width:64 height:64 into:out];
+    {
+        const uint8_t *stl = out + (16 * 64 + 16) * 4, *sbl = out + (48 * 64 + 16) * 4;
+        CHECK(near(stl, 0, 255, 0, 1) && near(sbl, 255, 255, 255, 1), "the second instance shifts the coordinate by half and is drawn over the first");
     }
 
     const float faint[4] = {0.5f, 0.5f, 0.5f, 0.4f};

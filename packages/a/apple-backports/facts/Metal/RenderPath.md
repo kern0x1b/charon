@@ -16,7 +16,7 @@ folder and answer an error. The functions the tool refuses (`tools/air2es/README
 
 ## What is done
 
-A vertex function that reads its buffers by vertex identifier is drawn with the buffers as vertex arrays, with the stride and offsets the layout
+A vertex function whose inputs come from a vertex descriptor (`[[stage_in]]`) is drawn with the attributes of the descriptor: the formats of bytes and shorts, normalised or not, and of floats, per vertex as vertex arrays and per instance or constant as the value at the element of the draw, each instance drawn on its own. A vertex function that reads its buffers by vertex identifier is drawn with the buffers as vertex arrays, with the stride and offsets the layout
 of its structure says; the buffers a function loads constants from are uniforms; a texture is a `sampler2D` and the sampler state sets its filters and
 wrapping (clamp to edge, repeat, mirrored repeat); blending, the write mask, culling, the winding, the viewport, the scissor and the blend colour are the encoder's;
 `drawPrimitives` and `drawIndexedPrimitives` with 16 or 32 bit indices; a drawable of a layer and a texture as render targets, with the origin of Metal,
@@ -25,7 +25,7 @@ the top left, which the port keeps by turning the vertical axis of a target that
 
 ## What is not
 
-* A vertex descriptor: a pipeline that has one is refused. A function with `[[stage_in]]` is not translated yet.
+* Vertex formats of half floats, 32 bit integers, the packed 10 bit formats and the BGRA one: a pipeline that uses one is refused, since ES 2.0 has no attribute of them. A layout whose step function is per vertex with a step rate other than one, or per patch, is refused too.
 * Compute: a compute pipeline answers an error, and the compute encoder answers nil. The graphics of the A5 run no compute functions.
 * Depth and stencil: a depth and stencil state answers nil with a line in the log, and there is no depth attachment.
 * Multiple render targets, tessellation, texture arrays, cubes, depth and 3D textures, sampling with an offset or gradients, and the function constants
