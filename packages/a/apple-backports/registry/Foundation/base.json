@@ -1877,5 +1877,13 @@
     "status": "implemented",
     "facts": "facts/Foundation/NSUserDefaultsSuite.md",
     "source": "the host's own Foundation through Mac Catalyst, tests/backports/host/suitedefaults (50 answers of typed reads and writes), and tests/backports/device/suitedefaults.m on iOS 6"
+  },
+  {
+    "api": "NSBundle.appStoreReceiptURL",
+    "kind": "property",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSBundleReceiptURL.md",
+    "source": "the release's own method of the name (a stub that raises) read on the devices, and tests/backports/device/receipturl.m on iOS 6"
   }
 ]
