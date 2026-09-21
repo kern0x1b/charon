@@ -5,7 +5,7 @@ UIEdgeInsets charon_content_overlay_insets(UIViewController *controller, UIView 
 
 static char CharonAdditionalSafeAreaInsetsKey;
 
-static UIEdgeInsets charon_bar_overlap(UIView *bar, UIView *view)
+static UIEdgeInsets charon_bar_overlap(UIView *bar, UIView *view, CGFloat statusBottom)
 {
     UIWindow *window = [view isKindOfClass:[UIWindow class]] ? (UIWindow *)view : view.window;
     if (!bar || bar.hidden || bar.alpha <= 0 || !bar.window || bar.window != window)
@@ -14,7 +14,7 @@ static UIEdgeInsets charon_bar_overlap(UIView *bar, UIView *view)
     if (CGRectIsNull(covered) || CGRectIsEmpty(covered))
         return UIEdgeInsetsZero;
     CGRect bounds = view.bounds;
-    if (CGRectGetMinY(covered) <= CGRectGetMinY(bounds))
+    if (CGRectGetMinY(covered) <= CGRectGetMinY(bounds) + statusBottom + 0.5)
         return UIEdgeInsetsMake(CGRectGetMaxY(covered) - CGRectGetMinY(bounds), 0, 0, 0);
     if (CGRectGetMaxY(covered) >= CGRectGetMaxY(bounds))
         return UIEdgeInsetsMake(0, 0, CGRectGetMaxY(bounds) - CGRectGetMinY(covered), 0);
@@ -41,9 +41,9 @@ UIEdgeInsets charon_content_overlay_insets(UIViewController *controller, UIView 
     UIEdgeInsets insets = charon_status_bar_overlap(view);
     UINavigationController *navigation = controller.navigationController;
     UITabBarController *tabs = controller.tabBarController;
-    UIEdgeInsets bars[] = {charon_bar_overlap(navigation.navigationBar, view),
-                           charon_bar_overlap(navigation.toolbar, view),
-                           charon_bar_overlap(tabs.tabBar, view)};
+    UIEdgeInsets bars[] = {charon_bar_overlap(navigation.navigationBar, view, insets.top),
+                           charon_bar_overlap(navigation.toolbar, view, insets.top),
+                           charon_bar_overlap(tabs.tabBar, view, insets.top)};
     for (NSUInteger index = 0; index < sizeof bars / sizeof *bars; index++) {
         insets.top = MAX(insets.top, bars[index].top);
         insets.bottom = MAX(insets.bottom, bars[index].bottom);
