@@ -882,3 +882,5 @@ the same cases through the real `NSOperationQueue` on the release.
 `device/textfieldreason.m` ends the editing of a real text field with a delegate that has only `-textFieldDidEndEditing:reason:`, one that has only the old method, and none. It has no host record: a text field of a headless scene does not become the first responder.
 
 `host/tail3/run.sh` records what the system does with `sharedContainerIdentifier` of an `NSURLSessionConfiguration` - default, set, copied, cleared, on a background configuration, kept by a session - and `device/tail3.m` runs the same cases on iOS 6.
+
+`host/show/run.sh` records what the system does when a controller shows another one - pushed by a navigation controller, presented with no container or in a tab bar controller, sent to a parent that overrides the method, `showDetailViewController:sender:` with no split view - and which controller `targetViewControllerForAction:sender:` and `targetForAction:withSender:` answer; `device/show.m` runs the same cases on iOS 6.
