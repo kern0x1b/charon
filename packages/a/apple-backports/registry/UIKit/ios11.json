@@ -606,19 +606,23 @@
       "api": "UINavigationBar.prefersLargeTitles",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "the large title is laid out and animated by the navigation bar itself, and the port replaces no part of that layout",
-      "effect": "the property is not there: a bar keeps the one title row this release draws, and an application that asks first does not expect the tall one",
-      "source": "UIKit of iOS 11.0 arm64"
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the large title is laid out and animated by the navigation bar of the release that draws it, and this release's bar has one title row and keeps its own look",
+      "effect": "the property answers what was set and the bar keeps its one title row, so a screen laid out for either finds the bar it measures",
+      "facts": "facts/UIKit/LargeTitles.md",
+      "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
     },
     {
       "api": "UINavigationItem.largeTitleDisplayMode",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
+      "minimum": "6.0",
+      "status": "inert",
       "reason": "the mode only means something to a bar that can draw a large title",
-      "effect": "the property is not there, so nothing claims to choose between modes that do not exist",
-      "source": "UIKit of iOS 11.0 arm64"
+      "effect": "it answers what was set, automatic until then",
+      "facts": "facts/UIKit/LargeTitles.md",
+      "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
     },
     {
       "api": "UINavigationItem.searchController",
@@ -644,37 +648,45 @@
       "api": "UIViewController.prefersHomeIndicatorAutoHidden",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
+      "minimum": "6.0",
+      "status": "inert",
       "reason": "this device has a home button and no home indicator to hide",
-      "effect": "the property is not there, and a controller that would hide the indicator changes nothing on a phone that never draws one",
-      "source": "UIKit of iOS 11.0 arm64"
+      "effect": "the property answers NO, as a controller that does not override it does on the release, and a controller that overrides it changes nothing on a screen that never draws an indicator",
+      "facts": "facts/UIKit/HomeIndicator.md",
+      "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
     },
     {
       "api": "-[UIViewController setNeedsUpdateOfHomeIndicatorAutoHidden]",
       "kind": "method",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "nothing to ask for an update of",
-      "effect": "the method is not there",
-      "source": "UIKit of iOS 11.0 arm64"
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "there is no indicator to ask for an update of",
+      "effect": "the request goes to the parent, then the presenter, and ends at the root, where the release would hand it to the application: nothing here reads it",
+      "facts": "facts/UIKit/HomeIndicator.md",
+      "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
     },
     {
       "api": "UIViewController.preferredScreenEdgesDeferringSystemGestures",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
+      "minimum": "6.0",
+      "status": "inert",
       "reason": "the system edge gestures the property defers were introduced with the home indicator and do not exist here",
-      "effect": "the property is not there",
-      "source": "UIKit of iOS 11.0 arm64"
+      "effect": "the property answers no edge, as the release's default does, and an override changes nothing since there is no system gesture at an edge to defer",
+      "facts": "facts/UIKit/HomeIndicator.md",
+      "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
     },
     {
       "api": "-[UIViewController setNeedsUpdateOfScreenEdgesDeferringSystemGestures]",
       "kind": "method",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "the same: there is no edge gesture to defer",
-      "effect": "the method is not there",
-      "source": "UIKit of iOS 11.0 arm64"
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "there is no edge gesture to defer",
+      "effect": "the request goes to the parent, then the presenter, and ends at the root; nothing here reads it",
+      "facts": "facts/UIKit/HomeIndicator.md",
+      "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
     },
     {
       "api": "UIScreen.captured",
@@ -1848,10 +1860,12 @@
       "api": "UINavigationBar.largeTitleTextAttributes",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
+      "minimum": "6.0",
+      "status": "inert",
       "reason": "the attributes style a large title this release's navigation bar never draws",
-      "effect": "the property is not there",
-      "source": "UIKit of iOS 11.0 arm64"
+      "effect": "it answers a copy of what was set, nil until then",
+      "facts": "facts/UIKit/LargeTitles.md",
+      "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
     },
     {
       "api": "UISplitViewController.primaryEdge",
@@ -1875,19 +1889,67 @@
       "api": "UIViewController.childViewControllerForScreenEdgesDeferringSystemGestures",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
+      "minimum": "6.0",
+      "status": "inert",
       "reason": "there are no system edge gestures here to defer, so no child to ask about them",
-      "effect": "the property is not there",
-      "source": "UIKit of iOS 11.0 arm64"
+      "effect": "the property answers nil, as the release's default does",
+      "facts": "facts/UIKit/HomeIndicator.md",
+      "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
     },
     {
       "api": "UIViewController.childViewControllerForHomeIndicatorAutoHidden",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "there is no home indicator here to hide",
-      "effect": "the property is not there",
-      "source": "UIKit of iOS 11.0 arm64"
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "there is no home indicator here to hide, so no child to ask about it",
+      "effect": "the property answers nil, as the release's default does",
+      "facts": "facts/UIKit/HomeIndicator.md",
+      "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
+    },
+    {
+      "api": "-[UINavigationController childViewControllerForHomeIndicatorAutoHidden]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "there is no home indicator here for the child to answer for",
+      "effect": "it answers its top view controller, as the release's does, so a container that is asked passes the question on to the controller the release passes it to",
+      "facts": "facts/UIKit/HomeIndicator.md",
+      "source": "UIKit of iOS 12.0 arm64, the two overrides read at their addresses in the cache"
+    },
+    {
+      "api": "-[UINavigationController childViewControllerForScreenEdgesDeferringSystemGestures]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "there is no edge gestures here for the child to answer for",
+      "effect": "it answers its top view controller, as the release's does, so a container that is asked passes the question on to the controller the release passes it to",
+      "facts": "facts/UIKit/HomeIndicator.md",
+      "source": "UIKit of iOS 12.0 arm64, the two overrides read at their addresses in the cache"
+    },
+    {
+      "api": "-[UITabBarController childViewControllerForHomeIndicatorAutoHidden]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "there is no home indicator here for the child to answer for",
+      "effect": "it answers its selected view controller, as the release's does, so a container that is asked passes the question on to the controller the release passes it to",
+      "facts": "facts/UIKit/HomeIndicator.md",
+      "source": "UIKit of iOS 12.0 arm64, the two overrides read at their addresses in the cache"
+    },
+    {
+      "api": "-[UITabBarController childViewControllerForScreenEdgesDeferringSystemGestures]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "there is no edge gestures here for the child to answer for",
+      "effect": "it answers its selected view controller, as the release's does, so a container that is asked passes the question on to the controller the release passes it to",
+      "facts": "facts/UIKit/HomeIndicator.md",
+      "source": "UIKit of iOS 12.0 arm64, the two overrides read at their addresses in the cache"
     },
     {
       "api": "UIPasteboard.itemProviders",

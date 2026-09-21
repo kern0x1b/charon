@@ -38,6 +38,7 @@ inputs.
     sh host/textcontent/run.sh
     sh host/avcapture/run.sh
     sh host/oslog/run.sh  writes device/oslog-expectations.h when it passes
+    sh host/homeindicator/run.sh  writes device/homeindicator-expectations.h when it passes, then holds the port's categories to it with mutants
     sh host/imageflip/run.sh
     sh host/ios1516/run.sh  writes device/ios1516-expectations.h when it passes
     sh host/cachereader/run.sh <dyld_shared_cache> <image> <class> <selector>
@@ -835,6 +836,8 @@ deceleration does not take it. `swipeui.m` is the example.
   grip in editing; the handlers of the data source and the order of the rows are checked. The `listactions` group of `host/uikit2/run.sh` puts the port beside
   the system's diffable data source in a window and compares the outline handlers (thirteen steps) and the reordering handlers and their transactions (six
   drags) with the interactive movement API. It writes `/private/var/backports/lists.log` and `lists.done`.
+
+`homeindicator.m` (`homeindicator-Info.plist`, `homeindicator-cases.m`): an application of its own that holds the home indicator, edge gesture and large title accessors to the records of the host's UIKit; it needs `/private/var/backports` made by root, the screen on (`wake`), and the application registered, which a device does after a reboot.
 
 `device/wake.m` is a tool that wakes and unlocks a device that has no passcode, by sending the Home button and a slide along the
 unlock track through the HID event system. An application that is launched while the screen is locked comes up inactive
