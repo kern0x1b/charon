@@ -2187,11 +2187,10 @@
     "api": "-[NSTextContainer exclusionPaths]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "inert",
-    "facts": "facts/UIKit/TextSystem7.md",
-    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
-    "reason": "the release's layout knows no exclusion paths",
-    "effect": "the value is kept and read back, and the text is laid out without it"
+    "status": "implemented",
+    "facts": "facts/UIKit/NSTextContainerExclusionPaths.md",
+    "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/exclusion (ten layouts of one text round rectangles, an oval and a triangle), and tests/backports/device/exclusion.m on iOS 6",
+    "effect": "the release's typesetter lays a line into the free segments of the container that the paths leave, as iOS 7's does: text flows beside a path, splits round one in the middle, and moves down past one that leaves no room"
   },
   {
     "api": "-[NSTextContainer heightTracksTextView]",
@@ -2233,11 +2232,10 @@
     "api": "-[NSTextContainer setExclusionPaths:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "inert",
-    "facts": "facts/UIKit/TextSystem7.md",
-    "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
-    "reason": "the release's layout knows no exclusion paths",
-    "effect": "the value is kept and read back, and the text is laid out without it"
+    "status": "implemented",
+    "facts": "facts/UIKit/NSTextContainerExclusionPaths.md",
+    "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/exclusion (ten layouts of one text round rectangles, an oval and a triangle), and tests/backports/device/exclusion.m on iOS 6",
+    "effect": "the release's typesetter lays a line into the free segments of the container that the paths leave, as iOS 7's does: text flows beside a path, splits round one in the middle, and moves down past one that leaves no room"
   },
   {
     "api": "-[NSTextContainer setHeightTracksTextView:]",

@@ -17,12 +17,12 @@ attachment's `contents` and `fileType` are the data and the type it was made wit
 `-propertyForGlyphAtIndex:` (null, control character and non-base character, worked out from the character, since the release keeps
 only a not-shown flag) and `-getGlyphsInRange:glyphs:properties:characterIndexes:bidiLevels:`. The release measured a container's used
 rectangle only once something had asked for its layout, and answered an empty one before; `-usedRectForTextContainer:` now lays the
-container out first, as iOS 7's does. A container with exclusion paths or a line limit is no longer simple, as on the system. The paragraph style's `allowsDefaultTighteningForTruncation` (on, as the host has it) and
+container out first, as iOS 7's does. A container with exclusion paths or a line limit is no longer simple, as on the system, and lays its lines round the paths (`NSTextContainerExclusionPaths.md`). The paragraph style's `allowsDefaultTighteningForTruncation` (on, as the host has it) and
 `lineBreakStrategy` are kept by the style, copied with it, held in its equality and read back.
 
 ## What it cannot do
 
-The release's layout knows no exclusion paths, no line break mode of a container, no tracking of a text view, no tightening and no line
+The release's layout knows no line break mode of a container, no tracking of a text view, no tightening and no line
 break strategy: those are kept and read back and the text is laid out without them (`inert`). The attachment's `bounds` is kept and the
 release lays an attachment out at the size of its image. `-truncatedGlyphRangeInLineFragmentForGlyphAtIndex:` answers no range, since the
 release does not say what it truncated. A paragraph style's two properties are not in its archive, and a style that the release copies
