@@ -685,6 +685,7 @@ static UIWindow *the_window;
     NSNotification *rotated = [NSNotification notificationWithName:UIApplicationDidChangeStatusBarOrientationNotification object:[UIApplication sharedApplication]
                                                           userInfo:@{UIApplicationStatusBarOrientationUserInfoKey: @(UIInterfaceOrientationLandscapeLeft)}];
     [[NSNotificationCenter defaultCenter] postNotification:rotated];
+    log_line([NSString stringWithFormat:@"scene events %lu -> %lu, last [%@]", (unsigned long)before, (unsigned long)scene_events.count, scene_events.lastObject]);
     CHECK((scene_events.count == before + 1 && [scene_events.lastObject hasPrefix:@"coordinate space 3 "]), "the scene delegate hears the interface change with the previous orientation");
 
     UITextField *field = [[UITextField alloc] initWithFrame:CGRectMake(0, 300, 300, 30)];
@@ -780,6 +781,7 @@ static UIWindow *the_window;
     textView.attributedText = text;
     UITextPosition *from = [textView positionFromPosition:textView.beginningOfDocument offset:3], *to = [textView positionFromPosition:textView.beginningOfDocument offset:8];
     [textView replaceRange:[textView textRangeFromPosition:from toPosition:to] withAttributedText:[[NSAttributedString alloc] initWithString:@"XY" attributes:@{NSForegroundColorAttributeName: [UIColor blueColor]}]];
+    log_line([NSString stringWithFormat:@"text is [%@] length %lu", textView.attributedText.string, (unsigned long)textView.attributedText.length]);
     CHECK(([textView.attributedText.string isEqual:@"helXYrld"]), "replacing a range with attributed text changes the text");
     CHECK((close_to([textView.attributedText attribute:NSForegroundColorAttributeName atIndex:3 effectiveRange:NULL], 0, 0, 1, 1) &&
               close_to([textView.attributedText attribute:NSForegroundColorAttributeName atIndex:6 effectiveRange:NULL], 1, 0, 0, 1)), "the runs are kept");

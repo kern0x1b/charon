@@ -1,11 +1,11 @@
 #import "CharonSymbols.h"
 #import <objc/runtime.h>
+#import "CharonImageBaseline.h"
 
 #pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
 
 static char charon_symbol_configuration_key;
 static char charon_symbol_name_key;
-static char charon_symbol_baseline_key;
 
 static UITraitCollection *charon_screen_traits(void)
 {
@@ -42,7 +42,7 @@ static UIImage *charon_symbol_image(NSString *name, UIImageSymbolConfiguration *
     image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     objc_setAssociatedObject(image, &charon_symbol_name_key, name, OBJC_ASSOCIATION_COPY_NONATOMIC);
     objc_setAssociatedObject(image, &charon_symbol_configuration_key, configuration, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    objc_setAssociatedObject(image, &charon_symbol_baseline_key, @(baseline), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    charon_set_image_baseline(image, @(baseline));
     return image;
 }
 
@@ -96,16 +96,6 @@ static UIImage *charon_image_with_configuration(UIImage *image, UIImageSymbolCon
 - (UIImageSymbolConfiguration *)symbolConfiguration
 {
     return objc_getAssociatedObject(self, &charon_symbol_configuration_key);
-}
-
-- (BOOL)hasBaseline
-{
-    return objc_getAssociatedObject(self, &charon_symbol_baseline_key) != nil;
-}
-
-- (CGFloat)baselineOffsetFromBottom
-{
-    return [objc_getAssociatedObject(self, &charon_symbol_baseline_key) doubleValue];
 }
 
 - (UIImage *)imageByApplyingSymbolConfiguration:(UIImageSymbolConfiguration *)configuration

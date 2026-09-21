@@ -138,26 +138,6 @@
       "effect": "kept as given, an equal one leaving the first in place; a symbol image put in the view, or already in it, is drawn again with the image's own configuration over this one (the view then holds that drawing as its image); an ordinary image is left as it is",
       "facts": "facts/UIKit/UIImageSymbols.md",
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the symbols group); the header of SDK 16.4"
-    },
-    {
-      "api": "UIImage.hasBaseline",
-      "kind": "property",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "YES for a drawn symbol and NO for every other image",
-      "facts": "facts/UIKit/UIImageSymbols.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the symbols group); the header of SDK 16.4"
-    },
-    {
-      "api": "UIImage.baselineOffsetFromBottom",
-      "kind": "property",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "the baseline of a drawn symbol, from the host's measurements to within a point, and 0 for every other image",
-      "facts": "facts/UIKit/UIImageSymbols.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the symbols group); the header of SDK 16.4"
     }
   ]
 }
