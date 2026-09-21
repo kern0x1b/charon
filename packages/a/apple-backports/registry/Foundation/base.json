@@ -1869,5 +1869,13 @@
     "status": "implemented",
     "facts": "facts/Foundation/NSFileManagerAppGroup.md",
     "source": "the host's own Foundation through Mac Catalyst, tests/backports/host/appgroup (20 identifiers), and tests/backports/device/appgroup.m on iOS 6"
+  },
+  {
+    "api": "-[NSUserDefaults initWithSuiteName:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSUserDefaultsSuite.md",
+    "source": "the host's own Foundation through Mac Catalyst, tests/backports/host/suitedefaults (50 answers of typed reads and writes), and tests/backports/device/suitedefaults.m on iOS 6"
   }
 ]

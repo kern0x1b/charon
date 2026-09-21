@@ -764,6 +764,8 @@ writes `/private/var/backports/swipeui.log` and `swipeui.done`.
 
 `device/smallapis.m` holds `completionWithItemsHandler` of an activity controller and the alternate icon calls (unsupported, with the error of a feature that is not there) on a device.
 
+`host/suitedefaults/run.sh` compares `-initWithSuiteName:` of NSUserDefaults with the host's own over 50 typed reads, writes, registered defaults, URLs and a second instance, and writes `device/suitedefaults-expectations.h`; `device/suitedefaults.m` holds the port to them.
+
 `host/touchtypes/run.sh` records what the host's UIKit answers for `allowedTouchTypes`, `requiresExclusiveTouchType` and `allowedPressTypes` of a gesture recognizer (the defaults, an array set, an empty array, duplicates) into `device/touchtypes-expectations.h`, and `device/touchtypes.m` holds the port to them on a device and then taps with a real finger on views whose tap recognizers allow different touch types.
 
 `host/textalign/run.sh` records what the host's UIKit does when `textAlignment` of a label, a text field and a text view is set to left, centre, right and natural (the value read back, and the side the ink of the rendered control is on, for a Latin and a Hebrew text), into `device/textalign-expectations.h`, and `device/textalign.m` holds the port to the same records on a device.
