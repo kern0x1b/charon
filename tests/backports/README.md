@@ -36,6 +36,7 @@ inputs.
     sh host/swipeactions/run.sh
     sh host/registry/run.sh <dyld_shared_cache_armv7>
     sh host/spring/run.sh  writes device/spring-expectations.h when it passes
+    sh host/ypcbcr/run.sh  the 420 Y'CbCr conversions against the host's own vImage
     sh host/blocks/run.sh
     sh host/textcontent/run.sh
     sh host/avcapture/run.sh
@@ -426,6 +427,12 @@ postinst run with `DPKG_ROOT` set to it.
   OAEP-SHA1 round trips through the pair, and holds an algorithm the release cannot do to a refusal that carries an
   OSStatus the caller can read. The private key's representation is either a PKCS#1 RSAPrivateKey or an error, and the
   test fails if it is ever the public half. It needs the package built with `security = true`.
+- `ypcbcr.m`: a process of its own, the 420 Y'CbCr conversions of iOS 8. It names the image each of the seven
+  functions comes from, checks the four matrices against the coefficients the newer release holds, holds every luma and
+  chroma byte of a 34 by 18 picture to the arithmetic the header writes out within the last bit, checks that the luma
+  and chroma are the same whichever chroma layout is asked for, that the alpha the caller gives reaches every pixel,
+  that each of the four channels is extracted byte for byte, and that the refusals are the documented ones. It needs the
+  package built with `accelerate = true`.
 - `tolerance.m`: a process of its own, the timer tolerance, which is a property
   and two CoreFoundation functions.
 - `uikit2.m` (`uikit2-Info.plist`): an application for the second UIKit batch -
