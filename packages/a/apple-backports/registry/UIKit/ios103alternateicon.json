@@ -1,0 +1,38 @@
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "UIApplication.supportsAlternateIcons",
+      "kind": "property",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release takes the icon from the application's bundle and has no way to change it while the application is installed",
+      "effect": "NO, so an application that asks first does not offer the change",
+      "facts": "facts/UIKit/UIApplicationAlternateIcon.md",
+      "source": "the header of SDK 16.4 and tests/backports/device/smallapis.m on iOS 6"
+    },
+    {
+      "api": "UIApplication.alternateIconName",
+      "kind": "property",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release takes the icon from the application's bundle and has no way to change it while the application is installed",
+      "effect": "nil, the primary icon, always",
+      "facts": "facts/UIKit/UIApplicationAlternateIcon.md",
+      "source": "the header of SDK 16.4 and tests/backports/device/smallapis.m on iOS 6"
+    },
+    {
+      "api": "-[UIApplication setAlternateIconName:completionHandler:]",
+      "kind": "method",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the release takes the icon from the application's bundle and has no way to change it while the application is installed",
+      "effect": "the completion handler is called on the main queue with an NSCocoaErrorDomain NSFeatureUnsupportedError and the icon stays",
+      "facts": "facts/UIKit/UIApplicationAlternateIcon.md",
+      "source": "the header of SDK 16.4 and tests/backports/device/smallapis.m on iOS 6"
+    }
+  ]
+}
