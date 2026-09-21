@@ -31,3 +31,14 @@ no content dimension variables, it keeps the constraints that depend on it weakl
 constraint classes of the port already put the backing view in place of a guide where they can; this is for the ones that reach the release with
 the guide itself, as an application recompiled from another architecture makes them. `device/layoutguide.m` asks the four on the iPhone 4S and
 the iPad 2 and solves a constraint on a guide.
+
+The release treats every item of a constraint as a view. Its layout engine asks an item for its variables and its description by a set of `nsli_` messages - 17 of them, all
+answered by `UIView` and by nothing else in iOS 6 - and `-[UIView addConstraint:]` asks the item `isDescendantOfView:`; a guide that is an item itself, as it is in a
+constraint made by another path than the ones the port changed (a translated application makes them past the constructors), fails on the first of
+these it is sent. A guide therefore hands every message it does not answer to the view behind it (`forwardingTargetForSelector:` and the method signature; `respondsToSelector:` answers the `nsli_`
+ones), so a constraint that holds a guide is a constraint on the view that stands for it, whichever way it was made.
+The port also puts the backing view in place of the guide in every constructor of the release that takes an item - the five
+`constraintWithItem:` messages - and in the views of a visual format, so `firstItem` of a constraint made by them is the backing view.
+`device/guideitem.m` makes a constraint through each constructor and a visual format with a guide, adds it, lays out and asks for its description
+(which sends the engine's messages), makes constraints from a guide's anchors, gives a constraint the guide itself as an item past the constructors
+(`_setFirstItem:`), adds it and has the engine place the guide by it, and asks a guide for the `nsli_` messages a view answers.

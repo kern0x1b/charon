@@ -3,6 +3,12 @@
 #import "layoutguide-cases.h"
 #import "layoutguide-expectations.h"
 
+@interface NSObject (GuideProbe)
+- (BOOL)_supportsContentDimensionVariables;
+- (void)_rememberDependentConstraint:(NSLayoutConstraint *)constraint;
+- (void)_setWantsAutolayout;
+@end
+
 static NSString *const results_folder = @"/private/var/backports";
 
 @interface LayoutGuideDelegate : UIResponder <UIApplicationDelegate>

@@ -160,6 +160,31 @@ static id charon_anchor(UILayoutGuide *guide, SEL name, Class type, NSLayoutAttr
     return _owningView;
 }
 
+static BOOL charon_engine_selector(SEL selector)
+{
+    return strncmp(sel_getName(selector), "nsli_", 5) == 0;
+}
+
+- (BOOL)respondsToSelector:(SEL)selector
+{
+    return [super respondsToSelector:selector] || (charon_engine_selector(selector) && [_view respondsToSelector:selector]);
+}
+
+- (id)forwardingTargetForSelector:(SEL)selector
+{
+    if ([_view respondsToSelector:selector])
+        return _view;
+    return [super forwardingTargetForSelector:selector];
+}
+
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector
+{
+    NSMethodSignature *signature = [super methodSignatureForSelector:selector];
+    if (!signature)
+        signature = [_view methodSignatureForSelector:selector];
+    return signature;
+}
+
 - (BOOL)_supportsContentDimensionVariables
 {
     return NO;

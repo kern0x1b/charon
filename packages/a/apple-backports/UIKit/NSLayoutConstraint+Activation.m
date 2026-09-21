@@ -92,19 +92,67 @@ static UIView *charon_holder(UIView *ancestor)
 
 @implementation CharonConstraintGuideItems
 
+static id charon_backing(id item)
+{
+    return [item isKindOfClass:[UILayoutGuide class]] ? [(UILayoutGuide *)item charon_view] : item;
+}
+
+static void charon_swap_constructor(SEL selector, IMP (^make)(IMP original))
+{
+    Method method = class_getClassMethod([NSLayoutConstraint class], selector);
+    if (!method)
+        return;
+    class_replaceMethod(object_getClass([NSLayoutConstraint class]), selector, make(method_getImplementation(method)), method_getTypeEncoding(method));
+}
+
 + (void)load
 {
-    SEL selector = @selector(constraintWithItem:attribute:relatedBy:toItem:attribute:multiplier:constant:);
-    Method method = class_getClassMethod([NSLayoutConstraint class], selector);
-    NSLayoutConstraint *(*original)(id, SEL, id, NSLayoutAttribute, NSLayoutRelation, id, NSLayoutAttribute, CGFloat, CGFloat) = (NSLayoutConstraint *(*)(id, SEL, id, NSLayoutAttribute, NSLayoutRelation, id, NSLayoutAttribute, CGFloat, CGFloat))method_getImplementation(method);
-    IMP replacement = imp_implementationWithBlock(^NSLayoutConstraint *(Class self, id first, NSLayoutAttribute firstAttribute, NSLayoutRelation relation, id second, NSLayoutAttribute secondAttribute, CGFloat multiplier, CGFloat constant) {
-        if ([first isKindOfClass:[UILayoutGuide class]])
-            first = [(UILayoutGuide *)first charon_view];
-        if ([second isKindOfClass:[UILayoutGuide class]])
-            second = [(UILayoutGuide *)second charon_view];
-        return original(self, selector, first, firstAttribute, relation, second, secondAttribute, multiplier, constant);
+    charon_swap_constructor(@selector(constraintWithItem:attribute:relatedBy:toItem:attribute:multiplier:constant:), ^IMP(IMP original) {
+        SEL selector = @selector(constraintWithItem:attribute:relatedBy:toItem:attribute:multiplier:constant:);
+        return imp_implementationWithBlock(^NSLayoutConstraint *(Class self, id first, NSLayoutAttribute firstAttribute, NSLayoutRelation relation, id second, NSLayoutAttribute secondAttribute, CGFloat multiplier, CGFloat constant) {
+            return ((NSLayoutConstraint *(*)(id, SEL, id, NSLayoutAttribute, NSLayoutRelation, id, NSLayoutAttribute, CGFloat, CGFloat))original)(self, selector, charon_backing(first), firstAttribute, relation, charon_backing(second), secondAttribute, multiplier, constant);
+        });
     });
-    class_replaceMethod(object_getClass([NSLayoutConstraint class]), selector, replacement, method_getTypeEncoding(method));
+    charon_swap_constructor(@selector(constraintWithItem:attribute:relatedBy:toItem:attribute:constant:), ^IMP(IMP original) {
+        SEL selector = @selector(constraintWithItem:attribute:relatedBy:toItem:attribute:constant:);
+        return imp_implementationWithBlock(^NSLayoutConstraint *(Class self, id first, NSLayoutAttribute firstAttribute, NSLayoutRelation relation, id second, NSLayoutAttribute secondAttribute, CGFloat constant) {
+            return ((NSLayoutConstraint *(*)(id, SEL, id, NSLayoutAttribute, NSLayoutRelation, id, NSLayoutAttribute, CGFloat))original)(self, selector, charon_backing(first), firstAttribute, relation, charon_backing(second), secondAttribute, constant);
+        });
+    });
+    charon_swap_constructor(@selector(constraintWithItem:attribute:relatedBy:toItem:attribute:multiplier:), ^IMP(IMP original) {
+        SEL selector = @selector(constraintWithItem:attribute:relatedBy:toItem:attribute:multiplier:);
+        return imp_implementationWithBlock(^NSLayoutConstraint *(Class self, id first, NSLayoutAttribute firstAttribute, NSLayoutRelation relation, id second, NSLayoutAttribute secondAttribute, CGFloat multiplier) {
+            return ((NSLayoutConstraint *(*)(id, SEL, id, NSLayoutAttribute, NSLayoutRelation, id, NSLayoutAttribute, CGFloat))original)(self, selector, charon_backing(first), firstAttribute, relation, charon_backing(second), secondAttribute, multiplier);
+        });
+    });
+    charon_swap_constructor(@selector(constraintWithItem:attribute:relatedBy:toItem:attribute:), ^IMP(IMP original) {
+        SEL selector = @selector(constraintWithItem:attribute:relatedBy:toItem:attribute:);
+        return imp_implementationWithBlock(^NSLayoutConstraint *(Class self, id first, NSLayoutAttribute firstAttribute, NSLayoutRelation relation, id second, NSLayoutAttribute secondAttribute) {
+            return ((NSLayoutConstraint *(*)(id, SEL, id, NSLayoutAttribute, NSLayoutRelation, id, NSLayoutAttribute))original)(self, selector, charon_backing(first), firstAttribute, relation, charon_backing(second), secondAttribute);
+        });
+    });
+    charon_swap_constructor(@selector(constraintWithItem:attribute:relatedBy:constant:), ^IMP(IMP original) {
+        SEL selector = @selector(constraintWithItem:attribute:relatedBy:constant:);
+        return imp_implementationWithBlock(^NSLayoutConstraint *(Class self, id first, NSLayoutAttribute firstAttribute, NSLayoutRelation relation, CGFloat constant) {
+            return ((NSLayoutConstraint *(*)(id, SEL, id, NSLayoutAttribute, NSLayoutRelation, CGFloat))original)(self, selector, charon_backing(first), firstAttribute, relation, constant);
+        });
+    });
+    charon_swap_constructor(@selector(constraintsWithVisualFormat:options:metrics:views:), ^IMP(IMP original) {
+        SEL selector = @selector(constraintsWithVisualFormat:options:metrics:views:);
+        return imp_implementationWithBlock(^NSArray *(Class self, NSString *format, NSLayoutFormatOptions options, NSDictionary *metrics, NSDictionary *views) {
+            BOOL hasGuide = NO;
+            for (id item in views.allValues)
+                if ([item isKindOfClass:[UILayoutGuide class]])
+                    hasGuide = YES;
+            if (hasGuide) {
+                NSMutableDictionary *mapped = [NSMutableDictionary dictionaryWithCapacity:views.count];
+                for (NSString *key in views)
+                    mapped[key] = charon_backing(views[key]);
+                views = mapped;
+            }
+            return ((NSArray *(*)(id, SEL, NSString *, NSLayoutFormatOptions, NSDictionary *, NSDictionary *))original)(self, selector, format, options, metrics, views);
+        });
+    });
 }
 
 @end
