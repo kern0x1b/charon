@@ -27,7 +27,9 @@ iOS 6 has no Handoff, no Spotlight index of activities and no continuation, so a
 or handed to another device, and the class is `inert`. The delegate messages `userActivityWasContinued:` and
 `userActivity:didReceiveInputStream:outputStream:` and the application delegate's continuation messages are never sent.
 The system saves a current activity again whenever `needsSave` is set; the port asks once, at `becomeCurrent`.
-What later releases added - the referrer URL, the target content identifier, prediction eligibility, the persistent
+What later releases added - the referrer URL, prediction eligibility, the persistent
 identifier and the content attribute set - is not declared, so `respondsToSelector:` answers no; the registry lists
 each that has a decision.
 The class does not adopt `NSSecureCoding` or `NSCopying`, which is what the system's does not do either.
+
+`targetContentIdentifier` (iOS 13) is declared and stored as a plain string, as the host's is, and nothing acts on it.

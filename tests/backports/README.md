@@ -54,6 +54,7 @@ them), has glslang validate both shaders as ES 1.00, and holds the second render
 `host/air2es/expected/quad` under that name (`app.resources`). It makes the device, reads the library, draws the fixture's two functions into a texture with `drawPrimitives` and
 with `drawIndexedPrimitives`, reads the pixels back and compares them with what the fixture computes, blends, draws into the drawable of a `CAMetalLayer`, and holds
 what the port cannot do to its refusals.
+    sh host/foundation14/run.sh  writes device/foundation14-expectations.h; the foundation14 groups of host/uikit2/run.sh hold each class
 
 `host/oslog/run.sh` runs the same 61 calls through the host's os_log, asked for its
 developer output, and through the port's formatter, and compares the two texts; the calls both

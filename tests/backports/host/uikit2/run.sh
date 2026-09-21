@@ -12,6 +12,8 @@ sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 frameworks="-framework LocalAuthentication -framework MobileCoreServices -framework SafariServices -framework UIKit -framework QuartzCore -framework CoreGraphics -framework Foundation"
 flags="-fobjc-arc -fvisibility=hidden -Wall -Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-objc-protocol-method-implementation -Wno-incomplete-implementation -Wno-objc-property-implementation"
+frameworks="-framework LocalAuthentication -framework SafariServices -framework UIKit -framework QuartzCore -framework CoreGraphics -framework Foundation"
+flags="-DCHARON_HOST_DIFFERENTIAL=1 -fobjc-arc -fvisibility=hidden -Wall -Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-objc-protocol-method-implementation -Wno-incomplete-implementation -Wno-objc-property-implementation"
 rm -rf "$build"
 mkdir -p "$build/plain"
 export CHARON_DATA_ASSETS="$here/../../device/data-assets/Assets.car"
@@ -129,6 +131,31 @@ windowed_renamed() {
     [ "$result" = 0 ] || status=1
 }
 
+renamed() {
+    # $1: group name, $2: sources, $3: selectors that get renamed, $4: test source; as group, but only the classes and the named selectors are renamed
+    name=$1
+    files=$2
+    renamed=$3
+    test=$4
+    objects=""
+    for file in $files; do
+        xcrun clang $target $flags -w -c "$sources/$file" -o "$build/plain/$name-$(basename "$file").o"
+        objects="$objects $build/plain/$name-$(basename "$file").o"
+    done
+    renames "$objects" "$(renamed_keep "$objects" "$renamed")" > "$build/$name.flags"
+    mkdir -p "$build/$name"
+    built=""
+    for file in $files; do
+        xcrun clang $target $flags $(cat "$build/$name.flags") -c "$sources/$file" -o "$build/$name/$(basename "$file").o"
+        built="$built $build/$name/$(basename "$file").o"
+    done
+    xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/$test" "$harness/check.m" $built $frameworks -o "$build/$name-test"
+    if "$build/$name-test" > "$build/$name.log" 2>&1; then result=0; else result=$?; fi
+    grep -v '^ok ' "$build/$name.log" || true
+    echo "$name: exit=$result log=$build/$name.log"
+    [ "$result" = 0 ] || status=1
+}
+
 status=0
 group traits "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m" "*" traits_test.m
 group notifications "UIUserNotificationSettings.m" "*" notifications_test.m
@@ -174,6 +201,22 @@ group listvalues "CharonLists.m UICellAccessory.m UIViewConfigurationState.m UIL
 export CHARON_LISTS_EXPECTATIONS="$here/../../device/lists-expectations.h"
 windowed_renamed listcell "CharonLists.m CharonConfigurationHost.m UICellAccessory.m UIViewConfigurationState.m UIListContentProperties.m UIListContentConfiguration.m UIBackgroundConfiguration.m UIListContentView.m UICollectionViewCell+Configuration.m UITableViewCell+Configuration.m UITableViewHeaderFooterView+Configuration.m UICollectionViewListCell.m UICollectionView+Editing.m UICollectionViewRegistration.m UICollectionLayoutListConfiguration.m UICollectionViewCompositionalLayout+ListConfiguration.m NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m NSDiffableDataSourceSnapshot.m CharonDiffable.m UICollectionViewDiffableDataSource.m CharonSwipeViews.m UICollectionView+SwipeActions.m UIContextualAction.m UISwipeActionsConfiguration.m" "contentConfiguration setContentConfiguration automaticallyUpdatesContentConfiguration setAutomaticallyUpdatesContentConfiguration backgroundConfiguration setBackgroundConfiguration automaticallyUpdatesBackgroundConfiguration setAutomaticallyUpdatesBackgroundConfiguration configurationState setNeedsUpdateConfiguration updateConfigurationUsingState defaultContentConfiguration isEditing setEditing allowsSelectionDuringEditing setAllowsSelectionDuringEditing allowsMultipleSelectionDuringEditing setAllowsMultipleSelectionDuringEditing dequeueConfiguredReusableCellWithRegistration dequeueConfiguredReusableSupplementaryViewWithRegistration" listcell_test.m
 windowed_renamed listactions "CharonLists.m CharonConfigurationHost.m UICellAccessory.m UIViewConfigurationState.m UIListContentProperties.m UIListContentConfiguration.m UIBackgroundConfiguration.m UIListContentView.m UICollectionViewCell+Configuration.m UITableViewCell+Configuration.m UITableViewHeaderFooterView+Configuration.m UICollectionViewListCell.m UICollectionView+Editing.m UICollectionViewRegistration.m UICollectionLayoutListConfiguration.m UICollectionViewCompositionalLayout+ListConfiguration.m NSCollectionLayoutValues.m NSCollectionLayoutItems.m UICollectionViewCompositionalLayout.m NSCollectionLayoutSection+iOS14.m UICollectionViewCompositionalLayoutConfiguration+iOS14.m NSDiffableDataSourceSnapshot.m CharonDiffable.m UICollectionViewDiffableDataSource.m NSDiffableDataSourceSectionSnapshot.m UICollectionViewDiffableDataSource+iOS14.m UICollectionViewDiffableDataSourceHandlers.m NSDiffableDataSourceTransaction.m UICollectionView+InteractiveMovement.m CharonSwipeViews.m UICollectionView+SwipeActions.m UIContextualAction.m UISwipeActionsConfiguration.m" "contentConfiguration setContentConfiguration automaticallyUpdatesContentConfiguration setAutomaticallyUpdatesContentConfiguration backgroundConfiguration setBackgroundConfiguration automaticallyUpdatesBackgroundConfiguration setAutomaticallyUpdatesBackgroundConfiguration configurationState setNeedsUpdateConfiguration updateConfigurationUsingState defaultContentConfiguration isEditing setEditing allowsSelectionDuringEditing setAllowsSelectionDuringEditing allowsMultipleSelectionDuringEditing setAllowsMultipleSelectionDuringEditing dequeueConfiguredReusableCellWithRegistration dequeueConfiguredReusableSupplementaryViewWithRegistration beginInteractiveMovementForItemAtIndexPath updateInteractiveMovementTargetPosition endInteractiveMovement cancelInteractiveMovement" listactions_test.m
+
+group foundation14filehandle "../Foundation/NSFileHandle+Errors13.m" "" foundation14_filehandle_test.m
+group foundation14compression "../Foundation/NSData+Compression13.m ../Foundation/CharonLZMA.m" "" foundation14_compression_test.m
+group foundation14listformatter "../Foundation/NSListFormatter.m" "*" foundation14_listformatter_test.m
+group foundation14units "../Foundation/NSDimension.m ../Foundation/NSUnit.m ../Foundation/NSUnitConverter.m ../Foundation/NSUnitConverterLinear.m ../Foundation/NSUnitConverterReciprocal.m ../Foundation/NSMeasurement.m ../Foundation/NSUnitInformationStorage.m" "*" foundation14_units_test.m
+renamed foundation14bytecount "../Foundation/NSDimension.m ../Foundation/NSUnit.m ../Foundation/NSUnitConverter.m ../Foundation/NSUnitConverterLinear.m ../Foundation/NSUnitConverterReciprocal.m ../Foundation/NSMeasurement.m ../Foundation/NSUnitInformationStorage.m ../Foundation/NSUnitLength.m ../Foundation/NSByteCountFormatter+Measurement13.m" "stringFromMeasurement" foundation14_bytecount_test.m
+group foundation14httpresponse "../Foundation/NSHTTPURLResponse+HeaderField13.m" "" foundation14_httpresponse_test.m
+group foundation14collections "../Foundation/NSCoder+Collections14.m ../Foundation/NSKeyedUnarchiver+Collections14.m" "" foundation14_collections_test.m
+renamed foundation14queue "../Foundation/NSOperationQueue+Barrier13.m" "addBarrierBlock progress" foundation14_queue_test.m
+renamed foundation14websocket "../Foundation/NSURLSessionWebSocket13.m" "webSocketTaskWithURL webSocketTaskWithRequest" foundation14_websocket_test.m
+renamed foundation14directoryenumerator "../Foundation/NSDirectoryEnumerator+PostOrder13.m" "isEnumeratingDirectoryPostOrder" foundation14_directoryenumerator_test.m
+group foundation14cookie "../Foundation/NSHTTPCookie+SameSite13.m" "" foundation14_cookie_test.m
+renamed foundation14networkaccess "../Foundation/NSURLRequest+NetworkAccess13.m ../Foundation/NSURLSessionConfiguration+NetworkAccess13.m" "allowsExpensiveNetworkAccess setAllowsExpensiveNetworkAccess allowsConstrainedNetworkAccess setAllowsConstrainedNetworkAccess" foundation14_networkaccess_test.m
+group foundation14resourcekeys "../Foundation/NSURLResourceKeys14.m" "" foundation14_resourcekeys_test.m
+group foundation14useractivity "../Foundation/NSUserActivity.m ../Foundation/NSUserActivity+TargetContent13.m" "*" foundation14_useractivity_test.m
+group foundation14urlcache "../Foundation/NSURLCache+DirectoryURL13.m" "" foundation14_urlcache_test.m
 
 # the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation
 xcrun clang $target -fobjc-arc -Wall -w -I"$harness" "$here/spring_uikit.m" $frameworks -o "$build/spring_uikit"

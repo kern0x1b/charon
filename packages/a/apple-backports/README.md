@@ -332,6 +332,21 @@ and the code here is written anew for armv7 and armv7s. What a facts file under
 `facts/` names is what was read; nothing in this range was carried over from an
 older implementation.
 
+### Foundation of iOS 13 and 14, carried and held against the host
+
+145 names of Foundation are decided in `registry/Foundation/ios13found.json`: 119 carried, 2 inert and 24 absent.
+Carried: the error-returning `NSFileHandle` methods, `NSData` compression (ZLIB, LZ4 and LZMA in both directions;
+LZFSE as stored blocks only, since compressed LZFSE has no public specification), `NSListFormatter`,
+`NSUnitInformationStorage`, the `NSByteCountFormatter` measurement forms, `-[NSHTTPURLResponse valueForHTTPHeaderField:]`,
+the secure collection decoders of `NSCoder` and `NSKeyedUnarchiver`, `NSOperationQueue` barriers and progress,
+`NSURLSessionWebSocketTask` (an RFC 6455 client), expensive and constrained network access, `NSHTTPCookie` SameSite,
+`NSURLCache` with a directory URL, the new URL resource keys, and the small members (`NSDate.now`, the post-order
+enumerator flag, `macCatalystApp`, `iOSAppOnMac`, `targetContentIdentifier`). Inert: `NSURLContentTypeKey` and
+`NSURLFileContentIdentifierKey` answer no value. Absent: the `NSXPC` members, which cannot work without a service an
+iOS 6 application can ship, the TLS version bounds and the transaction metrics properties. The facts are in
+`facts/Foundation/`; the proof is the `foundation14*` groups of `tests/backports/host/uikit2/run.sh` and
+`tests/backports/device/foundation14.m`.
+
 ### Carried
 
 Foundation gets the secure coding surface of the archivers: an archiver created

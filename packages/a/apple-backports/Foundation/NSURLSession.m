@@ -395,6 +395,10 @@ static NSURLRequest *charon_wire_request(NSURLSessionTask *task, NSURLRequest *r
     }
     wire.HTTPShouldHandleCookies = NO;
     wire.allowsCellularAccess = configuration.allowsCellularAccess && request.allowsCellularAccess;
+    if ([configuration respondsToSelector:@selector(allowsExpensiveNetworkAccess)] && !configuration.allowsExpensiveNetworkAccess)
+        wire.allowsExpensiveNetworkAccess = NO;
+    if ([configuration respondsToSelector:@selector(allowsConstrainedNetworkAccess)] && !configuration.allowsConstrainedNetworkAccess)
+        wire.allowsConstrainedNetworkAccess = NO;
     if (wire.networkServiceType == NSURLNetworkServiceTypeDefault)
         wire.networkServiceType = configuration.networkServiceType;
     if (configuration.HTTPShouldUsePipelining)
