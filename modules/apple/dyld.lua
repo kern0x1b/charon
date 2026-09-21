@@ -618,7 +618,7 @@ end
 
 function missing_imports(cachefile, binaries, root)
     local cache = load(cachefile)
-    local missing, dangling = {}, {}
+    local missing, dangling, ordering = {}, {}, {}
     local found = {}
     local function named(binary)
         return root and path.relative(binary, root) or binary
@@ -669,7 +669,7 @@ function missing_imports(cachefile, binaries, root)
             if symbol.weak and bound and cache.libraries[bound] and not exports_symbol(lookup, bound, symbol.name, {}) then
                 for _, install in ipairs(table.orderkeys(provided)) do
                     if install ~= bound and provided[install].exports[symbol.name] then
-                        table.insert(missing, {named(entry.binary), string.format("%s (weakly bound to %s, which does not export it, while %s does; link %s before %s)",
+                        table.insert(ordering, {named(entry.binary), string.format("%s (weakly bound to %s, which does not export it, while %s does; link %s before %s)",
                                                                                   symbol.name, bound, install, path.filename(install), path.filename(bound))})
                         break
                     end
@@ -700,7 +700,10 @@ function missing_imports(cachefile, binaries, root)
     table.sort(dangling, function (a, b)
         return a[1] == b[1] and a[2] < b[2] or a[1] < b[1]
     end)
-    return missing, #found, cache, dangling
+    table.sort(ordering, function (a, b)
+        return a[1] == b[1] and a[2] < b[2] or a[1] < b[1]
+    end)
+    return missing, #found, cache, dangling, ordering
 end
 
 function check(cachefile, binaries, folder, opt)
@@ -708,7 +711,7 @@ function check(cachefile, binaries, folder, opt)
     if not os.exists(cachefile) then
         raise("there is no shared cache or library folder at %s to check imports against; a check that reports success having looked at nothing is worse than no check", cachefile)
     end
-    local missing, count, cache, dangling = missing_imports(cachefile, binaries, folder)
+    local missing, count, cache, dangling, ordering = missing_imports(cachefile, binaries, folder)
     local emitted = compat.emitted()
     local guarded = {}
     -- What another package provides is checked, and reported, but it is that package's image and not this one's to refuse.
@@ -716,6 +719,15 @@ function check(cachefile, binaries, folder, opt)
     local exempt = {}
     for _, binary in ipairs(opt.exempt or {}) do
         exempt[folder and path.relative(binary, folder) or binary] = true
+    end
+    -- A link order that puts a system library in front of the one carrying the symbol is answered where that image is built.
+    -- In another package's image it is that package's to answer for, so it is reported and not a reason to refuse this program.
+    for _, entry in ipairs(ordering) do
+        if exempt[entry[1]] then
+            wprint("%s %s", entry[1], entry[2])
+        else
+            table.insert(missing, entry)
+        end
     end
     for _, entry in ipairs(dangling) do
         local by = emitted[entry[2]:sub(2)]
