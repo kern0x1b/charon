@@ -301,13 +301,14 @@ static CharonUniformPlan *uniformPlans(CharonMetalPipeline *pipeline, NSArray *u
         if (location >= 0)
             _plan.sizes[_plan.sizeCount++] = (CharonSizePlan){location, (unsigned)[size[@"texture"] unsignedIntegerValue]};
     }
-    _plan.outputs = [_fragmentReflection[@"outputs"] unsignedIntValue];
-    if (_plan.outputs < 1)
-        _plan.outputs = 1;
-    if (_plan.outputs > 4)
-        _plan.outputs = 4;
+    for (NSNumber *o in _fragmentReflection[@"outputs"]) {
+        if (_plan.outputCount < 4 && o.unsignedIntValue < 4)
+            _plan.outputIndex[_plan.outputCount++] = o.unsignedIntValue;
+    }
+    if (_plan.outputCount == 0)
+        _plan.outputIndex[_plan.outputCount++] = 0;
     _plan.output = [self locationForName:@"charon_output"];
-    for (unsigned i = 0; i < _plan.outputs; i++) {
+    for (unsigned i = 0; i < 4; i++) {
         MTLRenderPipelineColorAttachmentDescriptor *b = _descriptor.colorAttachments[i];
         CharonBlend *out = &_plan.blends[i];
         out->blending = b.blendingEnabled;
@@ -321,6 +322,21 @@ static CharonUniformPlan *uniformPlans(CharonMetalPipeline *pipeline, NSArray *u
         out->mask[1] = (b.writeMask & MTLColorWriteMaskGreen) != 0;
         out->mask[2] = (b.writeMask & MTLColorWriteMaskBlue) != 0;
         out->mask[3] = (b.writeMask & MTLColorWriteMaskAlpha) != 0;
+    }
+    NSArray *fetches = _fragmentReflection[@"fetches"];
+    _plan.fetches = calloc(fetches.count ? fetches.count : 1, sizeof(CharonFetchPlan));
+    uint32_t used = 0;
+    for (unsigned k = 0; k < _plan.textureCount; k++)
+        used |= 1u << _plan.textures[k].unit;
+    for (NSDictionary *f in fetches) {
+        GLint location = [self locationForName:f[@"name"]];
+        int unit = 7;
+        while (unit >= 0 && (used & (1u << unit)))
+            unit--;
+        if (location < 0 || unit < 0)
+            continue;
+        used |= 1u << unit;
+        _plan.fetches[_plan.fetchCount++] = (CharonFetchPlan){location, (unsigned)[f[@"attachment"] unsignedIntegerValue], (unsigned)unit};
     }
     MTLRenderPipelineColorAttachmentDescriptor *blend = _descriptor.colorAttachments[0];
     _plan.blending = blend.blendingEnabled;
@@ -349,6 +365,7 @@ static CharonUniformPlan *uniformPlans(CharonMetalPipeline *pipeline, NSArray *u
     free(_plan.inputs);
     free(_plan.textures);
     free(_plan.sizes);
+    free(_plan.fetches);
     if (_program) {
         CharonMetalDevice *device = [CharonMetalDevice shared];
         [device acquire];

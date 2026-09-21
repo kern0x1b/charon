@@ -65,6 +65,18 @@
    "stage": "fragment",
    "source": "module10.frag",
    "reflection": "module10.json"
+  },
+  {
+   "name": "maskShape",
+   "stage": "fragment",
+   "source": "module11.frag",
+   "reflection": "module11.json"
+  },
+  {
+   "name": "maskMerge",
+   "stage": "fragment",
+   "source": "module12.frag",
+   "reflection": "module12.json"
   }
  ]
 }

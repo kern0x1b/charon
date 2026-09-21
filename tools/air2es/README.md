@@ -42,9 +42,10 @@ once for each target, into the target's own framebuffer, with the target's own b
 
 ## The colour attachment
 
-A fragment function that takes the colour it is drawing over as an argument (`[[color(0)]]`) reads `gl_LastFragData[0]`, with
-`GL_EXT_shader_framebuffer_fetch`, which the SGX 543 has: the framebuffer is read where the tile is, and there is no copy of it to a texture. Only the first
-colour attachment can be read, and only as four floats.
+A fragment function that takes the colour it draws over as an argument (`[[color(n)]]`) reads it in one of two ways. When the function writes that target and no other, it reads
+`gl_LastFragData[0]`, with `GL_EXT_shader_framebuffer_fetch`, which the SGX 543 has: the framebuffer is read where the tile is, and there is no copy of it to a texture. When it does not write that
+target, it reads the attachment as a texture (`charon_attachmentN`) at the position of the fragment, and `PREFIX.json` lists the attachment; the runtime binds it, since it is not the one drawn to. A function may write
+any of the four targets, alone or with others.
 
 ## Function constants
 
@@ -57,7 +58,7 @@ when it makes the function, and the initialiser is translated ahead of the funct
 
 A function it cannot translate is refused with the reason, and no file is written: a loop inside a loop,
 a texture read in a vertex function (the SGX 543 has no vertex texture units), integer bit operations, reading a texture of integers, `min`, `max`, `clamp` and the like on integers,
-a fragment output of an integer type, more than four render targets, outputs that are not the first targets in order, reading the colour attachment in a function that writes several targets, texture arrays, cubes,
+a fragment output of an integer type, more than four render targets, reading a colour attachment that the function writes together with other targets, texture arrays, cubes,
 textures of integers, reading a depth texture at a level, in pixel coordinates or with gradients, comparing with a sampler that is constant in the library, sampling with gradients or an explicit level, with a minimum level clamp, with an offset or in pixel coordinates,
 reading a texture at a level or with an offset, `half` reads from a vertex buffer, dynamic indices into a buffer element, local arrays, a function
 constant of a vector type, argument buffers, tessellation, compute kernels, and any AIR intrinsic without an ES 1.00 form.

@@ -456,6 +456,21 @@ static const GLfloat *rampOf(NSUInteger count)
             }
             glUniform1i(plan->textures[k].location, (GLint)unit);
         }
+        for (unsigned k = 0; k < plan->fetchCount; k++) {
+            CharonMetalTexture *attachment = plan->fetches[k].attachment < _targetCount ? _targets[plan->fetches[k].attachment] : nil;
+            if (!attachment)
+                continue;
+            unsigned unit = plan->fetches[k].unit;
+            glActiveTexture(GL_TEXTURE0 + unit);
+            glBindTexture(GL_TEXTURE_2D, attachment.name);
+            _boundTexture[unit] = attachment.name;
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            attachment.appliedSampler = nil;
+            glUniform1i(plan->fetches[k].location, (GLint)unit);
+        }
         for (unsigned k = 0; k < plan->sizeCount; k++) {
             unsigned unit = plan->sizes[k].unit;
             if (unit < 16 && _fragmentTextures[unit])
@@ -480,15 +495,17 @@ static GLenum primitive(MTLPrimitiveType type)
 - (void)issue:(GLenum)mode first:(GLint)first count:(GLsizei)count indices:(const void *)indices type:(GLenum)type
 {
     const CharonPlan *plan = _pipeline.plan;
-    if (plan->outputs <= 1 || _targetCount <= 1) {
+    if (plan->outputCount == 1 && plan->outputIndex[0] == 0) {
         if (indices)
             glDrawElements(mode, count, type, indices);
         else
             glDrawArrays(mode, first, count);
         return;
     }
-    NSUInteger n = plan->outputs < _targetCount ? plan->outputs : _targetCount;
-    for (NSUInteger k = n; k-- > 0;) {
+    for (unsigned n = plan->outputCount; n-- > 0;) {
+        unsigned k = plan->outputIndex[n];
+        if (k >= _targetCount)
+            continue;
         const CharonBlend *b = &plan->blends[k];
         glBindFramebuffer(GL_FRAMEBUFFER, [_targets[k] renderTarget]);
         if (b->blending) {
@@ -501,7 +518,7 @@ static GLenum primitive(MTLPrimitiveType type)
         glColorMask(b->mask[0], b->mask[1], b->mask[2], b->mask[3]);
         if (plan->output >= 0)
             glUniform1i(plan->output, (GLint)k);
-        if (k != 0) {
+        if (n != 0) {
             glDepthMask(GL_FALSE);
             glStencilMask(0);
         } else {

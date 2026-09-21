@@ -66,6 +66,12 @@ typedef struct {
 } CharonSizePlan;
 
 typedef struct {
+    GLint location;
+    unsigned attachment;
+    unsigned unit;
+} CharonFetchPlan;
+
+typedef struct {
     BOOL blending;
     GLenum sourceRGB, destinationRGB, sourceAlpha, destinationAlpha, equationRGB, equationAlpha;
     GLboolean mask[4];
@@ -92,8 +98,11 @@ typedef struct {
     BOOL blending;
     GLenum sourceRGB, destinationRGB, sourceAlpha, destinationAlpha, equationRGB, equationAlpha;
     GLboolean mask[4];
-    unsigned outputs;
+    unsigned outputCount;
+    unsigned outputIndex[4];
     GLint output;
+    CharonFetchPlan *fetches;
+    unsigned fetchCount;
     CharonBlend blends[4];
 } CharonPlan;
 

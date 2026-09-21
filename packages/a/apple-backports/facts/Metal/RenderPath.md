@@ -34,6 +34,12 @@ A pass with up to four colour attachments and a pipeline whose fragment function
 blending and write mask, the fragment function told which of its colours to write; depth and stencil are written by the last draw only, so all the draws see the same buffers. A draw
 costs as many times as it has targets. A function that both reads the colour attachment and writes several targets is not translated.
 
+## Reading the colour attachment
+
+A fragment function that reads the colour it draws over reads the framebuffer where it is when it writes that target and no other (`GL_EXT_shader_framebuffer_fetch`), and reads the attachment as a texture, at
+the position of the fragment with nearest filtering, when it writes another target: a mask kept in a second attachment and merged into the first is done this way. A function that reads an attachment it also writes with
+others is not translated.
+
 ## Depth and stencil
 
 A pass takes a depth texture and a stencil texture, cleared or loaded, and a depth and stencil state sets the depth test, whether depth is written, and the stencil test and operations for the front and the

@@ -211,7 +211,7 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
     NSError *error = nil;
     self.library = [self.device newLibraryWithFile:[folder stringByDeletingPathExtension] error:&error];
     CHECK(self.library != nil, "a library is read from beside its file");
-    CHECK([[[self.library functionNames] sortedArrayUsingSelector:@selector(compare:)] isEqualToArray:(@[@"colorFragment", @"constFragment", @"depthRead", @"depthVertex", @"fetchFragment", @"flowFragment", @"pairFragment", @"quadFragment", @"quadVertex", @"shadowCompare", @"stageInVertex"])], "it holds its eleven functions");
+    CHECK([[[self.library functionNames] sortedArrayUsingSelector:@selector(compare:)] isEqualToArray:(@[@"colorFragment", @"constFragment", @"depthRead", @"depthVertex", @"fetchFragment", @"flowFragment", @"maskMerge", @"maskShape", @"pairFragment", @"quadFragment", @"quadVertex", @"shadowCompare", @"stageInVertex"])], "it holds its thirteen functions");
     CHECK([self.library newFunctionWithName:@"missing"] == nil, "a name it does not hold gives nil");
     CHECK([[self.library newFunctionWithName:@"quadVertex"] functionType] == MTLFunctionTypeVertex, "the vertex function is a vertex function");
     CHECK([[self.library newFunctionWithName:@"quadFragment"] functionType] == MTLFunctionTypeFragment, "and the fragment function a fragment function");
@@ -606,6 +606,66 @@ static BOOL near(const uint8_t *p, int r, int g, int b, int tolerance)
         CHECK(fabsf(readBack(@"depthRead", nearestSampler, 0) - 128) <= 2, "a shader reads the depth that was written, half of the range");
         CHECK(readBack(@"shadowCompare", comparingSampler, 0.3f) > 253, "a compared reference nearer than the depth is lit");
         CHECK(readBack(@"shadowCompare", comparingSampler, 0.7f) < 2, "and one farther than the depth is not");
+    }
+
+    {
+        MTLRenderPipelineDescriptor *sp = [[MTLRenderPipelineDescriptor alloc] init];
+        sp.vertexFunction = [self.library newFunctionWithName:@"quadVertex"];
+        sp.fragmentFunction = [self.library newFunctionWithName:@"maskShape"];
+        sp.colorAttachments[0].pixelFormat = MTLPixelFormatRGBA8Unorm;
+        sp.colorAttachments[1].pixelFormat = MTLPixelFormatRGBA8Unorm;
+        NSError *maskError = nil;
+        id<MTLRenderPipelineState> shape = [self.device newRenderPipelineStateWithDescriptor:sp error:&maskError];
+        MTLRenderPipelineDescriptor *mp = [[MTLRenderPipelineDescriptor alloc] init];
+        mp.vertexFunction = [self.library newFunctionWithName:@"quadVertex"];
+        mp.fragmentFunction = [self.library newFunctionWithName:@"maskMerge"];
+        mp.colorAttachments[0].pixelFormat = MTLPixelFormatRGBA8Unorm;
+        mp.colorAttachments[1].pixelFormat = MTLPixelFormatRGBA8Unorm;
+        id<MTLRenderPipelineState> merge = [self.device newRenderPipelineStateWithDescriptor:mp error:&maskError];
+        CHECK(shape != nil && merge != nil, "a function that writes the second render target and reads it, and one that reads it and writes the first, are made");
+        MTLTextureDescriptor *md = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA8Unorm width:64 height:64 mipmapped:NO];
+        md.usage = MTLTextureUsageRenderTarget | MTLTextureUsageShaderRead;
+        id<MTLTexture> mask = [self.device newTextureWithDescriptor:md];
+        Corner quad[6] = {{{-1, 1}, {0, 0}}, {{1, 1}, {1, 0}}, {{-1, -1}, {0, 1}}, {{1, 1}, {1, 0}}, {{1, -1}, {1, 1}}, {{-1, -1}, {0, 1}}};
+        float unit = 1;
+        MTLRenderPassDescriptor *first = [MTLRenderPassDescriptor renderPassDescriptor];
+        first.colorAttachments[0].texture = target;
+        first.colorAttachments[0].loadAction = MTLLoadActionClear;
+        first.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1);
+        first.colorAttachments[1].texture = mask;
+        first.colorAttachments[1].loadAction = MTLLoadActionClear;
+        first.colorAttachments[1].clearColor = MTLClearColorMake(0.25, 0, 0, 1);
+        id<MTLCommandBuffer> mb = [self.queue commandBuffer];
+        id<MTLRenderCommandEncoder> me = [mb renderCommandEncoderWithDescriptor:first];
+        [me setRenderPipelineState:shape];
+        [me setVertexBytes:quad length:sizeof quad atIndex:0];
+        [me setVertexBytes:&unit length:sizeof unit atIndex:1];
+        [me drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6];
+        [me drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6];
+        [me endEncoding];
+        [mb commit];
+        [mb waitUntilCompleted];
+        uint8_t maskPixel[4];
+        [mask getBytes:maskPixel bytesPerRow:4 fromRegion:MTLRegionMake2D(32, 32, 1, 1) mipmapLevel:0];
+        [self read:target width:64 height:64 into:out];
+        CHECK(abs(maskPixel[0] - 191) <= 2 && near(out + (32 * 64 + 32) * 4, 0, 0, 0, 1), "a function that reads and writes the second target adds to it twice and leaves the first alone");
+        MTLRenderPassDescriptor *second = [MTLRenderPassDescriptor renderPassDescriptor];
+        second.colorAttachments[0].texture = target;
+        second.colorAttachments[0].loadAction = MTLLoadActionClear;
+        second.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1);
+        second.colorAttachments[1].texture = mask;
+        second.colorAttachments[1].loadAction = MTLLoadActionLoad;
+        id<MTLCommandBuffer> nb = [self.queue commandBuffer];
+        id<MTLRenderCommandEncoder> ne = [nb renderCommandEncoderWithDescriptor:second];
+        [ne setRenderPipelineState:merge];
+        [ne setVertexBytes:quad length:sizeof quad atIndex:0];
+        [ne setVertexBytes:&unit length:sizeof unit atIndex:1];
+        [ne drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6];
+        [ne endEncoding];
+        [nb commit];
+        [nb waitUntilCompleted];
+        [self read:target width:64 height:64 into:out];
+        CHECK(near(out + (32 * 64 + 32) * 4, 191, 0, 0, 2), "a function that reads the second target and writes the first takes what the first draws left there");
     }
 
     const float faint[4] = {0.5f, 0.5f, 0.5f, 0.4f};
