@@ -418,6 +418,13 @@ postinst run with `DPKG_ROOT` set to it.
   release's own velocity are one value in both directions, and puts a real link through the frame rates, the frame
   intervals and a run loop, where the target timestamp is a frame past the timestamp. 53 of 53 on an iPhone 4S
   running 6.1.3.
+- `seckey.m`: a process of its own, the five key functions of iOS 10. It names the image each of the five comes from,
+  asks for a key with no parameters and with a key type the release cannot make and gets an error rather than a crash,
+  generates a 1024-bit RSA pair that is not kept in the keychain, takes its public key, holds the public external
+  representation to a PKCS#1 RSAPublicKey of a modulus of the size asked for and an exponent of 65537, runs PKCS1 and
+  OAEP-SHA1 round trips through the pair, and holds an algorithm the release cannot do to a refusal that carries an
+  OSStatus the caller can read. The private key's representation is either a PKCS#1 RSAPrivateKey or an error, and the
+  test fails if it is ever the public half. It needs the package built with `security = true`.
 - `tolerance.m`: a process of its own, the timer tolerance, which is a property
   and two CoreFoundation functions.
 - `uikit2.m` (`uikit2-Info.plist`): an application for the second UIKit batch -

@@ -122,57 +122,7 @@
       "source": "SDK 16.4, Security"
     },
     {
-      "api": "SecKeyCopyExternalRepresentation()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
       "api": "SecKeyCopyKeyExchangeResult()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecKeyCopyPublicKey()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecKeyCreateDecryptedData()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecKeyCreateEncryptedData()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecKeyCreateRandomKey()",
       "kind": "function",
       "introduced": "10.0",
       "minimum": "6.0",
