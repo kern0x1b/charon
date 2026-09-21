@@ -8,7 +8,7 @@ sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 frameworks="-framework UIKit -framework QuartzCore -framework CoreGraphics -framework Foundation"
 flags="-fobjc-arc -fvisibility=hidden -w"
-files="UITraitCollection.m"
+files="UITraitCollection.m UITraitCollection+Appearance13.m"
 [ -f "$sources/UITraitCollection+UserInterfaceStyle.m" ] && files="$files UITraitCollection+UserInterfaceStyle.m"
 rm -rf "$build"
 mkdir -p "$build/plain" "$build/ours"
