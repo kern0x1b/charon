@@ -1,8 +1,14 @@
 #import <UIKit/UIKit.h>
+#import <objc/runtime.h>
+
+static UIView *charon_item_view(id item)
+{
+    return [item isKindOfClass:[UILayoutGuide class]] ? [(UILayoutGuide *)item owningView] : item;
+}
 
 static UIView *charon_container(NSLayoutConstraint *constraint)
 {
-    for (UIView *view = constraint.firstItem; view; view = view.superview) {
+    for (UIView *view = charon_item_view(constraint.firstItem); view; view = view.superview) {
         if ([view.constraints indexOfObjectIdenticalTo:constraint] != NSNotFound)
             return view;
     }
@@ -31,7 +37,7 @@ static UILayoutGuide *charon_guide(id item)
 
 static BOOL charon_ownerless(id item)
 {
-    UILayoutGuide *guide = charon_guide(item);
+    UILayoutGuide *guide = [item isKindOfClass:[UILayoutGuide class]] ? item : charon_guide(item);
     return guide && !guide.owningView;
 }
 
@@ -69,10 +75,36 @@ static UIView *charon_holder(UIView *ancestor)
     }
     if (container || charon_ownerless(self.firstItem) || charon_ownerless(self.secondItem))
         return;
-    UIView *ancestor = charon_common_ancestor(self.firstItem, self.secondItem);
+    UIView *ancestor = charon_common_ancestor(charon_item_view(self.firstItem), charon_item_view(self.secondItem));
     if (!ancestor)
         [NSException raise:NSGenericException format:@"Unable to activate constraint with items %@ and %@ because they have no common ancestor.  Does the constraint reference items in different view hierarchies?  That's illegal.", self.firstItem, self.secondItem];
     [charon_holder(ancestor) addConstraint:self];
+}
+
+@end
+
+@interface UILayoutGuide (CharonBacking)
+- (UIView *)charon_view;
+@end
+
+@interface CharonConstraintGuideItems : NSObject
+@end
+
+@implementation CharonConstraintGuideItems
+
++ (void)load
+{
+    SEL selector = @selector(constraintWithItem:attribute:relatedBy:toItem:attribute:multiplier:constant:);
+    Method method = class_getClassMethod([NSLayoutConstraint class], selector);
+    NSLayoutConstraint *(*original)(id, SEL, id, NSLayoutAttribute, NSLayoutRelation, id, NSLayoutAttribute, CGFloat, CGFloat) = (NSLayoutConstraint *(*)(id, SEL, id, NSLayoutAttribute, NSLayoutRelation, id, NSLayoutAttribute, CGFloat, CGFloat))method_getImplementation(method);
+    IMP replacement = imp_implementationWithBlock(^NSLayoutConstraint *(Class self, id first, NSLayoutAttribute firstAttribute, NSLayoutRelation relation, id second, NSLayoutAttribute secondAttribute, CGFloat multiplier, CGFloat constant) {
+        if ([first isKindOfClass:[UILayoutGuide class]])
+            first = [(UILayoutGuide *)first charon_view];
+        if ([second isKindOfClass:[UILayoutGuide class]])
+            second = [(UILayoutGuide *)second charon_view];
+        return original(self, selector, first, firstAttribute, relation, second, secondAttribute, multiplier, constant);
+    });
+    class_replaceMethod(object_getClass([NSLayoutConstraint class]), selector, replacement, method_getTypeEncoding(method));
 }
 
 @end

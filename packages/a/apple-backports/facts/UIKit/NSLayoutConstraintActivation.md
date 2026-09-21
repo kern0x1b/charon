@@ -34,3 +34,16 @@ them back.
 
 In the backport a guide is a hidden view, and the activation asks that view which guide it is, so a guide's
 size lands on its owner rather than on the hidden view.
+
+## A layout guide as an item of a constraint
+
+`+constraintWithItem:attribute:relatedBy:toItem:attribute:multiplier:constant:` takes a `UILayoutGuide` as either item since
+iOS 9. The release refuses anything that is not a view ("Constraint items must each be an instance of UIView or subclass"), so the
+port takes the class method and gives the release the view that backs the guide (the one its anchors already use) in place of the
+guide. What the constraint answers for `firstItem` and `secondItem` is that view, not the guide: the system answers the guide.
+A constraint that reaches activation with a guide as an item all the same (one that was unarchived, for one) is put on the guide's
+owning view, and is left inactive while the guide has none, as a guide of the system that is not in a view yet does.
+
+Source: the host's own UIKit under Mac Catalyst, held against the port by `tests/backports/host/layoutguide/run.sh`, five
+records of frames and activation for constraints written with guides as items (`layoutguide-cases.m`), which
+`tests/backports/device/layoutguide.m` compares on the iPad 2 and the iPhone 4S.
