@@ -55,3 +55,7 @@ iPhone 4S has none for `.HelveticaNeueUI`, and neither does the emulator's iPhon
 answers the regular font, which is the nearest face the device has and not an omission of the backport.
 Medium and semibold are likewise not distinct from regular and bold; that is the ceiling of the release's
 fonts, not of the backport.
+
+The four `UIFontWidth` constants are the host's floats: standard 0, expanded 0.2, condensed -0.2, compressed -0.3.
+`systemFontOfSize:weight:width:` answers the font of the weight: no font of iOS 6 has another width, so the width is
+read and does not change the choice, and a descriptor that carries `UIFontWidthTrait` is matched as a standard one.

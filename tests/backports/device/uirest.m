@@ -775,6 +775,10 @@ static UIWindow *the_window;
     UIGraphicsEndImageContext();
     CHECK((lit_pixels(glyphImage, CGSizeMake(30, 30)) > 20), "showCGGlyphs draws the glyph");
 
+    CHECK((UIFontWidthStandard == 0 && UIFontWidthExpanded == 0.2f && UIFontWidthCondensed == -0.2f && UIFontWidthCompressed == -0.3f), "the four font widths have the values of the release that has them");
+    UIFont *widthFont = [UIFont systemFontOfSize:17 weight:UIFontWeightRegular width:UIFontWidthCondensed];
+    CHECK((widthFont != nil && widthFont.pointSize == 17 && [widthFont.familyName isEqual:[UIFont systemFontOfSize:17].familyName]), "a system font of a width is the font of the weight");
+
     UITextView *textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:@"hello world"];
     [text addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(6, 5)];

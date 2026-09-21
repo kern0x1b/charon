@@ -203,7 +203,7 @@ windowed_renamed_expected() {
 status=0
 group traits "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m UITraitCollection+Appearance13.m UITraitCollection+Appearance14.m UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImageSymbolGlyphs.m UIImage+Baseline13.m UIImage+iOS13.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m" "*" traits_test.m
 group notifications "UIUserNotificationSettings.m" "*" notifications_test.m
-group misc "UIScreen+NativeBounds.m UIFont+TextStyles.m UIFont+Weights.m UIColor+SystemColors.m UIColor+SystemPurpleColor.m UIImage+RenderingMode.m UITextField+DefaultTextAttributes.m UIViewController+ExtendedLayout.m" "systemFontOfSize" misc_test.m
+group misc "UIScreen+NativeBounds.m UIFont+TextStyles.m UIFont+Weights.m UIFontWidths.m UIColor+SystemColors.m UIColor+SystemPurpleColor.m UIImage+RenderingMode.m UITextField+DefaultTextAttributes.m UIViewController+ExtendedLayout.m" "systemFontOfSize" misc_test.m
 group motion "UIMotionEffect.m UIView+MotionEffects.m" "initWithKeyPath keyPath type minimumRelativeValue setMinimumRelativeValue maximumRelativeValue setMaximumRelativeValue keyPathsAndRelativeValuesForViewerOffset" motion_test.m
 group sizes "UIContentSizeCategory.m UIContentSizeCategory+Unspecified.m" "" sizes_test.m
 group tint "UIView+TintColor.m" "" tint_test.m

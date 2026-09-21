@@ -49,6 +49,7 @@
 extern const UIFontWeight CharonHostUIFontWeightUltraLight, CharonHostUIFontWeightThin, CharonHostUIFontWeightLight;
 extern const UIFontWeight CharonHostUIFontWeightRegular, CharonHostUIFontWeightMedium, CharonHostUIFontWeightSemibold;
 extern const UIFontWeight CharonHostUIFontWeightBold, CharonHostUIFontWeightHeavy, CharonHostUIFontWeightBlack;
+extern const CGFloat CharonHostUIFontWidthStandard, CharonHostUIFontWidthExpanded, CharonHostUIFontWidthCondensed, CharonHostUIFontWidthCompressed;
 extern UIFontTextStyle const CharonHostUIFontTextStyleHeadline, CharonHostUIFontTextStyleSubheadline, CharonHostUIFontTextStyleBody;
 extern UIFontTextStyle const CharonHostUIFontTextStyleFootnote, CharonHostUIFontTextStyleCaption1, CharonHostUIFontTextStyleCaption2;
 
@@ -117,6 +118,13 @@ int main(void)
             charon_check(bold == (*weights[index].ours > UIFontWeightMedium), NAMED(@"weight %s maps to bold or not", weights[index].name),
                          [NSString stringWithFormat:@"bold %d for weight %g", bold, (double)*weights[index].ours]);
         }
+
+        struct { const CGFloat *ours; CGFloat system; const char *name; } widths[] = {
+            {&CharonHostUIFontWidthStandard, UIFontWidthStandard, "standard"}, {&CharonHostUIFontWidthExpanded, UIFontWidthExpanded, "expanded"},
+            {&CharonHostUIFontWidthCondensed, UIFontWidthCondensed, "condensed"}, {&CharonHostUIFontWidthCompressed, UIFontWidthCompressed, "compressed"}};
+        for (NSUInteger index = 0; index < sizeof(widths) / sizeof(*widths); index++)
+            charon_check(*widths[index].ours == widths[index].system, NAMED(@"UIFontWidth %s", widths[index].name),
+                         [NSString stringWithFormat:@"%.17g != %.17g", (double)*widths[index].ours, (double)widths[index].system]);
 
         struct { UIColor *(*ours)(void); const char *expected; const char *name; } palette[] = {{NULL, "255 59 48 1.00", "systemRed"}};
         (void)palette;
