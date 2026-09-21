@@ -652,16 +652,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVCaptureSessionPresetInputPriority",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVCaptureStillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable",
       "kind": "property",
       "introduced": "7.0",
@@ -849,106 +839,6 @@
       "status": "absent",
       "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeAztecCode",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeCode128Code",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeCode39Code",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeCode39Mod43Code",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeCode93Code",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeEAN13Code",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeEAN8Code",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypePDF417Code",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeQRCode",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeUPCECode",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {
@@ -4882,36 +4772,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVMetadataObjectTypeDataMatrixCode",
-      "kind": "constant",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeITF14Code",
-      "kind": "constant",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeInterleaved2of5Code",
-      "kind": "constant",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVMutableMetadataItem.dataType",
       "kind": "property",
       "introduced": "8.0",
@@ -5293,16 +5153,6 @@
     },
     {
       "api": "AVCaptureSessionInterruptionReasonKey",
-      "kind": "constant",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureSessionPreset3840x2160",
       "kind": "constant",
       "introduced": "9.0",
       "minimum": "6.0",
