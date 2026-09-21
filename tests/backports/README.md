@@ -7,6 +7,36 @@ backports for macOS (UIKit ones through Mac Catalyst) with every class they
 define renamed, and compares the result with the system class on the same
 inputs.
 
+A test that stops linking is the worst thing that can happen here, and the
+hardest to see. Every script runs under `set -eu`, so a missing framework or a
+renamed symbol ends it at its first `clang` call: it never reaches a check, and
+from the outside it is indistinguishable from a test nobody happens to have run
+lately. It keeps its line in this file, so it goes on looking like cover while
+it guards nothing. That is how `host/uikit2/run.sh` - appearances, menus,
+pointer, search, colors, symbols, layout values, the compositional layout and
+the foundation14 groups - stood dead from the change that broke it until
+someone happened to run it: a commit appended a second `frameworks=` line to
+add one flag and dropped `-framework MobileCoreServices` in the copy, and the
+second assignment quietly won. `host/foundation2/run.sh` went the same way when
+a method moved to a new file that its source list does not name. So, before
+trusting any of these:
+
+    sh host/run-all.sh [--seconds N] [NAMES]
+
+It starts every script and asks one question of each: did it get past building
+itself? A script that FAILS without reaching a single check is reported DEAD
+with the last lines of its error; one still running when the clock runs out is
+alive, because a link that fails fails in seconds, and one that ends with status
+0 is alive because it got to its own end. The few it cannot start - the ones
+that take arguments, a server or a tool of their own, and the recorder that
+writes expectations rather than checking - are named with the reason, never
+passed over in silence. It says nothing about whether the checks pass, only
+whether they happen, and it exits non-zero if anything is dead.
+
+It runs the real scripts, so the ones that write an expectations header write it
+again: look at `git status` afterwards, and note that `host/ios1516/run.sh` puts
+freshly made UUIDs in its header on every run.
+
     sh host/url/run.sh
     sh host/session/run.sh      starts host/session/server.py on a free 127.0.0.1 port
     sh host/gamecontroller/run.sh   the port of the GameController model against the host's GameController, 8576 lines
