@@ -1,0 +1,86 @@
+{
+  "framework": "WebKit",
+  "entries": [
+    {
+      "api": "WKContentWorld",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the class is there and names worlds as the release's does: +pageWorld and +defaultClientWorld are each one object for the process, +worldWithName: gives the same object back for the same name, and -name answers the name for a named world and nil for the two standard ones. What a world stands for - a separate JavaScript context - the release does not have: its UIWebView runs one context per frame, so scripts of every world share the page's globals",
+      "facts": "facts/WebKit/ContentWorldAndPreferences.md",
+      "source": "the WebKit headers of SDK 16.4 for the declarations; the JavaScriptCore of the armv7 shared cache of 6.1.3 for what the release's script engine has, read by the strings of the cache against those of 9.3"
+    },
+    {
+      "api": "WKContentWorld.pageWorld",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "one object for the process, with a nil name, as the release answers",
+      "facts": "facts/WebKit/ContentWorldAndPreferences.md",
+      "source": "the WebKit headers of SDK 16.4 for the declarations; the JavaScriptCore of the armv7 shared cache of 6.1.3 for what the release's script engine has, read by the strings of the cache against those of 9.3"
+    },
+    {
+      "api": "-[WKUserContentController removeScriptMessageHandlerForName:contentWorld:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "removes the handler of that name, as -removeScriptMessageHandlerForName: does; the world is not read, since the release has one script context and the handlers are kept in one table",
+      "facts": "facts/WebKit/ContentWorldAndPreferences.md",
+      "source": "the WebKit headers of SDK 16.4 for the declarations; the JavaScriptCore of the armv7 shared cache of 6.1.3 for what the release's script engine has, read by the strings of the cache against those of 9.3"
+    },
+    {
+      "api": "-[WKUserContentController addScriptMessageHandlerWithReply:contentWorld:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the whole of this API is that window.webkit.messageHandlers.<name>.postMessage() answers a JavaScript Promise the page awaits. The JavaScriptCore of 6.1.3 has no Promise: the armv7 shared cache of the release holds the string Promise twice, both of them the Objective-C selector initWithDataPromise: of a system class, and none of JSPromise, PromiseConstructor or promiseCapability, where the cache of 9.3 holds 657. A page on this release therefore has nothing to receive a reply with, and a handler that could never be replied to is worse than one that is not there",
+      "effect": "the method is not there: respondsToSelector: answers NO, and an application can fall back to -addScriptMessageHandler:name:, which this package carries and which needs no Promise",
+      "source": "the WebKit headers of SDK 16.4 for the declarations; the JavaScriptCore of the armv7 shared cache of 6.1.3 for what the release's script engine has, read by the strings of the cache against those of 9.3"
+    },
+    {
+      "api": "-[WKScriptMessageHandlerWithReply userContentController:didReceiveScriptMessage:replyHandler:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a handler with a reply can only be registered by the method above, which is absent, so none is ever held",
+      "effect": "the message is never sent",
+      "source": "the WebKit headers of SDK 16.4 for the declarations; the JavaScriptCore of the armv7 shared cache of 6.1.3 for what the release's script engine has, read by the strings of the cache against those of 9.3"
+    },
+    {
+      "api": "WKWebpagePreferences",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the object is there and keeps its preferred content mode, which starts as WKContentModeRecommended as in the release",
+      "facts": "facts/WebKit/ContentWorldAndPreferences.md",
+      "source": "the WebKit headers of SDK 16.4 for the declarations; the JavaScriptCore of the armv7 shared cache of 6.1.3 for what the release's script engine has, read by the strings of the cache against those of 9.3"
+    },
+    {
+      "api": "WKWebpagePreferences.preferredContentMode",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the mode asks for the desktop or the mobile rendering of a page, and this release has one renderer: the UIWebView of 2012, which lays a page out as a phone and has no desktop mode to switch to",
+      "effect": "the mode is kept and read back, starting at WKContentModeRecommended; every page is rendered as the release's own mobile WebKit renders it, and the first mode set says so once in the log",
+      "facts": "facts/WebKit/ContentWorldAndPreferences.md",
+      "source": "the WebKit headers of SDK 16.4 for the declarations; the JavaScriptCore of the armv7 shared cache of 6.1.3 for what the release's script engine has, read by the strings of the cache against those of 9.3"
+    },
+    {
+      "api": "WKWebViewConfiguration.defaultWebpagePreferences",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a WKWebpagePreferences the configuration makes on first read and keeps, and which can be replaced; setting nil gives a fresh one, as the release does. It is held beside the configuration rather than in it, so a copy of the configuration does not carry it",
+      "facts": "facts/WebKit/ContentWorldAndPreferences.md",
+      "source": "the WebKit headers of SDK 16.4 for the declarations; the JavaScriptCore of the armv7 shared cache of 6.1.3 for what the release's script engine has, read by the strings of the cache against those of 9.3"
+    }
+  ]
+}
