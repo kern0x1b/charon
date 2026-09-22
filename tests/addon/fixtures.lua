@@ -90,8 +90,13 @@ function repository(folder)
 
     -- The recipe of the addon is read from this directory, while the addon itself is cloned from its history, so naming
     -- the copy and its one version here needs no commit of its own.
+    --
+    -- A plain filesystem path makes git clone with --local, hardlinking or copying loose objects straight out of this
+    -- scratch .git rather than fetching them through git's own protocol; that copy step races intermittently against
+    -- this same repository ("failed to copy file to .../objects/<hash>: No such file or directory", a different object
+    -- each time - git's own warning names the fix). A file:// URL takes git off that fast path.
     local recipe = path.join(copy, "addons", "c", "charon", "xmake.lua")
-    local text = io.readfile(recipe):gsub('add_urls%("[^"]*"%)', 'add_urls("' .. path.join(copy, ".git") .. '")', 1)
+    local text = io.readfile(recipe):gsub('add_urls%("[^"]*"%)', 'add_urls("file://' .. path.join(copy, ".git") .. '")', 1)
     io.writefile(recipe, text .. string.format('    add_versions("%s", "%s")\n', version, head))
     return copy, version
 end
