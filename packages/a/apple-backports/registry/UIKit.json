@@ -179,6 +179,24 @@
   "facts": "facts/UIKit/UIViewPropertyAnimator.md"
  },
  {
+  "api": "UIViewAnimating",
+  "kind": "protocol",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UIViewPropertyAnimator.md",
+  "source": "the protocol UIViewPropertyAnimator itself conforms to; its members (state, fractionComplete, isReversed, startAnimation, pauseAnimation, stopAnimation:, finishAnimationAtPosition:) are UIViewPropertyAnimator's own, registered on the class above"
+ },
+ {
+  "api": "UIViewImplicitlyAnimating",
+  "kind": "protocol",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UIViewPropertyAnimator.md",
+  "source": "the protocol UIViewPropertyAnimator itself conforms to, incorporating UIViewAnimating; its own members (the addAnimations:/addCompletion: family and continueAnimationWithTimingParameters:durationFactor:) are UIViewPropertyAnimator's own, registered on the class above"
+ },
+ {
   "api": "UIViewPropertyAnimator.scrubsLinearly",
   "kind": "property",
   "introduced": "11.0",

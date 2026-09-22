@@ -1630,6 +1630,22 @@
     "source": "UIKit of iOS 10.0.1 armv7s, read for the presentation flow, the delegate calls and the dimming"
   },
   {
+    "api": "UISearchResultsUpdating",
+    "kind": "protocol",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UISearchController.md",
+    "source": "the protocol UISearchController's own searchResultsUpdater property is typed to; its one member, updateSearchResultsForSearchController:, is called from UISearchController, registered on the class above"
+  },
+  {
+    "api": "UISearchControllerDelegate",
+    "kind": "protocol",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UISearchController.md",
+    "source": "the protocol UISearchController's own delegate property is typed to; its members are called from UISearchController, registered on the class above"
+  },
+  {
     "api": "UIStackView",
     "kind": "class",
     "introduced": "9.0",
