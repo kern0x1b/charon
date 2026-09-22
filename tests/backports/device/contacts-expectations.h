@@ -1,0 +1,16 @@
+static const char contacts_expectations[] =
+    "{\"contact.birthday\":\"1990-5-17\",\"contact.contactType\":\"person\",\"contact.copyClass\":\"CNContact\",\"contact.copyEqual\":\"1\",\"contact.identifierNonEmpty\":\"1\",\"contact"
+    ".mutableCopyIndependent\":\"original=Jane copy=Other\",\"contact.notEqualAfterChange\":\"1\",\"contact.values\":\"Jane|Doe|Acme|phones=1|emails=1\",\"contactProperty.plainI"
+    "nit\":\"contact=0 key=0 value=0 identifier=0 label=0\",\"container.predicateByIdentifiersIsPredicate\":\"1\",\"container.predicateOfContactIsPredicate\":\"1\",\"container.p"
+    "redicateOfGroupIsPredicate\":\"1\",\"container.typeValues\":\"0|1|2|3\",\"defaults.countryCodeIsTwoLetters\":\"1\",\"defaults.sortOrderIsKnown\":\"1\",\"formatter.classFullName"
+    "\":\"Jane Doe\",\"formatter.descriptorConforms\":\"1\",\"formatter.emptyContact\":\"1\",\"formatter.fullName\":\"Jane Doe\",\"formatter.nameOrder\":\"given\",\"formatter.nilContact"
+    "\":\"1\",\"formatter.organizationName\":\"Acme\",\"group.mutableIdentifierNonEmpty\":\"1\",\"group.mutableName\":\"Friends\",\"group.plainInitEmptyName\":\"1\",\"group.plainInitNon"
+    "EmptyIdentifier\":\"1\",\"group.predicateByIdentifiersIsPredicate\":\"1\",\"group.predicateInContainerIsPredicate\":\"1\",\"instantMessage.values\":\"handle|AIM|equal=1\",\"lab"
+    "eled.copy\":\"same=0 equal=1\",\"labeled.relabel\":\"label=_$!<Work>!$_ value=a@b.c sameIdentifier=1\",\"labeled.revalue\":\"label=_$!<Home>!$_ value=x@y.z sameIdentifier"
+    "=1\",\"labeled.values\":\"label=_$!<Home>!$_ value=a@b.c identifierNonEmpty=1\",\"phone.copy\":\"same=1 equal=1\",\"phone.equality\":\"same=0 isEqual=1 hash=1 other=0\",\"pho"
+    "ne.stringValue\":\"+15551234\",\"postal.copy\":\"class=CNPostalAddress equal=1\",\"postal.fields\":\"1 Infinite Loop|Cupertino|CA|95014|United States|us\",\"postal.mutableC"
+    "opyIndependent\":\"original=Cupertino copy=Elsewhere\",\"postalFormatter.instance\":\"1 Infinite Loop\\nCupertino CA 95014\\nUnited States\",\"postalFormatter.mailing\":\"1"
+    " Infinite Loop\\nCupertino CA 95014\\nUnited States\",\"relation.values\":\"Jane|equal=1\",\"social.values\":\"https://twitter.com/handle|handle|Twitter|equal=1\",\"vcard.b"
+    "adData\":\"result=1 error=0\",\"vcard.encoded\":\"BEGIN:VCARD\\r\\nVERSION:3.0\\r\\nPRODID:-//Apple Inc.//macOS 27.0//EN\\r\\nN:Appleseed;John;;;\\r\\nFN:John Appleseed\\r\\nTE"
+    "L;type=CELL;type=VOICE;type=pref:+15551234\\r\\nEND:VCARD\\r\\n\",\"vcard.roundtrip\":\"count=1 given=John family=Appleseed phones=1\"}"
+;

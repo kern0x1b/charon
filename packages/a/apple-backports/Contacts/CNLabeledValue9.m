@@ -84,7 +84,10 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    return self;
+    CNLabeledValue *copied = [[[self class] allocWithZone:zone] initWithLabel:_charonLabel value:[_charonValue copyWithZone:zone]];
+    copied->_charonIdentifier = [_charonIdentifier copy];
+    copied->_charonAddressBookIdentifier = _charonAddressBookIdentifier;
+    return copied;
 }
 
 + (BOOL)supportsSecureCoding

@@ -83,6 +83,7 @@ freshly made UUIDs in its header on every run.
     sh host/diffable/run.sh  writes device/diffable-expectations.h
     sh host/pasteboard10/run.sh  writes device/pasteboard10-expectations.h
     sh host/previewing/run.sh  writes device/previewing-expectations.h
+    sh host/contacts/run.sh  writes device/contacts-expectations.h, then holds the port's Contacts classes, under names of their own, to it with mutants
     sh host/air2es/run.sh    builds tools/air2es against the llvm package and needs glslangValidator
 
 `host/air2es/run.sh` assembles the AIR fixtures written for the test (a vertex function that reads its buffer by vertex
@@ -107,6 +108,15 @@ types, media type and position; the microphone is compared on the device only.
 `host/textcontent/run.sh` compares the 23 text content type constants and the
 `textContentType` of a text field, a text view and a search bar with the host's own,
 through Mac Catalyst.
+
+`host/contacts/run.sh` holds the port's Contacts to the host's own under Mac Catalyst, over
+`device/contacts-cases.m`: every case builds its objects in memory - CNContact and its values,
+the formatter, the vCard pair (both sides delegate to the same `ABPersonCreateVCardRepresentationWithPeople`
+of the host's own `AddressBook.framework`, so this is exact, not approximate), groups and
+containers before a save, and the plain value classes beside them. No case ever asks a
+`CNContactStore` for a permission, a fetch or a save, because the host runs as whoever is
+signed into this Mac and this package promises never to touch that person's own address book;
+that one seam is held on the device instead, by a future `device/contacts.m`.
 
 `host/blocks/run.sh` runs the port's timers, threads and run loop blocks in one
 process with the system's own, compiled with the selectors prefixed, and compares
