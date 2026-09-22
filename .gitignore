@@ -4,7 +4,6 @@ __pycache__/
 **/test_package/CMakeUserPresets.json
 .xmake/
 build/
-tests/backports/device/url_expectations.h
 
 # Personal / device data — never tracked. Only the example is.
 device.env*
