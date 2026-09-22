@@ -175,31 +175,60 @@ inside a live, drawn window - self-sizing needs a real view to measure, which th
 the build gate cannot provide - so nothing before this device run could have caught it.
 
 What was found reading the port's own code, not measured on the device (the device is held by
-11-12's own port work): `charon_layout_perform` (`CharonSelfSizing.m`), the primitive both this
-layout's and the self-sizing flow layout's deferred-measurement pass use to run a settle pass on
-the next turn of the run loop, used `CFRunLoopPerformBlock`/`CFRunLoopWakeUp` rather than
-`dispatch_async(dispatch_get_main_queue(), ...)` - the idiom every other deferred-to-main-thread
-spot in this package already uses (twenty of them). `CFRunLoopWakeUp` forces the main run loop to
-service its scheduled block on the very next pass, ahead of whatever else that pass already had
-queued, rather than taking a turn on the same queue as everything else waiting there - including a
-`dispatch_after` block queued around the same measurement. Changed to `dispatch_async`, which only
-this file (of everywhere in the package doing the same kind of work) was not already using.
+11-12's own port work), and re-checked once more against a coordinator's reading of the same code
+before this section was written: the two changes below are not two independent gaps, one primary
+and one defensive - they are one mechanism, an unbounded reschedule of the settle pass, made into a
+live lock by the run loop primitive `charon_note:` used to reschedule with.
 
-A second, independent gap was closed alongside it, since it could not be ruled out without a
-device to test non-convergence against: `charon_note:` rescheduled a fresh settle round, without
-limit, whenever a newly-noted element's estimated size still needed measuring against a changed
-fixed dimension. Nothing prevented an orthogonal section's measurement from failing to settle
-indefinitely if the fixed dimension it measures against kept changing round over round; a
-`_settleRounds` counter, reset on every fresh `prepareLayout` and capped at 12, now stops
-rescheduling and keeps the layout's best estimate instead, logging once through
-`charon_layout_say_once`. Twelve was chosen generously against every self-sizing configuration this
-band has seen settle in one or two rounds, not measured against a real non-converging case, since
-none was reproduced.
+**The loop, traced through `charon_settleMeasurements` (`UICollectionViewCompositionalLayout.m`).**
+`_pending = nil;` runs unconditionally at the very top of the method, before anything is measured.
+Nothing in the method - or in `charon_note:`, the only place that ever sets `_pending` again -
+tracks how many times a settle round has already run for the same content. So any `charon_note:`
+call that results from this round's own work, however it is triggered, finds `_pending` empty and
+immediately calls `charon_layout_perform` to schedule another round: the batch this round is
+processing is not exempt from re-triggering the next one. Two calls inside the method can trigger
+it before the method even returns: `[self charon_solveView:view]`, called mid-loop for every
+changed measurement but one, recomputes the full solved-section state unguarded by `_measuring` -
+it does not call `charon_note:` itself, but leaves the layout in a state where the next attribute
+query will, through `layoutAttributesForElementsInRect:`, for any element still short of its
+estimate. `invalidateLayoutWithContext:`, called at the end for every accumulated preferred-size
+context, *is* wrapped in `_measuring = YES` here, which blocks `charon_note:` for any query UIKit
+answers synchronously while that context is being applied - one of the two paths is guarded, the
+other is not.
+
+Whether UIKit answers that mid-loop's pending query synchronously (closing the loop within this
+one call to `charon_settleMeasurements`) or on its own next layout pass (closing it one run-loop
+turn later, across two calls to `charon_layout_perform`) was not settled by reading source alone -
+that is Apple's own `UICollectionView` internals answering, not this file. What *is* settled by
+reading source alone: nothing bounds how many times this can repeat, on either timing, as long as
+an orthogonal section's fixed measuring dimension keeps changing round over round. With
+`CFRunLoopPerformBlock`/`CFRunLoopWakeUp` - the primitive `charon_layout_perform` used before this
+patch - each reschedule forces the very next run loop pass to service it ahead of whatever else
+that pass already had queued, which is exactly what turns an unbounded-but-eventually-terminating
+retry into a live lock: a chain of rounds that keeps forcing itself to the front never lets the run
+loop reach the point where it services a plain `dispatch_after`-queued GCD block, however many
+passes go by. No crash and no exception is expected from this, and none was seen - the thread is
+never blocked waiting on anything, it is continuously, successfully doing rescheduled work.
+
+**Both changes are needed, and neither is the whole fix alone.** `_settleRounds`, reset on every
+fresh `prepareLayout` and capped at 12, is what actually guarantees the chain ends - without it, a
+configuration whose fixed dimension never converges reschedules forever regardless of which
+primitive it reschedules with. Replacing `CFRunLoopPerformBlock`/`CFRunLoopWakeUp` with
+`dispatch_async(dispatch_get_main_queue(), ...)` - the idiom every other deferred-to-main-thread
+spot in this package already used, twenty of them, before this one - is what keeps every round,
+bounded or not, from cutting in front of other main-queue work while it runs: even mid-chain,
+before the twelfth round is reached, a `dispatch_after` block queued around the same measurement
+now takes its fair turn on the same queue instead of being forced to wait for a pass that keeps
+finding new work to service first. Twelve was chosen generously against every self-sizing
+configuration this band has seen settle in one or two rounds, not measured against a real
+non-converging case, since none was reproduced; `_settleRounds` logs once through
+`charon_layout_say_once` if the cap is ever reached, so a configuration that genuinely cannot
+converge is recorded rather than silently accepted as done.
 
 Neither fix has been confirmed against the actual hang on hardware - the device is currently held
-by band 11-12's own work. This is reasoned from reading the code against the reported symptom, not
-measured; band 11-12 should re-run `compositional`'s `useDragView:1` through `runGestures:` once
-the device is free to confirm the tenth checkpoint now appears.
+by band 11-12's own port work. This is reasoned from reading the code against the reported
+symptom, not measured; band 11-12 should re-run `compositional`'s `useDragView:1` through
+`runGestures:` once the device is free to confirm the tenth checkpoint now appears.
 
 ## What the port cannot do
 
