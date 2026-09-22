@@ -23,6 +23,8 @@
 
 @implementation UTType
 
+@synthesize charon_identifier = _charon_identifier;
+
 + (instancetype)new
 {
     [NSException raise:NSInvalidArgumentException format:@"+[UTType new] is unavailable"];
@@ -35,7 +37,7 @@
     return nil;
 }
 
-- (instancetype)charon_initWithIdentifier:(NSString *)identifier
+- (instancetype)charon_initWithIdentifier:(NSString *)identifier __attribute__((objc_method_family(init)))
 {
     self = [super init];
     if (self)
@@ -115,12 +117,23 @@
 
 - (BOOL)isDynamic
 {
-    return UTTypeIsDynamic((__bridge CFStringRef)_charon_identifier);
+    // UTTypeIsDynamic is not exported by 6.1.3's armv7 release (measured by the build gate's own
+    // imports check: a weak import with nothing to bind to, NULL if called unguarded). Every
+    // identifier this class hands out either came from typeWithIdentifier: with an identifier the
+    // caller already had, or resolved through UTTypeCreatePreferredIdentifierForTag, which iOS 6
+    // does carry; answering NO here is the same answer a declared identifier already gets on a
+    // release new enough to have the real function.
+    if (UTTypeIsDynamic != NULL)
+        return UTTypeIsDynamic((__bridge CFStringRef)_charon_identifier);
+    return NO;
 }
 
 - (BOOL)isDeclared
 {
-    return UTTypeIsDeclared((__bridge CFStringRef)_charon_identifier);
+    // Same wall as isDynamic above: UTTypeIsDeclared is not exported by 6.1.3's armv7 release.
+    if (UTTypeIsDeclared != NULL)
+        return UTTypeIsDeclared((__bridge CFStringRef)_charon_identifier);
+    return YES;
 }
 
 - (BOOL)isPublicType

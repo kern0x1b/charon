@@ -51,6 +51,17 @@ technique `CFEmptyCollections.m` already uses for `__NSArray0__`/`__NSDictionary
 SDK header declares these `UTType *const`, but that is a promise to the header's callers, not a
 constraint on how this backport's own translation unit stores them.
 
+## What the build gate measured, not reasoned
+
+`UTTypeIsDeclared` and `UTTypeIsDynamic` are not exported by 6.1.3's armv7 release -
+`build-gate.lua`'s own imports check flagged both as weak imports the release resolves to NULL,
+on the very first gate run of this change. `isDeclared`/`isDynamic` guard each call
+(`UTTypeIsDeclared != NULL` / `UTTypeIsDynamic != NULL`) and answer `YES`/`NO` respectively when
+the release has no such function, rather than jump to a NULL pointer - `declared`, since every
+identifier this class hands out either came from a caller that already had it or resolved through
+`UTTypeCreatePreferredIdentifierForTag`, which iOS 6 does carry; not `dynamic`, the same answer a
+declared identifier already gets on a release new enough to have the real function.
+
 ## What differs from the system
 
 `tags` only ever reports `UTTagClassFilenameExtension` and `UTTagClassMIMEType`, the two tag
