@@ -1,7 +1,19 @@
 """Certify a list of symbols/selectors against BOTH the origin/main registry export and the
 origin/main source tree. A row is only real work when the registry does not carry it AND no
 definition exists in the tree. Written once, used for every list -- the previous handoff file was
-built by an ad-hoc query that forgot the registry filter entirely."""
+built by an ad-hoc query that forgot the registry filter entirely.
+
+status() key expansion is kept in sync BY HAND with crash-demand.py's status_one(): both look up
+a dotted `Owner.property` api under its method-form registry keys (getter/setter/is-getter, both
++/-), because the registry writes some rows only in method form. Measured divergence, 2026-09-22:
+before this file grew the same expansion, `UIActivity.activityCategory` (registry only carries
+`+[UIActivity activityCategory]`) read as "нет строки" here while crash-demand.py's status_one()
+found it -- this tool's in_tree() fallback happened to catch it too, so the two tools agreed on
+the final verdict that day, but only by accident of a second check existing. Do not rely on the
+tree fallback to keep masking a future case where crash-demand.py's registry-side match and this
+tool's registry-side match disagree and the tree can't decide either way (a synthesized property,
+no @dynamic, no real accessor body -- in_tree() returns False, status_one() would still find the
+method-form registry row). If status_one()'s key list changes, mirror it here."""
 import os, re, subprocess, sys, csv
 EXP=os.environ.get("CHARON_REGISTRY_TSV", "/private/tmp/bcorpus-scratch/carried-registry-fresh.tsv")
 _HERE=os.path.dirname(os.path.abspath(__file__))
@@ -21,6 +33,13 @@ BLOB=subprocess.run(["bash","-c",f"cat $(find {T} -name '*.m' -o -name '*.mm' -o
 def status(api):
     a=re.sub(r' \(\+\d+ owners\)$','',api)
     cands=[a, a+"()", a.lstrip("_"), a.lstrip("_")+"()", a.replace("_OBJC_CLASS_$_","")]
+    # A dotted property api may be carried only under its method form (crash-demand.py's
+    # status_one() does this same expansion; see the module docstring for why both need it).
+    if "." in a and not a.startswith(("-", "+", "_")):
+        o, name = a.split(".", 1)
+        up = name[0].upper() + name[1:]
+        cands += ["-[%s %s]" % (o, name), "-[%s set%s:]" % (o, up), "-[%s is%s]" % (o, up),
+                  "+[%s %s]" % (o, name), "+[%s set%s:]" % (o, up)]
     for k in cands:
         if k in reg: return reg[k]
     return "нет строки"
