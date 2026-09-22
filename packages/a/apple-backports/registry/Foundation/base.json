@@ -1509,6 +1509,30 @@
     "source": "the host's own CoreFoundation, through dlsym"
   },
   {
+    "api": "NSConstantArray",
+    "kind": "class",
+    "introduced": "13.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSConstantLiterals.md",
+    "source": "a strong import of UTM.app/UTM (arm64, corpus), read through nm, dyld_info -fixups and raw file offsets"
+  },
+  {
+    "api": "NSConstantDictionary",
+    "kind": "class",
+    "introduced": "13.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSConstantLiterals.md",
+    "source": "a strong import of UTM.app/UTM (arm64, corpus), read through nm, dyld_info -fixups and raw file offsets"
+  },
+  {
+    "api": "NSConstantIntegerNumber",
+    "kind": "class",
+    "introduced": "13.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSConstantLiterals.md",
+    "source": "a strong import of UTM.app/UTM (arm64, corpus), read through nm, dyld_info -fixups and raw file offsets"
+  },
+  {
     "api": "NSDateComponentsFormatter",
     "kind": "class",
     "introduced": "8.0",
