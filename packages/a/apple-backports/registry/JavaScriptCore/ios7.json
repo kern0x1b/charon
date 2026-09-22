@@ -1,0 +1,49 @@
+{
+  "framework": "JavaScriptCore",
+  "entries": [
+    {
+      "api": "JSVirtualMachine",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6 already carries JavaScriptCore.framework's C API - JSContextGroupRef, JSGlobalContextRef, JSObjectRef and their functions, all confirmed present by coordination/corpus/caches/6.0.tsv, 89 JS-prefixed symbols, not by reading a running process's memory. The Objective-C API of iOS 7 is a wrapper over exactly that C API, so it is implemented rather than left absent",
+      "effect": "-init creates its own JSContextGroupRef, released on dealloc; -addManagedReference:withOwner: and -removeManagedReference:withOwner: keep a plain retaining map from owner to the objects registered under it, in place of the real engine's garbage collector scanning the same graph - a reference lasts exactly as long as the owner given to add it does, not for as long as some other path also reaches it, which is the one place this simplification can be told apart from the real one",
+      "facts": "facts/JavaScriptCore/JSContext.md",
+      "source": "SDK 16.4, JavaScriptCore; coordination/corpus/caches/6.0.tsv for what iOS 6 exports"
+    },
+    {
+      "api": "JSContext",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a wrapper over the JSGlobalContextRef and JSEvaluateScript the release already carries",
+      "effect": "-init, -initWithVirtualMachine:, -evaluateScript: and -evaluateScript:withSourceURL: work as the header describes; +currentContext, +currentThis, +currentCallee and +currentArguments answer from inside a callback JavaScript makes into an exported block or JSExport method, and nil outside one; exception and exceptionHandler follow the header's own default (an uncaught exception is stored to exception); name is kept locally, since the release exports no JSGlobalContextSetName to show it anywhere; inspectable is stored and has no other effect, since there is no Web Inspector on this release to show it to; contextWithJSGlobalContextRef: and JSGlobalContextRef bridge to the C API, registering and finding wrappers by a global map keyed on the JSGlobalContextRef itself so the same context always returns the same Objective-C wrapper",
+      "facts": "facts/JavaScriptCore/JSContext.md",
+      "source": "SDK 16.4, JavaScriptCore; coordination/corpus/caches/6.0.tsv for what iOS 6 exports"
+    },
+    {
+      "api": "JSValue",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a wrapper over JSValueRef/JSObjectRef and the conversion table JSValue.h itself documents",
+      "effect": "every creation method, every to* and toObjectOfClass:, every is* type check, isEqualToObject:, isEqualWithTypeCoercionToObject:, isInstanceOf:, callWithArguments:, constructWithArguments:, invokeMethod:withArguments:, the property-access and subscript categories, the CGPoint/CGRect/CGSize/NSRange struct category and the C API bridging category are implemented. An Objective-C object that does not derive from NSString/NSNumber/NSDictionary/NSArray/NSDate/NSBlock and does not conform to a protocol incorporating JSExport becomes an opaque JavaScript wrapper object with no properties or methods, round-tripping back through toObject but nothing more; an NSBlock becomes a callable JavaScript function only when every argument and its return value are object-pointer-shaped (checked against the block's own _Block_signature, not assumed) - a block with a primitive argument or return type is still wrapped, and throws in JavaScript when called rather than reading a garbage value off the wrong-sized slot; isArray asks the context's own Array.isArray rather than the C API's JSValueIsArray, which iOS 6 does not export; valueWithNewPromiseFromExecutor:/valueWithNewPromiseResolvedWithResult:/valueWithNewPromiseRejectedWithReason:/valueWithNewSymbolFromDescription:/isSymbol are iOS 13, past the band this port targets, and are implemented as safe no-ops - a promise that never settles, a plain string standing in for a symbol - rather than left to raise unrecognized selector the first time a caller built against a later SDK reaches them",
+      "facts": "facts/JavaScriptCore/JSContext.md",
+      "source": "SDK 16.4, JavaScriptCore; coordination/corpus/caches/6.0.tsv for what iOS 6 exports"
+    },
+    {
+      "api": "JSManagedValue",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the real class exists to avoid a retain cycle when a JSValue is stored on an object exported to JavaScript; this port keeps that contract without the collector the real one relies on",
+      "effect": "managedValueWithValue:, managedValueWithValue:andOwner:, initWithValue: and value are implemented; the value is held weakly, so it reads back nil exactly when nothing else - ARC's own hold on the JSValue, or the retaining map behind -[JSVirtualMachine addManagedReference:withOwner:] for the owner given here - keeps it alive, which is the same outcome the real 'conditionally retained' contract describes, reached by a different mechanism",
+      "facts": "facts/JavaScriptCore/JSContext.md",
+      "source": "SDK 16.4, JavaScriptCore; coordination/corpus/caches/6.0.tsv for what iOS 6 exports"
+    }
+  ]
+}
