@@ -81,3 +81,14 @@ Android) as it is here; iOS 6 is the first platform it targets, not its limit.
   an `LC_LOAD_DYLIB` the device cannot satisfy, and the imports check fails with "neither the device
   nor this build provides" it — this cost a full gate run on the CoreSpotlight backport, which
   needs the framework's headers to compile against but must not link against the framework itself.
+
+- **A device-side binary built with the host's own `cc`/`clang` instead of this
+  driver's `apple-ios` toolchain can crash with `Bad system call: 12` (SIGSYS)
+  on old iOS before any of its own output runs.** The symptom looks like a
+  codesigning or sandbox rejection; it is not — it reproduces even for a
+  trivial Foundation program, ad-hoc `ldid -S` signed, run as root. The real
+  cause is a Mach-O built for a target the device's very old kernel does not
+  understand. Build every device-side tool — including throwaway probes, not
+  just ports — through a `target()` using `@addon/charon/daemon` (or `app`/
+  `tweak`) against `thumbv7-apple-ios6.0.0` like any other port; that alone
+  fixed it. Confirmed against an iPhone 4S, kernel build 10B329 (iOS 6.1.3).
