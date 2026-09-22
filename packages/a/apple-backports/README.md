@@ -30,9 +30,23 @@ the string the release itself holds; the permission, out of
 `ABAddressBookRequestAccessWithCompletion`; the fetches, the six predicates, the
 unification of linked people, the formatter, the vCard pair and the user
 defaults; and `CNSaveRequest`, written into the book in one `ABAddressBookSave`.
-What needs a class the package does not carry - groups, containers, the history
-of changes of iOS 13 - is `absent` in `registry/Contacts/ios9.json`, so a call
-raises an unrecognised selector instead of handing back an empty address book.
+Groups and containers are the same translation over `ABGroup` and `ABSource` -
+`CNGroup`, `CNMutableGroup`, `CNContainer`, the predicates over both,
+`groupsMatchingPredicate:error:`, `containersMatchingPredicate:error:` and the
+group and membership operations of `CNSaveRequest` are all carried;
+`facts/Contacts/Groups.md`. `CNContactProperty` and `CNPostalAddressFormatter`
+are carried too - a value object the real SDK itself exposes no public
+initializer for, and a multi-line address formatter that does not read
+`ABAddressFormats.plist` for per-locale field order, a written-down divergence
+rather than a silent one. `CNFetchResult` and the eleven
+`CNChangeHistoryEvent` subclasses of iOS 13 are real classes, so a strong
+reference to any of them does not crash dyld;
+`enumeratorForContactFetchRequest:error:` hands one back for a plain fetch, no
+history needed. The one wall left is the history itself: the release keeps
+none, so `enumeratorForChangeHistoryFetchRequest:error:` and
+`currentHistoryToken` stay `absent` in `registry/Contacts/ios9.json`, and a
+call raises an unrecognised selector instead of handing back an empty answer;
+`facts/Contacts/History.md`.
 
 Two properties have nowhere to live in the release's store and are written down
 rather than faked: `previousFamilyName`, for which the release exports no

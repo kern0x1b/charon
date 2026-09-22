@@ -27,20 +27,24 @@ shared cache of 6.1.3 for the calls behind it.
   The handler runs off the main thread, which is where the release's own callback
   runs.
 - `-defaultContainerIdentifier` is the record id of the book's default source
-  (`ABAddressBookCopyDefaultSource`), written out in decimal. `CNContainer` itself
-  is not carried, so the identifier is a string to pass back, not a container to
-  look at.
+  (`ABAddressBookCopyDefaultSource`), written out in decimal. Turning that
+  identifier into the `CNContainer` object itself is
+  `-containersMatchingPredicate:[CNContainer predicateForContainersWithIdentifiers:]`.
+- `-groupsMatchingPredicate:error:` and `-containersMatchingPredicate:error:`
+  answer real `CNGroup` and `CNContainer` objects out of `ABGroup` and
+  `ABSource`; `facts/Contacts/Groups.md` says how.
+- `-enumeratorForContactFetchRequest:error:` wraps the same fetch
+  `unifiedContactsMatchingPredicate:keysToFetch:error:` already runs in a real
+  `CNFetchResult`; `facts/Contacts/History.md` says how.
 
 ## What reads and writes it
 
 The fetches, the save request and the change notification are carried, and
 `facts/Contacts/Fetching.md` and `facts/Contacts/Saving.md` say what each one
 does and where it differs from the release. What is left out is what needs a
-class this package does not carry - `groupsMatchingPredicate:error:` and
-`containersMatchingPredicate:error:` need `CNGroup` and `CNContainer` - and what
-needs a history of changes the release does not keep: the two enumerators of
-iOS 13 and `currentHistoryToken`. Each of those is `absent` in
-`registry/Contacts/ios9.json`, so an application that names one gets an
+history of changes the release does not keep: `enumeratorForChangeHistoryFetchRequest:error:`
+and `currentHistoryToken`, `absent` in `registry/Contacts/ios9.json` with the
+reason at `facts/Contacts/History.md`, so an application that names one gets an
 unrecognised selector rather than an empty answer: an empty list of contacts is
 indistinguishable from an empty address book, and that is the one mistake this
 package will not make.

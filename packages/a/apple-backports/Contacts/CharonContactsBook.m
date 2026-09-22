@@ -455,4 +455,136 @@ static void charon_book_changed(ABAddressBookRef book, CFDictionaryRef info, voi
     return name;
 }
 
++ (CNGroup *)groupWithRecord:(ABRecordRef)record mutable:(BOOL)mutableObjects
+{
+    NSString *identifier = [NSString stringWithFormat:@"%d", (int)ABRecordGetRecordID(record)];
+    NSString *name = [self valueOfRecord:record property:kABGroupNameProperty];
+    return [CNGroup charon_groupWithIdentifier:identifier name:name mutable:mutableObjects];
+}
+
++ (NSArray<CNGroup *> *)groupsInBook:(ABAddressBookRef)book matching:(NSPredicate *)predicate
+                              mutable:(BOOL)mutableObjects error:(NSError **)error
+{
+    CharonContactMatch match = CharonContactMatchAll;
+    id wanted = nil;
+    if ([predicate isKindOfClass:[CharonContactPredicate class]]) {
+        match = [(CharonContactPredicate *)predicate match];
+        wanted = [(CharonContactPredicate *)predicate value];
+    } else if (predicate) {
+        if (error)
+            *error = [CharonContacts errorWithCode:CNErrorCodePredicateInvalid reason:@"The predicate is not one the Contacts framework makes."];
+        return nil;
+    }
+    NSMutableArray *found = [NSMutableArray array];
+    if (match == CharonContactMatchGroupIdentifiers) {
+        for (NSString *identifier in wanted) {
+            ABRecordRef record = ABAddressBookGetGroupWithRecordID(book, (ABRecordID)[identifier intValue]);
+            if (record)
+                [found addObject:[self groupWithRecord:record mutable:mutableObjects]];
+        }
+        return found;
+    }
+    if (match == CharonContactMatchGroupsInContainer) {
+        ABRecordRef source = ABAddressBookGetSourceWithRecordID(book, (ABRecordID)[wanted intValue]);
+        CFArrayRef groups = source ? ABAddressBookCopyArrayOfAllGroupsInSource(book, source) : NULL;
+        if (groups) {
+            for (CFIndex index = 0; index < CFArrayGetCount(groups); index++)
+                [found addObject:[self groupWithRecord:(ABRecordRef)CFArrayGetValueAtIndex(groups, index) mutable:mutableObjects]];
+            CFRelease(groups);
+        }
+        return found;
+    }
+    CFArrayRef groups = ABAddressBookCopyArrayOfAllGroups(book);
+    if (groups) {
+        for (CFIndex index = 0; index < CFArrayGetCount(groups); index++)
+            [found addObject:[self groupWithRecord:(ABRecordRef)CFArrayGetValueAtIndex(groups, index) mutable:mutableObjects]];
+        CFRelease(groups);
+    }
+    return found;
+}
+
++ (CNContainerType)typeOfSource:(ABRecordRef)source
+{
+    NSNumber *type = [self valueOfRecord:source property:kABSourceTypeProperty];
+    switch ([type intValue]) {
+        case kABSourceTypeLocal:
+            return CNContainerTypeLocal;
+        case kABSourceTypeExchange:
+        case kABSourceTypeExchangeGAL:
+            return CNContainerTypeExchange;
+        case kABSourceTypeCardDAV:
+        case kABSourceTypeCardDAVSearch:
+            return CNContainerTypeCardDAV;
+        default:
+            return CNContainerTypeUnassigned;
+    }
+}
+
++ (CNContainer *)containerWithRecord:(ABRecordRef)source
+{
+    NSString *identifier = [NSString stringWithFormat:@"%d", (int)ABRecordGetRecordID(source)];
+    NSString *name = [self valueOfRecord:source property:kABSourceNameProperty];
+    return [CNContainer charon_containerWithIdentifier:identifier name:name type:[self typeOfSource:source]];
+}
+
++ (ABRecordRef)sourceOfPersonWithIdentifier:(NSString *)identifier inBook:(ABAddressBookRef)book
+{
+    ABRecordRef person = ABAddressBookGetPersonWithRecordID(book, (ABRecordID)[identifier intValue]);
+    if (!person)
+        return NULL;
+    ABRecordRef source = ABPersonCopySource(person);
+    return source ? (ABRecordRef)CFAutorelease(source) : NULL;
+}
+
++ (ABRecordRef)sourceOfGroupWithIdentifier:(NSString *)identifier inBook:(ABAddressBookRef)book
+{
+    ABRecordRef group = ABAddressBookGetGroupWithRecordID(book, (ABRecordID)[identifier intValue]);
+    if (!group)
+        return NULL;
+    ABRecordRef source = ABGroupCopySource(group);
+    return source ? (ABRecordRef)CFAutorelease(source) : NULL;
+}
+
++ (NSArray<CNContainer *> *)containersInBook:(ABAddressBookRef)book matching:(NSPredicate *)predicate error:(NSError **)error
+{
+    CharonContactMatch match = CharonContactMatchAll;
+    id wanted = nil;
+    if ([predicate isKindOfClass:[CharonContactPredicate class]]) {
+        match = [(CharonContactPredicate *)predicate match];
+        wanted = [(CharonContactPredicate *)predicate value];
+    } else if (predicate) {
+        if (error)
+            *error = [CharonContacts errorWithCode:CNErrorCodePredicateInvalid reason:@"The predicate is not one the Contacts framework makes."];
+        return nil;
+    }
+    NSMutableArray *found = [NSMutableArray array];
+    if (match == CharonContactMatchContainerIdentifiers) {
+        for (NSString *identifier in wanted) {
+            ABRecordRef source = ABAddressBookGetSourceWithRecordID(book, (ABRecordID)[identifier intValue]);
+            if (source)
+                [found addObject:[self containerWithRecord:source]];
+        }
+        return found;
+    }
+    if (match == CharonContactMatchContainerOfContact) {
+        ABRecordRef source = [self sourceOfPersonWithIdentifier:wanted inBook:book];
+        if (source)
+            [found addObject:[self containerWithRecord:source]];
+        return found;
+    }
+    if (match == CharonContactMatchContainerOfGroup) {
+        ABRecordRef source = [self sourceOfGroupWithIdentifier:wanted inBook:book];
+        if (source)
+            [found addObject:[self containerWithRecord:source]];
+        return found;
+    }
+    CFArrayRef sources = ABAddressBookCopyArrayOfAllSources(book);
+    if (sources) {
+        for (CFIndex index = 0; index < CFArrayGetCount(sources); index++)
+            [found addObject:[self containerWithRecord:(ABRecordRef)CFArrayGetValueAtIndex(sources, index)]];
+        CFRelease(sources);
+    }
+    return found;
+}
+
 @end

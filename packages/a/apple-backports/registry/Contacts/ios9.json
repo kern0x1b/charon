@@ -1205,9 +1205,10 @@
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a group is a CNGroup, and the class is not carried",
-      "effect": "the selector is not there: respondsToSelector: answers NO and a call raises an unrecognised selector",
+      "status": "implemented",
+      "reason": "a group is a CNGroup, resolved from ABAddressBookCopyArrayOfAllGroups and the two real group predicates",
+      "effect": "nil answers every group; predicateForGroupsWithIdentifiers: and predicateForGroupsInContainerWithIdentifier: are honoured",
+      "facts": "facts/Contacts/Groups.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
     {
@@ -1215,9 +1216,10 @@
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a container is a CNContainer, and the class is not carried; the identifier of the book's default source is handed out by defaultContainerIdentifier instead",
-      "effect": "the selector is not there: respondsToSelector: answers NO and a call raises an unrecognised selector",
+      "status": "implemented",
+      "reason": "a container is a CNContainer, resolved from ABAddressBookCopyArrayOfAllSources and the three real container predicates",
+      "effect": "nil answers every source; predicateForContainersWithIdentifiers:, predicateForContainerOfContactWithIdentifier: (via ABPersonCopySource) and predicateForContainerOfGroupWithIdentifier: (via ABGroupCopySource) are honoured",
+      "facts": "facts/Contacts/Groups.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
     {
@@ -1225,9 +1227,10 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the enumerator of iOS 13 answers a CNFetchResult, which is not carried",
-      "effect": "the selector is not there: respondsToSelector: answers NO and a call raises an unrecognised selector",
+      "status": "implemented",
+      "reason": "wraps the same fetch unifiedContactsMatchingPredicate:keysToFetch:error: already runs, in an NSEnumerator handed back inside a real CNFetchResult; this fetch needs no history",
+      "effect": "the result's value is an NSEnumerator over the matching contacts, currentHistoryToken is nil",
+      "facts": "facts/Contacts/History.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
     {
@@ -1236,8 +1239,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the release keeps no history of changes an application may read back",
+      "reason": "the release keeps no history of changes an application may read back; CNFetchResult and CNChangeHistoryEvent are real classes, the wall is on this one selector that would have to walk a history the book never recorded",
       "effect": "the selector is not there: respondsToSelector: answers NO and a call raises an unrecognised selector",
+      "facts": "facts/Contacts/History.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
     {
@@ -1248,6 +1252,7 @@
       "status": "absent",
       "reason": "the release keeps no history of changes, so there is no token that names a point in one",
       "effect": "the selector is not there: respondsToSelector: answers NO and a call raises an unrecognised selector",
+      "facts": "facts/Contacts/History.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
     {
@@ -1255,9 +1260,10 @@
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a group is a CNGroup, and the class is not carried",
-      "effect": "the selector is not there: respondsToSelector: answers NO and a call raises an unrecognised selector",
+      "status": "implemented",
+      "reason": "queued the same way addContact:toContainerWithIdentifier: is, executed with ABGroupCreate/ABGroupCreateInSource and ABAddressBookAddRecord",
+      "effect": "the group is given the book's record id once the save succeeds, the same way an added contact is",
+      "facts": "facts/Contacts/Groups.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
     {
@@ -1265,9 +1271,10 @@
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a group is a CNGroup, and the class is not carried",
-      "effect": "the selector is not there: respondsToSelector: answers NO and a call raises an unrecognised selector",
+      "status": "implemented",
+      "reason": "queued and executed with ABRecordSetValue on kABGroupNameProperty of the group's own record",
+      "effect": "a group not in the book fails the save with CNErrorCodeRecordDoesNotExist",
+      "facts": "facts/Contacts/Groups.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
     {
@@ -1275,9 +1282,10 @@
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a group is a CNGroup, and the class is not carried",
-      "effect": "the selector is not there: respondsToSelector: answers NO and a call raises an unrecognised selector",
+      "status": "implemented",
+      "reason": "queued and executed with ABAddressBookRemoveRecord of the group's own record; the members are not deleted",
+      "effect": "a group not in the book fails the save with CNErrorCodeRecordDoesNotExist",
+      "facts": "facts/Contacts/Groups.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
     {
@@ -1285,9 +1293,10 @@
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a group is a CNGroup, and the class is not carried",
-      "effect": "the selector is not there: respondsToSelector: answers NO and a call raises an unrecognised selector",
+      "status": "implemented",
+      "reason": "queued and executed with ABGroupAddMember",
+      "effect": "a contact or a group not in the book fails the save with CNErrorCodeRecordDoesNotExist",
+      "facts": "facts/Contacts/Groups.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
     {
@@ -1295,9 +1304,10 @@
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a group is a CNGroup, and the class is not carried",
-      "effect": "the selector is not there: respondsToSelector: answers NO and a call raises an unrecognised selector",
+      "status": "implemented",
+      "reason": "queued and executed with ABGroupRemoveMember; the contact itself is not deleted",
+      "effect": "a contact or a group not in the book fails the save with CNErrorCodeRecordDoesNotExist",
+      "facts": "facts/Contacts/Groups.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
     {
@@ -1325,9 +1335,10 @@
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a group of the release's book is an ABGroup, and nothing of the corpus asks for one yet",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "a group of the release's book is an ABGroup, and CNGroup is the same translation CNContact already is over ABRecord",
+      "effect": "identifier and name answer the group's ABRecordID and kABGroupNameProperty; the predicates over groups are real",
+      "facts": "facts/Contacts/Groups.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
     {
@@ -1335,9 +1346,10 @@
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a group of the release's book is an ABGroup, and nothing of the corpus asks for one yet",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the mutable half of CNGroup, name settable before a save adds or updates it",
+      "effect": "a new group starts with a UUID identifier and gets the book's record id once added by a save request, the same way CNMutableContact does",
+      "facts": "facts/Contacts/Groups.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
     {
@@ -1345,9 +1357,10 @@
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a container is a source of the release's book, and nothing of the corpus asks for one yet",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "a container is a source of the release's book (ABSource), and the type maps from kABSourceTypeProperty",
+      "effect": "identifier, name and type answer the source's record id, kABSourceNameProperty and the mapped ABSourceType; the predicates over containers are real",
+      "facts": "facts/Contacts/Groups.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
     {
@@ -1355,9 +1368,10 @@
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class names one property of one contact for a picker, and no picker of Contacts is carried",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "a plain value object over a contact, a key, a value, a label and an identifier; the release itself exposes no public initializer for it either, since it exists to be handed back by a contact picker",
+      "effect": "the class exists and alloc/init does not crash; this port has no contact picker to hand one back, matching a release with no picker feature running",
+      "facts": "facts/Contacts/Groups.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
     {
@@ -1365,9 +1379,10 @@
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release formats an address out of ABAddressFormats.plist for its own view, and no call of that formatting is exported",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "a multi-line mailing address built from the fields of a CNPostalAddress the port already carries",
+      "effect": "street, then city/state/postal code, then country, one populated field per line, joined with newlines; the exact locale layout of ABAddressFormats.plist is not read, so this differs from the release's own picker view in ordering for locales that put the postal code before the city",
+      "facts": "facts/Contacts/Groups.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
     {
@@ -1375,9 +1390,208 @@
       "kind": "class",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release keeps no history of changes",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the base of the change history visitor hierarchy; the wall is on producing an instance, not on the class existing",
+      "effect": "the class and its acceptEventVisitor: exist so a strong reference does not crash dyld; this port never constructs one, since enumeratorForChangeHistoryFetchRequest:error: stays absent",
+      "facts": "facts/Contacts/History.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNChangeHistoryDropEverythingEvent",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a concrete CNChangeHistoryEvent visited through visitDropEverythingEvent:; never constructed here, same wall as the base class",
+      "effect": "the class exists so a strong reference does not crash dyld",
+      "facts": "facts/Contacts/History.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNChangeHistoryAddContactEvent",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a concrete CNChangeHistoryEvent carrying the added contact and its container; never constructed here, same wall as the base class",
+      "effect": "the class exists so a strong reference does not crash dyld",
+      "facts": "facts/Contacts/History.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNChangeHistoryUpdateContactEvent",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a concrete CNChangeHistoryEvent carrying the updated contact; never constructed here, same wall as the base class",
+      "effect": "the class exists so a strong reference does not crash dyld",
+      "facts": "facts/Contacts/History.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNChangeHistoryDeleteContactEvent",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a concrete CNChangeHistoryEvent carrying the deleted contact's identifier; never constructed here, same wall as the base class",
+      "effect": "the class exists so a strong reference does not crash dyld",
+      "facts": "facts/Contacts/History.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNChangeHistoryAddGroupEvent",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a concrete CNChangeHistoryEvent carrying the added group and its container; never constructed here, same wall as the base class",
+      "effect": "the class exists so a strong reference does not crash dyld",
+      "facts": "facts/Contacts/History.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNChangeHistoryUpdateGroupEvent",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a concrete CNChangeHistoryEvent carrying the updated group; never constructed here, same wall as the base class",
+      "effect": "the class exists so a strong reference does not crash dyld",
+      "facts": "facts/Contacts/History.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNChangeHistoryDeleteGroupEvent",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a concrete CNChangeHistoryEvent carrying the deleted group's identifier; never constructed here, same wall as the base class",
+      "effect": "the class exists so a strong reference does not crash dyld",
+      "facts": "facts/Contacts/History.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNChangeHistoryAddMemberToGroupEvent",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a concrete CNChangeHistoryEvent carrying the added member and its group; never constructed here, same wall as the base class",
+      "effect": "the class exists so a strong reference does not crash dyld",
+      "facts": "facts/Contacts/History.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNChangeHistoryRemoveMemberFromGroupEvent",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a concrete CNChangeHistoryEvent carrying the removed member and its group; never constructed here, same wall as the base class",
+      "effect": "the class exists so a strong reference does not crash dyld",
+      "facts": "facts/Contacts/History.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNChangeHistoryAddSubgroupToGroupEvent",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a concrete CNChangeHistoryEvent of the iOS surface (addSubgroup:toGroup: itself is macOS-only); never constructed here, same wall as the base class",
+      "effect": "the class exists so a strong reference does not crash dyld",
+      "facts": "facts/Contacts/History.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNChangeHistoryRemoveSubgroupFromGroupEvent",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a concrete CNChangeHistoryEvent of the iOS surface (removeSubgroup:fromGroup: itself is macOS-only); never constructed here, same wall as the base class",
+      "effect": "the class exists so a strong reference does not crash dyld",
+      "facts": "facts/Contacts/History.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNGroupIdentifierKey",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the KVC key for CNGroup.identifier, a string the release itself holds",
+      "effect": "the symbol is there and holds the string \"identifier\"",
+      "facts": "facts/Contacts/Groups.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNGroupNameKey",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the KVC key for CNGroup.name, a string the release itself holds",
+      "effect": "the symbol is there and holds the string \"name\"",
+      "facts": "facts/Contacts/Groups.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNContainerIdentifierKey",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the KVC key for CNContainer.identifier, a string the release itself holds",
+      "effect": "the symbol is there and holds the string \"identifier\"",
+      "facts": "facts/Contacts/Groups.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNContainerNameKey",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the KVC key for CNContainer.name, a string the release itself holds",
+      "effect": "the symbol is there and holds the string \"name\"",
+      "facts": "facts/Contacts/Groups.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNContainerTypeKey",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the KVC key for CNContainer.type, a string the release itself holds",
+      "effect": "the symbol is there and holds the string \"type\"",
+      "facts": "facts/Contacts/Groups.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNPostalAddressPropertyAttribute",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "an attribute key of CNPostalAddressFormatter's attributed string, an opaque token an application reads back through the symbol, never a hardcoded string",
+      "effect": "the symbol is there and tags each line of the attributed address with the CNPostalAddress key it came from",
+      "facts": "facts/Contacts/Groups.md",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+    },
+    {
+      "api": "CNPostalAddressLocalizedPropertyNameAttribute",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "an attribute key of CNPostalAddressFormatter's attributed string, an opaque token an application reads back through the symbol, never a hardcoded string",
+      "effect": "the symbol is there and tags each line with ABPersonCopyLocalizedPropertyName of the field it came from",
+      "facts": "facts/Contacts/Groups.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
     {
@@ -1385,9 +1599,10 @@
       "kind": "class",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the enumerators of iOS 13 that answer one are not carried",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "a plain generic container of a value and a history token; the wall is on the history token, not the container",
+      "effect": "value and currentHistoryToken answer what the store's enumerator hands it; enumeratorForContactFetchRequest:error: hands back a real one with a nil token, since that fetch needs no history",
+      "facts": "facts/Contacts/History.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     }
   ]

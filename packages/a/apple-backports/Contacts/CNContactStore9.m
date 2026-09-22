@@ -167,6 +167,80 @@
             break;
         }
     }
+    NSMutableArray *addedGroups = [NSMutableArray array];
+    for (NSArray *pair in failed ? @[] : [saveRequest charon_addedGroups]) {
+        CNMutableGroup *group = pair[0];
+        NSString *container = pair[1];
+        ABRecordRef record = NULL;
+        if (container.length > 0) {
+            ABRecordRef source = ABAddressBookGetSourceWithRecordID(book, (ABRecordID)[container intValue]);
+            if (!source) {
+                failed = [CharonContacts errorWithCode:CNErrorCodeParentRecordDoesNotExist reason:@"No container of the address book has that identifier."];
+                break;
+            }
+            record = ABGroupCreateInSource(source);
+        } else {
+            record = ABGroupCreate();
+        }
+        ABRecordSetValue(record, kABGroupNameProperty, (__bridge CFStringRef)group.name, NULL);
+        CFErrorRef failure = NULL;
+        if (!ABAddressBookAddRecord(book, record, &failure)) {
+            failed = [self charon_errorFrom:failure code:CNErrorCodeDataAccessError reason:@"The address book refused the new group."];
+            CFRelease(record);
+            break;
+        }
+        [addedGroups addObject:@[group, (__bridge_transfer id)record]];
+    }
+    for (CNMutableGroup *group in failed ? @[] : [saveRequest charon_updatedGroups]) {
+        ABRecordRef record = ABAddressBookGetGroupWithRecordID(book, (ABRecordID)[group.identifier intValue]);
+        if (!record) {
+            failed = [CharonContacts errorWithCode:CNErrorCodeRecordDoesNotExist reason:@"The group being updated is not in the address book."];
+            break;
+        }
+        ABRecordSetValue(record, kABGroupNameProperty, (__bridge CFStringRef)group.name, NULL);
+    }
+    for (CNMutableGroup *group in failed ? @[] : [saveRequest charon_deletedGroups]) {
+        ABRecordRef record = ABAddressBookGetGroupWithRecordID(book, (ABRecordID)[group.identifier intValue]);
+        if (!record) {
+            failed = [CharonContacts errorWithCode:CNErrorCodeRecordDoesNotExist reason:@"The group being deleted is not in the address book."];
+            break;
+        }
+        CFErrorRef failure = NULL;
+        if (!ABAddressBookRemoveRecord(book, record, &failure)) {
+            failed = [self charon_errorFrom:failure code:CNErrorCodeDataAccessError reason:@"The address book refused to remove the group."];
+            break;
+        }
+    }
+    for (NSArray *pair in failed ? @[] : [saveRequest charon_addedMembers]) {
+        CNContact *contact = pair[0];
+        CNGroup *group = pair[1];
+        ABRecordRef person = ABAddressBookGetPersonWithRecordID(book, (ABRecordID)[contact.identifier intValue]);
+        ABRecordRef groupRecord = ABAddressBookGetGroupWithRecordID(book, (ABRecordID)[group.identifier intValue]);
+        if (!person || !groupRecord) {
+            failed = [CharonContacts errorWithCode:CNErrorCodeRecordDoesNotExist reason:@"The contact or the group is not in the address book."];
+            break;
+        }
+        CFErrorRef failure = NULL;
+        if (!ABGroupAddMember(groupRecord, person, &failure)) {
+            failed = [self charon_errorFrom:failure code:CNErrorCodeDataAccessError reason:@"The address book refused to add the member to the group."];
+            break;
+        }
+    }
+    for (NSArray *pair in failed ? @[] : [saveRequest charon_removedMembers]) {
+        CNContact *contact = pair[0];
+        CNGroup *group = pair[1];
+        ABRecordRef person = ABAddressBookGetPersonWithRecordID(book, (ABRecordID)[contact.identifier intValue]);
+        ABRecordRef groupRecord = ABAddressBookGetGroupWithRecordID(book, (ABRecordID)[group.identifier intValue]);
+        if (!person || !groupRecord) {
+            failed = [CharonContacts errorWithCode:CNErrorCodeRecordDoesNotExist reason:@"The contact or the group is not in the address book."];
+            break;
+        }
+        CFErrorRef failure = NULL;
+        if (!ABGroupRemoveMember(groupRecord, person, &failure)) {
+            failed = [self charon_errorFrom:failure code:CNErrorCodeDataAccessError reason:@"The address book refused to remove the member from the group."];
+            break;
+        }
+    }
     if (!failed) {
         CFErrorRef failure = NULL;
         if (!ABAddressBookSave(book, &failure))
@@ -187,8 +261,45 @@
             [contact charon_setValues:[contact charon_values] available:[contact charon_availableKeys]
                            identifier:[NSString stringWithFormat:@"%d", (int)identifier]];
     }
+    for (NSArray *pair in addedGroups) {
+        CNMutableGroup *group = pair[0];
+        ABRecordRef record = (__bridge ABRecordRef)pair[1];
+        ABRecordID identifier = ABRecordGetRecordID(record);
+        if (identifier != kABRecordInvalidID)
+            [group charon_setIdentifier:[NSString stringWithFormat:@"%d", (int)identifier] name:group.name];
+    }
     CFRelease(book);
     return YES;
+}
+
+- (NSArray<CNGroup *> *)groupsMatchingPredicate:(NSPredicate *)predicate error:(NSError **)error
+{
+    ABAddressBookRef book = [CharonContactsBook createBook:error];
+    if (!book)
+        return nil;
+    NSArray *groups = [CharonContactsBook groupsInBook:book matching:predicate mutable:NO error:error];
+    CFRelease(book);
+    return groups;
+}
+
+- (NSArray<CNContainer *> *)containersMatchingPredicate:(NSPredicate *)predicate error:(NSError **)error
+{
+    ABAddressBookRef book = [CharonContactsBook createBook:error];
+    if (!book)
+        return nil;
+    NSArray *containers = [CharonContactsBook containersInBook:book matching:predicate error:error];
+    CFRelease(book);
+    return containers;
+}
+
+- (CNFetchResult<NSEnumerator<CNContact *> *> *)enumeratorForContactFetchRequest:(CNContactFetchRequest *)request error:(NSError **)error
+{
+    NSArray *contacts = [self charon_contactsMatching:request.predicate keysToFetch:request.keysToFetch
+                                                unify:request.unifyResults mutable:request.mutableObjects
+                                            sortOrder:request.sortOrder error:error];
+    if (!contacts)
+        return nil;
+    return [CNFetchResult charon_resultWithValue:[contacts objectEnumerator] historyToken:nil];
 }
 
 - (NSString *)defaultContainerIdentifier

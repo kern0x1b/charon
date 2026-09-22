@@ -27,7 +27,12 @@ typedef NS_ENUM(NSInteger, CharonContactMatch) {
     CharonContactMatchGroup,
     CharonContactMatchContainer,
     CharonContactMatchEmail,
-    CharonContactMatchPhone
+    CharonContactMatchPhone,
+    CharonContactMatchGroupIdentifiers,
+    CharonContactMatchGroupsInContainer,
+    CharonContactMatchContainerIdentifiers,
+    CharonContactMatchContainerOfContact,
+    CharonContactMatchContainerOfGroup
 };
 
 @interface CharonContactPredicate : NSPredicate
@@ -48,6 +53,14 @@ typedef NS_ENUM(NSInteger, CharonContactMatch) {
 + (BOOL)applyContact:(CNContact *)contact toRecord:(ABRecordRef)record error:(NSError **)error;
 + (NSString *)compositeNameOfContact:(CNContact *)contact;
 + (BOOL)contactFitsTheBook:(CNContact *)contact error:(NSError **)error;
++ (CNGroup *)groupWithRecord:(ABRecordRef)record mutable:(BOOL)mutableObjects;
++ (NSArray<CNGroup *> *)groupsInBook:(ABAddressBookRef)book matching:(NSPredicate *)predicate
+                              mutable:(BOOL)mutableObjects error:(NSError **)error;
++ (CNContainerType)typeOfSource:(ABRecordRef)source;
++ (CNContainer *)containerWithRecord:(ABRecordRef)source;
++ (NSArray<CNContainer *> *)containersInBook:(ABAddressBookRef)book matching:(NSPredicate *)predicate error:(NSError **)error;
++ (ABRecordRef)sourceOfPersonWithIdentifier:(NSString *)identifier inBook:(ABAddressBookRef)book CF_RETURNS_NOT_RETAINED;
++ (ABRecordRef)sourceOfGroupWithIdentifier:(NSString *)identifier inBook:(ABAddressBookRef)book CF_RETURNS_NOT_RETAINED;
 @end
 
 @interface CharonContactsKeyDescriptor : NSObject <CNKeyDescriptor>
@@ -69,6 +82,24 @@ typedef NS_ENUM(NSInteger, CharonContactMatch) {
 - (NSArray *)charon_added;
 - (NSArray *)charon_updated;
 - (NSArray *)charon_deleted;
+- (NSArray *)charon_addedGroups;
+- (NSArray *)charon_updatedGroups;
+- (NSArray *)charon_deletedGroups;
+- (NSArray *)charon_addedMembers;
+- (NSArray *)charon_removedMembers;
+@end
+
+@interface CNGroup (Charon)
++ (instancetype)charon_groupWithIdentifier:(NSString *)identifier name:(NSString *)name mutable:(BOOL)mutableObjects;
+- (void)charon_setIdentifier:(NSString *)identifier name:(NSString *)name;
+@end
+
+@interface CNFetchResult (Charon)
++ (instancetype)charon_resultWithValue:(id)value historyToken:(NSData *)token;
+@end
+
+@interface CNContainer (Charon)
++ (instancetype)charon_containerWithIdentifier:(NSString *)identifier name:(NSString *)name type:(CNContainerType)type;
 @end
 
 @interface CNContactStore (Charon)

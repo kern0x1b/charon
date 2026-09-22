@@ -49,11 +49,10 @@ what the release's own editor does.
   multi-value and the book numbers the entries again. The `identifier` of a
   `CNLabeledValue` an application held on to therefore names nothing after a
   save of that contact; refetch to get the current ones.
-- **Groups and members are not carried.** `addGroup:toContainerWithIdentifier:`,
+- **Groups and members are carried.** `addGroup:toContainerWithIdentifier:`,
   `updateGroup:`, `deleteGroup:`, `addMember:toGroup:` and
-  `removeMember:fromGroup:` take a `CNGroup`, which this package does not carry,
-  and they are absent rather than silently doing nothing. The rows are in
-  `registry/Contacts/ios9.json`.
+  `removeMember:fromGroup:` execute over `ABGroup`, the same way the contact
+  operations execute over `ABPerson`; `facts/Contacts/Groups.md` says how.
 - **`transactionAuthor` and `shouldRefetchContacts`** of iOS 15 are absent: the
   release's book records no author of a change, and a save writes what it was
   given and refetches nothing.
