@@ -120,11 +120,12 @@ def main():
     # imports, never by the GCDevice protocol itself). Protocol status is never pushed onto the
     # member either way: an explicit registry row above (protocol or member) still wins, this only
     # fires when the registry left the member undecided.
-    _tree_candidates = [
+    _tree_candidates = [p for p in [
+        os.environ.get("CHARON_TREE_DIR"),                                              # explicit override survives any future worktree move
         os.path.join(BASE, "packages", "a", "apple-backports"),                        # script lives in the repo
-        os.path.join(os.path.expanduser("~"), "Git", "projects", "ios", "charon-worktrees",
-                      "bcorpus", "packages", "a", "apple-backports"),                   # script lives in the scratchpad
-    ]
+        os.path.join(os.path.expanduser("~"), "Git", "projects", "ios", "charon",
+                      ".agent-work", "worktrees", "bcorpus", "packages", "a", "apple-backports"),  # script lives in the scratchpad
+    ] if p]
     TREE = next((p for p in _tree_candidates if os.path.isdir(p)), _tree_candidates[-1])
     _blob = subprocess.run(["bash", "-c", f"cat $(find {TREE} -name '*.m' -o -name '*.mm' -o -name '*.h') 2>/dev/null"],
                             capture_output=True, text=True).stdout

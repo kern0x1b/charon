@@ -5,11 +5,12 @@ built by an ad-hoc query that forgot the registry filter entirely."""
 import os, re, subprocess, sys, csv
 EXP=os.environ.get("CHARON_REGISTRY_TSV", "/private/tmp/bcorpus-scratch/carried-registry-fresh.tsv")
 _HERE=os.path.dirname(os.path.abspath(__file__))
-_T_CANDIDATES=[
+_T_CANDIDATES=[p for p in [
+    os.environ.get("CHARON_TREE_DIR"),                                                # explicit override survives any future worktree move
     os.path.join(os.path.dirname(_HERE), "packages", "a", "apple-backports"),          # script lives in the repo (tools/)
-    os.path.join(os.path.expanduser("~"), "Git", "projects", "ios", "charon-worktrees",
-                  "bcorpus", "packages", "a", "apple-backports"),                      # script lives in the scratchpad
-]
+    os.path.join(os.path.expanduser("~"), "Git", "projects", "ios", "charon",
+                  ".agent-work", "worktrees", "bcorpus", "packages", "a", "apple-backports"),  # script lives in the scratchpad
+] if p]
 T=next((p for p in _T_CANDIDATES if os.path.isdir(p)), _T_CANDIDATES[-1])
 reg={}
 for l in open(EXP):
