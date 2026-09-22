@@ -91,6 +91,16 @@ def sym_kind(sym):
     m = re.match(r"_OBJC_(META)?CLASS_\$_(.+)", sym)
     if m:
         return "class", m.group(2)
+    # A protocol referenced from another translation unit (adopted by a class whose interface
+    # imports the protocol from a system header, or named via @protocol()) is a real weak-external
+    # link symbol, same mechanism as a class -- _OBJC_PROTOCOL_$_<Name> (the protocol_t struct) or
+    # _OBJC_LABEL_PROTOCOL_$_<Name> (the __objc_protolist entry). Before this, both fell through to
+    # bare "symbol" kind with the full underscored name still attached, so a protocol was demanded
+    # but never typed as one -- carried_status() and the protocol-status-not-on-member rule (§5)
+    # had nothing to apply to.
+    m = re.match(r"_OBJC_(LABEL_)?PROTOCOL_\$_(.+)", sym)
+    if m:
+        return "protocol", m.group(2)
     return "symbol", sym
 
 # Segment the attributed home into what each demand actually implies:
