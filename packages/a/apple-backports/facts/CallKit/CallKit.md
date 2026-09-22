@@ -85,8 +85,15 @@ release. The cellular calls of the release are the one thing that does cross the
 ## What is not carried
 
 The call directory - `CXCallDirectoryManager`, `CXCallDirectoryProvider`, `CXCallDirectoryExtensionContext` and its delegate - is absent: it is an
-application extension, and iOS 6 loads no extensions. `+[CXProvider reportNewIncomingVoIPPushPayload:completion:]` is absent: it arrived in iOS 14.5 and
-reports a call out of a PushKit payload this release has no push of. `CXErrorDomainNotificationServiceExtension` is absent for the same reason.
+application extension, and iOS 6 loads no extensions. `CXErrorDomainNotificationServiceExtension` is absent for the same reason.
+
+`+[CXProvider reportNewIncomingVoIPPushPayload:completion:]` is absent, and the wall behind it is not a version gate but the one genuine wall this
+domain has: the method turns a `PKPushRegistry` VoIP push payload into a reported call, and this port never receives one to turn. `apsd`, iOS 6.1.3's
+own push daemon, ties every device token to a nonzero `UIRemoteNotificationType` bitmask (`Badge`/`Sound`/`Alert`) with no silent fourth bit - measured
+against real hardware in `facts/PushKit/PushKit.md` - so a `PKPushRegistry` set up the way PushKit is meant to be used, with no prior
+`-registerUserNotificationSettings:` call, never receives a token at all. And even with a token, `apsd` on this release never wakes a suspended or
+not-running application for any push, VoIP included. Both are Apple's own service on this device, not something the release "didn't have yet" - which
+is why cellular incoming calls are still fully reported, through `CharonCallTelephony.m`'s `CTCallCenter` observation instead of a push.
 
 What the release does with a cellular call beyond the four states is out of reach: `CTCallCenter` gives no direction for a connected call, no hold state and
 no handle, so a cellular call of the port has `onHold` NO and an update of nothing. CoreTelephony of iOS 6 does export `CTCallDial`, `CTCallAnswer`,
