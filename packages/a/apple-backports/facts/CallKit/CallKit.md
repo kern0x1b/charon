@@ -145,6 +145,24 @@ PID was the same before and after the install and after the poke, and its crash 
 cause is architectural, not a bug in this package: `/Library/MobileSubstrate/MobileSubstrate.dylib` here resolves to
 `CydiaSubstrate.framework/Libraries/SubstrateInjection.dylib`, and this release's MobileSubstrate injects a filtered dylib into a process at that
 process's own launch, not retroactively into one already running - SpringBoard was already up before the tweak was installed, and nothing short of a
-respring picks a freshly-installed filter up. A respring is exactly what the fleet's device discipline forbids without the owner's sign-off, so this is
-where the proof stops for now: build, package and install are each proven; a window actually appearing over SpringBoard, and the tap round-trip into
-`CXAnswerCallAction`/`CXEndCallAction`, are still not proven, and need one deliberate respring to settle either way.
+respring picks a freshly-installed filter up.
+
+Measured again 2026-09-23, same iPhone 4S, with the owner's sign-off to respring: the tweak's constructor now writes its own pid to
+`/var/mobile/Library/Caches/org.charon.callkit/loaded` and posts `org.charon.callkit.screen-loaded`, so "did SpringBoard load this dylib" is a direct
+read instead of a guess from the window - there is still no `vmmap`/`otool` on this device to ask any other way. `launchctl stop
+com.apple.SpringBoard` (and, on a retry, `killall -9 SpringBoard`) changed the PID `launchctl list` reports (3565 -> 11711 across one respring, then
+11711 -> 12529 across a second one taken purely to pair a fresh before/after inside a single measurement), and each time the marker file's pid matched
+the new SpringBoard PID exactly. **The window appears.** Posting `org.charon.callkit.incoming` right after immediately raised the dimmed overlay with
+the caller labels and the two round buttons, confirmed on a screenshot taken and deleted immediately after each check. A tap on Decline (80,390) and,
+on the next call, a tap on Answer (240,390), each written to `answered`/`declined` and dismissed the window as the tweak's `-respond:` promises.
+
+That much is the tweak's own file-and-notification protocol, driven by the `charon-callkit-poke` probe rather than a real `CXProvider` - the stronger
+proof is `tests/backports/device/callkit-screen.m` itself, built through the real toolchain (`@addon/charon/daemon`, `apple-backports` with
+`callkit=true`) and run on the same device against the already-installed canon (`0.8.10+0f900eff` - the canon was not rebuilt or touched for this).
+It reports its own incoming call through a real `CXProvider`, waits on a tap at the coordinates it logs, and turns what arrives into
+`performAnswerCallAction:` or `performEndCallAction:` on its own delegate. Both cases ran: `charon-callkit-touch tap 80 390` turned into
+`performEndCallAction:`, and `charon-callkit-touch tap 240 390` on the next call turned into `performAnswerCallAction:` - `checks=7 failures=0`. The
+screen is proven end to end: build, package, install, SpringBoard load, the window, and both directions of the tap round-trip through a real
+`CXAnswerCallAction`/`CXEndCallAction`. The one caveat that remains structural, not a gap in this measurement: MobileSubstrate here only picks up a
+freshly-installed or freshly-updated filtered dylib at SpringBoard's own next respring, never retroactively - anyone installing or updating this
+package still needs one.
