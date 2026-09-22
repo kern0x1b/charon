@@ -343,9 +343,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the regular expression engine of iOS 6 has no named groups, so no pattern that names one compiles and no result holds names",
+      "reason": "confirmed, not assumed: iOS 6.1.3's libicucore carries icudt49l (ICU 49, 2012); ICU did not add named capture group syntax (?<name>...) to its regex grammar until ICU 55 (2015, https://icu.unicode.org/design/regular-expressions/named-capture-groups), together with the uregex_groupNumberFromName lookup this method would need. Before ICU 55, (?<x follows only =/! (lookbehind), so a pattern naming a group is a compile error on this release, not merely a method this port could add on top -- confirmed absent from the dyld cache's exports too (uregex_groupNumberFromName is not among them, only uregex_group/uregex_groupCount/uregex_groupUText)",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the SDK 16.4 headers"
+      "source": "the SDK 16.4 headers; $HOME/.charon/dyld/6.1.3/dyld_shared_cache_armv7 for the ICU version string and the uregex_* exports"
     },
     {
       "api": "-[NSFileManager trashItemAtURL:resultingItemURL:error:]",
