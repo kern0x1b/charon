@@ -432,26 +432,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVCaptureDevice.activeVideoMaxFrameDuration",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureDevice.activeVideoMinFrameDuration",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVCaptureDevice.autoFocusRangeRestriction",
       "kind": "property",
       "introduced": "7.0",
@@ -938,36 +918,6 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give AVCaptureVideoPreviewLayer a method like it: it arrived in iOS 8",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "+[AVMetadataItem identifierForKey:keySpace:]",
-      "kind": "method",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMetadataItem a method like it: it arrived in iOS 8",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "+[AVMetadataItem keyForIdentifier:]",
-      "kind": "method",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMetadataItem a method like it: it arrived in iOS 8",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "+[AVMetadataItem keySpaceForIdentifier:]",
-      "kind": "method",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMetadataItem a method like it: it arrived in iOS 8",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, AVFoundation"
     },
@@ -1708,66 +1658,6 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give AVMediaSelectionGroup a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataItem.dataType",
-      "kind": "property",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMetadataItem a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataItem.extendedLanguageTag",
-      "kind": "property",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMetadataItem a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataItem.identifier",
-      "kind": "property",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMetadataItem a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMutableMetadataItem.dataType",
-      "kind": "property",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableMetadataItem a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMutableMetadataItem.extendedLanguageTag",
-      "kind": "property",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableMetadataItem a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMutableMetadataItem.identifier",
-      "kind": "property",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableMetadataItem a property like it: it arrived in iOS 8",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, AVFoundation"
     },
@@ -2672,26 +2562,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVCaptureDataOutputSynchronizer",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureDataOutputSynchronizerDelegate",
-      "kind": "protocol",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 11, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVCaptureDepthDataOutput",
       "kind": "class",
       "introduced": "11.0",
@@ -2793,56 +2663,6 @@
     },
     {
       "api": "AVCapturePhoto",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureSynchronizedData",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureSynchronizedDataCollection",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureSynchronizedDepthData",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureSynchronizedMetadataObjectData",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureSynchronizedSampleBufferData",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
