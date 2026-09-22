@@ -124,6 +124,17 @@
       "source": "the headers of SDK 16.4; AuthenticationServices of the arm64 shared cache of iOS 13.0 for what the release does, and the SFAuthenticationSession of iOS 11 this package's session is built on for what it can do"
     },
     {
+      "api": "ASWebAuthenticationPresentationContextProviding",
+      "kind": "protocol",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "an application's own class adopts this protocol; the port's part is sending its one message, not declaring the protocol itself, which the SDK's own headers already do",
+      "effect": "-[ASWebAuthenticationSession start] sends presentationAnchorForWebAuthenticationSession: to whatever conforms to it",
+      "facts": "facts/AuthenticationServices/ASWebAuthenticationSession.md",
+      "source": "the headers of SDK 16.4; AuthenticationServices of the arm64 shared cache of iOS 13.0 for what the release does, and the SFAuthenticationSession of iOS 11 this package's session is built on for what it can do"
+    },
+    {
       "api": "-[ASWebAuthenticationPresentationContextProviding presentationAnchorForWebAuthenticationSession:]",
       "kind": "method",
       "introduced": "13.0",
