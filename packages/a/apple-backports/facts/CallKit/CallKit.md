@@ -119,4 +119,21 @@ interface, and there is one path through the state machine instead of two. The s
 the application's own interface, and when the call ends.
 
 Without that tweak none of this is heard: the library writes a file nobody reads and posts a notification nobody hears, and the calls of the application
-work exactly as they do with no screen. Nothing on this path can refuse, raise or fail a call.
+work exactly as they do with no screen. Nothing on this path can refuse, raise or fail a call. The behaviour does not degrade when the tweak is missing -
+it simply does not happen, the way a device without the hardware a feature needs answers "unavailable" rather than pretending.
+
+The tweak, `org.charon.callkit-screen` (`packages/a/apple-callkit-screen`), carries the other side: a MobileSubstrate dylib filtered to
+`com.apple.springboard`, built by Charon's own tweak rule (`@addon/charon/tweak`) the way any port builds one, proven for real by
+`tests/addon/tweak_test.lua` (the rule itself, against a device test already held to a running iPhone 4S) and `tests/addon/callkit_screen_test.lua`
+(this package, built and installed - `Library/MobileSubstrate/DynamicLibraries/charon-callkit-screen.dylib` and its filter plist land where the rule
+promises). It listens for `org.charon.callkit.incoming`, reads the payload, raises a window above SpringBoard's own with the caller's name and handle and
+an answer and a decline button, and on a tap writes `answered` or `declined` and posts back, exactly the protocol the library already speaks; it takes the
+window down on `org.charon.callkit.ended` too, for a call the application ended for a reason of its own.
+
+What that proves and what it does not: the dylib links, is signed and packaged, and the build gate holds it to the same Mach-O checks every other binary in
+this tree answers to. It does **not** prove that a window drawn this way actually appears above SpringBoard's own interface, or that
+`notify_register_dispatch` reaches a dylib injected into SpringBoard's process in its own sandbox and its own launch sequence - nothing short of a device
+answers that, and no device has answered it yet. `tests/backports/device/callkit-screen.m` is the device test written for that measurement: it reports an
+incoming call from a command-line process and waits for a tap on the screen - logged coordinates, driven by `revtouch tap X Y`, never anything else - to
+turn into `performAnswerCallAction:` or `performEndCallAction:` on its own delegate. Until it has run on hardware, the screen is not declared working under
+any description weaker than that.
