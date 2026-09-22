@@ -69,3 +69,15 @@ Android) as it is here; iOS 6 is the first platform it targets, not its limit.
   build trees are gitignored) and are reproducible from the recipes.
 - This repository receives frequent merges through a separate flow; coordinate
   before landing wide changes.
+
+## Traps
+
+- **A framework's own entry in `modules/apple/backports.lua`'s `LIBRARIES` table must not name
+  itself in `frameworks` unless the release actually carries that framework.** CoreVideo and Metal
+  do (the framework exists on-device, only some of its symbols are missing), so `GraphicsBackports`
+  and `MetalBackports` list themselves; GameController, Vision and CallKit do not exist on iOS 6 at
+  all, so `GameControllerBackports`, `VisionBackports` and `CallKitBackports` list every framework
+  they need *except* their own. Listing a framework the release never shipped makes the linker emit
+  an `LC_LOAD_DYLIB` the device cannot satisfy, and the imports check fails with "neither the device
+  nor this build provides" it — this cost a full gate run on the CoreSpotlight backport, which
+  needs the framework's headers to compile against but must not link against the framework itself.
