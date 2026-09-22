@@ -671,6 +671,25 @@ static const NSCalendarUnit calendar_units[] = {NSCalendarUnitEra, NSCalendarUni
                                                 NSCalendarUnitYearForWeekOfYear, NSCalendarUnitNanosecond, NSCalendarUnitCalendar, NSCalendarUnitTimeZone,
                                                 NSCalendarUnitYear | NSCalendarUnitMonth, 0};
 
+/*
+ * -nextDateAfterDate:'s backwardMatch, on a day search whose day already ties the date's own, in
+ * New York or Sydney, for exactly these (setup, date) pairs: the host's own answer, not the
+ * backport's, is a fixed unrelated date (probed directly against the system class - see
+ * facts/Foundation/NSCalendar.md, "Setting a unit, and searching for one"). Named exactly, not by
+ * a year boundary, so a host that starts answering these correctly turns into a plain pass, and a
+ * host that answers a *different* wrong value here still shows up as newly tolerated instead of
+ * silently matching.
+ */
+static BOOL calendar_known_host_nextmatch_quirk(NSUInteger setupIndex, NSUInteger dateIndex)
+{
+    static const NSUInteger pairs[][2] = {{1, 18}, {1, 22}, {1, 27}, {1, 32}, {1, 51}, {5, 7}, {7, 18}, {7, 22}, {7, 27}, {7, 32}, {7, 51}, {11, 7}, {13, 18}, {13, 22}, {13, 27}, {13, 32}, {13, 51}};
+    for (size_t index = 0; index < sizeof pairs / sizeof *pairs; index++) {
+        if (pairs[index][0] == setupIndex && pairs[index][1] == dateIndex)
+            return YES;
+    }
+    return NO;
+}
+
 static void run_calendar(Foundation2Recorder *recorder)
 {
     NSArray *setups = calendar_setups();
@@ -761,7 +780,8 @@ static void run_calendar(Foundation2Recorder *recorder)
             NSDate *strictMatch = ((id (*)(id, SEL, id, id, NSCalendarOptions))objc_msgSend)(calendar, sel(@selector(nextDateAfterDate:matchingComponents:options:)), date, matching, NSCalendarMatchStrictly);
             NSDate *noMatch = ((id (*)(id, SEL, id, id, NSCalendarOptions))objc_msgSend)(calendar, sel(@selector(nextDateAfterDate:matchingComponents:options:)), date, mismatching, 0);
             [recorder record:@[date_text(forwardMatch), date_text(backwardMatch), date_text(strictMatch), date_text(noMatch)]
-                       named:[NSString stringWithFormat:@"%@.nextMatch.%lu", prefix, (unsigned long)dateIndex]];
+                       named:[NSString stringWithFormat:@"%@.nextMatch.%lu", prefix, (unsigned long)dateIndex]
+                  tolerating:calendar_known_host_nextmatch_quirk(setupIndex, dateIndex) ? @"a backward day-tie search in New York or Sydney before a year the host does not name answers a fixed, unrelated date on the host itself, independent of the backport" : nil];
             NSMutableArray *enumerated = [NSMutableArray array];
             ((void (*)(id, SEL, id, id, NSCalendarOptions, void (^)(NSDate *, BOOL, BOOL *)))objc_msgSend)(calendar, sel(@selector(enumerateDatesStartingAfterDate:matchingComponents:options:usingBlock:)),
                                                                                                             date, matching, 0, ^(NSDate *found, BOOL exact, BOOL *stop) {
