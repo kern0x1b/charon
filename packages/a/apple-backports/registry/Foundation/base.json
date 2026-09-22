@@ -1047,6 +1047,14 @@
     "facts": "facts/Foundation/NSURLSession.md"
   },
   {
+    "api": "NSURLSessionConfiguration.TLSMaximumSupportedProtocol",
+    "kind": "property",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURLSession.md",
+    "source": "packages/a/apple-backports/Foundation/NSURLSessionConfiguration.m, which the setter's own entry already documents the absent half of"
+  },
+  {
     "api": "-[NSURLSessionConfiguration setTLSMinimumSupportedProtocol:]",
     "kind": "method",
     "introduced": "7.0",
@@ -1054,6 +1062,14 @@
     "reason": "the release hands its requests to NSURLConnection, which takes no bound on the handshake",
     "effect": "the setter is not there, so respondsToSelector: answers honestly and an unchecked call raises; the getter answers the bound the platform really has",
     "facts": "facts/Foundation/NSURLSession.md"
+  },
+  {
+    "api": "NSURLSessionConfiguration.TLSMinimumSupportedProtocol",
+    "kind": "property",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSURLSession.md",
+    "source": "packages/a/apple-backports/Foundation/NSURLSessionConfiguration.m, which the setter's own entry already documents the absent half of"
   },
   {
     "api": "-[NSURLSessionTask progress]",
