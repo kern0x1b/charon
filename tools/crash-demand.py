@@ -255,10 +255,29 @@ def main():
         return st or "undecided"
 
     # ---- per-app SENDS: carried (methname) minus defined (method_t) minus stock 6.0
+    # Same class of bug as caches/sel/ and aggregate.py's import: a BASE-relative path silently
+    # producing zero rows instead of failing when the whole directory (not just one app's file)
+    # is missing -- found by actually running this file from a location whose BASE doesn't carry
+    # corpus/selcache/, not by inspecting the code. Every selector-level gap depends on this; its
+    # silent absence looks like a smaller-but-plausible run, not a broken one.
+    _SELCACHE_CANDIDATES = [p for p in [
+        os.environ.get("CHARON_CORPUS_DIR"),
+        os.path.join(os.path.expanduser("~"), "Git", "projects", "ios", "coordination", "corpus"),
+        os.path.join(BASE, "corpus"),
+    ] if p]
+    CORPUS_DIR = next((p for p in _SELCACHE_CANDIDATES if os.path.isdir(os.path.join(p, "selcache"))), None)
+    if CORPUS_DIR is None:
+        sys.exit(
+            "crash-demand.py: no corpus/selcache/ directory found (looked in %s). Every "
+            "selector-level (method/property) gap depends on it -- without it the tool still "
+            "runs and still writes a plausible-looking crash-demand-top.tsv, just missing every "
+            "selector row silently. Set CHARON_CORPUS_DIR to the directory that contains "
+            "selcache/ and defcache/." % ", ".join(_SELCACHE_CANDIDATES)
+        )
     sends = {}
     for app in MINOS:
-        mp = os.path.join(BASE, "corpus", "selcache", app + ".json")
-        dp = os.path.join(BASE, "corpus", "defcache", app + ".json")
+        mp = os.path.join(CORPUS_DIR, "selcache", app + ".json")
+        dp = os.path.join(CORPUS_DIR, "defcache", app + ".json")
         if os.path.exists(mp):
             carried = set(json.load(open(mp)))
             defined = set(json.load(open(dp))) if os.path.exists(dp) else set()
