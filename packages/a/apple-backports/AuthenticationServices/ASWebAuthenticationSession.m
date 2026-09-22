@@ -1,5 +1,6 @@
 #import <AuthenticationServices/AuthenticationServices.h>
 #import <SafariServices/SafariServices.h>
+#import "../SafariServices/CharonSafari.h"
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
@@ -133,6 +134,12 @@ __attribute__((constructor)) static void charon_aswebauth_recover_journal(void)
         CharonWebAuthWriteJournal([NSHTTPCookieStorage sharedHTTPCookieStorage].cookies, CharonWebAuthJournalPath());
         CharonWebAuthReplaceCookies(@[]);
         _ephemeralJournalActive = YES;
+    }
+    id<ASWebAuthenticationPresentationContextProviding> provider = _presentationContextProvider;
+    if ([provider respondsToSelector:@selector(presentationAnchorForWebAuthenticationSession:)]) {
+        UIWindow *anchor = [provider presentationAnchorForWebAuthenticationSession:self];
+        if (anchor)
+            _session.charon_presentationWindow = anchor;
     }
     BOOL started = [_session start];
     _spent = _spent || started;

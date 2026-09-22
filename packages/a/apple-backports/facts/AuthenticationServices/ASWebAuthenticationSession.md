@@ -49,11 +49,17 @@ password that looked stored would mislead.
 
 ## What iOS 13 added to the session
 
-- `presentationContextProvider` is kept and read back, weakly, as the release holds it, and is never asked:
-  `presentationAnchorForWebAuthenticationSession:` is not sent. iOS 13 needs the provider to choose which
-  window of which scene the page is presented over, and raises when a session is started without one; this
-  release runs one application with one window, so the page has one place to go and a session with no
-  provider still starts.
+- `presentationContextProvider` is kept and read back, weakly, as the release holds it. `-start` sends it
+  `presentationAnchorForWebAuthenticationSession:` when it responds to the selector, and, if the answer is
+  non-nil, presents the page over that window instead of the key window - `SFAuthenticationSession`'s own
+  `charon_presentationWindow` hook, already built for exactly this and unused until now. This was carried
+  `inert` for a time on the theory that a single-window device makes the question pointless, which mistakes
+  "the answer is almost always the key window" for "the question need not be asked": an application that
+  keeps a second, non-key window around (a picture-in-picture overlay, a window it is mid-transition to)
+  and names it through the provider gets that window, not a guess. iOS 13 also raises when a session is
+  started without a provider at all; this port does not - a session with no provider, or one whose provider
+  returns `nil`, still starts over the key window, since one window is always available to fall back to on
+  this release.
 - `canStart` answers `YES` until the session has been started or cancelled and `NO` after. It is read from
   the port's own state: `SFAuthenticationSession`, which this session wraps, has nothing to ask. `-start`
   and `-cancel` behave exactly as they did before, and only record that the session has been spent.
