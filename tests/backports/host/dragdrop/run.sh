@@ -4,10 +4,10 @@ here=$(cd "$(dirname "$0")" && pwd)
 UIKIT=${UIKIT:-$here/../../../../packages/a/apple-backports/UIKit}
 harness=${DRAGDROP_HARNESS:-$here/../../device}
 build=${DRAGDROP_BUILD:-${TMPDIR:-/tmp}/charon-dragdrop-host}
-sources="UIDragItem.m UIDropProposal.m UIDragInteraction.m UIDropInteraction.m"
+sources="UIDragItem.m UIDropProposal.m UIDragInteraction.m UIDropInteraction.m UIDragDropSession.m"
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
-renames="-DUIDragItem=CharonHostUIDragItem -DUIDropProposal=CharonHostUIDropProposal -DUIDragInteraction=CharonHostUIDragInteraction -DUIDropInteraction=CharonHostUIDropInteraction"
+renames="-DUIDragItem=CharonHostUIDragItem -DUIDropProposal=CharonHostUIDropProposal -DUIDragInteraction=CharonHostUIDragInteraction -DUIDropInteraction=CharonHostUIDropInteraction -DCharonDragDropSession=CharonHostDragDropSession"
 rm -rf "$build"
 mkdir -p "$build"
 objects=""

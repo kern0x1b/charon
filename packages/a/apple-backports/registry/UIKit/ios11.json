@@ -781,19 +781,37 @@
       "api": "UIDropSession",
       "kind": "protocol",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
-      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "no session is ever created, since no drag begins, but the selector must not crash a caller that has one: -loadObjectsOfClass:completion: answers with an empty array, honestly, instead of raising an unrecognized selector",
+      "source": "UIKit of iOS 11.0 arm64; CharonDragDropSession in UIDragDropSession.m",
+      "facts": "facts/UIKit/DragAndDrop.md"
+    },
+    {
+      "api": "-[UIDropSession loadObjectsOfClass:completion:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "implemented",
+      "effect": "calls completion with an empty array and returns a finished NSProgress; capability-honest, since this release never loads anything from a session that is never made",
+      "source": "CharonDragDropSession in UIDragDropSession.m",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UIDragDropSession",
       "kind": "protocol",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
-      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
-      "source": "UIKit of iOS 11.0 arm64"
+      "status": "implemented",
+      "effect": "no session is ever created, since no drag begins, but the selector must not crash a caller that has one: -canLoadObjectsOfClass: answers NO, honestly, instead of raising an unrecognized selector",
+      "source": "UIKit of iOS 11.0 arm64; CharonDragDropSession in UIDragDropSession.m",
+      "facts": "facts/UIKit/DragAndDrop.md"
+    },
+    {
+      "api": "-[UIDragDropSession canLoadObjectsOfClass:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "implemented",
+      "effect": "answers NO; capability-honest, since this release never has anything to offer from a session that is never made",
+      "source": "CharonDragDropSession in UIDragDropSession.m",
+      "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
       "api": "UIDragAnimating",

@@ -130,12 +130,28 @@ static void interactions(void)
     CHECK([weakDrop delegate] == nil, "drop delegate is weak");
 }
 
+static void session(void)
+{
+    id<UIDropSession> session = [[NSClassFromString(@"CharonHostDragDropSession") alloc] init];
+    CHECK(session != nil, "drop session is constructible");
+    CHECK([session canLoadObjectsOfClass:[NSString class]] == NO, "drop session canLoadObjectsOfClass answers NO");
+    __block BOOL called = NO;
+    __block NSArray *loaded = nil;
+    NSProgress *progress = [session loadObjectsOfClass:[NSString class] completion:^(NSArray<__kindof id<NSItemProviderReading>> *objects) {
+        called = YES;
+        loaded = objects;
+    }];
+    CHECK(called && loaded != nil && loaded.count == 0, "drop session loadObjectsOfClass:completion: answers an empty array");
+    CHECK(progress != nil && progress.completedUnitCount == progress.totalUnitCount, "drop session load returns a finished progress");
+}
+
 int main(void)
 {
     @autoreleasepool {
         proposals();
         items();
         interactions();
+        session();
         printf("checks=%d failures=%d\n", charon_checks, charon_failures);
     }
     return charon_failures ? 1 : 0;

@@ -53,4 +53,18 @@ anything, `hasActiveDrag` and `hasActiveDrop` are NO, and the state of a cell do
 not change. `UITableViewDragDelegate` and its kin are protocols the application
 adopts; the package has nothing to do with them. The sessions, the previews and
 the coordinators that a delegate is handed are not carried: they are only ever
-made by the system while a drag is going on. The registry lists them as absent.
+made by the system while a drag is going on. The registry lists most of them as
+absent.
+
+## The two session selectors that must not crash a caller
+
+`-[UIDragDropSession canLoadObjectsOfClass:]` and `-[UIDropSession
+loadObjectsOfClass:completion:]` are the exception: no session object is ever
+made by this release, but a caller holding one must never hit an unrecognized
+selector for asking it. `CharonDragDropSession` in `UIDragDropSession.m` is a
+concrete, private conformer of both protocols that answers honestly instead of
+crashing - `canLoadObjectsOfClass:` is NO and `loadObjectsOfClass:completion:`
+calls its completion with an empty array and returns a finished `NSProgress` -
+the same answer a session that never had anything to offer would give. Nothing
+in this package vends an instance of it yet, since no drag or drop ever begins
+to need one; it exists so the surface is safe to use the day something does.
