@@ -8,6 +8,41 @@ has none. This file is the reasoning behind the answers, a section per range of
 releases, so that a port can see at a glance what it gets, what it gets with a
 difference, and what it will never get here and why.
 
+## iOS 9
+
+### Contacts, over the address book the release already has
+
+There is no wall in front of Contacts. iOS 6.1.3 carries the whole C API of
+`AddressBook` - `ABAddressBookCreate`, `ABAddressBookCopyArrayOfAllPeople`,
+`ABAddressBookSave`, `ABPersonCopyLocalizedPropertyName`, the multi-value family
+and both halves of the vCard pair are exported by the armv7 shared cache - and
+Contacts of iOS 9 is an Objective-C surface over that same local store. So
+`CNContactStore` is an `ABAddressBook`, a `CNContact` is an `ABRecord`, a
+`CNLabeledValue` is one entry of a multi-value, and `CNPhoneNumber`,
+`CNPostalAddress`, `CNSocialProfile` and `CNInstantMessageAddress` are the values
+those entries hold.
+
+What is carried is the whole of the reading and writing path an application of
+the corpus uses: the sixteen classes above with every property of iOS 9 on them,
+the ninety-two constants of iOS 9 and the three iOS 10 keys, each defined with
+the string the release itself holds; the permission, out of
+`ABAddressBookGetAuthorizationStatus` and
+`ABAddressBookRequestAccessWithCompletion`; the fetches, the six predicates, the
+unification of linked people, the formatter, the vCard pair and the user
+defaults; and `CNSaveRequest`, written into the book in one `ABAddressBookSave`.
+What needs a class the package does not carry - groups, containers, the history
+of changes of iOS 13 - is `absent` in `registry/Contacts/ios9.json`, so a call
+raises an unrecognised selector instead of handing back an empty address book.
+
+Two properties have nowhere to live in the release's store and are written down
+rather than faked: `previousFamilyName`, for which the release exports no
+maiden-name property, and `nonGregorianBirthday`, for which it has no alternate
+birthday at all. `subLocality` and `subAdministrativeArea` of iOS 10.3 are empty
+for the same reason. The rest of the differences - the case of the social service
+names, the UUID a labeled value hands out beside the integer the book keeps, and
+what a localized name answers - are in `facts/Contacts/Values.md` and
+`facts/Contacts/CNContactStore.md`.
+
 ## iOS 10
 
 ### Feedback that is a vibration, not a haptic
