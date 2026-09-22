@@ -8,6 +8,11 @@ the key of the getter that was called and only when the user info has no value f
 not asked; a description from the provider replaces the failure reason of the user info, and a failure reason from the provider composes with the standard description text; setting a provider again
 replaces it and `nil` removes it; a copy of an error is answered too; the underlying error is not consulted. Returning `nil` gives the usual fallback.
 
+`+userInfoValueProviderForDomain:` answers the same block object that was set for a domain
+(compared by identity), `nil` for a domain nothing was ever set for, and `nil` again once the
+domain's provider is cleared by setting `nil` - measured with a small probe against the host's
+own Foundation and matched by the backport identically in all three cases.
+
 ## How the port does it
 
 The six getters of `NSError` are replaced at load time by ones that ask the provider for their key, when the release has no such method on the class, before the release's own answer. The providers

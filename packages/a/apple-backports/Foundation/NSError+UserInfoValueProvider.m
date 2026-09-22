@@ -36,6 +36,17 @@ static id charon_provided(NSError *error, NSErrorUserInfoKey key)
     }
 }
 
++ (id (^)(NSError *, NSErrorUserInfoKey))userInfoValueProviderForDomain:(NSErrorDomain)errorDomain
+{
+    if (!errorDomain)
+        return nil;
+    id provider;
+    @synchronized(charon_providers()) {
+        provider = charon_providers()[errorDomain];
+    }
+    return provider;
+}
+
 - (NSString *)localizedDescription
 {
     return charon_provided(self, NSLocalizedDescriptionKey) ?: [NSString stringWithFormat:@"%@ %ld", self.domain, (long)self.code];
