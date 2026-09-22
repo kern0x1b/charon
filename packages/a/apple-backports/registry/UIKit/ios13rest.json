@@ -4191,41 +4191,129 @@
       "api": "-[UIDocumentPickerViewController initForExportingURLs:]",
       "kind": "method",
       "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the content types are UTType objects, and UniformTypeIdentifiers, which makes them, is not on iOS 6",
-      "effect": "the method is not there; the initialisers of iOS 8 to 13 are",
-      "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDocumentPickerViewController.md",
+      "source": "the public headers of SDK 26.5 (the real default: the original document is moved, matching initForExportingURLs:urls asCopy:NO); the port's own initWithURLs:inMode: for the rest"
     },
     {
       "api": "-[UIDocumentPickerViewController initForExportingURLs:asCopy:]",
       "kind": "method",
       "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the content types are UTType objects, and UniformTypeIdentifiers, which makes them, is not on iOS 6",
-      "effect": "the method is not there; the initialisers of iOS 8 to 13 are",
-      "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDocumentPickerViewController.md",
+      "source": "carried onto the port's own initWithURLs:inMode:, asCopy mapped to Export/Move exactly as the SDK 26.5 header documents"
     },
     {
       "api": "-[UIDocumentPickerViewController initForOpeningContentTypes:]",
       "kind": "method",
       "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the content types are UTType objects, and UniformTypeIdentifiers, which makes them, is not on iOS 6",
-      "effect": "the method is not there; the initialisers of iOS 8 to 13 are",
-      "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDocumentPickerViewController.md",
+      "source": "the public headers of SDK 26.5 (the real default: the original document, matching initForOpeningContentTypes:contentTypes asCopy:NO); the port's own initWithDocumentTypes:inMode: for the rest"
     },
     {
       "api": "-[UIDocumentPickerViewController initForOpeningContentTypes:asCopy:]",
       "kind": "method",
       "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the content types are UTType objects, and UniformTypeIdentifiers, which makes them, is not on iOS 6",
-      "effect": "the method is not there; the initialisers of iOS 8 to 13 are",
-      "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDocumentPickerViewController.md",
+      "source": "carried onto the port's own initWithDocumentTypes:inMode:, contentTypes reduced to their UTType.identifier and asCopy mapped to Import/Open exactly as the SDK 26.5 header documents"
+    },
+    {
+      "api": "UTType",
+      "kind": "class",
+      "introduced": "14.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UTType.md",
+      "source": "the local SDK's own UniformTypeIdentifiers/UTType.h and UTCoreTypes.h for the surface and the eleven constants' identifiers; UTType* C functions MobileCoreServices already carries on iOS 6 for the behaviour"
+    },
+    {
+      "api": "UTTypeItem",
+      "kind": "constant",
+      "introduced": "14.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UTType.md",
+      "source": "the local SDK's UTCoreTypes.h, identifier public.item"
+    },
+    {
+      "api": "UTTypeContent",
+      "kind": "constant",
+      "introduced": "14.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UTType.md",
+      "source": "the local SDK's UTCoreTypes.h, identifier public.content"
+    },
+    {
+      "api": "UTTypeData",
+      "kind": "constant",
+      "introduced": "14.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UTType.md",
+      "source": "the local SDK's UTCoreTypes.h, identifier public.data"
+    },
+    {
+      "api": "UTTypeDirectory",
+      "kind": "constant",
+      "introduced": "14.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UTType.md",
+      "source": "the local SDK's UTCoreTypes.h, identifier public.directory"
+    },
+    {
+      "api": "UTTypeURL",
+      "kind": "constant",
+      "introduced": "14.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UTType.md",
+      "source": "the local SDK's UTCoreTypes.h, identifier public.url"
+    },
+    {
+      "api": "UTTypeFileURL",
+      "kind": "constant",
+      "introduced": "14.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UTType.md",
+      "source": "the local SDK's UTCoreTypes.h, identifier public.file-url"
+    },
+    {
+      "api": "UTTypeText",
+      "kind": "constant",
+      "introduced": "14.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UTType.md",
+      "source": "the local SDK's UTCoreTypes.h, identifier public.text"
+    },
+    {
+      "api": "UTTypePlainText",
+      "kind": "constant",
+      "introduced": "14.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UTType.md",
+      "source": "the local SDK's UTCoreTypes.h, identifier public.plain-text"
+    },
+    {
+      "api": "UTTypeUTF8PlainText",
+      "kind": "constant",
+      "introduced": "14.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UTType.md",
+      "source": "the local SDK's UTCoreTypes.h, identifier public.utf8-plain-text"
+    },
+    {
+      "api": "UTTypeImage",
+      "kind": "constant",
+      "introduced": "14.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UTType.md",
+      "source": "the local SDK's UTCoreTypes.h, identifier public.image"
+    },
+    {
+      "api": "UTTypePDF",
+      "kind": "constant",
+      "introduced": "14.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UTType.md",
+      "source": "the local SDK's UTCoreTypes.h, identifier com.adobe.pdf"
     },
     {
       "api": "-[UISplitViewController hideColumn:]",

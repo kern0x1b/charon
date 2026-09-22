@@ -1,12 +1,14 @@
 # UIDocumentPickerViewController, iOS 8
 
 Introduced in iOS 8: the view controller through which an application opens or imports a document, and exports or
-moves one. iOS 11 added the plural `initWithURLs:` and `allowsMultipleSelection`, and iOS 13 `shouldShowFileExtensions`
-and `directoryURL`.
+moves one. iOS 11 added the plural `initWithURLs:` and `allowsMultipleSelection`, iOS 13 `shouldShowFileExtensions`
+and `directoryURL`, and iOS 14 the four `UTType`-based initializers below.
 
 Source: the host's own UIKit under Mac Catalyst, asked for every initializer and mode and held against the port by the
 `documentpicker` group of `tests/backports/host/uikit2/run.sh`; and `tests/backports/device/documentpicker.m`, which
-drives the browser with real touches on iOS 6.
+drives the browser with real touches on iOS 6. The iOS 14 pair's defaults are not from Catalyst but from the local
+machine's own SDK header - `UIDocumentPickerViewController.h` under `/Library/Developer/CommandLineTools/SDKs/
+MacOSX26.5.sdk` - which documents each default in its doc comment; see `UTType.md` for the class the two pairs take.
 
 ## What the port does as the system does
 
@@ -14,6 +16,18 @@ drives the browser with real touches on iOS 6.
 others; `initWithURL:inMode:` and `initWithURLs:inMode:` take the export and move modes and raise the same for the
 others, with the system's reasons. `init` and `initWithNibName:bundle:` raise `NSInvalidArgumentException`. The
 properties are kept and the delegate is weak.
+
+## The iOS 14 initializers
+
+`initForOpeningContentTypes:contentTypes asCopy:asCopy` reduces `contentTypes` to their `UTType.identifier` and calls
+`initWithDocumentTypes:inMode:` with Import if `asCopy` is set, Open otherwise - the same Import/Open distinction the
+port's browser already implements. `initForOpeningContentTypes:` calls it with `asCopy:NO`, matching the header's own
+doc comment ("giving you access to the original document").
+
+`initForExportingURLs:urls asCopy:asCopy` calls `initWithURLs:inMode:` with Export if `asCopy` is set, Move otherwise.
+`initForExportingURLs:` calls it with `asCopy:NO`, matching the header's own doc comment for the single-argument form
+("the original document will be moved to the destination") - the opposite default from the opening pair, read
+directly off the header rather than assumed to match.
 
 ## The browser
 

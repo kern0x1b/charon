@@ -1,6 +1,7 @@
 #import <UIKit/UIKit.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "CharonDocumentBrowser.h"
+#import "CharonUTType.h"
 
 @implementation UIDocumentPickerViewController {
     UIDocumentPickerMode _documentPickerMode;
@@ -47,6 +48,29 @@
         _documentPickerMode = mode;
     }
     return self;
+}
+
+- (instancetype)initForOpeningContentTypes:(NSArray<UTType *> *)contentTypes asCopy:(BOOL)asCopy
+{
+    NSMutableArray<NSString *> *identifiers = [NSMutableArray arrayWithCapacity:contentTypes.count];
+    for (UTType *type in contentTypes)
+        [identifiers addObject:type.identifier];
+    return [self initWithDocumentTypes:identifiers inMode:asCopy ? UIDocumentPickerModeImport : UIDocumentPickerModeOpen];
+}
+
+- (instancetype)initForOpeningContentTypes:(NSArray<UTType *> *)contentTypes
+{
+    return [self initForOpeningContentTypes:contentTypes asCopy:NO];
+}
+
+- (instancetype)initForExportingURLs:(NSArray<NSURL *> *)urls asCopy:(BOOL)asCopy
+{
+    return [self initWithURLs:urls inMode:asCopy ? UIDocumentPickerModeExportToService : UIDocumentPickerModeMoveToService];
+}
+
+- (instancetype)initForExportingURLs:(NSArray<NSURL *> *)urls
+{
+    return [self initForExportingURLs:urls asCopy:NO];
 }
 
 - (instancetype)init
