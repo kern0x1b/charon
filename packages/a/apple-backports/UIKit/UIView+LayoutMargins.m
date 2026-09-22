@@ -7,6 +7,7 @@
 
 static char charon_margins_key;
 static char charon_preserves_key;
+static char charon_insets_from_safe_area_key;
 
 static void charon_margins_changed(UIView *view)
 {
@@ -26,15 +27,22 @@ static void charon_margins_changed(UIView *view)
     NSValue *stored = objc_getAssociatedObject(self, &charon_margins_key);
     UIEdgeInsets margins = stored ? [stored UIEdgeInsetsValue] : UIEdgeInsetsMake(8, 8, 8, 8);
     UIView *superview = self.superview;
-    if (!superview || ![objc_getAssociatedObject(self, &charon_preserves_key) boolValue])
-        return margins;
-    UIEdgeInsets inherited = [superview layoutMargins];
-    CGRect bounds = superview.bounds;
-    CGRect frame = self.frame;
-    margins.top = MAX(margins.top, inherited.top - MAX(CGRectGetMinY(frame) - CGRectGetMinY(bounds), 0));
-    margins.left = MAX(margins.left, inherited.left - MAX(CGRectGetMinX(frame) - CGRectGetMinX(bounds), 0));
-    margins.bottom = MAX(margins.bottom, inherited.bottom - MAX(CGRectGetMaxY(bounds) - CGRectGetMaxY(frame), 0));
-    margins.right = MAX(margins.right, inherited.right - MAX(CGRectGetMaxX(bounds) - CGRectGetMaxX(frame), 0));
+    if (superview && [objc_getAssociatedObject(self, &charon_preserves_key) boolValue]) {
+        UIEdgeInsets inherited = [superview layoutMargins];
+        CGRect bounds = superview.bounds;
+        CGRect frame = self.frame;
+        margins.top = MAX(margins.top, inherited.top - MAX(CGRectGetMinY(frame) - CGRectGetMinY(bounds), 0));
+        margins.left = MAX(margins.left, inherited.left - MAX(CGRectGetMinX(frame) - CGRectGetMinX(bounds), 0));
+        margins.bottom = MAX(margins.bottom, inherited.bottom - MAX(CGRectGetMaxY(bounds) - CGRectGetMaxY(frame), 0));
+        margins.right = MAX(margins.right, inherited.right - MAX(CGRectGetMaxX(bounds) - CGRectGetMaxX(frame), 0));
+    }
+    if (self.insetsLayoutMarginsFromSafeArea) {
+        UIEdgeInsets safe = self.safeAreaInsets;
+        margins.top = MAX(margins.top, safe.top);
+        margins.left = MAX(margins.left, safe.left);
+        margins.bottom = MAX(margins.bottom, safe.bottom);
+        margins.right = MAX(margins.right, safe.right);
+    }
     return margins;
 }
 
@@ -62,6 +70,20 @@ static void charon_margins_changed(UIView *view)
 
 - (void)layoutMarginsDidChange
 {
+}
+
+- (BOOL)insetsLayoutMarginsFromSafeArea
+{
+    NSNumber *stored = objc_getAssociatedObject(self, &charon_insets_from_safe_area_key);
+    return stored ? stored.boolValue : YES;
+}
+
+- (void)setInsetsLayoutMarginsFromSafeArea:(BOOL)insetsLayoutMarginsFromSafeArea
+{
+    if (self.insetsLayoutMarginsFromSafeArea == insetsLayoutMarginsFromSafeArea)
+        return;
+    objc_setAssociatedObject(self, &charon_insets_from_safe_area_key, @(insetsLayoutMarginsFromSafeArea), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    charon_margins_changed(self);
 }
 
 @end

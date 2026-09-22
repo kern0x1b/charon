@@ -68,9 +68,14 @@ what UIKit does anyway, once per level.
 
 **The callbacks are not declared.** `-safeAreaInsetsDidChange` and `-viewSafeAreaInsetsDidChange` would each be a promise the port
 cannot keep: they are called from the moment of change, which the port never sees. They are in the registry as `absent` with that
-reason, and so is `insetsLayoutMarginsFromSafeArea`: it would only mean something if it changed what `-layoutMargins` answers, and that
-method belongs to the iOS 8 backport, not to this one. A flag that layout reads and believes, while nothing acts on it, is worse than no
-flag.
+reason.
+
+**`insetsLayoutMarginsFromSafeArea` is carried, and wired into `-layoutMargins`.** It is a stored `BOOL`
+(`UIView+LayoutMargins.m`, an associated object, default `YES` as on every release that has it) read by `-layoutMargins` itself: when
+it is `YES`, the margins `-layoutMargins` would otherwise answer are maxed, edge by edge, against `-safeAreaInsets` — the same
+`max()` iOS 11 does at `0x18a27bca4`. This is not a promise the port cannot keep the way the two callbacks above are: `-layoutMargins`
+is computed on every read already, so folding `-safeAreaInsets` in costs nothing the getter was not already paying, and the flag
+genuinely changes what the next read of `-layoutMargins` answers instead of being read and believed for nothing.
 
 **`-safeAreaLayoutGuide` is carried.** An application that constrains to the guide (`view.safeAreaLayoutGuide.topAnchor`) failed on iOS 6 with an
 unrecognized selector, and the guide can be kept live now that the port has layout guides. The property answers one `UILayoutGuide` per view, owned

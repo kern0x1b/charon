@@ -222,9 +222,7 @@
       "kind": "property",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the flag only means anything if it changes -layoutMargins, which belongs to the iOS 8 backport and does not answer to this port",
-      "effect": "the property is not declared, so respondsToSelector: answers honestly; a flag that changed nothing would be worse, since layout would read it and believe it",
+      "status": "implemented",
       "facts": "facts/UIKit/UIViewSafeArea.md",
       "source": "UIKit of iOS 11.0 arm64, -[UIView layoutMargins] at 0x18a27bca4, which folds the safe area in before answering"
     },
