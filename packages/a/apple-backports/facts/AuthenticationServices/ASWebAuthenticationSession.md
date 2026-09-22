@@ -57,41 +57,45 @@ password that looked stored would mislead.
 - `canStart` answers `YES` until the session has been started or cancelled and `NO` after. It is read from
   the port's own state: `SFAuthenticationSession`, which this session wraps, has nothing to ask. `-start`
   and `-cancel` behave exactly as they did before, and only record that the session has been spent.
-- `prefersEphemeralWebBrowserSession` is **not** carried. It is absent rather than kept-and-ignored: the one
-  thing the property promises is that the sign-in leaves no trace, and an application told that falsely is
-  worse off than one told nothing. `respondsToSelector:` answers NO and the application can see what it is
-  not getting.
+- `prefersEphemeralWebBrowserSession` is a real, settable `BOOL` and `-start` acts on it (below). It was
+  carried absent for a time on the theory that "the release has no private browsing mode" was a wall; it
+  is not one, only more work than the property's own getter/setter, and the coordinator's 2026-09-22
+  ruling that difficulty is not a wall is what reopened it.
 
-## Why the ephemeral session is absent, and what it would take
+## The ephemeral session
 
-This is written down so that the next person does not start from the beginning and pay the same price.
+This release has exactly one cookie jar per process and no store per web view: the selector table of
+6.1.3 has `_cookieStorage`, `_cf2nsCookies:` and `_ns2cfCookies:`, the single CFNetwork-to-Foundation
+bridge, and has no `websiteDataStore`, no `ephemeralDataStore` and no non-persistent web data store of any
+kind - the only `nonPersistent` names in the release are about keychain credentials, not the web. A
+`UIWebView` has nothing to read cookies from except that one jar, so isolating a sign-in flow means
+emptying the jar for the flow's duration, not switching to a private store; the session is modal and the
+phone runs one application at a time, so nothing else reads the jar meanwhile.
 
-**The mechanism exists and would work.** This release has exactly one cookie jar per process and no store
-per web view: the selector table of 6.1.3 has `_cookieStorage`, `_cf2nsCookies:` and `_ns2cfCookies:`, the
-single CFNetwork-to-Foundation bridge, and has no `websiteDataStore`, no `ephemeralDataStore` and no
-non-persistent web data store of any kind - the only `nonPersistent` names in the release are about keychain
-credentials, not the web. There is therefore nothing for a `UIWebView` to read cookies from except that one
-jar, and a session that emptied it would really be isolated from what was there before. The session is
-modal and the phone runs one application at a time, so nothing else would be reading the jar meanwhile.
+**The journal.** Save-the-jar-empty-it-put-it-back makes every cookie the application owns depend on the
+process surviving the login; on a 282 MB jetsam ceiling being killed mid-flow is ordinary. `-start`, when
+`prefersEphemeralWebBrowserSession` is set, first serializes `NSHTTPCookieStorage`'s cookies (their
+`.properties`, a plist-safe dictionary each) to a binary plist under `NSApplicationSupportDirectory`,
+empties the jar, then starts the wrapped session. The completion handler, `-cancel`, and a failed `-start`
+all restore from that journal and delete it - whichever of the three ends the flow, the jar goes back to
+what it held before, discarding whatever the sign-in page itself set. A `constructor` function runs at
+image load, before any application code, and restores a leftover journal if one is found: a kill mid-flow
+costs a restart, not the cookies.
 
-**What stops it is the cost, not the difficulty.** Save-the-jar, empty it, run the sign-in, put it back
-makes every cookie the application owns depend on the process living to the end of a web login. On an
-iPhone 4S the jetsam ceiling is 282 MB and being killed in the middle of a web view flow is ordinary, not
-exotic. The failure is not that the privacy promise is unmet - it is that the user loses every session they
-were signed into, in an application that was only trying to be careful. That is worse than not offering the
-feature.
+**The URL cache.** `[NSURLCache sharedURLCache] removeAllCachedResponses]` is called once the flow ends,
+alongside the cookie restore. It needs no journal of its own: losing a cached response only costs a
+re-fetch, never a lost session, so what the flow cached (and, as a side effect, whatever else was cached at
+the time) is discarded rather than snapshotted and put back.
 
-**It is fixable, and the fix is a journal.** Write the snapshot of the jar to disk atomically *before*
-emptying it, and restore from that journal on the next launch if it is still there. A kill mid-session then
-costs a restart, not the cookies. That is the design to build when this is picked up.
+**What is still not isolated, and is not claimed to be.** The property promises an ephemeral *browsing
+session*, not ephemeral cookies: `localStorage` and WebSQL databases are part of what a sign-in leaves
+behind, and `UIWebView` keeps those in its own directories, not the cookie jar or the URL cache. Isolating
+them would mean snapshotting and restoring those directories too, which this does not do. A port built on
+this must not describe the session as fully ephemeral without that caveat - only cookies and the URL cache
+are isolated, exactly as this property backs onto for a `UIWebView`-drawn page.
 
-**Even with the journal it would be partial, and it must be called that.** The property promises an
-ephemeral *browsing session*, not ephemeral cookies: `localStorage`, WebSQL databases and the URL cache are
-part of what a sign-in leaves behind, and `UIWebView` keeps those in its own directories rather than in the
-cookie jar. Isolating them means snapshotting and restoring those directories too - moving the
-application's own web data on every sign-in - so the honest first step carries cookies and the URL cache
-and says plainly that local and database storage are not isolated. A port that ships this must not describe
-it as an ephemeral session without that sentence.
-
-The work is planned rather than refused. It is not done now because the demand is a single application, the
-journal and the measurement need a real `UIWebView` on a device, and that measurement has not been made.
+**What was not measured.** The journal and the constructor's recovery path were written against the same
+`NSHTTPCookieStorage`/`NSPropertyListSerialization`/`NSURLCache` API this file already used or that iOS 6
+has carried since its first release; no device run exercised a real jetsam kill mid-flow to confirm the
+constructor's recovery path fires correctly at the next launch. That is reasoned, not measured, and is
+recorded here as exactly that.

@@ -139,9 +139,9 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the page is drawn by the UIWebView of this release, which shares the application's cookie and cache store and has no private mode. The isolation is buildable - the release has one cookie jar per process and no store per web view, so emptying it around a modal sign-in would really isolate one - but doing it without a journal makes every cookie the application owns depend on the process surviving the login, and on a device with a 282 MB jetsam ceiling being killed mid-flow is ordinary; losing every session the user was signed into is worse than not offering the feature. The work is planned, not refused: write the jar to disk before emptying it and restore from that journal at the next launch. Even then it would isolate cookies and the URL cache and not local or database storage, and would have to say so",
-      "effect": "the property is not there: respondsToSelector: answers NO, so an application can see it cannot have an ephemeral session instead of being told it has one",
+      "status": "implemented",
+      "reason": "the release has one process-wide cookie jar and no store per UIWebView, so isolating a sign-in flow means emptying that jar for the flow's duration, not switching to a private store. The jar is journaled to a plist on disk before it is emptied (a jetsam kill mid-flow must not cost the application every cookie it owned), replaced empty, and restored from the journal when the flow ends by any path - completion, cancellation, or a fresh launch finding a leftover journal from a kill",
+      "effect": "starting an ephemeral session empties the shared cookie jar for the flow and restores exactly what was there before once it ends; cookies and the URL cache are isolated, local and database storage are not, since UIWebView has no such per-session store to isolate on this release",
       "source": "the headers of SDK 16.4; AuthenticationServices of the arm64 shared cache of iOS 13.0 for what the release does, and the SFAuthenticationSession of iOS 11 this package's session is built on for what it can do",
       "facts": "facts/AuthenticationServices/ASWebAuthenticationSession.md"
     },
