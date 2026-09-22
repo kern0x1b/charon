@@ -7,10 +7,10 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the class is a strong-imported LOAD-FAIL for provenance and telegram; iOS 6.1.3 carries no system Spotlight index CSSearchableIndex can write to (Spotlight.framework's SPSpotlightManager is a pull model from the app's own records, not the push write this class documents), so the class is real and every write answers the error iOS itself gives where indexing is unsupported",
-      "effect": "isIndexingAvailable answers NO; defaultSearchableIndex and initWithName: give a real instance; indexSearchableItems:, the two delete methods, deleteAllSearchableItemsWithCompletionHandler: and endIndexBatchWithClientState:completionHandler: call their handler with CSIndexErrorDomain code CSIndexErrorCodeIndexingUnsupported (-1005), the release's own code and text for a device without indexing; beginIndexBatch does nothing, since there is no batch to begin",
+      "reason": "the class is a strong-imported LOAD-FAIL for provenance and telegram; iOS 6.1.3 has no CSSearchableIndex-shaped system index, so this port keeps the journal itself, in a real per-index store under Application Support, and bridges it to the release's own Spotlight.framework private class SPSpotlightManager, whose pull model (startRecordUpdatesForApplication:andCategory:, requestRecordUpdatesForApplication:category:andIDs:, notifyIndexer) already serves Messages and Calendar on this release",
+      "effect": "isIndexingAvailable answers YES; defaultSearchableIndex and initWithName: give a real instance backed by its own plist store; indexSearchableItems:, the two delete methods and deleteAllSearchableItemsWithCompletionHandler: write or remove entries in that store and call their handler with a nil error; beginIndexBatch does nothing since the store commits synchronously, endIndexBatchWithClientState:completionHandler: persists the client state (refusing on the unbatched defaultSearchableIndex, per the header) and fetchLastClientStateWithCompletionHandler: reads it back; every mutation also registers the index's category with SPSpotlightManager and pushes the changed identifiers to it, best-effort and never fatal if the private class or its selectors are absent",
       "facts": "facts/CoreSpotlight/CoreSpotlight.md",
-      "source": "the header of iOS 16.4 for the contract; Spotlight.framework of the armv7 shared cache of iOS 6.1.3, SPSpotlightManager"
+      "source": "the header of iOS 16.4 for the contract; Spotlight.framework and Search.framework of the armv7 shared cache of iOS 6.1.3, disassembled with modules/apple/dyld.lua's extract"
     },
     {
       "api": "CSSearchableItem",

@@ -1189,9 +1189,11 @@ function extract(cachefile, install, outputfile)
             for _, described in ipairs(linkedit_commands) do
                 if described.at == at then
                     for _, field in ipairs(described.fields) do
-                        local position, value = field[1], field[2]
-                        if value > 0 then
+                        local position, value, length = field[1], field[2], field[3]
+                        if value > 0 and length > 0 then
                             body = body:sub(1, position) .. string.pack("<I4", value + shift) .. body:sub(position + 5)
+                        elseif value > 0 then
+                            body = body:sub(1, position) .. string.pack("<I4", 0) .. body:sub(position + 5)
                         end
                     end
                     if described.dyld_info then
