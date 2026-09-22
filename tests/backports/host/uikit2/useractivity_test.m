@@ -21,6 +21,7 @@
 @property (nonatomic, getter=isEligibleForHandoff) BOOL eligibleForHandoff;
 @property (nonatomic, getter=isEligibleForSearch) BOOL eligibleForSearch;
 @property (nonatomic, getter=isEligibleForPublicIndexing) BOOL eligibleForPublicIndexing;
+@property (nonatomic, getter=isEligibleForPrediction) BOOL eligibleForPrediction;
 - (void)addUserInfoEntriesFromDictionary:(NSDictionary *)dictionary;
 - (void)becomeCurrent;
 - (void)resignCurrent;
@@ -58,9 +59,9 @@ static NSString *raised(void (^block)(void))
 
 static NSString *state(id a)
 {
-    return [NSString stringWithFormat:@"type=%@ title=%@ info=%@ req=%@ needsSave=%d web=%@ exp=%@ kw=%@ streams=%d handoff=%d search=%d public=%d",
+    return [NSString stringWithFormat:@"type=%@ title=%@ info=%@ req=%@ needsSave=%d web=%@ exp=%@ kw=%@ streams=%d handoff=%d search=%d public=%d prediction=%d",
             [a activityType], [a title], [a userInfo], [a requiredUserInfoKeys], [a needsSave], [a webpageURL], [a expirationDate], [a keywords],
-            [a supportsContinuationStreams], [a isEligibleForHandoff], [a isEligibleForSearch], [a isEligibleForPublicIndexing]];
+            [a supportsContinuationStreams], [a isEligibleForHandoff], [a isEligibleForSearch], [a isEligibleForPublicIndexing], [a isEligibleForPrediction]];
 }
 
 int main(void)
@@ -90,7 +91,7 @@ int main(void)
             charon_check([one isEqualToString:two], [[@"the web page URL " stringByAppendingString:address] UTF8String], ([NSString stringWithFormat:@"%@ != %@", one, two]));
         }
         both(^(id a) { [a setWebpageURL:nil]; [a setKeywords:[NSSet setWithObjects:@"a", @"b", nil]]; [a setRequiredUserInfoKeys:[NSSet setWithObject:@"k"]]; [a setExpirationDate:[NSDate dateWithTimeIntervalSince1970:100]];
-            [a setEligibleForHandoff:NO]; [a setEligibleForSearch:YES]; [a setEligibleForPublicIndexing:YES]; [a setSupportsContinuationStreams:YES]; });
+            [a setEligibleForHandoff:NO]; [a setEligibleForSearch:YES]; [a setEligibleForPublicIndexing:YES]; [a setEligibleForPrediction:NO]; [a setSupportsContinuationStreams:YES]; });
         charon_check([state(ours) isEqualToString:state(system)], "keywords, keys, expiry, eligibility and the identifier", ([NSString stringWithFormat:@"%@\n%@", state(ours), state(system)]));
         NSString *one = raised(^{ (void)[[CharonHostNSUserActivity alloc] initWithActivityType:@""]; });
         NSString *two = raised(^{ (void)[[NSUserActivity alloc] initWithActivityType:@""]; });

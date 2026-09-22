@@ -16,10 +16,11 @@ NSString *const NSUserActivityTypeBrowsingWeb = @"NSUserActivityTypeBrowsingWeb"
     BOOL _eligibleForHandoff;
     BOOL _eligibleForSearch;
     BOOL _eligibleForPublicIndexing;
+    BOOL _eligibleForPrediction;
     BOOL _current;
 }
 
-@dynamic referrerURL, targetContentIdentifier, eligibleForPrediction, persistentIdentifier;
+@dynamic referrerURL, targetContentIdentifier, persistentIdentifier;
 
 - (instancetype)init
 {
@@ -41,6 +42,7 @@ NSString *const NSUserActivityTypeBrowsingWeb = @"NSUserActivityTypeBrowsingWeb"
     _userInfo = @{};
     _needsSave = YES;
     _eligibleForHandoff = YES;
+    _eligibleForPrediction = YES;
     return self;
 }
 
@@ -181,6 +183,16 @@ NSString *const NSUserActivityTypeBrowsingWeb = @"NSUserActivityTypeBrowsingWeb"
 - (void)setEligibleForPublicIndexing:(BOOL)eligible
 {
     _eligibleForPublicIndexing = eligible;
+}
+
+- (BOOL)isEligibleForPrediction
+{
+    return _eligibleForPrediction;
+}
+
+- (void)setEligibleForPrediction:(BOOL)eligible
+{
+    _eligibleForPrediction = eligible;
 }
 
 - (void)becomeCurrent
