@@ -1,10 +1,12 @@
-# `NSConstantArray`, `NSConstantDictionary` and `NSConstantIntegerNumber`
+# `NSConstantArray`, `NSConstantDictionary`, `NSConstantIntegerNumber` and `NSConstantDoubleNumber`
 
 Source: a real strong import, read directly out of a shipped binary rather than out of a header
-- none of the three classes appears in any SDK header, because the compiler emits them itself and
-an application never spells their names. Read with `nm -u`, `dyld_info -fixups` and raw file
-reads against `UTM.app/UTM` (arm64, from the corpus scratchpad's extracted Payload; the same three
-symbols are imported by Delta and Provenance from the same corpus, one or two classes each).
+- none of the four classes appears in any SDK header, because the compiler emits them itself and
+an application never spells their names. The first three were read with `nm -u`, `dyld_info
+-fixups` and raw file reads against `UTM.app/UTM` (arm64, from the corpus scratchpad's extracted
+Payload; the same symbols are imported by Delta and Provenance from the same corpus, one or two
+classes each). `NSConstantDoubleNumber` (`provenance`, one strong import, `crash-demand-top.tsv`
+rank 65) was not read the same way - see its own section below.
 
 ## What the compiler does
 
@@ -38,6 +40,22 @@ requirement, since the compiler already built the object.
   `-objCType`, and the trailing eight bytes are the literal's own value, stored whole regardless of
   the encoded width (`0`, `2`, `3`, `12` were the values actually seen).
 
+## `NSConstantDoubleNumber`, reasoned rather than read
+
+No shipped binary that strongly imports `NSConstantDoubleNumber` was available to this band to
+disassemble - `provenance`'s own binary, the one the demand row names, was not on hand either.
+The layout carried (`isa`, `const char *objCType`, `double value`) is not invented: it is the same
+`isa`-then-`objCType`-then-`value` shape measured for `NSConstantIntegerNumber` above, on the
+reasoning that both classes come from the same clang codegen path - a boxed literal, `@(expr)`,
+that clang can fold at compile time because `expr` is itself a compile-time constant - and clang
+does not invent a second struct shape for a second numeric flavour of the same optimisation. What
+changed from the measured class is only the trailing field's width and the type-encoding character
+`objCType` points at: `"d"` for a `double` expression, presumably `"f"` for a `float` one, in place
+of `"i"`/`"q"`. Confirming the exact byte offsets against a real binary - and finding out whether a
+boxed `float` literal really does widen to an 8-byte `double` in storage the way this class assumes,
+matching how the integer class stores every width in a full 8 bytes - is future work for whichever
+band next holds a binary that imports this class strongly.
+
 ## What the backport does
 
 Each class reads its own bound instance through a fixed-offset struct overlay, the way
@@ -45,9 +63,14 @@ Each class reads its own bound instance through a fixed-offset struct overlay, t
 are declared, so nothing depends on how this compiler's non-fragile layout would place them.
 `NSConstantArray` and `NSConstantDictionary` implement the minimum NSArray/NSDictionary primitives
 (`-count`, `-objectAtIndex:`, `-objectForKey:`, `-keyEnumerator`) that the class clusters build the
-rest of their behaviour on. `NSConstantIntegerNumber` implements every `NSNumber` accessor
-directly against the stored 64-bit value, rather than leaning on an inherited default that real
-`NSNumber` does not guarantee for a subclass it never expects.
+rest of their behaviour on. `NSConstantIntegerNumber` and `NSConstantDoubleNumber` each implement
+every `NSNumber` accessor directly against their own stored value, rather than leaning on an
+inherited default that real `NSNumber` does not guarantee for a subclass it never expects.
+`NSConstantDoubleNumber`'s `-stringValue` picks the shortest decimal that reads back to the same
+`double`, the property a real `NSNumber`'s description promises, rather than reproducing
+`CFNumber`'s own formatter byte for byte; this was not held against a host oracle, since no
+UIKit/Foundation host test can construct a compile-time-constant literal the way a real binary's
+`isa`-bound instance is built.
 
 ## What is not known
 

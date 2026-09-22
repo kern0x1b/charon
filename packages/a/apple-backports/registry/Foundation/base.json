@@ -1589,6 +1589,14 @@
     "source": "a strong import of UTM.app/UTM (arm64, corpus), read through nm, dyld_info -fixups and raw file offsets"
   },
   {
+    "api": "NSConstantDoubleNumber",
+    "kind": "class",
+    "introduced": "13.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSConstantLiterals.md",
+    "source": "crash-demand-top.tsv rank 65, a strong import of provenance (coordinator 2026-09-22 override: LOAD-FAIL class, absent forbidden by COORDINATION.md §2); layout reasoned by analogy to NSConstantIntegerNumber's measured one, no binary of provenance's own was available to disassemble"
+  },
+  {
     "api": "NSDateComponentsFormatter",
     "kind": "class",
     "introduced": "8.0",
