@@ -131,6 +131,12 @@ static NSString *charon_call_file(NSString *name)
 __attribute__((constructor))
 static void charon_callkit_screen_load(void)
 {
+    [[NSFileManager defaultManager] createDirectoryAtPath:charon_call_screen_folder withIntermediateDirectories:YES
+                                                attributes:@{NSFilePosixPermissions: @(0777)} error:NULL];
+    NSString *marker = [NSString stringWithFormat:@"pid=%d\n", getpid()];
+    [marker writeToFile:charon_call_file(@"loaded") atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+    notify_post("org.charon.callkit.screen-loaded");
+
     static int incoming = NOTIFY_TOKEN_INVALID, ended = NOTIFY_TOKEN_INVALID;
     notify_register_dispatch(charon_call_incoming, &incoming, dispatch_get_main_queue(), ^(int token) {
         (void)token;
