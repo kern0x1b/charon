@@ -41,10 +41,9 @@ shared cache of 6.1.3 for the calls behind it.
 
 The fetches, the save request and the change notification are carried, and
 `facts/Contacts/Fetching.md` and `facts/Contacts/Saving.md` say what each one
-does and where it differs from the release. What is left out is what needs a
-history of changes the release does not keep: `enumeratorForChangeHistoryFetchRequest:error:`
-and `currentHistoryToken`, `absent` in `registry/Contacts/ios9.json` with the
-reason at `facts/Contacts/History.md`, so an application that names one gets an
-unrecognised selector rather than an empty answer: an empty list of contacts is
-indistinguishable from an empty address book, and that is the one mistake this
-package will not make.
+does and where it differs from the release. The release keeps no journal of
+changes an application can read back, so `-enumeratorForChangeHistoryFetchRequest:error:`
+and `currentHistoryToken` do not read one out of `AddressBook` - they keep
+their own, in a snapshot journal this store writes and diffs itself.
+`facts/Contacts/History.md` says how, and where the honest boundaries of a
+journal built this way sit.

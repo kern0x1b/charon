@@ -107,6 +107,43 @@ typedef NS_ENUM(NSInteger, CharonContactMatch) {
                              mutable:(BOOL)mutableObjects sortOrder:(CNContactSortOrder)sortOrder error:(NSError **)error;
 @end
 
+@interface CharonContactsHistory : NSObject
++ (NSData *)currentToken;
++ (CNFetchResult<NSEnumerator<CNChangeHistoryEvent *> *> *)enumeratorForRequest:(CNChangeHistoryFetchRequest *)request error:(NSError **)error;
+@end
+
+@interface CNChangeHistoryAddContactEvent (Charon)
++ (instancetype)charon_eventWithContact:(CNContact *)contact containerIdentifier:(NSString *)containerIdentifier;
+@end
+
+@interface CNChangeHistoryUpdateContactEvent (Charon)
++ (instancetype)charon_eventWithContact:(CNContact *)contact;
+@end
+
+@interface CNChangeHistoryDeleteContactEvent (Charon)
++ (instancetype)charon_eventWithContactIdentifier:(NSString *)identifier;
+@end
+
+@interface CNChangeHistoryAddGroupEvent (Charon)
++ (instancetype)charon_eventWithGroup:(CNGroup *)group containerIdentifier:(NSString *)containerIdentifier;
+@end
+
+@interface CNChangeHistoryUpdateGroupEvent (Charon)
++ (instancetype)charon_eventWithGroup:(CNGroup *)group;
+@end
+
+@interface CNChangeHistoryDeleteGroupEvent (Charon)
++ (instancetype)charon_eventWithGroupIdentifier:(NSString *)identifier;
+@end
+
+@interface CNChangeHistoryAddMemberToGroupEvent (Charon)
++ (instancetype)charon_eventWithMember:(CNContact *)member group:(CNGroup *)group;
+@end
+
+@interface CNChangeHistoryRemoveMemberFromGroupEvent (Charon)
++ (instancetype)charon_eventWithMember:(CNContact *)member group:(CNGroup *)group;
+@end
+
 @interface CNPostalAddress (Charon)
 - (NSString *)charon_fieldForKey:(NSString *)key;
 - (void)charon_setField:(NSString *)value forKey:(NSString *)key;

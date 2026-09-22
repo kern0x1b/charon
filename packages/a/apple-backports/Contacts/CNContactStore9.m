@@ -5,7 +5,10 @@
 
 @implementation CNContactStore
 
-@dynamic currentHistoryToken;
+- (NSData *)currentHistoryToken
+{
+    return [CharonContactsHistory currentToken];
+}
 
 + (CNAuthorizationStatus)authorizationStatusForEntityType:(CNEntityType)entityType
 {
@@ -300,6 +303,16 @@
     if (!contacts)
         return nil;
     return [CNFetchResult charon_resultWithValue:[contacts objectEnumerator] historyToken:nil];
+}
+
+- (CNFetchResult<NSEnumerator<CNChangeHistoryEvent *> *> *)enumeratorForChangeHistoryFetchRequest:(CNChangeHistoryFetchRequest *)fetchRequest error:(NSError **)error
+{
+    if (!fetchRequest) {
+        if (error)
+            *error = [CharonContacts errorWithCode:CNErrorCodeDataAccessError reason:@"No change-history fetch request was given."];
+        return nil;
+    }
+    return [CharonContactsHistory enumeratorForRequest:fetchRequest error:error];
 }
 
 - (NSString *)defaultContainerIdentifier
