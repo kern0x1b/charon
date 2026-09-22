@@ -1,0 +1,458 @@
+#!/usr/bin/env python3
+"""Crash-level demand ranking: absent iOS-6 API that corpus apps use WITHOUT a guard.
+
+LINK-TIME symbols (classes, constants, C functions), from the corpus store:
+  strong import -> dyld aborts at LAUNCH if absent   (severity LOAD-FAIL)
+  weak import   -> guarded, degrades to nil          (severity soft)
+
+SELECTORS (methods/properties). For each app, a selector is a SEND when the bundle
+carries the string (__objc_methname) but does not DEFINE it (otool -oV method_t): defined
+selectors are override points/callbacks that UIKit calls and the app does not send, so a
+missing one is harmless. Each send is mapped through the SDK (Backports 7-10's
+surface-diff clang AST dump) to owner class, framework and INTRODUCED version. An app
+whose deployment target (LC_BUILD_VERSION minos) >= that version needs no availability
+guard -> unrecognized-selector crash on iOS 6 (CRASH-ON-USE); a lower minos means the
+app must guard it -> soft. Selectors with no public SDK declaration drop out (app-private).
+
+Registry status follows surface-diff's own rule: an exact row, a property's method-form
+rows, else the owner class (absent/ignored decide all members; implemented/inert covers
+members that arrived no later than the class row), else undecided.
+
+CAVEATS to repeat wherever this is quoted:
+ - a selector name is not class-bound in the binary; a name an app uses on its OWN class
+   that also exists in the SDK is a false positive (cross-app frequency limits it).
+ - "status comes from the ORIGINAL (earliest) owner" is sound ONLY for a name with ONE owner. For an
+   ambiguous name it SILENTLY LOSES the later owners: the row collapses onto the earliest class and
+   every app that actually meant a later one disappears with it. So the list UNDERCOUNTS demand, it does
+   not only overcount -- and it fails quietly, which is the worse failure. Caught on `prepare`: collapsed
+   onto AVAudioEngine (AVFAudio 8.0), while ppsspp/session/telegram import UIFeedbackGenerator (UIKit
+   10.0) and not AVAudioEngine; UIFeedbackGenerator.prepare could never have appeared as a row of its
+   own. Fix for an ambiguous row: decide the owner by which of the candidate CLASSES each app actually
+   imports, and SPLIT the row across the real owners instead of collapsing it.
+ - "unguarded" = no guard REQUIRED (minos >= introduced). A developer may still have
+   written respondsToSelector:. Upper bound on crash exposure, not proof.
+ - hardware-gated frameworks (Metal, ARKit, CoreNFC, CoreHaptics) are excluded.
+ - SIXTH blind spot, the same family as the fifth and larger: C-FUNCTION KEY SPELLING. The registry writes
+   a C function as `name()`; a Mach-O symbol has no parentheses and one leading underscore. Stripping the
+   underscore but not trying the `()` spelling reported EVERY carried C function as a gap. Measured when it
+   was fixed: 76 of 140 link-symbol rows were false (44 implemented, 24 inert, 8 decided absent) -- the
+   whole OpenGLES ES3 pack of 44 was already carried, including _glDeleteVertexArrays, which had been the
+   number-one head row at 4 apps, plus 11 Security, 5 UIKit accessibility, 3 vImage, 3 CoreVideo.
+ - FIFTH blind spot, and the only one that manufactures FALSE gaps rather than losing real ones:
+   CLASS-LEVEL COVERAGE vs ROW-LEVEL CHECKING. The registry may state a whole class in one entry, and then
+   no per-member row exists. Checking only for a per-member row reports the whole surface as a gap although
+   it is carried. Caught when the 7-10 band checked six head rows against the tree and found FIVE already
+   implemented (NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:, NSUserActivity
+   initWithActivityType:, UISearchController.obscuresBackgroundDuringPresentation,
+   UITextInputAssistantItem.leading/trailingBarButtonGroups, UIFeedbackGenerator.prepare). Two causes, both
+   fixed above: `inert` class rows propagated to nothing at all, and `implemented` class rows covered only
+   members no newer than the class row's own `introduced`. This one costs other people's TIME, not accuracy:
+   the head of the list sent work that was already done.
+
+PROJECT RULE, checking whether a symbol is really missing on the old system:
+ check it against the EXPORT TABLE of the library the import binds to, never against `strings` of the
+ shared cache. The cache's string blob also holds the LOCAL symbol names of every image, so a private,
+ non-exported symbol of the very same framework reads as "present" there while no import can ever bind
+ to it. This is a third form of the name-collision blind spot: not a public name colliding with a
+ private CLASS, but with a private SYMBOL of the framework itself. Found on
+ _kCLErrorUserInfoAlternateRegionKey: its name sits in CoreLocation's string table next to
+ __ZTV13CLPreferences and _kCLHeadingCodingKeyAccuracy, and CoreLocation exports 137 symbols, none of
+ them this one -> a real LOAD-FAIL gap, not a false positive.
+"""
+import json, os, re, subprocess, importlib.util
+from collections import defaultdict
+
+BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+spec = importlib.util.spec_from_file_location("agg", os.path.join(BASE, "tools", "aggregate.py"))
+agg = importlib.util.module_from_spec(spec); spec.loader.exec_module(agg)
+
+# Deployment targets, measured with otool -l (LC_BUILD_VERSION minos) on each main binary.
+MINOS = {"ish": (11, 0), "ppsspp": (11, 0), "pojav": (12, 2), "provenance": (16, 0),
+         "delta": (14, 0), "utm": (14, 0), "aidoku": (15, 0), "yattee": (14, 0),
+         "session": (15, 0), "telegram": (11, 0)}
+HW = {"Metal", "MetalKit", "MetalPerformanceShaders", "ARKit", "CoreNFC", "CoreHaptics"}
+IMPL_PROTOCOLS = {"UIContentContainer", "UITraitEnvironment", "UIFocusEnvironment"}
+HW_NAME = re.compile(r"MTL[A-Z]|CAMetal")                    # Metal types/args outside the Metal framework
+FRAMEWORKS_SESSION = {"Photos", "PhotosUI", "AVFoundation", "AVFAudio", "AVKit", "CoreMedia", "VideoToolbox",
+                      "AudioToolbox", "GameController", "Security", "CoreTelephony", "CoreGraphics", "ImageIO",
+                      "CoreVideo", "Accelerate", "CoreImage", "MobileCoreServices", "CoreServices", "CoreText",
+                      "QuartzCore", "CoreMotion", "MapKit", "OpenGLES"}
+def route(fw, band_):
+    if fw == "CoreLocation": return "CoreLocation"
+    if fw in FRAMEWORKS_SESSION: return "frameworks"
+    late = {"7": "7-10", "8-10": "7-10/10", "11-12": "11-12", "13-14": "13-14", "15-16": "13-14+", "17+": "later"}
+    return late.get(band_, "?")
+RANK = {"implemented": 0, "inert": 1, "ignored": 2, "absent": 3, "undecided": 4}
+GAP = ("absent", "undecided", "ignored", "gap?")
+
+def ver(text):
+    return tuple(int(p) for p in text.split(".")) if text else None
+
+def band(v):
+    if v is None: return "?"
+    m = v[0]
+    if m < 7: return "<7"
+    if m == 7: return "7"
+    if m <= 10: return "8-10"
+    if m <= 12: return "11-12"
+    if m <= 14: return "13-14"
+    if m <= 16: return "15-16"
+    return "17+"
+
+def main():
+    sdk = json.load(open(os.path.join(BASE, "corpus", "sdk-introduced.json")))
+    universe = set(l.rstrip("\n") for l in open(os.path.expanduser("~/.charon/dyld/6.0/selectors_armv7.txt")))
+    reg = agg.load_registry()
+    reg_kinds = json.load(open("/tmp/reg-kinds.json")) if os.path.exists("/tmp/reg-kinds.json") else {}
+    # The registry's own `introduced` for each row (export column 4, when present): surface-diff decides
+    # "an implemented class covers members that arrived no later than its class row" with exactly this.
+    reg_intro = {}
+    for _l in open(agg.REGISTRY_TSV):
+        _p = _l.rstrip("\n").split("\t")
+        if len(_p) >= 4 and _p[3] and _p[0] != "framework":
+            reg_intro[_p[1]] = ver(_p[3])
+    store = json.load(open(os.path.join(BASE, "tools", "store.json")))
+
+    # A PROTOCOL owner has no @implementation of its own; the registry may be silent on both the
+    # protocol and the member. Before falling through to "undecided", check whether a class the
+    # corpus apps actually import already defines the member in the tree -- exactly what a
+    # GCDevice.vendorName-style false gap needs (carried by GCController, which every caller
+    # imports, never by the GCDevice protocol itself). Protocol status is never pushed onto the
+    # member either way: an explicit registry row above (protocol or member) still wins, this only
+    # fires when the registry left the member undecided.
+    _tree_candidates = [
+        os.path.join(BASE, "packages", "a", "apple-backports"),                        # script lives in the repo
+        os.path.join(os.path.expanduser("~"), "Git", "projects", "ios", "charon-worktrees",
+                      "bcorpus", "packages", "a", "apple-backports"),                   # script lives in the scratchpad
+    ]
+    TREE = next((p for p in _tree_candidates if os.path.isdir(p)), _tree_candidates[-1])
+    _blob = subprocess.run(["bash", "-c", f"cat $(find {TREE} -name '*.m' -o -name '*.mm' -o -name '*.h') 2>/dev/null"],
+                            capture_output=True, text=True).stdout
+    _impls = defaultdict(list)
+    for _m in re.finditer(r'@implementation\s+(\w+)([^\n]*)\n(.*?)(?=^@end)', _blob, re.S | re.M):
+        _impls[_m.group(1)].append(_m.group(3))
+    _imported_classes = set()
+    for _app, _d in store["apps"].items():
+        _imported_classes |= {_r["name"] for _r in _d["demand"] if _r.get("kind") == "class"}
+
+    def _member_sel(api, mk):
+        if mk == "property":
+            return api.split(".", 1)[1]
+        m = re.match(r'^[-+]\[\w+ (.+)\]$', api)
+        return m.group(1) if m else None
+
+    def protocol_member_in_tree(sel):
+        for c in (c for c in _impls if c in _imported_classes):
+            body = "\n".join(_impls[c])
+            if ":" in sel:
+                parts = [p for p in sel.split(":") if p]
+                pat = r'[-+]\s*\([^)]*\)\s*' + re.escape(parts[0]) + r'\s*:'
+                for q in parts[1:]:
+                    pat += r'[^;{]{0,300}?\b' + re.escape(q) + r'\s*:'
+                if re.search(pat, body):
+                    return c
+                continue
+            if re.search(r'@dynamic\b[^;\n]*\b' + re.escape(sel) + r'\b', body):
+                continue                            # @dynamic is evidence of ABSENCE, not carriage
+            up = sel[0].upper() + sel[1:]
+            if re.search(r'[-+]\s*\([^)]*\)\s*' + re.escape(sel) + r'\s*(?:\{|;|$)', body, re.M):
+                return c
+            if re.search(r'[-+]\s*\([^)]*\)\s*set' + re.escape(up) + r'\s*:', body):
+                return c
+        return None
+
+    reg_sel = {}                                   # selector -> best status on ANY owner
+    for api, st in reg.items():
+        m = re.match(r"^[-+]\[\w+ (.+)\]$", api)
+        if m and RANK.get(st, 9) < RANK.get(reg_sel.get(m.group(1)), 9):
+            reg_sel[m.group(1)] = st
+
+    # An owner recorded with no version stays unversioned here. Filling it from its earliest VERSIONED
+    # member is unsafe: the real introduced version can be earlier, and overestimating it lets members
+    # count as covered that the registry has not decided. The right source is the registry's own
+    # `introduced` for the class row, which the flat export does not carry (requested).
+    def class_version(owner):
+        e = sdk.get(owner)
+        return ver(e[1]) if e and e[1] else None
+
+    # SDK selector index: selector -> [(introduced, api, owner, ownerkind, framework, memberkind)]
+    idx = defaultdict(list)
+    for api, (kind, v, fw) in sdk.items():
+        if kind == "method":
+            m = re.match(r"^([-+])\[(\w+) (.+)\]$", api)
+            if m:
+                owner = m.group(2)
+                idx[m.group(3)].append((ver(v) or class_version(owner), api, owner, sdk.get(owner, ["?"])[0], fw, "method"))
+        elif kind == "property":
+            owner, name = api.split(".", 1)
+            up = name[0].upper() + name[1:]
+            for sel in (name, "set" + up + ":", "is" + up):
+                if sel == name and ("is" + up) in universe and name not in universe:
+                    continue                       # custom getter isName: the bare name is not a selector on iOS 6
+                idx[sel].append((ver(v) or class_version(owner), api, owner, sdk.get(owner, ["?"])[0], fw, "property"))
+
+    # Status of ONE (owner, member) candidate, by surface-diff's coverage rule: an exact row, a
+    # property's method-form rows, else the owner class (absent/ignored decide every member; an
+    # IMPLEMENTED class covers members that arrived no later than its class row; inert does not).
+    # A selector name is not class-bound, so a selector can have several owners whose statuses
+    # disagree. Best-case across owners hides real gaps (UIView.bottomAnchor implemented would hide
+    # UILayoutSupport.bottomAnchor); worst-case invents false ones (a newer, unrelated class that
+    # shares the name, e.g. NSString containsString: vs some absent class). So a row takes the status
+    # of the selector's ORIGINAL owner (earliest introduced), and rows where another owner disagrees
+    # are written to a separate file instead of being resolved by a guess.
+    GAPSET = ("undecided", "absent", "ignored")
+    # Decisions Coordinator has handed down that no registry file carries: frameworks we do not backport
+    # at all have no registry row and never will, so this file is their record. Marked "(override)"
+    # everywhere it shows, and consulted only when the registry itself has no row.
+    overrides = {}
+    _op = os.path.join(BASE, "corpus", "decision-overrides.tsv")
+    if os.path.exists(_op):
+        for _l in list(open(_op))[1:]:
+            _q = _l.rstrip("\n").split("\t")
+            if len(_q) >= 2:
+                overrides[_q[0]] = _q[1]
+    def status_one(c):
+        v, api, owner, _ok, _fw, _mk = c
+        keys = [api]
+        if _mk == "property":
+            o, name = api.split(".", 1); up = name[0].upper() + name[1:]
+            keys += ["-[%s %s]" % (o, name), "-[%s set%s:]" % (o, up), "-[%s is%s]" % (o, up),
+                     "+[%s %s]" % (o, name), "+[%s set%s:]" % (o, up)]      # a `class` property is a + method
+        st = next((reg[k] for k in keys if k in reg), None)
+        if st is None:
+            # A class entry speaks for its WHOLE SURFACE (registry README: "A class whose whole surface
+            # shares one status is one entry"). Every status propagates -- implemented, inert, absent,
+            # ignored -- and it propagates regardless of when the member arrived: a class carried at 8.0
+            # still owns the property its 9.1 release added. Restricting this to members no newer than the
+            # class row, and dropping `inert` on the floor, is what produced FALSE gaps at the top of the list.
+            ost = reg.get(owner)
+            # A PROTOCOL owner is not a class owner. "protocol absent" means we do not carry the protocol
+            # itself, NOT that the member is missing: the member is provided by the concrete classes that
+            # adopt it, and those may be implemented. Caught on GCDevice (protocol, absent 14.0) whose
+            # vendorName/productCategory/handlerQueue are all defined by GCController (implemented 7.0) --
+            # and every calling app imports GCController, none imports the protocol. So a protocol owner
+            # may only CARRY a member, never condemn one.
+            if reg_kinds.get(owner) == "protocol" and ost in ("absent", "ignored"):
+                ost = None
+            if ost in ("absent", "ignored", "implemented", "inert"):
+                st = ost if ost in ("absent", "ignored") else ost + "(class)"
+        if st is None and reg_kinds.get(owner) == "protocol":
+            sel = _member_sel(api, _mk)
+            carrier = protocol_member_in_tree(sel) if sel else None
+            if carrier:
+                st = "implemented(tree:%s)" % carrier
+        if st is None and api in overrides:
+            st = overrides[api] + " (override)"
+        return st or "undecided"
+
+    # ---- per-app SENDS: carried (methname) minus defined (method_t) minus stock 6.0
+    sends = {}
+    for app in MINOS:
+        mp = os.path.join(BASE, "corpus", "selcache", app + ".json")
+        dp = os.path.join(BASE, "corpus", "defcache", app + ".json")
+        if os.path.exists(mp):
+            carried = set(json.load(open(mp)))
+            defined = set(json.load(open(dp))) if os.path.exists(dp) else set()
+            sends[app] = (carried - universe) - defined
+
+    groups = {}                                    # display api -> aggregate
+    impl_only = old_sdk = 0
+    sel_apps = defaultdict(set)
+    for app, sels in sends.items():
+        for s in sels:
+            if s in idx:
+                sel_apps[s].add(app)
+    strs = {}
+    for rel, up in (("7.0.1", (7, 1)), ("10.3.4", (10, 3)), ("12.0", (12, 0))):
+        pth = os.path.join(BASE, "caches", "sel", rel + ".strings")
+        if os.path.exists(pth):
+            strs[rel] = (up, set(l.rstrip("\n") for l in open(pth)))
+    def upper_bound(sel):
+        for rel in ("7.0.1", "10.3.4", "12.0"):
+            if rel in strs and sel in strs[rel][1]:
+                return strs[rel][0]
+        return None
+    unversioned = set()
+    for s, apps in sel_apps.items():
+        known = [c for c in idx[s] if c[0] is not None]
+        if not known:
+            ub = upper_bound(s)
+            if ub is None or not idx[s]:
+                continue
+            # introduced <= ub (first release whose strings contain it); enough for the deployment-target rule
+            known = [(ub, c[1], c[2], c[3], c[4], c[5]) for c in idx[s]]
+            unversioned.add(s)
+        intro = min(c[0] for c in known)
+        if intro[0] < 7:
+            old_sdk += 1
+            continue
+        first = min(known, key=lambda c: c[0])
+        if first[4] in HW or HW_NAME.search(first[1]):
+            continue
+        sendable = [c for c in known if not (c[3] == "protocol" and c[5] == "method" and
+                                             (c[2].endswith(("Delegate", "DataSource")) or c[2] in IMPL_PROTOCOLS))]
+        if not sendable:
+            impl_only += 1
+            continue
+        best = min(sendable, key=lambda c: c[0])
+        key = best[1]
+        # Owners introduced together with the earliest one are equally "original". If they disagree
+        # (UIView.bottomAnchor implemented, UILayoutSupport.bottomAnchor undecided, same release),
+        # the row is ambiguous by nature and goes to the separate file, not to the ranked gaps.
+        earliest = [c for c in sendable if c[0] == best[0]]
+        est = [(c, status_one(c)) for c in earliest]
+        covered_e = [(c, st) for c, st in est if st.split("(")[0] not in GAPSET]
+        gap_e = [(c, st) for c, st in est if st.split("(")[0] in GAPSET]
+        pst = covered_e[0][1] if covered_e else gap_e[0][1]
+        notes = []
+        if s in unversioned:
+            notes.append("version unknown: introduced <= release whose strings contain it")
+        later = [(c[2], status_one(c)) for c in sendable if c not in earliest]
+        gap_owners = sorted({"%s:%s" % (c[2], st.split("(")[0]) for c, st in gap_e} |
+                            {"%s:%s" % (o, st.split("(")[0]) for o, st in later if st.split("(")[0] in GAPSET})
+        carry_owners = sorted({c[2] for c, st in covered_e} |
+                              {o for o, st in later if st.split("(")[0] in ("implemented", "inert")})
+        if not covered_e and not carry_owners and reg_sel.get(s) in ("implemented", "inert"):
+            notes.append("the registry has this selector %s on implementing classes, none on this declaring protocol/class" % reg_sel[s])
+        if not covered_e and carry_owners:
+            notes.append("same selector is carried on %s: check whether that covers this owner" % ",".join(carry_owners[:3]))
+        g = groups.setdefault(key, {"apps": set(), "intro": intro, "fw": best[4], "owners": len(sendable),
+                                    "st": pst, "ev": "; ".join(notes),
+                                    "amb": gap_owners if covered_e else []})
+        g["apps"] |= apps
+
+    rows = []
+    for key, g in groups.items():
+        crash = sorted(a for a in g["apps"] if MINOS[a] >= g["intro"])
+        soft = sorted(a for a in g["apps"] if MINOS[a] < g["intro"])
+        disp = key + (" (+%d owners)" % (g["owners"] - 1) if g["owners"] > 1 else "")
+        rows.append({"api": disp, "kind": "selector", "framework": g["fw"], "band": band(g["intro"]),
+                     "introduced": ".".join(map(str, g["intro"])), "apps": len(g["apps"]), "crash": len(crash),
+                     "soft": len(soft), "status": g["st"], "sev": "CRASH-ON-USE" if crash else "soft", "callers": crash,
+                     "ev": g["ev"], "amb": g["amb"]})
+
+    # ---- link-time symbols
+    seen = {}
+    for app, d in store["apps"].items():
+        for r in d["demand"]:
+            if r.get("cat") != "FRAMEWORK" or agg.is_swift_mangled(r["name"]) or r["framework"] in HW \
+                    or HW_NAME.search(r["name"].lstrip("_")) or r["name"].lstrip("_").startswith(("MTL", "CAMetal")):
+                continue
+            e = seen.setdefault((r["kind"], r["name"], r["framework"], r["band"]), {"apps": set(), "strong": set()})
+            e["apps"].add(app)
+            if not r.get("weak"):
+                e["strong"].add(app)
+    for (kind, name, fw, b), e in seen.items():
+        st = agg.carried_status(reg, kind, name, fw)
+        if st == "n/a-A5":
+            continue
+        if st in (None, "", "gap?"):
+            # the same Coordinator override file the selector path consults; a link symbol is keyed by
+            # its bare name, its underscore form, or the ObjC class-symbol form
+            _k = next((k for k in (name, "_" + name, name.lstrip("_"),
+                                   "_OBJC_CLASS_$_" + name, "_OBJC_CLASS_$_" + name.lstrip("_"))
+                       if k in overrides), None)
+            if _k:
+                st = overrides[_k] + " (override)"
+        sd = sdk.get(name) or sdk.get(name.lstrip("_"))
+        v = ver(sd[1]) if sd and sd[1] else None
+        bb = band(v) if v else {"13+": "13-16"}.get(b, b)
+        crash = sorted(e["strong"])
+        rows.append({"api": name, "kind": kind, "framework": fw, "band": bb,
+                     "introduced": ".".join(map(str, v)) if v else "", "apps": len(e["apps"]), "crash": len(crash),
+                     "soft": len(e["apps"]) - len(crash), "status": st,
+                     "sev": "LOAD-FAIL" if crash else "soft", "callers": crash, "ev": "", "amb": []})
+
+    # ---- decision hints for UNDECIDED rows. Mechanical evidence only; hit rate measured on the
+    # registry's own decided members (leave-one-out). The evidence is how the registry decided the
+    # SAME OWNER's other members introduced in the SAME release band (7-10 or 11-12); band-blind
+    # siblings mislead (UIScrollView's decided members are mostly iOS 11+ and absent, which says
+    # nothing about an iOS 7 property). No name/keyword rules: the registry's own reasons for
+    # absent are missing OS services (WAL SQLite, pasteboard service, vibration motor timing), which
+    # no name pattern predicts. "carry" = implemented OR inert (both remove the crash).
+    # Band 13+ is excluded: the registry decides it ~93% absent because that band is UNSTARTED, not
+    # because it is infeasible, so a tag there would only echo "nobody has looked yet".
+    classes6 = json.load(open(os.path.expanduser("~/.charon/dyld/6.0/classes_armv7.json")))["classes"]
+    def owner_of(api):
+        api = re.sub(r" \(\+\d+ owners\)$", "", api)
+        m = re.match(r"^[-+]\[(\w+) ", api)
+        if m: return m.group(1)
+        if "." in api and not api.startswith(("-", "+", "_")): return api.split(".", 1)[0]
+        return None
+    def is_member(api):
+        return api.startswith(("-", "+")) or ("." in api and not api.startswith("_"))
+    def bk_of(version):
+        if not version: return None
+        return "7-10" if version[0] <= 10 else "11-12" if version[0] <= 12 else "13+"
+    def api_band(api):
+        e = sdk.get(api)
+        return bk_of(ver(e[1])) if e and e[1] else None
+    CARRIED = ("implemented", "inert")
+    def exists(o):
+        return o in classes6 or reg.get(o) in CARRIED
+    sib = defaultdict(list)                        # (owner, band) -> [carried?] over decided members
+    decided = []
+    for api, st in reg.items():
+        o = owner_of(api)
+        if not o or not is_member(api) or st not in CARRIED + ("absent",) or sdk.get(o, ["?"])[0] == "protocol":
+            continue
+        bk = api_band(api)
+        if bk in ("7-10", "11-12"):
+            sib[(o, bk)].append(st in CARRIED)
+            decided.append((o, bk, st in CARRIED))
+    hit = defaultdict(lambda: [0, 0])              # tag -> [right, total]
+    for o, bk, is_c in decided:
+        if not exists(o):
+            tag, pred = "class-undecided", False
+        else:
+            others = list(sib[(o, bk)]); others.remove(is_c)
+            if len(others) < 2: continue
+            pred = sum(others) * 2 >= len(others)
+            tag = "likely-carry" if pred else "likely-absent"
+        hit[tag][1] += 1; hit[tag][0] += (pred == is_c)
+    precision = {t: (r / n, n) for t, (r, n) in hit.items() if n}
+    for r in rows:
+        r["hint"] = ""
+        if r["kind"] == "selector" and r["status"].startswith("undecided"):
+            o = owner_of(r["api"]); bk = bk_of(ver(r["introduced"]))
+            if bk == "13+":
+                tag = "band-13+ unstarted"
+            elif sdk.get(o, ["?"])[0] == "protocol":
+                tag = "protocol-owner"
+            elif not exists(o):
+                tag = "class-undecided"
+            elif len(sib.get((o, bk), [])) < 2:
+                tag = "no-signal"
+            else:
+                tag = "likely-carry" if sum(sib[(o, bk)]) * 2 >= len(sib[(o, bk)]) else "likely-absent"
+            pr = precision.get(tag)
+            r["hint"] = tag + (" (%d%% of %d)" % (round(100 * pr[0]), pr[1]) if pr else "")
+        elif r["status"].startswith(("gap?", "undecided")):
+            r["hint"] = "symbol: needs a decision"
+    print("hint hit rates (leave-one-out, decided members, bands 7-12):",
+          {t: "%d%% of %d" % (round(100 * a), n) for t, (a, n) in precision.items()})
+
+    gaps = [r for r in rows if r["status"].startswith(GAP) and r["crash"] > 0]
+    gaps.sort(key=lambda r: (-r["crash"], -r["apps"], r["sev"] != "LOAD-FAIL", r["band"], r["api"]))
+    out = os.path.join(BASE, "corpus", "crash-demand-top.tsv")
+    with open(out, "w") as f:
+        f.write("rank\tseverity\tapi\tkind\tframework\tband\troute\tintroduced\tapps\tcrash_apps\tsoft_apps\tregistry\thint\tcrash_callers\tevidence\n")
+        for i, r in enumerate(gaps, 1):
+            f.write(f"{i}\t{r['sev']}\t{r['api']}\t{r['kind']}\t{r['framework']}\t{r['band']}\t{route(r['framework'], r['band'])}\t{r['introduced']}\t"
+                    f"{r['apps']}\t{r['crash']}\t{r['soft']}\t{r['status']}\t{r['hint']}\t{','.join(r['callers'])}\t{r['ev']}\n")
+    amb = [r for r in rows if r.get("amb") and r["crash"] > 0]
+    amb.sort(key=lambda r: (-r["crash"], r["api"]))
+    with open(os.path.join(BASE, "corpus", "crash-demand-ambiguous-owners.tsv"), "w") as f:
+        f.write("unguarded_callers\tapps\tframework\tintroduced\tprimary_row(status covered)\tprimary_status\tother_owners_not_covered\tcallers\n")
+        for r in amb:
+            f.write(f"{r['crash']}\t{r['apps']}\t{r['framework']}\t{r['introduced']}\t{r['api']}\t{r['status']}\t{'; '.join(r['amb'])}\t{','.join(r['callers'])}\n")
+    print(f"ambiguous-owner rows (primary owner covered, another owner not): {len(amb)}")
+    print(f"crash-level gap rows: {len(gaps)}  (callback-only selectors set apart: {impl_only}; sdk<7 dropped: {old_sdk})")
+    print(f"-> {out}")
+    return gaps
+
+if __name__ == "__main__":
+    gaps = main()
+    print("\nTOP 45 overall:")
+    for i, r in enumerate(gaps[:45], 1):
+        print(f"{i:>2} {r['sev']:12} {r['crash']}/{r['apps']:<2} {r['band']:5} {r['framework']:16} {r['status']:11} {r['api']}")
