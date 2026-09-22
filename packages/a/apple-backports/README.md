@@ -302,6 +302,8 @@ circular until given continuous, and a value that is neither makes it circular a
 only, so a clipping layer set to continuous gets a mask of the continuous corner shape over its circular clip, within 1.5% of the
 area the system covers. See `facts/QuartzCore/CALayerCornerCurve.md`.
 
+`CALayer.maskedCorners` picks which of the four corners `cornerRadius` rounds, the same four `CACornerMask` bits `UIRectCorner` already carries at the same positions: a clipping layer masked to fewer than all four gets a `CAShapeLayer` mask of a rect rounded on exactly those corners, kept in step with its bounds, radius and mask the way `cornerCurve`'s own mask is; a layer masked to all four (the default) is untouched. The two masks are not coordinated - whichever of `cornerCurve` or `maskedCorners` was set more recently on a layer keeps `layer.mask`. See `facts/QuartzCore/CALayerMaskedCorners.md`.
+
 ### The spring and the display link of Core Animation
 
 `CASpringAnimation` is the release's own class - the armv7 caches of iOS 6.0 and 6.1.3 already carry it, privately, with its mass,

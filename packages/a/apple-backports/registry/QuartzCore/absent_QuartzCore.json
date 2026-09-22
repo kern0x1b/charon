@@ -42,16 +42,6 @@
       "source": "SDK 16.4, QuartzCore"
     },
     {
-      "api": "CALayer.maskedCorners",
-      "kind": "property",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give CALayer a property like it: it arrived in iOS 11",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, QuartzCore"
-    },
-    {
       "api": "+[CALayer cornerCurveExpansionFactor:]",
       "kind": "method",
       "introduced": "13.0",
