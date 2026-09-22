@@ -36,37 +36,6 @@ target("probe")
 %s
 ]]
 
--- The version an addon is installed under is what xmake keeps it by, so it names this copy of the working tree: a run
--- against changed files must not be answered with the addon a previous run installed.
-
-local function repository(folder)
-    local root = path.absolute(path.join(os.scriptdir(), "..", ".."))
-    local copy = path.join(folder, "charon")
-    os.mkdir(copy)
-    local listed = os.iorunv("git", {"-C", root, "ls-files", "-c", "-o", "--exclude-standard"})
-    for _, file in ipairs(listed:split("\n", {plain = true})) do
-        file = file:trim()
-        if file ~= "" and os.isfile(path.join(root, file)) then
-            os.mkdir(path.directory(path.join(copy, file)))
-            os.cp(path.join(root, file), path.join(copy, file))
-        end
-    end
-    for _, argv in ipairs({{"init", "-q", "-b", "main"}, {"add", "-A"},
-                           {"-c", "user.name=charon", "-c", "user.email=charon@example.com", "commit", "-q", "-m", "the working tree"}}) do
-        os.vrunv("git", table.join({"-C", copy}, argv))
-    end
-    local head = os.iorunv("git", {"-C", copy, "rev-parse", "HEAD"}):trim()
-    local version = "v0.0.0-" .. head:sub(1, 12)
-    os.vrunv("git", {"-C", copy, "tag", version})
-
-    -- The recipe of the addon is read from this directory, while the addon itself is cloned from its history, so naming
-    -- the copy and its one version here needs no commit of its own.
-    local recipe = path.join(copy, "addons", "c", "charon", "xmake.lua")
-    local text = io.readfile(recipe):gsub('add_urls%("[^"]*"%)', 'add_urls("' .. path.join(copy, ".git") .. '")', 1)
-    io.writefile(recipe, text .. string.format('    add_versions("%s", "%s")\n', version, head))
-    return copy, version
-end
-
 local function port(folder, version, name, source, requires, packages)
     local at = path.join(folder, name)
     os.mkdir(at)
@@ -76,19 +45,14 @@ local function port(folder, version, name, source, requires, packages)
     return at
 end
 
-local function built(at)
-    os.vrunv("xmake", {"f", "-p", "iphoneos", "-a", "armv7", "-y"}, {curdir = at})
-    os.vrunv("xmake", {"build", "-y"}, {curdir = at})
-end
-
 function failures(opt)
     local found = {}
     local folder = fixtures.scratch()
-    local copy, version = repository(folder)
+    local copy, version = fixtures.repository(folder)
 
     -- A port that asks for nothing an old release lacks is built, placed and checked, and its binary is there.
     local plain = port(folder, version, "plain", MAIN)
-    local refused = fixtures.refusal(function () built(plain) end)
+    local refused = fixtures.refusal(function () fixtures.build(plain) end)
     if refused then
         table.insert(found, "a daemon port that calls nothing an old release lacks must build: " .. refused)
     elseif #os.files(path.join(plain, "build", "**", "probe")) == 0 then
@@ -99,7 +63,7 @@ function failures(opt)
     -- may carry comes from apple-compat, and one the whole process shares comes from the C++ runtime that exports it once.
     for _, case in ipairs({{"later", LATER, "apple%-compat::dispatch_activate"},
                            {"locked", LOCKED, "charon@libcxx"}}) do
-        local told = fixtures.refusal(function () built(port(folder, version, case[1], case[2])) end)
+        local told = fixtures.refusal(function () fixtures.build(port(folder, version, case[1], case[2])) end)
         if not told then
             table.insert(found, string.format("a port calling %s must be refused at %s", case[1], "iOS 6.0"))
         elseif not told:find(case[3]) then
