@@ -160,6 +160,47 @@ whose `-preferredLayoutAttributesFittingAttributes:` sets the height, and one th
   kind and index path. What is waiting for a turn of the run loop holds the layout weakly, so a layout that is released first
   is not measured.
 
+## A device-only hang, found and fixed 2026-09-23
+
+`tests/backports/device/compositional.m`'s `useDragView:1` (orthogonal scrolling, self-sizing) ran
+to completion on the iPad - nine checkpoints through the method, including one right after
+`[drag_view layoutIfNeeded]` returns - but the next step, queued separately with
+`dispatch_after`/`dispatch_get_main_queue()`, never ran: no crash, no uncaught exception. Band
+11-12 localised this to between the two steps and excluded a hang inside the port's own
+`charon_offsetOfSection:` (the stdout log is line-buffered and flushed after every write, so a
+checkpoint at the entry of the next step would have appeared even if that step's body never
+returned; it never appeared at all, meaning the step's block itself was never delivered). None of
+the 26 checks that measured this layout on real hardware before this one exercised self-sizing
+inside a live, drawn window - self-sizing needs a real view to measure, which the host oracle and
+the build gate cannot provide - so nothing before this device run could have caught it.
+
+What was found reading the port's own code, not measured on the device (the device is held by
+11-12's own port work): `charon_layout_perform` (`CharonSelfSizing.m`), the primitive both this
+layout's and the self-sizing flow layout's deferred-measurement pass use to run a settle pass on
+the next turn of the run loop, used `CFRunLoopPerformBlock`/`CFRunLoopWakeUp` rather than
+`dispatch_async(dispatch_get_main_queue(), ...)` - the idiom every other deferred-to-main-thread
+spot in this package already uses (twenty of them). `CFRunLoopWakeUp` forces the main run loop to
+service its scheduled block on the very next pass, ahead of whatever else that pass already had
+queued, rather than taking a turn on the same queue as everything else waiting there - including a
+`dispatch_after` block queued around the same measurement. Changed to `dispatch_async`, which only
+this file (of everywhere in the package doing the same kind of work) was not already using.
+
+A second, independent gap was closed alongside it, since it could not be ruled out without a
+device to test non-convergence against: `charon_note:` rescheduled a fresh settle round, without
+limit, whenever a newly-noted element's estimated size still needed measuring against a changed
+fixed dimension. Nothing prevented an orthogonal section's measurement from failing to settle
+indefinitely if the fixed dimension it measures against kept changing round over round; a
+`_settleRounds` counter, reset on every fresh `prepareLayout` and capped at 12, now stops
+rescheduling and keeps the layout's best estimate instead, logging once through
+`charon_layout_say_once`. Twelve was chosen generously against every self-sizing configuration this
+band has seen settle in one or two rounds, not measured against a real non-converging case, since
+none was reproduced.
+
+Neither fix has been confirmed against the actual hang on hardware - the device is currently held
+by band 11-12's own work. This is reasoned from reading the code against the reported symptom, not
+measured; band 11-12 should re-run `compositional`'s `useDragView:1` through `runGestures:` once
+the device is free to confirm the tenth checkpoint now appears.
+
 ## What the port cannot do
 
 - **Nested scrolling is done, and is the port's own.** iOS 6 has no scroll view to nest in a section, so the port moves the section itself: a pan

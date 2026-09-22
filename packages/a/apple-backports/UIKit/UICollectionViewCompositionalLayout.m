@@ -989,6 +989,7 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
     NSMutableArray *_preferredContexts;
     BOOL _measuring;
     BOOL _applyingPreferred;
+    NSUInteger _settleRounds;
 }
 
 - (instancetype)initCharonWithSection:(NSCollectionLayoutSection *)section provider:(UICollectionViewCompositionalLayoutSectionProvider)provider
@@ -1082,6 +1083,7 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
     _lookup = [NSMutableDictionary dictionary];
     _hasPinned = NO;
     _contentSize = CGSizeZero;
+    _settleRounds = 0;
     if (!view)
         return;
     [self charon_solveView:view];
@@ -1173,6 +1175,16 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
     BOOL cell = element->category == 0;
     NSString *key = [NSString stringWithFormat:@"%d/%@/%ld/%ld", cell ? 0 : 1, cell ? @"" : element->kind, (long)element->indexPath.section, (long)element->indexPath.item];
     if (!_pending) {
+        // A settle round that never converges would otherwise keep rescheduling itself forever,
+        // each round competing with whatever else is queued on the main thread for a turn; this
+        // caps it at a round count no legitimate self-sizing pass has been seen to need, rather
+        // than trusting every future layout (in particular an orthogonal-scrolling one, the
+        // configuration this bound exists for) to always settle.
+        if (_settleRounds >= 12) {
+            charon_layout_say_once(@"compositional-settle-rounds", @"NSCollectionLayoutSection: self-sizing did not settle within 12 rounds; keeping the last estimate instead of measuring further");
+            return;
+        }
+        _settleRounds++;
         _pending = [NSMutableDictionary dictionary];
         charon_layout_perform(self, ^(UICollectionViewLayout *layout) {
             [(UICollectionViewCompositionalLayout *)layout charon_settleLater];
