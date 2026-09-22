@@ -43,6 +43,44 @@ Island, São Paulo, Apia - every hour from January 2020 to October 2024, setting
 device test holds iOS 6 to five of them, the half hours from 00:30 to 04:30 the day before New York's
 spring transition of 2023, which answer the instants themselves, including the jump at 02:30 to 03:00.
 
+## Setting a unit, and searching for one
+
+`-dateBySettingUnit:value:ofDate:options:`, `-nextDateAfterDate:matchingComponents:options:` and
+`-enumerateDatesStartingAfterDate:matchingComponents:options:usingBlock:` do not do what a plain reading of
+the header suggests - "take the date's components, change the one field, hand them back." Measured against
+the host, era down to second all share one shape: every field coarser than the one being fixed is kept from
+the date; the field itself becomes the requested value; every field finer than it - given or not - is reset
+to its period's base, day and month to 1, everything else to 0. If that candidate is not strictly on the
+correct side of the date (later, for a forward search or a set that would otherwise sit in the past; earlier,
+for a backward search), it steps out by one unit of the next coarser period - a month for a day, a year for a
+month - and tries again there. A request that already holds returns the date untouched, with no truncation
+at all; that is how `-dateBySettingUnit:value:ofDate:options:` answers a weekday that already matches, and
+how a `date`/`hour` search whose fields already equal the date's own answers too.
+
+Two measured exceptions, both narrow enough to state exactly:
+
+- A day search stepping backward, whose day already ties the date's own, always steps out to the previous
+  month regardless of what a finer given field says - checked against the host on New York, Berlin, Tokyo,
+  Kolkata and Sydney, forward and backward, tied and untied, alone and paired with an hour or a minute: this
+  is the one combination where the finer field's own sign does not decide it.
+- A day that does not exist in the month it would land in - the 31st rolled back into a thirty-day month, the
+  30th forward into February - does not carry the overflow arithmetically the way `-dateByAddingComponents:`
+  would. It lands exactly on the first of the following month, with every finer given field dropped, no
+  matter how far past the month's end the requested day sits. Checked on the host across Gregorian and
+  Buddhist calendars in six zones: the 29th, 30th and 31st rolled into every month from 28 to 31 days long,
+  forward and backward, always land on the 1st that follows, never a carried day count.
+
+One divergence is recorded rather than chased: a backward day search whose day ties the date's own, in a
+zone with daylight saving rules (New York, Sydney) and a date before some year the host does not name,
+answers with a fixed, unrelated date - 4 April 1975 for every New York query checked from 1970 through 2005,
+regardless of the year asked from; from 2010 on the host answers the plain previous month. This is the
+host's own `-nextDateAfterDate:` doing it, not the backport's construction of the candidate - probed directly
+against the system class, outside the backport entirely, with the same fixed answer for every year up to the
+boundary. It reads as an internal cache or lookup table in the host's own Foundation that the backport has no
+reason to reproduce; iOS 6.1.3 predates the host that exhibits it. `tests/backports/host/foundation2` holds 17
+of 14954 checks against it, all `nextMatch`'s `backwardMatch` field, all in New York or Sydney, all four fixed
+dates - 4 April 2001, 3 April 2006, 21 September 1984 and 1995, 3 April 1982 - that land inside the boundary.
+
 ## Granularity
 
 `-isDate:equalToDate:toUnitGranularity:` and `-compareDate:toDate:toUnitGranularity:` were measured against

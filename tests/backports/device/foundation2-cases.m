@@ -745,6 +745,31 @@ static void run_calendar(Foundation2Recorder *recorder)
             [recorder record:@[@(((BOOL (*)(id, SEL, id, id))objc_msgSend)(calendar, sel(@selector(date:matchesComponents:)), date, matching)),
                                @(((BOOL (*)(id, SEL, id, id))objc_msgSend)(calendar, sel(@selector(date:matchesComponents:)), date, mismatching))]
                        named:[NSString stringWithFormat:@"%@.matches.%lu", prefix, (unsigned long)dateIndex]];
+            NSMutableArray *setUnit = [NSMutableArray array];
+            NSCalendarUnit settingUnits[] = {NSCalendarUnitYear, NSCalendarUnitMonth, NSCalendarUnitDay, NSCalendarUnitHour, NSCalendarUnitMinute, NSCalendarUnitWeekday};
+            NSInteger settingValues[] = {year + 1, ((month + 3) % 12) + 1, ((day + 10) % 25) + 1, (hour + 5) % 24, (minute + 15) % 60, ((weekday + 2) % 7) + 1};
+            for (size_t index = 0; index < sizeof settingUnits / sizeof *settingUnits; index++) {
+                for (int strict = 0; strict < 2; strict++) {
+                    NSDate *result = ((id (*)(id, SEL, NSCalendarUnit, NSInteger, id, NSCalendarOptions))objc_msgSend)(calendar, sel(@selector(dateBySettingUnit:value:ofDate:options:)),
+                                                                                                                       settingUnits[index], settingValues[index], date, strict ? NSCalendarMatchStrictly : 0);
+                    [setUnit addObject:date_text(result)];
+                }
+            }
+            [recorder record:setUnit named:[NSString stringWithFormat:@"%@.settingUnit.%lu", prefix, (unsigned long)dateIndex]];
+            NSDate *forwardMatch = ((id (*)(id, SEL, id, id, NSCalendarOptions))objc_msgSend)(calendar, sel(@selector(nextDateAfterDate:matchingComponents:options:)), date, matching, 0);
+            NSDate *backwardMatch = ((id (*)(id, SEL, id, id, NSCalendarOptions))objc_msgSend)(calendar, sel(@selector(nextDateAfterDate:matchingComponents:options:)), date, matching, NSCalendarSearchBackwards);
+            NSDate *strictMatch = ((id (*)(id, SEL, id, id, NSCalendarOptions))objc_msgSend)(calendar, sel(@selector(nextDateAfterDate:matchingComponents:options:)), date, matching, NSCalendarMatchStrictly);
+            NSDate *noMatch = ((id (*)(id, SEL, id, id, NSCalendarOptions))objc_msgSend)(calendar, sel(@selector(nextDateAfterDate:matchingComponents:options:)), date, mismatching, 0);
+            [recorder record:@[date_text(forwardMatch), date_text(backwardMatch), date_text(strictMatch), date_text(noMatch)]
+                       named:[NSString stringWithFormat:@"%@.nextMatch.%lu", prefix, (unsigned long)dateIndex]];
+            NSMutableArray *enumerated = [NSMutableArray array];
+            ((void (*)(id, SEL, id, id, NSCalendarOptions, void (^)(NSDate *, BOOL, BOOL *)))objc_msgSend)(calendar, sel(@selector(enumerateDatesStartingAfterDate:matchingComponents:options:usingBlock:)),
+                                                                                                            date, matching, 0, ^(NSDate *found, BOOL exact, BOOL *stop) {
+                [enumerated addObject:[NSString stringWithFormat:@"%@|%d", date_text(found), exact]];
+                if (enumerated.count >= 3)
+                    *stop = YES;
+            });
+            [recorder record:enumerated named:[NSString stringWithFormat:@"%@.enumerate.%lu", prefix, (unsigned long)dateIndex]];
             NSDateComponents *whole = [[NSDateComponents alloc] init];
             whole.year = year;
             whole.month = month;

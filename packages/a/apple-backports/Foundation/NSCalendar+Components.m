@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#include <math.h>
 
 extern const NSCalendarUnit CharonCalendarAllUnits;
 NSInteger charon_calendar_nanosecond_exactly(NSDate *date);
@@ -121,6 +122,130 @@ static NSComparisonResult charon_compare(NSCalendar *calendar, NSDate *first, NS
             return NSOrderedSame;
     }
     return NSOrderedSame;
+}
+
+static NSInteger charon_calendar_base_value(NSCalendarUnit unit)
+{
+    return (unit == NSCalendarUnitMonth || unit == NSCalendarUnitDay) ? 1 : 0;
+}
+
+static NSCalendarUnit charon_calendar_period_unit(NSCalendarUnit unit)
+{
+    switch (unit) {
+    case NSCalendarUnitYear:
+        return NSCalendarUnitEra;
+    case NSCalendarUnitMonth:
+        return NSCalendarUnitYear;
+    case NSCalendarUnitDay:
+        return NSCalendarUnitMonth;
+    case NSCalendarUnitHour:
+        return NSCalendarUnitDay;
+    case NSCalendarUnitMinute:
+        return NSCalendarUnitHour;
+    case NSCalendarUnitSecond:
+        return NSCalendarUnitMinute;
+    default:
+        return 0;
+    }
+}
+
+/*
+ * Builds the date the real Foundation builds when it fixes one field of a date: everything
+ * coarser than `stepUnit` is kept from `date`, `stepUnit` itself becomes `stepValue`, and
+ * everything finer is taken from `finerGiven` (when it names that field) or reset to its
+ * period base (day/month: 1, everything else: 0). Measured against Catalyst - see
+ * .agent-work/records/nscalendar-newmethods-wip.diff for the probes this came from.
+ */
+static NSDate *charon_calendar_direct_construct(NSCalendar *calendar, NSDate *date, NSCalendarUnit stepUnit, NSInteger stepValue, NSDateComponents *finerGiven)
+{
+    static const NSCalendarUnit chain[] = {NSCalendarUnitEra, NSCalendarUnitYear, NSCalendarUnitMonth, NSCalendarUnitDay, NSCalendarUnitHour, NSCalendarUnitMinute, NSCalendarUnitSecond};
+    NSDateComponents *components = [calendar components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond fromDate:date];
+    BOOL reachedStep = NO;
+    for (size_t index = 0; index < sizeof chain / sizeof *chain; index++) {
+        NSCalendarUnit unit = chain[index];
+        if (unit == stepUnit) {
+            charon_calendar_set_value(components, unit, stepValue);
+            reachedStep = YES;
+            continue;
+        }
+        if (!reachedStep)
+            continue;
+        NSInteger given = finerGiven ? charon_calendar_value(finerGiven, unit) : NSDateComponentUndefined;
+        charon_calendar_set_value(components, unit, given != NSDateComponentUndefined ? given : charon_calendar_base_value(unit));
+    }
+    return [calendar dateFromComponents:components];
+}
+
+static NSDate *charon_calendar_roll_by_period(NSCalendar *calendar, NSDate *date, NSCalendarUnit periodUnit, NSInteger delta)
+{
+    if (!periodUnit)
+        return nil;
+    NSDateComponents *step = [[NSDateComponents alloc] init];
+    charon_calendar_set_value(step, periodUnit, delta);
+    return [calendar dateByAddingComponents:step toDate:date options:0];
+}
+
+/*
+ * Builds the day=targetDay candidate `monthOffset` months from `date`'s own month, for
+ * nextDateAfterDate's Day-stepUnit search. Measured on host: when targetDay does not exist in
+ * that month (e.g. day 31 rolled back into a 30-day month), the real search does not clamp the
+ * way -[NSCalendar dateFromComponents:] does - it carries the overflow into the following month
+ * the way date arithmetic would, and drops every finer given field rather than trying to place
+ * them on the carried-into day.
+ */
+static NSDate *charon_calendar_day_candidate(NSCalendar *calendar, NSDate *date, NSInteger monthOffset, NSInteger targetDay, NSDateComponents *finerGiven)
+{
+    NSDateComponents *base = [calendar components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth fromDate:date];
+    NSDate *monthAnchor = [calendar dateFromComponents:base];
+    if (monthOffset) {
+        monthAnchor = charon_calendar_roll_by_period(calendar, monthAnchor, NSCalendarUnitMonth, monthOffset);
+        if (!monthAnchor)
+            return nil;
+        base = [calendar components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth fromDate:monthAnchor];
+    }
+    NSRange days = [calendar rangeOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitMonth forDate:monthAnchor];
+    if (days.location != NSNotFound && targetDay >= 1 && targetDay <= (NSInteger)days.length) {
+        NSDateComponents *full = [base copy];
+        full.day = targetDay;
+        NSInteger hour = finerGiven ? charon_calendar_value(finerGiven, NSCalendarUnitHour) : NSDateComponentUndefined;
+        full.hour = hour != NSDateComponentUndefined ? hour : 0;
+        full.minute = 0;
+        full.second = 0;
+        return [calendar dateFromComponents:full];
+    }
+    /*
+     * Measured on host: an out-of-range day does not carry the excess across the month
+     * boundary arithmetically - whatever the overflow, the candidate lands exactly on day 1
+     * of the following month, with every finer given field dropped.
+     */
+    NSDateComponents *first = [base copy];
+    first.day = 1;
+    first.hour = 0;
+    first.minute = 0;
+    first.second = 0;
+    NSDate *startOfMonth = [calendar dateFromComponents:first];
+    if (!startOfMonth)
+        return nil;
+    return charon_calendar_roll_by_period(calendar, startOfMonth, NSCalendarUnitMonth, 1);
+}
+
+static NSDate *charon_calendar_set_weekday(NSCalendar *calendar, NSDate *date, NSInteger value)
+{
+    NSInteger current = charon_calendar_value(charon_calendar_components(calendar, NSCalendarUnitWeekday, date), NSCalendarUnitWeekday);
+    if (current == value)
+        return date;
+    NSDate *startOfWeek = nil;
+    if (![calendar rangeOfUnit:NSCalendarUnitWeekOfYear startDate:&startOfWeek interval:NULL forDate:date])
+        return nil;
+    NSInteger firstWeekday = (NSInteger)calendar.firstWeekday;
+    NSInteger offset = ((value - firstWeekday) % 7 + 7) % 7;
+    NSDate *direct = charon_calendar_roll_by_period(calendar, startOfWeek, NSCalendarUnitDay, offset);
+    NSDate *reference = nil;
+    if (!direct || ![calendar rangeOfUnit:NSCalendarUnitDay startDate:&reference interval:NULL forDate:date])
+        return nil;
+    if ([direct compare:reference] == NSOrderedAscending)
+        direct = charon_calendar_roll_by_period(calendar, direct, NSCalendarUnitDay, 7);
+    return direct;
 }
 
 static NSDate *charon_add_unit(NSCalendar *calendar, NSCalendarUnit unit, NSInteger value, NSDate *date, NSCalendarOptions options)
@@ -336,6 +461,127 @@ static NSDate *charon_add_unit(NSCalendar *calendar, NSCalendarUnit unit, NSInte
             return NO;
     }
     return YES;
+}
+
+- (NSDate *)dateBySettingUnit:(NSCalendarUnit)unit value:(NSInteger)value ofDate:(NSDate *)date options:(NSCalendarOptions)opts
+{
+    if (!date)
+        return nil;
+    if (unit == NSCalendarUnitWeekday)
+        return charon_calendar_set_weekday(self, date, value);
+    if (unit == NSCalendarUnitEra || unit == NSCalendarUnitYear || unit == NSCalendarUnitMonth || unit == NSCalendarUnitDay ||
+        unit == NSCalendarUnitHour || unit == NSCalendarUnitMinute || unit == NSCalendarUnitSecond) {
+        NSInteger current = [self component:unit fromDate:date];
+        if (current == value)
+            return date;
+        NSDate *direct = charon_calendar_direct_construct(self, date, unit, value, nil);
+        if (!direct)
+            return nil;
+        if (value < current)
+            direct = charon_calendar_roll_by_period(self, direct, charon_calendar_period_unit(unit), 1) ?: direct;
+        return direct;
+    }
+    NSDateComponents *current = charon_calendar_components(self, unit, date);
+    if (charon_calendar_value(current, unit) == value)
+        return date;
+    for (NSInteger distance = 1; distance <= 800; distance++) {
+        NSDate *forward = charon_add_unit(self, NSCalendarUnitDay, distance, date, 0);
+        NSDateComponents *forwardParts = forward ? charon_calendar_components(self, unit, forward) : nil;
+        if (forwardParts && charon_calendar_value(forwardParts, unit) == value)
+            return forward;
+        NSDate *backward = charon_add_unit(self, NSCalendarUnitDay, -distance, date, 0);
+        NSDateComponents *backwardParts = backward ? charon_calendar_components(self, unit, backward) : nil;
+        if (backwardParts && charon_calendar_value(backwardParts, unit) == value)
+            return backward;
+    }
+    return nil;
+}
+
+- (NSDate *)nextDateAfterDate:(NSDate *)date matchingComponents:(NSDateComponents *)comps options:(NSCalendarOptions)opts
+{
+    if (!date || !comps)
+        return nil;
+    NSCalendarUnit given = charon_calendar_given_units(comps);
+    if (!given)
+        return nil;
+    static const NSCalendarUnit chain[] = {NSCalendarUnitEra, NSCalendarUnitYear, NSCalendarUnitMonth, NSCalendarUnitDay, NSCalendarUnitHour, NSCalendarUnitMinute, NSCalendarUnitSecond};
+    NSCalendarUnit stepUnit = 0;
+    for (size_t i = 0; i < sizeof chain / sizeof *chain; i++) {
+        if (given & chain[i]) {
+            stepUnit = chain[i];
+            break;
+        }
+    }
+    BOOL forward = !(opts & NSCalendarSearchBackwards);
+    if (!stepUnit) {
+        NSCalendarUnit units[] = {NSCalendarUnitNanosecond, NSCalendarUnitWeekday, NSCalendarUnitWeekdayOrdinal, NSCalendarUnitWeekOfMonth,
+                                  NSCalendarUnitWeekOfYear, NSCalendarUnitYearForWeekOfYear, NSCalendarUnitQuarter};
+        for (size_t i = 0; i < sizeof units / sizeof *units; i++) {
+            if (given & units[i]) {
+                stepUnit = units[i];
+                break;
+            }
+        }
+        if (!stepUnit)
+            return nil;
+        NSInteger direction = forward ? 1 : -1;
+        NSDate *cursor = charon_add_unit(self, stepUnit, direction, date, 0);
+        if (!cursor)
+            return nil;
+        for (NSInteger iteration = 0; iteration < 2000000; iteration++) {
+            if ([self date:cursor matchesComponents:comps])
+                return cursor;
+            NSDate *next = charon_add_unit(self, stepUnit, direction, cursor, 0);
+            if (!next)
+                return nil;
+            cursor = next;
+        }
+        return nil;
+    }
+    NSInteger target = charon_calendar_value(comps, stepUnit);
+    NSInteger current = [self component:stepUnit fromDate:date];
+    NSDate *direct = stepUnit == NSCalendarUnitDay ? charon_calendar_day_candidate(self, date, 0, target, comps)
+                                                    : charon_calendar_direct_construct(self, date, stepUnit, target, comps);
+    if (!direct)
+        return nil;
+    /*
+     * The real search compares the constructed instant to `date`, not the target/current pair -
+     * a finer given field can validate a same-period candidate even when stepUnit ties (measured
+     * on host: day-tie + a later hour stays in the same month for a forward search). The one
+     * exception measured on host is Day itself searching backwards on a tie: real Foundation
+     * always steps out to the previous month there regardless of any finer field, so that is
+     * kept as an explicit override rather than folded into the general comparison.
+     */
+    BOOL roll;
+    if (stepUnit == NSCalendarUnitDay && !forward && target == current)
+        roll = YES;
+    else
+        roll = forward ? !([direct compare:date] == NSOrderedDescending) : !([direct compare:date] == NSOrderedAscending);
+    if (roll) {
+        if (stepUnit == NSCalendarUnitDay)
+            direct = charon_calendar_day_candidate(self, date, forward ? 1 : -1, target, comps) ?: direct;
+        else
+            direct = charon_calendar_roll_by_period(self, direct, charon_calendar_period_unit(stepUnit), forward ? 1 : -1) ?: direct;
+    }
+    return direct;
+}
+
+- (void)enumerateDatesStartingAfterDate:(NSDate *)start matchingComponents:(NSDateComponents *)comps options:(NSCalendarOptions)opts usingBlock:(void (^)(NSDate *date, BOOL exactMatch, BOOL *stop))block
+{
+    if (!start || !comps || !block)
+        return;
+    NSDate *cursor = start;
+    for (NSInteger iteration = 0; iteration < 1000; iteration++) {
+        NSDate *match = [self nextDateAfterDate:cursor matchingComponents:comps options:opts & ~NSCalendarSearchBackwards];
+        if (!match)
+            return;
+        BOOL exact = [self date:match matchesComponents:comps];
+        BOOL stop = NO;
+        block(match, exact, &stop);
+        if (stop)
+            return;
+        cursor = match;
+    }
 }
 
 @end

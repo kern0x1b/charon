@@ -221,6 +221,30 @@
     "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
   },
   {
+    "api": "-[NSCalendar dateBySettingUnit:value:ofDate:options:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
+  },
+  {
+    "api": "-[NSCalendar enumerateDatesStartingAfterDate:matchingComponents:options:usingBlock:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
+  },
+  {
+    "api": "-[NSCalendar nextDateAfterDate:matchingComponents:options:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "facts": "facts/Foundation/NSCalendar.md",
+    "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
+  },
+  {
     "api": "-[NSCalendar dateWithEra:year:month:day:hour:minute:second:nanosecond:]",
     "kind": "method",
     "introduced": "8.0",
