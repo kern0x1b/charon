@@ -184,7 +184,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "a save request is the list of contacts to add, update and delete, which the store writes into the release's book in one ABAddressBookSave",
-      "effect": "addContact:toContainerWithIdentifier:, updateContact: and deleteContact: are answered; the group and member calls are absent",
+      "effect": "addContact:toContainerWithIdentifier:, updateContact:, deleteContact: and the group and member calls are all answered",
       "facts": "facts/Contacts/Saving.md",
       "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
     },
@@ -1315,20 +1315,22 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release's book records no author of a change",
-      "effect": "the selector is not there: respondsToSelector: answers NO and a call raises an unrecognised selector",
-      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+      "status": "implemented",
+      "reason": "a plain settable string the request carries; the release's book records no author of a change, so the value never reaches a stored record or a change-history event",
+      "effect": "reads back exactly what was set, default nil, same as the release before a save names an author the book can keep",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes",
+      "facts": "facts/Contacts/SaveRequest.md"
     },
     {
       "api": "CNSaveRequest.shouldRefetchContacts",
       "kind": "property",
       "introduced": "15.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a save of the release's book writes the records it was given and refetches nothing",
-      "effect": "the selector is not there: respondsToSelector: answers NO and a call raises an unrecognised selector",
-      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes"
+      "status": "implemented",
+      "reason": "the port runs its own executeSaveRequest:error:, so refetching the contacts a save just wrote is a read this port controls, not a read the release's book has to offer on its own",
+      "effect": "when set, every added or updated CNMutableContact the request carries is re-read from the book with its own available keys and updated in place after a successful save, the same objects an application already holds",
+      "source": "the headers of SDK 16.4 for the declarations; Contacts of the arm64 shared cache of iOS 12.0 for the value of every constant and for the shape of the classes; the resources of Contacts.framework on an iPhone4,1 running 9.3.6 for what the release answers; AddressBook of the armv7 shared cache of 6.1.3 for the store the port reads and writes",
+      "facts": "facts/Contacts/SaveRequest.md"
     },
     {
       "api": "CNGroup",

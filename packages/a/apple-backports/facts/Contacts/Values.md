@@ -93,6 +93,14 @@ A postal address is a dictionary in the book: `street` is `Street`, `city` is
   reads the release's own `ABPersonGetSortOrdering()`. The release sorts with a
   collator of its own, so two names that differ only in how a collation orders
   them can come out in a different order than under iOS 9.
+- **`CNContactVCardSerialization` writes the platform it runs on into `PRODID`.**
+  `dataWithContacts:error:` delegates straight to `ABPersonCreateVCardRepresentationWithPeople`,
+  so the line reads `-//Apple Inc.//iOS 6.1.3//EN` on the device and
+  `-//Apple Inc.//macOS 27.0//EN` from a host oracle built for Mac Catalyst - each
+  side honestly reporting its own `AddressBook.framework`, not a bug in either. A
+  device check holding `vcard.encoded` to a host-generated expectation normalizes
+  that one token before comparing; every other byte of the vCard still has to
+  match exactly. `tests/backports/device/contacts.m` does this.
 
 ## Key availability
 

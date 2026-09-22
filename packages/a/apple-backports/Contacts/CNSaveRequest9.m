@@ -14,7 +14,8 @@
     NSMutableArray *_charonRemovedMembers;
 }
 
-@dynamic transactionAuthor, shouldRefetchContacts;
+@synthesize transactionAuthor = _charonTransactionAuthor;
+@synthesize shouldRefetchContacts = _charonShouldRefetchContacts;
 
 - (instancetype)init
 {

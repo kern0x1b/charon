@@ -53,9 +53,11 @@ what the release's own editor does.
   `updateGroup:`, `deleteGroup:`, `addMember:toGroup:` and
   `removeMember:fromGroup:` execute over `ABGroup`, the same way the contact
   operations execute over `ABPerson`; `facts/Contacts/Groups.md` says how.
-- **`transactionAuthor` and `shouldRefetchContacts`** of iOS 15 are absent: the
-  release's book records no author of a change, and a save writes what it was
-  given and refetches nothing.
+- **`transactionAuthor` and `shouldRefetchContacts`** of iOS 15 are carried;
+  `facts/Contacts/SaveRequest.md` says what each does and the one honest
+  boundary of the two - the release's book records no author of a change, so
+  `transactionAuthor` reads back exactly what was set and reaches nothing
+  else.
 - A save of this process's own does not post
   `CNContactStoreDidChangeNotification`, which follows the release's external
   change callback; iOS 9 posts it for a change from another store.

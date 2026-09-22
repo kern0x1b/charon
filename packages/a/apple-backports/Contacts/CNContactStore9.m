@@ -271,6 +271,22 @@
         if (identifier != kABRecordInvalidID)
             [group charon_setIdentifier:[NSString stringWithFormat:@"%d", (int)identifier] name:group.name];
     }
+    if (saveRequest.shouldRefetchContacts) {
+        NSMutableArray *refetch = [NSMutableArray array];
+        for (NSArray *pair in added)
+            [refetch addObject:pair[0]];
+        [refetch addObjectsFromArray:[saveRequest charon_updated]];
+        for (CNMutableContact *contact in refetch) {
+            ABRecordRef record = ABAddressBookGetPersonWithRecordID(book, (ABRecordID)[contact.identifier intValue]);
+            if (!record)
+                continue;
+            NSSet *keys = [contact charon_availableKeys];
+            NSMutableDictionary *values = [NSMutableDictionary dictionary];
+            [CharonContactsBook readRecord:record into:values keys:keys filling:NO];
+            values[CNContactIdentifierKey] = contact.identifier;
+            [contact charon_setValues:values available:keys identifier:contact.identifier];
+        }
+    }
     CFRelease(book);
     return YES;
 }
