@@ -133,7 +133,18 @@ window down on `org.charon.callkit.ended` too, for a call the application ended 
 What that proves and what it does not: the dylib links, is signed and packaged, and the build gate holds it to the same Mach-O checks every other binary in
 this tree answers to. It does **not** prove that a window drawn this way actually appears above SpringBoard's own interface, or that
 `notify_register_dispatch` reaches a dylib injected into SpringBoard's process in its own sandbox and its own launch sequence - nothing short of a device
-answers that, and no device has answered it yet. `tests/backports/device/callkit-screen.m` is the device test written for that measurement: it reports an
+answers that. `tests/backports/device/callkit-screen.m` is the device test written for that measurement: it reports an
 incoming call from a command-line process and waits for a tap on the screen - logged coordinates, driven by `revtouch tap X Y`, never anything else - to
 turn into `performAnswerCallAction:` or `performEndCallAction:` on its own delegate. Until it has run on hardware, the screen is not declared working under
 any description weaker than that.
+
+Measured on hardware 2026-09-22 (iPhone 4S, 6.1.3): `dpkg -i` of `org.charon.callkit-screen` installs cleanly (`dpkg-query` confirms
+`install ok installed`, the dylib and filter plist land where the rule promises). Posting `org.charon.callkit.incoming` with the payload the library
+writes reaches the folder and the notification is posted without error - but **no window appeared over SpringBoard**. This is not a crash: SpringBoard's
+PID was the same before and after the install and after the poke, and its crash log carries nothing from this run - silence, not a fault. The likely
+cause is architectural, not a bug in this package: `/Library/MobileSubstrate/MobileSubstrate.dylib` here resolves to
+`CydiaSubstrate.framework/Libraries/SubstrateInjection.dylib`, and this release's MobileSubstrate injects a filtered dylib into a process at that
+process's own launch, not retroactively into one already running - SpringBoard was already up before the tweak was installed, and nothing short of a
+respring picks a freshly-installed filter up. A respring is exactly what the fleet's device discipline forbids without the owner's sign-off, so this is
+where the proof stops for now: build, package and install are each proven; a window actually appearing over SpringBoard, and the tap round-trip into
+`CXAnswerCallAction`/`CXEndCallAction`, are still not proven, and need one deliberate respring to settle either way.
