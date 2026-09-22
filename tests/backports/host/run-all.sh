@@ -17,7 +17,7 @@ fi
 # What this sweep cannot start, with the reason for each: a test passed over without one is the same blind
 # spot the sweep exists to close, so nothing is skipped silently and no reason here is a guess.
 needs_arguments="registry cachereader fuzz"
-records_only="naturallanguage-record"
+records_only="naturallanguage-record smallapis2"
 
 alive='^(ok|FAIL|note|skip|stage|record|records:|checks=|[0-9]+ (of|checks))'
 
