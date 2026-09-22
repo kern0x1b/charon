@@ -14,6 +14,11 @@
     return predicate;
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+    return self;
+}
+
 - (BOOL)evaluateWithObject:(id)object substitutionVariables:(NSDictionary *)variables
 {
     return [self evaluateWithObject:object];

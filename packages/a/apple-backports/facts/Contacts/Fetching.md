@@ -39,7 +39,10 @@ predicate of Charon's own, which the store reads:
 The predicate also answers `-evaluateWithObject:` for a `CNContact`, so it can
 filter an array in hand; iOS 9's own predicate raises instead. A predicate that
 is not one of these six is refused with `CNErrorCodePredicateInvalid` rather
-than quietly ignored.
+than quietly ignored. It answers `-copyWithZone:` too, since `CNContactFetchRequest.predicate`
+is a `copy` property - found crashing on real hardware (`-[CharonContactPredicate
+copyWithZone:]` unimplemented, NSInvalidArgumentException) the first time a
+fetch request was ever given one of these six.
 
 ## Unification
 
