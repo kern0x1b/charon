@@ -679,6 +679,15 @@
   "source": "UIKit of the armv7s cache of iOS 10.3.4, the host's UIKit through Mac Catalyst"
  },
  {
+  "api": "UITextInputTraits",
+  "kind": "protocol",
+  "introduced": "10.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "facts": "facts/UIKit/UITextContentType.md",
+  "source": "the protocol UITextField, UITextView and UISearchBar conform to; its textContentType member, the one this release added (10.0), is those three classes' own, registered above as inert"
+ },
+ {
   "api": "UITextContentTypeUsername",
   "kind": "constant",
   "introduced": "11.0",
