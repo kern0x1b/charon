@@ -101,6 +101,17 @@
       "facts": "facts/CoreGraphics/CGColorSpace.md"
     },
     {
+      "api": "CGColorSpaceCreateWithPlatformColorSpace()",
+      "kind": "function",
+      "introduced": "3.1.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
+      "effect": "the symbol is the release's own and does what it does there; it was not compared with a newer release",
+      "source": "the armv7 shared caches of every held release from 3.1.3, the lowest, on: CoreGraphics, the library the SDK puts it in, exports it in each (dyld.exported_at, the measure the gate takes); the SDK 16.4 header dates it 9.0",
+      "facts": "facts/CoreGraphics/CGColorSpace.md"
+    },
+    {
       "api": "CGColorSpaceCopyICCData()",
       "kind": "function",
       "introduced": "10.0",

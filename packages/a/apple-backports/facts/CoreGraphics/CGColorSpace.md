@@ -58,6 +58,12 @@ on the answers recorded by `host/coregraphics7/refresh.sh`: `CGPathAddRoundedRec
 `kCGPDFContextOutputIntent...` keys. The last two groups are exported, and how they behave was
 not compared.
 
+`CGColorSpaceCreateWithPlatformColorSpace`, which the SDK 16.4 header dates 9.0, is exported by
+CoreGraphics itself in the armv7 cache of every held release from 3.1.3, the lowest, on (the
+gate's own measure, `dyld.exported_at` over the library the SDK puts it in), so its registry entry
+says 3.1.3 and the release's own function answers. What it makes of a platform colour space was
+not compared.
+
 ## What this package carries
 
 `CGColorSpaceCopyICCData` (10.0): iOS 12 makes `CGColorSpaceCopyICCProfile` a branch to it
