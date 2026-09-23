@@ -35,7 +35,10 @@ reason and are named in the test; the rest are held.
 - `UINavigationItem.searchController` puts the search bar in the title of the navigation bar, and taking the
   controller away takes it out; `hidesSearchBarWhenScrolling` and `preferredSearchBarPlacement` (iOS 16) are kept
   and change nothing - there is one placement, the title view, not the automatic/inline/stacked choice the system's
-  layout reads it for.
+  layout reads it for. `searchBarPlacement` (iOS 16), the placement realised, answers that one placement: inline -
+  in the row of the bar, where the system's inline bar sits too - while the controller's bar is the item's title
+  view, and automatic, which names no placement, while the item has no controller or the application has put
+  another title view in its place (the header calls the value valid only with a controller assigned).
 
 ## What it cannot do as the system does
 
@@ -44,7 +47,8 @@ reason and are named in the test; the rest are held.
   `parentViewController` is set and `presentingViewController` is `nil`, and the presenting controller's
   `presentedViewController` is `nil` unless the application presented the search controller itself.
 - The search bar of a navigation item sits in the title of the bar, where the release's navigation bar can hold it,
-  not under a large title, which the release does not have. The system's placements of iOS 16 (`searchBarPlacement`),
-  the scope bar activation, the suggestions and `searchControllerObservedScrollView` are not carried.
+  not under a large title, which the release does not have. The stacked placement of iOS 16 is not carried, and
+  its inline bar sits in the title rather than on the trailing edge; the scope bar activation, the suggestions and
+  `searchControllerObservedScrollView` are not carried.
 - The results are updated when the text changes and when the search starts and ends; the number of extra updates the
   system makes while a dismissal finishes is not reproduced.

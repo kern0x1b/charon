@@ -918,14 +918,14 @@
       "source": "SDK 16.4, UIKit"
     },
     {
-      "api": "UIButton.hovered",
-      "kind": "property",
+      "api": "-[UIButton isHovered]",
+      "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "an indirect-pointer hover state; the 4S and iPad 2 have no trackpad or mouse input path at all, so it can only ever answer NO - not built, no demand, and a candidate to flip to implemented rather than stay absent, since a permanent NO is a defined answer, not a wall",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the getter of hovered: NO, as on any device with no pointer - the release has no trackpad, mouse or hover event, so nothing ever hovers over a button",
+      "facts": "facts/UIKit/UIPointerEvents.md",
+      "source": "SDK 16.4, UIKit; absent from the class in the 6.1.3 and 12.0 caches and present in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UIButton.preferredBehavioralStyle",
@@ -1972,30 +1972,30 @@
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "combines two initializers this port already carries separately (initWithBarButtonSystemItem:primaryAction: and the menu setter, UIBarButtonItem+Actions14.m) - simply not composed, no demand, not a wall",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "initWithBarButtonSystemItem:primaryAction: and then the menu: a tap runs the action, or shows the menu when there is no action",
+      "facts": "facts/UIKit/UIControlMenus.md",
+      "source": "SDK 16.4, UIKit; absent from the class in the 6.1.3 and 12.0 caches and present in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "-[UIBarButtonItem initWithPrimaryAction:menu:]",
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "combines initWithPrimaryAction: and the menu setter, both already carried (UIBarButtonItem+Actions14.m) - simply not composed, no demand, not a wall",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "initWithPrimaryAction: and then the menu: a tap runs the action, or shows the menu when there is no action",
+      "facts": "facts/UIKit/UIControlMenus.md",
+      "source": "SDK 16.4, UIKit; absent from the class in the 6.1.3 and 12.0 caches and present in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "-[UIBarButtonItem initWithTitle:image:target:action:menu:]",
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "combines the old target-action initializer with the menu setter this port already carries - simply not composed, no demand, not a wall",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "a plain item with the title, the image, the target and the action, and then the menu: a tap sends the action to the target, or shows the menu when there is no action",
+      "facts": "facts/UIKit/UIControlMenus.md",
+      "source": "SDK 16.4, UIKit; absent from the class in the 6.1.3 and 12.0 caches and present in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "-[UICollectionViewCell defaultBackgroundConfiguration]",
@@ -2934,10 +2934,10 @@
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the readonly counterpart to preferredSearchBarPlacement (implemented, inert): the port's search bar has one placement, the title view, so this always has a defined answer - a flip candidate for implemented, left absent since status does not move in this pass",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "inline while the search controller's bar is the item's title view, in the row of the navigation bar, where the port puts it; automatic, no placement, while the item has no search controller or its title view is something else",
+      "facts": "facts/UIKit/UISearchController.md",
+      "source": "SDK 16.4, UIKit; absent from the class in the 6.1.3 and 12.0 caches and present in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UINavigationItem.style",

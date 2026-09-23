@@ -31,7 +31,22 @@ item's `target` and `action`, so those answer the port's while the item has an a
 tapping runs the action with the item as its sender, or shows the menu as an action sheet on the key window with a hidden view as
 the source.
 
+An item given a menu while it already has an action of the application's own keeps that target and action, and a tap sends it:
+UIKit shows such an item's menu on a long press, and an item of the release is not a view the port can give one, so the menu is kept and
+not shown - as with an item that has both a primary action and a menu. Before 2026-09-23 the port took the target and action over
+for the menu here too, and the application's action was lost without a word.
+
 The space items `+fixedSpaceItemOfWidth:` and `+flexibleSpaceItem` are system items of those kinds.
+
+## Bar button items, iOS 16
+
+`-initWithPrimaryAction:menu:` and `-initWithBarButtonSystemItem:primaryAction:menu:` are the iOS 14 initialisers with the action, and
+then the menu set (`UIKit/UIBarButtonItem+Menu16.m`). `-initWithTitle:image:target:action:menu:` is a plain item with the title, the
+target and the action, the image when there is one, and then the menu; with no action a tap shows the menu, with one the rule above
+holds. The three are composed from what the port already carries, not held against the host - Catalyst is not on this machine - and not
+measured on a device. Ladder, by `objc.inventory` with `initWithBarButtonSystemItem:menu:` as the positive control and an invented
+selector as the negative one: none of the three is in `UIBarButtonItem`'s methods in 6.1.3 or 12.0, all three are in 16.0 and 18.0; with
+no 13-15 cache that bounds them to 12.0-16.0, and `introduced` stays the header's 16.0.
 
 ## Segmented controls
 

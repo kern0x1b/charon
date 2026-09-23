@@ -24,3 +24,13 @@ Source: the host's own UIKit under Mac Catalyst (macOS 27.0), held against the b
   header says the tap's mask is only evaluated for indirect input devices.
 - The interaction the button adds is the port's `UIPointerInteraction`, and never asks the provider for a style.
 - `-gestureRecognizer:shouldReceiveEvent:` of a recogniser's delegate is never sent.
+
+## `UIButton.hovered`, iOS 15
+
+`-[UIButton isHovered]` answers NO, always (`UIKit/UIButton+Hover15.m`). A button is hovered only while a pointer rests over it, and the
+release delivers no hover event at all - the port's `UIHoverGestureRecognizer` never leaves the possible state for the same reason - so NO
+is the answer any device without a pointer gives, not a placeholder. The registry lists the getter, `-[UIButton isHovered]`, since the
+property is readonly and has no setter to spell it. Ladder, by `objc.inventory` on each cache with `initWithBarButtonSystemItem:menu:` of
+iOS 14 as the positive control and an invented selector as the negative one: `isHovered` is not in `UIButton`'s methods in 6.1.3 or 12.0
+and is in 16.0 and 18.0; the ladder has no 13-15 cache, so it bounds the release to 12.0-16.0 and `introduced` stays the header's 15.0.
+Not measured on a device.
