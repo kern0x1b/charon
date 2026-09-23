@@ -50,16 +50,6 @@
       "reason": "the class is the principal class an app-extension target subclasses, and iOS 6 has no app-extension infrastructure to instantiate one (facts/Foundation/CloudAndExtensions.md: no host, NSExtensionMain answers 69). The wall is the missing loader, not the class's own age",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, CallKit"
-    },
-    {
-      "api": "CXErrorDomainNotificationServiceExtension",
-      "kind": "constant",
-      "introduced": "14.5",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant names errors CallKit hands back to a Notification Service Extension, and iOS 6 has no app-extension infrastructure to host one (facts/Foundation/CloudAndExtensions.md): there is no such extension for this domain to report errors to",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, CallKit"
     }
   ]
 }

@@ -5,7 +5,7 @@ them through a `CXCallController`, and watches every call of the device through 
 configuration and the two shorthand requests of the call controller. The release keeps no call of its own: the truth about which calls exist lives in
 `callservicesd`, and each of the three classes is a client of it.
 
-Source: the CallKit of the host, read under Mac Catalyst by `tests/backports/host/callkit/run.sh` - the four error domains as data, the defaults of
+Source: the CallKit of the host, read under Mac Catalyst by `tests/backports/host/callkit/run.sh` - the five error domains as data, the defaults of
 `CXProviderConfiguration`, the deadline of an action, the completeness of a transaction, the keys a `CXStartCallAction` archives under, the equality of a
 handle and what a copy of an action and of a transaction is - and SDK 16.4's headers for the surface. What the host will not answer is written down under
 *What is not carried*.
@@ -23,8 +23,9 @@ release. The cellular calls of the release are the one thing that does cross the
 
 ## What the port does
 
-- The four error domains are the release's own strings, to the character: `com.apple.CallKit.error`, `com.apple.CallKit.error.incomingcall`,
-  `com.apple.CallKit.error.requesttransaction` and `com.apple.CallKit.error.calldirectorymanager`. An error of the port carries the domain and the code and
+- The five error domains are the release's own strings, to the character: `com.apple.CallKit.error`, `com.apple.CallKit.error.incomingcall`,
+  `com.apple.CallKit.error.requesttransaction`, `com.apple.CallKit.error.calldirectorymanager`, and iOS 14.5's
+  `com.apple.CallKit.error.notificationserviceextension`. An error of the port carries the domain and the code and
   no user info, as the release's do, so `-localizedDescription` falls back to Foundation's wording for an unknown domain.
 - A new `CXProviderConfiguration` allows 2 call groups of 5 calls each, supports no video, includes its calls in recents, and supports no handle type; its
   `ringtoneSound` and `iconTemplateImageData` are nil. Those are the release's defaults, read off the host. `-initWithLocalizedName:` is the iOS 10
@@ -85,7 +86,8 @@ release. The cellular calls of the release are the one thing that does cross the
 ## What is not carried
 
 The call directory - `CXCallDirectoryManager`, `CXCallDirectoryProvider`, `CXCallDirectoryExtensionContext` and its delegate - is absent: it is an
-application extension, and iOS 6 loads no extensions. `CXErrorDomainNotificationServiceExtension` is absent for the same reason.
+application extension, and iOS 6 loads no extensions. `CXErrorDomainNotificationServiceExtension` is carried: it is a
+string, and an application that names it loads.
 
 `+[CXProvider reportNewIncomingVoIPPushPayload:completion:]` is absent, and the wall behind it is not a version gate but the one genuine wall this
 domain has: the method turns a `PKPushRegistry` VoIP push payload into a reported call, and this port never receives one to turn. `apsd`, iOS 6.1.3's

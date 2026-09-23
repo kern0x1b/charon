@@ -62,6 +62,7 @@ mutant CXErrorDomains10.m 'NSErrorDomain const CXErrorDomain = @"com.apple.CallK
 mutant CXErrorDomains10.m 'CXErrorDomainIncomingCall = @"com.apple.CallKit.error.incomingcall";' 'CXErrorDomainIncomingCall = @"com.apple.CallKit.error.incomingCall";'
 mutant CXErrorDomains10.m 'CXErrorDomainRequestTransaction = @"com.apple.CallKit.error.requesttransaction";' 'CXErrorDomainRequestTransaction = @"com.apple.CallKit.error.transaction";'
 mutant CXErrorDomains10.m 'CXErrorDomainCallDirectoryManager = @"com.apple.CallKit.error.calldirectorymanager";' 'CXErrorDomainCallDirectoryManager = @"com.apple.CallKit.error.directorymanager";'
+mutant CXErrorDomainNotificationServiceExtension145.m '@"com.apple.CallKit.error.notificationserviceextension"' '@"com.apple.CallKit.error.notificationextension"'
 mutant CXProviderConfiguration10.m "_maximumCallGroups = 2;" "_maximumCallGroups = 1;"
 mutant CXProviderConfiguration10.m "_maximumCallsPerCallGroup = 5;" "_maximumCallsPerCallGroup = 4;"
 mutant CXProviderConfiguration10.m "_includesCallsInRecents = YES;" "_includesCallsInRecents = NO;"

@@ -34,6 +34,7 @@ static void domains(CallKitRecorder record)
     record(@"domain.incoming", CXErrorDomainIncomingCall);
     record(@"domain.transaction", CXErrorDomainRequestTransaction);
     record(@"domain.directory", CXErrorDomainCallDirectoryManager);
+    record(@"domain.notificationExtension", CXErrorDomainNotificationServiceExtension);
 }
 
 static void configuration(CallKitRecorder record)

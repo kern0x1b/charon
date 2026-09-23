@@ -243,6 +243,15 @@
       "status": "implemented",
       "facts": "facts/CallKit/CallKit.md",
       "source": "CallKit of the arm64 shared cache of iOS 12.0, and SDK 16.4, CallKit"
+    },
+    {
+      "api": "CXErrorDomainNotificationServiceExtension",
+      "kind": "constant",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/CallKit/CallKit.md",
+      "source": "the host's CallKit under Mac Catalyst (tests/backports/host/callkit/run.sh), and SDK 16.4, CallKit"
     }
   ]
 }

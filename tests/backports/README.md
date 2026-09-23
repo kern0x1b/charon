@@ -176,7 +176,7 @@ does not carry, within the releases the entry covers. The script gives the check
 entries made up for the purpose, against the cache it is passed, and needs no
 device.
 
-`host/callkit/run.sh` holds the port's CallKit to the host's under Mac Catalyst: the four error domains, the defaults and the copy of a
+`host/callkit/run.sh` holds the port's CallKit to the host's under Mac Catalyst: the five error domains, the defaults and the copy of a
 provider configuration, the deadline each action class carries, the completeness of a transaction, the equality, hashing and secure
 coding of a handle, and what a copy of each object is. A tool has no VoIP entitlement, so anything that reaches callservicesd comes back
 `CXErrorCodeRequestTransactionErrorUnentitled` and no delegate method is ever called; the transactions the port really performs, the
