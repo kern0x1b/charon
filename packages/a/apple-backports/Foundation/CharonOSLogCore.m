@@ -52,7 +52,7 @@ os_log_t charon_os_log_named(const char *subsystem, const char *category)
             log = [[CharonOSLog alloc] initWithSubsystem:subsystem category:category];
             logs[key] = log;
         }
-        return log;
+        return (CHARON_OS_LOG_BRIDGE os_log_t)log;
     }
 }
 
@@ -64,7 +64,7 @@ BOOL charon_os_log_type_enabled(os_log_t log, os_log_type_t type)
 void charon_os_log_send(os_log_t log, os_log_type_t type, const char *format, va_list arguments, int error)
 {
     char *text = charon_os_log_format(format, arguments, error);
-    CharonOSLog *named = (CharonOSLog *)log;
+    CharonOSLog *named = (CHARON_OS_LOG_BRIDGE CharonOSLog *)log;
     const char *category = named->_category && *named->_category ? named->_category : NULL;
     int level = type == OS_LOG_TYPE_FAULT ? ASL_LEVEL_CRIT : type == OS_LOG_TYPE_ERROR ? ASL_LEVEL_ERR : ASL_LEVEL_NOTICE;
     aslmsg message = asl_new(ASL_TYPE_MSG);
