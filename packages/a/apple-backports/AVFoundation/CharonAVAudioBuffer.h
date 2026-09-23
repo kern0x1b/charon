@@ -19,8 +19,12 @@
 // actually implements them at link time - so every method a real caller sends still resolves
 // here, correctly, regardless of the header's own claimed ancestry.
 
+// Only plain C data lives in this struct, on purpose: ARC does not retain an Objective-C pointer
+// stored in a malloc'd struct field just because the field's declared type is an object pointer -
+// only real ivars and locals get that. `format` used to live here and was a latent dangling-
+// pointer bug (nothing kept it alive once a caller dropped its own reference to the format object
+// used to build the buffer) until a real ivar on CharonAudioBuffer replaced it - see AVAudioBuffer8.m.
 typedef struct {
-    AVAudioFormat *format;
     AudioBufferList *bufferList;
     UInt32 frameCapacity;
     UInt32 frameLength;
@@ -41,6 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface CharonAudioBuffer (CharonImpl)
 - (CharonAudioBufferImpl *)charon_impl;
 - (CharonAudioBufferImpl *)charon_allocate;
+- (void)charon_setFormat:(AVAudioFormat *)format;
 @end
 
 @interface AVAudioPCMBuffer : CharonAudioBuffer

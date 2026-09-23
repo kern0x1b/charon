@@ -43,6 +43,23 @@ int main(void)
         AVAudioFormat *tooManyChannels = [[AVAudioFormat alloc] initStandardFormatWithSampleRate:44100.0 channels:6];
         CHECK(tooManyChannels == nil, "more than 2 channels without a channel layout is refused, matching the real class");
 
+        // A malloc'd C struct field typed as an Objective-C pointer is NOT retained by ARC just
+        // because of its declared type - only a real ivar or local is. This was a genuine latent
+        // dangling-pointer bug here (format stored in the struct, not an ivar) until fixed. Proven
+        // by dropping every other reference, forcing the freed memory to be reused by unrelated
+        // allocations, then reading the buffer's own values back through its strong reference: a
+        // dangling pointer would read garbage or a wrong, reused object's data, not what was set.
+        AVAudioPCMBuffer *retainCheck;
+        @autoreleasepool {
+            AVAudioFormat *temporary = [[AVAudioFormat alloc] initStandardFormatWithSampleRate:22050.0 channels:1];
+            retainCheck = [[AVAudioPCMBuffer alloc] initWithPCMFormat:temporary frameCapacity:16];
+        }
+        for (int i = 0; i < 4096; i++)
+            @autoreleasepool { (void)[NSMutableString stringWithFormat:@"churn %d filling freed memory", i]; }
+        CHECK(retainCheck.format != nil, "a buffer's format stays alive after every other strong reference is dropped");
+        CHECK(retainCheck.format.sampleRate == 22050.0, "buffer.format.sampleRate survives, not a dangling pointer's garbage");
+        CHECK(retainCheck.format.channelCount == 1, "buffer.format.channelCount survives, not a dangling pointer's garbage");
+
         AVAudioFrameCount frames = 512;
         AVAudioPCMBuffer *buffer = [[AVAudioPCMBuffer alloc] initWithPCMFormat:stereo frameCapacity:frames];
         CHECK(buffer != nil, "PCM buffer is constructed");

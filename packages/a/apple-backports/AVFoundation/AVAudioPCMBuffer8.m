@@ -37,7 +37,7 @@
         }
 
         CharonAudioBufferImpl *impl = [self charon_allocate];
-        impl->format = format;
+        [self charon_setFormat:format];
         impl->bufferList = list;
         impl->frameCapacity = frameCapacity;
         impl->frameLength = 0;
@@ -101,19 +101,19 @@
 - (float *const *)floatChannelData
 {
     CharonAudioBufferImpl *impl = [self charon_impl];
-    return (impl && [impl->format commonFormat] == AVAudioPCMFormatFloat32) ? (float *const *)impl->channelPointers : NULL;
+    return (impl && [self.format commonFormat] == AVAudioPCMFormatFloat32) ? (float *const *)impl->channelPointers : NULL;
 }
 
 - (int16_t *const *)int16ChannelData
 {
     CharonAudioBufferImpl *impl = [self charon_impl];
-    return (impl && [impl->format commonFormat] == AVAudioPCMFormatInt16) ? (int16_t *const *)impl->channelPointers : NULL;
+    return (impl && [self.format commonFormat] == AVAudioPCMFormatInt16) ? (int16_t *const *)impl->channelPointers : NULL;
 }
 
 - (int32_t *const *)int32ChannelData
 {
     CharonAudioBufferImpl *impl = [self charon_impl];
-    return (impl && [impl->format commonFormat] == AVAudioPCMFormatInt32) ? (int32_t *const *)impl->channelPointers : NULL;
+    return (impl && [self.format commonFormat] == AVAudioPCMFormatInt32) ? (int32_t *const *)impl->channelPointers : NULL;
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -121,7 +121,7 @@
     CharonAudioBufferImpl *impl = [self charon_impl];
     if (!impl)
         return nil;
-    AVAudioPCMBuffer *copy = [[AVAudioPCMBuffer allocWithZone:zone] initWithPCMFormat:impl->format frameCapacity:impl->frameCapacity];
+    AVAudioPCMBuffer *copy = [[AVAudioPCMBuffer allocWithZone:zone] initWithPCMFormat:self.format frameCapacity:impl->frameCapacity];
     CharonAudioBufferImpl *other = [copy charon_impl];
     other->frameLength = impl->frameLength;
     for (UInt32 i = 0; i < impl->bufferList->mNumberBuffers; i++)
@@ -138,7 +138,7 @@
 - (NSString *)description
 {
     CharonAudioBufferImpl *impl = [self charon_impl];
-    return [NSString stringWithFormat:@"<AVAudioPCMBuffer %p: %@, frameLength %u / %u>", self, impl->format,
+    return [NSString stringWithFormat:@"<AVAudioPCMBuffer %p: %@, frameLength %u / %u>", self, self.format,
                                       (unsigned)impl->frameLength, (unsigned)impl->frameCapacity];
 }
 

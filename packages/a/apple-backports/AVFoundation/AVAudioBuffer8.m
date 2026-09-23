@@ -8,6 +8,7 @@
 @implementation CharonAudioBuffer {
 @private
     CharonAudioBufferImpl *_charon;
+    AVAudioFormat *_charon_format;   // a real ivar, ARC-retained - see the struct's own comment in the header
 }
 
 // Both accessors are ordinary instance methods, callable from AVAudioPCMBuffer as any inherited
@@ -15,6 +16,11 @@
 - (CharonAudioBufferImpl *)charon_impl
 {
     return _charon;
+}
+
+- (void)charon_setFormat:(AVAudioFormat *)format
+{
+    _charon_format = format;
 }
 
 - (CharonAudioBufferImpl *)charon_allocate
@@ -39,7 +45,7 @@
 
 - (AVAudioFormat *)format
 {
-    return _charon ? _charon->format : nil;
+    return _charon_format;
 }
 
 - (const AudioBufferList *)audioBufferList
