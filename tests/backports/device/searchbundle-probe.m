@@ -110,11 +110,6 @@ int main(int argc, char *argv[])
             return 1;
 
         CharonProbeDelegate *delegate = ((id (*)(id, SEL))objc_msgSend)(((id (*)(id, SEL))objc_msgSend)((id)[CharonProbeDelegate class], sel_registerName("alloc")), sel_registerName("init"));
-        NSArray *domains = ((id (*)(id, SEL))objc_msgSend)(agent, sel_registerName("searchDomains"));
-        NSArray *withOurs = [domains arrayByAddingObject:@999];
-        ((void (*)(id, SEL, id))objc_msgSend)(agent, sel_registerName("setSearchDomains:"), withOurs);
-        printf("probe: forced searchDomains -> %s\n", [[((id (*)(id, SEL))objc_msgSend)(agent, sel_registerName("searchDomains")) description] UTF8String]);
-        fflush(stdout);
         Protocol *daemonProtocol = objc_getProtocol("SPDaemonQueryDelegate");
         printf("probe: objc_getProtocol(SPDaemonQueryDelegate) -> %p\n", daemonProtocol);
         fflush(stdout);
