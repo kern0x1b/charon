@@ -23,7 +23,13 @@ _T_CANDIDATES=[p for p in [
     os.path.join(os.path.expanduser("~"), "Git", "projects", "ios", "charon",
                   ".agent-work", "worktrees", "bcorpus", "packages", "a", "apple-backports"),  # script lives in the scratchpad
 ] if p]
-T=next((p for p in _T_CANDIDATES if os.path.isdir(p)), _T_CANDIDATES[-1])
+T=next((p for p in _T_CANDIDATES if os.path.isdir(p)), None)
+if T is None:
+    sys.exit("verify.py: no tree directory found (looked in %s). Set CHARON_TREE_DIR to the "
+              "current worktree's packages/a/apple-backports -- without it in_tree() silently "
+              "scans an empty blob and every check() call reports false positives (this is exactly "
+              "how the GCDevice row came back after the worktree moved earlier this session)."
+              % ", ".join(_T_CANDIDATES))
 reg={}
 for l in open(EXP):
     p=l.rstrip("\n").split("\t")

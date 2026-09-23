@@ -191,7 +191,13 @@ A5_UNREACHABLE = {"Metal", "MetalKit", "MetalPerformanceShaders", "MetalPerforma
 def load_registry():
     reg = {}
     if not os.path.exists(REGISTRY_TSV):
-        return reg
+        # A missing registry export is not "nothing is decided yet" -- every caller (carried_status,
+        # crash-demand.py's status_one) reads an empty reg the same way it reads a real one where
+        # nothing has landed, so the whole pipeline runs to completion and reports a plausible,
+        # badly inflated gap list with no error and no count of what went missing. Same failure
+        # shape as an empty tree blob or a missing caches/sel/, just inflating instead of hiding.
+        sys.exit("aggregate.py: registry export not found at %s (CHARON_REGISTRY_TSV). Every row "
+                  "would silently read as undecided instead of raising." % REGISTRY_TSV)
     with open(REGISTRY_TSV) as f:
         header = next(f, "")
         # Support both formats: new "framework\tapi\tstatus" and old "status\tframework\tkind\tapi\t..."

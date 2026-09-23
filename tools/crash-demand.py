@@ -134,7 +134,13 @@ def main():
         os.path.join(os.path.expanduser("~"), "Git", "projects", "ios", "charon",
                       ".agent-work", "worktrees", "bcorpus", "packages", "a", "apple-backports"),  # script lives in the scratchpad
     ] if p]
-    TREE = next((p for p in _tree_candidates if os.path.isdir(p)), _tree_candidates[-1])
+    TREE = next((p for p in _tree_candidates if os.path.isdir(p)), None)
+    if TREE is None:
+        sys.exit("crash-demand.py: no tree directory found (looked in %s). Set CHARON_TREE_DIR to "
+                  "the current worktree's packages/a/apple-backports -- without it "
+                  "protocol_member_in_tree() silently scans an empty blob and every protocol-owner "
+                  "row (e.g. GCDevice.vendorName) reports a false gap instead of the tree-carried "
+                  "class that actually implements it." % ", ".join(_tree_candidates))
     _blob = subprocess.run(["bash", "-c", f"cat $(find {TREE} -name '*.m' -o -name '*.mm' -o -name '*.h') 2>/dev/null"],
                             capture_output=True, text=True).stdout
     _impls = defaultdict(list)
