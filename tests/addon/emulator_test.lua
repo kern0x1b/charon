@@ -721,6 +721,166 @@ local function held_image_step(emulator, folder, found)
     os.tryrm(folder)
 end
 
+local INFO = [[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>CFBundleExecutable</key><string>Probe</string>
+%s
+</dict></plist>
+]]
+
+local function registration_step(emulator, debian, folder, found)
+    local tree = path.join(folder, "app-tree")
+    os.mkdir(path.join(tree, "Applications", "Probe.app"))
+    io.writefile(path.join(tree, "Applications", "Probe.app", "Info.plist"), INFO:format("<key>CFBundleIdentifier</key><string>org.example.probe</string>"))
+    local control = path.join(folder, "app-control")
+    io.writefile(control, (CONTROL:gsub("org.example.placed", "org.example.probe")))
+    local deb = debian.write({control = control, version = "1.0", root = tree, outputdir = path.join(folder, "app-debs")})
+    local rootfs = path.join(folder, "app-rootfs")
+    local cache = path.join(rootfs, "private", "var", "mobile", "Library", "Caches", "com.apple.mobile.installation.plist")
+    os.mkdir(path.directory(cache))
+    os.ln("private/var", path.join(rootfs, "var"))
+    os.vrunv("plutil", {"-create", "binary1", cache})
+    local placed = emulator.install_deb(deb, rootfs)
+    if #placed ~= 1 or placed[1] ~= "Applications/Probe.app" then
+        table.insert(found, "installing a package names the application bundles it placed, said " .. table.concat(placed, ", "))
+        return
+    end
+    if emulator.register_application(rootfs, placed[1]) ~= "org.example.probe" then
+        table.insert(found, "registering an application answers its bundle identifier")
+    end
+    if os.isfile(cache) then
+        table.insert(found, "registering an application removes MobileInstallation's cache, which it rebuilds from /Applications at boot")
+    end
+    local bare = path.join(folder, "bare-rootfs")
+    os.mkdir(path.join(bare, "Applications", "Probe.app"))
+    os.cp(path.join(tree, "Applications", "Probe.app", "Info.plist"), path.join(bare, "Applications", "Probe.app") .. "/")
+    if emulator.register_application(bare, "Applications/Probe.app") ~= "org.example.probe" then
+        table.insert(found, "an image with no MobileInstallation cache yet registers an application too")
+    end
+    io.writefile(path.join(bare, "Applications", "Probe.app", "Info.plist"), INFO:format(""))
+    local refused = fixtures.refusal(function () emulator.register_application(bare, "Applications/Probe.app") end) or ""
+    if not refused:find("CFBundleIdentifier", 1, true) then
+        table.insert(found, "an application with no bundle identifier must be refused, said " .. refused)
+    end
+    os.rm(path.join(bare, "Applications", "Probe.app", "Info.plist"))
+    refused = fixtures.refusal(function () emulator.register_application(bare, "Applications/Probe.app") end) or ""
+    if not refused:find("has no Info.plist", 1, true) then
+        table.insert(found, "a bundle with no Info.plist must be refused as such, said " .. refused)
+    end
+end
+
+local function launch_step(emulator, folder, found)
+    local steps = emulator.parse_steps({"tap", "160", "260", "home", "drag", "1", "2", "3", "4"})
+    if table.concat(steps, ";") ~= "tap 160 260;home;drag 1 2 3 4" then
+        table.insert(found, "launch's steps are read as tap X Y, home and drag X1 Y1 X2 Y2, read " .. table.concat(steps, ";"))
+    end
+    for _, words in ipairs({{"tap", "1"}, {"swipe", "1", "2"}, {"tap", "x", "2"}}) do
+        if not fixtures.refusal(function () emulator.parse_steps(words) end) then
+            table.insert(found, "a step that is not tap X Y, drag X1 Y1 X2 Y2 or home must be refused: " .. table.concat(words, " "))
+        end
+    end
+    local command = table.concat(emulator.launch_command("org.example.probe", 90), " ")
+    if command ~= "/usr/libexec/charon-sblaunch --wait 90 --stdout /private/var/charon/app.stdout --stderr /private/var/charon/app.stderr org.example.probe" then
+        table.insert(found, "launch has charon-sblaunch wait and keep the application's output beside the verdict: " .. command)
+    end
+    local scanned = {}
+    for _, line in ipairs({"[control] snapshot=/run/app-0.png frame=12", "[transition] input-complete id=3 kind=gesture completed-ns=1",
+                           "[transition] settle id=4 sequence=90 started-ns=2", "[transition] internal-stable id=4 sequence=90 content-revision=7",
+                           "[process] spawn-setexec pid=90 parent=1 suspended=0 /Applications/Probe.app/Probe argv=\"\""}) do
+        emulator.scan(scanned, line)
+    end
+    if not (scanned.snapshots or {})["/run/app-0.png"] or scanned.transition ~= 4 or not (scanned.stable or {})[4]
+       or (scanned.programs or {})["90"] ~= "/Applications/Probe.app/Probe" then
+        table.insert(found, "the log is read for the snapshots taken, the transitions started and settled, and the path of each program started")
+    end
+
+    local results = path.join(folder, "launch-results")
+    local function driven()
+        os.tryrm(results)
+        os.mkdir(results)
+        local sent = {}
+        local driver = emulator.launch_driver({results = results, run = "/run", application = "/Applications/Probe.app",
+                                               steps = {"tap 160 260"}})
+        return driver, sent, function (state)
+            return driver.stop(state, function (command) table.insert(sent, command) end)
+        end
+    end
+    local driver, sent, tick = driven()
+    local state = {}
+    tick(state)
+    io.writefile(path.join(results, "test.stdout"), "charon-sblaunch: 0.0 s: waiting for SpringBoard\ncharon-sblaunch: 21.5 s: SpringBoard refused with 3 (device locked), the screen is locked\n")
+    tick(state)
+    state.ready = true
+    tick(state)
+    tick(state)
+    state.transition = 1
+    tick(state)
+    if table.concat(sent, ";") ~= "unlock" then
+        table.insert(found, "a locked screen is unlocked once while the unlock has not settled, sent " .. table.concat(sent, ";"))
+    end
+    state.stable = {[1] = true}
+    tick(state)
+    if #sent ~= 2 or sent[2] ~= "unlock" then
+        table.insert(found, "a screen still locked after its unlock settled is unlocked again, sent " .. table.concat(sent, ";"))
+    end
+    state.transition, state.stable[2] = 2, true
+    json.savefile(path.join(results, "verdict.json"), {test = {spawned = 1, exit = 0}})
+    tick(state)
+    if sent[3] ~= "settle" then
+        table.insert(found, "once the application is frontmost the emulator is asked to settle, sent " .. tostring(sent[3]))
+    end
+    state.programs = {["90"] = "/Applications/Probe.app/Probe"}
+    tick(state)
+    if #sent ~= 3 then
+        table.insert(found, "no snapshot is taken before the settle has started, sent " .. table.concat(sent, ";"))
+    end
+    state.transition = 3
+    tick(state)
+    if #sent ~= 3 then
+        table.insert(found, "no snapshot is taken before the screen has settled, sent " .. table.concat(sent, ";"))
+    end
+    state.stable[3] = true
+    tick(state)
+    if sent[4] ~= "snapshot /run/app-0.png" then
+        table.insert(found, "a settled screen is snapshot into the run, sent " .. tostring(sent[4]))
+    end
+    tick(state)
+    state.snapshots = {["/run/app-0.png"] = true}
+    tick(state)
+    if sent[5] ~= "tap 160 260" then
+        table.insert(found, "a step is taken once the snapshot before it is written, sent " .. tostring(sent[5]))
+    end
+    tick(state)
+    state.transition = 4
+    tick(state)
+    if sent[6] ~= "settle" or #sent ~= 6 then
+        table.insert(found, "the emulator is asked to settle once the step's input is complete, sent " .. table.concat(sent, ";"))
+    end
+    state.transition, state.stable[5] = 5, true
+    tick(state)
+    state.snapshots["/run/app-1.png"] = true
+    local done = tick(state)
+    if sent[7] ~= "snapshot /run/app-1.png" or not done or #driver.shots ~= 2 or driver.failure or driver.application.pid ~= "90" then
+        table.insert(found, string.format("after its last step and snapshot the launch is done with two shots, sent %s, done %s",
+                                          table.concat(sent, ";"), tostring(done)))
+    end
+
+    driver, sent, tick = driven()
+    json.savefile(path.join(results, "verdict.json"), {test = {spawned = 1, exit = 4}})
+    if not tick({ready = true}) or driver.failure ~= "refused" then
+        table.insert(found, "a launch charon-sblaunch could not finish ends the run as refused")
+    end
+    driver, sent, tick = driven()
+    json.savefile(path.join(results, "verdict.json"), {test = {spawned = 1, exit = 0}})
+    state = {ready = true}
+    tick(state)
+    state.programs, state.exits = {["90"] = "/Applications/Probe.app/Probe"}, {["90"] = {status = 0, signal = 11}}
+    if not tick(state) or driver.failure ~= "exited" or driver.exit.signal ~= 11 then
+        table.insert(found, "an application that dies ends the run with its signal")
+    end
+end
+
 function failures(opt)
     local emulator = import("emulator", {rootdir = opt.modules, anonymous = true})
     local debian = import("debian", {rootdir = opt.modules, anonymous = true})
@@ -730,6 +890,8 @@ function failures(opt)
     home_step(emulator, folder, found)
     deb_step(emulator, debian, folder, found)
     runner_job(emulator, folder, found)
+    registration_step(emulator, debian, folder, found)
+    launch_step(emulator, folder, found)
     runner_source(opt, found)
     timing_and_reports(emulator, folder, found)
     load_step(emulator, found)

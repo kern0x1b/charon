@@ -9,6 +9,10 @@ import("apple.firmware")
 RESULTS = "private/var/charon"
 REPORTS = "private/var/logs/CrashReporter"
 RUNNER = "usr/libexec/charon-runner"
+LAUNCHER = "usr/libexec/charon-sblaunch"
+-- MobileInstallation's cache of the installed applications, which SpringBoard
+-- lists and launches from.
+INSTALLATION_CACHE = "private/var/mobile/Library/Caches/com.apple.mobile.installation.plist"
 RUNNER_JOB = "System/Library/LaunchDaemons/org.charon.emulator.runner.plist"
 -- launchd reads launchd.conf at boot through iOS 6.1; from 7 it does not, and
 -- from 6.1 it ignores a LaunchDaemons plist its prebuilt job cache does not
@@ -498,7 +502,44 @@ function install_deb(deb, rootfs)
     maintainer_script(work, members, "preinst", rootfs, deb, "install")
     place(path.join(work, "tree"), rootfs)
     maintainer_script(work, members, "postinst", rootfs, deb, "configure")
+    local applications = {}
+    for _, bundle in ipairs(os.dirs(path.join(work, "tree", "Applications", "*.app"))) do
+        table.insert(applications, "Applications/" .. path.filename(bundle))
+    end
     remove(work)
+    return applications
+end
+
+-- What uicache does on a device, left to MobileInstallation itself: its cache
+-- of the installed applications is removed from the image, and it builds the
+-- cache again from /Applications at boot, as it does on a firmware's first
+-- boot, whose root filesystem has none. SpringBoard then lists the application
+-- and launches it by the bundle identifier this answers.
+function register_application(rootfs, relative)
+    local info = path.join(guest_path(rootfs, relative), "Info.plist")
+    if not os.isfile(info) then
+        raise("/%s has no Info.plist, so it is no application SpringBoard can list", relative)
+    end
+    local identifier = try {function () return os.iorunv("plutil", {"-extract", "CFBundleIdentifier", "raw", "-o", "-", info}):trim() end}
+    if not identifier or identifier == "" then
+        raise("%s names no CFBundleIdentifier, and SpringBoard launches an application by it", info)
+    end
+    remove(guest_path(rootfs, INSTALLATION_CACHE))
+    return identifier
+end
+
+function install_launcher(rootfs, guest)
+    local launcher = guest_path(rootfs, LAUNCHER)
+    os.mkdir(path.directory(launcher))
+    os.vrunv("cp", {"-p", path.join(guest, LAUNCHER), launcher})
+end
+
+-- The runner's command for launch: charon-sblaunch waits up to seconds for
+-- SpringBoard to take the launch, and the application's output goes beside
+-- the verdict.
+function launch_command(identifier, seconds)
+    return {"/" .. LAUNCHER, "--wait", tostring(seconds), "--stdout", "/" .. RESULTS .. "/app.stdout",
+            "--stderr", "/" .. RESULTS .. "/app.stderr", identifier}
 end
 
 local function escaped(text)
@@ -574,6 +615,22 @@ function scan(state, line)
     elseif line:startswith("[display] frame=") then
         state.frames = (state.frames or 0) + 1
     end
+    -- An input and a settle each start a transition, numbered in order, which
+    -- is stable once the screen has stopped changing after it.
+    local started = line:match("^%[transition%] input%-complete id=(%d+)") or line:match("^%[transition%] settle id=(%d+)")
+    if started then
+        state.transition = math.max(state.transition or 0, tonumber(started))
+    end
+    local stable = line:match("^%[transition%] internal%-stable id=(%d+)")
+    if stable then
+        state.stable = state.stable or {}
+        state.stable[tonumber(stable)] = true
+    end
+    local snapshot = line:match("^%[control%] snapshot=(.-) frame=%d+$")
+    if snapshot then
+        state.snapshots = state.snapshots or {}
+        state.snapshots[snapshot] = true
+    end
     local pid, program = line:match("^%[process%] spawn%-setexec pid=(%d+) parent=%d+ suspended=%d (%S+)")
     if not pid then
         pid, program = line:match("^%[process%] exec pid=(%d+) (/%S+)")
@@ -583,6 +640,8 @@ function scan(state, line)
     end
     if pid then
         state.names[pid] = path.filename(program)
+        state.programs = state.programs or {}
+        state.programs[pid] = program
         if program:endswith("SpringBoard.app/SpringBoard") then
             state.springboard = true
         elseif program:endswith("/DataMigrator") then
@@ -743,6 +802,110 @@ function describe(result)
     return result.state
 end
 
+-- The steps launch takes after the application is up, each followed by a
+-- snapshot once the screen settles: the word and how many numbers follow it.
+function parse_steps(words)
+    local arity = {tap = 2, drag = 4, home = 0}
+    local steps, index = {}, 1
+    while index <= #words do
+        local verb = words[index]
+        local count = arity[verb]
+        if not count then
+            raise("launch takes the steps tap X Y, drag X1 Y1 X2 Y2 and home after the bundle identifier, and not %s", verb)
+        end
+        local step = {verb}
+        for offset = 1, count do
+            local number = tonumber(words[index + offset])
+            if not number then
+                raise("%s takes %d numbers, in points", verb, count)
+            end
+            table.insert(step, words[index + offset])
+        end
+        table.insert(steps, table.concat(step, " "))
+        index = index + count + 1
+    end
+    return steps
+end
+
+-- What launch does while the guest runs, as the stop function of boot. It
+-- unlocks the screen while charon-sblaunch says it is locked, one unlock at a
+-- time; once the launch is done and the application frontmost, it has the
+-- emulator settle and takes a snapshot when the screen has stopped changing,
+-- then takes each step, settles and takes a snapshot after it. Settling is
+-- the emulator's own measure, in guest time: [transition] settle id=N, then
+-- internal-stable id=N. The driver keeps where it ended in shots, failure,
+-- exit and application.
+function launch_driver(opt)
+    local driver = {phase = "launching", shots = {}, step = 0, unlocks = 0}
+    local function settle(state, send)
+        send("settle")
+        driver.phase, driver.after, driver.settling = "settling", state.transition or 0, nil
+    end
+    function driver.stop(state, send)
+        if not state.ready then
+            return false
+        end
+        for pid, program in pairs(state.programs or {}) do
+            if program:startswith(opt.application .. "/") and (not driver.application or driver.application.pid ~= pid) then
+                driver.application = {pid = pid, program = program}
+            end
+        end
+        local exited = driver.application and (state.exits or {})[driver.application.pid]
+        if exited then
+            driver.failure, driver.exit = "exited", exited
+            return true
+        end
+        if driver.phase == "launching" then
+            local verdict = path.join(opt.results, "verdict.json")
+            if os.isfile(verdict) then
+                local test = (json.loadfile(verdict) or {}).test or {}
+                if test.spawned ~= 1 or test.exit ~= 0 then
+                    driver.failure = "refused"
+                    return true
+                end
+                settle(state, send)
+                return false
+            end
+            local stdout = path.join(opt.results, "test.stdout")
+            local last = (os.isfile(stdout) and io.readfile(stdout) or ""):match("([^\n]*)\n$") or ""
+            -- The unlock gesture is the next transition; another is sent only
+            -- once that one has settled and the screen is still locked.
+            local idle = not driver.unlocking or (state.stable or {})[driver.unlocking]
+            if idle and last:find("the screen is locked", 1, true) and not last:find("passcode", 1, true) then
+                send("unlock")
+                driver.unlocks = driver.unlocks + 1
+                driver.unlocking = (state.transition or 0) + 1
+            end
+        elseif driver.phase == "settling" then
+            if not driver.settling and (state.transition or 0) > driver.after then
+                driver.settling = state.transition
+            end
+            if driver.settling and (state.stable or {})[driver.settling] then
+                driver.pending = path.join(opt.run, string.format("app-%d.png", #driver.shots))
+                send("snapshot " .. driver.pending)
+                driver.phase = "shooting"
+            end
+        elseif driver.phase == "shooting" then
+            if (state.snapshots or {})[driver.pending] then
+                table.insert(driver.shots, driver.pending)
+                driver.step = driver.step + 1
+                local step = opt.steps[driver.step]
+                if not step then
+                    return true
+                end
+                send(step)
+                driver.phase, driver.after = "stepping", state.transition or 0
+            end
+        elseif driver.phase == "stepping" then
+            if (state.transition or 0) > driver.after then
+                settle(state, send)
+            end
+        end
+        return false
+    end
+    return driver
+end
+
 function boot(opt)
     local run = opt.run
     os.mkdir(run)
@@ -786,7 +949,9 @@ function boot(opt)
             reason = "exited"
             break
         end
-        if opt.stop and opt.stop(state) then
+        if opt.stop and opt.stop(state, function (command)
+            control:write(command .. "\n", {block = true})
+        end) then
             reason = "reached"
             break
         end

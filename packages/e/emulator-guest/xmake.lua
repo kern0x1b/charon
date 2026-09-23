@@ -1,6 +1,6 @@
 package("emulator-guest")
     set_homepage("https://github.com/kern0x1b/charon")
-    set_description("charon-runner, the daemon that starts a test inside an emulated device and writes its verdict, built by Charon's own rules for the port's architecture and minimum release")
+    set_description("charon-runner, the daemon that starts a test inside an emulated device and writes its verdict, and charon-sblaunch, which has SpringBoard launch an application, built by Charon's own rules for the port's architecture and minimum release")
     set_license("MIT")
 
     local digests = {}
@@ -34,5 +34,7 @@ package("emulator-guest")
     end)
 
     on_test(function (package)
-        assert(os.isfile(path.join(package:installdir(), "usr", "libexec", "charon-runner")))
+        for _, name in ipairs({"charon-runner", "charon-sblaunch"}) do
+            assert(os.isfile(path.join(package:installdir(), "usr", "libexec", name)))
+        end
     end)

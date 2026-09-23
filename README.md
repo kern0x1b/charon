@@ -99,6 +99,10 @@ Then:
     xmake emulate [-s 60] [--scale 10] run COMMAND
                                start COMMAND in it and report pass, fail, crash,
                                timeout or boot-blocked; -d DEVICE, -r RELEASE
+    xmake emulate launch BUNDLE-ID [tap X Y | drag X1 Y1 X2 Y2 | home ...]
+                               install, register the application with SpringBoard,
+                               have SpringBoard launch it, keep its output and a
+                               snapshot once its screen settles and after each step
     xmake emulate debug COMMAND
                                start COMMAND as the guest's first process under
                                the emulator's debugger and print where it stopped
@@ -278,8 +282,8 @@ own userland over an emulated XNU on macOS arm64 hosts; it is pinned by
 commit, with the fixes it has not taken yet as patches under
 `packages/s/shade/patches/` - with
 `charon@swiftshader`, the CPU Vulkan driver its OpenGL ES is drawn through, and
-`charon@emulator-guest`, `charon-runner` built by the `daemon` rule for the
-port's architecture and minimum. The device is `-d`, or the first device of
+`charon@emulator-guest`, `charon-runner` and `charon-sblaunch` built by the
+`daemon` rule for the port's architecture and minimum. The device is `-d`, or the first device of
 the catalog of the configured architecture that Shade has a profile for and
 that runs `-r` (default `apple_minimum`); its earliest release not older than
 that is the one emulated. A device without a profile, or a release whose
@@ -306,7 +310,29 @@ is removed unless `-k` keeps it. A golden image of an older emulator package is
 removed when the golden image of the new one is made. A crash names the signal, the program counter the
 emulator saw and the last frame, and a boot that never ran the command names
 where it stopped: the emulator, a process that keeps crashing, SpringBoard or
-the data migration. The guest has no network unless `-n` or a target's
+the data migration.
+
+`run` starts a program as a child of `charon-runner`, outside SpringBoard, so a
+UIKit application started that way never reaches
+`application:didFinishLaunchingWithOptions:`. `launch BUNDLE-ID` starts one the
+way a tap on its icon does. For each application bundle a package puts under
+`/Applications`, `install` removes MobileInstallation's cache from the image
+(`com.apple.mobile.installation.plist`, which `uicache` rewrites on a device),
+and MobileInstallation builds it again from `/Applications` at boot, as on a
+firmware's first boot, so SpringBoard lists the application. `launch` installs,
+and has the runner start `charon-sblaunch`, which waits up to `-s` guest seconds
+for SpringBoard to take the launch through `SBSLaunchApplicationForDebugging`
+and make the application frontmost, with the application's standard output and
+error in `/private/var/charon/app.stdout` and `app.stderr` (unbuffered, and
+`NSLog` to standard error too). While SpringBoard refuses because the screen is
+locked, `launch` unlocks it over Shade's control channel. Then it has Shade
+`settle` and, once the screen has not changed for 60 display periods of guest
+time, writes a snapshot, `app-0.png`, into the run folder; then it takes each
+step given after the bundle identifier - `tap X Y`, `drag X1 Y1 X2 Y2` in points,
+`home` - settles and takes a snapshot after each, and quits. It prints the application's output and the snapshots, and fails naming
+SpringBoard's refusal, the signal or status the application ended with, or that
+its process never started; `log` prints the output again and `shot` the last
+frame. The guest has no network unless `-n` or a target's
 `emulate.network` value says `loopback` or `host`. Several ports and sessions
 emulate at once: golden images are built in a folder of their own and renamed
 into place under a file lock, so a second session waits for the first instead

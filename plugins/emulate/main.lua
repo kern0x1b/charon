@@ -98,12 +98,20 @@ local function install(ctx)
     local base = golden(ctx)
     local rootfs = path.join(ctx.image, "rootfs")
     emulator.clone_golden(base, rootfs)
+    local applications = {}
     for _, package in ipairs(written) do
-        emulator.install_deb(package.deb, rootfs)
+        local placed = emulator.install_deb(package.deb, rootfs)
         cprint("${bright green}installed${clear} %s into %s %s", path.filename(package.deb), ctx.identifier, ctx.version)
+        for _, relative in ipairs(placed) do
+            local identifier = emulator.register_application(rootfs, relative)
+            applications[identifier] = "/" .. relative
+            cprint("${bright green}registered${clear} %s (/%s) with SpringBoard", identifier, relative)
+        end
     end
     json.savefile(path.join(ctx.image, "image.json"), {identifier = ctx.identifier, version = ctx.version, build = ctx.build,
-                                                        packages = table.imap(written, function (_, item) return path.filename(item.deb) end)})
+                                                        packages = table.imap(written, function (_, item) return path.filename(item.deb) end),
+                                                        applications = applications})
+    return applications
 end
 
 local function run(ctx, argv)
@@ -178,9 +186,82 @@ local function run(ctx, argv)
     end
 end
 
+-- The port is installed, its application launched by SpringBoard the way a
+-- tap on its icon launches it, and what the application writes and shows is
+-- kept: its standard output and error, and a snapshot once its screen settles
+-- and after each step.
+local function launch(ctx, identifier, steps)
+    local applications = install(ctx)
+    local application = applications[identifier]
+    if not application then
+        raise("the port installs no application %s; it installs %s", identifier,
+              #table.keys(applications) > 0 and table.concat(table.orderkeys(applications), ", ") or "none")
+    end
+    local folder = path.join(ctx.image, "run")
+    emulator.remove(folder)
+    local rootfs = path.join(folder, "rootfs")
+    emulator.clone(path.join(ctx.image, "rootfs"), rootfs)
+    local seconds = tonumber(option.get("seconds"))
+    local results = emulator.results(rootfs)
+    emulator.install_launcher(rootfs, ctx.guest)
+    -- The runner outlasts charon-sblaunch's own wait by one of its half-second
+    -- retries, so charon-sblaunch says why it gave up instead of being ended.
+    emulator.install_runner(rootfs, ctx.guest, emulator.launch_command(identifier, seconds), seconds + 1, ctx.version)
+    local driver = emulator.launch_driver({results = results, run = folder, application = application, steps = steps})
+    local booted = booter(ctx)(table.join(ctx, {rootfs = rootfs, run = folder, stop = driver.stop}))
+    os.cp(results, path.join(folder, "results"))
+    local reports = emulator.reports(rootfs)
+    for _, report in ipairs(reports) do
+        os.cp(report.file, path.join(folder, "results", "reports", path.filename(report.file)))
+    end
+    local result = {identifier = identifier, application = application, shots = driver.shots, failure = driver.failure,
+                    exit = driver.exit, pid = driver.application and driver.application.pid, unlocks = driver.unlocks,
+                    reason = booted.reason, seconds = booted.seconds, scale = booted.scale,
+                    stdout = path.join(folder, "results", "app.stdout"), stderr = path.join(folder, "results", "app.stderr")}
+    json.savefile(path.join(folder, "verdict.json"), result)
+    if not option.get("keep") then
+        emulator.remove(rootfs)
+        emulator.remove(path.join(folder, "runtime"))
+        emulator.remove(path.join(folder, ".shade-device-state"))
+    end
+    for _, name in ipairs({"app.stdout", "app.stderr"}) do
+        local file = path.join(folder, "results", name)
+        if os.isfile(file) and os.filesize(file) > 0 then
+            io.write(io.readfile(file))
+        end
+    end
+    for _, shot in ipairs(driver.shots) do
+        print(shot)
+    end
+    local where = string.format("on %s %s (%s) in %.1f host s at time scale %s", ctx.identifier, ctx.version, ctx.build,
+                                booted.seconds, booted.scale)
+    if driver.failure == "refused" then
+        local said = path.join(folder, "results", "test.stderr")
+        local reason = os.isfile(said) and io.readfile(said):trim() or ""
+        if reason == "" then
+            local states = path.join(folder, "results", "test.stdout")
+            local last = os.isfile(states) and io.readfile(states):match("([^\n]*)\n?$") or ""
+            reason = string.format("charon-sblaunch was ended at the -s deadline of %d guest seconds; its last state: %s",
+                                   seconds, last ~= "" and last or "none")
+        end
+        raise("SpringBoard did not launch %s %s: %s; the emulator log is %s", identifier, where, reason, booted.log)
+    elseif driver.failure == "exited" then
+        raise("%s ended %s %s; the emulator log is %s", identifier,
+              driver.exit.signal ~= 0 and string.format("on signal %d", driver.exit.signal) or string.format("with status %d", driver.exit.status),
+              where, booted.log)
+    elseif not driver.application then
+        raise("%s was %s, and no process of %s ever started %s; the emulator log is %s", identifier,
+              driver.phase == "launching" and "never launched" or "launched", application, where, booted.log)
+    elseif booted.reason ~= "reached" then
+        raise("%s ran, and the run ended (%s) %s before its %d steps were taken; the emulator log is %s", identifier,
+              booted.reason, where, #steps, booted.log)
+    end
+    cprint("${bright green}launched${clear} %s as pid %s %s, %d snapshot(s)", identifier, driver.application.pid, where, #driver.shots)
+end
+
 local function log(ctx, text)
     local results = path.join(ctx.image, "run", "results")
-    for _, name in ipairs({"test.stdout", "test.stderr", "runner.stdout", "runner.stderr"}) do
+    for _, name in ipairs({"test.stdout", "test.stderr", "runner.stdout", "runner.stderr", "app.stdout", "app.stderr"}) do
         local file = path.join(results, name)
         if os.isfile(file) then
             for line in io.readfile(file):gmatch("[^\n]+") do
@@ -260,8 +341,8 @@ end
 function main()
     local action = option.get("action")
     local arguments = option.get("arguments") or {}
-    if action ~= "install" and action ~= "run" and action ~= "debug" and action ~= "log" and action ~= "shot" and action ~= "clean" then
-        raise("xmake emulate takes install, run, debug, log, shot or clean")
+    if action ~= "install" and action ~= "run" and action ~= "launch" and action ~= "debug" and action ~= "log" and action ~= "shot" and action ~= "clean" then
+        raise("xmake emulate takes install, run, launch, debug, log, shot or clean")
     end
     if action == "clean" then
         local owner = (project.name() or path.filename(os.projectdir())) .. "-" .. hash.strhash32(os.projectdir())
@@ -292,6 +373,11 @@ function main()
             raise("xmake emulate run needs a command")
         end
         run(ctx, arguments)
+    elseif action == "launch" then
+        if #arguments == 0 then
+            raise("xmake emulate launch needs the bundle identifier of the application")
+        end
+        launch(ctx, arguments[1], emulator.parse_steps(table.slice(arguments, 2)))
     elseif action == "debug" then
         if #arguments == 0 then
             raise("xmake emulate debug needs the command to start under the debugger")
@@ -302,7 +388,7 @@ function main()
     else
         local frame = path.join(ctx.image, "run", "frame.png")
         if not os.isfile(frame) then
-            raise("%s %s has no frame yet; xmake emulate run leaves one", ctx.identifier, ctx.version)
+            raise("%s %s has no frame yet; xmake emulate run and launch leave one", ctx.identifier, ctx.version)
         end
         local output = arguments[1] or path.join(config.builddir(), ctx.identifier .. "_" .. ctx.build .. ".png")
         os.cp(frame, output)
