@@ -2,16 +2,6 @@
   "framework": "AVKit",
   "entries": [
     {
-      "api": "AVPlayerViewController",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVKit"
-    },
-    {
       "api": "AVKitErrorDomain",
       "kind": "constant",
       "introduced": "9.0",
@@ -42,26 +32,6 @@
       "source": "SDK 16.4, AVKit"
     },
     {
-      "api": "-[AVPlayerViewControllerDelegate playerViewController:willBeginFullScreenPresentationWithAnimationCoordinator:]",
-      "kind": "method",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a AVPlayerViewControllerDelegate that sends anything like it: the message arrived in iOS 12",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, AVKit"
-    },
-    {
-      "api": "-[AVPlayerViewControllerDelegate playerViewController:willEndFullScreenPresentationWithAnimationCoordinator:]",
-      "kind": "method",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a AVPlayerViewControllerDelegate that sends anything like it: the message arrived in iOS 12",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, AVKit"
-    },
-    {
       "api": "AVPlayerItem.externalMetadata",
       "kind": "property",
       "introduced": "12.2",
@@ -77,7 +47,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a AVPlayerViewControllerDelegate that sends anything like it: the message arrived in iOS 15",
+      "reason": "the backports' AVPlayerViewController leaves full screen only back into its own inline view, which it keeps, so there is no interface for the delegate to restore and the message is not sent",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, AVKit"
     },
@@ -117,7 +87,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a AVPlayerViewControllerDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "AVInterstitialTimeRange, the class the message carries, is not carried, so the backports' AVPlayerViewController presents no interstitial and does not send it",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, AVKit"
     },
@@ -127,7 +97,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a AVPlayerViewControllerDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "AVInterstitialTimeRange, the class the message carries, is not carried, so the backports' AVPlayerViewController presents no interstitial and does not send it",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, AVKit"
     },
