@@ -80,16 +80,6 @@
       "reason": "a 4S has one radio and never reports NR, but the string constant is not a wall: it is owed with its real value from a newer release, so the current technology can be compared against it and honestly never equal it",
       "effect": "until it is written the symbol is not there: a weak reference to it is NULL",
       "source": "the SDK 16.4 headers of CoreTelephony"
-    },
-    {
-      "api": "CTCellularData",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "iOS 6 has no restriction of cellular data by application to report",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the SDK 16.4 headers of CoreTelephony"
     }
   ]
 }
