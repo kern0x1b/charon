@@ -169,7 +169,7 @@
     {
       "api": "CGColorSpaceUsesExtendedRange()",
       "kind": "function",
-      "introduced": "10.0",
+      "introduced": "9.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "a departure from 10.0 in that the answer never varies: iOS 12 reads a flag that only the extended spaces set, and iOS 6 has none",

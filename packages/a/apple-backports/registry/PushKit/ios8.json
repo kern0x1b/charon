@@ -37,7 +37,7 @@
     {
       "api": "PKPushTypeVoIP",
       "kind": "constant",
-      "introduced": "9.0",
+      "introduced": "8.2",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the constant a VoIP registration names; the value is the constant's own name, the form every PKPushType/PKPushSubtype string in Apple's documentation and headers back to iOS 8 takes, not measured in a shared cache since attempting to read the literal's bytes across the iOS 12.0 and 16.0 caches (modules/apple/dyld.lua's pointer_at chain-resolving the CFConstantString bytes pointer) kept landing outside every mapping - recorded as unresolved rather than guessed silently",

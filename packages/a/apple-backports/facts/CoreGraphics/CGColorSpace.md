@@ -51,7 +51,7 @@ not compared.
 
 `CGColorSpaceCopyICCData` (10.0): iOS 12 makes `CGColorSpaceCopyICCProfile` a branch to it
 (`0x182df02f0` to `0x182df0030`), so the profile of the release answers for it.
-`CGColorSpaceUsesExtendedRange` (10.0): iOS 12 reads one flag of the space
+`CGColorSpaceUsesExtendedRange` (9.3, the first armv7 cache that exports it; the header says 10.0): iOS 12 reads one flag of the space
 (`0x182df0470`), which only the extended spaces set, and the release makes none, so the answer is NO.
 `CGColorSpaceIsHDR` (13.0), `CGColorSpaceUsesITUR_2100TF` (14.0), `CGColorSpaceIsHLGBased` and
 `CGColorSpaceIsPQBased` (15.0): a space answers YES to them only when it is an HLG, PQ or extended

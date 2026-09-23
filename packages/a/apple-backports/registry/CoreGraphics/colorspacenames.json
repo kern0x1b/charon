@@ -59,7 +59,7 @@
     {
       "api": "kCGColorSpaceExtendedGray",
       "kind": "constant",
-      "introduced": "10.0",
+      "introduced": "9.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the symbol is carried so that an application which names it loads; iOS 6 cannot make a space of this name",
@@ -92,7 +92,7 @@
     {
       "api": "kCGColorSpaceExtendedLinearSRGB",
       "kind": "constant",
-      "introduced": "10.0",
+      "introduced": "9.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the symbol is carried so that an application which names it loads; iOS 6 cannot make a space of this name",
@@ -103,7 +103,7 @@
     {
       "api": "kCGColorSpaceExtendedSRGB",
       "kind": "constant",
-      "introduced": "10.0",
+      "introduced": "9.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the symbol is carried so that an application which names it loads; iOS 6 cannot make a space of this name",
@@ -246,7 +246,7 @@
     {
       "api": "kCGColorSpaceLinearSRGB",
       "kind": "constant",
-      "introduced": "10.0",
+      "introduced": "9.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the symbol is carried so that an application which names it loads; iOS 6 cannot make a space of this name",

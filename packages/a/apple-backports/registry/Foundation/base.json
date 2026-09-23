@@ -1767,7 +1767,7 @@
   {
     "api": "NSMetadataUbiquitousItemIsSharedKey",
     "kind": "constant",
-    "introduced": "10.0",
+    "introduced": "8.3",
     "status": "inert",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
@@ -1797,7 +1797,7 @@
   {
     "api": "NSMetadataUbiquitousSharedItemOwnerNameComponentsKey",
     "kind": "constant",
-    "introduced": "10.0",
+    "introduced": "9.0",
     "status": "inert",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
@@ -1817,7 +1817,7 @@
   {
     "api": "NSMetadataUbiquitousSharedItemRoleOwner",
     "kind": "constant",
-    "introduced": "10.0",
+    "introduced": "8.3",
     "status": "inert",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
@@ -1827,7 +1827,7 @@
   {
     "api": "NSMetadataUbiquitousSharedItemRoleParticipant",
     "kind": "constant",
-    "introduced": "10.0",
+    "introduced": "8.3",
     "status": "inert",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
