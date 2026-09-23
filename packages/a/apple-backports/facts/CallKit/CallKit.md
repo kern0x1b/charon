@@ -85,8 +85,13 @@ release. The cellular calls of the release are the one thing that does cross the
 
 ## What is not carried
 
-The call directory is an application extension, and iOS 6 loads no extensions. `CXCallDirectoryProvider`,
-`CXCallDirectoryExtensionContext` and its delegate are absent. `CXCallDirectoryManager` is carried and refuses at that seam: no
+The call directory is an application extension, and iOS 6 loads no extensions. Its delegate protocol,
+`CXCallDirectoryExtensionContextDelegate`, is absent: nothing ever calls it. `CXCallDirectoryProvider` and
+`CXCallDirectoryExtensionContext` are carried inert, as the host answers for them without an extension host: the provider's
+`-beginRequestWithExtensionContext:` does nothing; the context is an `NSExtensionContext` (the release's from 8.0, the package's before),
+not incremental, with no delegate and no input items, whose adding methods return, whose four removing methods raise
+`NSInternalInconsistencyException` ("Calling removeAllBlockingEntries when isIncremental is false is unsupported", the host's text), and whose
+`-completeRequestWithCompletionHandler:` is never answered. `CXCallDirectoryManager` is carried and refuses at that seam: no
 identifier names an extension here, so `-reloadExtensionWithIdentifier:completionHandler:` completes with
 `CXErrorDomainCallDirectoryManager` / `CXErrorCodeCallDirectoryManagerErrorNoExtensionFound`, and
 `-getEnabledStatusForExtensionWithIdentifier:completionHandler:` with `CXCallDirectoryEnabledStatusUnknown` and the same error. That is

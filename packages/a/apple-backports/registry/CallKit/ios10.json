@@ -274,6 +274,28 @@
       "effect": "completes on a global queue with NSCocoaErrorDomain / NSFeatureUnsupportedError, the host's answer where it has no such page",
       "facts": "facts/CallKit/CallKit.md",
       "source": "the host's CallKit under Mac Catalyst (tests/backports/host/callkit/run.sh), and SDK 16.4, CallKit"
+    },
+    {
+      "api": "CXCallDirectoryProvider",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the principal class of a call directory extension, and iOS 6 loads no extensions (facts/Foundation/CloudAndExtensions.md: no host, NSExtensionMain answers 69), so nothing ever begins a request",
+      "effect": "-beginRequestWithExtensionContext: of the base class does nothing, as the host's does; a subclass loads and can be made",
+      "facts": "facts/CallKit/CallKit.md",
+      "source": "the host's CallKit under Mac Catalyst (tests/backports/host/callkit/run.sh), and SDK 16.4, CallKit"
+    },
+    {
+      "api": "CXCallDirectoryExtensionContext",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the context the system hands a call directory extension, and iOS 6 runs none (facts/Foundation/CloudAndExtensions.md), so a context has no host to take its entries",
+      "effect": "an NSExtensionContext whose entries go nowhere: it is not incremental, has no delegate and no input items, the adding methods return, the four removing ones raise NSInternalInconsistencyException with the host's text, since a context that is not incremental takes no removals, and -completeRequestWithCompletionHandler: is never answered, as the host's context with no host is not",
+      "facts": "facts/CallKit/CallKit.md",
+      "source": "the host's CallKit under Mac Catalyst (tests/backports/host/callkit/run.sh), and SDK 16.4, CallKit"
     }
   ]
 }

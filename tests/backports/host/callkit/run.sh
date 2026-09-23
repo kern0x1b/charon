@@ -105,5 +105,13 @@ mutant CXCallDirectoryManager10.m "    dispatch_async(dispatch_get_global_queue(
         completion(charon_no_extension());"
 mutant CXCallDirectoryManager10.m "        shared = [[self alloc] init];" "        shared = nil;"
 mutant CXCallDirectoryManager+OpenSettings134.m "code:NSFeatureUnsupportedError" "code:NSFeatureUnsupportedError + 1"
+mutant CXCallDirectoryExtensionContext10.m "- (void)completeRequestWithCompletionHandler:(void (^)(BOOL expired))completion
+{
+}" "- (void)completeRequestWithCompletionHandler:(void (^)(BOOL expired))completion
+{
+    completion(NO);
+}"
+mutant CXCallDirectoryExtensionContext10.m "    return NO;" "    return YES;"
+mutant CXCallDirectoryExtensionContext10.m "is unsupported" "is not supported"
 echo "mutants surviving: $survived"
 [ "$survived" -eq 0 ]

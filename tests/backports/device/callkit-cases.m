@@ -1,4 +1,5 @@
 #import <CallKit/CallKit.h>
+#import <objc/runtime.h>
 #import "callkit-cases.h"
 
 // Every case here has to answer the same in the host's CallKit and in the
@@ -288,6 +289,40 @@ static void directoryManager(CallKitRecorder record)
     }
 }
 
+// What an extension's principal class and its context are without a host to hand them a request: the host's own
+// answer for a context an application makes itself.
+static void directoryExtension(CallKitRecorder record)
+{
+    CXCallDirectoryExtensionContext *context = [[CXCallDirectoryExtensionContext alloc] init];
+    record(@"directoryContext.made", [NSString stringWithFormat:@"class=%@ super=%@ incremental=%@ delegate=%@ items=%lu",
+                                      named([context class]), named(class_getSuperclass([context class])), flag(context.isIncremental),
+                                      flag(context.delegate != nil), (unsigned long)context.inputItems.count]);
+    [context addBlockingEntryWithNextSequentialPhoneNumber:18005550100];
+    [context addIdentificationEntryWithNextSequentialPhoneNumber:18005550101 label:@"Charon"];
+    record(@"directoryContext.entries", @"returned");
+    NSMutableArray *removals = [NSMutableArray array];
+    NSArray *blocks = @[^{ [context removeBlockingEntryWithPhoneNumber:18005550100]; }, ^{ [context removeIdentificationEntryWithPhoneNumber:18005550101]; },
+                        ^{ [context removeAllBlockingEntries]; }, ^{ [context removeAllIdentificationEntries]; }];
+    for (dispatch_block_t removal in blocks) {
+        @try {
+            removal();
+            [removals addObject:@"returned"];
+        } @catch (NSException *exception) {
+            [removals addObject:[NSString stringWithFormat:@"%@: %@", exception.name, exception.reason]];
+        }
+    }
+    record(@"directoryContext.removals", [removals componentsJoinedByString:@" | "]);
+    __block BOOL completed = NO;
+    [context completeRequestWithCompletionHandler:^(BOOL expired) {
+        completed = YES;
+    }];
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.5]];
+    record(@"directoryContext.complete", [NSString stringWithFormat:@"answered=%@", flag(completed)]);
+    CXCallDirectoryProvider *provider = [[CXCallDirectoryProvider alloc] init];
+    [provider beginRequestWithExtensionContext:context];
+    record(@"directoryProvider.begin", [NSString stringWithFormat:@"class=%@ super=%@ returned", named([provider class]), named(class_getSuperclass([provider class]))]);
+}
+
 void callkit_run(CallKitRecorder record)
 {
     domains(record);
@@ -298,4 +333,5 @@ void callkit_run(CallKitRecorder record)
     updates(record);
     controllers(record);
     directoryManager(record);
+    directoryExtension(record);
 }
