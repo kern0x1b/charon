@@ -288,6 +288,12 @@ own form sheet. The display's corners are square, there is no keyboard detent, a
 parent does not stack with it is not drawn (it needs an image and a filter iOS 6 does not have). See
 `facts/UIKit/UISheetPresentationController.md`.
 
+A program linked with SDK 13.0 or later gets iOS 13's default presentation style: a new view controller starts with
+`UIModalPresentationAutomatic`, which `modalPresentationStyle` answers as the page sheet (full screen for an image picker of the
+camera), decided as the release decides it, by the SDK the program's load command records. **Every port charon builds is such a
+program** (the SDK is 16.4), so a presentation without a style of its own is a sheet on the phone and a page sheet on the iPad; a
+program linked with an older SDK keeps full screen. See `facts/UIKit/UIModalPresentationAutomatic.md`.
+
 ### Compositional layouts, laid out by the release's own collection view
 
 `UICollectionViewCompositionalLayout` and everything it is described with - `NSCollectionLayoutSection`, `Group`, `Item`,
