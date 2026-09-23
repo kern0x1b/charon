@@ -8,7 +8,7 @@ documents at the root; this file is the map to them and to the tree.
 
 If the effort has to be rebuilt from nothing — every session gone — read
 [COORDINATION.md](COORDINATION.md) first. It carries the team structure, the flow patches
-travel through, the traps already paid for, and the restart procedure. This file stays the
+travel through, the known traps, and the restart procedure. This file stays the
 map of the code.
 
 Charon builds legacy Apple platforms for [xmake](https://xmake.io) and Conan:
@@ -83,8 +83,8 @@ Each entry: wrong pattern → right pattern → the mechanical reason.
   changed backport, patch or recipe is already a different package with its own install path —
   no force needed, no collision with another band's build (a change that's only a comment or
   layout is deliberately excluded from the digest, by design). A private store instead
-  re-resolves the whole dependency chain from network, up to rebuilding LLVM from source (one
-  band lost hours and tens of GB this way) — never do that either. If a build's own output needs
+  re-resolves the whole dependency chain from network, up to rebuilding LLVM from source — never do
+  that either. If a build's own output needs
   to survive the shared store regardless of any package (a crash log, failure text), redirect it
   to your own file instead of isolating anything: `xmake -y > build.log 2>&1`.
 
