@@ -291,6 +291,44 @@ registration: the live store (`/var/log/DiagnosticMessages/<date>.asl`, not the 
 `/var/log/asl/`) had entries from other processes in the same minutes and none from this one. A
 device stand reports through `printf` into its redirected `stdout`.
 
+## The device run held to the recording (2026-09-23)
+
+With the stand built with ARC, `device/compositional.m` on the 4S failed 10 checks. Five were the
+test's own (fixed in the test); the rest came to three causes, each measured on the 4S.
+
+**iOS 6 loses an element whose frame spans the rectangle it checks - repaired.** iOS 6's collection
+view asks its private `UICollectionViewData` which elements its bounds show; that object asks the
+layout for `_validLayoutRect` (the bounds cut to the content) and files each answer under the pages
+of its frame's edges (`_screenPageForPoint:`), so an element reaching past both ends of that
+rectangle is under no page inside it and never gets a view. A plain `UICollectionViewLayout`
+subclass shows it with iOS 6's own code: with content 244 in a 320 x 480 view, frames
+{234,-1,160,246} and {10,-10,100,260} get no cell, {234,-1,160,240} and {234,3,160,242} do; with
+content 480, {10,-10,100,500} gets none. The transform plays no part: 0.3 of "modified at 250",
+turned by 0.3 rad, has the bounding frame {202.7,-15.4,222.6,272.7}, and the same frame with no
+transform is lost too, while a smaller turn or scale is shown. The system's layout shows it. For this
+layout only, `-[UICollectionViewData layoutAttributesForElementsInRect:]` now adds back what the
+layout returned and the pages lost: elements that reach past both ends of the checked rectangle,
+only when missing, so where nothing is lost the answer is unchanged. The selector and both ivars are
+present in every armv7 cache from 6.0 to 9.3.6; where one is missing the repair is not installed.
+
+**The recording's font is not the device's.** `compositional-sized-expectations.h` was written on the
+host, where the system and the port measure a label in the same font (SF). The device's is
+Helvetica. At label width 272 (item and section insets) Helvetica 15 sets the two long texts in lines
+270 and 271 pt wide, 2 and 3 lines; SF at the recording's 0.77 scale wraps them at 279 and 281 and
+so has 3 and 4 - the only font of those tried that fits all five recorded widths (304, 284, 272,
+224, 141.5). The port measures the label at 272, the width the cell gets. Helvetica Bold 17 has a
+21 pt line where the recording has 20 (the header and footer case). The test now takes, for a list
+of label cells, the height the device's font gives each text at the width the system laid it out at,
+moves what lies below by the difference, and prints a `note` naming each changed height.
+
+**armv7's `CGFloat` is a float.** The orthogonal lines are the host's doubles printed with `%g`; the
+device's cos(0.3) prints 0.955337 against 0.955336. Those lines are compared to one unit in the
+sixth significant digit.
+
+With the three, the stand answers `ok checks=43 failures=0` on the 4S (canon `0.8.10+e302673e`, this
+tree's one-band `libUIKitBackports.dylib` swapped in); with the canon's own library the same stand
+still fails "modified at 250".
+
 ## What the port cannot do
 
 - **Nested scrolling is done, and is the port's own.** iOS 6 has no scroll view to nest in a section, so the port moves the section itself: a pan
