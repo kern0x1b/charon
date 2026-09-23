@@ -25,9 +25,9 @@ superscripts, and RTF and plain text as well. What the release draws of the six 
 ## NSTextTab
 
 The release has an `NSTextTab` with `initWithTextAlignment:location:options:`, the alignment, the location and the options - and does
-not export it, so an application that names the class does not start. The library defines the class under a name of Charon's own and
-exports the release's name as an alias of it; sent to, the alias answers `+class` and `+alloc` with the release's class, so the
-tabs that are made, the tabs a paragraph style holds and `[NSTextTab class]` are one class, and `isKindOfClass:` holds.
+not export it, so an application that names the class does not start. The library exports the release's name as an alias, a
+subclass of the release's class that answers as it (`facts/UIKit/NSTextMembers13.md`, the aliases), so the tabs that are made, the
+tabs a paragraph style holds and `[NSTextTab class]` are one class, `isKindOfClass:` holds, and a subclass inherits the release's tab.
 `+columnTerminatorsForLocale:` is added to that class: the decimal separator of the locale, or a full stop for none.
 
 ## What differs

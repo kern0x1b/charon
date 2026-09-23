@@ -24,6 +24,7 @@
 @end
 
 @interface NSTextBlock (TextAliasProbe)
++ (NSInteger)textAliasClassProbe;
 - (NSInteger)textAliasProbe;
 @end
 
@@ -35,6 +36,11 @@ CHARON_ALIAS(NSTextBlock)
 CHARON_ALIAS(NSTextTable)
 
 @implementation NSTextBlock (TextAliasProbe)
+
++ (NSInteger)textAliasClassProbe
+{
+    return 43;
+}
 
 - (UIColor *)backgroundColor
 {
@@ -225,6 +231,8 @@ static void check_loader(void)
     CHECK(class_getSuperclass(objc_getClass("CharonNSTextTable")) == [NSObject class], "NSTextTable: an alias laid out before the loader stays under NSObject");
     CHECK(object_getClass([[NSTextTable alloc] init]) == table && [NSTextTable instancesRespondToSelector:@selector(numberOfColumns)],
           "NSTextTable: the alias still answers as the release's class");
+    CHECK([NSTextTable textAliasClassProbe] == 43 && [table textAliasClassProbe] == 43,
+          "NSTextTable: a class method of the release's class is forwarded to it");
     CHECK([[TextAliasTable alloc] init] != nil && ![TextAliasTable instancesRespondToSelector:@selector(numberOfColumns)],
           "NSTextTable: its subclass does not inherit the release's class");
     aslmsg query = asl_new(ASL_TYPE_QUERY);

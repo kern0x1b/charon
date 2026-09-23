@@ -1985,6 +1985,7 @@
     "kind": "class",
     "introduced": "7.0",
     "status": "implemented",
+    "effect": "the name is an alias that answers NSObject's class introspection as the release's class; a subclass an application writes of it inherits the release's class, is laid out after it, and +alloc makes the subclass (facts/UIKit/NSTextMembers13.md, the aliases)",
     "facts": "facts/UIKit/NSAttributedStringText.md",
     "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does"
   },
@@ -1993,6 +1994,7 @@
     "kind": "class",
     "introduced": "9.0",
     "status": "implemented",
+    "effect": "the name is an alias that answers NSObject's class introspection as the release's class; a subclass an application writes of it inherits the release's class, is laid out after it, and +alloc makes the subclass (facts/UIKit/NSTextMembers13.md, the aliases)",
     "facts": "facts/UIKit/NSTextMembers13.md",
     "source": "the shared caches of iOS 5.1.1 to 10.3.4: UIFoundation carries the class from 6.0 and exports it from 9.0 (8.4.1 does not); the SDK's header says iOS 7.0"
   },

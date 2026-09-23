@@ -66,16 +66,48 @@ is in 16.0 and 18.0, the two-argument one is in all four. No 13-15 cache, so `in
 UIFoundation carries `NSTextList` from iOS 6.0 and exports it from 9.0 (`objc.inventory` and the exports of the shared caches of 5.1.1
 to 10.3.4: none in 5.1.1, carried and not exported in 6.0 to 8.4.1, exported in 9.0 and later, `.agent-work/plan-and-analysis/b1314-catcheck/textlist-ladder.log`; the SDK's header says iOS 7.0). An
 application that links the class does not start on a release that does not export it. `UIKit/NSTextList.m` exports the name as an
-alias of `CharonNSTextList` (`charon_alias.h`, as for `NSTextTab`), which answers `+class` and `+alloc` with the release's class, so
-`[NSTextList class]`, the lists made through it and the lists a paragraph style holds are one class. A category written on
-`NSTextList` is attached by the library's loader (`attach.c`) to the release's class the alias names, where a release does not
-export it, and to the exported class where one does. The gate refuses a category whose class the release neither exports nor
-carries in an image the library loads (`unattached_categories` in `modules/apple/backports.lua`).
+alias (`charon_alias.h`, as `UIKit/NSTextTab.m` does for `NSTextTab`, carried and not exported before 7.0).
 
-## On a device, iOS 6.1.3
+## The aliases, `NSTextList` and `NSTextTab`
 
-On an iPad 2 of iOS 6.1.3 (2026-09-23), `tests/backports/device/textalias.m` against the gate's libraries (output
-`.agent-work/plan-and-analysis/b1314-catcheck/textalias-ipad2-gate5.txt`), 15 of 15: `[NSTextList class]` and `[NSTextTab class]`
-are UIFoundation's classes, what is made through the names is those classes, the three-argument initializer and
-`+columnTerminatorsForLocale:` are on them from `libUIKitBackports.dylib`, no class of the library adds either by name, and the list
-keeps its starting number while the two-argument initializer is still UIFoundation's own.
+`CHARON_ALIAS(Name)` defines `CharonName` and exports `_OBJC_CLASS_$_Name` and its metaclass as aliases of it, so what an
+application links is `CharonName`. What the port does with it:
+
+- The library's loader (`attach.c`, `charon_reparent`) makes `CharonName` a subclass of the release's class before the runtime
+  first uses it. The compiler cannot name a class the release does not export, and the one public function that changes a
+  superclass, `class_setSuperclass`, is deprecated from iOS 2.0 in the header ("You should not use this function"). So the
+  loader writes the release's class into the second word of `CharonName`'s class and of its metaclass - `superclass`, after
+  `isa`, in the class structure the compiler emits for every class - and then has the runtime lay it out, which lays it out
+  after the release's instance variables. The loader then checks it through
+  the public functions: `class_getSuperclass` is the release's class and `class_getInstanceSize` is the release's.
+- So a subclass an application writes of the name inherits the release's class and has its instance variables after the
+  release's; `+alloc` of the subclass makes the subclass.
+- Sent to the name itself, the class methods of NSObject answer as the release's class does: `+class`, `+alloc`,
+  `+allocWithZone:`, `+superclass`, `+isSubclassOfClass:`, `+instancesRespondToSelector:`, `+instanceMethodForSelector:`,
+  `+instanceMethodSignatureForSelector:`, `+conformsToProtocol:`, `+respondsToSelector:`, `+methodForSelector:`, `+description`,
+  `+hash` and `+isEqual:`; what the release's class answers beyond them is forwarded to it. Sent to a subclass, they answer as
+  NSObject's do, and `+superclass` of a direct subclass is the release's class.
+- What differs: the name's own object is not the release's class. `[Name isEqual:release]` is YES, `[release isEqual:Name]`
+  is NO (NSObject compares the objects, and the release's class is not ours to change); `class_getName`, `object_getClass`
+  and the other C functions of the runtime, given the linked name rather than `[Name class]`, answer `CharonName`; and
+  `class_getSuperclass` of a direct subclass is `CharonName`, whose superclass is the release's class.
+- ld64 merges a category written on the name in the library into `CharonName`. The loader gives the release's class each method
+  of it the release's class lacks, and gives `CharonName`'s copy of each method the release's class has the release's
+  implementation, so that a subclass reaches the same method a plain instance does.
+- A class of an image loaded with the library that has a `+load` of its own and subclasses the name makes the runtime lay
+  `CharonName` out on NSObject before the loader runs. The loader's check fails, it takes its write back, and the log says
+  `apple-backports: CharonName was laid out before the library's loader ran`; the name still answers as the release's class,
+  and that subclass does not inherit it.
+- A category on a class the release carries without exporting, written without an alias, has a NULL class reference, and the
+  loader has nothing to attach it to: the gate refuses it and names `charon_alias.h` (`unattached_categories` in
+  `modules/apple/backports.lua`).
+
+## Measured
+
+`tests/backports/device/textalias.m`, 59 checks, built by `@addon/charon/daemon` against the package of commit `dacc7278`, whose library code is the branch's last, and run
+by `xmake emulate` on an emulated iPhone2,1 of iOS 6.0 (10A403): 59 of 59
+(`.agent-work/plan-and-analysis/b1314-catcheck/textalias-emulate60.txt`). The emulator runs the release's own dyld,
+runtime and UIFoundation, which is what the aliases and the loader depend on. The same subclass check answers YES for
+`NSTextList`, which the loader put under the release's class, and NO for the test's own `NSTextTable`, laid out before the
+loader ran, so the check tells the two apart. Not yet run on a device of 6.1.3 for this code: an earlier run on an iPad 2
+(15 of 15, `textalias-ipad2-gate5.txt`) was of the alias before it was a subclass.
