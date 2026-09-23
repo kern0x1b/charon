@@ -64,6 +64,17 @@ only two exceptions, and each still refuses whatever `ALAssetsLibrary` itself ca
 Once the checks pass the writes are made one after another; a write that then fails (the disk is full) leaves the ones before it made, as the release has no way to undo them.
 
 Source: the header of iOS 16.4; the host's Photos for the text of the exception and the
-error codes; `ALAssetsLibrary` of an iPad 2 running 6.1.3 for the iOS 8 creation request. The iOS 9 creation request, the asset
-resource, the resource manager, and the collection change request are verified against this port's own `ALAssetsLibrary` calls and
-against the SDK header (`PHAssetCreationRequest` inherits from `PHAssetChangeRequest`), but not yet run on device.
+error codes; `ALAssetsLibrary` of an iPad 2 running 6.1.3 for the iOS 8 creation request. The iOS 9 creation request with its placeholder
+passed to `addAssets:` of an album created in the same change, the album found again by its placeholder with that one asset in it,
+the refused rename, reorder and delete (`PHPhotosErrorChangeNotSupported`, title unchanged afterwards), the asset resource, and the
+resource manager (completion once with `nil`, progress once with `1.0`, within five seconds) were run on an iPad 2 running 6.1.3 on
+2026-09-23, called off the main thread, 17 of 19 checks passing; the two others are the release's rewrite below.
+
+The saved photos of iOS 6 do not keep the bytes they are given: a 726-byte JPEG written with
+`writeImageDataToSavedPhotosAlbum:metadata:` and `nil` metadata reads back as 1929 bytes, measured the same with no port code on the
+path. The resource and the resource manager hand back what the library stores — identical to a direct `ALAssetsLibrary` read of the
+same asset — not the bytes given to the creation request.
+
+An album name is unique on iOS 6: `addAssetsGroupAlbumWithName:` answers `nil` for a name already in use, so a second album with the
+same title fails the change with "the photo library did not answer with the new album". The check happens at the write, after the
+assets of the same change were already written, so those assets stay in the saved photos without the album.
