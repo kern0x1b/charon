@@ -234,40 +234,40 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "applies a snapshot with no diff, by reloading the collection view; the port's data source already holds the current snapshot and reloads the view when it cannot diff (UIKit/UICollectionViewDiffableDataSource.m), so this is that path on request - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "takes the snapshot as current without diffing and reloads the collection view, as an apply that cannot diff already does",
+      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "source": "SDK 16.4, UIKit; the class is in neither the 6.1.3 nor the 12.0 cache, and the method is in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "-[UICollectionViewDiffableDataSource applySnapshotUsingReloadData:completion:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "applySnapshotUsingReloadData: with a block run when it is done; the port's data source already reloads the view when it cannot diff and runs a completion after applying (UIKit/UICollectionViewDiffableDataSource.m) - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "takes the snapshot as current without diffing, reloads the collection view and runs the completion on the main queue",
+      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "source": "SDK 16.4, UIKit; the class is in neither the 6.1.3 nor the 12.0 cache, and the method is in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "-[UICollectionViewDiffableDataSource indexForSectionIdentifier:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the index of a section in the current snapshot; the port's data source holds that snapshot and the snapshot answers indexOfSectionIdentifier: (UIKit/NSDiffableDataSourceSnapshot.m), so this is a lookup through it - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the index of the section in the current snapshot, NSNotFound for one that is not there",
+      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "source": "SDK 16.4, UIKit; the class is in neither the 6.1.3 nor the 12.0 cache, and the method is in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "-[UICollectionViewDiffableDataSource sectionIdentifierForIndex:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the section identifier at an index of the current snapshot; the port's data source holds that snapshot and it answers its sectionIdentifiers (UIKit/NSDiffableDataSourceSnapshot.m), so this is a lookup through it - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the section at the index of the current snapshot, nil out of range (nil read from the header's nullability, not measured)",
+      "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
+      "source": "SDK 16.4, UIKit; the class is in neither the 6.1.3 nor the 12.0 cache, and the method is in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "-[UIColorPickerViewControllerDelegate colorPickerViewController:didSelectColor:continuously:]",
@@ -392,40 +392,40 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "applies a snapshot with no diff, by reloading the table; the port's data source already holds the current snapshot and reloads the table when it cannot diff (UIKit/UITableViewDiffableDataSource.m), so this is that path on request - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "takes the snapshot as current without diffing and reloads the table, as an apply that cannot diff already does",
+      "facts": "facts/UIKit/UITableViewDiffableDataSource.md",
+      "source": "SDK 16.4, UIKit; the class is in neither the 6.1.3 nor the 12.0 cache, and the method is in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "-[UITableViewDiffableDataSource applySnapshotUsingReloadData:completion:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "applySnapshotUsingReloadData: with a block run when it is done; the port's data source already reloads the table when it cannot diff and runs a completion after applying (UIKit/UITableViewDiffableDataSource.m) - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "takes the snapshot as current without diffing, reloads the table and runs the completion on the main queue",
+      "facts": "facts/UIKit/UITableViewDiffableDataSource.md",
+      "source": "SDK 16.4, UIKit; the class is in neither the 6.1.3 nor the 12.0 cache, and the method is in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "-[UITableViewDiffableDataSource indexForSectionIdentifier:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the index of a section in the current snapshot; the port's data source holds that snapshot and the snapshot answers indexOfSectionIdentifier: (UIKit/NSDiffableDataSourceSnapshot.m), so this is a lookup through it - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the index of the section in the current snapshot, NSNotFound for one that is not there",
+      "facts": "facts/UIKit/UITableViewDiffableDataSource.md",
+      "source": "SDK 16.4, UIKit; the class is in neither the 6.1.3 nor the 12.0 cache, and the method is in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "-[UITableViewDiffableDataSource sectionIdentifierForIndex:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the section identifier at an index of the current snapshot; the port's data source holds that snapshot and it answers its sectionIdentifiers (UIKit/NSDiffableDataSourceSnapshot.m), so this is a lookup through it - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the section at the index of the current snapshot, nil out of range (nil read from the header's nullability, not measured)",
+      "facts": "facts/UIKit/UITableViewDiffableDataSource.md",
+      "source": "SDK 16.4, UIKit; the class is in neither the 6.1.3 nor the 12.0 cache, and the method is in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "-[UIViewController contentScrollViewForEdge:]",
@@ -462,20 +462,20 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the items marked with reloadItemsWithIdentifiers:; the port's snapshot already keeps them in order (UIKit/NSDiffableDataSourceSnapshot.m), so a getter over that set would carry this - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the items marked with reloadItemsWithIdentifiers:, once each, in the order first asked",
+      "facts": "facts/UIKit/NSDiffableDataSourceSnapshot.md",
+      "source": "SDK 16.4, UIKit; the class is in neither the 6.1.3 nor the 12.0 cache, and the getter is in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "NSDiffableDataSourceSnapshot.reloadedSectionIdentifiers",
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the sections marked with reloadSectionsWithIdentifiers:; the port's snapshot already keeps them in order (UIKit/NSDiffableDataSourceSnapshot.m), so a getter over that set would carry this - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the sections marked with reloadSectionsWithIdentifiers:, once each, in the order first asked",
+      "facts": "facts/UIKit/NSDiffableDataSourceSnapshot.md",
+      "source": "SDK 16.4, UIKit; the class is in neither the 6.1.3 nor the 12.0 cache, and the getter is in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "NSMutableParagraphStyle.usesDefaultHyphenation",

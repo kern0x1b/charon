@@ -52,9 +52,20 @@ The order of the checks, and the line numbers of the user info, are the system's
 
 ## Where the port departs
 
-- The members of iOS 15 - `reconfigureItemsWithIdentifiers:`, `reloadedItemIdentifiers`, `reloadedSectionIdentifiers` and
-  `reconfiguredItemIdentifiers` - are not answered. The marks a reload leaves are kept and read by the data sources.
+- Of the members of iOS 15, `reconfigureItemsWithIdentifiers:` and `reconfiguredItemIdentifiers` are not answered (their rows in
+  `registry/UIKit/ios15-16.json` say why). `reloadedItemIdentifiers` and `reloadedSectionIdentifiers` are, below.
 - A reload is remembered after the identifier is validated; the system remembers it first, so a snapshot in which one raised still holds
-  the marks of what was asked. Only the data source reads them, and it ignores an identifier that is not in the snapshot.
+  the marks of what was asked. The data sources ignore an identifier that is not in the snapshot; `reloadedItemIdentifiers` and
+  `reloadedSectionIdentifiers` of such a snapshot leave out what the port refused and the system would list.
+
+## `reloadedItemIdentifiers` and `reloadedSectionIdentifiers`, iOS 15.0
+
+`UIKit/UIDiffableDataSource+iOS15.m` answers the marks the snapshot already keeps for its data sources: every identifier passed to
+`reloadItemsWithIdentifiers:` or `reloadSectionsWithIdentifiers:`, once each, in the order first asked; `-copy` keeps them, and the snapshot
+a data source's `-snapshot` hands back has none, since the data source drops the marks when it applies one. The order and the
+empty list after an apply follow the port's own bookkeeping and were not held against the system: no host oracle runs on this machine
+(Catalyst is not installed) and no device run was made. `objc.inventory` (`.agent-work/plan-and-analysis/b1314-flips/ladder-diffable.log`
+in the charon checkout the band used): the class is in neither the 6.1.3 nor the 12.0 cache, both getters are in 16.0 and 18.0; there is
+no 13-15 cache, so `introduced` stays the header's 15.0.
 - The generation UUID in `-description` is anew for a snapshot and copied by `-copy`; the port makes a new one when the sections change, and the
   rule of the system was not read. The host test does not compare it.

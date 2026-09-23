@@ -38,6 +38,12 @@ void charon_diffable_finish(void (^completion)(void));
 - (void)charon_reorderEnded;
 - (void)charon_reorderCancelled;
 - (void)charon_rebaseSectionSnapshotsFrom:(NSDiffableDataSourceSnapshot *)previous onto:(NSDiffableDataSourceSnapshot *)snapshot;
+- (void)charon_applyReloadingData:(NSDiffableDataSourceSnapshot *)snapshot completion:(void (^)(void))completion;
+@end
+
+@interface UITableViewDiffableDataSource (CharonDiffable)
+- (NSDiffableDataSourceSnapshot *)charon_current;
+- (void)charon_applyReloadingData:(NSDiffableDataSourceSnapshot *)snapshot completion:(void (^)(void))completion;
 @end
 
 @interface NSDiffableDataSourceTransaction (CharonDiffable)

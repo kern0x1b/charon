@@ -65,3 +65,22 @@ description, the index path of every item and the item at every index path. `dev
   keeps items of a tree that are not in the section any more.
 - `applySnapshot:toSection:` with a nil section or snapshot raises `NSInternalInconsistencyException` with the reason of the system; the system's
   own raise, on its queue, ends the process.
+
+## `applySnapshotUsingReloadData:`, `sectionIdentifierForIndex:` and `indexForSectionIdentifier:`, iOS 15.0
+
+`UIKit/UIDiffableDataSource+iOS15.m`, over the data source's own state.
+
+- `-applySnapshotUsingReloadData:` and its completion form take the snapshot as current, without its reload marks, call `reloadData` and
+  `layoutIfNeeded` on the collection view and run the completion on the main queue afterwards - what an `applySnapshot:` that cannot diff already
+  does, now on request. No difference is worked out and nothing is animated, as the header asks. A nil snapshot raises
+  "Invalid parameter not satisfying: snapshot", the port's wording for `applySnapshot:`. The next `applySnapshot:` diffs against this
+  snapshot, as against any applied one.
+- Section snapshots applied earlier are carried onto the new snapshot as for a regular apply: a section that is gone loses its tree.
+- `-sectionIdentifierForIndex:` answers the section at that index of the current snapshot, and nil for a negative or out-of-range index -
+  nil because the header declares the result nullable, not because the system's answer was read.
+- `-indexForSectionIdentifier:` answers the snapshot's `indexOfSectionIdentifier:`, NSNotFound for a section that is not there.
+
+None of this was held against the system: no host oracle runs on this machine (Catalyst is not installed) and no device run was made.
+Ladder by `objc.inventory` (`.agent-work/plan-and-analysis/b1314-flips/ladder-diffable.log`, with `applySnapshot:animatingDifferences:`
+as the positive control and an invented selector as the negative one): the class is in neither the 6.1.3 nor the 12.0 cache, and all four
+methods are in 16.0 and 18.0. There is no 13-15 cache, so `introduced` stays the header's 15.0.

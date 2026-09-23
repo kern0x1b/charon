@@ -132,6 +132,18 @@ static NSString *const charon_source_file = @"UIDiffableDataSource.m";
         [UIView setAnimationsEnabled:animations];
 }
 
+- (void)charon_applyReloadingData:(NSDiffableDataSourceSnapshot *)snapshot completion:(void (^)(void))completion
+{
+    if (!snapshot)
+        [NSException raise:NSInternalInconsistencyException format:@"Invalid parameter not satisfying: snapshot"];
+    NSDiffableDataSourceSnapshot *updated = [snapshot charon_copyWithoutReloads];
+    _applied = YES;
+    _snapshot = updated;
+    [_tableView reloadData];
+    [_tableView layoutIfNeeded];
+    charon_diffable_finish(completion);
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return [self charon_current].numberOfSections;
