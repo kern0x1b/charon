@@ -303,6 +303,54 @@ static Class charon_bound_class(const void *slot)
     return Nil;
 }
 
+// ld64 merges a category written on an alias into the class the alias names, CharonName,
+// since both are in one image, so the release's class takes from CharonName whatever it and
+// its superclasses lack. CharonName's own +class, +alloc and forwarding are NSObject's
+// selectors, which the release's class answers already.
+static unsigned charon_method_count(Class cls)
+{
+    unsigned count = 0;
+    free(class_copyMethodList(cls, &count));
+    return count;
+}
+
+static size_t charon_adopt_methods(Class release, Class proxy, struct charon_pending *pending, size_t used)
+{
+    unsigned count = 0;
+    Method *methods = class_copyMethodList(proxy, &count);
+    for (unsigned index = 0; index < count; index++) {
+        SEL selector = method_getName(methods[index]);
+        if (!charon_implements(release, selector))
+            pending[used++] = (struct charon_pending){release, selector, method_getImplementation(methods[index]), method_getTypeEncoding(methods[index])};
+    }
+    free(methods);
+    return used;
+}
+
+static void charon_adopt_declarations(Class release, Class proxy)
+{
+    unsigned count = 0;
+    Protocol **protocols = class_copyProtocolList(proxy, &count);
+    for (unsigned index = 0; index < count; index++) {
+        if (!class_conformsToProtocol(release, protocols[index]))
+            class_addProtocol(release, protocols[index]);
+    }
+    free(protocols);
+    if (!class_addProperty)
+        return;
+    objc_property_t *properties = class_copyPropertyList(proxy, &count);
+    for (unsigned index = 0; index < count; index++) {
+        const char *name = property_getName(properties[index]);
+        if (class_getProperty(release, name))
+            continue;
+        unsigned held = 0;
+        objc_property_attribute_t *attributes = property_copyAttributeList(properties[index], &held);
+        class_addProperty(release, name, attributes, held);
+        free(attributes);
+    }
+    free(properties);
+}
+
 __attribute__((constructor)) static void charon_backports_attach(void)
 {
     unsigned long size;
@@ -312,6 +360,15 @@ __attribute__((constructor)) static void charon_backports_attach(void)
     for (size_t index = 0; index < count; index++) {
         const struct charon_category *category = categories[index];
         capacity += (category->instance_methods ? category->instance_methods->count : 0) + (category->class_methods ? category->class_methods->count : 0);
+    }
+    unsigned long own_size = 0;
+    const struct charon_alias *own = charon_section(&__dso_handle, charon_slide(), "__DATA", "__charon_alias", &own_size);
+    size_t own_count = own ? own_size / sizeof *own : 0;
+    Class *releases = calloc(own_count ? own_count : 1, sizeof *releases);
+    for (size_t index = 0; index < own_count; index++) {
+        releases[index] = objc_getClass(own[index].name);
+        if (releases[index])
+            capacity += charon_method_count((Class)own[index].proxy) + charon_method_count(object_getClass((id)own[index].proxy));
     }
     size_t alias_count;
     struct charon_alias *aliases = charon_aliases(&alias_count);
@@ -332,9 +389,21 @@ __attribute__((constructor)) static void charon_backports_attach(void)
         used = charon_collect(cls, category->instance_methods, pending, used);
         used = charon_collect(object_getClass((id)cls), category->class_methods, pending, used);
     }
+    for (size_t index = 0; index < own_count; index++) {
+        if (!releases[index])
+            continue;
+        Class proxy = (Class)own[index].proxy;
+        used = charon_adopt_methods(releases[index], proxy, pending, used);
+        used = charon_adopt_methods(object_getClass((id)releases[index]), object_getClass((id)proxy), pending, used);
+    }
     for (size_t index = 0; index < used; index++)
         class_addMethod(pending[index].cls, pending[index].name, pending[index].implementation, pending[index].types);
     free(pending);
+    for (size_t index = 0; index < own_count; index++) {
+        if (releases[index])
+            charon_adopt_declarations(releases[index], (Class)own[index].proxy);
+    }
+    free(releases);
     for (size_t index = 0; index < count; index++) {
         const struct charon_category *category = categories[index];
         Class cls = classes[index];

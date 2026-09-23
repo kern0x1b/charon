@@ -8,6 +8,7 @@
 #import "check.h"
 
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
+#pragma clang diagnostic ignored "-Wnonnull"
 
 static NSString *image_of(const void *address)
 {

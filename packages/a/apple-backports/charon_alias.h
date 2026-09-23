@@ -6,7 +6,9 @@
 // exports the release's name as an alias of it, and records the pair in
 // __DATA,__charon_alias. Sent to, CharonName answers +class and +alloc with the
 // release's class, so what is made, what the release hands out and [Name class] are
-// one class; attach.c attaches a category written on Name to the release's class.
+// one class. ld64 merges a category written on Name in the same image into CharonName, and
+// attach.c gives the release's class what CharonName has and the release's class lacks; a
+// category on Name in another image is attached to the release's class by name.
 struct charon_alias {
     const void *proxy;
     const char *name;
