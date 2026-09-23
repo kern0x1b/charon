@@ -8,7 +8,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "ranks 16/17 of coordination/corpus/crash-demand-top.tsv, LOAD-FAIL, class_confirmed against both telegram and session's own trees. apple.objc.inventory() against the armv7 shared cache of 6.1.3 found no AVCapturePhotoOutput/AVCapturePhotoSettings/AVCaptureResolvedPhotoSettings under any name; AVCaptureStillImageOutput, the class the header documents this API as sitting above, is real and exported. Ladder-walked to 10.0.1 (tools/release-split.lua's own cache-by-cache inventory), not the header's bare 10.0. grep of this tree's own .m files found no orphaned implementation",
-      "effect": "a real AVCaptureOutput subclass, addable to an AVCaptureSession by facade: -[AVCaptureSession addOutput:]/-canAddOutput:/-removeOutput:/-outputs are swizzled to substitute a real, internally-held AVCaptureStillImageOutput for the facade so the session's own private graph setup never touches the facade directly; -capturePhotoWithSettings:delegate: captures for real through that AVCaptureStillImageOutput and delivers the real image data through the delegate's -captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error: - the iOS 10-era, non-AVCapturePhoto delegate callback telegram's own binary defines alongside the modern one",
+      "effect": "an AVCaptureStillImageOutput itself (the release's one still capture output), so the session builds, runs and lists it as its own - 6.1.3's session reads its own -outputs while it builds the graph and while a capture runs, and an earlier facade beside the real output made every capture fail with -11800 (measured on an iPad 2); it answers isKindOfClass: AVCaptureStillImageOutput YES, where 10.0's does not; -capturePhotoWithSettings:delegate: captures for real through its own -captureStillImageAsynchronouslyFromConnection:completionHandler: and delivers the real image data through the delegate's -captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error: - the iOS 10-era, non-AVCapturePhoto delegate callback telegram's own binary defines alongside the modern one",
       "facts": "facts/AVFoundation/AVCapturePhotoOutput.md",
       "source": "SDK 16.4, AVFoundation/AVCapturePhotoOutput.h"
     },
@@ -19,7 +19,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "rank 627, class_confirmed for telegram",
-      "effect": "forwards to the real, underlying AVCaptureStillImageOutput.availableImageDataCVPixelFormatTypes",
+      "effect": "the output's own availableImageDataCVPixelFormatTypes, the release's answer for its still image output (420f, 420v, 32BGRA on an iPad 2)",
       "facts": "facts/AVFoundation/AVCapturePhotoOutput.md",
       "source": "see AVCapturePhotoOutput"
     },
@@ -41,7 +41,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "rank 632, class_confirmed for telegram",
-      "effect": "queries the real AVCaptureDevice behind the still image output's own connection with the real, iOS-4.0-era -isFlashModeSupported: to build the array for real, not a fixed list",
+      "effect": "queries the real AVCaptureDevice behind the output's own connection with the real, iOS-4.0-era -isFlashModeSupported: to build the array for real, not a fixed list",
       "facts": "facts/AVFoundation/AVCapturePhotoOutput.md",
       "source": "see AVCapturePhotoOutput"
     },
@@ -74,7 +74,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "rank 629, class_confirmed for session",
-      "effect": "real, settable BOOL storage; the underlying AVCaptureStillImageOutput already captures at the device's full active-format resolution regardless of this flag, so honoring it costs nothing and there is no lower-resolution path it would need to opt out of",
+      "effect": "real, settable BOOL storage; the release's still image output already captures at the device's full active-format resolution regardless of this flag, so honoring it costs nothing and there is no lower-resolution path it would need to opt out of",
       "facts": "facts/AVFoundation/AVCapturePhotoOutput.md",
       "source": "see AVCapturePhotoOutput"
     },
@@ -85,7 +85,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "rank 100, class_confirmed for both session and telegram",
-      "effect": "captures for real through the underlying AVCaptureStillImageOutput's -captureStillImageAsynchronouslyFromConnection:completionHandler:, applying settings.flashMode and settings.autoStillImageStabilizationEnabled onto the real device/output first, then delivers the real image data through -captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error: (with a previewPhotoSampleBuffer when previewPhotoFormat asks for one) and the willBegin/didCapture/didFinishCapture callbacks around it, all only if the delegate responds to them",
+      "effect": "captures for real through the output's own -captureStillImageAsynchronouslyFromConnection:completionHandler:, applying settings.flashMode, settings.autoStillImageStabilizationEnabled (where the release has it, 7.0) and settings.format (a JPEG when it has none) onto the real device/output first, then delivers the real image data through -captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error: (with a previewPhotoSampleBuffer when previewPhotoFormat asks for one) and the willBegin/didCapture/didFinishCapture callbacks around it, all only if the delegate responds to them",
       "facts": "facts/AVFoundation/AVCapturePhotoOutput.md",
       "source": "see AVCapturePhotoOutput"
     },

@@ -35,26 +35,41 @@ The sample-buffer variant is the one this port can deliver for real without inve
 pre-11 devices - this is the same code Telegram uses when the modern callback isn't the one being
 exercised, not a code path invented for this port.
 
-## Why a facade, not a real subclass wired into the session
+## Why the output is a still image output
 
-`AVCaptureOutput` is not meant to be handed to `-[AVCaptureSession addOutput:]`'s private setup as
-a client subclass - the existing precedent in this tree for absent `AVCaptureOutput`-family
-surface (`AVCaptureDataOutputSynchronizer.m`) only *observes* real, existing outputs; it never
-injects a new one into the session's own graph. `AVCapturePhotoOutput` has to be addable to a
-session, so it is a facade: a real `AVCaptureOutput` subclass instance the caller holds, wrapping
-an internally-held real `AVCaptureStillImageOutput` that never has its own `-init` special-cased -
-`AVCaptureOutput`'s inherited `-init` runs the same way any subclass's does, and the facade is
-never itself passed into `AVCaptureSession`'s private graph, so nothing in that private machinery
-ever sees or depends on the facade's own (otherwise ordinary) `AVCaptureOutput` ivars.
+On this release `AVCapturePhotoOutput` is an `AVCaptureStillImageOutput` itself: the class the port
+defines under that name has the release's still image output as its superclass, so
+`-[AVCaptureSession addOutput:]` takes it, builds it into the graph and runs it as the output it is,
+and `-outputs`, `-canAddOutput:` and `-removeOutput:` are the release's own, unchanged. The SDK
+declares the class above `AVCaptureOutput`, so `AVCapturePhotoOutput.m` declares the implementation
+under a name of its own (`CharonPhotoOutput`) with clang's `objc_runtime_name("AVCapturePhotoOutput")`:
+the class, its metaclass and their `_OBJC_CLASS_$_`/`_OBJC_METACLASS_$_` symbols carry the API's
+name, which is all an application or the registry check ever sees (`nm -m` of the probe:
+`_OBJC_CLASS_$_AVCapturePhotoOutput` in `__objc_data`, `AVCaptureStillImageOutput` undefined as its
+superclass).
 
-`-[AVCaptureSession addOutput:]`/`-canAddOutput:`/`-removeOutput:`/`-outputs` are swizzled (the
-same interception pattern `CharonPushBridge` and `CharonRemoteCommandBridge` already use in this
-tree) to detect a facade and substitute its real `AVCaptureStillImageOutput` on the way in, and to
-map the real object back to its facade on the way out (`-outputs`), via a
-`weakToWeakObjectsMapTable` keyed by the real output - so a caller doing
-`[session.outputs containsObject:photoOutput]` with the facade it originally passed to
-`-addOutput:` still gets the answer it expects. The genuine graph node the session ever touches is
-always the real, on-release `AVCaptureStillImageOutput`.
+The first version was a facade: an `AVCaptureOutput` instance holding a still image output of its own,
+with `-addOutput:`/`-canAddOutput:`/`-removeOutput:`/`-outputs` of `AVCaptureSession` exchanged to put
+the held output into the session and to answer the facade back from `-outputs`. No capture through it
+ever finished on 6.1.3. Measured on an iPad 2 (`tests/backports/device/photooutput10.m` and a scratch
+probe, 2026-09-23):
+
+- the control, the release's own `AVCaptureStillImageOutput` in the same session with the Photo preset,
+  captured a 960x720 JPEG twice before the facade and once after it;
+- through the facade, the first capture ended in `AVFoundationErrorDomain` -11800 (underlying OSStatus
+  -12780) and the next ones never called back; on an iPhone 4S (an earlier run of the same probe) no capture gave a photo. The zoom's hooks were not in
+  that probe, and the iPad 2 has no flash, so neither was the cause;
+- 6.1.3's `AVCaptureSession` calls its own `-outputs` three times from inside AVFoundation while
+  `-startRunning` builds the graph, and again each time a capture posts its notifications (a counting
+  `-outputs` with `backtrace`/`dladdr`), so the exchanged `-outputs` handed the release the facade in
+  place of the output it had built;
+- with only the `-outputs` exchange taken back out, the same facade's held output captured with a
+  buffer.
+
+A class of its own beside the release's output can therefore not be listed in `-outputs` without the
+release reading it there; the still image output subclass is what lets `session.outputs` hold the very
+object the application added. The four exchanged methods and the facade's `-init` through
+`objc_msgSendSuper` are gone with it.
 
 ## What fires for real
 
@@ -62,19 +77,20 @@ always the real, on-release `AVCaptureStillImageOutput`.
   the real, iOS-4.0-era `-isFlashModeSupported:`/`-flashMode` pair, still present and functional
   on 6.1.3 despite being deprecated in the SDK header at 10.0) and
   `settings.autoStillImageStabilizationEnabled` onto
-  `AVCaptureStillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable` where the
-  release has it, then captures for real through
-  `-captureStillImageAsynchronouslyFromConnection:completionHandler:`, delivering the real
+  `automaticallyEnablesStillImageStabilizationWhenAvailable` where the release has it, and
+  `settings.format` onto `outputSettings` (a JPEG, `AVVideoCodecJPEG`, when the settings have no
+  format, so a capture never inherits the format of the one before it), then captures for real through
+  its own `-captureStillImageAsynchronouslyFromConnection:completionHandler:`, delivering the real
   `CMSampleBufferRef` to the delegate.
 - Still image stabilization arrived on `AVCaptureStillImageOutput` in 7.0 (the armv7 caches: 6.1.3's
   still image output has no stabilization selector, 7.0's has the four). An earlier version of this
   port set it unconditionally, "real since iOS 5.0", and every capture on 6.1.3 died of an unrecognized
   selector (`tests/backports/device/photooutput10.m`, 2026-09-23); retracted. On 6.x the setting is
   kept and enables nothing, what it does on a device without the feature.
-- `-availablePhotoPixelFormatTypes` forwards to the real
-  `AVCaptureStillImageOutput.availableImageDataCVPixelFormatTypes`.
+- `-availablePhotoPixelFormatTypes` is the output's own `availableImageDataCVPixelFormatTypes`
+  (`420f`, `420v`, `32BGRA` on an iPad 2).
 - `-supportedFlashModes` queries the real device behind the connection for real, not a fixed list.
-- `-photoSettingsWithFormat:`'s format dictionary is carried through and applied to the real
+- `-photoSettingsWithFormat:`'s format dictionary is carried through and applied to the
   output's `outputSettings` at capture time.
 - `AVCaptureResolvedPhotoSettings.uniqueID` matches the `AVCapturePhotoSettings.uniqueID` used to
   initiate the request, per Apple's own documented contract - real, monotonically-incrementing
@@ -82,6 +98,10 @@ always the real, on-release `AVCaptureStillImageOutput`.
 
 ## What differs from the release, honestly
 
+- The output is an `AVCaptureStillImageOutput` (above): `isKindOfClass:[AVCaptureStillImageOutput class]`
+  answers `YES` and it responds to the still image output's own methods, where 10.0's
+  `AVCapturePhotoOutput` sits directly under `AVCaptureOutput`. An application that looks through
+  `session.outputs` for a still image output finds the photo output, and capturing from it works.
 - `AVCapturePhotoOutput.availableRawPhotoPixelFormatTypes` is always an empty array: RAW capture has
   no path on this release's sensor pipeline.
 - The preview photo is drawn by the port. `AVCapturePhotoSettings.availablePreviewPhotoPixelFormatTypes`
@@ -109,18 +129,23 @@ always the real, on-release `AVCaptureStillImageOutput`.
   active-format resolution regardless of this flag, unlike a video data output's preview-resolution
   stream, so there is no lower-resolution path to opt out of.
 
-## What is not proven
+## Measured on device
 
-Not measured on device this pass - the session-integration swizzle (`addOutput:`/`canAddOutput:`/
-`removeOutput:`/`outputs`) and the facade pattern are host-syntax-checked and gate-verified only.
-A device pass would confirm: that a real `AVCaptureSession` accepts the substituted
-`AVCaptureStillImageOutput` from inside the swizzled `-addOutput:` the same way it would if the app
-had passed that real class directly (expected, since the session never sees anything but a real,
-on-release class, but not yet exercised end-to-end with a live camera and a real delegate); and
-that Telegram's own `-captureOutput:didFinishProcessingPhotoSampleBuffer:...` implementation
-handles a `nil` `previewPhotoSampleBuffer` and `nil` `bracketSettings` gracefully (expected, since
-both are documented `nullable` in Apple's own header, but not measured against Telegram's actual
-code).
+`tests/backports/device/photooutput10.m`, built with `AVCapturePhotoOutput.m` and the zoom's files
+(`AVCaptureDevice+VideoZoom7.m`, `CharonAVCapture.m`, `AVCaptureDevice+ActiveFrameDuration.m`), as
+the library carries them. iPad 2, 6.1.3: 27 checks, 0 failed. The class keeps its name and
+`session.outputs` holds it, and loses it on removal. A photo alone comes as a 960x720 JPEG. The
+previews come in 32BGRA at 960x720 (the photo's size, under the display's 1024), at 160x120 when
+160x160 is asked, and held to the display past it. An uncompressed 32BGRA photo gets its preview
+through CoreImage at 320x240. The next settings without a format give a JPEG again. With a 2x zoom,
+the photo output's still connection carries 2.00 as its scale and crop, and the zoomed capture comes
+with its preview. Each preview is within 0.005 levels of the probe's own drawing of the photo at the
+preview's size, and further from the photo turned upside down (0.96 to 1.91 levels). The control is
+weak on the iPad: its camera saw a dark, nearly even scene (mean about 10 of 255, spread 1.6 to 2.8).
+Still, a preview drawn empty would have been about 10 levels off, which the check (under 6) refuses.
+
+Not measured: Telegram's own `-captureOutput:didFinishProcessingPhotoSampleBuffer:...` with a `nil`
+`bracketSettings` (documented `nullable` in the header).
 
 ## Owner of `availablePreviewPhotoPixelFormatTypes`, corrected
 

@@ -2,7 +2,6 @@
 #import <CoreImage/CoreImage.h>
 #import <ImageIO/ImageIO.h>
 #import <UIKit/UIKit.h>
-#import <objc/runtime.h>
 #import <objc/message.h>
 
 // Ranks 16/17 of coordination/corpus/crash-demand-top.tsv, LOAD-FAIL, class_confirmed against
@@ -26,17 +25,16 @@
 // release does not do for us), and is a real fallback path Telegram already ships for pre-11
 // devices. This port targets exactly that path.
 //
-// AVCaptureOutput is not meant to be subclassed by a client and driven through
-// -[AVCaptureSession addOutput:]'s private machinery directly - the safe, working pattern
-// already established in this tree for absent AVCaptureOutput-family surface
-// (AVCaptureDataOutputSynchronizer.m observes *existing* real outputs rather than injecting a
-// fake one into the session graph) does not apply here, since this class must itself be
-// addable to a session. So AVCapturePhotoOutput here is a facade: a real AVCaptureOutput
-// subclass instance that is never actually handed to the session's own internal graph. Instead,
-// -[AVCaptureSession addOutput:]/-canAddOutput:/-removeOutput:/-outputs are swizzled to detect an
-// AVCapturePhotoOutput facade and substitute a real, internally-held AVCaptureStillImageOutput in
-// its place - the genuine graph node is always the real class already on this release; the facade
-// only ever forwards to it and is never touched by AVCaptureSession's private setup.
+// On this release AVCapturePhotoOutput is an AVCaptureStillImageOutput itself, the one output class that captures
+// stills, so the session builds and runs it as its own: 6.1.3's AVCaptureSession reads its own -outputs while it
+// builds the graph at -startRunning and again while a capture runs, and an object standing beside the real output
+// there (the first version of this port) made every capture end in AVFoundationErrorDomain -11800
+// (facts/AVFoundation/AVCapturePhotoOutput.md, "Why the output is a still image output"). The SDK declares the
+// class above AVCaptureOutput, so the implementation is declared under a name of its own and carries the class's
+// name at run time.
+__attribute__((objc_runtime_name("AVCapturePhotoOutput")))
+@interface CharonPhotoOutput : AVCaptureStillImageOutput
+@end
 
 static AVCaptureDevice *CharonDeviceForConnection(AVCaptureConnection *connection)
 {
@@ -105,40 +103,14 @@ static AVCaptureDevice *CharonDeviceForConnection(AVCaptureConnection *connectio
 
 @end
 
-@interface AVCapturePhotoOutput ()
-@property (nonatomic, strong) AVCaptureStillImageOutput *charonStillImageOutput;
-@end
-
-@implementation AVCapturePhotoOutput
+@implementation CharonPhotoOutput
 {
     BOOL _charonHighResolutionCaptureEnabled;
 }
 
-@synthesize charonStillImageOutput = _charonStillImageOutput;
-
-// AVCaptureOutput marks -init AV_INIT_UNAVAILABLE (a client is meant to instantiate only a
-// concrete Apple subclass) - real for the abstract base, not for a subclass overriding -init
-// itself, so this reaches over it with objc_msgSendSuper the same way this tree's other
-// not-meant-to-be-instantiated classes already do (see MPRemoteCommandCenter71.m). Nothing this
-// facade does depends on AVCaptureOutput's own (private, nil-after-alloc) internal state - see
-// this file's header comment on why the facade is never handed to AVCaptureSession's real graph.
-- (instancetype)init
-{
-    struct objc_super target = {self, [AVCaptureOutput class]};
-    self = ((id (*)(struct objc_super *, SEL))objc_msgSendSuper)(&target, sel_registerName("init"));
-    if (self)
-        _charonStillImageOutput = [[AVCaptureStillImageOutput alloc] init];
-    return self;
-}
-
-- (NSArray<AVCaptureConnection *> *)connections
-{
-    return self.charonStillImageOutput.connections;
-}
-
 - (NSArray<NSNumber *> *)availablePhotoPixelFormatTypes
 {
-    return self.charonStillImageOutput.availableImageDataCVPixelFormatTypes ?: @[];
+    return self.availableImageDataCVPixelFormatTypes ?: @[];
 }
 
 // iOS 6's AVCaptureStillImageOutput has no Bayer/Apple ProRAW capture path at all - real
@@ -152,7 +124,7 @@ static AVCaptureDevice *CharonDeviceForConnection(AVCaptureConnection *connectio
 
 - (NSArray<NSNumber *> *)supportedFlashModes
 {
-    AVCaptureDevice *device = CharonDeviceForConnection(self.charonStillImageOutput.connections.firstObject);
+    AVCaptureDevice *device = CharonDeviceForConnection(self.connections.firstObject);
     if (!device)
         return @[@(AVCaptureFlashModeOff)];
     NSMutableArray<NSNumber *> *modes = [NSMutableArray arrayWithObject:@(AVCaptureFlashModeOff)];
@@ -298,7 +270,7 @@ static CMSampleBufferRef CharonCreatePreviewSample(CMSampleBufferRef photo, size
         return;
     }
     size_t previewLongest = preview ? CharonPreviewLongestSide(preview) : 0;
-    AVCaptureConnection *connection = self.charonStillImageOutput.connections.firstObject;
+    AVCaptureConnection *connection = [self connectionWithMediaType:AVMediaTypeVideo];
     if (!connection) {
         [NSException raise:NSInvalidArgumentException format:@"AVCapturePhotoOutput has no connection to capture from - add it to a running AVCaptureSession first"];
         return;
@@ -306,11 +278,10 @@ static CMSampleBufferRef CharonCreatePreviewSample(CMSampleBufferRef photo, size
 
     // Still image stabilization arrived on AVCaptureStillImageOutput in 7.0; 6.x has none, and the setting is then
     // what it is on a device without it: kept, and nothing to enable.
-    AVCaptureStillImageOutput *still = self.charonStillImageOutput;
-    if ([still respondsToSelector:@selector(setAutomaticallyEnablesStillImageStabilizationWhenAvailable:)])
-        still.automaticallyEnablesStillImageStabilizationWhenAvailable = settings.autoStillImageStabilizationEnabled;
-    if (settings.format)
-        self.charonStillImageOutput.outputSettings = settings.format;
+    if ([self respondsToSelector:@selector(setAutomaticallyEnablesStillImageStabilizationWhenAvailable:)])
+        self.automaticallyEnablesStillImageStabilizationWhenAvailable = settings.autoStillImageStabilizationEnabled;
+    // Every capture takes its own settings' format; without one, a photo settings object asks for a JPEG.
+    self.outputSettings = settings.format ?: @{AVVideoCodecKey: AVVideoCodecJPEG};
 
     AVCaptureDevice *device = CharonDeviceForConnection(connection);
     AVCaptureFlashMode flashMode = settings.flashMode;
@@ -322,104 +293,25 @@ static CMSampleBufferRef CharonCreatePreviewSample(CMSampleBufferRef photo, size
     AVCaptureResolvedPhotoSettings *resolved = ((id (*)(id, SEL))objc_msgSend)([AVCaptureResolvedPhotoSettings alloc], sel_registerName("init"));
     resolved.uniqueID = settings.uniqueID;
 
+    AVCapturePhotoOutput *output = (AVCapturePhotoOutput *)(id)self;
     if ([delegate respondsToSelector:@selector(captureOutput:willBeginCaptureForResolvedSettings:)])
-        [delegate captureOutput:self willBeginCaptureForResolvedSettings:resolved];
+        [delegate captureOutput:output willBeginCaptureForResolvedSettings:resolved];
 
-    [self.charonStillImageOutput captureStillImageAsynchronouslyFromConnection:connection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+    [self captureStillImageAsynchronouslyFromConnection:connection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
         if ([delegate respondsToSelector:@selector(captureOutput:didCapturePhotoForResolvedSettings:)])
-            [delegate captureOutput:self didCapturePhotoForResolvedSettings:resolved];
+            [delegate captureOutput:output didCapturePhotoForResolvedSettings:resolved];
         if ([delegate respondsToSelector:@selector(captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:)]) {
             CMSampleBufferRef previewSample = previewLongest ? CharonCreatePreviewSample(imageDataSampleBuffer, previewLongest) : NULL;
             if (previewLongest && imageDataSampleBuffer && !previewSample)
                 NSLog(@"AVCapturePhotoOutput: the preview photo asked for could not be made from the captured still; it is delivered without one");
             ((void (*)(id, SEL, id, CMSampleBufferRef, CMSampleBufferRef, id, id, id))objc_msgSend)(delegate, sel_registerName("captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:"),
-                self, imageDataSampleBuffer, previewSample, resolved, nil, error);
+                output, imageDataSampleBuffer, previewSample, resolved, nil, error);
             if (previewSample)
                 CFRelease(previewSample);
         }
         if ([delegate respondsToSelector:@selector(captureOutput:didFinishCaptureForResolvedSettings:error:)])
-            [delegate captureOutput:self didFinishCaptureForResolvedSettings:resolved error:error];
+            [delegate captureOutput:output didFinishCaptureForResolvedSettings:resolved error:error];
     }];
-}
-
-@end
-
-// Session integration: never let the facade itself reach AVCaptureSession's private graph setup.
-// -addOutput:/-canAddOutput:/-removeOutput:/-outputs are swizzled to substitute the facade's real
-// AVCaptureStillImageOutput on the way in, and to substitute the facade back on the way out, so
-// -[session.outputs containsObject:photoOutput] still answers correctly for a caller holding the
-// facade it originally passed to -addOutput:.
-static NSMapTable<AVCaptureOutput *, AVCapturePhotoOutput *> *CharonPhotoFacadesByReal(void)
-{
-    static NSMapTable<AVCaptureOutput *, AVCapturePhotoOutput *> *table;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        table = [NSMapTable weakToWeakObjectsMapTable];
-    });
-    return table;
-}
-
-@implementation AVCaptureSession (CharonPhotoOutputBridge)
-
-+ (void)load
-{
-    SEL pairs[][2] = {
-        {@selector(addOutput:), @selector(charon_addOutput:)},
-        {@selector(canAddOutput:), @selector(charon_canAddOutput:)},
-        {@selector(removeOutput:), @selector(charon_removeOutput:)},
-        {@selector(outputs), @selector(charon_outputs)},
-    };
-    for (size_t index = 0; index < sizeof(pairs) / sizeof(pairs[0]); index++) {
-        Method original = class_getInstanceMethod(self, pairs[index][0]);
-        Method replacement = class_getInstanceMethod(self, pairs[index][1]);
-        method_exchangeImplementations(original, replacement);
-    }
-}
-
-- (AVCaptureStillImageOutput *)charon_realOutput:(AVCaptureOutput *)output
-{
-    if (![output isKindOfClass:[AVCapturePhotoOutput class]])
-        return nil;
-    return ((AVCapturePhotoOutput *)output).charonStillImageOutput;
-}
-
-- (void)charon_addOutput:(AVCaptureOutput *)output
-{
-    AVCaptureStillImageOutput *real = [self charon_realOutput:output];
-    if (real) {
-        [self charon_addOutput:real];
-        [CharonPhotoFacadesByReal() setObject:(AVCapturePhotoOutput *)output forKey:real];
-        return;
-    }
-    [self charon_addOutput:output];
-}
-
-- (BOOL)charon_canAddOutput:(AVCaptureOutput *)output
-{
-    AVCaptureStillImageOutput *real = [self charon_realOutput:output];
-    return [self charon_canAddOutput:real ?: output];
-}
-
-- (void)charon_removeOutput:(AVCaptureOutput *)output
-{
-    AVCaptureStillImageOutput *real = [self charon_realOutput:output];
-    if (real) {
-        [self charon_removeOutput:real];
-        [CharonPhotoFacadesByReal() removeObjectForKey:real];
-        return;
-    }
-    [self charon_removeOutput:output];
-}
-
-- (NSArray<AVCaptureOutput *> *)charon_outputs
-{
-    NSArray<AVCaptureOutput *> *real = [self charon_outputs];
-    NSMutableArray<AVCaptureOutput *> *mapped = [NSMutableArray arrayWithCapacity:real.count];
-    for (AVCaptureOutput *output in real) {
-        AVCapturePhotoOutput *facade = [CharonPhotoFacadesByReal() objectForKey:output];
-        [mapped addObject:facade ?: output];
-    }
-    return mapped;
 }
 
 @end
