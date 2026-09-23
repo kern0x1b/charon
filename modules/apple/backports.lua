@@ -725,6 +725,7 @@ function build(opt)
     end
     dyld.check(opt.cache, built)
     if #built == #LIBRARIES then
+        check_band_caches(opt, objects)
         local undocumented = check_registry(opt.root, surface(built, opt.architecture), opt.registry, opt.deployment, release.exports, release_inventory(opt.cache))
         if undocumented > 0 then
             cprint("${color.warning}note:${clear} %d of the registry's entries name no file of facts yet", undocumented)
@@ -968,16 +969,15 @@ local function staged_libraries(opt)
     return staged
 end
 
-function stage_bands(opt)
-    opt = table.join(opt, {triple = opt.architecture .. "-apple-ios" .. opt.deployment})
-    local attach, objects, origins = compiled(opt)
-    opt = table.join(opt, {origins = origins})
-    check_releases(opt, objects, origins)
+-- The bands the package stages, {point, first, last} each, and the architecture of every firmware
+-- the catalog lists by release: a band point is every release an object's API arrived in after the
+-- deployment, and a band is checked against the first and the last release it runs on.
+local function band_plan(opt, objects)
     local points = {[opt.deployment] = true}
     for _, library in ipairs(staged_libraries(opt)) do
         for _, object in ipairs(objects[library.name]) do
             if #exported_symbols(object) > 0 then
-                local version = introduced_in(opt, origins[object], object)
+                local version = introduced_in(opt, opt.origins[object], object)
                 if dyld.compare_versions(version, opt.deployment) > 0 then
                     points[version] = true
                 end
@@ -994,7 +994,41 @@ function stage_bands(opt)
     end
     local listed = table.orderkeys(architectures)
     table.sort(listed, function (a, b) return dyld.compare_versions(a, b) < 0 end)
-    local ranges = band_ranges(points, listed)
+    return band_ranges(points, listed), architectures
+end
+
+-- Staging every band checks its imports against the caches of its first and last release, which a
+-- build of the deployment's band alone never opens: a new band point (7.1, from one registry row)
+-- passed the gate and stopped the canon on a cache nobody held. A complete build names every such
+-- release up front, with its band and the command that fetches it. The answer holds for the ladder
+-- as it is held: a band point is the first held release that exports an object's API, so a fetched
+-- cache can move a point earlier and end the band before it on another release (measured: fetching
+-- 7.1, 8.1.2 and 9.2 moved the ends to 7.0.6, 8.1.1 and 9.1, and fetching those moved them to 8.1
+-- and 9.0.2). Only the whole ladder would fix the points; its size keeps it unheld.
+function check_band_caches(opt, objects)
+    local ranges, architectures = band_plan(opt, objects)
+    local missing = {}
+    for _, range in ipairs(ranges) do
+        for _, release in ipairs(table.unique({range.first, range.last})) do
+            if not held_cache(opt.architecture, release) then
+                table.insert(missing, string.format("  iOS %s, an end of the band of iOS %s (%s to %s): xmake firmware --arch=%s fetch %s",
+                                                    release, range.point, range.first, range.last, architectures[release], release))
+            end
+        end
+    end
+    if #missing > 0 then
+        raise("the staged bands cannot have their imports checked: %s holds no cache of the releases they are checked against (%d)\n%s",
+              dyld.root(), #missing, table.concat(missing, "\n"))
+    end
+    return ranges
+end
+
+function stage_bands(opt)
+    opt = table.join(opt, {triple = opt.architecture .. "-apple-ios" .. opt.deployment})
+    local attach, objects, origins = compiled(opt)
+    opt = table.join(opt, {origins = origins})
+    check_releases(opt, objects, origins)
+    local ranges, architectures = band_plan(opt, objects)
     local home = path.join(opt.stage, INSTALL_FOLDER)
     local lines = {}
     for _, range in ipairs(ranges) do

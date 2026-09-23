@@ -44,6 +44,13 @@ Reading the verdict (`$out.log`):
   `listed as absent, but what is built answers it`, and the rest. Each names symbols; fix the
   registry or the code, not the check.
 - `note: N of the registry's entries name no file of facts yet` is a note, not a failure.
+- **Red before the registry is read:** `error: the staged bands cannot have their imports checked:`
+  and one line per release, `iOS X, an end of the band of iOS P (first to last): xmake firmware
+  --arch=A fetch X`. The canon stages every band and checks each against its first and last
+  release; the gate names every such cache not held, all at once. Fetch them one at a time (the
+  network, not a heavy slot), then gate again: a fetched cache can move a band point earlier and
+  with it the end of the band before (measured 2026-09-23, 7.1 -> 7.0.6 -> held), so a second run
+  can name a release the first did not.
 - `EXIT=0` alone is not green: read the lines above. A pipe or a backgrounded wrapper can hide a
   non-zero exit.
 
