@@ -311,6 +311,21 @@ def main():
             defined = set(json.load(open(dp))) if os.path.exists(dp) else set()
             sends[app] = (carried - universe) - defined
 
+    # A selector NAME is not class-bound in the binary (CAVEAT #1, this file's own docstring) -- an
+    # app sending a selector string is not evidence it's calling the row's specific owner, only that
+    # it sends *some* method by that name. `_OBJC_CLASS_$_<Name>` is a real strong-import symbol: an
+    # app cannot hold it without that exact class being linked, immune to name collision by
+    # construction. Cross-checked per the CallKit band's control (measured, not assumed): among
+    # AVAudioEngine/AVAudioPCMBuffer/AVAudioUnit-family method names credited to 4 apps each, only
+    # `delta`/`provenance` actually hold `AVAudioEngine`'s class symbol -- the other two send some
+    # unrelated same-named selector (ppsspp/session/telegram's "prepare" is UIFeedbackGenerator's,
+    # already `inert` in the registry -- not a real AVAudioEngine gap for them at all).
+    class_holders = defaultdict(set)               # class name -> apps that hold its _OBJC_CLASS_$_ symbol
+    for app, d in store["apps"].items():
+        for r in d["demand"]:
+            if r.get("kind") == "class":
+                class_holders[r["name"]].add(app)
+
     groups = {}                                    # display api -> aggregate
     impl_only = old_sdk = 0
     sel_apps = defaultdict(set)
@@ -403,7 +418,7 @@ def main():
             notes.append("same selector is carried on %s: check whether that covers this owner" % ",".join(carry_owners[:3]))
         g = groups.setdefault(key, {"apps": set(), "intro": intro, "fw": best[4], "owners": len(sendable),
                                     "st": pst, "ev": "; ".join(notes),
-                                    "amb": gap_owners if covered_e else []})
+                                    "amb": gap_owners if covered_e else [], "owner": best[2], "ownerkind": best[3]})
         g["apps"] |= apps
 
     rows = []
@@ -411,10 +426,29 @@ def main():
         crash = sorted(a for a in g["apps"] if MINOS[a] >= g["intro"])
         soft = sorted(a for a in g["apps"] if MINOS[a] < g["intro"])
         disp = key + (" (+%d owners)" % (g["owners"] - 1) if g["owners"] > 1 else "")
+        # Class-symbol verification, alongside the name-based count, not instead of it -- so the
+        # divergence itself is visible rather than one number silently replacing another.
+        cls_note = ""
+        if g["ownerkind"] == "class":
+            confirmed = g["apps"] & class_holders.get(g["owner"], set())
+            if not confirmed and g["apps"]:
+                # Not zero-because-nobody-wants-it and not full-count-because-everybody-does: the
+                # selector is sent, but no caller holds the owner's class symbol at all. Name
+                # collision is the likely explanation, not absence of demand -- mark it as its own
+                # case (this file's own `class-undecided` vocabulary) rather than let a silent 0
+                # read as "confirmed nobody needs this."
+                cls_note = "class-undecided: selector sent by %s but none hold %s's class symbol -- likely a same-named selector on another class" % (",".join(sorted(g["apps"])), g["owner"])
+        else:
+            confirmed = g["apps"]           # protocol owner: no class symbol of its own to check against
+            cls_note = "protocol-owner: not class-symbol-verifiable, name-based count only"
+        cls_crash = sorted(a for a in confirmed if MINOS[a] >= g["intro"])
+        cls_soft = sorted(a for a in confirmed if MINOS[a] < g["intro"])
         rows.append({"api": disp, "kind": "selector", "framework": g["fw"], "band": band(g["intro"]),
                      "introduced": ".".join(map(str, g["intro"])), "apps": len(g["apps"]), "crash": len(crash),
                      "soft": len(soft), "status": g["st"], "sev": "CRASH-ON-USE" if crash else "soft", "callers": crash,
-                     "ev": g["ev"], "amb": g["amb"]})
+                     "ev": g["ev"], "amb": g["amb"],
+                     "cls_apps": len(confirmed), "cls_crash": len(cls_crash), "cls_soft": len(cls_soft),
+                     "cls_callers": cls_crash, "cls_note": cls_note})
 
     # ---- link-time symbols
     seen = {}
@@ -443,10 +477,16 @@ def main():
         v = ver(sd[1]) if sd and sd[1] else None
         bb = band(v) if v else {"13+": "13-16"}.get(b, b)
         crash = sorted(e["strong"])
+        # Link-symbol rows need no separate class-symbol check: a class-kind row already counts an
+        # app only if it strong-imports _OBJC_CLASS_$_<Name> directly (that IS the verification), and
+        # a constant/function row is a bare C symbol name with no selector-collision risk to begin
+        # with -- both are already what the cls_* columns exist to add for selector rows.
         rows.append({"api": name, "kind": kind, "framework": fw, "band": bb,
                      "introduced": ".".join(map(str, v)) if v else "", "apps": len(e["apps"]), "crash": len(crash),
                      "soft": len(e["apps"]) - len(crash), "status": st,
-                     "sev": "LOAD-FAIL" if crash else "soft", "callers": crash, "ev": "", "amb": []})
+                     "sev": "LOAD-FAIL" if crash else "soft", "callers": crash, "ev": "", "amb": [],
+                     "cls_apps": len(e["apps"]), "cls_crash": len(crash), "cls_soft": len(e["apps"]) - len(crash),
+                     "cls_callers": crash, "cls_note": ""})
 
     # ---- decision hints for UNDECIDED rows. Mechanical evidence only; hit rate measured on the
     # registry's own decided members (leave-one-out). The evidence is how the registry decided the
@@ -518,13 +558,22 @@ def main():
           {t: "%d%% of %d" % (round(100 * a), n) for t, (a, n) in precision.items()})
 
     gaps = [r for r in rows if r["status"].startswith(GAP) and r["crash"] > 0]
-    gaps.sort(key=lambda r: (-r["crash"], -r["apps"], r["sev"] != "LOAD-FAIL", r["band"], r["api"]))
+    # Rank by the class-symbol-confirmed count, not the name-based one -- the name-based count is
+    # what a selector string collides into, not what the app actually holds. Both stay in the file,
+    # side by side; nothing here is a replacement of the old columns, only a second measurement of
+    # the same row. `-r["crash"]` stays as the tiebreak so two rows with equal confirmed exposure
+    # still order the same way they did before this column existed.
+    gaps.sort(key=lambda r: (-r["cls_crash"], -r["crash"], -r["apps"], r["sev"] != "LOAD-FAIL", r["band"], r["api"]))
     out = os.path.join(BASE, "corpus", "crash-demand-top.tsv")
     with open(out, "w") as f:
-        f.write("rank\tseverity\tapi\tkind\tframework\tband\troute\tintroduced\tapps\tcrash_apps\tsoft_apps\tregistry\thint\tcrash_callers\tevidence\n")
+        f.write("rank\tseverity\tapi\tkind\tframework\tband\troute\tintroduced\tapps\tcrash_apps\tsoft_apps\t"
+                 "class_confirmed_apps\tclass_confirmed_crash_apps\tclass_confirmed_soft_apps\t"
+                 "registry\thint\tcrash_callers\tclass_confirmed_callers\tclass_note\tevidence\n")
         for i, r in enumerate(gaps, 1):
             f.write(f"{i}\t{r['sev']}\t{r['api']}\t{r['kind']}\t{r['framework']}\t{r['band']}\t{route(r['framework'], r['band'])}\t{r['introduced']}\t"
-                    f"{r['apps']}\t{r['crash']}\t{r['soft']}\t{r['status']}\t{r['hint']}\t{','.join(r['callers'])}\t{r['ev']}\n")
+                    f"{r['apps']}\t{r['crash']}\t{r['soft']}\t"
+                    f"{r['cls_apps']}\t{r['cls_crash']}\t{r['cls_soft']}\t"
+                    f"{r['status']}\t{r['hint']}\t{','.join(r['callers'])}\t{','.join(r['cls_callers'])}\t{r['cls_note']}\t{r['ev']}\n")
     amb = [r for r in rows if r.get("amb") and r["crash"] > 0]
     amb.sort(key=lambda r: (-r["crash"], r["api"]))
     with open(os.path.join(BASE, "corpus", "crash-demand-ambiguous-owners.tsv"), "w") as f:
@@ -539,11 +588,16 @@ def main():
     print(f"ambiguous-owner rows (primary owner covered, another owner not): {len(amb)}")
     print(f"crash-level gap rows: {len(gaps)}  (callback-only selectors set apart: {impl_only}; sdk<7 dropped: {old_sdk})")
     print(f"dropped, no version and no upper bound (counted, not silent -- see crash-demand-dropped.tsv): {len(dropped_no_version)}")
+    diverge = [r for r in gaps if r["cls_crash"] != r["crash"]]
+    unconfirmed = [r for r in gaps if r["cls_note"].startswith("class-undecided")]
+    print(f"class-symbol vs name-based count diverge: {len(diverge)} rows  "
+          f"(class-symbol-unconfirmed, likely name collision: {len(unconfirmed)})")
     print(f"-> {out}")
     return gaps
 
 if __name__ == "__main__":
     gaps = main()
-    print("\nTOP 45 overall:")
+    print("\nTOP 45 overall (ranked by class-symbol-confirmed crash exposure):")
     for i, r in enumerate(gaps[:45], 1):
-        print(f"{i:>2} {r['sev']:12} {r['crash']}/{r['apps']:<2} {r['band']:5} {r['framework']:16} {r['status']:11} {r['api']}")
+        flag = "" if r["cls_crash"] == r["crash"] else f"  (name-based said {r['crash']})"
+        print(f"{i:>2} {r['sev']:12} {r['cls_crash']}/{r['cls_apps']:<2} {r['band']:5} {r['framework']:16} {r['status']:11} {r['api']}{flag}")
