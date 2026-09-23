@@ -1,16 +1,32 @@
 #import "CharonSCN.h"
 
+static NSArray<SCNGeometrySourceSemantic> *CharonSCNKnownSemantics(void)
+{
+    static NSArray<SCNGeometrySourceSemantic> *semantics;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        semantics = @[SCNGeometrySourceSemanticVertex, SCNGeometrySourceSemanticNormal,
+                      SCNGeometrySourceSemanticColor, SCNGeometrySourceSemanticTexcoord,
+                      SCNGeometrySourceSemanticTangent];
+    });
+    return semantics;
+}
+
 @implementation SCNGeometry
 {
     SCNVector3 _boundingBoxMin;
     SCNVector3 _boundingBoxMax;
     BOOL _hasExplicitBoundingBox;
+    NSMutableDictionary<SCNGeometrySourceSemantic, NSArray<SCNGeometrySource *> *> *_sourcesBySemantic;
+    NSArray<SCNGeometryElement *> *_elements;
 }
 
 - (instancetype)init
 {
     if ((self = [super init])) {
         _materials = @[];
+        _sourcesBySemantic = [NSMutableDictionary dictionary];
+        _elements = @[];
     }
     return self;
 }
@@ -18,6 +34,17 @@
 + (instancetype)geometry
 {
     return [[self alloc] init];
+}
+
++ (instancetype)geometryWithSources:(NSArray<SCNGeometrySource *> *)sources elements:(NSArray<SCNGeometryElement *> *)elements
+{
+    SCNGeometry *geometry = [[self alloc] init];
+    for (SCNGeometrySource *source in sources) {
+        NSArray<SCNGeometrySource *> *existing = geometry->_sourcesBySemantic[source.semantic];
+        geometry->_sourcesBySemantic[source.semantic] = existing ? [existing arrayByAddingObject:source] : @[source];
+    }
+    geometry->_elements = [elements copy] ?: @[];
+    return geometry;
 }
 
 @synthesize name = _name;
@@ -33,14 +60,23 @@
     _materials = firstMaterial ? @[firstMaterial] : @[];
 }
 
+- (NSArray<SCNGeometrySource *> *)geometrySourcesForSemantic:(SCNGeometrySourceSemantic)semantic
+{
+    return _sourcesBySemantic[semantic] ?: @[];
+}
+
 - (NSArray<SCNGeometrySource *> *)geometrySources
 {
-    return @[];
+    NSMutableArray<SCNGeometrySource *> *all = [NSMutableArray array];
+    for (SCNGeometrySourceSemantic semantic in CharonSCNKnownSemantics()) {
+        [all addObjectsFromArray:_sourcesBySemantic[semantic]];
+    }
+    return all;
 }
 
 - (NSArray<SCNGeometryElement *> *)geometryElements
 {
-    return @[];
+    return _elements;
 }
 
 #pragma mark - SCNBoundingVolume
@@ -101,6 +137,15 @@
         _name = [coder decodeObjectOfClass:[NSString class] forKey:@"name"];
         NSArray<SCNMaterial *> *materials = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSArray class], [SCNMaterial class], nil] forKey:@"materials"];
         _materials = materials ?: @[];
+        NSSet *sourceClasses = [NSSet setWithObjects:[NSArray class], [SCNGeometrySource class], nil];
+        for (SCNGeometrySourceSemantic semantic in CharonSCNKnownSemantics()) {
+            NSArray<SCNGeometrySource *> *sources = [coder decodeObjectOfClasses:sourceClasses forKey:semantic];
+            if (sources.count) {
+                _sourcesBySemantic[semantic] = sources;
+            }
+        }
+        NSArray<SCNGeometryElement *> *elements = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSArray class], [SCNGeometryElement class], nil] forKey:@"elements"];
+        _elements = elements ?: @[];
     }
     return self;
 }
@@ -109,6 +154,10 @@
 {
     [coder encodeObject:_name forKey:@"name"];
     [coder encodeObject:_materials forKey:@"materials"];
+    for (SCNGeometrySourceSemantic semantic in CharonSCNKnownSemantics()) {
+        [coder encodeObject:_sourcesBySemantic[semantic] forKey:semantic];
+    }
+    [coder encodeObject:_elements forKey:@"elements"];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -119,6 +168,8 @@
     copy->_boundingBoxMin = _boundingBoxMin;
     copy->_boundingBoxMax = _boundingBoxMax;
     copy->_hasExplicitBoundingBox = _hasExplicitBoundingBox;
+    copy->_sourcesBySemantic = [_sourcesBySemantic mutableCopy];
+    copy->_elements = [_elements copy];
     return copy;
 }
 

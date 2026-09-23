@@ -134,7 +134,15 @@
     if (![coder containsValueForKey:key]) {
         return fallback;
     }
-    return [coder decodeIntegerForKey:key] != 0;
+    @try {
+        return [coder decodeBoolForKey:key];
+    } @catch (NSException *exception) {
+        @try {
+            return [coder decodeIntegerForKey:key] != 0;
+        } @catch (NSException *stillNotAnInteger) {
+            return fallback;
+        }
+    }
 }
 
 + (NSURL *)decodePathContents:(NSCoder *)coder forKey:(NSString *)key

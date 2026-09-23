@@ -517,6 +517,72 @@
       "effect": "valueWithSCNVector3:/valueWithSCNVector4:/valueWithSCNMatrix4: box the struct via +[NSValue valueWithBytes:objCType:]; the getters read back only when objCType matches, defaulting to zero (SCNVector3/4) or SCNMatrix4Identity otherwise, never garbage",
       "source": "measured directly against the release cache ladder, not read off sdk-introduced.json (which lists NSValue.SCNMatrix4Value/SCNVector3Value/SCNVector4Value as properties, not the category methods themselves, and carries no ios() version for them either): the literal selector strings valueWithSCNVector3:/valueWithSCNVector4:/valueWithSCNMatrix4:/SCNVector3Value/SCNVector4Value/SCNMatrix4Value are absent from the 7.1.2 armv7 dyld_shared_cache and present, all six together, in the 8.0 one -- checked by raw string search (strings -a | grep -xF), with a nonsense-selector negative control confirming the search does not over-match. objc.inventory (modules/apple/objc.lua) was tried first and returned ABSENT for all six at every release including 10.0.1, where the category demonstrably exists (macOS SceneKit oracle already used it in an earlier turn) -- it does not merge a category compiled in one image (SceneKit.framework) onto a class defined in another (NSValue, in Foundation), so it is not fit for measuring a cross-image category and this entry does not rely on it",
       "facts": "facts/SceneKit/SceneKit.md"
+    },
+    {
+      "api": "SCNGeometrySource",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "measured on star2.scn/coin.scn: a mesh geometry's kGeometrySourceSemanticVertex/Normal/Texcoord keys each hold an array of one SCNGeometrySource carrying data/vectorCount/floatComponents/componentsPerVector/bytesPerComponent/dataOffset/dataStride -- read exactly as archived, not assumed from the public factory method's parameter order",
+      "effect": "data/semantic/vectorCount/floatComponents/componentsPerVector/bytesPerComponent/dataOffset/dataStride decode and re-encode faithfully; geometrySourceWithBuffer:... (the Metal-buffer factory) is not implemented, not needed by any archive measured so far",
+      "source": "coordination/corpus/sdk-introduced.json: SCNGeometrySource, class, version null; release cache measurement: the semantic string kGeometrySourceSemanticVertex is absent from the 7.1.2 armv7 dyld_shared_cache and present at 8.0",
+      "facts": "facts/SceneKit/SceneKit.md"
+    },
+    {
+      "api": "SCNGeometryElement",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "measured on star2.scn: the archive names the property 'elementData', not 'data' -- the only member of this class whose archive key diverges from its own public property name -- alongside primitiveType/primitiveCount/bytesPerIndex",
+      "effect": "carries a real SCNGeometryPrimitiveTypePolygon (measured: star2.scn's single mesh uses primitiveType 4, introduced ios 10.0 in the SDK header) mesh's raw index buffer faithfully; this class does not interpret or rasterize the buffer, only decodes it -- rendering is a separate, later concern",
+      "source": "coordination/corpus/sdk-introduced.json: SCNGeometryElement, class, version null; release cache measurement: kGeometrySourceSemanticVertex (same object graph) absent at 7.1.2, present at 8.0",
+      "facts": "facts/SceneKit/SceneKit.md"
+    },
+    {
+      "api": "SCNGeometrySourceSemanticVertex",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "measured directly against the release cache ladder and against the raw archive, not assumed: the constant's real value is the archive's own key string (e.g. 'kGeometrySourceSemanticVertex'), not the shorter 'vertex'-style value one might guess from the property name",
+      "effect": "SCNGeometry.geometrySourcesForSemantic: and the archive decoder both key off this exact string; a guessed value would silently return zero sources instead of failing",
+      "source": "coordination/corpus/sdk-introduced.json: SCNGeometrySourceSemanticVertex, constant, version null; release cache measurement: the literal string kGeometrySourceSemanticVertex is absent from the 7.1.2 armv7 dyld_shared_cache and present at 8.0; confirmed against the real star2.scn archive read with plistlib",
+      "facts": "facts/SceneKit/SceneKit.md"
+    },
+    {
+      "api": "SCNGeometrySourceSemanticNormal",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "measured directly against the release cache ladder and against the raw archive, not assumed: the constant's real value is the archive's own key string (e.g. 'kGeometrySourceSemanticVertex'), not the shorter 'vertex'-style value one might guess from the property name",
+      "effect": "SCNGeometry.geometrySourcesForSemantic: and the archive decoder both key off this exact string; a guessed value would silently return zero sources instead of failing",
+      "source": "coordination/corpus/sdk-introduced.json: SCNGeometrySourceSemanticNormal, constant, version null; release cache measurement: the literal string kGeometrySourceSemanticVertex is absent from the 7.1.2 armv7 dyld_shared_cache and present at 8.0; confirmed against the real star2.scn archive read with plistlib",
+      "facts": "facts/SceneKit/SceneKit.md"
+    },
+    {
+      "api": "SCNGeometrySourceSemanticColor",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "measured directly against the release cache ladder and against the raw archive, not assumed: the constant's real value is the archive's own key string (e.g. 'kGeometrySourceSemanticVertex'), not the shorter 'vertex'-style value one might guess from the property name",
+      "effect": "SCNGeometry.geometrySourcesForSemantic: and the archive decoder both key off this exact string; a guessed value would silently return zero sources instead of failing",
+      "source": "coordination/corpus/sdk-introduced.json: SCNGeometrySourceSemanticColor, constant, version null; release cache measurement: the literal string kGeometrySourceSemanticVertex is absent from the 7.1.2 armv7 dyld_shared_cache and present at 8.0; confirmed against the real star2.scn archive read with plistlib",
+      "facts": "facts/SceneKit/SceneKit.md"
+    },
+    {
+      "api": "SCNGeometrySourceSemanticTexcoord",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "measured directly against the release cache ladder and against the raw archive, not assumed: the constant's real value is the archive's own key string (e.g. 'kGeometrySourceSemanticVertex'), not the shorter 'vertex'-style value one might guess from the property name",
+      "effect": "SCNGeometry.geometrySourcesForSemantic: and the archive decoder both key off this exact string; a guessed value would silently return zero sources instead of failing",
+      "source": "coordination/corpus/sdk-introduced.json: SCNGeometrySourceSemanticTexcoord, constant, version null; release cache measurement: the literal string kGeometrySourceSemanticVertex is absent from the 7.1.2 armv7 dyld_shared_cache and present at 8.0; confirmed against the real star2.scn archive read with plistlib",
+      "facts": "facts/SceneKit/SceneKit.md"
     }
   ]
 }
