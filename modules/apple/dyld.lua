@@ -636,8 +636,30 @@ local SCRIPTDIR = os.scriptdir()
 -- Where what the measurements below found is kept between runs, beside the caches it was read from.
 -- Every file is named by a key over everything its content depends on, this code included, so a
 -- changed SDK, rung or reader is simply a different file and nothing is ever invalidated by hand.
+-- The key of the code comes first in the name, so what an earlier reader wrote can be told apart
+-- and retired.
 local function stored(name)
     return path.join(path.directory(root()), "cache", name)
+end
+
+-- The text of a kept file, or nil when there is none: a run that retires it between a check and a
+-- read leaves a measurement to be made again, not a failure.
+local function kept_text(file)
+    if not os.isfile(file) then
+        return nil
+    end
+    return try {
+        function ()
+            return io.readfile(file)
+        end,
+        catch {
+            function (errors)
+                if os.isfile(file) then
+                    raise(errors)
+                end
+            end
+        }
+    }
 end
 
 -- A whole file or none: a reader running beside a writer sees the old file or the new one.
@@ -667,11 +689,41 @@ local function code_lines(name, lines)
     return lines
 end
 
--- What the owners of an SDK's symbols depend on: every .tbd it holds, by content, and the code that
--- reads them and the caches.
+local CODE_KEY
+
+-- The code that reads the SDK and the caches, by content.
+local function code_key()
+    if not CODE_KEY then
+        local lines = table.values(code_lines("dyld", {}))
+        table.sort(lines)
+        CODE_KEY = hash.strhash128(table.concat(lines, "\n"))
+    end
+    return CODE_KEY
+end
+
+-- A kept file of family (sdk-owners, first-release) under the current code and key.
+local function kept_file(family, key)
+    return stored(family .. "-" .. code_key() .. "-" .. key .. ".tsv")
+end
+
+-- Removes the files of family the current code can no longer name: those an earlier reader wrote,
+-- and those named before the code had a place of its own in the name. Files of other SDKs and ladders
+-- read by this same code stay, and so does a file still being written (store's partial name). It runs
+-- only after this code wrote a file of its own, so a run answered from what is kept removes nothing.
+-- A file another run retired meanwhile is already gone.
+local function retire(family)
+    local current = family .. "-" .. code_key() .. "-"
+    for _, file in ipairs(os.files(stored(family .. "-*.tsv"))) do
+        if not path.filename(file):startswith(current) then
+            os.tryrm(file)
+        end
+    end
+end
+
+-- What the owners of an SDK's symbols depend on besides the code: every .tbd it holds, by content.
 local function sdk_key(sdkdir)
     if not SDK_KEYS[sdkdir] then
-        local lines = table.values(code_lines("dyld", {}))
+        local lines = {}
         for _, file in ipairs(sdk_tbds(sdkdir)) do
             table.insert(lines, path.relative(file, sdkdir) .. " " .. hash.sha256(file))
         end
@@ -697,8 +749,8 @@ local function write_owners(file, owners)
     store(file, table.concat(installs, "\n") .. "\n\n" .. table.concat(lines, "\n") .. "\n")
 end
 
-local function read_owners(file)
-    local installs, body = io.readfile(file):match("^(.-)\n\n(.*)$")
+local function read_owners(text)
+    local installs, body = text:match("^(.-)\n\n(.*)$")
     installs = installs:split("\n")
     local owners = {}
     for symbol, ids in body:gmatch("([^\t\n]+)\t([^\n]+)") do
@@ -717,9 +769,10 @@ end
 -- count, never undefineds. Reading every .tbd takes most of a minute; what it gives is kept on disk.
 function sdk_owners(sdkdir)
     if not OWNERS[sdkdir] then
-        local kept = stored("sdk-owners-" .. sdk_key(sdkdir) .. ".tsv")
-        if os.isfile(kept) then
-            OWNERS[sdkdir] = read_owners(kept)
+        local kept = kept_file("sdk-owners", sdk_key(sdkdir))
+        local text = kept_text(kept)
+        if text then
+            OWNERS[sdkdir] = read_owners(text)
             return OWNERS[sdkdir]
         end
         local owners = {}
@@ -781,6 +834,7 @@ function sdk_owners(sdkdir)
             end
         end
         write_owners(kept, owners)
+        retire("sdk-owners")
         OWNERS[sdkdir] = owners
     end
     return OWNERS[sdkdir]
@@ -805,7 +859,9 @@ end
 local SIGNATURES = {}
 
 -- A ladder as it lies on disk: each rung's release and the files it is read from, with their sizes
--- and times. Two runs that agree on it read the same bytes.
+-- and modification times. Two runs that agree on it read files of the same names, sizes and times:
+-- a cache fetched again has a new time, and only a copy that keeps both the size and the time of
+-- the file it replaces goes unseen.
 local function ladder_signature(ladder)
     local rungs = {}
     for _, entry in ipairs(ladder) do
@@ -834,13 +890,11 @@ local FIRST = {}
 -- takes most of a minute, so every answer is kept on disk under the SDK and the ladder it was
 -- measured on, and only symbols never measured on them load a cache at all.
 function first_releases(ladder, sdkdir, symbols)
-    local kept = stored("first-release-" .. hash.strhash128(sdk_key(sdkdir) .. " " .. ladder_signature(ladder)) .. ".tsv")
+    local kept = kept_file("first-release", hash.strhash128(sdk_key(sdkdir) .. " " .. ladder_signature(ladder)))
     local function read()
         local known = {}
-        if os.isfile(kept) then
-            for symbol, release in io.readfile(kept):gmatch("([^\t\n]+)\t([^\n]+)") do
-                known[symbol] = release ~= "-" and release or false
-            end
+        for symbol, release in (kept_text(kept) or ""):gmatch("([^\t\n]+)\t([^\n]+)") do
+            known[symbol] = release ~= "-" and release or false
         end
         return known
     end
@@ -884,6 +938,7 @@ function first_releases(ladder, sdkdir, symbols)
         end
         table.sort(lines)
         store(kept, table.concat(lines, "\n") .. "\n")
+        retire("first-release")
     end
     local found = {}
     for _, symbol in ipairs(symbols) do
