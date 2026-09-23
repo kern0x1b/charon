@@ -72,89 +72,65 @@ Android) as it is here; iOS 6 is the first platform it targets, not its limit.
 
 ## Traps
 
-- **A framework's own entry in `modules/apple/backports.lua`'s `LIBRARIES` table must not name
-  itself in `frameworks` unless the release actually carries that framework.** CoreVideo and Metal
-  do (the framework exists on-device, only some of its symbols are missing), so `GraphicsBackports`
-  and `MetalBackports` list themselves; GameController, Vision and CallKit do not exist on iOS 6 at
-  all, so `GameControllerBackports`, `VisionBackports` and `CallKitBackports` list every framework
-  they need *except* their own. Listing a framework the release never shipped makes the linker emit
-  an `LC_LOAD_DYLIB` the device cannot satisfy, and the imports check fails with "neither the device
-  nor this build provides" it — this cost a full gate run on the CoreSpotlight backport, which
-  needs the framework's headers to compile against but must not link against the framework itself.
+Each entry: wrong pattern → right pattern → the mechanical reason.
 
-- **A device-side binary built with the host's own `cc`/`clang` instead of this
-  driver's `apple-ios` toolchain can crash with `Bad system call: 12` (SIGSYS)
-  on old iOS before any of its own output runs.** The symptom looks like a
-  codesigning or sandbox rejection; it is not — it reproduces even for a
-  trivial Foundation program, ad-hoc `ldid -S` signed, run as root. The real
-  cause is a Mach-O built for a target the device's very old kernel does not
-  understand. Build every device-side tool — including throwaway probes, not
-  just ports — through a `target()` using `@addon/charon/daemon` (or `app`/
-  `tweak`) against `thumbv7-apple-ios6.0.0` like any other port; that alone
-  fixed it. Confirmed against an iPhone 4S, kernel build 10B329 (iOS 6.1.3).
+- **Backport self-linking.** Wrong: an entry in `modules/apple/backports.lua`'s `LIBRARIES` table
+  names its own on-device framework in `frameworks`. Right: list it only if the release actually
+  ships that framework — CoreVideo does (symbols missing, framework present), so
+  `GraphicsBackports` lists it; GameController, Vision, CallKit and Metal do not exist on iOS 6 at
+  all, so `GameControllerBackports`, `VisionBackports`, `CallKitBackports` and `MetalBackports`
+  list every framework they need *except* their own. Reason: an `LC_LOAD_DYLIB` for a framework
+  the device never shipped fails the imports check ("neither the device nor this build provides").
 
-- **`NSMapTable` sends `retain`/`release` to its keys and values by default, even for
-  `strongToWeakObjectsMapTable` and friends.** A key that is not really an Objective-C object — a
-  `JSGlobalContextRef` or any other opaque C pointer bridged in with `(__bridge id)` — crashes
-  inside `objc_retain` the first time something is inserted, with a backtrace that points at
-  `NSConcreteMapTable` and nothing about the actual mistake. Build such a table with
-  `+mapTableWithKeyOptions:valueOptions:` and `NSPointerFunctionsOpaqueMemory |
-  NSPointerFunctionsOpaquePersonality` for the non-object side. Paid for on the JSContext
-  registry (`JavaScriptCore/JSContext.m`), keying a context lookup table on the
-  `JSGlobalContextRef` itself.
+- **Device-side binaries and the toolchain.** Wrong: building a device-side binary — including a
+  throwaway probe — with the host's own `cc`/`clang`. Right: build it through a `target()` using
+  `@addon/charon/daemon` (or `app`/`tweak`) against this driver's `apple-ios` toolchain, same as
+  any port. Reason: a Mach-O built for the wrong target crashes with `Bad system call: 12`
+  (SIGSYS) before its own code runs on the device's old kernel — indistinguishable from a
+  codesigning/sandbox rejection by symptom alone.
 
-- **A block's callable address is its `invoke` field, not the block's own pointer.** A block
-  literal is `{isa, flags, reserved, invoke, ...captures}`; casting the block pointer itself to a C
-  function type and calling it jumps into the `isa` field's bytes as if they were code — an
-  instant crash inside the block's own frame, `frame #0` showing the block's compiler-generated
-  symbol as if it corrupted itself. Read `invoke` out of the struct first. Also: ARC forbids
-  calling an Objective-C pointer as a raw function pointer at all (`cast ... disallowed with ARC`)
-  — bridge through `void *` before either step. Paid for boxing an `NSBlock` as a callable
-  `JSValue`.
+- **`NSMapTable` and non-object keys/values.** Wrong: building an `NSMapTable` with default
+  options (including `strongToWeakObjectsMapTable`) when a key or value is an opaque C pointer
+  bridged with `(__bridge id)` (e.g. a `JSGlobalContextRef`). Right: build it with
+  `+mapTableWithKeyOptions:valueOptions:`, using `NSPointerFunctionsOpaqueMemory |
+  NSPointerFunctionsOpaquePersonality` for the non-object side. Reason: default options send
+  `retain`/`release` to keys and values, and `objc_retain` on a non-object crashes inside
+  `NSConcreteMapTable` with no hint of the real cause.
 
-- **`-[NSInvocation setArgument:atIndex:]` copies bytes, not objects — it does not retain an
-  object argument unless `-retainArguments` has been called.** An argument set from a local that
-  goes out of scope before `-invoke` runs (the ordinary case when arguments are filled in a loop
-  inside a helper function) leaves a dangling pointer; the crash lands inside the *callee*'s own
-  ARC-generated argument-retain prologue, `objc_storeStrong`, which looks exactly like a bug in
-  the method being called rather than in how it was invoked. Call `-retainArguments` right after
-  creating the invocation, before setting any arguments. Paid for on the generic JSExport method
-  dispatcher (`JavaScriptCore/JSExportBridge.m`).
+- **Calling a block by its own pointer.** Wrong: casting a block's own pointer to a C function
+  type and calling it. Right: read the `invoke` field out of the block's layout
+  (`{isa, flags, reserved, invoke, ...captures}`) and call that, bridging through `void *` first
+  (ARC forbids calling an Objective-C pointer as a raw function pointer). Reason: the block
+  pointer's own bytes are `isa`, not code.
 
-- **A non-ASCII character in a `.m` file compiled through `tests/backports/host/*/prefix_selectors.py`
-  corrupts unrelated selectors elsewhere in the same file, not the line the character is on.** The
-  tool renames selectors by byte offset from a clang AST dump; one multi-byte UTF-8 character (an
-  em dash in a comment, in this case) shifts every byte offset after it by two, so renames later in
-  the file land one character into the target identifier — `component:fromDate:` becomes
-  `ccharonHost_omponent:fromDate:`, which reads as a build tool bug in a completely different
-  method. Keep comments in files that go through that pipeline ASCII-only.
+- **`NSInvocation` argument lifetime.** Wrong: calling `-setArgument:atIndex:` without first
+  calling `-retainArguments`, when the argument's source local can go out of scope before
+  `-invoke` runs. Right: call `-retainArguments` immediately after creating the invocation, before
+  setting any arguments. Reason: `-setArgument:atIndex:` copies bytes, not objects, so the pointer
+  dangles once its scope ends — and the crash then lands in the *callee's* ARC prologue
+  (`objc_storeStrong`), not at the real cause.
 
-- **Mixing `NSInteger` and `NSUInteger` in the same expression silently promotes the signed side
-  to unsigned**, per C's usual arithmetic conversions — `signedValue - calendar.firstWeekday`
-  (`firstWeekday` is `NSUInteger`) does not go negative when `signedValue` is smaller, it wraps to
-  a huge positive number, and a later `% 7` on that gives a plausible-looking but wrong small
-  integer with no crash anywhere. Cast the `NSUInteger` side explicitly before subtracting. Paid
-  for on every weekday computation in `NSCalendar+Components.m` until a host differential caught
-  the wrong answers — nothing crashed, nothing warned, the numbers were just wrong.
-- **A `@addon/charon/daemon`/`app`/`tweak` target that `add_requires`s
-  `charon@apple-backports` and `add_packages("apple-backports")` still fails
-  its own link with "these imports are not exported by the device's iOS:
-  (loads .../libContactsBackports.dylib, which neither the device nor this
-  build provides)", even though the package built the library and
-  `add_packages` attached it.** `modules/apple/platform.lua`'s
-  `verify_placed` takes one of two branches: if `target:values("charon.libraries")`
-  is empty and the target shares no runtime, it takes the plain, weak-linked
-  path, which for this package/config combination does not recognise the
-  backport dylib as something the build itself provides. The fix is not in
-  the backport, and there is no amount of staring at `backport_libraries`
-  that shows it from the failing target alone: add `set_values("charon.libraries",
-  "<the alias add_requires gave the package>")` to the target, which switches
-  it to the branch that copies the library in beside the binary and retargets
-  the load command to match — the same thing a real port relying on it must
-  already be doing, silently, wherever it works. This cost a full debugging
-  pass that included two throwaway commits solely to get `print()` inside
-  `modules/apple/platform.lua` to run at all, because `@addon/charon/*`
-  resolves to a version-pinned copy of this repository (`~/.xmake/addons/charon/<version>/`),
-  not the working tree `add_repositories` points at — an uncommitted edit to
-  a module under `modules/` never reaches a build that includes an addon by
-  version, only a commit does.
+- **Non-ASCII in `prefix_selectors.py` input.** Wrong: a non-ASCII character (e.g. an em dash) in
+  a comment of a `.m` file compiled through `tests/backports/host/prefix_selectors.py`. Right:
+  keep comments in files on that pipeline ASCII-only. Reason: the tool renames selectors by byte
+  offset from a clang AST dump, so one multi-byte UTF-8 character shifts every later offset and
+  corrupts an unrelated selector further down the file (e.g. `component:fromDate:` becomes
+  `ccharonHost_omponent:fromDate:`).
+
+- **Mixing `NSInteger` and `NSUInteger`.** Wrong: subtracting an `NSUInteger` (e.g.
+  `calendar.firstWeekday`) from a smaller `NSInteger` without a cast. Right: cast the `NSUInteger`
+  side to `NSInteger` explicitly before subtracting. Reason: C's usual arithmetic conversions
+  promote the signed side to unsigned, so the result wraps to a huge positive number instead of
+  going negative — wrong answer, no crash, no warning.
+
+- **`charon.libraries` and `verify_placed`.** Wrong: a `daemon`/`app`/`tweak` target
+  `add_requires`s a backport package and `add_packages`s it, but link still fails with "these
+  imports are not exported by the device's iOS ... neither the device nor this build provides".
+  Right: add `set_values("charon.libraries", "<the alias add_requires gave the package>")` to the
+  target. Reason: `modules/apple/platform.lua`'s `verify_placed` takes the plain, weak-linked path
+  whenever `target:values("charon.libraries")` is empty and the target shares no runtime, and that
+  path does not recognize the backport dylib as build-provided; `set_values` switches it to the
+  branch that copies the library in and retargets the load command. Related trap: `@addon/charon/*`
+  resolves to a version-pinned copy of this repository (`~/.xmake/addons/charon/<version>/`), not
+  the working tree `add_repositories` points at, so an uncommitted edit under `modules/` never
+  reaches a build that includes the addon by version — only a commit does.
