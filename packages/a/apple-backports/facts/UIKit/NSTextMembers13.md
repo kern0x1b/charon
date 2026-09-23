@@ -74,4 +74,8 @@ carries in an image the library loads (`unattached_categories` in `modules/apple
 
 ## On a device, iOS 6.1.3
 
-On an iPad 2 of iOS 6.1.3 (2026-09-23), a process of the band's own (`.agent-work/runs/b1314-live/main.m`, output `run4-all.txt` beside it) loaded the gate's `libUIKitBackports.dylib` and checked the three-argument `NSTextList` initializer: the class answers it - added by name, since 6.1.3 does not export the class - and the list has the starting number, while the two-argument initializer is still UIFoundation's own.
+On an iPad 2 of iOS 6.1.3 (2026-09-23), `tests/backports/device/textalias.m` against the gate's libraries (output
+`.agent-work/plan-and-analysis/b1314-catcheck/textalias-ipad2-gate5.txt`), 15 of 15: `[NSTextList class]` and `[NSTextTab class]`
+are UIFoundation's classes, what is made through the names is those classes, the three-argument initializer and
+`+columnTerminatorsForLocale:` are on them from `libUIKitBackports.dylib`, no class of the library adds either by name, and the list
+keeps its starting number while the two-argument initializer is still UIFoundation's own.
