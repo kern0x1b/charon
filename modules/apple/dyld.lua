@@ -623,6 +623,87 @@ local function exports_symbol(lookup, install, symbol, seen)
     return false
 end
 
+-- Whether the library installed at install exports symbol in a loaded cache, itself or through a
+-- library it re-exports: what dyld binds a client's two-level import of symbol from install to.
+function exported_by(cache, install, symbol)
+    return exports_symbol(function (name) return cache.libraries[name] end, install, symbol, {})
+end
+
+local OWNERS = {}
+local LISTED_KEYS = {["symbols"] = "", ["weak-symbols"] = "", ["objc-classes"] = "class", ["objc-eh-types"] = "_OBJC_EHTYPE_$_", ["objc-ivars"] = "_OBJC_IVAR_$_"}
+
+-- The library a client of the SDK links each symbol against: the install name of the first document
+-- of the .tbd that lists it, which is the public framework or library, even where the symbol itself
+-- is listed under a library that one re-exports (UIKitCore under UIKit). Only exports and re-exports
+-- count, never undefineds.
+function sdk_owners(sdkdir)
+    if not OWNERS[sdkdir] then
+        local owners = {}
+        local files = table.join(os.files(path.join(sdkdir, "System", "Library", "Frameworks", "**.tbd")), os.files(path.join(sdkdir, "usr", "lib", "*.tbd")))
+        for _, file in ipairs(files) do
+            local text = io.readfile(file)
+            local umbrella = text:match("install%-name:%s*'([^']+)'") or text:match("install%-name:%s*(%S+)")
+            local exporting, prefix, buffer = false, nil, nil
+            local function take(list)
+                for item in list:gmatch("[^,%[%]]+") do
+                    local name = item:gsub("^%s+", ""):gsub("%s+$", ""):gsub("^'", ""):gsub("'$", "")
+                    if #name > 0 then
+                        local names = prefix == "class" and {"_OBJC_CLASS_$_" .. name, "_OBJC_METACLASS_$_" .. name} or {prefix .. name}
+                        for _, symbol in ipairs(names) do
+                            owners[symbol] = owners[symbol] or {}
+                            if not table.contains(owners[symbol], umbrella) then
+                                table.insert(owners[symbol], umbrella)
+                            end
+                        end
+                    end
+                end
+            end
+            for line in text:gmatch("[^\n]+") do
+                if buffer then
+                    buffer = buffer .. line
+                    if line:find("]", 1, true) then
+                        take(buffer)
+                        buffer = nil
+                    end
+                elseif line:startswith("---") then
+                    exporting = false
+                elseif line:match("^[%w%-]+:") then
+                    local key = line:match("^([%w%-]+):")
+                    exporting = key == "exports" or key == "reexports"
+                elseif exporting and umbrella then
+                    local key, rest = line:match("^%s+%-?%s*([%w%-]+):%s*(.*)$")
+                    prefix = key and LISTED_KEYS[key]
+                    if prefix and rest:find("[", 1, true) then
+                        if rest:find("]", 1, true) then
+                            take(rest)
+                        else
+                            buffer = rest
+                        end
+                    end
+                end
+            end
+        end
+        OWNERS[sdkdir] = owners
+    end
+    return OWNERS[sdkdir]
+end
+
+-- Whether a loaded cache exports symbol where a client binds it: from one of owners, the libraries the
+-- SDK puts it in, when there are any, and anywhere in the cache otherwise. Without that, a same-named
+-- symbol of another image reads as the API: CNLabelHome is exported by AddressBookUI from iOS 7.0,
+-- and by Contacts.framework, where a client binds it, only from 9.0.
+function exported_at(cache, symbol, owners)
+    if not owners then
+        return cache.exports[symbol] ~= nil
+    end
+    for _, install in ipairs(owners) do
+        if exported_by(cache, install, symbol) then
+            return true
+        end
+    end
+    return false
+end
+
 local function undefined_imports(data, image)
     local imported = {}
     if not image.symtab then

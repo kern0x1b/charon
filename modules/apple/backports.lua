@@ -780,12 +780,13 @@ end
 -- A header can name a later release than the one that actually already exports the symbol (measured
 -- for UIKeyboardIsLocalUserInfoKey: the SDK 16.4 header says ios(9.0), the real armv7 cache of 8.0
 -- already exports it), and this function exists so the same object-splitting rule answers to the
--- fact, not the annotation. Returns nil for a symbol no held release exports -- newer than this
--- architecture's cache ladder reaches, where the header/registry fallback in introduced_in() below
--- is the only source left.
-local function measured_introduced(architecture, symbol)
-    for _, entry in ipairs(ladder(architecture)) do
-        if dyld.load(entry.source).exports[symbol] then
+-- fact, not the annotation. A symbol counts only where a client binds it, in the library the SDK
+-- puts it in (dyld.exported_at). Returns nil for a symbol no held release exports, where the
+-- header/registry fallback in releases_in() below is the only source left.
+local function measured_introduced(opt, symbol)
+    local owners = dyld.sdk_owners(opt.sdkdir)[symbol]
+    for _, entry in ipairs(ladder(opt.architecture)) do
+        if dyld.exported_at(dyld.load(entry.source), symbol, owners) then
             return entry.release
         end
     end
@@ -806,7 +807,7 @@ function releases_in(opt, source, object)
             table.insert(names, name)
             earliest[name] = false
         end
-        local version = measured_introduced(opt.architecture, symbol)
+        local version = measured_introduced(opt, symbol)
         if version and (not earliest[name] or dyld.compare_versions(version, earliest[name]) < 0) then
             earliest[name] = version
         end

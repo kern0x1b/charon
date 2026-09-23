@@ -1,4 +1,8 @@
--- xmake l tools/release-split.lua OBJECTSDIR [OUTPUT]
+-- xmake l tools/release-split.lua OBJECTSDIR [OUTPUT] [SDKDIR]
+--
+-- SDKDIR is the iPhoneOS SDK whose .tbd files say which library each symbol belongs to (the newest
+-- one in the shared xmake store when not given). A symbol counts as exported only by that library
+-- or one it re-exports, where a client binds it, not by a same-named symbol elsewhere in the cache.
 --
 -- MANDATORY: a band runs this after its own build() and before handing off a
 -- patch (or running write_deb()'s full band rebuild). It needs OBJECTSDIR's
@@ -105,8 +109,18 @@ local function ladder()
     return dyld.held_ladder({"armv7", "armv7s"})
 end
 
-function main(objectsdir, output)
-    assert(objectsdir, "usage: xmake l tools/release-split.lua OBJECTSDIR [OUTPUT]")
+local function newest_sdk()
+    local found = os.dirs(path.join(os.getenv("HOME"), ".xmake", "packages", "i", "iphoneos-sdk", "*", "*", "Developer.app",
+                                    "Contents", "Developer", "Platforms", "iPhoneOS.platform", "Developer", "SDKs", "iPhoneOS*.sdk"))
+    table.sort(found, function (a, b) return os.mtime(a) > os.mtime(b) end)
+    return found[1]
+end
+
+function main(objectsdir, output, sdkdir)
+    assert(objectsdir, "usage: xmake l tools/release-split.lua OBJECTSDIR [OUTPUT] [SDKDIR]")
+    sdkdir = sdkdir or newest_sdk()
+    assert(sdkdir and os.isdir(sdkdir), "release-split: no iPhoneOS SDK found; pass SDKDIR")
+    local owners = dyld.sdk_owners(sdkdir)
     local files = os.files(path.join(objectsdir, "*.o"))
     assert(#files > 0, objectsdir .. " holds no *.o")
     table.sort(files)
@@ -124,7 +138,7 @@ function main(objectsdir, output)
     for _, entry in ipairs(ladder()) do
         local release = dyld.load(entry.source)
         for symbol in pairs(all_symbols) do
-            if not first[symbol] and release.exports[symbol] then
+            if not first[symbol] and dyld.exported_at(release, symbol, owners[symbol]) then
                 first[symbol] = entry.release
             end
         end
