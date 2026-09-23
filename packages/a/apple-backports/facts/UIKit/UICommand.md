@@ -45,5 +45,7 @@ its handler. A command with the destructive attribute is the destructive button;
 
 ## What differs from the host
 
-The members of iOS 16 and later of the menu leaf protocol - `subtitle`, `selectedImage`, `repeatBehavior`, `sender`,
-`performWithSender:target:` - are not answered.
+The members of the menu leaf protocol of iOS 16 - `sender`, `presentationSourceItem`, `performWithSender:target:` - are carried
+(`UIMenuLeaf.md`); the sheet now sends a chosen command through `performWithSender:target:`'s path, so `sender` is the view the
+interaction belongs to while the action runs. `selectedImage` and `repeatBehavior` arrived with iOS 17 and are not in the SDK (16.4)
+this port is built against; `subtitle` is `UIMenuElement`'s own (15.0), not the protocol's, and its row says why it is absent.

@@ -236,6 +236,15 @@ static void charon_require(BOOL condition, NSString *what)
     _state = state;
 }
 
+// The command's action goes up the responder chain from the target, or from the
+// first responder when there is none, with the command as the sender of the message.
+- (void)charon_performWithSender:(id)sender target:(id)target
+{
+    objc_setAssociatedObject(self, @selector(sender), sender, OBJC_ASSOCIATION_ASSIGN);
+    [[UIApplication sharedApplication] sendAction:_action to:target from:self forEvent:nil];
+    objc_setAssociatedObject(self, @selector(sender), nil, OBJC_ASSOCIATION_ASSIGN);
+}
+
 - (BOOL)isEqual:(id)object
 {
     if (object == self)

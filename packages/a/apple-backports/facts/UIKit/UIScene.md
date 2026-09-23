@@ -87,3 +87,11 @@ is the port's own literal, taken to be the system's by its name, not read from a
 `tools/release-split.lua` over the built objects reports `_UISceneErrorDomain` first exported in **no** release, but that
 says nothing: the iOS 13 scene notifications of `UISceneConstants.o` read `none` the same way, and across all 713 symbols it
 finds no first export above 10.0.1, so the tool does not see UIKit's exports on the 12.0-18.0 rungs.
+
+## `UIWindowScene.keyWindow`, iOS 15
+
+`UIKit/UIWindowScene+KeyWindow15.m` answers the application's key window when it is one of the scene's windows, and nil when there is
+no key window. The release has one scene and the port's scene answers the application's windows as its own (`UIKit/UIWindowScene.m`),
+so in practice it is `[UIApplication sharedApplication].keyWindow`. Ladder by `objc.inventory`
+(`.agent-work/plan-and-analysis/b1314-flips/ladder-leaf-anchor-key.log`): `UIWindowScene` is not in the 12.0 cache, and `keyWindow` is in
+16.0 and 18.0 with `windows` as the positive control; no 13-15 cache, so `introduced` stays the header's 15.0. Not run on a device.

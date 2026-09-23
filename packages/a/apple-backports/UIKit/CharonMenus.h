@@ -40,6 +40,7 @@ NSString *charon_menu_attributes_text(NSUInteger attributes);
 
 @interface UICommand (CharonMenus)
 - (instancetype)initCharonWithTitle:(NSString *)title image:(UIImage *)image action:(SEL)action propertyList:(id)propertyList alternates:(NSArray *)alternates;
+- (void)charon_performWithSender:(id)sender target:(id)target;
 @end
 
 @interface UIMenu (CharonMenus)

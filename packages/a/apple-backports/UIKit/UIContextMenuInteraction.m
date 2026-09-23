@@ -437,7 +437,7 @@ static BOOL charon_destructive(UIMenuElement *element)
     if ([chosen isKindOfClass:[UIAction class]])
         [(UIAction *)chosen charon_performWithSender:view];
     else if ([chosen isKindOfClass:[UICommand class]])
-        [[UIApplication sharedApplication] sendAction:((UICommand *)chosen).action to:nil from:chosen forEvent:nil];
+        [(UICommand *)chosen charon_performWithSender:view target:nil];
 }
 
 - (UIMenu *)charon_visibleMenu

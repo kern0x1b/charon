@@ -1742,10 +1742,10 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the key window among the scene's windows; the port's scene already answers its windows (UIKit/UIWindowScene.m) and the release's UIWindow says which one is key, so this could be derived - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the application's key window when it is one of the scene's windows, nil when there is none; the release has one scene, so it is UIApplication's keyWindow",
+      "facts": "facts/UIKit/UIScene.md",
+      "source": "SDK 16.4, UIKit; the class is not in the 12.0 cache, and the getter is in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UIWindowSceneActivationAction",
@@ -2793,10 +2793,60 @@
       "kind": "protocol",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol UIAction and UICommand both take in iOS 16, for what a menu element that runs something answers; the port carries both classes (facts/UIKit/UIAction.md, facts/UIKit/UICommand.md) and their members, so declaring the protocol and its conformance would carry it - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the protocol is in the library with UIAction's and UICommand's conformance (it always was, from the header), and both classes now answer every member of the 16.4 protocol",
+      "facts": "facts/UIKit/UIMenuLeaf.md",
+      "source": "SDK 16.4, UIKit; not in the 6.1.3 or 12.0 cache, and in 16.0 and 18.0 (objc.inventory)"
+    },
+    {
+      "api": "-[UIAction performWithSender:target:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "runs the handler with sender set while it runs; the target is not used, since an action has no selector",
+      "facts": "facts/UIKit/UIMenuLeaf.md",
+      "source": "SDK 16.4, UIKit; not in the 6.1.3 or 12.0 cache, and in 16.0 and 18.0 (objc.inventory)"
+    },
+    {
+      "api": "UIAction.presentationSourceItem",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the sender while the element runs when it is a view or a bar button item, nil otherwise",
+      "facts": "facts/UIKit/UIMenuLeaf.md",
+      "source": "SDK 16.4, UIKit; not in the 6.1.3 or 12.0 cache, and in 16.0 and 18.0 (objc.inventory)"
+    },
+    {
+      "api": "-[UICommand performWithSender:target:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "sends the command's action to the target, or up the responder chain when it is nil, with the command as the message's sender and sender set while it runs",
+      "facts": "facts/UIKit/UIMenuLeaf.md",
+      "source": "SDK 16.4, UIKit; not in the 6.1.3 or 12.0 cache, and in 16.0 and 18.0 (objc.inventory)"
+    },
+    {
+      "api": "UICommand.presentationSourceItem",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the sender while the element runs when it is a view or a bar button item, nil otherwise",
+      "facts": "facts/UIKit/UIMenuLeaf.md",
+      "source": "SDK 16.4, UIKit; not in the 6.1.3 or 12.0 cache, and in 16.0 and 18.0 (objc.inventory)"
+    },
+    {
+      "api": "UICommand.sender",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the sender while the command's action runs, nil otherwise, as UIAction.sender",
+      "facts": "facts/UIKit/UIMenuLeaf.md",
+      "source": "SDK 16.4, UIKit; not in the 6.1.3 or 12.0 cache, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UINavigationBar.behavioralStyle",
@@ -3254,10 +3304,10 @@
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the view's own spelling of its layer's anchorPoint, which the release's CALayer has; a forward to view.layer would carry it - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "reads and writes the layer's anchorPoint, which the release's CALayer has; the layer's position, and so the view's center, stays",
+      "facts": "facts/UIKit/UIViewAnchorPoint.md",
+      "source": "SDK 16.4, UIKit; not in UIView's methods in the 6.1.3 or 12.0 cache, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UIViewController.activePresentationController",

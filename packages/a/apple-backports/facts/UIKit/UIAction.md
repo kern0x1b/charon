@@ -35,5 +35,4 @@ Source: the host's own UIKit under Mac Catalyst (macOS 27.0), held against the b
   made in the context menu of this port it is the view the interaction belongs to; the host's is the control
   or bar item the action was sent from, and no such thing exists here. The value is not read from the host: it
   is the nearest honest sender a view-attached menu has.
-- `UIMenuLeaf` (16.0), which the header of newer SDKs makes `UIAction` adopt, is not carried: `-performWithSender:target:`
-  and `presentationSourceItem` are not there.
+- `UIMenuLeaf` (16.0), which the header makes `UIAction` adopt, is carried with its members: `UIMenuLeaf.md`.
