@@ -3947,9 +3947,10 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "effect": "sent by a sheet that may not be dismissed, once per drag, when the drag has pulled it a quarter of its bottom extent past the smallest detent",
+      "status": "absent",
+      "effect": "the port defines no such method; a sheet sends it to a delegate that implements it, once per drag, when a sheet that may not be dismissed has been pulled a quarter of its bottom extent past the smallest detent",
       "facts": "facts/UIKit/UISheetPresentationController.md",
+      "reason": "a delegate method the application implements, not one the port carries",
       "source": "UIKitCore of the held 16.0 cache (arm64e), read statically; the public headers of SDK 26 and SDK 16.4; held on iOS 6 by tests/backports/device/sheet.m"
     },
     {
@@ -3957,9 +3958,10 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "effect": "sent by a sheet after a drag or a tap on its dimming view has dismissed it, once the release has taken the controller down; not for a dismissal the program asks for",
+      "status": "absent",
+      "effect": "the port defines no such method; a sheet sends it to a delegate that implements it after a drag or a tap on its dimming view has dismissed it, once the release has taken the controller down, and not for a dismissal the program asks for",
       "facts": "facts/UIKit/UISheetPresentationController.md",
+      "reason": "a delegate method the application implements, not one the port carries",
       "source": "UIKitCore of the held 16.0 cache (arm64e), read statically; the public headers of SDK 26 and SDK 16.4; held on iOS 6 by tests/backports/device/sheet.m"
     },
     {
@@ -3967,9 +3969,10 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "effect": "asked by a sheet when a drag passes its smallest detent, unless the controller presents another or is modal in presentation; NO keeps the sheet in place",
+      "status": "absent",
+      "effect": "the port defines no such method; a sheet asks a delegate that implements it when a drag passes its smallest detent, unless the controller presents another or is modal in presentation, and NO keeps the sheet in place",
       "facts": "facts/UIKit/UISheetPresentationController.md",
+      "reason": "a delegate method the application implements, not one the port carries",
       "source": "UIKitCore of the held 16.0 cache (arm64e), read statically; the public headers of SDK 26 and SDK 16.4; held on iOS 6 by tests/backports/device/sheet.m"
     },
     {
@@ -3977,9 +3980,10 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "effect": "sent by a sheet when a drag begins to dismiss it or a tap on its dimming view dismisses it; a drag let go above the smallest detent then takes the dismissal back",
+      "status": "absent",
+      "effect": "the port defines no such method; a sheet sends it to a delegate that implements it when a drag begins to dismiss it or a tap on its dimming view dismisses it, and a drag let go above the smallest detent then takes the dismissal back",
       "facts": "facts/UIKit/UISheetPresentationController.md",
+      "reason": "a delegate method the application implements, not one the port carries",
       "source": "UIKitCore of the held 16.0 cache (arm64e), read statically; the public headers of SDK 26 and SDK 16.4; held on iOS 6 by tests/backports/device/sheet.m"
     },
     {

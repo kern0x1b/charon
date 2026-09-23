@@ -16,8 +16,7 @@ SDK (an App Store binary of its time, a port built with an old SDK) is not touch
 
 Source: UIKitCore of the held 16.0 cache (arm64e), read statically; no 13.x or 14.x cache is on the ladder.
 UIKit of 6.1.3 (armv7) and UIKitCore of 12.0 (arm64) are read for what the older library does with the
-value. The listing and every address: `.agent-work/plan-and-analysis/b1314-sheet/modal-default.md` of the
-band that made the port. Held by `tests/backports/device/modaldefault.m`, built twice.
+value; the addresses are below. Held by `tests/backports/device/modaldefault.m`, built twice.
 
 ## What the release does (16.0)
 

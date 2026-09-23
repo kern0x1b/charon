@@ -7,9 +7,8 @@ context, `UISheetPresentationControllerDetentInactive` and `-invalidateDetents` 
 
 Sources:
 - UIKitCore of the held 16.0 cache (arm64e), read statically for the geometry, the detents, the dimming, the drag and
-  its end, the stack of sheets and the corners; the 18.0 cache where it confirms or corrects a value. The listing with
-  every address is `.agent-work/plan-and-analysis/b1314-sheet/uikitcore16-sheet-geometry.md` of the band that made the
-  port; the code names each address beside the value it takes from it.
+  its end, the stack of sheets and the corners; the 18.0 cache where it confirms or corrects a value. The addresses are
+  below and, for each value, beside it in the code.
 - The host's own UIKit under Mac Catalyst for what the API answers - defaults, descriptions, equality, the resolution of
   detents for eleven containers, which styles have a sheet: `tests/backports/host/sheet/run.sh` writes 42 records into
   `tests/backports/device/sheet-expectations.h`, which `tests/backports/device/sheet.m` holds the port to on iOS 6. The
