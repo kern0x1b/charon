@@ -373,7 +373,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITableView a method like it: it arrived in iOS 15",
+      "reason": "reruns the configuration of the cells already on screen, keeping the cell objects; the release's table can only reload a row, which replaces its cell - the very difference reconfigure exists for - and handing the old cell back needs the release's private dequeue, which the port does not reach into; no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -433,7 +433,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIViewController a method like it: it arrived in iOS 15",
+      "reason": "answers the scroll view a bar at that edge watches for its scroll-edge appearance; the port finds that scroll view itself, breadth first in the controller's view (facts/UIKit/BarAppearanceApplication.md), and could answer it or an override here - not built for lack of demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -443,7 +443,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIViewController a method like it: it arrived in iOS 15",
+      "reason": "overrides the scroll view a bar at that edge watches for its scroll-edge appearance; the port finds that scroll view itself, breadth first in the controller's view (facts/UIKit/BarAppearanceApplication.md), and could take an override first - not built for lack of demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1473,7 +1473,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITableView a property like it: it arrived in iOS 15",
+      "reason": "lets the rows of a table take keyboard focus; the port has no focus engine (UIFocusSystem absent, ios11.json), so no row can be focused whatever this says",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1483,7 +1483,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITableView a property like it: it arrived in iOS 15",
+      "reason": "lets the rows of a table take keyboard focus while it edits; the port has no focus engine (UIFocusSystem absent, ios11.json), so no row can be focused whatever this says",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1493,7 +1493,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITableView a property like it: it arrived in iOS 15",
+      "reason": "sets the height of the empty rows a plain table draws under its last one; the release draws that filler itself, in private code the port does not reach into, so another height would mean replacing that drawing - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1503,7 +1503,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITableView a property like it: it arrived in iOS 15",
+      "reason": "switches off the prefetching a table does through its prefetchDataSource (iOS 10); the port carries no prefetchDataSource and no UITableViewDataSourcePrefetching (the registry has no row for either), so there is no prefetching to switch",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1693,7 +1693,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIViewController a property like it: it arrived in iOS 15",
+      "reason": "the view controller's own focus group; UIFocusEnvironment.focusGroupIdentifier is inert (ios13rest.json) because the port has no focus engine, and this override of it is not built - focus never enters a group to use it",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1703,7 +1703,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIViewController a property like it: it arrived in iOS 15",
+      "reason": "answers the UISheetPresentationController (absent here) that a page or form sheet runs through, with its detents and grabber; the port carries UIPresentationController (ios8presentation.json) but no sheet with resizable detents over it, which is real work - no demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1723,7 +1723,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIWindowScene a property like it: it arrived in iOS 15",
+      "reason": "names what the system shares when the whole scene is shared, from the window menu of iPadOS or the share menu of a Mac; the release has no such system surface and UIActivityItemsConfigurationProviding is absent, so nothing would ask - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1733,7 +1733,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIWindowScene a property like it: it arrived in iOS 15",
+      "reason": "answers the scene's UIFocusSystem; the port has no focus engine and UIFocusSystem is absent (ios11.json), so there is none to answer",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1743,7 +1743,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIWindowScene a property like it: it arrived in iOS 15",
+      "reason": "the key window among the scene's windows; the port's scene already answers its windows (UIKit/UIWindowScene.m) and the release's UIWindow says which one is key, so this could be derived - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2424,7 +2424,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIWindowScene a method like it: it arrived in iOS 16",
+      "reason": "asks the system to rotate the scene to the orientations of a UIWindowSceneGeometryPreferencesIOS, which the port carries; the release rotates by supportedInterfaceOrientations and attemptRotationToDeviceOrientation, and wiring a request into that - including what to do when the device is not held that way - is real work; no demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3175,7 +3175,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITableView a property like it: it arrived in iOS 16",
+      "reason": "lets a cell that changes its content resize its row; the release's table takes every row height from its delegate up front and the port does not measure the cells of a table (facts/UIKit/UITableViewEstimatedHeights.md), so there is no self-sizing for a cell to invalidate",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3265,7 +3265,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIViewController a property like it: it arrived in iOS 16",
+      "reason": "the presentation controller managing the controller while it is presented, nil otherwise; the port carries UIViewController.presentationController (ios8presentation.json), from which this could be answered - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3275,7 +3275,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIViewController a property like it: it arrived in iOS 16",
+      "reason": "the name iOS 16 gives the performance intervals it records for interactions in this controller; the release records no such intervals, so the name would be kept and never read - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3295,7 +3295,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIWindowScene a property like it: it arrived in iOS 16",
+      "reason": "answers a UIWindowSceneGeometry (absent here) with the scene's orientation, coordinate space and size restrictions; the port's scene answers each of those already (UIKit/UIWindowScene.m), so the object could be built from them - no demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3305,7 +3305,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIWindowScene a property like it: it arrived in iOS 16",
+      "reason": "the header says it is nil on a platform that does not support the behaviors (closing, miniaturizing a window), and a phone or tablet of the release is one, so a getter answering nil is the defined answer - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
