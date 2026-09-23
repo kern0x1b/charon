@@ -119,15 +119,12 @@ Every one of these was paid for once. None of them is theoretical.
 - After reviving a dead test, do **not** declare it healthy — run it fully and look for regressions
   that accumulated while it was blind.
 - Compiling under Mac Catalyst is **not** proof it builds: the real package build is stricter.
-  Catalyst is a **behaviour oracle**, not a build check. **But measured 2026-09-23: Catalyst is not
-  available on this machine at all.** Only Command Line Tools are installed — there is no
-  `Xcode.app`, `MacOSX.sdk` carries no `UIKit.framework` to link a Catalyst target against, and
-  `xcrun --sdk iphoneos --show-sdk-path` fails outright (the port takes its iOS SDK from its own
-  xmake package, not from Xcode). Do not plan a host oracle on Catalyst. Three paths work instead:
-  `objc.inventory`/`dyld.load` against the release's real armv7 cache for statics, `xmake emulate`
-  on an armv7 guest for dynamics without hardware, and a real device. The emulator has **no audio
-  daemon** — anything needing AudioSession fails there with `kAudioSessionNotInitialized`, which
-  reads like a code error and is not one.
+  Catalyst is a **behaviour oracle**, not a build check. It works here: the Command Line Tools'
+  `MacOSX.sdk/System/iOSSupport` carries `UIKit`, and the host tests under `tests/backports/host/`
+  are built and run as Catalyst probes. Other oracles: `objc.inventory`/`dyld.load` against the
+  release's real armv7 cache for statics, `xmake emulate` on an armv7 guest, and a real device.
+  The emulator's audio is unverified; anything needing AudioSession may fail there with
+  `kAudioSessionNotInitialized`, which reads like a code error and may not be one.
 - Before disassembling a firmware cache, check whether the host answers. When the host diverges for
   a known reason, name the divergence and make the test fail if it ever stops diverging.
 - The header can be wrong. Where the header and the running system disagree, follow the system and
