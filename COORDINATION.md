@@ -49,15 +49,10 @@ Bands produce patches. **Only the coordinator merges and pushes.**
    only on green. Every claim in the patch is re-verified here; a band's own gate is not enough.
 4. After each push the coordinator regenerates the registry export the demand engine reads.
 
-Gate commands (coordinator):
-
-```
-xmake l <scratchpad>/run_light_tests.lua                 # five quick tests
-xmake l <scratchpad>/build-gate.lua 6.1.3 <outdir> <wt>  # full: all libs + check_registry + imports
-```
-
-`build-gate.lua` takes the checkout as argument three — **never hardcode the path**, that defect
-already caused a gate to certify the wrong tree.
+Gate: the skill `backports-gate` (`.agents/skills/backports-gate/SKILL.md`) — light guard, full
+gate, release split, how to read the verdict. Merge: the workspace skill `patch-merge`
+(`$HOME/Git/projects/ios/.agents/skills/patch-merge/SKILL.md`). `build-gate.lua` takes the
+checkout as argument three — **never hardcode the path**.
 
 **The tree is frozen while a gate runs on it.** `build-gate.lua` reads the checkout live, so a patch
 applied mid-run makes the result meaningless in both directions: it can fail on state the build never
@@ -184,10 +179,9 @@ Honesty is a hard requirement, not a style.
 1. Read this file and `AGENTS.md`.
 2. `git -C $HOME/Git/projects/ios/charon fetch origin && git log --oneline -5` — see where main is.
 3. Create the coordinator's own merge worktree; never merge in the shared checkout.
-4. Copy the gate scripts into the new scratchpad and re-point them at the new worktree.
-5. Bring up one session per band from the table in section 4. Each prompt must carry: the domain,
-   section 2 (the overriding rule), section 3 (the flow), the traps from section 5 relevant to it,
-   and the device discipline.
+4. The gate scripts are in `$HOME/Git/projects/ios/coordination/`; gate the merge worktree by passing it
+   as argument three (skill `backports-gate`).
+5. Bring up one session per band from the table in section 4 — workspace skill `band-launch`.
 6. Bring up the demand engine and have it re-certify **through `tools/verify.py`** before anything
    is handed out. Nothing goes out any other way.
 7. Ask the Telegram port for its current blocker and route it first.

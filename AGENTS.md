@@ -35,6 +35,13 @@ Android) as it is here; iOS 6 is the first platform it targets, not its limit.
   the linker. Start here for anything task-specific.
 - **`DESIGN.md`** — how the pieces fit and *why*, including the Gradle/Maven →
   Charon mapping for anyone arriving from the JVM world.
+- **Skills** (`.agents/skills/`): `backports-gate` — gating apple-backports and reading the
+  verdict; `corpus-regen` — the registry export and demand data after a push; `emulate-port` —
+  `xmake emulate`. The `xmake-*` skills are vendored (`VENDORED.md`).
+- **Workspace-wide procedures** are skills in `$HOME/Git/projects/ios/.agents/skills/`:
+  `device-session` (claim, run, install, launch, tap on a real device), `canon-install`,
+  `patch-merge`, `worktree-sweep`, `session-handoff`, `band-launch`, `band-supervise`. A session
+  started inside this repository does not list them — read `<name>/SKILL.md` there.
 
 ## Repository layout
 

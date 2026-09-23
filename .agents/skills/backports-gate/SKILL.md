@@ -1,0 +1,88 @@
+---
+name: backports-gate
+description: Run the apple-backports gate on a charon checkout or worktree and read its verdict — the light guard, the full package gate (all libraries, check_registry, imports), the release-split check and the host-test liveness sweep. Use before sending a backports patch, when merging one, or whenever asked "is this tree green".
+---
+
+# Gating apple-backports
+
+The gate scripts live outside the repository, in `$HOME/Git/projects/ios/coordination/`. They
+read the checkout they are pointed at, live, from disk.
+
+## 1. Light guard (seconds)
+
+```
+xmake l $HOME/Git/projects/ios/coordination/run_light_tests.lua
+```
+
+Five `tests/addon` suites. Each prints `<name>: OK (0 failures)` or one `<name> FAIL: ...` line
+per failure.
+
+- It always tests the shared checkout `$HOME/Git/projects/ios/charon` (the path is fixed inside the
+  script), whatever the current directory is. A green light guard says nothing about a worktree
+  until its commits are in that checkout.
+
+## 2. Full gate (minutes to tens of minutes)
+
+Every edit for the round is done and committed first; then, from the checkout being gated:
+
+```
+out=.agent-work/runs/<task>/gate-<n>          # fresh directory per run, never reused
+mkdir -p "$out"
+xmake l $HOME/Git/projects/ios/coordination/build-gate.lua 6.1.3 "$PWD/$out" "$PWD" > "$out.log" 2>&1; echo EXIT=$?
+```
+
+Pass `timeout: 600000` on the shell call. If the harness backgrounds it, wait for its notification;
+check liveness by the `xmake` process and its compiler children, not by the log (it is silent for
+long stretches).
+
+Reading the verdict (`$out.log`):
+
+- **Green:** no `error:` line; the log has
+  `imports: every non-weak import of the armv7 slices of N binaries resolves against M exports`
+  followed by one `.../lib<Framework>Backports.dylib` path per library.
+- **Red:** `error: the registry does not describe what the backports carry:` and the lines under it —
+  `built, but no entry in registry/`, `listed as implemented, but nothing of that name is built`,
+  `listed as absent, but what is built answers it`, and the rest. Each names symbols; fix the
+  registry or the code, not the check.
+- `note: N of the registry's entries name no file of facts yet` is a note, not a failure.
+- `EXIT=0` alone is not green: read the lines above. A pipe or a backgrounded wrapper can hide a
+  non-zero exit.
+
+Traps:
+
+- The tree is frozen while the gate runs: `sources()` globs once at the start, so a file added or
+  edited mid-run gives a false red or a false green. Edits wait for the next run.
+- Argument three is the checkout. Always pass it; never gate by a remembered path.
+
+## 3. Release split (mandatory after a green build, before handing off)
+
+The gate checks releases on the coarse grid of band points; this checks each symbol against the
+cache ladder. `OBJECTSDIR` is one framework directory (the script does not recurse):
+
+```
+for d in "$out"/build/objects/*/; do xmake l tools/release-split.lua "$d"; done
+```
+
+A flagged file has symbols first exported in more than one release: split it, one release per
+object file.
+
+- A category has no `nm`-visible symbols, so a clean result says nothing about category files:
+  check those by selector-string search against the release caches
+  (`$HOME/.charon/dyld/<release>/dyld_shared_cache_armv7`), with a negative control that the
+  search finds a selector known to be there.
+
+## 4. Host tests (liveness)
+
+```
+sh tests/backports/host/run-all.sh [--seconds N] [NAMES]
+```
+
+A sweep: it reports whether each `host/*/run.sh` got past building itself, not whether its checks
+pass. A test that stops linking dies silently under `set -eu`; after reviving one, run it in full
+and read it for regressions before calling it healthy.
+
+## What goes with a patch
+
+The base commit, what is inside, which of steps 1–4 ran with their verdict lines, and the caveats.
+The coordinator re-runs the gate after `git am -3`; see the workspace skill `patch-merge`
+(`$HOME/Git/projects/ios/.agents/skills/patch-merge/SKILL.md`).
