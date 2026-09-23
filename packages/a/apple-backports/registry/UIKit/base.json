@@ -2085,6 +2085,14 @@
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
   },
   {
+    "api": "-[NSLayoutManager setGlyphs:properties:characterIndexes:font:forGlyphRange:]",
+    "kind": "method",
+    "introduced": "7.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/TextSystem7.md",
+    "source": "the release's own pre-7 primitive, -insertGlyphs:length:forStartingGlyphAtIndex:characterIndex:, confirmed present by respondsToSelector: on the iPad 2, 6.1.3; the iOS 7 form and its siblings (setGlyphs:glyphIndex:layoutData:, setGlyph:atIndex:) are not"
+  },
+  {
     "api": "-[NSLayoutManager truncatedGlyphRangeInLineFragmentForGlyphAtIndex:]",
     "kind": "method",
     "introduced": "7.0",
