@@ -72,3 +72,23 @@ Anyone carrying `UITextView.textContainerInset` (or anything else that presumes 
 this: the honest surface is a WebKit document view, and a container-geometry answer (`textContainer.size`, glyph-level measurement)
 must be refused or absent, never a number computed against the wrong coordinate system, however plausible it looks next to
 WebKit's own padding.
+
+## `UITextView.textContainerInset`, carried onto the WebKit body it actually has
+
+Confirmed present on the release, by `respondsToSelector:` on the live classes, not the header: `DOMHTMLElement` answers
+`setAttribute:value:`, `getAttribute:` and `style`; `DOMCSSStyleDeclaration` (what `.style` returns) answers `setPadding:`,
+`padding`, `setProperty:value:priority:` and `cssText`. `UIWebDocumentView` (the class `m_webView` is typed to) does **not**
+answer `stringByEvaluatingJavaScriptFromString:`, so the port goes through the DOM binding directly - `m_body`'s own `.style`
+- rather than JavaScript. The property: kept exactly as given (round trip, no normalization - the one thing an application can
+check directly) and, on `-setTextContainerInset:`, written to `m_body.style.padding` as a CSS shorthand string in the same
+top/right/bottom/left order `UIEdgeInsets` already uses.
+
+Verified end to end in a real running application on the iPad 2, 6.1.3 (a bare daemon cannot construct a `UITextView` at all -
+`initWithFrame:` traps, `SIGTRAP`, with no `UIApplicationMain` behind it): `UIEdgeInsetsMake(11, 22, 33, 44)` set through the
+property reads back as exactly `top=11 left=22 bottom=33 right=44` (the round trip), and `m_body.style.padding`, read back
+through the same DOM binding right after, answers `11px 44px 33px 22px` - the CSS engine's own serialization of what was set,
+not merely a call that returned without crashing. No screenshot was needed or taken; the DOM's own read-back is the proof.
+
+`textContainer`, `layoutManager` and `textStorage` remain unimplemented on `UITextView` (nothing added them): an application
+asking for container geometry gets the release's own honest "does not respond", never a number computed against a WebKit box
+that only looks like a text container.

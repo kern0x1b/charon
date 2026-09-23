@@ -655,6 +655,17 @@
   "source": "UIKit of the armv7s cache of iOS 10.3.4, the host's UIKit through Mac Catalyst"
  },
  {
+  "api": "UITextView.textContainerInset",
+  "kind": "property",
+  "introduced": "7.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "UITextView on this release carries no TextKit surface at all (measured on the iPad 2, 6.1.3: no textContainer/layoutManager/textStorage selector; its ivars are entirely WebKit's own, m_webView/UIWebDocumentView, m_body/DOMHTMLElement, m_frame/WebFrame), so there is no NSTextContainer for this property to describe",
+  "effect": "the value round-trips exactly (kept, handed back unmodified) and is applied as the WebKit document body's CSS padding, confirmed on the iPad 2 by reading DOMCSSStyleDeclaration.padding back after setting the property; nothing that presumes a real text container (glyph-level measurement, container size) is added",
+  "facts": "facts/UIKit/TextSystem7.md",
+  "source": "the iPad 2, 6.1.3: UITextView's ivars (class introspection) and a live app run confirming the round trip and the DOM padding it produces"
+ },
+ {
   "api": "UITextView.textContentType",
   "kind": "property",
   "introduced": "10.0",
