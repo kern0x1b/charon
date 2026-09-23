@@ -74,12 +74,22 @@ alias (`charon_alias.h`, as `UIKit/NSTextTab.m` does for `NSTextTab`, carried an
 application links is `CharonName`. What the port does with it:
 
 - The library's loader (`attach.c`, `charon_reparent`) makes `CharonName` a subclass of the release's class before the runtime
-  first uses it. The compiler cannot name a class the release does not export, and the one public function that changes a
-  superclass, `class_setSuperclass`, is deprecated from iOS 2.0 in the header ("You should not use this function"). So the
-  loader writes the release's class into the second word of `CharonName`'s class and of its metaclass - `superclass`, after
-  `isa`, in the class structure the compiler emits for every class - and then has the runtime lay it out, which lays it out
-  after the release's instance variables. The loader then checks it through
-  the public functions: `class_getSuperclass` is the release's class and `class_getInstanceSize` is the release's.
+  first uses it: it writes the release's class into the second word of `CharonName`'s class and of its metaclass - `superclass`,
+  after `isa`, in the class structure the compiler emits for every class, in the library's own data - and then has the runtime
+  lay it out, which lays it out after the release's instance variables. The loader then checks it through the public
+  functions: `class_getSuperclass` is the release's class and `class_getInstanceSize` is the release's. What else was weighed:
+  - a superclass given at compile time, `@interface CharonName : Name`: the alias itself defines `_OBJC_CLASS_$_Name`, so the
+    superclass would be the class itself; and without the alias the reference is a weak import, NULL on a release that does
+    not export the class, and the runtime drops a class whose weak superclass is missing;
+  - `objc_allocateClassPair(release, ...)`: it makes a class at run time, and no symbol can name it, while an application's
+    subclass has its superclass bound at load to `_OBJC_CLASS_$_Name`, the alias; it would still inherit from the alias;
+  - `class_setSuperclass`, the one public function that changes a superclass (deprecated from iOS 2.0 in the header): it
+    works on a class the runtime has laid out already, and does not lay it out again. Measured by `textalias.m` on the test's
+    own `NSTextTable` alias, which the runtime laid out before the loader: after `class_setSuperclass(CharonNSTextTable,
+    NSTextTable)` its superclass is the release's class and its size stays NSObject's, 4 bytes, where the release's `NSTextTable`
+    is 52, and the test's subclass has its first instance variable at offset 4, inside the release's (the same on iPhone4,1
+    6.1.3 and iPhone2,1 6.0 in the emulator). So a subclass written of it has its instance variables where the release's
+    are, and making one would write over them.
 - So a subclass an application writes of the name inherits the release's class and has its instance variables after the
   release's; `+alloc` of the subclass makes the subclass.
 - Sent to the name itself, the class methods of NSObject answer as the release's class does: `+class`, `+alloc`,
@@ -104,10 +114,11 @@ application links is `CharonName`. What the port does with it:
 
 ## Measured
 
-`tests/backports/device/textalias.m`, 59 checks, built by `@addon/charon/daemon` against the package of commit `dacc7278`, whose library code is the branch's last, and run
-by `xmake emulate` on an emulated iPhone2,1 of iOS 6.0 (10A403): 59 of 59
-(`.agent-work/plan-and-analysis/b1314-catcheck/textalias-emulate60.txt`). The emulator runs the release's own dyld,
-runtime and UIFoundation, which is what the aliases and the loader depend on. The same subclass check answers YES for
-`NSTextList`, which the loader put under the release's class, and NO for the test's own `NSTextTable`, laid out before the
-loader ran, so the check tells the two apart. Not yet run on a device of 6.1.3 for this code: an earlier run on an iPad 2
-(15 of 15, `textalias-ipad2-gate5.txt`) was of the alias before it was a subclass.
+`tests/backports/device/textalias.m`, 61 checks, built by `@addon/charon/daemon` (addon `v0.8.10`) against the package of commit
+`dacc7278`, whose library code is the branch's last, and run by `xmake emulate`: 61 of 61 on an emulated iPhone4,1 of iOS 6.1.3
+(10B329) and 61 of 61 on an emulated iPhone2,1 of iOS 6.0 (10A403) (`.agent-work/plan-and-analysis/b1314-catcheck/`
+`textalias-emulate613.txt`, `textalias-emulate60.txt`). The emulator runs the release's own dyld, runtime and UIFoundation,
+which is what the aliases and the loader depend on. The same subclass check answers YES for `NSTextList`, which the loader
+put under the release's class, and NO for the test's own `NSTextTable`, laid out before the loader ran, so the check tells the
+two apart. Device-unverified: not yet run on a device for this code; an earlier run on an iPad 2 (15 of 15,
+`textalias-ipad2-gate5.txt`) was of the alias before it was a subclass.

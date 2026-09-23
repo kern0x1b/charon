@@ -18,6 +18,11 @@
 #import "check.h"
 #import "../../../packages/a/apple-backports/charon_alias.h"
 
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
+#pragma clang diagnostic ignored "-Wnonnull"
+#pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 @interface NSTextBlock : NSObject
 - (UIColor *)backgroundColor;
 - (void)setBackgroundColor:(UIColor *)color;
@@ -87,7 +92,10 @@ CHARON_ALIAS(NSTextTable)
 @implementation TextAliasBlock
 @end
 
-@interface TextAliasTable : NSTextTable
+@interface TextAliasTable : NSTextTable {
+@public
+    NSInteger _mark[4];
+}
 @end
 
 @implementation TextAliasTable
@@ -97,10 +105,6 @@ CHARON_ALIAS(NSTextTable)
 }
 
 @end
-
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-#pragma clang diagnostic ignored "-Wnonnull"
-#pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
 
 static NSString *image_of(const void *address)
 {
@@ -243,6 +247,20 @@ static void check_loader(void)
     aslresponse_free(found);
     asl_free(query);
     CHECK(logged, "NSTextTable: the log names the alias laid out before the loader");
+
+    // The one public function that changes a superclass, on this alias the runtime has already laid out:
+    // it links the release's class in, and the size stays NSObject's, so the subclass laid out after it
+    // has its instance variables where the release's are. Nothing is made of either afterwards.
+    Class proxy = objc_getClass("CharonNSTextTable");
+    size_t before = class_getInstanceSize(proxy);
+    ptrdiff_t mark = ivar_getOffset(class_getInstanceVariable([TextAliasTable class], "_mark"));
+    class_setSuperclass(proxy, table);
+    printf("measured: class_setSuperclass on a laid-out alias: superclass %s, alias size %zu (before %zu), release size %zu, subclass ivar at %td\n",
+           class_getName(class_getSuperclass(proxy)), class_getInstanceSize(proxy), before, class_getInstanceSize(table), mark);
+    CHECK(class_getSuperclass(proxy) == table && class_getInstanceSize(proxy) == before && before == class_getInstanceSize([NSObject class]),
+          "class_setSuperclass: the alias is linked under the release's class and keeps NSObject's size");
+    CHECK(mark < (ptrdiff_t)class_getInstanceSize(table) && ivar_getOffset(class_getInstanceVariable([TextAliasTable class], "_mark")) == mark,
+          "class_setSuperclass: the subclass's instance variables stay inside the release's");
 }
 
 int main(int argc, char **argv)
