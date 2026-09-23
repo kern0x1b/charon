@@ -230,10 +230,30 @@ local function selector_failures(folder, opt)
     return found
 end
 
+-- An object file is not linked yet, so the class a category extends is not bound in its category
+-- list but named by an external relocation of the slot; the inventory of the object has to read it,
+-- or the category's members answer to no class and a band cannot tell which entries it carries.
+local function object_failures(folder, opt)
+    local found = {}
+    local objc = import("apple.objc", {rootdir = opt.modules, anonymous = true})
+    io.writefile(path.join(folder, "category.m"), "#import <Foundation/Foundation.h>\n@implementation NSObject (Probe)\n- (int)probeAddedMember { return 1; }\n@end\n")
+    fixtures.run(folder, opt.clang, {"-target", "armv7-apple-ios6.0", "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-c", "category.m", "-o", "category.o"})
+    local inventory = objc.binary_inventory(path.join(folder, "category.o"), "armv7")
+    local class = inventory and inventory.classes and inventory.classes.NSObject
+    if not class or not class.instance["-probeAddedMember"] then
+        local named = {}
+        for name in pairs(inventory and inventory.classes or {}) do
+            table.insert(named, name)
+        end
+        table.insert(found, "the inventory of an object with a category on NSObject must list -probeAddedMember under NSObject, and names the classes " .. table.concat(named, " "))
+    end
+    return found
+end
+
 function failures(opt)
     local found = {}
     local folder = fixtures.scratch()
-    for _, check in ipairs({stub_failures, selector_failures, inventory_failures, held_failures}) do
+    for _, check in ipairs({stub_failures, selector_failures, inventory_failures, held_failures, object_failures}) do
         table.join2(found, check(folder, opt))
     end
     os.tryrm(folder)

@@ -5,6 +5,7 @@ local FAT64 = "\xca\xfe\xba\xbf"
 
 local ARM = 12
 local ARM64 = 0x0100000C
+local OBJECT = 1
 local EXECUTABLE = 2
 local CODE = 0x80000000 | 0x400
 local THUMB_DEFINITION = 0x0008
@@ -104,8 +105,9 @@ function image(data, base)
             end
             table.insert(found.segments, {name = name:gsub("%z+$", ""), vmaddr = vmaddr, vmsize = vmsize, fileoff = fileoff})
             for index = 0, nsects - 1 do
-                local sectname, segname, addr, sectsize, _, _, _, _, flags, reserved1, reserved2 = string.unpack(layout, data, first + index * entry + 1)
-                table.insert(found.sections, {name = sectname:gsub("%z+$", ""), segment = segname:gsub("%z+$", ""), addr = addr, size = sectsize, flags = flags, reserved1 = reserved1, reserved2 = reserved2})
+                local sectname, segname, addr, sectsize, _, _, reloff, nreloc, flags, reserved1, reserved2 = string.unpack(layout, data, first + index * entry + 1)
+                table.insert(found.sections, {name = sectname:gsub("%z+$", ""), segment = segname:gsub("%z+$", ""), addr = addr, size = sectsize, flags = flags, reserved1 = reserved1, reserved2 = reserved2,
+                                              reloff = reloff, nreloc = nreloc})
             end
         elseif command == LC_SYMTAB then
             found.symtab = {string.unpack("<I4I4I4I4", data, at + 9)}
@@ -345,6 +347,22 @@ function bound_slots(data, found)
                         bind()
                         address = address and (address + skip) or nil
                     end
+                end
+            end
+        end
+    end
+    -- An object file has no bind opcodes yet: a pointer to a symbol another file defines is an
+    -- external relocation of the pointer's size, which the static linker turns into the bind.
+    if found.filetype == OBJECT and found.symtab then
+        local symoff, stroff = found.symtab[1], found.symtab[3]
+        local entry = found.wide and 16 or 12
+        for _, section in ipairs(found.sections) do
+            for index = 0, (section.nreloc or 0) - 1 do
+                local address, info = string.unpack("<i4I4", data, found.base + section.reloff + index * 8 + 1)
+                local external, length, pcrel, kind = (info >> 27) & 1, (info >> 25) & 3, (info >> 24) & 1, info >> 28
+                if address >= 0 and external == 1 and pcrel == 0 and kind == 0 and (1 << length) == pointer then
+                    local strx = string.unpack("<I4", data, found.base + symoff + (info & 0xFFFFFF) * entry + 1)
+                    slots[section.addr + address] = cstring(data, found.base + stroff + strx)
                 end
             end
         end
