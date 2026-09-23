@@ -17,8 +17,8 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6 has one subscriber, which subscriberCellularProvider answers",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "this is not a wall standing in for subscriberCellularProvider: the property is owed as a real dictionary keyed by the one service's identifier, not an alias that gets skipped",
+      "effect": "until it is written the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of CoreTelephony"
     },
     {
@@ -27,8 +27,8 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6 has one subscriber, and subscriberCellularProviderDidUpdateNotifier serves it",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "this is not a wall standing in for subscriberCellularProviderDidUpdateNotifier: the notification name is owed for the one service's entry, not an alias that gets skipped",
+      "effect": "until it is written the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of CoreTelephony"
     },
     {
@@ -47,8 +47,8 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "nothing of the release sends the messages of the delegate",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the delegate slot is not a wall: it is owed to store and return like any delegate property, even though the release does not yet send it any messages",
+      "effect": "until it is written the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of CoreTelephony"
     },
     {
@@ -57,8 +57,8 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "nothing of the release sends the messages of the delegate",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "reason": "the protocol is not a wall: it is owed alongside the delegate property it types, even though the release does not yet send its messages",
+      "effect": "until it is written the protocol is not there: NSProtocolFromString answers nil",
       "source": "the SDK 16.4 headers of CoreTelephony"
     },
     {
@@ -67,8 +67,8 @@
       "introduced": "14.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6 has no 5G",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "reason": "a 4S has one radio and never reports NR, but the string constant is not a wall: it is owed with its real value from a newer release, so the current technology can be compared against it and honestly never equal it",
+      "effect": "until it is written the symbol is not there: a weak reference to it is NULL",
       "source": "the SDK 16.4 headers of CoreTelephony"
     },
     {
@@ -77,8 +77,8 @@
       "introduced": "14.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6 has no 5G",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "reason": "a 4S has one radio and never reports NR, but the string constant is not a wall: it is owed with its real value from a newer release, so the current technology can be compared against it and honestly never equal it",
+      "effect": "until it is written the symbol is not there: a weak reference to it is NULL",
       "source": "the SDK 16.4 headers of CoreTelephony"
     },
     {
