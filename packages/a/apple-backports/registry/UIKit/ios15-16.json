@@ -205,7 +205,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UICollectionViewDelegate that sends anything like it: the message arrived in iOS 15",
+      "reason": "asks for the scene an item opens in when it is pinched or dragged out into a window of its own; the port runs one scene and refuses a second (requestSceneSessionActivation answers multiple scenes not supported, facts/UIKit/UIScene.md), so there is no window to open and nothing would ask - no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -215,7 +215,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UICollectionViewDelegate that sends anything like it: the message arrived in iOS 15",
+      "reason": "a per-item override of selectionFollowsFocus, which moves the selection with keyboard focus; the port has no focus engine (UIFocusSystem absent, ios11.json) and UICollectionView.selectionFollowsFocus is absent for the same reason, so focus never lands on an item and there is nothing for the selection to follow",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -225,7 +225,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UICollectionViewDelegate that sends anything like it: the message arrived in iOS 15",
+      "reason": "the iOS 15 form of targetIndexPathForMoveFromItemAtIndexPath:toProposedIndexPath:, which adds the path the item started from; the port's interactive movement sends only the iOS 9 form (UICollectionView+InteractiveMovement.m) and could ask this one first - not done for lack of demand, not a wall",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -1623,7 +1623,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIView a property like it: it arrived in iOS 15",
+      "reason": "a debugging description of the minimum and maximum content size categories that bound the view's traits; those two limits are not carried (see their own rows), so there is nothing applied to describe - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1633,7 +1633,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIView a property like it: it arrived in iOS 15",
+      "reason": "the effect a focused view shows, a halo or a lift; the port has no focus engine (UIFocusSystem absent, ios11.json) and UIFocusEffect is absent, so no view is ever focused to show one",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1643,7 +1643,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIView a property like it: it arrived in iOS 15",
+      "reason": "ranks a view inside its focus group when focus enters the group; the port has no focus engine (UIFocusSystem absent, ios11.json) and focusGroupIdentifier is inert, so focus never enters a group",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1653,7 +1653,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIView a property like it: it arrived in iOS 15",
+      "reason": "a layout guide that tracks the keyboard's frame; the port carries UILayoutGuide (base.json) and the release posts the keyboard frame notifications, so a UIKeyboardLayoutGuide could be built on the two - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1663,7 +1663,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIView a property like it: it arrived in iOS 15",
+      "reason": "caps the content size category in the traits of the view and its subviews; the port's traits carry one - Large for the screen, the one the release has (facts/UIKit/UITraitCollectionTraits10.md) - which a cap below it would lower, so it has a definable answer - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1673,7 +1673,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIView a property like it: it arrived in iOS 15",
+      "reason": "sets a floor under the content size category in the traits of the view and its subviews; the port's traits carry one - Large for the screen, the one the release has (facts/UIKit/UITraitCollectionTraits10.md) - which a floor above it would raise, so it has a definable answer - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2013,7 +2013,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UICollectionViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "asks whether a tap on an item is a primary action rather than a selection; a tap on an item of the release's own UICollectionView goes straight into its selection, which the port does not intercept, so nothing asks - a hook on that path could, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2023,7 +2023,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UICollectionViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "asks for the preview a context menu shrinks back into; the port shows a context menu as an action sheet with no lifted preview (facts/UIKit/UIContextMenuInteraction.md), so there is no dismissal preview to ask for",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2033,7 +2033,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UICollectionViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "asks for the preview a context menu lifts out of the item; the port shows a context menu as an action sheet with no lifted preview (facts/UIKit/UIContextMenuInteraction.md), so there is no highlight preview to ask for",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2043,7 +2043,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UICollectionViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "the iOS 16 form of the item context menu, for a set of index paths; the port's list menus send the iOS 13 single-item form (UIKit/CharonListMenu.m) and could ask this one first with the one path - not done for lack of demand, not a wall",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2053,7 +2053,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UICollectionViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "tells the delegate a tap on an item was a primary action rather than a selection; a tap on an item of the release's own UICollectionView goes straight into its selection, which the port does not intercept, so nothing sends it - a hook on that path could, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -3255,7 +3255,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIView a property like it: it arrived in iOS 16",
+      "reason": "the view's own spelling of its layer's anchorPoint, which the release's CALayer has; a forward to view.layer would carry it - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
