@@ -159,9 +159,9 @@
         _castsShadow = [coder containsValueForKey:@"castsShadow"] ? [coder decodeBoolForKey:@"castsShadow"] : YES;
         _categoryBitMask = [coder containsValueForKey:@"categoryBitMask"] ? [coder decodeIntegerForKey:@"categoryBitMask"] : 1;
 
-        SCNParticleSystem *particleSystem = [coder decodeObjectOfClass:[SCNParticleSystem class] forKey:@"particleSystem"];
-        if (particleSystem) {
-            [_particleSystems addObject:particleSystem];
+        NSArray<SCNParticleSystem *> *particleSystem = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSArray class], [SCNParticleSystem class], nil] forKey:@"particleSystem"];
+        if (particleSystem.count) {
+            [_particleSystems addObjectsFromArray:particleSystem];
         }
         NSArray<SCNParticleSystem *> *particleSystems = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSArray class], [SCNParticleSystem class], nil] forKey:@"particleSystems"];
         if (particleSystems.count) {

@@ -451,6 +451,72 @@
       "effect": "the documented value [1 0 0 0; 0 1 0 0; 0 0 1 0; 0 0 0 1], laid out m11..m44 row-major matching the real struct",
       "source": "coordination/corpus/sdk-introduced.json: SCNMatrix4Identity, constant, version null; SceneKit.framework/Headers/SceneKitTypes.h documents the value directly in a comment; release cache measurement: SceneKit.framework absent at 7.1.2, present at 8.0",
       "facts": "facts/SceneKit/SceneKit.md"
+    },
+    {
+      "api": "+[NSValue valueWithSCNVector3:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the NSValue(SceneKitAdditions) category this port implements in NSValue+SceneKit.m, boxing SCNVector3/SCNVector4/SCNMatrix4 for NSValue the way the real SDK header declares; check_registry flagged these six as built with no registry entry (classes were registered in this same pass, the category on an existing class was not, since it is not a class)",
+      "effect": "valueWithSCNVector3:/valueWithSCNVector4:/valueWithSCNMatrix4: box the struct via +[NSValue valueWithBytes:objCType:]; the getters read back only when objCType matches, defaulting to zero (SCNVector3/4) or SCNMatrix4Identity otherwise, never garbage",
+      "source": "measured directly against the release cache ladder, not read off sdk-introduced.json (which lists NSValue.SCNMatrix4Value/SCNVector3Value/SCNVector4Value as properties, not the category methods themselves, and carries no ios() version for them either): the literal selector strings valueWithSCNVector3:/valueWithSCNVector4:/valueWithSCNMatrix4:/SCNVector3Value/SCNVector4Value/SCNMatrix4Value are absent from the 7.1.2 armv7 dyld_shared_cache and present, all six together, in the 8.0 one -- checked by raw string search (strings -a | grep -xF), with a nonsense-selector negative control confirming the search does not over-match. objc.inventory (modules/apple/objc.lua) was tried first and returned ABSENT for all six at every release including 10.0.1, where the category demonstrably exists (macOS SceneKit oracle already used it in an earlier turn) -- it does not merge a category compiled in one image (SceneKit.framework) onto a class defined in another (NSValue, in Foundation), so it is not fit for measuring a cross-image category and this entry does not rely on it",
+      "facts": "facts/SceneKit/SceneKit.md"
+    },
+    {
+      "api": "+[NSValue valueWithSCNVector4:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the NSValue(SceneKitAdditions) category this port implements in NSValue+SceneKit.m, boxing SCNVector3/SCNVector4/SCNMatrix4 for NSValue the way the real SDK header declares; check_registry flagged these six as built with no registry entry (classes were registered in this same pass, the category on an existing class was not, since it is not a class)",
+      "effect": "valueWithSCNVector3:/valueWithSCNVector4:/valueWithSCNMatrix4: box the struct via +[NSValue valueWithBytes:objCType:]; the getters read back only when objCType matches, defaulting to zero (SCNVector3/4) or SCNMatrix4Identity otherwise, never garbage",
+      "source": "measured directly against the release cache ladder, not read off sdk-introduced.json (which lists NSValue.SCNMatrix4Value/SCNVector3Value/SCNVector4Value as properties, not the category methods themselves, and carries no ios() version for them either): the literal selector strings valueWithSCNVector3:/valueWithSCNVector4:/valueWithSCNMatrix4:/SCNVector3Value/SCNVector4Value/SCNMatrix4Value are absent from the 7.1.2 armv7 dyld_shared_cache and present, all six together, in the 8.0 one -- checked by raw string search (strings -a | grep -xF), with a nonsense-selector negative control confirming the search does not over-match. objc.inventory (modules/apple/objc.lua) was tried first and returned ABSENT for all six at every release including 10.0.1, where the category demonstrably exists (macOS SceneKit oracle already used it in an earlier turn) -- it does not merge a category compiled in one image (SceneKit.framework) onto a class defined in another (NSValue, in Foundation), so it is not fit for measuring a cross-image category and this entry does not rely on it",
+      "facts": "facts/SceneKit/SceneKit.md"
+    },
+    {
+      "api": "+[NSValue valueWithSCNMatrix4:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the NSValue(SceneKitAdditions) category this port implements in NSValue+SceneKit.m, boxing SCNVector3/SCNVector4/SCNMatrix4 for NSValue the way the real SDK header declares; check_registry flagged these six as built with no registry entry (classes were registered in this same pass, the category on an existing class was not, since it is not a class)",
+      "effect": "valueWithSCNVector3:/valueWithSCNVector4:/valueWithSCNMatrix4: box the struct via +[NSValue valueWithBytes:objCType:]; the getters read back only when objCType matches, defaulting to zero (SCNVector3/4) or SCNMatrix4Identity otherwise, never garbage",
+      "source": "measured directly against the release cache ladder, not read off sdk-introduced.json (which lists NSValue.SCNMatrix4Value/SCNVector3Value/SCNVector4Value as properties, not the category methods themselves, and carries no ios() version for them either): the literal selector strings valueWithSCNVector3:/valueWithSCNVector4:/valueWithSCNMatrix4:/SCNVector3Value/SCNVector4Value/SCNMatrix4Value are absent from the 7.1.2 armv7 dyld_shared_cache and present, all six together, in the 8.0 one -- checked by raw string search (strings -a | grep -xF), with a nonsense-selector negative control confirming the search does not over-match. objc.inventory (modules/apple/objc.lua) was tried first and returned ABSENT for all six at every release including 10.0.1, where the category demonstrably exists (macOS SceneKit oracle already used it in an earlier turn) -- it does not merge a category compiled in one image (SceneKit.framework) onto a class defined in another (NSValue, in Foundation), so it is not fit for measuring a cross-image category and this entry does not rely on it",
+      "facts": "facts/SceneKit/SceneKit.md"
+    },
+    {
+      "api": "-[NSValue SCNVector3Value]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the NSValue(SceneKitAdditions) category this port implements in NSValue+SceneKit.m, boxing SCNVector3/SCNVector4/SCNMatrix4 for NSValue the way the real SDK header declares; check_registry flagged these six as built with no registry entry (classes were registered in this same pass, the category on an existing class was not, since it is not a class)",
+      "effect": "valueWithSCNVector3:/valueWithSCNVector4:/valueWithSCNMatrix4: box the struct via +[NSValue valueWithBytes:objCType:]; the getters read back only when objCType matches, defaulting to zero (SCNVector3/4) or SCNMatrix4Identity otherwise, never garbage",
+      "source": "measured directly against the release cache ladder, not read off sdk-introduced.json (which lists NSValue.SCNMatrix4Value/SCNVector3Value/SCNVector4Value as properties, not the category methods themselves, and carries no ios() version for them either): the literal selector strings valueWithSCNVector3:/valueWithSCNVector4:/valueWithSCNMatrix4:/SCNVector3Value/SCNVector4Value/SCNMatrix4Value are absent from the 7.1.2 armv7 dyld_shared_cache and present, all six together, in the 8.0 one -- checked by raw string search (strings -a | grep -xF), with a nonsense-selector negative control confirming the search does not over-match. objc.inventory (modules/apple/objc.lua) was tried first and returned ABSENT for all six at every release including 10.0.1, where the category demonstrably exists (macOS SceneKit oracle already used it in an earlier turn) -- it does not merge a category compiled in one image (SceneKit.framework) onto a class defined in another (NSValue, in Foundation), so it is not fit for measuring a cross-image category and this entry does not rely on it",
+      "facts": "facts/SceneKit/SceneKit.md"
+    },
+    {
+      "api": "-[NSValue SCNVector4Value]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the NSValue(SceneKitAdditions) category this port implements in NSValue+SceneKit.m, boxing SCNVector3/SCNVector4/SCNMatrix4 for NSValue the way the real SDK header declares; check_registry flagged these six as built with no registry entry (classes were registered in this same pass, the category on an existing class was not, since it is not a class)",
+      "effect": "valueWithSCNVector3:/valueWithSCNVector4:/valueWithSCNMatrix4: box the struct via +[NSValue valueWithBytes:objCType:]; the getters read back only when objCType matches, defaulting to zero (SCNVector3/4) or SCNMatrix4Identity otherwise, never garbage",
+      "source": "measured directly against the release cache ladder, not read off sdk-introduced.json (which lists NSValue.SCNMatrix4Value/SCNVector3Value/SCNVector4Value as properties, not the category methods themselves, and carries no ios() version for them either): the literal selector strings valueWithSCNVector3:/valueWithSCNVector4:/valueWithSCNMatrix4:/SCNVector3Value/SCNVector4Value/SCNMatrix4Value are absent from the 7.1.2 armv7 dyld_shared_cache and present, all six together, in the 8.0 one -- checked by raw string search (strings -a | grep -xF), with a nonsense-selector negative control confirming the search does not over-match. objc.inventory (modules/apple/objc.lua) was tried first and returned ABSENT for all six at every release including 10.0.1, where the category demonstrably exists (macOS SceneKit oracle already used it in an earlier turn) -- it does not merge a category compiled in one image (SceneKit.framework) onto a class defined in another (NSValue, in Foundation), so it is not fit for measuring a cross-image category and this entry does not rely on it",
+      "facts": "facts/SceneKit/SceneKit.md"
+    },
+    {
+      "api": "-[NSValue SCNMatrix4Value]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the NSValue(SceneKitAdditions) category this port implements in NSValue+SceneKit.m, boxing SCNVector3/SCNVector4/SCNMatrix4 for NSValue the way the real SDK header declares; check_registry flagged these six as built with no registry entry (classes were registered in this same pass, the category on an existing class was not, since it is not a class)",
+      "effect": "valueWithSCNVector3:/valueWithSCNVector4:/valueWithSCNMatrix4: box the struct via +[NSValue valueWithBytes:objCType:]; the getters read back only when objCType matches, defaulting to zero (SCNVector3/4) or SCNMatrix4Identity otherwise, never garbage",
+      "source": "measured directly against the release cache ladder, not read off sdk-introduced.json (which lists NSValue.SCNMatrix4Value/SCNVector3Value/SCNVector4Value as properties, not the category methods themselves, and carries no ios() version for them either): the literal selector strings valueWithSCNVector3:/valueWithSCNVector4:/valueWithSCNMatrix4:/SCNVector3Value/SCNVector4Value/SCNMatrix4Value are absent from the 7.1.2 armv7 dyld_shared_cache and present, all six together, in the 8.0 one -- checked by raw string search (strings -a | grep -xF), with a nonsense-selector negative control confirming the search does not over-match. objc.inventory (modules/apple/objc.lua) was tried first and returned ABSENT for all six at every release including 10.0.1, where the category demonstrably exists (macOS SceneKit oracle already used it in an earlier turn) -- it does not merge a category compiled in one image (SceneKit.framework) onto a class defined in another (NSValue, in Foundation), so it is not fit for measuring a cross-image category and this entry does not rely on it",
+      "facts": "facts/SceneKit/SceneKit.md"
     }
   ]
 }

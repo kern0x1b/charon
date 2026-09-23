@@ -34,6 +34,21 @@
 -- treats differently from build(), or a release_exports mismatch this
 -- script's cache reading does not model) -- it narrows the search, it does
 -- not replace the gate.
+--
+-- BLIND SPOT, confirmed not theoretical: an Objective-C category's method
+-- implementations (e.g. a class extension like NSValue+SceneKit.m) compile
+-- to no nm-visible exported symbol at all -- nm -gU on such a file returns
+-- nothing, so this script silently checks zero symbols for it and can never
+-- flag a category method that spans releases. Measured while carrying
+-- SceneKit's NSValue(SceneKitAdditions) category: this script reported
+-- "clean" while including that file, having checked none of its six methods.
+-- Checking a category's own introduced version needs a different measurement
+-- (a literal selector-string search across the cache ladder -- strings -a
+-- CACHE | grep -xF SELECTOR, with a nonsense-selector negative control --
+-- worked where it was tried; modules/apple/objc.lua's inventory() did not,
+-- because it does not merge a category compiled into one image onto a class
+-- defined in another). This script does not attempt that measurement; do not
+-- read a clean run as covering any category file.
 
 import("apple.dyld", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 
