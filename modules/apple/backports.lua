@@ -127,7 +127,9 @@ end
 --
 -- Objective-C++ is how a backport reaches a C++ library it links in (LIBRARIES' archives). The
 -- archives are built without RTTI, so a class derived here from one of theirs has none either, and
--- the inline functions of their headers stay hidden, as the archives' own symbols are.
+-- the inline functions of their headers stay hidden, as the archives' own symbols are. Every .mm
+-- backport is compiled so: one that needs RTTI for another reason (typeid, dynamic_cast) cannot
+-- have it here.
 function compile(opt, source, object)
     local objective_c = not source:endswith(".c")
     local arguments = {"-Os", "-g0", "-Wall", "-Wno-unguarded-availability-new", "-Wno-unguarded-availability"}
@@ -395,16 +397,24 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
     for _, other in ipairs(library.libraries or {}) do
         table.join2(arguments, {"-L" .. outputdir, "-l" .. other})
     end
-    -- A static archive gives the link only the members a kept object calls, so a band whose release
-    -- carries the classes over it takes nothing of it. Its C++ runtime is the release's own libc++,
-    -- which UIKit loads on every release the bands start at (measured on 6.1.3).
-    for _, name in ipairs(library.archives or {}) do
+    -- C++ reaches a library only through its Objective-C++ objects: the archives' API is C++, and so
+    -- is the runtime they need. A band that keeps none of those objects, because its release carries
+    -- the classes they define, links neither, since ld64 keeps a load command for every dylib it is
+    -- given, used or not, and libc++ is exported only from iOS 5.0 on.
+    local cxx = false
+    for _, object in ipairs(kept) do
+        cxx = cxx or opt.origins[object]:endswith(".mm")
+    end
+    for _, name in ipairs(cxx and library.archives or {}) do
         local archive = opt.archives and opt.archives[name]
         if not archive then
             raise("%s links the static library of the package %s, and the build was given none: pass archives = {%s = {linkdir = ..., link = ..., includedir = ...}}, from the package's installdir",
                   library.name, name, name)
         end
-        table.join2(arguments, {path.join(archive.linkdir, "lib" .. archive.link .. ".a"), "-lc++"})
+        table.insert(arguments, path.join(archive.linkdir, "lib" .. archive.link .. ".a"))
+    end
+    if cxx then
+        table.insert(arguments, "-lc++")
     end
     for _, framework in ipairs(library.frameworks) do
         table.join2(arguments, {"-framework", framework})
