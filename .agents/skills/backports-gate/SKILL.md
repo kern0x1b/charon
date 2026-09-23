@@ -27,7 +27,7 @@ Every edit for the round is done and committed first; then, from the checkout be
 ```
 out=.agent-work/runs/<task>/gate-<n>          # fresh directory per run, never reused
 mkdir -p "$out"
-xmake l $HOME/Git/projects/ios/coordination/build-gate.lua 6.1.3 "$PWD/$out" "$PWD" > "$out.log" 2>&1; echo EXIT=$?
+$HOME/Git/projects/ios/coordination/heavy.sh xmake l $HOME/Git/projects/ios/coordination/build-gate.lua 6.1.3 "$PWD/$out" "$PWD" > "$out.log" 2>&1; echo EXIT=$?
 ```
 
 Pass `timeout: 600000` on the shell call. If the harness backgrounds it, wait for its notification;
