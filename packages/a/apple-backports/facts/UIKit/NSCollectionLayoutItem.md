@@ -72,7 +72,10 @@ same path the deprecated group takes. The exceptions are the deprecated form's: 
 Not measured: a fractional dimension of the repeated item resolves, as in the deprecated form, against the group's extent less the
 spacing between the copies, where the system may resolve it against the whole group; and a counted group does not self-size its items
 along the main axis, which with the deprecated form's fractional share never mattered and with an estimated item of the new form does.
-No host oracle runs here and no device run was made. `objc.inventory` (`.agent-work/plan-and-analysis/b1314-flips/ladder-rest.log`):
+No host oracle runs here, and the device run is the last section. `objc.inventory` (`.agent-work/plan-and-analysis/b1314-flips/ladder-rest.log`):
 both are not in 6.1.3 or 12.0 and are in 16.0 and 18.0, with the deprecated `horizontalGroupWithLayoutSize:subitem:count:`; no 13-15
 cache, so `introduced` stays the header's 16.0.
 
+## On a device, iOS 6.1.3
+
+On an iPad 2 of iOS 6.1.3 (2026-09-23), a process of the band's own (`.agent-work/runs/b1314-live/main.m`, output `run4-all.txt` beside it) loaded the gate's `libUIKitBackports.dylib` and checked the repeating-subitem group: one subitem at its own absolute width where the deprecated form takes a share, and a count below 1 raising with the deprecated form's text. No layout was run.

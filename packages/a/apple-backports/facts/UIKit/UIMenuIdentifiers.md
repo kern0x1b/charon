@@ -18,3 +18,7 @@ the device, and that each comes from `libUIKitBackports.dylib`.
 
 Nothing on this release builds a menu from them: the identifiers exist so that an application that keys its menus by them
 - to name a menu it makes, or to look for one in a builder - links.
+
+## On a device, iOS 6.1.3
+
+On an iPad 2 of iOS 6.1.3 (2026-09-23), a process of the band's own (`.agent-work/runs/b1314-live/main.m`, output `run4-all.txt` beside it) loaded the gate's `libUIKitBackports.dylib` and checked `UIMenuSidebar` and `UIMenuDocument` read through the library's exports: the strings above.

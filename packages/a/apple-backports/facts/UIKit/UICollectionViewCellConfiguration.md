@@ -24,6 +24,10 @@ Held by `UIKit/UIConfigurationUpdateHandler15.m` for `UICollectionViewCell`, `UI
 `UIKit/CharonConfigurationHost.m`), the view is sent `updateConfigurationUsingState:` first and the handler is called after it with the
 view and the same state object - the order the header gives ("called after `-updateConfigurationUsingState:`"). That the system hands
 both the same state object is the port's reading of the header, not measured. No host oracle runs on this machine (Catalyst is not
-installed) and no device run was made. Ladder by `objc.inventory` (`.agent-work/plan-and-analysis/b1314-flips/ladder-updatehandler.log`,
+installed), and the device run is the last section. Ladder by `objc.inventory` (`.agent-work/plan-and-analysis/b1314-flips/ladder-updatehandler.log`,
 `setSelected:animated:` as the positive control and an invented selector as the negative one): getter and setter are on none of the
 three classes in 6.1.3 or 12.0 and on all three in 16.0 and 18.0; no 13-15 cache, so `introduced` stays the header's 15.0.
+
+## On a device, iOS 6.1.3
+
+On an iPad 2 of iOS 6.1.3 (2026-09-23), a process of the band's own (`.agent-work/runs/b1314-live/main.m`, output `run4-all.txt` beside it) loaded the gate's `libUIKitBackports.dylib` and checked `configurationUpdateHandler` on a table cell: kept, run at the next layout after it is set with the cell and a cell state, run again with a selected state after selection, not called once cleared. The collection view cell and the header-footer view were not run.

@@ -41,3 +41,7 @@ for that scheme, so `-openURL:` on it answers `NO`, which an application that ch
 string UIKitCore exports in the 16.0 cache (`.agent-work/plan-and-analysis/b1314-flips/cfconst16.log`, `UIApplicationOpenSettingsURLString`
 read as `app-settings:` beside it as the control); 12.0 exports neither this nor anything of that name (`cfconst12.log`). It is the same
 scheme, so `-openURL:` answers `NO` for it too: iOS 6 has no notification settings of an application to open.
+
+## On a device, iOS 6.1.3
+
+On an iPad 2 of iOS 6.1.3 (2026-09-23), a process of the band's own (`.agent-work/runs/b1314-live/main.m`, output `run4-all.txt` beside it) loaded the gate's `libUIKitBackports.dylib` and checked `UIApplicationOpenNotificationSettingsURLString` read through the library's export: `app-settings:notifications`.

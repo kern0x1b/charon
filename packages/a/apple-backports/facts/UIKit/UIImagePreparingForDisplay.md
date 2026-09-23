@@ -45,4 +45,8 @@ could measure without an internal decode counter). `respondsToSelector:` was not
 
 Ladder by `objc.inventory` (`.agent-work/plan-and-analysis/b1314-flips/ladder-image.log`, an invented selector as the negative control): all
 three are not in `UIImage`'s methods in 6.1.3 or 12.0 and are in 16.0 and 18.0, with `imageByPreparingForDisplay`; there is no 13-15
-cache, so `introduced` stays the header's 15.0. Not run on a device.
+cache, so `introduced` stays the header's 15.0. Run on a device: the last section.
+
+## On a device, iOS 6.1.3
+
+On an iPad 2 of iOS 6.1.3 (2026-09-23), a process of the band's own (`.agent-work/runs/b1314-live/main.m`, output `run4-all.txt` beside it) loaded the gate's `libUIKitBackports.dylib` and checked the thumbnail (10 by 10 pixels at scale 1, nil for a size that is not positive) and both asynchronous forms, called off the main thread with an image of the right width; all as described.

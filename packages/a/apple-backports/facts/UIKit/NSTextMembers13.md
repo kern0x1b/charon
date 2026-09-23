@@ -63,5 +63,8 @@ The release carries the class without exporting it (the gate's import check name
 the class on iOS 6. `CharonTextListInit16` in the same file adds the method to `objc_getClass("NSTextList")` in its `+load`, which runs
 before the loader, when the class lacks it; the category stays for the registry and for a release that exports the class.
 `objc.inventory` (`.agent-work/plan-and-analysis/b1314-flips/ladder-rest.log`): the three-argument initializer is not in 6.1.3 or 12.0 and
-is in 16.0 and 18.0, the two-argument one is in all four. No 13-15 cache, so `introduced` stays the header's 16.0. Not run on a device.
+is in 16.0 and 18.0, the two-argument one is in all four. No 13-15 cache, so `introduced` stays the header's 16.0. Run on a device: the last section.
 
+## On a device, iOS 6.1.3
+
+On an iPad 2 of iOS 6.1.3 (2026-09-23), a process of the band's own (`.agent-work/runs/b1314-live/main.m`, output `run4-all.txt` beside it) loaded the gate's `libUIKitBackports.dylib` and checked the three-argument `NSTextList` initializer: the class answers it - added by name, since 6.1.3 does not export the class - and the list has the starting number, while the two-argument initializer is still UIFoundation's own.

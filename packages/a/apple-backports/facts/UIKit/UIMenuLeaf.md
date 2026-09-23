@@ -30,4 +30,8 @@ not measured on a device.
 Ladder by `objc.inventory` (`.agent-work/plan-and-analysis/b1314-flips/ladder-leaf-anchor-key.log`, an invented protocol and selector as
 the negative controls): the protocol is in neither the 6.1.3 nor the 12.0 cache and in 16.0 and 18.0; `UIAction` and `UICommand` are
 not in 12.0, and `performWithSender:target:`, `presentationSourceItem` and `sender` are in both classes in 16.0 and 18.0. There is no
-13-15 cache, so `introduced` stays the header's 16.0. None of the behaviour was held against the system or run on a device.
+13-15 cache, so `introduced` stays the header's 16.0. None of the behaviour was held against the system; the device run is the last section.
+
+## On a device, iOS 6.1.3
+
+On an iPad 2 of iOS 6.1.3 (2026-09-23), a process of the band's own (`.agent-work/runs/b1314-live/main.m`, output `run4-all.txt` beside it) loaded the gate's `libUIKitBackports.dylib` and checked that the runtime has `UIMenuLeaf`, that `UIAction` and `UICommand` conform, and an action's `performWithSender:target:` with `sender` and `presentationSourceItem` while it runs and nil after; all as described. A command's `performWithSender:target:` raised nothing, but its action could not be seen: a process has no `UIApplication` to send it.

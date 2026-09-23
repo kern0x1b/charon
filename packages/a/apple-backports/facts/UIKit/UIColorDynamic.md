@@ -92,3 +92,7 @@ calls' order and from the indigo control, not from a symbol. These are the value
 15 cache). `objc.inventory` (`ladder-rest.log`): neither getter is in 6.1.3 or 12.0, both are in 16.0 and 18.0.
 
 18.0 gives cyan and mint the same values (see the palette above).
+
+## On a device, iOS 6.1.3
+
+On an iPad 2 of iOS 6.1.3 (2026-09-23), a process of the band's own (`.agent-work/runs/b1314-live/main.m`, output `run4-all.txt` beside it) loaded the gate's `libUIKitBackports.dylib` and checked cyan and mint in light, dark and light with high contrast, and against the 18.0 palette purple light and dark, teal, green, red dark with high contrast, indigo light with high contrast, the secondary background dark elevated with high contrast and the tertiary label's alpha of 76/255; all as in the table.

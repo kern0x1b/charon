@@ -52,3 +52,7 @@ reason and are named in the test; the rest are held.
   `searchControllerObservedScrollView` are not carried.
 - The results are updated when the text changes and when the search starts and ends; the number of extra updates the
   system makes while a dismissal finishes is not reproduced.
+
+## On a device, iOS 6.1.3
+
+On an iPad 2 of iOS 6.1.3 (2026-09-23), a process of the band's own (`.agent-work/runs/b1314-live/main.m`, output `run4-all.txt` beside it) loaded the gate's `libUIKitBackports.dylib` and checked `UINavigationItem.searchBarPlacement`: automatic for an item with no search controller; the inline case was not run.

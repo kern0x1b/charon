@@ -60,3 +60,7 @@ control performs the selected segment's action when its value changes.
 
 The host does not run the action when the value change is sent by hand; the port does, since the release's control has no other
 way to tell.
+
+## On a device, iOS 6.1.3
+
+On an iPad 2 of iOS 6.1.3 (2026-09-23), a process of the band's own (`.agent-work/runs/b1314-live/main.m`, output `run4-all.txt` beside it) loaded the gate's `libUIKitBackports.dylib` and checked the three `UIBarButtonItem` initialisers of the last round: the title, image, target, action and menu one keeps the application's target and action with the menu (a copy - the property is `copy`), and the two primary-action ones keep the action and the menu. What a tap on such an item does was not run: a process has no window to tap in.

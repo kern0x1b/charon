@@ -18,4 +18,8 @@ the brightest white a screen can show to its SDR white (SDK 16.4 `UIScreen.h`).
 
 Ladder: by `objc.inventory` (`ladder-rest.log`), the three getters are not in `UIScreen`'s methods in 6.1.3 or 12.0 and are in 16.0 and
 18.0; the notification is not exported by UIKitCore in 12.0 (`cfconst12.log`, `UIApplicationOpenSettingsURLString` found there as the
-control) and is in 16.0. There is no 13-15 cache, so `introduced` stays the header's 16.0. Not run on a device.
+control) and is in 16.0. There is no 13-15 cache, so `introduced` stays the header's 16.0. Run on a device: the last section.
+
+## On a device, iOS 6.1.3
+
+On an iPad 2 of iOS 6.1.3 (2026-09-23), a process of the band's own (`.agent-work/runs/b1314-live/main.m`, output `run4-all.txt` beside it) loaded the gate's `libUIKitBackports.dylib` and checked headroom 1 and 1 and the status not supported on the main screen, and the notification's string; as described.

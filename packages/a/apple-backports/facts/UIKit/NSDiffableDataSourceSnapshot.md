@@ -64,8 +64,12 @@ The order of the checks, and the line numbers of the user info, are the system's
 `reloadItemsWithIdentifiers:` or `reloadSectionsWithIdentifiers:`, once each, in the order first asked; `-copy` keeps them, and the snapshot
 a data source's `-snapshot` hands back has none, since the data source drops the marks when it applies one. The order and the
 empty list after an apply follow the port's own bookkeeping and were not held against the system: no host oracle runs on this machine
-(Catalyst is not installed) and no device run was made. `objc.inventory` (`.agent-work/plan-and-analysis/b1314-flips/ladder-diffable.log`
+(Catalyst is not installed), and the device run is the last section. `objc.inventory` (`.agent-work/plan-and-analysis/b1314-flips/ladder-diffable.log`
 in the charon checkout the band used): the class is in neither the 6.1.3 nor the 12.0 cache, both getters are in 16.0 and 18.0; there is
 no 13-15 cache, so `introduced` stays the header's 15.0.
 - The generation UUID in `-description` is anew for a snapshot and copied by `-copy`; the port makes a new one when the sections change, and the
   rule of the system was not read. The host test does not compare it.
+
+## On a device, iOS 6.1.3
+
+On an iPad 2 of iOS 6.1.3 (2026-09-23), a process of the band's own (`.agent-work/runs/b1314-live/main.m`, output `run4-all.txt` beside it) loaded the gate's `libUIKitBackports.dylib` and checked `reloadedItemIdentifiers` (once each, in the order asked, kept by a copy, empty in a data source's snapshot) and `reloadedSectionIdentifiers`; all as described above.
