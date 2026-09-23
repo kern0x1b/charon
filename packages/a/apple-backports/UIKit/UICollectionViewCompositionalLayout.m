@@ -1036,6 +1036,13 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
 
 - (void)invalidateLayout
 {
+    // _settleRounds is reset here, not in -prepareLayout: this is the plain invalidation path -
+    // a reload, a bounds change, a configuration change - something other than the settle pass's
+    // own -invalidateLayoutWithContext:. The settle pass forces _solved = NO too (see below), which
+    // makes the next -prepareLayout take the same "real solve" branch this one does; resetting the
+    // round counter there as well would mean every settle round's own invalidation resets the
+    // counter that is supposed to be counting settle rounds, so the cap would never be reached no
+    // matter how many rounds ran.
     if (!_boundsOnlyChange && !_measuring) {
         _measured = [NSMutableDictionary dictionary];
         _measuredAgainst = [NSMutableDictionary dictionary];
@@ -1047,6 +1054,7 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
         _keepSolution = NO;
     }
     _boundsOnlyChange = NO;
+    _settleRounds = 0;
     [super invalidateLayout];
 }
 
@@ -1083,7 +1091,6 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
     _lookup = [NSMutableDictionary dictionary];
     _hasPinned = NO;
     _contentSize = CGSizeZero;
-    _settleRounds = 0;
     if (!view)
         return;
     [self charon_solveView:view];
