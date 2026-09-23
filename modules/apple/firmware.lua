@@ -388,11 +388,11 @@ local function plain_image(firmware, file)
     return file
 end
 
-local function copy_libraries(mount, destination)
+local function copy_libraries(mount, destination, accept)
     local copied = 0
     for _, top in ipairs(LIBRARY_FOLDERS) do
         for _, file in ipairs(os.files(path.join(mount, top, "**"))) do
-            if macho.is_macho(file) then
+            if macho.is_macho(file) and (not accept or accept(file)) then
                 local target = path.join(destination, path.relative(file, mount))
                 os.mkdir(path.directory(target))
                 os.cp(file, target)
@@ -411,6 +411,32 @@ local function cache_folder(mount)
     end
 end
 
+-- Whether a Mach-O file is a shared library: one image of it names itself (LC_ID_DYLIB), which no
+-- daemon, XPC service or other executable beside the libraries does.
+local function shared_library(file)
+    for _, image in ipairs(macho.images(macho.read(file))) do
+        if image.identity then
+            return true
+        end
+    end
+    return false
+end
+
+-- The libraries a system image carries as files beside its shared cache, for each architecture the
+-- cache was taken for: on a cache image every library in the cache is gone from the disk, so the
+-- shared libraries copy_libraries finds there are exactly what the cache lacks.
+local function take_outside(root, folder, architectures)
+    for _, architecture in ipairs(architectures) do
+        local outside = dyld.outside_source(folder, architecture)
+        local staging = outside .. ".partial"
+        os.tryrm(staging)
+        os.mkdir(staging)
+        copy_libraries(root, staging, shared_library)
+        os.tryrm(outside)
+        os.mv(staging, outside)
+    end
+end
+
 local function harvest(mount, release)
     local folder = path.join(dyld.root(), release)
     local found = {}
@@ -426,6 +452,7 @@ local function harvest(mount, release)
             end
         end
     end
+    take_outside(mount, folder, found)
     return found
 end
 
@@ -454,11 +481,29 @@ local function mount_and_harvest(image, release, architecture)
     return found
 end
 
+-- Where rootfs() unpacks one firmware's root filesystem, and whether it is complete there.
+local function rootfs_folder(firmware)
+    return path.join(home(), "firmware", "rootfs", firmware.identifier, firmware.version .. "_" .. firmware.build)
+end
+
+local function unpacked(firmware)
+    local folder = rootfs_folder(firmware)
+    return os.isfile(path.join(folder, "System", "Library", "CoreServices", "SystemVersion.plist")) and folder or nil
+end
+
 function fetch(architecture, minimum, opt)
     opt = opt or {}
     local release, firmwares = candidates(architecture, minimum)
-    local held = dyld.held_source(path.join(dyld.root(), release), architecture)
-    if held then
+    local folder = path.join(dyld.root(), release)
+    local held = dyld.held_source(folder, architecture)
+    if held and (os.isdir(held) or os.isdir(dyld.outside_source(folder, architecture))) then
+        return held, release
+    end
+    -- A cache taken before the libraries beside it were: the first firmware fetch would choose is the
+    -- one it came from, and its root filesystem, where unpacked, has them without a download.
+    if held and unpacked(firmwares[1]) then
+        cprint("${bright}taking the libraries of iOS %s for %s outside its shared cache${clear} from the root filesystem of %s %s", release, architecture, firmwares[1].identifier, firmwares[1].build)
+        take_outside(unpacked(firmwares[1]), folder, {architecture})
         return held, release
     end
     local tool = assert(opt.tool, "fetching firmware needs the charon-firmware tool")
@@ -593,7 +638,7 @@ end
 function rootfs(identifier, minimum, opt)
     opt = opt or {}
     local firmware = device_firmware(identifier, minimum)
-    local folder = path.join(home(), "firmware", "rootfs", firmware.identifier, firmware.version .. "_" .. firmware.build)
+    local folder = rootfs_folder(firmware)
     if os.isfile(path.join(folder, "System", "Library", "CoreServices", "SystemVersion.plist")) then
         return folder, firmware
     end

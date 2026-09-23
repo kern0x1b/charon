@@ -1118,15 +1118,22 @@ end
 -- as it is held: a band point is the first held release that exports an object's API, so a fetched
 -- cache can move a point earlier and end the band before it on another release (measured: fetching
 -- 7.1, 8.1.2 and 9.2 moved the ends to 7.0.6, 8.1.1 and 9.1, and fetching those moved them to 8.1
--- and 9.0.2). Only the whole ladder would fix the points; its size keeps it unheld.
+-- and 9.0.2). Only the whole ladder would fix the points; its size keeps it unheld. A cache is not the
+-- whole release either: a public framework can ship as a file beside it (PushKit on 8.0 and 8.1.3),
+-- so a band end is held only with the libraries fetch takes from outside its cache.
 function check_band_caches(opt, objects)
     local ranges, architectures = band_plan(opt, objects)
     local missing = {}
     for _, range in ipairs(ranges) do
         for _, release in ipairs(table.unique({range.first, range.last})) do
-            if not held_cache(opt.architecture, release) then
+            local held = held_cache(opt.architecture, release)
+            local cached = held and path.filename(held):match("^dyld_shared_cache_(.+)$")
+            if not held then
                 table.insert(missing, string.format("  iOS %s, an end of the band of iOS %s (%s to %s): xmake firmware --arch=%s fetch %s",
                                                     release, range.point, range.first, range.last, architectures[release], release))
+            elseif cached and not os.isdir(dyld.outside_source(path.directory(held), cached)) then
+                table.insert(missing, string.format("  iOS %s, an end of the band of iOS %s (%s to %s), without the libraries it carries outside its shared cache: xmake firmware --arch=%s fetch %s",
+                                                    release, range.point, range.first, range.last, cached, release))
             end
         end
     end

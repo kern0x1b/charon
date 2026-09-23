@@ -49,6 +49,14 @@ function compare_versions(a, b)
     return compare(a, b)
 end
 
+-- Where a release's libraries outside its shared cache are kept, taken from the same firmware as the
+-- cache. A release can ship a public framework as a file beside the cache rather than in it -
+-- PushKit on iPad2,4 8.0 and 8.1.3, in the cache of 8.1 to 8.1.2 - and what it exports is both.
+-- The folder exists, possibly empty, once those libraries were taken.
+function outside_source(folder, architecture)
+    return path.join(folder, "outside_" .. architecture)
+end
+
 function held_source(folder, architecture)
     local cache = path.join(folder, "dyld_shared_cache_" .. architecture)
     if os.isfile(cache) then
@@ -225,16 +233,25 @@ local function assemble(architecture, libraries)
     return {architecture = architecture, exports = exports, images = images, libraries = libraries, count = count}
 end
 
-local function load_libraries(folder)
-    local architecture = path.filename(folder):match("^libraries_(.+)$")
-    local libraries = {}
+-- The libraries of architecture in the Mach-O files under folder, into libraries. A library is
+-- named by its install name, or with by_path by where it lies under folder: dyld loads a client's
+-- dependency from that path, whatever the file names itself (PushKit beside the cache of 8.0 and
+-- 8.1.3 names itself @rpath/PushKit.framework/PushKit). A name keep holds is left as it is.
+local function read_libraries(folder, architecture, libraries, keep, by_path)
     for _, binary in ipairs(macho.binaries_under(folder)) do
         local data = macho.read(binary)
         local image = loaded_image(macho.images(data), architecture)
-        if image and image.identity then
-            libraries[image.identity] = library_of(data, image, image.base)
+        local name = image and image.identity and (by_path and ("/" .. path.relative(binary, folder)) or image.identity)
+        if name and not (keep and keep[name]) then
+            libraries[name] = library_of(data, image, image.base)
         end
     end
+end
+
+local function load_libraries(folder)
+    local architecture = path.filename(folder):match("^libraries_(.+)$")
+    local libraries = {}
+    read_libraries(folder, architecture, libraries)
     local loaded = assemble(architecture, libraries)
     if loaded.count == 0 then
         raise("%s holds no %s library exporting anything", folder, architecture)
@@ -596,6 +613,10 @@ local function load_cache(cachefile)
         end
     end
     cache.close()
+    local outside = outside_source(path.directory(cachefile), architecture)
+    if os.isdir(outside) then
+        read_libraries(outside, architecture, libraries, libraries, true)
+    end
     return assemble(architecture, libraries)
 end
 
