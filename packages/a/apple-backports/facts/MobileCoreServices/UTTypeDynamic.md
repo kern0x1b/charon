@@ -22,8 +22,7 @@ agree for declared, undeclared, empty and dynamic identifiers.
 
 ## On the device
 
-A daemon on an iPad 2 running 6.1.3 with the port compiled in, 15 checks, 0 failures (`.agent-work`
-probe `utdevice`): `public.jpeg` (and `public.JPEG`), `public.png`, `public.data`, `public.item`,
+A daemon on an iPad 2 running 6.1.3 with the port compiled in, 15 checks, 0 failures (`tests/backports/device/uttypedynamic8.m`): `public.jpeg` (and `public.JPEG`), `public.png`, `public.data`, `public.item`,
 `com.apple.quicktime-movie`, `public.mpeg-4` and `com.adobe.pdf` are declared and not dynamic; an
 undeclared name, the empty string and a `dyn.` identifier are not declared; the release's own
 identifier for the unknown extension `zzqq` is `dyn.age81y8xvse` (the host makes the same), dynamic and

@@ -19,7 +19,7 @@ registry follows the ladder. The profile levels are exactly the twelve 7.0 adds 
 A constant's value is the string the release's symbol points at, and the port carries the same:
 each profile level is its name without `kVTProfileLevel_` (`H264_Baseline_4_0` and so on),
 `kVTDecompressionPropertyKey_RealTime` is `RealTime`. Read from the host's VideoToolbox
-(`.agent-work` probe `values`), and held against the caches: the strings `H264_Baseline_4_0`,
+(`tests/backports/host/vtvalues`), and held against the caches: the strings `H264_Baseline_4_0`,
 `H264_High_5_2` and `H264_Main_5_2` are in the armv7 caches of 7.0 and 8.0 and in none of 6.1.3,
 while the control `H264_Baseline_3_0`, a level 6.1.3 exports, is in all three.
 
@@ -41,7 +41,7 @@ its first `VTCompressionSessionEncodeFrame`, where the release's encoder sets it
 ## On the device
 
 Measured on an iPad 2 running 6.1.3, 29 checks, 0 failures: a daemon linked against this package
-(`avfoundation`) builds format descriptions with `CMVideoFormatDescriptionCreateFromH264ParameterSets`
+(`avfoundation`, `tests/backports/device/h264decode.m`) builds format descriptions with `CMVideoFormatDescriptionCreateFromH264ParameterSets`
 from the SPS and PPS of the host's encoder (320x240 baseline, 640x480 high), the release's
 `VTDecompressionSession` takes them and decodes one IDR frame each to the right size and the
 checkerboard that was encoded. Then:

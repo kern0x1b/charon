@@ -13,7 +13,7 @@ of translucent, opaque, clear, offset and infinite images, over nil too; 30 filt
 one unknown, six parameter sets: none, empty, a known key, two keys, an unknown key, the input
 image) compared by name, input values and the exception; the four initializers over BGRA, ARGB and
 bi-planar buffers and NULL; linear sampling. An iPad 2 running 6.1.3, 17 checks, 0 failures, with
-the categories built into a daemon (`.agent-work` probe `cidevice`).
+the categories built into a daemon (`tests/backports/device/ciimage.m`).
 
 ## imageByCompositingOverImage:
 

@@ -96,7 +96,7 @@ Everything is built of what iOS 6 has: `AVPlayerLayer`, `UISlider`, `UIButton` w
 ## On the device
 
 An application on an iPad 2 running 6.1.3, linked against this package (`avkit`), 65 checks, 0
-failures (`.agent-work` probe `avpvc-device`): it writes a three second 320x240 H.264 file with the
+failures (`tests/backports/device/avplayer.m`): it writes a three second 320x240 H.264 file with the
 release's `AVAssetWriter` and
 
 - reads the defaults, and that the six members above are not answered while the carried ones are;

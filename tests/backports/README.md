@@ -430,6 +430,9 @@ macOS tool. What each of its tests holds the backport to:
   itself, which is what iOS 7 calls the bar tint colour, so the backport keeps
   the value it was given and hands it to the iOS 6 tint colour.
 
+- `vtvalues/`: prints the strings the host's VideoToolbox gives the H.264 profile levels of iOS 7 and
+  `kVTDecompressionPropertyKey_RealTime`, the values `VideoToolbox/VideoToolbox7.m` carries.
+
 ## Device
 
 The device tests run on an emulated iOS 6.0 (iPhone3,1). Until Charon runs the
@@ -699,6 +702,15 @@ clang force-load arclite below iOS 9.
   given - the body and no title - checks which repeats are taken and which
   refused, and waits for a notification to arrive while it is in front.
 - `stabilization8.m`: a process of its own for the video stabilization of iOS 7 and 8, with the two categories built in: every camera format's `supportedStabilizationMethod` of the release beside `videoStabilizationSupported` and the modes it supports, then a running video data connection of the default camera: Off at first, the exception for a mode past Cinematic, Standard, Cinematic and Auto against the release's switch, the active mode against what the release says it runs, and the old switch afterwards.
+- `zoom7.m`: a process of its own for the zoom of iOS 7, with `AVCaptureDevice+VideoZoom7.m`, `AVCaptureDevice+ActiveFrameDuration.m` and `CharonAVCapture.m` built in: the crop of a 32BGRA and a 420v buffer of a known picture, each format's maximum by the release's rule, 7.0's range and lock checks and texts, the still connection's `videoScaleAndCropFactor` against the release's own maximum, the preview layer's sublayer transform and point conversions, the camera's frames at 1 and 2 (printed), the ramp and its cancel, the frame duration's lock, and what a movie file output's connection can do.
+- `captureaudio7.m`: a process of its own for the application's audio session and a capture session: Playback set, the microphone still captured, then `AVCaptureSession+ApplicationAudioSession7.m`, built in, answering NO and keeping it.
+- `photooutput10.m`: a process of its own for `AVCapturePhotoOutput`'s preview photo, with `AVCapturePhotoOutput.m` built in: the format offered, the refusals, and real captures with a preview at the display's size, at a size asked for and past the display.
+- `avplayer.m` (`avplayer-Info.plist`): an application of its own, `AVPlayerViewController` over a three second video it writes: presented, picture in picture, inline and full screen with the delegate's transition coordinators, `pixelBufferAttributes` in 32BGRA and 420f, and a file that fails; `checkpoint` pauses where a screenshot is taken. Linked against the package built with `avkit = true`, staged under a folder of its own so the canon stays.
+- `colormatching.m`: a process of its own for `CGColorCreateCopyByMatchingToColorSpace` over the release's colour transform (facts/CoreGraphics/ColorMatching.md), with the port built in.
+- `bitmapcontexts.m`: prints which bitmap contexts 6.1.3's `CGBitmapContextCreate` makes (8-bit only), the measurement behind the colour matching.
+- `ciimage.m`: a process of its own for CIImage compositing, image buffer initializers and linear sampling, with the three categories built in.
+- `uttypedynamic8.m`: a process of its own for `UTTypeIsDynamic` and `UTTypeIsDeclared`, with `UIKit/UTTypeDynamic8.m` built in.
+- `h264decode.m` (`h264decode-frames.h`): a process linked against the package built with `avfoundation = true`: format descriptions from the host encoder's parameter sets decoded by the release's `VTDecompressionSession`, `VTCompressionSessionPrepareToEncodeFrames` and the profile levels against the release's encoder.
 - `avcapture.m`: a process of its own for the discovery of capture devices, linking
   `libAVFoundationBackports.dylib`. It holds a discovery session to the devices the
   release lists, by type, media type and position, in the order of the types, and

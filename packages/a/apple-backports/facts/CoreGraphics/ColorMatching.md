@@ -9,7 +9,7 @@ wrong: CoreGraphics exports `CGColorTransformCreate`, `CGColorTransformConvertCo
 ## Why the release's transform and not a public path
 
 The public way to convert a colour on 6.1.3 is to draw it into a bitmap context of the target space
-and read the pixel back. Measured on an iPad 2 running 6.1.3 (`.agent-work` probe `contexts`):
+and read the pixel back. Measured on an iPad 2 running 6.1.3 (`tests/backports/device/bitmapcontexts.m`):
 `CGBitmapContextCreate` makes only 8-bit contexts there - device grey 8-bit is made (red draws as
 77/255), while 32-bit float grey and RGB, 16-bit RGB and every CMYK context, 8-bit or float, are
 refused. So the public path answers each component to the nearest 1/255, a quietly different colour
@@ -34,7 +34,7 @@ private transform itself gives the same components as the public function for ev
 
 ## On the device
 
-A daemon on an iPad 2 running 6.1.3, 24 checks, 0 failures (`.agent-work` probe `cgmatch`), calls the
+A daemon on an iPad 2 running 6.1.3, 24 checks, 0 failures (`tests/backports/device/colormatching.m`), calls the
 private functions with the port's signature: the transform to device grey exists, the converted
 colour is grey, owned by the caller (retain count 1), keeps its alpha, and its grey is the release's
 own pixel grey for the same colour drawn into a one-pixel device grey bitmap, within one byte. The
