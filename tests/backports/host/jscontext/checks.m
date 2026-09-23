@@ -230,6 +230,120 @@ __attribute__((noinline)) static void CheckWrapperIdentity(JSContext *context)
     [context evaluateScript:@"first = second = third = undefined"];
 }
 
+static NSString *Run(JSContext *context, NSString *script)
+{
+    return [[context evaluateScript:script] toString];
+}
+
+/* Promises, each expectation as the host's JavaScriptCore answers it. */
+static void CheckPromises(JSContext *context)
+{
+    __block BOOL ran = NO;
+    __block NSString *executorThis = nil;
+    __block NSUInteger executorArguments = 0;
+    __block JSValue *resolve = nil;
+    JSValue *promise = [JSValue valueWithNewPromiseInContext:context fromExecutor:^(JSValue *resolveFunction, JSValue *rejectFunction) {
+        (void)rejectFunction;
+        ran = YES;
+        executorThis = [[JSContext currentThis] toString];
+        executorArguments = [JSContext currentArguments].count;
+        resolve = resolveFunction;
+    }];
+    check(ran, @"a promise's executor runs before valueWithNewPromiseInContext: returns");
+    check([executorThis isEqualToString:@"[object Promise]"] && executorArguments == 2, @"the executor is a callback whose this is the promise and whose arguments are its two resolving functions");
+    context[@"p"] = promise;
+    context[@"r"] = resolve;
+    check([Run(context, @"typeof r") isEqualToString:@"function"], @"the resolving functions are JavaScript functions");
+    check([Run(context, @"Object.prototype.toString.call(p)") isEqualToString:@"[object Promise]"], @"a promise's class is Promise");
+    check([Run(context, @"(p instanceof Promise) + ',' + (p.constructor === Promise) + ',' + Object.getOwnPropertyNames(p).length") isEqualToString:@"true,true,0"], @"a promise is an instance of the global Promise with no own properties");
+    check([Run(context, @"Object.getOwnPropertyNames(Promise.prototype).sort().join(',')") isEqualToString:@"catch,constructor,finally,then"], @"Promise.prototype has then, catch and finally");
+    check([Run(context, @"Object.keys(Promise.prototype).length + ',' + Object.keys(this).indexOf('Promise')") isEqualToString:@"0,-1"], @"Promise and its methods are not enumerable");
+    check([Run(context, @"var got; p.then(function (v) { got = v; }); r(42); typeof got") isEqualToString:@"undefined"], @"a reaction does not run while the script that queued it is running");
+    check([context[@"got"] toInt32] == 42, @"a reaction has run once the script that queued it returns");
+
+    JSValue *later = [JSValue valueWithNewPromiseInContext:context fromExecutor:^(JSValue *resolveFunction, JSValue *rejectFunction) {
+        (void)rejectFunction;
+        resolve = resolveFunction;
+    }];
+    context[@"later"] = later;
+    [context evaluateScript:@"var laterValue = 'unset'; later.then(function (v) { laterValue = v; })"];
+    [resolve callWithArguments:@[@7]];
+    check([context[@"laterValue"] toInt32] == 7, @"resolving from Objective-C runs the reaction before callWithArguments: returns");
+
+    context[@"resolved"] = [JSValue valueWithNewPromiseResolvedWithResult:@"x" inContext:context];
+    context[@"rejected"] = [JSValue valueWithNewPromiseRejectedWithReason:@"why" inContext:context];
+    [context evaluateScript:@"var resolvedValue, rejectedReason; resolved.then(function (v) { resolvedValue = v; }); rejected.catch(function (v) { rejectedReason = v; })"];
+    check([[context[@"resolvedValue"] toString] isEqualToString:@"x"] && [[context[@"rejectedReason"] toString] isEqualToString:@"why"], @"valueWithNewPromiseResolvedWithResult: and ...RejectedWithReason: settle as asked");
+    JSValue *adopting = [JSValue valueWithNewPromiseResolvedWithResult:promise inContext:context];
+    context[@"adopting"] = adopting;
+    [context evaluateScript:@"var adopted; adopting.then(function (v) { adopted = v; })"];
+    check(![adopting isEqualToObject:promise] && [context[@"adopted"] toInt32] == 42, @"a promise resolved with a promise is a new promise that adopts its value");
+
+    check([Run(context, @"var thenable; new Promise(function (ok) { ok({ then: function (f) { f('thenable'); } }); }).then(function (v) { thenable = v; }); 0") isEqualToString:@"0"] && [[context[@"thenable"] toString] isEqualToString:@"thenable"], @"a thenable is adopted");
+    [context evaluateScript:@"var itself; var ownResolve; var own = new Promise(function (ok) { ownResolve = ok; }); ownResolve(own); own.catch(function (e) { itself = (e instanceof TypeError) + ':' + e.message; })"];
+    check([[context[@"itself"] toString] isEqualToString:@"true:Cannot resolve a promise with itself"], @"a promise resolved with itself rejects with a TypeError");
+    check([Run(context, @"var order = []; var done = Promise.resolve(1); done.then(function () { order.push('a'); }); done.then(function () { order.push('b'); }); order.push('sync'); 0") isEqualToString:@"0"] && [Run(context, @"order.join(',')") isEqualToString:@"sync,a,b"], @"reactions run after the script, in the order they were added");
+    [context evaluateScript:@"var chain = []; Promise.reject(new Error('e1')).then(function () { chain.push('skipped'); }).catch(function (e) { chain.push(e.message); return 'next'; }).finally(function () { chain.push('finally'); return 'ignored'; }).then(function (v) { chain.push(v); })"];
+    check([Run(context, @"chain.join(',')") isEqualToString:@"e1,finally,next"], @"then, catch and finally chain as specified");
+    [context evaluateScript:@"var combined = []; Promise.all([1, Promise.resolve(2), { then: function (f) { f(3); } }]).then(function (v) { combined.push('all:' + v.join('+')); }); Promise.race([new Promise(function () {}), Promise.resolve('first')]).then(function (v) { combined.push('race:' + v); }); Promise.allSettled([Promise.reject('no'), 'yes']).then(function (v) { combined.push('settled:' + v[0].status + '/' + v[0].reason + '/' + v[1].status + '/' + v[1].value); }); Promise.all([]).then(function (v) { combined.push('empty:' + v.length); }); Promise.all([Promise.reject('bad'), 1]).catch(function (e) { combined.push('allrejected:' + e); })"];
+    check([Run(context, @"combined.sort().join(',')") isEqualToString:@"all:1+2+3,allrejected:bad,empty:0,race:first,settled:rejected/no/fulfilled/yes"], @"Promise.all, race and allSettled combine as specified");
+    [context evaluateScript:@"var notIterable; Promise.all(5).catch(function (e) { notIterable = e instanceof TypeError; })"];
+    check([Run(context, @"notIterable") isEqualToString:@"true"], @"Promise.all of a value that is not iterable rejects with a TypeError");
+    check([Run(context, @"var errors = []; try { Promise(function () {}); } catch (e) { errors.push(e instanceof TypeError); } try { Promise.prototype.then.call({}); } catch (e) { errors.push(e instanceof TypeError); } try { new Promise(5); } catch (e) { errors.push(e instanceof TypeError); } errors.join(',')") isEqualToString:@"true,true,true"], @"Promise without new, then on a non-promise and a non-function executor throw TypeError");
+
+    context[@"nest"] = ^JSValue *{
+        [[JSContext currentContext] evaluateScript:@"Promise.resolve().then(function () { inner = 'ran'; })"];
+        return [[JSContext currentContext] evaluateScript:@"typeof inner"];
+    };
+    check([Run(context, @"var inner; nest()") isEqualToString:@"undefined"] && [[context[@"inner"] toString] isEqualToString:@"ran"], @"jobs queued inside a callback wait for the outermost call to return");
+
+    __block int handled = 0;
+    void (^previous)(JSContext *, JSValue *) = context.exceptionHandler;
+    context.exceptionHandler = ^(JSContext *ctx, JSValue *exception) {
+        handled++;
+        ctx.exception = exception;
+    };
+    context[@"throwing"] = [JSValue valueWithNewPromiseInContext:context fromExecutor:^(JSValue *resolveFunction, JSValue *rejectFunction) {
+        (void)resolveFunction;
+        (void)rejectFunction;
+        JSContext *current = [JSContext currentContext];
+        current.exception = [JSValue valueWithNewErrorFromMessage:@"boom" inContext:current];
+    }];
+    [context evaluateScript:@"var thrown = 'pending'; throwing.then(function () { thrown = 'resolved'; }, function (e) { thrown = 'rejected:' + e.message; })"];
+    check([[context[@"thrown"] toString] isEqualToString:@"rejected:boom"] && !context.exception && handled == 0, @"an exception the executor sets rejects its promise and reaches no handler");
+    context[@"setsException"] = ^{
+        JSContext *current = [JSContext currentContext];
+        current.exception = [JSValue valueWithNewErrorFromMessage:@"from a block" inContext:current];
+    };
+    check([Run(context, @"var caught; try { setsException(); caught = 'no'; } catch (e) { caught = 'caught ' + e.message; } caught") isEqualToString:@"caught from a block"] && handled == 0 && !context.exception, @"an exception a block sets on its context is thrown into the script that called it");
+    context.exceptionHandler = previous;
+
+    /* Script run through the C API directly: the release with promises runs the jobs as that call
+     * returns, the backport on the thread's next run loop turn; after one turn both have. */
+    JSStringRef direct = JSStringCreateWithUTF8CString("var direct = 'unset'; Promise.resolve('ran').then(function (v) { direct = v; })");
+    JSEvaluateScript(context.JSGlobalContextRef, direct, NULL, NULL, 1, NULL);
+    JSStringRelease(direct);
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
+    check([[context[@"direct"] toString] isEqualToString:@"ran"], @"jobs queued by script run through the C API directly have run after one run loop turn");
+}
+
+/*
+ * Symbols: a named divergence. The host's engine has symbols; the release's (2012) has none, and
+ * the backport refuses at the seam. Each side is held to its own answer, so the check fails if the
+ * backport ever stops refusing or the oracle ever stops making one.
+ */
+static void CheckSymbols(JSContext *context)
+{
+    context.exception = nil;
+    JSValue *symbol = [JSValue valueWithNewSymbolFromDescription:@"d" inContext:context];
+#ifdef CHARON_PORT
+    check(!symbol.isSymbol && symbol.isUndefined && [[context.exception[@"name"] toString] isEqualToString:@"TypeError"], @"a symbol is refused with a TypeError on the context (the release's engine has no symbols)");
+#else
+    check(symbol.isSymbol && [[[context evaluateScript:@"(function (x) { return typeof x; })"] callWithArguments:@[symbol]].toString isEqualToString:@"symbol"], @"the host's engine makes a symbol (the divergence the backport names)");
+#endif
+    context.exception = nil;
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -290,6 +404,8 @@ int main(void)
 
         CheckManagedReferences(context);
         CheckWrapperIdentity(context);
+        CheckPromises(context);
+        CheckSymbols(context);
 
         JSVirtualMachine *vm = [[JSVirtualMachine alloc] init];
         JSContext *second = [[JSContext alloc] initWithVirtualMachine:vm];

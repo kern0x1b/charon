@@ -21,6 +21,6 @@ for source in JSInternal JSVirtualMachine JSContext JSValue JSManagedValue JSExp
     xcrun clang -fobjc-arc -w $renames -I"$port" -c "$port/$source.m" -o "$out/$source.o"
     objects="$objects $out/$source.o"
 done
-xcrun clang -fobjc-arc -w -framework Foundation -framework JavaScriptCore -framework CoreGraphics $renames "$here/checks.m" $objects -o "$out/checks"
+xcrun clang -fobjc-arc -w -DCHARON_PORT -framework Foundation -framework JavaScriptCore -framework CoreGraphics $renames "$here/checks.m" $objects -o "$out/checks"
 echo "backport"
 "$out/checks"

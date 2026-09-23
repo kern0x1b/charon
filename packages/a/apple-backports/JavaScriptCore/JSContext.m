@@ -49,6 +49,7 @@ static NSMapTable<id, JSContext *> *ContextRegistry(void)
             (void)context;
             weakSelf.exception = exception;
         } copy];
+        [JSValue charon_installPromiseInContext:self];
     }
     return self;
 }
@@ -169,15 +170,18 @@ static NSMapTable<id, JSContext *> *ContextRegistry(void)
     JSStringRef body = charon_js_string(script ?: @"");
     JSStringRef url = sourceURL ? charon_js_string(sourceURL.absoluteString) : NULL;
     JSValueRef exception = NULL;
+    charon_js_enter();
     JSValueRef result = JSEvaluateScript(_globalContext, body, NULL, url, 1, &exception);
     JSStringRelease(body);
     if (url)
         JSStringRelease(url);
-    if (exception) {
-        [self charon_noteException:exception];
-        return [JSValue charon_valueWithJSValueRef:JSValueMakeUndefined(_globalContext) context:self];
-    }
-    return [JSValue charon_valueWithJSValueRef:result context:self];
+    /* Both are held by a JSValue before the jobs the script queued run and can collect. */
+    JSValue *value = [JSValue charon_valueWithJSValueRef:exception ? JSValueMakeUndefined(_globalContext) : result context:self];
+    JSValue *thrown = exception ? [JSValue charon_valueWithJSValueRef:exception context:self] : nil;
+    charon_js_leave();
+    if (thrown)
+        [self charon_noteException:thrown.JSValueRef];
+    return value;
 }
 
 + (JSContext *)currentContext

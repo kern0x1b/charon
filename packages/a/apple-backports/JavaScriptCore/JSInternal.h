@@ -28,6 +28,7 @@ extern JSObjectRef _Nullable JSWeakObjectMapGet(JSContextRef ctx, JSWeakObjectMa
 extern void JSWeakObjectMapRemove(JSContextRef ctx, JSWeakObjectMapRef map, void *key);
 extern bool JSObjectSetPrivateProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName, JSValueRef _Nullable value);
 extern bool JSObjectDeletePrivateProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName);
+extern JSValueRef _Nullable JSObjectGetPrivateProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName);
 
 @interface JSVirtualMachine (CharonInternal)
 - (JSContextGroupRef)charon_group;
@@ -52,6 +53,8 @@ extern bool JSObjectDeletePrivateProperty(JSContextRef ctx, JSObjectRef object, 
 
 @interface JSValue (CharonInternal)
 + (instancetype)charon_valueWithJSValueRef:(JSValueRef)value context:(JSContext *)context;
+/* Give a context -init made its global Promise (JSValue.m, where promises are built). */
++ (void)charon_installPromiseInContext:(JSContext *)context;
 @end
 
 /* Box a native Objective-C object as a JSValueRef in `context`. Never NULL. */
@@ -75,9 +78,28 @@ NSString *charon_ns_string(JSStringRef string);
 JSClassRef charon_js_export_class(Class objcClass);
 BOOL charon_js_class_conforms_to_export(Class objcClass);
 
-/* Thread-local callback state read by +[JSContext currentContext/currentThis/currentCallee/currentArguments]. */
+/*
+ * Thread-local callback state read by +[JSContext currentContext/currentThis/currentCallee/currentArguments].
+ * A push keeps the context's exception aside and clears it, as the release's own JSContext does
+ * around a callback; the pop puts it back and answers the exception the callback set, if any,
+ * which the caller throws into the script that made the call.
+ */
 void charon_js_push_callback(JSContext *context, JSValue *_Nullable thisValue, JSValue *_Nullable callee, NSArray<JSValue *> *_Nullable arguments);
-void charon_js_pop_callback(void);
+JSValue *_Nullable charon_js_pop_callback(void);
+
+/*
+ * The job queue promise reactions run from. The JavaScriptCore that has promises runs its queued
+ * jobs when the outermost API call on a thread returns, never while script is on the stack.
+ * charon_js_enter and charon_js_leave bracket every call this port makes into script, a callback
+ * counts as a level too, and the leave that ends the outermost level runs `drain` for every
+ * context charon_js_note_jobs named, in the order they were named, until none is left. Jobs
+ * queued by script this port did not enter (a direct C API call, a web view's page) run on the
+ * thread's next run loop turn instead; the property accessors of JSValue are not a level, so a
+ * job a getter or setter queues waits for the next leave.
+ */
+void charon_js_enter(void);
+void charon_js_leave(void);
+void charon_js_note_jobs(JSContextRef context, JSObjectRef drain);
 
 typedef struct CharonJSFrame {
     struct CharonJSFrame *up;
@@ -85,6 +107,7 @@ typedef struct CharonJSFrame {
     __unsafe_unretained JSValue *thisValue;
     __unsafe_unretained JSValue *callee;
     __unsafe_unretained NSArray<JSValue *> *arguments;
+    void *_Nullable preservedException; /* a retained JSValue, or NULL */
 } CharonJSFrame;
 
 CharonJSFrame *_Nullable CharonCurrentFrame(void);

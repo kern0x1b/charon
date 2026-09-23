@@ -341,7 +341,12 @@ static JSValueRef BoundFunctionCallAsFunction(JSContextRef ctx, JSObjectRef func
         [boxedArguments addObject:[JSValue charon_valueWithJSValueRef:arguments[index] context:context]];
     charon_js_push_callback(context, [JSValue charon_valueWithJSValueRef:thisObject context:context], [JSValue charon_valueWithJSValueRef:function context:context], boxedArguments);
     JSValueRef result = InvokeSelector(ctx, binding.target, binding.selector, argumentCount, arguments, exception);
-    charon_js_pop_callback();
+    JSValue *thrown = charon_js_pop_callback();
+    if (thrown) {
+        if (exception)
+            *exception = thrown.JSValueRef;
+        return JSValueMakeUndefined(ctx);
+    }
     return result;
 }
 

@@ -123,7 +123,9 @@ static JSValueRef BlockCallAsFunction(JSContextRef ctx, JSObjectRef function, JS
         case 5: ((void (*)(void *, void *, void *, void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2], rawArgs[3], rawArgs[4], rawArgs[5]); break;
         case 6: ((void (*)(void *, void *, void *, void *, void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2], rawArgs[3], rawArgs[4], rawArgs[5], rawArgs[6]); break;
         }
-        charon_js_pop_callback();
+        JSValue *thrown = charon_js_pop_callback();
+        if (thrown && exception)
+            *exception = thrown.JSValueRef;
         return JSValueMakeUndefined(ctx);
     }
     id unretainedResult = nil;
@@ -137,7 +139,12 @@ static JSValueRef BlockCallAsFunction(JSContextRef ctx, JSObjectRef function, JS
     case 6: unretainedResult = ((id (*)(void *, void *, void *, void *, void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2], rawArgs[3], rawArgs[4], rawArgs[5], rawArgs[6]); break;
     }
     result = unretainedResult;
-    charon_js_pop_callback();
+    JSValue *thrown = charon_js_pop_callback();
+    if (thrown) {
+        if (exception)
+            *exception = thrown.JSValueRef;
+        return JSValueMakeUndefined(ctx);
+    }
     return charon_js_box(ctx, result);
 }
 
@@ -333,6 +340,54 @@ CharonJSFrame *CharonCurrentFrame(void)
     return pthread_getspecific(charon_frame_key);
 }
 
+/*
+ * One queue of contexts with jobs per thread, and the level of calls into script the thread is
+ * at. A context and its drain function are kept (JSGlobalContextRetain, JSValueProtect) from the
+ * moment its first job is queued until its drain has run.
+ */
+typedef struct CharonPendingJobs {
+    struct CharonPendingJobs *next;
+    JSGlobalContextRef context;
+    JSObjectRef drain;
+} CharonPendingJobs;
+
+typedef struct CharonJobState {
+    unsigned depth;
+    CharonPendingJobs *first;
+    CharonPendingJobs *last;
+} CharonJobState;
+
+static pthread_key_t charon_jobs_key;
+static pthread_once_t charon_jobs_once = PTHREAD_ONCE_INIT;
+
+static void CharonFreeJobs(void *value)
+{
+    CharonJobState *state = value;
+    for (CharonPendingJobs *pending = state->first, *next; pending; pending = next) {
+        next = pending->next;
+        JSValueUnprotect(pending->context, pending->drain);
+        JSGlobalContextRelease(pending->context);
+        free(pending);
+    }
+    free(state);
+}
+
+static void CharonMakeJobsKey(void)
+{
+    pthread_key_create(&charon_jobs_key, CharonFreeJobs);
+}
+
+static CharonJobState *CharonJobs(void)
+{
+    pthread_once(&charon_jobs_once, CharonMakeJobsKey);
+    CharonJobState *state = pthread_getspecific(charon_jobs_key);
+    if (!state) {
+        state = calloc(1, sizeof(CharonJobState));
+        pthread_setspecific(charon_jobs_key, state);
+    }
+    return state;
+}
+
 void charon_js_push_callback(JSContext *context, JSValue *thisValue, JSValue *callee, NSArray<JSValue *> *arguments)
 {
     pthread_once(&charon_frame_once, CharonMakeFrameKey);
@@ -342,14 +397,76 @@ void charon_js_push_callback(JSContext *context, JSValue *thisValue, JSValue *ca
     frame->thisValue = thisValue;
     frame->callee = callee;
     frame->arguments = arguments;
+    JSValue *preserved = context.exception;
+    frame->preservedException = preserved ? (void *)CFBridgingRetain(preserved) : NULL;
+    context.exception = nil;
     pthread_setspecific(charon_frame_key, frame);
+    CharonJobs()->depth++;
 }
 
-void charon_js_pop_callback(void)
+JSValue *charon_js_pop_callback(void)
 {
     CharonJSFrame *frame = CharonCurrentFrame();
     if (!frame)
-        return;
+        return nil;
+    CharonJobs()->depth--;
     pthread_setspecific(charon_frame_key, frame->up);
+    JSContext *context = frame->context;
+    JSValue *thrown = context.exception;
+    context.exception = frame->preservedException ? CFBridgingRelease(frame->preservedException) : nil;
     free(frame);
+    return thrown;
+}
+
+void charon_js_enter(void)
+{
+    CharonJobs()->depth++;
+}
+
+void charon_js_note_jobs(JSContextRef context, JSObjectRef drain)
+{
+    CharonJobState *state = CharonJobs();
+    CharonPendingJobs *pending = calloc(1, sizeof(CharonPendingJobs));
+    pending->context = JSGlobalContextRetain(JSContextGetGlobalContext(context));
+    pending->drain = drain;
+    JSValueProtect(pending->context, drain);
+    BOOL wasEmpty = !state->first;
+    if (state->last)
+        state->last->next = pending;
+    else
+        state->first = pending;
+    state->last = pending;
+    /* Script this port did not enter - a direct C API call, a web view's own page - has no leave
+     * of ours to run the jobs at; the thread's run loop runs them on its next turn instead. */
+    if (wasEmpty && !state->depth) {
+        CFRunLoopRef loop = CFRunLoopGetCurrent();
+        CFRunLoopPerformBlock(loop, kCFRunLoopCommonModes, ^{
+            charon_js_enter();
+            charon_js_leave();
+        });
+        CFRunLoopWakeUp(loop);
+    }
+}
+
+void charon_js_leave(void)
+{
+    CharonJobState *state = CharonJobs();
+    if (--state->depth)
+        return;
+    /* The drains run a level deep, so a call they make into script and back leaves them alone. */
+    state->depth++;
+    while (state->first) {
+        CharonPendingJobs *pending = state->first;
+        state->first = pending->next;
+        if (!state->first)
+            state->last = NULL;
+        JSValueRef exception = NULL;
+        JSObjectCallAsFunction(pending->context, pending->drain, NULL, 0, NULL, &exception);
+        if (exception)
+            [[JSContext charon_wrapperForGlobalContext:pending->context create:YES] charon_noteException:exception];
+        JSValueUnprotect(pending->context, pending->drain);
+        JSGlobalContextRelease(pending->context);
+        free(pending);
+    }
+    state->depth--;
 }
