@@ -49,6 +49,15 @@
 -- because it does not merge a category compiled into one image onto a class
 -- defined in another). This script does not attempt that measurement; do not
 -- read a clean run as covering any category file.
+--
+-- FIXED, was a false-positive source: ARC's compiler-generated block copy/destroy helpers
+-- (___copy_helper_block_*, ___destroy_helper_block_*) get external linkage so identical helpers
+-- merge across translation units, which makes them nm -gU-visible even though they are not part
+-- of any release's real export surface -- they never appear in any dyld cache, so every one of
+-- them classified as "none" and, sharing a file with a single genuine API symbol, made that file
+-- read as spanning two releases when it does not. Measured on 10 of 14 files a first run of this
+-- script flagged MIXED-RELEASES (UISearchController.o, UIViewPropertyAnimator.o and others): each
+-- carried exactly one real symbol plus these helpers, none of which any release will ever export.
 
 import("apple.dyld", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 
@@ -57,6 +66,13 @@ local EXCLUDED = {
     "^__OBJC_PROTOCOL_%$_",
     "^__OBJC_LABEL_PROTOCOL_%$_",
     "^___block_descriptor",
+    "^___block_literal_",
+    "^___copy_helper_block_",
+    "^___destroy_helper_block_",
+    "^___NSArray%d+__$",
+    "^___NSDictionary%d+__$",
+    "^___kCFBooleanTrue$",
+    "^___kCFBooleanFalse$",
 }
 
 local function internal(name)
