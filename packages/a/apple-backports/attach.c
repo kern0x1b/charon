@@ -367,8 +367,11 @@ __attribute__((constructor)) static void charon_backports_attach(void)
     Class *releases = calloc(own_count ? own_count : 1, sizeof *releases);
     for (size_t index = 0; index < own_count; index++) {
         releases[index] = objc_getClass(own[index].name);
-        if (releases[index])
-            capacity += charon_method_count((Class)own[index].proxy) + charon_method_count(object_getClass((id)own[index].proxy));
+        if (!releases[index])
+            continue;
+        // class_copyMethodList reads a class as realized without checking; looking it up realizes it.
+        objc_lookUpClass(class_getName((Class)own[index].proxy));
+        capacity += charon_method_count((Class)own[index].proxy) + charon_method_count(object_getClass((id)own[index].proxy));
     }
     size_t alias_count;
     struct charon_alias *aliases = charon_aliases(&alias_count);
