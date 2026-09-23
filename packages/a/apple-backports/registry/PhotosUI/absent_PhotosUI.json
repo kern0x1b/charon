@@ -37,8 +37,8 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "there is no limited selection of photos in iOS 6, so there is no picker for it; the status is never limited",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the picker is not a wall: it is owed and not yet written, and once written it can honestly present nothing to manage, since iOS 6's library access is never limited",
+      "effect": "until it is written the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, PhotosUI"
     },
     {
@@ -47,8 +47,8 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "there is no limited selection of photos in iOS 6, so there is no picker for it; the status is never limited",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the picker is not a wall: it is owed and not yet written, and once written it can honestly present nothing to manage, since iOS 6's library access is never limited",
+      "effect": "until it is written the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, PhotosUI"
     },
     {
@@ -137,8 +137,8 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6's picker chooses one item, so there is no order of a selection to keep",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the property is not a wall: it is owed and not yet written, and once written it can honestly report only the one item iOS 6's picker chooses, with no order to keep",
+      "effect": "until it is written the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of PhotosUI"
     },
     {
@@ -147,8 +147,8 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6's picker cannot show items as chosen already",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the property is not a wall: it is owed and not yet written, and once written it can honestly show nothing pre-chosen, since iOS 6's picker never opens with items already selected",
+      "effect": "until it is written the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of PhotosUI"
     },
     {
@@ -187,8 +187,8 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the release's picker holds no selection to take items out of",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the method is not a wall: it is owed and not yet written, and once written it can honestly deselect nothing, since iOS 6's picker holds no multi-item selection to take items out of",
+      "effect": "until it is written the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of PhotosUI"
     },
     {
@@ -197,8 +197,8 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the release's picker holds no selection to put in order",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the method is not a wall: it is owed and not yet written, and once written it can honestly reorder nothing, since iOS 6's picker holds no multi-item selection to put in order",
+      "effect": "until it is written the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of PhotosUI"
     }
   ]
