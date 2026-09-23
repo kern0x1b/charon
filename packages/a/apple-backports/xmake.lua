@@ -23,7 +23,7 @@ package("apple-backports")
 
     add_configs("uikit", {description = "Build libUIKitBackports.dylib beside libFoundationBackports.dylib, for an application; a daemon or a tool leaves UIKit out of its process.", default = false, type = "boolean"})
     add_configs("corelocation", {description = "Build libCoreLocationBackports.dylib, for a port that asks for location authorization; it loads CoreLocation into the process.", default = false, type = "boolean"})
-    add_configs("avfoundation", {description = "Build libAVFoundationBackports.dylib, for a port that finds its cameras and microphones with a discovery session or builds an H.264 format description from parameter sets; it loads AVFoundation, and libGraphicsBackports with CoreVideo, into the process.", default = false, type = "boolean"})
+    add_configs("avfoundation", {description = "Build libAVFoundationBackports.dylib, for a port that finds its cameras and microphones with a discovery session or builds an H.264 format description from parameter sets and encodes with the H.264 profile levels of iOS 7; it loads AVFoundation, and libGraphicsBackports with CoreVideo, into the process.", default = false, type = "boolean"})
     add_configs("coredata", {description = "Build libCoreDataBackports.dylib, for a port that keeps its data with Core Data; it loads CoreData into the process.", default = false, type = "boolean"})
     add_configs("security", {description = "Build libSecurityBackports.dylib, for a port that evaluates a trust with SecTrustEvaluateWithError; it loads Security into the process.", default = false, type = "boolean"})
 
