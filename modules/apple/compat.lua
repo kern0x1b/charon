@@ -20,6 +20,7 @@ ARRIVED = {
     __ulock_wait = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
     __ulock_wake = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
     clock_getres = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
+    clock_gettime_nsec_np = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
     os_unfair_lock_lock = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
     os_unfair_lock_trylock = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
     os_unfair_lock_unlock = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},

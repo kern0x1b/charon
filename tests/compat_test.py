@@ -63,6 +63,7 @@ CLOCK_AND_DIRECTORY = r"""
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -70,6 +71,7 @@ CLOCK_AND_DIRECTORY = r"""
 #include <unistd.h>
 
 int charon_clock_gettime(clockid_t which, struct timespec *now);
+uint64_t charon_clock_gettime_nsec_np(clockid_t which);
 DIR *charon_fdopendir(int descriptor);
 
 static int fails;
@@ -118,6 +120,20 @@ int main(int argc, char **argv)
            "CLOCK_MONOTONIC_RAW counts from boot with sleep, the only such clock iOS 6 has");
     errno = 0;
     expect(charon_clock_gettime((clockid_t)12345, &first) == -1 && errno == EINVAL, "an unknown clock is refused");
+    static const clockid_t counted[] = { CLOCK_REALTIME, CLOCK_MONOTONIC, CLOCK_UPTIME_RAW };
+    for (size_t index = 0; index < sizeof counted / sizeof counted[0]; index++) {
+        uint64_t ours = charon_clock_gettime_nsec_np(counted[index]);
+        uint64_t darwins = clock_gettime_nsec_np(counted[index]);
+        long long apart = (long long)(ours - darwins);
+        expect(ours != 0 && apart > -5000000LL && apart < 5000000LL,
+               "clock_gettime_nsec_np counts the nanoseconds of the clock Darwin's counts");
+    }
+    errno = 0;
+    uint64_t refused = clock_gettime_nsec_np((clockid_t)12345);
+    int darwins_errno = errno;
+    errno = 0;
+    expect(charon_clock_gettime_nsec_np((clockid_t)12345) == refused && refused == 0 && errno == darwins_errno,
+           "clock_gettime_nsec_np answers an unknown clock as Darwin's does: 0, and the same errno");
 
     int descriptor = open(argv[1], O_RDONLY);
     DIR *directory = charon_fdopendir(descriptor);
@@ -1650,8 +1666,8 @@ def failures():
         (folder / "clock.c").write_text(CLOCK_AND_DIRECTORY)
         (folder / "listed").mkdir()
         (folder / "listed" / "marker").write_text("")
-        built = run("xcrun", "clang", "-O2", SHIMS / "clock_gettime.c", SHIMS / "fdopendir.c", "clock.c", "-o", "clock",
-                    cwd=folder)
+        built = run("xcrun", "clang", "-O2", SHIMS / "clock_gettime.c", SHIMS / "clock_gettime_nsec_np.c", SHIMS / "fdopendir.c",
+                    "clock.c", "-o", "clock", cwd=folder)
         if built.returncode:
             found.append("the clock_gettime and fdopendir shims must compile: {}".format(built.stderr[-400:]))
         else:
@@ -1676,6 +1692,7 @@ def failures():
                                       ("fchmodat", "return fchmodat(3, \"x\", 0600, 0);", "sys/stat.h"),
                                       ("unlinkat", "return unlinkat(3, \"x\", 0);", "unistd.h"),
                                       ("clock_getres", "struct timespec t; return clock_getres(CLOCK_MONOTONIC, &t);", "time.h"),
+                                      ("clock_gettime_nsec_np", "return clock_gettime_nsec_np(CLOCK_MONOTONIC) != 0;", "time.h"),
                                       ("dispatch_get_global_queue", "return dispatch_get_global_queue(0x19, 0) != 0;",
                                        "dispatch/dispatch.h")):
             header = SHIMS.parent / "include" / "charon" / "{}.h".format(symbol)
