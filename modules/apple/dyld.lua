@@ -683,6 +683,20 @@ function sdk_owners(sdkdir)
                 end
             end
         end
+        -- A framework's API that a library of /usr/lib also lists (libSystem re-exporting libnetwork's
+        -- nw_* calls, from 9.0, three releases before Network.framework) is bound through the framework
+        -- by a client of its header, and the framework is where it counts.
+        for symbol, found in pairs(owners) do
+            local frameworks = {}
+            for _, install in ipairs(found) do
+                if install:startswith("/System/Library/Frameworks/") then
+                    table.insert(frameworks, install)
+                end
+            end
+            if #frameworks > 0 then
+                owners[symbol] = frameworks
+            end
+        end
         OWNERS[sdkdir] = owners
     end
     return OWNERS[sdkdir]
