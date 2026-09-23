@@ -531,3 +531,16 @@ guessed:
 
 Fix: `CharonSCNArchivedData`, an `NSMutableData` subclass mapped for `NSMutableData` on the
 unarchiver `decodeColor:` is handed, reads `NS.bytes` or `NS.data` itself.
+
+## Demand row that is not SceneKit's: `SCNSceneRenderer.audioEngine`
+
+`coordination/corpus/crash-demand-top.tsv` (2026-09-23) ranks `SCNSceneRenderer.audioEngine` 126th,
+CRASH-ON-USE, callers `delta` and `provenance`. The row is false: neither application links
+`SceneKit.framework`. `otool -L` on `Delta.app/Delta` and `Provenance-iOS.app/Provenance` shows only a
+weak `libswiftSceneKit.dylib`, which the Swift overlays pull in on their own. Provenance's
+`ReplayKit.framework` load command, found by the same scan, is the control that the scan finds a
+framework when it is there. The `audioEngine` selector those binaries use is their own
+(Delta's `Systems.framework`, Provenance's `PVCoreAudio` package). The demand engine counted it by name
+alone: `protocol-owner: not class-symbol-verifiable, name-based count only`. It is not a reason to carry
+`SCNSceneRenderer.audioEngine`. A real caller needs a binary that links SceneKit and reaches an
+`SCNView`/`SCNRenderer`.
