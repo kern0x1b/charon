@@ -72,26 +72,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "-[AVCaptureDevice cancelVideoZoomRamp]",
-      "kind": "method",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "-[AVCaptureDevice rampToVideoZoomFactor:withRate:]",
-      "kind": "method",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "-[AVCaptureOutput metadataOutputRectOfInterestForRect:]",
       "kind": "method",
       "introduced": "7.0",
@@ -452,16 +432,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVCaptureDevice.rampingVideoZoom",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVCaptureDevice.smoothAutoFocusEnabled",
       "kind": "property",
       "introduced": "7.0",
@@ -473,16 +443,6 @@
     },
     {
       "api": "AVCaptureDevice.smoothAutoFocusSupported",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureDevice.videoZoomFactor",
       "kind": "property",
       "introduced": "7.0",
       "minimum": "6.0",
@@ -512,27 +472,7 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVCaptureDeviceFormat.videoMaxZoomFactor",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceFormat a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVCaptureDeviceFormat.videoStabilizationSupported",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceFormat a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureDeviceFormat.videoZoomFactorUpscaleThreshold",
       "kind": "property",
       "introduced": "7.0",
       "minimum": "6.0",
@@ -562,27 +502,7 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVCaptureSession.automaticallyConfiguresApplicationAudioSession",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureSession a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVCaptureSession.masterClock",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureSession a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureSession.usesApplicationAudioSession",
       "kind": "property",
       "introduced": "7.0",
       "minimum": "6.0",

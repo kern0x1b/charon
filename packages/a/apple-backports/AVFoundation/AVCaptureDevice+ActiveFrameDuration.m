@@ -1,12 +1,12 @@
-#import <AVFoundation/AVFoundation.h>
+#import "CharonAVCapture.h"
 #import <objc/runtime.h>
+
+@interface AVCaptureDevice (CharonReleaseLock)
+- (BOOL)isLockedForConfiguration;
+@end
 
 static const char CharonActiveMinFrameDurationKey;
 static const char CharonActiveMaxFrameDurationKey;
-
-@interface AVCaptureDevice (CharonActiveFrameDurationSessions)
-- (NSHashTable<AVCaptureSession *> *)charon_activeFrameDurationSessions;
-@end
 
 static CMTime charon_default_min_frame_duration(AVCaptureDevice *device)
 {
@@ -46,18 +46,6 @@ static void charon_apply_frame_durations(AVCaptureSession *session)
     }
 }
 
-static void charon_swap_session(SEL selector)
-{
-    Method method = class_getInstanceMethod([AVCaptureSession class], selector);
-    if (!method)
-        return;
-    IMP original = method_getImplementation(method);
-    method_setImplementation(method, imp_implementationWithBlock(^(AVCaptureSession *self) {
-        ((void (*)(AVCaptureSession *, SEL))original)(self, selector);
-        charon_apply_frame_durations(self);
-    }));
-}
-
 @interface CharonActiveFrameDurationInstaller : NSObject
 @end
 
@@ -65,28 +53,9 @@ static void charon_swap_session(SEL selector)
 
 + (void)load
 {
-    charon_swap_session(@selector(startRunning));
-    charon_swap_session(@selector(commitConfiguration));
-
-    SEL addOutput = @selector(addOutput:);
-    Method outputMethod = class_getInstanceMethod([AVCaptureSession class], addOutput);
-    IMP originalAddOutput = method_getImplementation(outputMethod);
-    method_setImplementation(outputMethod, imp_implementationWithBlock(^(AVCaptureSession *self, AVCaptureOutput *output) {
-        ((void (*)(AVCaptureSession *, SEL, AVCaptureOutput *))originalAddOutput)(self, addOutput, output);
-        charon_apply_frame_durations(self);
-    }));
-
-    SEL addInput = @selector(addInput:);
-    Method inputMethod = class_getInstanceMethod([AVCaptureSession class], addInput);
-    IMP originalAddInput = method_getImplementation(inputMethod);
-    method_setImplementation(inputMethod, imp_implementationWithBlock(^(AVCaptureSession *self, AVCaptureInput *input) {
-        ((void (*)(AVCaptureSession *, SEL, AVCaptureInput *))originalAddInput)(self, addInput, input);
-        if ([input isKindOfClass:[AVCaptureDeviceInput class]]) {
-            AVCaptureDevice *device = ((AVCaptureDeviceInput *)input).device;
-            [[device charon_activeFrameDurationSessions] addObject:self];
-            charon_apply_frame_durations(self);
-        }
-    }));
+    [[NSNotificationCenter defaultCenter] addObserverForName:CHARON_CAPTURE_SESSION_CHANGED object:nil queue:nil usingBlock:^(NSNotification *note) {
+        charon_apply_frame_durations(note.object);
+    }];
 }
 
 @end
@@ -101,8 +70,13 @@ static void charon_swap_session(SEL selector)
 
 - (void)setActiveVideoMinFrameDuration:(CMTime)activeVideoMinFrameDuration
 {
+    // 7.0 asks the release's own -isLockedForConfiguration first, as 6.1.3's setters of the device do.
+    if (![self isLockedForConfiguration])
+        @throw [NSException exceptionWithName:NSGenericException
+                                       reason:@"activeVideoMinFrameDuration cannot be set without first successfully gaining exclusive ownership of the device using -lockForConfiguration:"
+                                     userInfo:nil];
     objc_setAssociatedObject(self, &CharonActiveMinFrameDurationKey, CMTIME_IS_VALID(activeVideoMinFrameDuration) ? [NSValue valueWithCMTime:activeVideoMinFrameDuration] : nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    for (AVCaptureSession *session in [self charon_activeFrameDurationSessions])
+    for (AVCaptureSession *session in [self charon_captureSessions])
         charon_apply_frame_durations(session);
 }
 
@@ -114,24 +88,14 @@ static void charon_swap_session(SEL selector)
 
 - (void)setActiveVideoMaxFrameDuration:(CMTime)activeVideoMaxFrameDuration
 {
+    // 7.0 asks the release's own -isLockedForConfiguration first, as 6.1.3's setters of the device do.
+    if (![self isLockedForConfiguration])
+        @throw [NSException exceptionWithName:NSGenericException
+                                       reason:@"activeVideoMaxFrameDuration cannot be set without first successfully gaining exclusive ownership of the device using -lockForConfiguration:"
+                                     userInfo:nil];
     objc_setAssociatedObject(self, &CharonActiveMaxFrameDurationKey, CMTIME_IS_VALID(activeVideoMaxFrameDuration) ? [NSValue valueWithCMTime:activeVideoMaxFrameDuration] : nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    for (AVCaptureSession *session in [self charon_activeFrameDurationSessions])
+    for (AVCaptureSession *session in [self charon_captureSessions])
         charon_apply_frame_durations(session);
-}
-
-@end
-
-@implementation AVCaptureDevice (CharonActiveFrameDurationSessions)
-
-- (NSHashTable<AVCaptureSession *> *)charon_activeFrameDurationSessions
-{
-    static const char key;
-    NSHashTable *sessions = objc_getAssociatedObject(self, &key);
-    if (!sessions) {
-        sessions = [NSHashTable weakObjectsHashTable];
-        objc_setAssociatedObject(self, &key, sessions, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
-    return sessions;
 }
 
 @end
