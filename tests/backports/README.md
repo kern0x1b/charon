@@ -705,6 +705,21 @@ postinst run with `DPKG_ROOT` set to it.
   class member the port's implementation invents but Apple's real header does not declare fails
   here at compile time, before it ever reaches a device - caught exactly once, for a fabricated
   `AVAudioUnitEQFilterParameters.active` property, while writing this file.
+- `avaudioconverter.m`: a process of its own for `AVAudioConverter` over real
+  `AudioConverterServices`, linking `libAVFoundationBackports.dylib`. A known 440 Hz Float32 tone
+  is converted down to Int16 and back up to Float32 through `-convertToBuffer:fromBuffer:error:`,
+  and the check names its error bound before running rather than after: `AVAudioPCMFormatInt16`
+  maps `[-1, 1]` onto `[-32768, 32767]`, so neither hop can move a sample by more than one int16
+  step, and the round trip's own bound is `2/32768 = 0.00006103515625`. 8 checks, no failure on an
+  iPhone4,1 (6.1.3): measured max error `0.0000152587890625`, about half the named bound and almost
+  exactly half an int16 step - what round-to-nearest quantization predicts for a full-scale tone,
+  and clearly non-zero, so the round trip really quantized rather than silently passing the buffer
+  through. The first run of this file failed every conversion with `OSStatus -50` (`paramErr`): a
+  freshly allocated `AVAudioPCMBuffer` already owns real sample memory at its full `frameCapacity`,
+  but its `AudioBufferList`'s `mDataByteSize` starts at 0 (it tracks `frameLength`, not capacity),
+  and `AudioConverterServices` reads `mDataByteSize` as how much room it has to write into - fixed
+  in `AVAudioConverter.m` by claiming the output buffer's full intended byte range with
+  `-setFrameLength:` before calling into AudioConverterServices, not after.
 
 ## Checking an application against a release and the backports
 
