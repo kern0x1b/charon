@@ -92,3 +92,47 @@ Android) as it is here; iOS 6 is the first platform it targets, not its limit.
   just ports — through a `target()` using `@addon/charon/daemon` (or `app`/
   `tweak`) against `thumbv7-apple-ios6.0.0` like any other port; that alone
   fixed it. Confirmed against an iPhone 4S, kernel build 10B329 (iOS 6.1.3).
+
+- **`NSMapTable` sends `retain`/`release` to its keys and values by default, even for
+  `strongToWeakObjectsMapTable` and friends.** A key that is not really an Objective-C object — a
+  `JSGlobalContextRef` or any other opaque C pointer bridged in with `(__bridge id)` — crashes
+  inside `objc_retain` the first time something is inserted, with a backtrace that points at
+  `NSConcreteMapTable` and nothing about the actual mistake. Build such a table with
+  `+mapTableWithKeyOptions:valueOptions:` and `NSPointerFunctionsOpaqueMemory |
+  NSPointerFunctionsOpaquePersonality` for the non-object side. Paid for on the JSContext
+  registry (`JavaScriptCore/JSContext.m`), keying a context lookup table on the
+  `JSGlobalContextRef` itself.
+
+- **A block's callable address is its `invoke` field, not the block's own pointer.** A block
+  literal is `{isa, flags, reserved, invoke, ...captures}`; casting the block pointer itself to a C
+  function type and calling it jumps into the `isa` field's bytes as if they were code — an
+  instant crash inside the block's own frame, `frame #0` showing the block's compiler-generated
+  symbol as if it corrupted itself. Read `invoke` out of the struct first. Also: ARC forbids
+  calling an Objective-C pointer as a raw function pointer at all (`cast ... disallowed with ARC`)
+  — bridge through `void *` before either step. Paid for boxing an `NSBlock` as a callable
+  `JSValue`.
+
+- **`-[NSInvocation setArgument:atIndex:]` copies bytes, not objects — it does not retain an
+  object argument unless `-retainArguments` has been called.** An argument set from a local that
+  goes out of scope before `-invoke` runs (the ordinary case when arguments are filled in a loop
+  inside a helper function) leaves a dangling pointer; the crash lands inside the *callee*'s own
+  ARC-generated argument-retain prologue, `objc_storeStrong`, which looks exactly like a bug in
+  the method being called rather than in how it was invoked. Call `-retainArguments` right after
+  creating the invocation, before setting any arguments. Paid for on the generic JSExport method
+  dispatcher (`JavaScriptCore/JSExportBridge.m`).
+
+- **A non-ASCII character in a `.m` file compiled through `tests/backports/host/*/prefix_selectors.py`
+  corrupts unrelated selectors elsewhere in the same file, not the line the character is on.** The
+  tool renames selectors by byte offset from a clang AST dump; one multi-byte UTF-8 character (an
+  em dash in a comment, in this case) shifts every byte offset after it by two, so renames later in
+  the file land one character into the target identifier — `component:fromDate:` becomes
+  `ccharonHost_omponent:fromDate:`, which reads as a build tool bug in a completely different
+  method. Keep comments in files that go through that pipeline ASCII-only.
+
+- **Mixing `NSInteger` and `NSUInteger` in the same expression silently promotes the signed side
+  to unsigned**, per C's usual arithmetic conversions — `signedValue - calendar.firstWeekday`
+  (`firstWeekday` is `NSUInteger`) does not go negative when `signedValue` is smaller, it wraps to
+  a huge positive number, and a later `% 7` on that gives a plausible-looking but wrong small
+  integer with no crash anywhere. Cast the `NSUInteger` side explicitly before subtracting. Paid
+  for on every weekday computation in `NSCalendar+Components.m` until a host differential caught
+  the wrong answers — nothing crashed, nothing warned, the numbers were just wrong.
