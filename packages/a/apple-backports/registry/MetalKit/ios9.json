@@ -35,6 +35,28 @@
       "source": "the header of iOS 16.4 for the contract; this port's own CharonMetalDevice.m and CharonMetalTexture.m"
     },
     {
+      "api": "MTKTextureLoaderErrorDomain",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the error domain every one of MTKTextureLoader's own refusals answers in",
+      "effect": "answers \"MTKTextureLoaderErrorDomain\"",
+      "facts": "facts/MetalKit/TextureLoader.md",
+      "source": "the release's own literal value, unverified against the shared cache; see facts/MetalKit/TextureLoader.md"
+    },
+    {
+      "api": "MTKTextureLoaderErrorKey",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "carried alongside MTKTextureLoaderErrorDomain, though this port never populates it: every one of this port's own MTKTextureLoader errors names its reason in NSLocalizedDescriptionKey, never per-image detail under this key",
+      "effect": "answers \"MTKTextureLoaderErrorKey\"; never appears in a userInfo dictionary this port builds",
+      "facts": "facts/MetalKit/TextureLoader.md",
+      "source": "the release's own literal value, unverified against the shared cache; see facts/MetalKit/TextureLoader.md"
+    },
+    {
       "api": "MTKTextureLoaderOptionSRGB",
       "kind": "constant",
       "introduced": "9.0",
