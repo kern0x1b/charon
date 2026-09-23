@@ -39,6 +39,10 @@ same image, read the same way, are their own names, as the release says they are
 nowhere. That is the value carried, in an object of its own for 12.0. The other five names of 12.3 and 12.6
 first appear at 16.0 on the ladder, an upper bound since nothing is held between 12.0 and 16.0, and keep the host's values,
 which the 16.0 cache holds as strings too.
+On an iPad 2 running 6.1.3, `tests/backports/device/graphics12.m` against the gate's own
+`libGraphicsBackports.dylib` (the review gate of 2026-09-23, loaded from a folder of its own so the canon stayed in place):
+130 checks, 0 failed. Among them, the 30 names the release lacks resolve to the backports, each with the string above, and
+`CGColorSpaceCreateWithName` makes a space of none of them.
 `CGColorSpaceCreateDeviceRGB` makes a space, and it is what a bitmap that must draw on this release
 is made with. A bitmap context made with a space that came back NULL is NULL, and draws nothing.
 
