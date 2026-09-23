@@ -3,10 +3,11 @@ import("fixtures")
 
 local function cache(file, architecture, exported, installed)
     installed = installed or "/usr/lib/libSystem.B.dylib"
-    local strings = "\0" .. exported .. "\0"
+    exported = table.wrap(exported)
+    local strings = "\0" .. table.concat(exported, "\0") .. "\0"
     local image, header, segment = 0x100, 28, 56
     local symbols = image + header + segment + 24
-    local symbol_table = symbols + 12
+    local symbol_table = symbols + 12 * #exported
     local name = symbol_table + #strings
     local size = name + #installed + 1
     local data = {}
@@ -19,8 +20,12 @@ local function cache(file, architecture, exported, installed)
     put(0x60, string.pack("<I8I8I8I4", image, 0, 0, name))
     put(image, string.pack("<I4i4i4I4I4I4I4", 0xFEEDFACE, 12, 9, 6, 2, segment + 24, 0))
     put(image + header, string.pack("<I4I4c16I4I4I4I4i4i4I4I4", 0x1, segment, "__LINKEDIT", 0, size, 0, size, 1, 1, 0, 0))
-    put(image + header + segment, string.pack("<I4I4I4I4I4I4", 0x2, 24, symbols, 1, symbol_table, #strings))
-    put(symbols, string.pack("<I4BBi2I4", 1, 0x0F, 1, 0, 0))
+    put(image + header + segment, string.pack("<I4I4I4I4I4I4", 0x2, 24, symbols, #exported, symbol_table, #strings))
+    local offset = 1
+    for index, symbol in ipairs(exported) do
+        put(symbols + 12 * (index - 1), string.pack("<I4BBi2I4", offset, 0x0F, 1, 0, 0))
+        offset = offset + #symbol + 1
+    end
     put(symbol_table, strings)
     put(name, installed .. "\0")
     local bytes = string.rep("\0", size)
@@ -195,6 +200,22 @@ function failures(opt)
     end
     if not text:find("_elsewhere (bound to /usr/lib/libother.dylib, which only another library exports", 1, true) then
         table.insert(found, "an import bound to a library that does not export it must be refused even when another library does: " .. text)
+    end
+    local ladder = {}
+    for _, rung in ipairs({{"4.0", {"_returned", "_removed"}}, {"4.3", {"_arrived"}}, {"5.0", {"_returned", "_arrived"}}}) do
+        table.insert(ladder, {release = rung[1], architecture = "armv7",
+                              source = cache(path.join(folder, "rungs", rung[1], "dyld_shared_cache_armv7"), "armv7", rung[2])})
+    end
+    io.writefile(path.join(folder, "sdk", "usr", "lib", "libSystem.tbd"), fixtures.system_stub("_returned, _arrived, _removed, _never"))
+    os.setenv("CHARON_HOME", path.join(folder, "home"))
+    local first = dyld.first_releases(ladder, path.join(folder, "sdk"), {"_returned", "_arrived", "_removed", "_never"})
+    os.setenv("CHARON_HOME", home or "")
+    if first._returned ~= "5.0" then
+        table.insert(found, "a symbol 4.0 exports and 4.3 does not is the release's own from 5.0, where it is exported again, not " .. tostring(first._returned))
+    end
+    if first._arrived ~= "4.3" or first._removed ~= "4.0" or first._never ~= nil then
+        table.insert(found, string.format("a symbol exported from 4.3 on is 4.3's, one only 4.0 exports is 4.0's, and one no rung exports has none, not %s, %s and %s",
+                                          tostring(first._arrived), tostring(first._removed), tostring(first._never)))
     end
     local errors = fixtures.refusal(function () dyld.check(path.join(folder, "absent"), {clean}) end)
     if not errors or not errors:find("no shared cache", 1, true) then

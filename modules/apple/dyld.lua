@@ -912,8 +912,11 @@ end
 
 local FIRST = {}
 
--- The first rung of ladder that exports each of symbols where a client of the SDK binds it
--- (exported_at), {symbol = release}, with no entry for a symbol no rung exports. Loading the rungs
+-- The rung of ladder from which each of symbols stays exported where a client of the SDK binds it
+-- (exported_at), {symbol = release}, with no entry for a symbol no rung exports: the first rung of
+-- the last run of rungs that export it, since a release between two that export a symbol may lack
+-- it (CoreLocation exports CLGeocoder in 4.0, neither exports nor carries it in 4.3 and 4.3.5, and
+-- exports it again from 5.0), and a release there needs what a backport carries. Loading the rungs
 -- takes most of a minute, so every answer is kept on disk under the SDK and the ladder it was
 -- measured on, and only symbols never measured on them load a cache at all.
 function first_releases(ladder, sdkdir, symbols)
@@ -936,22 +939,20 @@ function first_releases(ladder, sdkdir, symbols)
     end
     if #missing > 0 then
         local owners = sdk_owners(sdkdir)
+        local running = {}
         for _, entry in ipairs(ladder) do
-            if #missing == 0 then
-                break
-            end
-            local cache, left = load(entry.source), {}
+            local cache = load(entry.source)
             for _, symbol in ipairs(missing) do
-                if exported_at(cache, symbol, owners[symbol]) then
+                if not exported_at(cache, symbol, owners[symbol]) then
+                    running[symbol] = nil
+                elseif not running[symbol] then
+                    running[symbol] = true
                     known[symbol] = entry.release
-                else
-                    table.insert(left, symbol)
                 end
             end
-            missing = left
         end
         for _, symbol in ipairs(missing) do
-            known[symbol] = false
+            known[symbol] = known[symbol] or false
         end
         -- Another run may have added answers since this one read the file; keep theirs too.
         for symbol, release in pairs(read()) do
