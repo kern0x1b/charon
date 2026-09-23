@@ -6,9 +6,11 @@ package("shade")
 
     add_urls("https://github.com/kern0x1b/shade.git")
     -- The revision is a config as well as the version: the version string names a release, and a
-    -- different commit under the same name must be a different install.
-    local revision = "03fa4409c834a45e1acb187f6aa7cf0f139cf0bb"
-    add_versions("2026.09.20", revision)
+    -- different commit under the same name must be a different install. xmake keeps one source
+    -- checkout per version name and builds what it holds without fetching again, so each commit
+    -- takes a name of its own, and the install checks it built that commit.
+    local revision = "e6566546746debc3130378876a65494fe7f8da02"
+    add_versions("2026.09.23", revision)
     add_configs("revision", {description = "The Shade commit this package builds, so another commit is another emulator.", default = revision, type = "string", readonly = true})
     add_configs("sdl", {description = "Build the SDL2 window backend, for watching a guest on the desktop.", default = false, type = "boolean"})
     add_configs("ffmpeg", {description = "Build the FFmpeg audio decoder, for a guest that plays compressed audio.", default = false, type = "boolean"})
@@ -28,6 +30,11 @@ package("shade")
     end)
 
     on_install("macosx|arm64", function (package)
+        local head = os.iorunv("git", {"rev-parse", "HEAD"}):trim()
+        if head ~= package:config("revision") then
+            raise("the Shade source xmake holds for %s is commit %s, not the pinned %s; the pin needs a version name of its own",
+                  package:version_str(), head, package:config("revision"))
+        end
         local plist = package:dep("libplist")
         local pkgconfig = path.absolute("pkgconfig")
         os.mkdir(pkgconfig)

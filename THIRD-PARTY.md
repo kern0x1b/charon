@@ -42,7 +42,7 @@ into the port binary that ships to a device.
 
 | Component | Version | License | Package |
 | --- | --- | --- | --- |
-| Shade — Charon's ARM/iOS userland emulator | 2026.09.20 | MPL-2.0 (notices in its `NOTICE`) | `packages/s/shade`, from [`kern0x1b/shade`](https://github.com/kern0x1b/shade) |
+| Shade — Charon's ARM/iOS userland emulator | 2026.09.23 | MPL-2.0 (notices in its `NOTICE`) | `packages/s/shade`, from [`kern0x1b/shade`](https://github.com/kern0x1b/shade) |
 | SwiftShader | 2026.09.16 | Apache-2.0 | `packages/s/swiftshader` |
 | libplist | 2.7.0 | LGPL-2.1-or-later | `packages/l/libplist` — read/write plist for the ldid signer and the Shade emulator |
 | OpenSSL | 4.0.2 | Apache-2.0 | `packages/o/openssl` — used by the ldid signer and the Shade emulator |
