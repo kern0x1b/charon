@@ -2834,7 +2834,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "reason": "part of the iOS 16 item-group toolbar (leadingItemGroups/trailingItemGroups and UIBarButtonItemGroup composing the bar); that system is not built - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2844,7 +2844,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "reason": "a UIAction replacing the default back-button pop; the port's back button still runs on the old target-action pair (UIViewController's own pop), and nothing reads this property - no demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2854,7 +2854,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "reason": "part of the iOS 16 item-group toolbar; that system is not built - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2864,7 +2864,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "reason": "keys the persisted customization of the iOS 16 item-group toolbar, which is not built - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2874,7 +2874,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "reason": "feeds the document-based title menu (file rename, tags); no document browser integration exists to read it - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2884,7 +2884,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "reason": "part of the iOS 16 item-group toolbar; that system is not built - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2894,7 +2894,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "reason": "names the popover source for the item-group toolbar's overflow menu, which is not built - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2904,7 +2904,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "reason": "part of the iOS 16 item-group toolbar; that system is not built - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2925,7 +2925,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "reason": "answers the document-based title menu's rename command; nothing offers that menu, so nothing would call it - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2935,7 +2935,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "reason": "the readonly counterpart to preferredSearchBarPlacement (implemented, inert): the port's search bar has one placement, the title view, so this always has a defined answer - a flip candidate for implemented, left absent since status does not move in this pass",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2945,7 +2945,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "reason": "chooses among the iOS 16 navigation bar presentation styles (navigator, browser, editor); the port's navigation bar has one presentation - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2955,7 +2955,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "reason": "supplies the menu the document-based title button shows; no document browser integration exists to present it - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2965,7 +2965,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
+      "reason": "part of the iOS 16 item-group toolbar; that system is not built - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
