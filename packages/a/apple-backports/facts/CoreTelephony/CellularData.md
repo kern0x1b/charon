@@ -59,10 +59,33 @@ notifier is also called once immediately with the current state when set, matchi
 ## What is measured and what is not
 
 The function signatures, the `CTError` convention and the Darwin notification name are measured
-from the release's own binary, not guessed. What is not yet measured, because it needs the device
-and the 4S was busy this pass with the canon build: whether `CTServerConnectionCreate` tolerates a
-`NULL` callback/context the way this port assumes, whether `"com.apple.coretelephony"` actually
-fires on a real cellular-data-restriction change on this hardware (rather than only on radio-access
-events), and end-to-end confirmation that `CTServerConnectionGetCellularDataIsDisallowed` returns a
-real, sensible value rather than a permission or entitlement error this app's own process lacks.
-Queued for the next 4S window.
+from the release's own binary, not guessed.
+
+Measured 2026-09-23 on the iPhone 4S (6.1.3), `tests/backports/device/cellulardata.m`: the first
+assumption this port carried - that `CTServerConnectionCreate` tolerates a `NULL` callback the way
+the earlier host-only read of its disassembly suggested - was wrong. On real hardware the call
+answers `NULL` for every combination that passes a `NULL` callback, whatever the context is, and
+only succeeds once a real (even inert) callback function pointer is given. `CharonCTConnection` in
+`CTCellularData9.m` now passes one; without this fix `restrictedState` answered
+`kCTCellularDataRestrictedStateUnknown` on every read, not because the state was unknown but
+because the connection was never created - the honest-`Unknown` guarantee was doing its job, but on
+a wrong premise it never surfaced as a bug this port could see without a device. Fixed, the same
+device now reads `kCTCellularDataNotRestricted` twice in a row with no error
+(`CTServerConnectionGetCellularDataIsDisallowed` answers `domain=kCTErrorDomainNoError`,
+`disallowed=false`), which is the value a 4S with no cellular-data restriction actually carries -
+`restrictedState` no longer answers `Unknown` when the state is in fact known, closing the second
+trap named for this task.
+
+The notifier's own mechanism - Darwin notification registration on `set`, removal on unset, the
+immediate first call, and the immediate call carrying the same state a direct read gives - is
+confirmed on hardware. What is **not** confirmed, and could not be with the tools this pass had:
+whether `"com.apple.coretelephony"` fires for a real cellular-data-restriction change, because iOS
+6 carries no Settings UI for a feature introduced in iOS 9 to drive one through, and the one other
+way to raise a real change - calling the daemon's own `CTServerConnectionSetCellularDataIsDisallowed`
+directly - answers `kCTErrorDomainNoError` but silently no-ops: the same connection reads the flag
+back unchanged immediately after setting it true, and no notification arrives. That is read as an
+entitlement wall around the *write* path (CommCenter accepting the request from an unentitled
+process without applying or erroring it, the way `CXProvider` answered `Unentitled` for CallKit but
+this daemon answers success instead), not a defect in this port's notifier wiring - the read path
+and the notifier's own mechanics are both confirmed working against the one real, known state this
+device has to offer.

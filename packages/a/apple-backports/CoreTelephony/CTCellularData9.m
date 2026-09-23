@@ -3,7 +3,8 @@
 #import <dlfcn.h>
 
 typedef void *CTServerConnectionRef;
-typedef CTServerConnectionRef (*CharonCTServerConnectionCreate)(CFAllocatorRef allocator, void *callback, void *context);
+typedef void (*CTServerConnectionCallback)(CTServerConnectionRef connection, CFStringRef notificationType, CFDictionaryRef notificationInfo, void *context);
+typedef CTServerConnectionRef (*CharonCTServerConnectionCreate)(CFAllocatorRef allocator, CTServerConnectionCallback callback, void *context);
 typedef CTError (*CharonCTServerConnectionGetCellularDataIsDisallowed)(CTServerConnectionRef connection, Boolean *disallowed);
 
 static void *CharonCTHandle(void)
@@ -16,6 +17,13 @@ static void *CharonCTHandle(void)
     return handle;
 }
 
+// Measured on an iPhone 4S (6.1.3): CTServerConnectionCreate answers NULL whenever the callback
+// argument is NULL, whatever the context is - a NULL callback is not tolerated, it is refused.
+// A real (even inert) callback is what makes the daemon hand back a connection at all.
+static void CharonCTServerConnectionNotified(CTServerConnectionRef connection, CFStringRef notificationType, CFDictionaryRef notificationInfo, void *context)
+{
+}
+
 static CTServerConnectionRef CharonCTConnection(void)
 {
     static CTServerConnectionRef connection;
@@ -23,7 +31,7 @@ static CTServerConnectionRef CharonCTConnection(void)
     dispatch_once(&once, ^{
         CharonCTServerConnectionCreate create = (CharonCTServerConnectionCreate)dlsym(CharonCTHandle(), "_CTServerConnectionCreate");
         if (create)
-            connection = create(NULL, NULL, NULL);
+            connection = create(NULL, CharonCTServerConnectionNotified, NULL);
     });
     return connection;
 }
