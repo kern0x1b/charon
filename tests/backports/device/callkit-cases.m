@@ -323,6 +323,41 @@ static void directoryExtension(CallKitRecorder record)
     record(@"directoryProvider.begin", [NSString stringWithFormat:@"class=%@ super=%@ returned", named([provider class]), named(class_getSuperclass([provider class]))]);
 }
 
+// The VoIP push report of iOS 14.5 belongs to a Notification Service Extension; the host answers a process that is
+// none and holds no notification filtering entitlement, as every caller on iOS 6 is.
+static void voipPush(CallKitRecorder record)
+{
+    for (NSDictionary *payload in @[@{@"aps": @{}}, @{}]) {
+        __block int calls = 0;
+        __block NSError *given = nil;
+        __block BOOL onMain = NO;
+        [CXProvider reportNewIncomingVoIPPushPayload:payload completion:^(NSError *error) {
+            given = error;
+            onMain = [NSThread isMainThread];
+            calls++;
+        }];
+        BOOL beforeReturn = calls > 0;
+        wait_for(^{ return (BOOL)(calls > 1); });
+        record([NSString stringWithFormat:@"provider.voipPush.%lu", (unsigned long)payload.count],
+               [NSString stringWithFormat:@"calls=%d beforeReturn=%@ main=%@ error=%@ userInfo=%lu", calls, flag(beforeReturn), flag(onMain),
+                                          described(given), (unsigned long)given.userInfo.count]);
+    }
+    __block int calls = 0;
+    __block BOOL onMain = YES, beforeReturn = NO, done = NO;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [CXProvider reportNewIncomingVoIPPushPayload:@{} completion:^(NSError *error) {
+            onMain = [NSThread isMainThread];
+            calls++;
+        }];
+        beforeReturn = calls > 0;
+        done = YES;
+    });
+    wait_for(^{ return done; });
+    record(@"provider.voipPush.offMain", [NSString stringWithFormat:@"calls=%d beforeReturn=%@ main=%@", calls, flag(beforeReturn), flag(onMain)]);
+    [CXProvider reportNewIncomingVoIPPushPayload:@{} completion:nil];
+    record(@"provider.voipPush.nilCompletion", @"returned");
+}
+
 void callkit_run(CallKitRecorder record)
 {
     domains(record);
@@ -334,4 +369,5 @@ void callkit_run(CallKitRecorder record)
     controllers(record);
     directoryManager(record);
     directoryExtension(record);
+    voipPush(record);
 }

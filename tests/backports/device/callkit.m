@@ -137,7 +137,10 @@ static void from_the_backports(void)
     CHECK_EQUAL(image_of(NSClassFromString(@"CXCallDirectoryExtensionContext")), @"libCallKitBackports.dylib", "and its context");
     CHECK_EQUAL(image_of(class_getSuperclass(NSClassFromString(@"CXCallDirectoryExtensionContext"))), @"libFoundationBackports.dylib",
                 "whose NSExtensionContext is the package's on iOS 6");
-    CHECK(![CXProvider respondsToSelector:@selector(reportNewIncomingVoIPPushPayload:completion:)], "the iOS 14.5 push report is absent");
+    Method push = class_getClassMethod([CXProvider class], @selector(reportNewIncomingVoIPPushPayload:completion:));
+    Dl_info pushImage;
+    CHECK(push && dladdr((const void *)method_getImplementation(push), &pushImage) && [@(pushImage.dli_fname).lastPathComponent isEqualToString:@"libCallKitBackports.dylib"],
+          "the iOS 14.5 push report is there, from the backports");
 }
 
 static CXProvider *provider_with(CharonCallDelegate *delegate)

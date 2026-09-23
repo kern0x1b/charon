@@ -2,16 +2,6 @@
   "framework": "CallKit",
   "entries": [
     {
-      "api": "+[CXProvider reportNewIncomingVoIPPushPayload:completion:]",
-      "kind": "method",
-      "introduced": "14.5",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the method exists to turn a PKPushRegistry VoIP push payload into a reported call, and this port never receives one to turn: apsd on iOS 6.1.3, measured against real hardware (facts/PushKit/PushKit.md), ties every device token to a nonzero UIRemoteNotificationType bitmask (Badge/Sound/Alert) with no silent fourth bit, so a PKPushRegistry set up the way PushKit is meant to be used - with no prior -registerUserNotificationSettings: call - never receives a token at all; and apsd never wakes a suspended or not-running application for any push regardless. The wall is Apple's own push daemon on this release, not a version gate",
-      "effect": "the method is not there: respondsToSelector: answers NO and a compile time call crashes",
-      "source": "SDK 16.4, CallKit"
-    },
-    {
       "api": "CXCallDirectoryExtensionContextDelegate",
       "kind": "protocol",
       "introduced": "10.0",

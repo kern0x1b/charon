@@ -103,8 +103,21 @@ the method gets it too, completes with `NSCocoaErrorDomain` / `NSFeatureUnsuppor
 open: iOS 6 has none, and the releases before 13.4 give an application no public way to open theirs. `CXErrorDomainNotificationServiceExtension` is carried: it is a
 string, and an application that names it loads.
 
-`+[CXProvider reportNewIncomingVoIPPushPayload:completion:]` is absent, and the wall behind it is not a version gate but the one genuine wall this
-domain has: the method turns a `PKPushRegistry` VoIP push payload into a reported call, and this port never receives one to turn. `apsd`, iOS 6.1.3's
+`+[CXProvider reportNewIncomingVoIPPushPayload:completion:]` (iOS 14.5) is there and refuses at its seam. The header gives it to a
+Notification Service Extension, to have the containing application launched for an incoming VoIP call; iOS 6 has no application
+extensions, so no caller of it is ever one. The answer is the host's to a process that is no extension and holds no notification filtering
+entitlement (Mac Catalyst, `tests/backports/host/callkit/run.sh`, records `provider.voipPush.*`): the completion is called once, before the
+method returns, on the caller's thread (from the main thread and from a global queue alike), with `CXErrorDomainNotificationServiceExtension`
+/ `CXErrorCodeNotificationServiceExtensionErrorMissingNotificationFilteringEntitlement` (2) and no user info, whatever the payload; a nil
+completion is allowed. The earlier handoff's "on the main thread" was the thread the probe called from. A process that does hold
+`com.apple.developer.usernotifications.filtering` and is still no extension presumably gets
+`CXErrorCodeNotificationServiceExtensionErrorInvalidClientProcess` (1) from the system, as the reviewer remembered for an application process;
+the host cannot show it, since AMFI kills an ad-hoc signed process that claims that entitlement before it runs (exit 137, 2026-09-24), and
+iOS 6 gives a process no public way to read its own entitlements, so the port answers 2 to such a process as well. That is the one
+divergence, between two refusals, for an entitlement Apple issues only to extensions.
+
+Behind the seam is the wall that made the method `absent` before, and it still stands: the method turns a `PKPushRegistry` VoIP push payload
+into a reported call, and this port never receives one to turn. `apsd`, iOS 6.1.3's
 own push daemon, ties every device token to a nonzero `UIRemoteNotificationType` bitmask (`Badge`/`Sound`/`Alert`) with no silent fourth bit - measured
 against real hardware in `facts/PushKit/PushKit.md` - so a `PKPushRegistry` set up the way PushKit is meant to be used, with no prior
 `-registerUserNotificationSettings:` call, never receives a token at all. And even with a token, `apsd` on this release never wakes a suspended or

@@ -265,6 +265,17 @@
       "source": "SDK 16.4, CallKit, for the errors; the host's CallKit under Mac Catalyst (tests/backports/host/callkit/run.sh) for the queue and the shared instance"
     },
     {
+      "api": "+[CXProvider reportNewIncomingVoIPPushPayload:completion:]",
+      "kind": "method",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the header gives the method to a Notification Service Extension, to have its application launched for a VoIP call; iOS 6 has no application extensions, so no caller is ever one, and apsd of 6.1.3 delivers no VoIP push to report (facts/PushKit/PushKit.md)",
+      "effect": "calls the completion once, before returning, on the caller's thread, with CXErrorDomainNotificationServiceExtension / CXErrorCodeNotificationServiceExtensionErrorMissingNotificationFilteringEntitlement and no user info, the host's answer to a process that is no extension and holds no notification filtering entitlement; a nil completion is allowed",
+      "facts": "facts/CallKit/CallKit.md",
+      "source": "the host's CallKit under Mac Catalyst (tests/backports/host/callkit/run.sh), and SDK 16.4, CallKit"
+    },
+    {
       "api": "-[CXCallDirectoryManager openSettingsWithCompletionHandler:]",
       "kind": "method",
       "introduced": "13.4",
