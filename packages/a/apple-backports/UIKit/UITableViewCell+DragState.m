@@ -20,11 +20,3 @@ static const char CharonWhileDraggingKey;
 }
 
 @end
-
-@implementation UICollectionViewCell (CharonDragState)
-
-- (void)dragStateDidChange:(UICollectionViewCellDragState)dragState
-{
-}
-
-@end
