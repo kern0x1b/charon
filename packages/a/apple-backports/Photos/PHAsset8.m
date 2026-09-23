@@ -61,41 +61,66 @@
     return NO;
 }
 
-+ (PHFetchResult *)charon_result:(NSArray *)assets options:(PHFetchOptions *)options
+- (PHObject *)charon_refetched
 {
-    return [[PHFetchResult alloc] initWithCharonObjects:options ? [options charon_apply:assets] : assets];
+    return [CharonPhotosStore assetWithIdentifier:self.localIdentifier];
+}
+
+- (BOOL)charon_sameStateAs:(PHObject *)other
+{
+    PHAsset *asset = (PHAsset *)other;
+    return [asset isKindOfClass:[PHAsset class]] && asset.mediaType == _mediaType && asset.pixelWidth == _pixelWidth &&
+           asset.pixelHeight == _pixelHeight && asset.duration == _duration && asset.hasAdjustments == self.hasAdjustments &&
+           (asset.creationDate == _creationDate || [asset.creationDate isEqualToDate:_creationDate]) &&
+           (asset.location == _location || (asset.location && _location && [asset.location distanceFromLocation:_location] == 0));
+}
+
++ (PHFetchResult *)charon_result:(NSArray *(^)(void))query options:(PHFetchOptions *)options
+{
+    return [[PHFetchResult alloc] initWithCharonQuery:query options:options];
 }
 
 + (PHFetchResult<PHAsset *> *)fetchAssetsWithOptions:(PHFetchOptions *)options
 {
-    return [self charon_result:[CharonPhotosStore assetsOfSourceTypes:options.includeAssetSourceTypes filter:nil] options:options];
+    PHAssetSourceType sourceTypes = options.includeAssetSourceTypes;
+    return [self charon_result:^{
+        return [CharonPhotosStore assetsOfSourceTypes:sourceTypes filter:nil];
+    } options:options];
 }
 
 + (PHFetchResult<PHAsset *> *)fetchAssetsWithMediaType:(PHAssetMediaType)mediaType options:(PHFetchOptions *)options
 {
     ALAssetsFilter *filter = mediaType == PHAssetMediaTypeImage ? [ALAssetsFilter allPhotos] : mediaType == PHAssetMediaTypeVideo ? [ALAssetsFilter allVideos] : nil;
-    NSMutableArray *assets = [NSMutableArray array];
-    for (PHAsset *asset in [CharonPhotosStore assetsOfSourceTypes:options.includeAssetSourceTypes filter:filter]) {
-        if (asset.mediaType == mediaType)
-            [assets addObject:asset];
-    }
-    return [self charon_result:assets options:options];
+    PHAssetSourceType sourceTypes = options.includeAssetSourceTypes;
+    return [self charon_result:^{
+        NSMutableArray *assets = [NSMutableArray array];
+        for (PHAsset *asset in [CharonPhotosStore assetsOfSourceTypes:sourceTypes filter:filter]) {
+            if (asset.mediaType == mediaType)
+                [assets addObject:asset];
+        }
+        return (NSArray *)assets;
+    } options:options];
 }
 
 + (PHFetchResult<PHAsset *> *)fetchAssetsInAssetCollection:(PHAssetCollection *)assetCollection options:(PHFetchOptions *)options
 {
-    return [self charon_result:[assetCollection charon_assets] options:options];
+    return [self charon_result:^{
+        return [assetCollection charon_assets];
+    } options:options];
 }
 
 + (PHFetchResult<PHAsset *> *)fetchAssetsWithLocalIdentifiers:(NSArray<NSString *> *)identifiers options:(PHFetchOptions *)options
 {
-    NSMutableArray *assets = [NSMutableArray array];
-    for (NSString *identifier in identifiers) {
-        PHAsset *asset = [CharonPhotosStore assetWithIdentifier:identifier];
-        if (asset)
-            [assets addObject:asset];
-    }
-    return [self charon_result:assets options:options];
+    NSArray *kept = [identifiers copy];
+    return [self charon_result:^{
+        NSMutableArray *assets = [NSMutableArray array];
+        for (NSString *identifier in kept) {
+            PHAsset *asset = [CharonPhotosStore assetWithIdentifier:identifier];
+            if (asset)
+                [assets addObject:asset];
+        }
+        return (NSArray *)assets;
+    } options:options];
 }
 
 @end

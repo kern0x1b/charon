@@ -27,6 +27,7 @@ it. When the status is already decided the handler is called with it at once, of
 thread. The two calls with an access level of iOS 14 answer the same, and the status is
 never limited, as the release has no limited selection.
 
-Everything that needs the Photos database is absent: changes and their observers, the
-availability observers, cloud identifiers and the history of changes. The rows are in
-`registry/Photos/ios8.json`.
+Changes and their observers are told from `ALAssetsLibraryChangedNotification`
+(`Changes.md`, "Observing changes"). Everything else that needs the Photos database is
+absent: the availability observers, cloud identifiers and the history of changes. The rows
+are in `registry/Photos/ios8.json`.

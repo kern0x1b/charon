@@ -13,7 +13,11 @@ static void charon_deliver_authorization(void (^handler)(PHAuthorizationStatus s
     });
 }
 
-@implementation PHPhotoLibrary
+@implementation PHPhotoLibrary {
+    NSHashTable *_observers;
+    dispatch_queue_t _delivery;
+    id _listening;
+}
 
 @dynamic currentChangeToken, unavailabilityReason;
 
@@ -53,6 +57,50 @@ static void charon_deliver_authorization(void (^handler)(PHAuthorizationStatus s
     } failureBlock:^(NSError *error) {
         answer();
     }];
+}
+
+// The release says a change of the library with ALAssetsLibraryChangedNotification, posted by the
+// ALAssetsLibrary the port reads through; each observer is told on a serial queue off the main thread,
+// and it is held weakly, as the library of iOS 8 holds it (facts/Photos/Changes.md).
+- (void)registerChangeObserver:(id<PHPhotoLibraryChangeObserver>)observer
+{
+    @synchronized(self) {
+        if (!_observers) {
+            _observers = [NSHashTable weakObjectsHashTable];
+            _delivery = dispatch_queue_create("space.kern0x1b.photos.changes", DISPATCH_QUEUE_SERIAL);
+        }
+        [_observers addObject:observer];
+        if (_listening)
+            return;
+        __weak PHPhotoLibrary *weakSelf = self;
+        _listening = [[NSNotificationCenter defaultCenter] addObserverForName:ALAssetsLibraryChangedNotification object:[CharonPhotosStore library] queue:nil usingBlock:^(NSNotification *note) {
+            [weakSelf charon_libraryChanged:note.userInfo];
+        }];
+    }
+}
+
+- (void)unregisterChangeObserver:(id<PHPhotoLibraryChangeObserver>)observer
+{
+    @synchronized(self) {
+        [_observers removeObject:observer];
+    }
+}
+
+// Every notification is passed on: 6.1.3 posts an empty user info for a write of the application itself,
+// a real change, and the change reads again whatever it is asked about.
+- (void)charon_libraryChanged:(NSDictionary *)userInfo
+{
+    NSArray *observers;
+    @synchronized(self) {
+        observers = _observers.allObjects;
+    }
+    if (observers.count == 0)
+        return;
+    PHChange *change = [[PHChange alloc] initWithCharonUserInfo:userInfo];
+    dispatch_async(_delivery, ^{
+        for (id<PHPhotoLibraryChangeObserver> observer in observers)
+            [observer photoLibraryDidChange:change];
+    });
 }
 
 - (void)performChanges:(dispatch_block_t)changeBlock completionHandler:(void (^)(BOOL success, NSError *error))completionHandler

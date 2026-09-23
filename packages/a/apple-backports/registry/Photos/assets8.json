@@ -172,8 +172,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the class is the argument of an observer, and no observer is ever called, so none is made",
-      "effect": "the class is there for what names it; nothing makes an object of it",
+      "effect": "made for each ALAssetsLibraryChangedNotification and given to the observers; changeDetailsForFetchResult: runs the fetch again and answers nil when nothing it holds changed, changeDetailsForObject: reads the object again",
       "facts": "facts/Photos/Changes.md",
       "source": "the header of iOS 16.4 for the declarations; the host's Photos for the defaults, constants and exception text; an iPad 2 running 6.1.3 and the iOS 6.0 emulator for what ALAssetsLibrary gives and the release does not export"
     },
@@ -183,8 +182,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the class is the detail of a change, and no change is ever delivered",
-      "effect": "the class is there for what names it; nothing makes an object of it",
+      "effect": "the object before and after the change; objectWasDeleted when it cannot be read again; assetContentChanged when the release named the asset among the updated ones",
       "facts": "facts/Photos/Changes.md",
       "source": "the header of iOS 16.4 for the declarations; the host's Photos for the defaults, constants and exception text; an iPad 2 running 6.1.3 and the iOS 6.0 emulator for what ALAssetsLibrary gives and the release does not export"
     },
@@ -194,8 +192,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the class is the detail of a change, and no change is ever delivered",
-      "effect": "the class is there for what names it; nothing makes an object of it",
+      "effect": "the fetch before and after; removed indexes of the fetch before, inserted and changed of the fetch after; a change that reorders what both fetches hold, or a fetch whose options do not want incremental details, is told as not incremental; hasMoves is always NO",
       "facts": "facts/Photos/Changes.md",
       "source": "the header of iOS 16.4 for the declarations; the host's Photos for the defaults, constants and exception text; an iPad 2 running 6.1.3 and the iOS 6.0 emulator for what ALAssetsLibrary gives and the release does not export"
     },

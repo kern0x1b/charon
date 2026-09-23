@@ -3,6 +3,7 @@
 #import <UIKit/UIKit.h>
 
 @interface CharonPhotosStore : NSObject
++ (ALAssetsLibrary *)library;
 + (BOOL)canRead;
 + (BOOL)canWrite;
 + (NSArray<PHAsset *> *)assetsOfSourceTypes:(PHAssetSourceType)sourceTypes filter:(ALAssetsFilter *)filter;
@@ -37,6 +38,18 @@
 
 @interface PHFetchResult (Charon)
 - (instancetype)initWithCharonObjects:(NSArray *)objects;
+- (instancetype)initWithCharonQuery:(NSArray *(^)(void))query options:(PHFetchOptions *)options;
+- (PHFetchResult *)charon_refetched;
+- (BOOL)charon_wantsIncrementalChangeDetails;
+@end
+
+@interface PHObject (CharonChange)
+- (PHObject *)charon_refetched;
+- (BOOL)charon_sameStateAs:(PHObject *)other;
+@end
+
+@interface PHChange (Charon)
+- (instancetype)initWithCharonUserInfo:(NSDictionary *)userInfo;
 @end
 
 @interface PHFetchOptions (Charon)

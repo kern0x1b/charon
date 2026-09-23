@@ -6,6 +6,8 @@
 
 @implementation PHFetchResult {
     NSArray *_objects;
+    NSArray *(^_query)(void);
+    PHFetchOptions *_options;
 }
 
 - (instancetype)initWithCharonObjects:(NSArray *)objects
@@ -14,6 +16,31 @@
     if (self)
         _objects = [objects copy] ?: @[];
     return self;
+}
+
+// A fetch keeps the query it ran and its options, so that a change of the library can run it again and
+// say what a fetch made now gives instead (PHChange, facts/Photos/Changes.md).
+- (instancetype)initWithCharonQuery:(NSArray *(^)(void))query options:(PHFetchOptions *)options
+{
+    NSArray *objects = query();
+    self = [self initWithCharonObjects:options ? [options charon_apply:objects] : objects];
+    if (self) {
+        _query = [query copy];
+        _options = [options copy];
+    }
+    return self;
+}
+
+- (PHFetchResult *)charon_refetched
+{
+    if (!_query)
+        return self;
+    return [[PHFetchResult alloc] initWithCharonQuery:_query options:_options];
+}
+
+- (BOOL)charon_wantsIncrementalChangeDetails
+{
+    return _options ? _options.wantsIncrementalChangeDetails : YES;
 }
 
 - (id)copyWithZone:(NSZone *)zone

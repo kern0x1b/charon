@@ -53,6 +53,32 @@ changes nothing, since the read never reaches the network; `progressHandler`, wh
 success, so a caller waiting on it is never left waiting forever. `-cancelDataRequest:` is a no-op: by the time a caller could call it,
 the read this release can do has already finished.
 
+## Observing changes
+
+`-[PHPhotoLibrary registerChangeObserver:]` and `-unregisterChangeObserver:` keep the observers in a weak hash table, so an
+observer that goes away is dropped without being unregistered. iOS 6 says that the library changed with
+`ALAssetsLibraryChangedNotification`, posted by an `ALAssetsLibrary`; the port listens to the one it reads and writes through,
+from the first registration on. Every notification makes one `PHChange` that every observer registered at that moment is sent
+with `photoLibraryDidChange:`, one after another on a serial queue that is not the main thread.
+
+The header of iOS 6 says that the user info may name the assets and groups that changed (`ALAssetLibraryUpdatedAssetsKey` and the
+three group keys) and that a nil user info means everything changed. Measured on 6.1.3, for writes of the application itself: the
+notification is posted once per write, from the library that wrote and off the main thread; the first write of a process, before
+its library had read anything, came with an empty dictionary although an asset was added, and a later one with
+`ALAssetLibraryUpdatedAssetGroupsKey` and `ALAssetLibraryUpdatedAssetsKey`. So an empty dictionary is not taken to mean that
+nothing changed, an asset the keys name counts as changed, and the change reads again what it is asked about in every case. Every fetch result keeps the query that made it
+and its options, and `-changeDetailsForFetchResult:` runs that query again: the objects of the fetch before that are not in the
+fetch after are the removals, as indexes of the fetch before; the new ones the insertions, and the objects in both that the
+notification named or whose properties read differently the changes, as indexes of the fetch after. When nothing differs it
+answers nil. The objects both fetches hold must keep their order among themselves to be told as indexes: the saved photos of the
+release are in the order of their dates and an asset does not move, so a change that reorders is told with
+`hasIncrementalChanges` NO and no indexes, the answer the header allows for any change; `hasMoves` is always NO. A fetch whose
+options say `wantsIncrementalChangeDetails` NO is told the same way. `-changeDetailsForObject:` reads the asset or album again by
+its identifier: nil when it reads the same and was not named, `objectWasDeleted` when it can no longer be read, and
+`assetContentChanged` when the notification named the asset, which is all the release tells: it does not separate a change of
+the bytes from one of the properties. `+[PHFetchResultChangeDetails changeDetailsFromFetchResult:toFetchResult:changedObjects:]`
+compares the two fetches it is given the same way.
+
 ## What is refused
 
 The library of iOS 6 lets an application add to it and read it, not delete from it and not change what is in it. `+deleteAssets:`, an
@@ -70,6 +96,8 @@ the refused rename, reorder and delete (`PHPhotosErrorChangeNotSupported`, title
 resource manager (completion once with `nil`, progress once with `1.0`, within five seconds) were run on an iPad 2 running 6.1.3 on
 2026-09-23, called off the main thread, 17 of 19 checks passing; the two others are the release's rewrite below. The refusal of
 an album name in use below was run there too: 3300, and the number of 8-by-8 saved photos the same before and after.
+The change observers were run on the same iPad on 2026-09-23 with `tests/backports/device/photoschanges8.m`, an application of its
+own with the photo library allowed: 22 checks, 0 failures.
 
 The saved photos of iOS 6 do not keep the bytes they are given: a 726-byte JPEG written with
 `writeImageDataToSavedPhotosAlbum:metadata:` and `nil` metadata reads back as 1929 bytes, measured the same with no port code on the
