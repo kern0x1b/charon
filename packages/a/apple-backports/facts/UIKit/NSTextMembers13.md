@@ -58,6 +58,10 @@ attachment.
 The release carries `NSTextList` itself, in UIFoundation (`objc.inventory` on 6.1.3), with `initWithMarkerFormat:options:` and
 `startingItemNumber`. `UIKit/NSTextList+Init16.m` is those two in a row: the release's initializer, then the starting number set on the
 list it made. It adds no state and draws nothing the release did not; the release's text views draw no list markers either way.
+The release carries the class without exporting it (the gate's import check names `_OBJC_CLASS_$_NSTextList` as a weak import NULL on
+6.1.3), and the library's loader (`attach.c`) skips a category whose class reference is NULL, so the category alone would never reach
+the class on iOS 6. `CharonTextListInit16` in the same file adds the method to `objc_getClass("NSTextList")` in its `+load`, which runs
+before the loader, when the class lacks it; the category stays for the registry and for a release that exports the class.
 `objc.inventory` (`.agent-work/plan-and-analysis/b1314-flips/ladder-rest.log`): the three-argument initializer is not in 6.1.3 or 12.0 and
 is in 16.0 and 18.0, the two-argument one is in all four. No 13-15 cache, so `introduced` stays the header's 16.0. Not run on a device.
 
