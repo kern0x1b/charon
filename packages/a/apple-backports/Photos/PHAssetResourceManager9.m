@@ -1,4 +1,7 @@
 #import "CharonPhotos.h"
+#include <errno.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
@@ -48,25 +51,52 @@
     }
 }
 
-- (NSData *)charon_readResource:(PHAssetResource *)resource error:(NSError **)error
+// Photos of iOS 9 and later hands a resource over in chunks of a size of its own, which only a library holding real
+// assets could show, and the one library of this machine is the owner's. The size here is the port's: a read holds
+// one chunk at a time, so a video of any length stays within a small part of a 512 MB device's memory.
+static const NSUInteger CharonResourceChunkLength = 1024 * 1024;
+
+// Reads the representation of the resource's asset one chunk after another and hands each to deliver, which answers
+// NO to stop the read. NO, with the error, when the asset or its data is gone or the library gives no more bytes before
+// the representation's own size; a read stopped by deliver answers NO and leaves the error as it was.
+- (BOOL)charon_readResource:(PHAssetResource *)resource
+                   progress:(PHAssetResourceProgressHandler)progress
+                    deliver:(BOOL (^)(NSData *chunk))deliver
+                      error:(NSError **)error
 {
     PHAsset *asset = [CharonPhotosStore assetWithIdentifier:resource.assetLocalIdentifier];
+    if (!asset) {
+        if (error)
+            *error = [CharonPhotosStore errorWithCode:PHPhotosErrorIdentifierNotFound reason:@"the asset this resource was made from no longer exists"];
+        return NO;
+    }
     ALAssetRepresentation *representation = [asset charon_asset].defaultRepresentation;
     if (!representation) {
         if (error)
-            *error = [CharonPhotosStore errorWithCode:-1 reason:@"the asset this resource was made from no longer exists"];
-        return nil;
+            *error = [CharonPhotosStore errorWithCode:PHPhotosErrorMissingResource reason:@"the asset this resource was made from has no data to read"];
+        return NO;
     }
-    NSUInteger length = (NSUInteger)representation.size;
-    NSMutableData *data = [NSMutableData dataWithLength:length];
-    NSError *readError = nil;
-    NSUInteger got = [representation getBytes:data.mutableBytes fromOffset:0 length:length error:&readError];
-    if (got != length) {
-        if (error)
-            *error = readError ?: [CharonPhotosStore errorWithCode:-1 reason:@"the photo library gave fewer bytes than the resource's own size"];
-        return nil;
+    long long size = representation.size;
+    for (long long offset = 0; offset < size;) {
+        @autoreleasepool {
+            NSUInteger length = (NSUInteger)MIN((long long)CharonResourceChunkLength, size - offset);
+            NSMutableData *chunk = [NSMutableData dataWithLength:length];
+            NSError *readError = nil;
+            NSUInteger got = [representation getBytes:chunk.mutableBytes fromOffset:offset length:length error:&readError];
+            if (got == 0) {
+                if (error)
+                    *error = readError ?: [CharonPhotosStore errorWithCode:PHPhotosErrorInternalError reason:@"the photo library gave fewer bytes than the resource's own size"];
+                return NO;
+            }
+            chunk.length = got;
+            offset += got;
+            if (!deliver(chunk))
+                return NO;
+            if (progress)
+                progress((double)offset / (double)size);
+        }
     }
-    return data;
+    return YES;
 }
 
 - (PHAssetResourceDataRequestID)requestDataForAssetResource:(PHAssetResource *)resource
@@ -80,46 +110,77 @@
         [_charonPending addObject:key];
     }
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        BOOL pending;
-        @synchronized (self->_charonPending) {
-            pending = [self->_charonPending containsObject:key];
-        }
+        BOOL (^pending)(void) = ^BOOL {
+            @synchronized (self->_charonPending) {
+                return [self->_charonPending containsObject:key];
+            }
+        };
+        // A cancel is looked at before every chunk: a request cancelled before its first one delivers nothing, one
+        // cancelled during the read stops there. Either completes once, with PHPhotosErrorUserCancelled.
         NSError *error = nil;
-        NSData *data = pending ? [self charon_readResource:resource error:&error] : nil;
+        BOOL read = pending() && [self charon_readResource:resource progress:options.progressHandler deliver:^BOOL(NSData *chunk) {
+            if (!pending())
+                return NO;
+            if (handler)
+                handler(chunk);
+            return YES;
+        } error:&error];
+        BOOL cancelled;
         @synchronized (self->_charonPending) {
-            pending = [self->_charonPending containsObject:key];
+            cancelled = ![self->_charonPending containsObject:key];
             [self->_charonPending removeObject:key];
         }
-        if (!pending) {
-            if (completionHandler)
-                completionHandler([CharonPhotosStore errorWithCode:PHPhotosErrorUserCancelled reason:@"the data request was cancelled"]);
-            return;
-        }
-        if (data) {
-            if (options.progressHandler)
-                options.progressHandler(1.0);
-            if (handler)
-                handler(data);
-        }
         if (completionHandler)
-            completionHandler(data ? nil : error);
+            completionHandler(cancelled ? [CharonPhotosStore errorWithCode:PHPhotosErrorUserCancelled reason:@"the data request was cancelled"]
+                                        : read ? nil : error);
     });
     return requestID;
 }
 
+// Photos writes the data into the file as it reads it. This writes it one chunk at a time into a file of its own
+// beside the given one and renames that into place once every chunk is in: the given file is replaced on success,
+// as the whole-file atomic write here always did, and left as it was when the read or a write fails.
 - (void)writeDataForAssetResource:(PHAssetResource *)resource
                             toFile:(NSURL *)fileURL
                            options:(PHAssetResourceRequestOptions *)options
                  completionHandler:(void (^)(NSError *error))completionHandler
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSError *error = nil;
-        NSData *data = [self charon_readResource:resource error:&error];
-        BOOL wrote = data && [data writeToURL:fileURL options:NSDataWritingAtomic error:&error];
-        if (wrote && options.progressHandler)
-            options.progressHandler(1.0);
+        NSError *(^failure)(NSURL *) = ^NSError *(NSURL *url) {
+            return [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSURLErrorKey: url}];
+        };
+        NSString *name = [NSString stringWithFormat:@".%@.%@", fileURL.lastPathComponent, [NSUUID UUID].UUIDString];
+        NSURL *partURL = [fileURL.URLByDeletingLastPathComponent URLByAppendingPathComponent:name];
+        const char *part = partURL.fileSystemRepresentation;
+        int fd = open(part, O_WRONLY | O_CREAT | O_EXCL, 0644);
+        NSError *error = fd < 0 ? failure(fileURL) : nil;
+        __block NSError *writeError = nil;
+        BOOL wrote = fd >= 0 && [self charon_readResource:resource progress:options.progressHandler deliver:^BOOL(NSData *chunk) {
+            for (NSUInteger done = 0; done < chunk.length;) {
+                ssize_t put = write(fd, (const char *)chunk.bytes + done, chunk.length - done);
+                if (put < 0) {
+                    if (errno == EINTR)
+                        continue;
+                    writeError = failure(fileURL);
+                    return NO;
+                }
+                done += (NSUInteger)put;
+            }
+            return YES;
+        } error:&error];
+        error = writeError ?: error;
+        if (fd >= 0 && close(fd) != 0 && wrote) {
+            error = failure(fileURL);
+            wrote = NO;
+        }
+        if (wrote && rename(part, fileURL.fileSystemRepresentation) != 0) {
+            error = failure(fileURL);
+            wrote = NO;
+        }
+        if (fd >= 0 && !wrote)
+            unlink(part);
         if (completionHandler)
-            completionHandler(wrote ? nil : (error ?: [CharonPhotosStore errorWithCode:-1 reason:@"the resource's data could not be written to that file"]));
+            completionHandler(wrote ? nil : error);
     });
 }
 

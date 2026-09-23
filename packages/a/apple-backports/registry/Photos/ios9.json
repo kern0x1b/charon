@@ -40,8 +40,8 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the options object is plain state (whether the network may be used, a progress block); iOS 6 always reads the asset from local storage, so networkAccessAllowed changes nothing, and the read is synchronous enough that progress is only ever reported once, at completion",
-      "effect": "networkAccessAllowed is held and copied but not read back, since ALAssetsLibrary never reaches the network for a local asset's bytes; progressHandler is called once with 1.0 when the read that follows it succeeds, never left uncalled",
+      "reason": "the options object is plain state (whether the network may be used, a progress block); iOS 6 always reads the asset from local storage, so networkAccessAllowed changes nothing, and progress is the part of the representation read so far",
+      "effect": "networkAccessAllowed is held and copied but not read back, since ALAssetsLibrary never reaches the network for a local asset's bytes; progressHandler is called after each chunk the read hands over, with the part read so far, the last time with 1.0",
       "facts": "facts/Photos/Changes.md",
       "source": "the header of iOS 16.4 for the declarations; not yet measured on device"
     },
@@ -52,7 +52,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the manager gives back the bytes of the one resource an iOS 6 asset has; it reads them from the same ALAssetRepresentation that PHAssetResource itself was built from",
-      "effect": "+defaultManager gives one shared instance; requestDataForAssetResource:options:dataReceivedHandler:completionHandler: reads the whole representation in one call and hands it to dataReceivedHandler once, then calls completionHandler with nil, or with an error and no call to dataReceivedHandler if the asset is gone or the release gave fewer bytes than the representation's own size; writeDataForAssetResource:toFile:options:completionHandler: writes the same bytes to the given file; cancelDataRequest: of a request whose read has not handed data over yet makes it call dataReceivedHandler never and completionHandler once, with PHPhotosErrorUserCancelled; a completed request is not changed",
+      "effect": "+defaultManager gives one shared instance; requestDataForAssetResource:options:dataReceivedHandler:completionHandler: reads the representation one chunk at a time and hands each chunk to dataReceivedHandler, then calls completionHandler with nil, or with an error and no further chunk if the asset is gone (PHPhotosErrorIdentifierNotFound), has no representation (PHPhotosErrorMissingResource) or the release gives no more bytes before the representation's own size; writeDataForAssetResource:toFile:options:completionHandler: writes the chunks as they are read into a file beside the given one and renames it into place when all are in, leaving the given file as it was on a failure; cancelDataRequest: stops a request before its next chunk and makes it call completionHandler once, with PHPhotosErrorUserCancelled; a completed request is not changed",
       "facts": "facts/Photos/Changes.md",
       "source": "the header of iOS 16.4 for the declarations; verified against this port's own PHAssetResource and ALAssetRepresentation.getBytes:fromOffset:length:error:; not yet measured on device"
     }

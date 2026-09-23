@@ -43,45 +43,34 @@ success and an error in the domain `PHPhotosErrorDomain`. No access answers `PHP
 ## Reading a resource back
 
 `+[PHAssetResourceManager defaultManager]` (iOS 9) gives the bytes of a `PHAssetResource` back, on the same `ALAssetRepresentation` the
-resource was built from: `-requestDataForAssetResource:options:dataReceivedHandler:completionHandler:` reads the whole representation
-with `getBytes:fromOffset:length:error:` in one call (iOS 6 has no chunked network fetch to page through), then calls
-`dataReceivedHandler` once with everything and `completionHandler` with `nil`; `-writeDataForAssetResource:toFile:options:completionHandler:`
-writes the same bytes to the given file. Either call gives `completionHandler` an error, and never calls `dataReceivedHandler`, when the
-asset behind the resource's `assetLocalIdentifier` is gone or the release hands back fewer bytes than the representation's own `size` —
-the read is never allowed to answer with a silently short buffer. `PHAssetResourceRequestOptions.networkAccessAllowed` is held but
-changes nothing, since the read never reaches the network; `progressHandler`, when set, is always called exactly once, with `1.0`, on
-success, so a caller waiting on it is never left waiting forever. The read runs on a global queue after the call
-returns, so a caller can cancel it: `-cancelDataRequest:` takes the request out of the manager's pending ones, and a request
-cancelled before its read has handed data over calls `dataReceivedHandler` never and `completionHandler` once, with
-`PHPhotosErrorUserCancelled` (3072, which the header documents for "the asset resource or editing request"). A request that has
+resource was built from, one chunk at a time, as the documentation of iOS 9 says Photos does ("calls your handler block at least
+once, progressively providing chunks of data"; the complete data is their concatenation):
+`-requestDataForAssetResource:options:dataReceivedHandler:completionHandler:` reads the representation with
+`getBytes:fromOffset:length:error:` one chunk after another and calls `dataReceivedHandler` with each, then `completionHandler` with
+`nil`; `-writeDataForAssetResource:toFile:options:completionHandler:` writes each chunk as it is read. Only one chunk is held at a
+time, so a video is never read into memory whole. A chunk is 1 MiB here, the port's own choice: the size Photos of iOS 9 and later uses
+cannot be measured on this machine, since that needs a Photos library with assets in it and the host's one library is the
+owner's, and the devices run iOS 6. Nothing of the API depends on it; the device test holds what does not depend on the size: the chunks, none
+empty, are together the bytes of a direct read of the asset, and a video of several megabytes is not handed over in one piece.
+
+The file of `writeDataForAssetResource:` is written into a file of its own beside the given one and renamed into place when every
+chunk is in: a file already there is replaced on success, as the whole-file atomic write here did before, and left as it was
+when the read or a write fails, with the file system's error. What Photos itself does with a file that is already there is not
+measured, for the same reason as the chunk size; the documentation says only that it writes the data "progressively" into the file.
+
+Either call gives `completionHandler` an error, and never calls `dataReceivedHandler` again, when the asset behind the resource's
+`assetLocalIdentifier` is gone (`PHPhotosErrorIdentifierNotFound`), the asset has no representation (`PHPhotosErrorMissingResource`),
+or the release gives no more bytes before the representation's own `size` (its own error, or `PHPhotosErrorInternalError` when it
+gives none) — the read never ends on a silently short answer. `PHAssetResourceRequestOptions.networkAccessAllowed` is held but
+changes nothing, since the read never reaches the network; `progressHandler`, when set, is called after each chunk with the part
+read so far, the last time with `1.0`. The read runs on a global queue after the call returns, and the handlers of one request are
+called one after another from it, so a caller can cancel it: `-cancelDataRequest:` takes the request out of the manager's pending
+ones, and the read looks at that before every chunk. A request cancelled before its first chunk calls `dataReceivedHandler` never,
+one cancelled during the read no more after that, and either calls `completionHandler` once, with `PHPhotosErrorUserCancelled`
+(3072, which the header documents for "the asset resource or editing request"); a cancel after the last chunk still completes it
+cancelled, which the documentation allows ("a non-nil error when the data is complete if the user cancels"). A request that has
 completed already is not changed by a cancel. The earlier text here, that the read had always finished before a caller could
 cancel, was wrong: the read was asynchronous already, and a cancel reached nothing.
-
-## Observing changes
-
-`-[PHPhotoLibrary registerChangeObserver:]` and `-unregisterChangeObserver:` keep the observers in a weak hash table, so an
-observer that goes away is dropped without being unregistered. iOS 6 says that the library changed with
-`ALAssetsLibraryChangedNotification`, posted by an `ALAssetsLibrary`; the port listens to the one it reads and writes through,
-from the first registration on. Every notification makes one `PHChange` that every observer registered at that moment is sent
-with `photoLibraryDidChange:`, one after another on a serial queue that is not the main thread.
-
-The header of iOS 6 says that the user info may name the assets and groups that changed (`ALAssetLibraryUpdatedAssetsKey` and the
-three group keys) and that a nil user info means everything changed. Measured on 6.1.3, for writes of the application itself: the
-notification is posted once per write, from the library that wrote and off the main thread; the first write of a process, before
-its library had read anything, came with an empty dictionary although an asset was added, and a later one with
-`ALAssetLibraryUpdatedAssetGroupsKey` and `ALAssetLibraryUpdatedAssetsKey`. So an empty dictionary is not taken to mean that
-nothing changed, an asset the keys name counts as changed, and the change reads again what it is asked about in every case. Every fetch result keeps the query that made it
-and its options, and `-changeDetailsForFetchResult:` runs that query again: the objects of the fetch before that are not in the
-fetch after are the removals, as indexes of the fetch before; the new ones the insertions, and the objects in both that the
-notification named or whose properties read differently the changes, as indexes of the fetch after. When nothing differs it
-answers nil. The objects both fetches hold must keep their order among themselves to be told as indexes: the saved photos of the
-release are in the order of their dates and an asset does not move, so a change that reorders is told with
-`hasIncrementalChanges` NO and no indexes, the answer the header allows for any change; `hasMoves` is always NO. A fetch whose
-options say `wantsIncrementalChangeDetails` NO is told the same way. `-changeDetailsForObject:` reads the asset or album again by
-its identifier: nil when it reads the same and was not named, `objectWasDeleted` when it can no longer be read, and
-`assetContentChanged` when the notification named the asset, which is all the release tells: it does not separate a change of
-the bytes from one of the properties. `+[PHFetchResultChangeDetails changeDetailsFromFetchResult:toFetchResult:changedObjects:]`
-compares the two fetches it is given the same way.
 
 ## What is refused
 
