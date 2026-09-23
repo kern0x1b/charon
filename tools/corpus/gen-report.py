@@ -19,7 +19,7 @@ if not os.path.isdir(CORPUS):
               "directory that contains corpus/ (holds store.json, caches/, band-*.tsv)." % CORPUS)
 store = json.load(open(os.path.join(CORPUS, "store.json")))
 reg = agg.load_registry()
-DROP = "/Users/alexanderhavrysh/Git/projects/ios/emulator-lab/recompile/corpus-absent"
+DROP = os.path.join(CORPUS, "absent")
 
 # Katabasis class rows per app (cleaned system-only)
 kata = defaultdict(set)

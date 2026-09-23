@@ -15,7 +15,9 @@ Categories in the TSV:
 import os, re, sys
 from collections import defaultdict
 
-DROP = "/Users/alexanderhavrysh/Git/projects/ios/emulator-lab/recompile/corpus-absent"
+CORPUS_ROOT = os.environ.get("CHARON_CORPUS_ROOT") or os.path.join(
+    os.path.expanduser("~"), "Git", "projects", "ios", "coordination")
+DROP = os.path.join(CORPUS_ROOT, "corpus", "absent")
 
 def load():
     per = defaultdict(lambda: defaultdict(set))  # cat -> value -> set(apps)

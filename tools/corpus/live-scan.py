@@ -17,15 +17,16 @@ agg = importlib.util.module_from_spec(spec); spec.loader.exec_module(agg)
 CORPUS_ROOT = os.environ.get("CHARON_CORPUS_ROOT") or os.path.join(
     os.path.expanduser("~"), "Git", "projects", "ios", "coordination")
 CORPUS = os.path.join(CORPUS_ROOT, "corpus")
+KATABASIS_TARGETS = os.path.join(os.path.expanduser("~"), "Git", "projects", "ios", "katabasis", "targets")
 if not os.path.isdir(CORPUS):
     sys.exit("live-scan.py: no corpus/ data directory found at %s. Set CHARON_CORPUS_ROOT to the "
               "directory that contains corpus/ (holds store.json, store-live.json)." % CORPUS)
 
 LIVE_STORE = os.path.join(CORPUS, "store-live.json")
 LIVE_APPS = {
- "oba":   "/Users/alexanderhavrysh/Git/projects/ios/emulator-lab/recompile/targets/OneBusAway_v2.3.2/Payload/OneBusAway.app",
- "xkcd":  "/Users/alexanderhavrysh/Git/projects/ios/emulator-lab/recompile/targets/xkcd.Open.Source/Payload/xkcd Open Source.app",
- "zebra": "/Users/alexanderhavrysh/Git/projects/ios/emulator-lab/recompile/targets/Zebra-1.1.17/Payload/Zebra.app",
+ "oba":   os.path.join(KATABASIS_TARGETS, "OneBusAway_v2.3.2/Payload/OneBusAway.app"),
+ "xkcd":  os.path.join(KATABASIS_TARGETS, "xkcd.Open.Source/Payload/xkcd Open Source.app"),
+ "zebra": os.path.join(KATABASIS_TARGETS, "Zebra-1.1.17/Payload/Zebra.app"),
 }
 FOCUS = {"Foundation","CoreFoundation","CoreData","Security","LocalAuthentication","CFNetwork"}
 

@@ -92,7 +92,11 @@ int main(int argc, char **argv)
     @autoreleasepool {
         if (argc > 1)
             charon_log_to(@(argv[1]));
-        NSString *base = argc > 2 ? @(argv[2]) : @"http://192.168.18.115:8099";
+        if (argc < 3) {
+            printf("usage: waitsconnectivity <log> <http://host:port> [on|off]\n");
+            return 2;
+        }
+        NSString *base = @(argv[2]);
         if (argc > 3 && !strcmp(argv[3], "on")) {
             set_network(YES);
             printf("wifi on requested, client=%d\n", wifi_open());
