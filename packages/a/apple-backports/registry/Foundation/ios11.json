@@ -221,10 +221,10 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "ignored",
-      "reason": "honouring the key means changing -localizedDescription, a method every release already answers, and the port does not replace system implementations",
+      "reason": "the key is carried under its own string, but honouring it means changing -localizedDescription, a method every release already answers, and the port does not replace system implementations",
       "effect": "-localizedDescription ignores the key, so the message is the release's own and the sentence naming the failure is lost; nothing reports it",
       "facts": "facts/Foundation/NSError.md",
-      "source": "the host's Foundation"
+      "source": "the host's Foundation for the string NSLocalizedFailure"
     },
     {
       "api": "+[NSString stringWithValidatedFormat:validFormatSpecifiers:error:]",

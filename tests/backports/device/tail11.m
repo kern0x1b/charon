@@ -84,6 +84,17 @@ static void volume_keys(void)
     CHECK(values.count == 1 && values[NSURLVolumeAvailableCapacityForImportantUsageKey] != nil, "the dictionary holds the important usage capacity and leaves the other out");
 }
 
+static void failure_key(void)
+{
+    CHECK_EQUAL(NSLocalizedFailureErrorKey, @"NSLocalizedFailure", "the failure key carries the string of iOS 11");
+    Dl_info info;
+    void *address = dlsym(RTLD_DEFAULT, "NSLocalizedFailureErrorKey");
+    CHECK(address && dladdr(address, &info) && [@(info.dli_fname).lastPathComponent isEqualToString:@"libFoundationBackports.dylib"], "the failure key comes from the backports");
+    NSError *error = [NSError errorWithDomain:@"charon" code:1 userInfo:@{NSLocalizedFailureErrorKey: @"The file could not be saved.", NSLocalizedFailureReasonErrorKey: @"The disk is full."}];
+    CHECK_EQUAL(error.userInfo[NSLocalizedFailureErrorKey], @"The file could not be saved.", "an error keeps the failure in its user info");
+    CHECK([error.localizedDescription rangeOfString:@"The file could not be saved."].location == NSNotFound, "-localizedDescription ignores the failure, as the registry records");
+}
+
 static void swipe_actions(void)
 {
     NSString *library = @"libUIKitBackports.dylib";
@@ -151,6 +162,7 @@ int main(int argc, char **argv)
         picker_presets();
         absences();
         volume_keys();
+        failure_key();
         swipe_actions();
         regular_expressions();
         printf("%d of %d checks failed\n", charon_failures, charon_checks);
