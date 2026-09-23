@@ -30,7 +30,9 @@ have that done before. The host answers `kVTParameterErr` (-12902) for `NULL` an
 anything else - a fresh session, the same session again, an invalidated session (on which
 `VTSessionCopyProperty` already answers -12903), a JPEG session, even a pointer to a string. The port
 answers the same: `NULL` is refused, and anything else is left to set itself up on the first frame, as
-it does on the release without the call.
+it does on the release without the call. 6.1.3's VideoToolbox has no call that sets an encoder up
+before its first frame to reach instead: none of its 94 exports (`.agent-work` ladder `vt-6.1.3.txt`)
+names a preparation, a pass or a warm-up.
 
 So the call is inert: it answers as the host does and prepares nothing. What an application that calls
 it would learn early - that the encoder cannot get its resources - it learns on 6.1.3 from the status of

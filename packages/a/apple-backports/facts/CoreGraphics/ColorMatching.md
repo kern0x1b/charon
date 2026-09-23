@@ -6,6 +6,17 @@ in iOS 9, and nothing in iOS 6 has what it names" - the reason `COORDINATION.md`
 wrong: CoreGraphics exports `CGColorTransformCreate`, `CGColorTransformConvertColor` and
 `CGColorTransformRelease` from 3.1.3 on (the ladder), without a header. Retracted.
 
+## Why the release's transform and not a public path
+
+The public way to convert a colour on 6.1.3 is to draw it into a bitmap context of the target space
+and read the pixel back. Measured on an iPad 2 running 6.1.3 (`.agent-work` probe `contexts`):
+`CGBitmapContextCreate` makes only 8-bit contexts there - device grey 8-bit is made (red draws as
+77/255), while 32-bit float grey and RGB, 16-bit RGB and every CMYK context, 8-bit or float, are
+refused. So the public path answers each component to the nearest 1/255, a quietly different colour
+from the function's, and cannot reach a CMYK target at all. The transform CoreGraphics itself
+exports is the only full-precision path to every target; it has no header, which is why its three
+declarations are written in the file.
+
 ## What the port does
 
 It asks the release's own transform: `CGColorTransformCreate(space, options)`, then
