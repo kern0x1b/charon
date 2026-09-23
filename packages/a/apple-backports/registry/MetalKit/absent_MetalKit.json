@@ -2,16 +2,6 @@
   "framework": "MetalKit",
   "entries": [
     {
-      "api": "MTKMesh",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalKit"
-    },
-    {
       "api": "MTKMeshBuffer",
       "kind": "class",
       "introduced": "9.0",
@@ -52,26 +42,6 @@
       "source": "SDK 16.4, MetalKit"
     },
     {
-      "api": "MTKModelErrorDomain",
-      "kind": "constant",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, MetalKit"
-    },
-    {
-      "api": "MTKModelErrorKey",
-      "kind": "constant",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, MetalKit"
-    },
-    {
       "api": "MTKModelIOVertexDescriptorFromMetal()",
       "kind": "function",
       "introduced": "9.0",
@@ -93,16 +63,6 @@
     },
     {
       "api": "MTKSubmesh",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalKit"
-    },
-    {
-      "api": "MTKTextureLoader",
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
@@ -142,16 +102,6 @@
       "source": "SDK 16.4, MetalKit"
     },
     {
-      "api": "MTKTextureLoaderOptionSRGB",
-      "kind": "constant",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, MetalKit"
-    },
-    {
       "api": "MTKTextureLoaderOptionTextureCPUCacheMode",
       "kind": "constant",
       "introduced": "9.0",
@@ -169,46 +119,6 @@
       "status": "absent",
       "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
       "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, MetalKit"
-    },
-    {
-      "api": "MTKView",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalKit"
-    },
-    {
-      "api": "MTKViewDelegate",
-      "kind": "protocol",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 9, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, MetalKit"
-    },
-    {
-      "api": "MTKMetalVertexDescriptorFromModelIOWithError()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, MetalKit"
-    },
-    {
-      "api": "MTKModelIOVertexDescriptorFromMetalWithError()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalKit"
     },
     {

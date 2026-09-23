@@ -1,0 +1,16 @@
+{
+  "framework": "Metal",
+  "entries": [
+    {
+      "api": "MTLCaptureManager",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the Tier 2 verdict on Metal/MetalKit: the class and its capture scopes are tooling objects, not GPU work; capturing a trace is what genuinely needs a backend this port does not have",
+      "effect": "sharedCaptureManager gives a real singleton; newCaptureScopeWithDevice:/newCaptureScopeWithCommandQueue: give a real object conforming to MTLCaptureScope whose beginScope/endScope are no-ops; the deprecated startCaptureWithDevice:/WithCommandQueue:/WithScope: are no-ops and stopCapture is a no-op; isCapturing always answers NO",
+      "facts": "facts/Metal/CaptureManager.md",
+      "source": "the header of iOS 16.4 for the contract"
+    }
+  ]
+}
