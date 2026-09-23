@@ -220,6 +220,28 @@ def main():
             _q = _l.rstrip("\n").split("\t")
             if len(_q) >= 2:
                 overrides[_q[0]] = _q[1]
+    # `gaps` below is filtered by `r["status"].startswith(GAP)`, and GAP is exactly four literal
+    # words. An override written in any other phrasing -- even one that says outright "tracked as
+    # OPEN WORK, not a closed question" in its own revisit_when column -- produces a status string
+    # that matches none of them, so the row is computed, given a real crash count, and then silently
+    # dropped at the gaps filter: no error, no count, nothing. Measured cost, 2026-09-23: 412 of 621
+    # override rows used two such phrasings ("carry (implementation planned)", 213; "carry surface;
+    # honest failure only at the external wall (scheduled)", 199), and 214+ of those are demanded by
+    # a real corpus app -- both phrasings are earlier sessions' "still open" convention, predating
+    # this file's current "gap? implement" one. Normalize instead of requiring every session to match
+    # today's exact wording by accident:
+    _CARRIED_OVERRIDE_PHRASINGS = ("present-on-6", "implemented")             # self-declared "not a gap"/already done
+    _INERT_OVERRIDE_PHRASINGS = ("present-inert", "must-be-present-inert")    # self-declared covered-but-empty
+    def _normalize_override(raw):
+        if raw.startswith(GAP) or raw.startswith("inert"):
+            return raw                                     # already in the vocabulary the filter understands
+        if raw.startswith(_CARRIED_OVERRIDE_PHRASINGS):
+            return "implemented"
+        if raw.startswith(_INERT_OVERRIDE_PHRASINGS):
+            return "inert"
+        # Anything else -- including phrasings not yet seen -- is unrecognized rather than known-carried,
+        # so it must rank rather than vanish: fail toward visibility, not toward silence.
+        return "gap? implement -- " + raw
     def status_one(c):
         v, api, owner, _ok, _fw, _mk = c
         keys = [api]
@@ -251,7 +273,7 @@ def main():
             if carrier:
                 st = "implemented(tree:%s)" % carrier
         if st is None and api in overrides:
-            st = overrides[api] + " (override)"
+            st = _normalize_override(overrides[api]) + " (override)"
         return st or "undecided"
 
     # ---- per-app SENDS: carried (methname) minus defined (method_t) minus stock 6.0
@@ -410,7 +432,7 @@ def main():
                                    "_OBJC_CLASS_$_" + name, "_OBJC_CLASS_$_" + name.lstrip("_"))
                        if k in overrides), None)
             if _k:
-                st = overrides[_k] + " (override)"
+                st = _normalize_override(overrides[_k]) + " (override)"
         sd = sdk.get(name) or sdk.get(name.lstrip("_"))
         v = ver(sd[1]) if sd and sd[1] else None
         bb = band(v) if v else {"13+": "13-16"}.get(b, b)
