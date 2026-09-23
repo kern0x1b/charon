@@ -4,7 +4,7 @@
     {
       "api": "CTRadioAccessTechnologyGPRS",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 6.0 exports none of these names, and iOS 6.1.3 exports all but WCDMA under the same values; the constant is carried under its own name so a build linked against it loads on both",
@@ -15,7 +15,7 @@
     {
       "api": "CTRadioAccessTechnologyEdge",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 6.0 exports none of these names, and iOS 6.1.3 exports all but WCDMA under the same values; the constant is carried under its own name so a build linked against it loads on both",
@@ -37,7 +37,7 @@
     {
       "api": "CTRadioAccessTechnologyHSDPA",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 6.0 exports none of these names, and iOS 6.1.3 exports all but WCDMA under the same values; the constant is carried under its own name so a build linked against it loads on both",
@@ -48,7 +48,7 @@
     {
       "api": "CTRadioAccessTechnologyHSUPA",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 6.0 exports none of these names, and iOS 6.1.3 exports all but WCDMA under the same values; the constant is carried under its own name so a build linked against it loads on both",
@@ -59,7 +59,7 @@
     {
       "api": "CTRadioAccessTechnologyCDMA1x",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 6.0 exports none of these names, and iOS 6.1.3 exports all but WCDMA under the same values; the constant is carried under its own name so a build linked against it loads on both",
@@ -70,7 +70,7 @@
     {
       "api": "CTRadioAccessTechnologyCDMAEVDORev0",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 6.0 exports none of these names, and iOS 6.1.3 exports all but WCDMA under the same values; the constant is carried under its own name so a build linked against it loads on both",
@@ -81,7 +81,7 @@
     {
       "api": "CTRadioAccessTechnologyCDMAEVDORevA",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 6.0 exports none of these names, and iOS 6.1.3 exports all but WCDMA under the same values; the constant is carried under its own name so a build linked against it loads on both",
@@ -92,7 +92,7 @@
     {
       "api": "CTRadioAccessTechnologyCDMAEVDORevB",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 6.0 exports none of these names, and iOS 6.1.3 exports all but WCDMA under the same values; the constant is carried under its own name so a build linked against it loads on both",
@@ -103,7 +103,7 @@
     {
       "api": "CTRadioAccessTechnologyeHRPD",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 6.0 exports none of these names, and iOS 6.1.3 exports all but WCDMA under the same values; the constant is carried under its own name so a build linked against it loads on both",
@@ -114,7 +114,7 @@
     {
       "api": "CTRadioAccessTechnologyLTE",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 6.0 exports none of these names, and iOS 6.1.3 exports all but WCDMA under the same values; the constant is carried under its own name so a build linked against it loads on both",
@@ -125,7 +125,7 @@
     {
       "api": "CTRadioAccessTechnologyDidChangeNotification",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 6.0 has no such name and iOS 6.1.3 exports it; it is carried as the name",

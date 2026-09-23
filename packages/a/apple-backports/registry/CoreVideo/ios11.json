@@ -96,7 +96,7 @@
     {
       "api": "kCVImageBufferTransferFunction_Linear",
       "kind": "constant",
-      "introduced": "12.0",
+      "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
       "effect": "the constant is there with the value Linear, the one iOS 12 gives it; it names the value only, the release does nothing for it",

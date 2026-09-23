@@ -23,13 +23,6 @@ extern void glReadBuffer(GLenum mode) __attribute__((availability(ios, introduce
 extern void glTexImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid* pixels) __attribute__((availability(ios, introduced=7.0)));
 extern void glTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid* pixels) __attribute__((availability(ios, introduced=7.0)));
 extern void glCopyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height) __attribute__((availability(ios, introduced=7.0)));
-extern void glGenQueries(GLsizei n, GLuint* ids) __attribute__((availability(ios, introduced=7.0)));
-extern void glDeleteQueries(GLsizei n, const GLuint* ids) __attribute__((availability(ios, introduced=7.0)));
-extern GLboolean glIsQuery(GLuint id) __attribute__((availability(ios, introduced=7.0)));
-extern void glBeginQuery(GLenum target, GLuint id) __attribute__((availability(ios, introduced=7.0)));
-extern void glEndQuery(GLenum target) __attribute__((availability(ios, introduced=7.0)));
-extern void glGetQueryiv(GLenum target, GLenum pname, GLint* params) __attribute__((availability(ios, introduced=7.0)));
-extern void glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint* params) __attribute__((availability(ios, introduced=7.0)));
 extern void glDrawBuffers(GLsizei n, const GLenum* bufs) __attribute__((availability(ios, introduced=7.0)));
 extern void glUniformMatrix2x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) __attribute__((availability(ios, introduced=7.0)));
 extern void glUniformMatrix3x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) __attribute__((availability(ios, introduced=7.0)));
@@ -136,77 +129,6 @@ void glTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, G
 
 void glCopyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height)
 {
-    charon_es3_error();
-}
-
-void glGenQueries(GLsizei n, GLuint* ids)
-{
-    static void (*fn)(GLsizei n, GLuint* ids);
-    if (!fn)
-        fn = (void (*)(GLsizei n, GLuint* ids))dlsym(RTLD_DEFAULT, "glGenQueriesEXT");
-    if (fn)
-        { fn(n, ids); return; }
-    charon_es3_error();
-}
-
-void glDeleteQueries(GLsizei n, const GLuint* ids)
-{
-    static void (*fn)(GLsizei n, const GLuint* ids);
-    if (!fn)
-        fn = (void (*)(GLsizei n, const GLuint* ids))dlsym(RTLD_DEFAULT, "glDeleteQueriesEXT");
-    if (fn)
-        { fn(n, ids); return; }
-    charon_es3_error();
-}
-
-GLboolean glIsQuery(GLuint id)
-{
-    static GLboolean (*fn)(GLuint id);
-    if (!fn)
-        fn = (GLboolean (*)(GLuint id))dlsym(RTLD_DEFAULT, "glIsQueryEXT");
-    if (fn)
-        return fn(id);
-    charon_es3_error();
-    return (GLboolean)0;
-}
-
-void glBeginQuery(GLenum target, GLuint id)
-{
-    static void (*fn)(GLenum target, GLuint id);
-    if (!fn)
-        fn = (void (*)(GLenum target, GLuint id))dlsym(RTLD_DEFAULT, "glBeginQueryEXT");
-    if (fn)
-        { fn(target, id); return; }
-    charon_es3_error();
-}
-
-void glEndQuery(GLenum target)
-{
-    static void (*fn)(GLenum target);
-    if (!fn)
-        fn = (void (*)(GLenum target))dlsym(RTLD_DEFAULT, "glEndQueryEXT");
-    if (fn)
-        { fn(target); return; }
-    charon_es3_error();
-}
-
-void glGetQueryiv(GLenum target, GLenum pname, GLint* params)
-{
-    static void (*fn)(GLenum target, GLenum pname, GLint* params);
-    if (!fn)
-        fn = (void (*)(GLenum target, GLenum pname, GLint* params))dlsym(RTLD_DEFAULT, "glGetQueryivEXT");
-    if (fn)
-        { fn(target, pname, params); return; }
-    charon_es3_error();
-}
-
-void glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint* params)
-{
-    static void (*fn)(GLuint id, GLenum pname, GLuint* params);
-    if (!fn)
-        fn = (void (*)(GLuint id, GLenum pname, GLuint* params))dlsym(RTLD_DEFAULT, "glGetQueryObjectuivEXT");
-    if (fn)
-        { fn(id, pname, params); return; }
     charon_es3_error();
 }
 

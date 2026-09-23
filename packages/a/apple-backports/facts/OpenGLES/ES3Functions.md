@@ -25,3 +25,10 @@ The other 74 have no ES 2.0 extension on this hardware - the 3D textures, the tr
 the integer attributes, the instanced draws, the framebuffer blit and the buffer copy - and answer as an ES 3.0 call in an ES 2.0
 context ought to: nothing happens, `GL_INVALID_ENUM` is set (by a bind of the texture target zero, which no state depends on) and
 the answer is zero or null. `kEAGLColorFormatSRGBA8` is a name for a format the release's drawable does not have.
+
+## Where the release already has the names
+
+The OpenGLES of iOS 3.0 to 4.3.5 already exports the seven query calls (`glGenQueries` to `glGetQueryObjectuiv`) under
+their ES 3.0 names; 5.0 to 6.1.6 does not, and 7.0 does again (the held armv7 and armv7s caches). They are compiled into an object of
+their own, `ES3Queries.m`, so that a band of a release that exports them takes the release's, and one that does not takes these.
+Their registry rows stay at 7.0: the release this port runs on, 6.1.3, has none of them.

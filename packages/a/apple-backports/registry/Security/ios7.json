@@ -4,7 +4,7 @@
     {
       "api": "kSecAttrSynchronizable",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "a departure from 7.0 in what the keychain does with it: the keychain of iOS 6 takes the key and ignores it, and there is no iCloud Keychain to carry an item anywhere",
