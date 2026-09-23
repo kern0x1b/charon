@@ -122,7 +122,18 @@ static NSArray *CharonSearchMatches(id query)
         NSString *identifier = [item valueForKey:@"uniqueIdentifier"];
         id result = ((id (*)(id, SEL, id, id, id, id, id, id, id, id))objc_msgSend)(
             resultClass, factory, identifier, title, nil, nil, nil, nil, nil, nil);
-        CharonSearchDatastoreLog([NSString stringWithFormat:@"built result -> %@", result]);
+        // class_copyIvarList on SPContentResult and its whole chain up to PBCodable (measured on
+        // device, not guessed): SPSearchResult's own _has bitmask tracks only {identifier, flags},
+        // both set by this real factory already - no _domain ivar exists anywhere in this chain (it
+        // belongs to the unrelated SPSearchResultSection). The two fields the factory leaves unset
+        // are SPContentResult's own _extid/_content, backed by -setExtid:/-setContent:. Filling them
+        // is the coordinator's cheap differentiating experiment for the appendResults: hang.
+        if ([result respondsToSelector:sel_registerName("setExtid:")])
+            ((void (*)(id, SEL, id))objc_msgSend)(result, sel_registerName("setExtid:"), identifier);
+        if ([result respondsToSelector:sel_registerName("setContent:")])
+            ((void (*)(id, SEL, id))objc_msgSend)(result, sel_registerName("setContent:"), title);
+        CharonSearchDatastoreLog([NSString stringWithFormat:@"built result -> %@ (extid=%@ content=%@)", result,
+                                  [result valueForKey:@"extid"], [result valueForKey:@"content"]]);
         if (result)
             [results addObject:result];
     }
