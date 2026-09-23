@@ -57,6 +57,8 @@ static const CharonColorRow charon_rows[] = {
     [22] = {C(242, 242, 247, 1), C(28, 28, 30, 1), C(235, 235, 240, 1), C(36, 36, 38, 1), SAME},
     [23] = {C(162, 132, 94, 1), C(172, 142, 104, 1), SAME, SAME, SAME},
     [24] = {C(88, 86, 214, 1), C(94, 92, 230, 1), SAME, SAME, SAME},
+    [25] = {C(50, 173, 230, 1), C(100, 210, 255, 1), C(0, 113, 164, 1), C(112, 215, 255, 1), SAME},
+    [26] = {C(0, 199, 190, 1), C(99, 230, 226, 1), C(12, 129, 123, 1), C(99, 230, 226, 1), SAME},
 };
 
 static UIColor *charon_row_color(const double *values)
@@ -132,5 +134,7 @@ static UIColor *charon_system_color(NSUInteger row)
 + (UIColor *)systemGray6Color { return charon_system_color(22); }
 + (UIColor *)systemBrownColor { return charon_system_color(23); }
 + (UIColor *)systemIndigoColor { return charon_system_color(24); }
++ (UIColor *)systemCyanColor { return charon_system_color(25); }
++ (UIColor *)systemMintColor { return charon_system_color(26); }
 
 @end

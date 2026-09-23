@@ -83,7 +83,8 @@ scene requests already built their errors with (`charon_scene_error` in `UIKit/U
 constant, so the two cannot drift). Before, the domain was right and the constant absent: an application comparing
 `error.domain` against `UISceneErrorDomain` read a NULL weak reference and never matched. `introduced` is the header's 15.0,
 **not measured**: the cache ladder has 12.0 and then 16.0, no 13-15 rung to place the first export between them. The value
-is the port's own literal, taken to be the system's by its name, not read from a release's cache.
+is the port's own literal, and it is the system's: UIKitCore of the 16.0 cache exports `UISceneErrorDomain` as `@"UISceneErrorDomain"`
+(`.agent-work/plan-and-analysis/b1314-flips/cfconst16.log`).
 `tools/release-split.lua` over the built objects reports `_UISceneErrorDomain` first exported in **no** release, but that
 says nothing: the iOS 13 scene notifications of `UISceneConstants.o` read `none` the same way, and across all 713 symbols it
 finds no first export above 10.0.1, so the tool does not see UIKit's exports on the 12.0-18.0 rungs.

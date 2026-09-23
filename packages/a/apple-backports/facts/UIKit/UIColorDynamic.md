@@ -41,3 +41,27 @@ does not follow a collection that is made current later. `-colorWithAlphaCompone
 value with that alpha and is not dynamic, where the host keeps it dynamic. Equality is the release's, by components.
 
 The named colours are made once, each a dynamic colour of its table, so the same object answers every call.
+
+## `systemCyanColor` and `systemMintColor`, iOS 15.0
+
+Two more rows of the same table (`UIKit/UIColorDynamic.m`), dynamic as the others. The values were **read from the 16.0 cache**, not
+from a published table: `+[UIColor systemCyanColor]` and `+systemMintColor` of UIKitCore each build their colour once, in a block that
+calls `colorWithRed:green:blue:alpha:` for each combination of interface style and contrast, and the components are doubles loaded from
+UIKitCore's constants. The block was disassembled and the doubles read from the cache
+(`.agent-work/plan-and-analysis/b1314-flips/imp.lua`, `once.py`, `colors.py`; output in `imp16/*.txt` there), with
+`systemIndigoColor` as the control: it reads (88, 86, 214) light and (94, 92, 230) dark, the values this file already carried.
+
+| colour | light | dark | light, high contrast | dark, high contrast |
+| --- | --- | --- | --- | --- |
+| cyan | (50, 173, 230) | (100, 210, 255) | (0, 113, 164) | (112, 215, 255) |
+| mint | (0, 199, 190) | (99, 230, 226) | (12, 129, 123) | (99, 230, 226) |
+
+Alpha is 1 in every one. Mint's dark high-contrast colour is its dark colour: the block passes the same three registers for both. Which
+argument of the trait call is the interface style (0 unspecified, 2 dark) and which the contrast (0 normal, 1 high) is read from the
+calls' order and from the indigo control, not from a symbol. These are the values of 16.0; whether 15.0 had the same was not read (no
+15 cache). `objc.inventory` (`ladder-rest.log`): neither getter is in 6.1.3 or 12.0, both are in 16.0 and 18.0.
+
+Found on the way, not changed here: the same read of 16.0 gives `systemIndigoColor` a high-contrast light value of (54, 52, 163), where
+this port answers the normal one, and `systemTealColor` values of (48, 176, 199) light and (64, 200, 224) dark, where the port's
+`UIColor+SystemColors.m` carries the static (90, 200, 250) of iOS 7-12. Whether 13.0 already had these was not read.
+

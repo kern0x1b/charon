@@ -36,3 +36,8 @@ an assistive technology (1033 and 1034), are the host's.
 
 `UIApplicationOpenSettingsURLString` is `app-settings:`. iOS 6 has no settings page for an application and no handler
 for that scheme, so `-openURL:` on it answers `NO`, which an application that checks `-canOpenURL:` first already handles.
+
+`UIApplicationOpenNotificationSettingsURLString` (15.4) is `app-settings:notifications` (`UIKit/UIApplicationConstants15_4.m`), the
+string UIKitCore exports in the 16.0 cache (`.agent-work/plan-and-analysis/b1314-flips/cfconst16.log`, `UIApplicationOpenSettingsURLString`
+read as `app-settings:` beside it as the control); 12.0 exports neither this nor anything of that name (`cfconst12.log`). It is the same
+scheme, so `-openURL:` answers `NO` for it too: iOS 6 has no notification settings of an application to open.

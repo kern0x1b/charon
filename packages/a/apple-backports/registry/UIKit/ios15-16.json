@@ -1012,20 +1012,20 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a fixed pair of light and dark colours like the system tints the port already carries (UIColor+SystemColors.m, systemIndigoColor implemented, facts/UIKit/UIColorDynamic.md); its two values would carry it - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "dynamic: (50, 173, 230) light, (100, 210, 255) dark, (0, 113, 164) and (112, 215, 255) with high contrast - the values UIKitCore of 16.0 builds it from",
+      "facts": "facts/UIKit/UIColorDynamic.md",
+      "source": "SDK 16.4, UIKit; values read from the 16.0 cache's UIKitCore; not in 6.1.3 or 12.0, in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UIColor.systemMintColor",
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a fixed pair of light and dark colours like the system tints the port already carries (UIColor+SystemColors.m, systemIndigoColor implemented, facts/UIKit/UIColorDynamic.md); its two values would carry it - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "dynamic: (0, 199, 190) light, (99, 230, 226) dark, (12, 129, 123) light with high contrast and the dark value dark - the values UIKitCore of 16.0 builds it from",
+      "facts": "facts/UIKit/UIColorDynamic.md",
+      "source": "SDK 16.4, UIKit; values read from the 16.0 cache's UIKitCore; not in 6.1.3 or 12.0, in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UIColor.tintColor",
@@ -1172,10 +1172,10 @@
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the identifier of the Sidebar menu of the main menu; the port carries the other identifiers of the main menu (UIMenuRoot, UIMenuFile, facts/UIKit/UIMenuIdentifiers.md), and this is one more of them - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "com.apple.menu.sidebar, the system's string; nothing on the release builds a menu from it",
+      "facts": "facts/UIKit/UIMenuIdentifiers.md",
+      "source": "SDK 16.4, UIKit; not exported by UIKitCore in the 12.0 cache, exported in 16.0 with this value (cfconst.lua)"
     },
     {
       "api": "UIPasteboardDetectionPatternCalendarEvent",
@@ -1812,10 +1812,10 @@
       "kind": "constant",
       "introduced": "15.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the URL that opens the application's notification settings; the port carries UIApplicationOpenSettingsURLString, which the release cannot open, so openURL: answers NO (facts/UIKit/KeyboardAndAccessibility.md), and this would answer the same way - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "app-settings:notifications, the system's string; the release has no handler for the scheme, so openURL: answers NO, as for UIApplicationOpenSettingsURLString",
+      "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+      "source": "SDK 16.4, UIKit; not exported by UIKitCore in the 12.0 cache, exported in 16.0 with this value (cfconst.lua)"
     },
     {
       "api": "UICellAccessoryDetail",
@@ -2783,10 +2783,10 @@
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the identifier of the Document menu of the main menu; the port carries the other identifiers of the main menu (UIMenuRoot, UIMenuFile, facts/UIKit/UIMenuIdentifiers.md), and this is one more of them - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "com.apple.menu.document, the system's string; nothing on the release builds a menu from it",
+      "facts": "facts/UIKit/UIMenuIdentifiers.md",
+      "source": "SDK 16.4, UIKit; not exported by UIKitCore in the 12.0 cache, exported in 16.0 with this value (cfconst.lua)"
     },
     {
       "api": "UIMenuLeaf",
