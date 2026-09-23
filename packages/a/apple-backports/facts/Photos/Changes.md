@@ -68,13 +68,19 @@ error codes; `ALAssetsLibrary` of an iPad 2 running 6.1.3 for the iOS 8 creation
 passed to `addAssets:` of an album created in the same change, the album found again by its placeholder with that one asset in it,
 the refused rename, reorder and delete (`PHPhotosErrorChangeNotSupported`, title unchanged afterwards), the asset resource, and the
 resource manager (completion once with `nil`, progress once with `1.0`, within five seconds) were run on an iPad 2 running 6.1.3 on
-2026-09-23, called off the main thread, 17 of 19 checks passing; the two others are the release's rewrite below.
+2026-09-23, called off the main thread, 17 of 19 checks passing; the two others are the release's rewrite below. The refusal of
+an album name in use below was run there too: 3300, and the number of 8-by-8 saved photos the same before and after.
 
 The saved photos of iOS 6 do not keep the bytes they are given: a 726-byte JPEG written with
 `writeImageDataToSavedPhotosAlbum:metadata:` and `nil` metadata reads back as 1929 bytes, measured the same with no port code on the
 path. The resource and the resource manager hand back what the library stores — identical to a direct `ALAssetsLibrary` read of the
 same asset — not the bytes given to the creation request.
 
-An album name is unique on iOS 6: `addAssetsGroupAlbumWithName:` answers `nil` for a name already in use, so a second album with the
-same title fails the change with "the photo library did not answer with the new album". The check happens at the write, after the
-assets of the same change were already written, so those assets stay in the saved photos without the album.
+An album name is unique on iOS 6: `addAssetsGroupAlbumWithName:` answers `nil` for a name already in use. A creation request whose
+title is already the name of an album of the device, or of an album created earlier in the same change, fails the whole change with
+`PHPhotosErrorChangeNotSupported` and a reason, when the requests are checked — before anything is written, so none of the change's
+assets are left behind. Names are compared exactly: the release itself made an album whose name differs from an existing one only
+in case. The code is the header's (3300, "The change request is not supported as configured"), the one this port
+gives every change iOS 6 cannot make; what the system's Photos answers for a duplicate title was not measured, since this machine
+has no Catalyst and the host's own Photos holds the owner's library. A name that collides only at the write, on something the check
+does not see, still fails the change there, after the writes before it.

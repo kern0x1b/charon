@@ -37,6 +37,11 @@ static NSString *const CharonPhotosTransactionKey = @"space.kern0x1b.photos.tran
     [_changes addObject:change];
 }
 
+- (NSArray *)changes
+{
+    return _changes;
+}
+
 - (void)refuseWithReason:(NSString *)reason
 {
     _refusal = _refusal ?: reason;

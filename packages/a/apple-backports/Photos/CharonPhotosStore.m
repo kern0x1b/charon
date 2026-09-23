@@ -322,6 +322,15 @@ static NSString *const CharonPhotosErrorDomain = @"PHPhotosErrorDomain";
     } error:error];
 }
 
++ (BOOL)hasAlbumWithName:(NSString *)name
+{
+    for (ALAssetsGroup *group in [self groupsOfTypes:ALAssetsGroupAlbum]) {
+        if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:name])
+            return YES;
+    }
+    return NO;
+}
+
 + (ALAssetsGroup *)createAlbumWithName:(NSString *)name error:(NSError **)error
 {
     __block ALAssetsGroup *made = nil;

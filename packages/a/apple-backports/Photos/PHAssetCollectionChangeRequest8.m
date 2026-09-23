@@ -12,6 +12,7 @@ static CharonPhotosTransaction *charon_transaction(void)
 }
 
 @implementation PHAssetCollectionChangeRequest {
+    __weak CharonPhotosTransaction *_transaction;
     PHAssetCollection *_editing;
     NSString *_title;
     NSString *_token;
@@ -23,6 +24,7 @@ static CharonPhotosTransaction *charon_transaction(void)
 {
     CharonPhotosTransaction *transaction = charon_transaction();
     PHAssetCollectionChangeRequest *request = [[self alloc] init];
+    request->_transaction = transaction;
     request->_title = [title copy];
     request->_token = [[NSUUID UUID].UUIDString stringByAppendingString:@"/L0/ALBUM"];
     request->_placeholder = [[PHObjectPlaceholder alloc] initWithCharonLocalIdentifier:request->_token];
@@ -106,8 +108,25 @@ static CharonPhotosTransaction *charon_transaction(void)
     [charon_transaction() refuseWithReason:@"iOS 6 albums through AssetsLibrary carry no order to move within"];
 }
 
+// An album name is unique on iOS 6: addAssetsGroupAlbumWithName: answers nil for one in use. The name
+// is checked here, before any request of the change writes, so a refused album leaves nothing behind.
 - (BOOL)charon_validate:(NSError **)error
 {
+    if (!_title)
+        return YES;
+    BOOL taken = NO;
+    for (id change in _transaction.changes) {
+        if (change == self)
+            break;
+        if ([change isKindOfClass:[PHAssetCollectionChangeRequest class]] && [((PHAssetCollectionChangeRequest *)change)->_title isEqualToString:_title])
+            taken = YES;
+    }
+    if (taken || [CharonPhotosStore hasAlbumWithName:_title]) {
+        if (error)
+            *error = [CharonPhotosStore errorWithCode:PHPhotosErrorChangeNotSupported
+                                               reason:@"iOS 6 cannot make a second album with a name already in use"];
+        return NO;
+    }
     return YES;
 }
 

@@ -17,6 +17,7 @@
 + (NSString *)writeImage:(UIImage *)image error:(NSError **)error;
 + (NSString *)writeVideoAtURL:(NSURL *)url error:(NSError **)error;
 + (NSError *)errorWithCode:(NSInteger)code reason:(NSString *)reason;
++ (BOOL)hasAlbumWithName:(NSString *)name;
 + (ALAssetsGroup *)createAlbumWithName:(NSString *)name error:(NSError **)error;
 + (BOOL)addAsset:(ALAsset *)asset toGroupWithURL:(NSURL *)url error:(NSError **)error;
 @end
@@ -26,6 +27,7 @@
 + (void)run:(dispatch_block_t)changes then:(void (^)(BOOL success, NSError *error))completion;
 + (BOOL)runAndWait:(dispatch_block_t)changes error:(NSError **)error;
 - (void)addChange:(id)change;
+- (NSArray *)changes;
 - (void)refuseWithReason:(NSString *)reason;
 @end
 
