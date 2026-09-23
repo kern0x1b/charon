@@ -483,7 +483,7 @@ local function loaded_images(release, binaries, binary, architecture)
 end
 
 function unattached_categories(release, inventory, binaries, architecture)
-    local defined, aliases, aliased = {}, {}, {}
+    local defined, aliases = {}, {}
     for _, binary in ipairs(binaries) do
         for _, symbol in ipairs(defined_symbols(binary)) do
             defined[symbol] = true
@@ -494,7 +494,6 @@ function unattached_categories(release, inventory, binaries, architecture)
         local images
         for proxy, name in pairs(objc.binary_aliases(binary, architecture) or {}) do
             aliases[proxy] = name
-            aliased[name] = true
             local carried = inventory.classes[name]
             images = images or loaded_images(release, binaries, binary, architecture)
             if not (carried and carried.image and images[carried.image]) then
@@ -502,23 +501,22 @@ function unattached_categories(release, inventory, binaries, architecture)
             end
         end
     end
+    -- A category's class reference is filled when the class is this binary's own, an alias, or
+    -- exported by the release or by a library of the package; otherwise dyld leaves it NULL
+    -- and the loader has no class to attach it to, even where the release carries the class.
     for _, binary in ipairs(binaries) do
-        local images
         for _, category in ipairs(objc.binary_categories(binary, architecture) or {}) do
             local bound = category.bound and category.bound:match("^_OBJC_CLASS_%$_(.+)$")
             local class = category.class and (aliases[category.class] or category.class) or bound
-            local attached
-            if category.class then
-                attached = not aliases[category.class]
-            elseif bound then
-                attached = release.exports[category.bound] or (defined[category.bound] and not aliased[bound])
-            end
-            if not attached and class and inventory.classes[class] and inventory.classes[class].image then
-                images = images or loaded_images(release, binaries, binary, architecture)
-                attached = images[inventory.classes[class].image]
-            end
+            local attached = category.class ~= nil or (category.bound ~= nil and (release.exports[category.bound] or defined[category.bound]))
             if not attached then
-                table.insert(found, string.format("%s(%s) in %s", class or category.bound or "a class this check cannot name", category.name or "?", path.filename(binary)))
+                local carried = class and inventory.classes[class]
+                if carried and carried.image then
+                    table.insert(found, string.format("%s(%s) in %s (the release carries %s in %s without exporting it: alias it through charon_alias.h)",
+                                                      class, category.name or "?", path.filename(binary), class, carried.image))
+                else
+                    table.insert(found, string.format("%s(%s) in %s", class or "a class this check cannot name", category.name or "?", path.filename(binary)))
+                end
             end
         end
     end
@@ -529,7 +527,7 @@ end
 function check_categories(release, inventory, binaries, architecture, version)
     local found = unattached_categories(release, inventory, binaries, architecture)
     if #found > 0 then
-        raise("categories and aliases whose class iOS %s neither exports nor carries in an image the library loads, so the library's loader has no class to give what they add and nothing of it is there: %s",
+        raise("categories whose class neither iOS %s nor the package exports, and aliases whose class it does not carry in an image the library loads, so the library's loader has no class to give what they add and nothing of it is there: %s",
               version, table.concat(found, " "))
     end
 end
