@@ -65,6 +65,7 @@ local EXCLUDED = {
     "^_OBJC_IVAR_%$_",
     "^__OBJC_PROTOCOL_%$_",
     "^__OBJC_LABEL_PROTOCOL_%$_",
+    "^__OBJC_PROTOCOL_REFERENCE_%$_",
     "^___block_descriptor",
     "^___block_literal_",
     "^___copy_helper_block_",
@@ -101,18 +102,7 @@ local function symbols_of(object)
 end
 
 local function ladder()
-    local releases = {}
-    for _, folder in ipairs(os.dirs(path.join(dyld.root(), "*"))) do
-        local release = path.filename(folder)
-        if release:match("^%d+[%.%d]*$") then
-            local cache = dyld.held_source(folder, "armv7") or dyld.held_source(folder, "armv7s")
-            if cache and os.isfile(cache) then
-                table.insert(releases, {release = release, cache = cache})
-            end
-        end
-    end
-    table.sort(releases, function (a, b) return dyld.compare_versions(a.release, b.release) < 0 end)
-    return releases
+    return dyld.held_ladder({"armv7", "armv7s"})
 end
 
 function main(objectsdir, output)
@@ -132,7 +122,7 @@ function main(objectsdir, output)
 
     local first = {}
     for _, entry in ipairs(ladder()) do
-        local release = dyld.load(entry.cache)
+        local release = dyld.load(entry.source)
         for symbol in pairs(all_symbols) do
             if not first[symbol] and release.exports[symbol] then
                 first[symbol] = entry.release

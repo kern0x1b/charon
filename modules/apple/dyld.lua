@@ -72,6 +72,29 @@ function held_releases(architecture)
     return releases
 end
 
+-- Every held release, oldest first, with the cache that measures it: the first of the preferred
+-- architectures the release is held for, and otherwise arm64 or arm64e -- the only caches held for
+-- the releases after armv7's last, so a ladder of the preferred ones alone stops at iOS 10 and every
+-- symbol of 11.0 and later reads as exported by no release at all.
+function held_ladder(preferred)
+    local candidates = table.join(preferred, {"arm64", "arm64e"})
+    local ladder = {}
+    for _, folder in ipairs(os.dirs(path.join(root(), "*"))) do
+        local release = path.filename(folder)
+        if release:match("^%d+[%.%d]*$") then
+            for _, architecture in ipairs(candidates) do
+                local source = held_source(folder, architecture)
+                if source then
+                    table.insert(ladder, {release = release, architecture = architecture, source = source})
+                    break
+                end
+            end
+        end
+    end
+    table.sort(ladder, function (a, b) return compare(a.release, b.release) < 0 end)
+    return ladder
+end
+
 local function loaded_image(found, architecture)
     local wanted = architecture == "armv7s" and {"armv7s", "armv7"} or {architecture}
     for _, candidate in ipairs(wanted) do

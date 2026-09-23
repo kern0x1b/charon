@@ -767,24 +767,11 @@ end
 
 local LADDERS = {}
 
--- The cache ladder for one architecture, oldest release first: every release held for it or for an
--- architecture that runs its code, the armv7s caches of iOS 10 for armv7 -- exactly what
--- release-split.lua walks, so this check answers to the same measurement instead of a second copy of it.
+-- The cache ladder for one architecture, oldest release first: dyld.held_ladder(), which
+-- release-split.lua walks as well, so this check answers to the same measurement instead of a
+-- second copy of it.
 local function ladder(architecture)
-    if not LADDERS[architecture] then
-        local held = {}
-        for _, candidate in ipairs(compatible(architecture)) do
-            for _, release in ipairs(dyld.held_releases(candidate)) do
-                held[release] = true
-            end
-        end
-        local releases = table.orderkeys(held)
-        table.sort(releases, function (a, b) return dyld.compare_versions(a, b) < 0 end)
-        LADDERS[architecture] = {}
-        for _, release in ipairs(releases) do
-            table.insert(LADDERS[architecture], {release = release, source = held_cache(architecture, release)})
-        end
-    end
+    LADDERS[architecture] = LADDERS[architecture] or dyld.held_ladder(compatible(architecture))
     return LADDERS[architecture]
 end
 
