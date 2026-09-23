@@ -698,6 +698,7 @@ clang force-load arclite below iOS 9.
   authorization, adds, replaces and removes requests, reads back what iOS 6 was
   given - the body and no title - checks which repeats are taken and which
   refused, and waits for a notification to arrive while it is in front.
+- `stabilization8.m`: a process of its own for the video stabilization of iOS 7 and 8, with the two categories built in: every camera format's `supportedStabilizationMethod` of the release beside `videoStabilizationSupported` and the modes it supports, then a running video data connection of the default camera: Off at first, the exception for a mode past Cinematic, Standard, Cinematic and Auto against the release's switch, the active mode against what the release says it runs, and the old switch afterwards.
 - `avcapture.m`: a process of its own for the discovery of capture devices, linking
   `libAVFoundationBackports.dylib`. It holds a discovery session to the devices the
   release lists, by type, media type and position, in the order of the types, and

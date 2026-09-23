@@ -472,16 +472,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVCaptureDeviceFormat.videoStabilizationSupported",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceFormat a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVCaptureInputPort.clock",
       "kind": "property",
       "introduced": "7.0",
@@ -992,16 +982,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "-[AVCaptureDeviceFormat isVideoStabilizationModeSupported:]",
-      "kind": "method",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceFormat a method like it: it arrived in iOS 8",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "-[AVCaptureStillImageOutput captureStillImageBracketAsynchronouslyFromConnection:withSettingsArray:completionHandler:]",
       "kind": "method",
       "introduced": "8.0",
@@ -1269,26 +1249,6 @@
       "status": "absent",
       "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureConnection.activeVideoStabilizationMode",
-      "kind": "property",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureConnection a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureConnection.preferredVideoStabilizationMode",
-      "kind": "property",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureConnection a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, AVFoundation"
     },
     {
