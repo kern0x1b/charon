@@ -1,5 +1,11 @@
 -- xmake l tools/release-split.lua OBJECTSDIR [OUTPUT]
 --
+-- MANDATORY: a band runs this after its own build() and before handing off a
+-- patch (or running write_deb()'s full band rebuild). It needs OBJECTSDIR's
+-- *.o already compiled, so it cannot be the gate's first step, and it does
+-- not replace band() -- see the divergence note below -- so it does not
+-- replace write_deb() either. It is the fast, mandatory check in between.
+--
 -- For every *.o in OBJECTSDIR, lists the symbols it defines (nm -gU, with
 -- ivars, $shim and Charon-/charon-prefixed internal symbols and ObjC protocol
 -- metadata excluded -- the same exclusions modules/apple/backports.lua's own
