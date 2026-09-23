@@ -1833,7 +1833,7 @@
       "introduced": "16",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIPrintFormatter a property like it: it arrived in iOS 16",
+      "reason": "an override point iOS 16's print system asks before drawing a formatter off the main thread, YES by default; the release's print system never asks, so an override would not be heard, and a getter answering YES could be carried - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2063,7 +2063,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIContentView a method like it: it arrived in iOS 16",
+      "reason": "asked before a new configuration is set on a content view that already exists, to reuse it; the port carries UIContentView and the cells' contentConfiguration (facts/UIKit/UIConfigurationState.md), so it could ask here before replacing the view - not built for lack of demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2223,7 +2223,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UISearchResultsUpdating that sends anything like it: the message arrived in iOS 16",
+      "reason": "the iOS 16 update sent when a suggestion is chosen; the port's controller sends the iOS 8 updateSearchResultsForSearchController: (base.json), but the port's search controller shows no suggestion list (facts/UIKit/UISearchController.md) and its search text field has no suggestions (facts/UIKit/UISearchTextField.md), so no suggestion is ever chosen to send this with",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2233,7 +2233,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UISearchTextFieldDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "sent when a suggestion under the search field is chosen; the port's search controller shows no suggestion list (facts/UIKit/UISearchController.md) and its search text field has no suggestions (facts/UIKit/UISearchTextField.md), so none is ever chosen",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2434,7 +2434,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSCollectionLayoutSection a property like it: it arrived in iOS 16",
+      "reason": "the edge the insets of a section's headers and footers are measured from; the port carries contentInsetsReference for the section itself (facts/UIKit/NSCollectionLayoutContentInsetsReference.md), and the supplementary items could take the same measure - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2454,7 +2454,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the Text Kit 2 element for one item of a list; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing splits text into list elements",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -2464,7 +2464,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "reason": "the activity that copies the link of a document shared for collaboration through iCloud; the release has no such sharing service and the share sheet no such activity, a wall at that service",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -2474,7 +2474,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "reason": "the activity that invites people to a document shared for collaboration through iCloud; the release has no such sharing service and the share sheet no such activity, a wall at that service",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -2484,7 +2484,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIAlertController a property like it: it arrived in iOS 16",
+      "reason": "marks an alert critical, which only the Mac idiom draws with a caution symbol; the port carries UIAlertController (facts/UIKit/UIAlertController.md), and on a phone or tablet the value changes nothing, so keeping it is the defined answer - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2564,7 +2564,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the base of a calendar view's selection behaviours; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -2574,7 +2574,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "lets a calendar view select several dates; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -2584,7 +2584,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the delegate of a calendar view's multiple-date selection; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -2594,7 +2594,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "lets a calendar view select one date; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -2604,7 +2604,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the delegate of a calendar view's single-date selection; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -2614,7 +2614,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "a month calendar with decorations and selection; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -2624,7 +2624,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "a mark drawn under a date of a calendar view; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -2634,7 +2634,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the delegate asked for a calendar view's decorations; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -2644,7 +2644,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "a list cell accessory that shows a menu of choices; the port lays out the other accessories itself (facts/UIKit/UICellAccessory.md) and shows a UIMenu as an action sheet (facts/UIKit/UIContextMenuInteraction.md), so the two could make this one - not built for lack of demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -2694,7 +2694,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "what the title menu of a document's navigation bar shows about it - its metadata, drag item and share action; the release's navigation bar has no title menu, so there is nothing to show it in - no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -2704,7 +2704,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "where and with what an edit menu interaction shows its menu; the release's text views show their edit menu through UIMenuController, which takes UIMenuItems of a title and an action (facts/UIKit/UIMenuController.md); an edit menu interaction could be built over it by turning a UIMenu into such items, which is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -2714,7 +2714,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "shows an edit menu of UIMenu elements at a point of a view; the release's text views show their edit menu through UIMenuController, which takes UIMenuItems of a title and an action (facts/UIKit/UIMenuController.md); an edit menu interaction could be built over it by turning a UIMenu into such items, which is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -2724,7 +2724,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the animator an edit menu interaction hands its delegate as the menu shows and hides; the release's text views show their edit menu through UIMenuController, which takes UIMenuItems of a title and an action (facts/UIKit/UIMenuController.md); an edit menu interaction could be built over it by turning a UIMenu into such items, which is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -2734,7 +2734,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "asked by an edit menu interaction for its menu and told when it shows and hides; the release's text views show their edit menu through UIMenuController, which takes UIMenuItems of a title and an action (facts/UIKit/UIMenuController.md); an edit menu interaction could be built over it by turning a UIMenu into such items, which is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -2744,7 +2744,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "shows the find bar over a view that can be searched; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -2754,7 +2754,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "asked by a find interaction for the session to search with; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -2764,7 +2764,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "one search of a find interaction, its results and the highlight of the current one; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -2784,7 +2784,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "reason": "the identifier of the Document menu of the main menu; the port carries the other identifiers of the main menu (UIMenuRoot, UIMenuFile, facts/UIKit/UIMenuIdentifiers.md), and this is one more of them - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -2794,7 +2794,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the protocol UIAction and UICommand both take in iOS 16, for what a menu element that runs something answers; the port carries both classes (facts/UIKit/UIAction.md, facts/UIKit/UICommand.md) and their members, so declaring the protocol and its conformance would carry it - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -2975,7 +2975,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the delegate told when a document is renamed from the title menu of its navigation bar; the release's navigation bar has no title menu, so nothing is ever renamed there",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -3005,7 +3005,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "a paste button the system draws, which pastes without the paste prompt of iOS 16; the release asks nothing before a paste, so a button calling paste: would do what this one does, but drawing it as the system does is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -3015,7 +3015,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the look of a UIPasteControl - its shape, colours and label; follows UIPasteControl, not carried (see its row)",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -3025,7 +3025,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the protocol UIView and UIBarButtonItem take so a popover can hang from either through sourceItem; the port's UIPopoverPresentationController already hangs from a sourceView or a barButtonItem (facts/UIKit/UIPopoverPresentationController.md), so the protocol could be declared over those - not built for lack of demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -3035,7 +3035,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the closable and miniaturizable settings of a scene's window, which only a Mac window has; UIWindowScene.windowingBehaviors is nil on a platform without them, as the header says, so no object of this class is ever handed out on a phone or tablet",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -3075,7 +3075,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "reason": "posted when a screen's reference display mode changes; the screens of the 4S and iPad 2 have no reference mode, so the status never changes and the notification is never posted, which is a defined behaviour - not built for lack of demand, not a wall, and a candidate to implement with referenceDisplayModeStatus",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -3125,7 +3125,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the protocol of a suggestion listed under a search field; the port's search controller shows no suggestion list (facts/UIKit/UISearchController.md) and its search text field has no suggestions (facts/UIKit/UISearchTextField.md), so there is no list to put one in",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -3135,7 +3135,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "a suggestion listed under a search field, with a title and an image; the port's search controller shows no suggestion list (facts/UIKit/UISearchController.md) and its search text field has no suggestions (facts/UIKit/UISearchTextField.md), so there is no list to put one in",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -3145,7 +3145,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UISearchTextField a property like it: it arrived in iOS 16",
+      "reason": "the suggestions listed under the search field; the port's search controller shows no suggestion list (facts/UIKit/UISearchController.md) and its search text field has no suggestions (facts/UIKit/UISearchTextField.md), so there is no list to fill - building one is real work, no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3155,7 +3155,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
+      "reason": "the value a custom detent answers when it cannot be used; the port carries UIPresentationController (ios8presentation.json) but no sheet with resizable detents over it, so there is no detent to resolve",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -3165,7 +3165,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "what a custom detent is resolved against - the traits and the largest height a sheet can take; the port carries UIPresentationController (ios8presentation.json) but no sheet with resizable detents over it, so there is no detent to resolve",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -3185,7 +3185,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "collects the results of a text search as they are found; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -3195,7 +3195,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the options of a text search - whole words, case, how a match starts; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -3205,7 +3205,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the protocol a view adopts to be searched by a find interaction; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -3215,7 +3215,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "a find session over a view that adopts UITextSearching; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -3315,7 +3315,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the scene's resolved orientation, coordinate space and size restrictions; the port's scene answers each of those already (UIKit/UIWindowScene.m), so the object could be built from them - not built for lack of demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
