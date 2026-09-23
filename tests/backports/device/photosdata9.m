@@ -265,6 +265,28 @@ static void check_move(void)
     [files removeItemAtURL:second error:NULL];
 }
 
+// A video given as data is staged in a file of the process for ALAssetsLibrary, which takes a video only as a file; the
+// staged file must be gone once the change is done. Adds one solid-blue video, 64 by 64.
+static void check_staged(void)
+{
+    NSFileManager *files = [NSFileManager defaultManager];
+    NSURL *source = blue_video(15, 64, 64, NO);
+    NSData *data = [NSData dataWithContentsOfURL:source];
+    [files removeItemAtURL:source error:NULL];
+    NSSet *before = [NSSet setWithArray:[files contentsOfDirectoryAtPath:NSTemporaryDirectory() error:NULL]];
+    __block NSString *identifier = nil;
+    NSError *error = nil;
+    BOOL added = [[PHPhotoLibrary sharedPhotoLibrary] performChangesAndWait:^{
+        PHAssetCreationRequest *request = [PHAssetCreationRequest creationRequestForAsset];
+        [request addResourceWithType:PHAssetResourceTypeVideo data:data options:nil];
+        identifier = request.placeholderForCreatedAsset.localIdentifier;
+    } error:&error];
+    printf("video from data: %s\n", added ? "written" : error.description.UTF8String);
+    NSSet *after = [NSSet setWithArray:[files contentsOfDirectoryAtPath:NSTemporaryDirectory() error:NULL]];
+    CHECK(added && asset_with_identifier(identifier) != nil, "a video given as data is added");
+    CHECK([after isEqualToSet:before], "and the file it was staged in is gone");
+}
+
 static void run_checks(void)
 {
     dispatch_semaphore_t answered = dispatch_semaphore_create(0);
@@ -304,6 +326,7 @@ static void run_checks(void)
     }
     [[NSFileManager defaultManager] removeItemAtURL:video error:NULL];
     check_move();
+    check_staged();
 
     NSString *summary = [NSString stringWithFormat:@"%d checks, %d failed\n", charon_checks, charon_failures];
     printf("%s", summary.UTF8String);

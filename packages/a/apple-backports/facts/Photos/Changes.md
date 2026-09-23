@@ -26,7 +26,10 @@ says a file that is open or hard-linked cannot be moved: a file with more than o
 be removed, fail the change with `PHPhotosErrorInvalidResource` and a reason when the requests are checked, before anything is
 written. Whether another process holds the file open iOS 6 gives no public way to ask, so that case is not refused. A removal
 that still fails after the asset is made fails the change with the file system's error, the way every write of the change that
-fails after the ones before it does (below): the asset is then in the library and the file is still where it was. `+supportsAssetResourceTypes:` answers
+fails after the ones before it does (below): the asset is then in the library and the file is still where it was. A video
+resource given as data is written by `ALAssetsLibrary` only from a file, so the data is staged in a file of the process's
+temporary folder and that file is removed once the library has copied it, whether the write succeeded or not; a staged file
+that cannot be removed after a successful write fails the change the same way. `+supportsAssetResourceTypes:` answers
 YES only for a single-element array naming the photo or the video type. `+[PHAssetResource assetResourcesForAsset:]` (iOS 9) describes
 the one resource an iOS 6 asset already has, read from `ALAssetRepresentation` (`defaultRepresentation`) rather than from a Photos
 database row; `+assetResourcesForLivePhoto:` always gives an empty array, since no live photo can exist on this release.

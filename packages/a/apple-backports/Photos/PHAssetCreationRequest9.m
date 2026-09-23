@@ -138,24 +138,31 @@ static CharonPhotosTransaction *charon_transaction(void)
 {
     NSDictionary *metadata = [self charon_metadata];
     NSString *identifier = nil;
+    NSURL *staged = nil;
     if (_resourceType == PHAssetResourceTypePhoto) {
         NSData *data = _resourceData ?: (_resourceFileURL ? [NSData dataWithContentsOfURL:_resourceFileURL] : nil);
         identifier = [CharonPhotosStore writeImageData:data metadata:metadata error:error];
+    } else if (_resourceFileURL) {
+        identifier = [CharonPhotosStore writeVideoAtURL:_resourceFileURL error:error];
     } else {
-        NSURL *url = _resourceFileURL;
-        if (!url && _resourceData) {
-            url = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[NSUUID UUID].UUIDString]];
-            if (![_resourceData writeToURL:url atomically:YES]) {
-                if (error)
-                    *error = [CharonPhotosStore errorWithCode:-1 reason:@"the video data could not be staged for the photo library"];
-                return NO;
-            }
-        }
-        identifier = [CharonPhotosStore writeVideoAtURL:url error:error];
+        // ALAssetsLibrary takes a video only as a file: the data is staged in one of this process's own, which is
+        // removed once the library has copied it, whether the write succeeded or not.
+        staged = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[NSUUID UUID].UUIDString]];
+        if (![_resourceData writeToURL:staged options:NSDataWritingAtomic error:error])
+            return NO;
+        identifier = [CharonPhotosStore writeVideoAtURL:staged error:error];
+    }
+    if (identifier)
+        [CharonPhotosStore bindPlaceholderIdentifier:_token toIdentifier:identifier];
+    // A write that failed keeps its own error, the cause; after one that succeeded, a staged file that cannot be removed
+    // fails the change with the file system's error, as a moved file does.
+    if (staged && unlink(staged.fileSystemRepresentation) != 0 && identifier) {
+        if (error)
+            *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSURLErrorKey: staged}];
+        return NO;
     }
     if (!identifier)
         return NO;
-    [CharonPhotosStore bindPlaceholderIdentifier:_token toIdentifier:identifier];
     return [self charon_removeMovedFile:error];
 }
 
