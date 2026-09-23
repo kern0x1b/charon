@@ -237,11 +237,11 @@ static NSMutableSet *charon_players_in_picture(void)
     UIView *_charonStage;
     UIView *_charonContentOverlayView;
     UIView *_charonControls;
-    UIView *_charonTopBar;
+    UIToolbar *_charonTopBar;
     UIView *_charonBottomBar;
-    UIButton *_charonDoneButton;
+    UIBarButtonItem *_charonDoneItem;
     UIButton *_charonPlayButton;
-    UIButton *_charonPictureButton;
+    UIBarButtonItem *_charonPictureItem;
     UIButton *_charonFullScreenButton;
     UISlider *_charonScrubber;
     UILabel *_charonElapsedLabel;
@@ -587,24 +587,15 @@ static NSString *charon_contents_gravity(NSString *videoGravity)
     _charonControls.backgroundColor = [UIColor clearColor];
     [_charonStage addSubview:_charonControls];
 
-    _charonTopBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, bounds.size.width, 44)];
+    // The system's own Done, titled and localized by UIKit.
+    _charonTopBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, bounds.size.width, 44)];
     _charonTopBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
-    _charonTopBar.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
+    _charonTopBar.barStyle = UIBarStyleBlack;
+    _charonTopBar.translucent = YES;
     [_charonControls addSubview:_charonTopBar];
-
-    _charonDoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    _charonDoneButton.frame = CGRectMake(4, 0, 64, 44);
-    _charonDoneButton.titleLabel.font = [UIFont boldSystemFontOfSize:15];
-    [_charonDoneButton setTitle:NSLocalizedStringFromTableInBundle(@"Done", nil, [NSBundle bundleForClass:[UIApplication class]], nil)
-                       forState:UIControlStateNormal];
-    [_charonDoneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [_charonDoneButton addTarget:self action:@selector(charon_done:) forControlEvents:UIControlEventTouchUpInside];
-    [_charonTopBar addSubview:_charonDoneButton];
-
-    _charonPictureButton = [self charon_buttonWithImage:charon_picture_glyph() action:@selector(charon_picture:)];
-    _charonPictureButton.frame = CGRectMake(bounds.size.width - 44, 0, 44, 44);
-    _charonPictureButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-    [_charonTopBar addSubview:_charonPictureButton];
+    _charonDoneItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(charon_done:)];
+    _charonPictureItem = [[UIBarButtonItem alloc] initWithImage:charon_picture_glyph() style:UIBarButtonItemStylePlain target:self
+                                                         action:@selector(charon_picture:)];
 
     _charonBottomBar = [[UIView alloc] initWithFrame:CGRectMake(0, bounds.size.height - 44, bounds.size.width, 44)];
     _charonBottomBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
@@ -702,12 +693,18 @@ static NSString *charon_contents_gravity(NSString *videoGravity)
         [_charonSpinner stopAnimating];
 
     BOOL full = _charonFullScreen != nil;
-    _charonDoneButton.hidden = !(full || [self charon_presentedItself]);
-    _charonFullScreenButton.hidden = full || [self charon_presentedItself];
-    _charonPictureButton.hidden = !(_allowsPictureInPicturePlayback && [AVPictureInPictureController isPictureInPictureSupported])
-        || [self charon_pictureActive];
+    BOOL done = full || [self charon_presentedItself];
+    BOOL picture = _allowsPictureInPicturePlayback && [AVPictureInPictureController isPictureInPictureSupported] && ![self charon_pictureActive];
+    _charonFullScreenButton.hidden = done;
+    NSMutableArray *items = [NSMutableArray array];
+    if (done)
+        [items addObject:_charonDoneItem];
+    [items addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL]];
+    if (picture)
+        [items addObject:_charonPictureItem];
+    _charonTopBar.items = items;
+    _charonTopBar.hidden = !done && !picture;
     _charonScrubber.enabled = !_requiresLinearPlayback && item != nil && CMTIME_IS_NUMERIC(item.duration);
-    _charonTopBar.hidden = _charonDoneButton.hidden && _charonPictureButton.hidden;
 
     BOOL controls = _showsPlaybackControls && !(_charonControlsHidden && playing);
     _charonControls.hidden = !controls;

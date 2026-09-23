@@ -31,8 +31,9 @@ Everything is built of what iOS 6 has: `AVPlayerLayer`, `UISlider`, `UIButton` w
 `UIBezierPath` (iOS 6 has no symbol images), `UIActivityIndicatorView`, `MPNowPlayingInfoCenter`.
 
 - **Controls.** A bottom bar with play/pause, elapsed time, a scrubber, remaining time, and full screen
-  when the controller is inline; a top bar with Done when the controller is presented itself or in full
-  screen, and picture in picture when `allowsPictureInPicturePlayback` is `YES`. A tap on the video shows
+  when the controller is inline; a top toolbar with the system's own Done item
+  (`UIBarButtonSystemItemDone`, so UIKit titles and localizes it) when the controller is presented
+  itself or in full screen, and picture in picture when `allowsPictureInPicturePlayback` is `YES`. A tap on the video shows
   or hides them; while playing they hide after three seconds. `showsPlaybackControls = NO` removes them
   and the tap. The scrubber seeks with zero tolerance while dragged, pausing and restoring the rate.
   Play at the end seeks to zero first. A spinner shows while the item's status is unknown or a playing
@@ -58,7 +59,8 @@ Everything is built of what iOS 6 has: `AVPlayerLayer`, `UISlider`, `UIButton` w
   Done brings it back. `entersFullScreenWhenPlaybackBegins` enters it when the player's rate leaves 0
   while the controller is inline and on screen; `exitsFullScreenWhenPlaybackEnds` leaves it at
   `AVPlayerItemDidPlayToEndTimeNotification`, and dismisses a controller presented itself.
-- **Done** on a presented controller pauses the player and dismisses the controller.
+- **Done** on a presented controller pauses the player and dismisses the controller. That it pauses
+  is reasoned from the release's behaviour, not measured on a release that has the class.
 - **`updatesNowPlayingInfoCenter`** (default `YES`) writes `MPNowPlayingInfoCenter`'s `nowPlayingInfo`
   on every change of rate, item, status or duration: the asset's common title once loaded
   (asynchronously), the duration, the elapsed time and the rate. It clears what it wrote when the player
