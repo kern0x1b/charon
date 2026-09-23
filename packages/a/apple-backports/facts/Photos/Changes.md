@@ -92,6 +92,17 @@ only two exceptions, and each still refuses whatever `ALAssetsLibrary` itself ca
 
 Once the checks pass the writes are made one after another; a write that then fails (the disk is full) leaves the ones before it made, as the release has no way to undo them.
 
+Every error of the port is one of the header's named `PHPhotosError` codes, each for the case the header gives it, or the error
+the release or the file system gave, passed on: a creation request with no resource is `PHPhotosErrorMissingResource` ("Asset
+resource missing"); resource data that is not an image, an image with no pixels, and a file that cannot be moved are
+`PHPhotosErrorInvalidResource` ("Asset resource validation failed"); an asset, a resource's asset or an album that is not in the
+library (an asset added to an album that no committed change made, an album gone) is `PHPhotosErrorIdentifierNotFound`
+("Identifier was not found"); what iOS 6 cannot do, found only at the write (an album name taken, an album that refuses an
+asset, as the release does for one the application may not edit), is `PHPhotosErrorChangeNotSupported`, the code of the same
+refusals found by the checks; a library that answers a write with neither an asset nor an error is
+`PHPhotosErrorInternalError` ("An unknown, internal error"). Which code Photos of iOS 9 and later gives for each of these was not
+measured, for the reason above; the header's text for the code is the source.
+
 Source: the header of iOS 16.4; the host's Photos for the text of the exception and the
 error codes; `ALAssetsLibrary` of an iPad 2 running 6.1.3 for the iOS 8 creation request. The iOS 9 creation request with its placeholder
 passed to `addAssets:` of an album created in the same change, the album found again by its placeholder with that one asset in it,

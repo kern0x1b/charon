@@ -2,6 +2,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import <ImageIO/ImageIO.h>
 #import <objc/message.h>
+#import <Photos/PHError.h>
 
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
@@ -200,7 +201,7 @@ static CharonPhotosTransaction *charon_transaction(void)
 {
     if (_kind == CharonChangeImage && [_source CGImage] == NULL) {
         if (error)
-            *error = [CharonPhotosStore errorWithCode:3302 reason:@"the image has no pixels to add"];
+            *error = [CharonPhotosStore errorWithCode:PHPhotosErrorInvalidResource reason:@"the image has no pixels to add"];
         return NO;
     }
     return YES;

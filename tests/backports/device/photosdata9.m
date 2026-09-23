@@ -287,6 +287,57 @@ static void check_staged(void)
     CHECK([after isEqualToSet:before], "and the file it was staged in is gone");
 }
 
+static NSError *change_error(dispatch_block_t changes)
+{
+    NSError *error = nil;
+    BOOL made = [[PHPhotoLibrary sharedPhotoLibrary] performChangesAndWait:changes error:&error];
+    return made ? nil : error;
+}
+
+static BOOL is_photos_error(NSError *error, NSInteger code)
+{
+    return [error.domain isEqualToString:PHPhotosErrorDomain] && error.code == code;
+}
+
+// Each error is the header's code for the case it names (facts/Photos/Changes.md), made to happen here. Nothing of these
+// is written, but the album of the last one, which is this run's own.
+static void check_codes(NSString *albumIdentifier)
+{
+    NSUInteger before = saved_photos_count();
+    NSError *error = change_error(^{
+        [PHAssetCreationRequest creationRequestForAsset];
+    });
+    printf("no resource: %s\n", error.description.UTF8String ?: "no error");
+    CHECK(is_photos_error(error, PHPhotosErrorMissingResource), "a creation request with no resource is a missing resource");
+
+    error = change_error(^{
+        [[PHAssetCreationRequest creationRequestForAsset] addResourceWithType:PHAssetResourceTypePhoto data:[@"not an image" dataUsingEncoding:NSUTF8StringEncoding] options:nil];
+    });
+    CHECK(is_photos_error(error, PHPhotosErrorInvalidResource), "photo data that is not an image is an invalid resource");
+
+    error = change_error(^{
+        [PHAssetChangeRequest creationRequestForAssetFromImage:[[UIImage alloc] init]];
+    });
+    CHECK(is_photos_error(error, PHPhotosErrorInvalidResource), "an image with no pixels is an invalid resource");
+    CHECK(saved_photos_count() == before, "and none of the three wrote anything");
+
+    // A placeholder whose change never committed: its change was refused, so no asset stands behind it.
+    __block PHObjectPlaceholder *orphan = nil;
+    change_error(^{
+        orphan = [PHAssetCreationRequest creationRequestForAsset].placeholderForCreatedAsset;
+    });
+    PHAssetCollection *album = albumIdentifier ? [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[albumIdentifier] options:nil].firstObject : nil;
+    CHECK(album != nil, "this run's album is found again");
+    error = change_error(^{
+        [[PHAssetCollectionChangeRequest changeRequestForAssetCollection:album] addAssets:@[orphan]];
+    });
+    printf("an asset no change made: %s\n", error.description.UTF8String ?: "no error");
+    CHECK(is_photos_error(error, PHPhotosErrorIdentifierNotFound), "an asset no committed change made is not found");
+
+    CharonReadRecord *record = read_resource(((id (*)(id, SEL))objc_msgSend)([PHAssetResource alloc], @selector(init)), NO);
+    CHECK(record.chunks.count == 0 && is_photos_error(record.error, PHPhotosErrorIdentifierNotFound), "a resource whose asset is not there reads as not found");
+}
+
 static void run_checks(void)
 {
     dispatch_semaphore_t answered = dispatch_semaphore_create(0);
@@ -304,7 +355,7 @@ static void run_checks(void)
     printf("fixture video: %lld bytes\n", size.longLongValue);
     CHECK(video != nil, "the fixture video is made");
 
-    __block NSString *identifier = nil;
+    __block NSString *identifier = nil, *albumIdentifier = nil;
     NSString *name = album_name();
     NSError *error = nil;
     BOOL made = [[PHPhotoLibrary sharedPhotoLibrary] performChangesAndWait:^{
@@ -313,6 +364,7 @@ static void run_checks(void)
         PHAssetCollectionChangeRequest *album = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:name];
         [album addAssets:@[request.placeholderForCreatedAsset]];
         identifier = request.placeholderForCreatedAsset.localIdentifier;
+        albumIdentifier = album.placeholderForCreatedAssetCollection.localIdentifier;
     } error:&error];
     printf("fixture in %s: %s\n", name.UTF8String, made ? "written" : error.description.UTF8String);
     PHAsset *asset = asset_with_identifier(identifier);
@@ -327,6 +379,7 @@ static void run_checks(void)
     [[NSFileManager defaultManager] removeItemAtURL:video error:NULL];
     check_move();
     check_staged();
+    check_codes(albumIdentifier);
 
     NSString *summary = [NSString stringWithFormat:@"%d checks, %d failed\n", charon_checks, charon_failures];
     printf("%s", summary.UTF8String);

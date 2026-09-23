@@ -89,12 +89,12 @@ static CharonPhotosTransaction *charon_transaction(void)
 {
     if (!_hasResource) {
         if (error)
-            *error = [CharonPhotosStore errorWithCode:3302 reason:@"the creation request was never given a resource to save"];
+            *error = [CharonPhotosStore errorWithCode:PHPhotosErrorMissingResource reason:@"the creation request was never given a resource to save"];
         return NO;
     }
     if (_resourceType == PHAssetResourceTypePhoto && _resourceData && ![UIImage imageWithData:_resourceData]) {
         if (error)
-            *error = [CharonPhotosStore errorWithCode:3302 reason:@"the resource data is not an image this release can decode"];
+            *error = [CharonPhotosStore errorWithCode:PHPhotosErrorInvalidResource reason:@"the resource data is not an image this release can decode"];
         return NO;
     }
     // A move takes the file out of its folder once the asset is made. The header says a hard-linked file cannot be

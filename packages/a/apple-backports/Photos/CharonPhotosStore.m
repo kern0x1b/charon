@@ -312,7 +312,7 @@ static NSString *const CharonPhotosErrorDomain = @"PHPhotosErrorDomain";
         });
     }];
     if (!written && error)
-        *error = failed ?: [self errorWithCode:-1 reason:@"the photo library did not answer with the address of the asset"];
+        *error = failed ?: [self errorWithCode:PHPhotosErrorInternalError reason:@"the photo library did not answer with the address of the asset"];
     return written.absoluteString;
 }
 
@@ -364,7 +364,7 @@ static NSString *const CharonPhotosErrorDomain = @"PHPhotosErrorDomain";
         }];
     }];
     if (!made && error)
-        *error = failed ?: [self errorWithCode:-1 reason:@"the photo library did not answer with the new album"];
+        *error = failed ?: [self errorWithCode:PHPhotosErrorChangeNotSupported reason:@"the photo library made no album, as iOS 6 answers for a name already in use"];
     return made;
 }
 
@@ -377,9 +377,9 @@ static NSString *const CharonPhotosErrorDomain = @"PHPhotosErrorDomain";
             if (group) {
                 added = [group addAsset:asset];
                 if (!added)
-                    failed = [self errorWithCode:-1 reason:@"the album refused the asset"];
+                    failed = [self errorWithCode:PHPhotosErrorChangeNotSupported reason:@"the album refused the asset, as iOS 6 does for an album the application may not edit"];
             } else {
-                failed = [self errorWithCode:-1 reason:@"the album no longer exists"];
+                failed = [self errorWithCode:PHPhotosErrorIdentifierNotFound reason:@"the album no longer exists"];
             }
             done();
         } failureBlock:^(NSError *problem) {

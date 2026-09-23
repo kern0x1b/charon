@@ -151,7 +151,7 @@ static CharonPhotosTransaction *charon_transaction(void)
             : [addedAsset charon_asset];
         if (!alAsset) {
             if (error)
-                *error = [CharonPhotosStore errorWithCode:-1 reason:@"an asset added to the album no longer exists, or its creation has not been committed yet"];
+                *error = [CharonPhotosStore errorWithCode:PHPhotosErrorIdentifierNotFound reason:@"an asset added to the album no longer exists, or its creation has not been committed yet"];
             return NO;
         }
         if (![CharonPhotosStore addAsset:alAsset toGroupWithURL:groupURL error:error])
