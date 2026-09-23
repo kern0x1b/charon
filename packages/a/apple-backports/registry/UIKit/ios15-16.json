@@ -1373,7 +1373,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIScene a property like it: it arrived in iOS 15",
+      "reason": "a second line under the scene's title where the system lists windows; the port's UIScene keeps its title (UIKit/UIScene.m), and the release lists no scenes anywhere, so a subtitle could be kept the same way and never shown - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1383,7 +1383,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "the domain of the errors scene requests fail with; the port already makes those errors in a domain of this very name, written as a literal (UIKit/UIApplication+Scenes.m), so exporting the constant would let an application compare against it - not built, not a wall, and a candidate to implement",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1393,7 +1393,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "a presentation that slides a sheet up to medium or large detents with a grabber; the port carries UIPresentationController (ios8presentation.json) but no sheet with resizable detents over it, which is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -1403,7 +1403,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "the value that asks a sheet for its default corner radius; follows UISheetPresentationController, not carried (see its row)",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1413,7 +1413,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the delegate told when a sheet changes detent; the port carries UIPresentationController (ios8presentation.json) but no sheet with resizable detents over it, so no sheet changes detent to tell it",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -1423,7 +1423,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "a height a sheet can rest at; the port carries UIPresentationController (ios8presentation.json) but no sheet with resizable detents over it, so there is no sheet to rest",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -1433,7 +1433,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "names the large detent of a sheet; the port carries UIPresentationController (ios8presentation.json) but no sheet with resizable detents over it, so no detent carries the name",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1443,7 +1443,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "names the medium detent of a sheet; the port carries UIPresentationController (ios8presentation.json) but no sheet with resizable detents over it, so no detent carries the name",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1613,7 +1613,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "a layout guide that switches its constraints by the edge a tracked view is near, the base of UIKeyboardLayoutGuide; the port carries UILayoutGuide (base.json), over which it could be built - not built for lack of demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -1683,7 +1683,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIViewConfigurationState a property like it: it arrived in iOS 15",
+      "reason": "whether a header is pinned to the visible bounds; the port's compositional layout pins headers (packages/a/apple-backports/README.md) and its configuration state leaves this @dynamic (facts/UIKit/UIConfigurationState.md), so the layout could set it - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1753,7 +1753,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "an action that opens content in a new window; the port runs one scene and refuses a second (requestSceneSessionActivation answers multiple scenes not supported, facts/UIKit/UIScene.md), so there is no window to open",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -1763,7 +1763,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "what a new window opens with, from an action or a pinch; the port runs one scene and refuses a second (requestSceneSessionActivation answers multiple scenes not supported, facts/UIKit/UIScene.md), so there is no window to configure",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -1773,7 +1773,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "opens a view's content in a new window when it is pinched out; the port runs one scene and refuses a second (requestSceneSessionActivation answers multiple scenes not supported, facts/UIKit/UIScene.md), so there is no window to open",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -1783,7 +1783,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "options for asking the system to show a new scene; the port runs one scene and refuses a second (requestSceneSessionActivation answers multiple scenes not supported, facts/UIKit/UIScene.md), so a request is refused before any option is read",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -1793,7 +1793,7 @@
       "introduced": "15.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "the activity that starts SharePlay, which shares an activity over a FaceTime call through Apple's Group Activities service; the release has neither the service nor the activity, a wall at that service",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1803,7 +1803,7 @@
       "introduced": "15.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIActivityViewController a property like it: it arrived in iOS 15",
+      "reason": "lets the share sheet put one activity, SharePlay, at the top; the release's share sheet lays its activities out itself and has no SharePlay (see UIActivityTypeSharePlay), so there is nothing to promote",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1813,7 +1813,7 @@
       "introduced": "15.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "the URL that opens the application's notification settings; the port carries UIApplicationOpenSettingsURLString, which the release cannot open, so openURL: answers NO (facts/UIKit/KeyboardAndAccessibility.md), and this would answer the same way - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1823,7 +1823,7 @@
       "introduced": "15.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the info button accessory of a list cell; the port lays out the other accessories of a list cell itself (facts/UIKit/UICellAccessory.md), and a detail button would be one more - not built for lack of demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
