@@ -96,3 +96,12 @@ no key window. The release has one scene and the port's scene answers the applic
 so in practice it is `[UIApplication sharedApplication].keyWindow`. Ladder by `objc.inventory`
 (`.agent-work/plan-and-analysis/b1314-flips/ladder-leaf-anchor-key.log`): `UIWindowScene` is not in the 12.0 cache, and `keyWindow` is in
 16.0 and 18.0 with `windows` as the positive control; no 13-15 cache, so `introduced` stays the header's 15.0. Not run on a device.
+
+## `UIWindowScene.windowingBehaviors`, iOS 16
+
+`UIKit/UIWindowScene+Windowing16.m` answers nil. The header: "This property will be nil on unsupported platforms, otherwise will
+provide a mutable object for window behavior customization"; the behaviours are closing and miniaturizing a window, which a phone or
+tablet does not have, and `UISceneWindowingBehaviors` itself stays absent, since nothing ever hands one out. `objc.inventory`
+(`ladder-rest.log`): the getter is not in 12.0 (nor the class) and is in 16.0 and 18.0; no 13-15 cache, so `introduced` stays the
+header's 16.0. That the system answers nil on an iPhone is the header's word, not measured.
+

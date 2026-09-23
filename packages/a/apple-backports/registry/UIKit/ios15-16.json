@@ -872,10 +872,10 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a readonly idiom-derived style (phone, pad, mac) with no UIButtonConfiguration dependency and a definable answer on this device class - simply not built, no demand",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "pad: the mac style exists only in a Mac application, and a phone or tablet resolves every control to pad",
+      "facts": "facts/UIKit/UIBehavioralStyle.md",
+      "source": "SDK 16.4, UIKit; not in 6.1.3 or 12.0, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UIButton.changesSelectionAsPrimaryAction",
@@ -932,10 +932,10 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the writable override of behavioralStyle, itself not built (no demand) - nothing to override",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "keeps what was asked, automatic until set; a phone or tablet resolves every style to pad, so it changes nothing",
+      "facts": "facts/UIKit/UIBehavioralStyle.md",
+      "source": "SDK 16.4, UIKit; not in 6.1.3 or 12.0, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UIButton.subtitleLabel",
@@ -1452,20 +1452,20 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the style the slider resolved to, where mac draws it as a Mac slider; on iOS it resolves to pad (SDK UIBehavioralStyle.h: pad is the style for iOS applications), which is a defined answer - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "pad: the mac style exists only in a Mac application, and a phone or tablet resolves every control to pad",
+      "facts": "facts/UIKit/UIBehavioralStyle.md",
+      "source": "SDK 16.4, UIKit; not in 6.1.3 or 12.0, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UISlider.preferredBehavioralStyle",
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "asks for the mac style, which only a Mac application draws, or the pad style; on a phone or tablet the slider is pad whatever is asked, so the value could only be kept - not built for lack of demand, not a wall",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "keeps what was asked, automatic until set; a phone or tablet resolves every style to pad, so it changes nothing",
+      "facts": "facts/UIKit/UIBehavioralStyle.md",
+      "source": "SDK 16.4, UIKit; not in 6.1.3 or 12.0, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UITableView.allowsFocus",
@@ -2483,10 +2483,10 @@
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "marks an alert critical, which only the Mac idiom draws with a caution symbol; the port carries UIAlertController (facts/UIKit/UIAlertController.md), and on a phone or tablet the value changes nothing, so keeping it is the defined answer - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "kept, default until set; only the Mac idiom draws a critical alert differently, so on a phone or tablet it changes nothing",
+      "facts": "facts/UIKit/UIAlertController.md",
+      "source": "SDK 16.4, UIKit; not in 6.1.3 or 12.0, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UIBarButtonItem.hidden",
@@ -2853,30 +2853,30 @@
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the style the bar resolved to, where mac places its contents in an NSToolbar; on iOS it resolves to pad (SDK UIBehavioralStyle.h: pad is the style for iOS applications), which is a defined answer - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "pad: the mac style exists only in a Mac application, and a phone or tablet resolves every control to pad",
+      "facts": "facts/UIKit/UIBehavioralStyle.md",
+      "source": "SDK 16.4, UIKit; not in 6.1.3 or 12.0, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UINavigationBar.currentNSToolbarSection",
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the section of a Mac window's NSToolbar the bar's contents are in; a phone or tablet has no NSToolbar, so the answer is none, which is a defined answer - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "none: the bar's contents go in an NSToolbar only in a Mac window",
+      "facts": "facts/UIKit/UIBehavioralStyle.md",
+      "source": "SDK 16.4, UIKit; not in 6.1.3 or 12.0, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UINavigationBar.preferredBehavioralStyle",
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "asks for the mac style, which puts the bar in an NSToolbar, or the pad style; a phone or tablet has no NSToolbar, so the bar is pad whatever is asked and the value could only be kept - not built for lack of demand, not a wall",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "keeps what was asked, automatic until set; a phone or tablet resolves every style to pad, so it changes nothing",
+      "facts": "facts/UIKit/UIBehavioralStyle.md",
+      "source": "SDK 16.4, UIKit; not in 6.1.3 or 12.0, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UINavigationItem.additionalOverflowItems",
@@ -3094,40 +3094,40 @@
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the ratio of the brightest white the screen shows now to its SDR white; the screens of the 4S and iPad 2 have no extended dynamic range, so it is 1, which is a defined answer - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "1: the screen shows nothing brighter than SDR white (1 rather than 0 follows from the header's ratio, not measured)",
+      "facts": "facts/UIKit/UIScreenReferenceDisplayMode.md",
+      "source": "SDK 16.4, UIKit; not in 6.1.3 or 12.0, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UIScreen.potentialEDRHeadroom",
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the highest ratio of white to SDR white the screen can reach with EDR on; the screens of the 4S and iPad 2 have no extended dynamic range, so it is 1, which is a defined answer - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "1: the screen can show nothing brighter than SDR white (1 rather than 0 follows from the header's ratio, not measured)",
+      "facts": "facts/UIKit/UIScreenReferenceDisplayMode.md",
+      "source": "SDK 16.4, UIKit; not in 6.1.3 or 12.0, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UIScreen.referenceDisplayModeStatus",
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "whether the screen runs in its colour-accurate reference mode, which only some iPad Pro screens have; the screens of the 4S and iPad 2 have none, so the answer is not supported, which is a defined answer - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "not supported: the screens of the 4S and iPad 2 have no reference display mode",
+      "facts": "facts/UIKit/UIScreenReferenceDisplayMode.md",
+      "source": "SDK 16.4, UIKit; not in 6.1.3 or 12.0, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UIScreenReferenceDisplayModeStatusDidChangeNotification",
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "posted when a screen's reference display mode changes; the screens of the 4S and iPad 2 have no reference mode, so the status never changes and the notification is never posted, which is a defined behaviour - not built for lack of demand, not a wall, and a candidate to implement with referenceDisplayModeStatus",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "exported with the system's string (read from 16.0); never posted, since a status that cannot change has nothing to announce",
+      "facts": "facts/UIKit/UIScreenReferenceDisplayMode.md",
+      "source": "SDK 16.4, UIKit; not exported by UIKitCore in the 12.0 cache, exported in 16.0 with this value (cfconst.lua)"
     },
     {
       "api": "UISearchController.ignoresSearchSuggestionsForSearchBarPlacementStacked",
@@ -3354,10 +3354,10 @@
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the header says it is nil on a platform that does not support the behaviors (closing, miniaturizing a window), and a phone or tablet of the release is one, so a getter answering nil is the defined answer - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "nil, as the header says for a platform without window behaviours",
+      "facts": "facts/UIKit/UIScene.md",
+      "source": "SDK 16.4, UIKit; the class is not in the 12.0 cache, and the getter is in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UIWindowSceneGeometry",

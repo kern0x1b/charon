@@ -53,3 +53,12 @@ iOS 6 has no `UIAlertController`, so the controller builds the native view the r
 - an action is run once, when the view is dismissed with its index, and only if it is enabled; a disabled action runs
   nothing, an index of -1 runs nothing, and a view that has been dismissed already runs no handler again;
 - the first other button of an alert is disabled while its action is, and enabled when there is no other button.
+
+## `severity`, iOS 16.0
+
+`UIKit/UIAlertController+Severity16.m` keeps the value set, default until then, and nothing reads it. The header of SDK 16.4 has the
+two values and no comment; a critical alert is drawn differently only in the Mac idiom (the reason on the old registry row, not read
+from a Mac here), so on a phone or tablet a kept value that changes nothing is what the system does. `objc.inventory`
+(`.agent-work/plan-and-analysis/b1314-flips/ladder-rest.log`): getter and setter are not in 6.1.3 or 12.0 and are in 16.0 and 18.0; no
+13-15 cache, so `introduced` stays the header's 16.0. Not run on a device.
+
