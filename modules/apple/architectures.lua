@@ -7,6 +7,10 @@ ARCHITECTURES = {
     arm64 = {first = "7.0"}
 }
 
+function names()
+    return table.orderkeys(ARCHITECTURES)
+end
+
 local function runs(architecture, release)
     local bounds = ARCHITECTURES[architecture]
     return semver.compare(release, bounds.first) >= 0 and (not bounds.last or semver.compare(release, bounds.last) <= 0)
