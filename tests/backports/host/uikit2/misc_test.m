@@ -131,8 +131,8 @@ int main(void)
         NSArray *ourColors = @[[UIColor charonHostSystemRedColor], [UIColor charonHostSystemGreenColor], [UIColor charonHostSystemBlueColor],
                                [UIColor charonHostSystemOrangeColor], [UIColor charonHostSystemYellowColor], [UIColor charonHostSystemPinkColor],
                                [UIColor charonHostSystemTealColor], [UIColor charonHostSystemGrayColor], [UIColor charonHostSystemPurpleColor]];
-        NSArray *expectedColors = @[@"255 59 48 1.00", @"76 217 100 1.00", @"0 122 255 1.00", @"255 149 0 1.00", @"255 204 0 1.00",
-                                    @"255 45 85 1.00", @"90 200 250 1.00", @"142 142 147 1.00", @"88 86 214 1.00"];
+        NSArray *expectedColors = @[@"255 59 48 1.00", @"52 199 89 1.00", @"0 122 255 1.00", @"255 149 0 1.00", @"255 204 0 1.00",
+                                    @"255 45 85 1.00", @"48 176 199 1.00", @"142 142 147 1.00", @"175 82 222 1.00"];
         NSArray *systemColors = @[[UIColor systemRedColor], [UIColor systemGreenColor], [UIColor systemBlueColor], [UIColor systemOrangeColor],
                                   [UIColor systemYellowColor], [UIColor systemPinkColor], [UIColor systemTealColor], [UIColor systemGrayColor],
                                   [UIColor systemPurpleColor]];

@@ -1893,9 +1893,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.secondaryLabelColor",
@@ -1903,9 +1903,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.tertiaryLabelColor",
@@ -1913,9 +1913,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.quaternaryLabelColor",
@@ -1923,9 +1923,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.linkColor",
@@ -1933,9 +1933,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.placeholderTextColor",
@@ -1945,7 +1945,7 @@
       "status": "implemented",
       "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "the iOS 13 table's tertiary label values, not measured on 18.0: 18.0 asks for the colour by a name no CoreUI catalogue holds; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.separatorColor",
@@ -1953,9 +1953,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.opaqueSeparatorColor",
@@ -1963,9 +1963,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.systemBackgroundColor",
@@ -1973,9 +1973,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.secondarySystemBackgroundColor",
@@ -1983,9 +1983,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.tertiarySystemBackgroundColor",
@@ -1993,9 +1993,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.systemGroupedBackgroundColor",
@@ -2003,9 +2003,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.secondarySystemGroupedBackgroundColor",
@@ -2013,9 +2013,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.tertiarySystemGroupedBackgroundColor",
@@ -2023,9 +2023,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.systemFillColor",
@@ -2033,9 +2033,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.secondarySystemFillColor",
@@ -2043,9 +2043,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.tertiarySystemFillColor",
@@ -2053,9 +2053,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.quaternarySystemFillColor",
@@ -2063,9 +2063,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.systemGray2Color",
@@ -2073,9 +2073,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.systemGray3Color",
@@ -2083,9 +2083,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.systemGray4Color",
@@ -2093,9 +2093,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.systemGray5Color",
@@ -2103,9 +2103,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.systemGray6Color",
@@ -2113,9 +2113,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.systemBrownColor",
@@ -2123,9 +2123,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.systemIndigoColor",
@@ -2133,9 +2133,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "a dynamic colour of the iOS 13 palette: light, dark, dark elevated for the backgrounds and the high contrast values of the grays and fills; one colour for every call",
+      "effect": "a dynamic colour with the values of 18.0 - light, dark, and the high-contrast and dark elevated variants where 18.0 has them; one colour for every call",
       "facts": "facts/UIKit/UIColorDynamic.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the colors13 group); the header of SDK 16.4"
+      "source": "measured on 18.0: UIKitCore of the ladder's 18.0 cache for the colours it builds in code, CoreUI's palette catalogues of the 18.0 root filesystem (22A3354) for the colours it asks for by name; how dynamic colours behave from the host's UIKit under Mac Catalyst (the colors13 group of tests/backports/host/uikit2)"
     },
     {
       "api": "UIColor.accessibilityName",

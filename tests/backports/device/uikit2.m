@@ -711,9 +711,9 @@ static NSString *traits_of(id environment)
         } copy],
         [^(void (^done)(void)) {
             struct { const char *name; int red, green, blue; } systems[] = {
-                {"systemRedColor", 255, 59, 48}, {"systemGreenColor", 76, 217, 100}, {"systemBlueColor", 0, 122, 255},
+                {"systemRedColor", 255, 59, 48}, {"systemGreenColor", 52, 199, 89}, {"systemBlueColor", 0, 122, 255},
                 {"systemOrangeColor", 255, 149, 0}, {"systemYellowColor", 255, 204, 0}, {"systemPinkColor", 255, 45, 85},
-                {"systemTealColor", 90, 200, 250}, {"systemGrayColor", 142, 142, 147}, {"systemPurpleColor", 88, 86, 214},
+                {"systemTealColor", 48, 176, 199}, {"systemGrayColor", 142, 142, 147}, {"systemPurpleColor", 175, 82, 222},
             };
             for (size_t index = 0; index < sizeof systems / sizeof *systems; index++) {
                 SEL selector = sel_registerName(systems[index].name);

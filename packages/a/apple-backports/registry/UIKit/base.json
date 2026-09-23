@@ -21,7 +21,7 @@
     "introduced": "7.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
-    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
+    "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
   },
   {
     "api": "+[UIColor systemGrayColor]",
@@ -29,7 +29,7 @@
     "introduced": "7.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
-    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
+    "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
   },
   {
     "api": "+[UIColor systemGreenColor]",
@@ -37,7 +37,7 @@
     "introduced": "7.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
-    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
+    "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
   },
   {
     "api": "+[UIColor systemOrangeColor]",
@@ -45,7 +45,7 @@
     "introduced": "7.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
-    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
+    "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
   },
   {
     "api": "+[UIColor systemPinkColor]",
@@ -53,7 +53,7 @@
     "introduced": "7.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
-    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
+    "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
   },
   {
     "api": "+[UIColor systemPurpleColor]",
@@ -61,7 +61,7 @@
     "introduced": "9.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
-    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
+    "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
   },
   {
     "api": "+[UIColor systemRedColor]",
@@ -69,7 +69,7 @@
     "introduced": "7.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
-    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
+    "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
   },
   {
     "api": "+[UIColor systemTealColor]",
@@ -77,7 +77,7 @@
     "introduced": "7.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
-    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
+    "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
   },
   {
     "api": "+[UIColor systemYellowColor]",
@@ -85,7 +85,7 @@
     "introduced": "7.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
-    "source": "UIKitCore of iOS 12.0 arm64, read for the components of each colour"
+    "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
   },
   {
     "api": "+[UIFont preferredFontForTextStyle:]",

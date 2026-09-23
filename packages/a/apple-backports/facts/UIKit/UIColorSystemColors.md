@@ -3,7 +3,10 @@
 Source: the UIKitCore of iOS 12.0 arm64 (`dyld_shared_cache_arm64`), read for the components themselves,
 and the other frameworks of the same release that draw with them.
 
-The nine colours are opaque and fixed - this is before the release made them depend on an appearance -
+**Superseded by the palette rule of `UIColorDynamic.md`:** the port now answers these nine as dynamic colours with the values of 18.0
+(green, teal and purple changed; the others keep the light value below). What follows is what 12.0 carried, kept as the record.
+
+In 12.0 the nine colours are opaque and fixed - this is before the release made them depend on an appearance -
 and each is a triple of bytes over 255:
 
 | colour | red | green | blue |
