@@ -55,7 +55,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIImageSymbolConfiguration a method like it: it arrived in iOS 15",
+      "reason": "asks a symbol for the fixed colours its designer gave its parts; the port draws each symbol from a script of its own into one single-colour bitmap (facts/UIKit/UIImageSymbols.md) with no parts marked and no colours for them, and its configuration carries no colour (facts/UIKit/UIImageSymbolConfiguration.md) - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -65,7 +65,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIImageSymbolConfiguration a method like it: it arrived in iOS 15",
+      "reason": "tints the primary, secondary and tertiary layers of a symbol at stepped opacities of one colour; the port draws each symbol from a script of its own into one single-colour bitmap (facts/UIKit/UIImageSymbols.md) with no layers marked, so there is nothing to step - marking them in 549 scripts is real work, no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -75,7 +75,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIImageSymbolConfiguration a method like it: it arrived in iOS 15",
+      "reason": "gives the layers of a symbol a colour each; the port draws each symbol from a script of its own into one single-colour bitmap (facts/UIKit/UIImageSymbols.md) with no layers marked, so there is nothing to colour apart - marking them in 549 scripts is real work, no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -115,7 +115,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSDiffableDataSourceSnapshot a method like it: it arrived in iOS 15",
+      "reason": "marks items whose cells are to be configured again in place rather than replaced; the snapshot already records reloaded items (UIKit/NSDiffableDataSourceSnapshot.m), but applying a reconfigure needs reconfigureItemsAtIndexPaths:, which the release's collection and table views do not have (see those rows) - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -195,7 +195,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UICollectionView a method like it: it arrived in iOS 15",
+      "reason": "reruns the configuration of the cells already on screen, keeping the cell objects; the release's collection view can only reload an item, which replaces its cell - the very difference reconfigure exists for - and handing the old cell back needs the release's private dequeue, which the port does not reach into; no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -235,7 +235,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UICollectionViewDiffableDataSource that sends anything like it: the message arrived in iOS 15",
+      "reason": "applies a snapshot with no diff, by reloading the collection view; the port's data source already holds the current snapshot and reloads the view when it cannot diff (UIKit/UICollectionViewDiffableDataSource.m), so this is that path on request - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -245,7 +245,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UICollectionViewDiffableDataSource that sends anything like it: the message arrived in iOS 15",
+      "reason": "applySnapshotUsingReloadData: with a block run when it is done; the port's data source already reloads the view when it cannot diff and runs a completion after applying (UIKit/UICollectionViewDiffableDataSource.m) - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -255,7 +255,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UICollectionViewDiffableDataSource that sends anything like it: the message arrived in iOS 15",
+      "reason": "the index of a section in the current snapshot; the port's data source holds that snapshot and the snapshot answers indexOfSectionIdentifier: (UIKit/NSDiffableDataSourceSnapshot.m), so this is a lookup through it - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -265,7 +265,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UICollectionViewDiffableDataSource that sends anything like it: the message arrived in iOS 15",
+      "reason": "the section identifier at an index of the current snapshot; the port's data source holds that snapshot and it answers its sectionIdentifiers (UIKit/NSDiffableDataSourceSnapshot.m), so this is a lookup through it - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -393,7 +393,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UITableViewDiffableDataSource that sends anything like it: the message arrived in iOS 15",
+      "reason": "applies a snapshot with no diff, by reloading the table; the port's data source already holds the current snapshot and reloads the table when it cannot diff (UIKit/UITableViewDiffableDataSource.m), so this is that path on request - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -403,7 +403,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UITableViewDiffableDataSource that sends anything like it: the message arrived in iOS 15",
+      "reason": "applySnapshotUsingReloadData: with a block run when it is done; the port's data source already reloads the table when it cannot diff and runs a completion after applying (UIKit/UITableViewDiffableDataSource.m) - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -413,7 +413,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UITableViewDiffableDataSource that sends anything like it: the message arrived in iOS 15",
+      "reason": "the index of a section in the current snapshot; the port's data source holds that snapshot and the snapshot answers indexOfSectionIdentifier: (UIKit/NSDiffableDataSourceSnapshot.m), so this is a lookup through it - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -423,7 +423,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UITableViewDiffableDataSource that sends anything like it: the message arrived in iOS 15",
+      "reason": "the section identifier at an index of the current snapshot; the port's data source holds that snapshot and it answers its sectionIdentifiers (UIKit/NSDiffableDataSourceSnapshot.m), so this is a lookup through it - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -453,7 +453,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSDiffableDataSourceSnapshot a property like it: it arrived in iOS 15",
+      "reason": "the items marked with reconfigureItemsWithIdentifiers:, which is not carried (see its row), so there would never be any to answer",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -463,7 +463,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSDiffableDataSourceSnapshot a property like it: it arrived in iOS 15",
+      "reason": "the items marked with reloadItemsWithIdentifiers:; the port's snapshot already keeps them in order (UIKit/NSDiffableDataSourceSnapshot.m), so a getter over that set would carry this - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -473,7 +473,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSDiffableDataSourceSnapshot a property like it: it arrived in iOS 15",
+      "reason": "the sections marked with reloadSectionsWithIdentifiers:; the port's snapshot already keeps them in order (UIKit/NSDiffableDataSourceSnapshot.m), so a getter over that set would carry this - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -973,7 +973,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UICollectionView a property like it: it arrived in iOS 15",
+      "reason": "lets the items of a collection view take keyboard focus; the port has no focus engine (UIFocusSystem absent, ios11.json), so no item can be focused whatever this says",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -983,7 +983,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UICollectionView a property like it: it arrived in iOS 15",
+      "reason": "lets the items of a collection view take keyboard focus while it edits; the port has no focus engine (UIFocusSystem absent, ios11.json), so no item can be focused whatever this says",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1913,7 +1913,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIImageSymbolConfiguration a method like it: it arrived in iOS 16",
+      "reason": "asks for a symbol in one colour, which is the only way the port draws one (facts/UIKit/UIImageSymbols.md); the configuration is an immutable value held to the host's description, equality and archive (facts/UIKit/UIImageSymbolConfiguration.md), so the preference would have to be carried through those too - not built for lack of demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2093,7 +2093,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIPageControl a method like it: it arrived in iOS 16",
+      "reason": "the image of the dot for one page while it is current; the release draws the dots of its page control itself, which is why the port keeps the iOS 14 indicator images without drawing them (inert, ios13rest.json), and drawing images for the current dot would mean replacing that drawing - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2103,7 +2103,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIPageControl a method like it: it arrived in iOS 16",
+      "reason": "sets the image of the dot for one page while it is current; the release draws the dots of its page control itself, which is why the port keeps the iOS 14 indicator images without drawing them (inert, ios13rest.json), and drawing images for the current dot would mean replacing that drawing - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2654,7 +2654,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UICollectionView a property like it: it arrived in iOS 16",
+      "reason": "lets a cell that changes its content resize itself in place; the port measures self-sizing cells on the steps of its layouts (packages/a/apple-backports/README.md, compositional layout), so a cell's invalidation could start a new measure - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2985,7 +2985,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIPageControl a property like it: it arrived in iOS 16",
+      "reason": "lays the dots out right to left, or top to bottom; the release draws the dots of its page control itself, in one row from left to right, and turning them would mean replacing that drawing - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2995,7 +2995,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIPageControl a property like it: it arrived in iOS 16",
+      "reason": "the image of the dot of the current page; the release draws the dots of its page control itself, which is why the port keeps the iOS 14 indicator images without drawing them (inert, ios13rest.json), and drawing an image for the current dot would mean replacing that drawing - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3085,7 +3085,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UISearchController a property like it: it arrived in iOS 16",
+      "reason": "hides the suggestions while the search bar is stacked under the title; the port carries neither the stacked placement nor a list of suggestions (facts/UIKit/UISearchController.md), so there is nothing to hide",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3095,7 +3095,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UISearchController a property like it: it arrived in iOS 16",
+      "reason": "chooses when the scope bar appears - on typing, on activation, or by hand; the release's UISearchBar shows a scope bar through showsScopeBar, which the port's controller could set at the moment chosen - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3105,7 +3105,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UISearchController a property like it: it arrived in iOS 16",
+      "reason": "the placement of the controller's bar as it is realised; UINavigationItem.searchBarPlacement answers that for the item that holds the bar, and the controller could answer it by finding that item - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3115,7 +3115,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UISearchController a property like it: it arrived in iOS 16",
+      "reason": "the suggestions listed under the search field, UISearchSuggestion objects (absent here); the port's controller shows no such list (facts/UIKit/UISearchController.md), and building one is real work - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
