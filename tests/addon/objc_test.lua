@@ -144,11 +144,6 @@ local function inventory_failures(folder, opt)
     return found
 end
 
-local function linker_version(opt)
-    local out, errors = os.iorunv(opt.ld64, {"-v"})
-    return ((out or "") .. (errors or "")):match("PROJECT:ld64%-(%S+)")
-end
-
 local function held_failures(folder, opt)
     local found = {}
     local objc = import("apple.objc", {rootdir = opt.modules, anonymous = true})
@@ -157,7 +152,7 @@ local function held_failures(folder, opt)
     os.mkdir(device)
     io.writefile(path.join(folder, "held.m"), HELD)
     fixtures.run(folder, opt.clang, {"-target", "armv7-apple-ios6.0", "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-w",
-                                     "-mlinker-version=" .. linker_version(opt), "-fuse-ld=" .. opt.ld64, "-dynamiclib",
+                                     "-mlinker-version=" .. fixtures.linker_version(opt.ld64), "-fuse-ld=" .. opt.ld64, "-dynamiclib",
                                      "-framework", "Foundation", "-install_name", "/usr/lib/libheld.dylib",
                                      "held.m", "-o", path.join(device, "libheld.dylib")})
     local inventory = objc.inventory(libraries)
@@ -186,7 +181,7 @@ end
 
 local function stub_failures(folder, opt)
     local found = {}
-    local version = linker_version(opt)
+    local version = fixtures.linker_version(opt.ld64)
     io.writefile(path.join(folder, "messages.m"), MESSAGES)
     local linked = {"-target", "arm64-apple-ios7.0", "-isysroot", opt.sdk, "-w", "-O2", "-fuse-ld=" .. opt.ld64, "-framework", "Foundation", "messages.m"}
     local unversioned = fixtures.refusal(function () fixtures.run(folder, opt.clang, table.join(linked, {"-o", "unversioned"})) end) or ""
@@ -213,7 +208,7 @@ local function selector_failures(folder, opt)
                            {"armv7", "armv7-apple-ios6.0", "charon_catlist", {"-Wl,-rename_section,__DATA,__objc_catlist,__DATA,__charon_catlist"}}}) do
         local library = "libselectors_" .. case[1] .. "_" .. case[3] .. ".dylib"
         fixtures.run(folder, opt.clang, table.join({"-target", case[2], "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-w", "-fobjc-arc",
-                                                    "-mlinker-version=" .. linker_version(opt), "-fuse-ld=" .. opt.ld64, "-dynamiclib", "-framework", "Foundation",
+                                                    "-mlinker-version=" .. fixtures.linker_version(opt.ld64), "-fuse-ld=" .. opt.ld64, "-dynamiclib", "-framework", "Foundation",
                                                     "selectors.m", "-o", library}, case[4] or {}))
         if case[4] and fixtures.run(folder, "xcrun", {"otool", "-l", library}):find("__objc_catlist", 1, true) then
             table.insert(found, "ld64 kept __objc_catlist under -rename_section, which the backports rely on")

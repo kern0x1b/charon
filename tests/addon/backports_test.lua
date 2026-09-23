@@ -154,6 +154,32 @@ local function floor_step(backports, opt, folder, found)
     end
 end
 
+-- ld64 merges the categories a library puts on one class into a single category under one of
+-- their names, so the library's category list names one file's category for all of them. A
+-- category left unattached is named with every member it adds, which is what finds each file.
+local function categories_step(backports, opt, folder, found)
+    local work = path.join(folder, "categories")
+    os.mkdir(work)
+    io.writefile(path.join(work, "one.m"), "#import <Foundation/Foundation.h>\n@implementation NSProgress (ProbeOne)\n- (int)probeOne { return 1; }\n@end\n")
+    io.writefile(path.join(work, "two.m"), "#import <Foundation/Foundation.h>\n@implementation NSProgress (ProbeTwo)\n+ (int)probeTwo { return 2; }\n@end\n")
+    fixtures.run(work, opt.clang, {"-target", "armv7-apple-ios4.3", "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-w",
+                                   "-mlinker-version=" .. fixtures.linker_version(opt.ld64), "-fuse-ld=" .. opt.ld64, "-dynamiclib",
+                                   "-framework", "Foundation", "-Wl,-rename_section,__DATA,__objc_catlist,__DATA,__charon_catlist",
+                                   "one.m", "two.m", "-o", "libprobe.dylib"})
+    local library = path.join(work, "libprobe.dylib")
+    local named = table.concat(backports.unattached_categories({exports = {}}, {classes = {}}, {library}, "armv7"), " ")
+    for _, member in ipairs({"-probeOne", "+probeTwo"}) do
+        if not named:find(member, 1, true) then
+            table.insert(found, "a category on a class neither the release nor the package exports must be named with every member it adds, " ..
+                                "whichever categories ld64 merged into it, and " .. member .. " is missing from: " .. named)
+        end
+    end
+    named = table.concat(backports.unattached_categories({exports = {["_OBJC_CLASS_$_NSProgress"] = true}}, {classes = {}}, {library}, "armv7"), " ")
+    if named ~= "" then
+        table.insert(found, "a category on a class the release exports is attached, and must not be named: " .. named)
+    end
+end
+
 function failures(opt)
     local backports = import("apple.backports", {rootdir = opt.modules, anonymous = true})
     local found = {}
@@ -161,6 +187,7 @@ function failures(opt)
     digest_step(opt, folder, found)
     surface_step(backports, opt, folder, found)
     floor_step(backports, opt, folder, found)
+    categories_step(backports, opt, folder, found)
     local seven = fixtures.object(folder, "seven", "__attribute__((visibility(\"default\"))) int arrived_seven = 7;\n__attribute__((visibility(\"default\"))) int also_seven(void) { return 7; }\nstatic int helper(void) { return 0; }\n")
     local eight = fixtures.object(folder, "eight", "__attribute__((visibility(\"default\"))) int arrived_eight = 8;\n")
     local methods = fixtures.object(folder, "methods", "static int added(void) { return 1; }\nint (*const hidden_table[])(void) = {added};\n")

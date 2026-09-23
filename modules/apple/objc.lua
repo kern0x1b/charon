@@ -405,6 +405,7 @@ end
 -- The categories of a binary with the class each one names: `class` when the binary
 -- defines the class itself, `bound` (the symbol) when dyld binds the reference. A
 -- reference under chained fixups is neither: this reads classic bind opcodes only.
+-- `instance` and `class_methods` hold the selectors each adds, keyed as the inventory keys them.
 function binary_categories(binary, architecture)
     local source, image = file_source(binary, architecture)
     if not source then
@@ -415,7 +416,9 @@ function binary_categories(binary, architecture)
     for _, category in ipairs(table.join(section_entries(read, image, "__objc_catlist"), section_entries(read, image, "__charon_catlist"))) do
         local class = read.pointer(category + read.size)
         table.insert(found, {name = read.string(read.pointer(category)), class = class ~= 0 and class_data(read, class).name or nil,
-                             bound = source.bound[category + read.size]})
+                             bound = source.bound[category + read.size],
+                             instance = method_names(read, read.pointer(category + 2 * read.size)),
+                             class_methods = method_names(read, read.pointer(category + 3 * read.size))})
     end
     return found
 end

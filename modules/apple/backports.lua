@@ -581,18 +581,29 @@ function unattached_categories(release, inventory, binaries, architecture)
     -- A category's class reference is filled when the class is this binary's own, an alias, or
     -- exported by the release or by a library of the package; otherwise dyld leaves it NULL
     -- and the loader has no class to attach it to, even where the release carries the class.
+    -- ld64 merges a library's categories on one class into one, named after one of them, so a
+    -- category is named with the members it adds: they, not its name, find every file behind it.
     for _, binary in ipairs(binaries) do
         for _, category in ipairs(objc.binary_categories(binary, architecture) or {}) do
             local bound = category.bound and category.bound:match("^_OBJC_CLASS_%$_(.+)$")
             local class = category.class and (aliases[category.class] or category.class) or bound
             local attached = category.class ~= nil or (category.bound ~= nil and (release.exports[category.bound] or defined[category.bound]))
             if not attached then
+                local members = {}
+                for kind, sign in pairs({instance = "-", class_methods = "+"}) do
+                    for selector in pairs(category[kind]) do
+                        table.insert(members, sign .. selector:sub(2))
+                    end
+                end
+                table.sort(members)
+                local named = string.format("%s(%s: %s) in %s", class or "a class this check cannot name", category.name or "?",
+                                            table.concat(members, " "), path.filename(binary))
                 local carried = class and inventory.classes[class]
                 if carried and carried.image then
-                    table.insert(found, string.format("%s(%s) in %s (the release carries %s in %s without exporting it: alias it through charon_alias.h)",
-                                                      class, category.name or "?", path.filename(binary), class, carried.image))
+                    table.insert(found, string.format("%s (the release carries %s in %s without exporting it: alias it through charon_alias.h)",
+                                                      named, class, carried.image))
                 else
-                    table.insert(found, string.format("%s(%s) in %s", class or "a class this check cannot name", category.name or "?", path.filename(binary)))
+                    table.insert(found, named)
                 end
             end
         end

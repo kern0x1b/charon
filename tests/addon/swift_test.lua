@@ -23,11 +23,6 @@ public func probe(_ x: Int32) -> Int32 {
 
 local MAIN = "#include <stdio.h>\nextern int swift_probe(int);\nint main(void) { printf(\"%d\\n\", swift_probe(9)); return 0; }\n"
 
-local function linker_version(opt)
-    local out, errors = os.iorunv(opt.ld64, {"-v"})
-    return ((out or "") .. (errors or "")):match("PROJECT:ld64%-(%S+)")
-end
-
 local function build(folder, opt, swift, architecture, deployment)
     local work = path.join(folder, architecture)
     os.mkdir(work)
@@ -36,7 +31,7 @@ local function build(folder, opt, swift, architecture, deployment)
     swift.build_module({swiftc = path.join(opt.swift, "bin", "swiftc"), source = source, architecture = architecture,
                         deployment = deployment, sdk = opt.sdk, output = modules, workdir = work})
     local common = {"-target", swift.triple(architecture, deployment), "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-w",
-                    "-mlinker-version=" .. linker_version(opt)}
+                    "-mlinker-version=" .. fixtures.linker_version(opt.ld64)}
     local objects = {}
     local tables = swift.unicode_tables(source)
     local generated = path.join(work, "generated")

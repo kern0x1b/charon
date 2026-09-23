@@ -27,6 +27,12 @@ function object(folder, name, source)
     return path.join(folder, name .. ".o")
 end
 
+-- The version ld64 reports, which clang must be told to emit what that linker can take.
+function linker_version(ld64)
+    local out, errors = os.iorunv(ld64, {"-v"})
+    return ((out or "") .. (errors or "")):match("PROJECT:ld64%-(%S+)")
+end
+
 function link(folder, ld64, output, triple, source, extra)
     local linker = triple:startswith("armv7") and ld64 or "ld"
     run(folder, "xcrun", table.join({"clang", "-target", triple, "-Wno-incompatible-sysroot", "-fuse-ld=" .. linker,
