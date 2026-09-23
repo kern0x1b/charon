@@ -76,3 +76,61 @@ not code; that distinction cost one segfault before `tests/backports/host/jscont
   back through `-toObject`, but nothing more.
 - **`-isArray`** asks the context's own `Array.isArray` rather than the C API's `JSValueIsArray`, which iOS 6
   does not export (introduced iOS 9); `-isDate` asks `-isInstanceOf:` against the context's own `Date`.
+
+## Two build-system defects this port's own files exposed, both in `modules/apple/backports.lua`
+
+**Charon's own internal helpers must not share an object file with a class the band reexports -
+fixed.** `charon_js_box`, `charon_js_unbox`, `charon_ns_string`, `charon_js_push_callback` and
+`charon_js_pop_callback` used to live in `JSValue.m` and `JSContext.m`, next to the `JSValue`/
+`JSContext` classes themselves. `band()` correctly reexports those two classes from the system on
+any release from iOS 7.0 (where JavaScriptCore is genuinely there) - and drops their whole object
+file doing it, taking the five helpers with it, even though `JSExportBridge.m` (whose own class,
+`CharonExportBinding`, is never a real SDK name and so is always kept) calls them
+unconditionally on every band. That produced "Undefined symbols: _charon_js_box" at `write_deb`'s
+multi-band link only, never at a single-release `build()`, which never reexports anything -
+confirmed by instrumenting `link()` directly (not committed): kept every JavaScriptCore object on
+the 6.1.3 band, kept only `JSExportBridge.o` on the 7.0 band. Fixed by moving all five, plus the
+block/opaque-object `JSClassRef` machinery and the pthread callback frame stack they depend on,
+into `JSInternal.m`, which defines nothing but Charon's own names - `band()` always keeps it
+regardless of what else in the library gets reexported.
+
+**`-framework X` embeds the SDK's own install path for X, not the band's - fixed, generalized
+past JavaScriptCore.** Fixing the helpers above surfaced a second, independent defect: on the
+7.0 band, `libJavaScriptCoreBackports.dylib` loaded
+`/System/Library/PrivateFrameworks/JavaScriptCore.framework/JavaScriptCore`, which iOS 7.0 does
+not carry. Measured directly against both caches (`dyld.load` on `6.1.3` and `7.0`):
+`JavaScriptCore` moved from `PrivateFrameworks` to `Frameworks` exactly at iOS 7.0. The 6.1.3
+band linked clean only because the SDK's own path happens to still match iOS 6's. Checked all 21
+frameworks this package's `LIBRARIES` table names against both ends of the covered range
+(`6.1.3` and `10.3.4`) - `JavaScriptCore` is the only one whose path differs; the other 20 are
+stable across the whole range, so this was not a second live case, only a first confirmed one.
+Fixed generally, not as a JavaScriptCore special case: `framework_install_path()` reads, for
+every framework a library links, where that band's own cache actually carries it (the same fact
+`stubs()` already reads from the cache for symbols a band reexports, applied to the framework
+itself), and `link()` rewrites the one load command afterward with `install_name_tool -change`
+where it differs from what the SDK embedded. The ordinary, full-declaration `-framework X` link
+stays exactly as it was - tried building a `.tbd` scoped to only this band's own exports instead
+(the same technique `stubs()` uses for reexported symbols) and reverted it: it silently dropped
+the declarations `UTType.m`'s weak, `API_AVAILABLE`-guarded calls to `_UTTypeIsDeclared`/
+`_UTTypeIsDynamic` need to bind as weak imports rather than hard-undefined, since a band-scoped
+stub carries no symbol arriving in a later release the same way the band's real firmware does
+not - the rewrite-after-linking approach needs no such declaration, since the ordinary
+`-framework` link already provides every one the SDK knows about.
+
+**A third defect, found trying to make the first one fail loudly instead of as a bare linker
+error, is real and still open.** The idea: after `band()` picks `kept`, check that every
+`charon_`/`Charon`-prefixed symbol a kept object references undefined is actually defined
+somewhere in `kept`, and name the object and the (likely reexported-away) object that should have
+carried it, instead of leaving the discovery to whatever `Undefined symbols` the linker happens to
+print. Implemented and reverted (not committed) after it fired a false positive on a single-release
+`build()`: `CharonMetalEncoder.o needs _CharonMetalBindEpoch`, naming no provider, for a symbol
+that links and runs fine today. The classification of "undefined, external" symbols from the
+Mach-O `nlist` table (`kind & 0x0E == 0x00 and kind & 0x01 ~= 0`) does not distinguish a true
+`N_UNDF` external reference from a **common symbol** (`N_UNDF` with a nonzero value field, a
+tentative definition the linker resolves without another object defining it) or a **weak
+definition**, and `_CharonMetalBindEpoch` is one of those, not a true undefined reference. A
+version of this check worth trying again needs to read the `nlist` value field (zero for a true
+undefined reference, nonzero for a common symbol) and the `N_WEAK_DEF`/`N_WEAK_REF` bits
+(`n_desc`, not `n_type`) before deciding a symbol is genuinely missing - left open rather than
+shipped half-right, since a check that gives a false positive teaches the next person to ignore
+it, and then it misses the real one too.

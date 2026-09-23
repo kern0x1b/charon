@@ -286,6 +286,53 @@ function stubs(architecture, library, reexported, releases, folder)
     return files
 end
 
+-- `-framework X` resolves through the SDK's own install-name for X, which is wherever Apple's
+-- *current* release keeps it - not necessarily where the band being linked keeps it. JavaScriptCore
+-- moved from /System/Library/PrivateFrameworks to /System/Library/Frameworks exactly at iOS 7.0
+-- (measured against both ends of the covered range, the only one of this package's 21 frameworks
+-- that did): a band before that point links fine because the SDK's path happens to still match iOS
+-- 6's, and a band from 7.0 on embeds a load command for a path that release never carried, which
+-- only shows up as a bare "which neither the device nor this build provides" at the import check,
+-- far from the framework name that would explain it.
+--
+-- The fix cannot be stubs()'s: a .tbd built from only this band's own exports drops every symbol
+-- a later release added that this band's code reaches through a weak, API_AVAILABLE-guarded
+-- reference (UTType.m's calls to _UTTypeIsDeclared/_UTTypeIsDynamic, absent on every release this
+-- package covers before 11.0, are exactly that shape) - the linker needs a *declaration* to bind
+-- those weakly, and a band-scoped stub does not carry one for the same reason the band does not
+-- carry the real definition. Answered instead by keeping the ordinary, full-declaration
+-- `-framework X` link exactly as before (nothing loses a weak-import declaration it depends on),
+-- and rewriting the one load command afterward with install_name_tool -change, from whatever the
+-- SDK embedded to the path this band's own cache says the framework actually lives at - the same
+-- fact stubs() already reads from the cache, applied to the framework itself instead of only the
+-- symbols a band reexports from it. Not a JavaScriptCore special case: framework_install_path is
+-- asked for every framework a library links, so the next one Apple relocates is caught here
+-- instead of costing another afternoon finding it by hand.
+function framework_install_path(library, releases)
+    local found = {}
+    for _, framework in ipairs(library.frameworks) do
+        local suffix = "/" .. framework .. ".framework/" .. framework
+        local install
+        for candidate in pairs(releases[1].libraries) do
+            if candidate:endswith(suffix) then
+                install = install or candidate
+            end
+        end
+        if install then
+            local everywhere = true
+            for _, release in ipairs(releases) do
+                everywhere = everywhere and release.libraries[install] ~= nil
+            end
+            if not everywhere then
+                raise("%s is at %s in one release this band covers and not in another: a band spanning both needs the same install path in every release it covers, or it should be split at the release where the framework moved",
+                      framework, install)
+            end
+            found[framework] = install
+        end
+    end
+    return found
+end
+
 -- dyld learned to re-export a symbol of another library in iOS 4.2, and ld64
 -- refuses -reexported_symbols_list for anything older ("targeted OS version
 -- does not support -reexported_symbols_list"). A band for such a release still
@@ -356,6 +403,20 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
         table.insert(arguments, "-Wl,-unexported_symbols_list," .. list)
     end
     os.vrunv("xcrun", arguments)
+    local real_paths = framework_install_path(library, releases)
+    local embedded
+    for _, framework in ipairs(library.frameworks) do
+        local real = real_paths[framework]
+        if real then
+            embedded = embedded or macho.images(macho.read(output))[1].libraries
+            local suffix = "/" .. framework .. ".framework/" .. framework
+            for _, current in ipairs(embedded) do
+                if current:endswith(suffix) and current ~= real then
+                    os.vrunv("xcrun", {"install_name_tool", "-change", current, real, output})
+                end
+            end
+        end
+    end
     if sections_of(output)["__DATA,__objc_catlist"] then
         raise("%s kept __objc_catlist: the linker did not rename it, so the runtime would attach every backported method over the system's own", output)
     end
