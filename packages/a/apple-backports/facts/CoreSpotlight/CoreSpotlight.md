@@ -187,16 +187,30 @@ bugs, each found by a failure this port could not have predicted from host-only 
 
 ## Measured 2026-09-23, second pass: `SPContentResult` found by reading the classlist, not guessing
 
-The coordinator's instruction was precise: find which cache image defines `_OBJC_CLASS_$_SPContentResult`
-by walking the cache's own classlist, not by extracting another framework at random.
-`apple.objc.inventory()` opened against the whole cache does exactly that - it walks every image's
-`__objc_classlist` directly (not the export trie `macho.imported_symbols` reads, which is why the
-first attempt at this specific lookup answered nothing) and records which image each class actually
-comes from. Answer: `SPContentResult` is defined in `Search.framework` itself, the file already
-extracted this session - superclass `SPSearchResult`, superclass of that `PBCodable`, and no
-overridden `-init` anywhere in the chain, so the "unmeasured initialization contract" this document
-named as the boundary after the first device pass was the wrong hypothesis. The real blockers, found
-one at a time as each was fixed:
+**Boundary crossed, not intermediate: `searchd` now calls into this bundle's own methods for real.**
+The first device pass ended with `searchd` never calling `-searchDomains`/`-performQuery:withResultsPipe:`
+on the registered class at all - that is now fixed and confirmed: both are called, `-performQuery:withResultsPipe:`
+receives a real query, correctly reads its `searchString`, and correctly builds a real `SPContentResult`
+carrying the synthetic item's exact title. `resultsPipe respondsToSelector:@selector(appendResults:)`
+answers `YES`. Whatever remains is entirely about the one call at the end of this chain, not about
+whether the bundle is reachable at all - record it as crossed so the next pass does not re-prove it.
+
+A note on the method that found `SPContentResult`, since the instruction that produced it was itself
+based on an assumption worth naming: the coordinator's own suggestion was to find the image that
+*exports* `_OBJC_CLASS_$_SPContentResult`. Nothing exports it - `macho.imported_symbols`, which reads
+the export trie, found nothing, and following that instruction literally would have answered
+"defined nowhere", a sixth wrong fact in this chain. **A class can be defined and never exported**;
+the ObjC runtime reads class definitions from `__objc_classlist`, a section a linker's export trie
+has no reason to include, since nothing outside the image references the class by its mangled
+`_OBJC_CLASS_$_` symbol directly - only `objc_getClass`/`NSClassFromString` reach it, at runtime, by
+name. `apple.objc.inventory()` walks `__objc_classlist` across the whole cache directly, which is why
+it found what the export-trie read could not.
+
+Answer: `SPContentResult` is defined in `Search.framework` itself, the file already extracted this
+session - superclass `SPSearchResult`, superclass of that `PBCodable`, and no overridden `-init`
+anywhere in the chain, so the "unmeasured initialization contract" this document named as the
+boundary after the first device pass was the wrong hypothesis. The real blockers, found one at a
+time as each was fixed:
 
 1. **`objc_allocateClassPair` over `SPContentResult` does not itself grant `<SPSearchDatastore>`
    conformance.** `NotesDatastore` gets it from its own `@interface` declaration; `class_addMethod`
@@ -232,20 +246,44 @@ builds a real `SPContentResult` carrying that exact title - confirmed by the obj
 `-description` in the log: `<SPContentResult: 0x1d59c080> { title = CharonProbeXyzzyPlugh19640523; }`.
 `resultsPipe respondsToSelector:@selector(appendResults:)` answers `YES`.
 
-**Sending `-appendResults:` to it hangs `searchd`.** The call was made; no crash followed, no further
-log line (`appendResults: sent`, the line immediately after the send, never appears), and `searchd`'s
-own process moved into uninterruptible sleep (`ps` state `U`) and stayed there, unresponsive to a
-fresh connection, until killed with `kill -9`. This is a real, observed hang, not a guess: confirmed
-by waiting past it and re-checking, not by a single snapshot. Two candidates, neither chased further
-this pass: the `SPContentResult` this port builds is missing fields (`extid`, `domain` -
-`SPContentResult`'s own ivars, both unset by the plain factory call this code uses) that
-`-appendResults:`'s own internal serialization may require and may not fail cleanly without; or
-`-appendResults:` itself expects to run inside a call chain this bundle's `performQuery:` does not
-reproduce. Sending it from `searchd`'s own process bypassed the entitlement-style silent failures
-seen everywhere else in this document, and produced a real hang instead - the strongest signal yet
-that the protocol surface itself is now right, and what remains is a data or calling-convention
-detail of this one method. The bundle was removed from the device before release, specifically
-because it hangs the host it loads into.
+**Sending `-appendResults:` to it hangs `searchd`, and the differentiating experiment names which
+of the two candidates it is not.** The call was made; no crash followed, no further log line
+(`appendResults: sent`, the line immediately after the send, never appears), and `searchd`'s own
+process moved into uninterruptible sleep (`ps` state `U`) and stayed there, unresponsive to a fresh
+connection, until killed with `kill -9`. Real, observed, confirmed by waiting past it and
+re-checking, not a single snapshot.
+
+`class_copyIvarList` walked across the real chain (`SPContentResult` → `SPSearchResult` →
+`PBCodable` → `NSObject`, read directly on device, not guessed from names) found the actual field
+set, smaller than assumed: `SPContentResult` itself carries only `_extid`/`_content`
+(`-setExtid:`/`-setContent:`); `SPSearchResult` carries `_identifier` (a `Q`/`uint64_t`, not a
+string - the factory's `identifier:` argument is presumably hashed into it internally),
+`_title`/`_subtitle`/`_summary`/`_auxiliaryTitle`/`_auxiliarySubtitle`/`_url`, and one `_has`
+bitfield (`{?="identifier"b1"flags"b1}`) tracking only those two fields as ever-set - both already
+set by the real factory this code calls. **There is no `_domain` ivar anywhere in this chain** -
+that field belongs to the unrelated `SPSearchResultSection`, so "unset domain" was never a real
+candidate; `_extid`/`_content` were the only two fields actually worth filling.
+
+Filled both (`-setExtid:` with the item's own identifier, `-setContent:` with its title, confirmed
+in the log immediately before the hang: `extid=org.charon.corespotlight.probe.item1
+content=CharonProbeXyzzyPlugh19640523`) and repeated the call on a clean `searchd`
+(confirmed not-yet-running before the run, per the coordinator's instruction not to chain
+experiments without a health check between them). **The hang still happens, identically** - same
+missing `appendResults: sent` line, same `U` state, same unresponsiveness until `kill -9`. This
+rules out the missing-field hypothesis directly rather than leaving it open: whatever
+`-appendResults:` blocks on, it is not an unset `extid`/`content`/`domain`. The remaining
+candidate - `-appendResults:` expecting a call chain or connection state this bundle's
+`-performQuery:withResultsPipe:` does not reproduce, most plausibly a `mach_msg` wait on something
+this out-of-process caller never supplies - stands as the real boundary, differentiated rather than
+assumed. `searchd` was confirmed healthy again after each `kill -9` (a real query against Apple's
+own built-in bundles, results returned normally) before the device was released; the bundle itself
+was removed before release, since it hangs the host it loads into.
+
+This paragraph and the one above were measured by commit `f19a3da8` and lost from main when an
+earlier-authored patch (`59b01c7a`) was applied after it; they are restored as measured. The
+experiment's code - `-setExtid:`/`-setContent:` filled with the item's identifier and title - is
+not restored: it did not change the hang, and what `NotesDatastore` itself puts into those two
+fields is not measured, so filling them with guessed values would be a quietly different answer.
 
 Diagnostics used during those passes, since this class runs inside `searchd`, not the process
 that launches it: a plain `fopen`/`fprintf`/`fclose` to `/private/var/backports/searchbundle.log`
