@@ -1842,20 +1842,20 @@
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the iOS 16 name for a group of count copies of one item side by side; the port's groups already lay out a counted subitem (UIKit/NSCollectionLayoutItems.m, facts/UIKit/NSCollectionLayoutItem.md), so this is that group under its new name - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "a group of count copies of the item at its own size side by side, not resized to a share of the group as the deprecated subitem:count: is",
+      "facts": "facts/UIKit/NSCollectionLayoutItem.md",
+      "source": "SDK 16.4, UIKit; not in 6.1.3 or 12.0, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "+[NSCollectionLayoutGroup verticalGroupWithLayoutSize:repeatingSubitem:count:]",
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the iOS 16 name for a group of count copies of one item stacked; the port's groups already lay out a counted subitem (UIKit/NSCollectionLayoutItems.m, facts/UIKit/NSCollectionLayoutItem.md), so this is that group under its new name - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "a group of count copies of the item at its own size stacked, not resized to a share of the group as the deprecated subitem:count: is",
+      "facts": "facts/UIKit/NSCollectionLayoutItem.md",
+      "source": "SDK 16.4, UIKit; not in 6.1.3 or 12.0, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "+[UIBarButtonItemGroup fixedGroupWithRepresentativeItem:items:]",
@@ -1932,10 +1932,10 @@
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release's own NSTextList (UIFoundation) has initWithMarkerFormat:options: and setStartingItemNumber: (objc.inventory on 6.1.3), so this is the two in a row - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the release's own initWithMarkerFormat:options:, then its startingItemNumber set",
+      "facts": "facts/UIKit/NSTextMembers13.md",
+      "source": "SDK 16.4, UIKit; the release's NSTextList (UIFoundation) lacks it in 6.1.3 and 12.0 and has it in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "-[UIBarButtonItem creatingFixedGroup]",

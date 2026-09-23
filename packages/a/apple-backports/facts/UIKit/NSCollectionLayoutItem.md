@@ -60,3 +60,19 @@ Source: the host's own UIKit under Mac Catalyst (macOS 27.0), asked each questio
 ## Where the port differs
 
 - `-hash` of equal objects, as for the values.
+
+## `horizontalGroupWithLayoutSize:repeatingSubitem:count:` and the vertical one, iOS 16.0
+
+`UIKit/NSCollectionLayoutGroup+Repeating16.m`. The iOS 16 names are not the deprecated `subitem:count:` renamed: the header of the
+deprecated pair says it "forces the width dimension of the subitem to .fractionalWidth(1.0/count)", and the header of the new pair says
+only that it repeats the subitem `count` times and that fitting them in the group is the caller's responsibility. The port follows the
+two headers: the new group is one subitem, a copy of the item at its own size, repeated `count` times by the layout's counted path, the
+same path the deprecated group takes. The exceptions are the deprecated form's: no size, a count below 1, a nil item.
+
+Not measured: a fractional dimension of the repeated item resolves, as in the deprecated form, against the group's extent less the
+spacing between the copies, where the system may resolve it against the whole group; and a counted group does not self-size its items
+along the main axis, which with the deprecated form's fractional share never mattered and with an estimated item of the new form does.
+No host oracle runs here and no device run was made. `objc.inventory` (`.agent-work/plan-and-analysis/b1314-flips/ladder-rest.log`):
+both are not in 6.1.3 or 12.0 and are in 16.0 and 18.0, with the deprecated `horizontalGroupWithLayoutSize:subitem:count:`; no 13-15
+cache, so `introduced` stays the header's 16.0.
+

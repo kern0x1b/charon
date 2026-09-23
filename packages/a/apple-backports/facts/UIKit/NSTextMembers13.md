@@ -52,3 +52,12 @@ target reaches 9.0.
 
 `+[NSTextAttachment textAttachmentWithImage:]` is absent: the release's `NSTextAttachment` holds no image, and its text views draw no
 attachment.
+
+## `-[NSTextList initWithMarkerFormat:options:startingItemNumber:]`, iOS 16.0
+
+The release carries `NSTextList` itself, in UIFoundation (`objc.inventory` on 6.1.3), with `initWithMarkerFormat:options:` and
+`startingItemNumber`. `UIKit/NSTextList+Init16.m` is those two in a row: the release's initializer, then the starting number set on the
+list it made. It adds no state and draws nothing the release did not; the release's text views draw no list markers either way.
+`objc.inventory` (`.agent-work/plan-and-analysis/b1314-flips/ladder-rest.log`): the three-argument initializer is not in 6.1.3 or 12.0 and
+is in 16.0 and 18.0, the two-argument one is in all four. No 13-15 cache, so `introduced` stays the header's 16.0. Not run on a device.
+
