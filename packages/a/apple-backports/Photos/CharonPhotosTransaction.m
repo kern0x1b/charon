@@ -2,9 +2,14 @@
 
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
-@protocol CharonPhotosChange
+// Photos applies a change block as one unit, so a request may name an object another request of the block creates, in
+// whichever order the block made them. A change writes what it makes in charon_commit; what relates it to another
+// object (an album's assets) waits for charon_commitRelations, which runs once every change of the block has committed.
+@protocol CharonPhotosChange <NSObject>
 - (BOOL)charon_validate:(NSError **)error;
 - (BOOL)charon_commit:(NSError **)error;
+@optional
+- (BOOL)charon_commitRelations:(NSError **)error;
 @end
 
 static NSString *const CharonPhotosTransactionKey = @"space.kern0x1b.photos.transaction";
@@ -67,6 +72,10 @@ static NSString *const CharonPhotosTransactionKey = @"space.kern0x1b.photos.tran
     }
     for (id<CharonPhotosChange> change in _changes) {
         if (![change charon_commit:error])
+            return NO;
+    }
+    for (id<CharonPhotosChange> change in _changes) {
+        if ([change respondsToSelector:@selector(charon_commitRelations:)] && ![change charon_commitRelations:error])
             return NO;
     }
     return YES;

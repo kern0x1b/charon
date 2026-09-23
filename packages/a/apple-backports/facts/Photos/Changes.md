@@ -39,9 +39,13 @@ creationRequestForAssetCollectionWithTitle:]` and `+changeRequestForAssetCollect
 synced from elsewhere is refused) are made into `-[ALAssetsLibrary addAssetsGroupAlbumWithName:resultBlock:failureBlock:]` and
 `-[ALAssetsGroup addAsset:]`; `addAssets:` queues assets to append at commit, and `placeholderForCreatedAssetCollection` resolves like
 the asset placeholder above. `addAssets:` takes a `PHAsset` or, the documented way to add an asset to an album in the same change
-that creates it, the `PHObjectPlaceholder` such a creation request gives back; the placeholder is resolved to the asset it wrote
-right before it is added to the album, so a change block must add the asset's creation request before the album request that
-references its placeholder, in the order this port runs a block's requests. iOS 6 has no way through `ALAssetsLibrary` to rename an album, reorder or remove its assets, or delete an
+that creates it, the `PHObjectPlaceholder` such a creation request gives back. The documentation of `PHObjectPlaceholder` says a
+placeholder can be used "to make additional change requests involving the object to create" and names no order for them, so the
+port asks for none: the requests of a block are written in two rounds, first everything a request makes (the assets, the new
+albums), then what relates one object to another (the assets an album is given), and the placeholder is resolved in the second
+round, when every creation of the block has been written, whether the asset's creation request came before the album request or
+after it. The earlier text here asked a block to make the asset's creation request first, the order this port happened to write
+in; that was a limit of the port, not of the API. iOS 6 has no way through `ALAssetsLibrary` to rename an album, reorder or remove its assets, or delete an
 album at all, so `setTitle:` on an existing album, `insertAssets:atIndexes:`, `removeAssets:`, `removeAssetsAtIndexes:`,
 `replaceAssetsAtIndexes:withAssets:`, `moveAssetsAtIndexes:toIndex:` and `+deleteAssetCollections:` all fail the change with a reason,
 before anything is written.

@@ -18,6 +18,7 @@ static CharonPhotosTransaction *charon_transaction(void)
     NSString *_token;
     PHObjectPlaceholder *_placeholder;
     NSMutableArray *_addedAssets;
+    NSURL *_groupURL;
 }
 
 + (instancetype)creationRequestForAssetCollectionWithTitle:(NSString *)title
@@ -135,26 +136,32 @@ static CharonPhotosTransaction *charon_transaction(void)
 
 - (BOOL)charon_commit:(NSError **)error
 {
-    NSURL *groupURL;
     if (_title) {
         ALAssetsGroup *group = [CharonPhotosStore createAlbumWithName:_title error:error];
         if (!group)
             return NO;
-        groupURL = [group valueForProperty:ALAssetsGroupPropertyURL];
-        [CharonPhotosStore bindPlaceholderIdentifier:_token toIdentifier:groupURL.absoluteString];
+        _groupURL = [group valueForProperty:ALAssetsGroupPropertyURL];
+        [CharonPhotosStore bindPlaceholderIdentifier:_token toIdentifier:_groupURL.absoluteString];
     } else {
-        groupURL = [NSURL URLWithString:[CharonPhotosStore resolvedIdentifier:_editing.localIdentifier]];
+        _groupURL = [NSURL URLWithString:[CharonPhotosStore resolvedIdentifier:_editing.localIdentifier]];
     }
+    return YES;
+}
+
+// The assets are added once every change of the block has committed, so a placeholder of an asset created in the same
+// block resolves whether its creation request came before this one or after.
+- (BOOL)charon_commitRelations:(NSError **)error
+{
     for (id addedAsset in _addedAssets) {
         ALAsset *alAsset = [addedAsset isKindOfClass:[PHObjectPlaceholder class]]
             ? [[CharonPhotosStore assetWithIdentifier:[addedAsset localIdentifier]] charon_asset]
             : [addedAsset charon_asset];
         if (!alAsset) {
             if (error)
-                *error = [CharonPhotosStore errorWithCode:PHPhotosErrorIdentifierNotFound reason:@"an asset added to the album no longer exists, or its creation has not been committed yet"];
+                *error = [CharonPhotosStore errorWithCode:PHPhotosErrorIdentifierNotFound reason:@"an asset added to the album is not in the library: it no longer exists, or no committed change made it"];
             return NO;
         }
-        if (![CharonPhotosStore addAsset:alAsset toGroupWithURL:groupURL error:error])
+        if (![CharonPhotosStore addAsset:alAsset toGroupWithURL:_groupURL error:error])
             return NO;
     }
     return YES;

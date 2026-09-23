@@ -358,10 +358,12 @@ static void run_checks(void)
     __block NSString *identifier = nil, *albumIdentifier = nil;
     NSString *name = album_name();
     NSError *error = nil;
+    // The album request comes first and is given the placeholder of an asset a later request of the block creates: Photos
+    // names no order for the requests of one block.
     BOOL made = [[PHPhotoLibrary sharedPhotoLibrary] performChangesAndWait:^{
+        PHAssetCollectionChangeRequest *album = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:name];
         PHAssetCreationRequest *request = [PHAssetCreationRequest creationRequestForAsset];
         [request addResourceWithType:PHAssetResourceTypeVideo fileURL:video options:nil];
-        PHAssetCollectionChangeRequest *album = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:name];
         [album addAssets:@[request.placeholderForCreatedAsset]];
         identifier = request.placeholderForCreatedAsset.localIdentifier;
         albumIdentifier = album.placeholderForCreatedAssetCollection.localIdentifier;
@@ -372,6 +374,10 @@ static void run_checks(void)
     NSData *direct = asset ? direct_read(asset.localIdentifier) : nil;
     printf("direct read: %lu bytes\n", (unsigned long)direct.length);
     CHECK(made && resource && direct.length > 0, "the video is in the library and reads back directly");
+    PHAssetCollection *album = albumIdentifier ? [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[albumIdentifier] options:nil].firstObject : nil;
+    PHFetchResult *inAlbum = album ? [PHAsset fetchAssetsInAssetCollection:album options:nil] : nil;
+    CHECK(inAlbum.count == 1 && [[inAlbum.firstObject localIdentifier] isEqualToString:asset.localIdentifier],
+          "an album made before the asset in the same block holds it");
     if (resource && direct.length) {
         check_read(resource, direct);
         check_write(resource, direct);
