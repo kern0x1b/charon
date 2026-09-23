@@ -7,7 +7,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSTextAttachment a method like it: it arrived in iOS 15",
+      "reason": "registers the NSTextAttachmentViewProvider (absent here) that puts a view in the text for an attachment of a file type; the release's NSTextAttachment holds no image and its text views draw no attachment (facts/UIKit/NSTextMembers13.md), so there is nothing to host a view in",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -17,7 +17,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSTextAttachment a method like it: it arrived in iOS 15",
+      "reason": "answers the NSTextAttachmentViewProvider class (absent here) registered for a file type; the release's text views draw no attachment (facts/UIKit/NSTextMembers13.md) and nothing registers one, so there is no class to answer",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -293,7 +293,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIImage a method like it: it arrived in iOS 15",
+      "reason": "a decoded copy drawn at a smaller size; the port already decodes eagerly for imageByPreparingForDisplay (UIKit/UIImage+iOS15.m) and draws into bitmaps for UIGraphicsImageRenderer, so this is the same drawing at another size - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -303,7 +303,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIImage a method like it: it arrived in iOS 15",
+      "reason": "the asynchronous form of imageByPreparingForDisplay, which the port carries (UIKit/UIImage+iOS15.m); running that on a background queue and calling the handler would carry it - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -313,7 +313,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIImage a method like it: it arrived in iOS 15",
+      "reason": "the asynchronous form of imageByPreparingThumbnailOfSize:, itself not carried; both come down to drawing the image into a bitmap of the size, which the port already does elsewhere - not built for lack of demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -503,7 +503,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSTextAttachment a property like it: it arrived in iOS 15",
+      "reason": "lets an attachment be drawn by a view from its NSTextAttachmentViewProvider (absent here); the release's text views draw no attachment (facts/UIKit/NSTextMembers13.md), so there is no view to allow",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -513,7 +513,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSTextAttachment a property like it: it arrived in iOS 15",
+      "reason": "the space laid out on either side of an attachment in its line; the release's text views draw no attachment (facts/UIKit/NSTextMembers13.md), so no line makes room for one",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -523,7 +523,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSTextAttachment a property like it: it arrived in iOS 15",
+      "reason": "answers whether an attachment is drawn by a view from its NSTextAttachmentViewProvider (absent here); the release's text views draw no attachment (facts/UIKit/NSTextMembers13.md), so none is",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1573,7 +1573,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 15",
+      "reason": "an opaque object that saves and restores the text view's selection and scroll position; the release's text view answers selectedRange and contentOffset, so such an object could be made of them - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1893,7 +1893,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIImage a method like it: it arrived in iOS 16",
+      "reason": "a symbol image from a bundle drawn with its variable-value layers filled in part; the port draws its own glyphs for a listed set of symbol names (ios13symbols.json) and none of them has such layers, and answering the plain glyph would drop the value silently - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1903,7 +1903,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIImage a method like it: it arrived in iOS 16",
+      "reason": "a system symbol drawn with its variable-value layers filled in part; the port draws its own glyphs for a listed set of symbol names (ios13symbols.json) and none of them has such layers, and answering the plain glyph would drop the value silently - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1923,7 +1923,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITextView a method like it: it arrived in iOS 16",
+      "reason": "chooses between Text Kit 2 and Text Kit 1 for a new text view; the release's UITextView lays its text out in a WebKit body with neither, and the port carries no NSTextLayoutManager (absent) and no layoutManager on the text view, so there is nothing to choose",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3225,7 +3225,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 16",
+      "reason": "answers the UIFindInteraction (absent here) that shows the find bar over the text; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3235,7 +3235,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 16",
+      "reason": "turns on the UIFindInteraction (absent here) that shows the find bar over the text; the release has no find panel for a text view, so there is nothing to turn on - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3245,7 +3245,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 16",
+      "reason": "answers the NSTextLayoutManager of Text Kit 2 laying out the text view; the release's UITextView lays its text out in a WebKit body and the port carries no NSTextLayoutManager (absent), so there is none to answer",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
