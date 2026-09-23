@@ -15,6 +15,14 @@ BOOL charon_custom_transition(CharonTransitionKind kind, UIViewController *from,
 
 @interface UIPresentationController (CharonContainer)
 - (void)charon_setContainerView:(UIView *)view;
+/* Whether this presentation controller presents its controller itself from that presenting
+   controller (a sheet does in a compact width), and the animator it presents and dismisses
+   with when the transitioning delegate answers none; NO and nil here. */
+- (BOOL)charon_presentsFrom:(UIViewController *)presenting;
+- (id<UIViewControllerAnimatedTransitioning>)charon_transitionAnimator;
+/* Whether a touch on the container itself, on none of its views, goes through to what is
+   under it; NO here, as UIKit's transition view keeps it. */
+- (BOOL)charon_containerIgnoresDirectTouches;
 @end
 
 UIPresentationController *charon_presentation_controller_of(UIViewController *controller);

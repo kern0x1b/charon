@@ -580,6 +580,12 @@ void charon_set_presentation_controller(UIViewController *controller, UIPresenta
     [_presentation containerViewDidLayoutSubviews];
 }
 
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    UIView *hit = [super hitTest:point withEvent:event];
+    return hit == self && [_presentation charon_containerIgnoresDirectTouches] ? nil : hit;
+}
+
 @end
 
 @interface CharonImmediateAnimator : NSObject <UIViewControllerAnimatedTransitioning>
@@ -692,27 +698,38 @@ static void charon_presentation_run(BOOL presenting, UIViewController *from, UIV
                 [presenterView removeFromSuperview];
         } else {
             [presentation dismissalTransitionDidEnd:didComplete];
-            native();
-            /* The release's dismissal frames the presenter's view for its controller and puts it where the
-               presented view was, in this container: it keeps that place on the screen when the container goes. */
-            if (presenterView.superview == container && window) {
-                presenterView.frame = [container convertRect:presenterView.frame toView:window];
-                [window insertSubview:presenterView belowSubview:container];
+            /* A dismissal the user took back (a sheet dragged down and let go above its
+               smallest detent) leaves the controller presented. */
+            if (didComplete) {
+                native();
+                /* The release's dismissal frames the presenter's view for its controller and puts it where the
+                   presented view was, in this container: it keeps that place on the screen when the container goes. */
+                if (presenterView.superview == container && window) {
+                    presenterView.frame = [container convertRect:presenterView.frame toView:window];
+                    [window insertSubview:presenterView belowSubview:container];
+                }
+                [container removeFromSuperview];
+                [presentation charon_setContainerView:nil];
+                if (!presenterView.window && window)
+                    [window insertSubview:presenterView atIndex:0];
             }
-            [container removeFromSuperview];
-            [presentation charon_setContainerView:nil];
-            if (!presenterView.window && window)
-                [window insertSubview:presenterView atIndex:0];
         }
         charon_set_mode(begun, CharonDeferralPass);
         if (presenting) {
             [to viewDidAppear:YES];
             if (removes)
                 [from viewDidDisappear:YES];
-        } else {
+        } else if (didComplete) {
             if (removes)
                 [to viewDidAppear:YES];
             [from viewDidDisappear:YES];
+        } else {
+            if (removes) {
+                [to viewWillDisappear:YES];
+                [to viewDidDisappear:YES];
+            }
+            [from viewWillAppear:YES];
+            [from viewDidAppear:YES];
         }
         charon_set_mode(begun, CharonDeferralSwallow);
         dispatch_async(dispatch_get_main_queue(), ^{

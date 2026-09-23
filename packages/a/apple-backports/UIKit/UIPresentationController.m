@@ -69,6 +69,21 @@
     _containerView = view;
 }
 
+- (BOOL)charon_presentsFrom:(UIViewController *)presenting
+{
+    return NO;
+}
+
+- (id<UIViewControllerAnimatedTransitioning>)charon_transitionAnimator
+{
+    return nil;
+}
+
+- (BOOL)charon_containerIgnoresDirectTouches
+{
+    return NO;
+}
+
 - (UIView *)presentedView
 {
     return _presentedViewController.view;
