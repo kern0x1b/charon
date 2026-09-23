@@ -42,13 +42,16 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     if ((self = [self init])) {
-        NSURL *path = [CharonSCNCoding decodePathContents:coder forKey:@"contents"];
-        if (path) {
-            _contents = path;
-        } else {
-            UIColor *color = [CharonSCNCoding decodeColor:coder forKey:@"contents"];
-            if (color) {
-                _contents = color;
+        if ([coder containsValueForKey:@"image"]) {
+            id decoded = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSDictionary class], [NSString class], nil] forKey:@"image"];
+            NSString *path = nil;
+            if ([decoded isKindOfClass:[NSDictionary class]]) {
+                path = [(NSDictionary *)decoded objectForKey:@"path"];
+            } else if ([decoded isKindOfClass:[NSString class]]) {
+                path = decoded;
+            }
+            if (path.length) {
+                _contents = path;
             }
         }
         if ([coder containsValueForKey:@"intensity"]) {

@@ -92,6 +92,7 @@ comments.
 | `SCNCamera` | `fieldOfView` | `yFov` (falls back to `fov`) | camera renders at whatever default FOV we pick instead of the authored one — wrong framing |
 | `SCNLight` | `categoryBitMask` | `lightCategoryBitMask` | light/geometry category masking silently doesn't match; harmless unless the scene relies on masks to exclude a light from some geometry — not the case in `gift`/`diamond`/`star2`/`coin`, all lights hit everything |
 | `SCNLight` | `automaticallyAdjustsShadowProjection` | `autoShadowProjection` | not implemented this turn (shadow-quality tier, see skip list) — recorded here so whoever adds it does not re-derive the divergence |
+| `SCNMaterialProperty` | `contents` | `image` (file-backed) / `color` (solid-fill) / `float` (scalar) — never `contents` itself | measured on `star2.scn`'s real diffuse property (object `#556`): the archive has no `contents` key at all on any of its 24 `SCNMaterialProperty` instances; the union of keys actually used is `image`/`color`/`float`/`borderColor`/... A decoder reading `contents` silently leaves every material's every slot at its default — nothing crashes, the mesh loses its texture |
 
 ## Skip list: keys read from the archive but not decoded, by class, with visual weight
 
@@ -353,3 +354,64 @@ distinguishable from each other, which no shared default could produce.
 still open — check for them on `star2`/`coin`, whose PBR materials and real
 meshes are more likely to carry a non-default value, rather than re-deriving
 this paragraph or spending a dedicated run.
+
+## `star2.scn` decodes correctly on a real armv7 guest, node-for-node against a macOS oracle
+
+First real mesh in this port: `SCNGeometry`/`SCNGeometrySource`/`SCNGeometryElement`,
+exercised end to end. Oracle: a throwaway Swift script running real Apple SceneKit
+(`SCNScene(url:)`) against `/Applications/Telegram.app/Contents/Resources/star2.scn`,
+recorded *before* the guest run, not fitted after. Guest: `.agent-work/plan-and-analysis/
+gift-probe/star2_probe.m`, embedding the real file bytes, decoding through the actual
+`SCNScene sceneWithURL:options:error:` on the emulated `iPhone4,1 6.1.3`.
+
+Result: `pass`, `failures=0`, every one of 14 root children matches the oracle in order,
+name, and every printed property — including the single mesh (`star` node):
+`sources=3` (`kGeometrySourceSemanticVertex`/`Normal`/`Texcoord`, each
+`vectorCount=1078 componentsPerVector=3-or-2 bytesPerComponent=4 stride=12-or-8 offset=0
+dataLength=12936-or-8624`, exact), `elements=1` (`primitiveType=4` [Polygon]
+`primitiveCount=777 bytesPerIndex=2 dataLength=7554`, exact), `lightingModel=
+SCNLightingModelPhysicallyBased`, `diffuseContents=texture.jpg` (exact, see below).
+Seven particle systems' `speedFactor`/`stretchFactor`/`lifeSpan`/`velocity` all matched
+too, `speedFactor` again proving read (`0.85`/`0.8502` split, same pattern as `diamond.scn`).
+
+**One real divergence found and fixed by this run, not by inspection first.** The first
+guest run (before the fix below) decoded everything above identically except
+`diffuseContents=(none)` where the oracle had `texture.jpg` — `SCNMaterialProperty.contents`
+was nil. Traced with `plutil`/`plistlib` on the raw archive (not guessed): the archive's 24
+`SCNMaterialProperty` instances carry no `contents` key anywhere; the real key is `image`
+(file-backed, `{"path": "texture.jpg"}`, same shape as `particleImage`), `color` (solid-fill),
+or `float` (scalar) depending on `propertyType`. Fixed in `SCNMaterialProperty.m` to read
+`image`; re-ran the guest, `diffuseContents=texture.jpg` now matches the oracle exactly.
+Divergence recorded in the table above.
+
+**A second, independent finding from the same probe, corrected before it shipped.** The
+fix's first draft reused `CharonSCNCoding.decodePathContents:`, which resolves a file
+reference to an `NSURL` relative to the scene's source (the same helper `particleImage`
+already uses, merged). A direct Swift test against real SceneKit
+(`material.diffuse.contents`, printed via `String(describing:)`) showed the real property
+holds the **bare filename string** `"texture.jpg"`, not a resolved URL — interpolating an
+`NSURL` with a base prints `"texture.jpg -- file:///path/to/star2.scn"` (verified by
+constructing one directly), which is not what real SceneKit returns. `SCNMaterialProperty.
+contents` in this port now decodes `image`'s `path` directly as an `NSString`, matching the
+measured real type. **This casts doubt on `particleImage`'s existing URL-resolving
+implementation** (merged with `gift`/`diamond`, gated green) — it was never checked against
+a macOS oracle for its *exposed type*, only for the *filename* it carries. Not changed here
+(out of this turn's scope, and changing already-gated code without a fresh guest run of its
+own would be worse than leaving it) — flagged for whoever next touches `SCNParticleSystem.
+particleImage` or does a focused pass on public-API type fidelity.
+
+**Still open, unwired by design, not a silent gap:** `SCNMaterialProperty` instances whose
+`propertyType` carries a solid `color` (14 of `star2.scn`'s 24 — ambient/specular/emission/
+etc. tints, everything that isn't the two `image` slots or the one `float` slot) archive
+their `NSColor` **directly embedded in the main object graph**, not nested in an `NSData`
+payload the way `SCNLight`/`SCNParticleSystem` colors are (measured: object `#550`'s `color`
+key is a UID reference straight to a `$classname: "NSColor"` object, sibling-level in
+`$objects`, not wrapped in bytes). The existing `CharonSCNCoding.decodeColor:` assumes the
+`NSData`-wrapped shape and would need its own class-mapping plumbing on the *outer* keyed
+unarchiver (not the throwaway inner one it currently creates) to handle this directly-embedded
+form safely; attempting it without that would either throw (secure coding, unknown class) or
+silently do nothing, for 14 of 24 slots on this one file alone. Not wired this turn — `contents`
+stays `nil` for every `color`/`float`-shaped slot, exactly the pre-existing default, no new
+crash risk introduced. Visual-accuracy deficit list, next entry: `star2`'s non-diffuse material
+tints (ambient occlusion strength, specular color, etc.) render at their class defaults, not
+their authored values, until this is wired.
