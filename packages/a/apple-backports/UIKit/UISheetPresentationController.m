@@ -272,6 +272,26 @@ typedef NS_ENUM(NSInteger, CharonDetentType) {
 
 @implementation CharonSheetLayoutInfo
 
+@synthesize parent = _parent;
+@synthesize child = _child;
+@synthesize container = _container;
+@synthesize view = _view;
+@synthesize sheet = _sheet;
+@synthesize root = _root;
+@synthesize presented = _presented;
+@synthesize wantsGrabber = _wantsGrabber;
+@synthesize edgeAttachedInCompactHeight = _edgeAttachedInCompactHeight;
+@synthesize widthFollowsPreferredContentSize = _widthFollowsPreferredContentSize;
+@synthesize preferredWidth = _preferredWidth;
+@synthesize preferredCornerRadius = _preferredCornerRadius;
+@synthesize offset = _offset;
+@synthesize detentOffsets = _detentOffsets;
+@synthesize dimmingIndex = _dimmingIndex;
+@synthesize rootFrame = _rootFrame;
+@synthesize savedTransform = _savedTransform;
+@synthesize savedCornerRadius = _savedCornerRadius;
+@synthesize savedMasksToBounds = _savedMasksToBounds;
+
 - (UITraitCollection *)traits
 {
     return _container.traitCollection;
