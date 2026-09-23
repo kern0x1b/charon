@@ -1,5 +1,6 @@
 #include <mach-o/dyld.h>
 #include <mach-o/getsect.h>
+#include <asl.h>
 #include <mach-o/loader.h>
 #include <objc/runtime.h>
 #include <stdlib.h>
@@ -195,10 +196,36 @@ static void charon_add_properties(Class cls, const struct charon_list *list)
     }
 }
 
+// An alias of charon_alias.h is a subclass of the release's class, so that a subclass an
+// application writes of the name inherits the release's class and is laid out after its
+// instance variables. The compiler cannot name a class the release does not export, so the
+// superclass is written here, into the second word of the alias's class and metaclass (the
+// superclass of objc's class layout), before the runtime first uses the alias; using it then
+// lays it out from the release's class, which is what the check after it reads. An image loaded
+// with the library whose class used the alias earlier - a subclass with a +load of its own - has
+// had it laid out on NSObject, which the write cannot change: it is taken back, and the log
+// names the alias.
+static void charon_reparent(Class proxy, Class release)
+{
+    Class *words = (Class *)(void *)proxy;
+    Class *meta = (Class *)(void *)object_getClass((id)proxy);
+    Class superclass = words[1], metasuperclass = meta[1];
+    words[1] = release;
+    meta[1] = object_getClass((id)release);
+    objc_lookUpClass(class_getName(proxy));
+    if (class_getSuperclass(proxy) == release && class_getInstanceSize(proxy) == class_getInstanceSize(release))
+        return;
+    words[1] = superclass;
+    meta[1] = metasuperclass;
+    asl_log(NULL, NULL, ASL_LEVEL_ERR, "apple-backports: %s was laid out before the library's loader ran, so it stays a subclass of NSObject and a subclass of %s does not inherit %s",
+            class_getName(proxy), class_getName(release), class_getName(release));
+}
+
 // ld64 merges a category written on an alias into the class the alias names, CharonName,
 // since both are in one image, so the release's class takes from CharonName whatever it and
-// its superclasses lack. CharonName's own +class, +alloc and forwarding are NSObject's
-// selectors, which the release's class answers already.
+// its superclasses lack. Where the release's class has the method itself, CharonName's copy
+// would stand before it for a subclass, so it is given the release's implementation. CharonName's
+// own class methods are selectors of the root class, which the release's class answers already.
 static unsigned charon_method_count(Class cls)
 {
     unsigned count = 0;
@@ -206,7 +233,7 @@ static unsigned charon_method_count(Class cls)
     return count;
 }
 
-static size_t charon_adopt_methods(Class release, Class proxy, struct charon_pending *pending, size_t used)
+static size_t charon_adopt_methods(Class release, Class proxy, Class own, struct charon_pending *pending, size_t used)
 {
     unsigned count = 0;
     Method *methods = class_copyMethodList(proxy, &count);
@@ -214,6 +241,8 @@ static size_t charon_adopt_methods(Class release, Class proxy, struct charon_pen
         SEL selector = method_getName(methods[index]);
         if (!charon_implements(release, selector))
             pending[used++] = (struct charon_pending){release, selector, method_getImplementation(methods[index]), method_getTypeEncoding(methods[index])};
+        else if (!own || !charon_implements(own, selector))
+            method_setImplementation(methods[index], class_getMethodImplementation(release, selector));
     }
     free(methods);
     return used;
@@ -261,8 +290,8 @@ __attribute__((constructor)) static void charon_backports_attach(void)
         releases[index] = objc_getClass(own[index].name);
         if (!releases[index])
             continue;
-        // class_copyMethodList reads a class as realized without checking; looking it up realizes it.
-        objc_lookUpClass(class_getName((Class)own[index].proxy));
+        // class_copyMethodList reads a class as realized without checking; charon_reparent realizes it.
+        charon_reparent((Class)own[index].proxy, releases[index]);
         capacity += charon_method_count((Class)own[index].proxy) + charon_method_count(object_getClass((id)own[index].proxy));
     }
     size_t alias_count;
@@ -288,8 +317,8 @@ __attribute__((constructor)) static void charon_backports_attach(void)
         if (!releases[index])
             continue;
         Class proxy = (Class)own[index].proxy;
-        used = charon_adopt_methods(releases[index], proxy, pending, used);
-        used = charon_adopt_methods(object_getClass((id)releases[index]), object_getClass((id)proxy), pending, used);
+        used = charon_adopt_methods(releases[index], proxy, Nil, pending, used);
+        used = charon_adopt_methods(object_getClass((id)releases[index]), object_getClass((id)proxy), object_getClass((id)objc_getClass("NSObject")), pending, used);
     }
     for (size_t index = 0; index < used; index++)
         class_addMethod(pending[index].cls, pending[index].name, pending[index].implementation, pending[index].types);
