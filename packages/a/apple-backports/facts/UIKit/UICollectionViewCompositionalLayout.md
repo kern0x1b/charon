@@ -248,11 +248,31 @@ have been enough for the self-sizing case's async round to land inside a narrow
 `runUntilDate:0.01` × 6 polling window - "the self-sizing path is independent of the
 instrumentation" is not proven, only "it now completes instead of hanging under this harness."
 
-## A second device-only hang, orthogonal scrolling, not yet fixed (2026-09-23)
+## What looked like a second hang, orthogonal scrolling, was the stand crashing (2026-09-23)
 
-Two things were found and fixed while looking for the orthogonal-specific mechanism, one a real
-bug regardless of whether it explains this hang, one an unconfirmed hypothesis with a diagnostic
-patch attached.
+After `useDragView:1`, `DIAG 9` was the last line and the next queued step never ran. That was
+not a hang, and not the port. Measured on the 4S: a sampler thread that writes with a raw
+`write(2)` and calls nothing but mach functions fell silent at the same moment as one calling
+`CFRunLoopCopyCurrentMode` and one calling `printf`, and the process was gone about ten seconds
+after launch. A handler on an alternate stack caught SIGSEGV on the main thread in
+`objc_msgSend`, called from the test's own `run_next` (`device/gesture.m`) as the first
+`dispatch_after` step ran. The stand had been built through `@addon/charon/app` without
+`-fobjc-arc`, so `gesture.m`'s static `queue`, an autoreleased array, dangled once the pool
+drained. Such a death leaves no crash report on this stand, which is why three runs read it as a
+hang. Built with ARC, the gesture phase runs to its end: `checks=46 failures=10`, real
+differences, each followed up on its own.
+
+This retracts the reentrancy hypothesis: that adding the section's pan recognizer from inside the
+collection view's first `-layoutSubviews` stalled the run loop. The `dispatch_async` deferral
+written for it and its three `CHARON-DIAG` lines are gone, and the recognizer is set up
+synchronously again. Measured on the 4S with the ARC-built stand, one
+band's `libUIKitBackports.dylib` from the same tree swapped in each way: deferred and synchronous
+give the same 36 passing checks and the same 10 failures, detail for detail, and neither process
+takes a signal.
+
+It also qualifies the section above. The self-sizing hang was measured on the same stand, built
+the same way, so how much of it was the port's is open until it is measured again with ARC; the
+two changes made for it are kept, since each is right on its own reading.
 
 **`_settleRounds` was unreachable by construction - fixed.** The cap was reset in `-prepareLayout`,
 which runs on every genuine solve - including the one the settle pass's own
@@ -263,84 +283,13 @@ fires. Moved the reset to the plain `-invalidateLayout` override instead - the p
 bounds change or a configuration change takes, never the one the settle pass's own
 `-invalidateLayoutWithContext:` takes - so the round count now actually accumulates across a chain
 of settle rounds instead of restarting at zero on each one. This is the same class of defect this
-band already found once in this same file (an unbounded reschedule with no way to terminate); it
-does not explain `useDragView:1`'s hang, since that configuration's self-sizing chain is never
-entered at all, but it was real and needed fixing regardless of that.
+band already found once in this same file (an unbounded reschedule with no way to terminate),
+found while reading for the stand's crash and real on its own.
 
-**The orthogonal-scrolling section's own deferred work, found by looking past
-`charon_layout_perform` rather than assuming everything routes through it.**
-`CharonOrthogonalController.updateSections:view:environment:` - called synchronously from
-`-prepareLayout`, itself called from the collection view's own `-layoutSubviews`, the very first
-time it ever solves - creates a `UIPanGestureRecognizer`, calls
-`-[UICollectionView addGestureRecognizer:]` and `-[UIPanGestureRecognizer
-requireGestureRecognizerToFail:]` on the same collection view that is, at that exact moment, still
-in the middle of laying itself out for the first time since being attached to a window. That is a
-reentrant mutation of a view's gesture recognizers from inside that same view's own layout pass - a
-different shape of "our code calling back into UIKit before UIKit is done with us" than the
-self-sizing one, but the same class of bug. It is this band's strongest lead for this hang, and it
-is unconfirmed: no path in this file's own source shows what `-addGestureRecognizer:` or
-`-requireGestureRecognizerToFail:` do internally on 6.1.3, and nothing here proves they block.
-
-Deferred the gesture recognizer setup off `-prepareLayout`'s call stack with
-`dispatch_async(dispatch_get_main_queue(), ...)` - the same idiom that closed the self-sizing hang,
-now applied to the one other place in this package's orthogonal-scrolling code that mutated a
-view's own state from inside that view's layout pass - guarded by a `_pendingPan` flag so a second
-`updateSections:` call before the deferred block runs does not schedule it twice, and by re-reading
-`_view` (weak) inside the deferred block rather than capturing it, so a view released before the
-block runs is not touched. Three `printf`+`fflush(stdout)` lines (`CHARON-DIAG orthogonal: ...`)
-bracket the deferred block - scheduled, running, done - so band 11-12 can confirm or rule this out
-in the one run this patch is meant to cost them: if `DIAG 10` now appears, or if it still does not
-but the three `CHARON-DIAG` lines all print, this hypothesis is wrong and the search moves
-elsewhere without needing another round of code to try. If `CHARON-DIAG orthogonal: gesture
-recognizer setup deferred` prints but `running` never does, the stall is between scheduling this
-block and the run loop ever servicing it - which would in turn suggest the earlier live-lock class
-of bug is present somewhere else in the orthogonal path this reading did not find, not that this
-specific deferral fixed anything. (This paragraph originally specified `NSLog` for these three
-lines; that choice is why the first run of this diagnostic resolved nothing - see the measurement
-immediately below.)
-
-`useDragView:1`'s own configuration (`FW`/`FH`, not estimated) was confirmed by reading
-`compositional-cases.m`'s helpers and the section built at `compositional.m:191-192`, not by a
-device run; the reentrancy hypothesis is reasoned from what `-addGestureRecognizer:` and
-`-requireGestureRecognizerToFail:` are documented to do and from the timing (called mid-layout, on
-a view attached to a window for the first time), not measured against 6.1.3's actual behaviour,
-which this band has no way to read the way it read `CFBooleanGetValue`'s disassembly - there is no
-equivalent "read the function out of the shared cache" move available for a hang inside a private,
-dynamically-behaved gesture subsystem the way there was for a pure data comparison.
-
-**Measured 2026-09-23: run on hardware, and inconclusive - not because the diagnostic failed to
-resolve the question, but because it never actually asked it.** `DIAG 10` still did not appear. But
-none of the three `CHARON-DIAG` lines printed either - not "deferred", not "running", not "done" -
-and band 11-12 did not stop at that silence. They found the actual store
-(`/var/log/DiagnosticMessages/2026.09.23.asl`, not the empty `/var/log/asl/`), pulled it to a Mac
-and grepped it: zero hits for `compositional` or `CHARON-DIAG`, in a store that is otherwise alive
-(71 entries that day, real `powerd`/`imagent` messages in the same window). ASL itself works on
-this device; nothing from this process ever reached it. `NSLog` writes to ASL, not to the
-redirected `stdout` `check.m`'s own `setvbuf(stdout, NULL, _IOLBF, 0)` reads - the channel `DIAG
-1`-`9` actually travel on. Using `NSLog` for this diagnostic left the "does the reentrant path even
-run before the hang" question exactly as open as it was before this patch: a message that never
-arrives and code that never runs produce the identical observation, silence, so this measurement
-answers nothing about the hypothesis - it only names a second, standalone defect (below) that has
-to be fixed before any question can be asked this way again. Replaced all three lines with
-`printf`+`fflush(stdout)`, the proven channel, so the next run actually resolves the hypothesis
-instead of repeating this one.
-
-**The lesson, general enough to write down on its own:** a diagnostic is worth exactly as much as
-its channel is proven, and "I wrote a message that would prove or disprove X" is not the same claim
-as "I wrote a message that will be read." Before adding a probe, confirm its output is legible by
-the same means it will actually be read by - not assumed legible because the API is the standard
-one for the platform. `NSLog` is the standard way to log on iOS; it was still the wrong choice
-here, because *this* stand reads `stdout`, not ASL, and nothing about `NSLog` being idiomatic made
-that true.
-
-**A second, standalone finding, worth its own line because any band can walk into it:** `NSLog`
-from a process launched through `sblaunch` after `uicache -p` registration appears not to reach
-ASL at all - the same thin, ad-hoc registration that has already surfaced twice this shift, on the
-SpringBoard icon and on LaunchServices. This was not chased further here (out of this band's scope
-and the device was needed elsewhere), but it means every `NSLog`-based diagnostic run through this
-launch path on this fleet is silent by construction, not merely unreliable - worth a band with
-device time confirming and writing up on its own, since the next one to reach for `NSLog` here will
-otherwise repeat this exact detour.
+**`NSLog` does not reach ASL from a process launched through `sblaunch`** after `uicache -p`
+registration: the live store (`/var/log/DiagnosticMessages/<date>.asl`, not the empty
+`/var/log/asl/`) had entries from other processes in the same minutes and none from this one. A
+device stand reports through `printf` into its redirected `stdout`.
 
 ## What the port cannot do
 

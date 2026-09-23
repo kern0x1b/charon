@@ -1,6 +1,5 @@
 #import "CharonCompositionalLayout.h"
 #import <QuartzCore/QuartzCore.h>
-#import <stdio.h>
 
 static const CGFloat CharonDecelerationPerMillisecond = 0.998;
 static const CGFloat CharonSpringFrequency = 14;
@@ -54,7 +53,6 @@ static const CGFloat CharonSpringFrequency = 14;
     NSMutableDictionary *_offsets;
     NSMutableDictionary *_visible;
     UIPanGestureRecognizer *_pan;
-    BOOL _pendingPan;
     CADisplayLink *_link;
     id<NSCollectionLayoutEnvironment> _environment;
     NSInteger _active;
@@ -259,44 +257,11 @@ static const CGFloat CharonSpringFrequency = 14;
         [self detach];
         return;
     }
-    if (!_pan && !_pendingPan) {
-        // The first orthogonal section a layout ever solves is discovered from inside
-        // -prepareLayout, itself called from the collection view's own -layoutSubviews - so
-        // -addGestureRecognizer:/-requireGestureRecognizerToFail: here would mutate the same
-        // view's gesture recognizers while that view is still in the middle of laying itself out
-        // for the very first time. That reentrant mutation, not anything in the self-sizing
-        // settle chain (this section never carries an estimated dimension), is this band's
-        // strongest, unconfirmed lead for the device hang recorded in
-        // facts/UIKit/UICollectionViewCompositionalLayout.md - deferred here, on the same
-        // dispatch_async(dispatch_get_main_queue(), ...) idiom that closed the self-sizing hang,
-        // so it happens once the view has finished this layout pass rather than reentrantly
-        // inside it. The CHARON-DIAG lines print through printf+fflush, not NSLog: NSLog goes to
-        // ASL, which a device measurement found never receives anything from an ad-hoc-signed,
-        // sblaunch-registered process on this stand, while printf into the redirected stdout is
-        // the one channel this stand has already proven (tests/backports/device/check.m's own
-        // setvbuf(stdout, NULL, _IOLBF, 0), the same channel DIAG 1-9 already reach). They bracket
-        // the deferred block so a device run can confirm or rule this hypothesis out in one pass.
-        _pendingPan = YES;
-        __weak CharonOrthogonalController *weak = self;
-        printf("CHARON-DIAG orthogonal: gesture recognizer setup deferred\n");
-        fflush(stdout);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            printf("CHARON-DIAG orthogonal: gesture recognizer setup running\n");
-            fflush(stdout);
-            CharonOrthogonalController *strong = weak;
-            if (!strong || strong->_pan)
-                return;
-            strong->_pendingPan = NO;
-            UICollectionView *current = strong->_view;
-            if (!current)
-                return;
-            strong->_pan = [[UIPanGestureRecognizer alloc] initWithTarget:strong action:@selector(pan:)];
-            strong->_pan.delegate = strong;
-            [current addGestureRecognizer:strong->_pan];
-            [current.panGestureRecognizer requireGestureRecognizerToFail:strong->_pan];
-            printf("CHARON-DIAG orthogonal: gesture recognizer setup done\n");
-            fflush(stdout);
-        });
+    if (!_pan) {
+        _pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+        _pan.delegate = self;
+        [view addGestureRecognizer:_pan];
+        [view.panGestureRecognizer requireGestureRecognizerToFail:_pan];
     }
     [self runAllHandlers];
 }
@@ -305,7 +270,6 @@ static const CGFloat CharonSpringFrequency = 14;
 {
     [_link invalidate];
     _link = nil;
-    _pendingPan = NO;
     if (_pan) {
         [_pan.view removeGestureRecognizer:_pan];
         _pan = nil;

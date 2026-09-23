@@ -459,6 +459,19 @@ the Photos port over it) waits off the main queue, and off the main thread it
 sleeps or waits on a semaphore, never `CFRunLoopRunInMode`, which returns at
 once on a thread whose run loop has no sources.
 
+A stand built through Charon's `@addon/charon/app` rule
+instead of by hand asks for ARC itself, on the target:
+
+    add_mflags("-fobjc-arc")
+    add_ldflags("-fobjc-arc")
+
+The rule adds neither, and every file here is written for ARC. Without them the
+build succeeds and the process fails at run time: `gesture.m`'s static `queue`,
+assigned an autoreleased array, dangles once the pool drains, and the first
+`dispatch_after` step dies in `objc_msgSend` with SIGSEGV. On a device such a
+death leaves no crash report, so it reads as a hang. The link flag is what makes
+clang force-load arclite below iOS 9.
+
 - `mechanism.m`, `url.m`: a process of their own, Foundation only; they print
   `ok`/`FAIL` lines and exit with the number of failures. `url.m` includes
   `url_expectations.h`, the host's results that `host/url/run.sh` writes there
