@@ -653,13 +653,26 @@ end
 
 local SDK_KEYS = {}
 
+-- The code a measurement runs: this file and every module beside it that it imports, followed through
+-- their own imports, by name and content, so the same code reads the same wherever it is checked out.
+local function code_lines(name, lines)
+    local file = path.join(SCRIPTDIR, name .. ".lua")
+    if lines[name] or not os.isfile(file) then
+        return lines
+    end
+    lines[name] = name .. " " .. hash.sha256(file)
+    for imported in io.readfile(file):gmatch('import%("([%w_]+)"') do
+        code_lines(imported, lines)
+    end
+    return lines
+end
+
 -- What the owners of an SDK's symbols depend on: every .tbd it holds, by content, and the code that
--- reads them and the caches: this file and the two it imports.
+-- reads them and the caches.
 local function sdk_key(sdkdir)
     if not SDK_KEYS[sdkdir] then
-        local lines = {}
-        local code = {path.join(SCRIPTDIR, "dyld.lua"), path.join(SCRIPTDIR, "macho.lua"), path.join(SCRIPTDIR, "compat.lua")}
-        for _, file in ipairs(table.join(sdk_tbds(sdkdir), code)) do
+        local lines = table.values(code_lines("dyld", {}))
+        for _, file in ipairs(sdk_tbds(sdkdir)) do
             table.insert(lines, path.relative(file, sdkdir) .. " " .. hash.sha256(file))
         end
         table.sort(lines)
@@ -803,7 +816,7 @@ local function ladder_signature(ladder)
         local lines = {}
         for index, entry in ipairs(ladder) do
             table.insert(lines, rungs[index])
-            local files = os.isdir(entry.source) and os.files(path.join(entry.source, "**")) or os.files(entry.source .. "*")
+            local files = os.isdir(entry.source) and os.files(path.join(entry.source, "**")) or table.join(entry.source, os.files(entry.source .. ".*"))
             table.sort(files)
             for _, file in ipairs(files) do
                 table.insert(lines, file .. " " .. os.filesize(file) .. " " .. os.mtime(file))
