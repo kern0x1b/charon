@@ -136,3 +136,25 @@ Android) as it is here; iOS 6 is the first platform it targets, not its limit.
   integer with no crash anywhere. Cast the `NSUInteger` side explicitly before subtracting. Paid
   for on every weekday computation in `NSCalendar+Components.m` until a host differential caught
   the wrong answers — nothing crashed, nothing warned, the numbers were just wrong.
+- **A `@addon/charon/daemon`/`app`/`tweak` target that `add_requires`s
+  `charon@apple-backports` and `add_packages("apple-backports")` still fails
+  its own link with "these imports are not exported by the device's iOS:
+  (loads .../libContactsBackports.dylib, which neither the device nor this
+  build provides)", even though the package built the library and
+  `add_packages` attached it.** `modules/apple/platform.lua`'s
+  `verify_placed` takes one of two branches: if `target:values("charon.libraries")`
+  is empty and the target shares no runtime, it takes the plain, weak-linked
+  path, which for this package/config combination does not recognise the
+  backport dylib as something the build itself provides. The fix is not in
+  the backport, and there is no amount of staring at `backport_libraries`
+  that shows it from the failing target alone: add `set_values("charon.libraries",
+  "<the alias add_requires gave the package>")` to the target, which switches
+  it to the branch that copies the library in beside the binary and retargets
+  the load command to match — the same thing a real port relying on it must
+  already be doing, silently, wherever it works. This cost a full debugging
+  pass that included two throwaway commits solely to get `print()` inside
+  `modules/apple/platform.lua` to run at all, because `@addon/charon/*`
+  resolves to a version-pinned copy of this repository (`~/.xmake/addons/charon/<version>/`),
+  not the working tree `add_repositories` points at — an uncommitted edit to
+  a module under `modules/` never reaches a build that includes an addon by
+  version, only a commit does.
