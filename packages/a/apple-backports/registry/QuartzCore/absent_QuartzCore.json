@@ -52,56 +52,6 @@
       "source": "SDK 16.4, QuartzCore"
     },
     {
-      "api": "CAAnimation.preferredFrameRateRange",
-      "kind": "property",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give CAAnimation a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, QuartzCore"
-    },
-    {
-      "api": "CADisplayLink.preferredFrameRateRange",
-      "kind": "property",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give CADisplayLink a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, QuartzCore"
-    },
-    {
-      "api": "CAFrameRateRangeDefault",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, QuartzCore"
-    },
-    {
-      "api": "CAFrameRateRangeIsEqualToRange()",
-      "kind": "function",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, QuartzCore"
-    },
-    {
-      "api": "CAFrameRateRangeMake()",
-      "kind": "function",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, QuartzCore"
-    },
-    {
       "api": "CAEDRMetadata",
       "kind": "class",
       "introduced": "16.0",
