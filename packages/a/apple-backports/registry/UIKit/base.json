@@ -2070,6 +2070,7 @@
     "api": "-[NSLayoutManager CGGlyphAtIndex:]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
@@ -2078,6 +2079,7 @@
     "api": "-[NSLayoutManager CGGlyphAtIndex:isValidIndex:]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
@@ -2086,6 +2088,7 @@
     "api": "-[NSLayoutManager enumerateEnclosingRectsForGlyphRange:withinSelectedGlyphRange:inTextContainer:usingBlock:]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
@@ -2094,6 +2097,7 @@
     "api": "-[NSLayoutManager enumerateLineFragmentsForGlyphRange:usingBlock:]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
@@ -2102,6 +2106,7 @@
     "api": "-[NSLayoutManager getGlyphsInRange:glyphs:properties:characterIndexes:bidiLevels:]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
@@ -2110,6 +2115,7 @@
     "api": "-[NSLayoutManager processEditingForTextStorage:edited:range:changeInLength:invalidatedRange:]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
@@ -2118,6 +2124,7 @@
     "api": "-[NSLayoutManager propertyForGlyphAtIndex:]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does"
@@ -2126,6 +2133,7 @@
     "api": "-[NSLayoutManager setGlyphs:properties:characterIndexes:font:forGlyphRange:]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the release's own pre-7 primitive, -insertGlyphs:length:forStartingGlyphAtIndex:characterIndex:, confirmed present by respondsToSelector: on the iPad 2, 6.1.3; the iOS 7 form and its siblings (setGlyphs:glyphIndex:layoutData:, setGlyph:atIndex:) are not"
@@ -2134,6 +2142,7 @@
     "api": "-[NSLayoutManager truncatedGlyphRangeInLineFragmentForGlyphAtIndex:]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "6.0",
     "status": "inert",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
