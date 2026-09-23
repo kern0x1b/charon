@@ -57,8 +57,8 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6 offers no way to ask for items that match every one of several kinds",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the filter object is not a wall: it combines other filters; it is owed and not yet written, and once written it will honestly match only what each subfilter itself matches",
+      "effect": "until it is written the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of PhotosUI"
     },
     {
@@ -67,8 +67,8 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6 offers no way to ask for what a kind does not match",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the filter object is not a wall: it inverts another filter; it is owed and not yet written, and once written it will honestly match only what the subfilter itself does not",
+      "effect": "until it is written the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of PhotosUI"
     },
     {
@@ -77,8 +77,8 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6 keeps no playback style of an item to filter by",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the filter object is not a wall: it matches on an item's playback style; it is owed and not yet written, and once written it will honestly find nothing for a style iOS 6's library keeps no record of",
+      "effect": "until it is written the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of PhotosUI"
     },
     {
@@ -87,8 +87,8 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6 has no way to show only panoramas",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the filter object is not a wall: it is owed and not yet written, and once written it will honestly match nothing, since iOS 6's photo library never tags an asset as panoramas",
+      "effect": "until it is written the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of PhotosUI"
     },
     {
@@ -97,8 +97,8 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6 has no way to show only screenshots",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the filter object is not a wall: it is owed and not yet written, and once written it will honestly match nothing, since iOS 6's photo library never tags an asset as screenshots",
+      "effect": "until it is written the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of PhotosUI"
     },
     {
@@ -107,8 +107,8 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6 has no screen recordings",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the filter object is not a wall: it is owed and not yet written, and once written it will honestly match nothing, since iOS 6's photo library never tags an asset as screen recordings",
+      "effect": "until it is written the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of PhotosUI"
     },
     {
@@ -117,8 +117,8 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6 has no slow motion videos to show by themselves",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the filter object is not a wall: it is owed and not yet written, and once written it will honestly match nothing, since iOS 6's photo library never tags an asset as slow motion video",
+      "effect": "until it is written the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of PhotosUI"
     },
     {
@@ -127,8 +127,8 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6 has no time lapse videos to show by themselves",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the filter object is not a wall: it is owed and not yet written, and once written it will honestly match nothing, since iOS 6's photo library never tags an asset as time lapse video",
+      "effect": "until it is written the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of PhotosUI"
     },
     {
@@ -157,8 +157,8 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6 has no way to show only bursts",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the filter object is not a wall: it is owed and not yet written, and once written it will honestly match nothing, since iOS 6's photo library never tags an asset as burst",
+      "effect": "until it is written the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of PhotosUI"
     },
     {
@@ -167,8 +167,8 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6 has no cinematic videos",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the filter object is not a wall: it is owed and not yet written, and once written it will honestly match nothing, since iOS 6's photo library never tags an asset as cinematic video",
+      "effect": "until it is written the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of PhotosUI"
     },
     {
@@ -177,8 +177,8 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "iOS 6 has no depth effect photos",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "reason": "the filter object is not a wall: it is owed and not yet written, and once written it will honestly match nothing, since iOS 6's photo library never tags an asset as depth effect photo",
+      "effect": "until it is written the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of PhotosUI"
     },
     {
