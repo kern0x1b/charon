@@ -6,10 +6,11 @@ package("apple-backports")
 
     add_deps("charon@firmware-tools", {alias = "firmware-tools"})
     add_deps("charon@ldid 2.1.5-procursus7+23.gaf86971", {alias = "ldid"})
+    add_deps("charon@box2d 2.2.1", {alias = "box2d"})
 
     local modules = path.join(os.scriptdir(), "..", "..", "..", "modules")
     local inputs = table.join(os.files(path.join(os.scriptdir(), "*.c")), os.files(path.join(os.scriptdir(), "*.h")),
-                              os.files(path.join(os.scriptdir(), "*", "*.m")), os.files(path.join(os.scriptdir(), "*", "*.h")),
+                              os.files(path.join(os.scriptdir(), "*", "*.m")), os.files(path.join(os.scriptdir(), "*", "*.mm")), os.files(path.join(os.scriptdir(), "*", "*.h")),
                               os.files(path.join(os.scriptdir(), "registry", "*.json")), os.files(path.join(os.scriptdir(), "registry", "*", "*.json")))
     table.insert(inputs, path.join(modules, "apple", "backports.lua"))
     table.insert(inputs, path.join(os.scriptdir(), "..", "..", "..", "addons", "c", "charon", "xmake.lua"))
@@ -116,7 +117,8 @@ package("apple-backports")
                                      package:config("avkit") and {"AVKitBackports"} or {})
         local common = {root = package:scriptdir(), architecture = package:arch(), deployment = deployment, sdkdir = toolchain:config("sdkdir"),
                         cc = assert(toolchain:tool("cc"), "the apple-ios toolchain names no compiler for " .. package:arch()),
-                        ld = assert(linker, "the apple-ios toolchain names no ld64 for " .. package:arch()), libraries = libraries}
+                        ld = assert(linker, "the apple-ios toolchain names no ld64 for " .. package:arch()), libraries = libraries,
+                        archives = {box2d = {linkdir = package:dep("box2d"):installdir("lib"), link = "Box2D", includedir = package:dep("box2d"):installdir("include")}}}
         backports.build(table.join(common, {cache = cache, builddir = path.absolute("link"), outputdir = package:installdir("lib")}))
         local released
         for version in io.readfile(path.join(package:scriptdir(), "..", "..", "..", "addons", "c", "charon", "xmake.lua")):gmatch('add_versions%("v(%d[%d%.]*)"') do

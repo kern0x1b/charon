@@ -7,7 +7,7 @@ import("core.base.json")
 
 LIBRARIES = {
     {name = "FoundationBackports", folder = "Foundation", frameworks = {"Foundation", "CoreFoundation", "SystemConfiguration"}},
-    {name = "UIKitBackports", folder = "UIKit", frameworks = {"UIKit", "Foundation", "CoreGraphics", "QuartzCore", "MobileCoreServices"}, libraries = {"FoundationBackports"}},
+    {name = "UIKitBackports", folder = "UIKit", frameworks = {"UIKit", "Foundation", "CoreGraphics", "QuartzCore", "MobileCoreServices"}, libraries = {"FoundationBackports"}, archives = {"box2d"}},
     {name = "CoreLocationBackports", folder = "CoreLocation", frameworks = {"CoreLocation", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CoreDataBackports", folder = "CoreData", frameworks = {"CoreData", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "SecurityBackports", folder = "Security", frameworks = {"Security", "Foundation"}, libraries = {"FoundationBackports"}},
@@ -124,6 +124,10 @@ end
 -- classes as the weak imports that are NULL on the release, and the device says
 -- only that the program failed. What the library must not export it hides at
 -- the link, where a hidden symbol can still be named.
+--
+-- Objective-C++ is how a backport reaches a C++ library it links in (LIBRARIES' archives). The
+-- archives are built without RTTI, so a class derived here from one of theirs has none either, and
+-- the inline functions of their headers stay hidden, as the archives' own symbols are.
 function compile(opt, source, object)
     local objective_c = not source:endswith(".c")
     local arguments = {"-Os", "-g0", "-Wall", "-Wno-unguarded-availability-new", "-Wno-unguarded-availability"}
@@ -131,6 +135,12 @@ function compile(opt, source, object)
         table.insert(arguments, "-Werror=objc-missing-property-synthesis")
     else
         table.insert(arguments, "-fvisibility=hidden")
+    end
+    if source:endswith(".mm") then
+        table.join2(arguments, {"-fno-rtti", "-fvisibility-inlines-hidden"})
+        for _, name in ipairs(table.orderkeys(opt.archives or {})) do
+            table.insert(arguments, "-I" .. opt.archives[name].includedir)
+        end
     end
     os.vrunv(clang(opt, table.join(arguments, {"-c", source, "-o", object}), objective_c))
 end
@@ -146,7 +156,8 @@ local function sections_of(file)
 end
 
 function sources(root, library)
-    local found = table.join(os.files(path.join(root, library.folder, "*.m")), os.files(path.join(root, library.folder, "*.c")))
+    local found = table.join(os.files(path.join(root, library.folder, "*.m")), os.files(path.join(root, library.folder, "*.mm")),
+                             os.files(path.join(root, library.folder, "*.c")))
     table.sort(found)
     return found
 end
@@ -383,6 +394,17 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
     end
     for _, other in ipairs(library.libraries or {}) do
         table.join2(arguments, {"-L" .. outputdir, "-l" .. other})
+    end
+    -- A static archive gives the link only the members a kept object calls, so a band whose release
+    -- carries the classes over it takes nothing of it. Its C++ runtime is the release's own libc++,
+    -- which UIKit loads on every release the bands start at (measured on 6.1.3).
+    for _, name in ipairs(library.archives or {}) do
+        local archive = opt.archives and opt.archives[name]
+        if not archive then
+            raise("%s links the static library of the package %s, and the build was given none: pass archives = {%s = {linkdir = ..., link = ..., includedir = ...}}, from the package's installdir",
+                  library.name, name, name)
+        end
+        table.join2(arguments, {path.join(archive.linkdir, "lib" .. archive.link .. ".a"), "-lc++"})
     end
     for _, framework in ipairs(library.frameworks) do
         table.join2(arguments, {"-framework", framework})
