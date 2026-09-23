@@ -3,6 +3,7 @@
 #import <Photos/Photos.h>
 #import <UIKit/UIKit.h>
 #import <objc/message.h>
+#include <unistd.h>
 #import "check.h"
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -23,13 +24,13 @@ static void wait_until(double seconds, BOOL (^done)(void))
         [NSThread sleepForTimeInterval:0.05];
 }
 
-// A video of blue noise (no red, no green) at a high bit rate, so the encoder cannot make it small.
-static NSURL *blue_noise_video(int frames)
+// A blue video: noise in the blue channel (no red, no green) at a high bit rate, so the encoder cannot make it small,
+// or a solid blue one.
+static NSURL *blue_video(int frames, int width, int height, BOOL noise)
 {
     NSURL *url = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"charon-%@.mov", [NSUUID UUID].UUIDString]]];
     NSError *error = nil;
     AVAssetWriter *writer = [AVAssetWriter assetWriterWithURL:url fileType:AVFileTypeQuickTimeMovie error:&error];
-    const int width = 640, height = 480;
     AVAssetWriterInput *input = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:@{
         AVVideoCodecKey: AVVideoCodecH264, AVVideoWidthKey: @(width), AVVideoHeightKey: @(height),
         AVVideoCompressionPropertiesKey: @{AVVideoAverageBitRateKey: @(40 * 1000 * 1000), AVVideoMaxKeyFrameIntervalKey: @1}}];
@@ -56,7 +57,7 @@ static NSURL *blue_noise_video(int frames)
         for (int y = 0; y < height; y++) {
             uint8_t *row = base + y * stride;
             for (int x = 0; x < width; x++) {
-                row[4 * x] = (uint8_t)random();
+                row[4 * x] = noise ? (uint8_t)random() : 255;
                 row[4 * x + 1] = 0;
                 row[4 * x + 2] = 0;
                 row[4 * x + 3] = 255;
@@ -215,6 +216,55 @@ static void check_write(PHAssetResource *resource, NSData *direct)
     [[NSFileManager defaultManager] removeItemAtPath:folder error:NULL];
 }
 
+static NSUInteger saved_photos_count(void)
+{
+    PHAssetCollection *saved = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil].firstObject;
+    return saved ? [PHAsset fetchAssetsInAssetCollection:saved options:nil].count : 0;
+}
+
+static NSError *add_video(NSURL *url, BOOL move, NSString **identifier)
+{
+    __block NSString *made = nil;
+    NSError *error = nil;
+    BOOL added = [[PHPhotoLibrary sharedPhotoLibrary] performChangesAndWait:^{
+        PHAssetResourceCreationOptions *options = [[PHAssetResourceCreationOptions alloc] init];
+        options.shouldMoveFile = move;
+        PHAssetCreationRequest *request = [PHAssetCreationRequest creationRequestForAsset];
+        [request addResourceWithType:PHAssetResourceTypeVideo fileURL:url options:options];
+        made = request.placeholderForCreatedAsset.localIdentifier;
+    } error:&error];
+    if (identifier)
+        *identifier = added ? made : nil;
+    return added ? nil : (error ?: [NSError errorWithDomain:@"charon.test" code:0 userInfo:nil]);
+}
+
+// shouldMoveFile: the header's "the original file is removed if the asset is created successfully", and its hard-linked
+// file that cannot be moved. Each adds a solid-blue video, 64 by 64, the fixture the fleet keeps.
+static void check_move(void)
+{
+    NSFileManager *files = [NSFileManager defaultManager];
+    NSURL *kept = blue_video(15, 64, 64, NO);
+    NSString *identifier = nil;
+    NSError *error = add_video(kept, NO, &identifier);
+    CHECK(error == nil && asset_with_identifier(identifier) && [files fileExistsAtPath:kept.path], "a file not moved stays where it was");
+    [files removeItemAtURL:kept error:NULL];
+
+    NSURL *moved = blue_video(15, 64, 64, NO);
+    error = add_video(moved, YES, &identifier);
+    CHECK(error == nil && asset_with_identifier(identifier) && ![files fileExistsAtPath:moved.path], "a moved file is gone once the asset is made");
+
+    NSURL *linked = blue_video(15, 64, 64, NO);
+    NSURL *second = [linked URLByAppendingPathExtension:@"link.mov"];
+    CHECK(link(linked.fileSystemRepresentation, second.fileSystemRepresentation) == 0, "a second hard link to a video is made");
+    NSUInteger before = saved_photos_count();
+    error = add_video(linked, YES, NULL);
+    printf("move of a hard-linked file: %s\n", error.description.UTF8String ?: "no error");
+    CHECK([error.domain isEqualToString:PHPhotosErrorDomain] && error.code == PHPhotosErrorInvalidResource, "a hard-linked file is refused as an invalid resource");
+    CHECK(saved_photos_count() == before && [files fileExistsAtPath:linked.path] && [files fileExistsAtPath:second.path], "before anything is written, and both links stay");
+    [files removeItemAtURL:linked error:NULL];
+    [files removeItemAtURL:second error:NULL];
+}
+
 static void run_checks(void)
 {
     dispatch_semaphore_t answered = dispatch_semaphore_create(0);
@@ -226,7 +276,7 @@ static void run_checks(void)
     dispatch_semaphore_wait(answered, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(120 * NSEC_PER_SEC)));
     CHECK(status == PHAuthorizationStatusAuthorized, "the application may use the photo library");
 
-    NSURL *video = blue_noise_video(90);
+    NSURL *video = blue_video(90, 640, 480, YES);
     NSNumber *size = nil;
     [video getResourceValue:&size forKey:NSURLFileSizeKey error:NULL];
     printf("fixture video: %lld bytes\n", size.longLongValue);
@@ -253,6 +303,7 @@ static void run_checks(void)
         check_write(resource, direct);
     }
     [[NSFileManager defaultManager] removeItemAtURL:video error:NULL];
+    check_move();
 
     NSString *summary = [NSString stringWithFormat:@"%d checks, %d failed\n", charon_checks, charon_failures];
     printf("%s", summary.UTF8String);

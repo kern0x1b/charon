@@ -19,7 +19,14 @@ application support folder of the application.
 `+[PHAssetCreationRequest creationRequestForAsset]` (iOS 9) is the same kind of change request, staged instead of written immediately:
 `addResourceWithType:data:options:` and `addResourceWithType:fileURL:options:` accept exactly one resource, photo or video, and the
 commit writes it the same way the iOS 8 creation request does. A second resource, or a resource type other than photo or video
-(adjustment data, an alternate photo, a live photo pairing), fails the change with a reason. `+supportsAssetResourceTypes:` answers
+(adjustment data, an alternate photo, a live photo pairing), fails the change with a reason. `PHAssetResourceCreationOptions.shouldMoveFile` on a file
+resource removes the file once the asset is made from it, as the header says ("the original file is removed if the asset is
+created successfully"); `ALAssetsLibrary` itself always copies, so the move is the copy followed by the removal. The header also
+says a file that is open or hard-linked cannot be moved: a file with more than one hard link, and one whose folder does not let it
+be removed, fail the change with `PHPhotosErrorInvalidResource` and a reason when the requests are checked, before anything is
+written. Whether another process holds the file open iOS 6 gives no public way to ask, so that case is not refused. A removal
+that still fails after the asset is made fails the change with the file system's error, the way every write of the change that
+fails after the ones before it does (below): the asset is then in the library and the file is still where it was. `+supportsAssetResourceTypes:` answers
 YES only for a single-element array naming the photo or the video type. `+[PHAssetResource assetResourcesForAsset:]` (iOS 9) describes
 the one resource an iOS 6 asset already has, read from `ALAssetRepresentation` (`defaultRepresentation`) rather than from a Photos
 database row; `+assetResourcesForLivePhoto:` always gives an empty array, since no live photo can exist on this release.

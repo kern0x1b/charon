@@ -18,8 +18,8 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the options object is plain state (a filename, a UTI, whether to move the file) that this release has no need to interpret, since a single write always copies the given bytes or file",
-      "effect": "originalFilename, uniformTypeIdentifier and shouldMoveFile are held and copied; nothing reads shouldMoveFile back, as ALAssetsLibrary's write always copies",
+      "reason": "the options object is plain state (a filename, a UTI, whether to move the file); ALAssetsLibrary's write always copies, so a move is that copy followed by the removal of the file",
+      "effect": "originalFilename, uniformTypeIdentifier and shouldMoveFile are held and copied; shouldMoveFile on a file resource removes the file once the asset is made, refuses a hard-linked file or one whose folder does not let it be removed with PHPhotosErrorInvalidResource before anything is written, and fails the change with the file system's error if the removal fails after the write",
       "facts": "facts/Photos/Changes.md",
       "source": "the header of iOS 16.4 for the declarations; not yet measured on device"
     },
