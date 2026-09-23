@@ -11,15 +11,14 @@ read the checkout they are pointed at, live, from disk.
 ## 1. Light guard (seconds)
 
 ```
-xmake l $HOME/Git/projects/ios/coordination/run_light_tests.lua
+xmake l $HOME/Git/projects/ios/coordination/run_light_tests.lua "$PWD"
 ```
 
 Five `tests/addon` suites. Each prints `<name>: OK (0 failures)` or one `<name> FAIL: ...` line
 per failure.
 
-- It always tests the shared checkout `$HOME/Git/projects/ios/charon` (the path is fixed inside the
-  script), whatever the current directory is. A green light guard says nothing about a worktree
-  until its commits are in that checkout.
+- Pass the checkout as the argument; without one it tests the shared checkout
+  `$HOME/Git/projects/ios/charon`, not the worktree you are in.
 
 ## 2. Full gate (minutes to tens of minutes)
 
