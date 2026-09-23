@@ -12,33 +12,56 @@ step, and the version suffix is a real reason the two could differ. If they
 do, `SCNKeyedUnarchiver`'s failure will name the missing class or leave a
 property at its default — loud or silent-but-visible, not a crash.
 
-## Fact: every color is a nested keyed archive, not an object reference
+## Fact: an archived color is an `NSColor` in its authoring color space — nested or in the graph
 
-`SCNLight.color`, `.shadowColor`, `SCNParticleSystem.particleColor` are never
-resolved through the outer archive's `$objects` table the way every other
-object property is. Each is an `NSMutableData` whose bytes are themselves a
-complete, independent `NSKeyedArchiver` payload (own `$archiver`/`$top`/
-`$objects`), written by the real `NSColor` on the authoring Mac. Its root
-object is class `"NSColor"`, with `NSColorSpace` (`NSICC` profile blob +
-`NSSpaceID`) and `NSComponents` (a dictionary whose `NSRGB` or `NSWhite`
-key holds a plain space-separated string of floats, e.g.
-`"0.5764705882 0.4470588235 1 1"`).
+Two shapes, both measured on all four files (`gift`/`diamond`/`star2`/`coin`):
 
-This is a fact about Apple's keyed-archive format in general, not a SceneKit
-peculiarity — the next reader who opens a `.plist`/`.scn`/`.data`-carrying
-archive from Apple's own tooling should expect nested archives inside
-`NSData` fields wherever the original author used a class the top-level
-archiver didn't want to embed directly.
+- `SCNLight.color`/`.shadowColor` and `SCNParticleSystem.particleColor`: an `NSMutableData`
+  whose bytes are a complete, independent `NSKeyedArchiver` payload with an `NSColor` root.
+- `SCNMaterialProperty.color` (every solid-color slot: 14 of `star2`'s 24 properties, and
+  `SCNScene.background`/`environment`): the `NSColor` object sits **directly in the main
+  object graph** (a UID straight to a `$classname: "NSColor"` object).
 
-Implementation: `CharonSCNCoding.decodeColor:forKey:` opens a *second*
-`NSKeyedUnarchiver` over the `NSData`, with `requiresSecureCoding = YES` and
-`[unarchiver setClass:[CharonSCNArchivedColor class] forClassName:@"NSColor"]`
-— it never requires a class actually named `NSColor` to exist (it does not,
-on this platform). `CharonSCNArchivedColor` reads `NSComponents`/`NSRGB`/
-`NSWhite` and vends a `UIColor`. This works unconditionally, independent of
-whether an iOS-authored archive nests `NSColor` or `UIColor` — if it turns
-out to be `UIColor` directly, `decodeColor:` already has a plain-object
-fallback path.
+The `NSColor` object itself has the same keys in both: `NSColorSpace` (integer: 1 calibrated
+RGB, 2 device RGB, 3 calibrated white, 4 device white), `NSComponents` (**raw bytes**, a
+space-separated ASCII float list in the authoring space, alpha last), `NSRGB` or `NSWhite`
+(raw NUL-terminated bytes, the same color converted to calibrated RGB/white), and
+`NSCustomColorSpace` -> an `NSColorSpace` object with `NSICC` (the ICC profile) plus
+`NSSpaceID`/`NSID`. In the graph shape `NSICC` is an `NSMutableData` object; in the nested
+shape it is a bare plist `data` value.
+
+**Retracted:** this section used to say `NSComponents` is a dictionary holding `NSRGB`/
+`NSWhite` strings, and `CharonSCNArchivedColor` read it that way. It is raw bytes, and
+`NSRGB`/`NSWhite` are sibling keys. The old reading could never have produced a color from
+these files: no guest probe printed a color before 2026-09-23, so the error went unseen, and
+every light/particle color sat at its class default.
+
+Authoring spaces measured (103 `NSColor` objects in the four files): Display P3 (ICC, `para`
+type 3 curves), sRGB IEC61966-2.1 Linear (ICC, gamma 1; every light color), sRGB (the HP
+3144-byte ICC, 1024-entry `curv`), Generic Gray Gamma 2.2 (ICC, `curv`), and Generic Gray
+with no ICC at all (`NSColorSpace` 3, alone or with `NSID` 2).
+
+What real SceneKit exposes (macOS oracle,
+`.agent-work/plan-and-analysis/color-oracle/oracle.swift` in the band worktree): the
+`NSColor` in its authoring space, unconverted. `NSComponents` and `NSRGB` differ
+(`star2` ambient: 0.4845 vs 0.4090), so reading `NSRGB` as if it were sRGB would be wrong.
+
+Implementation: `CharonSCNArchivedColor` (mapped for `NSColor`) converts to sRGB, the only
+meaning a spaceless `UIColor` on this platform has. It uses the profile's own `rXYZ`/`gXYZ`/
+`bXYZ` matrix and `rTRC`/`gTRC`/`bTRC` (or `kTRC`) curves to reach PCS XYZ, then goes through
+the inverse of the sRGB profile's D50 colorants and the IEC sRGB encoding, clamped to [0,1].
+A calibrated white without a profile is Generic Gray, gamma 1.8: measured, `coin`'s
+`NSWhite 0.3652207168` -> oracle sRGB 0.4406431317. Device RGB/white is taken as sRGB.
+Calibrated RGB without a profile (Generic RGB) appears in no measured file and is refused,
+so `nil`, as is a LUT-based profile. `CharonSCNArchivedColorSpace` (mapped for `NSColorSpace`)
+carries only `NSICC`. `decodeColor:` maps both class names on whichever `NSKeyedUnarchiver`
+holds the color: the caller's for the graph shape, a fresh inner one for the nested shape.
+
+Checked against the oracle's `usingColorSpace(.sRGB)` components, host prototype
+(`color-oracle/proto.py`): 102 of 103 colors match to 1.2e-4, the worst being Display P3
+white (s15Fixed16 quantisation of the P3 colorants). The 103rd is the `groundColor`
+parameter of `diamond`'s procedural sky (`SCNScene.environment` -> `MDLSkyCubeTexture`),
+which SceneKit never exposes as a color.
 
 ## Fact: image/file content is `{"path": "<name>"}`, exposed as the bare filename string
 
@@ -234,6 +257,19 @@ This is not a reason to withhold the constant. An application that asks
 false answer does not. The surface is carried honestly; the renderer's gap
 is named honestly beside it, not hidden behind a truthful-looking property.
 
+### Deficit entries added 2026-09-23 by the color oracle
+
+- `SCNScene.background`, `.lightingEnvironment` (archive key `environment`) and `.fogColor`
+  are not carried: `SCNScene` has neither the properties nor the keys. All four files set
+  `background` to a transparent color (alpha 0) and `fogColor` to Display P3 white; the
+  environment is the same transparent color, except in `diamond`, where it is a procedural
+  sky (`MDLSkyCubeTexture` built from an `NSDictionary` of sky parameters under
+  `SCNMaterialProperty.image`). No demand row names these properties yet
+  (`coordination/corpus/*.tsv`, grep), so they are recorded here and not built.
+- `clearCoat`/`clearCoatRoughness`/`clearCoatNormal` (iOS 13 API) are set on every PBR
+  material in `star2`/`coin` (`flecks.jpg` normal, 0.3-0.45 intensity). `SCNMaterial` in this
+  port does not carry them, so the clear-coat sparkle is missing from the picture.
+
 ## `xmake f -y` without `-c` after an edit can silently not re-evaluate the package
 
 `-y` alone, run again after changing an already-configured package's sources,
@@ -421,21 +457,11 @@ scene-source push/pop stack in `SCNScene.m` is left in place, unused by any deco
 real infrastructure for whenever a renderer needs to actually load the named file, not a
 property-getter concern.
 
-**Still open, unwired by design, not a silent gap:** `SCNMaterialProperty` instances whose
-`propertyType` carries a solid `color` (14 of `star2.scn`'s 24 — ambient/specular/emission/
-etc. tints, everything that isn't the two `image` slots or the one `float` slot) archive
-their `NSColor` **directly embedded in the main object graph**, not nested in an `NSData`
-payload the way `SCNLight`/`SCNParticleSystem` colors are (measured: object `#550`'s `color`
-key is a UID reference straight to a `$classname: "NSColor"` object, sibling-level in
-`$objects`, not wrapped in bytes). The existing `CharonSCNCoding.decodeColor:` assumes the
-`NSData`-wrapped shape and would need its own class-mapping plumbing on the *outer* keyed
-unarchiver (not the throwaway inner one it currently creates) to handle this directly-embedded
-form safely; attempting it without that would either throw (secure coding, unknown class) or
-silently do nothing, for 14 of 24 slots on this one file alone. Not wired this turn — `contents`
-stays `nil` for every `color`/`float`-shaped slot, exactly the pre-existing default, no new
-crash risk introduced. Visual-accuracy deficit list, next entry: `star2`'s non-diffuse material
-tints (ambient occlusion strength, specular color, etc.) render at their class defaults, not
-their authored values, until this is wired.
+**Closed 2026-09-23 (was "still open, unwired"):** the `color` slots (14 of `star2.scn`'s 24
+properties hold an `NSColor` directly in the graph) are now decoded, and so are the `float`
+slots (`metalness`/`roughness` scalars; oracle type `NSNumber`, e.g. `0.45`). See "an archived
+color is an `NSColor` in its authoring color space" above, and the guest measurement in
+"Colors on the guest" below.
 
 ## `coin.scn` decodes correctly on a real armv7 guest, five meshes, three textures, a real `SCNPhysicsWorld` — first try, zero new bugs
 
@@ -475,3 +501,33 @@ untested by this file, but not a stub); `rayTestWithSegment...`/two `contactTest
 variants/`convexSweepTest...` return an honest empty array and `updateCollisionPairs` is a
 genuine no-op — there is no `SCNPhysicsBody` anywhere in this port, so "no bodies, no
 contacts" is the true answer for this scene, not a placeholder pretending to work.
+
+## Colors on the guest: every light, shadow, particle and material color matches the oracle
+
+Measured 2026-09-23 on the armv7 guest (`xmake emulate -d iPhone4,1 -r 6.1.3`, 10B329), through
+the real `+[SCNScene sceneWithURL:options:error:]`, all four files in one probe
+(`color_probe.m` in the band worktree's `.agent-work/plan-and-analysis/gift-probe/`), compared
+field by field with the macOS oracle (`color-oracle/compare.py`): 213 values checked (116
+colors, 85 numbers: each slot's `intensity` plus the `float` slots, 12 file names), 0
+mismatches, worst color component error 1.2e-4. The four node-tree probes still print trees
+identical to their earlier green runs.
+
+The first guest run of the new color code matched every material slot but none of the nested
+colors: every light, shadow and particle color stayed at its class default. Chased down, not
+guessed:
+
+- `decodeColor:` on the same nested bytes, outside a scene decode, returned the right color
+  (0.803784, oracle 0.8037840724).
+- Inside a scene decode, the outer `decodeObjectOfClasses:` returned an `NSConcreteMutableData`
+  of **length 0**. A `SCNLight` subclass substituted by `setClass:forClassName:` measured it
+  directly on a plain unarchiver.
+- The difference is the key. `SCNKeyedArchiver` writes `NSMutableData` as `{NS.bytes: ...}`
+  (12 to 22 per file, every one a nested color or the sky parameters); current Foundation
+  writes `{NS.data: ...}`. A host-built `NS.data` archive decoded in full on the same guest,
+  and the `NS.bytes` form came back empty through a plain `NSKeyedUnarchiver`.
+- Through an `NSKeyedUnarchiver` *subclass*, or with `decodeObjectOfClasses:forKey:` swizzled,
+  the same `NS.bytes` object came back whole (1026 bytes). Mechanism not identified. Debug
+  interception of the unarchiver hides this failure, so do not trust an instrumented run for it.
+
+Fix: `CharonSCNArchivedData`, an `NSMutableData` subclass mapped for `NSMutableData` on the
+unarchiver `decodeColor:` is handed, reads `NS.bytes` or `NS.data` itself.

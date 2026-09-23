@@ -45,6 +45,10 @@
         NSString *image = [CharonSCNCoding decodeFileReferenceName:coder forKey:@"image"];
         if (image) {
             _contents = image;
+        } else if ([coder containsValueForKey:@"color"]) {
+            _contents = [CharonSCNCoding decodeColor:coder forKey:@"color"];
+        } else if ([coder containsValueForKey:@"float"]) {
+            _contents = [NSNumber numberWithFloat:[coder decodeFloatForKey:@"float"]];
         }
         if ([coder containsValueForKey:@"intensity"]) {
             _intensity = [coder decodeDoubleForKey:@"intensity"];
