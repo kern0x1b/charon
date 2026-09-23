@@ -2,6 +2,7 @@
 #import <CoreTelephony/CTCallCenter.h>
 #import <AVFoundation/AVAudioSession.h>
 #include <dlfcn.h>
+#import <objc/runtime.h>
 #import "check.h"
 #import "callkit-cases.h"
 #import "callkit-expectations.h"
@@ -131,8 +132,11 @@ static void from_the_backports(void)
     CHECK_EQUAL(image_of([CXProvider class]), @"libCallKitBackports.dylib", "CXProvider comes from the backports");
     CHECK_EQUAL(image_of([CXCallController class]), @"libCallKitBackports.dylib", "CXCallController comes from the backports");
     CHECK_EQUAL(image_of([CXHandle class]), @"libCallKitBackports.dylib", "CXHandle comes from the backports");
-    CHECK(NSClassFromString(@"CXCallDirectoryManager") == Nil, "the call directory manager is absent, as the registry says");
-    CHECK(NSClassFromString(@"CXCallDirectoryProvider") == Nil, "and so is the call directory provider");
+    CHECK_EQUAL(image_of(NSClassFromString(@"CXCallDirectoryManager")), @"libCallKitBackports.dylib", "the call directory manager comes from the backports");
+    CHECK_EQUAL(image_of(NSClassFromString(@"CXCallDirectoryProvider")), @"libCallKitBackports.dylib", "and so does the call directory provider");
+    CHECK_EQUAL(image_of(NSClassFromString(@"CXCallDirectoryExtensionContext")), @"libCallKitBackports.dylib", "and its context");
+    CHECK_EQUAL(image_of(class_getSuperclass(NSClassFromString(@"CXCallDirectoryExtensionContext"))), @"libFoundationBackports.dylib",
+                "whose NSExtensionContext is the package's on iOS 6");
     CHECK(![CXProvider respondsToSelector:@selector(reportNewIncomingVoIPPushPayload:completion:)], "the iOS 14.5 push report is absent");
 }
 
