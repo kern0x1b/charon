@@ -197,62 +197,68 @@
     {
       "api": "kCGColorSpaceExtendedLinearDisplayP3",
       "kind": "constant",
-      "introduced": "12.3",
+      "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "it arrived in 12.3, later than the newest iOS 12 release this package reads, 12.0, so the value that release gives is not read, and the value of a later release is known to differ for the names of this family; iOS 6 cannot make a space of it either",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the SDK 16.4 headers of CoreGraphics"
+      "status": "implemented",
+      "reason": "the symbol is carried so that an application which names it loads; iOS 6 cannot make a space of this name",
+      "effect": "the constant is there with the value the host's CoreGraphics gives it; CGColorSpaceCreateWithName answers NULL for it, as it does for every name of the release that it cannot make, and an application that checks the result handles it",
+      "facts": "facts/CoreGraphics/CGColorSpace.md",
+      "source": "CoreGraphics of the macOS host, which holds the string of the constant, read with dlsym; the cache ladder, whose first held release with it in CoreGraphics is 16.0, an upper bound: nothing is held between 12.0 and 16.0 (the SDK 16.4 header dates it 12.3)"
     },
     {
       "api": "kCGColorSpaceExtendedLinearITUR_2020",
       "kind": "constant",
-      "introduced": "12.3",
+      "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "it arrived in 12.3, later than the newest iOS 12 release this package reads, 12.0, so the value that release gives is not read, and the value of a later release is known to differ for the names of this family; iOS 6 cannot make a space of it either",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the SDK 16.4 headers of CoreGraphics"
+      "status": "implemented",
+      "reason": "the symbol is carried so that an application which names it loads; iOS 6 cannot make a space of this name",
+      "effect": "the constant is there with the value the host's CoreGraphics gives it; CGColorSpaceCreateWithName answers NULL for it, as it does for every name of the release that it cannot make, and an application that checks the result handles it",
+      "facts": "facts/CoreGraphics/CGColorSpace.md",
+      "source": "CoreGraphics of the macOS host, which holds the string of the constant, read with dlsym; the cache ladder, whose first held release with it in CoreGraphics is 16.0, an upper bound: nothing is held between 12.0 and 16.0 (the SDK 16.4 header dates it 12.3)"
     },
     {
       "api": "kCGColorSpaceDisplayP3_HLG",
       "kind": "constant",
-      "introduced": "12.6",
+      "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "it arrived in 12.6, later than the newest iOS 12 release this package reads, 12.0, so the value that release gives is not read, and the value of a later release is known to differ for the names of this family; iOS 6 cannot make a space of it either",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the SDK 16.4 headers of CoreGraphics"
+      "status": "implemented",
+      "reason": "the symbol is carried so that an application which names it loads; iOS 6 cannot make a space of this name",
+      "effect": "the constant is there with the value the host's CoreGraphics gives it; CGColorSpaceCreateWithName answers NULL for it, as it does for every name of the release that it cannot make, and an application that checks the result handles it",
+      "facts": "facts/CoreGraphics/CGColorSpace.md",
+      "source": "CoreGraphics of the macOS host, which holds the string of the constant, read with dlsym; the cache ladder, whose first held release with it in CoreGraphics is 16.0, an upper bound: nothing is held between 12.0 and 16.0 (the SDK 16.4 header dates it 12.6)"
     },
     {
       "api": "kCGColorSpaceDisplayP3_PQ_EOTF",
       "kind": "constant",
-      "introduced": "12.6",
+      "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "it arrived in 12.6, later than the newest iOS 12 release this package reads, 12.0, so the value that release gives is not read, and the value of a later release is known to differ for the names of this family; iOS 6 cannot make a space of it either",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the SDK 16.4 headers of CoreGraphics"
+      "status": "implemented",
+      "reason": "the symbol is carried so that an application which names it loads; iOS 6 cannot make a space of this name",
+      "effect": "the constant is there with the value the host's CoreGraphics gives it; CGColorSpaceCreateWithName answers NULL for it, as it does for every name of the release that it cannot make, and an application that checks the result handles it",
+      "facts": "facts/CoreGraphics/CGColorSpace.md",
+      "source": "CoreGraphics of the macOS host, which holds the string of the constant, read with dlsym; the cache ladder, whose first held release with it in CoreGraphics is 16.0, an upper bound: nothing is held between 12.0 and 16.0 (the SDK 16.4 header dates it 12.6)"
     },
     {
       "api": "kCGColorSpaceITUR_2020_HLG",
       "kind": "constant",
-      "introduced": "12.6",
+      "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "it arrived in 12.6, later than the newest iOS 12 release this package reads, 12.0, so the value that release gives is not read, and the value of a later release is known to differ for the names of this family; iOS 6 cannot make a space of it either",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the SDK 16.4 headers of CoreGraphics"
+      "status": "implemented",
+      "reason": "the symbol is carried so that an application which names it loads; iOS 6 cannot make a space of this name",
+      "effect": "the constant is there with the value the host's CoreGraphics gives it; CGColorSpaceCreateWithName answers NULL for it, as it does for every name of the release that it cannot make, and an application that checks the result handles it",
+      "facts": "facts/CoreGraphics/CGColorSpace.md",
+      "source": "CoreGraphics of the macOS host, which holds the string of the constant, read with dlsym; the cache ladder, whose first held release with it in CoreGraphics is 16.0, an upper bound: nothing is held between 12.0 and 16.0 (the SDK 16.4 header dates it 12.6)"
     },
     {
       "api": "kCGColorSpaceITUR_2020_PQ_EOTF",
       "kind": "constant",
-      "introduced": "12.6",
+      "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "it arrived in 12.6, later than the newest iOS 12 release this package reads, 12.0, so the value that release gives is not read, and the value of a later release is known to differ for the names of this family; iOS 6 cannot make a space of it either",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the SDK 16.4 headers of CoreGraphics"
+      "status": "implemented",
+      "reason": "the symbol is carried so that an application which names it loads; iOS 6 cannot make a space of this name",
+      "effect": "the constant is there with the value 12.0 gives it, its own name; CGColorSpaceCreateWithName answers NULL for it, as it does for every name of the release that it cannot make, and an application that checks the result handles it",
+      "facts": "facts/CoreGraphics/CGColorSpace.md",
+      "source": "CoreGraphics of the arm64 cache of 12.0, the first held release whose CoreGraphics exports it (the gate's ladder): the value read through the symbol, its __cfstring and the bytes it names, kCGColorSpaceDisplayP3, kCGColorSpaceSRGB and kCGColorSpaceExtendedSRGB of the same image as the control; the SDK 16.4 header dates it 12.6"
     }
   ]
 }

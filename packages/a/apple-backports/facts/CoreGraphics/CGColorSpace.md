@@ -28,6 +28,17 @@ Every `kCGColorSpace...` name the release exports is a string equal to its own n
 Every other name (Display P3, the extended, linear and ITU-R spaces, the HLG and PQ ones,
 ACES, DCI P3, ROMM, generic XYZ and Lab) is not exported by the release, and this package carries the constants: each is the string the host's CoreGraphics gives it, an
 application that names one loads, and `CGColorSpaceCreateWithName` answers NULL for it, as the release does for `kCGColorSpaceSRGB`.
+Four of them are not their own name on the host (macOS 27.0, read with `dlsym`): `kCGColorSpaceITUR_2020_PQ` and
+`kCGColorSpaceITUR_2020_PQ_EOTF` are `kCGColorSpaceITUR_2100_PQ`, `kCGColorSpaceITUR_2020_HLG` is `kCGColorSpaceITUR_2100_HLG`, and
+`kCGColorSpaceDisplayP3_PQ_EOTF` is `kCGColorSpaceDisplayP3_PQ`: the names the header marks deprecated share the value of
+the name that replaced them. `kCGColorSpaceITUR_2020_PQ_EOTF` is older than its header's 12.6: CoreGraphics of the 12.0 arm64
+cache already exports it. Its value there, read through the symbol (`tools/cfconst.py`: the symbol's address in
+CoreGraphics' symbol table, the pointer stored there, the `__cfstring` it points at and the bytes that names), is its own name,
+`kCGColorSpaceITUR_2020_PQ_EOTF`, 30 bytes; `kCGColorSpaceDisplayP3`, `kCGColorSpaceSRGB` and `kCGColorSpaceExtendedSRGB` of the
+same image, read the same way, are their own names, as the release says they are. The cache holds `kCGColorSpaceITUR_2100_PQ`
+nowhere. That is the value carried, in an object of its own for 12.0. The other five names of 12.3 and 12.6
+first appear at 16.0 on the ladder, an upper bound since nothing is held between 12.0 and 16.0, and keep the host's values,
+which the 16.0 cache holds as strings too.
 `CGColorSpaceCreateDeviceRGB` makes a space, and it is what a bitmap that must draw on this release
 is made with. A bitmap context made with a space that came back NULL is NULL, and draws nothing.
 

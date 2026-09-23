@@ -75,6 +75,12 @@ static void names(void)
         {&kCGColorSpaceITUR_2020_sRGBGamma, @"kCGColorSpaceITUR_2020_sRGBGamma"},
         {&kCGColorSpaceITUR_709_HLG, @"kCGColorSpaceITUR_709_HLG"},
         {&kCGColorSpaceITUR_709_PQ, @"kCGColorSpaceITUR_709_PQ"},
+        {&kCGColorSpaceExtendedLinearDisplayP3, @"kCGColorSpaceExtendedLinearDisplayP3"},
+        {&kCGColorSpaceExtendedLinearITUR_2020, @"kCGColorSpaceExtendedLinearITUR_2020"},
+        {&kCGColorSpaceDisplayP3_HLG, @"kCGColorSpaceDisplayP3_HLG"},
+        {&kCGColorSpaceITUR_2020_HLG, @"kCGColorSpaceITUR_2100_HLG"},
+        {&kCGColorSpaceDisplayP3_PQ_EOTF, @"kCGColorSpaceDisplayP3_PQ"},
+        {&kCGColorSpaceITUR_2020_PQ_EOTF, @"kCGColorSpaceITUR_2020_PQ_EOTF"},
         };
         int carried = 0, unmade = 0, valued = 0;
         for (size_t i = 0; i < sizeof named / sizeof named[0]; i++) {
@@ -84,9 +90,9 @@ static void names(void)
             unmade += made == NULL;
             CGColorSpaceRelease(made);
         }
-        CHECK(carried == 24, "the 24 colour space names the release lacks come from the backports");
-        CHECK(valued == 24, "each has the string the host gives it");
-        CHECK(unmade == 24, "and CGColorSpaceCreateWithName makes no space of any of them");
+        CHECK(carried == 30, "the 30 colour space names the release lacks come from the backports");
+        CHECK(valued == 30, "each has its measured string: the host's, or 12.0's for the one it first exports");
+        CHECK(unmade == 30, "and CGColorSpaceCreateWithName makes no space of any of them");
     }
 #endif
     CGColorSpaceRelease(generic);
