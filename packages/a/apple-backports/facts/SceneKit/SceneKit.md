@@ -40,7 +40,7 @@ whether an iOS-authored archive nests `NSColor` or `UIColor` — if it turns
 out to be `UIColor` directly, `decodeColor:` already has a plain-object
 fallback path.
 
-## Fact: image/file content is `{"path": "<name>"}`, resolved beside the .scn
+## Fact: image/file content is `{"path": "<name>"}`, exposed as the bare filename string
 
 `SCNMaterialProperty.contents` and `SCNParticleSystem.particleImage`, when
 they hold a file reference, do not carry image bytes. They are archived as
@@ -50,14 +50,29 @@ the literal strings `"lighterTexture.jpg"`, `"darkerTexture.jpg"`,
 In every case the named file is a flat sibling of the `.scn` in
 `Contents/Resources/` — confirmed by `find`, not assumed.
 
-`CharonSCNCoding.decodePathContents:forKey:` resolves this relative to the
-scene's own source URL, tracked through `+[CharonSCNCoding pushSourceURL:]`/
-`popSourceURL`/`currentSourceURL` (a small explicit stack, pushed by
-`+[SCNScene sceneWithURL:options:error:]` around the decode and popped
-after) — not a hidden global read at decode time from an ambient location.
-This mirrors the real mechanism `loadCompressedScene` already depends on:
-Telegram decompresses to a temp directory first specifically so this
-relative resolution has something to resolve against.
+**The public property's exposed value is the bare filename string, not a
+resolved URL** — measured directly against real SceneKit (a throwaway Swift
+script printing `type(of:)`/`String(describing:)` on `material.diffuse.contents`
+and every `particleSystem.particleImage` in `gift.scn`/`star2.scn`): both come
+back `__NSCFString` / `"particles.png"`, `"texture.jpg"`, unresolved, no scene
+directory prefix. An early draft of this port resolved the reference into an
+`NSURL` relative to the scene's source URL instead (plausible-looking, and it
+is exactly what a renderer would eventually need to actually load the file) —
+that draft shipped once already (`particleImage`, with `gift`/`diamond`) before
+being caught by this same direct-Swift-check technique and corrected in both
+places together. `CharonSCNCoding.decodeFileReferenceName:forKey:` now returns
+the bare `NSString` for both properties; nothing between here and the archive
+resolves it against the scene's source.
+
+The scene-source stack (`+[CharonSCNCoding pushSourceURL:]`/`popSourceURL`/
+`currentSourceURL`, pushed by `+[SCNScene sceneWithURL:options:error:]` around
+the decode) is left in place, unused by any decoder now — real, harmless,
+already-wired infrastructure for whenever a renderer actually needs to load
+the named file relative to the scene, at which point resolving it is that
+renderer's job, not the property getter's. This mirrors the real mechanism
+`loadCompressedScene` already depends on: Telegram decompresses to a temp
+directory first specifically so a relative lookup has something to resolve
+against.
 
 ## Two "вероятно" from the previous turn, closed by tracing referrers, not by reading types
 
@@ -384,21 +399,27 @@ or `float` (scalar) depending on `propertyType`. Fixed in `SCNMaterialProperty.m
 `image`; re-ran the guest, `diffuseContents=texture.jpg` now matches the oracle exactly.
 Divergence recorded in the table above.
 
-**A second, independent finding from the same probe, corrected before it shipped.** The
-fix's first draft reused `CharonSCNCoding.decodePathContents:`, which resolves a file
-reference to an `NSURL` relative to the scene's source (the same helper `particleImage`
-already uses, merged). A direct Swift test against real SceneKit
+**A second, independent finding from the same probe — and this one turned out to affect
+already-merged code too, fixed the same turn.** The fix's first draft reused
+`CharonSCNCoding.decodePathContents:`, which resolves a file reference to an `NSURL`
+relative to the scene's source (the same helper `particleImage` already used, merged with
+`gift`/`diamond`). A direct Swift test against real SceneKit
 (`material.diffuse.contents`, printed via `String(describing:)`) showed the real property
 holds the **bare filename string** `"texture.jpg"`, not a resolved URL — interpolating an
 `NSURL` with a base prints `"texture.jpg -- file:///path/to/star2.scn"` (verified by
-constructing one directly), which is not what real SceneKit returns. `SCNMaterialProperty.
-contents` in this port now decodes `image`'s `path` directly as an `NSString`, matching the
-measured real type. **This casts doubt on `particleImage`'s existing URL-resolving
-implementation** (merged with `gift`/`diamond`, gated green) — it was never checked against
-a macOS oracle for its *exposed type*, only for the *filename* it carries. Not changed here
-(out of this turn's scope, and changing already-gated code without a fresh guest run of its
-own would be worse than leaving it) — flagged for whoever next touches `SCNParticleSystem.
-particleImage` or does a focused pass on public-API type fidelity.
+constructing one directly), which is not what real SceneKit returns. The same check run
+against `gift.scn`'s `particleImage` (four particle systems, all resolving `"particles.png"`)
+confirmed real SceneKit returns `__NSCFString`/`"particles.png"` there too — not the
+`NSURL` this port had been building. Both call sites now share one helper,
+`CharonSCNCoding.decodeFileReferenceName:forKey:`, which returns the bare archived
+`NSString` and does not touch the scene-source stack at all. Re-ran all three probes
+(`gift`/`diamond`/`star2`) on the armv7 guest after the fix: all three still `pass`,
+`failures=0`, and `image=`/`diffuseContents=` now print the bare filename
+(`particles.png`/`coin_anim.png`/`texture.jpg`) matching real SceneKit's exposed type, not
+just its filename. `decodePathContents:` (the wrong, URL-building helper) is gone; the
+scene-source push/pop stack in `SCNScene.m` is left in place, unused by any decoder now —
+real infrastructure for whenever a renderer needs to actually load the named file, not a
+property-getter concern.
 
 **Still open, unwired by design, not a silent gap:** `SCNMaterialProperty` instances whose
 `propertyType` carries a solid `color` (14 of `star2.scn`'s 24 — ambient/specular/emission/

@@ -112,8 +112,8 @@ SCNParticleProperty const SCNParticlePropertyContactNormal = @"contactNormal";
         }
         [CharonSCNCoding markFound:lifeSpanFound forKey:@"particleLifeSpan" onObject:self];
         _particleLifeSpanVariation = [coder decodeDoubleForKey:@"particleLifeSpanVariation"];
-        NSURL *imagePath = [CharonSCNCoding decodePathContents:coder forKey:@"particleImage"];
-        _particleImage = imagePath ?: [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSString class], [UIColor class], nil] forKey:@"particleImage"];
+        NSString *imageName = [CharonSCNCoding decodeFileReferenceName:coder forKey:@"particleImage"];
+        _particleImage = imageName ?: [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSString class], [UIColor class], nil] forKey:@"particleImage"];
         UIColor *color = [CharonSCNCoding decodeColor:coder forKey:@"particleColor"];
         if (color) {
             _particleColor = color;

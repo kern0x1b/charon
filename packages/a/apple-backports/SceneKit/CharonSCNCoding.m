@@ -145,7 +145,7 @@
     }
 }
 
-+ (NSURL *)decodePathContents:(NSCoder *)coder forKey:(NSString *)key
++ (NSString *)decodeFileReferenceName:(NSCoder *)coder forKey:(NSString *)key
 {
     if (![coder containsValueForKey:key]) {
         return nil;
@@ -157,10 +157,7 @@
     } else if ([decoded isKindOfClass:[NSString class]]) {
         path = decoded;
     }
-    if (path.length == 0) {
-        return nil;
-    }
-    return [NSURL URLWithString:[path stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]] relativeToURL:[self currentSourceURL]];
+    return path.length ? path : nil;
 }
 
 static NSMutableArray *CharonSCNSourceURLStack(void)

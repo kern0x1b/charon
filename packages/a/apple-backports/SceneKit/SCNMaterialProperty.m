@@ -42,17 +42,9 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     if ((self = [self init])) {
-        if ([coder containsValueForKey:@"image"]) {
-            id decoded = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSDictionary class], [NSString class], nil] forKey:@"image"];
-            NSString *path = nil;
-            if ([decoded isKindOfClass:[NSDictionary class]]) {
-                path = [(NSDictionary *)decoded objectForKey:@"path"];
-            } else if ([decoded isKindOfClass:[NSString class]]) {
-                path = decoded;
-            }
-            if (path.length) {
-                _contents = path;
-            }
+        NSString *image = [CharonSCNCoding decodeFileReferenceName:coder forKey:@"image"];
+        if (image) {
+            _contents = image;
         }
         if ([coder containsValueForKey:@"intensity"]) {
             _intensity = [coder decodeDoubleForKey:@"intensity"];
