@@ -79,14 +79,16 @@ Each is an independent session with its own worktree. Domains do not overlap.
 
 | Band | Domain |
 | --- | --- |
-| Backports · iOS 7–10 | UIKit and Foundation, APIs introduced 7.0–10.x |
-| Backports · iOS 11–12 | same, 11.x–12.x; also owns canon builds and test-suite health |
-| Backports · iOS 13–14 | same, 13.x–14.x |
-| Backports · frameworks | AVFoundation, Photos, Security, CoreImage, ImageIO, CoreVideo, CoreMedia, QuartzCore, CoreTelephony, Metal, Accelerate, GameController |
-| Backports · CallKit | CallKit end to end, including the system call screen via a tweak |
-| Backports · Contacts | Contacts over the AddressBook C API iOS 6 already carries |
-| Corpus demand engine | measures which missing APIs applications actually call; ranks them; owns `tools/verify.py` |
-| Telegram port | the recompiled official Telegram on the 4S |
+| Backports · iOS 7–10 | UIKit and Foundation, APIs introduced 7.0–10.x; the release-ladder tools (`release-split.lua`, `introduced_in()`) |
+| Backports · iOS 11–12 | same, 11.x–12.x, and AVKit 11+; also owns canon builds, test-suite health and the demand engine's LAUNCH-BLOCK ranking |
+| Backports · iOS 13–14 | same, 13.x–16.x; the gate's category check |
+| Backports · frameworks | AVFoundation, AVKit before 11, CoreMedia, VideoToolbox, CoreSpotlight, MediaPlayer, Security, Metal, CoreImage, ImageIO, CoreVideo, QuartzCore, CoreTelephony, Accelerate, GameController, Intents, FileProvider |
+| Backports · SceneKit/PassKit/Speech/ReplayKit | those four frameworks, including a real `SCNView` renderer for Telegram |
+| charon: app launch in the emulator | `xmake emulate launch`, the guest tools it needs, and the `charon@eidolon` package |
+| Telegram from source | the official Telegram built from its own source with this toolchain; no stubs, no recompiler |
+
+Photos, CallKit and Contacts are closed; their facts files describe what was carried. A closed
+domain is reopened by a new band, not by a stray patch.
 
 The demand engine **does not decide**. It produces evidence; the coordinator issues verdicts.
 
