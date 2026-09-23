@@ -775,22 +775,16 @@ local function ladder(architecture)
     return LADDERS[architecture]
 end
 
--- The release a symbol first-appears exporting, walking the real cache ladder oldest to newest --
+-- The release each of symbols first-appears exporting, walking the real cache ladder oldest to newest --
 -- the same measurement release-split.lua makes, not the SDK header's own availability annotation.
 -- A header can name a later release than the one that actually already exports the symbol (measured
 -- for UIKeyboardIsLocalUserInfoKey: the SDK 16.4 header says ios(9.0), the real armv7 cache of 8.0
 -- already exports it), and this function exists so the same object-splitting rule answers to the
 -- fact, not the annotation. A symbol counts only where a client binds it, in the library the SDK
--- puts it in (dyld.exported_at). Returns nil for a symbol no held release exports, where the
--- header/registry fallback in releases_in() below is the only source left.
-local function measured_introduced(opt, symbol)
-    local owners = dyld.sdk_owners(opt.sdkdir)[symbol]
-    for _, entry in ipairs(ladder(opt.architecture)) do
-        if dyld.exported_at(dyld.load(entry.source), symbol, owners) then
-            return entry.release
-        end
-    end
-    return nil
+-- puts it in (dyld.exported_at). {symbol = release}, with no entry for a symbol no held release
+-- exports, where the header/registry fallback in releases_in() below is the only source left.
+local function measured_introduced(opt, symbols)
+    return dyld.first_releases(ladder(opt.architecture), opt.sdkdir, symbols)
 end
 
 -- The releases one object's exported API arrived in, {version = {names}}, and the names no source
@@ -800,14 +794,16 @@ end
 -- 12.0 exports _OBJC_CLASS_$_NLTokenizer, and its metaclass only from 16.0), and the class is the API.
 function releases_in(opt, source, object)
     local names, earliest = {}, {}
-    for _, symbol in ipairs(exported_symbols(object)) do
+    local symbols = exported_symbols(object)
+    local first = measured_introduced(opt, symbols)
+    for _, symbol in ipairs(symbols) do
         local name = symbol:match("^_OBJC_CLASS_%$_(.+)$") or symbol:match("^_OBJC_METACLASS_%$_(.+)$")
                      or symbol:match("^_OBJC_IVAR_%$_(.-)%.") or symbol:sub(2)
         if earliest[name] == nil then
             table.insert(names, name)
             earliest[name] = false
         end
-        local version = measured_introduced(opt, symbol)
+        local version = first[symbol]
         if version and (not earliest[name] or dyld.compare_versions(version, earliest[name]) < 0) then
             earliest[name] = version
         end

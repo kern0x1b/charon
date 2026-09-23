@@ -4,6 +4,10 @@
 -- one in the shared xmake store when not given). A symbol counts as exported only by that library
 -- or one it re-exports, where a client binds it, not by a same-named symbol elsewhere in the cache.
 --
+-- What a run measures is kept in $CHARON_HOME/cache (dyld.sdk_owners, dyld.first_releases), keyed
+-- by the SDK's .tbd files, the rungs' files and the code that reads them, so a second run over
+-- symbols already measured loads no cache and reads no .tbd.
+--
 -- MANDATORY: a band runs this after its own build() and before handing off a
 -- patch (or running write_deb()'s full band rebuild). It needs OBJECTSDIR's
 -- *.o already compiled, so it cannot be the gate's first step, and it does
@@ -120,7 +124,6 @@ function main(objectsdir, output, sdkdir)
     assert(objectsdir, "usage: xmake l tools/release-split.lua OBJECTSDIR [OUTPUT] [SDKDIR]")
     sdkdir = sdkdir or newest_sdk()
     assert(sdkdir and os.isdir(sdkdir), "release-split: no iPhoneOS SDK found; pass SDKDIR")
-    local owners = dyld.sdk_owners(sdkdir)
     local files = os.files(path.join(objectsdir, "*.o"))
     assert(#files > 0, objectsdir .. " holds no *.o")
     table.sort(files)
@@ -134,15 +137,7 @@ function main(objectsdir, output, sdkdir)
         end
     end
 
-    local first = {}
-    for _, entry in ipairs(ladder()) do
-        local release = dyld.load(entry.source)
-        for symbol in pairs(all_symbols) do
-            if not first[symbol] and dyld.exported_at(release, symbol, owners[symbol]) then
-                first[symbol] = entry.release
-            end
-        end
-    end
+    local first = dyld.first_releases(ladder(), sdkdir, table.orderkeys(all_symbols))
 
     -- A class and its metaclass are one API, and it arrives with the class: a release can export the
     -- class alone (NaturalLanguage of 12.0 exports _OBJC_CLASS_$_NLTokenizer, its metaclass only from

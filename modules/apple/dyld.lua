@@ -631,16 +631,86 @@ end
 
 local OWNERS = {}
 local LISTED_KEYS = {["symbols"] = "", ["weak-symbols"] = "", ["objc-classes"] = "class", ["objc-eh-types"] = "_OBJC_EHTYPE_$_", ["objc-ivars"] = "_OBJC_IVAR_$_"}
+local SCRIPTDIR = os.scriptdir()
+
+-- Where what the measurements below found is kept between runs, beside the caches it was read from.
+-- Every file is named by a key over everything its content depends on, this code included, so a
+-- changed SDK, rung or reader is simply a different file and nothing is ever invalidated by hand.
+local function stored(name)
+    return path.join(path.directory(root()), "cache", name)
+end
+
+-- A whole file or none: a reader running beside a writer sees the old file or the new one.
+local function store(file, text)
+    local partial = file .. "." .. hash.uuid4()
+    io.writefile(partial, text)
+    os.mv(partial, file)
+end
+
+local function sdk_tbds(sdkdir)
+    return table.join(os.files(path.join(sdkdir, "System", "Library", "Frameworks", "**.tbd")), os.files(path.join(sdkdir, "usr", "lib", "*.tbd")))
+end
+
+local SDK_KEYS = {}
+
+-- What the owners of an SDK's symbols depend on: every .tbd it holds, by content, and the code that
+-- reads them and the caches: this file and the two it imports.
+local function sdk_key(sdkdir)
+    if not SDK_KEYS[sdkdir] then
+        local lines = {}
+        local code = {path.join(SCRIPTDIR, "dyld.lua"), path.join(SCRIPTDIR, "macho.lua"), path.join(SCRIPTDIR, "compat.lua")}
+        for _, file in ipairs(table.join(sdk_tbds(sdkdir), code)) do
+            table.insert(lines, path.relative(file, sdkdir) .. " " .. hash.sha256(file))
+        end
+        table.sort(lines)
+        SDK_KEYS[sdkdir] = hash.strhash128(table.concat(lines, "\n"))
+    end
+    return SDK_KEYS[sdkdir]
+end
+
+local function write_owners(file, owners)
+    local installs, index, lines = {}, {}, {}
+    for symbol, found in pairs(owners) do
+        local ids = {}
+        for _, install in ipairs(found) do
+            if not index[install] then
+                table.insert(installs, install)
+                index[install] = #installs
+            end
+            table.insert(ids, index[install])
+        end
+        table.insert(lines, symbol .. "\t" .. table.concat(ids, ","))
+    end
+    store(file, table.concat(installs, "\n") .. "\n\n" .. table.concat(lines, "\n") .. "\n")
+end
+
+local function read_owners(file)
+    local installs, body = io.readfile(file):match("^(.-)\n\n(.*)$")
+    installs = installs:split("\n")
+    local owners = {}
+    for symbol, ids in body:gmatch("([^\t\n]+)\t([^\n]+)") do
+        local found = {}
+        for id in ids:gmatch("%d+") do
+            table.insert(found, installs[tonumber(id)])
+        end
+        owners[symbol] = found
+    end
+    return owners
+end
 
 -- The library a client of the SDK links each symbol against: the install name of the first document
 -- of the .tbd that lists it, which is the public framework or library, even where the symbol itself
 -- is listed under a library that one re-exports (UIKitCore under UIKit). Only exports and re-exports
--- count, never undefineds.
+-- count, never undefineds. Reading every .tbd takes most of a minute; what it gives is kept on disk.
 function sdk_owners(sdkdir)
     if not OWNERS[sdkdir] then
+        local kept = stored("sdk-owners-" .. sdk_key(sdkdir) .. ".tsv")
+        if os.isfile(kept) then
+            OWNERS[sdkdir] = read_owners(kept)
+            return OWNERS[sdkdir]
+        end
         local owners = {}
-        local files = table.join(os.files(path.join(sdkdir, "System", "Library", "Frameworks", "**.tbd")), os.files(path.join(sdkdir, "usr", "lib", "*.tbd")))
-        for _, file in ipairs(files) do
+        for _, file in ipairs(sdk_tbds(sdkdir)) do
             local text = io.readfile(file)
             local umbrella = text:match("install%-name:%s*'([^']+)'") or text:match("install%-name:%s*(%S+)")
             local exporting, prefix, buffer = false, nil, nil
@@ -697,6 +767,7 @@ function sdk_owners(sdkdir)
                 owners[symbol] = frameworks
             end
         end
+        write_owners(kept, owners)
         OWNERS[sdkdir] = owners
     end
     return OWNERS[sdkdir]
@@ -716,6 +787,96 @@ function exported_at(cache, symbol, owners)
         end
     end
     return false
+end
+
+local SIGNATURES = {}
+
+-- A ladder as it lies on disk: each rung's release and the files it is read from, with their sizes
+-- and times. Two runs that agree on it read the same bytes.
+local function ladder_signature(ladder)
+    local rungs = {}
+    for _, entry in ipairs(ladder) do
+        table.insert(rungs, entry.release .. " " .. entry.architecture .. " " .. entry.source)
+    end
+    local named = table.concat(rungs, "\n")
+    if not SIGNATURES[named] then
+        local lines = {}
+        for index, entry in ipairs(ladder) do
+            table.insert(lines, rungs[index])
+            local files = os.isdir(entry.source) and os.files(path.join(entry.source, "**")) or os.files(entry.source .. "*")
+            table.sort(files)
+            for _, file in ipairs(files) do
+                table.insert(lines, file .. " " .. os.filesize(file) .. " " .. os.mtime(file))
+            end
+        end
+        SIGNATURES[named] = hash.strhash128(table.concat(lines, "\n"))
+    end
+    return SIGNATURES[named]
+end
+
+local FIRST = {}
+
+-- The first rung of ladder that exports each of symbols where a client of the SDK binds it
+-- (exported_at), {symbol = release}, with no entry for a symbol no rung exports. Loading the rungs
+-- takes most of a minute, so every answer is kept on disk under the SDK and the ladder it was
+-- measured on, and only symbols never measured on them load a cache at all.
+function first_releases(ladder, sdkdir, symbols)
+    local kept = stored("first-release-" .. hash.strhash128(sdk_key(sdkdir) .. " " .. ladder_signature(ladder)) .. ".tsv")
+    local function read()
+        local known = {}
+        if os.isfile(kept) then
+            for symbol, release in io.readfile(kept):gmatch("([^\t\n]+)\t([^\n]+)") do
+                known[symbol] = release ~= "-" and release or false
+            end
+        end
+        return known
+    end
+    FIRST[kept] = FIRST[kept] or read()
+    local known = FIRST[kept]
+    local missing, seen = {}, {}
+    for _, symbol in ipairs(symbols) do
+        if known[symbol] == nil and not seen[symbol] then
+            seen[symbol] = true
+            table.insert(missing, symbol)
+        end
+    end
+    if #missing > 0 then
+        local owners = sdk_owners(sdkdir)
+        for _, entry in ipairs(ladder) do
+            if #missing == 0 then
+                break
+            end
+            local cache, left = load(entry.source), {}
+            for _, symbol in ipairs(missing) do
+                if exported_at(cache, symbol, owners[symbol]) then
+                    known[symbol] = entry.release
+                else
+                    table.insert(left, symbol)
+                end
+            end
+            missing = left
+        end
+        for _, symbol in ipairs(missing) do
+            known[symbol] = false
+        end
+        -- Another run may have added answers since this one read the file; keep theirs too.
+        for symbol, release in pairs(read()) do
+            if known[symbol] == nil then
+                known[symbol] = release
+            end
+        end
+        local lines = {}
+        for symbol, release in pairs(known) do
+            table.insert(lines, symbol .. "\t" .. (release or "-"))
+        end
+        table.sort(lines)
+        store(kept, table.concat(lines, "\n") .. "\n")
+    end
+    local found = {}
+    for _, symbol in ipairs(symbols) do
+        found[symbol] = known[symbol] or nil
+    end
+    return found
 end
 
 local function undefined_imports(data, image)
