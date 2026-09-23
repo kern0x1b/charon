@@ -57,8 +57,8 @@ Android) as it is here; iOS 6 is the first platform it targets, not its limit.
   or absolute `/Users/<name>/…` paths in tracked files — use `$HOME`,
   placeholders, and a gitignored `device.env`.
 - **Commit messages:** plain imperative subject describing the change, no type
-  prefixes or scope tags. Keep the AI-attribution trailer
-  `Co-Authored-By: Claude <noreply@anthropic.com>` — the work is openly AI-built
+  prefixes or scope tags. Keep the AI-attribution trailer:
+  an agent's commit ends with its own `Co-Authored-By:` line — the work is openly AI-built
   and we keep the mark.
 - **A recipe takes a dependency by platform, not by name.** `package:dep(name)` is keyed by the package's name, and a host tool
   in the graph (ldid) brings its own dependencies with it, so a target's openssl and the host's meet at one key and the later
