@@ -178,6 +178,18 @@ function main(objectsdir, output, sdkdir)
         print(text)
     end
 
+    -- A release named here is the first held rung that exports the symbol, so it bounds the arrival
+    -- from above; where the ladder skips whole major releases (nothing is held between 12.0 and
+    -- 16.0), a symbol of 13.0, 14.0 or 15.0 reads as 16.0. Say so, from the rungs actually held.
+    local rungs = ladder()
+    for index = 2, #rungs do
+        local previous, current = rungs[index - 1].release, rungs[index].release
+        if tonumber(current:match("^%d+")) - tonumber(previous:match("^%d+")) > 1 then
+            cprint("${color.warning}note:${clear} no release is held between %s and %s, so %s here means after %s and by %s, not a measured first release",
+                   previous, current, current, previous, current)
+        end
+    end
+
     if #mixed > 0 then
         raise("release-split: %d file(s) mix more than one release's symbols: %s", #mixed, table.concat(mixed, ", "))
     end

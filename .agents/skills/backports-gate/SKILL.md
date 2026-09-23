@@ -68,6 +68,10 @@ for d in "$out"/build/objects/*/; do xmake l tools/release-split.lua "$d"; done
 A flagged file has symbols first exported in more than one release: split it, one release per
 object file.
 
+- A release it names is the first held rung that exports the symbol, an upper bound: nothing is held
+  between 12.0 and 16.0, so 16.0 means "after 12.0, by 16.0", never a measured 13.0-15.x (the script
+  prints each such gap).
+
 - A category has no `nm`-visible symbols, so a clean result says nothing about category files:
   check those by selector-string search against the release caches
   (`$HOME/.charon/dyld/<release>/dyld_shared_cache_armv7`), with a negative control that the
