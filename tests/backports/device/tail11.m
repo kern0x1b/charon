@@ -124,7 +124,11 @@ static void regular_expressions(void)
     NSError *error = nil;
     NSRegularExpression *named = [NSRegularExpression regularExpressionWithPattern:@"(?<word>a+)" options:0 error:&error];
     CHECK(named == nil && error != nil, "a pattern that names a group does not compile on this release");
-    CHECK(![NSTextCheckingResult instancesRespondToSelector:NSSelectorFromString(@"rangeWithName:")], "rangeWithName: is absent");
+    NSTextCheckingResult *match = [[NSRegularExpression regularExpressionWithPattern:@"(a+)" options:0 error:NULL] firstMatchInString:@"baa" options:0 range:NSMakeRange(0, 3)];
+    CHECK([match respondsToSelector:NSSelectorFromString(@"rangeWithName:")], "rangeWithName: is there");
+    NSRange unnamed = [match rangeWithName:@"word"];
+    CHECK(unnamed.location == NSNotFound && unnamed.length == 0, "a name the pattern does not carry has no range, as on iOS 11");
+    CHECK([match rangeAtIndex:1].location == 1 && [match rangeAtIndex:1].length == 2, "and the numbered group is still where it was");
     NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:@"charon-trash-check.txt"];
     [@"x" writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:NULL];
     SEL trash = NSSelectorFromString(@"trashItemAtURL:resultingItemURL:error:");

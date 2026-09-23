@@ -46,6 +46,7 @@ freshly made UUIDs in its header on every run.
     sh host/uikit2/run.sh
     sh host/keyedarchive11/run.sh  writes device/keyedarchive11-expectations.h when it passes
     sh host/foundation11/run.sh    writes device/foundation11-expectations.h when it passes
+    sh host/rangewithname/run.sh
     sh host/validatedformat/run.sh [pairs] [seed]
     sh host/validatedformat/run.sh --mutants [pairs] [seed]
     sh host/fuzz/run.sh percentencoding|stringcase|calendar [rounds] [seed]
@@ -198,7 +199,7 @@ closes that. It reads each source through clang's syntax tree and renames both
 the port's method definitions and the messages sent to them, with their ARC
 family kept, for example `initWith…` becoming `initCharonHostWith…`. The tests
 then attach the renamed categories as they are. `foundation2`, `foundation11`,
-`keyedarchive11`, `systemspacing`, `gesturename`, `batchupdates` and
+`rangewithname`, `keyedarchive11`, `systemspacing`, `gesturename`, `batchupdates` and
 `directionalmargins` are built this way. In the four UIKit ones the tool renames
 the definitions and nothing else: no method there calls another the port
 carries.
@@ -213,6 +214,15 @@ object every time, it answers for an archiver made with
 `-initForWritingWithMutableData:` instead of raising, and an archive whose root
 is missing or `nil` fails with `NSCoderValueNotFoundError`, not with
 `NSCoderReadCorruptError`.
+
+`host/rangewithname/run.sh` holds `-[NSTextCheckingResult rangeWithName:]` to
+the host's own, in one process, over patterns with named, unnamed, nested,
+optional and look-around groups, names inside a character class, a `\Q…\E`
+quote and a comment, the case-insensitive, comments and literal options, results
+shifted by `-resultByAdjustingRangesWithOffset:`, a result of no expression and a
+`nil` name. It writes no expectations: the host's ICU is the one of iOS 9 and
+later, which compiles a named group, and the device test cannot replay a pattern
+iOS 6's ICU rejects; `device/tail11.m` holds the iOS 6 side.
 
 `host/foundation11/run.sh` does the same for the rest of the iOS 11 and 12
 Foundation batch: reading and writing a property list through a URL,
