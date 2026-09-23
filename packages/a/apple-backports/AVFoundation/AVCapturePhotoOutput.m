@@ -1,4 +1,7 @@
 #import <AVFoundation/AVFoundation.h>
+#import <CoreImage/CoreImage.h>
+#import <ImageIO/ImageIO.h>
+#import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 #import <objc/message.h>
 
@@ -93,6 +96,13 @@ static AVCaptureDevice *CharonDeviceForConnection(AVCaptureConnection *connectio
     return _charonUniqueID;
 }
 
+// The preview is drawn by the port from the captured still (facts/AVFoundation/AVCapturePhotoOutput.md),
+// into the format CoreGraphics draws into directly.
+- (NSArray<NSNumber *> *)availablePreviewPhotoPixelFormatTypes
+{
+    return @[@(kCVPixelFormatType_32BGRA)];
+}
+
 @end
 
 @interface AVCapturePhotoOutput ()
@@ -136,16 +146,6 @@ static AVCaptureDevice *CharonDeviceForConnection(AVCaptureConnection *connectio
 // so an honestly empty array is correct here, not a stub standing in for one this port cannot
 // build: nothing on this release could ever populate it.
 - (NSArray<NSNumber *> *)availableRawPhotoPixelFormatTypes
-{
-    return @[];
-}
-
-// No preview-photo pipeline exists on this release's still image path (unlike the RAW/processed
-// buffer, generating a distinct smaller preview buffer was never part of AVCaptureStillImageOutput).
-// An empty array here is the same honest "not available" this port already gives
-// -availableRawPhotoPixelFormatTypes; -capturePhotoWithSettings:delegate: below refuses a caller
-// who sets -previewPhotoFormat rather than silently ignoring it.
-- (NSArray<NSNumber *> *)availablePreviewPhotoPixelFormatTypes
 {
     return @[];
 }
@@ -210,19 +210,105 @@ static AVCaptureDevice *CharonDeviceForConnection(AVCaptureConnection *connectio
         [NSException raise:NSInvalidArgumentException format:@"livePhotoCaptureEnabled may only be set to YES if livePhotoCaptureSupported is YES"];
 }
 
+// The longest side of the preview: "Width and height are only honored up to the display dimensions. If you
+// specify a width and height whose aspect ratio differs from the RAW or processed photo, the larger of the two
+// dimensions is honored and aspect ratio of the RAW or processed photo is always preserved" (the header); with
+// no dimensions, the display's.
+static size_t CharonPreviewLongestSide(NSDictionary *preview)
+{
+    UIScreen *screen = [UIScreen mainScreen];
+    size_t display = (size_t)(MAX(screen.bounds.size.width, screen.bounds.size.height) * screen.scale);
+    NSNumber *width = preview[(__bridge NSString *)kCVPixelBufferWidthKey], *height = preview[(__bridge NSString *)kCVPixelBufferHeightKey];
+    if (!width || !height)
+        return display;
+    return MIN((size_t)MAX(width.unsignedIntegerValue, height.unsignedIntegerValue), display);
+}
+
+// The captured still as an image no longer on its longest side than `longest`: a JPEG through ImageIO's
+// thumbnail, which decodes at the reduced size; an uncompressed buffer through CoreImage.
+static CGImageRef CharonCreatePhotoImage(CMSampleBufferRef photo, size_t longest)
+{
+    CMFormatDescriptionRef format = CMSampleBufferGetFormatDescription(photo);
+    if (format && CMFormatDescriptionGetMediaSubType(format) == kCMVideoCodecType_JPEG) {
+        NSData *data = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:photo];
+        CGImageSourceRef source = data ? CGImageSourceCreateWithData((__bridge CFDataRef)data, NULL) : NULL;
+        if (!source)
+            return NULL;
+        NSDictionary *options = @{(__bridge NSString *)kCGImageSourceCreateThumbnailFromImageAlways: @YES,
+                                  (__bridge NSString *)kCGImageSourceThumbnailMaxPixelSize: @(longest)};
+        CGImageRef image = CGImageSourceCreateThumbnailAtIndex(source, 0, (__bridge CFDictionaryRef)options);
+        CFRelease(source);
+        return image;
+    }
+    CVImageBufferRef buffer = CMSampleBufferGetImageBuffer(photo);
+    CIImage *image = buffer ? [CIImage imageWithCVPixelBuffer:buffer] : nil;
+    return image ? [[CIContext contextWithOptions:nil] createCGImage:image fromRect:image.extent] : NULL;
+}
+
+// The preview sample buffer: the still drawn into a 32BGRA pixel buffer whose longest side is `longest` (or
+// the still's own, when that is smaller), with the still's presentation time.
+static CMSampleBufferRef CharonCreatePreviewSample(CMSampleBufferRef photo, size_t longest)
+{
+    if (!photo)
+        return NULL;
+    CGImageRef image = CharonCreatePhotoImage(photo, longest);
+    if (!image)
+        return NULL;
+    size_t imageWidth = CGImageGetWidth(image), imageHeight = CGImageGetHeight(image);
+    double scale = MIN(1.0, (double)longest / MAX(imageWidth, imageHeight));
+    size_t width = MAX((size_t)1, (size_t)llround(imageWidth * scale)), height = MAX((size_t)1, (size_t)llround(imageHeight * scale));
+    CVPixelBufferRef pixels = NULL;
+    NSDictionary *attributes = @{(__bridge NSString *)kCVPixelBufferIOSurfacePropertiesKey: @{}};
+    if (CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, (__bridge CFDictionaryRef)attributes, &pixels) != kCVReturnSuccess) {
+        CGImageRelease(image);
+        return NULL;
+    }
+    CVPixelBufferLockBaseAddress(pixels, 0);
+    CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(CVPixelBufferGetBaseAddress(pixels), width, height, 8, CVPixelBufferGetBytesPerRow(pixels), space,
+                                                 kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little);
+    CGColorSpaceRelease(space);
+    if (context) {
+        CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
+        CGContextDrawImage(context, CGRectMake(0, 0, width, height), image);
+        CGContextRelease(context);
+    }
+    CVPixelBufferUnlockBaseAddress(pixels, 0);
+    CGImageRelease(image);
+    CMVideoFormatDescriptionRef description = NULL;
+    CMSampleBufferRef sample = NULL;
+    CMSampleTimingInfo timing = {kCMTimeInvalid, CMSampleBufferGetPresentationTimeStamp(photo), kCMTimeInvalid};
+    if (context && CMVideoFormatDescriptionCreateForImageBuffer(kCFAllocatorDefault, pixels, &description) == noErr)
+        CMSampleBufferCreateForImageBuffer(kCFAllocatorDefault, pixels, true, NULL, NULL, description, &timing, &sample);
+    if (description)
+        CFRelease(description);
+    CVPixelBufferRelease(pixels);
+    return sample;
+}
+
 - (void)capturePhotoWithSettings:(AVCapturePhotoSettings *)settings delegate:(id<AVCapturePhotoCaptureDelegate>)delegate
 {
-    if (settings.previewPhotoFormat) {
+    NSDictionary *preview = settings.previewPhotoFormat;
+    if (preview && ![settings.availablePreviewPhotoPixelFormatTypes containsObject:preview[(__bridge NSString *)kCVPixelBufferPixelFormatTypeKey]]) {
         [NSException raise:NSInvalidArgumentException format:@"previewPhotoFormat's pixel format type must be present in availablePreviewPhotoPixelFormatTypes"];
         return;
     }
+    if (preview && (preview[(__bridge NSString *)kCVPixelBufferWidthKey] == nil) != (preview[(__bridge NSString *)kCVPixelBufferHeightKey] == nil)) {
+        [NSException raise:NSInvalidArgumentException format:@"previewPhotoFormat must give both kCVPixelBufferWidthKey and kCVPixelBufferHeightKey, or neither"];
+        return;
+    }
+    size_t previewLongest = preview ? CharonPreviewLongestSide(preview) : 0;
     AVCaptureConnection *connection = self.charonStillImageOutput.connections.firstObject;
     if (!connection) {
         [NSException raise:NSInvalidArgumentException format:@"AVCapturePhotoOutput has no connection to capture from - add it to a running AVCaptureSession first"];
         return;
     }
 
-    self.charonStillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable = settings.autoStillImageStabilizationEnabled;
+    // Still image stabilization arrived on AVCaptureStillImageOutput in 7.0; 6.x has none, and the setting is then
+    // what it is on a device without it: kept, and nothing to enable.
+    AVCaptureStillImageOutput *still = self.charonStillImageOutput;
+    if ([still respondsToSelector:@selector(setAutomaticallyEnablesStillImageStabilizationWhenAvailable:)])
+        still.automaticallyEnablesStillImageStabilizationWhenAvailable = settings.autoStillImageStabilizationEnabled;
     if (settings.format)
         self.charonStillImageOutput.outputSettings = settings.format;
 
@@ -243,8 +329,13 @@ static AVCaptureDevice *CharonDeviceForConnection(AVCaptureConnection *connectio
         if ([delegate respondsToSelector:@selector(captureOutput:didCapturePhotoForResolvedSettings:)])
             [delegate captureOutput:self didCapturePhotoForResolvedSettings:resolved];
         if ([delegate respondsToSelector:@selector(captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:)]) {
+            CMSampleBufferRef previewSample = previewLongest ? CharonCreatePreviewSample(imageDataSampleBuffer, previewLongest) : NULL;
+            if (previewLongest && imageDataSampleBuffer && !previewSample)
+                NSLog(@"AVCapturePhotoOutput: the preview photo asked for could not be made from the captured still; it is delivered without one");
             ((void (*)(id, SEL, id, CMSampleBufferRef, CMSampleBufferRef, id, id, id))objc_msgSend)(delegate, sel_registerName("captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:"),
-                self, imageDataSampleBuffer, NULL, resolved, nil, error);
+                self, imageDataSampleBuffer, previewSample, resolved, nil, error);
+            if (previewSample)
+                CFRelease(previewSample);
         }
         if ([delegate respondsToSelector:@selector(captureOutput:didFinishCaptureForResolvedSettings:error:)])
             [delegate captureOutput:self didFinishCaptureForResolvedSettings:resolved error:error];

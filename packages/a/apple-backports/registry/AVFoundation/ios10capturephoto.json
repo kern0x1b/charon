@@ -85,18 +85,18 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "rank 100, class_confirmed for both session and telegram",
-      "effect": "captures for real through the underlying AVCaptureStillImageOutput's -captureStillImageAsynchronouslyFromConnection:completionHandler:, applying settings.flashMode and settings.autoStillImageStabilizationEnabled onto the real device/output first, then delivers the real image data through -captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error: (previewPhotoSampleBuffer always NULL - see availablePreviewPhotoPixelFormatTypes) and the willBegin/didCapture/didFinishCapture callbacks around it, all only if the delegate responds to them",
+      "effect": "captures for real through the underlying AVCaptureStillImageOutput's -captureStillImageAsynchronouslyFromConnection:completionHandler:, applying settings.flashMode and settings.autoStillImageStabilizationEnabled onto the real device/output first, then delivers the real image data through -captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error: (with a previewPhotoSampleBuffer when previewPhotoFormat asks for one) and the willBegin/didCapture/didFinishCapture callbacks around it, all only if the delegate responds to them",
       "facts": "facts/AVFoundation/AVCapturePhotoOutput.md",
       "source": "see AVCapturePhotoOutput"
     },
     {
-      "api": "AVCapturePhotoOutput.availablePreviewPhotoPixelFormatTypes",
+      "api": "AVCapturePhotoSettings.availablePreviewPhotoPixelFormatTypes",
       "kind": "property",
       "introduced": "10.0.1",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "rank 634, class_confirmed for telegram, needed to make AVCapturePhotoSettings.previewPhotoFormat's own contract (see below) checkable",
-      "effect": "always an honestly empty array - this release's still image path has no separate preview-buffer generation to offer",
+      "effect": "[32BGRA]: the port draws the preview itself from the captured still, into the format CoreGraphics draws into directly",
       "facts": "facts/AVFoundation/AVCapturePhotoOutput.md",
       "source": "see AVCapturePhotoOutput"
     },
@@ -129,7 +129,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "rank 633, class_confirmed for session",
-      "effect": "forwarded for real onto the underlying AVCaptureStillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable, a real property on this release since iOS 5.0, at the moment of -capturePhotoWithSettings:delegate:",
+      "effect": "kept; at capture it is given to the underlying AVCaptureStillImageOutput's automaticallyEnablesStillImageStabilizationWhenAvailable where the release has it (7.0 on); 6.x has no still image stabilization, and there the setting enables nothing, as on a device without it",
       "facts": "facts/AVFoundation/AVCapturePhotoOutput.md",
       "source": "see AVCapturePhotoSettings"
     },
@@ -140,7 +140,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "rank 635, class_confirmed for telegram",
-      "effect": "real, settable storage; since availablePreviewPhotoPixelFormatTypes is always empty (see above), -capturePhotoWithSettings:delegate: throws NSInvalidArgumentException if it is set non-nil, the same validation real AVCapturePhotoOutput performs, rather than silently ignoring a preview request this release cannot honor",
+      "effect": "kept; at capture a format not in availablePreviewPhotoPixelFormatTypes, or a width without a height or the other way round, raises NSInvalidArgumentException; otherwise the still is decoded (a JPEG through ImageIO's thumbnail, an uncompressed buffer through CoreImage) and drawn into a 32BGRA pixel buffer whose longest side is the larger of the width and height asked, held to the display's, or the display's when none is asked, keeping the photo's aspect ratio, and delivered as previewPhotoSampleBuffer",
       "facts": "facts/AVFoundation/AVCapturePhotoOutput.md",
       "source": "see AVCapturePhotoSettings"
     },

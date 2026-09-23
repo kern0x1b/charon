@@ -15,7 +15,7 @@
     {
       "api": "MPRemoteCommandCenter.playCommand",
       "kind": "property",
-      "introduced": "7.1",
+      "introduced": "7.1.2",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "rank 108 names it directly; iOS 6 has no MediaPlayer command surface, but it has UIEventTypeRemoteControl with a UIEventSubtypeRemoteControlPlay subtype since iOS 4.0, a real event source, not an invented one",
@@ -26,7 +26,7 @@
     {
       "api": "MPRemoteCommandCenter.pauseCommand",
       "kind": "property",
-      "introduced": "7.1",
+      "introduced": "7.1.2",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "rank 108 names it directly; mapped to the real UIEventSubtypeRemoteControlPause",
@@ -37,7 +37,7 @@
     {
       "api": "MPRemoteCommandCenter.togglePlayPauseCommand",
       "kind": "property",
-      "introduced": "7.1",
+      "introduced": "7.1.2",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "rank 108 names it directly; mapped to the real UIEventSubtypeRemoteControlTogglePlayPause",
@@ -48,7 +48,7 @@
     {
       "api": "MPRemoteCommandCenter.nextTrackCommand",
       "kind": "property",
-      "introduced": "7.1",
+      "introduced": "7.1.2",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "rank 108 names it directly; mapped to the real UIEventSubtypeRemoteControlNextTrack",
@@ -59,7 +59,7 @@
     {
       "api": "MPRemoteCommandCenter.previousTrackCommand",
       "kind": "property",
-      "introduced": "7.1",
+      "introduced": "7.1.2",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "rank 108 names it directly; mapped to the real UIEventSubtypeRemoteControlPreviousTrack",
@@ -70,7 +70,7 @@
     {
       "api": "MPRemoteCommandCenter.stopCommand",
       "kind": "property",
-      "introduced": "7.1",
+      "introduced": "7.1.2",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "part of the real class carried above; mapped to the real UIEventSubtypeRemoteControlStop",
@@ -81,7 +81,7 @@
     {
       "api": "MPRemoteCommandCenter.seekForwardCommand",
       "kind": "property",
-      "introduced": "7.1",
+      "introduced": "7.1.2",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "part of the real class carried above; mapped to the real UIEventSubtypeRemoteControlBeginSeekingForward/EndSeekingForward, delivering a real MPSeekCommandEvent with the correct begin/end type",
@@ -92,7 +92,7 @@
     {
       "api": "MPRemoteCommandCenter.seekBackwardCommand",
       "kind": "property",
-      "introduced": "7.1",
+      "introduced": "7.1.2",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "part of the real class carried above; mapped to the real UIEventSubtypeRemoteControlBeginSeekingBackward/EndSeekingBackward, delivering a real MPSeekCommandEvent with the correct begin/end type",
@@ -103,7 +103,7 @@
     {
       "api": "MPRemoteCommandCenter.changePlaybackPositionCommand",
       "kind": "property",
-      "introduced": "9.0",
+      "introduced": "8.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "rank 108 names it directly; a real, addressable MPChangePlaybackPositionCommand - iOS 6's UIEventTypeRemoteControl has no scrubbing subtype, so it is honestly never messaged, the same way this port keeps a property it cannot act on elsewhere rather than declaring the whole class absent for one unreachable member",
@@ -114,7 +114,7 @@
     {
       "api": "MPRemoteCommandCenter.ratingCommand",
       "kind": "property",
-      "introduced": "7.1",
+      "introduced": "7.1.2",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "part of the real class carried above; no old-style event source exists for a rating gesture",
@@ -125,7 +125,7 @@
     {
       "api": "MPRemoteCommandCenter.likeCommand",
       "kind": "property",
-      "introduced": "7.1",
+      "introduced": "7.1.2",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "part of the real class carried above; no old-style event source exists for a feedback gesture",
@@ -136,7 +136,7 @@
     {
       "api": "MPRemoteCommandCenter.dislikeCommand",
       "kind": "property",
-      "introduced": "7.1",
+      "introduced": "7.1.2",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "part of the real class carried above; no old-style event source exists for a feedback gesture",
@@ -147,7 +147,7 @@
     {
       "api": "MPRemoteCommandCenter.bookmarkCommand",
       "kind": "property",
-      "introduced": "7.1",
+      "introduced": "7.1.2",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "part of the real class carried above; no old-style event source exists for a feedback gesture",
@@ -158,7 +158,7 @@
     {
       "api": "MPRemoteCommandCenter.skipForwardCommand",
       "kind": "property",
-      "introduced": "7.1",
+      "introduced": "7.1.2",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "part of the real class carried above; no old-style event source exists for a preferred-interval skip gesture, distinct from the plain seek commands this release does have",
@@ -169,7 +169,7 @@
     {
       "api": "MPRemoteCommandCenter.skipBackwardCommand",
       "kind": "property",
-      "introduced": "7.1",
+      "introduced": "7.1.2",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "part of the real class carried above; no old-style event source exists for a preferred-interval skip gesture, distinct from the plain seek commands this release does have",
@@ -180,7 +180,7 @@
     {
       "api": "MPRemoteCommandCenter.changePlaybackRateCommand",
       "kind": "property",
-      "introduced": "7.1",
+      "introduced": "7.1.2",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "part of the real class carried above; no old-style event source exists for a rate-change gesture",

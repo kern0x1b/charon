@@ -67,3 +67,15 @@ would confirm: that a real headset button press or lock-screen control tap actua
 "available since iOS 4.0" claims, and that `-beginReceivingRemoteControlEvents`/first-responder
 status (both still the application's own responsibility, on this release exactly as on a current
 one) are enough to receive them without any additional accommodation this port would need to make.
+
+## Releases, measured on the cache ladder
+
+`apple.objc.inventory()` over every armv7 cache from 7.0 to 10.3.4 (a nonsense selector and a
+nonsense class as negative controls): `MPRemoteCommandCenter` and its command properties from
+`playCommand` to `changePlaybackRateCommand` first appear at 7.1.2, the first 7.1 cache on the ladder
+(no 7.1 or 7.1.1 cache is held), so their rows carry 7.1.2, not the header's 7.1.
+`-changePlaybackPositionCommand`, `-changeRepeatModeCommand`, `-changeShuffleModeCommand` and
+`MPChangePlaybackPositionCommandEvent` first appear at 8.0; the language option commands and
+`MPChangeLanguageOptionCommandEvent` at 9.0; the class `MPChangePlaybackPositionCommand` only at
+9.2.1. What the release's own `-changePlaybackPositionCommand` answers between 8.0 and 9.2 is not
+measured.

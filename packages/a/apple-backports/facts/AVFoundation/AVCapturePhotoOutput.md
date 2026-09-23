@@ -61,11 +61,16 @@ always the real, on-release `AVCaptureStillImageOutput`.
 - `-capturePhotoWithSettings:delegate:` applies `settings.flashMode` to the real device (through
   the real, iOS-4.0-era `-isFlashModeSupported:`/`-flashMode` pair, still present and functional
   on 6.1.3 despite being deprecated in the SDK header at 10.0) and
-  `settings.autoStillImageStabilizationEnabled` onto the real
-  `AVCaptureStillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable` (real since
-  iOS 5.0), then captures for real through
+  `settings.autoStillImageStabilizationEnabled` onto
+  `AVCaptureStillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable` where the
+  release has it, then captures for real through
   `-captureStillImageAsynchronouslyFromConnection:completionHandler:`, delivering the real
   `CMSampleBufferRef` to the delegate.
+- Still image stabilization arrived on `AVCaptureStillImageOutput` in 7.0 (the armv7 caches: 6.1.3's
+  still image output has no stabilization selector, 7.0's has the four). An earlier version of this
+  port set it unconditionally, "real since iOS 5.0", and every capture on 6.1.3 died of an unrecognized
+  selector (`tests/backports/device/photooutput10.m`, 2026-09-23); retracted. On 6.x the setting is
+  kept and enables nothing, what it does on a device without the feature.
 - `-availablePhotoPixelFormatTypes` forwards to the real
   `AVCaptureStillImageOutput.availableImageDataCVPixelFormatTypes`.
 - `-supportedFlashModes` queries the real device behind the connection for real, not a fixed list.
@@ -77,14 +82,20 @@ always the real, on-release `AVCaptureStillImageOutput`.
 
 ## What differs from the release, honestly
 
-- `-availableRawPhotoPixelFormatTypes` and `-availablePreviewPhotoPixelFormatTypes` are always
-  empty arrays. Neither RAW capture nor a separate preview-buffer pipeline exists anywhere in this
-  release's still-image path - an honestly empty array, not a stub standing in for support this
-  port could build. Because the preview array is always empty,
-  `-capturePhotoWithSettings:delegate:` throws `NSInvalidArgumentException` if the caller sets
-  `AVCapturePhotoSettings.previewPhotoFormat` non-nil, the same validation real
-  `AVCapturePhotoOutput` performs - a caller who asks for a preview format this release cannot
-  produce is told so, not silently ignored.
+- `AVCapturePhotoOutput.availableRawPhotoPixelFormatTypes` is always an empty array: RAW capture has
+  no path on this release's sensor pipeline.
+- The preview photo is drawn by the port. `AVCapturePhotoSettings.availablePreviewPhotoPixelFormatTypes`
+  is `[32BGRA]`, the format CoreGraphics draws into directly. At capture a `previewPhotoFormat` whose
+  pixel format is not in that list, or that gives a width without a height or the other way round,
+  raises `NSInvalidArgumentException` (the text is the port's). Otherwise the captured still is decoded
+  (a JPEG through ImageIO's thumbnail, which decodes at the reduced size; an uncompressed buffer through
+  CoreImage) and drawn into an IOSurface-backed 32BGRA pixel buffer, delivered with the still's
+  presentation time as `previewPhotoSampleBuffer`. Its size follows the header: "Width and height are
+  only honored up to the display dimensions. If you specify a width and height whose aspect ratio
+  differs from the RAW or processed photo, the larger of the two dimensions is honored and aspect ratio
+  of the RAW or processed photo is always preserved": the longest side is the larger of the two asked,
+  held to the display's longest side in pixels, the display's when none is asked, and never more than
+  the still's own. A preview that cannot be made is said in the log, and the photo comes without it.
 - `-isFlashScene` always answers `NO`. Apple's own header already documents this as the correct
   default "unless you set `photoSettingsForSceneMonitoring` to a non-nil value" - this port carries
   no scene-monitoring pipeline, so that property is never non-nil, and `NO` is the release's own
@@ -110,3 +121,13 @@ that Telegram's own `-captureOutput:didFinishProcessingPhotoSampleBuffer:...` im
 handles a `nil` `previewPhotoSampleBuffer` and `nil` `bracketSettings` gracefully (expected, since
 both are documented `nullable` in Apple's own header, but not measured against Telegram's actual
 code).
+
+## Owner of `availablePreviewPhotoPixelFormatTypes`, corrected
+
+The first version of this port defined `-availablePreviewPhotoPixelFormatTypes` on
+`AVCapturePhotoOutput`. `apple.objc.inventory()` over the armv7 cache ladder finds that selector on
+`AVCapturePhotoSettings` from 10.0.1 and on `AVCapturePhotoOutput` in no release up to 10.3.4 (a
+nonsense selector as negative control, `-isFlashScene` on the output as positive); the corpus row
+(rank 634) names `AVCapturePhotoSettings` too. The method now lives on `AVCapturePhotoSettings`,
+the registry key with it. Every other selector of these classes first appears at 10.0.1, the release
+their registry rows carry.
