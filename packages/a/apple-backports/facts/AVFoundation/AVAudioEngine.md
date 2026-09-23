@@ -1,8 +1,9 @@
 # AVAudioEngine, AVAudioPlayerNode, AVAudioUnitEQ, AVAudioConverter - the node graph
 
-**`AVAudioEngine` and `AVAudioPlayerNode` are built and measured: a real signal passes through
-the graph, sample-for-sample.** `AVAudioUnitEQ`/`AVAudioConverter` are next (their audio
-components are already confirmed present, below).
+**`AVAudioEngine`, `AVAudioPlayerNode` and `AVAudioUnitEQ` are built and measured: a real signal
+passes through the graph, sample-for-sample, and a real `kAudioUnitSubType_NBandEQ` unit in that
+graph measurably and predictably changes it.** `AVAudioConverter` is next (its C functions are
+already confirmed present, below).
 
 None of the four classes exist on iOS 6.0/6.1.3 (confirmed via `objc.inventory` against the real
 armv7 shared cache before any code was written - no name collision the way `AVAudioBuffer` was,
@@ -111,11 +112,83 @@ symbol whose bare name starts with `charon_`/`Charon` from a dylib's exported ta
 reached by runtime lookup (`NSClassFromString`/`objc_msgSend`) from a separate test binary, not
 static linking - `CharonAudioEngineTestSupport`/`engine-probe.m` is the worked example.
 
+## What is built: `AVAudioUnit` / `AVAudioUnitEffect` / `AVAudioUnitEQ`
+
+`AVAudioUnit`/`AVAudioUnitEffect`/`AVAudioUnitEQ`/`AVAudioUnitEQFilterParameters` sit on the real
+`kAudioUnitSubType_NBandEQ` component confirmed present above, not a stand-in. `AVAudioEngine`'s
+`-attachNode:` now recognises any `AVAudioUnit` (`AVAudioUnitEQ` today, any future
+`AVAudioUnitEffect` subclass the same way): it calls `AUGraphAddNode` with the node's own
+`audioComponentDescription` on the already-open graph - the same "already open, so the component
+instantiates immediately" fact `AVAudioEngine`'s own `-init` already relies on for its output/mixer
+nodes - then hands the real `AudioUnit` back to the node. `-detachNode:` mirrors it with
+`AUGraphRemoveNode`. `-connect:to:fromBus:toBus:format:` needed no change at all: an `AVAudioUnitEQ`
+is just another real-`AudioUnit`-backed node to that method, exactly like the output/mixer nodes it
+already wires.
+
+A caller is free to configure `AVAudioUnitEQ`'s bands (`filterType`/`frequency`/`bandwidth`/`gain`/
+`bypass`) and `globalGain` before the node is ever attached - matching real usage, and matching how
+a real `AVAudioUnitEQ` is normally built and configured before `-attachNode:`. Every one of those
+setters funnels through `-charon_setParameterID:bandIndex:value:`, which is a no-op until a real
+`AudioUnit` exists; `-attachNode:` calls the base class hook `-charon_applyPendingParameters` right
+after creating that real unit, which sets `kAUNBandEQProperty_NumberOfBands` (must happen before the
+graph as a whole is initialized - it always does here, since `-prepare`/`AUGraphInitialize` only
+runs later) and replays every kept parameter through the real `kAUNBandEQParam_*` IDs
+(`AudioUnitParameters.h`) - one call per band per parameter, `paramID + bandIndex` per Apple's own
+documented layout, `kAUNBandEQParam_GlobalGain` alone. `bypass` on `AVAudioUnitEffect` itself (the
+whole-unit bypass, not a single band's) is `kAudioUnitProperty_BypassEffect` - a property every real
+Apple effect unit is expected to honour, kept at the base class so any future effect subclass gets
+it for free. A fresh `AVAudioUnitEQFilterParameters` defaults to `bypass = YES`, matching Apple's own
+documented default (a fresh band does nothing until explicitly un-bypassed).
+
+**Measured, not assumed - `checks=9 failures=0`, `tests/backports/device/avaudiouniteq.m`**,
+run through `xmake emulate -d iPhone4,1 -r 6.1.3 run
+/usr/libexec/charon-avaudiouniteq-test` (`pass ... in 0.1 guest s / 6.2 host s`, the same Shade offline
+`GenericOutput` path `AVAudioEngine`'s own proof uses - no `mediaserverd`, no device queue for this
+part): builds a `player -> AVAudioUnitEQ(2 bands) -> mainMixer -> (offline) output` graph, a 2 kHz
+test tone scheduled through it, pulled by hand through `AudioUnitRender`. Two runs, same tone, only
+the EQ's band configuration differs:
+
+- band 0 `Parametric`, `gain = 0`, un-bypassed: real Apple peaking-filter coefficients collapse to
+  an identity transfer function at 0 dB. Measured `max |output - source| = 0.000000` across all 512
+  samples - bit-exact, not merely close, so the check written for "near-identity" (`< 0.01`) is
+  actually the stronger claim, reported honestly rather than tightened after the fact.
+- the same graph, band 1 added: real `LowPass` at 150 Hz against the 2 kHz tone, un-bypassed.
+  Measured RMS: `source = 0.353003`, `zero-gain-band = 0.353003` (identical to source, confirming
+  the first result independently), `150Hz-lowpass-on-2kHz-tone = 0.007011` - roughly a 50x drop,
+  far past the `< half` bar the check demanded, the size and direction a 150 Hz cutoff against a
+  2 kHz tone should produce.
+
+This is the check the coordinator asked for, closed: a bypassed/0 dB band leaves the graph's real
+output alone (bit-exact here, not just close), and a real, active band changes it in a large,
+predictable, measured way - not a graph that compiles, runs, and produces silence or an unchecked
+non-zero number.
+
+One implementation bug the build itself caught before any of this ran: an early draft invented an
+`active`/`isActive` property on `AVAudioUnitEQFilterParameters` that Apple's own real header
+(SDK 16.4, `AVAudioUnitEQ.h`) does not declare - only `filterType`/`frequency`/`bandwidth`/`gain`/
+`bypass` are real. Client-facing code compiles against the actual SDK framework headers, not this
+port's own private `CharonAVAudioUnit.h`, so the mistake surfaced immediately as a hard compile
+error in `eq-probe.m` ("property 'active' not found") the first time real client code tried to use
+it - removed from the header, the implementation and the registry rather than worked around.
+
+**This is a structural property of the test stand, not a one-off catch, and worth stating as a
+standing fact: a device/emulator test built against the real SDK's own framework headers rejects a
+fabricated member of this port's public API surface at compile time, before it ever reaches a
+registry entry or a device** - one of this cluster's four fabricated-API-surface incidents this
+shift, and the only one caught before it could reach a device at all.
+
 ## Not yet closed
 
 - The narrower `RemoteIO`/hardware-format measurement named above (needs a device).
-- `AVAudioUnitEQ` and `AVAudioConverter` - real work, not started; their Audio Components
-  (`NBandEQ`, and `AudioConverterServices`'s C functions) are already confirmed present, above.
+- `AVAudioConverter` - real work, not started; its `AudioConverterServices` C functions are already
+  confirmed present, above.
+- `AVAudioUnit.AUAudioUnit`/`+instantiateWithComponentDescription:options:completionHandler:` (the
+  iOS 9+ async/`AUAudioUnit`-wrapping surface) - out of scope for a 6.1.3 minimum, not attempted.
+- `-loadAudioUnitPresetAtURL:error:` honestly refuses (`kAudio_UnimplementedError`) - no application
+  in the corpus needs a real `.aupreset` load yet.
 - `AVAudioInputNode`'s real capture path (kept as a real object from construction, never exercised).
-- Multi-input mixer topology (more than one `AVAudioPlayerNode` at once) and inserting an effect
-  node between player and mixer - this pass only wires a single player straight to the mixer.
+- Multi-input mixer topology (more than one `AVAudioPlayerNode` at once) - this pass wires one
+  player and one effect node into the mixer, not several of either at once.
+- `eq-probe.m`'s proof runs on the `GenericOutput` offline path only, same as `AVAudioEngine`'s own
+  proof - the narrower `RemoteIO`/hardware-format measurement above covers this cluster too once a
+  device is free.

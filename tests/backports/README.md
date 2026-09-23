@@ -684,6 +684,27 @@ postinst run with `DPKG_ROOT` set to it.
   accelerometer and is written down in
   `packages/a/apple-backports/facts/UIKit/UIFeedbackGenerator.md`, since an
   emulated device has no motor and every call there plays nothing.
+- `avaudioengine.m`: a process of its own for `AVAudioEngine`/`AVAudioPlayerNode`, linking
+  `libAVFoundationBackports.dylib`. A graph that compiles, runs and produces silence reports
+  nothing - no exception, no error code, a green gate - so this pulls the real `GenericOutput`
+  unit's output by hand through `AudioUnitRender` and checks it sample-for-sample against a known
+  waveform scheduled through a real `AVAudioPlayerNode` into the real `mainMixerNode`.
+  `kAudioUnitSubType_GenericOutput` needs no `mediaserverd`, so this runs on the Shade emulator, not
+  only on a device. 13 checks, no failure on an iPhone4,1 (6.1.3): the pulled samples matched the
+  scheduled waveform exactly.
+- `avaudiouniteq.m`: a process of its own for `AVAudioUnitEQ` over a real `kAudioUnitSubType_NBandEQ`
+  unit, in the same offline `player -> EQ -> mainMixer -> GenericOutput` graph `avaudioengine.m`
+  proves. A real EQ node attached but never touching the signal is the same "compiles, runs,
+  produces silence" failure one level up, so the check names its expected result before running: a
+  band at 0 dB gain, un-bypassed, should leave a 2 kHz test tone where it started, and a real
+  `LowPass` band at 150 Hz against that same tone should attenuate it to well under half its RMS.
+  9 checks, no failure on an iPhone4,1 (6.1.3): the 0 dB band left the tone bit-exact
+  (`max |output - source| = 0.000000`), and the 150 Hz low-pass dropped RMS from 0.353003 to
+  0.007011, about 50x. This file is itself evidence of a property of the whole test stand: it
+  compiles against the real SDK's own framework headers, not this port's private headers, so a
+  class member the port's implementation invents but Apple's real header does not declare fails
+  here at compile time, before it ever reaches a device - caught exactly once, for a fabricated
+  `AVAudioUnitEQFilterParameters.active` property, while writing this file.
 
 ## Checking an application against a release and the backports
 

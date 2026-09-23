@@ -1,5 +1,6 @@
 #import "CharonAVAudioEngine.h"
 #import "CharonAVAudioBuffer.h"
+#import "CharonAVAudioUnit.h"
 #import <AVFAudio/AVAudioConnectionPoint.h>
 
 extern OSStatus CharonPlayerRenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp,
@@ -96,8 +97,21 @@ static OSStatus CharonAddUnit(AUGraph graph, OSType type, OSType subtype, AUNode
         [_charon_attached addObject:node];
         return;
     }
-    // Real effect/converter nodes (AVAudioUnitEQ, AVAudioConverter) attach through their own
-    // subclass, not implemented in this pass - see facts/AVFoundation/AVAudioEngine.md.
+    if ([node isKindOfClass:[AVAudioUnit class]]) {
+        // The graph is already open (AUGraphOpen ran in -init) - AUGraphAddNode instantiates the
+        // real component immediately, exactly like the output/mixer nodes created in -init, so
+        // AUGraphNodeInfo already returns a real, usable AudioUnit right here, before the graph as
+        // a whole is ever initialized.
+        AudioComponentDescription desc = [(AVAudioUnit *)node audioComponentDescription];
+        AUNode auNode = 0;
+        CharonAddUnit(_charon_graph, desc.componentType, desc.componentSubType, &auNode);
+        AudioUnit audioUnit = NULL;
+        AUGraphNodeInfo(_charon_graph, auNode, NULL, &audioUnit);
+        [node charon_setEngine:self auNode:auNode audioUnit:audioUnit];
+        [(AVAudioUnit *)node charon_applyPendingParameters];
+        [_charon_attached addObject:node];
+        return;
+    }
     [_charon_attached addObject:node];
 }
 
@@ -105,6 +119,8 @@ static OSStatus CharonAddUnit(AUGraph graph, OSType type, OSType subtype, AUNode
 {
     [self disconnectNodeOutput:node];
     [self disconnectNodeInput:node];
+    if ([node isKindOfClass:[AVAudioUnit class]])
+        AUGraphRemoveNode(_charon_graph, [node charon_impl]->auNode);
     [node charon_setEngine:nil auNode:0 audioUnit:NULL];
     [_charon_attached removeObject:node];
 }
