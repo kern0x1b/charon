@@ -1,4 +1,5 @@
 #import "CharonCompositionalLayout.h"
+#import <objc/runtime.h>
 
 @interface UICollectionViewCompositionalLayout (CharonSectionNoting)
 - (void)charon_beginNotingSections;
@@ -967,6 +968,65 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
     return charon_touches(shown, owner) && CGRectIntersectsRect(frame, clipped);
 }
 
+static BOOL charon_spans(CGRect frame, CGRect rect)
+{
+    return (CGRectGetMinY(frame) < CGRectGetMinY(rect) && CGRectGetMaxY(frame) > CGRectGetMaxY(rect))
+        || (CGRectGetMinX(frame) < CGRectGetMinX(rect) && CGRectGetMaxX(frame) > CGRectGetMaxX(rect));
+}
+
+static NSString *charon_element_key(UICollectionViewLayoutAttributes *attributes)
+{
+    return [NSString stringWithFormat:@"%ld/%@/%ld/%ld", (long)attributes.representedElementCategory, attributes.representedElementKind ?: @"",
+                                      (long)attributes.indexPath.section, (long)attributes.indexPath.item];
+}
+
+// The collection view of iOS 6 asks its private UICollectionViewData which elements a rectangle
+// shows, and that object files what the layout answered under the pages of each frame's edges: an
+// element whose frame reaches past both ends of the rectangle it checked (_validLayoutRect, the
+// bounds cut to the content) is filed under no page inside it and never gets a view, although the
+// layout returned it. A plain UICollectionViewLayout subclass loses such an element the same way on
+// the 4S. The system's compositional layout shows it - an item a handler turns or grows, a section
+// taller than the screen - so for this layout the answer gets back what the layout returned and the
+// pages lost: only elements that reach past both ends of the checked rectangle, only when missing.
+static void charon_install_page_repair(void)
+{
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        Class data = NSClassFromString(@"UICollectionViewData");
+        Method method = data ? class_getInstanceMethod(data, @selector(layoutAttributesForElementsInRect:)) : NULL;
+        Ivar layoutIvar = data ? class_getInstanceVariable(data, "_layout") : NULL;
+        Ivar validIvar = data ? class_getInstanceVariable(data, "_validLayoutRect") : NULL;
+        if (!method || !layoutIvar || !validIvar || strncmp(ivar_getTypeEncoding(validIvar), "{CGRect=", 8))
+            return;
+        NSArray *(*original)(id, SEL, CGRect) = (NSArray *(*)(id, SEL, CGRect))method_getImplementation(method);
+        ptrdiff_t validOffset = ivar_getOffset(validIvar);
+        method_setImplementation(method, imp_implementationWithBlock(^NSArray *(id self_, CGRect rect) {
+            NSArray *found = original(self_, @selector(layoutAttributesForElementsInRect:), rect);
+            id layout = object_getIvar(self_, layoutIvar);
+            if (![layout isKindOfClass:[UICollectionViewCompositionalLayout class]])
+                return found;
+            CGRect checked = *(CGRect *)((char *)(__bridge void *)self_ + validOffset);
+            NSMutableArray *repaired = nil;
+            NSMutableSet *known = nil;
+            for (UICollectionViewLayoutAttributes *attributes in [layout layoutAttributesForElementsInRect:rect]) {
+                if (!charon_spans(attributes.frame, checked) || !CGRectIntersectsRect(attributes.frame, rect))
+                    continue;
+                if (!known) {
+                    known = [NSMutableSet set];
+                    for (UICollectionViewLayoutAttributes *shown in found)
+                        [known addObject:charon_element_key(shown)];
+                }
+                if ([known containsObject:charon_element_key(attributes)])
+                    continue;
+                if (!repaired)
+                    repaired = [found mutableCopy];
+                [repaired addObject:attributes];
+            }
+            return repaired ?: found;
+        }));
+    });
+}
+
 @implementation UICollectionViewCompositionalLayout {
 @private
     NSCollectionLayoutSection *_section;
@@ -1079,6 +1139,7 @@ static BOOL charon_within_owner(CGRect frame, CGRect owner, CGRect clipped)
 - (void)prepareLayout
 {
     [super prepareLayout];
+    charon_install_page_repair();
     UICollectionView *view = self.collectionView;
     if (_keepSolution && _solved) {
         _keepSolution = NO;
