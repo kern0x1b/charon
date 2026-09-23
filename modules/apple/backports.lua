@@ -456,7 +456,8 @@ end
 -- both cases attach.c attaches the category to the release's class of that name, which it
 -- finds only where the class is in an image the library loads. A category whose class is
 -- neither exported nor there is dropped on the very release it is for, while its methods
--- still count as built.
+-- still count as built. An alias of charon_alias.h is held to the same: its class must be
+-- the release's, in an image the library loads.
 local function loaded_images(release, binaries, binary, architecture)
     local own = {}
     for _, other in ipairs(binaries) do
@@ -487,12 +488,20 @@ function unattached_categories(release, inventory, binaries, architecture)
         for _, symbol in ipairs(defined_symbols(binary)) do
             defined[symbol] = true
         end
+    end
+    local found = {}
+    for _, binary in ipairs(binaries) do
+        local images
         for proxy, name in pairs(objc.binary_aliases(binary, architecture) or {}) do
             aliases[proxy] = name
             aliased[name] = true
+            local carried = inventory.classes[name]
+            images = images or loaded_images(release, binaries, binary, architecture)
+            if not (carried and carried.image and images[carried.image]) then
+                table.insert(found, string.format("%s, which %s aliases in %s", name, proxy, path.filename(binary)))
+            end
         end
     end
-    local found = {}
     for _, binary in ipairs(binaries) do
         local images
         for _, category in ipairs(objc.binary_categories(binary, architecture) or {}) do
@@ -520,7 +529,7 @@ end
 function check_categories(release, inventory, binaries, architecture, version)
     local found = unattached_categories(release, inventory, binaries, architecture)
     if #found > 0 then
-        raise("categories whose class iOS %s neither exports nor carries in an image the library loads, so the library's loader has no class to attach them to and nothing they add is there: %s",
+        raise("categories and aliases whose class iOS %s neither exports nor carries in an image the library loads, so the library's loader has no class to give what they add and nothing of it is there: %s",
               version, table.concat(found, " "))
     end
 end
