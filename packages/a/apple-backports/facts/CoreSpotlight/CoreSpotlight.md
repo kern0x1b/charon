@@ -245,13 +245,14 @@ that the protocol surface itself is now right, and what remains is a data or cal
 detail of this one method. The bundle was removed from the device before release, specifically
 because it hangs the host it loads into.
 
-Diagnostics used and their proven channel, since this class runs inside `searchd`, not the process
-that launches it: `printf`/`NSLog` to this process's own `stdout`/`stderr` reach nobody - a plain
-`fopen`/`fprintf`/`fclose` to a fixed path (`CharonSearchDatastoreLog` in the source) is the channel
-proven to survive that boundary, confirmed by lines actually landing on disk after the class
-registered successfully. Left in place, gated behind rarely-called methods, for whoever continues
-this - it is what caught every finding in this section, including the hang, which produced no
-log line of its own but whose absence was exactly the signal.
+Diagnostics used during those passes, since this class runs inside `searchd`, not the process
+that launches it: a plain `fopen`/`fprintf`/`fclose` to `/private/var/backports/searchbundle.log`
+was the channel that reached the measurer. It is removed from the source: it wrote every search
+string and every matching item's title - the device owner's own searches and every indexing app's
+data - to a file with no bound. The bundle keeps only `NSLog` lines for structural failures (no
+query, no title, no result); whether `searchd`'s `NSLog` reaches the device's system log is not
+measured. A pass that needs more must add its own scaffolding, keep user data out of it, and take
+it off before its patch.
 
 ## What differs from the release
 

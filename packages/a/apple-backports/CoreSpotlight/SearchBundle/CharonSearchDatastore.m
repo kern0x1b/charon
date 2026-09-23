@@ -28,19 +28,6 @@
 // not against one specific band of libCoreSpotlightBackports.dylib.
 static NSString *const CharonSpotlightSharedRoot = @"/var/mobile/Library/Caches/org.charon.corespotlight";
 
-// This class runs inside searchd, not the process that launches it, so printf/NSLog to this
-// process's own stdout/stderr reaches nobody - a file is the one channel proven to survive that
-// boundary (the same one CTCellularData9.m's device test used earlier this session). Appends only;
-// never assume the channel works without a line like this one actually landing on disk.
-static void CharonSearchDatastoreLog(NSString *line)
-{
-    FILE *file = fopen("/private/var/backports/searchbundle.log", "a");
-    if (!file)
-        return;
-    fprintf(file, "%s\n", line.UTF8String);
-    fclose(file);
-}
-
 // CSSearchableItem is this port's own class, not Apple's - iOS 6 carries no CoreSpotlight.framework
 // at all - so unarchiving one needs the class registered first, which only happens once the band's
 // own dylib is loaded. The install path a device's own postinst keeps linked regardless of which
@@ -84,19 +71,16 @@ static NSArray *CharonSearchLoadAllItems(void)
 
 static NSArray *CharonSearchMatches(id query)
 {
-    CharonSearchDatastoreLog([NSString stringWithFormat:@"CharonSearchMatches: query class=%@", NSStringFromClass([query class])]);
     NSString *searchString = nil;
     @try {
         searchString = [(NSObject *)query valueForKey:@"searchString"];
     } @catch (NSException *exception) {
-        CharonSearchDatastoreLog([NSString stringWithFormat:@"valueForKey:searchString raised %@: %@", exception.name, exception.reason]);
+        NSLog(@"CharonSearchDatastore: the query does not answer searchString (%@)", exception.name);
     }
-    CharonSearchDatastoreLog([NSString stringWithFormat:@"searchString -> %@", searchString]);
     searchString = searchString ?: @"";
     if (searchString.length == 0)
         return [NSArray array];
     NSArray *items = CharonSearchLoadAllItems();
-    CharonSearchDatastoreLog([NSString stringWithFormat:@"CharonSearchLoadAllItems -> %lu items", (unsigned long)items.count]);
     NSMutableArray *results = [NSMutableArray array];
     // Measured on device: this factory is a class method of SPContentResult (our own base class,
     // confirmed by apple.objc's inventory() reading the real __objc_classlist entry, not strings),
@@ -106,7 +90,7 @@ static NSArray *CharonSearchMatches(id query)
     Class resultClass = NSClassFromString(@"SPContentResult");
     SEL factory = sel_registerName("resultWithIdentifier:title:subtitle:summary:auxiliaryTitle:auxiliarySubtitle:actionURL:searchableContent:");
     if (!resultClass || ![resultClass respondsToSelector:factory]) {
-        CharonSearchDatastoreLog([NSString stringWithFormat:@"SPContentResult factory unavailable: class=%@ responds=%d", resultClass, [resultClass respondsToSelector:factory]]);
+        NSLog(@"CharonSearchDatastore: SPContentResult's result factory is unavailable (class %@)", resultClass);
         return [NSArray array];
     }
     for (id item in items) {
@@ -116,35 +100,29 @@ static NSArray *CharonSearchMatches(id query)
         // nil) - title is the only field this port's attribute set actually backs, so it is the
         // only one matched against.
         NSString *title = [attributeSet valueForKey:@"title"] ?: @"";
-        CharonSearchDatastoreLog([NSString stringWithFormat:@"item title=\"%@\"", title]);
         if ([title rangeOfString:searchString options:NSCaseInsensitiveSearch].location == NSNotFound)
             continue;
         NSString *identifier = [item valueForKey:@"uniqueIdentifier"];
         id result = ((id (*)(id, SEL, id, id, id, id, id, id, id, id))objc_msgSend)(
             resultClass, factory, identifier, title, nil, nil, nil, nil, nil, nil);
-        CharonSearchDatastoreLog([NSString stringWithFormat:@"built result -> %@", result]);
         if (result)
             [results addObject:result];
     }
     return results;
 }
 
-// Temporary device-pass diagnostic: this class runs inside searchd, not the process that launched
 static id CharonDisplayIdentifierForDomain(id self, SEL _cmd, unsigned int domain)
 {
-    CharonSearchDatastoreLog([NSString stringWithFormat:@"displayIdentifierForDomain: %u", domain]);
     return @"Charon";
 }
 
 static id CharonSearchDomains(id self, SEL _cmd)
 {
-    CharonSearchDatastoreLog(@"searchDomains called");
     return @[@999];
 }
 
 static void CharonPerformQuery(id self, SEL _cmd, id query, id resultsPipe)
 {
-    CharonSearchDatastoreLog([NSString stringWithFormat:@"performQuery:withResultsPipe: query=%@ resultsPipe=%@", query, resultsPipe]);
     NSArray *matches = CharonSearchMatches(query);
     // Measured on device: the object handed to withResultsPipe: is the query object itself
     // (an SDSearchQuery, defined in searchd's own binary, not the shared cache - not
@@ -153,32 +131,25 @@ static void CharonPerformQuery(id self, SEL _cmd, id query, id resultsPipe)
     // <SPSearchResultsPipe>, and the push method is -appendResults:, not -addResults: -
     // SPSearchResultSection happens to implement a same-shaped -addResults: for an unrelated
     // reason, which is exactly how a wrong name keeps looking plausible.
-    CharonSearchDatastoreLog([NSString stringWithFormat:@"matches.count=%lu resultsPipe respondsToAppendResults=%d",
-                              (unsigned long)matches.count, [resultsPipe respondsToSelector:sel_registerName("appendResults:")]]);
     if (matches.count == 0 || !resultsPipe)
         return;
     ((void (*)(id, SEL, id))objc_msgSend)(resultsPipe, sel_registerName("appendResults:"), matches);
-    CharonSearchDatastoreLog(@"appendResults: sent");
 }
 
 __attribute__((constructor))
 static void CharonSearchDatastoreRegister(void)
 {
-    CharonSearchDatastoreLog(@"CharonSearchDatastoreRegister constructor entered");
-    if (NSClassFromString(@"CharonSearchDatastore")) {
-        CharonSearchDatastoreLog(@"class already registered, skipping");
+    if (NSClassFromString(@"CharonSearchDatastore"))
         return;
-    }
     // SPSearchDatastore is a protocol, not a class - NSClassFromString on it answers nil and a
     // plain NSObject fallback is not what NotesDatastore itself subclasses, which is why searchd
     // silently ignored one (measured on device: no crash, no error, -searchDomains simply never
     // called). NotesDatastore's own binary imports _OBJC_CLASS_$_SPContentResult and nothing else
     // SP-prefixed (macho.imported_symbols), so that is the real base class.
     Class base = NSClassFromString(@"SPContentResult") ?: [NSObject class];
-    CharonSearchDatastoreLog([NSString stringWithFormat:@"base class SPContentResult -> %@", base]);
     Class cls = objc_allocateClassPair(base, "CharonSearchDatastore", 0);
     if (!cls) {
-        CharonSearchDatastoreLog(@"objc_allocateClassPair failed");
+        NSLog(@"CharonSearchDatastore: objc_allocateClassPair over %@ failed", base);
         return;
     }
     class_addMethod(cls, sel_registerName("displayIdentifierForDomain:"), (IMP)CharonDisplayIdentifierForDomain, "@12@0:4I8");
@@ -191,12 +162,9 @@ static void CharonSearchDatastoreRegister(void)
     // searchbundle-probe.m) - applying it here too rather than assuming the method list alone is
     // enough a second time.
     Protocol *protocol = objc_getProtocol("SPSearchDatastore");
-    CharonSearchDatastoreLog([NSString stringWithFormat:@"objc_getProtocol(SPSearchDatastore) -> %p", protocol]);
-    if (protocol) {
-        BOOL added = class_addProtocol(cls, protocol);
-        CharonSearchDatastoreLog([NSString stringWithFormat:@"class_addProtocol -> %d", added]);
-    }
+    if (protocol)
+        class_addProtocol(cls, protocol);
+    else
+        NSLog(@"CharonSearchDatastore: this release has no SPSearchDatastore protocol; searchd will not query this datastore");
     objc_registerClassPair(cls);
-    CharonSearchDatastoreLog([NSString stringWithFormat:@"objc_registerClassPair done, CharonSearchDatastore is live, conformsToProtocol=%d",
-                              protocol ? [cls conformsToProtocol:protocol] : -1]);
 }
