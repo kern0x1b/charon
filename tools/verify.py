@@ -15,7 +15,12 @@ tool's registry-side match disagree and the tree can't decide either way (a synt
 no @dynamic, no real accessor body -- in_tree() returns False, status_one() would still find the
 method-form registry row). If status_one()'s key list changes, mirror it here."""
 import os, re, subprocess, sys, csv
-EXP=os.environ.get("CHARON_REGISTRY_TSV", "/private/tmp/bcorpus-scratch/carried-registry-fresh.tsv")
+# Was "/private/tmp/bcorpus-scratch/carried-registry-fresh.tsv" -- every other tool in this
+# session (aggregate.py, crash-demand.py, weak-imports.py) defaults to
+# /private/tmp/charon-registry-export/carried-registry.tsv; this file alone pointed at a
+# different scratch copy under a different default, silently reading a possibly-stale second
+# export instead of the one everyone else treats as canonical. Aligned; still CHARON_REGISTRY_TSV-overridable.
+EXP=os.environ.get("CHARON_REGISTRY_TSV", "/private/tmp/charon-registry-export/carried-registry.tsv")
 _HERE=os.path.dirname(os.path.abspath(__file__))
 _T_CANDIDATES=[p for p in [
     os.environ.get("CHARON_TREE_DIR"),                                                # explicit override survives any future worktree move
@@ -30,10 +35,15 @@ if T is None:
               "scans an empty blob and every check() call reports false positives (this is exactly "
               "how the GCDevice row came back after the worktree moved earlier this session)."
               % ", ".join(_T_CANDIDATES))
-reg={}
+reg={}; reg_kinds={}
+_exp_header = open(EXP).readline().rstrip("\n").split("\t")
+_ki = _exp_header.index("kind") if "kind" in _exp_header else None
 for l in open(EXP):
     p=l.rstrip("\n").split("\t")
-    if len(p)>=3 and p[0]!="framework": reg[p[1]]=p[2]
+    if len(p)>=3 and p[0]!="framework":
+        reg[p[1]]=p[2]
+        if _ki is not None and len(p)>_ki and p[_ki]:
+            reg_kinds[p[1]]=p[_ki]
 BLOB=subprocess.run(["bash","-c",f"cat $(find {T} -name '*.m' -o -name '*.mm' -o -name '*.h') 2>/dev/null"],
                     capture_output=True,text=True).stdout
 def status(api):
@@ -57,12 +67,24 @@ for _m in re.finditer(r'@implementation\s+(\w+)([^\n]*)\n(.*?)(?=^@end)', BLOB, 
     IMPLS.setdefault(_m.group(1), []).append(_m.group(3))
 def _body(cls):
     return "\n".join(IMPLS.get(cls, []))
-PROTOCOLS=set(); ADOPTERS={}
-try:
-    import json as _j
-    _k=_j.load(open("/private/tmp/bcorpus-scratch/reg-kinds.json"))
-    PROTOCOLS={a for a,kk in _k.items() if kk=="protocol"}
-    _store=_j.load(open("/private/tmp/bcorpus-scratch/tools/store.json"))
+import json as _j
+# reg_kinds now comes straight from EXP's own "kind" column (see above) -- no more separate
+# /tmp/reg-kinds.json with no generator anywhere in this tree.
+PROTOCOLS={a for a,kk in reg_kinds.items() if kk=="protocol"}
+_STORE_CANDIDATES=[p for p in [
+    os.environ.get("CHARON_TOOLS_DIR") and os.path.join(os.environ["CHARON_TOOLS_DIR"], "store.json"),
+    os.path.join(os.path.dirname(_HERE), "tools", "store.json"),
+    os.path.join(_HERE, "store.json"),
+] if p]
+_STORE_PATH=next((p for p in _STORE_CANDIDATES if os.path.isfile(p)), None)
+ADOPTERS={}
+if _STORE_PATH is None:
+    print("verify.py: WARNING no store.json found (looked in %s) -- PROTOCOLS/ADOPTERS stay "
+          "empty, every protocol-member row falls back to in_tree()'s flat scan instead of the "
+          "corpus's actual class imports. Set CHARON_TOOLS_DIR." % ", ".join(_STORE_CANDIDATES),
+          file=sys.stderr)
+else:
+    _store=_j.load(open(_STORE_PATH))
     _imported=set()
     for _a,_d in _store["apps"].items():
         _imported |= {r["name"] for r in _d["demand"] if r.get("kind")=="class"}
@@ -70,8 +92,6 @@ try:
     # the concrete classes the corpus apps import. A protocol member is carried when one of
     # THOSE classes defines it in the tree.
     ADOPTERS={_p:_imported for _p in PROTOCOLS}
-except Exception as _e:
-    pass
 
 def in_tree(api, kind=None, owner=None):
     a=re.sub(r' \(\+\d+ owners\)$','',api)

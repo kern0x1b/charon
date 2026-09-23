@@ -111,7 +111,7 @@ def main():
     sdk = json.load(open(os.path.join(BASE, "corpus", "sdk-introduced.json")))
     universe = set(l.rstrip("\n") for l in open(os.path.expanduser("~/.charon/dyld/6.0/selectors_armv7.txt")))
     reg = agg.load_registry()
-    reg_kinds = json.load(open("/tmp/reg-kinds.json")) if os.path.exists("/tmp/reg-kinds.json") else {}
+    reg_kinds = agg.load_reg_kinds()
     # The registry's own `introduced` for each row (export column 4, when present): surface-diff decides
     # "an implemented class covers members that arrived no later than its class row" with exactly this.
     reg_intro = {}

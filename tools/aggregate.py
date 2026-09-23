@@ -216,6 +216,33 @@ def load_registry():
                 reg[api] = status
     return reg
 
+def load_reg_kinds():
+    # Replaces the old /tmp/reg-kinds.json: that file had no generator anywhere in this tree,
+    # sat in a path AGENTS.md itself says is wiped, and its two consumers each read it a
+    # different way -- crash-demand.py silently fell back to {} if missing (losing every
+    # protocol-owner classification with no count, no error), verify.py hardcoded a path in
+    # a different scratch directory entirely and would just crash. Every registry entry
+    # already carries its own "kind" (checked: 0 of 7834 rows missing it), and
+    # export-registry.lua now appends it as this TSV's 5th column -- so this is a projection
+    # of data already required to exist, not a second export to keep in sync by hand.
+    if not os.path.exists(REGISTRY_TSV):
+        sys.exit("aggregate.py: registry export not found at %s (CHARON_REGISTRY_TSV). "
+                  "load_reg_kinds() has nothing to read." % REGISTRY_TSV)
+    kinds = {}
+    with open(REGISTRY_TSV) as f:
+        header = next(f, "")
+        if not header.startswith("framework\t"):
+            return kinds
+        cols = header.rstrip("\n").split("\t")
+        if "kind" not in cols:
+            return kinds
+        ki = cols.index("kind")
+        for line in f:
+            p = line.rstrip("\n").split("\t")
+            if len(p) > ki and p[ki]:
+                kinds[p[1]] = p[ki]
+    return kinds
+
 def carried_status(reg, kind, name, framework):
     if framework in A5_UNREACHABLE:
         return "n/a-A5"
