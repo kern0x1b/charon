@@ -172,6 +172,7 @@
       "api": "-[CLGeocoder geocodeAddressString:inRegion:preferredLocale:completionHandler:]",
       "kind": "method",
       "introduced": "11.0",
+      "minimum": "5.0",
       "status": "implemented",
       "facts": "facts/CoreLocation/CLGeocoderLocale.md",
       "source": "CoreLocation 12.0 arm64"
@@ -180,6 +181,7 @@
       "api": "-[CLGeocoder reverseGeocodeLocation:preferredLocale:completionHandler:]",
       "kind": "method",
       "introduced": "11.0",
+      "minimum": "5.0",
       "status": "implemented",
       "facts": "facts/CoreLocation/CLGeocoderLocale.md",
       "source": "CoreLocation 12.0 arm64"
@@ -215,6 +217,7 @@
       "api": "CLPlacemark.timeZone",
       "kind": "property",
       "introduced": "9.0",
+      "minimum": "5.0",
       "status": "inert",
       "reason": "the placemark of the release carries no time zone and the port has no source for one",
       "effect": "it answers nil, which the property allows, and says so once in the log",

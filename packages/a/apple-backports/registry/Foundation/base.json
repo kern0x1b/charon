@@ -1942,6 +1942,7 @@
     "api": "NSFileAccessIntent",
     "kind": "class",
     "introduced": "8.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports"
@@ -1950,6 +1951,7 @@
     "api": "-[NSFileCoordinator coordinateAccessWithIntents:queue:byAccessor:]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports"
