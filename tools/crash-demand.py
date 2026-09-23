@@ -357,6 +357,32 @@ def main():
             "Set CHARON_CACHES_DIR to the directory that contains sel/, or restore "
             "coordination/corpus/caches/sel/." % ", ".join(_CACHES_SEL_CANDIDATES)
         )
+    # The 6.0/7.0.1/10.3.4/12.0/18.0.tsv version-cache ladder is the SAME data aggregate.py's own
+    # ingest() used to decide whether a class is a gap in the first place (before it is ever added
+    # to any app's `demand` list) -- reuse it directly through agg.build_index() rather than
+    # re-deriving "is this owner trackable" from an unrelated signal. The registry records
+    # DECISIONS about gaps, not which classes are gaps: `AVAudioEngine` has no row of its own in
+    # the registry (its status comes entirely from decision-overrides.tsv) even though it is a
+    # genuine iOS 8 class, confirmed present in 10.3.4.tsv -- keying off "does the registry mention
+    # this exact class name" mislabeled AVAudioEngine, AVAudioPCMBuffer and others as
+    # class-unverifiable in an earlier version of this check. CACHES_SEL above already resolved the
+    # caches/ directory (its own parent); reuse that resolution instead of a second independent
+    # lookup that could silently disagree with it.
+    # agg.CACHES is a module-level constant bound at import time from CHARON_CACHES_DIR (or a
+    # relative default) -- setting the env var here would be too late to affect it, so the
+    # directory has to be assigned on the module object directly.
+    agg.CACHES = os.path.dirname(CACHES_SEL)
+    _b60_syms, _ladder = agg.build_index()
+    gap_class_syms = set()
+    for _band, _attr in _ladder:
+        gap_class_syms |= set(_attr)
+    # Each ladder tier is a full cumulative dyld-cache snapshot, not a delta of what changed in
+    # that release -- UIView is present in the 7.0.1/10.3.4/12.0/18.0 tiers too, same as it is in
+    # 6.0, because it never left. A first version of this line unioned the ladder alone and
+    # matched almost every real Apple class, baseline or not, silently undoing the whole fix.
+    # ingest() itself decides "is this a gap" with `if s in b60: continue` BEFORE it ever
+    # consults the ladder -- mirror that exact order here.
+    gap_class_syms -= _b60_syms
     strs = {}
     for rel, up in (("7.0.1", (7, 1)), ("10.3.4", (10, 3)), ("12.0", (12, 0))):
         pth = os.path.join(CACHES_SEL, rel + ".strings")
@@ -428,8 +454,27 @@ def main():
         disp = key + (" (+%d owners)" % (g["owners"] - 1) if g["owners"] > 1 else "")
         # Class-symbol verification, alongside the name-based count, not instead of it -- so the
         # divergence itself is visible rather than one number silently replacing another.
+        #
+        # class_holders can only ever hold a class whose OWN _OBJC_CLASS_$_ symbol is somewhere in
+        # the 7.0.1/10.3.4/12.0/18.0 cache ladder (aggregate.py's ingest() drops every symbol
+        # already present in the iOS 6.0 baseline cache before `demand` is ever built -- a class
+        # that shipped before iOS 6, like UIView, UIViewController or AVAudioSession, is discarded
+        # at ingest, unconditionally, no matter how many apps actually hold it). `gap_class_syms`
+        # (built above from the same agg.build_index() aggregate.py itself calls) is the correct
+        # test for that. An EARLIER version of this fix tested `g["owner"] in reg_kinds` (does the
+        # registry mention this exact class name) instead, reasoning that a registry entry implies
+        # "tracked as a gap" -- measured wrong: `AVAudioEngine` has no row of its own in the
+        # registry at all (its status comes entirely from decision-overrides.tsv, not a registry
+        # row), so that check mislabeled a genuine, confirmed-working iOS-8 gap class (the very row
+        # this file's own control-1 comment discusses two paragraphs up) as "predates iOS 6" --
+        # caught by re-running the two mandated controls after the first patch, not assumed correct.
+        # Separately and independently, silently zeroing `confirmed` for every baseline-owner row
+        # forced 27+ rows with genuine 2-3 app name-based exposure (e.g.
+        # UITextView.textContainerInset, independently confirmed by the 7-10 band as a real
+        # uncovered gap) to rank 419+ through the `-cls_crash`-led sort below -- an inversion of
+        # priority order, not a cosmetic mislabel; that is what this whole branch exists to avoid.
         cls_note = ""
-        if g["ownerkind"] == "class":
+        if g["ownerkind"] == "class" and ("_OBJC_CLASS_$_" + g["owner"]) in gap_class_syms:
             confirmed = g["apps"] & class_holders.get(g["owner"], set())
             if not confirmed and g["apps"]:
                 # Not zero-because-nobody-wants-it and not full-count-because-everybody-does: the
@@ -438,6 +483,15 @@ def main():
                 # case (this file's own `class-undecided` vocabulary) rather than let a silent 0
                 # read as "confirmed nobody needs this."
                 cls_note = "class-undecided: selector sent by %s but none hold %s's class symbol -- likely a same-named selector on another class" % (",".join(sorted(g["apps"])), g["owner"])
+        elif g["ownerkind"] == "class":
+            # Owner's class symbol is not in any tier of the cache ladder -- either it predates
+            # iOS 6 (baseline, in the 6.0 cache instead) or it postdates our newest cache (18.0);
+            # either way class_holders can never have data for it, by construction, not because a
+            # collision was checked and found. Keep the name-based count, the same fallback the
+            # protocol-owner branch already uses for the same reason (no class symbol of its own
+            # to test against).
+            confirmed = g["apps"]
+            cls_note = "class-unverifiable: %s's class symbol is not in the 7.0.1/10.3.4/12.0/18.0 cache ladder (baseline class predating iOS 6, or newer than our cache coverage) -- class_holders cannot have data for it by construction, name-based count kept" % g["owner"]
         else:
             confirmed = g["apps"]           # protocol owner: no class symbol of its own to check against
             cls_note = "protocol-owner: not class-symbol-verifiable, name-based count only"
@@ -590,8 +644,10 @@ def main():
     print(f"dropped, no version and no upper bound (counted, not silent -- see crash-demand-dropped.tsv): {len(dropped_no_version)}")
     diverge = [r for r in gaps if r["cls_crash"] != r["crash"]]
     unconfirmed = [r for r in gaps if r["cls_note"].startswith("class-undecided")]
+    unverifiable = [r for r in gaps if r["cls_note"].startswith("class-unverifiable")]
     print(f"class-symbol vs name-based count diverge: {len(diverge)} rows  "
-          f"(class-symbol-unconfirmed, likely name collision: {len(unconfirmed)})")
+          f"(class-symbol-unconfirmed, likely name collision: {len(unconfirmed)}; "
+          f"class-unverifiable, pre-iOS-6 owner, name-based count kept: {len(unverifiable)})")
     print(f"-> {out}")
     return gaps
 
