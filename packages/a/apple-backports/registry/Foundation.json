@@ -48,7 +48,7 @@
   "api": "NSDateInterval",
   "kind": "class",
   "introduced": "10.0",
-  "minimum": "6.0",
+  "minimum": "5.0",
   "status": "implemented",
   "facts": "facts/Foundation/NSDateInterval.md",
   "source": "host Foundation, cross-checked against the armv7s caches of iOS 10.0.1 and 10.3.4"

@@ -242,7 +242,6 @@
     "api": "WKNavigationResponse",
     "kind": "class",
     "introduced": "8.0",
-    "minimum": "6.0",
     "status": "inert",
     "reason": "the UIWebView of the release hands its delegate the request and never the response that came back",
     "effect": "the class is there and no navigation ever hands one to the delegate",

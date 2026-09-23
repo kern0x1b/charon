@@ -67,7 +67,7 @@
       "api": "+[UITraitCollection traitCollectionWithForceTouchCapability:]",
       "kind": "method",
       "introduced": "9.0",
-      "minimum": "6.0",
+      "minimum": "5.0",
       "status": "implemented",
       "facts": "facts/UIKit/UITraitEnvironment.md",
       "source": "the host's own UIKit, and the release, which has no force touch, so the capability of a collection nobody set is unavailable"

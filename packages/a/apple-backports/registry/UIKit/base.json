@@ -19,6 +19,7 @@
     "api": "+[UIColor systemBlueColor]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
     "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
@@ -27,6 +28,7 @@
     "api": "+[UIColor systemGrayColor]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
     "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
@@ -35,6 +37,7 @@
     "api": "+[UIColor systemGreenColor]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
     "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
@@ -43,6 +46,7 @@
     "api": "+[UIColor systemOrangeColor]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
     "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
@@ -51,6 +55,7 @@
     "api": "+[UIColor systemPinkColor]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
     "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
@@ -59,6 +64,7 @@
     "api": "+[UIColor systemPurpleColor]",
     "kind": "method",
     "introduced": "9.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
     "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
@@ -67,6 +73,7 @@
     "api": "+[UIColor systemRedColor]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
     "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
@@ -75,6 +82,7 @@
     "api": "+[UIColor systemTealColor]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
     "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
@@ -83,6 +91,7 @@
     "api": "+[UIColor systemYellowColor]",
     "kind": "method",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIColorSystemColors.md",
     "source": "CoreUI's palette catalogues of the 18.0 root filesystem (22A3354), read for each variant; UIKitCore of iOS 12.0 arm64 for the fixed values before (facts/UIKit/UIColorSystemColors.md)"
@@ -105,6 +114,7 @@
     "api": "+[UITraitCollection traitCollectionWithUserInterfaceStyle:]",
     "kind": "method",
     "introduced": "12.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/UIKit/UITraitCollectionUserInterfaceStyle.md",
     "source": "the UIKit of the host's Mac Catalyst, measured trait by trait, and UIKit 12.0 arm64, read by the session that carries iOS 11 and 12"
@@ -333,6 +343,7 @@
     "api": "-[UIScreen traitCollectionDidChange:]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/UIKit/UITraitEnvironment.md"
   },
@@ -521,6 +532,7 @@
     "api": "-[UIView layoutMarginsDidChange]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIViewLayoutMargins.md",
     "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
@@ -538,6 +550,7 @@
     "api": "-[UIView layoutMargins]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIViewLayoutMargins.md",
     "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
@@ -572,6 +585,7 @@
     "api": "-[UIView preservesSuperviewLayoutMargins]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIViewLayoutMargins.md",
     "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
@@ -615,6 +629,7 @@
     "api": "-[UIView setLayoutMargins:]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIViewLayoutMargins.md",
     "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
@@ -631,6 +646,7 @@
     "api": "-[UIView setPreservesSuperviewLayoutMargins:]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/UIViewLayoutMargins.md",
     "source": "the host's own UIKit, through the differential run of tests/backports/host/layout"
@@ -697,6 +713,7 @@
     "api": "-[UIView traitCollectionDidChange:]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/UIKit/UITraitEnvironment.md"
   },
@@ -807,6 +824,7 @@
     "api": "-[UIViewController traitCollectionDidChange:]",
     "kind": "method",
     "introduced": "8.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/UIKit/UITraitEnvironment.md"
   },
@@ -1166,6 +1184,7 @@
     "api": "UIApplicationLaunchOptionsShortcutItemKey",
     "kind": "constant",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/ApplicationShortcuts.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
@@ -1211,6 +1230,7 @@
     "api": "UIBarButtonItem.buttonGroup",
     "kind": "property",
     "introduced": "9.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/ApplicationShortcuts.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
@@ -1482,6 +1502,7 @@
     "api": "UIKeyInputDownArrow",
     "kind": "constant",
     "introduced": "7.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/KeyboardAndAccessibility.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
@@ -1490,6 +1511,7 @@
     "api": "UIKeyInputEscape",
     "kind": "constant",
     "introduced": "7.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/KeyboardAndAccessibility.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
@@ -1498,6 +1520,7 @@
     "api": "UIKeyInputLeftArrow",
     "kind": "constant",
     "introduced": "7.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/KeyboardAndAccessibility.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
@@ -1522,6 +1545,7 @@
     "api": "UIKeyInputRightArrow",
     "kind": "constant",
     "introduced": "7.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/KeyboardAndAccessibility.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
@@ -1530,6 +1554,7 @@
     "api": "UIKeyInputUpArrow",
     "kind": "constant",
     "introduced": "7.0",
+    "minimum": "6.0",
     "status": "implemented",
     "facts": "facts/UIKit/KeyboardAndAccessibility.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
@@ -1676,6 +1701,7 @@
     "api": "UITraitCollection.userInterfaceStyle",
     "kind": "property",
     "introduced": "12.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/UIKit/UITraitCollectionUserInterfaceStyle.md",
     "source": "the UIKit of the host's Mac Catalyst, measured trait by trait, and UIKit 12.0 arm64, read by the session that carries iOS 11 and 12"

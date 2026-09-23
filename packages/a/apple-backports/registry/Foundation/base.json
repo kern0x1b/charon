@@ -1418,6 +1418,7 @@
     "api": "NSURLSessionDownloadTaskResumeData",
     "kind": "constant",
     "introduced": "7.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/Foundation/NSURLSession.md"
   },
@@ -1433,6 +1434,7 @@
     "api": "NSURLSessionTaskPriorityDefault",
     "kind": "constant",
     "introduced": "8.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/Foundation/NSURLSession.md"
   },
@@ -1440,6 +1442,7 @@
     "api": "NSURLSessionTaskPriorityHigh",
     "kind": "constant",
     "introduced": "8.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/Foundation/NSURLSession.md"
   },
@@ -1447,6 +1450,7 @@
     "api": "NSURLSessionTaskPriorityLow",
     "kind": "constant",
     "introduced": "8.0",
+    "minimum": "5.0",
     "status": "implemented",
     "facts": "facts/Foundation/NSURLSession.md"
   },

@@ -5,7 +5,7 @@
       "api": "UIImageConfiguration",
       "kind": "class",
       "introduced": "13.0",
-      "minimum": "6.0",
+      "minimum": "5.0",
       "status": "implemented",
       "effect": "an immutable holder of a trait collection that is copied, compared and archived as UIKit's is; iOS 6 draws no symbol, so nothing but the application reads it",
       "facts": "facts/UIKit/UIImageSymbolConfiguration.md",
