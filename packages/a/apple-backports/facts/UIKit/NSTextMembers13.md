@@ -120,5 +120,6 @@ application links is `CharonName`. What the port does with it:
 `textalias-emulate613.txt`, `textalias-emulate60.txt`). The emulator runs the release's own dyld, runtime and UIFoundation,
 which is what the aliases and the loader depend on. The same subclass check answers YES for `NSTextList`, which the loader
 put under the release's class, and NO for the test's own `NSTextTable`, laid out before the loader ran, so the check tells the
-two apart. Device-unverified: not yet run on a device for this code; an earlier run on an iPad 2 (15 of 15,
-`textalias-ipad2-gate5.txt`) was of the alias before it was a subclass.
+two apart. On a device: an iPad 2 (iPad2,2) of iOS 6.1.3 (10B329) ran the same test against the full gate's libraries of
+`249d6da2`, whose library code is the branch's last, loaded from a directory of their own (`DYLD_PRINT_LIBRARIES` names both),
+61 of 61, with the same sizes and offset for `class_setSuperclass` (`textalias-ipad2-gate3.txt`).
