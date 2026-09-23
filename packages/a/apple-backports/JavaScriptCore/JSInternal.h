@@ -45,4 +45,14 @@ BOOL charon_js_class_conforms_to_export(Class objcClass);
 void charon_js_push_callback(JSContext *context, JSValue *_Nullable thisValue, JSValue *_Nullable callee, NSArray<JSValue *> *_Nullable arguments);
 void charon_js_pop_callback(void);
 
+typedef struct CharonJSFrame {
+    struct CharonJSFrame *up;
+    __unsafe_unretained JSContext *context;
+    __unsafe_unretained JSValue *thisValue;
+    __unsafe_unretained JSValue *callee;
+    __unsafe_unretained NSArray<JSValue *> *arguments;
+} CharonJSFrame;
+
+CharonJSFrame *_Nullable CharonCurrentFrame(void);
+
 NS_ASSUME_NONNULL_END

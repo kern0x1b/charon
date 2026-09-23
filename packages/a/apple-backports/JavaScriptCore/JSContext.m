@@ -1,5 +1,4 @@
 #import "JSInternal.h"
-#import <pthread.h>
 
 static NSMapTable<id, JSContext *> *charon_context_registry;
 static NSLock *charon_context_registry_lock;
@@ -18,56 +17,6 @@ static NSMapTable<id, JSContext *> *ContextRegistry(void)
         charon_context_registry_lock = [NSLock new];
     });
     return charon_context_registry;
-}
-
-/*
- * +currentContext, +currentThis, +currentCallee and +currentArguments only answer from inside a
- * callback JavaScript makes into Objective-C - a block or a JSExport method. A pthread key holds
- * a small stack of frames, one push per nested callback, so a callback that itself calls back
- * into JavaScript which calls back into Objective-C again still answers correctly for its own
- * frame once the inner one pops.
- */
-typedef struct CharonJSFrame {
-    struct CharonJSFrame *up;
-    __unsafe_unretained JSContext *context;
-    __unsafe_unretained JSValue *thisValue;
-    __unsafe_unretained JSValue *callee;
-    __unsafe_unretained NSArray<JSValue *> *arguments;
-} CharonJSFrame;
-
-static pthread_key_t charon_frame_key;
-static pthread_once_t charon_frame_once = PTHREAD_ONCE_INIT;
-
-static void CharonMakeFrameKey(void)
-{
-    pthread_key_create(&charon_frame_key, NULL);
-}
-
-static CharonJSFrame *CharonCurrentFrame(void)
-{
-    pthread_once(&charon_frame_once, CharonMakeFrameKey);
-    return pthread_getspecific(charon_frame_key);
-}
-
-void charon_js_push_callback(JSContext *context, JSValue *thisValue, JSValue *callee, NSArray<JSValue *> *arguments)
-{
-    pthread_once(&charon_frame_once, CharonMakeFrameKey);
-    CharonJSFrame *frame = calloc(1, sizeof(CharonJSFrame));
-    frame->up = CharonCurrentFrame();
-    frame->context = context;
-    frame->thisValue = thisValue;
-    frame->callee = callee;
-    frame->arguments = arguments;
-    pthread_setspecific(charon_frame_key, frame);
-}
-
-void charon_js_pop_callback(void)
-{
-    CharonJSFrame *frame = CharonCurrentFrame();
-    if (!frame)
-        return;
-    pthread_setspecific(charon_frame_key, frame->up);
-    free(frame);
 }
 
 @interface JSContext ()
