@@ -268,6 +268,28 @@ def carried_status(reg, kind, name, framework):
 
 CAT_ORDER = {"FRAMEWORK": 0, "SYSCALL": 1, "SYSLIB": 2, "RUNTIME": 3}
 GAP_STATUS = {"gap?", "absent"}   # not carried today => real priority
+
+# The registry records what the port decided, not what it exports: an `ignored` row can name a
+# symbol no backport defines (NSLocalizedFailureErrorKey was one), and dyld stops an application
+# that imports it strongly exactly as it would for an `absent` row. What the 6.1.3 band exports
+# decides that: one Mach-O name per line, `nm -gUj` over the canon's bands/6.1.3/*.dylib (README).
+BUILT_EXPORTS = os.environ.get("CHARON_BUILT_EXPORTS") or os.path.join(CORPUS, "built-exports-6.1.3.txt")
+def load_built_exports():
+    # Missing is not "nothing is exported": every carried row would read as a launch blocker.
+    if not os.path.exists(BUILT_EXPORTS):
+        sys.exit("aggregate.py: export list of the 6.1.3 band not found at %s (CHARON_BUILT_EXPORTS); "
+                  "see README, 'built exports'." % BUILT_EXPORTS)
+    built = {line.strip() for line in open(BUILT_EXPORTS) if line.strip()}
+    if not any(name.startswith("_OBJC_CLASS_$_") for name in built):
+        sys.exit("aggregate.py: %s names no class; it is not the export list of a backports band." % BUILT_EXPORTS)
+    return built
+def launch_blocks(strong, status, kind, name, built):
+    """A strong import the device cannot bind: a gap, or a carried row whose symbol the band does not export."""
+    if strong < 1 or status == "n/a-A5":
+        return False
+    if status in GAP_STATUS:
+        return True
+    return (("_OBJC_CLASS_$_" + name) if kind == "class" else name) not in built
 def is_swift_mangled(name):
     # Swift symbols (_$s.../_$S...) are Swift-runtime domain, never ObjC backports.
     return name.startswith("_$s") or name.startswith("_$S") or name.startswith("$s") or name.startswith("$S")

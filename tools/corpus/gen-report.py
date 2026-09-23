@@ -19,6 +19,7 @@ if not os.path.isdir(CORPUS):
               "directory that contains corpus/ (holds store.json, caches/, band-*.tsv)." % CORPUS)
 store = json.load(open(os.path.join(CORPUS, "store.json")))
 reg = agg.load_registry()
+built = agg.load_built_exports()
 DROP = os.path.join(CORPUS, "absent")
 
 # Katabasis class rows per app (cleaned system-only)
@@ -86,8 +87,8 @@ def write_band_files():
         with open(os.path.join(CORPUS, f"band-{ob}.tsv"), "w") as fh:
             fh.write("strong\tapps\tblocker\tcarried\tframework\tkind\tname\tapplist\n")
             for s, a, st, fw, kind, name, al in rows:
-                # launch-blocker: a strong (hard-linked) gap => dyld aborts pre-main if absent
-                lb = "LAUNCH-BLOCK" if (s >= 1 and st in agg.GAP_STATUS) else ""
+                # launch-blocker: a strong (hard-linked) import the band does not export => dyld aborts pre-main
+                lb = "LAUNCH-BLOCK" if agg.launch_blocks(s, st, kind, name, built) else ""
                 fh.write(f"{s}\t{a}\t{lb}\t{st}\t{fw}\t{kind}\t{name}\t{al}\n")
 
 def top_rows(bands, gaps_only=True, n=40):
@@ -116,14 +117,14 @@ with open(R, "w") as f:
     for b in ("7", "8-10", "11-12"):
         w(f"| {b} | {agg.BAND_ROUTE[b]} | {g7[b]} | {c7[b]} | {n7[b]} |\n")
     w(f"| **7–12 total** | | **{g7['7']+g7['8-10']+g7['11-12']}** | **{c7['7']+c7['8-10']+c7['11-12']}** | **{n7['7']+n7['8-10']+n7['11-12']}** |\n")
-    # launch-blocker tally: strong gaps that abort dyld pre-main if absent
+    # launch-blocker tally: strong imports the 6.1.3 band does not export, which abort dyld pre-main
     lb = defaultdict(int)
     for (cat, kind, name, fw, band), e in agg_rows.items():
         if cat != "FRAMEWORK" or band not in ("7", "8-10", "11-12"):
             continue
-        if len(e["strong"]) >= 1 and agg.carried_status(reg, kind, name, fw) in agg.GAP_STATUS:
+        if agg.launch_blocks(len(e["strong"]), agg.carried_status(reg, kind, name, fw), kind, name, built):
             lb[band] += 1
-    w(f"\n**LAUNCH-BLOCKERS (strong/hard-linked gaps, bands 7–12):** {lb['7']+lb['8-10']+lb['11-12']} of the {g7['7']+g7['8-10']+g7['11-12']} gaps are strong — a missing hard-linked symbol aborts dyld before main, so the app never starts (proven: iSH won't launch without NSUserActivity). These are the load-gating set: apps stay dead until they exist (or Katabasis weak-binds them). The rest are `#available`-guarded and degrade to nil.\n")
+    w(f"\n**LAUNCH-BLOCKERS (strong/hard-linked imports the 6.1.3 band does not export, bands 7–12):** {lb['7']+lb['8-10']+lb['11-12']}, beside {g7['7']+g7['8-10']+g7['11-12']} gaps; a carried row the band does not export (an `ignored` decision with no symbol) counts too — a missing hard-linked symbol aborts dyld before main, so the app never starts (proven: iSH won't launch without NSUserActivity). These are the load-gating set: apps stay dead until they exist (or Katabasis weak-binds them). The rest are `#available`-guarded and degrade to nil.\n")
     w(f"\n**Frontier (band 13+, beyond current backports):** {g7['13+']} distinct system class+constant demands introduced iOS 13–18 — real for the \"all apps\" goal but out of current 7–12 scope.\n\n")
     w("## Top gaps, bands 7–12, most-apps-first\n")
     w("`LB` = LAUNCH-BLOCKER: a strong (hard-linked) gap — if absent, dyld aborts before main and the app never starts (proven on iPad2: iSH won't launch without NSUserActivity). All-weak gaps (blank) degrade to nil gracefully. Katabasis is separately weak-binding uncovered classrefs so the long tail degrades instead of hard-failing.\n\n```\n")
