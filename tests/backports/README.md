@@ -454,6 +454,10 @@ application, schedule later steps with timers or
 `performSelector:withObject:afterDelay:`, not with `dispatch_async` to the main
 queue from a block already running there: the main queue is serial, so a block
 queued behind a running one does not run while that one spins a nested run loop.
+A test waiting on a library that answers on the main queue (`ALAssetsLibrary`,
+the Photos port over it) waits off the main queue, and off the main thread it
+sleeps or waits on a semaphore, never `CFRunLoopRunInMode`, which returns at
+once on a thread whose run loop has no sources.
 
 - `mechanism.m`, `url.m`: a process of their own, Foundation only; they print
   `ok`/`FAIL` lines and exit with the number of failures. `url.m` includes
