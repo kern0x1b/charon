@@ -7,7 +7,7 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass; tied to the same wall MTKMesh's own construction hits (facts/MetalKit/TextureLoader.md): a real MDLMesh, a substantially larger ModelIO object model this pass does not carry, beyond the plain MDLVertexDescriptor it does (facts/ModelIO/VertexDescriptor.md).",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalKit"
     },
@@ -17,7 +17,7 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass; tied to the same wall MTKMesh's own construction hits (facts/MetalKit/TextureLoader.md): a real MDLMesh, a substantially larger ModelIO object model this pass does not carry, beyond the plain MDLVertexDescriptor it does (facts/ModelIO/VertexDescriptor.md).",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalKit"
     },
@@ -27,7 +27,7 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the function arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass: only the WithError sibling was (registry/MetalKit/ios10modelbridge.json), and this pass carried that one. This form is a straightforward return-nil-on-failure version of the same real format mapping already built, safe to add the same way on demand - not a wall.",
       "effect": "the function is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalKit"
     },
@@ -37,7 +37,7 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the function arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass; a single-value version of the same format table this pass already built for the two WithError descriptor bridge functions (facts/MetalKit/ModelBridge.md) - safe to add from the same mapping on demand, not a wall.",
       "effect": "the function is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalKit"
     },
@@ -47,7 +47,7 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the function arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass: only the WithError sibling was (registry/MetalKit/ios10modelbridge.json), and this pass carried that one. This form is a straightforward return-nil-on-failure version of the same real format mapping already built, safe to add the same way on demand - not a wall.",
       "effect": "the function is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalKit"
     },
@@ -57,7 +57,7 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the function arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass; a single-value version of the same format table this pass already built for the two WithError descriptor bridge functions (facts/MetalKit/ModelBridge.md) - safe to add from the same mapping on demand, not a wall.",
       "effect": "the function is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalKit"
     },
@@ -67,7 +67,7 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass; tied to the same wall MTKMesh's own construction hits (facts/MetalKit/TextureLoader.md): a real MDLMesh, a substantially larger ModelIO object model this pass does not carry, beyond the plain MDLVertexDescriptor it does (facts/ModelIO/VertexDescriptor.md).",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalKit"
     },
@@ -77,7 +77,7 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass; this port's MTKTextureLoader (facts/MetalKit/TextureLoader.md) always loads a single non-mipmapped texture, so nothing reads this option - a real, stated gap in the loader, not a reason tied to iOS 6 lacking Metal.",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalKit"
     },
@@ -87,7 +87,7 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass; this port's MTKTextureLoader always builds its texture descriptor through +texture2DDescriptorWithPixelFormat:width:height:mipmapped:, whose defaults this port never overrides for cache mode, storage mode or usage - a real, stated gap in the loader.",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalKit"
     },
@@ -97,7 +97,7 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass; this port's MTKTextureLoader always builds its texture descriptor through +texture2DDescriptorWithPixelFormat:width:height:mipmapped:, whose defaults this port never overrides for cache mode, storage mode or usage - a real, stated gap in the loader.",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalKit"
     },
@@ -107,7 +107,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass; this port's MTKTextureLoader never builds a cube texture, so nothing reads this option - a real, stated gap in the loader.",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalKit"
     },
@@ -117,7 +117,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass; this port's MTKTextureLoader never builds a cube texture, so nothing reads this option - a real, stated gap in the loader.",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalKit"
     },
@@ -127,7 +127,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass; this port's MTKTextureLoader (facts/MetalKit/TextureLoader.md) always loads a single non-mipmapped texture, so nothing reads this option - a real, stated gap in the loader, not a reason tied to iOS 6 lacking Metal.",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalKit"
     },
@@ -137,7 +137,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass; this port's MTKTextureLoader always uploads the pixels in the orientation CGBitmapContext decodes them, so nothing reads this option - a real, stated gap in the loader.",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalKit"
     },
@@ -147,7 +147,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass; this port's MTKTextureLoader always builds its texture descriptor through +texture2DDescriptorWithPixelFormat:width:height:mipmapped:, whose defaults this port never overrides for cache mode, storage mode or usage - a real, stated gap in the loader.",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalKit"
     },
@@ -157,7 +157,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass; this port's MTKTextureLoader always uploads the pixels in the orientation CGBitmapContext decodes them, so nothing reads this option - a real, stated gap in the loader.",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalKit"
     },
@@ -167,7 +167,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass; this port's MTKTextureLoader always uploads the pixels in the orientation CGBitmapContext decodes them, so nothing reads this option - a real, stated gap in the loader.",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalKit"
     },
@@ -177,7 +177,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass; this port's MTKTextureLoader always uploads the pixels in the orientation CGBitmapContext decodes them, so nothing reads this option - a real, stated gap in the loader.",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalKit"
     }

@@ -11,6 +11,17 @@
       "effect": "sharedCaptureManager gives a real singleton; newCaptureScopeWithDevice:/newCaptureScopeWithCommandQueue: give a real object conforming to MTLCaptureScope whose beginScope/endScope are no-ops; the deprecated startCaptureWithDevice:/WithCommandQueue:/WithScope: are no-ops and stopCapture is a no-op; isCapturing always answers NO",
       "facts": "facts/Metal/CaptureManager.md",
       "source": "the header of iOS 16.4 for the contract"
+    },
+    {
+      "api": "MTLCaptureScope",
+      "kind": "protocol",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MTLCaptureManager calls it; the protocol status is not pushed onto the class that calls it",
+      "effect": "the object MTLCaptureManager's -newCaptureScopeWithDevice:/-newCaptureScopeWithCommandQueue: gives conforms to it in full: label, device and commandQueue hold what they were given, beginScope/endScope are no-ops",
+      "facts": "facts/Metal/CaptureManager.md",
+      "source": "the header of iOS 16.4 for the contract"
     }
   ]
 }

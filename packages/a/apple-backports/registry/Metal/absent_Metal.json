@@ -17,7 +17,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, Metal"
     },
@@ -27,7 +27,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "not corpus-demanded this pass; this port's CharonMetalEncoder implements only render commands - no blit command encoder is built at all, a real, separate gap in the command encoder surface, not a reason tied to the absence of a GPU driver.",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, Metal"
     },
@@ -37,7 +37,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass; it is the domain a command buffer execution error is documented to use. This port's command buffers, when they fail, report it through CharonMetalErrorDomain (CharonMetalDevice.m) instead - adopting the release's own domain name is real, scoped work for later, not a wall.",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, Metal"
     },
@@ -77,7 +77,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "reason": "not corpus-demanded this pass; it is the domain a library compile error is documented to use. This port's -[CharonMetalDevice newLibraryWithSource:options:error:] (facts/Metal/CompileOptions.md) already reports its honest refusal through CharonMetalErrorDomain instead - adopting the release's own domain name is real, scoped work for later, not a wall.",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, Metal"
     },
@@ -97,7 +97,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, Metal"
     },
@@ -107,7 +107,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, Metal"
     },
@@ -117,7 +117,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, Metal"
     },
@@ -127,7 +127,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, Metal"
     },
@@ -147,7 +147,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, Metal"
     },
@@ -167,7 +167,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, Metal"
     },
@@ -212,22 +212,12 @@
       "source": "SDK 16.4, Metal"
     },
     {
-      "api": "MTLCaptureScope",
-      "kind": "protocol",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 11, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
-    },
-    {
       "api": "MTLPipelineBufferDescriptor",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass; it configures per-buffer mutability tracking on a render or compute pipeline descriptor. This port's CharonMetalPipeline (MTLRenderPipelineDescriptor8.m) does not expose vertexBuffers/fragmentBuffers mutability at all - a real, scoped gap in the pipeline descriptor surface, not a hardware wall.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, Metal"
     },
@@ -237,7 +227,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass; it configures per-buffer mutability tracking on a render or compute pipeline descriptor. This port's CharonMetalPipeline (MTLRenderPipelineDescriptor8.m) does not expose vertexBuffers/fragmentBuffers mutability at all - a real, scoped gap in the pipeline descriptor surface, not a hardware wall.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, Metal"
     },
@@ -247,7 +237,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, Metal"
     },
@@ -257,7 +247,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, Metal"
     },
@@ -297,7 +287,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, Metal"
     },
@@ -447,7 +437,7 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass; it identifies a texture for sharing across processes or devices. This port has no IOSurface- or XPC-backed cross-process resource sharing built at all - a real, separate gap from the single-process Metal-over-OpenGL-ES-2.0 bridge this port carries, not a reason tied to the absence of a GPU driver.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, Metal"
     },
@@ -547,7 +537,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "not corpus-demanded this pass; it reports per-encoder execution status or shader debug log information this port's CharonMetalCommandBuffer/CharonMetalEncoder do not track at all. MTLCommandBufferDescriptor.errorOptions (facts/Metal/CommandBufferDescriptor.md) can already ask for this tracking; nothing produces it yet, a real, named gap rather than a silent one.",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, Metal"
     },
@@ -837,7 +827,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "not corpus-demanded this pass; it configures function creation (specialization, binary archives) from a compiled library. This port's own function creation (-[CharonMetalLibrary newFunctionWithName:constantValues:error:]) already takes a name and constant values directly, without this descriptor - the extra facilities it offers go with compiler capabilities this port does not build, not with a hardware wall.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, Metal"
     },
@@ -857,7 +847,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "not corpus-demanded this pass; it reports per-encoder execution status or shader debug log information this port's CharonMetalCommandBuffer/CharonMetalEncoder do not track at all. MTLCommandBufferDescriptor.errorOptions (facts/Metal/CommandBufferDescriptor.md) can already ask for this tracking; nothing produces it yet, a real, named gap rather than a silent one.",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, Metal"
     },
@@ -867,7 +857,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "not corpus-demanded this pass; it reports per-encoder execution status or shader debug log information this port's CharonMetalCommandBuffer/CharonMetalEncoder do not track at all. MTLCommandBufferDescriptor.errorOptions (facts/Metal/CommandBufferDescriptor.md) can already ask for this tracking; nothing produces it yet, a real, named gap rather than a silent one.",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, Metal"
     },
@@ -927,7 +917,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "not corpus-demanded this pass; it reports per-encoder execution status or shader debug log information this port's CharonMetalCommandBuffer/CharonMetalEncoder do not track at all. MTLCommandBufferDescriptor.errorOptions (facts/Metal/CommandBufferDescriptor.md) can already ask for this tracking; nothing produces it yet, a real, named gap rather than a silent one.",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, Metal"
     },
