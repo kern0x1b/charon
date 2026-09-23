@@ -15,6 +15,7 @@ NSString *const SCNSceneUpAxisAttributeKey = @"SCNSceneUpAxisAttributeKey";
     if ((self = [super init])) {
         _rootNode = [SCNNode node];
         _attributes = [NSMutableDictionary dictionary];
+        _physicsWorld = [[SCNPhysicsWorld alloc] init];
     }
     return self;
 }
@@ -25,6 +26,7 @@ NSString *const SCNSceneUpAxisAttributeKey = @"SCNSceneUpAxisAttributeKey";
 }
 
 @synthesize rootNode = _rootNode;
+@synthesize physicsWorld = _physicsWorld;
 
 - (id)attributeForKey:(NSString *)key
 {
@@ -84,6 +86,10 @@ NSString *const SCNSceneUpAxisAttributeKey = @"SCNSceneUpAxisAttributeKey";
         if (root) {
             _rootNode = root;
         }
+        SCNPhysicsWorld *physicsWorld = [coder decodeObjectOfClass:[SCNPhysicsWorld class] forKey:@"physicsWorld"];
+        if (physicsWorld) {
+            _physicsWorld = physicsWorld;
+        }
     }
     return self;
 }
@@ -91,6 +97,7 @@ NSString *const SCNSceneUpAxisAttributeKey = @"SCNSceneUpAxisAttributeKey";
 - (void)encodeWithCoder:(NSCoder *)coder
 {
     [coder encodeObject:_rootNode forKey:@"rootNode"];
+    [coder encodeObject:_physicsWorld forKey:@"physicsWorld"];
 }
 
 @end

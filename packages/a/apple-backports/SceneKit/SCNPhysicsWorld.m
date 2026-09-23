@@ -1,0 +1,98 @@
+#import "CharonSCN.h"
+
+@implementation SCNPhysicsWorld
+{
+    NSMutableArray<SCNPhysicsBehavior *> *_behaviors;
+}
+
+- (instancetype)init
+{
+    if ((self = [super init])) {
+        _gravity = SCNVector3Make(0, -9.8, 0);
+        _speed = 1;
+        _timeStep = 1.0 / 60.0;
+        _behaviors = [NSMutableArray array];
+    }
+    return self;
+}
+
+@synthesize gravity = _gravity;
+@synthesize speed = _speed;
+@synthesize timeStep = _timeStep;
+@synthesize contactDelegate = _contactDelegate;
+
+- (NSArray<SCNPhysicsBehavior *> *)allBehaviors
+{
+    return [_behaviors copy];
+}
+
+- (void)addBehavior:(SCNPhysicsBehavior *)behavior
+{
+    if (behavior && ![_behaviors containsObject:behavior]) {
+        [_behaviors addObject:behavior];
+    }
+}
+
+- (void)removeBehavior:(SCNPhysicsBehavior *)behavior
+{
+    [_behaviors removeObject:behavior];
+}
+
+- (void)removeAllBehaviors
+{
+    [_behaviors removeAllObjects];
+}
+
+- (NSArray<SCNHitTestResult *> *)rayTestWithSegmentFromPoint:(SCNVector3)origin toPoint:(SCNVector3)dest options:(NSDictionary<SCNPhysicsTestOption, id> *)options
+{
+    return @[];
+}
+
+- (NSArray<SCNPhysicsContact *> *)contactTestBetweenBody:(SCNPhysicsBody *)bodyA andBody:(SCNPhysicsBody *)bodyB options:(NSDictionary<SCNPhysicsTestOption, id> *)options
+{
+    return @[];
+}
+
+- (NSArray<SCNPhysicsContact *> *)contactTestWithBody:(SCNPhysicsBody *)body options:(NSDictionary<SCNPhysicsTestOption, id> *)options
+{
+    return @[];
+}
+
+- (NSArray<SCNPhysicsContact *> *)convexSweepTestWithShape:(SCNPhysicsShape *)shape fromTransform:(SCNMatrix4)from toTransform:(SCNMatrix4)to options:(NSDictionary<SCNPhysicsTestOption, id> *)options
+{
+    return @[];
+}
+
+- (void)updateCollisionPairs
+{
+}
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [self init])) {
+        if ([coder containsValueForKey:@"gravity"]) {
+            _gravity = [CharonSCNCoding decodeVector3:coder forKey:@"gravity"];
+        }
+        if ([coder containsValueForKey:@"speed"]) {
+            _speed = [coder decodeDoubleForKey:@"speed"];
+        }
+        if ([coder containsValueForKey:@"timeStep"]) {
+            _timeStep = [coder decodeDoubleForKey:@"timeStep"];
+        }
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [CharonSCNCoding encodeVector3:_gravity coder:coder forKey:@"gravity"];
+    [coder encodeDouble:_speed forKey:@"speed"];
+    [coder encodeDouble:_timeStep forKey:@"timeStep"];
+}
+
+@end

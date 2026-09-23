@@ -436,3 +436,42 @@ stays `nil` for every `color`/`float`-shaped slot, exactly the pre-existing defa
 crash risk introduced. Visual-accuracy deficit list, next entry: `star2`'s non-diffuse material
 tints (ambient occlusion strength, specular color, etc.) render at their class defaults, not
 their authored values, until this is wired.
+
+## `coin.scn` decodes correctly on a real armv7 guest, five meshes, three textures, a real `SCNPhysicsWorld` — first try, zero new bugs
+
+`coin.scn` is the last of the four target files and the heaviest: `star` is a group node
+(no geometry of its own) with five real mesh children — `Affiliate`, `Plane`, `Business`,
+`Inner`, `Outer` — three of which (`Affiliate`/`Plane`/`Business`) share `lighterTexture.jpg`,
+one (`Inner`) uses `darkerTexture.jpg`, one (`Outer`) uses `texture.jpg`; two of the five
+(`Affiliate`, `Business`) carry **two** `SCNGeometryElement`s each, not one — a tiny
+`primitiveType=2` (Line, 3 primitives, 12 bytes) alongside the real `primitiveType=0`
+(Triangles) element, both read and re-encoded faithfully, not merged or dropped. Oracle: the
+same throwaway-Swift-against-real-SceneKit method as `star2`, recorded before the guest run.
+
+Guest (`.agent-work/plan-and-analysis/gift-probe/coin_probe.m`, same embed-real-bytes-and-
+decode-through-`SCNScene`-on-the-emulated-`iPhone4,1 6.1.3` method): `pass`, `failures=0`,
+**every one of the 14 root children and all five mesh children matched the oracle exactly on
+the first guest run** — no second bug like `star2`'s `image`-key miss. Every `vectorCount`/
+`dataLength`/`primitiveCount`/`primitiveType`/`diffuseContents` for all five meshes, both
+two-element geometries' Line-then-Triangles pair, and all three texture names matched
+byte-for-byte against the numbers measured directly off the raw archive beforehand.
+
+**`SCNPhysicsWorld` is a new class this turn, absent from this port entirely before now** —
+`SceneKit.framework` never carried a `SCNPhysicsWorld` symbol on iOS 6 through 7.1.2
+(`_OBJC_CLASS_$_SCNPhysicsWorld` first exports at 8.0, same release-ladder measurement
+method as every other class here), and neither `gift.scn`/`diamond.scn`/`star2.scn` reach it
+(no physics-configured scene until `coin`). `SCNScene`'s archive key is literally
+`physicsWorld` (no divergence, matches the public property name) referencing a nested
+`SCNPhysicsWorld` object with `gravity`/`speed`/`timeStep` archived under their own property
+names too — plus an archive-only `scale` key with no public property to carry it to (not
+decoded, matches the same "editor/private key" pattern already seen on `SCNLight`) and a
+`scene` key that is a back-reference to the owning `SCNScene`, not a settable property (not
+decoded either, would be a retain cycle if it were). `coin.scn`'s authored `gravity=(0, 1.75,
+0)` is **not** the class default (`(0, -9.8, 0)`, real SceneKit's own documented default) —
+proof the value is read, not coincidentally correct — and the guest printed the exact same
+three numbers as the oracle on the very first run. `addBehavior:`/`removeBehavior:`/
+`removeAllBehaviors`/`allBehaviors` are real array management (`coin.scn` attaches none, so
+untested by this file, but not a stub); `rayTestWithSegment...`/two `contactTest...`
+variants/`convexSweepTest...` return an honest empty array and `updateCollisionPairs` is a
+genuine no-op — there is no `SCNPhysicsBody` anywhere in this port, so "no bodies, no
+contacts" is the true answer for this scene, not a placeholder pretending to work.
