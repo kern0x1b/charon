@@ -129,6 +129,14 @@
     return [archived toUIColor];
 }
 
++ (BOOL)decodeBool:(NSCoder *)coder forKey:(NSString *)key default:(BOOL)fallback
+{
+    if (![coder containsValueForKey:key]) {
+        return fallback;
+    }
+    return [coder decodeIntegerForKey:key] != 0;
+}
+
 + (NSURL *)decodePathContents:(NSCoder *)coder forKey:(NSString *)key
 {
     if (![coder containsValueForKey:key]) {

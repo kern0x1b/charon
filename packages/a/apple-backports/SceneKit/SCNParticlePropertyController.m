@@ -34,7 +34,8 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     if ((self = [self init])) {
-        _animation = [coder decodeObjectOfClass:[CAAnimation class] forKey:@"animation"];
+        id archivedAnimation = [coder decodeObjectOfClasses:[NSSet setWithObjects:[CAAnimation class], [NSDictionary class], nil] forKey:@"animation"];
+        _animation = [archivedAnimation isKindOfClass:[CAAnimation class]] ? archivedAnimation : nil;
         if ([coder containsValueForKey:@"inputMode"]) {
             _inputMode = [coder decodeIntegerForKey:@"inputMode"];
         }

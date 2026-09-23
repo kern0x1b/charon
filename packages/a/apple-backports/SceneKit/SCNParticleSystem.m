@@ -89,7 +89,7 @@ SCNParticleProperty const SCNParticlePropertyContactNormal = @"contactNormal";
         if ([coder containsValueForKey:@"emissionDuration"]) {
             _emissionDuration = [coder decodeDoubleForKey:@"emissionDuration"];
         }
-        _loops = [coder containsValueForKey:@"loops"] ? [coder decodeBoolForKey:@"loops"] : YES;
+        _loops = [CharonSCNCoding decodeBool:coder forKey:@"loops" default:YES];
         if ([coder containsValueForKey:@"birthRate"]) {
             _birthRate = [coder decodeDoubleForKey:@"birthRate"];
         }
@@ -130,9 +130,9 @@ SCNParticleProperty const SCNParticlePropertyContactNormal = @"contactNormal";
         if ([coder containsValueForKey:@"sortingMode"]) {
             _sortingMode = [coder decodeIntegerForKey:@"sortingMode"];
         }
-        _lightingEnabled = [coder decodeBoolForKey:@"lightingEnabled"];
-        _affectedByGravity = [coder containsValueForKey:@"affectedByGravity"] ? [coder decodeBoolForKey:@"affectedByGravity"] : YES;
-        _affectedByPhysicsFields = [coder containsValueForKey:@"affectedByPhysicsFields"] ? [coder decodeBoolForKey:@"affectedByPhysicsFields"] : YES;
+        _lightingEnabled = [CharonSCNCoding decodeBool:coder forKey:@"lightingEnabled" default:NO];
+        _affectedByGravity = [CharonSCNCoding decodeBool:coder forKey:@"affectedByGravity" default:YES];
+        _affectedByPhysicsFields = [CharonSCNCoding decodeBool:coder forKey:@"affectedByPhysicsFields" default:YES];
         BOOL speedFactorFound = [coder containsValueForKey:@"speedFactor"];
         if (speedFactorFound) {
             _speedFactor = [coder decodeDoubleForKey:@"speedFactor"];

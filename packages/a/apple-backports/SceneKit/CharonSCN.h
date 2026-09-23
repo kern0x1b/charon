@@ -12,6 +12,7 @@
 
 + (UIColor *)decodeColor:(NSCoder *)coder forKey:(NSString *)key;
 + (NSURL *)decodePathContents:(NSCoder *)coder forKey:(NSString *)key;
++ (BOOL)decodeBool:(NSCoder *)coder forKey:(NSString *)key default:(BOOL)fallback;
 
 + (void)pushSourceURL:(NSURL *)url;
 + (void)popSourceURL;

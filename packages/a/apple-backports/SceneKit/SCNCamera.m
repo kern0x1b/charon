@@ -51,11 +51,11 @@
         if ([coder containsValueForKey:@"zFar"]) {
             _zFar = [coder decodeDoubleForKey:@"zFar"];
         }
-        _usesOrthographicProjection = [coder decodeBoolForKey:@"usesOrthographicProjection"];
+        _usesOrthographicProjection = [CharonSCNCoding decodeBool:coder forKey:@"usesOrthographicProjection" default:NO];
         if ([coder containsValueForKey:@"orthographicScale"]) {
             _orthographicScale = [coder decodeDoubleForKey:@"orthographicScale"];
         }
-        _automaticallyAdjustsZRange = [coder decodeBoolForKey:@"automaticallyAdjustsZRange"];
+        _automaticallyAdjustsZRange = [CharonSCNCoding decodeBool:coder forKey:@"automaticallyAdjustsZRange" default:NO];
     }
     return self;
 }

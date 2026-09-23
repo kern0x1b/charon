@@ -51,9 +51,9 @@
         if ([coder containsValueForKey:@"minimumDistance"]) {
             _minimumDistance = [coder decodeDoubleForKey:@"minimumDistance"];
         }
-        _active = [coder containsValueForKey:@"active"] ? [coder decodeBoolForKey:@"active"] : YES;
-        _exclusive = [coder decodeBoolForKey:@"exclusive"];
-        _usesEllipsoidalExtent = [coder decodeBoolForKey:@"usesEllipsoidalExtent"];
+        _active = [CharonSCNCoding decodeBool:coder forKey:@"active" default:YES];
+        _exclusive = [CharonSCNCoding decodeBool:coder forKey:@"exclusive" default:NO];
+        _usesEllipsoidalExtent = [CharonSCNCoding decodeBool:coder forKey:@"usesEllipsoidalExtent" default:NO];
         if ([coder containsValueForKey:@"scope"]) {
             _scope = [coder decodeIntegerForKey:@"scope"];
         }

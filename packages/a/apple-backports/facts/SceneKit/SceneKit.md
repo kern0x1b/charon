@@ -249,6 +249,22 @@ already exporting at 9.0 — the registry entry was wrong by a full release,
 underneath a green gate. Run it before a band build, not instead of one: see
 the script's own header for what it does and does not cover.
 
+## `SCNParticlePropertyController.animation` is not a `CAAnimation` reference in the archive
+
+Measured on `gift.scn`, confirmed by the real guest decode failing loudly before this was
+fixed: the archive's `animation` key under a `SCNParticlePropertyController` is not a
+`CAAnimation` object reference at all. It is a generic, engine-agnostic dictionary --
+`{"class": "animation", "animation": {"keyframe": {...16 key/value pairs...}}}` -- that
+Xcode's Scene Editor emits instead of relying on `CAAnimation`'s own `NSCoding`. Reconstructing
+a real `CAKeyframeAnimation` from that dictionary shape is not implemented; `initWithCoder:`
+now accepts either a real `CAAnimation` (kept) or a dictionary (silently kept nil, not
+crashed). Effect: `SCNParticlePropertyController.animation` is `nil` for every controller
+gift.scn/diamond.scn carry, so whichever particle property they meant to vary over life
+does not vary -- named here as visual-accuracy deficit list item two, alongside the area
+light. Do not extend `initWithCoder:` for this key from the four fields seen in one
+`gift.scn` instance without re-checking a wider sample first (the dictionary format may
+carry more animation kinds -- basic, spring -- than keyframe).
+
 ## `SCNPhysicsRadialGravityField` has no public header at all
 
 Unlike every other class in this facts file, `SCNPhysicsRadialGravityField`

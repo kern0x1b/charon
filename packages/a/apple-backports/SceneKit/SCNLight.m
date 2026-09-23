@@ -72,7 +72,7 @@ SCNLightType const SCNLightTypeSpot = @"spot";
         if ([coder containsValueForKey:@"intensity"]) {
             _intensity = [coder decodeDoubleForKey:@"intensity"];
         }
-        _castsShadow = [coder decodeBoolForKey:@"castsShadow"];
+        _castsShadow = [CharonSCNCoding decodeBool:coder forKey:@"castsShadow" default:NO];
         if ([coder containsValueForKey:@"shadowRadius"]) {
             _shadowRadius = [coder decodeDoubleForKey:@"shadowRadius"];
         }

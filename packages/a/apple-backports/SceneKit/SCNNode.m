@@ -153,10 +153,10 @@
         _rotation = [coder containsValueForKey:@"rotation"] ? [CharonSCNCoding decodeVector4:coder forKey:@"rotation"] : SCNVector4Make(0, 0, 1, 0);
         _orientation = [coder containsValueForKey:@"orientation"] ? [CharonSCNCoding decodeVector4:coder forKey:@"orientation"] : SCNVector4Make(0, 0, 0, 1);
         _scale = [coder containsValueForKey:@"scale"] ? [CharonSCNCoding decodeVector3:coder forKey:@"scale"] : SCNVector3Make(1, 1, 1);
-        _hidden = [coder decodeBoolForKey:@"hidden"];
+        _hidden = [CharonSCNCoding decodeBool:coder forKey:@"hidden" default:NO];
         _opacity = [coder containsValueForKey:@"opacity"] ? [coder decodeDoubleForKey:@"opacity"] : 1;
         _renderingOrder = [coder decodeIntegerForKey:@"renderingOrder"];
-        _castsShadow = [coder containsValueForKey:@"castsShadow"] ? [coder decodeBoolForKey:@"castsShadow"] : YES;
+        _castsShadow = [CharonSCNCoding decodeBool:coder forKey:@"castsShadow" default:YES];
         _categoryBitMask = [coder containsValueForKey:@"categoryBitMask"] ? [coder decodeIntegerForKey:@"categoryBitMask"] : 1;
 
         NSArray<SCNParticleSystem *> *particleSystem = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSArray class], [SCNParticleSystem class], nil] forKey:@"particleSystem"];

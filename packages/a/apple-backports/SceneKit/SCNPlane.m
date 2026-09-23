@@ -30,6 +30,11 @@
 @synthesize cornerRadius = _cornerRadius;
 @synthesize cornerSegmentCount = _cornerSegmentCount;
 
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     if ((self = [super initWithCoder:coder])) {

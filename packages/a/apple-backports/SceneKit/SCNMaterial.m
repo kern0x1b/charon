@@ -78,7 +78,7 @@ SCNLightingModel const SCNLightingModelConstant = @"SCNLightingModelConstant";
         if (lightingModel.length) {
             _lightingModelName = lightingModel;
         }
-        _doubleSided = [coder decodeBoolForKey:@"doubleSided"];
+        _doubleSided = [CharonSCNCoding decodeBool:coder forKey:@"doubleSided" default:NO];
         if ([coder containsValueForKey:@"transparency"]) {
             _transparency = [coder decodeDoubleForKey:@"transparency"];
         }
