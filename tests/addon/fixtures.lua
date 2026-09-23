@@ -20,6 +20,13 @@ function run(folder, program, argv)
     return os.iorunv(program, argv, {curdir = folder})
 end
 
+-- An armv7 object compiled from C source, symbols hidden unless the source says otherwise.
+function object(folder, name, source)
+    io.writefile(path.join(folder, name .. ".c"), source)
+    run(folder, "xcrun", {"clang", "-target", "armv7-apple-ios6.0", "-Wno-incompatible-sysroot", "-fvisibility=hidden", "-c", name .. ".c", "-o", name .. ".o"})
+    return path.join(folder, name .. ".o")
+end
+
 function link(folder, ld64, output, triple, source, extra)
     local linker = triple:startswith("armv7") and ld64 or "ld"
     run(folder, "xcrun", table.join({"clang", "-target", triple, "-Wno-incompatible-sysroot", "-fuse-ld=" .. linker,

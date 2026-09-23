@@ -73,7 +73,7 @@ local function internal_symbol(name)
     return bare:startswith("charon_") or bare:startswith("Charon")
 end
 
-local function defined_symbols(file, hidden)
+local function symbols_where(file, wanted)
     local data = macho.read(file)
     local found = {}
     for _, image in ipairs(macho.images(data)) do
@@ -81,8 +81,8 @@ local function defined_symbols(file, hidden)
             local symoff, nsyms, stroff = image.symtab[1], image.symtab[2], image.symtab[3]
             local entry = image.wide and 16 or 12
             for index = 0, nsyms - 1 do
-                local strx, kind = string.unpack("<I4B", data, image.base + symoff + index * entry + 1)
-                if kind & 0xE0 == 0 and kind & 0x0E == 0x0E and (hidden or (kind & 0x10 == 0 and kind & 0x01 ~= 0)) then
+                local strx, kind, _, _, value = string.unpack(image.wide and "<I4BBI2I8" or "<I4BBI2I4", data, image.base + symoff + index * entry + 1)
+                if wanted(kind, value) then
                     local finish = data:find("\0", image.base + stroff + strx + 1, true)
                     found[data:sub(image.base + stroff + strx + 1, finish - 1)] = true
                 end
@@ -90,6 +90,20 @@ local function defined_symbols(file, hidden)
         end
     end
     return table.orderkeys(found)
+end
+
+local function defined_symbols(file, hidden)
+    return symbols_where(file, function (kind)
+        return kind & 0xE0 == 0 and kind & 0x0E == 0x0E and (hidden or (kind & 0x10 == 0 and kind & 0x01 ~= 0))
+    end)
+end
+
+-- What an object needs another file to define (nm -u): external, undefined, and not a common symbol,
+-- which an object defines itself.
+local function undefined_symbols(file)
+    return symbols_where(file, function (kind, value)
+        return kind & 0xE0 == 0 and kind & 0x0E == 0 and kind & 0x01 ~= 0 and value == 0
+    end)
 end
 
 local function exported_symbols(file)
@@ -173,9 +187,12 @@ local function names_a_class(symbols)
     return false
 end
 
-function band(release_exports, objects, arrived)
-    local kept, reexported = {}, {}
+-- A band neither keeps nor re-exports an object below its registry minimum (range.minimums, from
+-- minimums() below, for the band's release range.release); those it names as left out, the third answer.
+function band(release_exports, objects, arrived, range)
+    local kept, reexported, left = {}, {}, {}
     for _, object in ipairs(objects) do
+        local minimum = range and range.minimums[object]
         local symbols = exported_symbols(object)
         local present = {}
         for _, symbol in ipairs(symbols) do
@@ -183,7 +200,9 @@ function band(release_exports, objects, arrived)
                 table.insert(present, symbol)
             end
         end
-        if #present == 0 or (arrived and not names_a_class(present) and arrived(object)) then
+        if minimum and dyld.compare_versions(range.release, minimum) < 0 then
+            table.insert(left, object)
+        elseif #present == 0 or (arrived and not names_a_class(present) and arrived(object)) then
             table.insert(kept, object)
         elseif #present == #symbols then
             table.join2(reexported, symbols)
@@ -198,25 +217,32 @@ function band(release_exports, objects, arrived)
                   path.filename(object), table.concat(present, " "), table.concat(absent, " "))
         end
     end
-    return kept, reexported
+    return kept, reexported, left
 end
 
 local function compiled(opt)
     local attach = path.join(opt.builddir, "objects", "attach.o")
     os.mkdir(path.directory(attach))
     compile(opt, path.join(opt.root, "attach.c"), attach)
-    local objects, origins = {}, {}
+    local placed = floors(opt)
+    local objects, origins, minimums = {}, {}, {}
     for _, library in ipairs(LIBRARIES) do
         objects[library.name] = {}
         for _, source in ipairs(sources(opt.root, library)) do
-            local object = path.join(opt.builddir, "objects", library.folder, path.basename(source) .. ".o")
-            os.mkdir(path.directory(object))
-            compile(opt, source, object)
+            local object
+            if placed[source] then
+                object = placed[source].object
+                minimums[object] = placed[source].minimum
+            else
+                object = path.join(opt.builddir, "objects", library.folder, path.basename(source) .. ".o")
+                os.mkdir(path.directory(object))
+                compile(opt, source, object)
+            end
             table.insert(objects[library.name], object)
             origins[object] = source
         end
     end
-    return attach, objects, origins
+    return attach, objects, origins, minimums
 end
 
 local function exported_through(release, install, seen)
@@ -371,7 +397,16 @@ local function carried_classes(cache)
 end
 
 local function link(opt, library, attach, objects, releases, outputdir, checked)
-    local kept, reexported = band(releases[1].exports, objects, checked and later_than(opt, checked.release))
+    local release = checked and checked.release or opt.deployment
+    local kept, reexported, left = band(releases[1].exports, objects, checked and later_than(opt, checked.release), {release = release, minimums = opt.minimums or {}})
+    if #left > 0 then
+        local named = {}
+        for _, object in ipairs(left) do
+            table.insert(named, string.format("%s (%s)", path.filename(opt.origins[object]), opt.minimums[object]))
+        end
+        cprint("${color.warning}note:${clear} the band for iOS %s leaves %d objects of %s out below their registry minimum: %s",
+               release, #named, library.name, table.concat(named, " "))
+    end
     if not reexports(opt.deployment) then
         reexported = {}
     end
@@ -416,8 +451,19 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
     if cxx then
         table.insert(arguments, "-lc++")
     end
+    -- A framework the band's release does not have is not linked: it could not load there. What the
+    -- band keeps then needs none of it, or the link names the symbols that do.
+    local real_paths = framework_install_path(library, releases)
+    local absent = {}
     for _, framework in ipairs(library.frameworks) do
-        table.join2(arguments, {"-framework", framework})
+        if real_paths[framework] then
+            table.join2(arguments, {"-framework", framework})
+        else
+            table.insert(absent, framework)
+        end
+    end
+    if #absent > 0 then
+        cprint("${color.warning}note:${clear} the band for iOS %s links %s without %s, which the release does not have", release, library.name, table.concat(absent, " "))
     end
     if #reexported > 0 then
         local list = path.join(opt.builddir, library.name .. ".reexported")
@@ -438,7 +484,6 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
         table.insert(arguments, "-Wl,-unexported_symbols_list," .. list)
     end
     os.vrunv("xcrun", arguments)
-    local real_paths = framework_install_path(library, releases)
     local embedded
     for _, framework in ipairs(library.frameworks) do
         local real = real_paths[framework]
@@ -564,6 +609,25 @@ function check_categories(release, inventory, binaries, architecture, version)
     end
 end
 
+-- The members a binary's categories add to classes it does not define itself: the API a category
+-- carries, as the registry spells it.
+local function added_members(inventory, ours)
+    local found = {}
+    for name, class in pairs(inventory and inventory.classes or {}) do
+        if not class.image and not ours[name] then
+            for kind, sign in pairs({instance = "-", class = "+"}) do
+                for selector in pairs(class[kind]) do
+                    local plain = selector:sub(2)
+                    if not plain:startswith("charon_") and not plain:startswith(".cxx_") and plain ~= "load" then
+                        table.insert(found, string.format("%s[%s %s]", sign, name, plain))
+                    end
+                end
+            end
+        end
+    end
+    return found
+end
+
 function surface(binaries, architecture)
     local found = {classes = {}, members = {}, symbols = {}, registered = {}, answered = {}}
     for _, binary in ipairs(binaries) do
@@ -594,16 +658,9 @@ function surface(binaries, architecture)
                     end
                 end
             end
-            if not class.image and not ours[name] then
-                for kind, sign in pairs({instance = "-", class = "+"}) do
-                    for selector in pairs(class[kind]) do
-                        local plain = selector:sub(2)
-                        if not plain:startswith("charon_") and not plain:startswith(".cxx_") and plain ~= "load" then
-                            found.members[string.format("%s[%s %s]", sign, name, plain)] = true
-                        end
-                    end
-                end
-            end
+        end
+        for _, member in ipairs(added_members(inventory, ours)) do
+            found.members[member] = true
         end
     end
     return found
@@ -728,21 +785,23 @@ local function in_range(entry, deployment)
         and not (entry.maximum and dyld.compare_versions(deployment, entry.maximum) >= 0)
 end
 
+-- The registry entry a built name answers to: its own spelling, else the entry of the class that owns it.
+local function entry_of(listed, name)
+    for spelling in pairs(spellings(name)) do
+        if listed[spelling] then
+            return listed[spelling]
+        end
+    end
+    local owner = name:match("^[-+]%[([%w_]+) ") or name:match("^([%u][%w_]*)%.")
+    return owner and listed[owner] or nil
+end
+
 function check_registry(root, found, complete, deployment, exports, inventory)
     local listed, incomplete = registry(root)
     local unlisted, undocumented = {}, {}
-    local function known(name)
-        for spelling in pairs(spellings(name)) do
-            if listed[spelling] then
-                return true
-            end
-        end
-        local owner = name:match("^[-+]%[([%w_]+) ") or name:match("^([%u][%w_]*)%.")
-        return owner ~= nil and listed[owner] ~= nil
-    end
     for _, carried in ipairs({found.classes, found.members, found.symbols}) do
         for name in pairs(carried) do
-            if not known(name) then
+            if not entry_of(listed, name) then
                 table.insert(unlisted, name)
             end
         end
@@ -783,7 +842,7 @@ function check_registry(root, found, complete, deployment, exports, inventory)
             built = built or (entry.kind == "class" and (found.registered or {})[name]) or false
             local carried = deployment and entry.introduced and dyld.compare_versions(entry.introduced, deployment) <= 0
             carried = carried or (exports and exports["_" .. name:gsub("%(%)$", "")]) or false
-            local ours = not (deployment and entry.maximum and dyld.compare_versions(deployment, entry.maximum) >= 0)
+            local ours = not deployment or in_range(entry, deployment)
             local declared = entry.kind == "protocol" or (owner and ((listed[owner] and listed[owner].kind == "protocol") or (inventory and inventory.protocols and inventory.protocols[owner] ~= nil)))
             if entry.status == "implemented" and not built and not carried and ours and not declared then
                 table.insert(unbuilt, name)
@@ -823,11 +882,158 @@ function check_registry(root, found, complete, deployment, exports, inventory)
 end
 
 
+-- The names one object carries as API: its exported classes, functions and constants, and the members
+-- its categories add. An object that carries none is a helper of the objects that do.
+local function carried_names(object, architecture)
+    local names, ours = {}, {}
+    for _, symbol in ipairs(exported_symbols(object)) do
+        local class = symbol:match("^_OBJC_CLASS_%$_(.+)$") or symbol:match("^_OBJC_METACLASS_%$_(.+)$")
+        if class then
+            ours[class] = true
+        end
+        names[class or symbol:sub(2)] = true
+    end
+    for _, member in ipairs(added_members(objc.binary_inventory(object, architecture), ours)) do
+        names[member] = true
+    end
+    return table.orderkeys(names)
+end
+
+local function lower(a, b)
+    if a == nil or b == "" then
+        return b
+    end
+    if a == "" or b == nil then
+        return a
+    end
+    return dyld.compare_versions(a, b) <= 0 and a or b
+end
+
+-- The release each object is carried from, {object = version}: the `minimum` of the registry entries
+-- its API answers to, and no key for an object without one. An object whose entries name different
+-- minimums (an entry without one names none) is refused, as misplaced() refuses mixed releases: the
+-- earliest would carry API below its minimum, the latest would drop API the registry carries earlier.
+-- A helper takes the lowest minimum among the objects that name a symbol it defines (nm -u), through
+-- other helpers as well; the third answer lists the objects that carry nothing the registry can place
+-- and that no object names, such as an installer whose +load adds its API at run time. Such an object
+-- takes the highest minimum among the objects it names, through others of its kind as well, since it
+-- links only where every one of them is carried; the fourth answer says which, {object = {minimum,
+-- from, symbol}}. With nothing to take, every band keeps it. An object the registry or its callers
+-- place below an object it names is refused as well: it would not link in the bands between. A minimum
+-- at or below the deployment bounds nothing, so it mixes with none.
+function minimums(listed, objects, architecture, deployment)
+    local found, problems, bounds, helpers = {}, {}, {}, {}
+    for _, object in ipairs(objects) do
+        local names = carried_names(object, architecture)
+        if #names == 0 then
+            table.insert(helpers, object)
+        else
+            local by, order = {}, {}
+            for _, name in ipairs(names) do
+                local entry = entry_of(listed, name)
+                if entry then
+                    local minimum = entry.minimum or ""
+                    if minimum ~= "" and deployment and dyld.compare_versions(minimum, deployment) <= 0 then
+                        minimum = ""
+                    end
+                    if not by[minimum] then
+                        by[minimum] = {}
+                        table.insert(order, minimum)
+                    end
+                    table.insert(by[minimum], name)
+                end
+            end
+            if #order > 1 then
+                table.sort(order, function (a, b) return lower(a, b) == a and a ~= b end)
+                local described = {}
+                for _, minimum in ipairs(order) do
+                    table.insert(described, string.format("%s with %s", table.concat(by[minimum], " "), minimum == "" and "no registry minimum" or ("registry minimum " .. minimum)))
+                end
+                table.insert(problems, string.format("%s defines %s; an object is carried from one release on, so split it", path.filename(object), table.concat(described, " and ")))
+            end
+            bounds[object] = #order == 1 and order[1] or ""
+        end
+    end
+    local definer, helper = {}, {}
+    for _, object in ipairs(objects) do
+        for _, symbol in ipairs(defined_symbols(object, true)) do
+            definer[symbol] = object
+        end
+    end
+    for _, object in ipairs(helpers) do
+        helper[object] = true
+    end
+    local changed = true
+    while changed do
+        changed = false
+        for _, object in ipairs(objects) do
+            if bounds[object] then
+                for _, symbol in ipairs(undefined_symbols(object)) do
+                    local named = definer[symbol]
+                    if named and named ~= object and helper[named] then
+                        local bound = lower(bounds[named], bounds[object])
+                        if bound ~= bounds[named] then
+                            bounds[named] = bound
+                            changed = true
+                        end
+                    end
+                end
+            end
+        end
+    end
+    local unreached = {}
+    for _, object in ipairs(objects) do
+        if bounds[object] == nil then
+            table.insert(unreached, object)
+        elseif bounds[object] ~= "" then
+            found[object] = bounds[object]
+        end
+    end
+    local needs, inherited = {}, {}
+    for _, object in ipairs(unreached) do
+        needs[object] = undefined_symbols(object)
+    end
+    changed = true
+    while changed do
+        changed = false
+        for _, object in ipairs(unreached) do
+            for _, symbol in ipairs(needs[object]) do
+                local named = definer[symbol]
+                local minimum = named and named ~= object and found[named]
+                if minimum and (not found[object] or dyld.compare_versions(minimum, found[object]) > 0) then
+                    found[object] = minimum
+                    inherited[object] = {minimum = minimum, from = named, symbol = symbol}
+                    changed = true
+                end
+            end
+        end
+    end
+    for _, object in ipairs(objects) do
+        if bounds[object] ~= nil then
+            for _, symbol in ipairs(needs[object] or undefined_symbols(object)) do
+                local named = definer[symbol]
+                local minimum = named and named ~= object and found[named]
+                if minimum and (not found[object] or dyld.compare_versions(minimum, found[object]) > 0) then
+                    table.insert(problems, string.format("%s is carried %s and names %s, which %s defines only from %s on; it would not link below that, so give its entries that minimum or move the symbol to a file of its own",
+                                                         path.filename(object), found[object] and ("from " .. found[object]) or "by every band", symbol, path.filename(named), minimum))
+                end
+            end
+        end
+    end
+    local kept = {}
+    for _, object in ipairs(unreached) do
+        if not found[object] then
+            table.insert(kept, object)
+        end
+    end
+    return found, problems, kept, inherited
+end
+
 function build(opt)
     local release = loaded(opt.cache, opt.architecture)
     opt = table.join(opt, {triple = opt.architecture .. "-apple-ios" .. opt.deployment})
-    local attach, objects, origins = compiled(opt)
-    opt = table.join(opt, {origins = origins})
+    local attach, objects, origins, minimums = compiled(opt)
+    opt = table.join(opt, {origins = origins, minimums = minimums})
     check_releases(opt, objects, origins)
     local built = {}
     for _, library in ipairs(LIBRARIES) do
@@ -878,6 +1084,73 @@ local LISTED = {}
 local function listed(root)
     LISTED[root] = LISTED[root] or registry(root)
     return LISTED[root]
+end
+
+-- The sources whose registry minimum is above the deployment, {source = {minimum, object}}: a band
+-- below that release neither compiles nor keeps them, and the bands from it on carry the object
+-- compiled for the minimum itself. Which entries an object answers to is known only once it is
+-- compiled, so below the highest minimum the registry names, every source is compiled once for that
+-- release first; a deployment at or above it has every source in range and compiles nothing extra.
+function floors(opt)
+    local top
+    for _, entry in pairs(listed(opt.root)) do
+        if entry.minimum and dyld.compare_versions(entry.minimum, opt.deployment) > 0 and (not top or dyld.compare_versions(entry.minimum, top) > 0) then
+            top = entry.minimum
+        end
+    end
+    if not top then
+        return {}
+    end
+    local function at(release)
+        return table.join(opt, {deployment = release, triple = opt.architecture .. "-apple-ios" .. release})
+    end
+    local objects, origins = {}, {}
+    for _, library in ipairs(LIBRARIES) do
+        for _, source in ipairs(sources(opt.root, library)) do
+            local object = path.join(opt.builddir, "objects-" .. top, library.folder, path.basename(source) .. ".o")
+            os.mkdir(path.directory(object))
+            compile(at(top), source, object)
+            table.insert(objects, object)
+            origins[object] = source
+        end
+    end
+    local found, problems, unreached, inherited = minimums(listed(opt.root), objects, opt.architecture, opt.deployment)
+    if #problems > 0 then
+        raise("%d objects cannot be placed by their registry minimum above iOS %s:\n  %s", #problems, opt.deployment, table.concat(problems, "\n  "))
+    end
+    local taken = {}
+    for _, object in ipairs(objects) do
+        local from = inherited[object]
+        if from then
+            table.insert(taken, string.format("%s (%s, from %s by %s)", path.filename(origins[object]), from.minimum, path.filename(origins[from.from]), from.symbol))
+        end
+    end
+    if #taken > 0 then
+        cprint("${color.warning}note:${clear} %d objects carry no API the registry can place and take the highest minimum of the objects they name: %s",
+               #taken, table.concat(taken, " "))
+    end
+    if #unreached > 0 then
+        local named = {}
+        for _, object in ipairs(unreached) do
+            table.insert(named, path.filename(origins[object]))
+        end
+        cprint("${color.warning}note:${clear} %d objects carry no API the registry can place and no other object names them, so every band from iOS %s keeps them: %s",
+               #named, opt.deployment, table.concat(named, " "))
+    end
+    local placed = {}
+    for _, object in ipairs(objects) do
+        local minimum = found[object]
+        if minimum and dyld.compare_versions(minimum, opt.deployment) > 0 then
+            local source = origins[object]
+            if minimum ~= top then
+                object = path.join(opt.builddir, "objects-" .. minimum, path.filename(path.directory(object)), path.filename(object))
+                os.mkdir(path.directory(object))
+                compile(at(minimum), source, object)
+            end
+            placed[source] = {minimum = minimum, object = object}
+        end
+    end
+    return placed
 end
 
 local LADDERS = {}
@@ -1085,7 +1358,8 @@ end
 
 -- The bands the package stages, {point, first, last} each, and the architecture of every firmware
 -- the catalog lists by release: a band point is every release an object's API arrived in after the
--- deployment, and a band is checked against the first and the last release it runs on.
+-- deployment and every registry minimum above it, and a band is checked against the first and the
+-- last release it runs on.
 local function band_plan(opt, objects)
     local points = {[opt.deployment] = true}
     for _, library in ipairs(staged_libraries(opt)) do
@@ -1095,6 +1369,9 @@ local function band_plan(opt, objects)
                 if dyld.compare_versions(version, opt.deployment) > 0 then
                     points[version] = true
                 end
+            end
+            if (opt.minimums or {})[object] then
+                points[opt.minimums[object]] = true
             end
         end
     end
@@ -1146,8 +1423,8 @@ end
 
 function stage_bands(opt)
     opt = table.join(opt, {triple = opt.architecture .. "-apple-ios" .. opt.deployment})
-    local attach, objects, origins = compiled(opt)
-    opt = table.join(opt, {origins = origins})
+    local attach, objects, origins, minimums = compiled(opt)
+    opt = table.join(opt, {origins = origins, minimums = minimums})
     check_releases(opt, objects, origins)
     local ranges, architectures = band_plan(opt, objects)
     local home = path.join(opt.stage, INSTALL_FOLDER)
@@ -1161,7 +1438,7 @@ function stage_bands(opt)
             table.insert(caches, {cache = file, release = release})
             local reexported = {}
             for _, library in ipairs(staged_libraries(opt)) do
-                local _, symbols = band(found.exports, objects[library.name], later_than(opt, release))
+                local _, symbols = band(found.exports, objects[library.name], later_than(opt, release), {release = release, minimums = opt.minimums})
                 table.join2(reexported, symbols)
             end
             signatures[release] = table.concat(reexported, " ")
