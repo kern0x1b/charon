@@ -2,16 +2,6 @@
   "framework": "CoreGraphics",
   "entries": [
     {
-      "api": "CGColorCreateCopyByMatchingToColorSpace()",
-      "kind": "function",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 9, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, CoreGraphics"
-    },
-    {
       "api": "CGColorSpaceCreateWithPlatformColorSpace()",
       "kind": "function",
       "introduced": "9.0",
