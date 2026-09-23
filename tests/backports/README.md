@@ -180,10 +180,12 @@ device.
 provider configuration, the deadline each action class carries, the completeness of a transaction, the equality, hashing and secure
 coding of a handle, and what a copy of each object is. A tool has no VoIP entitlement, so anything that reaches callservicesd comes back
 `CXErrorCodeRequestTransactionErrorUnentitled` and no delegate method is ever called; the transactions the port really performs, the
-timeouts and the refusals are held on the device by `device/callkit.m` instead. Two records are expected to differ and are named in the
+timeouts and the refusals are held on the device by `device/callkit.m` instead. Four records are expected to differ and are named in the
 script: the host's CallKit is that of iOS 14 and later, which drops the deprecated localized name from a configuration's copy and keeps a
-ringtone as a resolved URL, where the iOS 10 header the port implements has two plain properties. The test fails if they ever stop
-differing, and the device is held to the port's answer for those two and to the host's for the rest.
+ringtone as a resolved URL, where the iOS 10 header the port implements has two plain properties; and macOS runs no call directory
+service, so the host's `CXCallDirectoryManager` answers a reload and a status with the connection's failure, where the port answers
+NoExtensionFound. The test fails if they ever stop differing, and the device is held to the port's answer for those four and to the
+host's for the rest.
 
 `host/foundation2/run.sh` runs the cases of `device/foundation2-cases.m`, the
 ones the device runs, against the host's Foundation and against the renamed
