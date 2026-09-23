@@ -238,8 +238,9 @@ static CGFloat drag_section(NSInteger section)
         CHECK(drag_offsets.count > 3 && [drag_offsets.lastObject doubleValue] == offset, "the handler was told each offset, and the last is the section's");
         UICollectionViewCell *first = [drag_view cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
         CHECK(first == nil || first.frame.origin.x < 0, "the cells moved with the offset");
-        drag_before = offset;
     });
+    gesture_step(2.5, ^{});
+    gesture_step(0.1, ^{ drag_before = drag_section(0); });
     gesture_drag(^{ return CGPointMake(160, 400); }, ^{ return CGPointMake(160, 200); }, 8, 2.5);
     gesture_step(0.1, ^{
         CHECK(drag_view.contentOffset.y > 100, "a finger dragged up outside the section scrolls the collection view");
@@ -262,7 +263,7 @@ static CGFloat drag_section(NSInteger section)
         CHECK(drag_section(0) < drag_before, "a section dragged back moves back");
     });
     gesture_step(2.5, ^{});
-    [self useDragView:5];
+    [self useDragView:4];
     gesture_step(0.1, ^{ CHECK(drag_section(0) == 0, "a group-paging section starts at its first group"); });
     gesture_drag(^{ return CGPointMake(250, 50); }, ^{ return CGPointMake(170, 50); }, 6, 2.5);
     gesture_step(0.1, ^{
@@ -281,7 +282,8 @@ static CGFloat drag_section(NSInteger section)
     gesture_step(0.05, ^{
         CHECK(drag_section(0) == 0 || drag_section(0) < 0, "a section pulled past its start gives, as a scroll view does, and never runs off");
     });
-    gesture_step(1.5, ^{
+    gesture_step(1.5, ^{});
+    gesture_step(0.05, ^{
         CHECK(fabs(drag_section(0)) < 0.5, "and comes back to its start once the finger lifts");
     });
     gesture_run(^{
