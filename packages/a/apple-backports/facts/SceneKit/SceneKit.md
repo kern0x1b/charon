@@ -1,0 +1,290 @@
+# SceneKit: the .scn archive format, measured against real Telegram assets
+
+Source of the measurements below: `/Applications/Telegram.app/Contents/Resources/{gift,diamond,star2,coin,badge,business,lightspeed,star,swirl}.scn`,
+the macOS Telegram client installed on the development machine — a static app
+resource, not user data. Read with `plutil -p` and with Python's `plistlib`
+(walking `$objects`/`$class`/`$classname` to trace which object references
+which). Cross-checked against a real `SCNScene(url:)` load on macOS SceneKit
+via a throwaway Swift script, which is a real, running Apple SceneKit acting
+as a behavior oracle, not a guess. iOS-asset equivalence is assumed, not
+measured: the iOS bundle carries `gift2_<version>.scn` behind a decompression
+step, and the version suffix is a real reason the two could differ. If they
+do, `SCNKeyedUnarchiver`'s failure will name the missing class or leave a
+property at its default — loud or silent-but-visible, not a crash.
+
+## Fact: every color is a nested keyed archive, not an object reference
+
+`SCNLight.color`, `.shadowColor`, `SCNParticleSystem.particleColor` are never
+resolved through the outer archive's `$objects` table the way every other
+object property is. Each is an `NSMutableData` whose bytes are themselves a
+complete, independent `NSKeyedArchiver` payload (own `$archiver`/`$top`/
+`$objects`), written by the real `NSColor` on the authoring Mac. Its root
+object is class `"NSColor"`, with `NSColorSpace` (`NSICC` profile blob +
+`NSSpaceID`) and `NSComponents` (a dictionary whose `NSRGB` or `NSWhite`
+key holds a plain space-separated string of floats, e.g.
+`"0.5764705882 0.4470588235 1 1"`).
+
+This is a fact about Apple's keyed-archive format in general, not a SceneKit
+peculiarity — the next reader who opens a `.plist`/`.scn`/`.data`-carrying
+archive from Apple's own tooling should expect nested archives inside
+`NSData` fields wherever the original author used a class the top-level
+archiver didn't want to embed directly.
+
+Implementation: `CharonSCNCoding.decodeColor:forKey:` opens a *second*
+`NSKeyedUnarchiver` over the `NSData`, with `requiresSecureCoding = YES` and
+`[unarchiver setClass:[CharonSCNArchivedColor class] forClassName:@"NSColor"]`
+— it never requires a class actually named `NSColor` to exist (it does not,
+on this platform). `CharonSCNArchivedColor` reads `NSComponents`/`NSRGB`/
+`NSWhite` and vends a `UIColor`. This works unconditionally, independent of
+whether an iOS-authored archive nests `NSColor` or `UIColor` — if it turns
+out to be `UIColor` directly, `decodeColor:` already has a plain-object
+fallback path.
+
+## Fact: image/file content is `{"path": "<name>"}`, resolved beside the .scn
+
+`SCNMaterialProperty.contents` and `SCNParticleSystem.particleImage`, when
+they hold a file reference, do not carry image bytes. They are archived as
+`{"path": "<filename>"}`, e.g. `coin.scn`'s three diffuse textures decode to
+the literal strings `"lighterTexture.jpg"`, `"darkerTexture.jpg"`,
+`"texture.jpg"`, and `gift.scn`'s `particleImage` decodes to `"particles.png"`.
+In every case the named file is a flat sibling of the `.scn` in
+`Contents/Resources/` — confirmed by `find`, not assumed.
+
+`CharonSCNCoding.decodePathContents:forKey:` resolves this relative to the
+scene's own source URL, tracked through `+[CharonSCNCoding pushSourceURL:]`/
+`popSourceURL`/`currentSourceURL` (a small explicit stack, pushed by
+`+[SCNScene sceneWithURL:options:error:]` around the decode and popped
+after) — not a hidden global read at decode time from an ambient location.
+This mirrors the real mechanism `loadCompressedScene` already depends on:
+Telegram decompresses to a temp directory first specifically so this
+relative resolution has something to resolve against.
+
+## Two "вероятно" from the previous turn, closed by tracing referrers, not by reading types
+
+- **`SCNPlane`** in `gift.scn`: exactly one instance, referenced only by
+  `SCNParticleSystem.emitterShape` (never by any node's `.geometry`). It is
+  a shape for particle emission math, not a drawn surface. Its own
+  `.materials` array holds one `SCNMaterial` that has never had any of
+  `diffuse`/`ambient`/`specular`/etc. touched (none of those keys appear in
+  its archived dictionary) — every `SCNGeometry` carries a materials array
+  by construction, this one is inert.
+- **`SCNMaterial`/`SCNMaterialProperty`** in `gift.scn`: the nine
+  `SCNMaterialProperty` instances belong to `SCNLight.gobo`/
+  `.probeEnvironment` (five different lights) and `SCNScene.background`/
+  `.environment` — not to any visible mesh (there is none in this file) and
+  not to particles either (particle appearance goes through
+  `particleImage`/`particleColor` directly, not through a `SCNMaterial`).
+  None of the nine carry a `contents` key at all. Consequence: `gift` and
+  `diamond` need zero texture-decoding code for materials — only property
+  bags that decode to their defaults.
+
+## Divergence table: API name vs. archive key name
+
+The single most dangerous class of bug here: property exists, decoder
+doesn't recognize the archive key, value silently stays at its default,
+nothing crashes, the scene renders looking wrong. Keep this list as the one
+place that protects against it — do not scatter individual notes in code
+comments.
+
+| Class | Public API name | Archive key | Effect if missed |
+| --- | --- | --- | --- |
+| `SCNNode` (`SCNParticleSystemSupport` category) | `particleSystems` (array) | `particleSystem` (**singular**, one object — plural `particleSystems` array key also exists and is additionally checked) | a node's particle emitter never attaches; nothing emits |
+| `SCNCamera` | `fieldOfView` | `yFov` (falls back to `fov`) | camera renders at whatever default FOV we pick instead of the authored one — wrong framing |
+| `SCNLight` | `categoryBitMask` | `lightCategoryBitMask` | light/geometry category masking silently doesn't match; harmless unless the scene relies on masks to exclude a light from some geometry — not the case in `gift`/`diamond`/`star2`/`coin`, all lights hit everything |
+| `SCNLight` | `automaticallyAdjustsShadowProjection` | `autoShadowProjection` | not implemented this turn (shadow-quality tier, see skip list) — recorded here so whoever adds it does not re-derive the divergence |
+
+## Skip list: keys read from the archive but not decoded, by class, with visual weight
+
+Not decoding these is a real, named cut — not an oversight. Split by
+whether the owner is the *authoring tool* (Xcode's Scene Editor: editor
+state, bookkeeping) or the *renderer* (would visibly change the picture if
+wired up).
+
+**`SCNLight`** (measured on `gift.scn`'s five light instances: types
+`ambient`, `omni`×2, `area`, `directional`×2):
+- editor-only, no visual effect if skipped: `baked`, `version`,
+  `shouldBakeIndirectLighting`, `shouldBakeDirectLighting`,
+  `usesDeferredShadows`, `usesModulatedMode`, `shadowSampleCount2`,
+  `scncolor`/`scnShadowColor` (private float4 duplicates of `color`/
+  `shadowColor`, redundant with the nested-archive path already decoded).
+- shadow-quality tier, real visual effect but only on shadow *softness/cost*,
+  not on whether a shadow exists (`castsShadow`/`shadowColor`/`shadowRadius`
+  are decoded): `shadowMapSize`, `shadowSampleCount`, `shadowBias`,
+  `shadowCascadeCount`, `shadowCascadeSplittingFactor`, `orthographicScale`,
+  `maximumShadowDistance`, `forcesBackFaceCasters`,
+  `sampleDistributedShadowMaps`, `automaticallyAdjustsShadowProjection`
+  (archived `autoShadowProjection`, see divergence table).
+- area-light geometry, real visual effect, skipped because `gift`/`diamond`
+  use `area` type but our decoder does not yet read it:
+  `areaExtentsX`/`Y`/`Z` (public API exposes these as one `simd_float3
+  areaExtents` — the archive splits them into three scalars, a second,
+  smaller divergence worth folding into the table above once implemented),
+  `areaPolygonVertices`, `drawsArea`, `doubleSided`, `areaType`. An area
+  light without these falls back to a point-light approximation — visibly
+  softer/harder than authored.
+- probe/IES tier, not used by any of the four target files per the earlier
+  per-file class survey (no `SCNLightTypeProbe`/`SCNLightTypeIES` instance
+  found): `IESProfileURL`, `probeType`, `probeUpdateType`, `probeExtents`,
+  `probeOffset`, `parallaxCorrectionEnabled`, `parallaxExtentsFactor`,
+  `parallaxCenterOffset`, `sphericalHarmonicsCoefficients` (also `readonly`
+  — computed, never authored, so there is nothing to decode regardless).
+
+**`SCNCamera`** (measured on `gift.scn`'s one camera): decoded
+`fieldOfView`, `zNear`, `zFar`, `usesOrthographicProjection`,
+`orthographicScale`, `automaticallyAdjustsZRange`. Everything else in the
+archive is post-processing the real device never had cause to reproduce
+faithfully and that materially changes the look if half-wired: `wantsHDR`,
+`bloomIntensity`/`bloomThreshold`/`bloomIteration`/`bloomIterationSpread`/
+`bloomBlurRadius`, `wantsDepthOfField`/`focusDistance`/
+`focalBlurSampleCount`/`fStop`/`apertureBladeCount`(archived
+`bladeCount`)/`sensorHeight`(archived `sensorSize`), `motionBlurIntensity`,
+`screenSpaceAmbientOcclusion*` (four keys), `wantsExposureAdaptation` and
+its seven `exposureAdaptation*`/`minimumExposure`/`maximumExposure`/
+`exposureOffset` companions, `grainIntensity`/`grainScale`/`grainIsColored`,
+`colorFringeIntensity`/`colorFringeStrength`, `vignettingIntensity`/
+`vignettingPower`, `contrast`/`saturation`/`whitePoint`/`averageGray`,
+`whiteBalanceTemperature`/`whiteBalanceTint`, `focalLength`,
+`projectionDirection`, `fillMode`, `categoryBitMask`. All of these are real
+SceneKit render features (bloom, DOF, SSAO, exposure, film grain, vignette,
+color grading) — skipping them means the port's picture is flatter and
+sharper than Apple's own renderer would produce, every one of them a
+legitimate deferred-implement, not a "doesn't matter."
+
+**`SCNParticleSystem`**: decoded the emission/velocity/lifespan/size/color/
+image/shape/blend/sort/lighting/gravity-coupling surface (see
+`SCNParticleSystem.m`). Skipped, all with real per-particle visual effect:
+`seed` (deterministic-vs-random look between runs), `particleMass`/
+`particleMassVariation`, `particleBounce`/`particleBounceVariation`,
+`particleFriction`/`particleFrictionVariation`, `particleCharge`/
+`particleChargeVariation` (all four feed physics-field force response —
+`gift.scn`'s particles are `affectedByPhysicsFields: true` against a
+`SCNPhysicsRadialGravityField`, so an unset `particleMass` defaulting to 1
+is an approximation, not a no-op), `particleIntensity`/
+`particleIntensityVariation`, `particleDiesOnCollision`/
+`physicsCollisionsEnabled`/`softParticlesEnabled`/`blackPassEnabled`,
+`isLocal`, `birthLocation`, `renderingMode`, `writesToDepthBuffer`,
+`fixedTimeStep`, `dampingFactor`, the `imageSequence*` family (sprite-sheet
+animation — `gift.scn`'s `particleImage` decode showed a plain
+`{"path":...}`, not an image-sequence configuration, so this tier is
+confirmed inert for this file, not merely skipped), `birthDirection`
+(archived as raw bytes the same shape as `emittingDirection`, not yet
+wired).
+
+**`SCNPhysicsField`**: decoded `strength`, `falloffExponent`,
+`minimumDistance`, `active`, `exclusive`, `usesEllipsoidalExtent`, `scope`,
+`categoryBitMask`. Skipped: `halfExtent`, `offset`, `direction` (all three
+are `SCNVector3`, likely the same raw-bytes shape as node transforms —
+not yet measured on the field object itself, only inferred from the header;
+flagged here rather than assumed and left silently wrong).
+
+**`SCNMaterial`**: decoded `name`, the full readonly `SCNMaterialProperty`
+slot set (`diffuse`/`ambient`/`specular`/`normal`/`reflective`/`emission`/
+`transparent`/`multiply`/`displacement`/`ambientOcclusion`/
+`selfIllumination`/`metalness`/`roughness`), `lightingModelName`,
+`doubleSided`, `transparency`, `shininess`, `blendMode`. Skipped, measured
+present on `gift.scn`'s inert plane material and real on `coin.scn`'s PBR
+meshes: `fresnelExponent`, `indexOfRefraction`, `transparencyMode`,
+`cullMode`, `litPerPixel`, `fillMode`, `locksAmbientWithDiffuse`,
+`avoidsOverLighting`, `colorBufferWriteMask`, `writesToDepthBuffer`,
+`readsFromDepthBuffer`, `selfIlluminationOcclusion`. All real rendering
+knobs; none block a mesh from appearing, all can make it look subtly wrong
+(culling, depth test, transparency compositing mode).
+
+## Visual-accuracy deficit list — first entry: `gift.scn`'s main light is an area light
+
+This is the running list `check_releases`/the skip list above promised: not
+"what's missing" but "what will look wrong, and why." First concrete entry,
+not a hypothetical one.
+
+`gift.scn`'s `"frontal"` light — its main light, per the macOS SceneKit
+oracle dump — has `type = area`. The `SCNLightTypeArea` constant itself is
+carried honestly: `SCNLight.type` reads the real archived string and answers
+`"area"` truthfully. But the *behavior* an area light implies — a light with
+physical extent, producing a soft-edged shadow and a falloff shaped by that
+extent and by `areaPolygonVertices`/`drawsArea`, not the sharp single-point
+falloff of an omni or directional light — is not implemented by this port's
+renderer. `areaExtentsX/Y/Z`, `areaPolygonVertices` and `drawsArea` are on
+the skip list above, decode-but-unused.
+
+Net effect: `gift.scn` decodes completely and correctly — the type is read,
+the value returned, nothing crashes or lies about what kind of light it is —
+but the rendered scene's main light will look like whatever this port's
+point/directional fallback produces, not the soft area-light SceneKit's own
+renderer would draw. When the picture looks wrong, this is where to look
+first: not a decode bug, a renderer gap, on the very first tier.
+
+This is not a reason to withhold the constant. An application that asks
+`SCNLight.type` and gets the true answer behaves correctly; one that gets a
+false answer does not. The surface is carried honestly; the renderer's gap
+is named honestly beside it, not hidden behind a truthful-looking property.
+
+## `xmake f -y` without `-c` after an edit can silently not re-evaluate the package
+
+`-y` alone, run again after changing an already-configured package's sources,
+can hand back a cached "already satisfied" decision without re-checking the
+package at all — a config log a few dozen lines long with no mention of the
+package's name anywhere in it is the sign, not a green exit code by itself.
+`-c` (full reconfigure) is what actually forces the package requirement to
+be re-evaluated. Measured on this port: a config run right after splitting
+`SCNLightTypeProbe` out of `SCNLightConstants10.m` produced a 46-line log
+with zero mentions of `apple-backports` and exit 0 — looked done, proved
+nothing. The same command with `-c` produced a real several-thousand-line
+band rebuild and a freshly digested install path.
+
+## `tools/release-split.lua` — the release-splitting check the build gate does not fully cover
+
+`band()`/`band_ranges()` in `modules/apple/backports.lua` catch a symbol
+whose introduced release does not match its object file's other symbols only
+against the one release each already-existing band boundary happens to
+check against — a registry's declared `introduced` version gets rounded up
+to the nearest of those boundaries first. Two symbols declared for the same
+rounded-up boundary can share a `.m`, link clean, and still be a full release
+apart in truth. Measured on this port: `SCNLightTypeIES` and
+`SCNLightTypeProbe` were both declared `introduced: "10.0"` in one object
+file; `check_releases` and `band()` both accepted it and
+`libSceneKitBackports.dylib` linked and installed with no complaint.
+`tools/release-split.lua`, walking the real `~/.charon/dyld/*` cache ladder
+symbol by symbol instead of by band boundary, found `SCNLightTypeProbe`
+already exporting at 9.0 — the registry entry was wrong by a full release,
+underneath a green gate. Run it before a band build, not instead of one: see
+the script's own header for what it does and does not cover.
+
+## `SCNPhysicsRadialGravityField` has no public header at all
+
+Unlike every other class in this facts file, `SCNPhysicsRadialGravityField`
+is not declared anywhere in `SceneKit.framework/Headers/*.h` in SDK 16.4.
+Apple exposes it only indirectly, through `+[SCNPhysicsField
+radialGravityField]`, which returns a plain `SCNPhysicsField *`-typed
+pointer to a private concrete subclass — the same pattern the archive
+depends on by naming the class directly (`$classname: "SCNPhysicsRadialGravityField"`,
+confirmed by `plutil`/`plistlib` on `gift.scn`, `diamond.scn`, `star2.scn`,
+`coin.scn`). Our port declares this class itself, in `CharonSCN.h`, since
+there is no Apple header to import it from. The same will likely be true
+for `SCNPhysicsVortexField` (needed only by `swirl.scn`, outside the current
+four-file scope) and any other field subclass reached later.
+
+## Classes built and syntax-checked this turn, not yet run
+
+`SCNScene`, `SCNNode`, `SCNGeometry`, `SCNPlane`, `SCNLight`, `SCNCamera`,
+`SCNMaterial`, `SCNMaterialProperty`, `SCNParticleSystem`,
+`SCNParticlePropertyController`, `SCNPhysicsField`,
+`SCNPhysicsRadialGravityField`, the `NSValue(SceneKitAdditions)` category,
+and the shared `CharonSCNCoding` helper — the complete class set `gift.scn`
+and `diamond.scn` need per the per-file class survey (`gift`/`diamond` share
+an identical `$classname` set; neither uses `SCNGeometrySource`/
+`SCNGeometryElement`, which are `star2`/`coin`-only).
+
+Verified: `clang -fsyntax-only -fobjc-arc` against the real SDK 16.4 headers
+at `-miphoneos-version-min=6.0`, zero errors across all fourteen files.
+
+Not verified, and named as the boundary rather than left implicit: no
+end-to-end decode of a real `.scn` has been run with these classes. The two
+paths that could do it are both closed on this machine right now — the full
+package gate (`xmake l coordination/build-gate.lua`) needs the armv7
+toolchain and 10+ minutes not spent this turn, and a Mac Catalyst host-oracle
+run (the pattern already established elsewhere in this port) is unavailable
+here because this machine has only Command Line Tools, not Xcode.app — its
+macOS SDK carries no `UIKit.framework` to link against for a Catalyst
+target. Confirmed by `xcrun --sdk macosx --show-sdk-path` and `ls` on the
+result. The real device or a full package gate is the next place this can
+actually run.

@@ -1,0 +1,27 @@
+{
+  "framework": "SceneKit",
+  "entries": [
+    {
+      "api": "SCNLightTypeIES",
+      "kind": "constant",
+      "introduced": "10.0.1",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "measured later than the 8.0 baseline (sdk-introduced.json marks it ios 10.0, not null like the four original light types), so it is carried from its own object file, not SCNLight.m",
+      "effect": "SCNLight.type accepts this string; none of the four target assets (gift/diamond/star2/coin) use an IES light",
+      "source": "release cache measurement (precise ladder, not sdk-introduced.json's coarser '10.0'): _SCNLightTypeIES absent from every armv7 dyld_shared_cache through 9.3.6, present at 10.0.1",
+      "facts": "facts/SceneKit/SceneKit.md"
+    },
+    {
+      "api": "SCNLightingModelPhysicallyBased",
+      "kind": "constant",
+      "introduced": "10.0.1",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "measured ios 10.0, not the 8.0 baseline of the other four lighting models; coin.scn's and star2.scn's real mesh materials use exactly this value, confirmed by loading the real asset with macOS SceneKit",
+      "effect": "SCNMaterial.lightingModelName compares and stores this exact string; the PBR shading itself is an OpenGL ES 2.0 approximation, not implemented by this constant alone",
+      "source": "coordination/corpus/sdk-introduced.json: SCNLightingModelPhysicallyBased, constant, version '10.0.1' (precise ladder measurement, absent through 9.3.6, present at 10.0.1)",
+      "facts": "facts/SceneKit/SceneKit.md"
+    }
+  ]
+}

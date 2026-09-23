@@ -1,0 +1,96 @@
+#import "CharonSCN.h"
+
+NSString *const SCNSceneStartTimeAttributeKey = @"SCNSceneStartTimeAttributeKey";
+NSString *const SCNSceneEndTimeAttributeKey = @"SCNSceneEndTimeAttributeKey";
+NSString *const SCNSceneFrameRateAttributeKey = @"SCNSceneFrameRateAttributeKey";
+NSString *const SCNSceneUpAxisAttributeKey = @"SCNSceneUpAxisAttributeKey";
+
+@implementation SCNScene
+{
+    NSMutableDictionary<NSString *, id> *_attributes;
+}
+
+- (instancetype)init
+{
+    if ((self = [super init])) {
+        _rootNode = [SCNNode node];
+        _attributes = [NSMutableDictionary dictionary];
+    }
+    return self;
+}
+
++ (instancetype)scene
+{
+    return [[self alloc] init];
+}
+
+@synthesize rootNode = _rootNode;
+
+- (id)attributeForKey:(NSString *)key
+{
+    return _attributes[key];
+}
+
+- (void)setAttribute:(id)attribute forKey:(NSString *)key
+{
+    if (attribute) {
+        _attributes[key] = attribute;
+    } else {
+        [_attributes removeObjectForKey:key];
+    }
+}
+
++ (instancetype)sceneWithURL:(NSURL *)url options:(NSDictionary<NSString *, id> *)options error:(NSError **)error
+{
+    NSData *data = [NSData dataWithContentsOfURL:url options:0 error:error];
+    if (data == nil) {
+        return nil;
+    }
+    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
+    unarchiver.requiresSecureCoding = YES;
+    id root = nil;
+    [CharonSCNCoding pushSourceURL:url];
+    @try {
+        root = [unarchiver decodeObjectOfClass:[SCNScene class] forKey:NSKeyedArchiveRootObjectKey];
+    } @catch (NSException *exception) {
+        if (error) {
+            *error = [NSError errorWithDomain:SCNErrorDomain code:1 userInfo:@{NSLocalizedDescriptionKey: exception.reason ?: @"the archive names a class this port does not carry"}];
+        }
+        [CharonSCNCoding popSourceURL];
+        return nil;
+    }
+    [CharonSCNCoding popSourceURL];
+    [unarchiver finishDecoding];
+    if (![root isKindOfClass:[SCNScene class]]) {
+        if (error) {
+            *error = [NSError errorWithDomain:SCNErrorDomain code:1 userInfo:@{NSLocalizedDescriptionKey: @"the archive's top level object is not a SCNScene"}];
+        }
+        return nil;
+    }
+    return root;
+}
+
+#pragma mark - NSSecureCoding
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [self init])) {
+        SCNNode *root = [coder decodeObjectOfClass:[SCNNode class] forKey:@"rootNode"];
+        if (root) {
+            _rootNode = root;
+        }
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeObject:_rootNode forKey:@"rootNode"];
+}
+
+@end
