@@ -853,7 +853,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a property like it: it arrived in iOS 15",
+      "reason": "the same selection-toggle flag UIButtonConfiguration draws for UIButton, absent for the same reason: no demand for the declarative configuration system on a bar button item",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1863,7 +1863,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBarButtonItemGroup a method like it: it arrived in iOS 16",
+      "reason": "a factory for the iOS 16 item-group toolbar; UIBarButtonItemGroup itself is carried only at its 9.0 shortcut-bar surface (inert, base.json - the release has no shortcut bar), not this later one - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1873,7 +1873,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBarButtonItemGroup a method like it: it arrived in iOS 16",
+      "reason": "same item-group toolbar factory family - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1883,7 +1883,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBarButtonItemGroup a method like it: it arrived in iOS 16",
+      "reason": "same item-group toolbar factory family - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1943,7 +1943,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 16",
+      "reason": "builds the fixed variant of an item-group toolbar group from this item; the toolbar system it feeds is not built - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1953,7 +1953,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 16",
+      "reason": "same item-group toolbar family - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1963,7 +1963,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 16",
+      "reason": "same item-group toolbar family - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1973,7 +1973,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 16",
+      "reason": "combines two initializers this port already carries separately (initWithBarButtonSystemItem:primaryAction: and the menu setter, UIBarButtonItem+Actions14.m) - simply not composed, no demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1983,7 +1983,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 16",
+      "reason": "combines initWithPrimaryAction: and the menu setter, both already carried (UIBarButtonItem+Actions14.m) - simply not composed, no demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1993,7 +1993,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 16",
+      "reason": "combines the old target-action initializer with the menu setter this port already carries - simply not composed, no demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2494,7 +2494,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a property like it: it arrived in iOS 16",
+      "reason": "part of the item-group toolbar's visibility model, which is not built - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2504,7 +2504,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a property like it: it arrived in iOS 16",
+      "reason": "the menu form the item-group toolbar shows when the item overflows; that toolbar is not built - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2514,7 +2514,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBarButtonItem a property like it: it arrived in iOS 16",
+      "reason": "orders the item's own menu (UIBarButtonItem.menu, implemented) inside the overflow menu of the item-group toolbar, which is not built - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2524,7 +2524,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBarButtonItemGroup a property like it: it arrived in iOS 16",
+      "reason": "declared @dynamic in UIBarButtonItemGroup.m to keep the compiler from synthesising a silent accessor, but never given one: it steers the item-group toolbar's overflow behaviour, and that toolbar is not built - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2534,7 +2534,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBarButtonItemGroup a property like it: it arrived in iOS 16",
+      "reason": "same @dynamic-but-unimplemented property as alwaysAvailable, for the same reason - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2544,7 +2544,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBarButtonItemGroup a property like it: it arrived in iOS 16",
+      "reason": "same @dynamic-but-unimplemented property as alwaysAvailable, for the same reason - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
