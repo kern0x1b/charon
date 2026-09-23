@@ -765,59 +765,140 @@ local function listed(root)
     return LISTED[root]
 end
 
-local INTRODUCED = {}
+local LADDERS = {}
 
-local function introduced(opt, source, object)
-    local key = object .. ":" .. hash.sha256(object)
-    INTRODUCED[key] = INTRODUCED[key] or introduced_in(opt, source, object)
-    return INTRODUCED[key]
-end
-
-function later_than(opt, release)
-    return function (object)
-        return dyld.compare_versions(introduced(opt, opt.origins[object], object), release) > 0
+-- The cache ladder for one architecture, oldest release first: every release held for it or for an
+-- architecture that runs its code, the armv7s caches of iOS 10 for armv7 -- exactly what
+-- release-split.lua walks, so this check answers to the same measurement instead of a second copy of it.
+local function ladder(architecture)
+    if not LADDERS[architecture] then
+        local held = {}
+        for _, candidate in ipairs(compatible(architecture)) do
+            for _, release in ipairs(dyld.held_releases(candidate)) do
+                held[release] = true
+            end
+        end
+        local releases = table.orderkeys(held)
+        table.sort(releases, function (a, b) return dyld.compare_versions(a, b) < 0 end)
+        LADDERS[architecture] = {}
+        for _, release in ipairs(releases) do
+            table.insert(LADDERS[architecture], {release = release, source = held_cache(architecture, release)})
+        end
     end
+    return LADDERS[architecture]
 end
 
-function introduced_in(opt, source, object)
-    local names = availability_names(exported_symbols(object))
-    local releases = {}
-    for _, name in ipairs(table.orderkeys(names)) do
-        local dump = os.iorunv(clang(opt, {"-fsyntax-only", "-w", "-Xclang", "-ast-dump", "-Xclang", "-ast-dump-filter", "-Xclang", name, source}, true))
-        local version = introduced_version(dump, name)
-        if not version then
-            -- API that is Foundation's own and in no header of the SDK, which a
-            -- backport still carries under Apple's name because an archive holds
-            -- it: the registry is what says when it arrived.
-            local entry = listed(opt.root)[name]
-            version = entry and entry.status == "implemented" and entry.introduced or nil
+-- The release a symbol first-appears exporting, walking the real cache ladder oldest to newest --
+-- the same measurement release-split.lua makes, not the SDK header's own availability annotation.
+-- A header can name a later release than the one that actually already exports the symbol (measured
+-- for UIKeyboardIsLocalUserInfoKey: the SDK 16.4 header says ios(9.0), the real armv7 cache of 8.0
+-- already exports it), and this function exists so the same object-splitting rule answers to the
+-- fact, not the annotation. Returns nil for a symbol no held release exports -- newer than this
+-- architecture's cache ladder reaches, where the header/registry fallback in introduced_in() below
+-- is the only source left.
+local function measured_introduced(architecture, symbol)
+    for _, entry in ipairs(ladder(architecture)) do
+        if dyld.load(entry.source).exports[symbol] then
+            return entry.release
         end
-        if not version then
-            raise("neither the SDK nor the registry says which iOS release %s arrived in, and %s defines it, so no band can hold it", name, path.filename(source))
+    end
+    return nil
+end
+
+-- The releases one object's exported API arrived in, {version = {names}}, and the names no source
+-- can place at all. Measured, not judged: an object mixing releases is reported by the caller, so
+-- one pass can name every such object instead of stopping at the first.
+function releases_in(opt, source, object)
+    local releases, resolved, unplaced = {}, {}, {}
+    for _, symbol in ipairs(exported_symbols(object)) do
+        local name = symbol:match("^_OBJC_CLASS_%$_(.+)$") or symbol:match("^_OBJC_METACLASS_%$_(.+)$")
+                     or symbol:match("^_OBJC_IVAR_%$_(.-)%.") or symbol:sub(2)
+        local version = measured_introduced(opt.architecture, symbol) or resolved[name]
+        if not version and resolved[name] == nil then
+            local dump = os.iorunv(clang(opt, {"-fsyntax-only", "-w", "-Xclang", "-ast-dump", "-Xclang", "-ast-dump-filter", "-Xclang", name, source}, true))
+            version = introduced_version(dump, name)
+            if not version then
+                -- API that is Foundation's own and in no header of the SDK, which a
+                -- backport still carries under Apple's name because an archive holds
+                -- it: the registry is what says when it arrived.
+                local entry = listed(opt.root)[name]
+                version = entry and entry.status == "implemented" and entry.introduced or nil
+            end
+            resolved[name] = version or false
+            if not version then
+                table.insert(unplaced, name)
+            end
         end
-        releases[version] = releases[version] or {}
-        table.insert(releases[version], name)
+        if version then
+            releases[version] = releases[version] or {}
+            if not table.contains(releases[version], name) then
+                table.insert(releases[version], name)
+            end
+        end
+    end
+    return releases, unplaced
+end
+
+-- What is wrong with one object's releases, or nil when it holds API of exactly one.
+local function misplaced(source, releases, unplaced)
+    if #unplaced > 0 then
+        return string.format("neither the SDK, the registry nor a held release's own cache says which iOS release %s arrived in, and %s defines it, so no band can hold it",
+                             table.concat(unplaced, " "), path.filename(source))
     end
     local found = table.orderkeys(releases)
+    table.sort(found, function (a, b) return dyld.compare_versions(a, b) < 0 end)
     if #found > 1 then
         local described = {}
         for _, version in ipairs(found) do
             table.insert(described, string.format("%s from iOS %s", table.concat(releases[version], " "), version))
         end
-        raise("%s defines %s; an object carries API that arrived in one release, so split it", path.filename(source), table.concat(described, " and "))
+        return string.format("%s defines %s; an object carries API that arrived in one release, so split it", path.filename(source), table.concat(described, " and "))
     end
-    return found[1]
 end
 
+local INTRODUCED = {}
+
+local function measured(opt, source, object)
+    local key = object .. ":" .. hash.sha256(object)
+    if not INTRODUCED[key] then
+        local releases, unplaced = releases_in(opt, source, object)
+        INTRODUCED[key] = {releases = releases, unplaced = unplaced, problem = misplaced(source, releases, unplaced)}
+    end
+    return INTRODUCED[key]
+end
+
+function introduced_in(opt, source, object)
+    local found = measured(opt, source, object)
+    if found.problem then
+        raise(found.problem)
+    end
+    return table.orderkeys(found.releases)[1]
+end
+
+function later_than(opt, release)
+    return function (object)
+        return dyld.compare_versions(introduced_in(opt, opt.origins[object], object), release) > 0
+    end
+end
+
+-- Every object of every library is measured before anything is refused, so a tree with several
+-- mixed objects names all of them in one run rather than one per build.
 function check_releases(opt, objects, origins)
+    local problems = {}
     for _, library in ipairs(LIBRARIES) do
         if not opt.libraries or table.contains(opt.libraries, library.name) then
             for _, object in ipairs(objects[library.name]) do
                 if #exported_symbols(object) > 0 then
-                    introduced(opt, origins[object], object)
+                    local problem = measured(opt, origins[object], object).problem
+                    if problem then
+                        table.insert(problems, string.format("  %s: %s", library.name, problem))
+                    end
                 end
             end
         end
+    end
+    if #problems > 0 then
+        raise("%d objects hold API no single release introduced:\n%s", #problems, table.concat(problems, "\n"))
     end
 end
 
@@ -898,11 +979,12 @@ function stage_bands(opt)
     opt = table.join(opt, {triple = opt.architecture .. "-apple-ios" .. opt.deployment})
     local attach, objects, origins = compiled(opt)
     opt = table.join(opt, {origins = origins})
+    check_releases(opt, objects, origins)
     local points = {[opt.deployment] = true}
     for _, library in ipairs(staged_libraries(opt)) do
         for _, object in ipairs(objects[library.name]) do
             if #exported_symbols(object) > 0 then
-                local version = introduced(opt, origins[object], object)
+                local version = introduced_in(opt, origins[object], object)
                 if dyld.compare_versions(version, opt.deployment) > 0 then
                     points[version] = true
                 end
