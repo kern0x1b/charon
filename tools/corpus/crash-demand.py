@@ -32,6 +32,11 @@ CAVEATS to repeat wherever this is quoted:
  - "unguarded" = no guard REQUIRED (minos >= introduced). A developer may still have
    written respondsToSelector:. Upper bound on crash exposure, not proof.
  - hardware-gated frameworks (Metal, ARKit, CoreNFC, CoreHaptics) are excluded.
+ - SENDERS OUTSIDE THE APP are invisible: only messages the app's own bundle sends are counted. A method
+   UIKit (or a backport library) calls on the app's objects -- e.g.
+   -systemLayoutSizeFittingSize:withHorizontalFittingPriority:verticalFittingPriority:, which self-sizing
+   cells need and no corpus binary names -- never appears, and neither do apps outside the corpus. "Not in
+   the ranking" is not "cannot crash": the ranking orders work, a run on a device decides.
  - SIXTH blind spot, the same family as the fifth and larger: C-FUNCTION KEY SPELLING. The registry writes
    a C function as `name()`; a Mach-O symbol has no parentheses and one leading underscore. Stripping the
    underscore but not trying the `()` spelling reported EVERY carried C function as a gap. Measured when it

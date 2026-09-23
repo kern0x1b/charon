@@ -24,7 +24,7 @@ xmake emulate [-s 60] [--scale 10] run COMMAND # verdict: pass, fail, crash, tim
 xmake emulate debug COMMAND                    # COMMAND as first guest process, under the debugger
 xmake emulate log [TEXT]                       # what the last run left
 xmake emulate shot [FILE]                      # its last frame
-xmake emulate clean                            # this port's images (--all: every image and golden image)
+xmake emulate clean                            # this port's images and every port's shared tmp and cache (--all: every image and golden image)
 ```
 
 Options: `-d DEVICE` (e.g. `iPhone3,1`; default the first catalog device of the configured
@@ -50,4 +50,6 @@ architecture that Shade has a profile for), `-r RELEASE` (default `apple_minimum
   with the reason — not replaced by another.
 - Images, and a rootfs kept with `-k`, live in the emulator root beside the dyld caches
   (`~/.charon/emulator`), not in the project; copy the log and verdict you need into
-  `.agent-work/runs/`, then `xmake emulate clean`.
+  `.agent-work/runs/`. Do not run `xmake emulate clean` while other sessions use the emulator: it
+  always removes the shared `tmp.noindex` and `cache.noindex` too, and every other port's next run
+  starts cold.

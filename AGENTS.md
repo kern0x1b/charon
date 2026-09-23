@@ -147,3 +147,21 @@ Each entry: wrong pattern → right pattern → the mechanical reason.
   resolves to a version-pinned copy of this repository (`~/.xmake/addons/charon/<version>/`), not
   the working tree `add_repositories` points at, so an uncommitted edit under `modules/` never
   reaches a build that includes the addon by version — only a commit does.
+
+- **`+load` in a backport.** Wrong: expecting `+load` to see a method the library's categories add,
+  or replacing a release method there with no category carrying its selector. Right: decide on the
+  release alone, and keep a same-selector category beside the replacement, as apple-backports'
+  `Foundation/NSBundle+ReceiptURL.m` does. Reason: `+load` runs before `attach.c`'s constructor
+  attaches `__DATA,__charon_catlist`, and the registry check counts only selectors categories add.
+
+- **A C function shared between backport files.** Wrong: calling from one file a C function defined
+  in a file that implements a class or exports an API symbol. Right: define it in a file that exports
+  no API symbol of its own, as `packages/a/apple-backports/UIKit/UIViewController+DocumentMenu.m`
+  does, or link the files through Objective-C methods. Reason: a file whose exports a band's release
+  already has is left out of that band, so the call is `Undefined symbols` in later bands only —
+  `backports-gate` links one band and passes; only the all-band build of `canon-install` shows it.
+
+- **Package source caches are patched.** Wrong: quoting what an upstream project does from the
+  source tree a package build extracted (xmake's package cache, Conan's `p/*/s`). Right: read the
+  pinned commit from a fresh download or the upstream git object, and say which one was read.
+  Reason: both hold the tree after the recipe's patches and in-place edits ran.

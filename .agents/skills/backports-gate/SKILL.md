@@ -52,6 +52,9 @@ Traps:
 - The tree is frozen while the gate runs: `sources()` globs once at the start, so a file added or
   edited mid-run gives a false red or a false green. Edits wait for the next run.
 - Argument three is the checkout. Always pass it; never gate by a remembered path.
+- A port or test project that requires `charon@apple-backports` with only some of its configs never
+  runs `check_registry`: `modules/apple/backports.lua` runs it only when every library in
+  `LIBRARIES` was built. Such a green build says nothing about the registry; only this gate does.
 
 ## 3. Release split (mandatory after a green build, before handing off)
 
@@ -83,5 +86,9 @@ and read it for regressions before calling it healthy.
 ## What goes with a patch
 
 The base commit, what is inside, which of steps 1–4 ran with their verdict lines, and the caveats.
+
+Before `git format-patch`, `git status` must show no rebase or `am` in progress, and `git log -1`
+must be your own last commit: during a stopped rebase HEAD is a partly replayed branch, and the
+export carries the wrong commits.
 The coordinator re-runs the gate after `git am -3`; see the workspace skill `patch-merge`
 (`$HOME/Git/projects/ios/.agents/skills/patch-merge/SKILL.md`).
