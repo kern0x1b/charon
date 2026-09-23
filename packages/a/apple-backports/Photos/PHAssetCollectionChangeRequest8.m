@@ -16,7 +16,7 @@ static CharonPhotosTransaction *charon_transaction(void)
     NSString *_title;
     NSString *_token;
     PHObjectPlaceholder *_placeholder;
-    NSMutableArray<PHAsset *> *_addedAssets;
+    NSMutableArray *_addedAssets;
 }
 
 + (instancetype)creationRequestForAssetCollectionWithTitle:(NSString *)title
@@ -77,7 +77,7 @@ static CharonPhotosTransaction *charon_transaction(void)
         [charon_transaction() refuseWithReason:@"addAssets: needs either a new album or one fetched with changeRequestForAssetCollection:"];
     if (!_addedAssets)
         _addedAssets = [NSMutableArray array];
-    for (PHAsset *asset in assets)
+    for (id asset in assets)
         [_addedAssets addObject:asset];
 }
 
@@ -123,8 +123,16 @@ static CharonPhotosTransaction *charon_transaction(void)
     } else {
         groupURL = [NSURL URLWithString:[CharonPhotosStore resolvedIdentifier:_editing.localIdentifier]];
     }
-    for (PHAsset *asset in _addedAssets) {
-        if (![CharonPhotosStore addAsset:[asset charon_asset] toGroupWithURL:groupURL error:error])
+    for (id addedAsset in _addedAssets) {
+        ALAsset *alAsset = [addedAsset isKindOfClass:[PHObjectPlaceholder class]]
+            ? [[CharonPhotosStore assetWithIdentifier:[addedAsset localIdentifier]] charon_asset]
+            : [addedAsset charon_asset];
+        if (!alAsset) {
+            if (error)
+                *error = [CharonPhotosStore errorWithCode:-1 reason:@"an asset added to the album no longer exists, or its creation has not been committed yet"];
+            return NO;
+        }
+        if (![CharonPhotosStore addAsset:alAsset toGroupWithURL:groupURL error:error])
             return NO;
     }
     return YES;

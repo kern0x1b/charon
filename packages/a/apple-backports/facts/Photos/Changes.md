@@ -28,7 +28,10 @@ Albums are the one other thing this release lets an application change. `+[PHAss
 creationRequestForAssetCollectionWithTitle:]` and `+changeRequestForAssetCollection:` (only for a regular album — a smart album or one
 synced from elsewhere is refused) are made into `-[ALAssetsLibrary addAssetsGroupAlbumWithName:resultBlock:failureBlock:]` and
 `-[ALAssetsGroup addAsset:]`; `addAssets:` queues assets to append at commit, and `placeholderForCreatedAssetCollection` resolves like
-the asset placeholder above. iOS 6 has no way through `ALAssetsLibrary` to rename an album, reorder or remove its assets, or delete an
+the asset placeholder above. `addAssets:` takes a `PHAsset` or, the documented way to add an asset to an album in the same change
+that creates it, the `PHObjectPlaceholder` such a creation request gives back; the placeholder is resolved to the asset it wrote
+right before it is added to the album, so a change block must add the asset's creation request before the album request that
+references its placeholder, in the order this port runs a block's requests. iOS 6 has no way through `ALAssetsLibrary` to rename an album, reorder or remove its assets, or delete an
 album at all, so `setTitle:` on an existing album, `insertAssets:atIndexes:`, `removeAssets:`, `removeAssetsAtIndexes:`,
 `replaceAssetsAtIndexes:withAssets:`, `moveAssetsAtIndexes:toIndex:` and `+deleteAssetCollections:` all fail the change with a reason,
 before anything is written.
