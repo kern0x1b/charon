@@ -22,16 +22,6 @@
       "source": "SDK 16.4, AVKit"
     },
     {
-      "api": "AVPictureInPictureController",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVKit"
-    },
-    {
       "api": "AVPictureInPictureControllerDelegate",
       "kind": "protocol",
       "introduced": "9.0",
