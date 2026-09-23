@@ -1,5 +1,7 @@
 #import "CharonImageBaseline.h"
 
+#pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
+
 @implementation UIImage (CharonFifteen)
 
 - (UIImage *)imageByPreparingForDisplay
@@ -35,6 +37,41 @@
         result = [result imageWithRenderingMode:self.renderingMode];
     charon_set_image_baseline(result, charon_image_baseline(self));
     return result;
+}
+
+// The system hands the prepared image to the handler from a queue of its own.
+- (void)prepareForDisplayWithCompletionHandler:(void (^)(UIImage *))completionHandler
+{
+    void (^handler)(UIImage *) = [completionHandler copy];
+    if (!handler)
+        return;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        handler([self imageByPreparingForDisplay]);
+    });
+}
+
+// A bitmap of exactly the size asked, in pixels at scale 1, with the image drawn
+// upright and stretched to fill it.
+- (UIImage *)imageByPreparingThumbnailOfSize:(CGSize)size
+{
+    size_t width = (size_t)ceil(size.width), height = (size_t)ceil(size.height);
+    if (!(size.width > 0) || !(size.height > 0) || (!self.CGImage && !self.CIImage))
+        return nil;
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(width, height), NO, 1);
+    [self drawInRect:CGRectMake(0, 0, width, height)];
+    UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return result;
+}
+
+- (void)prepareThumbnailOfSize:(CGSize)size completionHandler:(void (^)(UIImage *))completionHandler
+{
+    void (^handler)(UIImage *) = [completionHandler copy];
+    if (!handler)
+        return;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        handler([self imageByPreparingThumbnailOfSize:size]);
+    });
 }
 
 @end

@@ -292,30 +292,30 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a decoded copy drawn at a smaller size; the port already decodes eagerly for imageByPreparingForDisplay (UIKit/UIImage+iOS15.m) and draws into bitmaps for UIGraphicsImageRenderer, so this is the same drawing at another size - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "a decoded bitmap of exactly the size asked, in pixels at scale 1, the image drawn upright and stretched to fill it; nil for a size that is not positive (size semantics chosen, not measured)",
+      "facts": "facts/UIKit/UIImagePreparingForDisplay.md",
+      "source": "SDK 16.4, UIKit; not in UIImage's methods in the 6.1.3 or 12.0 cache, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "-[UIImage prepareForDisplayWithCompletionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the asynchronous form of imageByPreparingForDisplay, which the port carries (UIKit/UIImage+iOS15.m); running that on a background queue and calling the handler would carry it - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "imageByPreparingForDisplay run on a global queue, its result handed to the handler there",
+      "facts": "facts/UIKit/UIImagePreparingForDisplay.md",
+      "source": "SDK 16.4, UIKit; not in UIImage's methods in the 6.1.3 or 12.0 cache, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "-[UIImage prepareThumbnailOfSize:completionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the asynchronous form of imageByPreparingThumbnailOfSize:, itself not carried; both come down to drawing the image into a bitmap of the size, which the port already does elsewhere - not built for lack of demand, not a wall",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "imageByPreparingThumbnailOfSize: run on a global queue, its result handed to the handler there",
+      "facts": "facts/UIKit/UIImagePreparingForDisplay.md",
+      "source": "SDK 16.4, UIKit; not in UIImage's methods in the 6.1.3 or 12.0 cache, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "-[UIResponder captureTextFromCamera:]",

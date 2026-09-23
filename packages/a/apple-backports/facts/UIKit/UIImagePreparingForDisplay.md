@@ -28,3 +28,21 @@ Core Graphics' documented behaviour, not something this band watched happen on t
 iPad 2 - there is no user-visible difference to check for (the API is a performance hint, and its
 contract does not promise or forbid any particular before/after timing an external observer
 could measure without an internal decode counter). `respondsToSelector:` was not run either.
+
+## The asynchronous form and the thumbnail, iOS 15
+
+`UIKit/UIImage+iOS15.m`:
+
+- `-prepareForDisplayWithCompletionHandler:` runs `imageByPreparingForDisplay` on a global queue and hands its result to the handler
+  there. The header does not name the queue the system calls back on; a background one is what the port picked. A nil handler does
+  nothing rather than crash.
+- `-imageByPreparingThumbnailOfSize:` draws the image, orientation applied, into a bitmap context of exactly the size asked at scale 1,
+  so the thumbnail's `size` in points is its size in pixels and its scale is 1; a fractional size is rounded up and a size that is not
+  positive answers nil, as does an image with neither a `CGImage` nor a `CIImage`. The image is stretched to fill the size: the port
+  does not keep the aspect ratio. Scale 1 and the stretch are what the port chose, following how the method is commonly described as
+  behaving; neither was measured against the system, and the header says only "a new thumbnail image at the specified size".
+- `-prepareThumbnailOfSize:completionHandler:` is the thumbnail on a global queue, as the display preparation is.
+
+Ladder by `objc.inventory` (`.agent-work/plan-and-analysis/b1314-flips/ladder-image.log`, an invented selector as the negative control): all
+three are not in `UIImage`'s methods in 6.1.3 or 12.0 and are in 16.0 and 18.0, with `imageByPreparingForDisplay`; there is no 13-15
+cache, so `introduced` stays the header's 15.0. Not run on a device.
