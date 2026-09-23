@@ -9,10 +9,22 @@ static NSError *CharonIndexError(CSIndexErrorCode code, NSString *reason)
     return [NSError errorWithDomain:CSIndexErrorDomain code:code userInfo:@{NSLocalizedDescriptionKey: reason}];
 }
 
+// A search bundle - CharonSearchDatastore.m, the principal class of
+// org.charon.corespotlight.searchBundle - runs in whatever process hosts system search, not this
+// application's own process, so an index only this app's sandbox can read is one no search bundle
+// can ever answer a query against. This mirrors org.charon.callkit's own bridge
+// (CharonCallScreen.m): a shared, world-readable cache path rather than the sandboxed
+// NSApplicationSupportDirectory this store used before a search bundle needed to read it too, kept
+// one subdirectory per indexing application so one app's items never collide with another's.
+NSString *const CharonSpotlightSharedRoot = @"/var/mobile/Library/Caches/org.charon.corespotlight";
+
 static NSString *CharonSpotlightStoreDirectory(void)
 {
-    NSString *base = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
-    return [base stringByAppendingPathComponent:@"space.kern0x1b.corespotlight"];
+    NSString *bundleID = [[NSBundle mainBundle] bundleIdentifier] ?: @"space.kern0x1b.corespotlight.default";
+    NSString *directory = [CharonSpotlightSharedRoot stringByAppendingPathComponent:bundleID];
+    [[NSFileManager defaultManager] createDirectoryAtPath:directory withIntermediateDirectories:YES
+                                                attributes:@{NSFilePosixPermissions: @(0777)} error:NULL];
+    return directory;
 }
 
 static NSString *CharonSpotlightCategory(void)

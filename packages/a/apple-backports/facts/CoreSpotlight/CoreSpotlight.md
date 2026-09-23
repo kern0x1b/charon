@@ -103,13 +103,43 @@ unmeasured on-device. What is measured and closes the loop regardless of that an
 perfectly accepted registration cannot reach the user, because the system's own search surface is the
 fixed eleven-bundle list above, none of which reads a third-party category, and
 `Application.searchBundle` (the one bundle that does look at installed apps) bypasses
-`SPSpotlightManager` entirely. Making a `CSSearchableIndex` write actually appear in the device's
-Spotlight UI needs a twelfth entry in `/System/Library/SearchBundles/` — real, buildable work, since
-`-_loadSearchBundles` is a genuine directory scan and the release is already patched system-wide by
-this port's own dylibs — but it is a distinct, larger feature (an `SPSearchable`-conforming plugin
-for `Search.framework`, itself unreversed) and not part of `CSSearchableIndex`'s own contract, which
-is about the index, not the search UI. Demand-driven, filed here rather than attempted speculatively,
-per the coordination rule that backports follow what applications actually reach.
+`SPSpotlightManager` entirely.
+
+**The twelfth entry named above is now built, not just filed as buildable.**
+`packages/a/apple-backports/CoreSpotlight/SearchBundle/CharonSearchDatastore.m` is
+`org.charon.corespotlight.searchBundle`'s principal class - a real runtime subclass of the
+release's own `SPSearchDatastore` (`objc_allocateClassPair` over the class
+`Search.framework` exports, not a bare `NSObject` that happens to answer the protocol), packaged
+by `write_searchbundle` in `modules/apple/backports.lua` and installed at
+`/System/Library/SearchBundles/org.charon.corespotlight.searchBundle/` by the same `.deb` this
+port already writes, whenever `corespotlight` is among the staged libraries. The protocol it
+implements was read from `NotesDatastore` (`MobileNotes.searchBundle`'s own principal class) with
+`llvm-otool -oV` and each selector resolved against the iOS 6.1.3 shared cache directly
+(`.agent-work/handoffs/2026-09-23-corespotlight-searchbundle-measurement.md`), which corrected two
+selector names an earlier `strings`-only pass got wrong (`-categoryForDomain:` and
+`-wantsEveryResultInItsOwnSection` are not implemented by `NotesDatastore` at all - the real
+required methods are `-displayIdentifierForDomain:`, `-searchDomains` and
+`-performQuery:withResultsPipe:`). `-performQuery:withResultsPipe:` filters every app's stored
+items (case-insensitive substring match against `attributeSet.title`/`.contentDescription`) and
+pushes matches through `-[resultsPipe addResults:]`, the way `NotesDatastore` itself does.
+
+This forced a real correction to `CSSearchableIndex` itself:
+`CharonSpotlightStoreDirectory` wrote under `NSApplicationSupportDirectory`, sandboxed to the
+indexing application's own container - a location no search bundle, running in whatever process
+hosts system search, could ever read. It now writes under
+`/var/mobile/Library/Caches/org.charon.corespotlight/<bundle identifier>/`, world-readable
+(`0777`), the same shared-cache bridge pattern `org.charon.callkit` already uses to cross the same
+kind of process boundary. `CharonSearchDatastore.m` resolves `CSSearchableItem` - this port's own
+class, not Apple's, so no compile-time link is possible - by `dlopen`ing the installed
+`libCoreSpotlightBackports.dylib` symlink before unarchiving, and every value that crosses that
+boundary is typed `id` and read with `valueForKey:`, never a static `CSSearchableItem *`, since
+this bundle is built once, not per band.
+
+Not yet measured, because it needs a device with a running system search host: whether the daemon
+that scans `/System/Library/SearchBundles/` re-reads it after install without a reboot, and whether
+a real query against this datastore's one domain actually reaches `-performQuery:withResultsPipe:`
+and shows a result on screen. That is the one measurement everything above was built to make
+possible, filed as the next device pass rather than assumed.
 
 ## What differs from the release
 

@@ -1010,11 +1010,44 @@ function write_scripts(folder)
     end
 end
 
+-- The 12th search bundle isn't a band: it carries none of this port's own API, only a bridge from
+-- CharonSpotlightStore (libCoreSpotlightBackports.dylib, resolved by name at runtime, not linked -
+-- see CharonSearchDatastore.m) to Search.framework's own SPSearchDatastore, so it needs no
+-- per-release symbol-availability logic and is built once, at the port's own deployment minimum,
+-- installed under /System/Library/SearchBundles/ - the directory
+-- .agent-work/handoffs/2026-09-23-corespotlight-searchbundle-measurement.md measured
+-- Search.framework's own -_loadSearchBundles to scan - rather than staged per band like the dylibs.
+local function corespotlight_staged(opt)
+    for _, library in ipairs(staged_libraries(opt)) do
+        if library.name == "CoreSpotlightBackports" then
+            return true
+        end
+    end
+    return false
+end
+
+function write_searchbundle(opt)
+    if not corespotlight_staged(opt) then
+        return
+    end
+    local folder = path.join(opt.stage, "System", "Library", "SearchBundles", "org.charon.corespotlight.searchBundle")
+    os.mkdir(folder)
+    local source = path.join(opt.root, "CoreSpotlight", "SearchBundle", "CharonSearchDatastore.m")
+    local output = path.join(folder, "org.charon.corespotlight")
+    local triple = opt.architecture .. "-apple-ios" .. opt.deployment
+    os.vrunv("xcrun", {"clang", "-target", triple, "-isysroot", opt.sdkdir, "-fuse-ld=" .. opt.ld, "-fobjc-arc",
+                       "-bundle", "-Os", "-g0", "-Wall", "-o", output, source, "-framework", "Foundation"})
+    os.vrunv("xcrun", {"strip", "-x", output})
+    signing.sign(opt.ldid, output)
+    os.cp(path.join(opt.root, "CoreSpotlight", "SearchBundle", "Info.plist"), path.join(folder, "Info.plist"))
+end
+
 function write_deb(opt)
     local debian = import("debian", {rootdir = path.join(os.scriptdir(), ".."), anonymous = true})
     local stage = path.join(opt.builddir, "stage")
     os.tryrm(stage)
     local ranges = stage_bands(table.join(opt, {stage = stage}))
+    write_searchbundle(table.join(opt, {stage = stage}))
     local covered = {}
     for _, range in ipairs(ranges) do
         table.insert(covered, range.first == range.last and range.first or (range.first .. " to " .. range.last))
