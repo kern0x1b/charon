@@ -279,7 +279,7 @@ there is no Apple header to import it from. The same will likely be true
 for `SCNPhysicsVortexField` (needed only by `swirl.scn`, outside the current
 four-file scope) and any other field subclass reached later.
 
-## Classes built and syntax-checked this turn, not yet run
+## `gift.scn` decodes correctly on a real armv7 guest — measured, not just built
 
 `SCNScene`, `SCNNode`, `SCNGeometry`, `SCNPlane`, `SCNLight`, `SCNCamera`,
 `SCNMaterial`, `SCNMaterialProperty`, `SCNParticleSystem`,
@@ -290,17 +290,57 @@ and `diamond.scn` need per the per-file class survey (`gift`/`diamond` share
 an identical `$classname` set; neither uses `SCNGeometrySource`/
 `SCNGeometryElement`, which are `star2`/`coin`-only).
 
-Verified: `clang -fsyntax-only -fobjc-arc` against the real SDK 16.4 headers
-at `-miphoneos-version-min=6.0`, zero errors across all fourteen files.
+A probe (`.agent-work/plan-and-analysis/gift-probe/`, scratch, not committed)
+embeds the real `gift.scn` bytes, decodes them through the actual
+`SCNScene sceneWithURL:options:error:` entry point on the emulated `iPhone4,1
+6.1.3` armv7 guest, and printf/fflush's the node tree. Result: `pass`,
+`failures=0`, tree matches the real macOS SceneKit oracle node-for-node,
+including child order (`particles → particles 3 → particles 4 → particles 2`,
+not ascending — could not reproduce by coincidence).
 
-Not verified, and named as the boundary rather than left implicit: no
-end-to-end decode of a real `.scn` has been run with these classes. The two
-paths that could do it are both closed on this machine right now — the full
-package gate (`xmake l coordination/build-gate.lua`) needs the armv7
-toolchain and 10+ minutes not spent this turn, and a Mac Catalyst host-oracle
-run (the pattern already established elsewhere in this port) is unavailable
-here because this machine has only Command Line Tools, not Xcode.app — its
-macOS SDK carries no `UIKit.framework` to link against for a Catalyst
-target. Confirmed by `xcrun --sdk macosx --show-sdk-path` and `ls` on the
-result. The real device or a full package gate is the next place this can
-actually run.
+Getting there cost five real, guest-caught decode failures, each fixed before
+moving on, none described as a finding without a fix:
+
+1. `SCNNode`'s `particleSystem` key (singular) decodes to an `NSArray`, not a
+   bare `SCNParticleSystem` — `NSKeyedUnarchiver` named the key, the expected
+   class and the real one directly.
+2. `SCNPlane` overrode `-initWithCoder:` without redeclaring
+   `+supportsSecureCoding`, which Foundation refuses even though the
+   superclass already returns `YES` for it.
+3. `SCNParticlePropertyController.animation` is not a `CAAnimation` reference
+   in the archive at all — Xcode's Scene Editor serializes it as a generic
+   `{"class": "animation", "animation": {"keyframe": {...}}}` dictionary.
+   Reconstructing a real animation from that shape is not implemented;
+   `initWithCoder:` now keeps it `nil` rather than crash — visual-accuracy
+   deficit list item two.
+4. `decodeBoolForKey:` throws when the archive stores the property as a plain
+   integer instead of a boolean-tagged plist value — measured on
+   `castsShadow` (archived as `0`, an integer).
+5. The archive does **not** encode BOOL-shaped properties uniformly: `hidden`
+   really is a boolean-tagged value where `castsShadow` is an integer, in the
+   same file. A blanket switch to `decodeIntegerForKey:` (item 4's first fix)
+   broke `hidden` immediately — a second, separate guest-caught failure from
+   generalizing off one measured sample instead of re-checking. Fixed with a
+   `CharonSCNCoding.decodeBool:forKey:default:` that tries `decodeBoolForKey:`
+   first and falls back to `decodeIntegerForKey:` on exception, rather than
+   assuming either encoding.
+
+**Honest remainder on the diff itself.** Every printed property whose value
+differs from its class's init default (`particleLifeSpan=2` vs default `1`,
+`particleVelocity=1.65` vs default `0`, five `SCNLight.type` strings across
+five nodes including `"area"`, which no single default could produce) is
+proven read from the archive — the value itself is the evidence. Three
+properties instead print a value equal to their default:
+`SCNParticleSystem.speedFactor` (`1`), `.stretchFactor` (`0`), and
+`SCNCamera.fieldOfView` (`60`). For these three, the raw archive was
+independently confirmed (via `plistlib`, not the probe) to carry the key
+with that same value — `speedFactor: 1.0`, `stretchFactor: 0.0`,
+`fov`/`yFov: 60.0` are genuinely present in the object dictionaries. That
+proves the key exists in the file; it does not prove the decoder read it
+rather than silently falling through to the same-valued default. Closing
+that gap needs a value that differs from default on one of these three
+specific keys, which `gift`/`diamond` do not happen to provide. Do not spend
+a dedicated run chasing it — the cost exceeds the value here. It is likely to
+close for free on `star2` or `coin`, whose PBR materials and real meshes are
+far more likely to carry a non-default `speedFactor`/`stretchFactor`/`fov`;
+check for it there rather than re-deriving this paragraph.
