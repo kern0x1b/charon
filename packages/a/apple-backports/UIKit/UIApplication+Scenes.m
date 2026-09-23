@@ -19,7 +19,7 @@ static void charon_scene_error(void (^handler)(NSError *), NSInteger code)
 {
     if (!handler)
         return;
-    NSError *error = [NSError errorWithDomain:@"UISceneErrorDomain" code:code userInfo:nil];
+    NSError *error = [NSError errorWithDomain:UISceneErrorDomain code:code userInfo:nil];
     dispatch_async(dispatch_get_main_queue(), ^{
         handler(error);
     });

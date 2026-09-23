@@ -274,10 +274,10 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UIColorPickerViewControllerDelegate that sends anything like it: the message arrived in iOS 15",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "sent for every choice on the grid or the slider, with continuously YES while a finger is down on the grid or the slider tracks, and NO when it lifts; a delegate that has it hears it instead of colorPickerViewControllerDidSelectColor:",
+      "facts": "facts/UIKit/UIColorWell.md",
+      "source": "UIKit/UIColorPickerViewController.m (charon_pickColor:continuously:); the header of SDK 16.4"
     },
     {
       "api": "-[UIImage imageByPreparingForDisplay]",
@@ -1382,10 +1382,10 @@
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the domain of the errors scene requests fail with; the port already makes those errors in a domain of this very name, written as a literal (UIKit/UIApplication+Scenes.m), so exporting the constant would let an application compare against it - not built, not a wall, and a candidate to implement",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the string UISceneErrorDomain, the domain of the errors the port's scene requests fail with, so an application can compare an error's domain against it",
+      "facts": "facts/UIKit/UIScene.md",
+      "source": "SDK 16.4, UIKit (introduced from the header: the cache ladder has no 13-15 rung)"
     },
     {
       "api": "UISheetPresentationController",

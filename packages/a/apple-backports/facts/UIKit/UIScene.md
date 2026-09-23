@@ -75,3 +75,15 @@ iOS 13.0 constants, since `check_registry` requires one release per object file.
   user info that holds anything else does not archive and nothing is kept for that launch; a value that comes back as the
   wrong kind is dropped rather than assigned. The session's `stateRestorationActivity` is not archived with the session
   itself, which keeps only its role, configuration and persistent identifier.
+
+## `UISceneErrorDomain`, iOS 15
+
+`UIKit/UISceneConstants15.m` exports `UISceneErrorDomain` with the value `@"UISceneErrorDomain"`, the literal the port's
+scene requests already built their errors with (`charon_scene_error` in `UIKit/UIApplication+Scenes.m`, which now uses the
+constant, so the two cannot drift). Before, the domain was right and the constant absent: an application comparing
+`error.domain` against `UISceneErrorDomain` read a NULL weak reference and never matched. `introduced` is the header's 15.0,
+**not measured**: the cache ladder has 12.0 and then 16.0, no 13-15 rung to place the first export between them. The value
+is the port's own literal, taken to be the system's by its name, not read from a release's cache.
+`tools/release-split.lua` over the built objects reports `_UISceneErrorDomain` first exported in **no** release, but that
+says nothing: the iOS 13 scene notifications of `UISceneConstants.o` read `none` the same way, and across all 713 symbols it
+finds no first export above 10.0.1, so the tool does not see UIKit's exports on the 12.0-18.0 rungs.
