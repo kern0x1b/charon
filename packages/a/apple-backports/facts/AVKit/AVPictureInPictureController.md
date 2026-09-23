@@ -76,3 +76,19 @@ also covering system alerts it should not (both expected from the documented win
 ordering, but not exercised); and that a real call screen's `AVPlayerLayer` (video already
 decoding live camera/remote frames) reparents cleanly under real memory and thermal pressure, not
 just a static test asset.
+
+## Properties the header declares beside these
+
+Until 2026-09-23 clang synthesized, without a word, an accessor for every property of the header the
+class did not write itself (`nm` of the object: `contentSource`, `canStartPictureInPictureAutomaticallyFromInline`,
+`canStopPictureInPicture`, `requiresLinearPlayback`, `isPictureInPictureSuspended`), so the class
+answered them by storing a value it never used. Now:
+
+- `requiresLinearPlayback` (14.0) is stored and answered: the floating window has no seek control,
+  so playback in it is linear whatever the value.
+- `pictureInPictureSuspended` answers `NO`: the window is never suspended while the application runs.
+- `contentSource` and `-initWithContentSource:` (15.0) and
+  `canStartPictureInPictureAutomaticallyFromInline` (14.2) are `@dynamic` and not answered - the
+  first two need `AVPictureInPictureControllerContentSource`, which is not carried, the third starts
+  picture in picture as the application leaves the foreground, which the window does not survive.
+- `canStopPictureInPicture` is tvOS's and is not answered on iOS.

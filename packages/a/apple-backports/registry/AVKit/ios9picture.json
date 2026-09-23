@@ -77,6 +77,58 @@
       "effect": "computed for real from the real AVPlayerLayer's own readyForDisplay and player properties on every access, not a fixed default - not KVO-observable the way the real property is, since nothing in this port drives an automatic KVO notification when readyForDisplay changes underneath it (see facts, What is not proven)",
       "facts": "facts/AVKit/AVPictureInPictureController.md",
       "source": "see AVPictureInPictureController"
+    },
+    {
+      "api": "AVPictureInPictureController.pictureInPictureSuspended",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "declared by the header beside the properties the class carries; clang synthesized it silently before",
+      "effect": "NO: the floating window is the application's own and is never suspended while the application runs",
+      "facts": "facts/AVKit/AVPictureInPictureController.md",
+      "source": "see AVPictureInPictureController"
+    },
+    {
+      "api": "AVPictureInPictureController.requiresLinearPlayback",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "telegram sends requiresLinearPlayback (crash-demand-top.tsv, rank 772, one of three owners)",
+      "effect": "stored and answered; the floating window has no seek control, so playback in it is linear whatever the value",
+      "facts": "facts/AVKit/AVPictureInPictureController.md",
+      "source": "SDK 16.4, AVKit/AVPictureInPictureController.h"
+    },
+    {
+      "api": "AVPictureInPictureController.canStartPictureInPictureAutomaticallyFromInline",
+      "kind": "property",
+      "introduced": "14.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the property starts picture in picture when the application leaves the foreground, and the floating window here is the application's own and goes with it; floating video over other applications needs a SpringBoard-side companion this tree does not build",
+      "effect": "the accessor is not there: respondsToSelector: answers NO and an unchecked call raises",
+      "source": "SDK 16.4, AVKit/AVPictureInPictureController.h"
+    },
+    {
+      "api": "AVPictureInPictureController.contentSource",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "AVPictureInPictureControllerContentSource, the class it holds, is not carried, and no application of the corpus reaches it",
+      "effect": "the accessor is not there: respondsToSelector: answers NO and an unchecked call raises",
+      "source": "SDK 16.4, AVKit/AVPictureInPictureController.h"
+    },
+    {
+      "api": "-[AVPictureInPictureController initWithContentSource:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "AVPictureInPictureControllerContentSource, the class it takes, is not carried, and no application of the corpus reaches it",
+      "effect": "the method is not there: respondsToSelector: answers NO and an unchecked call raises",
+      "source": "SDK 16.4, AVKit/AVPictureInPictureController.h"
     }
   ]
 }

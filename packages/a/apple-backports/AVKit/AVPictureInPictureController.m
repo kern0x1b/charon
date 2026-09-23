@@ -75,6 +75,17 @@
 }
 
 @synthesize playerLayer = _playerLayer;
+@synthesize requiresLinearPlayback = _requiresLinearPlayback;
+// Declared by the header, not carried: without @dynamic clang synthesizes accessors that store a
+// value and do nothing with it (measured with nm on the object). canStopPictureInPicture is tvOS's.
+@dynamic contentSource, canStartPictureInPictureAutomaticallyFromInline, canStopPictureInPicture;
+
+- (BOOL)isPictureInPictureSuspended
+{
+    // The floating window is the application's own and is never suspended while the application
+    // runs; when the application leaves the foreground, nothing of it runs to ask.
+    return NO;
+}
 
 + (BOOL)isPictureInPictureSupported
 {
