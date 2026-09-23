@@ -4,6 +4,7 @@
 
 static const char CharonHostKey;
 static const char CharonTableStyleKey;
+static const char CharonUpdateHandlerKey;
 
 @interface CharonBackgroundView : UIView
 - (void)charon_applyConfiguration:(UIBackgroundConfiguration *)configuration inBounds:(CGRect)bounds tint:(UIColor *)tint;
@@ -262,7 +263,12 @@ NSNumber *charon_host_table_style(UITableViewCell *cell)
         return;
     state->needsUpdate = NO;
     state->updating = YES;
-    ((void (*)(id, SEL, id))objc_msgSend)(self, @selector(updateConfigurationUsingState:), [self charon_makeConfigurationState]);
+    UIViewConfigurationState *configurationState = [self charon_makeConfigurationState];
+    ((void (*)(id, SEL, id))objc_msgSend)(self, @selector(updateConfigurationUsingState:), configurationState);
+    // The handler of iOS 15 runs after the view's own update, with the same state.
+    void (^handler)(id, id) = objc_getAssociatedObject(self, &CharonUpdateHandlerKey);
+    if (handler)
+        handler(self, configurationState);
     state->updating = NO;
 }
 
@@ -282,6 +288,17 @@ NSNumber *charon_host_table_style(UITableViewCell *cell)
 void charon_request_update(UIView *view)
 {
     ((void (*)(id, SEL))objc_msgSend)(view, @selector(setNeedsUpdateConfiguration));
+}
+
+id charon_host_update_handler(UIView *host)
+{
+    return objc_getAssociatedObject(host, &CharonUpdateHandlerKey);
+}
+
+void charon_host_set_update_handler(UIView *host, id handler)
+{
+    objc_setAssociatedObject(host, &CharonUpdateHandlerKey, [handler copy], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    charon_request_update(host);
 }
 
 static void charon_wrap(Class cls, SEL selector, id (^make)(IMP original))

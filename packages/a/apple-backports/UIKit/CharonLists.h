@@ -143,6 +143,8 @@ void charon_host_default_update(UIView *host, UIViewConfigurationState *state);
 NSNumber *charon_host_table_style(UITableViewCell *cell);
 UIView *charon_host_content_view(UIView *host);
 void charon_request_update(UIView *view);
+id charon_host_update_handler(UIView *host);
+void charon_host_set_update_handler(UIView *host, id handler);
 UICollectionView *charon_owning_collection_view(UIView *view);
 
 @interface UICollectionView (CharonLists)

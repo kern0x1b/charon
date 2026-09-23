@@ -992,10 +992,10 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a block run where updateConfigurationUsingState: runs; the port carries updateConfigurationUsingState: and setNeedsUpdateConfiguration on the cell (facts/UIKit/UICollectionViewCellConfiguration.md), so calling a stored block from there would carry it - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "kept copied; setting it asks for a configuration update, and the update calls it after updateConfigurationUsingState:, with the view and the same state",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "SDK 16.4, UIKit; not in the class's methods in the 6.1.3 or 12.0 cache, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UICollectionViewLayoutAutomaticDimension",
@@ -1512,20 +1512,20 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a block run where updateConfigurationUsingState: runs; the port carries updateConfigurationUsingState: and setNeedsUpdateConfiguration on a table cell (ios14lists.json, facts/UIKit/UITableViewCellConfiguration.md), so calling a stored block from there would carry it - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "kept copied; setting it asks for a configuration update, and the update calls it after updateConfigurationUsingState:, with the view and the same state",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "SDK 16.4, UIKit; not in the class's methods in the 6.1.3 or 12.0 cache, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UITableViewHeaderFooterView.configurationUpdateHandler",
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a block run where updateConfigurationUsingState: runs; the port carries updateConfigurationUsingState: and setNeedsUpdateConfiguration on header and footer views (ios14lists.json, facts/UIKit/UITableViewCellConfiguration.md), so calling a stored block from there would carry it - not built for lack of demand, not a wall, and a candidate to implement",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "kept copied; setting it asks for a configuration update, and the update calls it after updateConfigurationUsingState:, with the view and the same state",
+      "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
+      "source": "SDK 16.4, UIKit; not in the class's methods in the 6.1.3 or 12.0 cache, and in 16.0 and 18.0 (objc.inventory)"
     },
     {
       "api": "UITextContentTypeDateTime",

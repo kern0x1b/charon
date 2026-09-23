@@ -4,6 +4,7 @@ The same properties as the collection view cell, with `defaultContentConfigurati
 
 ## What the port does as UIKit does
 - While a content configuration is set, `textLabel`, `detailTextLabel` and `imageView` answer nil, as on the host.
+- `configurationUpdateHandler` (iOS 15) is carried for both, as for the collection view cell: `UICollectionViewCellConfiguration.md`.
 
 ## What the host measures that a phone would not
 
