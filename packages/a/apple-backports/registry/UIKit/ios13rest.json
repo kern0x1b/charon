@@ -3658,12 +3658,12 @@
     {
       "api": "NSCocoaVersionDocumentAttribute",
       "kind": "constant",
-      "introduced": "13.0",
+      "introduced": "9.0",
       "minimum": "6.0",
       "status": "implemented",
       "effect": "the string CocoaRTFVersion, the host's",
       "facts": "facts/UIKit/NSTextMembers13.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
+      "source": "UIFoundation of iOS 9.0 armv7, which is where the symbol first exports (SDK 16.4's header says 13.0, the cache ladder does not agree); the host's own UIKit under Mac Catalyst (macOS 27.0) for the value, held against the backport by tests/backports/host/uikit2 (the views13 group)"
     },
     {
       "api": "NSTextScalingDocumentAttribute",

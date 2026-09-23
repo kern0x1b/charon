@@ -1,6 +1,5 @@
 #import <UIKit/UIKit.h>
 
-NSString *const NSCocoaVersionDocumentAttribute = @"CocoaRTFVersion";
 NSString *const NSTextScalingDocumentAttribute = @"TextScaling";
 NSString *const NSSourceTextScalingDocumentAttribute = @"SourceTextScaling";
 NSString *const NSSourceTextScalingDocumentOption = @"SourceTextScaling";
