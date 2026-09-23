@@ -51,6 +51,7 @@ light("lift_test")
 light("digest_test")
 light("dependency_test")
 light("swift_rule_test")
+light("firmware_test")
 
 suite("architectures_test")
 suite("macho_test")

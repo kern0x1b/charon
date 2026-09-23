@@ -437,15 +437,30 @@ local function take_outside(root, folder, architectures)
     end
 end
 
-local function harvest(mount, release)
+local function same_file(first, second)
+    return os.filesize(first) == os.filesize(second) and hash.sha256(first) == hash.sha256(second)
+end
+
+-- Takes the shared caches of a mounted system image (or an unpacked root filesystem) into the
+-- release's folder, with the libraries beside them. A cache already held is the ladder every gate
+-- reads, chosen when it was first taken: it is never written over, and an image whose cache is
+-- another one is refused by the firmware's name, so its libraries are not taken either.
+function harvest(mount, release, firmware)
     local folder = path.join(dyld.root(), release)
     local found = {}
     local caches = cache_folder(mount)
     for _, file in ipairs(caches and os.files(path.join(caches, "dyld_shared_cache_*")) or {}) do
         local name = path.filename(file)
         if not name:find("%.symbols$") and not name:find("%.map$") and not name:find("%.atlas$") then
-            os.mkdir(folder)
-            os.cp(file, path.join(folder, name))
+            local held = path.join(folder, name)
+            if not os.isfile(held) then
+                os.mkdir(folder)
+                os.cp(file, held .. ".partial")
+                os.mv(held .. ".partial", held)
+            elseif not same_file(file, held) then
+                raise("%s %s carries another %s than the one held for iOS %s (%s), which is kept",
+                      firmware.identifier, firmware.build, name, release, held)
+            end
             local architecture = name:match("^dyld_shared_cache_([%w_]+)$")
             if architecture then
                 table.insert(found, architecture)
@@ -456,14 +471,16 @@ local function harvest(mount, release)
     return found
 end
 
-local function mount_and_harvest(image, release, architecture)
+local function mount_and_harvest(image, release, architecture, firmware)
     local mount = image .. ".mount"
     os.mkdir(mount)
     os.vrunv("hdiutil", {"attach", "-readonly", "-nobrowse", "-noverify", "-noautoopen", "-mountpoint", mount, image})
-    local found
+    -- xmake's try without a catch returns nil and drops the error, which then read as "holds no
+    -- shared cache" for every firmware of the release: the error is kept and raised once detached.
+    local found, failure
     try {
         function ()
-            found = harvest(mount, release)
+            found = harvest(mount, release, firmware)
             if #found == 0 and os.isdir(path.join(mount, LIBRARY_FOLDERS[1])) and not cache_folder(mount) then
                 local copied = copy_libraries(mount, path.join(dyld.root(), release, "libraries_" .. architecture))
                 if copied > 0 then
@@ -471,6 +488,11 @@ local function mount_and_harvest(image, release, architecture)
                 end
             end
         end,
+        catch {
+            function (errors)
+                failure = errors
+            end
+        },
         finally {
             function ()
                 os.vrunv("hdiutil", {"detach", mount})
@@ -478,6 +500,9 @@ local function mount_and_harvest(image, release, architecture)
             end
         }
     }
+    if failure then
+        raise(failure)
+    end
     return found
 end
 
@@ -499,12 +524,21 @@ function fetch(architecture, minimum, opt)
     if held and (os.isdir(held) or os.isdir(dyld.outside_source(folder, architecture))) then
         return held, release
     end
-    -- A cache taken before the libraries beside it were: the first firmware fetch would choose is the
-    -- one it came from, and its root filesystem, where unpacked, has them without a download.
-    if held and unpacked(firmwares[1]) then
-        cprint("${bright}taking the libraries of iOS %s for %s outside its shared cache${clear} from the root filesystem of %s %s", release, architecture, firmwares[1].identifier, firmwares[1].build)
-        take_outside(unpacked(firmwares[1]), folder, {architecture})
-        return held, release
+    -- A cache taken before the libraries beside it were: they come from the firmware that cache is,
+    -- found by its root filesystem where one is unpacked, else by harvest refusing every image whose
+    -- cache is another. Which firmware a cache was first taken from is not recorded, and the smallest
+    -- is not always it (6.1.3's is iPhone4,1's, from an unpacked root filesystem).
+    if held then
+        for _, firmware in ipairs(firmwares) do
+            local root = unpacked(firmware)
+            local caches = root and cache_folder(root)
+            local cache = caches and path.join(caches, path.filename(held))
+            if cache and os.isfile(cache) and same_file(cache, held) then
+                cprint("${bright}taking the libraries of iOS %s for %s outside its shared cache${clear} from the root filesystem of %s %s", release, architecture, firmware.identifier, firmware.build)
+                take_outside(root, folder, {architecture})
+                return held, release
+            end
+        end
     end
     local tool = assert(opt.tool, "fetching firmware needs the charon-firmware tool")
     local failures = {}
@@ -524,7 +558,7 @@ function fetch(architecture, minimum, opt)
                             fetch_member(firmware.url, members[name], file)
                         end
                         local image = plain_image(firmware, file)
-                        table.join2(harvested, mount_and_harvest(image, release, architecture))
+                        table.join2(harvested, mount_and_harvest(image, release, architecture, firmware))
                         os.tryrm(image)
                         if table.contains(harvested, architecture) then
                             break
@@ -541,6 +575,7 @@ function fetch(architecture, minimum, opt)
             catch {
                 function (errors)
                     table.insert(failures, firmware.identifier .. " " .. firmware.build .. ": " .. tostring(errors))
+                    cprint("${color.warning}%s %s did not yield the %s libraries of iOS %s:${clear} %s", firmware.identifier, firmware.build, architecture, release, tostring(errors))
                 end
             }
         }
