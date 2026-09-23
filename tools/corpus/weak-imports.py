@@ -12,8 +12,9 @@ so nothing here proves a crash. What it can do is: classify each symbol by kind 
 say whether it EXISTS now (registry status implemented/inert = present, not NULL), how new it is,
 and how many corpus apps import it (a second, independent view of the same name).
 
-Usage: weak-imports.py <file, one symbol per line>
-Output: corpus/weak-imports-ranked.tsv
+Usage: weak-imports.py <file, one symbol per line> [output-path]
+Output: corpus/weak-imports-ranked.tsv (or argv[2] / $CHARON_WEAK_IMPORTS_OUT, to redirect a
+one-off or test run away from the real file)
 """
 import json, os, re, sys
 from collections import defaultdict
@@ -35,7 +36,7 @@ CAUGHT = {"AVAudioSessionPortBluetoothLE", "AVAudioSessionMediaServicesWereLostN
 def ver(t):
     return tuple(int(p) for p in t.split(".")) if t else None
 
-def main(path):
+def main(path, out_override=None):
     syms = [l.strip() for l in open(path, errors="replace") if l.strip()]
     sdk = json.load(open(os.path.join(CORPUS, "sdk-introduced.json")))
     reg, intro = {}, {}
@@ -120,7 +121,7 @@ def main(path):
         v = ver(r["introduced"]) if r["introduced"] else (99,)
         return v
     rows.sort(key=lambda r: (r["tier"], -r["apps"], ver_key(r), r["name"]))
-    out = os.path.join(CORPUS, "weak-imports-ranked.tsv")
+    out = out_override or os.environ.get("CHARON_WEAK_IMPORTS_OUT") or os.path.join(CORPUS, "weak-imports-ranked.tsv")
     with open(out, "w") as f:
         f.write("tier\tsymbol\tkind\tframework\tintroduced\tregistry\tcorpus_apps_importing\tcorpus_strong\n")
         for r in rows:
@@ -145,4 +146,4 @@ def main(path):
     return rows
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)

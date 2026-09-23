@@ -125,16 +125,56 @@ loudly-empty or with a printed `MISSING` rather than crashing):
   reasoning the task gave for `store.json` (~4 MB) — moved alongside it to `corpus/`, not left
   beside the scripts.
 
-## Known cost of this session's testing
+## Known cost of this session's testing, and what it fixed
 
-`static-candidates.py` and `weak-imports.py` write their output through a hardcoded
-`corpus/<name>.tsv` path with no way to redirect via the CLI. The smoke test for
-`static-candidates.py` was run once against a fabricated one-line input before this was noticed,
-overwriting the real `corpus/static-candidates-demand.tsv` with a placeholder; it was regenerated
-from a real `surface-diff-latest.py --release 6.0 --list` run over UIKit+Foundation immediately
-after (222 real rows) but the original file's exact framework-list invocation is not known, so a
-coordinator who needs the original framework selection should regenerate deliberately.
-`weak-imports.py`'s test instead reused the existing `weak-imports-ranked.tsv`'s own symbol column
-as real input, so its overwrite is a legitimate regeneration (hash differs from before only
-because the registry export moved on since the file was last generated). Every other script's
-verification was run against an isolated scratch `CHARON_CORPUS_ROOT`, touching no real data.
+`static-candidates.py` and `weak-imports.py` originally wrote their output through a hardcoded
+`corpus/<name>.tsv` path with no way to redirect via the CLI. `static-candidates.py`'s smoke test
+was run once against a fabricated one-line input before this was noticed, overwriting the real
+`corpus/static-candidates-demand.tsv` with a placeholder; it was regenerated from a real
+`surface-diff-latest.py --release 6.0 --list` run over UIKit+Foundation immediately after (222 real
+rows) but the original file's exact framework-list invocation is not known, so a coordinator who
+needs the original framework selection should regenerate deliberately. `weak-imports.py`'s test
+instead reused the existing `weak-imports-ranked.tsv`'s own symbol column as real input, so its
+overwrite is a legitimate regeneration (hash differs from before only because the registry export
+moved on since the file was last generated). `selector-demand.py report` was also run directly
+against the real corpus during testing — its overwrite of `selector-demand-{7-10,FUIKit}.tsv` is
+likewise a legitimate regeneration from real `selcache/`/`defcache/` inputs already on disk, not a
+fabrication.
+
+Both `static-candidates.py` and `weak-imports.py` now take the output path as an optional second
+positional argument, or `$CHARON_STATIC_CANDIDATES_OUT` / `$CHARON_WEAK_IMPORTS_OUT`, defaulting to
+the real `corpus/*.tsv` path if neither is given — so a test or one-off run no longer has to choose
+between touching real data and standing up a whole scratch `CHARON_CORPUS_ROOT`. Verified: both
+redirected successfully to a `/tmp` path (both via the positional arg and via the environment
+variable) using real, non-fabricated corpus inputs, and the real files' hashes were unchanged
+before and after.
+
+## Every script that writes into `corpus/`, and how to redirect it for a test run
+
+The coarse lever — pointing `CHARON_CORPUS_ROOT` at an isolated scratch directory containing only
+the specific inputs a script needs (a symlinked read-only input plus an empty output area is
+usually enough) — always works, and was how every script below except the two named above was
+verified during this migration without touching real data. A per-output override is finer-grained
+and lighter-weight where one exists.
+
+| Script | Writes | Dedicated output redirect | Coarse redirect (`CHARON_CORPUS_ROOT`) |
+| --- | --- | --- | --- |
+| `static-candidates.py` | `static-candidates-demand.tsv` | yes — arg 2 / `$CHARON_STATIC_CANDIDATES_OUT` | yes |
+| `weak-imports.py` | `weak-imports-ranked.tsv` | yes — arg 2 / `$CHARON_WEAK_IMPORTS_OUT` | yes |
+| `crash-demand.py` | `crash-demand-{top,ambiguous-owners,dropped}.tsv` | no (takes no arguments at all) | yes (this migration's main control) |
+| `gen-report.py` | `band-*.tsv`, `corpus-report.md` | no | yes (verified) |
+| `sdk-introduced.py` | `sdk-introduced.json`, `sdk-introduced-unverified.tsv` | no | yes (verified, bounded run with `FRAMEWORKS` truncated) |
+| `observed.py` | `observed-device.tsv`, `crash-demand-owner-unknown.tsv` | no | yes (verified) |
+| `live-scan.py` | `store-live.json` (`ingest`), `band-11-12-FCS.tsv` (`fcs`) | no | yes (verified) |
+| `hint-track.py` | `hint-ledger.tsv`, `absent-reversals.tsv` (append-only, deduped by api — a rerun on unchanged registry data adds nothing) | no | yes (verified, +0 rows on rerun) |
+| `selector-demand.py` | `selector-demand-{7-10,FUIKit}.tsv` | no | yes |
+| `weak-per-image.py` | `weak-imports-by-image{,-any}.tsv` | no | yes (verified) |
+| `aggregate.py` | `store.json` (`ingest`) | no (only `CHARON_TOOLS_DIR`, which redirects the whole tools lookup, not just this write) | yes |
+| `defined-methods.py` | `defcache/<app>.json` | no (app name is a fixed list, but idempotent — reruns reproduce the same bytes from the same binaries, verified) | yes (verified) |
+| `scan-selectors.py` | `selcache/<app>.json`, `defcache/<app>.json` | app name is argv[1] — pass a name that isn't a real corpus app to avoid touching real per-app caches | yes |
+
+`stopgap-selectors.py`, `verify.py`, `merge-katabasis.py` print to stdout only and write nothing.
+`subframework-scan.py` writes one scratch `.m` file (deleted in the same run, `finally`-guarded) —
+not corpus data. `export-registry.lua` and `corpus-scan.lua` always take an explicit output
+path/redirect from the caller, never a default inside `corpus/`. `sel-universe.sh` already had a
+dedicated `CHARON_CACHES_DIR` override before this migration.

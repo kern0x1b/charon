@@ -7,9 +7,12 @@ SDK gives the member's availability; `?` means it has none recorded (the cfee153
 
 For every listed method/property, count the corpus apps that SEND its selector (bundle carries the
 string and does not define it) and, from the app deployment targets, how many can call it without a
-guard. Output corpus/static-candidates-demand.tsv, then compare with the crash-demand list, which is
-built by a different route (SDK dump + registry join): the two should agree on the undecided rows that
-apps send, and where they differ one of the two has a bug.
+guard. Output corpus/static-candidates-demand.tsv (or argv[2] / $CHARON_STATIC_CANDIDATES_OUT, to
+redirect a one-off or test run away from the real file), then compare with the crash-demand list,
+which is built by a different route (SDK dump + registry join): the two should agree on the
+undecided rows that apps send, and where they differ one of the two has a bug.
+
+Usage: python3 static-candidates.py <surface-diff --list output> [output-path]
 """
 import csv, json, os, re, sys
 from collections import defaultdict
@@ -37,7 +40,7 @@ def selectors(api, kind):
         return [n, "set" + up + ":", "is" + up]
     return []
 
-def main(path):
+def main(path, out_override=None):
     fw = None
     cands = []                                   # (framework, version|None, kind, api)
     for line in open(path, errors="replace"):
@@ -69,7 +72,10 @@ def main(path):
         crash = sorted(a for a in apps if v is not None and MINOS[a] >= v)
         out.append((len(crash), len(apps), fw, ".".join(map(str, v)) if v else "?", kind, api, sorted(apps)))
     out.sort(key=lambda t: (-t[0], -t[1], t[5]))
-    p = os.path.join(CORPUS, "static-candidates-demand.tsv")
+    # Real corpus/static-candidates-demand.tsv was overwritten once by a test run against a
+    # fabricated input during this migration (see README) -- CHARON_STATIC_CANDIDATES_OUT (or the
+    # positional arg below) lets a one-off or test run redirect the write without touching it.
+    p = out_override or os.environ.get("CHARON_STATIC_CANDIDATES_OUT") or os.path.join(CORPUS, "static-candidates-demand.tsv")
     with open(p, "w") as f:
         f.write("unguarded_callers\tapps\tframework\tintroduced\tkind\tapi\tsenders\n")
         for cr, n, fw_, v, k, a, apps in out:
@@ -98,4 +104,4 @@ def main(path):
         r = mine[a]; print(f"     {r[9]}/{r[8]} {r[5]:5} {r[12][:22]:22} {a[:64]}")
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)
