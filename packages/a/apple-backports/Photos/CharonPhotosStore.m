@@ -322,4 +322,46 @@ static NSString *const CharonPhotosErrorDomain = @"PHPhotosErrorDomain";
     } error:error];
 }
 
++ (ALAssetsGroup *)createAlbumWithName:(NSString *)name error:(NSError **)error
+{
+    __block ALAssetsGroup *made = nil;
+    __block NSError *failed = nil;
+    [self work:^(dispatch_block_t done) {
+        [[self library] addAssetsGroupAlbumWithName:name resultBlock:^(ALAssetsGroup *group) {
+            made = group;
+            done();
+        } failureBlock:^(NSError *problem) {
+            failed = problem;
+            done();
+        }];
+    }];
+    if (!made && error)
+        *error = failed ?: [self errorWithCode:-1 reason:@"the photo library did not answer with the new album"];
+    return made;
+}
+
++ (BOOL)addAsset:(ALAsset *)asset toGroupWithURL:(NSURL *)url error:(NSError **)error
+{
+    __block BOOL added = NO;
+    __block NSError *failed = nil;
+    [self work:^(dispatch_block_t done) {
+        [[self library] groupForURL:url resultBlock:^(ALAssetsGroup *group) {
+            if (group) {
+                added = [group addAsset:asset];
+                if (!added)
+                    failed = [self errorWithCode:-1 reason:@"the album refused the asset"];
+            } else {
+                failed = [self errorWithCode:-1 reason:@"the album no longer exists"];
+            }
+            done();
+        } failureBlock:^(NSError *problem) {
+            failed = problem;
+            done();
+        }];
+    }];
+    if (!added && error)
+        *error = failed;
+    return added;
+}
+
 @end

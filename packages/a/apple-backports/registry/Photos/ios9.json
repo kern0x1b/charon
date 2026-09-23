@@ -1,0 +1,60 @@
+{
+  "framework": "Photos",
+  "entries": [
+    {
+      "api": "PHAssetCreationRequest",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 9 gave the creation request its own subclass so a resource can be attached before the write; iOS 6 still has only ALAssetsLibrary's single write to the saved photos, so the resource is staged and written at commit the same way PHAssetChangeRequest's own creation request is",
+      "effect": "+creationRequestForAsset opens a request; addResourceWithType:data:options: and addResourceWithType:fileURL:options: accept exactly one photo or video resource (a second call, or any other resource type, fails the change); +supportsAssetResourceTypes: answers YES only for a single photo or video type; placeholderForCreatedAsset resolves like PHAssetChangeRequest's",
+      "facts": "facts/Photos/Changes.md",
+      "source": "the header of iOS 16.4 for the declarations; verified against this port's own PHAssetChangeRequest (facts/Photos/Changes.md), which PHAssetCreationRequest inherits from in the SDK; not yet measured on device"
+    },
+    {
+      "api": "PHAssetResourceCreationOptions",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the options object is plain state (a filename, a UTI, whether to move the file) that this release has no need to interpret, since a single write always copies the given bytes or file",
+      "effect": "originalFilename, uniformTypeIdentifier and shouldMoveFile are held and copied; nothing reads shouldMoveFile back, as ALAssetsLibrary's write always copies",
+      "facts": "facts/Photos/Changes.md",
+      "source": "the header of iOS 16.4 for the declarations; not yet measured on device"
+    },
+    {
+      "api": "PHAssetResource",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6 has one resource per asset, the primary representation ALAssetsLibrary gives, so the class describes that representation rather than a Photos database row",
+      "effect": "+assetResourcesForAsset: gives one PHAssetResource built from the asset's defaultRepresentation (type, UTI and filename); +assetResourcesForLivePhoto: always gives an empty array, since iOS 6 has no live photos",
+      "facts": "facts/Photos/Changes.md",
+      "source": "the header of iOS 16.4 for the declarations; ALAssetRepresentation of an iPad 2 running 6.1.3 for the shape of a representation; the resource list of a live photo not yet measured, since no live photo can exist on this release"
+    },
+    {
+      "api": "PHAssetResourceRequestOptions",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the options object is plain state (whether the network may be used, a progress block); iOS 6 always reads the asset from local storage, so networkAccessAllowed changes nothing, and the read is synchronous enough that progress is only ever reported once, at completion",
+      "effect": "networkAccessAllowed is held and copied but not read back, since ALAssetsLibrary never reaches the network for a local asset's bytes; progressHandler is called once with 1.0 when the read that follows it succeeds, never left uncalled",
+      "facts": "facts/Photos/Changes.md",
+      "source": "the header of iOS 16.4 for the declarations; not yet measured on device"
+    },
+    {
+      "api": "PHAssetResourceManager",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the manager gives back the bytes of the one resource an iOS 6 asset has; it reads them from the same ALAssetRepresentation that PHAssetResource itself was built from",
+      "effect": "+defaultManager gives one shared instance; requestDataForAssetResource:options:dataReceivedHandler:completionHandler: reads the whole representation in one call and hands it to dataReceivedHandler once, then calls completionHandler with nil, or with an error and no call to dataReceivedHandler if the asset is gone or the release gave fewer bytes than the representation's own size; writeDataForAssetResource:toFile:options:completionHandler: writes the same bytes to the given file; cancelDataRequest: is a no-op, since a request this release can serve completes before the caller could cancel it",
+      "facts": "facts/Photos/Changes.md",
+      "source": "the header of iOS 16.4 for the declarations; verified against this port's own PHAssetResource and ALAssetRepresentation.getBytes:fromOffset:length:error:; not yet measured on device"
+    }
+  ]
+}

@@ -17,6 +17,8 @@
 + (NSString *)writeImage:(UIImage *)image error:(NSError **)error;
 + (NSString *)writeVideoAtURL:(NSURL *)url error:(NSError **)error;
 + (NSError *)errorWithCode:(NSInteger)code reason:(NSString *)reason;
++ (ALAssetsGroup *)createAlbumWithName:(NSString *)name error:(NSError **)error;
++ (BOOL)addAsset:(ALAsset *)asset toGroupWithURL:(NSURL *)url error:(NSError **)error;
 @end
 
 @interface CharonPhotosTransaction : NSObject
@@ -48,4 +50,9 @@
 - (instancetype)initWithCharonGroup:(ALAssetsGroup *)group;
 - (instancetype)initWithCharonSmartSubtype:(PHAssetCollectionSubtype)subtype;
 - (NSArray<PHAsset *> *)charon_assets;
+- (ALAssetsGroup *)charon_group;
+@end
+
+@interface PHAssetChangeRequest (Charon)
+- (NSDictionary *)charon_metadata;
 @end

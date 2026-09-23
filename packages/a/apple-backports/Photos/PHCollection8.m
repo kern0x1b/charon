@@ -146,6 +146,11 @@ static PHFetchResult *charon_collections(NSArray *collections, PHFetchOptions *o
     return @[];
 }
 
+- (ALAssetsGroup *)charon_group
+{
+    return _group;
+}
+
 + (NSArray *)charon_smartSubtypes
 {
     return @[@(PHAssetCollectionSubtypeSmartAlbumVideos), @(PHAssetCollectionSubtypeSmartAlbumFavorites),
