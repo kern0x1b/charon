@@ -27,7 +27,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIAction a method like it: it arrived in iOS 15",
+      "reason": "an action that opens the camera and types the text it reads into the responder; the 4S and iPad 2 have a camera, but recognising text in its frames needs VNRecognizeTextRequest, absent in the port's Vision, so there is nothing to read the text with - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -155,7 +155,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UIAdaptivePresentationControllerDelegate that sends anything like it: the message arrived in iOS 15",
+      "reason": "sent before a presentation adapts to a compact size, with the controller it adapts to; the port keeps adaptivePresentationStyle and never adapts (facts/UIKit/UIPresentationController.md), so no adaptation happens to prepare for",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -165,7 +165,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UIApplicationDelegate that sends anything like it: the message arrived in iOS 15",
+      "reason": "asks whether the key commands of the application are remapped to the keys of the keyboard layout in use; the port carries UIKeyCommand (facts/UIKit/KeyCommands.md) and matches its input as given, with no remapping to ask about - no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -323,7 +323,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIResponder a method like it: it arrived in iOS 15",
+      "reason": "the responder action behind captureTextFromCameraActionForResponder:; the camera is there, but recognising text in its frames needs VNRecognizeTextRequest, absent in the port's Vision, so there is nothing to read the text with - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -763,7 +763,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "names the paste action of the system's edit menu, to find it in a UIMenuBuilder; the release's text views build their edit menu with UIMenuController, which holds no actions with identifiers (facts/UIKit/UITextInputEditMenu16.md), so nothing carries the name - no demand",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -773,7 +773,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "names the paste-and-go action of the system's edit menu, to find it in a UIMenuBuilder; the release's text views build their edit menu with UIMenuController, which holds no actions with identifiers (facts/UIKit/UITextInputEditMenu16.md), so nothing carries the name - no demand",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -783,7 +783,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "names the paste-and-match-style action of the system's edit menu, to find it in a UIMenuBuilder; the release's text views build their edit menu with UIMenuController, which holds no actions with identifiers (facts/UIKit/UITextInputEditMenu16.md), so nothing carries the name - no demand",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -793,7 +793,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "names the paste-and-search action of the system's edit menu, to find it in a UIMenuBuilder; the release's text views build their edit menu with UIMenuController, which holds no actions with identifiers (facts/UIKit/UITextInputEditMenu16.md), so nothing carries the name - no demand",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -803,7 +803,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "the metadata key under which an items configuration hands over an LPLinkMetadata; the port carries UIActivityItemsConfiguration (ios13rest.json) but no LinkPresentation framework, so there is no metadata of that kind to hand over - no demand",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -813,7 +813,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "adopted by a responder that offers items to share when the whole scene is shared; the release has no system surface that shares a scene, and UIResponder.activityItemsConfiguration is inert here for the same want of a reader (ios13rest.json), so nothing would ask - no demand",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -843,7 +843,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "selects items by dragging a rectangle over them with a pointer; the 4S and iPad 2 have no pointer to drag one with - no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -953,7 +953,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "describes a button's look - background, image placement, title and subtitle - for the button to draw; the port carries UIButton's parts and UIBackgroundConfiguration (facts/UIKit/UIBackgroundConfiguration.md), over which it could be built, but it replaces how the button lays out and draws, which is real work - no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -963,7 +963,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UICollectionLayoutListConfiguration a property like it: it arrived in iOS 15",
+      "reason": "the space above each section header of a list; the port lays its list sections out itself (facts/UIKit/UICollectionLayoutListConfiguration.md), so it could add the space there - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1003,7 +1003,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "the value that asks a list for its default header padding; follows UICollectionLayoutListConfiguration.headerTopPadding, not carried (see its row)",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1063,7 +1063,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIDatePicker a property like it: it arrived in iOS 15",
+      "reason": "whether the date picker rounds its date to minuteInterval; the release's UIDatePicker applies minuteInterval itself, in private code the port does not reach into, so turning the rounding off would mean replacing it - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1073,7 +1073,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the effect a focused item shows, a halo or a lift; the port has no focus engine (UIFocusSystem absent, ios11.json), so no item is ever focused to show one",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -1083,7 +1083,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the halo drawn around a focused item; the port has no focus engine (UIFocusSystem absent, ios11.json), so no item is ever focused to draw it around",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -1123,7 +1123,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "the input of a key command for the delete key; the port carries the other key inputs of that kind (UIKeyInputUpArrow and the rest, facts/UIKit/KeyboardAndAccessibility.md), and whether the release's hardware keyboard handling delivers delete to a key command is what would need measuring - not built for lack of demand, not a wall",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1133,7 +1133,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "a layout guide that follows the keyboard's frame; the port carries UILayoutGuide (base.json) and the release posts the keyboard frame notifications, so the guide could be built on the two - not built for lack of demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
