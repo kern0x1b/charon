@@ -68,6 +68,16 @@ to diff from later.
   edited twice between one call and the next reports one
   `CNChangeHistoryUpdateContactEvent`, not two - the same way a release that
   is asked to diff two points spanning several edits would.
+- **An add and an update inside the same second can collapse into just the
+  add.** `kABPersonModificationDateProperty` is the only signal this journal
+  has for "changed since the last snapshot", and on the release it carries
+  whole seconds. Measured on real hardware (iPad 2, 6.1.3): a contact added
+  and then updated inside the same second snapshots with the same
+  modification date both times, so the second diff sees no change and
+  answers no `CNChangeHistoryUpdateContactEvent` for it - the add already
+  reported the contact in its current, already-updated form, so nothing is
+  silently lost, but an application counting on one event per save should
+  not expect one for an edit that lands in the same second as the add.
 - **A record the journal never saw cannot be reported deleted.** Deleting a
   contact or group that came and went between two snapshots this journal
   actually took produces no event at all, since neither snapshot ever named
