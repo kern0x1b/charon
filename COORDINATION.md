@@ -59,6 +59,25 @@ xmake l <scratchpad>/build-gate.lua 6.1.3 <outdir> <wt>  # full: all libs + chec
 `build-gate.lua` takes the checkout as argument three — **never hardcode the path**, that defect
 already caused a gate to certify the wrong tree.
 
+**The tree is frozen while a gate runs on it.** `build-gate.lua` reads the checkout live, so a patch
+applied mid-run makes the result meaningless in both directions: it can fail on state the build never
+saw, and it can pass work the checks never reached. Patches that arrive during a gate wait for the
+next stack. Paid for twice on 2026-09-23.
+
+**Two blind spots of this gate, both measured, both to be covered by other means:**
+
+- It checked only classes and method-shaped spellings against what is built, so a **constant or plain
+  C function** registered but not carried — or carried but not registered — passed green. Fixed
+  2026-09-23; the detector now also tests `found.symbols`. It was blind twice before that, so a green
+  gate from earlier in the tree proves less about constants than it looks.
+- Its release-split check works on the **coarsened grid of band points**, not per symbol, so a
+  registry entry wrong by a whole release boundary can pass. Cover it with
+  `xmake l tools/release-split.lua <dir-with-compiled-objects>` — a **mandatory step after a
+  successful `build()` and before `write_deb()`**. It walks every exported symbol through the cache
+  ladder and names the first release that exports it. Known blind spot of its own: a **category** has
+  no `nm`-visible symbols, so a clean result says nothing about category files — measure those by
+  direct selector-string search against the caches, with a negative control.
+
 ## 4. The bands
 
 Each is an independent session with its own worktree. Domains do not overlap.
@@ -103,10 +122,17 @@ Every one of these was paid for once. None of them is theoretical.
 - After reviving a dead test, do **not** declare it healthy — run it fully and look for regressions
   that accumulated while it was blind.
 - Compiling under Mac Catalyst is **not** proof it builds: the real package build is stricter.
-  Catalyst is a **behaviour oracle**, not a build check.
-- Before disassembling a firmware cache, check whether the host answers — Catalyst exposes more
-  than expected. When the host diverges for a known reason, name the divergence and make the test
-  fail if it ever stops diverging.
+  Catalyst is a **behaviour oracle**, not a build check. **But measured 2026-09-23: Catalyst is not
+  available on this machine at all.** Only Command Line Tools are installed — there is no
+  `Xcode.app`, `MacOSX.sdk` carries no `UIKit.framework` to link a Catalyst target against, and
+  `xcrun --sdk iphoneos --show-sdk-path` fails outright (the port takes its iOS SDK from its own
+  xmake package, not from Xcode). Do not plan a host oracle on Catalyst. Three paths work instead:
+  `objc.inventory`/`dyld.load` against the release's real armv7 cache for statics, `xmake emulate`
+  on an armv7 guest for dynamics without hardware, and a real device. The emulator has **no audio
+  daemon** — anything needing AudioSession fails there with `kAudioSessionNotInitialized`, which
+  reads like a code error and is not one.
+- Before disassembling a firmware cache, check whether the host answers. When the host diverges for
+  a known reason, name the divergence and make the test fail if it ever stops diverging.
 - The header can be wrong. Where the header and the running system disagree, follow the system and
   record the divergence.
 
