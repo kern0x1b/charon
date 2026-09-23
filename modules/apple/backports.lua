@@ -794,14 +794,27 @@ end
 
 -- The releases one object's exported API arrived in, {version = {names}}, and the names no source
 -- can place at all. Measured, not judged: an object mixing releases is reported by the caller, so
--- one pass can name every such object instead of stopping at the first.
+-- one pass can name every such object instead of stopping at the first. A name arrives with the
+-- first of its symbols: a release can export a class without its metaclass (NaturalLanguage of
+-- 12.0 exports _OBJC_CLASS_$_NLTokenizer, and its metaclass only from 16.0), and the class is the API.
 function releases_in(opt, source, object)
-    local releases, resolved, unplaced = {}, {}, {}
+    local names, earliest = {}, {}
     for _, symbol in ipairs(exported_symbols(object)) do
         local name = symbol:match("^_OBJC_CLASS_%$_(.+)$") or symbol:match("^_OBJC_METACLASS_%$_(.+)$")
                      or symbol:match("^_OBJC_IVAR_%$_(.-)%.") or symbol:sub(2)
-        local version = measured_introduced(opt.architecture, symbol) or resolved[name]
-        if not version and resolved[name] == nil then
+        if earliest[name] == nil then
+            table.insert(names, name)
+            earliest[name] = false
+        end
+        local version = measured_introduced(opt.architecture, symbol)
+        if version and (not earliest[name] or dyld.compare_versions(version, earliest[name]) < 0) then
+            earliest[name] = version
+        end
+    end
+    local releases, unplaced = {}, {}
+    for _, name in ipairs(names) do
+        local version = earliest[name] or nil
+        if not version then
             local dump = os.iorunv(clang(opt, {"-fsyntax-only", "-w", "-Xclang", "-ast-dump", "-Xclang", "-ast-dump-filter", "-Xclang", name, source}, true))
             version = introduced_version(dump, name)
             if not version then
@@ -811,16 +824,12 @@ function releases_in(opt, source, object)
                 local entry = listed(opt.root)[name]
                 version = entry and entry.status == "implemented" and entry.introduced or nil
             end
-            resolved[name] = version or false
-            if not version then
-                table.insert(unplaced, name)
-            end
         end
         if version then
             releases[version] = releases[version] or {}
-            if not table.contains(releases[version], name) then
-                table.insert(releases[version], name)
-            end
+            table.insert(releases[version], name)
+        else
+            table.insert(unplaced, name)
         end
     end
     return releases, unplaced

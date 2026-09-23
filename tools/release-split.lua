@@ -130,6 +130,17 @@ function main(objectsdir, output)
         end
     end
 
+    -- A class and its metaclass are one API, and it arrives with the class: a release can export the
+    -- class alone (NaturalLanguage of 12.0 exports _OBJC_CLASS_$_NLTokenizer, its metaclass only from
+    -- 16.0), which would otherwise read as one object spanning two releases.
+    for symbol in pairs(all_symbols) do
+        local class = symbol:match("^_OBJC_METACLASS_%$_(.+)$")
+        local arrived = class and first["_OBJC_CLASS_$_" .. class]
+        if arrived and (not first[symbol] or dyld.compare_versions(arrived, first[symbol]) < 0) then
+            first[symbol] = arrived
+        end
+    end
+
     local lines, mixed = {}, {}
     for _, file in ipairs(files) do
         local name = path.filename(file)
