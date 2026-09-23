@@ -4,7 +4,7 @@
     {
       "api": "CGPathAddRoundedRect()",
       "kind": "function",
-      "introduced": "7.0",
+      "introduced": "5.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -15,7 +15,7 @@
     {
       "api": "CGPathCreateWithRoundedRect()",
       "kind": "function",
-      "introduced": "7.0",
+      "introduced": "5.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -37,7 +37,7 @@
     {
       "api": "kCGColorSpaceGenericCMYK",
       "kind": "constant",
-      "introduced": "9.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -48,7 +48,7 @@
     {
       "api": "kCGColorSpaceGenericGray",
       "kind": "constant",
-      "introduced": "9.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -70,7 +70,7 @@
     {
       "api": "kCGColorSpaceGenericRGB",
       "kind": "constant",
-      "introduced": "9.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -125,7 +125,7 @@
     {
       "api": "CGColorSpaceCopyName()",
       "kind": "function",
-      "introduced": "10.0",
+      "introduced": "4.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -136,7 +136,7 @@
     {
       "api": "CGColorSpaceCopyPropertyList()",
       "kind": "function",
-      "introduced": "10.0",
+      "introduced": "4.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -147,7 +147,7 @@
     {
       "api": "CGColorSpaceCreateWithICCData()",
       "kind": "function",
-      "introduced": "10.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -158,7 +158,7 @@
     {
       "api": "CGColorSpaceCreateWithPropertyList()",
       "kind": "function",
-      "introduced": "10.0",
+      "introduced": "4.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -169,7 +169,7 @@
     {
       "api": "CGColorSpaceSupportsOutput()",
       "kind": "function",
-      "introduced": "10.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -191,7 +191,7 @@
     {
       "api": "CGColorCreateGenericCMYK()",
       "kind": "function",
-      "introduced": "13.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -202,7 +202,7 @@
     {
       "api": "CGColorCreateGenericGray()",
       "kind": "function",
-      "introduced": "13.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -213,7 +213,7 @@
     {
       "api": "CGColorCreateGenericRGB()",
       "kind": "function",
-      "introduced": "13.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -235,7 +235,7 @@
     {
       "api": "CGColorGetConstantColor()",
       "kind": "function",
-      "introduced": "14.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -257,7 +257,7 @@
     {
       "api": "kCGColorBlack",
       "kind": "constant",
-      "introduced": "14.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -268,7 +268,7 @@
     {
       "api": "kCGColorClear",
       "kind": "constant",
-      "introduced": "14.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -279,7 +279,7 @@
     {
       "api": "kCGColorWhite",
       "kind": "constant",
-      "introduced": "14.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -290,7 +290,7 @@
     {
       "api": "kCGPDFContextOutputIntent",
       "kind": "constant",
-      "introduced": "14.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -301,7 +301,7 @@
     {
       "api": "kCGPDFContextOutputIntents",
       "kind": "constant",
-      "introduced": "14.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -312,7 +312,7 @@
     {
       "api": "kCGPDFXDestinationOutputProfile",
       "kind": "constant",
-      "introduced": "14.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -323,7 +323,7 @@
     {
       "api": "kCGPDFXInfo",
       "kind": "constant",
-      "introduced": "14.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -334,7 +334,7 @@
     {
       "api": "kCGPDFXOutputCondition",
       "kind": "constant",
-      "introduced": "14.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -345,7 +345,7 @@
     {
       "api": "kCGPDFXOutputConditionIdentifier",
       "kind": "constant",
-      "introduced": "14.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -356,7 +356,7 @@
     {
       "api": "kCGPDFXOutputIntentSubtype",
       "kind": "constant",
-      "introduced": "14.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -367,7 +367,7 @@
     {
       "api": "kCGPDFXRegistryName",
       "kind": "constant",
-      "introduced": "14.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",

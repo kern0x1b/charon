@@ -4,7 +4,7 @@
     {
       "api": "SecPolicyCreateRevocation()",
       "kind": "function",
-      "introduced": "7.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -15,7 +15,7 @@
     {
       "api": "kSecPropertyTypeError",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -26,7 +26,7 @@
     {
       "api": "kSecPropertyTypeTitle",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -37,7 +37,7 @@
     {
       "api": "SecCertificateCopyPublicKey()",
       "kind": "function",
-      "introduced": "10.3",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -48,7 +48,7 @@
     {
       "api": "SecCertificateCopySerialNumber()",
       "kind": "function",
-      "introduced": "10.3",
+      "introduced": "3.1.3",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",

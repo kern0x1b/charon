@@ -68,6 +68,14 @@ gate's own measure, `dyld.exported_at` over the library the SDK puts it in), so 
 says 3.1.3 and the release's own function answers. What it makes of a platform colour space was
 not compared.
 
+The other exports above carry the same measure as their `introduced`, not the header's dates (7.0 to 14.0):
+CoreGraphics exports `CGPathAddRoundedRect` and `CGPathCreateWithRoundedRect` from 5.0,
+`CGColorSpaceCopyName`, `CGColorSpaceCopyPropertyList` and `CGColorSpaceCreateWithPropertyList` from 4.0, and the
+rest (the three generic space names, `CGColorSpaceCreateWithICCData`, `CGColorSpaceSupportsOutput`, the generic
+colour functions, `CGColorGetConstantColor` and its three colours, and the `kCGPDFX...` and
+`kCGPDFContextOutputIntent...` keys) from 3.1.3, the lowest rung held, which means "3.1.3 or earlier". The same pass
+gives `kCGColorSpaceDisplayP3` 9.3, so the ladder does not answer its lowest rung for everything.
+
 ## What this package carries
 
 `CGColorSpaceCopyICCData` (10.0): iOS 12 makes `CGColorSpaceCopyICCProfile` a branch to it

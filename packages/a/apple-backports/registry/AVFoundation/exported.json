@@ -4,7 +4,7 @@
     {
       "api": "AVTrackAssociationTypeAudioFallback",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -15,7 +15,7 @@
     {
       "api": "AVTrackAssociationTypeChapterList",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -26,7 +26,7 @@
     {
       "api": "AVTrackAssociationTypeForcedSubtitlesOnly",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -37,7 +37,7 @@
     {
       "api": "AVTrackAssociationTypeSelectionFollower",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -48,7 +48,7 @@
     {
       "api": "AVTrackAssociationTypeTimecode",
       "kind": "constant",
-      "introduced": "7.0",
+      "introduced": "6.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -59,7 +59,7 @@
     {
       "api": "AVVideoColorPrimariesKey",
       "kind": "constant",
-      "introduced": "10.0",
+      "introduced": "5.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -70,7 +70,7 @@
     {
       "api": "AVVideoColorPrimaries_ITU_R_709_2",
       "kind": "constant",
-      "introduced": "10.0",
+      "introduced": "5.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -81,7 +81,7 @@
     {
       "api": "AVVideoColorPrimaries_SMPTE_C",
       "kind": "constant",
-      "introduced": "10.0",
+      "introduced": "5.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -92,7 +92,7 @@
     {
       "api": "AVVideoColorPropertiesKey",
       "kind": "constant",
-      "introduced": "10.0",
+      "introduced": "5.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -103,7 +103,7 @@
     {
       "api": "AVVideoTransferFunctionKey",
       "kind": "constant",
-      "introduced": "10.0",
+      "introduced": "5.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -114,7 +114,7 @@
     {
       "api": "AVVideoTransferFunction_ITU_R_709_2",
       "kind": "constant",
-      "introduced": "10.0",
+      "introduced": "5.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -125,7 +125,7 @@
     {
       "api": "AVVideoYCbCrMatrixKey",
       "kind": "constant",
-      "introduced": "10.0",
+      "introduced": "5.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -136,7 +136,7 @@
     {
       "api": "AVVideoYCbCrMatrix_ITU_R_601_4",
       "kind": "constant",
-      "introduced": "10.0",
+      "introduced": "5.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",
@@ -147,7 +147,7 @@
     {
       "api": "AVVideoYCbCrMatrix_ITU_R_709_2",
       "kind": "constant",
-      "introduced": "10.0",
+      "introduced": "5.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release exports it itself, so there is nothing to carry: it is the release's own and it is here to say so",

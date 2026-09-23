@@ -15,3 +15,13 @@ are exported, which is what an application that links against them needs, and no
 The rest of the metadata API of ImageIO (`CGImageMetadata...`, `CGImageDestination...Metadata...`) and the
 other names of ImageIO and CoreVideo that arrived after iOS 6 are not exported, so a weak reference to them is
 NULL, and the registry records them as absent.
+
+## Since which release
+
+ImageIO exports `kCGImageSourceSubsampleFactor` from 4.0 (3.1.3's cache has it in another image) and the
+other ten from 5.0.
+
+The registry's `introduced` is the first release on the armv7 cache ladder (3.1.3 to 10.3.4) whose
+library the SDK puts the name in exports it (`dyld.exported_at` with `dyld.sdk_owners`, the measure the gate
+takes), not the SDK header's date; 3.1.3 is the lowest rung held, so it means "3.1.3 or earlier". The same pass
+gives `kCGColorSpaceDisplayP3` 9.3 as the control, so the ladder does not answer its lowest rung for everything.
