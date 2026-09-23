@@ -35,15 +35,27 @@ function failures(opt)
 
     -- Another cache is another firmware's: the held one is the ladder every gate reads.
     os.tryrm(outside)
-    errors = fixtures.refusal(function () firmware.harvest(image(folder, "another", "the cache of another firmware"), "9.9", other) end)
-    if not errors or not errors:find("iPhone4,1 99A1", 1, true) then
-        table.insert(found, "an image carrying another cache than the held one is refused by the firmware's name: " .. tostring(errors))
+    local refused
+    taken, refused = firmware.harvest(image(folder, "another", "the cache of another firmware"), "9.9", other)
+    if taken or not refused or not refused:find("iPhone4,1 99A1", 1, true) then
+        table.insert(found, "an image carrying another cache than the held one is refused by the firmware's name: " .. tostring(refused))
     end
     if io.readfile(held) ~= "the cache of one firmware" then
         table.insert(found, "a held cache is never written over")
     end
     if os.isdir(outside) then
         table.insert(found, "the libraries of a refused image are not taken")
+    end
+
+    -- A universal static library beside the cache is fat around an ar archive: no image, no library,
+    -- and no reason to refuse the image (7.0's usr/lib/libQMIParser.a).
+    local archive = image(folder, "archive", "the cache of one firmware")
+    local fat = string.pack(">I4I4i4i4I4I4I4", 0xcafebabe, 1, 12, 9, 28, 16, 2) .. "!<arch>\n" .. string.rep("\0", 8)
+    io.writefile(path.join(archive, "usr", "lib", "libArchive.a"), fat)
+    os.tryrm(outside)
+    errors = fixtures.refusal(function () firmware.harvest(archive, "9.9", first) end)
+    if errors or not os.isdir(outside) or os.isfile(path.join(outside, "usr", "lib", "libArchive.a")) then
+        table.insert(found, "a fat static library beside the cache is neither a library taken nor a failure: " .. tostring(errors))
     end
 
     os.setenv("CHARON_HOME", home or nil)

@@ -219,7 +219,11 @@ function images(data)
             else
                 _, _, offset = string.unpack(">i4i4I4", data, 9 + index * 20)
             end
-            table.insert(found, image(data, offset))
+            -- A universal static library is fat around ar archives, not images (libQMIParser.a
+            -- beside the shared cache of 7.0): such a slice holds nothing to load.
+            if data:sub(offset + 1, offset + 8) ~= "!<arch>\n" then
+                table.insert(found, image(data, offset))
+            end
         end
         return found
     end
