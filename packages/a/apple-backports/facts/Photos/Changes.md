@@ -50,8 +50,12 @@ writes the same bytes to the given file. Either call gives `completionHandler` a
 asset behind the resource's `assetLocalIdentifier` is gone or the release hands back fewer bytes than the representation's own `size` —
 the read is never allowed to answer with a silently short buffer. `PHAssetResourceRequestOptions.networkAccessAllowed` is held but
 changes nothing, since the read never reaches the network; `progressHandler`, when set, is always called exactly once, with `1.0`, on
-success, so a caller waiting on it is never left waiting forever. `-cancelDataRequest:` is a no-op: by the time a caller could call it,
-the read this release can do has already finished.
+success, so a caller waiting on it is never left waiting forever. The read runs on a global queue after the call
+returns, so a caller can cancel it: `-cancelDataRequest:` takes the request out of the manager's pending ones, and a request
+cancelled before its read has handed data over calls `dataReceivedHandler` never and `completionHandler` once, with
+`PHPhotosErrorUserCancelled` (3072, which the header documents for "the asset resource or editing request"). A request that has
+completed already is not changed by a cancel. The earlier text here, that the read had always finished before a caller could
+cancel, was wrong: the read was asynchronous already, and a cancel reached nothing.
 
 ## Observing changes
 

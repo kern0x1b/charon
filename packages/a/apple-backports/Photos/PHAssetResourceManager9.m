@@ -15,7 +15,19 @@
 
 @end
 
+// The data requests not yet completed. A request cancelled before its read has handed data over is taken out
+// here, and its read completes with PHPhotosErrorUserCancelled instead of delivering.
 @implementation PHAssetResourceManager
+{
+    NSMutableSet<NSNumber *> *_charonPending;
+}
+
+- (instancetype)init
+{
+    if ((self = [super init]))
+        _charonPending = [NSMutableSet set];
+    return self;
+}
 
 + (instancetype)defaultManager
 {
@@ -63,9 +75,26 @@
                                            completionHandler:(void (^)(NSError *error))completionHandler
 {
     PHAssetResourceDataRequestID requestID = [PHAssetResourceManager charon_nextRequestID];
+    NSNumber *key = @(requestID);
+    @synchronized (_charonPending) {
+        [_charonPending addObject:key];
+    }
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        BOOL pending;
+        @synchronized (self->_charonPending) {
+            pending = [self->_charonPending containsObject:key];
+        }
         NSError *error = nil;
-        NSData *data = [self charon_readResource:resource error:&error];
+        NSData *data = pending ? [self charon_readResource:resource error:&error] : nil;
+        @synchronized (self->_charonPending) {
+            pending = [self->_charonPending containsObject:key];
+            [self->_charonPending removeObject:key];
+        }
+        if (!pending) {
+            if (completionHandler)
+                completionHandler([CharonPhotosStore errorWithCode:PHPhotosErrorUserCancelled reason:@"the data request was cancelled"]);
+            return;
+        }
         if (data) {
             if (options.progressHandler)
                 options.progressHandler(1.0);
@@ -96,6 +125,9 @@
 
 - (void)cancelDataRequest:(PHAssetResourceDataRequestID)requestID
 {
+    @synchronized (_charonPending) {
+        [_charonPending removeObject:@(requestID)];
+    }
 }
 
 @end
