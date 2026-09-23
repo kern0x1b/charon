@@ -39,7 +39,7 @@ import json
 import os
 import sys
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.dirname(os.path.realpath(__file__))
 # corpus/ is DATA, in the durable location CHARON_CORPUS_ROOT addresses (default coordination/),
 # independent of this script's own location. surface-diff-latest.py is a NEIGHBOR SCRIPT, found
 # beside this file (HERE, already correct above). See tools/corpus/README.md.

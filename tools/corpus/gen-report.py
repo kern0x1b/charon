@@ -5,7 +5,7 @@ cross-check column. Run after a full re-ingest."""
 import json, os, sys, importlib.util
 from collections import defaultdict
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.dirname(os.path.realpath(__file__))
 # aggregate.py is a NEIGHBOR SCRIPT (found beside this file wherever it is copied to); store.json
 # and everything under corpus/ is DATA, in the durable location CHARON_CORPUS_ROOT addresses
 # (default coordination/), independent of this script's own location. See tools/corpus/README.md.

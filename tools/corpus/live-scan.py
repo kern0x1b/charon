@@ -8,7 +8,7 @@ Usage: python3 live-scan.py ingest   # scan the 3 live apps into store-live.json
        python3 live-scan.py fcs      # write merged band-11-12-FCS slice (default)
 """
 import os, re, subprocess, sys, json, importlib.util
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.dirname(os.path.realpath(__file__))
 # aggregate.py is a NEIGHBOR SCRIPT (found beside this file wherever it is copied to);
 # store.json/store-live.json and everything under corpus/ is DATA, in the durable location
 # CHARON_CORPUS_ROOT addresses (default coordination/). See tools/corpus/README.md.

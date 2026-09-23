@@ -17,7 +17,7 @@ CORPUS="$CORPUS_ROOT/corpus"
 # then-real-candidates pattern as everywhere else, so a future worktree move doesn't repeat this.
 WT="${CHARON_ROOT_DIR:-}"
 if [ -z "$WT" ] || [ ! -d "$WT/modules" ]; then
-  for c in "$HOME/Git/projects/ios/charon/.agent-work/worktrees/bcorpus" "$HOME/Git/projects/ios/charon"; do
+  for c in "$(cd "$(dirname "$(realpath "$0")")/../.." && pwd)" "$HOME/Git/projects/ios/charon"; do
     if [ -d "$c/modules" ]; then WT="$c"; break; fi
   done
 fi

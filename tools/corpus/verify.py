@@ -21,7 +21,7 @@ import os, re, subprocess, sys, csv
 # different scratch copy under a different default, silently reading a possibly-stale second
 # export instead of the one everyone else treats as canonical. Aligned; still CHARON_REGISTRY_TSV-overridable.
 EXP=os.environ.get("CHARON_REGISTRY_TSV", "/private/tmp/charon-registry-export/carried-registry.tsv")
-_HERE=os.path.dirname(os.path.abspath(__file__))
+_HERE=os.path.dirname(os.path.realpath(__file__))
 # packages/a/apple-backports and store.json are DATA/TREE, not this script's own location -- the
 # old "dirname(_HERE)" candidates below computed a path one level too shallow even before this
 # script's move (coordination/corpus-tools/ -> charon/tools/corpus/, 2026-09-23) and were dead on
@@ -30,8 +30,6 @@ _HERE=os.path.dirname(os.path.abspath(__file__))
 _T_CANDIDATES=[p for p in [
     os.environ.get("CHARON_TREE_DIR"),                                                # explicit override survives any future worktree move
     os.path.join(os.path.dirname(os.path.dirname(_HERE)), "packages", "a", "apple-backports"),  # coordinator's shared checkout
-    os.path.join(os.path.expanduser("~"), "Git", "projects", "ios", "charon",
-                  ".agent-work", "worktrees", "bcorpus", "packages", "a", "apple-backports"),  # script lives in the scratchpad
 ] if p]
 T=next((p for p in _T_CANDIDATES if os.path.isdir(p)), None)
 if T is None:

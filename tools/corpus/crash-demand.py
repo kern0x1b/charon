@@ -70,7 +70,7 @@ PROJECT RULE, checking whether a symbol is really missing on the old system:
 import json, os, re, subprocess, sys, importlib.util
 from collections import defaultdict
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.dirname(os.path.realpath(__file__))
 # BASE has two unrelated roles that must not share one name: aggregate.py is a NEIGHBOR SCRIPT,
 # found beside this file wherever it is copied to (HERE); every corpus/* path below is DATA, which
 # lives in a durable location addressed by CHARON_CORPUS_ROOT (default coordination/), not wherever
@@ -171,8 +171,6 @@ def main():
         os.environ.get("CHARON_TREE_DIR"),                                              # explicit override survives any future worktree move
         os.path.join(os.path.expanduser("~"), "Git", "projects", "ios", "charon",
                       "packages", "a", "apple-backports"),                             # coordinator's shared checkout
-        os.path.join(os.path.expanduser("~"), "Git", "projects", "ios", "charon",
-                      ".agent-work", "worktrees", "bcorpus", "packages", "a", "apple-backports"),  # script lives in the scratchpad
     ] if p]
     TREE = next((p for p in _tree_candidates if os.path.isdir(p)), None)
     if TREE is None:

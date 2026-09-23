@@ -304,7 +304,7 @@ def main():
     parser.add_argument("frameworks", nargs="+")
     parser.add_argument("--sdk", default=None, help="a macOS SDK with System/iOSSupport (Mac Catalyst), or an iPhoneOS SDK")
     parser.add_argument("--target", default=None, help="default: iOS 26 Catalyst for a macOS SDK, iOS 16.4 for an iPhoneOS one")
-    parser.add_argument("--registry", default=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "..", "packages", "a", "apple-backports", "registry"))
+    parser.add_argument("--registry", default=os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "..", "packages", "a", "apple-backports", "registry"))
     parser.add_argument("--above", default="6.0", help="only what arrived after this release")
     parser.add_argument("--up-to", default=None, help="only what arrived up to and including this release")
     parser.add_argument("--release", default=None, help="a release whose classes the release itself carries, from ~/.charon/dyld/<release>/classes_armv7.json: what it answers is not a gap")

@@ -24,7 +24,7 @@ corpus/defcache/ish.json byte-for-byte. Usage:
 """
 import importlib.util, json, os, subprocess, sys
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.dirname(os.path.realpath(__file__))
 # corpus/ is DATA, in the durable location CHARON_CORPUS_ROOT addresses (default coordination/),
 # independent of this script's own location. aggregate.py/defined-methods.py are NEIGHBOR SCRIPTS,
 # found beside this file. See tools/corpus/README.md.

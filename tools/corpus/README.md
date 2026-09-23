@@ -28,7 +28,7 @@ tiny, plausible-looking file there instead of the real one.
 
 The fix, applied uniformly across every script in this directory:
 
-- **neighbor scripts** are found beside the calling script itself (`HERE = dirname(abspath(__file__))`,
+- **neighbor scripts** are found beside the calling script itself (`HERE = dirname(realpath(__file__))`, so a symlink such as `coordination/corpus-tools` resolves to here,
   or `${0:A:h}` in zsh) — this is correct wherever the whole `tools/corpus/` directory is copied to,
   because the neighbors move with it;
 - **data** is found through `CHARON_CORPUS_ROOT`, an environment variable defaulting to
