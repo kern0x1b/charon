@@ -125,7 +125,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSTextAttachmentLayout a method like it: it arrived in iOS 15",
+      "reason": "asked by Text Kit 2 for the bounds of an attachment in a line; the port carries no NSTextLayoutManager (absent) and the release's text views draw no attachment (facts/UIKit/NSTextMembers13.md), so nothing lays an attachment out to ask",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -135,7 +135,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSTextAttachmentLayout a method like it: it arrived in iOS 15",
+      "reason": "asked by Text Kit 2 for the image an attachment draws; the port carries no NSTextLayoutManager (absent) and the release's text views draw no attachment (facts/UIKit/NSTextMembers13.md), so nothing draws one to ask",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -145,7 +145,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSTextAttachmentLayout a method like it: it arrived in iOS 15",
+      "reason": "asked by Text Kit 2 for the NSTextAttachmentViewProvider (absent here) that puts a view in the text; the release's text views draw no attachment (facts/UIKit/NSTextMembers13.md), so nothing hosts a view to ask",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -383,7 +383,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UITableViewDelegate that sends anything like it: the message arrived in iOS 15",
+      "reason": "a per-row override of selectionFollowsFocus, which moves the selection with keyboard focus; the port has no focus engine (UIFocusSystem absent, ios11.json), so focus never lands on a row and there is nothing for the selection to follow",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -1013,7 +1013,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIColor a property like it: it arrived in iOS 15",
+      "reason": "a fixed pair of light and dark colours like the system tints the port already carries (UIColor+SystemColors.m, systemIndigoColor implemented, facts/UIKit/UIColorDynamic.md); its two values would carry it - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1023,7 +1023,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIColor a property like it: it arrived in iOS 15",
+      "reason": "a fixed pair of light and dark colours like the system tints the port already carries (UIColor+SystemColors.m, systemIndigoColor implemented, facts/UIKit/UIColorDynamic.md); its two values would carry it - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1033,7 +1033,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIColor a property like it: it arrived in iOS 15",
+      "reason": "a dynamic colour that resolves to the tint colour of the view it is drawn in; the port resolves dynamic colours against a trait collection (facts/UIKit/UIColorDynamic.md) and its traits do not carry a view's tint, so the colour would have nothing to resolve against - carrying the tint there is real work, no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1093,7 +1093,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIFocusItem a property like it: it arrived in iOS 15",
+      "reason": "the effect a focused item shows, a halo or a lift; the port has no focus engine (UIFocusSystem absent, ios11.json) and UIFocusEffect is absent, so no item is ever focused to show one",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1103,7 +1103,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIFocusItem a property like it: it arrived in iOS 15",
+      "reason": "ranks an item inside its focus group when focus enters the group; the port has no focus engine (UIFocusSystem absent, ios11.json), so focus never enters a group",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1113,7 +1113,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIFocusItem a property like it: it arrived in iOS 15",
+      "reason": "lets focus pass through an item to what is under it; the port has no focus engine (UIFocusSystem absent, ios11.json), so focus never moves to pass through anything",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2253,7 +2253,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UITableViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "asks whether a tap on a row is a primary action rather than a selection; a tap on a row of the release's own UITableView goes straight into its selection, which the port does not intercept, so nothing asks - a hook on that path could, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2263,7 +2263,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UITableViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "tells the delegate a tap on a row was a primary action rather than a selection; a tap on a row of the release's own UITableView goes straight into its selection, which the port does not intercept, so nothing sends it - a hook on that path could, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2283,7 +2283,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UITextFieldDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "the release's text field builds its edit menu with the old UIMenuController and never asks a delegate for one (facts/UIKit/UITextInputEditMenu16.md); asking the delegate would mean hooking that menu and turning its items into a UIMenu and back - real work, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2293,7 +2293,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UITextFieldDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "the release's text field builds its edit menu with the old UIMenuController and never asks a delegate for one (facts/UIKit/UITextInputEditMenu16.md); sending this would mean hooking that menu and making a UIEditMenuInteractionAnimating animator for it - real work, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2303,7 +2303,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UITextFieldDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "the release's text field builds its edit menu with the old UIMenuController and never asks a delegate for one (facts/UIKit/UITextInputEditMenu16.md); sending this would mean hooking that menu and making a UIEditMenuInteractionAnimating animator for it - real work, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2394,7 +2394,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "the release's text view builds its edit menu with the old UIMenuController and never asks a delegate for one (facts/UIKit/UITextInputEditMenu16.md); asking the delegate would mean hooking that menu and turning its items into a UIMenu and back - real work, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2404,7 +2404,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "the release's text view builds its edit menu with the old UIMenuController and never asks a delegate for one (facts/UIKit/UITextInputEditMenu16.md); sending this would mean hooking that menu and making a UIEditMenuInteractionAnimating animator for it - real work, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2414,7 +2414,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "the release's text view builds its edit menu with the old UIMenuController and never asks a delegate for one (facts/UIKit/UITextInputEditMenu16.md); sending this would mean hooking that menu and making a UIEditMenuInteractionAnimating animator for it - real work, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2664,7 +2664,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIContextMenuConfiguration a property like it: it arrived in iOS 16",
+      "reason": "the count shown on the stack of previews when several items are dragged into one menu; the port shows a context menu as an action sheet with no preview (facts/UIKit/UIContextMenuInteraction.md), so there is no stack to badge",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2674,7 +2674,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIContextMenuConfiguration a property like it: it arrived in iOS 16",
+      "reason": "asks the system to put the most used elements nearest the finger or keep the given order; the port shows a context menu as an action sheet (facts/UIKit/UIContextMenuInteraction.md) that always lists the elements in the given order, so the value could be kept and the order would stay fixed - not built for lack of demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2684,7 +2684,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIContextMenuConfiguration a property like it: it arrived in iOS 16",
+      "reason": "names the other selected items a menu on several items acts on; the port sends the single-item menu message only and the release has no two-finger selection (facts/UIKit/UIListContextMenus.md), so no menu is made for several items",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2804,7 +2804,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationBar a property like it: it arrived in iOS 16",
+      "reason": "the style the bar resolved to, where mac places its contents in an NSToolbar; on iOS it resolves to pad (SDK UIBehavioralStyle.h: pad is the style for iOS applications), which is a defined answer - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2814,7 +2814,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationBar a property like it: it arrived in iOS 16",
+      "reason": "the section of a Mac window's NSToolbar the bar's contents are in; a phone or tablet has no NSToolbar, so the answer is none, which is a defined answer - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2824,7 +2824,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationBar a property like it: it arrived in iOS 16",
+      "reason": "asks for the mac style, which puts the bar in an NSToolbar, or the pad style; a phone or tablet has no NSToolbar, so the bar is pad whatever is asked and the value could only be kept - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3045,7 +3045,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIScreen a property like it: it arrived in iOS 16",
+      "reason": "the ratio of the brightest white the screen shows now to its SDR white; the screens of the 4S and iPad 2 have no extended dynamic range, so it is 1, which is a defined answer - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3055,7 +3055,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIScreen a property like it: it arrived in iOS 16",
+      "reason": "the highest ratio of white to SDR white the screen can reach with EDR on; the screens of the 4S and iPad 2 have no extended dynamic range, so it is 1, which is a defined answer - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3065,7 +3065,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIScreen a property like it: it arrived in iOS 16",
+      "reason": "whether the screen runs in its colour-accurate reference mode, which only some iPad Pro screens have; the screens of the 4S and iPad 2 have none, so the answer is not supported, which is a defined answer - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
