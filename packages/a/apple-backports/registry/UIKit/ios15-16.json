@@ -85,7 +85,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIListContentConfiguration a method like it: it arrived in iOS 15",
+      "reason": "a header style larger and bolder than prominentInsetGroupedHeaderConfiguration; the port carries the other list styles (UIListContentConfiguration implemented), each with fonts, colours and margins measured against the host under Catalyst, which is not on this machine now, so this style's values have no oracle to be taken from - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -95,7 +95,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIListContentConfiguration a method like it: it arrived in iOS 15",
+      "reason": "a larger, bolder header style for inset grouped lists; the port carries the other list styles (UIListContentConfiguration implemented), each with fonts, colours and margins measured against the host under Catalyst, which is not on this machine now, so this style's values have no oracle to be taken from - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -105,7 +105,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIPointerStyle a method like it: it arrived in iOS 15",
+      "reason": "the style of the system's own pointer; the port carries UIPointerStyle, never applied since no pointer is drawn (facts/UIKit/UIPointerStyle.md), so this would be one more style of it that nothing shows - not built for lack of demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -823,7 +823,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBackgroundConfiguration a property like it: it arrived in iOS 15",
+      "reason": "an image drawn in a cell's background; the port's UIBackgroundConfiguration already builds a background view with a colour, a stroke and a custom view (facts/UIKit/UIBackgroundConfiguration.md), so an image view in it would carry this - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -833,7 +833,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIBackgroundConfiguration a property like it: it arrived in iOS 15",
+      "reason": "how the background image fills the background; follows UIBackgroundConfiguration.image, not carried (see its row), and would be that image view's contentMode",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -993,7 +993,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UICollectionViewCell a property like it: it arrived in iOS 15",
+      "reason": "a block run where updateConfigurationUsingState: runs; the port carries updateConfigurationUsingState: and setNeedsUpdateConfiguration on the cell (facts/UIKit/UICollectionViewCellConfiguration.md), so calling a stored block from there would carry it - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1043,7 +1043,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIControl a property like it: it arrived in iOS 15",
+      "reason": "the text shown when a pointer rests on the control; the release has no pointer and so no hover (the 4S and iPad 2 have neither mouse nor trackpad), so the tip would never show - the text could only be kept, no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1053,7 +1053,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIControl a property like it: it arrived in iOS 15",
+      "reason": "answers the UIToolTipInteraction (absent here) that shows the tip when a pointer rests on the control; the release has no pointer to rest, so there is no tip to show and no interaction carried - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1153,7 +1153,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIMenu a property like it: it arrived in iOS 15",
+      "reason": "the elements of a single-selection menu whose state is on; the port's UIMenu holds its children and their UIAction state, so this could be read off them - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1353,7 +1353,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIPointerStyle a property like it: it arrived in iOS 15",
+      "reason": "the arrows and shapes drawn around the pointer, UIPointerAccessory objects (absent here); the port draws no pointer (facts/UIKit/UIPointerStyle.md), so there is nothing to put them around",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1453,7 +1453,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UISlider a property like it: it arrived in iOS 15",
+      "reason": "the style the slider resolved to, where mac draws it as a Mac slider; on iOS it resolves to pad (SDK UIBehavioralStyle.h: pad is the style for iOS applications), which is a defined answer - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1463,7 +1463,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UISlider a property like it: it arrived in iOS 15",
+      "reason": "asks for the mac style, which only a Mac application draws, or the pad style; on a phone or tablet the slider is pad whatever is asked, so the value could only be kept - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1513,7 +1513,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITableViewCell a property like it: it arrived in iOS 15",
+      "reason": "a block run where updateConfigurationUsingState: runs; the port carries updateConfigurationUsingState: and setNeedsUpdateConfiguration on a table cell (ios14lists.json, facts/UIKit/UITableViewCellConfiguration.md), so calling a stored block from there would carry it - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1523,7 +1523,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITableViewHeaderFooterView a property like it: it arrived in iOS 15",
+      "reason": "a block run where updateConfigurationUsingState: runs; the port carries updateConfigurationUsingState: and setNeedsUpdateConfiguration on header and footer views (ios14lists.json, facts/UIKit/UITableViewCellConfiguration.md), so calling a stored block from there would carry it - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1713,7 +1713,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIWindow a property like it: it arrived in iOS 15",
+      "reason": "lets a window refuse to become key; the release's UIWindow makes itself key without asking, so honouring a NO would mean hooking makeKeyWindow and makeKeyAndVisible - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1843,7 +1843,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSCollectionLayoutGroup a method like it: it arrived in iOS 16",
+      "reason": "the iOS 16 name for a group of count copies of one item side by side; the port's groups already lay out a counted subitem (UIKit/NSCollectionLayoutItems.m, facts/UIKit/NSCollectionLayoutItem.md), so this is that group under its new name - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1853,7 +1853,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSCollectionLayoutGroup a method like it: it arrived in iOS 16",
+      "reason": "the iOS 16 name for a group of count copies of one item stacked; the port's groups already lay out a counted subitem (UIKit/NSCollectionLayoutItems.m, facts/UIKit/NSCollectionLayoutItem.md), so this is that group under its new name - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1933,7 +1933,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSTextList a method like it: it arrived in iOS 16",
+      "reason": "the release's own NSTextList (UIFoundation) has initWithMarkerFormat:options: and setStartingItemNumber: (objc.inventory on 6.1.3), so this is the two in a row - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2003,7 +2003,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UICollectionViewCell a method like it: it arrived in iOS 16",
+      "reason": "the background configuration a cell starts from, by its list style; the port carries UIBackgroundConfiguration with the list cell styles (listPlainCellConfiguration and the rest), so the answer could be picked from them - not built for lack of demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2073,7 +2073,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UIContextMenuInteractionDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "asks for the preview a menu shrinks back into for one of its items; the port shows a context menu as an action sheet with no lifted preview (facts/UIKit/UIContextMenuInteraction.md), so there is no dismissal preview to ask for",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2083,7 +2083,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UIContextMenuInteractionDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "asks for the preview a menu lifts out for one of its items; the port shows a context menu as an action sheet with no lifted preview (facts/UIKit/UIContextMenuInteraction.md), so there is no highlight preview to ask for",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2203,7 +2203,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UISearchControllerDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "sent after the search bar moves between inline and stacked; the port has one placement, the title view (facts/UIKit/UISearchController.md), so the bar never moves and there is nothing to send",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2213,7 +2213,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a UISearchControllerDelegate that sends anything like it: the message arrived in iOS 16",
+      "reason": "sent before the search bar moves between inline and stacked; the port has one placement, the title view (facts/UIKit/UISearchController.md), so the bar never moves and there is nothing to send",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, UIKit"
     },
@@ -2243,7 +2243,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITableViewCell a method like it: it arrived in iOS 16",
+      "reason": "the background configuration a cell starts from, by its table's style; the port carries UIBackgroundConfiguration with the list cell styles (listPlainCellConfiguration, listGroupedCellConfiguration), so the answer could be picked from them - not built for lack of demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2273,7 +2273,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITableViewHeaderFooterView a method like it: it arrived in iOS 16",
+      "reason": "the background configuration a header or footer starts from, by its table's style; the port carries UIBackgroundConfiguration with the list header and footer styles, so the answer could be picked from them - not built for lack of demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2444,7 +2444,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSTextList a property like it: it arrived in iOS 16",
+      "reason": "whether the list is numbered rather than bulleted; the release's own NSTextList (UIFoundation) has the marker format this follows from, though no isOrdered of its own (objc.inventory on 6.1.3) - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2774,7 +2774,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIMenu a property like it: it arrived in iOS 16",
+      "reason": "asks for the elements of a menu as small, medium or large tiles; the port shows a menu as an action sheet (facts/UIKit/UIContextMenuInteraction.md), one row per element, so the value could be kept and the rows would stay rows - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -3285,7 +3285,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIWindow a property like it: it arrived in iOS 16",
+      "reason": "a layout guide inside the safe area with the window's aspect ratio, for content that must not be cut; the port carries UILayoutGuide (base.json) and UIView.safeAreaLayoutGuide (ios11.json), so this guide could be solved from them - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
