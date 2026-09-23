@@ -108,10 +108,12 @@ fixed eleven-bundle list above, none of which reads a third-party category, and
 **The twelfth entry named above is built and installed; the query path is not proven yet, and
 exactly how far it gets is now measured on an iPad 2 (6.1.3), not guessed.**
 `packages/a/apple-backports/CoreSpotlight/SearchBundle/CharonSearchDatastore.m` is
-`org.charon.corespotlight.searchBundle`'s principal class, packaged by `write_searchbundle` in
-`modules/apple/backports.lua` and installed at
-`/System/Library/SearchBundles/org.charon.corespotlight.searchBundle/` by the same `.deb` this
-port already writes, whenever `corespotlight` is among the staged libraries. The protocol it
+`org.charon.corespotlight.searchBundle`'s principal class, built by `write_searchbundle` in
+`modules/apple/backports.lua` whenever `corespotlight` is among the staged libraries, for
+`/System/Library/SearchBundles/org.charon.corespotlight.searchBundle/`. **It is not packaged:**
+`write_deb` builds it outside the stage and prints `withheld:` with the reason, because sending
+`-appendResults:` hangs `searchd` (below). It goes back into the package only once that hang is
+fixed and the query path is measured green on a device. The protocol it
 implements was read from `NotesDatastore` (`MobileNotes.searchBundle`'s own principal class) with
 `llvm-otool -oV` and each selector resolved against the iOS 6.1.3 shared cache directly
 (`.agent-work/handoffs/2026-09-23-corespotlight-searchbundle-measurement.md`), which corrected two

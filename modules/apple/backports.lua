@@ -1209,7 +1209,7 @@ end
 -- CharonSpotlightStore (libCoreSpotlightBackports.dylib, resolved by name at runtime, not linked -
 -- see CharonSearchDatastore.m) to Search.framework's own SPSearchDatastore, so it needs no
 -- per-release symbol-availability logic and is built once, at the port's own deployment minimum,
--- installed under /System/Library/SearchBundles/ - the directory
+-- for /System/Library/SearchBundles/ - the directory
 -- .agent-work/handoffs/2026-09-23-corespotlight-searchbundle-measurement.md measured
 -- Search.framework's own -_loadSearchBundles to scan - rather than staged per band like the dylibs.
 local function corespotlight_staged(opt)
@@ -1221,11 +1221,20 @@ local function corespotlight_staged(opt)
     return false
 end
 
+-- write_deb compiles the bundle, so its source keeps being checked, but does not place it in the
+-- package: sending -appendResults: from -performQuery:withResultsPipe: puts searchd into
+-- uninterruptible sleep until kill -9, measured on an iPad 2 (6.1.3) and recorded in
+-- facts/CoreSpotlight/CoreSpotlight.md. A package carrying it hangs the system search on every
+-- device that installs it. It goes back into the stage only once that hang is fixed and the query
+-- path is measured green on the device; until then write_deb says so, with the reason.
+local SEARCHBUNDLE_WITHHELD = "sending -appendResults: hangs searchd (measured on an iPad 2, facts/CoreSpotlight/CoreSpotlight.md)"
+
 function write_searchbundle(opt)
     if not corespotlight_staged(opt) then
         return
     end
-    local folder = path.join(opt.stage, "System", "Library", "SearchBundles", "org.charon.corespotlight.searchBundle")
+    local folder = path.join(opt.builddir, "searchbundle", "org.charon.corespotlight.searchBundle")
+    os.tryrm(folder)
     os.mkdir(folder)
     local source = path.join(opt.root, "CoreSpotlight", "SearchBundle", "CharonSearchDatastore.m")
     local output = path.join(folder, "org.charon.corespotlight")
@@ -1235,6 +1244,7 @@ function write_searchbundle(opt)
     os.vrunv("xcrun", {"strip", "-x", output})
     signing.sign(opt.ldid, output)
     os.cp(path.join(opt.root, "CoreSpotlight", "SearchBundle", "Info.plist"), path.join(folder, "Info.plist"))
+    cprint("${color.warning}withheld:${clear} org.charon.corespotlight.searchBundle is built at %s but not packaged: %s", folder, SEARCHBUNDLE_WITHHELD)
 end
 
 function write_deb(opt)
