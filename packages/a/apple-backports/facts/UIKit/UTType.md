@@ -54,13 +54,12 @@ constraint on how this backport's own translation unit stores them.
 ## What the build gate measured, not reasoned
 
 `UTTypeIsDeclared` and `UTTypeIsDynamic` are not exported by 6.1.3's armv7 release -
-`build-gate.lua`'s own imports check flagged both as weak imports the release resolves to NULL,
-on the very first gate run of this change. `isDeclared`/`isDynamic` guard each call
-(`UTTypeIsDeclared != NULL` / `UTTypeIsDynamic != NULL`) and answer `YES`/`NO` respectively when
-the release has no such function, rather than jump to a NULL pointer - `declared`, since every
-identifier this class hands out either came from a caller that already had it or resolved through
-`UTTypeCreatePreferredIdentifierForTag`, which iOS 6 does carry; not `dynamic`, the same answer a
-declared identifier already gets on a release new enough to have the real function.
+`build-gate.lua`'s own imports check flagged both as weak imports the release resolves to NULL.
+`isDeclared`/`isDynamic` guard each call. Until 2026-09-23 the guard answered `YES`/`NO` for every
+identifier on 6.1.3, which was wrong for a dynamic identifier - `UTTypeCreatePreferredIdentifierForTag`
+of 6.1.3 makes `dyn.` identifiers for tags it has no type for (measured: `dyn.age81y8xvse` for the
+extension `zzqq`). This library now carries both functions (`UIKit/UTTypeDynamic8.m`,
+`facts/MobileCoreServices/UTTypeDynamic.md`), so the guard passes and they answer.
 
 ## What differs from the system
 

@@ -117,12 +117,8 @@
 
 - (BOOL)isDynamic
 {
-    // UTTypeIsDynamic is not exported by 6.1.3's armv7 release (measured by the build gate's own
-    // imports check: a weak import with nothing to bind to, NULL if called unguarded). Every
-    // identifier this class hands out either came from typeWithIdentifier: with an identifier the
-    // caller already had, or resolved through UTTypeCreatePreferredIdentifierForTag, which iOS 6
-    // does carry; answering NO here is the same answer a declared identifier already gets on a
-    // release new enough to have the real function.
+    // 6.1.3 exports no UTTypeIsDynamic; this library carries one (UTTypeDynamic8.m), and a band
+    // for 8.0 on re-exports the release's. The check stays for a build that has neither.
     if (UTTypeIsDynamic != NULL)
         return UTTypeIsDynamic((__bridge CFStringRef)_charon_identifier);
     return NO;
@@ -130,7 +126,7 @@
 
 - (BOOL)isDeclared
 {
-    // Same wall as isDynamic above: UTTypeIsDeclared is not exported by 6.1.3's armv7 release.
+    // As isDynamic above: UTTypeDynamic8.m carries UTTypeIsDeclared where the release has none.
     if (UTTypeIsDeclared != NULL)
         return UTTypeIsDeclared((__bridge CFStringRef)_charon_identifier);
     return YES;
