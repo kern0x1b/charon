@@ -648,6 +648,17 @@ build-time patch, so the module builds and runs on iOS 6 with availability
 checking on. A port takes it with `add_requires("charon@styx", {alias =
 "combine"})` and `add_packages("combine")` beside the runtime and libcxx.
 
+`charon@eidolon` is the second: Eidolon, the SwiftUI API written anew on the
+UIKit of iOS 6, as one module named `SwiftUI` - every symbol an application
+takes from SwiftUI is mangled with that name - compiled against the runtime and
+against `charon@styx` built against the same runtime, which it takes with the
+same `shared`, `backports` and `backports_uikit` configs. Availability checking
+stays on, so what a later release adds stays behind `#available`. A port writes
+`import SwiftUI` and an `@main` `App`, with `add_requires("charon@eidolon",
+{alias = "swiftui"})` and `add_packages("swiftui")` beside the runtime and
+libcxx; the package names Styx's module folders too, since SwiftUI re-exports
+Combine.
+
 The runtime carries the Swift overlays of the system's own frameworks, which
 Apple ships inside a newer OS: ObjectiveC, Dispatch, CoreFoundation,
 CoreGraphics and Foundation from swift-5.4.3, QuartzCore, UIKit and CoreData

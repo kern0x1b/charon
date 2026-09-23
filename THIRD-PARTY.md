@@ -20,6 +20,7 @@ carried into the program that ships to the device.
 | libc++, libc++abi | 23.1.1 | Apache-2.0 WITH LLVM-exception | `packages/l/libcxx` |
 | The Swift runtime and standard library, with the system-framework overlays | 6.4.0 | Apache-2.0 WITH Swift-exception | `packages/s/swift-runtime` |
 | Styx — a `Combine` module for platforms without Apple's framework | 2026.09.20 | MIT (the upstream MIT copyright is kept in its `LICENSE`) | `packages/s/styx`, from [`kern0x1b/styx`](https://github.com/kern0x1b/styx) |
+| Eidolon — a `SwiftUI` module on the UIKit of iOS 6 | 2026.09.23 | MIT | `packages/e/eidolon`, from [`kern0x1b/eidolon`](https://github.com/kern0x1b/eidolon) |
 
 ## The compiler, linker, signer and SDK
 
