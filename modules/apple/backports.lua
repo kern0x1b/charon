@@ -574,6 +574,7 @@ function check_registry(root, found, complete, deployment, exports, inventory)
     for name, entry in pairs(listed) do
         if entry.status == "absent" then
             local present = entry.kind == "class" and found.classes[name] or false
+            present = present or ((entry.kind == "constant" or entry.kind == "function") and found.symbols[name:gsub("%(%)$", "")]) or false
             for spelling in pairs(spellings(name)) do
                 present = present or (spelling:match("^[-+]%[") and (found.answered or {})[spelling]) or false
             end
