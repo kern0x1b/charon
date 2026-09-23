@@ -31,7 +31,8 @@ LIBRARIES = {
     {name = "CoreSpotlightBackports", folder = "CoreSpotlight", frameworks = {"Foundation"}, libraries = {"FoundationBackports"}},
     {name = "PushKitBackports", folder = "PushKit", frameworks = {"UIKit", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "JavaScriptCoreBackports", folder = "JavaScriptCore", frameworks = {"JavaScriptCore", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}},
-    {name = "SceneKitBackports", folder = "SceneKit", frameworks = {"UIKit", "QuartzCore", "OpenGLES", "Foundation"}, libraries = {"FoundationBackports", "OpenGLESBackports"}}
+    {name = "SceneKitBackports", folder = "SceneKit", frameworks = {"UIKit", "QuartzCore", "OpenGLES", "Foundation"}, libraries = {"FoundationBackports", "OpenGLESBackports"}},
+    {name = "MediaPlayerBackports", folder = "MediaPlayer", frameworks = {"MediaPlayer", "UIKit", "Foundation"}, libraries = {"FoundationBackports"}}
 }
 
 PACKAGE = "org.charon.apple-backports"
