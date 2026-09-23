@@ -2312,9 +2312,8 @@
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITextInput a method like it: it arrived in iOS 16",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextInputEditMenu16.md",
       "source": "SDK 16.4, UIKit"
     },
     {
@@ -2322,9 +2321,8 @@
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITextInput a method like it: it arrived in iOS 16",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextInputEditMenu16.md",
       "source": "SDK 16.4, UIKit"
     },
     {
@@ -2332,9 +2330,62 @@
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITextInput a method like it: it arrived in iOS 16",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextInputEditMenu16.md",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITextField editMenuForTextRange:suggestedActions:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextInputEditMenu16.md",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITextField willDismissEditMenuWithAnimator:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextInputEditMenu16.md",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITextField willPresentEditMenuWithAnimator:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextInputEditMenu16.md",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITextView editMenuForTextRange:suggestedActions:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextInputEditMenu16.md",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITextView willDismissEditMenuWithAnimator:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextInputEditMenu16.md",
+      "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "-[UITextView willPresentEditMenuWithAnimator:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextInputEditMenu16.md",
       "source": "SDK 16.4, UIKit"
     },
     {
@@ -2862,9 +2913,10 @@
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "inert",
+      "reason": "the search bar of a navigation item sits in the title of the navigation bar of the release, which has one placement, not the automatic/inline/stacked choice this property steers",
+      "effect": "it answers what was set and the bar stays in the title view",
+      "facts": "facts/UIKit/UISearchController.md",
       "source": "SDK 16.4, UIKit"
     },
     {

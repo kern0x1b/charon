@@ -33,7 +33,9 @@ reason and are named in the test; the rest are held.
   button, and sends `didDismissSearchController:` when that is done. Making an inactive controller inactive sends
   nothing.
 - `UINavigationItem.searchController` puts the search bar in the title of the navigation bar, and taking the
-  controller away takes it out; `hidesSearchBarWhenScrolling` is kept and changes nothing.
+  controller away takes it out; `hidesSearchBarWhenScrolling` and `preferredSearchBarPlacement` (iOS 16) are kept
+  and change nothing - there is one placement, the title view, not the automatic/inline/stacked choice the system's
+  layout reads it for.
 
 ## What it cannot do as the system does
 
