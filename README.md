@@ -536,6 +536,16 @@ pair by symbol instead of importing `os/lock.h`, whose declaration carries iOS
 10. The standard library's availability macros are rewritten to `*` for the same
 reason the frontend takes the flag.
 
+The runtime with Objective-C interoperation has iOS 6.0 as its floor. Built with
+`SWIFT_CLASS_IS_SWIFT_MASK=1`, a Swift class marks itself with the low bit of
+its `data` word. iOS 6.0's Objective-C runtime (objc4-532) masks that bit off
+when it reads the word; iOS 5.1.1's does not, reads the class's read-only data
+one byte off and follows a wild pointer at the first class it realizes. Below
+6.0 the runtime would have to register no standard-library class with
+Objective-C, giving up the Foundation bridges, or be adapted to that older
+runtime. Embedded Swift registers nothing with Objective-C and is not bound by
+this floor.
+
 The runtime is built without library evolution, and that is a decision with
 consequences worth knowing. A resilient layout makes a client's class need the
 metadata update of iOS 12's Objective-C runtime (`_objc_realizeClassFromSwift`),

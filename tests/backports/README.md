@@ -445,6 +445,16 @@ emulated root filesystem the way a device gets them: the data of
 `org.charon.apple-backports_<revision>_iphoneos-arm.deb` unpacked into it and its
 postinst run with `DPKG_ROOT` set to it.
 
+A test that creates UIKit objects is an application (its own `-Info.plist`,
+installed and started through SpringBoard), not a process of its own: a bare
+process has no `UIApplicationMain` behind it, and there `UITextView`'s
+`initWithFrame:` traps with `SIGTRAP`
+(`packages/a/apple-backports/facts/UIKit/TextSystem7.md`). Inside the
+application, schedule later steps with timers or
+`performSelector:withObject:afterDelay:`, not with `dispatch_async` to the main
+queue from a block already running there: the main queue is serial, so a block
+queued behind a running one does not run while that one spins a nested run loop.
+
 - `mechanism.m`, `url.m`: a process of their own, Foundation only; they print
   `ok`/`FAIL` lines and exit with the number of failures. `url.m` includes
   `url_expectations.h`, the host's results that `host/url/run.sh` writes there
@@ -581,7 +591,12 @@ postinst run with `DPKG_ROOT` set to it.
   exist and be writable by the application first:
   `mkdir -p /private/var/backports && chmod 777 /private/var/backports`. Every
   check writes its own line to the log, since a tweak must not touch the
-  application's `stdout`: a failure that only printed would be lost. The last
+  application's `stdout`: a failure that only printed would be lost. So a tweak
+  never calls `charon_log_to`, which reopens `stdout` onto its file
+  (`device/check.m`), and its constructor does nothing that can crash the
+  application: crashes of the application in a row can leave MobileSubstrate in
+  safe mode, where the tweak is not loaded until a respring
+  (`killall -9 SpringBoard`). The last
   full run answered `ok checks=47 failures=0` on an iPhone 4S (6.1.3, armv7).
   Three of those checks are not about the safe area at all: they ask the
   release's own visual format parser what it does with the iOS 11 spacing

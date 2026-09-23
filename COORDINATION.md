@@ -130,6 +130,11 @@ Every one of these was paid for once. None of them is theoretical.
   a known reason, name the divergence and make the test fail if it ever stops diverging.
 - The header can be wrong. Where the header and the running system disagree, follow the system and
   record the divergence.
+- A backport whose behaviour can differ on the device (UIKit, graphics, media, anything a macOS host
+  answers differently) is not done on a host run. Hold it to the most faithful target that can
+  answer: a real device, `xmake emulate` where hardware is not needed, the host only as the floor.
+  Until the device run is green the patch says **device-unverified** in its caveats. Rebuilding or
+  downloading what that run needs is worth the disk.
 
 **Registry**
 
