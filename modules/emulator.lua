@@ -17,8 +17,18 @@ RUNNER_JOB = "System/Library/LaunchDaemons/org.charon.emulator.runner.plist"
 LAUNCHD_CONF = "private/etc/launchd.conf"
 RUNNER_TASK = RESULTS .. "/job"
 MIGRATOR = "System/Library/PrivateFrameworks/DataMigration.framework/Support/DataMigrator"
-SETUP_KEYS = {{"SetupDone", "-bool", "YES"}, {"SetupFinishedAllSteps", "-bool", "YES"}, {"SetupVersion", "-integer", "2"},
-              {"AssistantPresented", "-bool", "YES"}}
+SETUP_KEYS = {{"SetupDone", "-bool", "YES"}, {"SetupFinishedAllSteps", "-bool", "YES"}, {"AssistantPresented", "-bool", "YES"}}
+-- The SetupVersion Setup.app writes when it finishes, by release: below it,
+-- Setup runs again at every boot as "Update Completed" and SpringBoard launches
+-- nothing else. Read from Setup's own code (the integer it passes before
+-- -setObject:forKey:@"SetupVersion", and compares the stored one against):
+-- 10A403 writes 2, 10B329 writes 3. The Setup of 5.0, 5.1.1 and 9.3.6 has no
+-- such key.
+SETUP_VERSIONS = {["6.0"] = 2, ["6.1"] = 3}
+-- What Setup.app leaves with lockdownd when it finishes, which iOS 6.1 asks
+-- instead of the preferences; plutil reads a dot as a key-path separator, so
+-- the dots are escaped.
+LOCKDOWN_KEYS = {{"com\\.apple\\.purplebuddy-SetupState", "-string", "DONE"}}
 CRASH_LOOP = 3
 -- The registers a stopped guest is read by, in the order the debugger lays
 -- them out; charon prints them in that order too.
@@ -320,7 +330,16 @@ function clone(source, destination)
     os.vrunv("cp", {"-c", "-R", source, destination})
 end
 
-function home(rootfs)
+function setup_keys(release)
+    local keys = table.copy(SETUP_KEYS)
+    local version = SETUP_VERSIONS[table.concat(table.slice(release:split(".", {plain = true}), 1, 2), ".")]
+    if version then
+        table.insert(keys, {"SetupVersion", "-integer", tostring(version)})
+    end
+    return keys
+end
+
+function home(rootfs, release)
     local preferences = guest_path(rootfs, "private/var/mobile/Library/Preferences")
     os.mkdir(preferences)
     for _, name in ipairs({"com.apple.purplebuddy", "com.apple.purplebuddy.notbackedup"}) do
@@ -328,7 +347,7 @@ function home(rootfs)
         if not os.isfile(file) then
             os.vrunv("plutil", {"-create", "binary1", file})
         end
-        for _, key in ipairs(SETUP_KEYS) do
+        for _, key in ipairs(setup_keys(release)) do
             os.vrunv("plutil", {"-replace", key[1], key[2], key[3], file})
         end
         os.vrunv("xattr", {"-w", "hfsfuse.record.owner_id", "501", file})
@@ -336,14 +355,20 @@ function home(rootfs)
     end
     -- iOS 6.1 asks lockdownd instead of the preferences above: SpringBoard
     -- reads com.apple.purplebuddy/SetupState, which Setup.app sets to DONE
-    -- when it finishes. 6.0 reads the preferences, so both are written.
+    -- when it finishes. 6.0 reads the preferences, so both are written. A
+    -- firmware's root filesystem has no lockdownd store until lockdownd first
+    -- runs, and lockdownd and the emulator both keep the keys they find in it,
+    -- so it is started here with the setup state in it.
     local ark = guest_path(rootfs, "private/var/root/Library/Lockdown/data_ark.plist")
-    if os.isfile(ark) then
-        -- plutil reads a dot as a key-path separator, so the dots are escaped.
-        os.vrunv("plutil", {"-replace", "com\\.apple\\.purplebuddy-SetupState", "-string", "DONE", ark})
-        os.vrunv("xattr", {"-w", "hfsfuse.record.owner_id", "0", ark})
-        os.vrunv("xattr", {"-w", "hfsfuse.record.group_id", "0", ark})
+    os.mkdir(path.directory(ark))
+    if not os.isfile(ark) then
+        os.vrunv("plutil", {"-create", "xml1", ark})
     end
+    for _, key in ipairs(LOCKDOWN_KEYS) do
+        os.vrunv("plutil", {"-replace", key[1], key[2], key[3], ark})
+    end
+    os.vrunv("xattr", {"-w", "hfsfuse.record.owner_id", "0", ark})
+    os.vrunv("xattr", {"-w", "hfsfuse.record.group_id", "0", ark})
 end
 
 -- The guest writes a report for every process it kills or that crashes, and
@@ -1060,7 +1085,14 @@ function clean(opt)
 end
 
 function golden(opt)
-    local key = string.format("%s_%s_%s", opt.identifier, opt.build, hash.strhash128(opt.shade_hash .. ";" .. table.concat(opt.steps or {"home"}, ";")))
+    -- The image is what the emulator and the home step made of the firmware, so
+    -- it is keyed by both: a change to what home writes is another image.
+    local written = {}
+    for _, key in ipairs(table.join(setup_keys(opt.version), LOCKDOWN_KEYS)) do
+        table.insert(written, table.concat(key, " "))
+    end
+    local key = string.format("%s_%s_%s", opt.identifier, opt.build, hash.strhash128(opt.shade_hash .. ";" ..
+                              table.concat(opt.steps or {"home"}, ";") .. ";" .. table.concat(written, ";")))
     local parent = path.join(opt.root or root(), "golden.noindex")
     local folder = path.join(parent, key)
     local marker = path.join(folder, "golden.json")
@@ -1081,7 +1113,7 @@ function golden(opt)
             local staging = path.join(parent, key .. ".partial-" .. os.getpid())
             local rootfs = path.join(staging, "rootfs")
             clone(opt.firmware, rootfs)
-            home(rootfs)
+            home(rootfs, opt.version)
             local migrates = os.isfile(guest_path(rootfs, MIGRATOR))
             cprint("${bright}booting %s %s once past its first-boot migration${clear} for a golden image", opt.identifier, opt.build)
             local booted = opt.boot(table.join(opt, {rootfs = rootfs, run = staging, stop = function (state)

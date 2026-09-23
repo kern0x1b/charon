@@ -77,17 +77,48 @@ local function home_step(emulator, folder, found)
     os.ln("private/var", path.join(rootfs, "var"))
     local ark = path.join(rootfs, "private", "var", "root", "Library", "Lockdown", "data_ark.plist")
     os.vrunv("plutil", {"-create", "binary1", ark})
-    emulator.home(rootfs)
+    os.vrunv("plutil", {"-insert", "-DeviceName", "-string", "iPhone", ark})
+    emulator.home(rootfs, "6.1.3")
     local state = try {function () return os.iorunv("plutil", {"-extract", "com\\.apple\\.purplebuddy-SetupState", "raw", ark}):trim() end}
     if state ~= "DONE" then
         table.insert(found, "iOS 6.1 reads the setup state from lockdownd, expected DONE, read " .. tostring(state))
+    end
+    local kept = try {function () return os.iorunv("plutil", {"-extract", "-DeviceName", "raw", ark}):trim() end}
+    if kept ~= "iPhone" then
+        table.insert(found, "the home step keeps what lockdownd's store already holds, read -DeviceName " .. tostring(kept))
+    end
+    -- A firmware's root filesystem has no lockdownd store before its first boot.
+    local fresh = path.join(folder, "home-fresh")
+    os.mkdir(path.join(fresh, "private", "var", "mobile"))
+    os.ln("private/var", path.join(fresh, "var"))
+    emulator.home(fresh, "6.0")
+    local fresh_plist = path.join(fresh, "private", "var", "mobile", "Library", "Preferences", "com.apple.purplebuddy.plist")
+    local written = try {function () return os.iorunv("plutil", {"-extract", "SetupVersion", "raw", fresh_plist}):trim() end}
+    if written ~= "2" then
+        table.insert(found, "on 6.0 the home step writes the SetupVersion 10A403's Setup writes, 2, read " .. tostring(written))
+    end
+    local older = path.join(folder, "home-older")
+    os.mkdir(path.join(older, "private", "var", "mobile"))
+    os.ln("private/var", path.join(older, "var"))
+    emulator.home(older, "5.1.1")
+    local none = try {function () return os.iorunv("plutil", {"-extract", "SetupVersion", "raw",
+        path.join(older, "private", "var", "mobile", "Library", "Preferences", "com.apple.purplebuddy.plist")}):trim() end}
+    if none then
+        table.insert(found, "a release whose Setup has no SetupVersion gets none written, read " .. tostring(none))
+    end
+    local created = path.join(fresh, "private", "var", "root", "Library", "Lockdown", "data_ark.plist")
+    state = try {function () return os.iorunv("plutil", {"-extract", "com\\.apple\\.purplebuddy-SetupState", "raw", created}):trim() end}
+    local root = try {function () return os.iorunv("xattr", {"-p", "hfsfuse.record.owner_id", created}):trim() end}
+    if state ~= "DONE" or root ~= "0" then
+        table.insert(found, "an image with no lockdownd store yet gets one, root's, with the setup state DONE, read " ..
+                     tostring(state) .. " owned by " .. tostring(root))
     end
     local plist = path.join(rootfs, "private", "var", "mobile", "Library", "Preferences", "com.apple.purplebuddy.plist")
     if not os.isfile(plist) then
         table.insert(found, "the home step writes com.apple.purplebuddy.plist under /private/var/mobile")
         return
     end
-    for key, wanted in pairs({SetupDone = "true", SetupFinishedAllSteps = "true", SetupVersion = "2", AssistantPresented = "true"}) do
+    for key, wanted in pairs({SetupDone = "true", SetupFinishedAllSteps = "true", SetupVersion = "3", AssistantPresented = "true"}) do
         local value = try {function () return os.iorunv("plutil", {"-extract", key, "raw", plist}):trim() end}
         if value ~= wanted then
             table.insert(found, string.format("the home step sets %s to %s, read %s", key, wanted, tostring(value)))
@@ -313,7 +344,7 @@ local function concurrency(folder, modules, found)
     io.writefile(path.join(firmware, "System", "Library", "CoreServices", "SystemVersion.plist"), "firmware")
     os.mkdir(path.join(firmware, "private", "var", "mobile"))
     local golden = script(folder, "golden", [[
-    local rootfs = emulator.golden({root = root, identifier = "iPhone3,1", build = "10A403", shade_hash = "fixture", deadline = 30,
+    local rootfs = emulator.golden({root = root, identifier = "iPhone3,1", version = "6.0", build = "10A403", shade_hash = "fixture", deadline = 30,
                                     firmware = extra, boot = function (opt)
         io.writefile(path.join(root, "boot-" .. os.getpid()), "booted")
         os.sleep(3000)
