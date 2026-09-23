@@ -872,6 +872,65 @@ static const SizedCase sized_cases[] = {
 NSUInteger compositional_sized_count(void) { return sizeof sized_cases / sizeof sized_cases[0]; }
 NSString *compositional_sized_name(NSUInteger index) { return @(sized_cases[index].name); }
 
+static CGFloat sized_text_height(NSString *text, UIFont *font, CGFloat width)
+{
+    UILabel *label = [[UILabel alloc] init];
+    label.numberOfLines = 0;
+    label.font = font;
+    label.text = text;
+    return [label sizeThatFits:CGSizeMake(width, CGFLOAT_MAX)].height;
+}
+
+// The recorded answers were written on the host, where the system and the port measure the same
+// labels in the same font. A device draws them in its own system font, and a text that ends near
+// the label's edge wraps differently in the two. For a list of label cells, this gives each
+// element the height the device's font gives its text at the width the system laid it out at,
+// and moves what the system put below it by the difference; everything else stays as recorded.
+NSString *compositional_sized_expected(NSUInteger index, NSString *recorded, NSMutableArray *differences)
+{
+    SizedCase spec = sized_cases[index];
+    if (spec.cellClass() != [SizedLabelCell class] || spec.offset > 0 || (spec.kind != 0 && spec.kind != 2 && spec.kind != 6))
+        return recorded;
+    NSMutableArray *rows = [[recorded componentsSeparatedByString:@"\n"] mutableCopy];
+    [rows removeObject:@""];
+    NSArray *content = [rows[0] componentsSeparatedByString:@" "];
+    [rows removeObjectAtIndex:0];
+    NSMutableArray *names = [NSMutableArray array], *frames = [NSMutableArray array], *deltas = [NSMutableArray array];
+    for (NSString *row in rows) {
+        NSArray *parts = [row componentsSeparatedByString:@" "];
+        NSString *name = parts[0];
+        CGRect frame = CGRectMake([parts[1] doubleValue], [parts[2] doubleValue], [parts[3] doubleValue], [parts[4] doubleValue]);
+        CGFloat height;
+        if ([name isEqualToString:@"header"] || [name isEqualToString:@"footer"]) {
+            NSString *text = [name isEqualToString:@"footer"] ? @"Footer of the section with enough words to wrap to a second line at this width" : @"Header";
+            height = sized_text_height(text, [UIFont boldSystemFontOfSize:17], frame.size.width - 20) + 8;
+        } else {
+            height = sized_text_height(sized_text(name.integerValue), [UIFont systemFontOfSize:15], frame.size.width - 16) + 12;
+        }
+        if (height != frame.size.height)
+            [differences addObject:[NSString stringWithFormat:@"%@ %@ -> %@", name, number(frame.size.height), number(height)]];
+        [names addObject:name];
+        [frames addObject:[NSValue valueWithCGRect:frame]];
+        [deltas addObject:@(height - frame.size.height)];
+    }
+    CGFloat total = 0;
+    NSMutableArray *lines = [NSMutableArray array];
+    for (NSUInteger row = 0; row < names.count; row++) {
+        CGRect frame = [frames[row] CGRectValue];
+        CGFloat above = 0;
+        for (NSUInteger other = 0; other < names.count; other++) {
+            if ([frames[other] CGRectValue].origin.y < frame.origin.y)
+                above += [deltas[other] doubleValue];
+        }
+        frame.origin.y += above;
+        frame.size.height += [deltas[row] doubleValue];
+        total += [deltas[row] doubleValue];
+        [lines addObject:[NSString stringWithFormat:@"%@ %@", names[row], rect_text(frame)]];
+    }
+    [lines sortUsingSelector:@selector(compare:)];
+    return [NSString stringWithFormat:@"content %@ %@\n%@\n", content[1], number([content[2] doubleValue] + total), [lines componentsJoinedByString:@"\n"]];
+}
+
 BOOL compositional_release_while_pending(CompositionalKit kit, UIWindow *window)
 {
     K = kit;

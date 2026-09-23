@@ -14,6 +14,40 @@ static NSString *const results_folder = @"/private/var/backports";
 @property (nonatomic, strong) UIWindow *window;
 @end
 
+// The recorded answers are a 64-bit host's, printed with %g; on armv7 CGFloat is a float, so a
+// value such as cos(0.3) prints one unit apart in its sixth digit (0.955337 against 0.955336).
+// Two lines agree when every token is the same, or has the same letters before a number that is
+// within one unit of the sixth significant digit %g prints.
+static BOOL same_to_printed_digits(NSString *actual, NSString *expected)
+{
+    if ([actual isEqualToString:expected])
+        return YES;
+    NSCharacterSet *separators = [NSCharacterSet characterSetWithCharactersInString:@" ,|"], *letters = [NSCharacterSet letterCharacterSet];
+    NSArray *left = [actual componentsSeparatedByCharactersInSet:separators], *right = [expected componentsSeparatedByCharactersInSet:separators];
+    if (left.count != right.count)
+        return NO;
+    for (NSUInteger index = 0; index < left.count; index++) {
+        NSString *a = left[index], *b = right[index];
+        if ([a isEqualToString:b])
+            continue;
+        NSUInteger pa = 0, pb = 0;
+        while (pa < a.length && [letters characterIsMember:[a characterAtIndex:pa]])
+            pa++;
+        while (pb < b.length && [letters characterIsMember:[b characterAtIndex:pb]])
+            pb++;
+        if (![[a substringToIndex:pa] isEqualToString:[b substringToIndex:pb]])
+            return NO;
+        NSScanner *sa = [NSScanner scannerWithString:[a substringFromIndex:pa]], *sb = [NSScanner scannerWithString:[b substringFromIndex:pb]];
+        double x, y;
+        if (![sa scanDouble:&x] || !sa.isAtEnd || ![sb scanDouble:&y] || !sb.isAtEnd)
+            return NO;
+        double magnitude = MAX(fabs(x), fabs(y));
+        if (magnitude == 0 || fabs(x - y) > pow(10, floor(log10(magnitude)) - 5) * 1.0001)
+            return NO;
+    }
+    return YES;
+}
+
 @implementation CharonCompositionalDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)options
@@ -88,12 +122,17 @@ static NSString *const results_folder = @"/private/var/backports";
     size_t wrong = 0;
     for (NSUInteger index = 0; recorded && index < compositional_sized_count(); index++) {
         NSString *actual = compositional_sized_dump(kit, index, self.window);
-        NSString *expected = @(compositional_sized_expectations[index]);
+        NSMutableArray *differences = [NSMutableArray array];
+        NSString *system = @(compositional_sized_expectations[index]);
+        NSString *expected = compositional_sized_expected(index, system, differences);
+        if (differences.count)
+            printf("note self-sizing %s: the device's font gives %s where the recording's gave the heights before the arrows\n", compositional_sized_name(index).UTF8String,
+                   [differences componentsJoinedByString:@", "].UTF8String);
         if ([actual isEqualToString:expected])
             continue;
         wrong++;
-        NSString *name = [NSString stringWithFormat:@"self-sizing %@ is laid out as the system does", compositional_sized_name(index)];
-        charon_check(NO, name.UTF8String, [NSString stringWithFormat:@"\n    device %@\n    system %@", actual, expected]);
+        NSString *name = [NSString stringWithFormat:@"self-sizing %@ is laid out as the system does, with the heights the device's font gives its text", compositional_sized_name(index)];
+        charon_check(NO, name.UTF8String, [NSString stringWithFormat:@"\n    device %@\n    system %@\n    recorded %@", actual, expected, system]);
     }
     CHECK(wrong == 0, "all estimated dimensions are measured from the cells as the system measures them");
     CHECK(compositional_release_while_pending(kit, self.window), "a layout and a data source released while a measurement is waiting are not touched");
@@ -106,7 +145,7 @@ static NSString *const results_folder = @"/private/var/backports";
     size_t wrong = 0;
     for (NSUInteger index = 0; recorded && index < MIN(actual.count, sizeof compositional_orthogonal_expectations / sizeof compositional_orthogonal_expectations[0]); index++) {
         NSString *expected = @(compositional_orthogonal_expectations[index]);
-        if ([actual[index] isEqualToString:expected])
+        if (same_to_printed_digits(actual[index], expected))
             continue;
         wrong++;
         NSString *name = [NSString stringWithFormat:@"orthogonal %@ is as the system's", [expected substringToIndex:MIN(40u, (unsigned)expected.length)]];
