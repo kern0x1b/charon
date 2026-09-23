@@ -62,7 +62,8 @@ notification constant in `UISceneConstants.m` holds a literal identical to its o
 did not, and nothing caught it because a wrong string still links, still answers a message, and never
 raises. Corrected to `@"UIWindowSceneSessionRoleExternalDisplay"`, and the constant it was quietly standing
 in for, `UIWindowSceneSessionRoleExternalDisplayNonInteractive`, is now defined in its own right with its
-own name as its value, next to it in the same file.
+own name as its value, in `UISceneConstants16.m` - a separate object file from `UISceneConstants.m`'s
+iOS 13.0 constants, since `check_registry` requires one release per object file.
 
 - State restoration by activity is carried. When the application enters the background and when it terminates, the scene
   delegate is asked `stateRestorationActivityForScene:`; the activity (type, title, user info, web page URL, required keys,

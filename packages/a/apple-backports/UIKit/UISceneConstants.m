@@ -8,4 +8,3 @@ NSNotificationName const UISceneWillEnterForegroundNotification = @"UISceneWillE
 NSNotificationName const UISceneDidEnterBackgroundNotification = @"UISceneDidEnterBackgroundNotification";
 UISceneSessionRole const UIWindowSceneSessionRoleApplication = @"UIWindowSceneSessionRoleApplication";
 UISceneSessionRole const UIWindowSceneSessionRoleExternalDisplay = @"UIWindowSceneSessionRoleExternalDisplay";
-UISceneSessionRole const UIWindowSceneSessionRoleExternalDisplayNonInteractive = @"UIWindowSceneSessionRoleExternalDisplayNonInteractive";
