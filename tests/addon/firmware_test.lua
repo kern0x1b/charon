@@ -18,7 +18,7 @@ function failures(opt)
     local outside = dyld.outside_source(path.directory(held), "armv7")
     local first, other = {identifier = "iPad2,4", build = "99A1"}, {identifier = "iPhone4,1", build = "99A1"}
 
-    local taken = firmware.harvest(image(folder, "first", "the cache of one firmware"), "9.9", first)
+    local taken = firmware.harvest(image(folder, "first", "the cache of one firmware"), "9.9", first, "armv7")
     if table.concat(taken, " ") ~= "armv7" or io.readfile(held) ~= "the cache of one firmware" then
         table.insert(found, "a release with no cache takes the image's")
     end
@@ -31,7 +31,7 @@ function failures(opt)
 
     -- The same cache from another firmware is the same release: kept, and its libraries taken.
     os.tryrm(outside)
-    local errors = fixtures.refusal(function () firmware.harvest(image(folder, "same", "the cache of one firmware"), "9.9", other) end)
+    local errors = fixtures.refusal(function () firmware.harvest(image(folder, "same", "the cache of one firmware"), "9.9", other, "armv7") end)
     if errors or not os.isdir(outside) then
         table.insert(found, "an image carrying the held cache is accepted: " .. tostring(errors))
     end
@@ -39,7 +39,7 @@ function failures(opt)
     -- Another cache is another firmware's: the held one is the ladder every gate reads.
     os.tryrm(outside)
     local refused
-    taken, refused = firmware.harvest(image(folder, "another", "the cache of another firmware"), "9.9", other)
+    taken, refused = firmware.harvest(image(folder, "another", "the cache of another firmware"), "9.9", other, "armv7")
     if taken or not refused or not refused:find("iPhone4,1 99A1", 1, true) then
         table.insert(found, "an image carrying another cache than the held one is refused by the firmware's name: " .. tostring(refused))
     end
@@ -50,13 +50,34 @@ function failures(opt)
         table.insert(found, "the libraries of a refused image are not taken")
     end
 
+    -- An image with no cache of the requested architecture is not its firmware, and touches nothing.
+    local none = path.join(folder, "none")
+    io.writefile(path.join(none, "System", "Library", "Caches", "com.apple.dyld", "dyld_shared_cache_armv7s"), "an armv7s cache")
+    local kind
+    taken, refused, kind = firmware.harvest(none, "9.9", other, "armv7")
+    if taken or kind ~= "absent" or os.isfile(path.join(path.directory(held), "dyld_shared_cache_armv7s")) then
+        table.insert(found, "an image carrying no cache of the requested architecture is refused as absent, taking nothing: " .. tostring(refused))
+    end
+
+    -- The held cache of the requested architecture decides; another architecture's held cache is kept.
+    local both = path.join(dyld.root(), "9.7")
+    io.writefile(path.join(both, "dyld_shared_cache_armv7s"), "the held armv7s cache")
+    io.writefile(path.join(both, "dyld_shared_cache_arm64"), "the held arm64 cache")
+    local mixed = path.join(folder, "mixed")
+    io.writefile(path.join(mixed, "System", "Library", "Caches", "com.apple.dyld", "dyld_shared_cache_armv7s"), "the held armv7s cache")
+    io.writefile(path.join(mixed, "System", "Library", "Caches", "com.apple.dyld", "dyld_shared_cache_arm64"), "another arm64 cache")
+    taken, refused = firmware.harvest(mixed, "9.7", other, "armv7s")
+    if not taken or table.concat(taken, " ") ~= "armv7s" or io.readfile(path.join(both, "dyld_shared_cache_arm64")) ~= "the held arm64 cache" then
+        table.insert(found, "an image carrying the held cache of the requested architecture is taken, and another architecture's held cache is kept: " .. tostring(refused))
+    end
+
     -- A universal static library beside the cache is fat around an ar archive: no image, no library,
     -- and no reason to refuse the image (7.0's usr/lib/libQMIParser.a).
     local archive = image(folder, "archive", "the cache of one firmware")
     local fat = string.pack(">I4I4i4i4I4I4I4", 0xcafebabe, 1, 12, 9, 28, 16, 2) .. "!<arch>\n" .. string.rep("\0", 8)
     io.writefile(path.join(archive, "usr", "lib", "libArchive.a"), fat)
     os.tryrm(outside)
-    errors = fixtures.refusal(function () firmware.harvest(archive, "9.9", first) end)
+    errors = fixtures.refusal(function () firmware.harvest(archive, "9.9", first, "armv7") end)
     if errors or not os.isdir(outside) or os.isfile(path.join(outside, "usr", "lib", "libArchive.a")) then
         table.insert(found, "a fat static library beside the cache is neither a library taken nor a failure: " .. tostring(errors))
     end
@@ -81,7 +102,6 @@ function failures(opt)
     local ten = path.join(dyld.root(), "9.8")
     io.writefile(path.join(ten, "dyld_shared_cache_armv7s"), "the armv7s cache of a 64-bit device")
     io.writefile(path.join(ten, "dyld_shared_cache_arm64"), "its arm64 cache")
-    os.vrunv("touch", {"-r", path.join(ten, "dyld_shared_cache_arm64"), path.join(ten, "dyld_shared_cache_armv7s")})
     errors = fixtures.refusal(function () firmware.fetch("armv7s", "9.8", {}) end)
     if errors or not os.isdir(dyld.outside_source(ten, "armv7s")) or io.readfile(path.join(ten, "dyld_shared_cache_armv7s.source")) ~= "iPhone6,1 98A1\n" then
         table.insert(found, "the libraries of a held cache come from the firmware of any architecture that carries it: " .. tostring(errors))

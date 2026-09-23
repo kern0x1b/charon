@@ -453,31 +453,43 @@ end
 
 -- Takes the shared caches of a mounted system image (or an unpacked root filesystem) into the
 -- release's folder, with the libraries beside them. A cache already held is the ladder every gate
--- reads, chosen when it was first taken: it is never written over, and an image whose cache is
--- another one is refused by the firmware's name, so its libraries are not taken either. Returns
--- the architectures taken, or nil and the refusal.
-function harvest(mount, release, firmware)
+-- reads, chosen when it was first taken, and is never written over. Where the folder holds the
+-- cache of architecture, the image is refused unless it carries that very cache: refused as absent
+-- when it carries none (another system image of the same firmware may), as another when it carries
+-- a different one. Another architecture's cache is taken only where none is held. Returns the
+-- architectures taken, or nil, the refusal and "absent" or "another".
+function harvest(mount, release, firmware, architecture)
     local folder = path.join(dyld.root(), release)
-    local found = {}
     local caches = cache_folder(mount)
+    local wanted = architecture and path.join(folder, "dyld_shared_cache_" .. architecture)
+    if wanted and os.isfile(wanted) then
+        local carried = caches and path.join(caches, path.filename(wanted))
+        if not carried or not os.isfile(carried) then
+            return nil, string.format("%s %s carries no %s", firmware.identifier, firmware.build, path.filename(wanted)), "absent"
+        elseif not same_file(carried, wanted) then
+            return nil, string.format("%s %s carries another %s than the one held for iOS %s (%s), which is kept",
+                                      firmware.identifier, firmware.build, path.filename(wanted), release, wanted), "another"
+        end
+        firmware.carries_held = true
+    end
+    local found = {}
     for _, file in ipairs(caches and os.files(path.join(caches, "dyld_shared_cache_*")) or {}) do
         local name = path.filename(file)
         if not name:find("%.symbols$") and not name:find("%.map$") and not name:find("%.atlas$") then
             local held = path.join(folder, name)
+            local taken = false
             if not os.isfile(held) then
                 os.mkdir(folder)
                 os.cp(file, held .. ".partial")
                 os.mv(held .. ".partial", held)
-                io.writefile(held .. ".source", firmware.identifier .. " " .. firmware.build .. "\n")
+                taken = true
             elseif same_file(file, held) then
-                io.writefile(held .. ".source", firmware.identifier .. " " .. firmware.build .. "\n")
-            else
-                return nil, string.format("%s %s carries another %s than the one held for iOS %s (%s), which is kept",
-                                          firmware.identifier, firmware.build, name, release, held)
+                taken = true
             end
-            local architecture = name:match("^dyld_shared_cache_([%w_]+)$")
-            if architecture then
-                table.insert(found, architecture)
+            local cached = name:match("^dyld_shared_cache_([%w_]+)$")
+            if taken and cached then
+                io.writefile(held .. ".source", firmware.identifier .. " " .. firmware.build .. "\n")
+                table.insert(found, cached)
             end
         end
     end
@@ -491,10 +503,10 @@ local function mount_and_harvest(image, release, architecture, firmware)
     os.vrunv("hdiutil", {"attach", "-readonly", "-nobrowse", "-noverify", "-noautoopen", "-mountpoint", mount, image})
     -- xmake's try without a catch returns nil and drops the error, which then read as "holds no
     -- shared cache" for every firmware of the release: the error is kept and raised once detached.
-    local found, refused, failure
+    local found, refused, kind, failure
     try {
         function ()
-            found, refused = harvest(mount, release, firmware)
+            found, refused, kind = harvest(mount, release, firmware, architecture)
             if refused then
                 return
             end
@@ -520,44 +532,37 @@ local function mount_and_harvest(image, release, architecture, firmware)
     if failure then
         raise(failure)
     end
-    return found, refused
+    return found, refused, kind
 end
 
 -- The firmwares that can have carried a held cache, in the order to try them. harvest records the
 -- firmware beside each cache it takes (<cache>.source); where it did, that one alone. Otherwise an
 -- image carries a cache for each architecture its device runs - a 64-bit device of iOS 10 carries
 -- armv7s beside arm64, and the armv7s caches of 10.x came that way - so the firmwares of every
--- architecture whose cache the release's folder holds can be it. An architecture whose held cache
--- has the same build date comes first, since one image can explain both files and a device of the
--- requested architecture alone cannot carry the other; the bytes decide in every case.
+-- architecture whose cache the release's folder holds can be it. Those come first, since a cache
+-- held beside another architecture's was most likely taken from the same image; the requested
+-- architecture's firmwares follow. The order only saves downloads: the bytes decide.
 local function held_candidates(architecture, release, firmwares, folder, held)
     local recorded = os.isfile(held .. ".source") and io.readfile(held .. ".source"):trim()
-    local first, rest, seen = {}, {}, {}
-    local function add(into, list)
+    local ordered, seen = {}, {}
+    local function add(list)
         for _, firmware in ipairs(list) do
             local key = firmware.identifier .. " " .. firmware.build
             if firmware.version == release and not seen[key] and (not recorded or key == recorded) then
                 seen[key] = true
-                table.insert(into, firmware)
+                table.insert(ordered, firmware)
             end
         end
     end
     for _, file in ipairs(os.files(path.join(folder, "dyld_shared_cache_*"))) do
         local other = path.filename(file):match("^dyld_shared_cache_([%w_]+)$")
-        if other and other ~= architecture and PLATFORMS[other] and os.mtime(file) == os.mtime(held) then
-            local _, more = candidates(other, release)
-            add(first, more)
-        end
-    end
-    add(first, firmwares)
-    for _, file in ipairs(os.files(path.join(folder, "dyld_shared_cache_*"))) do
-        local other = path.filename(file):match("^dyld_shared_cache_([%w_]+)$")
         if other and other ~= architecture and PLATFORMS[other] then
             local _, more = candidates(other, release)
-            add(rest, more)
+            add(more)
         end
     end
-    return table.join(first, rest)
+    add(firmwares)
+    return ordered
 end
 
 -- Where rootfs() unpacks one firmware's root filesystem, and whether it is complete there.
@@ -619,17 +624,22 @@ function fetch(architecture, minimum, opt)
                             fetch_member(firmware.url, members[name], file)
                         end
                         local image = plain_image(firmware, file)
-                        local taken, refused = mount_and_harvest(image, release, architecture, firmware)
+                        local taken, refused, kind = mount_and_harvest(image, release, architecture, firmware)
                         os.tryrm(image)
                         if refused then
                             refusal = refused
-                            return false
+                            if kind == "another" then
+                                return false
+                            end
                         end
-                        table.join2(harvested, taken)
+                        table.join2(harvested, taken or {})
                         if table.contains(harvested, architecture) then
                             break
                         end
                     end
+                end
+                if refusal and not table.contains(harvested, architecture) then
+                    return false
                 end
                 if not table.contains(harvested, architecture) then
                     raise("%s %s holds %s, not %s", firmware.identifier, firmware.build,
@@ -653,7 +663,7 @@ function fetch(architecture, minimum, opt)
         end
         failed(firmware, refusal or broken)
         -- Only one firmware carries a held cache: once its image failed, no other can stand in.
-        if held and broken then
+        if broken and firmware.carries_held then
             raise("the firmware of the cache held for iOS %s, %s %s, did not yield the %s libraries beside it:\n  %s",
                   release, firmware.identifier, firmware.build, architecture, table.concat(failures, "\n  "))
         end
