@@ -483,7 +483,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSMutableParagraphStyle a property like it: it arrived in iOS 15",
+      "reason": "sets a paragraph to hyphenate as the system does by default; the release's NSParagraphStyle carries hyphenationFactor (objc.inventory on 6.1.3), which this flag would set to the default factor - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -493,7 +493,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSParagraphStyle a property like it: it arrived in iOS 15",
+      "reason": "answers whether a paragraph hyphenates as the system does by default; the release's NSParagraphStyle carries hyphenationFactor (objc.inventory on 6.1.3), from which this could be answered - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -533,7 +533,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "makes the view that stands in the text for an attachment; the release's text views draw no attachment (facts/UIKit/NSTextMembers13.md), so there is nothing to host a view in",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -543,7 +543,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSTextContainer a property like it: it arrived in iOS 15",
+      "reason": "the Text Kit 2 layout manager a container belongs to; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so a container never belongs to one and the answer would always be nil",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -553,7 +553,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the abstract Text Kit 2 owner of a document's content, split into elements; the release carries Text Kit 1 in its private UIFoundation - NSTextStorage, NSLayoutManager, NSTextContainer (objc.inventory on 6.1.3), over which a content manager could be built, but the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent) to use one - real work, no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -563,7 +563,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the delegate of the Text Kit 2 content manager, asked about the elements it makes; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing would ask",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -573,7 +573,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the Text Kit 2 content manager over an NSTextStorage; the release carries Text Kit 1 in its private UIFoundation - NSTextStorage, NSLayoutManager, NSTextContainer (objc.inventory on 6.1.3), so the storage it wraps is there, but a content storage is real work and nothing in the port would read it - no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -583,7 +583,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the delegate of NSTextContentStorage, asked for the paragraphs it makes; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing would ask",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -593,7 +593,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "posted when an attribute Text Kit 2 cannot lay out is added to its storage; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so there is no storage to post it",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -603,7 +603,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the base class of the elements - paragraphs and the like - a Text Kit 2 content manager splits text into; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing splits text into elements",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -613,7 +613,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the protocol through which Text Kit 2 asks a content manager for its elements; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing would ask",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -623,7 +623,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the laid-out form of one Text Kit 2 element, holding its line fragments; the release carries Text Kit 1 in its private UIFoundation - NSTextStorage, NSLayoutManager, NSTextContainer (objc.inventory on 6.1.3), which lays text out in lines of its own, but the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent) to make fragments - real work, no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -633,7 +633,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the Text Kit 2 layout manager; the release carries Text Kit 1 in its private UIFoundation - NSTextStorage, NSLayoutManager, NSTextContainer (objc.inventory on 6.1.3), over whose layout a Text Kit 2 manager could be built, and the release's UITextView lays its text out in a WebKit body with neither - real work, no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -643,7 +643,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the delegate of the Text Kit 2 layout manager, asked for the fragments it makes; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing would ask",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -653,7 +653,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "one laid-out line of a Text Kit 2 layout fragment; the release carries Text Kit 1 in its private UIFoundation - NSTextStorage, NSLayoutManager, NSTextContainer (objc.inventory on 6.1.3), which lays out lines of its own, but the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent) to make these - real work, no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -663,7 +663,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "a position in a Text Kit 2 content manager; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so there is no content manager for a location to point into",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -673,7 +673,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the Text Kit 2 element for one paragraph of an attributed string; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing splits text into paragraphs of this kind",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -683,7 +683,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "a range between two NSTextLocations of Text Kit 2; a value class that needs nothing from the release, but the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent) and no location type, so there would be nothing to make one of - no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -693,7 +693,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "a Text Kit 2 selection, a set of NSTextRanges with an affinity; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), and the release's text views select through UITextInput, so nothing would make one",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -703,7 +703,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the protocol Text Kit 2's selection navigation reads the layout through; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing would read it",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -713,7 +713,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "moves a Text Kit 2 selection by characters, words and lines; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), and the release's text views move their selection through UITextInput, so nothing would drive one",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -723,7 +723,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSTextStorage a property like it: it arrived in iOS 15",
+      "reason": "the Text Kit 2 content storage watching a text storage; the release's NSTextStorage is there (objc.inventory on 6.1.3), but the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so no observer exists to answer",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -733,7 +733,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the protocol a Text Kit 2 content storage takes to watch an NSTextStorage; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing takes it",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
@@ -743,7 +743,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "lays out only the part of a Text Kit 2 document in view; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so there is no layout to limit to a viewport",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -753,7 +753,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "the delegate of the Text Kit 2 viewport controller, asked to place the fragments in view; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing would ask",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
