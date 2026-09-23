@@ -58,12 +58,19 @@ attachment.
 The release carries `NSTextList` itself, in UIFoundation (`objc.inventory` on 6.1.3), with `initWithMarkerFormat:options:` and
 `startingItemNumber`. `UIKit/NSTextList+Init16.m` is those two in a row: the release's initializer, then the starting number set on the
 list it made. It adds no state and draws nothing the release did not; the release's text views draw no list markers either way.
-The release carries the class without exporting it (the gate's import check names `_OBJC_CLASS_$_NSTextList` as a weak import NULL on
-6.1.3), and the library's loader (`attach.c`) skips a category whose class reference is NULL, so the category alone would never reach
-the class on iOS 6. `CharonTextListInit16` in the same file adds the method to `objc_getClass("NSTextList")` in its `+load`, which runs
-before the loader, when the class lacks it; the category stays for the registry and for a release that exports the class.
 `objc.inventory` (`.agent-work/plan-and-analysis/b1314-flips/ladder-rest.log`): the three-argument initializer is not in 6.1.3 or 12.0 and
 is in 16.0 and 18.0, the two-argument one is in all four. No 13-15 cache, so `introduced` stays the header's 16.0. Run on a device: the last section.
+
+## `NSTextList`, the class
+
+UIFoundation carries `NSTextList` from iOS 6.0 and exports it from 9.0 (`objc.inventory` and the exports of the shared caches of 5.1.1
+to 10.3.4: none in 5.1.1, carried and not exported in 6.0 to 8.4.1, exported in 9.0 and later, `.agent-work/plan-and-analysis/b1314-catcheck/textlist-ladder.log`; the SDK's header says iOS 7.0). An
+application that links the class does not start on a release that does not export it. `UIKit/NSTextList.m` exports the name as an
+alias of `CharonNSTextList` (`charon_alias.h`, as for `NSTextTab`), which answers `+class` and `+alloc` with the release's class, so
+`[NSTextList class]`, the lists made through it and the lists a paragraph style holds are one class. A category written on
+`NSTextList` is attached by the library's loader (`attach.c`) to the release's class the alias names, where a release does not
+export it, and to the exported class where one does. The gate refuses a category whose class the release neither exports nor
+carries in an image the library loads (`unattached_categories` in `modules/apple/backports.lua`).
 
 ## On a device, iOS 6.1.3
 

@@ -451,6 +451,80 @@ local function loaded(cache, architecture)
     return release
 end
 
+-- A category's class reference is NULL on a release that has the class without exporting
+-- it, and is a class of Charon's own where charon_alias.h exports the release's name; in
+-- both cases attach.c attaches the category to the release's class of that name, which it
+-- finds only where the class is in an image the library loads. A category whose class is
+-- neither exported nor there is dropped on the very release it is for, while its methods
+-- still count as built.
+local function loaded_images(release, binaries, binary, architecture)
+    local own = {}
+    for _, other in ipairs(binaries) do
+        own[path.join(INSTALL_FOLDER, path.filename(other))] = other
+    end
+    local seen, pending = {}, {path.join(INSTALL_FOLDER, path.filename(binary))}
+    while #pending > 0 do
+        local install = table.remove(pending)
+        if not seen[install] then
+            seen[install] = true
+            local dependents = release.libraries[install] and release.libraries[install].dependents
+            if own[install] then
+                for _, image in ipairs(macho.images(macho.read(own[install]))) do
+                    if image.architecture == architecture then
+                        dependents = image.libraries
+                    end
+                end
+            end
+            table.join2(pending, dependents or {})
+        end
+    end
+    return seen
+end
+
+function unattached_categories(release, inventory, binaries, architecture)
+    local defined, aliases, aliased = {}, {}, {}
+    for _, binary in ipairs(binaries) do
+        for _, symbol in ipairs(defined_symbols(binary)) do
+            defined[symbol] = true
+        end
+        for proxy, name in pairs(objc.binary_aliases(binary, architecture) or {}) do
+            aliases[proxy] = name
+            aliased[name] = true
+        end
+    end
+    local found = {}
+    for _, binary in ipairs(binaries) do
+        local images
+        for _, category in ipairs(objc.binary_categories(binary, architecture) or {}) do
+            local bound = category.bound and category.bound:match("^_OBJC_CLASS_%$_(.+)$")
+            local class = category.class and (aliases[category.class] or category.class) or bound
+            local attached
+            if category.class then
+                attached = not aliases[category.class]
+            elseif bound then
+                attached = release.exports[category.bound] or (defined[category.bound] and not aliased[bound])
+            end
+            if not attached and class and inventory.classes[class] and inventory.classes[class].image then
+                images = images or loaded_images(release, binaries, binary, architecture)
+                attached = images[inventory.classes[class].image]
+            end
+            if not attached then
+                table.insert(found, string.format("%s(%s) in %s", class or category.bound or "a class this check cannot name", category.name or "?", path.filename(binary)))
+            end
+        end
+    end
+    table.sort(found)
+    return found
+end
+
+function check_categories(release, inventory, binaries, architecture, version)
+    local found = unattached_categories(release, inventory, binaries, architecture)
+    if #found > 0 then
+        raise("categories whose class iOS %s neither exports nor carries in an image the library loads, so the library's loader has no class to attach them to and nothing they add is there: %s",
+              version, table.concat(found, " "))
+    end
+end
+
 function surface(binaries, architecture)
     local found = {classes = {}, members = {}, symbols = {}, registered = {}, answered = {}}
     for _, binary in ipairs(binaries) do
@@ -724,6 +798,7 @@ function build(opt)
         end
     end
     dyld.check(opt.cache, built)
+    check_categories(release, release_inventory(opt.cache), built, opt.architecture, opt.deployment)
     if #built == #LIBRARIES then
         check_band_caches(opt, objects)
         local undocumented = check_registry(opt.root, surface(built, opt.architecture), opt.registry, opt.deployment, release.exports, release_inventory(opt.cache))
@@ -1053,8 +1128,9 @@ function stage_bands(opt)
         for _, library in ipairs(staged_libraries(opt)) do
             table.insert(built, link(opt, library, attach, objects[library.name], releases, path.join(home, "bands", range.first), caches[1]))
         end
-        for _, release in ipairs(table.unique({range.first, range.last})) do
+        for index, release in ipairs(table.unique({range.first, range.last})) do
             dyld.check(release_cache(opt, architectures, release), built)
+            check_categories(releases[index], release_inventory(caches[index].cache), built, opt.architecture, release)
         end
         for index = #built, 1, -1 do
             os.vrunv("xcrun", {"strip", "-x", built[index]})

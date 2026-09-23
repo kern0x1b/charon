@@ -505,6 +505,11 @@ clang force-load arclite below iOS 9.
 - `ios1516.m`: a process of its own, what iOS 15 and 16 added that the port carries: `NSUUID`'s `compare:`, held to the answers
   `host/ios1516/run.sh` writes into `ios1516-expectations.h` after holding the port's method to the host's own, the
   orientation update of a view controller and the padding above a section header.
+- `textalias.m`: a process of its own, the classes the release carries without exporting them that the port exports as
+  aliases (`packages/a/apple-backports/charon_alias.h`), `NSTextTab` and `NSTextList`: the linked name answers the release's
+  class, what is made through it is the release's class, and the categories written on the name - `NSTextTab`'s
+  `+columnTerminatorsForLocale:`, `NSTextList`'s initializer of iOS 16 - are on the release's class, from
+  `libUIKitBackports.dylib`, attached by the library's loader and by nothing in a `+load`.
 - `corelocation.m`: a process of its own, the CoreLocation batch: the circular region as a class, its notify flags,
   and the answers of the class methods about monitoring and ranging. It needs the package built with
   `corelocation = true`; it is checked on the emulated 6.0 and on the iPad 2, where location services and region

@@ -402,6 +402,48 @@ function binary_inventory(binary, architecture)
     return found
 end
 
+-- The categories of a binary with the class each one names: `class` when the binary
+-- defines the class itself, `bound` (the symbol) when dyld binds the reference. A
+-- reference under chained fixups is neither: this reads classic bind opcodes only.
+function binary_categories(binary, architecture)
+    local source, image = file_source(binary, architecture)
+    if not source then
+        return nil
+    end
+    local read = reader(source)
+    local found = {}
+    for _, category in ipairs(table.join(section_entries(read, image, "__objc_catlist"), section_entries(read, image, "__charon_catlist"))) do
+        local class = read.pointer(category + read.size)
+        table.insert(found, {name = read.string(read.pointer(category)), class = class ~= 0 and class_data(read, class).name or nil,
+                             bound = source.bound[category + read.size]})
+    end
+    return found
+end
+
+-- The aliases of charon_alias.h a binary records: the release's class name each of its
+-- own classes stands in for.
+function binary_aliases(binary, architecture)
+    local source, image = file_source(binary, architecture)
+    if not source then
+        return nil
+    end
+    local read = reader(source)
+    local found = {}
+    for _, section in ipairs(image.sections) do
+        if section.segment == "__DATA" and section.name == "__charon_alias" then
+            for index = 0, section.size // (2 * read.size) - 1 do
+                local entry = section.addr + index * 2 * read.size
+                local proxy = class_data(read, read.pointer(entry)).name
+                local name = read.string(read.pointer(entry + read.size))
+                if proxy and name then
+                    found[proxy] = name
+                end
+            end
+        end
+    end
+    return found
+end
+
 function known_selectors(source)
     local architecture = path.filename(source):match("^dyld_shared_cache_([%w_]+)") or path.filename(source):match("^libraries_([%w_]+)$")
     local list = path.join(path.directory(source), "selectors_" .. architecture .. ".txt")
