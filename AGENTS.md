@@ -74,13 +74,19 @@ Android) as it is here; iOS 6 is the first platform it targets, not its limit.
 
 Each entry: wrong pattern → right pattern → the mechanical reason.
 
-- **Backport self-linking.** Wrong: an entry in `modules/apple/backports.lua`'s `LIBRARIES` table
-  names its own on-device framework in `frameworks`. Right: list it only if the release actually
-  ships that framework — CoreVideo does (symbols missing, framework present), so
-  `GraphicsBackports` lists it; GameController, Vision, CallKit and Metal do not exist on iOS 6 at
-  all, so `GameControllerBackports`, `VisionBackports`, `CallKitBackports` and `MetalBackports`
-  list every framework they need *except* their own. Reason: an `LC_LOAD_DYLIB` for a framework
-  the device never shipped fails the imports check ("neither the device nor this build provides").
+- **The shared `~/.xmake` store, not a private one.** Wrong: `xmake require --force`,
+  `xrepo install --force`, `rm -rf ~/.xmake/packages/...`, or a private `XMAKE_GLOBALDIR` to pick
+  up a changed recipe or patch. Right: just rebuild normally against the shared store. Reason:
+  every package that matters here (`apple-backports`, `llvm`, `swift-runtime`, `libcxx`, `swift`)
+  hashes its own sources, patches and recipe into a readonly digest config (`sources`/`recipe` —
+  see `packages/a/apple-backports/xmake.lua` and `packages/s/swift-runtime/digest.lua`), so a
+  changed backport, patch or recipe is already a different package with its own install path —
+  no force needed, no collision with another band's build (a change that's only a comment or
+  layout is deliberately excluded from the digest, by design). A private store instead
+  re-resolves the whole dependency chain from network, up to rebuilding LLVM from source (one
+  band lost hours and tens of GB this way) — never do that either. If a build's own output needs
+  to survive the shared store regardless of any package (a crash log, failure text), redirect it
+  to your own file instead of isolating anything: `xmake -y > build.log 2>&1`.
 
 - **Device-side binaries and the toolchain.** Wrong: building a device-side binary — including a
   throwaway probe — with the host's own `cc`/`clang`. Right: build it through a `target()` using
