@@ -66,8 +66,10 @@ end
 
 -- The recipes whose build hash covers the Lua they are made of: the variable their digest.lua sets, and the Lua sources.
 local RECIPES = {
+    -- lift.lua and what it calls make the headers the backports variant installs and every port compiles against
     {folder = "packages/s/swift-runtime", variable = "swift_runtime_sources_digest",
-     inputs = {"packages/s/swift-runtime/xmake.lua", "modules/apple/shared_runtime.lua"}},
+     inputs = {"packages/s/swift-runtime/xmake.lua", "modules/apple/shared_runtime.lua", "modules/apple/lift.lua",
+               "modules/apple/backports.lua", "modules/apple/compat.lua", "modules/apple/dyld.lua"}},
     {folder = "packages/l/libcxx", variable = "libcxx_sources_digest",
      inputs = {"packages/l/libcxx/xmake.lua", "modules/apple/shared_runtime.lua"}}
 }

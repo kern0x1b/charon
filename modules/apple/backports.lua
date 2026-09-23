@@ -716,11 +716,14 @@ end
 local STATUSES = {implemented = true, inert = true, absent = true, ignored = true}
 
 function registry(root)
-    local listed, told, incomplete = {}, {}, {}
+    local listed, told, incomplete, frameworks = {}, {}, {}, {}
     local files = table.join(os.files(path.join(root, "registry", "*.json")), os.files(path.join(root, "registry", "*", "*.json")))
     table.sort(files)
     for _, file in ipairs(files) do
         local named = path.join(path.filename(path.directory(file)), path.filename(file))
+        -- registry/<Framework>.json or registry/<Framework>/<part>.json
+        local folder = path.filename(path.directory(file))
+        frameworks[folder == "registry" and path.basename(file) or folder] = true
         local held = json.decode(io.readfile(file))
         for _, entry in ipairs(held.entries or held) do
             if told[entry.api] then
@@ -741,7 +744,7 @@ function registry(root)
             end
         end
     end
-    return listed, incomplete
+    return listed, incomplete, table.orderkeys(frameworks)
 end
 
 local function property_of(selector)

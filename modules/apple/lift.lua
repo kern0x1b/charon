@@ -17,8 +17,7 @@
 import("core.base.json")
 import("dyld")
 import("backports")
-
-local FRAMEWORKS = {"Foundation", "UIKit", "CoreLocation", "CoreGraphics", "CoreFoundation", "CoreData", "UserNotifications"}
+import("compat")
 
 local function version(text)
     return (text or ""):gsub("_", ".")
@@ -59,11 +58,67 @@ local function objects(text)
     return found
 end
 
-local function dumper(opt)
+-- A framework's headers: its umbrella header where it has one, every header it has where it does not (CoreTelephony,
+-- OpenGLES).
+local function framework_headers(sdk, framework)
+    local folder = path.join(sdk, "System", "Library", "Frameworks", framework .. ".framework", "Headers")
+    local umbrella = path.join(folder, framework .. ".h")
+    local files = os.isfile(umbrella) and {umbrella} or os.files(path.join(folder, "*.h"))
+    table.sort(files)
+    return files
+end
+
+-- The public headers of the SDK's usr/include that bring in what charon@apple-compat carries: every file that names a
+-- symbol followed by a paren outside a directive, as a module map reaches it - the file itself where a module map names
+-- it as a header, the umbrella header of its folder where one covers the folder (dispatch/block.h is reached through
+-- dispatch/dispatch.h and refuses to be included on its own). Which of them declares the symbol is the dump's to say. A
+-- symbol no public header names - a compiler-rt intrinsic - brings none; the dump then finds no declaration of it.
+local function system_headers(sdk, symbols)
+    local root = path.join(sdk, "usr", "include")
+    local public, umbrellas = {}, {}
+    for _, map in ipairs(os.files(path.join(root, "**.modulemap"))) do
+        local folder = path.directory(map)
+        for line in io.readfile(map):gmatch("[^\n]+") do
+            local umbrella = line:match('^%s*umbrella%s+header%s+"([^"]+)"')
+            local header = line:match('^%s*header%s+"([^"]+)"')
+            if umbrella then
+                umbrellas[path.relative(folder, root)] = path.relative(path.join(folder, umbrella), root)
+            elseif header then
+                public[path.relative(path.join(folder, header), root)] = true
+            end
+        end
+    end
+    local found = {}
+    for _, file in ipairs(os.files(path.join(root, "**.h"))) do
+        local text = io.readfile(file)
+        for _, symbol in ipairs(symbols) do
+            if text:find(symbol, 1, true) then
+                for line in text:gmatch("[^\n]+") do
+                    if not line:match("^%s*#") and line:find("%f[%w_]" .. symbol .. "%s*%(") then
+                        local name = path.relative(file, root)
+                        local reached = public[name] and name or umbrellas[path.directory(name)]
+                        if reached then
+                            found[reached] = true
+                        end
+                        break
+                    end
+                end
+            end
+        end
+    end
+    return table.orderkeys(found)
+end
+
+local function dumper(opt, frameworks, headers)
     local umbrella = path.join(opt.outputdir, "umbrella.m")
     local lines = {}
-    for _, framework in ipairs(FRAMEWORKS) do
-        table.insert(lines, string.format("#import <%s/%s.h>", framework, framework))
+    for _, framework in ipairs(frameworks) do
+        for _, header in ipairs(framework_headers(opt.sdk, framework)) do
+            table.insert(lines, string.format("#import <%s/%s>", framework, path.filename(header)))
+        end
+    end
+    for _, header in ipairs(headers) do
+        table.insert(lines, string.format("#include <%s>", header))
     end
     io.writefile(umbrella, table.concat(lines, "\n") .. "\n")
     local cache = {}
@@ -78,11 +133,18 @@ local function dumper(opt)
             table.join2(arguments, {"-ivfsoverlay", vfs})
         end
         local text = os.iorunv(opt.clang, table.join(arguments, {"-Xclang", "-ast-dump=json"}))
+        if not text then
+            raise("clang gave no dump for the filter %s", filter)
+        end
         local found = objects(text)
         -- The JSON names no owner; the text dump of the same filter heads each declaration with its qualified name, in
         -- the same order.
         local headings = {}
-        for heading in os.iorunv(opt.clang, table.join(arguments, {"-Xclang", "-ast-dump"})):gmatch("Dumping ([^\n]*):\n") do
+        local listing = os.iorunv(opt.clang, table.join(arguments, {"-Xclang", "-ast-dump"}))
+        if not listing then
+            raise("clang gave no dump for the filter %s", filter)
+        end
+        for heading in listing:gmatch("Dumping ([^\n]*):\n") do
             table.insert(headings, heading)
         end
         if #headings == #found then
@@ -95,6 +157,67 @@ local function dumper(opt)
     end
 end
 
+-- What the macro uses at sites of a header expand to where they stand, for the port's triple: the header is laid over the
+-- SDK's own through a VFS overlay as a copy with each use between two markers, and the umbrella is preprocessed, so each
+-- use expands in the header's own context - the macros defined, redefined or undefined around it (time.h undefines
+-- __CLOCK_AVAILABILITY after its last use) and the include that brings the header in (dispatch/block.h refuses to be
+-- included on its own).
+local function expander(opt)
+    return function (file, lines, sites)
+        local insertions = {}
+        for index, site in ipairs(sites) do
+            local last = site.line + site.count - 1
+            local finish = site.count == 1 and site.col - 1 + #site.use or #site.use:match("[^\n]*$")
+            table.insert(insertions, {line = site.line, col = site.col, order = 1, text = "charon_expansion_" .. index .. " "})
+            table.insert(insertions, {line = last, col = finish + 1, order = 2, text = " charon_expansion_end"})
+        end
+        -- last position first, so each insertion leaves the positions before it where they were
+        table.sort(insertions, function (a, b)
+            if a.line ~= b.line then
+                return a.line > b.line
+            elseif a.col ~= b.col then
+                return a.col > b.col
+            end
+            return a.order < b.order
+        end)
+        local marked = table.join(lines)
+        for _, insertion in ipairs(insertions) do
+            local text = marked[insertion.line]
+            marked[insertion.line] = text:sub(1, insertion.col - 1) .. insertion.text .. text:sub(insertion.col)
+        end
+        local copy = path.join(opt.outputdir, "expand", path.relative(file, opt.sdk))
+        io.writefile(copy, table.concat(marked, "\n"))
+        local overlay = path.join(opt.outputdir, "expand.yaml")
+        json.savefile(overlay, {version = 0, ["case-sensitive"] = "false", roots = {{type = "directory", name = path.directory(file),
+                               contents = {{type = "file", name = path.filename(file), ["external-contents"] = copy}}}}})
+        local text = os.iorunv(opt.clang, {"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-E", "-P",
+                                           "-x", "objective-c", path.join(opt.outputdir, "umbrella.m"), "-ivfsoverlay", overlay})
+        local found = {}
+        for index, expansion in text:gmatch("charon_expansion_(%d+)(.-)charon_expansion_end") do
+            found[sites[tonumber(index)]] = expansion:trim()
+        end
+        return found
+    end
+end
+
+-- The declarations among nodes a use reaches: one another of them redeclares (previousDecl) is not, as clang answers a use
+-- from the latest - NS_ENUM's forward enum X : T X keeps a region's release its definition no longer has.
+local function latest(nodes)
+    local superseded = {}
+    for _, node in ipairs(nodes) do
+        if node.previousDecl then
+            superseded[node.previousDecl] = true
+        end
+    end
+    local found = {}
+    for _, node in ipairs(nodes) do
+        if not superseded[node.id] then
+            table.insert(found, node)
+        end
+    end
+    return found
+end
+
 -- Where the iOS availability of a node was written, and the release it names.
 local function marks(node)
     local found = {}
@@ -103,7 +226,14 @@ local function marks(node)
             local begin = child.range and child.range.begin or {}
             local where = begin.expansionLoc or begin
             if where.file and where.line and where.col then
-                table.insert(found, {file = where.file, line = where.line, col = where.col, introduced = child.introduced})
+                -- an implicit accessor's attribute is its property's, written once for both; priority 1 is clang's
+                -- AP_PragmaClangAttribute, an attribute a #pragma clang attribute region (API_AVAILABLE_BEGIN) applied.
+                -- A declaration is told by where it starts, not by its id, which each dump gives anew.
+                local start = node.range and node.range.begin or {}
+                start = start.expansionLoc or start
+                local declaration = not node.isImplicit and string.format("%s:%s:%s", tostring(start.offset), node.kind, node.name or "") or nil
+                table.insert(found, {file = where.file, line = where.line, col = where.col, introduced = child.introduced,
+                                     declaration = declaration, node = declaration and node or nil, region = child.priority == 1})
             end
         end
     end
@@ -140,9 +270,14 @@ end
 local function matches(entry, node)
     local api = entry.api:gsub("%(%)$", "")
     local member = member_api(api)
+    -- A category is the class's by the class it extends, never by its own name: UIViewController (UIPresentationController)
+    -- is named after a class the backports carry, and its members are UIViewController's.
     if entry.kind == "class" then
-        return (node.kind == "ObjCInterfaceDecl" or node.kind == "ObjCCategoryDecl")
-               and (node.name == api or (node.interface and node.interface.name == api))
+        return node.kind == "ObjCInterfaceDecl" and node.name == api
+            or node.kind == "ObjCCategoryDecl" and node.interface ~= nil and node.interface.name == api
+    end
+    if entry.kind == "protocol" then
+        return node.kind == "ObjCProtocolDecl" and node.name == api
     end
     if member then
         if (node.kind ~= "ObjCMethodDecl" and node.kind ~= "ObjCPropertyDecl") or owner_of(node) ~= member.owner then
@@ -152,15 +287,19 @@ local function matches(entry, node)
             if node.kind == "ObjCMethodDecl" then
                 return node.name == member.selector and (node.instance ~= false) == (member.sign == "-")
             end
-            return node.name == (setter_property(member.selector) or member.selector)
+            -- a property is its getter's declaration; its setter has one of its own, implicit or written apart
+            return node.name == member.selector
         end
         return node.kind == "ObjCPropertyDecl" and node.name == member.property
             or node.kind == "ObjCMethodDecl" and (node.name == member.property or setter_property(node.name) == member.property)
     end
+    -- typedef enum { ... } clockid_t: the enumeration has no name of its own, and clang dumps it under the typedef's
     if entry.kind == "type" then
-        return (node.kind == "TypedefDecl" or node.kind == "EnumDecl" or node.kind == "RecordDecl") and node.name == api
+        return (node.kind == "TypedefDecl" or node.kind == "EnumDecl" or node.kind == "RecordDecl")
+               and (node.name or node._qualified) == api
     end
-    return (node.kind == "VarDecl" or node.kind == "FunctionDecl") and node.name == api
+    -- a constant is a variable or an enumerator
+    return (node.kind == "VarDecl" or node.kind == "FunctionDecl" or node.kind == "EnumConstantDecl") and node.name == api
 end
 
 
@@ -177,10 +316,18 @@ local function type_marks(node)
     return found
 end
 
-local function header_files(sdk)
+-- Every header of the frameworks read, and every header in the folders of the given system headers.
+local function header_files(sdk, frameworks, headers)
     local files = {}
-    for _, framework in ipairs(FRAMEWORKS) do
+    for _, framework in ipairs(frameworks) do
         table.join2(files, os.files(path.join(sdk, "System", "Library", "Frameworks", framework .. ".framework", "Headers", "*.h")))
+    end
+    local folders = {}
+    for _, header in ipairs(headers) do
+        folders[path.directory(header)] = true
+    end
+    for _, folder in ipairs(table.orderkeys(folders)) do
+        table.join2(files, os.files(path.join(folder, "*.h")))
     end
     return files
 end
@@ -211,8 +358,64 @@ local function covering(nodes, text, low, high, name)
     end
 end
 
--- The declaration of a member the SDK gives only as a requirement of a protocol, as a category would repeat it for a class:
--- the protocol's own type, and for a method its selector's parts paired in order with its parameters, from the AST node.
+-- The macro call that starts text, up to its balanced closing paren, and what follows it; nil where text does not start
+-- with a call.
+local function macro_call(text)
+    local name, open = text:match("^([%w_]+)%s*()%(")
+    if not name then
+        return nil
+    end
+    local depth = 0
+    for index = open, #text do
+        local char = text:sub(index, index)
+        if char == "(" then
+            depth = depth + 1
+        elseif char == ")" then
+            depth = depth - 1
+            if depth == 0 then
+                return text:sub(1, index), text:sub(index + 1), name
+            end
+        end
+    end
+end
+
+-- The use of a macro a mark's site starts: a call up to its balanced closing paren, over as many lines as it takes
+-- (CADisplayLink's API_DEPRECATED_WITH_REPLACEMENT names ios(...) a line below its own name), or the name alone where no
+-- paren follows it - an object-like macro, os/lock.h's OS_UNFAIR_LOCK_AVAILABILITY before a declaration or time.h's
+-- __CLOCK_AVAILABILITY after an enumerator. Answers the use's text and how many lines it spans; nil where the site
+-- starts no name, or a call that never closes.
+function macro_use(lines, line, col)
+    local text = lines[line]:sub(col)
+    local name = text:match("^[%w_]+")
+    if not name then
+        return nil
+    end
+    local count = 1
+    while true do
+        local following = text:sub(#name + 1):match("^%s*(.?)")
+        if following == "(" then
+            local call = macro_call(text)
+            if call then
+                local _, breaks = call:gsub("\n", "")
+                return call, breaks + 1
+            end
+        elseif following ~= "" then
+            return name, 1
+        end
+        if not lines[line + count] then
+            if following == "" then
+                return name, 1
+            end
+            return nil
+        end
+        text = text .. "\n" .. lines[line + count]
+        count = count + 1
+    end
+end
+
+-- The declaration of a member from its AST node, as a category would repeat a protocol's requirement for a class or an
+-- interface would declare a property's setter apart from it: the member's own type, and for a method its selector's
+-- parts paired in order with its parameters.
 function protocol_member_declaration(member, name, target)
     -- API_AVAILABLE(...) may nest parens (ios(8.0)), so the balanced match %b() is stripped, not [^)]*
     local function typed(field)
@@ -242,16 +445,96 @@ function protocol_member_declaration(member, name, target)
     return string.format("- (%s)%s API_AVAILABLE(ios(%s));", typed(member.returnType), table.concat(parts, " "), target)
 end
 
+-- What charon@apple-compat carries, in the registry's own entry shape: every symbol compat.provided() names is
+-- unconditionally linked (compat.lua's own force_includes() already refuses a symbol it does not know), so none of
+-- these takes a floor above opt.minimum the way a registry entry sometimes does - the whole point of asking is that
+-- compat carries it all the way down. The types they take (os_unfair_lock_t, clockid_t) come down with them as any
+-- type an implemented API names does, below.
+-- An entry is named as C names the function: dispatch_assert_queue$V2 is the symbol of dispatch_assert_queue.
+local function system_entries()
+    local names = {}
+    for symbol in pairs(compat.provided("iOS")) do
+        names[symbol:match("^[^$]+")] = true
+    end
+    local entries = {}
+    for _, name in ipairs(table.orderkeys(names)) do
+        table.insert(entries, {api = name, status = "implemented"})
+    end
+    return entries
+end
+
+-- Where a declaration a #pragma clang attribute region reaches takes an availability of its own, and the text that
+-- gives it one: an attribute written on a declaration replaces the region's for that platform (measured: a method, a
+-- property, a protocol, a class's @interface, an extern variable, a function, a typedef, an enumeration's definition
+-- and an enumerator inside API_AVAILABLE_BEGIN(ios(8)) each answer only the attribute written on it), and the region's
+-- others keep theirs. After the declaration's last token (before its ";") for a method, a property and an enumeration's
+-- or structure's definition, after its name for an enumerator, before its first token for the rest. A forward
+-- declaration (@class, enum X : T X inside NS_ENUM) takes none - the region gives @class none either, and a use reaches
+-- the definition - and a declaration whose name is not where the dump says, in this file, is left alone. 0-based offset
+-- into content, or nil.
+function declared_at(content, node, target)
+    local function at(location)
+        location = location or {}
+        return location.expansionLoc or location
+    end
+    local function spelled(location)
+        location = location or {}
+        return location.spellingLoc or location
+    end
+    local attribute = string.format("__attribute__((availability(ios,introduced=%s)))", version(target))
+    local name = (node.name or ""):match("^[%w_]+")
+    local loc = spelled(node.loc)
+    local first, last = at((node.range or {}).begin), at((node.range or {})["end"])
+    local kind = node.kind
+    -- a method's location is its - or +, its name the first part of its selector after it
+    if kind == "ObjCMethodDecl" then
+        local text = first.offset and last.offset and content:sub(first.offset + 1, last.offset + (last.tokLen or 0)) or ""
+        if not name or not text:find("^[-+]%s*%b()%s*" .. name .. "%f[^%w_]") then
+            return nil
+        end
+    elseif not name or not loc.offset or content:sub(loc.offset + 1, loc.offset + #name) ~= name then
+        return nil
+    end
+    if kind == "EnumConstantDecl" then
+        return loc.offset + #name, " " .. attribute
+    elseif kind == "ObjCMethodDecl" or kind == "ObjCPropertyDecl" then
+        -- a method's range ends at its ";", before which the attribute goes
+        if last.offset and content:sub(last.offset + 1, last.offset + 1) == ";" then
+            return last.offset, " " .. attribute
+        end
+        return last.offset and last.offset + (last.tokLen or 0), last.offset and " " .. attribute
+    elseif kind == "EnumDecl" or kind == "RecordDecl" then
+        if last.offset and content:sub(last.offset + 1, last.offset + 1) == "}" then
+            return last.offset + 1, " " .. attribute
+        end
+    elseif kind == "ObjCInterfaceDecl" or kind == "ObjCProtocolDecl" or kind == "ObjCCategoryDecl" then
+        if first.offset and last.offset and content:sub(first.offset + 1, first.offset + 1) == "@"
+           and content:sub(last.offset + 1, last.offset + 3) == "end" then
+            return first.offset, attribute .. " "
+        end
+    elseif kind == "TypedefDecl" or kind == "FunctionDecl" or kind == "VarDecl" then
+        return first.offset, first.offset and attribute .. " "
+    end
+end
+
 -- lift(opt): opt.clang, opt.sdk, opt.triple, opt.minimum, opt.registry (the folder holding registry/), opt.outputdir.
 -- Answers the VFS overlay to hand the compiler and what was done; raises when either check finds a difference.
 function lift(opt)
     os.tryrm(opt.outputdir)
     os.mkdir(opt.outputdir)
-    local dump = dumper(opt)
-    local listed, incomplete = backports.registry(opt.registry)
+    local listed, incomplete, registered = backports.registry(opt.registry)
     if #incomplete > 0 then
         raise("the backports registry is incomplete: %s", table.concat(incomplete, "; "))
     end
+    -- the frameworks read: every one the registry has a file for
+    local frameworks = registered
+    local symbols = {}
+    for _, entry in ipairs(system_entries()) do
+        table.insert(symbols, entry.api)
+    end
+    local system = system_headers(opt.sdk, symbols)
+    local dump = dumper(opt, frameworks, system)
+    local expand = expander(opt)
     local kept, entries = {}, {}
     for api, entry in pairs(listed) do
         if entry.status == "implemented" then
@@ -259,6 +542,11 @@ function lift(opt)
         else
             kept[api] = true
         end
+    end
+    for _, entry in ipairs(system_entries()) do
+        entry.system = true
+        table.insert(entries, entry)
+        listed[entry.api] = listed[entry.api] or entry
     end
     table.sort(entries, function (a, b) return a.api < b.api end)
 
@@ -283,11 +571,27 @@ function lift(opt)
         return chain
     end
 
-    local edits, blocked, targets, unmatched = {}, {}, {}, {}
+    -- system_files: where what apple-compat carries is declared, the files a type it takes is looked for in beside the
+    -- frameworks' own
+    local edits, blocked, targets, unmatched, system_files = {}, {}, {}, {}, {}
+    -- regional[file][id]: a declaration a region's attribute reaches, to be given its own (see declared_at)
+    local regional = {}
     local function place(mark, target)
-        if later(mark.introduced, target) and mark.file:startswith(opt.sdk) then
+        if mark.region then
+            if later(mark.introduced, target) and mark.node and mark.file:startswith(opt.sdk) then
+                regional[mark.file] = regional[mark.file] or {}
+                regional[mark.file][mark.declaration] = {node = mark.node, target = target}
+                edits[mark.file] = edits[mark.file] or {}
+            end
+        elseif later(mark.introduced, target) and mark.file:startswith(opt.sdk) then
             edits[mark.file] = edits[mark.file] or {}
-            edits[mark.file][mark.line .. ":" .. mark.col] = {line = mark.line, col = mark.col, target = target}
+            local at = mark.line .. ":" .. mark.col
+            local edit = edits[mark.file][at] or {line = mark.line, col = mark.col, declarations = {}}
+            edit.target = target
+            if mark.declaration then
+                edit.declarations[mark.declaration] = true
+            end
+            edits[mark.file][at] = edit
         end
     end
     for _, entry in ipairs(entries) do
@@ -309,6 +613,9 @@ function lift(opt)
         for _, node in ipairs(found) do
             for _, mark in ipairs(marks(node)) do
                 place(mark, target)
+                if entry.system then
+                    system_files[mark.file] = true
+                end
             end
             if entry.kind == "type" then
                 -- a type from the header alone: the type and every value it names
@@ -320,10 +627,14 @@ function lift(opt)
                     end
                 end
             end
-            if entry.kind == "class" then
-                local owners = table.join({entry.api}, superclasses(entry.api))
+            -- a class's surface, and a protocol's, which has no superclass
+            if entry.kind == "class" or entry.kind == "protocol" then
+                local owners = table.join({entry.api}, entry.kind == "class" and superclasses(entry.api) or {})
                 for _, child in ipairs(node.inner or {}) do
-                    if child.kind == "ObjCMethodDecl" or child.kind == "ObjCPropertyDecl" then
+                    -- an implicit setter's mark is its property's, which the property decides below; a setter the
+                    -- backports leave out of a property they carry is kept by its own declaration (see setters)
+                    local implicit_setter = child.kind == "ObjCMethodDecl" and child.isImplicit and (child.name or ""):find(":$")
+                    if (child.kind == "ObjCMethodDecl" or child.kind == "ObjCPropertyDecl") and not implicit_setter then
                         local names = {child.name, setter_property(child.name or "")}
                         local left = false
                         for _, owner in ipairs(owners) do
@@ -346,7 +657,29 @@ function lift(opt)
         end
     end
 
-    -- The types the headers alone declare that implemented API names in its signature.
+    -- A property the backports carry whose setter they leave out: the setter clang declares for it shares the property's
+    -- mark, so lowering the mark would lower the setter too. It is declared explicitly beside the property instead, at
+    -- the release the SDK gives it - Swift then answers the property from the lowered release and refuses the setter
+    -- below the SDK's, as it does for any setter declared apart from its property.
+    local setters = {}
+    for api in pairs(kept) do
+        local member = member_api(api)
+        if member and member.selector and member.selector:find(":$") then
+            for _, node in ipairs(dump(filter_of(listed[api]))) do
+                if node.kind == "ObjCMethodDecl" and node.isImplicit and matches(listed[api], node) then
+                    for _, mark in ipairs(marks(node)) do
+                        local at = mark.line .. ":" .. mark.col
+                        if edits[mark.file] and edits[mark.file][at] and not blocked[mark.file .. ":" .. at] then
+                            setters[mark.file .. ":" .. at] = protocol_member_declaration(node, node.name, mark.introduced)
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    -- The types the headers alone declare that implemented API names in its signature: the prefixed names its signature
+    -- spells, and every parameter whose type the AST gives as a typedef (os_unfair_lock_t, clockid_t).
     local named = {}
     for _, entry in ipairs(entries) do
         for _, node in ipairs(dump(filter_of(entry))) do
@@ -354,7 +687,14 @@ function lift(opt)
                 local signature = {(node.type or {}).qualType or ""}
                 for _, child in ipairs(node.inner or {}) do
                     if child.kind == "ParmVarDecl" then
-                        table.insert(signature, (child.type or {}).qualType or "")
+                        local type = child.type or {}
+                        table.insert(signature, type.qualType or "")
+                        if type.typeAliasDeclId then
+                            local alias = (type.qualType or ""):gsub("%f[%w_]const%f[^%w_]", ""):match("[%a_][%w_]*")
+                            if alias then
+                                named[alias] = true
+                            end
+                        end
                     end
                 end
                 for word in table.concat(signature, " "):gmatch("%f[%w_]([NUC][SIG][%w_]+)") do
@@ -364,13 +704,13 @@ function lift(opt)
         end
     end
     local lowered_types, kept_types = {}, {}
-    local headers = header_files(opt.sdk)
+    local headers = header_files(opt.sdk, frameworks, table.orderkeys(system_files))
     local names = table.keys(named)
     table.sort(names)
     for _, name in ipairs(names) do
         local declared = {}
         for _, node in ipairs(dump(name)) do
-            if (node.kind == "TypedefDecl" or node.kind == "EnumDecl" or node.kind == "RecordDecl") and node.name == name then
+            if (node.kind == "TypedefDecl" or node.kind == "EnumDecl" or node.kind == "RecordDecl") and (node.name or node._qualified) == name then
                 table.insert(declared, node)
             end
         end
@@ -413,7 +753,14 @@ function lift(opt)
                                         api = owner .. "." .. user.name
                                     end
                                 else
-                                    for word in line:gmatch("([%a_][%w_]*)") do
+                                    -- only a word C syntax could declare here - before the "(" of a function, before
+                                    -- the ";", "=", "[" or "," after a variable - is looked up; "int" or "in" names
+                                    -- no declaration, and a dump of every name containing it is the whole SDK
+                                    local candidates = {}
+                                    for word in line:gmatch("([%a_][%w_]*)%s*[%(;=%[,]") do
+                                        table.insert(candidates, word)
+                                    end
+                                    for _, word in ipairs(candidates) do
                                         if not user and word ~= name then
                                             for _, node in ipairs(dump(word)) do
                                                 if (node.kind == "FunctionDecl" or node.kind == "VarDecl") and node.name == word
@@ -534,8 +881,9 @@ function lift(opt)
         end
     end
 
-    -- The copies: each mark rewritten where its macro was written, the release inside ios(...) or, for the macros that
-    -- take the iOS release as a positional argument, that argument.
+    -- The copies: each mark rewritten where its macro was written - the release inside ios(...) or the positional argument
+    -- lift_macro knows, and for any other macro its own expansion at that place, with the release lowered. Only the
+    -- places our marks name change: a macro's definition, and every other place it is used, stay as the SDK wrote them.
     local roots, lifted = {}, 0
     for file, categories in pairs(redeclared) do
         edits[file] = edits[file] or {}
@@ -543,14 +891,77 @@ function lift(opt)
     local sorted_files = table.keys(edits)
     table.sort(sorted_files)
     for _, file in ipairs(sorted_files) do
-        local lines = io.readfile(file):split("\n", {strict = true})
+        local content = io.readfile(file)
+        if not content then
+            raise("lift() marked an edit in %s, which cannot be read back", file)
+        end
+        local lines = content:split("\n", {strict = true})
+        -- Rightmost column first, on every line that carries more than one edit: a rewrite only ever touches its own
+        -- macro's use and passes the rest of the line through unchanged, so applying the furthest-right edit first
+        -- leaves every column to its left still meaning what marks() found it to mean. The other order corrupts them
+        -- both - a shorter or longer replacement at the earlier column shifts every column after it (a property, its
+        -- getter and its setter sharing one line is exactly where two edits land on the same line).
+        local sites = {}
         for _, edit in pairs(edits[file]) do
             if not blocked[file .. ":" .. edit.line .. ":" .. edit.col] then
-                local text = lines[edit.line]
-                local head, tail = text:sub(1, edit.col - 1), text:sub(edit.col)
-                local rewritten = lift_macro(tail, edit.target)
-                if rewritten ~= tail then
-                    lines[edit.line] = head .. rewritten
+                edit.use, edit.count = macro_use(lines, edit.line, edit.col)
+                if edit.use then
+                    table.insert(sites, edit)
+                end
+            end
+        end
+        local starts = line_starts(content)
+        for _, held in pairs(regional[file] or {}) do
+            local offset, text = declared_at(content, held.node, held.target)
+            if offset then
+                local line = 1
+                while starts[line + 1] and starts[line + 1] <= offset + 1 do
+                    line = line + 1
+                end
+                table.insert(sites, {line = line, col = offset + 2 - starts[line], insert = text})
+            end
+        end
+        table.sort(sites, function (a, b)
+            return a.line == b.line and a.col > b.col or a.line < b.line
+        end)
+        local unrewritten = {}
+        for _, site in ipairs(sites) do
+            if site.use and lift_macro(site.use, site.target) == site.use then
+                table.insert(unrewritten, site)
+            end
+        end
+        local expanded = #unrewritten > 0 and expand(file, lines, unrewritten) or {}
+        for _, site in ipairs(sites) do
+            if site.insert then
+                local text = lines[site.line]
+                lines[site.line] = text:sub(1, site.col - 1) .. site.insert .. text:sub(site.col)
+                lifted = lifted + 1
+            else
+                local rewritten = lift_macro(site.use, site.target)
+                if rewritten == site.use and expanded[site] then
+                    rewritten = lift_expansion(expanded[site], site.target, table.getn(table.keys(site.declarations))) or site.use
+                end
+                local setter = setters[file .. ":" .. site.line .. ":" .. site.col]
+                local last = site.line + site.count - 1
+                local before = lines[site.line]:sub(1, site.col - 1)
+                local finish = site.count == 1 and site.col - 1 + #site.use or #site.use:match("[^\n]*$")
+                local after = lines[last]:sub(finish + 1)
+                if rewritten ~= site.use and setter then
+                    -- the setter's own declaration right after the property's, on its line; without the property's ";"
+                    -- there to follow, the mark is not lowered at all
+                    local ending = after:find(";", 1, true)
+                    if ending then
+                        after = after:sub(1, ending) .. " " .. setter .. after:sub(ending + 1)
+                    else
+                        rewritten = site.use
+                    end
+                end
+                if rewritten ~= site.use then
+                    -- back over the same lines, so every later mark's line still means what marks() found it to mean
+                    local parts = (before .. rewritten .. after):split("\n", {strict = true})
+                    for index = 1, site.count do
+                        lines[site.line + index - 1] = parts[index] or ""
+                    end
                     lifted = lifted + 1
                 end
             end
@@ -577,8 +988,8 @@ function lift(opt)
     -- Both ways: what is implemented answers the lowered release, and nothing else moved.
     local failures = {}
     for name, target in pairs(lowered_types) do
-        for _, node in ipairs(dump(name, vfs)) do
-            if (node.kind == "TypedefDecl" or node.kind == "EnumDecl" or node.kind == "RecordDecl") and node.name == name then
+        for _, node in ipairs(latest(dump(name, vfs))) do
+            if (node.kind == "TypedefDecl" or node.kind == "EnumDecl" or node.kind == "RecordDecl") and (node.name or node._qualified) == name then
                 for _, mark in ipairs(type_marks(node)) do
                     if later(mark.introduced, target) then
                         table.insert(failures, string.format("the type %s still says iOS %s", name, mark.introduced))
@@ -589,8 +1000,10 @@ function lift(opt)
     end
     for _, entry in ipairs(entries) do
         if targets[entry.api] then
-            for _, node in ipairs(dump(filter_of(entry), vfs)) do
-                if matches(entry, node) then
+            for _, node in ipairs(latest(dump(filter_of(entry), vfs))) do
+                local own = node.kind == "ObjCMethodDecl"
+                            and listed[string.format("%s[%s %s]", node.instance == false and "+" or "-", owner_of(node) or "", node.name)]
+                if matches(entry, node) and not (own and own.status ~= "implemented") then
                     for _, mark in ipairs(marks(node)) do
                         if later(mark.introduced, targets[entry.api]) then
                             table.insert(failures, string.format("%s still says iOS %s", entry.api, mark.introduced))
@@ -626,44 +1039,66 @@ function lift(opt)
         raise("the lifted headers are wrong: %s", table.concat(failures, "; "))
     end
     table.sort(unmatched)
+    -- A plain function or type can be unmatched honestly (a compiler-rt intrinsic, a private header this dumper
+    -- does not read) - lift.lua's own header comment already documents that as expected. A protocol, and a class or
+    -- protocol member, cannot: a protocol is dumped by its name, and entry.kind == "class"/nil-with-member-syntax names a
+    -- method or property the AST-dump filter should find
+    -- directly under its owner's own qualified scope, whether or not that owner has a registry entry of its own (this
+    -- lookup never consults listed[owner] - see matches()). An entry that names a real member and still matches
+    -- nothing is not a gap in SDK coverage, it is filter_of()/matches() failing to find something that is really
+    -- there, and reporting it only inside a count nobody is required to look at is exactly the silent loss this
+    -- checks against.
+    local silent = {}
+    for _, api in ipairs(unmatched) do
+        if member_api(api:gsub("%(%)$", "")) or (listed[api] or {}).kind == "protocol" then
+            table.insert(silent, api)
+        end
+    end
+    if #silent > 0 then
+        raise("lift() found no declaration at all for %d registered class/protocol member(s), which should never be silently absent: %s",
+              #silent, table.concat(silent, "; "))
+    end
     return {vfs = vfs, lifted = lifted, headers = #sorted_files, implemented = #entries, unmatched = unmatched,
             types = lowered_types, kept_types = kept_types}
 end
 
--- The release of the availability macro that starts text rewritten to target.
+-- The release of the availability macro that starts text rewritten to target, where the text itself spells it: ios(...),
+-- the platform and release API_AVAILABLE and its kin write. Any other macro - a release passed by position, pasted into a
+-- name, or no argument at all - is left to its own expansion (lift_expansion).
 function lift_macro(text, target)
-    local name, open = text:match("^([%w_]+)%s*()%(")
-    if not name then
+    local call, rest = macro_call(text)
+    if not call then
         return text
     end
-    local depth, finish = 0, nil
-    for index = open, #text do
-        local char = text:sub(index, index)
-        if char == "(" then
-            depth = depth + 1
-        elseif char == ")" then
-            depth = depth - 1
-            if depth == 0 then
-                finish = index
-                break
-            end
-        end
-    end
-    if not finish then
+    -- a call that carries several iOS releases (DISPATCH_OPTIONS, one per enumerator in its arguments) is not one
+    -- availability macro; its expansion is lowered instead, where each release can be counted
+    local _, releases = call:gsub("%f[%w]ios%s*%(", "")
+    if releases > 1 then
         return text
     end
-    local call, rest = text:sub(1, finish), text:sub(finish + 1)
     local dotted = version(target)
-    local underscored = dotted:gsub("%.", "_")
     if call:find("%f[%w]ios%s*%(") then
-        call = call:gsub("(%f[%w]ios%s*%(%s*)[%d%.]+", "%1" .. dotted, 1)
-    elseif name == "NS_AVAILABLE" or name == "NS_CLASS_AVAILABLE" or name == "NS_ENUM_AVAILABLE" or name == "CF_AVAILABLE"
-           or name == "NS_DEPRECATED" then
-        call = call:gsub("^([%w_]+%s*%(%s*[^,]+,%s*)[%d_]+", "%1" .. underscored, 1)
-    elseif name:find("IOS") then
-        call = call:gsub("^([%w_]+%s*%(%s*)([%d_%.]+)", function (head, release)
-            return head .. (release:find("_") and underscored or dotted)
-        end, 1)
+        -- Almost every API_AVAILABLE/__API_AVAILABLE spells its release with dots (ios(14.0)), but a few of the SDK's
+        -- own declarations spell the ios() argument with an underscore instead (ios(14_0), UICollectionViewListCell
+        -- among them) inside an otherwise dotted macro - the character class has to accept both, or the underscored
+        -- half of the token is left behind unrewritten (ios(14_0) -> ios(6.1.3_0), which is not a version clang or
+        -- anything else parses).
+        call = call:gsub("(%f[%w]ios%s*%(%s*)[%d%._]+", "%1" .. dotted, 1)
     end
     return call .. rest
+end
+
+-- A macro use's own expansion (expander() above) with its iOS releases rewritten to target: the form for a use no branch
+-- of lift_macro can rewrite in place - CG_AVAILABLE_STARTING(mac, ios) and IMAGEIO_AVAILABLE_STARTING pick a positional
+-- macro by argument count, __OSX_AVAILABLE_BUT_DEPRECATED pastes its releases into a macro name that exists only for the
+-- pairs the SDK itself wrote (there is no __AVAILABILITY_INTERNAL__IPHONE_6_1_DEP__IPHONE_11_0), an object-like macro
+-- has no argument at all. One release is the release of every declaration the use is written for. Several belong to one
+-- declaration each (DISPATCH_OPTIONS' enumerators), and are lowered only when as many declarations are ours - the
+-- count is what the caller holds a mark for. nil otherwise, and for a use with no iOS release, so nothing is guessed at.
+function lift_expansion(expansion, target, declarations)
+    local _, releases = expansion:gsub("availability%s*%(%s*ios%s*,%s*introduced%s*=", "")
+    if releases == 0 or (releases > 1 and releases ~= declarations) then
+        return nil
+    end
+    return (expansion:gsub("(availability%s*%(%s*ios%s*,%s*introduced%s*=%s*)[%d%._]+", "%1" .. version(target)))
 end
