@@ -468,7 +468,10 @@ function harvest(mount, release, firmware)
                 os.mkdir(folder)
                 os.cp(file, held .. ".partial")
                 os.mv(held .. ".partial", held)
-            elseif not same_file(file, held) then
+                io.writefile(held .. ".source", firmware.identifier .. " " .. firmware.build .. "\n")
+            elseif same_file(file, held) then
+                io.writefile(held .. ".source", firmware.identifier .. " " .. firmware.build .. "\n")
+            else
                 return nil, string.format("%s %s carries another %s than the one held for iOS %s (%s), which is kept",
                                           firmware.identifier, firmware.build, name, release, held)
             end
@@ -520,6 +523,43 @@ local function mount_and_harvest(image, release, architecture, firmware)
     return found, refused
 end
 
+-- The firmwares that can have carried a held cache, in the order to try them. harvest records the
+-- firmware beside each cache it takes (<cache>.source); where it did, that one alone. Otherwise an
+-- image carries a cache for each architecture its device runs - a 64-bit device of iOS 10 carries
+-- armv7s beside arm64, and the armv7s caches of 10.x came that way - so the firmwares of every
+-- architecture whose cache the release's folder holds can be it. An architecture whose held cache
+-- has the same build date comes first, since one image can explain both files and a device of the
+-- requested architecture alone cannot carry the other; the bytes decide in every case.
+local function held_candidates(architecture, release, firmwares, folder, held)
+    local recorded = os.isfile(held .. ".source") and io.readfile(held .. ".source"):trim()
+    local first, rest, seen = {}, {}, {}
+    local function add(into, list)
+        for _, firmware in ipairs(list) do
+            local key = firmware.identifier .. " " .. firmware.build
+            if firmware.version == release and not seen[key] and (not recorded or key == recorded) then
+                seen[key] = true
+                table.insert(into, firmware)
+            end
+        end
+    end
+    for _, file in ipairs(os.files(path.join(folder, "dyld_shared_cache_*"))) do
+        local other = path.filename(file):match("^dyld_shared_cache_([%w_]+)$")
+        if other and other ~= architecture and PLATFORMS[other] and os.mtime(file) == os.mtime(held) then
+            local _, more = candidates(other, release)
+            add(first, more)
+        end
+    end
+    add(first, firmwares)
+    for _, file in ipairs(os.files(path.join(folder, "dyld_shared_cache_*"))) do
+        local other = path.filename(file):match("^dyld_shared_cache_([%w_]+)$")
+        if other and other ~= architecture and PLATFORMS[other] then
+            local _, more = candidates(other, release)
+            add(rest, more)
+        end
+    end
+    return table.join(first, rest)
+end
+
 -- Where rootfs() unpacks one firmware's root filesystem, and whether it is complete there.
 local function rootfs_folder(firmware)
     return path.join(home(), "firmware", "rootfs", firmware.identifier, firmware.version .. "_" .. firmware.build)
@@ -543,11 +583,13 @@ function fetch(architecture, minimum, opt)
     -- cache is another. Which firmware a cache was first taken from is not recorded, and the smallest
     -- is not always it (6.1.3's is iPhone4,1's, from an unpacked root filesystem).
     if held then
+        firmwares = held_candidates(architecture, release, firmwares, folder, held)
         for _, firmware in ipairs(firmwares) do
             local root = unpacked(firmware)
             local caches = root and cache_folder(root)
             local cache = caches and path.join(caches, path.filename(held))
             if cache and os.isfile(cache) and same_file(cache, held) then
+                io.writefile(held .. ".source", firmware.identifier .. " " .. firmware.build .. "\n")
                 cprint("${bright}taking the libraries of iOS %s for %s outside its shared cache${clear} from the root filesystem of %s %s", release, architecture, firmware.identifier, firmware.build)
                 take_outside(root, folder, {architecture})
                 return held, release

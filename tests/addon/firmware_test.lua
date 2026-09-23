@@ -25,6 +25,9 @@ function failures(opt)
     if not os.isdir(outside) then
         table.insert(found, "taking a cache takes the libraries beside it, even when there are none")
     end
+    if not os.isfile(held .. ".source") or io.readfile(held .. ".source") ~= "iPad2,4 99A1\n" then
+        table.insert(found, "a cache taken records the firmware it came from")
+    end
 
     -- The same cache from another firmware is the same release: kept, and its libraries taken.
     os.tryrm(outside)
@@ -56,6 +59,32 @@ function failures(opt)
     errors = fixtures.refusal(function () firmware.harvest(archive, "9.9", first) end)
     if errors or not os.isdir(outside) or os.isfile(path.join(outside, "usr", "lib", "libArchive.a")) then
         table.insert(found, "a fat static library beside the cache is neither a library taken nor a failure: " .. tostring(errors))
+    end
+
+    -- A held armv7s cache of iOS 10 came with the arm64 one from a 64-bit device's image: its
+    -- libraries come from that firmware, found among the architectures the folder holds, though the
+    -- armv7s devices are listed first; neither needs a download while both root filesystems are here.
+    local json = import("core.base.json")
+    json.savefile(path.join(folder, "home", "firmware", "catalog.json"), {sources = firmware.sources(), devices = {
+        {identifier = "iPhone5,1", platform = "s5l8950x", firmwares = {{version = "9.8", build = "98A1", url = "https://example.invalid/a.ipsw", size = 1}}},
+        {identifier = "iPhone6,1", platform = "s5l8960x", firmwares = {{version = "9.8", build = "98A1", url = "https://example.invalid/b.ipsw", size = 2}}}
+    }})
+    local function rootfs(identifier, caches)
+        local root = path.join(folder, "home", "firmware", "rootfs", identifier, "9.8_98A1")
+        io.writefile(path.join(root, "System", "Library", "CoreServices", "SystemVersion.plist"), "<plist/>")
+        for name, bytes in pairs(caches) do
+            io.writefile(path.join(root, "System", "Library", "Caches", "com.apple.dyld", name), bytes)
+        end
+    end
+    rootfs("iPhone5,1", {dyld_shared_cache_armv7s = "the armv7s cache of a 32-bit device"})
+    rootfs("iPhone6,1", {dyld_shared_cache_armv7s = "the armv7s cache of a 64-bit device", dyld_shared_cache_arm64 = "its arm64 cache"})
+    local ten = path.join(dyld.root(), "9.8")
+    io.writefile(path.join(ten, "dyld_shared_cache_armv7s"), "the armv7s cache of a 64-bit device")
+    io.writefile(path.join(ten, "dyld_shared_cache_arm64"), "its arm64 cache")
+    os.vrunv("touch", {"-r", path.join(ten, "dyld_shared_cache_arm64"), path.join(ten, "dyld_shared_cache_armv7s")})
+    errors = fixtures.refusal(function () firmware.fetch("armv7s", "9.8", {}) end)
+    if errors or not os.isdir(dyld.outside_source(ten, "armv7s")) or io.readfile(path.join(ten, "dyld_shared_cache_armv7s.source")) ~= "iPhone6,1 98A1\n" then
+        table.insert(found, "the libraries of a held cache come from the firmware of any architecture that carries it: " .. tostring(errors))
     end
 
     os.setenv("CHARON_HOME", home or nil)
