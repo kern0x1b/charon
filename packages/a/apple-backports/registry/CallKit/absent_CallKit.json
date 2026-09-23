@@ -32,16 +32,6 @@
       "source": "SDK 16.4, CallKit"
     },
     {
-      "api": "CXCallDirectoryManager",
-      "kind": "class",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class is how a host application enables, disables and reloads its own call directory extensions, and iOS 6 has no app-extension infrastructure to host one at all (facts/Foundation/CloudAndExtensions.md): there is nothing for this class to manage",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, CallKit"
-    },
-    {
       "api": "CXCallDirectoryProvider",
       "kind": "class",
       "introduced": "10.0",

@@ -234,6 +234,60 @@ static void controllers(CallKitRecorder record)
     record(@"observer.nilDelegate", [NSString stringWithFormat:@"%lu", (unsigned long)observer.calls.count]);
 }
 
+static void wait_for(BOOL (^done)(void))
+{
+    for (int i = 0; i < 250 && !done(); i++)
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];
+}
+
+static NSString *described(NSError *error)
+{
+    return error ? [NSString stringWithFormat:@"%@ %ld", error.domain, (long)error.code] : @"none";
+}
+
+// A call directory is an extension the host's CallKit manages through a service of its own, which macOS does not
+// run: its answers for an identifier are what a process with no such service gets, and are named divergent in the
+// host test. The queue the answers come on is the host's to tell.
+static void directoryManager(CallKitRecorder record)
+{
+    CXCallDirectoryManager *manager = [CXCallDirectoryManager sharedInstance];
+    record(@"directoryManager.shared", [NSString stringWithFormat:@"same=%@ class=%@", flag(manager == [CXCallDirectoryManager sharedInstance]), named([manager class])]);
+    NSString *identifier = @"space.kern0x1b.charon.CallDirectory";
+    __block BOOL reloaded = NO, reloadedOnMain = NO, answered = NO, answeredOnMain = NO;
+    __block NSError *reloadError = nil, *statusError = nil;
+    __block CXCallDirectoryEnabledStatus status = (CXCallDirectoryEnabledStatus)-1;
+    [manager reloadExtensionWithIdentifier:identifier completionHandler:^(NSError *error) {
+        reloadError = error;
+        reloadedOnMain = [NSThread isMainThread];
+        reloaded = YES;
+    }];
+    wait_for(^{ return reloaded; });
+    [manager getEnabledStatusForExtensionWithIdentifier:identifier completionHandler:^(CXCallDirectoryEnabledStatus enabledStatus, NSError *error) {
+        status = enabledStatus;
+        statusError = error;
+        answeredOnMain = [NSThread isMainThread];
+        answered = YES;
+    }];
+    wait_for(^{ return answered; });
+    record(@"directoryManager.reload", [NSString stringWithFormat:@"answered=%@ error=%@", flag(reloaded), described(reloadError)]);
+    record(@"directoryManager.status", [NSString stringWithFormat:@"answered=%@ status=%ld error=%@", flag(answered), (long)status, described(statusError)]);
+    record(@"directoryManager.queues", [NSString stringWithFormat:@"reload main=%@ status main=%@", flag(reloadedOnMain), flag(answeredOnMain)]);
+    [manager reloadExtensionWithIdentifier:identifier completionHandler:nil];
+    record(@"directoryManager.nilCompletion", @"returned");
+    if ([manager respondsToSelector:@selector(openSettingsWithCompletionHandler:)]) {
+        __block BOOL opened = NO;
+        __block NSError *settingsError = nil;
+        [manager openSettingsWithCompletionHandler:^(NSError *error) {
+            settingsError = error;
+            opened = YES;
+        }];
+        wait_for(^{ return opened; });
+        record(@"directoryManager.settings", [NSString stringWithFormat:@"answered=%@ error=%@", flag(opened), described(settingsError)]);
+    } else {
+        record(@"directoryManager.settings", @"not answered");
+    }
+}
+
 void callkit_run(CallKitRecorder record)
 {
     domains(record);
@@ -243,4 +297,5 @@ void callkit_run(CallKitRecorder record)
     transactions(record);
     updates(record);
     controllers(record);
+    directoryManager(record);
 }

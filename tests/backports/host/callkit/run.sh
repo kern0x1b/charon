@@ -22,7 +22,10 @@ libs="-framework Foundation -framework CoreTelephony -framework AVFoundation"
 # configuration from its copy and keeps a ringtone as a resolved URL rather than the name it was given. The port implements the iOS 10
 # header, where both are plain properties, so these two have to differ - and the test fails if they ever stop, since that would mean the
 # host has changed under it.
-divergent="configuration.deprecatedName configuration.ringtone"
+# And two it cannot answer at all: a call directory is managed through a service macOS does not run, so the host's
+# CXCallDirectoryManager answers every identifier with the connection's failure (NSCocoaErrorDomain 4099); the port answers
+# NoExtensionFound, since iOS 6 loads no extension an identifier could name.
+divergent="configuration.deprecatedName configuration.ringtone directoryManager.reload directoryManager.status"
 
 xcrun clang $common -I"$device" "$here/record.m" "$device/callkit-cases.m" $libs -framework CallKit -o "$build/system"
 CALLKIT_RECORDS="$build/system.json" "$build/system"
@@ -40,7 +43,7 @@ cp "$callkit"/*.m "$callkit/CharonCallKit.h" "$build/port/"
 port "$build/port"
 CALLKIT_RECORDS="$build/port.json" "$build/port/run"
 python3 "$here/compare.py" "$build/system.json" "$build/port.json" "$divergent"
-echo "port: agrees with the system on every record but the two it must not"
+echo "port: agrees with the system on every record but the ones named divergent"
 
 # The device reads the host's answers, with the two the host is no oracle for taken from the port itself.
 python3 "$here/expectations.py" "$build/system.json" "$build/port.json" "$divergent" "$build/expectations.json"
@@ -97,5 +100,10 @@ mutant CXHandle10.m '[coder encodeObject:_value forKey:@"value"];' '[coder encod
 mutant CXCallUpdate10.m "    copy->_supportsHolding = _supportsHolding;" "    copy->_supportsHolding = NO;"
 mutant CXCallUpdate10.m "    _localizedCallerName = [localizedCallerName copy];" "    _localizedCallerName = @\"fixed\";"
 mutant CXCallController10.m "        _callObserver = [[CXCallObserver alloc] init];" "        _callObserver = nil;"
+mutant CXCallDirectoryManager10.m "    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        completion(charon_no_extension());" "    dispatch_async(dispatch_get_main_queue(), ^{
+        completion(charon_no_extension());"
+mutant CXCallDirectoryManager10.m "        shared = [[self alloc] init];" "        shared = nil;"
+mutant CXCallDirectoryManager+OpenSettings134.m "code:NSFeatureUnsupportedError" "code:NSFeatureUnsupportedError + 1"
 echo "mutants surviving: $survived"
 [ "$survived" -eq 0 ]

@@ -252,6 +252,28 @@
       "status": "implemented",
       "facts": "facts/CallKit/CallKit.md",
       "source": "the host's CallKit under Mac Catalyst (tests/backports/host/callkit/run.sh), and SDK 16.4, CallKit"
+    },
+    {
+      "api": "CXCallDirectoryManager",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "a call directory is an application extension, and iOS 6 loads none (facts/Foundation/CloudAndExtensions.md: no host, NSExtensionMain answers 69), so no identifier names one; the class is there, and refuses at that seam",
+      "effect": "+sharedInstance is one manager; -reloadExtensionWithIdentifier:completionHandler: completes with CXErrorDomainCallDirectoryManager / CXErrorCodeCallDirectoryManagerErrorNoExtensionFound, and -getEnabledStatusForExtensionWithIdentifier:completionHandler: with CXCallDirectoryEnabledStatusUnknown and the same error, each on a global queue, as an identifier with no extension is answered",
+      "facts": "facts/CallKit/CallKit.md",
+      "source": "SDK 16.4, CallKit, for the errors; the host's CallKit under Mac Catalyst (tests/backports/host/callkit/run.sh) for the queue and the shared instance"
+    },
+    {
+      "api": "-[CXCallDirectoryManager openSettingsWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "13.4",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "iOS 6 has no settings page of call directories to open, and the releases before 13.4 give an application no public way to open theirs",
+      "effect": "completes on a global queue with NSCocoaErrorDomain / NSFeatureUnsupportedError, the host's answer where it has no such page",
+      "facts": "facts/CallKit/CallKit.md",
+      "source": "the host's CallKit under Mac Catalyst (tests/backports/host/callkit/run.sh), and SDK 16.4, CallKit"
     }
   ]
 }

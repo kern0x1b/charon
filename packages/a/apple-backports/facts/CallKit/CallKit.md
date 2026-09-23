@@ -85,8 +85,17 @@ release. The cellular calls of the release are the one thing that does cross the
 
 ## What is not carried
 
-The call directory - `CXCallDirectoryManager`, `CXCallDirectoryProvider`, `CXCallDirectoryExtensionContext` and its delegate - is absent: it is an
-application extension, and iOS 6 loads no extensions. `CXErrorDomainNotificationServiceExtension` is carried: it is a
+The call directory is an application extension, and iOS 6 loads no extensions. `CXCallDirectoryProvider`,
+`CXCallDirectoryExtensionContext` and its delegate are absent. `CXCallDirectoryManager` is carried and refuses at that seam: no
+identifier names an extension here, so `-reloadExtensionWithIdentifier:completionHandler:` completes with
+`CXErrorDomainCallDirectoryManager` / `CXErrorCodeCallDirectoryManagerErrorNoExtensionFound`, and
+`-getEnabledStatusForExtensionWithIdentifier:completionHandler:` with `CXCallDirectoryEnabledStatusUnknown` and the same error. That is
+the header's error for an identifier with no extension, reasoned rather than read: the host runs no call directory service, and its
+manager answers every identifier with the connection's failure (`NSCocoaErrorDomain` 4099), which the host test names divergent. What
+the host does answer is held: `+sharedInstance` is one object, and the answers come on a queue that is not the main one, as the port's
+come on a global queue. iOS 13.4's `-openSettingsWithCompletionHandler:`, a category of its own so a release with the class and without
+the method gets it too, completes with `NSCocoaErrorDomain` / `NSFeatureUnsupportedError`, the host's answer where it has no page to
+open: iOS 6 has none, and the releases before 13.4 give an application no public way to open theirs. `CXErrorDomainNotificationServiceExtension` is carried: it is a
 string, and an application that names it loads.
 
 `+[CXProvider reportNewIncomingVoIPPushPayload:completion:]` is absent, and the wall behind it is not a version gate but the one genuine wall this
