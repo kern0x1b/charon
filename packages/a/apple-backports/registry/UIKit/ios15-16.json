@@ -1143,7 +1143,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIListSeparatorConfiguration a property like it: it arrived in iOS 15",
+      "reason": "the vibrancy effect a list separator is drawn with; the port does not carry UIListSeparatorConfiguration or the list's separatorConfiguration (facts/UIKit/UICollectionLayoutListConfiguration.md), so there is no separator configuration to hold it",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1163,7 +1163,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIMenuElement a property like it: it arrived in iOS 15",
+      "reason": "a second line of text under an element's title; the port's UIMenuElement is carried (facts/UIKit/UIMenuElement.md) and its menus show as action sheets, one button per element with the title alone, so a subtitle could be kept and not shown - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1173,7 +1173,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "the identifier of the Sidebar menu of the main menu; the port carries the other identifiers of the main menu (UIMenuRoot, UIMenuFile, facts/UIKit/UIMenuIdentifiers.md), and this is one more of them - not built for lack of demand, not a wall, and a candidate to implement",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1183,7 +1183,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a name for a calendar event in detectPatternsForPatterns:, which is inert here because the release has no classifier for what a pasteboard holds (facts/UIKit/UIRestAbsent.md); the port defines the iOS 14 names (UIPasteboardDetectionPatternProbableWebURL and the rest) and could define this one the same way, but nothing would ever detect it - no demand",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1193,7 +1193,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a name for an email address in detectPatternsForPatterns:, which is inert here because the release has no classifier for what a pasteboard holds (facts/UIKit/UIRestAbsent.md); the port defines the iOS 14 names (UIPasteboardDetectionPatternProbableWebURL and the rest) and could define this one the same way, but nothing would ever detect it - no demand",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1203,7 +1203,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a name for a flight number in detectPatternsForPatterns:, which is inert here because the release has no classifier for what a pasteboard holds (facts/UIKit/UIRestAbsent.md); the port defines the iOS 14 names (UIPasteboardDetectionPatternProbableWebURL and the rest) and could define this one the same way, but nothing would ever detect it - no demand",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1213,7 +1213,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a name for a link in detectPatternsForPatterns:, which is inert here because the release has no classifier for what a pasteboard holds (facts/UIKit/UIRestAbsent.md); the port defines the iOS 14 names (UIPasteboardDetectionPatternProbableWebURL and the rest) and could define this one the same way, but nothing would ever detect it - no demand",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1223,7 +1223,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a name for an amount of money in detectPatternsForPatterns:, which is inert here because the release has no classifier for what a pasteboard holds (facts/UIKit/UIRestAbsent.md); the port defines the iOS 14 names (UIPasteboardDetectionPatternProbableWebURL and the rest) and could define this one the same way, but nothing would ever detect it - no demand",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1233,7 +1233,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a name for a phone number in detectPatternsForPatterns:, which is inert here because the release has no classifier for what a pasteboard holds (facts/UIKit/UIRestAbsent.md); the port defines the iOS 14 names (UIPasteboardDetectionPatternProbableWebURL and the rest) and could define this one the same way, but nothing would ever detect it - no demand",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1243,7 +1243,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a name for a postal address in detectPatternsForPatterns:, which is inert here because the release has no classifier for what a pasteboard holds (facts/UIKit/UIRestAbsent.md); the port defines the iOS 14 names (UIPasteboardDetectionPatternProbableWebURL and the rest) and could define this one the same way, but nothing would ever detect it - no demand",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1253,7 +1253,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a name for a shipment tracking number in detectPatternsForPatterns:, which is inert here because the release has no classifier for what a pasteboard holds (facts/UIKit/UIRestAbsent.md); the port defines the iOS 14 names (UIPasteboardDetectionPatternProbableWebURL and the rest) and could define this one the same way, but nothing would ever detect it - no demand",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1263,7 +1263,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "an arrow or shape drawn next to the pointer; the port draws no pointer (facts/UIKit/UIPointerStyle.md) and the 4S and iPad 2 have none, so there is nothing to draw it next to",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -1273,7 +1273,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a position of a pointer accessory, below of the pointer; the port draws no pointer and carries no UIPointerAccessory (facts/UIKit/UIPointerStyle.md), so nothing would be placed there",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1283,7 +1283,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a position of a pointer accessory, below and to the left of the pointer; the port draws no pointer and carries no UIPointerAccessory (facts/UIKit/UIPointerStyle.md), so nothing would be placed there",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1293,7 +1293,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a position of a pointer accessory, below and to the right of the pointer; the port draws no pointer and carries no UIPointerAccessory (facts/UIKit/UIPointerStyle.md), so nothing would be placed there",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1303,7 +1303,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a position of a pointer accessory, to the left of the pointer; the port draws no pointer and carries no UIPointerAccessory (facts/UIKit/UIPointerStyle.md), so nothing would be placed there",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1313,7 +1313,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a position of a pointer accessory, to the right of the pointer; the port draws no pointer and carries no UIPointerAccessory (facts/UIKit/UIPointerStyle.md), so nothing would be placed there",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1323,7 +1323,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a position of a pointer accessory, above of the pointer; the port draws no pointer and carries no UIPointerAccessory (facts/UIKit/UIPointerStyle.md), so nothing would be placed there",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1333,7 +1333,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a position of a pointer accessory, above and to the left of the pointer; the port draws no pointer and carries no UIPointerAccessory (facts/UIKit/UIPointerStyle.md), so nothing would be placed there",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1343,7 +1343,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a position of a pointer accessory, above and to the right of the pointer; the port draws no pointer and carries no UIPointerAccessory (facts/UIKit/UIPointerStyle.md), so nothing would be placed there",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1363,7 +1363,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIPrintInteractionController a property like it: it arrived in iOS 15",
+      "reason": "adds a portrait and landscape choice to the print panel; the release's UIPrintInteractionController shows a print panel of its own, in private code the port does not reach into, so adding a choice to it would mean replacing it - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1533,7 +1533,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a hint to autofill that a field takes a date and time; the port carries the other content types, their strings read from a release's cache (facts/UIKit/UITextContentType.md), and textContentType is inert since iOS 6 has no autofill - this constant could be read and carried the same way, not built for lack of demand, not a wall",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1543,7 +1543,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a hint to autofill that a field takes a flight number; the port carries the other content types, their strings read from a release's cache (facts/UIKit/UITextContentType.md), and textContentType is inert since iOS 6 has no autofill - this constant could be read and carried the same way, not built for lack of demand, not a wall",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1553,7 +1553,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "reason": "a hint to autofill that a field takes a shipment tracking number; the port carries the other content types, their strings read from a release's cache (facts/UIKit/UITextContentType.md), and textContentType is inert since iOS 6 has no autofill - this constant could be read and carried the same way, not built for lack of demand, not a wall",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, UIKit"
     },
@@ -1563,7 +1563,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UITextField a property like it: it arrived in iOS 15",
+      "reason": "an opaque object that saves and restores the text field's selection and scroll position; the release's text field answers selectedTextRange through UITextInput, so such an object could be made of it - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -1583,7 +1583,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the text and region of a tool tip; the release has no pointer, so nothing rests over a control to show a tip - no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -1593,7 +1593,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "shows a tool tip while a pointer rests on a view; the release has no pointer, so nothing rests over a control to show a tip - no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
@@ -1603,7 +1603,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
+      "reason": "asked for the tool tip at a point under the pointer; the release has no pointer, so nothing rests over a control to show a tip, so nothing would ask",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
