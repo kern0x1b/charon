@@ -3,6 +3,7 @@
 @interface CharonGCTables : NSObject
 + (NSArray<NSDictionary *> *)extendedSpecs;
 + (NSArray<NSDictionary *> *)microSpecs;
++ (NSArray<NSDictionary *> *)mouseSpecs;
 @end
 
 @interface GCControllerElement (Charon)

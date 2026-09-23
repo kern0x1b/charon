@@ -172,16 +172,6 @@
       "source": "SDK 16.4, GameController"
     },
     {
-      "api": "GCMouse.mouseInput",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "an external mouse is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCMouse class is owed and not yet written",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, GameController"
-    },
-    {
       "api": "GCVirtualController",
       "kind": "class",
       "introduced": "15.0",
@@ -648,66 +638,6 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "an external keyboard is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCKeyboardInput class is owed and not yet written",
-      "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the header of iOS 16.4 for the class and the release that added the member"
-    },
-    {
-      "api": "GCMouseInput.mouseMovedHandler",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "an external mouse is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCMouseInput class is owed and not yet written",
-      "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the header of iOS 16.4 for the class and the release that added the member"
-    },
-    {
-      "api": "GCMouseInput.scroll",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "an external mouse is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCMouseInput class is owed and not yet written",
-      "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the header of iOS 16.4 for the class and the release that added the member"
-    },
-    {
-      "api": "GCMouseInput.leftButton",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "an external mouse is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCMouseInput class is owed and not yet written",
-      "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the header of iOS 16.4 for the class and the release that added the member"
-    },
-    {
-      "api": "GCMouseInput.rightButton",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "an external mouse is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCMouseInput class is owed and not yet written",
-      "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the header of iOS 16.4 for the class and the release that added the member"
-    },
-    {
-      "api": "GCMouseInput.middleButton",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "an external mouse is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCMouseInput class is owed and not yet written",
-      "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the header of iOS 16.4 for the class and the release that added the member"
-    },
-    {
-      "api": "GCMouseInput.auxiliaryButtons",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "an external mouse is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCMouseInput class is owed and not yet written",
       "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the header of iOS 16.4 for the class and the release that added the member"
     },

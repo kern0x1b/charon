@@ -20,7 +20,7 @@
     NSMutableArray *ranked = [NSMutableArray array];
     for (NSDictionary *spec in specs) {
         NSString *kind = spec[@"kind"];
-        Class elementClass = [kind isEqual:@"dpad"] ? [GCControllerDirectionPad class] : [kind isEqual:@"axis"] ? [GCControllerAxisInput class] : [GCControllerButtonInput class];
+        Class elementClass = [kind isEqual:@"dpad"] ? [GCControllerDirectionPad class] : [kind isEqual:@"cursor"] ? [GCDeviceCursor class] : [kind isEqual:@"axis"] ? [GCControllerAxisInput class] : [GCControllerButtonInput class];
         GCControllerElement *element = [[elementClass alloc] initWithCharonSpec:spec];
         [element charon_attachToProfile:self];
         for (NSString *alias in spec[@"aliases"])

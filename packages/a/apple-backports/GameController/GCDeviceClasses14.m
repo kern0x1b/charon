@@ -45,11 +45,5 @@
 
 @end
 
-@implementation GCMouseInput
-
-@dynamic mouseMovedHandler, scroll, leftButton, rightButton, middleButton, auxiliaryButtons;
-
-@end
-
 @implementation GCDeviceCursor
 @end

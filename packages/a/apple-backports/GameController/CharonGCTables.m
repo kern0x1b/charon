@@ -74,4 +74,25 @@
     return specs;
 }
 
++ (NSArray *)mouseSpecs
+{
+    static NSArray *specs;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        specs = @[
+            @{@"kind": @"button", @"aliases": @[@"Left Button"], @"local": @"Left Button", @"unmappedLocal": @"Left Button", @"sf": [NSNull null], @"unmappedSf": [NSNull null], @"analog": @0, @"system": @0, @"collection": [NSNull null], @"order": @0},
+            @{@"kind": @"button", @"aliases": @[@"Right Button"], @"local": @"Right Button", @"unmappedLocal": @"Right Button", @"sf": [NSNull null], @"unmappedSf": [NSNull null], @"analog": @0, @"system": @0, @"collection": [NSNull null], @"order": @1},
+            @{@"kind": @"button", @"aliases": @[@"Middle Button"], @"local": @"Middle Button", @"unmappedLocal": @"Middle Button", @"sf": [NSNull null], @"unmappedSf": [NSNull null], @"analog": @0, @"system": @0, @"collection": [NSNull null], @"order": @2},
+            @{@"kind": @"cursor", @"aliases": @[@"Scroll"], @"local": @"Scroll", @"unmappedLocal": @"Scroll", @"sf": [NSNull null], @"unmappedSf": [NSNull null], @"analog": @1, @"system": @0, @"collection": [NSNull null], @"order": @3},
+            @{@"kind": @"axis", @"aliases": @[@"Scroll X Axis"], @"local": @"Scroll (Horizontal)", @"unmappedLocal": @"Scroll (Horizontal)", @"sf": [NSNull null], @"unmappedSf": [NSNull null], @"analog": @1, @"system": @0, @"collection": @"Scroll", @"order": @-1},
+            @{@"kind": @"axis", @"aliases": @[@"Scroll Y Axis"], @"local": @"Scroll (Vertical)", @"unmappedLocal": @"Scroll (Vertical)", @"sf": [NSNull null], @"unmappedSf": [NSNull null], @"analog": @1, @"system": @0, @"collection": @"Scroll", @"order": @-1},
+            @{@"kind": @"button", @"aliases": @[@"Scroll Down"], @"local": @"Scroll (Down)", @"unmappedLocal": @"Scroll (Down)", @"sf": [NSNull null], @"unmappedSf": [NSNull null], @"analog": @1, @"system": @0, @"collection": @"Scroll", @"order": @-1},
+            @{@"kind": @"button", @"aliases": @[@"Scroll Left"], @"local": @"Scroll (Left)", @"unmappedLocal": @"Scroll (Left)", @"sf": [NSNull null], @"unmappedSf": [NSNull null], @"analog": @1, @"system": @0, @"collection": @"Scroll", @"order": @-1},
+            @{@"kind": @"button", @"aliases": @[@"Scroll Right"], @"local": @"Scroll (Right)", @"unmappedLocal": @"Scroll (Right)", @"sf": [NSNull null], @"unmappedSf": [NSNull null], @"analog": @1, @"system": @0, @"collection": @"Scroll", @"order": @-1},
+            @{@"kind": @"button", @"aliases": @[@"Scroll Up"], @"local": @"Scroll (Up)", @"unmappedLocal": @"Scroll (Up)", @"sf": [NSNull null], @"unmappedSf": [NSNull null], @"analog": @1, @"system": @0, @"collection": @"Scroll", @"order": @-1}
+        ];
+    });
+    return specs;
+}
+
 @end
