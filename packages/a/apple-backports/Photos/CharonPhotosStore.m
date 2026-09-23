@@ -88,19 +88,28 @@ static NSString *const CharonPhotosErrorDomain = @"PHPhotosErrorDomain";
     return status == ALAuthorizationStatusAuthorized || status == ALAuthorizationStatusNotDetermined;
 }
 
-+ (NSArray *)groupsOfTypes:(ALAssetsGroupType)types
+// nil, with the library's error, when the release refuses the enumeration: a denied or restricted application, or a
+// library whose data is unavailable.
++ (NSArray *)groupsOfTypes:(ALAssetsGroupType)types error:(NSError **)error
 {
     __block NSMutableArray *groups = [NSMutableArray array];
+    __block NSError *failed = nil;
     [self work:^(dispatch_block_t done) {
         [[self library] enumerateGroupsWithTypes:types usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
             if (group)
                 [groups addObject:group];
             else
                 done();
-        } failureBlock:^(NSError *error) {
+        } failureBlock:^(NSError *problem) {
+            failed = problem;
             done();
         }];
     }];
+    if (failed) {
+        if (error)
+            *error = failed;
+        return nil;
+    }
     return groups;
 }
 
@@ -185,8 +194,14 @@ static NSString *const CharonPhotosErrorDomain = @"PHPhotosErrorDomain";
 {
     if (![self canRead])
         return @[];
+    NSError *error = nil;
+    NSArray *groups = [self groupsOfTypes:types error:&error];
+    // A fetch has no way to report an error: the result is empty, as it is for an application that may not read, and the
+    // refusal is said in the log.
+    if (!groups)
+        NSLog(@"Photos: the photo library refused to list its albums, so the fetch is empty: %@", error);
     NSMutableArray *found = [NSMutableArray array];
-    for (ALAssetsGroup *group in [self groupsOfTypes:types])
+    for (ALAssetsGroup *group in groups)
         [found addObject:[self collectionForGroup:group]];
     return found;
 }
@@ -322,13 +337,17 @@ static NSString *const CharonPhotosErrorDomain = @"PHPhotosErrorDomain";
     } error:error];
 }
 
-+ (BOOL)hasAlbumWithName:(NSString *)name
++ (BOOL)findAlbumWithName:(NSString *)name found:(BOOL *)found error:(NSError **)error
 {
-    for (ALAssetsGroup *group in [self groupsOfTypes:ALAssetsGroupAlbum]) {
+    NSArray *groups = [self groupsOfTypes:ALAssetsGroupAlbum error:error];
+    if (!groups)
+        return NO;
+    *found = NO;
+    for (ALAssetsGroup *group in groups) {
         if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:name])
-            return YES;
+            *found = YES;
     }
-    return NO;
+    return YES;
 }
 
 + (ALAssetsGroup *)createAlbumWithName:(NSString *)name error:(NSError **)error

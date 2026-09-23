@@ -121,7 +121,10 @@ static CharonPhotosTransaction *charon_transaction(void)
         if ([change isKindOfClass:[PHAssetCollectionChangeRequest class]] && [((PHAssetCollectionChangeRequest *)change)->_title isEqualToString:_title])
             taken = YES;
     }
-    if (taken || [CharonPhotosStore hasAlbumWithName:_title]) {
+    // An album list the library refuses is no answer: the change fails with the library's error rather than write on.
+    if (!taken && ![CharonPhotosStore findAlbumWithName:_title found:&taken error:error])
+        return NO;
+    if (taken) {
         if (error)
             *error = [CharonPhotosStore errorWithCode:PHPhotosErrorChangeNotSupported
                                                reason:@"iOS 6 cannot make a second album with a name already in use"];

@@ -115,4 +115,9 @@ assets are left behind. Names are compared exactly: the release itself made an a
 in case. The code is the header's (3300, "The change request is not supported as configured"), the one this port
 gives every change iOS 6 cannot make; what the system's Photos answers for a duplicate title was not measured, since this machine
 has no Catalyst and the host's own Photos holds the owner's library. A name that collides only at the write, on something the check
-does not see, still fails the change there, after the writes before it.
+does not see, still fails the change there, after the writes before it. When the release refuses to list the albums (an
+application denied or restricted, or a library whose data is unavailable), the check has no answer, and the change fails there
+with the release's own error (`ALAssetsLibraryErrorDomain`, -3311 "User denied access" for a denied process) instead of taking
+the refusal for "no such album" and writing on; `tests/backports/device/photosalbums8.m` holds it on an iPad 2, in a daemon the
+release denies. A fetch of albums, which has no way to report an error, is empty then, as it is for an application that may not
+read, and the refusal is said in the log.

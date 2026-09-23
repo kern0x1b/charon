@@ -18,7 +18,8 @@
 + (NSString *)writeImage:(UIImage *)image error:(NSError **)error;
 + (NSString *)writeVideoAtURL:(NSURL *)url error:(NSError **)error;
 + (NSError *)errorWithCode:(NSInteger)code reason:(NSString *)reason;
-+ (BOOL)hasAlbumWithName:(NSString *)name;
+// NO, with the library's error, when the albums cannot be listed; otherwise YES, and whether one has the name.
++ (BOOL)findAlbumWithName:(NSString *)name found:(BOOL *)found error:(NSError **)error;
 + (ALAssetsGroup *)createAlbumWithName:(NSString *)name error:(NSError **)error;
 + (BOOL)addAsset:(ALAsset *)asset toGroupWithURL:(NSURL *)url error:(NSError **)error;
 @end
