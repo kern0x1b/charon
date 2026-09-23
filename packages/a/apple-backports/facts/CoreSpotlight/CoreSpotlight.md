@@ -105,12 +105,11 @@ fixed eleven-bundle list above, none of which reads a third-party category, and
 `Application.searchBundle` (the one bundle that does look at installed apps) bypasses
 `SPSpotlightManager` entirely.
 
-**The twelfth entry named above is now built, not just filed as buildable.**
+**The twelfth entry named above is built and installed; the query path is not proven yet, and
+exactly how far it gets is now measured on an iPad 2 (6.1.3), not guessed.**
 `packages/a/apple-backports/CoreSpotlight/SearchBundle/CharonSearchDatastore.m` is
-`org.charon.corespotlight.searchBundle`'s principal class - a real runtime subclass of the
-release's own `SPSearchDatastore` (`objc_allocateClassPair` over the class
-`Search.framework` exports, not a bare `NSObject` that happens to answer the protocol), packaged
-by `write_searchbundle` in `modules/apple/backports.lua` and installed at
+`org.charon.corespotlight.searchBundle`'s principal class, packaged by `write_searchbundle` in
+`modules/apple/backports.lua` and installed at
 `/System/Library/SearchBundles/org.charon.corespotlight.searchBundle/` by the same `.deb` this
 port already writes, whenever `corespotlight` is among the staged libraries. The protocol it
 implements was read from `NotesDatastore` (`MobileNotes.searchBundle`'s own principal class) with
@@ -120,7 +119,10 @@ selector names an earlier `strings`-only pass got wrong (`-categoryForDomain:` a
 `-wantsEveryResultInItsOwnSection` are not implemented by `NotesDatastore` at all - the real
 required methods are `-displayIdentifierForDomain:`, `-searchDomains` and
 `-performQuery:withResultsPipe:`). `-performQuery:withResultsPipe:` filters every app's stored
-items (case-insensitive substring match against `attributeSet.title`/`.contentDescription`) and
+items (case-insensitive substring match against `attributeSet.title` - the only field this
+port's `CSSearchableItemAttributeSet` actually backs; `.contentDescription` was assumed present
+from the real CoreSpotlight API and found, on device, to raise `NSUnknownKeyException` instead of
+answering `nil` - corrected before it ever shipped a crash) and
 pushes matches through `-[resultsPipe addResults:]`, the way `NotesDatastore` itself does.
 
 This forced a real correction to `CSSearchableIndex` itself:
@@ -135,11 +137,121 @@ class, not Apple's, so no compile-time link is possible - by `dlopen`ing the ins
 boundary is typed `id` and read with `valueForKey:`, never a static `CSSearchableItem *`, since
 this bundle is built once, not per band.
 
-Not yet measured, because it needs a device with a running system search host: whether the daemon
-that scans `/System/Library/SearchBundles/` re-reads it after install without a reboot, and whether
-a real query against this datastore's one domain actually reaches `-performQuery:withResultsPipe:`
-and shows a result on screen. That is the one measurement everything above was built to make
-possible, filed as the next device pass rather than assumed.
+## Measured on device 2026-09-23 (iPad 2, 6.1.3): the two questions this was all built to answer
+
+**Does the search host re-read `/System/Library/SearchBundles/` without a reboot? Yes, measured, not
+assumed - there is no persistent daemon to be stale.** `com.apple.searchd`
+(`/System/Library/PrivateFrameworks/Search.framework/searchd`) is a launchd on-demand service with
+no `KeepAlive`: nothing has it loaded until the first client connects, it exits again once idle, and
+each cold start is confirmed by its PID changing between runs (`ps ax`) after `kill -9`ing it. A
+`SPSearchAgent` created from a standalone diagnostic process (`tests/backports/device/searchbundle-probe.m`)
+drove a real query through this real daemon and got real
+results back for Apple's own built-in bundles (`com.apple.MobileAddressBook`: 3, `com.apple.AppStore`:
+1, for the query `"a"`) - proving the whole `SPSearchAgent` → XPC → `searchd` → `-_loadSearchBundles`
+→ datastore → `SPSearchResultSection` pipeline is real and working end to end, and that a freshly
+installed or updated bundle is live the moment the next connection cold-starts `searchd` - no respring,
+no reboot, structurally, because there is nothing long-lived to go stale.
+
+**Does a real query reach `-performQuery:withResultsPipe:`? Not yet - genuine progress, an honest
+boundary, not a guess dressed as a result.** Getting this far took three more real, on-device-only
+bugs, each found by a failure this port could not have predicted from host-only reading:
+
+1. **`Info.plist` used the wrong keys.** The host-only pass read `principalClass` (lowercase) from a
+   `strings` fragment - "unable to load search bundle... principal cl[ass...]" - and wrote that as a
+   literal plist key, the same trap as the `-categoryForDomain:` mistake in the same document,
+   applied to a plist key this time instead of a selector name. `MobileNotes.searchBundle`'s own
+   `Info.plist`, fetched and read directly, uses `NSExecutable`/`NSPrincipalClass` (standard
+   `NSBundle` keys) and carries no `CFBundleExecutable` at all. `[NSBundle loadAndReturnError:]`
+   answered `NSCocoaErrorDomain` code 3588 ("couldn't be loaded") against the wrong keys; fixed by
+   matching the real bundle's keys exactly.
+2. **The compiled bundle referenced `_objc_alloc` and `___NSArray0__`, neither exported by iOS
+   6.1.3.** Both are modern-runtime fast-path symbols ARC's codegen substitutes for ordinary
+   patterns - `[[X alloc] init]`/bare `[X alloc]` for the first, the empty array literal `@[]` for
+   the second - when the compile target implies a new-enough runtime, which `-target
+   armv7-apple-ios9.0` (used to route around a `libarclite` requirement at lower targets, same as
+   `tests/backports/device/cellulardata.m` this session) does. `dlopen`'s own `dlerror()` named the
+   exact missing symbol directly - a far better signal than `NSBundle`'s generic "couldn't be
+   loaded". Fixed by replacing `@[]` with `[NSArray array]` throughout; the earlier
+   `CTCellularData9.m`/device-test precedent for `_objc_alloc` already established the same fix
+   for `alloc`/`init`.
+3. **`SPSearchDatastore` is a protocol, not a class - `NotesDatastore` does not subclass a class of
+   that name.** `NSClassFromString(@"SPSearchDatastore")` answers `nil`; the code silently fell back
+   to a bare `NSObject` subclass, which loaded and registered without error but which `searchd`
+   never asked anything of - no crash, no log, `-searchDomains` simply never called, indistinguishable
+   from the bundle not existing at all. `macho.imported_symbols` on `MobileNotes`'s own extracted
+   binary names exactly one `SP`-prefixed class import, `SPContentResult`; NotesDatastore's real
+   inheritance is `SPContentResult <SPSearchDatastore>`, class and protocol two different names
+   sharing no relationship the earlier reading assumed. Fixed by subclassing `SPContentResult`.
+
+## Measured 2026-09-23, second pass: `SPContentResult` found by reading the classlist, not guessing
+
+The coordinator's instruction was precise: find which cache image defines `_OBJC_CLASS_$_SPContentResult`
+by walking the cache's own classlist, not by extracting another framework at random.
+`apple.objc.inventory()` opened against the whole cache does exactly that - it walks every image's
+`__objc_classlist` directly (not the export trie `macho.imported_symbols` reads, which is why the
+first attempt at this specific lookup answered nothing) and records which image each class actually
+comes from. Answer: `SPContentResult` is defined in `Search.framework` itself, the file already
+extracted this session - superclass `SPSearchResult`, superclass of that `PBCodable`, and no
+overridden `-init` anywhere in the chain, so the "unmeasured initialization contract" this document
+named as the boundary after the first device pass was the wrong hypothesis. The real blockers, found
+one at a time as each was fixed:
+
+1. **`objc_allocateClassPair` over `SPContentResult` does not itself grant `<SPSearchDatastore>`
+   conformance.** `NotesDatastore` gets it from its own `@interface` declaration; `class_addMethod`
+   alone does not reproduce that. This is the exact same gap this pass had already found and fixed
+   on the delegate side (`SPDaemonQueryDelegate`, `class_addProtocol` in
+   `tests/backports/device/searchbundle-probe.m`) - applying the identical fix to the datastore
+   class itself (`class_addProtocol(cls, objc_getProtocol("SPSearchDatastore"))`) is what made
+   `searchd` call `-searchDomains` and `-performQuery:withResultsPipe:` for the first time. Confirmed
+   by the file log the class itself writes (see below): `searchDomains called`, then, once the query
+   agent's domain list was extended to include this datastore's own declared domain,
+   `performQuery:withResultsPipe:` too.
+2. **The `resultsPipe` parameter is not a separate object and not an `SPSearchResultSection`.**
+   Logging its `-description` showed the exact same pointer as `query` - it is the query object
+   itself, an `SDSearchQuery`. That class is not in the shared cache at all (`apple.objc.inventory()`
+   found nothing under that name); it is defined in `searchd`'s own executable, fetched and read
+   directly with `llvm-otool -oV`. Its real, required protocol is `<SPSearchResultsPipe>`, and the
+   push method is `-appendResults:` (`v12@0:4@8`) - not `-addResults:`, which is a real method of the
+   unrelated `SPSearchResultSection` that happened to share a name and a shape, the exact mechanism
+   that makes a wrong name look plausible. Fixed by sending `-appendResults:` instead.
+3. **The result factory is `SPContentResult`'s own class method, not `SPSearchResult`'s.** The first
+   device pass attributed `+resultWithIdentifier:title:subtitle:summary:auxiliaryTitle:auxiliarySubtitle:actionURL:searchableContent:`
+   to `SPSearchResult` (repeating the original, pre-device `strings`-based session's claim
+   unchecked); `apple.objc.inventory()`'s classlist read shows it is `SPContentResult`'s own class
+   method - `SPSearchResult` only happens to be `SPContentResult`'s superclass. `SPSearchResult
+   respondsToSelector:` answered `NO` for exactly this reason, caught by the file log rather than
+   silently returning no results forever.
+
+After all three: the bundle `dlopen`s cleanly, registers as a real `SPContentResult` subclass
+conforming to `<SPSearchDatastore>`, `searchd` calls `-searchDomains` and
+`-performQuery:withResultsPipe:` for real, `-performQuery:withResultsPipe:` correctly reads the
+query's `searchString`, correctly finds the one synthetic item written for this test, and correctly
+builds a real `SPContentResult` carrying that exact title - confirmed by the object's own
+`-description` in the log: `<SPContentResult: 0x1d59c080> { title = CharonProbeXyzzyPlugh19640523; }`.
+`resultsPipe respondsToSelector:@selector(appendResults:)` answers `YES`.
+
+**Sending `-appendResults:` to it hangs `searchd`.** The call was made; no crash followed, no further
+log line (`appendResults: sent`, the line immediately after the send, never appears), and `searchd`'s
+own process moved into uninterruptible sleep (`ps` state `U`) and stayed there, unresponsive to a
+fresh connection, until killed with `kill -9`. This is a real, observed hang, not a guess: confirmed
+by waiting past it and re-checking, not by a single snapshot. Two candidates, neither chased further
+this pass: the `SPContentResult` this port builds is missing fields (`extid`, `domain` -
+`SPContentResult`'s own ivars, both unset by the plain factory call this code uses) that
+`-appendResults:`'s own internal serialization may require and may not fail cleanly without; or
+`-appendResults:` itself expects to run inside a call chain this bundle's `performQuery:` does not
+reproduce. Sending it from `searchd`'s own process bypassed the entitlement-style silent failures
+seen everywhere else in this document, and produced a real hang instead - the strongest signal yet
+that the protocol surface itself is now right, and what remains is a data or calling-convention
+detail of this one method. The bundle was removed from the device before release, specifically
+because it hangs the host it loads into.
+
+Diagnostics used and their proven channel, since this class runs inside `searchd`, not the process
+that launches it: `printf`/`NSLog` to this process's own `stdout`/`stderr` reach nobody - a plain
+`fopen`/`fprintf`/`fclose` to a fixed path (`CharonSearchDatastoreLog` in the source) is the channel
+proven to survive that boundary, confirmed by lines actually landing on disk after the class
+registered successfully. Left in place, gated behind rarely-called methods, for whoever continues
+this - it is what caught every finding in this section, including the hang, which produced no
+log line of its own but whose absence was exactly the signal.
 
 ## What differs from the release
 
