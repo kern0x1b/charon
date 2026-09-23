@@ -48,8 +48,8 @@ checkerboard that was encoded. Then:
   it answers 0, and the session encodes a frame after it.
 - The 6.1.3 encoder refuses each of the twelve 7.0 profile levels: `VTSessionSetProperty(session,
   kVTCompressionPropertyKey_ProfileLevel, level)` answers -12900 (`kVTPropertyNotSupportedErr`) and
-  logs `VXE FIG ERROR: profile & level passed is not supported`; the session keeps its previous level
-  and still encodes. The controls `H264_Baseline_3_1` and `H264_Main_AutoLevel`, levels 6.1.3 has,
+  logs `VXE FIG ERROR: profile & level passed is not supported`; the session still encodes a frame
+  (which level it encodes at was not read). The controls `H264_Baseline_3_1` and `H264_Main_AutoLevel`, levels 6.1.3 has,
   answer 0. So an application that asks for a level this hardware's encoder does not know gets the
   release's own refusal as the status, not a quiet substitute: the port does not map a level onto
   another.
