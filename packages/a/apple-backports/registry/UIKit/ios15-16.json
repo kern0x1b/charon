@@ -1394,60 +1394,60 @@
       "kind": "class",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a presentation that slides a sheet up to medium or large detents with a grabber; the port carries UIPresentationController (ios8presentation.json) but no sheet with resizable detents over it, which is real work - no demand, not a wall",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the presentation of a page or form sheet in a compact width: the presented view slides up to its detents over the dimmed presenter, which scales back behind it, with a grabber, a drag that changes detent or dismisses and a tap on the dimming view; sheets stack behind one another; in a regular width the release draws its own form or page sheet",
+      "facts": "facts/UIKit/UISheetPresentationController.md",
+      "source": "UIKitCore of the held 16.0 cache (arm64e), read statically, for the geometry, the detents and the behaviour; the host's own UIKit under Mac Catalyst for what the API answers, held against the backport by tests/backports/host/sheet; tests/backports/device/sheet.m on iOS 6"
     },
     {
       "api": "UISheetPresentationControllerAutomaticDimension",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value that asks a sheet for its default corner radius; follows UISheetPresentationController, not carried (see its row)",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the release's value, the largest CGFloat; a preferredCornerRadius of it gives the sheet its default corner radius, 10",
+      "facts": "facts/UIKit/UISheetPresentationController.md",
+      "source": "UIKitCore of the held 16.0 cache (arm64e), read statically, for the geometry, the detents and the behaviour; the host's own UIKit under Mac Catalyst for what the API answers, held against the backport by tests/backports/host/sheet; tests/backports/device/sheet.m on iOS 6"
     },
     {
       "api": "UISheetPresentationControllerDelegate",
       "kind": "protocol",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the delegate told when a sheet changes detent; the port carries UIPresentationController (ios8presentation.json) but no sheet with resizable detents over it, so no sheet changes detent to tell it",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the protocol; a sheet tells its delegate when a drag or a tap on the dimming view settles on another detent, and the UIAdaptivePresentationControllerDelegate members it inherits about a dismissal by drag or tap",
+      "facts": "facts/UIKit/UISheetPresentationController.md",
+      "source": "UIKitCore of the held 16.0 cache (arm64e), read statically, for the geometry, the detents and the behaviour; the host's own UIKit under Mac Catalyst for what the API answers, held against the backport by tests/backports/host/sheet; tests/backports/device/sheet.m on iOS 6"
     },
     {
       "api": "UISheetPresentationControllerDetent",
       "kind": "class",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a height a sheet can rest at; the port carries UIPresentationController (ios8presentation.json) but no sheet with resizable detents over it, so there is no sheet to rest",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the medium and large detents, a new object each time, equal by type and resolved against the container as UIKitCore 16.0 resolves them (medium 0.56 of the largest height above a container height of 568 points, 0.63 up to it, inactive in a compact height)",
+      "facts": "facts/UIKit/UISheetPresentationController.md",
+      "source": "UIKitCore of the held 16.0 cache (arm64e), read statically, for the geometry, the detents and the behaviour; the host's own UIKit under Mac Catalyst for what the API answers, held against the backport by tests/backports/host/sheet; tests/backports/device/sheet.m on iOS 6"
     },
     {
       "api": "UISheetPresentationControllerDetentIdentifierLarge",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "names the large detent of a sheet; the port carries UIPresentationController (ios8presentation.json) but no sheet with resizable detents over it, so no detent carries the name",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the release's string com.apple.UIKit.large, the identifier of the large detent",
+      "facts": "facts/UIKit/UISheetPresentationController.md",
+      "source": "UIKitCore of the held 16.0 cache (arm64e), read statically, for the geometry, the detents and the behaviour; the host's own UIKit under Mac Catalyst for what the API answers, held against the backport by tests/backports/host/sheet; tests/backports/device/sheet.m on iOS 6"
     },
     {
       "api": "UISheetPresentationControllerDetentIdentifierMedium",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "names the medium detent of a sheet; the port carries UIPresentationController (ios8presentation.json) but no sheet with resizable detents over it, so no detent carries the name",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the release's string com.apple.UIKit.medium, the identifier of the medium detent",
+      "facts": "facts/UIKit/UISheetPresentationController.md",
+      "source": "UIKitCore of the held 16.0 cache (arm64e), read statically, for the geometry, the detents and the behaviour; the host's own UIKit under Mac Catalyst for what the API answers, held against the backport by tests/backports/host/sheet; tests/backports/device/sheet.m on iOS 6"
     },
     {
       "api": "UISlider.behavioralStyle",
@@ -1704,10 +1704,10 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "answers the UISheetPresentationController (absent here) that a page or form sheet runs through, with its detents and grabber; the port carries UIPresentationController (ios8presentation.json) but no sheet with resizable detents over it, which is real work - no demand, not a wall",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the sheet of a controller whose style is a page or form sheet (Automatic resolves to the page sheet), made when first asked, as UIKit makes it, and the same object after; nil for every other style",
+      "facts": "facts/UIKit/UISheetPresentationController.md",
+      "source": "UIKitCore of the held 16.0 cache (arm64e), read statically, for the geometry, the detents and the behaviour; the host's own UIKit under Mac Catalyst for what the API answers, held against the backport by tests/backports/host/sheet; tests/backports/device/sheet.m on iOS 6"
     },
     {
       "api": "UIWindow.canBecomeKeyWindow",
@@ -3206,20 +3206,20 @@
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value a custom detent answers when it cannot be used; the port carries UIPresentationController (ios8presentation.json) but no sheet with resizable detents over it, so there is no detent to resolve",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the release's value, the largest CGFloat, which a detent answers where it cannot be used; a sheet leaves such a detent out",
+      "facts": "facts/UIKit/UISheetPresentationController.md",
+      "source": "UIKitCore of the held 16.0 cache (arm64e), read statically, for the geometry, the detents and the behaviour; the host's own UIKit under Mac Catalyst for what the API answers, held against the backport by tests/backports/host/sheet; tests/backports/device/sheet.m on iOS 6"
     },
     {
       "api": "UISheetPresentationControllerDetentResolutionContext",
       "kind": "protocol",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "what a custom detent is resolved against - the traits and the largest height a sheet can take; the port carries UIPresentationController (ios8presentation.json) but no sheet with resizable detents over it, so there is no detent to resolve",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "effect": "the protocol a custom detent's resolver is given: the container's traits and the largest height a detent can have",
+      "facts": "facts/UIKit/UISheetPresentationController.md",
+      "source": "UIKitCore of the held 16.0 cache (arm64e), read statically, for the geometry, the detents and the behaviour; the host's own UIKit under Mac Catalyst for what the API answers, held against the backport by tests/backports/host/sheet; tests/backports/device/sheet.m on iOS 6"
     },
     {
       "api": "UITableView.selfSizingInvalidation",

@@ -16,7 +16,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "the controller of a presentation that a transitioning delegate gave (a custom, over full screen or over current context one) while it is presented, and nil for every other presentation, where the system answers its own",
+      "effect": "the controller of a presentation that a transitioning delegate gave (a custom, over full screen or over current context one) while it is presented, the sheet of a page or form sheet, made when first asked (UISheetPresentationController.md), and nil for every other presentation, where the system answers its own",
       "facts": "facts/UIKit/UIPresentationController.md",
       "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/custompresentation and host/presentation, and tests/backports/device/custompresentation.m and presentation.m on iOS 6"
     },

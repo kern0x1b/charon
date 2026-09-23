@@ -180,9 +180,15 @@
 
 @implementation UIViewController (CharonPresentationController)
 
+/* A page or form sheet's controller is made when it is first asked for, as UIKit makes it, so a
+   delegate set before the presentation hears of its dismissal; the sheet is asked by name, as this
+   file is linked into releases that do not carry it (UISheetPresentationController.m). */
 - (UIPresentationController *)presentationController
 {
-    return charon_presentation_controller_of(self);
+    UIPresentationController *current = charon_presentation_controller_of(self);
+    if (!current && [self respondsToSelector:@selector(sheetPresentationController)])
+        current = [self performSelector:@selector(sheetPresentationController)];
+    return current;
 }
 
 @end

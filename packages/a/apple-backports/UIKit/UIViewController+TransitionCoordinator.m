@@ -78,9 +78,23 @@ static id<UIViewControllerAnimatedTransitioning> charon_present_animator(UIViewC
     return [delegate animationControllerForPresentedController:presented presentingController:presenting sourceController:source];
 }
 
+/* A page or form sheet presented in a compact width is the sheet's own presentation
+   (UISheetPresentationController.m); the class is asked by name for its controller, as this
+   file is linked into releases that do not carry it. */
+static UIPresentationController *charon_sheet_for(UIViewController *presented, UIViewController *presenting)
+{
+    if (![presented respondsToSelector:@selector(sheetPresentationController)])
+        return nil;
+    UIPresentationController *sheet = [presented performSelector:@selector(sheetPresentationController)];
+    return [sheet charon_presentsFrom:presenting] ? sheet : nil;
+}
+
 static UIPresentationController *charon_presentation_for(UIViewController *presented, UIViewController *presenting, UIViewController *source)
 {
     UIModalPresentationStyle style = presented.modalPresentationStyle;
+    UIPresentationController *sheet = charon_sheet_for(presented, presenting);
+    if (sheet)
+        return sheet;
     id<UIViewControllerTransitioningDelegate> delegate = presented.transitioningDelegate;
     if (!(style >= 4 && style <= 6) || ![delegate respondsToSelector:@selector(presentationControllerForPresentedViewController:presentingViewController:sourceViewController:)])
         return nil;
@@ -154,7 +168,7 @@ static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewCo
         UIModalPresentationStyle style = presented.modalPresentationStyle;
         UIPresentationController *presentation = charon_presentation_for(presented, presenting, self);
         if (presentation) {
-            id<UIViewControllerAnimatedTransitioning> presentationAnimator = animated ? charon_present_animator(presented, presenting, self) : nil;
+            id<UIViewControllerAnimatedTransitioning> presentationAnimator = animated ? charon_present_animator(presented, presenting, self) ?: [presentation charon_transitionAnimator] : nil;
             CharonTransitionCoordinator *coordinator = charon_begin(presenting, presented, animated, YES, style);
             charon_presentation_present(presenting, presented, presentation, presentationAnimator, ^{
                 presented.modalPresentationStyle = UIModalPresentationFullScreen;
@@ -195,7 +209,7 @@ static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewCo
         UIViewController *presenting = presented.presentingViewController ?: self;
         UIPresentationController *presentation = presented.presentingViewController ? charon_presentation_controller_of(presented) : nil;
         if (presentation && presentation.containerView) {
-            id<UIViewControllerAnimatedTransitioning> presentationAnimator = animated ? charon_dismiss_animator(presented) : nil;
+            id<UIViewControllerAnimatedTransitioning> presentationAnimator = animated ? charon_dismiss_animator(presented) ?: [presentation charon_transitionAnimator] : nil;
             CharonTransitionCoordinator *coordinator = charon_begin(presented, presenting, animated, YES, presented.modalPresentationStyle);
             charon_presentation_dismiss(presented, presenting, presentation, presentationAnimator, ^{
                 dismissOriginal(self, dismiss, NO, nil);

@@ -11,8 +11,10 @@ for a device. Where the host answers as the Mac does the test says so.
   appearance, the light one, so the override changes neither the traits nor what is drawn (a dark override is not applied, since
   the controls of the release cannot be drawn dark and a trait that says dark over a light screen would mislead more than help);
   the first dark override says so once in the log.
-- `UIViewController.modalInPresentation` is kept, NO until set; a modal of iOS 6 has no swipe to dismiss for it to prevent, and the
-  first YES says so. `performsActionsWhilePresentingModally` is YES unless the Info.plist sets
+- `UIViewController.modalInPresentation` is kept, NO until set. A sheet (`UISheetPresentationController.md`) holds to it: a drag or a
+  tap on its dimming view does not dismiss the controller, and a drag pulled a quarter of the way past the smallest detent tells
+  the delegate it was attempted. A full-screen presentation has no
+  swipe to dismiss, here as on iOS 13. `performsActionsWhilePresentingModally` is YES unless the Info.plist sets
   `UIViewControllerPerformsActionsWhilePresentingModally`.
 - `UIView.focusGroupIdentifier` is kept, nil until set; iOS 6 has no focus engine. (`UIViewController.focusGroupIdentifier` is iOS 15's
   and is decided in `registry/UIKit/ios15-16.json`.)

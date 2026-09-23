@@ -24,10 +24,10 @@ static const char charon_style_key, charon_modal_key;
     return [objc_getAssociatedObject(self, &charon_modal_key) boolValue];
 }
 
+/* Read by the sheet (UISheetPresentationController.m), which a drag or a tap on its dimming
+   view then does not dismiss. */
 - (void)setModalInPresentation:(BOOL)modalInPresentation
 {
-    if (modalInPresentation)
-        charon_menus_say_once(@"modal-in-presentation", @"modalInPresentation: a modal view controller of iOS 6 has no swipe to dismiss, so the flag is kept and there is nothing for it to prevent");
     objc_setAssociatedObject(self, &charon_modal_key, @(modalInPresentation), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 

@@ -280,6 +280,14 @@ See `facts/UIKit/UISearchTextField.md`.
 of colors, an alpha slider and Done, which sets the well's color and sends value changed and tells the picker's delegate as the
 system's does, continuously while a finger moves. There is no spectrum, eyedropper, saved color or hex entry. See `facts/UIKit/UIColorWell.md`.
 
+`UISheetPresentationController` is the presentation of a page or form sheet in a compact width, over the port's own
+presentation: the card slides up to its medium or large detent (or a custom one) over the presenter, which dims and scales
+back behind it, sheets stack behind one another, and a drag moves it between detents or takes it down, asking the
+delegate and `modalInPresentation` first, with the numbers of UIKitCore 16.0. In a regular width the release draws its
+own form sheet. The display's corners are square, there is no keyboard detent, and the "magic" shadow of a sheet whose
+parent does not stack with it is not drawn (it needs an image and a filter iOS 6 does not have). See
+`facts/UIKit/UISheetPresentationController.md`.
+
 ### Compositional layouts, laid out by the release's own collection view
 
 `UICollectionViewCompositionalLayout` and everything it is described with - `NSCollectionLayoutSection`, `Group`, `Item`,

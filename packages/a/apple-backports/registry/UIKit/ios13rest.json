@@ -2821,9 +2821,8 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "a modal view controller of iOS 6 has no swipe to dismiss for the flag to prevent",
-      "effect": "kept and read back; the first YES says so once in the log",
+      "status": "implemented",
+      "effect": "kept and read back, NO until set; a sheet holding such a controller is not dismissed by a drag or a tap on its dimming view, and a full-screen presentation has no swipe to dismiss, here as on iOS 13",
       "facts": "facts/UIKit/UIViewMembers13.md",
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
     },
@@ -3948,44 +3947,40 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a modal of iOS 6 has no swipe to dismiss to attempt",
-      "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
-      "facts": "facts/UIKit/UIRestAbsent.md",
-      "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+      "status": "implemented",
+      "effect": "sent by a sheet that may not be dismissed, once per drag, when the drag has pulled it a quarter of its bottom extent past the smallest detent",
+      "facts": "facts/UIKit/UISheetPresentationController.md",
+      "source": "UIKitCore of the held 16.0 cache (arm64e), read statically; the public headers of SDK 26 and SDK 16.4; held on iOS 6 by tests/backports/device/sheet.m"
     },
     {
       "api": "-[UIAdaptivePresentationControllerDelegate presentationControllerDidDismiss:]",
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a modal of iOS 6 has no swipe to dismiss",
-      "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
-      "facts": "facts/UIKit/UIRestAbsent.md",
-      "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+      "status": "implemented",
+      "effect": "sent by a sheet after a drag or a tap on its dimming view has dismissed it, once the release has taken the controller down; not for a dismissal the program asks for",
+      "facts": "facts/UIKit/UISheetPresentationController.md",
+      "source": "UIKitCore of the held 16.0 cache (arm64e), read statically; the public headers of SDK 26 and SDK 16.4; held on iOS 6 by tests/backports/device/sheet.m"
     },
     {
       "api": "-[UIAdaptivePresentationControllerDelegate presentationControllerShouldDismiss:]",
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a modal of iOS 6 has no swipe to dismiss",
-      "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
-      "facts": "facts/UIKit/UIRestAbsent.md",
-      "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+      "status": "implemented",
+      "effect": "asked by a sheet when a drag passes its smallest detent, unless the controller presents another or is modal in presentation; NO keeps the sheet in place",
+      "facts": "facts/UIKit/UISheetPresentationController.md",
+      "source": "UIKitCore of the held 16.0 cache (arm64e), read statically; the public headers of SDK 26 and SDK 16.4; held on iOS 6 by tests/backports/device/sheet.m"
     },
     {
       "api": "-[UIAdaptivePresentationControllerDelegate presentationControllerWillDismiss:]",
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a modal of iOS 6 has no swipe to dismiss",
-      "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
-      "facts": "facts/UIKit/UIRestAbsent.md",
-      "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+      "status": "implemented",
+      "effect": "sent by a sheet when a drag begins to dismiss it or a tap on its dimming view dismisses it; a drag let go above the smallest detent then takes the dismissal back",
+      "facts": "facts/UIKit/UISheetPresentationController.md",
+      "source": "UIKitCore of the held 16.0 cache (arm64e), read statically; the public headers of SDK 26 and SDK 16.4; held on iOS 6 by tests/backports/device/sheet.m"
     },
     {
       "api": "-[UIViewController viewIsAppearing:]",
@@ -4619,9 +4614,8 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "a modal view controller of iOS 6 has no swipe to dismiss for the flag to prevent",
-      "effect": "the getter of modalInPresentation, read back as set",
+      "status": "implemented",
+      "effect": "the getter of modalInPresentation, read back as set and read by the sheet",
       "facts": "facts/UIKit/UIViewMembers13.md",
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
     }
