@@ -339,8 +339,17 @@ with that same value — `speedFactor: 1.0`, `stretchFactor: 0.0`,
 proves the key exists in the file; it does not prove the decoder read it
 rather than silently falling through to the same-valued default. Closing
 that gap needs a value that differs from default on one of these three
-specific keys, which `gift`/`diamond` do not happen to provide. Do not spend
-a dedicated run chasing it — the cost exceeds the value here. It is likely to
-close for free on `star2` or `coin`, whose PBR materials and real meshes are
-far more likely to carry a non-default `speedFactor`/`stretchFactor`/`fov`;
-check for it there rather than re-deriving this paragraph.
+specific keys, which `gift.scn` does not happen to provide. Do not spend a
+dedicated run chasing it — the cost exceeds the value here.
+
+**`diamond.scn` closed one of the three for free, the same run that was
+already planned for the next tier.** `speedFactor` prints `0.85` on four of
+its seven particle systems and `0.8502` on the fifth
+(`particles_center`) — both away from the init default of `1`, and
+distinguishable from each other, which no shared default could produce.
+`speedFactor` is now proven read, the same way `particleLifeSpan`/
+`particleVelocity`/`SCNLight.type` already were on `gift.scn`. `stretchFactor`
+(`0` on all seven systems here too) and `SCNCamera.fieldOfView` (`60`) are
+still open — check for them on `star2`/`coin`, whose PBR materials and real
+meshes are more likely to carry a non-default value, rather than re-deriving
+this paragraph or spending a dedicated run.
