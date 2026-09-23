@@ -7,4 +7,5 @@ NSNotificationName const UISceneWillDeactivateNotification = @"UISceneWillDeacti
 NSNotificationName const UISceneWillEnterForegroundNotification = @"UISceneWillEnterForegroundNotification";
 NSNotificationName const UISceneDidEnterBackgroundNotification = @"UISceneDidEnterBackgroundNotification";
 UISceneSessionRole const UIWindowSceneSessionRoleApplication = @"UIWindowSceneSessionRoleApplication";
-UISceneSessionRole const UIWindowSceneSessionRoleExternalDisplay = @"UIWindowSceneSessionRoleExternalDisplayNonInteractive";
+UISceneSessionRole const UIWindowSceneSessionRoleExternalDisplay = @"UIWindowSceneSessionRoleExternalDisplay";
+UISceneSessionRole const UIWindowSceneSessionRoleExternalDisplayNonInteractive = @"UIWindowSceneSessionRoleExternalDisplayNonInteractive";

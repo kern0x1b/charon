@@ -13,6 +13,7 @@
     NSArray<UIMenuElement *> *_elements;
     NSMutableArray *_waiting;
     BOOL _asked;
+    BOOL _cached;
 }
 
 + (BOOL)supportsSecureCoding
@@ -28,6 +29,14 @@
                                                                   image:nil];
     element->_identifier = [@"com.apple.deferred-element.dynamic." stringByAppendingString:[NSUUID UUID].UUIDString];
     element->_provider = [elementProvider copy];
+    element->_cached = YES;
+    return element;
+}
+
++ (instancetype)elementWithUncachedProvider:(void (^)(void (^completion)(NSArray<UIMenuElement *> *elements)))elementProvider
+{
+    UIDeferredMenuElement *element = [self elementWithProvider:elementProvider];
+    element->_cached = NO;
     return element;
 }
 
@@ -36,6 +45,7 @@
     if ((self = [super initWithCoder:coder])) {
         NSString *identifier = [coder decodeObjectOfClass:[NSString class] forKey:@"identifier"];
         _identifier = identifier ? [identifier copy] : [@"com.apple.deferred-element.dynamic." stringByAppendingString:[NSUUID UUID].UUIDString];
+        _cached = [coder containsValueForKey:@"cachesItems"] ? [coder decodeBoolForKey:@"cachesItems"] : YES;
     }
     return self;
 }
@@ -44,12 +54,28 @@
 {
     [super encodeWithCoder:coder];
     [coder encodeObject:_identifier forKey:@"identifier"];
-    [coder encodeBool:YES forKey:@"cachesItems"];
+    [coder encodeBool:_cached forKey:@"cachesItems"];
     [coder encodeBool:NO forKey:@"fulfilled"];
 }
 
 - (void)charon_fulfillWithCompletion:(void (^)(NSArray<UIMenuElement *> *))completion
 {
+    if (!_cached) {
+        void (^provider)(void (^)(NSArray<UIMenuElement *> *)) = _provider;
+        if (!provider) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(@[]);
+            });
+            return;
+        }
+        provider(^(NSArray<UIMenuElement *> *elements) {
+            NSArray *result = elements ?: @[];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(result);
+            });
+        });
+        return;
+    }
     void (^provider)(void (^)(NSArray<UIMenuElement *> *)) = nil;
     BOOL ask = NO;
     @synchronized (self) {

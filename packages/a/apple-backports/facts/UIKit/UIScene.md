@@ -53,6 +53,17 @@ scenes; the port sends the delegate call first.
 - `sceneDidDisconnect:` is never sent, as the one scene lives as long as the application. Handoff, shortcut items, CloudKit
   shares and the notification response of the connection options are not carried: the options answer nil or an empty set
   for them, and the delegate methods that would receive them are never sent.
+## Correction, iOS 13-14 band, 2026-09-23
+
+`UIWindowSceneSessionRoleExternalDisplay` carried the wrong string value: the constant's name said
+`ExternalDisplay`, but the literal it held was `@"UIWindowSceneSessionRoleExternalDisplayNonInteractive"`
+- the value of a different, real constant this port did not otherwise carry. Every other role and
+notification constant in `UISceneConstants.m` holds a literal identical to its own name; this one alone
+did not, and nothing caught it because a wrong string still links, still answers a message, and never
+raises. Corrected to `@"UIWindowSceneSessionRoleExternalDisplay"`, and the constant it was quietly standing
+in for, `UIWindowSceneSessionRoleExternalDisplayNonInteractive`, is now defined in its own right with its
+own name as its value, next to it in the same file.
+
 - State restoration by activity is carried. When the application enters the background and when it terminates, the scene
   delegate is asked `stateRestorationActivityForScene:`; the activity (type, title, user info, web page URL, required keys,
   expiration date and keywords) is archived in the application's user defaults under the session identifier, and an answer
