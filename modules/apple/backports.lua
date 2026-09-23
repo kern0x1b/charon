@@ -1138,7 +1138,7 @@ function check_band_caches(opt, objects)
         end
     end
     if #missing > 0 then
-        raise("the staged bands cannot have their imports checked: %s holds no cache of the releases they are checked against (%d)\n%s",
+        raise("the staged bands cannot have their imports checked: %s does not hold all of %d releases they are checked against\n%s",
               dyld.root(), #missing, table.concat(missing, "\n"))
     end
     return ranges
