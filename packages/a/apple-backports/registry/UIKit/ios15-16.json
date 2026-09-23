@@ -37,7 +37,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIButton a method like it: it arrived in iOS 15",
+      "reason": "it builds a button from a UIButtonConfiguration, and UIButtonConfiguration (the declarative style engine iOS 15 replaced the button property surface with) is itself absent from this port - no demand for it, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -175,7 +175,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIButton a method like it: it arrived in iOS 15",
+      "reason": "it schedules the next -updateConfiguration call, and that method only exists to read the button's UIButtonConfiguration, which this port does not carry - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -185,7 +185,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIButton a method like it: it arrived in iOS 15",
+      "reason": "the point where a subclass reapplies its UIButtonConfiguration; nothing to override when the configuration this method exists to serve is not carried - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -333,7 +333,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 15",
+      "reason": "the \"Paste and Go\" edit-menu command; our menu-building path (UIMenuController via the responder chain) has no command-name table for it, and no app implementing it has been seen - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -343,7 +343,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 15",
+      "reason": "the \"Paste and Match Style\" edit-menu command; same missing command-name table as the rest of this protocol - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -353,7 +353,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 15",
+      "reason": "the \"Paste and Search\" edit-menu command; same missing command-name table as the rest of this protocol - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -363,7 +363,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 15",
+      "reason": "the \"Print\" edit-menu command; nothing in this port's responder chain offers it, and there is no print pipeline behind it either - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -863,7 +863,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "reason": "toggles the -updateConfiguration cycle this port does not carry, since UIButtonConfiguration itself is absent - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -873,7 +873,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "reason": "a readonly idiom-derived style (phone, pad, mac) with no UIButtonConfiguration dependency and a definable answer on this device class - simply not built, no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -883,7 +883,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "reason": "governs the selection indicator a UIButtonConfiguration draws, and that configuration is itself absent from this port - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -893,7 +893,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "reason": "holds the UIButtonConfiguration this port does not carry - no demand for the declarative style engine, so nothing to hold",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -903,7 +903,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "reason": "the block -updateConfiguration calls after applying the automatic update; moot without the UIButtonConfiguration cycle this port does not carry - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -913,7 +913,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "reason": "reflects UIControl's own private touch-down tracking state, which this port does not surface publicly on any control - a real wire-up to the existing tracking machinery, just not built, no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -923,7 +923,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "reason": "an indirect-pointer hover state; the 4S and iPad 2 have no trackpad or mouse input path at all, so it can only ever answer NO - not built, no demand, and a candidate to flip to implemented rather than stay absent, since a permanent NO is a defined answer, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -933,7 +933,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "reason": "the writable override of behavioralStyle, itself not built (no demand) - nothing to override",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -943,7 +943,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 15",
+      "reason": "exposes the second text line a UIButtonConfiguration draws; that configuration is itself absent from this port - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2113,7 +2113,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "reason": "the \"Duplicate\" edit-menu command; same missing command-name table as the rest of this protocol - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2123,7 +2123,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "reason": "the \"Export\" edit-menu command; same missing command-name table as the rest of this protocol - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2133,7 +2133,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "reason": "the \"Find\" edit-menu command; the port's UIMenuController path never offers it, and nothing wires a find bar to a responder that would - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2143,7 +2143,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "reason": "the \"Find & Replace\" edit-menu command; same missing command-name table as the rest of this protocol - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2153,7 +2153,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "reason": "the \"Find Next\" edit-menu command; same missing command-name table as the rest of this protocol - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2163,7 +2163,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "reason": "the \"Find Previous\" edit-menu command; same missing command-name table as the rest of this protocol - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2173,7 +2173,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "reason": "the \"Move\" edit-menu command; same missing command-name table as the rest of this protocol - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2183,7 +2183,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "reason": "the \"Rename\" edit-menu command; same missing command-name table as the rest of this protocol - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2193,7 +2193,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 16",
+      "reason": "the \"Use Selection for Find\" edit-menu command; same missing command-name table as the rest of this protocol - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
@@ -2554,7 +2554,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give UIButton a property like it: it arrived in iOS 16",
+      "reason": "orders the elements of the menu a showsMenuAsPrimaryAction button presents; the port's own UIMenu/UIContextMenuInteraction backport (UIButton+Actions14.m) never reads an ordering preference - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit"
     },
