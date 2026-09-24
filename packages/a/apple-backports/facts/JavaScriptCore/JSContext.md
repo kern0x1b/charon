@@ -4,16 +4,23 @@ Source: SDK 16.4's own JSContext.h/JSValue.h/JSVirtualMachine.h/JSManagedValue.h
 contract; `coordination/corpus/caches/6.0.tsv` for what iOS 6 itself exports; `tests/backports/host/jscontext`
 for behaviour. That test is a differential: the same `checks.m` runs first against the host's own
 JavaScriptCore.framework, which ships these four classes and is the oracle every expectation has to pass,
-then against the backport, renamed at compile time and linked over the host's C API. Both answer 147 of
-147.
+then against the backport, renamed at compile time and linked over the host's C API. Both answer 151 of
+151.
 
 **Measured on the release's engine.** The same `checks.m`, built as a device binary against the band's
-library, answers 147 of 147 on an iPad 2 running 6.1.3 (the 2012 engine). The blocks-and-structs matrix
-is the host's line for line but four: an out-of-range double taken as `long long` or `unsigned long long`
-(1e20, Infinity), where C leaves the conversion undefined and the host (arm64) saturates while armv7's
-libSystem `__fixdfdi` wraps modulo 2^64 and answers 0 for an infinity - reasoned, not measured: the release's
-`CallbackArgument` casts the number too, so on armv7 it goes through the same conversion. What the engine does differently, and what
-the port does about it, is below under "The release's engine, measured".
+library, answers 151 of 151 on an iPad 2 running 6.1.3 (the 2012 engine). Its blocks-and-structs matrix
+differs from the host's in 31 of 351 lines:
+- 4 are an out-of-range double taken as `long long` or `unsigned long long` (1e20, Infinity), where C leaves
+  the conversion undefined: the host (arm64) saturates, while armv7's libSystem `__fixdfdi` wraps modulo 2^64
+  and answers 0 for an infinity. Reasoned, not measured: the release's `CallbackArgument` casts the number
+  too, so on armv7 it goes through the same conversion.
+- 27 are every `CGRect` line, whose object lists the same four keys in another order (host
+  `y,x,width,height`, iPad `y,width,x,height`), with the same values: the struct is made from a dictionary
+  literal, as the release makes it, so the order is how 6.1.3's CoreFoundation enumerates that dictionary.
+  Not compared with the release on armv7.
+
+What the engine does differently, and what the port does about it, is below under "The release's
+engine, measured".
 
 ## What iOS 6 already carries
 
@@ -47,7 +54,7 @@ documented clang Block ABI lays it out (below), not through `_Block_signature`.
 
 Every one of the four classes is a wrapper over the C API the table above confirms: `JSVirtualMachine` a
 `JSContextGroupRef`, `JSContext` a `JSGlobalContextRef`, `JSValue` a `JSValueRef` (protected with
-`JSValueProtect` for its own lifetime, unprotected once the queue below runs after its `-dealloc`), `JSManagedValue` a GC-weak hold on the
+`JSValueProtect` for its own lifetime, unprotected in its `-dealloc`), `JSManagedValue` a GC-weak hold on the
 JavaScript value itself (JSManagedValue.m and JSVirtualMachine.m describe the graph). An Objective-C object
 boxed more than once in a context gets the one wrapper, as the release keeps one.
 
@@ -142,19 +149,22 @@ the object it returns, or a TypeError "Objective-C blocks called as constructors
   `...RejectedWithReason:nil` raise NSInvalidArgumentException, as the release does (it puts the value
   into an array literal); the port makes that literal before any script runs, so the exception does not
   unwind through the engine's frames.
-- **When a wrapped object is released, and when a -dealloc lets go.** A finalizer must not call the C API
-  (JSObjectRef.h, `JSObjectFinalizeCallback`), and on the 2012 engine a finalizer runs inside whichever
-  allocation sweeps its block (below). So a finalizer here only queues the object its wrapper retained,
-  and no `-dealloc` here (JSValue, JSContext, JSVirtualMachine, JSManagedValue, a graph token) calls the C
-  API: each queues its unprotect, weak-map removals, private-property deletions or context release. The
-  queue runs in order at the thread's next outermost call into script or next run-loop turn, whichever
-  comes first (JSInternal.m, `charon_js_release_soon`, `charon_js_defer`); a run-loop turn runs it before
-  the collection timer fires. The release hands wrapped objects to the heap to release as the collection
-  ends (WebKit's `Heap::releaseSoon`), still inside the call that collected, and unprotects a JSValue
-  inside its `-dealloc`. Measured on the host: the release's owner is released by the time the
-  collection returns, the port's on the next turn and never inside the collection; `checks.m` turns the
-  run loop before every collection it asks for, on both sides, so a value released just before is let go
-  on both. On the device the collection itself comes from the run loop, after the queue.
+- **When a wrapped object is released.** A finalizer must not call the C API (JSObjectRef.h,
+  `JSObjectFinalizeCallback`), and on the 2012 engine a finalizer runs inside whichever allocation sweeps
+  its block (below); the last release of a wrapped object runs its `-dealloc`, which may (a JSValue, a
+  JSManagedValue, a graph token). So a finalizer here only queues the object its wrapper retained, on a
+  queue of the thread it runs on - the thread that collected. The release hands such objects to the heap
+  to release as the collection ends (WebKit's `Heap::releaseSoon`), still inside the call that collected;
+  the C API has no end-of-collection hook, so each thread releases what it queued at its own next
+  outermost call into script or next run-loop turn, whichever comes first, and at its exit (JSInternal.m,
+  `charon_js_release_soon`). Measured on the host (checks.m `CheckReleaseAfterCollection`,
+  `CheckReleaseThread`): the release's owner is released by the time the collection returns, the port's
+  on the next turn, never inside the collection, never by another thread that calls into script, and a
+  thread's turn is not held up by another thread's queue. The one case left: a thread that has no run
+  loop and calls into script no more keeps what it queued until it exits, where the release lets go as
+  the collection ends (a torn-down virtual machine's objects: measured, the release on its teardown, the
+  port at the thread's exit). A `-dealloc` here calls the C API as the release's does: no finalizer here
+  releases anything, so none runs inside a collection.
 - **Symbols**: the 2012 engine has none. `valueWithNewSymbolFromDescription:` notes a TypeError on the
   context and answers undefined, and `isSymbol` answers NO - an honest refusal at the seam.
 - **`-name`** is kept locally rather than shown anywhere, since the release exports no
@@ -176,7 +186,7 @@ JavaScriptCore-7536.26.7's source (OS X 10.8.2's, the same 536 branch):
   (`JSSynchronousGarbageCollectForDebugging` arrives in 7.0.1). `checks.m` on the device asks and turns
   the run loop until an object made unreachable first has been finalized.
 - **Finalizers run inside allocations.** A collection that allocation starts leaves the sweep to later
-  allocations: the first finalizer ran inside `JSObjectMake`, after 3971 of them. Hence the queue above.
+  allocations: the first finalizer ran inside `JSObjectMake`, after 3971 of them. Hence the finalizers' queue above.
 - **`JSContextGroupRelease` dropping a group's last reference crashes** once the group holds identifiers:
   it derefs with no lock and without switching to the group's identifier table, so `~StringImpl` finds
   the identifier in the wrong table (SIGSEGV, frames `JSContextGroupRelease` -> `~JSGlobalData` ->
