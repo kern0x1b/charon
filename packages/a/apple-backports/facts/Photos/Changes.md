@@ -73,9 +73,12 @@ owner's, and the devices run iOS 6. Nothing of the API depends on it; the device
 empty, are together the bytes of a direct read of the asset, and a video of several megabytes is not handed over in one piece.
 
 The file of `writeDataForAssetResource:` is written into a file of its own beside the given one and renamed into place when every
-chunk is in: a file already there is replaced on success, as the whole-file atomic write here did before, and left as it was
-when the read or a write fails, with the file system's error. What Photos itself does with a file that is already there is not
-measured, for the same reason as the chunk size; the documentation says only that it writes the data "progressively" into the file.
+chunk is in, and the given file is left as it was when the read or a write fails, with the file system's error (the device test
+holds this). A file already there is replaced on success. That is the port's own choice, not measured behaviour: what Photos
+itself does with a file that is already there is not measured, for the same reason as the chunk size, and the documentation says
+only that it writes the data "progressively" into the file. The reviewer recalls, without a measurement, that Photos refuses an existing file with a
+"file exists" error; if a measurement shows that, the port diverges here. The device test does not check the replacement, since
+its only source would be the port itself.
 
 Either call gives `completionHandler` an error, and never calls `dataReceivedHandler` again, when the asset behind the resource's
 `assetLocalIdentifier` is gone (`PHPhotosErrorIdentifierNotFound`), the asset has no representation (`PHPhotosErrorMissingResource`),
@@ -149,7 +152,8 @@ The change observers were run on the same iPad on 2026-09-23 with `tests/backpor
 own with the photo library allowed: 22 checks, 0 failures. The data of the resources (`tests/backports/device/photosdata9.m`: the
 chunked read and its cancel, the write to a file, `shouldMoveFile` and the hard-linked file, a video given as data in a QuickTime
 and an MPEG-4 container, the error codes, an album's placeholders after every creation of the change block) was run there on
-2026-09-24 with this tree's Photos sources: 34 checks, 0 failures. Controls: the same test over the Photos sources of main
+2026-09-24 with this tree's Photos sources: 34 checks, 0 failures. One of them, that a write replaces a file already there, has
+since been dropped, since its expectation came from the port itself (above); the other 33 are the test as it stands. Controls: the same test over the Photos sources of main
 at 7bb1720d, in an earlier form whose small test videos the iPad's encoder refused, failed the album placeholder and the error
 code checks this tree passes (18 checks, 11 failed, the rest not reached); and before the staged file took an extension, the
 video given as data failed with no asset (32 checks, 1 failed).

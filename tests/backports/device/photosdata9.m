@@ -206,11 +206,9 @@ static void check_write(PHAssetResource *resource, NSData *direct)
     NSArray *left = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:folder error:NULL];
     CHECK(left.count == 1, "and nothing else beside it");
 
+    // What a write onto a file that is already there does is not checked: the port replaces it, and what Photos itself
+    // does is not measured (facts/Photos/Changes.md).
     NSData *before = [@"a file that was there" dataUsingEncoding:NSUTF8StringEncoding];
-    [before writeToURL:url atomically:YES];
-    error = write_resource(resource, url);
-    CHECK(error == nil && [[NSData dataWithContentsOfURL:url] isEqualToData:direct], "a write replaces a file that was there");
-
     [before writeToURL:url atomically:YES];
     // A resource with no asset behind it, as photosresources9.m makes one: the header gives the class no public initializer.
     PHAssetResource *orphan = ((id (*)(id, SEL))objc_msgSend)([PHAssetResource alloc], @selector(init));

@@ -138,8 +138,9 @@ static const NSUInteger CharonResourceChunkLength = 1024 * 1024;
 }
 
 // Photos writes the data into the file as it reads it. This writes it one chunk at a time into a file of its own
-// beside the given one and renames that into place once every chunk is in: the given file is replaced on success,
-// as the whole-file atomic write here always did, and left as it was when the read or a write fails.
+// beside the given one and renames that into place once every chunk is in, and leaves the given file as it was when
+// the read or a write fails. A file already there is replaced on success: the port's choice, not measured against
+// Photos (facts/Photos/Changes.md).
 - (void)writeDataForAssetResource:(PHAssetResource *)resource
                             toFile:(NSURL *)fileURL
                            options:(PHAssetResourceRequestOptions *)options
