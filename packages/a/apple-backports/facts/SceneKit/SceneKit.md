@@ -312,6 +312,15 @@ already exporting at 9.0 — the registry entry was wrong by a full release,
 underneath a green gate. Run it before a band build, not instead of one: see
 the script's own header for what it does and does not cover.
 
+The opposite mistake happened with a string search. `SCNGeometrySourceSemanticTangent`
+was carried as 9.3.6 because the literal `kGeometrySourceSemanticTangent`
+first appears in 9.3.6's cache, but a string is not the export: measured
+through `apple.dyld`'s export table (2026-09-24), `_SCNGeometrySourceSemanticTangent`
+is absent at 9.0/9.2.1/9.3/9.3.5/9.3.6 and present at 10.0.1, with
+`_SCNGeometrySourceSemanticNormal` and `_OBJC_CLASS_$_SCNPhysicsWorld` found
+at 8.0 as controls. The entry is now 10.0.1 (`registry/SceneKit/ios10.json`).
+A release is read from the exported symbol, not from a string the cache holds.
+
 ## `SCNParticlePropertyController.animation` is not a `CAAnimation` reference in the archive
 
 Measured on `gift.scn`, confirmed by the real guest decode failing loudly before this was

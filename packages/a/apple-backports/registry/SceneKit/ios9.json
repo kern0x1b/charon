@@ -22,17 +22,6 @@
       "effect": "SCNLight.type accepts this string; none of the four target assets (gift/diamond/star2/coin) use a probe light",
       "source": "release cache measurement: _SCNLightTypeProbe present in the armv7 dyld_shared_cache of 9.0 through 9.3.6, absent before it (8.0/8.4.1 checked)",
       "facts": "facts/SceneKit/SceneKit.md"
-    },
-    {
-      "api": "SCNGeometrySourceSemanticTangent",
-      "kind": "constant",
-      "introduced": "9.3.6",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "sdk-introduced.json marks this ios 10.0, but a precise ladder walk found the literal string kGeometrySourceSemanticTangent absent through 8.0/8.4.1/9.0/9.2.1/9.3 and present at 9.3.6 -- almost a full band earlier than the SDK header/index claims, carried in its own object file for exactly that reason",
-      "effect": "SCNGeometry.geometrySourcesForSemantic: keys off this exact string; star2.scn declares a (currently empty) kGeometrySourceSemanticTangent array, so this constant is reached even though the mesh carries no tangent data yet",
-      "source": "release cache measurement: kGeometrySourceSemanticTangent absent from the armv7 dyld_shared_cache of 8.0/8.4.1/9.0/9.2.1/9.3, present at 9.3.6",
-      "facts": "facts/SceneKit/SceneKit.md"
     }
   ]
 }
