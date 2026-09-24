@@ -11,6 +11,16 @@
       "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/custompresentation and host/presentation, and tests/backports/device/custompresentation.m and presentation.m on iOS 6"
     },
     {
+      "api": "UIAdaptivePresentationControllerDelegate",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the protocol of a presentation controller's delegate; the port's sheet asks and tells it about a dismissal by drag or by a tap on the dimming view (presentationControllerShouldDismiss:, WillDismiss:, DidDismiss:, DidAttemptToDismiss:), and no presentation adapts, so its adaptive members are never sent",
+      "facts": "facts/UIKit/UIPresentationController.md",
+      "source": "the public headers of SDK 16.4 and SDK 26; UIKitCore of the held 16.0 cache (arm64e), read statically, for what a sheet sends; held on iOS 6 by tests/backports/device/sheet.m"
+    },
+    {
       "api": "UIViewController.presentationController",
       "kind": "property",
       "introduced": "8.0",

@@ -23,7 +23,10 @@ running 6.1.3.
 - `containerView` is nil until a presentation has begun; `presentedView` is the presented
   controller's view; the frame of the presented view is empty without a container.
 - `-sizeForChildContentContainer:withParentContainerSize:` answers the parent size.
-- The delegate and `overrideTraitCollection` are plain properties, both nil at first.
+- The delegate and `overrideTraitCollection` are plain properties, both nil at first. The delegate adopts
+  `UIAdaptivePresentationControllerDelegate`; its members are the application's to implement. No presentation adapts in the
+  port, so the adaptive ones are never sent; the sheet sends the four about a dismissal by drag or tap
+  (`UISheetPresentationController.md`).
 - The six transition hooks do nothing, and a subclass that overrides them and calls `super`
   is called in the order it is asked.
 
