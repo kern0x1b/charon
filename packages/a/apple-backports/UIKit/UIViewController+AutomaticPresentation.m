@@ -47,6 +47,18 @@ static uint32_t charon_program_sdk(void)
 }
 @end
 
+/* A split view controller prefers a custom presentation (0x188e995ac), which UIKit carries out with a
+   presentation controller of its own when no transitioning delegate gives one
+   (UIViewController+TransitionCoordinator.m). It prefers the form sheet only for a program linked with
+   SDK 16 or later whose split has a style, which arrived in iOS 14; no release this preference is
+   installed on has that style. */
+@implementation UISplitViewController (CharonAutomaticPresentation)
+- (UIModalPresentationStyle)charon_preferredModalPresentationStyle
+{
+    return UIModalPresentationCustom;
+}
+@end
+
 /* What Automatic resolves to: the controller's own preference, else the default provider's, which is
    the page sheet for every idiom UIKit registers (-[_UIPresentationControllerNullVisualStyleProvider
    defaultConcretePresentationStyleForViewController:] 0x189ab9524). */

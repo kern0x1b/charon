@@ -96,9 +96,18 @@ static UIPresentationController *charon_presentation_for(UIViewController *prese
     if (sheet)
         return sheet;
     id<UIViewControllerTransitioningDelegate> delegate = presented.transitioningDelegate;
-    if (!(style >= 4 && style <= 6) || ![delegate respondsToSelector:@selector(presentationControllerForPresentedViewController:presentingViewController:sourceViewController:)])
+    if (!(style >= 4 && style <= 6))
         return nil;
-    return [delegate presentationControllerForPresentedViewController:presented presentingViewController:presenting sourceViewController:source];
+    UIPresentationController *custom = nil;
+    if ([delegate respondsToSelector:@selector(presentationControllerForPresentedViewController:presentingViewController:sourceViewController:)])
+        custom = [delegate presentationControllerForPresentedViewController:presented presentingViewController:presenting sourceViewController:source];
+    /* A custom presentation whose delegate gives no controller, or that has no delegate, gets a plain
+       UIPresentationController (-_presentViewController:withAnimationController:completion:
+       0x1891a8fe0 in UIKitCore of 16.0, after -_customPresentationControllerForPresentedController:
+       0x1890dafa0 answers nil): the presented view fills the container over the presenter's. */
+    if (!custom && style == UIModalPresentationCustom)
+        custom = [[UIPresentationController alloc] initWithPresentedViewController:presented presentingViewController:presenting];
+    return custom;
 }
 
 static id<UIViewControllerAnimatedTransitioning> charon_dismiss_animator(UIViewController *presented)

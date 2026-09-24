@@ -35,11 +35,14 @@ running 6.1.3.
 The release presents a view controller itself - a full screen, a page sheet or a form sheet - and has no presentation controller.
 For a presentation in the style `UIModalPresentationCustom` (4), `OverFullScreen` (5) or `OverCurrentContext` (6), the port asks the
 presented controller's `transitioningDelegate` for `-presentationControllerForPresentedViewController:presentingViewController:sourceViewController:`,
-and when it answers a `UIPresentationController` the presentation is that object's, as on iOS 8; otherwise the
-release presents as it always has (a style that is not its own is its full screen one). What is different from the system's is written below;
-everything else was recorded from the host by `tests/backports/host/custompresentation/run.sh` (48 records, four variants: a
-presentation that keeps the presenter's view and animates, one that removes it, one without an animator and one that says
-`shouldPresentInFullscreen`) and is held on the iPad 2 by `tests/backports/device/custompresentation.m` (38 checks).
+and when it answers a `UIPresentationController` the presentation is that object's, as on iOS 8. A custom style whose
+delegate answers none, or that has no delegate, gets a plain `UIPresentationController`, as UIKit makes one
+(`-_presentViewController:withAnimationController:completion:` 0x1891a8fe0 in UIKitCore of 16.0, after
+`-_customPresentationControllerForPresentedController:` 0x1890dafa0 answers nil; the host's is that class, recorded as the
+"bare" case). Otherwise the release presents as it always has (a style that is not its own is its full screen one). What is different from the system's is written below;
+everything else was recorded from the host by `tests/backports/host/custompresentation/run.sh` (five variants: a
+presentation that keeps the presenter's view and animates, one that removes it, one without an animator, one that says
+`shouldPresentInFullscreen` and one with no transitioning delegate) and is held on the iPad 2 by `tests/backports/device/custompresentation.m` (38 checks).
 
 - `containerView` is a view on the window that the port makes, the same for the presentation and the dismissal, and is nil before
   the presentation begins and after the dismissal ends. It stays while the controller is presented, and it holds what the

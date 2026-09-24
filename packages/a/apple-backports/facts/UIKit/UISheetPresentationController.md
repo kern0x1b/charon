@@ -86,8 +86,9 @@ Sources:
   0x18938274c): the sheet hears the keyboard's will-show, will-hide and will-change-frame notifications (UIKit's private
   ones; the release posts the public ones with the same frame, duration and curve; a frame change counts only while the
   keyboard is shown). It keeps the keyboard's end frame in the container (CGRectNull once it hides) and whether the
-  window's first responder needs the keyboard (UIKit's private `-_requiresKeyboardWhenFirstResponder`; the port asks
-  whether it adopts `UIKeyInput`). While a first responder in the sheet needs the keyboard and the keyboard meets the
+  window's first responder needs the keyboard (UIKit's private `-_requiresKeyboardWhenFirstResponder` 0x18910488c: its
+  keyboard responder adopts `UIKeyInput` and, when it answers `isEditable`, is editable; the port asks the first
+  responder both, with the public protocol and selector). While a first responder in the sheet needs the keyboard and the keyboard meets the
   sheet's full-height frame, the sheet stands at its first detent: when that is below the large detent a detent with no
   identifier is put first, the first detent raised by the height of the keyboard over the full-height frame and no
   higher than the large detent, and the dimming detent moves down one. The selection stays; the sheet moves in an
@@ -151,19 +152,35 @@ Sources:
 - The status bar's appearance is not changed while a sheet is up.
 - A keyboard change that arrives while the sheet is dragged or a spring moves it takes effect when that ends; UIKit
   moves the sheet at once.
-- The grabber's tap is held on the iPad 2 by `sendActionsForControlEvents:` in `tests/backports/device/sheet.m`; a real
-  touch was not checked: `revtouch` delivered no touch to the phone-sized application in that session, the control tap
-  included.
+- The grabber's tap is held on the iPad 2 by `sendActionsForControlEvents:` in `tests/backports/device/sheet.m`, and
+  the touch reaching it by the window's `hitTest:withEvent:` at the grabber's centre and 10 points above the card
+  (`-[UIDropShadowView hitTest:withEvent:]` 0x189041df4 asks the grabbers before its own bounds; a hit on the view itself
+  answers nil; a hit in the content is cut to `contentTouchInsets`, which `-[_UISheetLayoutInfo _touchInsets]`
+  0x189035fc8 makes the untransformed frame less the hosted one: zero for a sheet not hosting another, and the port has
+  no hosting sheet). A real touch was not checked: `revtouch` delivered no touch to the phone-sized application in that
+  session, the control tap included.
 - In landscape the container is not rotated, a limitation of the port's presentation (`charon_presentation_run`)
   already.
-- The "magic" shadow is not drawn. UIKit draws it under a sheet whose parent does not stack with it (presented from a
-  full-screen or a custom presentation, or floating), at `_magicShadowOpacity` (the sheet's dimming fraction there, 0
-  whenever the parent stacks, which is every phone sheet over the root or over another sheet): a `_UIRoundedRectShadowView`
-  150 points beyond the card, the kit image `_UIPopoverShadow` (a 200 x 200 corner drawn four times into 400 x 400,
-  stretched with cap insets 199.5; `-_loadImageIfNecessary` 0x188efd9d0) under `kCAFilterVibrantColorMatrix` with the
-  lower-intensity matrix (`-_updateShadowVisualStyling` 0x189229340). `tests/backports/host/sheetshadow/run.sh` measured
-  on the host that this filter takes its colour from what lies behind the layer, the matrix of the destination laid over
-  it, not from the layer's black: its whole colour is a function of the destination, which iOS 6 cannot composite (no
-  such filter, no backdrop layer). Listed in the workspace's `coordination/crutches.md`.
-- `presentationController` of a controller with a page or form sheet style answers the sheet; for other styles the port
-  answers the controller a transitioning delegate gave, or nil, where UIKit has its own full-screen controller.
+- The "magic" shadow is drawn from a reading of what lies under the sheet, not composited by the render server. UIKit
+  lays it under a sheet whose parent does not stack with it (presented from a full-screen or a custom presentation, or
+  floating), at `_magicShadowOpacity` (0x188f92204, set by `-_percentDimmed` 0x188f936bc: 0 under a parent that stacks,
+  which is every phone sheet over the root or over another sheet, and while the sheet fills the screen; else the
+  dimming fraction): a `_UIRoundedRectShadowView` of corner radius 10, 150 points beyond the card, below everything
+  (`-[UIDropShadowView initWithFrame:]` 0x189100234), showing the kit image `_UIPopoverShadow` (a 200 x 200 corner
+  drawn four times into 400 x 400, stretched with cap insets 200 - 1/scale, or min(max(radius + 150, 170), that) when
+  the view is under 400 points either way; `-_loadImageIfNecessary` 0x188efd9d0) under `kCAFilterVibrantColorMatrix`
+  with the lower-intensity matrix (`-_updateShadowVisualStyling` 0x189229340). `tests/backports/host/sheetshadow/run.sh`
+  measured on the host that this filter takes its colour from what lies behind the layer: the pixel is
+  d + α·a(d)·(clamp(M·d) - d), with M the matrix, a(d) its alpha row and α the image's alpha times the view's. The
+  release has no such filter and no backdrop layer, so the port reads the window under the sheet (`CharonBackdrop`,
+  the blur's reader: the sheet view and everything above it hidden, at the screen scale) and draws that formula into a
+  layer (`CharonSheetShadow.c`). The image's alpha is generated, not shipped: two blurred rounded quadrants fitted to
+  the host's image, held to it pixel by pixel by the host test (worst 3/255 at 2x and at 1x against the 2x image's
+  2 x 2 means). The host test also holds the port's matrix and cap insets to the host's shadow view and the port's
+  pixel to the filter's over four colours; `tests/backports/device/sheet-cases.m` holds one pixel 20 points above a
+  sheet over a red full-screen presentation to the host's image and matrix. The residual difference is the blur's
+  (`UIVisualEffect.md`): what moves under the sheet is followed a few times a second, not every frame, and what is drawn
+  with OpenGL ES is not in the reading.
+- `presentationController` of a controller with a page or form sheet style answers the sheet; for a custom style the
+  port answers the controller a transitioning delegate gave, else a plain `UIPresentationController`, as UIKit does; for
+  other styles it answers nil where UIKit has its own full-screen controller.

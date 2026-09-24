@@ -66,6 +66,8 @@ int main(void)
            _preferredModalPresentationStyle in 16.0). */
         CHECK_EQUAL(style_of([[AVPlayerViewController alloc] init]), @(UIModalPresentationFullScreen), "a player view controller");
         CHECK_EQUAL(style_of([[MPMediaPickerController alloc] initWithMediaTypes:MPMediaTypeAnyAudio]), @(UIModalPresentationPageSheet), "a media picker");
+        /* A split view controller prefers a custom presentation (0x188e995ac in 16.0). */
+        CHECK_EQUAL(style_of([[UISplitViewController alloc] init]), @(UIModalPresentationCustom), "a split view controller");
 #endif
     }
     printf("checks=%d failures=%d\n", charon_checks, charon_failures);

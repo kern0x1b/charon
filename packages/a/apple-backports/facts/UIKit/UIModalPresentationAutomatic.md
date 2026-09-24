@@ -76,11 +76,16 @@ value; the addresses are below. Held by `tests/backports/device/modaldefault.m`,
 - `MFMailComposeViewController`, `MFMessageComposeViewController` and `SLComposeViewController` were not held: the iPad
   has no account to send with, so they cannot be made there.
 
+- `UISplitViewController` prefers the custom style (`-_preferredModalPresentationStyle` 0x188e995ac: 4, or the
+  form sheet for a program linked with SDK 16 whose split has a `style`, which arrived in iOS 14 and which the port does
+  not carry), and a split presented with Automatic is a custom presentation: with no transitioning delegate, a plain
+  `UIPresentationController` whose presented view fills the container over the presenter's
+  (`UIPresentationController.md`; `tests/backports/device/custompresentation-cases.m` "bare", recorded on the host).
+  `tests/backports/device/modaldefault.m` holds the preference. iOS 7, where the release knows the custom style and
+  the port does not install the default, was not measured.
+
 ## Not carried
 
-- `UISplitViewController`'s preference (4 or 2): a split view controller presented modally resolves to the
-  page sheet. iOS 6 has the class on the iPad only, and 4 is a custom presentation with no delegate on a
-  release that has none.
 - `UIDocumentPickerViewController`'s: the port's own class answers its style itself (the form sheet on the
   pad, full screen on the phone).
 - A presentation restores the resolved style, not Automatic, on the presented controller once it has

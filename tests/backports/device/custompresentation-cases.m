@@ -273,6 +273,31 @@ void custompresentation_run(UIWindow *window, CustomPresentationRecorder record,
             record([@"info." stringByAppendingString:[tag stringByAppendingString:@".dismissed.presenterFrame"]], [NSString stringWithFormat:@"before=%@ now=%@", frame_text(presenterFrame), presenter_text()]);
         });
     }
+    /* A custom presentation with no transitioning delegate: UIKit makes a presentation controller of its own
+       (-_presentViewController:withAnimationController:completion: 0x1891a8fe0 in UIKitCore of 16.0). */
+    CPController *bare = [[CPController alloc] init];
+    bare.title = @"bare";
+    bare.modalPresentationStyle = UIModalPresentationCustom;
+    step(0.3, ^{
+        fullscreenPresentation = NO;
+        removesPresenter = NO;
+        [events removeAllObjects];
+        [base presentViewController:bare animated:YES completion:^{ [events addObject:@"completion"]; }];
+    });
+    step(1.0, ^{
+        UIPresentationController *pc = bare.presentationController;
+        CGRect frame = [bare.view convertRect:bare.view.bounds toView:pc.containerView];
+        record(@"bare.present.events", [events componentsJoinedByString:@","]);
+        record(@"bare.present.end", [NSString stringWithFormat:@"presented=%d class=%@ modalWindow=%d baseWindow=%d modalFrame=%@ style=%ld", base.presentedViewController == bare,
+            NSStringFromClass([pc class]), bare.view.window != nil, base.view.window != nil, CGRectEqualToRect(frame, pc.containerView.bounds) ? @"containerBounds" : frame_text(frame), (long)pc.presentationStyle]);
+        [events removeAllObjects];
+        [base dismissViewControllerAnimated:YES completion:^{ [events addObject:@"completion"]; }];
+    });
+    step(1.0, ^{
+        record(@"bare.dismiss.events", [events componentsJoinedByString:@","]);
+        record(@"bare.dismiss.end", [NSString stringWithFormat:@"presented=%d modalWindow=%d baseWindow=%d", base.presentedViewController != nil, bare.view.window != nil, base.view.window != nil]);
+        record(@"bare.dismissed.presenterFrame", presenter_place());
+    });
     /* The control: the release's own full-screen presentation and dismissal, with no transitioning delegate. */
     CPController *native = [[CPController alloc] init];
     native.title = @"native";
