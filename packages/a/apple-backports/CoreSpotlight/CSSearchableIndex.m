@@ -117,7 +117,7 @@ static NSString *CharonSpotlightCategory(void)
 @property (nonatomic, strong) NSData *clientState;
 - (instancetype)initWithName:(NSString *)name;
 - (NSString *)path;
-- (void)save;
+- (NSError *)save;
 @end
 
 @implementation CharonSpotlightStore
@@ -159,15 +159,21 @@ static NSString *CharonSpotlightCategory(void)
     return [CharonSpotlightStoreDirectory() stringByAppendingPathComponent:[self.name stringByAppendingPathExtension:@"plist"]];
 }
 
-- (void)save
+// Answers nil once the store is on disk, where the search bundle reads it, or the error the caller's
+// completion handler receives: an index that could not be written holds nothing a search can find.
+- (NSError *)save
 {
     NSString *path = [self path];
-    [[NSFileManager defaultManager] createDirectoryAtPath:path.stringByDeletingLastPathComponent withIntermediateDirectories:YES attributes:nil error:NULL];
+    NSError *error = nil;
+    if (![[NSFileManager defaultManager] createDirectoryAtPath:path.stringByDeletingLastPathComponent withIntermediateDirectories:YES attributes:nil error:&error])
+        return CharonIndexError(CSIndexErrorCodeIndexUnavailableError, [NSString stringWithFormat:@"cannot create %@: %@", path.stringByDeletingLastPathComponent, error.localizedDescription]);
     NSMutableDictionary *disk = [NSMutableDictionary dictionary];
     disk[@"entries"] = self.entries;
     if (self.clientState)
         disk[@"clientState"] = self.clientState;
-    [disk writeToFile:path atomically:YES];
+    if (![disk writeToFile:path atomically:YES])
+        return CharonIndexError(CSIndexErrorCodeIndexUnavailableError, [NSString stringWithFormat:@"cannot write %@", path]);
+    return nil;
 }
 
 - (void)setItem:(CSSearchableItem *)item
@@ -264,53 +270,61 @@ static NSString *CharonSpotlightCategory(void)
 - (void)indexSearchableItems:(NSArray<CSSearchableItem *> *)items completionHandler:(void (^)(NSError *))completionHandler
 {
     CharonSpotlightStore *store = self.charonStore;
+    NSError *error = nil;
     NSMutableArray<NSString *> *identifiers = [NSMutableArray array];
     @synchronized (store) {
         for (CSSearchableItem *item in items) {
             [store setItem:item];
             [identifiers addObject:item.uniqueIdentifier];
         }
-        [store save];
+        error = [store save];
     }
-    [self charonNotifyChangedIdentifiers:identifiers];
+    if (!error)
+        [self charonNotifyChangedIdentifiers:identifiers];
     if (completionHandler)
-        completionHandler(nil);
+        completionHandler(error);
 }
 
 - (void)deleteSearchableItemsWithIdentifiers:(NSArray<NSString *> *)identifiers completionHandler:(void (^)(NSError *))completionHandler
 {
     CharonSpotlightStore *store = self.charonStore;
+    NSError *error = nil;
     @synchronized (store) {
         [store removeIdentifiers:identifiers];
-        [store save];
+        error = [store save];
     }
-    [self charonNotifyChangedIdentifiers:identifiers];
+    if (!error)
+        [self charonNotifyChangedIdentifiers:identifiers];
     if (completionHandler)
-        completionHandler(nil);
+        completionHandler(error);
 }
 
 - (void)deleteSearchableItemsWithDomainIdentifiers:(NSArray<NSString *> *)domainIdentifiers completionHandler:(void (^)(NSError *))completionHandler
 {
     CharonSpotlightStore *store = self.charonStore;
+    NSError *error = nil;
     @synchronized (store) {
         [store removeDomainIdentifiers:domainIdentifiers];
-        [store save];
+        error = [store save];
     }
-    [self charonNotifyChangedIdentifiers:nil];
+    if (!error)
+        [self charonNotifyChangedIdentifiers:nil];
     if (completionHandler)
-        completionHandler(nil);
+        completionHandler(error);
 }
 
 - (void)deleteAllSearchableItemsWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
     CharonSpotlightStore *store = self.charonStore;
+    NSError *error = nil;
     @synchronized (store) {
         [store removeAll];
-        [store save];
+        error = [store save];
     }
-    [self charonNotifyChangedIdentifiers:nil];
+    if (!error)
+        [self charonNotifyChangedIdentifiers:nil];
     if (completionHandler)
-        completionHandler(nil);
+        completionHandler(error);
 }
 
 - (void)beginIndexBatch
@@ -325,12 +339,13 @@ static NSString *CharonSpotlightCategory(void)
         return;
     }
     CharonSpotlightStore *store = self.charonStore;
+    NSError *error = nil;
     @synchronized (store) {
         store.clientState = clientState;
-        [store save];
+        error = [store save];
     }
     if (completionHandler)
-        completionHandler(nil);
+        completionHandler(error);
 }
 
 - (void)fetchLastClientStateWithCompletionHandler:(void (^)(NSData *, NSError *))completionHandler
