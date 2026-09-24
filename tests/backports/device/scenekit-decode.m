@@ -149,10 +149,14 @@ static NSUInteger count_lines_containing(NSString *text, NSString *needle)
     return count;
 }
 
-// How many objects a list property holds, or -1 when it holds something that is not a list: a decoder that keeps a
-// single object as it is hands one back, and asking it for a count would end the test instead of failing a check.
+// How many objects a list property holds (none when it answers nil, as particleSystems does with none), or -1 when it
+// holds something that is not a list: a decoder that keeps a single object as it is hands one back, and asking it for
+// a count would end the test instead of failing a check.
 static NSInteger list_count(id list)
 {
+    if (list == nil) {
+        return 0;
+    }
     return [list isKindOfClass:[NSArray class]] ? (NSInteger)[(NSArray *)list count] : -1;
 }
 
