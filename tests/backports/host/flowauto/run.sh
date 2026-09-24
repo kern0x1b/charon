@@ -12,7 +12,12 @@ xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sd
     "$here/../uikit2/windowed.m" "$here/record.m" "$device/flowauto-cases.m" "$device/check.m" -framework UIKit -framework Foundation -framework CoreGraphics -o "$app/Contents/MacOS/app"
 cp "$here/../uikit2/windowed.plist" "$app/Contents/Info.plist"
 codesign -s - --force "$app" > /dev/null 2>&1
+rm -f "$build/flowauto.json"
 FLOWAUTO_RECORDS="$build/flowauto.json" "$app/Contents/MacOS/app" > "$build/flowauto.log" 2>&1 || true
+if [ ! -s "$build/flowauto.json" ]; then
+    grep FAIL "$build/flowauto.log" || echo "FAIL: the recorder wrote nothing"
+    exit 1
+fi
 python3 "$here/../foundation2/embed.py" "$build/flowauto.json" "$device/flowauto-expectations.h"
 sed -i.bak 's/foundation2_expectations/flowauto_expectations/' "$device/flowauto-expectations.h" && rm -f "$device/flowauto-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/flowauto.json'))))")"
