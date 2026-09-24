@@ -23,8 +23,9 @@ follows the contract does raises. A view comes back from an archive with its con
 ## What the port does for the blur
 
 The release has no pass in the render server that blurs what lies behind a layer, so a view with a blur effect makes the picture itself.
-Each time it is due, the view hides itself, draws the layers of its window into a bitmap a quarter of the size of the area behind it (the area of the
-view, grown by the blur radius), shows itself again, blurs the bitmap with three passes of a box filter whose width is the one the ImageEffects sample of
+Each time it is due, the view hides itself and every layer drawn above it (the later siblings of it and of each of its superviews' layers, and those
+with a greater `zPosition`), draws the layers of its window into a bitmap a quarter of the size of the area behind it (the area of the view, grown by the
+blur radius, read in the view's own coordinates so that a transform above it does not shift the picture), shows them again, blurs the bitmap with three passes of a box filter whose width is the one the ImageEffects sample of
 iOS 7 uses for a Gaussian of the style's radius, raises its saturation, mixes the style's tint over it and gives it to a layer under the content view,
 cut to the size of the view and stretched smoothly to it. A picture that has not changed since the last one is not blurred again.
 
