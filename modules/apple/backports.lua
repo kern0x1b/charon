@@ -116,6 +116,14 @@ local function exported_symbols(file)
     return found
 end
 
+-- The clang driver a build runs: the one it was given, or the host's.
+local function driver(opt, arguments)
+    if opt.cc then
+        return opt.cc, arguments
+    end
+    return "xcrun", table.join({"clang"}, arguments)
+end
+
 local function clang(opt, arguments, objective_c)
     local given = {"-target", opt.triple, "-isysroot", opt.sdkdir}
     if objective_c then
@@ -125,10 +133,7 @@ local function clang(opt, arguments, objective_c)
         end
     end
     table.join2(given, arguments)
-    if opt.cc then
-        return opt.cc, given
-    end
-    return "xcrun", table.join({"clang"}, given)
+    return driver(opt, given)
 end
 
 -- Only C is compiled hidden. The classes of a backport are the API it carries,
@@ -419,7 +424,7 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
     end
     local output = path.join(outputdir, "lib" .. library.name .. ".dylib")
     os.mkdir(outputdir)
-    local arguments = {"clang", "-target", opt.triple, "-isysroot", opt.sdkdir, "-fuse-ld=" .. opt.ld, "-fobjc-arc", "-dynamiclib",
+    local arguments = {"-target", opt.triple, "-isysroot", opt.sdkdir, "-fuse-ld=" .. opt.ld, "-fobjc-arc", "-dynamiclib",
                        "-install_name", path.join(INSTALL_FOLDER, path.filename(output)),
                        "-Wl,-rename_section,__DATA,__objc_catlist,__DATA,__charon_catlist", "-o", output, attach}
     table.join2(arguments, kept)
@@ -483,7 +488,7 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
         io.writefile(list, table.concat(table.unique(internal), "\n") .. "\n")
         table.insert(arguments, "-Wl,-unexported_symbols_list," .. list)
     end
-    os.vrunv("xcrun", arguments)
+    os.vrunv(driver(opt, arguments))
     local embedded
     for _, framework in ipairs(library.frameworks) do
         local real = real_paths[framework]
@@ -1566,8 +1571,8 @@ function write_searchbundle(opt)
     local source = path.join(opt.root, "CoreSpotlight", "SearchBundle", "CharonSearchDatastore.m")
     local output = path.join(folder, "org.charon.corespotlight")
     local triple = opt.architecture .. "-apple-ios" .. opt.deployment
-    os.vrunv("xcrun", {"clang", "-target", triple, "-isysroot", opt.sdkdir, "-fuse-ld=" .. opt.ld, "-fobjc-arc",
-                       "-bundle", "-Os", "-g0", "-Wall", "-o", output, source, "-framework", "Foundation"})
+    os.vrunv(driver(opt, {"-target", triple, "-isysroot", opt.sdkdir, "-fuse-ld=" .. opt.ld, "-fobjc-arc",
+                          "-bundle", "-Os", "-g0", "-Wall", "-o", output, source, "-framework", "Foundation"}))
     os.vrunv("xcrun", {"strip", "-x", output})
     signing.sign(opt.ldid, output)
     os.cp(path.join(opt.root, "CoreSpotlight", "SearchBundle", "Info.plist"), path.join(folder, "Info.plist"))
