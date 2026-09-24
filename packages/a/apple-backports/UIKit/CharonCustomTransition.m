@@ -283,7 +283,9 @@ static void charon_interactive_transition(CharonTransitionKind kind, UIViewContr
     if (kind == CharonTransitionPresent)
         finalTo = [window convertRect:window.screen.applicationFrame fromWindow:nil];
     else if (kind == CharonTransitionDismiss)
-        finalTo = window.bounds;
+        /* The release frames the presenter's view again in its own dismissal, which runs when the interaction
+           has finished; until then the frame it gave the view before taking it out of the window stands for it. */
+        finalTo = toView.superview ? [toView.superview convertRect:toView.frame toView:host] : toView.frame;
 
     NSMutableArray *controllers = [NSMutableArray array];
     charon_collect(from, controllers);
@@ -376,12 +378,14 @@ static void charon_interactive_transition(CharonTransitionKind kind, UIViewContr
             [fromView removeFromSuperview];
         void (^settle)(void) = ^{
             if (toView.superview == container) {
+                /* A dismissal keeps the frame the release's own gave the presenter's view when it put it back. */
+                CGRect frame = kind == CharonTransitionDismiss ? [container convertRect:toView.frame toView:window] : finalTo;
                 [toView removeFromSuperview];
                 if (kind == CharonTransitionDismiss)
                     [window insertSubview:toView atIndex:0];
                 else
                     [host addSubview:toView];
-                toView.frame = finalTo;
+                toView.frame = frame;
             }
             [fromView removeFromSuperview];
             if (keepsPresenter)
@@ -620,9 +624,12 @@ static void charon_presentation_run(BOOL presenting, UIViewController *from, UIV
         container.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [window addSubview:container];
         [presentation charon_setContainerView:container];
+        /* The presenter's view keeps its place on the screen inside the container: the release framed it for its
+           controller, and on iOS 6 a root view sits under the status bar, not over the window's bounds. */
+        CGRect presenterFrame = [container convertRect:presenterView.frame fromView:presenterView.superview];
         if (removes) {
             [presenterView removeFromSuperview];
-            presenterView.frame = window.bounds;
+            presenterView.frame = presenterFrame;
             [container addSubview:presenterView];
         }
         charon_set_mode(begun, CharonDeferralPass);
@@ -632,7 +639,7 @@ static void charon_presentation_run(BOOL presenting, UIViewController *from, UIV
         [presentedView removeFromSuperview];
         if (removes) {
             [presenterView removeFromSuperview];
-            presenterView.frame = window.bounds;
+            presenterView.frame = presenterFrame;
             [container addSubview:presenterView];
         } else {
             [presenterPre restoreView:presenterView];
@@ -686,13 +693,16 @@ static void charon_presentation_run(BOOL presenting, UIViewController *from, UIV
         } else {
             [presentation dismissalTransitionDidEnd:didComplete];
             native();
+            /* The release's dismissal frames the presenter's view for its controller and puts it where the
+               presented view was, in this container: it keeps that place on the screen when the container goes. */
+            if (presenterView.superview == container && window) {
+                presenterView.frame = [container convertRect:presenterView.frame toView:window];
+                [window insertSubview:presenterView belowSubview:container];
+            }
             [container removeFromSuperview];
             [presentation charon_setContainerView:nil];
-            if (!presenterView.window && window) {
-                [presenterView removeFromSuperview];
-                presenterView.frame = window.bounds;
+            if (!presenterView.window && window)
                 [window insertSubview:presenterView atIndex:0];
-            }
         }
         charon_set_mode(begun, CharonDeferralPass);
         if (presenting) {

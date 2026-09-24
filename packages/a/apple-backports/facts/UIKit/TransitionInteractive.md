@@ -21,6 +21,11 @@ gives the interaction controller the context (`isInteractive` YES). Only when th
 operation without animation, so the views a gesture is on are not taken out from under it. A cancelled transition changes
 nothing of the release's state.
 
+In an interactive dismissal the final frame of the presenting controller is the frame its view has while it is out of the window: the
+release frames that view again only in its own dismissal, at the end, and on the iPad 2 (6.1.3) it gives a root view the application
+frame again, whatever the view was moved to meanwhile. When that dismissal has run, the view stays at the frame it gave; before, the
+port put it at the window's bounds, under the status bar.
+
 `UIPercentDrivenInteractiveTransition` starts the animator itself (`-startInteractiveTransition:` is what calls `animateTransition:`),
 pauses the container's layer (`speed` 0) and moves its `timeOffset`, which is what moves every animation of the animator by a fraction
 of `duration` (the animator's `transitionDuration:`). `-finishInteractiveTransition` lets the layer run on from where it is at

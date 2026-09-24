@@ -58,6 +58,15 @@ presentation that keeps the presenter's view and animates, one that removes it, 
 - While the controller is presented `presentedViewController.presentationController` is that object and
   `presentationStyle` answers the style; the presented view is at `frameOfPresentedViewInContainerView` in the container, and
   the presenting view stays in the window under it unless it is to be removed.
+- The presenting view keeps the frame the release gave it, which on iOS 6 is the application frame for a root view (under the status
+  bar, 0 20 320 460 on the iPad 2's phone-sized window), not the window's bounds: it goes into the container at that place on the
+  screen when it is to be removed, and after a dismissal it is where the release's own dismissal put it. That dismissal frames the
+  presenting view for its controller again (it sets its bounds and origin in
+  `-[UIWindowController transition:fromViewController:toViewController:target:didEndSelector:]`, and does so even when the view was
+  moved while it was out of the window) and puts it where the presented view was, in the container; the port moves it from there to
+  the window at the same place before the container goes. Measured on the iPad 2 (6.1.3) with the root view's frame changes and their
+  call stacks; before this the port put it at the window's bounds, under the status bar, after every dismissal and during a
+  presentation that removes it.
 
 Not carried: a presentation controller for any other style (the release's own presentation is kept, and
 `presentationController` answers nil for it), adaptive presentation (`adaptivePresentationStyle` is kept and never acts), and the trait
