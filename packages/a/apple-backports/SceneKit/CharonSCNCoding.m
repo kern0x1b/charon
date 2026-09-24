@@ -400,6 +400,26 @@ static void CharonSCNMapColorClasses(NSKeyedUnarchiver *unarchiver)
     [coder encodeBytes:(const uint8_t *)&vector length:sizeof(SCNVector4) forKey:key];
 }
 
++ (NSArray *)decodeArrayOfClass:(Class)cls coder:(NSCoder *)coder forKey:(NSString *)key
+{
+    id decoded = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSArray class], cls, nil] forKey:key];
+    if (decoded == nil) {
+        return @[];
+    }
+    if ([decoded isKindOfClass:cls]) {
+        return @[decoded];
+    }
+    NSMutableArray *objects = [NSMutableArray array];
+    for (id object in (NSArray *)decoded) {
+        if ([object isKindOfClass:cls]) {
+            [objects addObject:object];
+        } else {
+            NSLog(@"SceneKit: the archive's %@ holds a %@ where a %@ belongs; it is left out", key, [object class], cls);
+        }
+    }
+    return objects;
+}
+
 // Three shapes reach here: an NSColor object directly in the graph (material property
 // `color`), an NSData holding a separate keyed archive of one (SCNLight/SCNParticleSystem), or a
 // UIColor from an iOS-authored archive. NSColor/NSColorSpace are mapped on whichever unarchiver

@@ -132,6 +132,13 @@ comments.
 | `SCNLight` | `automaticallyAdjustsShadowProjection` | `autoShadowProjection` | not implemented this turn (shadow-quality tier, see skip list) — recorded here so whoever adds it does not re-derive the divergence |
 | `SCNMaterialProperty` | `contents` | `image` (file-backed) / `color` (solid-fill) / `float` (scalar) — never `contents` itself | measured on `star2.scn`'s real diffuse property (object `#556`): the archive has no `contents` key at all on any of its 24 `SCNMaterialProperty` instances; the union of keys actually used is `image`/`color`/`float`/`borderColor`/... A decoder reading `contents` silently leaves every material's every slot at its default — nothing crashes, the mesh loses its texture |
 
+A key that holds a list (`particleSystem`, `particleSystems`, `childNodes`, `materials`, each
+geometry-source semantic, `elements`) may hold a single object instead, and a decode that allows
+both `NSArray` and the class lets either through. `+[CharonSCNCoding decodeArrayOfClass:coder:forKey:]`
+is the one place that reads such a key: a single object becomes a one-element list, and an element
+of another class is left out with a log line naming the key. Before it, a single particle system
+reached `.count` and died on an unrecognized selector (`tests/backports/device/scenekit-decode.m`).
+
 ## Skip list: keys read from the archive but not decoded, by class, with visual weight
 
 Not decoding these is a real, named cut — not an oversight. Split by

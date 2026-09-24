@@ -10,6 +10,9 @@
 + (SCNVector4)decodeVector4:(NSCoder *)coder forKey:(NSString *)key;
 + (void)encodeVector4:(SCNVector4)vector coder:(NSCoder *)coder forKey:(NSString *)key;
 
+// The objects of one class a key holds: an archive may store a single object where it usually stores an array of
+// them, and both pass a decode that allows the class and NSArray; an absent key is an empty array.
++ (NSArray *)decodeArrayOfClass:(Class)cls coder:(NSCoder *)coder forKey:(NSString *)key;
 + (UIColor *)decodeColor:(NSCoder *)coder forKey:(NSString *)key;
 + (NSString *)decodeFileReferenceName:(NSCoder *)coder forKey:(NSString *)key;
 + (BOOL)decodeBool:(NSCoder *)coder forKey:(NSString *)key default:(BOOL)fallback;

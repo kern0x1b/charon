@@ -135,17 +135,14 @@ static NSArray<SCNGeometrySourceSemantic> *CharonSCNKnownSemantics(void)
 {
     if ((self = [self init])) {
         _name = [coder decodeObjectOfClass:[NSString class] forKey:@"name"];
-        NSArray<SCNMaterial *> *materials = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSArray class], [SCNMaterial class], nil] forKey:@"materials"];
-        _materials = materials ?: @[];
-        NSSet *sourceClasses = [NSSet setWithObjects:[NSArray class], [SCNGeometrySource class], nil];
+        _materials = [CharonSCNCoding decodeArrayOfClass:[SCNMaterial class] coder:coder forKey:@"materials"];
         for (SCNGeometrySourceSemantic semantic in CharonSCNKnownSemantics()) {
-            NSArray<SCNGeometrySource *> *sources = [coder decodeObjectOfClasses:sourceClasses forKey:semantic];
+            NSArray<SCNGeometrySource *> *sources = [CharonSCNCoding decodeArrayOfClass:[SCNGeometrySource class] coder:coder forKey:semantic];
             if (sources.count) {
                 _sourcesBySemantic[semantic] = sources;
             }
         }
-        NSArray<SCNGeometryElement *> *elements = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSArray class], [SCNGeometryElement class], nil] forKey:@"elements"];
-        _elements = elements ?: @[];
+        _elements = [CharonSCNCoding decodeArrayOfClass:[SCNGeometryElement class] coder:coder forKey:@"elements"];
     }
     return self;
 }

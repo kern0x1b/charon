@@ -159,16 +159,10 @@
         _castsShadow = [CharonSCNCoding decodeBool:coder forKey:@"castsShadow" default:YES];
         _categoryBitMask = [coder containsValueForKey:@"categoryBitMask"] ? [coder decodeIntegerForKey:@"categoryBitMask"] : 1;
 
-        NSArray<SCNParticleSystem *> *particleSystem = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSArray class], [SCNParticleSystem class], nil] forKey:@"particleSystem"];
-        if (particleSystem.count) {
-            [_particleSystems addObjectsFromArray:particleSystem];
-        }
-        NSArray<SCNParticleSystem *> *particleSystems = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSArray class], [SCNParticleSystem class], nil] forKey:@"particleSystems"];
-        if (particleSystems.count) {
-            [_particleSystems addObjectsFromArray:particleSystems];
-        }
+        [_particleSystems addObjectsFromArray:[CharonSCNCoding decodeArrayOfClass:[SCNParticleSystem class] coder:coder forKey:@"particleSystem"]];
+        [_particleSystems addObjectsFromArray:[CharonSCNCoding decodeArrayOfClass:[SCNParticleSystem class] coder:coder forKey:@"particleSystems"]];
 
-        NSArray<SCNNode *> *children = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSArray class], [SCNNode class], nil] forKey:@"childNodes"];
+        NSArray<SCNNode *> *children = [CharonSCNCoding decodeArrayOfClass:[SCNNode class] coder:coder forKey:@"childNodes"];
         for (SCNNode *child in children) {
             [self addChildNode:child];
         }
