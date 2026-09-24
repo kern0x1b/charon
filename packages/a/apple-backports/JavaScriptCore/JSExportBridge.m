@@ -118,6 +118,9 @@ static void CollectProtocol(Protocol *protocol, NSMutableDictionary<NSString *, 
 {
     if (!protocol_conformsToProtocol(protocol, @protocol(JSExport)))
         return;
+    /* a property's getter and setter are required methods of the protocol too; as the release
+     * does, they are the property's alone and not exported as methods of their own */
+    NSMutableSet<NSString *> *accessors = [NSMutableSet set];
     unsigned propertyCount = 0;
     objc_property_t *properties = protocol_copyPropertyList(protocol, &propertyCount);
     for (unsigned index = 0; index < propertyCount; index++) {
@@ -129,6 +132,8 @@ static void CollectProtocol(Protocol *protocol, NSMutableDictionary<NSString *, 
         SEL getter = sel_registerName(getterAttribute ?: name);
         NSString *defaultSetterName = [NSString stringWithFormat:@"set%@%@:", [[propertyName substringToIndex:1] uppercaseString], [propertyName substringFromIndex:1]];
         SEL setter = sel_registerName(setterAttribute ?: defaultSetterName.UTF8String);
+        [accessors addObject:NSStringFromSelector(getter)];
+        [accessors addObject:NSStringFromSelector(setter)];
         CharonExportEntry getEntry = {getter, NO, NULL};
         entries[propertyName] = [NSValue value:&getEntry withObjCType:@encode(CharonExportEntry)];
         if (!readonly) {
@@ -147,6 +152,8 @@ static void CollectProtocol(Protocol *protocol, NSMutableDictionary<NSString *, 
     struct objc_method_description *required = protocol_copyMethodDescriptionList(protocol, YES, YES, &methodCount);
     for (unsigned index = 0; index < methodCount; index++) {
         NSString *selectorName = NSStringFromSelector(required[index].name);
+        if ([accessors containsObject:selectorName])
+            continue;
         NSString *jsName = renames[selectorName] ?: JavaScriptNameForSelector(selectorName);
         CharonExportEntry entry = {required[index].name, YES, MethodArgumentTypes(protocol, required[index].name)};
         entries[jsName] = [NSValue value:&entry withObjCType:@encode(CharonExportEntry)];

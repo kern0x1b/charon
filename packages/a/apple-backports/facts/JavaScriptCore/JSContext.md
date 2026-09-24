@@ -100,6 +100,10 @@ functions). The invoke goes through the block literal's own
   release would call; this bridge calls blocks through their `invoke` pointer with object-sized arguments
   only, so calling one throws a TypeError in JavaScript instead of reading a value off the wrong-sized slot.
   JSExport methods have no such limit: they go through `NSInvocation`, which marshals every C type.
+- **Where a JSExport wrapper's properties and methods live.** A property reads and writes through its
+  getter and setter, and those accessors are not methods of their own (`typeof obj.setX` is undefined), as
+  on the host; but the port answers them on the wrapper itself (`obj.hasOwnProperty('x')` is true), where
+  the release keeps them on a prototype object per class (false there).
 - **The JavaScript class name of a wrapper** is the bridge's own (`[object CharonOpaqueObject]`,
   `[object CharonExportObject]`) where the host shows the Objective-C class (`[object NSURL]`), so
   `String(wrapper)` differs.

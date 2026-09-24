@@ -780,6 +780,8 @@ int main(void)
         check([[context evaluateScript:@"origin.addTo(2, 5)"] toInt32] == 7, @"JSExportAs renames the exported selector");
         [context evaluateScript:@"origin.x = 10"];
         check(point.x == 10, @"JSExport property setter mutates the native object");
+        check([Run(context, @"typeof origin.x + ' ' + origin.x + ' ' + typeof origin.setX") isEqualToString:@"number 10 undefined"] && [context[@"origin"][@"y"] toDouble] == 4,
+              @"a JSExport property reads its value, and its accessors are not methods of their own");
 
         NSArray *array = @[@1, @2, @3];
         context[@"arr"] = array;
