@@ -60,6 +60,13 @@ Sources:
   architecture (`firmware.versions`: arm64 up to 14.x below the sheet's own 15.0, `modules/apple/backports.lua`
   `band_plan`), and the files that carry the sheet and the presentation machinery export nothing the release has before
   15.0 or nothing at all, so they are in the bands of 11 to 14 too, where devices without a home button run.
+  The port does not present the sheet in any band from 8.0 on, though: there `UIPresentationController` is the release's
+  class and `UIPresentationController.m`, which carries the methods the port's presentation path sends
+  (`-charon_setContainerView:` and the rest), is left out, so `UIViewController+TransitionCoordinator.m` hands every
+  presentation to the release, which draws its own page sheet (full screen in a compact width before 13.0) and knows
+  nothing of the controller's detents. Before that change the path sent those methods to the release's class and the
+  application died with an unrecognized selector (the 8.0 to 10.3 bands of canon `0.8.10+8cfbbe9d` carry the path and not
+  the methods). Presenting the sheet on the release's class from 8.0 on is open.
 - Frame (`_stackAlignmentFrame` 0x189051544): centred, the container's width, from the top margin to the container's
   bottom edge. iPhone 4S with the status bar: top 40, the sheet 320 x 440.
 - Detents: large = the full height less the bottom safe inset (`maximumDetentValue` 0x1895e9958); medium = that times

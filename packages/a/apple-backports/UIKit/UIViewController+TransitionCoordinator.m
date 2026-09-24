@@ -91,6 +91,10 @@ static UIPresentationController *charon_sheet_for(UIViewController *presented, U
 
 static UIPresentationController *charon_presentation_for(UIViewController *presented, UIViewController *presenting, UIViewController *source)
 {
+    /* This file is linked into every band, UIPresentationController.m only into those below 8.0: from 8.0 on the class is
+       the release's, which presents every custom and sheet style itself and has none of the methods this path sends it. */
+    if (![UIPresentationController instancesRespondToSelector:@selector(charon_setContainerView:)])
+        return nil;
     UIModalPresentationStyle style = presented.modalPresentationStyle;
     UIPresentationController *sheet = charon_sheet_for(presented, presenting);
     if (sheet)
