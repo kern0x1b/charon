@@ -96,6 +96,58 @@ object the application added. The four exchanged methods and the facade's `-init
   initiate the request, per Apple's own documented contract - real, monotonically-incrementing
   storage, not a placeholder.
 
+## The resolved settings
+
+`AVCaptureResolvedPhotoSettings` (`AVCaptureResolvedPhotoSettings.m`) is made by
+`-capturePhotoWithSettings:delegate:` before `-captureOutput:willBeginCaptureForResolvedSettings:` and is the one
+object every callback of the request gets, as on 10.0. Until 2026-09-24 the class carried `uniqueID` alone, and
+because its other members are properties the SDK header declares on the class itself, the compiler synthesized each
+to a zero: the built library answered `photoDimensions` 0x0, `flashEnabled` NO, `expectedPhotoCount` 0 (read from
+the gate's `libAVFoundationBackports.dylib` with `otool -ov`: an ivar and a getter per header property). The one
+method of the class, `-dimensionsForSemanticSegmentationMatteOfType:`, was an unrecognized selector. Now every member
+answers explicitly, and one registry row names each.
+
+- `photoDimensions`: the dimensions of the video port's format (`connection.inputPorts[0].formatDescription`) as the
+  session runs it, read before the capture. Measured on an iPhone 4S, 6.1.3 (a probe outside the tree, the log
+  `device-4s-resolvedmeasure.log` of the bfw2 band): for all eight session presets the camera offers (Photo
+  3264x2448, High and 1920x1080, 1280x720, iFrame 960x540, 640x480, Medium 480x360, Low 192x144) the JPEG still, the
+  32BGRA still and the JPEG still at a 2x scale and crop come at exactly the port's dimensions, and the port's do not
+  change across the capture. A port can have no format yet: in `photooutput10.m` on the 4S, the first capture after the
+  photo output joined a running session found none (the release's own still image output had captured in that session
+  just before). The settings are then resolved from the still's own format when it comes, and
+  `-captureOutput:willBeginCaptureForResolvedSettings:` is sent then, before the other callbacks: the order of the
+  header holds and no callback is told dimensions that are not the photo's, and only the moment of willBeginCapture
+  differs from 10.0's, which sends it before the shutter.
+- `previewDimensions`: the preview's longest side (above) applied to `photoDimensions` with its aspect ratio, before
+  the capture; the preview buffer is made at exactly these. 0x0 with no preview format.
+- `flashEnabled`: YES when the camera has a flash, its flash mode is not Off once the request's mode is set on it,
+  and it says `flashActive`, which iOS 5 documents as "When the flash is active, it will flash if a still image is
+  captured". This is the camera's own answer for Auto too.
+- `stillImageStabilizationEnabled`: the still image output's `isStillImageStabilizationActive` where it has it (7.0
+  on); NO on 6.x, which has no stabilization.
+- `uniqueID`: the settings' own.
+- `rawPhotoDimensions`, `livePhotoMovieDimensions` (10.0.1), `embeddedThumbnailDimensions` (11.0),
+  `rawEmbeddedThumbnailDimensions`, `portraitEffectsMatteDimensions` (12.0), `-dimensionsForSemanticSegmentationMatteOfType:`
+  (13.0): 0x0, the header's answer for each when the capture did not request it, and what this capture delivers: the
+  still image output's own photo, with none of them. A request for one set on `AVCapturePhotoSettings` is not
+  honored (below, "Open").
+- `expectedPhotoCount` (11.0): 1. The header counts calls of `-captureOutput:didFinishProcessingPhoto:error:`; a
+  request here delivers its one photo through the 10.0 callback with sample buffers, once.
+- `dualCameraFusionEnabled` (10.2), `virtualDeviceFusionEnabled` (13.0): NO. The class is carried only below 10.0.1,
+  where every camera is a single one.
+- `redEyeReductionEnabled` (12.0): NO. Red-eye reduction came to capture in 12.0: `autoRedEyeReductionEnabled`,
+  `isAutoRedEyeReductionSupported` and `isRedEyeReductionEnabled` are in no string of the arm64 cache of 11.0 and all
+  in 12.0's (the control, `photoDimensions`, is in both).
+- `photoProcessingTimeRange` (13.0): `kCMTimeRangeInvalid`. The release makes no estimate; an invalid range says so,
+  where a zero range would say the photo takes no time.
+- `contentAwareDistortionCorrectionEnabled` (14.1): NO, never applied here.
+
+The ladder of the members, by selector string in the caches: `photoDimensions`, `rawPhotoDimensions`,
+`livePhotoMovieDimensions` and `capturePhotoWithSettings:delegate:` are in no string of the armv7 cache of 9.3.6 and
+in the arm64 cache of 10.0.1; `isDualCameraFusionEnabled` first appears at 10.2. `expectedPhotoCount`, which the header
+places at 11.0, is already a string of the 10.0.1 cache; that does not say which class carries it, so its row keeps
+the header's 11.0.
+
 ## What differs from the release, honestly
 
 - The output is an `AVCaptureStillImageOutput` (above): `isKindOfClass:[AVCaptureStillImageOutput class]`
@@ -144,6 +196,14 @@ preview's size, and further from the photo turned upside down (0.96 to 1.91 leve
 weak on the iPad: its camera saw a dark, nearly even scene (mean about 10 of 255, spread 1.6 to 2.8).
 Still, a preview drawn empty would have been about 10 levels off, which the check (under 6) refuses.
 
+iPhone 4S, 6.1.3, 2026-09-24, with the resolved settings (`AVCaptureResolvedPhotoSettings.m` built in): 94 checks, 0
+failed. Every capture hands one resolved settings object to its four callbacks in the header's order, under the
+request's unique ID; its photo dimensions are the photo's (3264x2448) and its preview dimensions the preview's (960x720,
+160x120, 320x240, 0x0 with none), both already at willBeginCapture; RAW and Live Photo 0x0; no stabilization; the flash
+not enabled with the flash Off. The camera's flash is held Off for the whole run and put back to its mode after; the
+capture with the flash On (`photooutput <log> flash-on`) fires the flash of a phone someone may be using and was not
+run, so `flashEnabled` YES is not measured.
+
 Not measured: Telegram's own `-captureOutput:didFinishProcessingPhotoSampleBuffer:...` with a `nil`
 `bracketSettings` (documented `nullable` in the header).
 
@@ -156,3 +216,14 @@ nonsense selector as negative control, `-isFlashScene` on the output as positive
 (rank 634) names `AVCapturePhotoSettings` too. The method now lives on `AVCapturePhotoSettings`,
 the registry key with it. Every other selector of these classes first appears at 10.0.1, the release
 their registry rows carry.
+
+## Open: the other members of the settings and the output
+
+Found while doing the resolved settings, 2026-09-24, not changed here. `AVCapturePhotoSettings` has the same
+compiler synthesis: `otool -ov` of the gate's `libAVFoundationBackports.dylib` lists an ivar and a getter/setter pair
+for each of 28 header properties the port does not implement (34 ivars, less `_internal`, `_charonUniqueID` and the four it synthesizes on purpose) (`depthDataDeliveryEnabled`,
+`embeddedThumbnailPhotoFormat`, `highResolutionPhotoEnabled`, `rawPhotoPixelFormatType`, `livePhotoMovieFileURL`,
+...): a caller may set them, and the capture never reads them. The class adopts `NSCopying` in its protocol list
+but has no `-copyWithZone:`, so `-copy` is an unrecognized selector, and `+photoSettingsFromPhotoSettings:` and the
+three RAW constructors are absent. The output (`CharonPhotoOutput`, declared under its own name, so nothing is
+synthesized) answers only the members listed in the registry; the header's others are unrecognized selectors.

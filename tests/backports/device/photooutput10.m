@@ -8,8 +8,10 @@
 // AVCapturePhotoOutput as the release's still image output (facts/AVFoundation/AVCapturePhotoOutput.md):
 // the release's own output in the same session as the control, the formats offered, the refusals, real
 // captures with a preview at the display's size and at a size asked for, an uncompressed photo, a zoomed
-// one, and the flash modes. Built with AVCapturePhotoOutput.m and the zoom's files, as the library carries them. A
-// process of its own: the camera needs no permission on 6.1.3.
+// one, the flash modes, and the resolved settings every capture reports. Built with AVCapturePhotoOutput.m and the
+// zoom's files, as the library carries them. A process of its own: the camera needs no permission on 6.1.3.
+// The camera's flash is held Off; a capture with the flash On runs only when asked, `photooutput <log> flash-on`, as it
+// fires the flash of a device someone may be using.
 
 @interface CharonPhotoCatcher : NSObject <AVCapturePhotoCaptureDelegate>
 @property (atomic) BOOL finished;
@@ -21,6 +23,11 @@
 // photo, or is drawn the wrong way up, is as far from one as from the other).
 @property (atomic) double previewDifference, flippedDifference, previewSpread;
 @property (atomic, strong) NSError *error;
+// The resolved settings each callback was given, and what they answered at willBeginCapture and at the photo.
+@property (atomic, strong) NSMutableArray *resolvedSeen, *callbacks;
+@property (atomic) CMVideoDimensions beganPhoto, beganPreview, resolvedPhoto, resolvedPreview, resolvedRaw, resolvedLive;
+@property (atomic) BOOL beganFlash, resolvedFlash, resolvedStabilized;
+@property (atomic) int64_t resolvedID;
 @end
 
 // The photo as an image: a JPEG through UIImage, a 32BGRA buffer through a bitmap context over its bytes.
@@ -100,11 +107,50 @@ static double spread(CVPixelBufferRef preview)
 
 @implementation CharonPhotoCatcher
 
+- (instancetype)init
+{
+    if ((self = [super init])) {
+        _resolvedSeen = [NSMutableArray array];
+        _callbacks = [NSMutableArray array];
+    }
+    return self;
+}
+
+- (void)captureOutput:(AVCapturePhotoOutput *)output willBeginCaptureForResolvedSettings:(AVCaptureResolvedPhotoSettings *)resolved
+{
+    [self.resolvedSeen addObject:resolved];
+    [self.callbacks addObject:@"willBegin"];
+    self.beganPhoto = resolved.photoDimensions;
+    self.beganPreview = resolved.previewDimensions;
+    self.beganFlash = resolved.flashEnabled;
+}
+
+- (void)captureOutput:(AVCapturePhotoOutput *)output didCapturePhotoForResolvedSettings:(AVCaptureResolvedPhotoSettings *)resolved
+{
+    [self.resolvedSeen addObject:resolved];
+    [self.callbacks addObject:@"didCapture"];
+}
+
+- (void)captureOutput:(AVCapturePhotoOutput *)output didFinishCaptureForResolvedSettings:(AVCaptureResolvedPhotoSettings *)resolved error:(NSError *)error
+{
+    [self.resolvedSeen addObject:resolved];
+    [self.callbacks addObject:@"didFinishCapture"];
+}
+
 - (void)captureOutput:(AVCapturePhotoOutput *)output didFinishProcessingPhotoSampleBuffer:(CMSampleBufferRef)photo
     previewPhotoSampleBuffer:(CMSampleBufferRef)preview resolvedSettings:(AVCaptureResolvedPhotoSettings *)resolved
     bracketSettings:(AVCaptureBracketedStillImageSettings *)bracket error:(NSError *)error
 {
     self.error = error;
+    [self.resolvedSeen addObject:resolved];
+    [self.callbacks addObject:@"didFinishProcessing"];
+    self.resolvedID = resolved.uniqueID;
+    self.resolvedPhoto = resolved.photoDimensions;
+    self.resolvedPreview = resolved.previewDimensions;
+    self.resolvedRaw = resolved.rawPhotoDimensions;
+    self.resolvedLive = resolved.livePhotoMovieDimensions;
+    self.resolvedFlash = resolved.flashEnabled;
+    self.resolvedStabilized = resolved.stillImageStabilizationEnabled;
     BOOL jpeg = NO, bgra = NO;
     CGImageRef image = photo ? create_photo_image(photo, &jpeg, &bgra) : NULL;
     self.photoIsJPEG = jpeg;
@@ -140,15 +186,49 @@ static NSString *raised(void (^block)(void))
     return @"nothing";
 }
 
+static BOOL same_dimensions(CMVideoDimensions a, CMVideoDimensions b)
+{
+    return a.width == b.width && a.height == b.height;
+}
+
+// What the header says of the resolved settings, against what the capture delivered: one object for every callback of
+// the request, under the request's unique ID, answering at willBeginCapture the dimensions of the photo and preview
+// buffers that come after, no RAW photo and no Live Photo movie (none asked for, none this release can make), and no
+// still image stabilization on 6.x, which has none.
+static void check_resolved(CharonPhotoCatcher *c, AVCapturePhotoSettings *settings)
+{
+    AVCaptureResolvedPhotoSettings *first = c.resolvedSeen.firstObject;
+    BOOL one = c.resolvedSeen.count == 4;
+    for (id seen in c.resolvedSeen)
+        one = one && seen == first;
+    CMVideoDimensions photo = c.resolvedPhoto, preview = c.resolvedPreview, began = c.beganPhoto;
+    printf("resolved: %d x %zu callbacks, id %lld of %lld, photo %dx%d (at will begin %dx%d), preview %dx%d, raw %dx%d, live %dx%d, flash %d, stabilized %d\n",
+           one, c.resolvedSeen.count, c.resolvedID, settings.uniqueID, photo.width, photo.height, began.width, began.height, preview.width, preview.height,
+           c.resolvedRaw.width, c.resolvedRaw.height, c.resolvedLive.width, c.resolvedLive.height, c.resolvedFlash, c.resolvedStabilized);
+    CHECK(one && c.resolvedID == settings.uniqueID, "every callback of a capture gets one resolved settings, under the request's unique ID");
+    CHECK_EQUAL(c.callbacks, (@[@"willBegin", @"didCapture", @"didFinishProcessing", @"didFinishCapture"]), "in the header's order");
+    CHECK(photo.width == (int32_t)c.photoWidth && photo.height == (int32_t)c.photoHeight, "its photo dimensions are the photo's");
+    CHECK(same_dimensions(preview, (CMVideoDimensions){(int32_t)c.previewWidth, (int32_t)c.previewHeight}), "its preview dimensions the preview's, 0x0 with none");
+    CHECK(same_dimensions(began, photo) && same_dimensions(c.beganPreview, preview) && c.beganFlash == c.resolvedFlash, "and it says both already at willBeginCapture");
+    CHECK(same_dimensions(c.resolvedRaw, (CMVideoDimensions){0, 0}) && same_dimensions(c.resolvedLive, (CMVideoDimensions){0, 0}), "no RAW photo, no Live Photo movie");
+    CHECK(!c.resolvedStabilized, "no still image stabilization on this release");
+    CHECK(settings.flashMode != AVCaptureFlashModeOff || !c.resolvedFlash, "the flash is not enabled when it is asked Off");
+}
+
 static CharonPhotoCatcher *capture_with(AVCapturePhotoOutput *output, AVCapturePhotoSettings *settings, NSDictionary *preview)
 {
     settings.previewPhotoFormat = preview;
     CharonPhotoCatcher *catcher = [[CharonPhotoCatcher alloc] init];
+    AVCaptureInputPort *port = [output connectionWithMediaType:AVMediaTypeVideo].inputPorts.firstObject;
+    CMVideoDimensions portDimensions = port.formatDescription ? CMVideoFormatDescriptionGetDimensions(port.formatDescription) : (CMVideoDimensions){0, 0};
+    printf("port before the capture: %s %dx%d\n", port.formatDescription ? "format" : "no format", portDimensions.width, portDimensions.height);
     [output capturePhotoWithSettings:settings delegate:catcher];
     for (int i = 0; i < 200 && !catcher.finished; i++)
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
     printf("capture: finished %d, error %s, preview against the photo %.2f, upside down %.2f, spread %.2f\n", catcher.finished,
            catcher.error.description.UTF8String ?: "none", catcher.previewDifference, catcher.flippedDifference, catcher.previewSpread);
+    if (catcher.finished)
+        check_resolved(catcher, settings);
     return catcher;
 }
 
@@ -207,6 +287,13 @@ int main(int argc, char **argv)
         session.sessionPreset = AVCaptureSessionPresetPhoto;
         AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:[AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo] error:NULL];
         [session addInput:input];
+        AVCaptureDevice *camera = input.device;
+        AVCaptureFlashMode cameraFlash = camera.flashMode;
+        BOOL flashOn = argc > 2 && strcmp(argv[2], "flash-on") == 0;
+        if (camera.hasFlash && [camera lockForConfiguration:NULL]) {
+            camera.flashMode = AVCaptureFlashModeOff;
+            [camera unlockForConfiguration];
+        }
 
         AVCaptureStillImageOutput *bare = [[AVCaptureStillImageOutput alloc] init];
         CHECK(input && [session canAddOutput:bare], "the camera and the release's still image output go into a session");
@@ -278,7 +365,6 @@ int main(int argc, char **argv)
 
         // The zoom of iOS 7 over the still image connection's own scale and crop: the photo output is zoomed as any
         // still image output is, and still captures.
-        AVCaptureDevice *camera = input.device;
         AVCaptureConnection *connection = [output connectionWithMediaType:AVMediaTypeVideo];
         printf("zoom: max %.2f, connection max %.2f\n", camera.activeFormat.videoMaxZoomFactor, connection.videoMaxScaleAndCropFactor);
         CGFloat zoom = MIN((CGFloat)2, MIN(camera.activeFormat.videoMaxZoomFactor, connection.videoMaxScaleAndCropFactor));
@@ -300,21 +386,29 @@ int main(int argc, char **argv)
 
         // The flash: the header offers the modes of the camera behind the output, Off, On and Auto for a camera with a
         // flash and Off alone for one without (the iPad 2). A capture takes its settings' mode onto the camera, where the
-        // release's still image output reads it, and a photo still comes.
+        // release's still image output reads it, and a photo still comes; the resolved settings say the flash is enabled
+        // when the camera's flash is active for the capture (flashActive, which iOS 5 documents as "it will flash if a
+        // still image is captured"). On only when asked (above).
         NSSet *flashModes = [NSSet setWithArray:output.supportedFlashModes];
         NSSet *cameraModes = camera.hasFlash ? [NSSet setWithObjects:@(AVCaptureFlashModeOff), @(AVCaptureFlashModeOn), @(AVCaptureFlashModeAuto), nil]
                                              : [NSSet setWithObject:@(AVCaptureFlashModeOff)];
         printf("flash: camera has one %d, modes offered %s\n", camera.hasFlash, [[output.supportedFlashModes componentsJoinedByString:@" "] UTF8String]);
         CHECK_EQUAL(flashModes, cameraModes, "the flash modes offered are the camera's");
         if (camera.hasFlash) {
-            for (NSNumber *mode in @[@(AVCaptureFlashModeOn), @(AVCaptureFlashModeOff)]) {
+            NSArray *modes = flashOn ? @[@(AVCaptureFlashModeOn), @(AVCaptureFlashModeOff)] : @[@(AVCaptureFlashModeOff)];
+            for (NSNumber *mode in modes) {
                 AVCapturePhotoSettings *flash = [AVCapturePhotoSettings photoSettings];
                 flash.flashMode = mode.integerValue;
                 CharonPhotoCatcher *lit = capture_with(output, flash, nil);
-                printf("flash %ld: camera mode %ld, photo %zux%zu\n", (long)mode.integerValue, (long)camera.flashMode, lit.photoWidth, lit.photoHeight);
+                printf("flash %ld: camera mode %ld, available %d, photo %zux%zu, resolved flash %d\n", (long)mode.integerValue, (long)camera.flashMode,
+                       camera.flashAvailable, lit.photoWidth, lit.photoHeight, lit.resolvedFlash);
                 CHECK(camera.flashMode == mode.integerValue, "a capture sets its flash mode on the camera");
                 CHECK(lit.finished && lit.error == nil && lit.photoIsJPEG, "and the photo comes");
+                if (mode.integerValue == AVCaptureFlashModeOn)
+                    CHECK(lit.resolvedFlash == camera.flashAvailable, "with the flash On, the resolved settings say it fires when the flash is available");
             }
+            if (!flashOn)
+                printf("flash: the On capture is not run; `flash-on` runs it\n");
         }
         [session beginConfiguration];
         [session removeOutput:output];
@@ -324,6 +418,10 @@ int main(int argc, char **argv)
         [NSThread sleepForTimeInterval:2];
         CHECK(bare_capture(bare, "control after"), "the release's still image output still captures after the photo output");
         [session stopRunning];
+        if (camera.hasFlash && [camera lockForConfiguration:NULL]) {
+            camera.flashMode = cameraFlash;
+            [camera unlockForConfiguration];
+        }
         printf("%d checks, %d failed\n", charon_checks, charon_failures);
     }
     return charon_failures;

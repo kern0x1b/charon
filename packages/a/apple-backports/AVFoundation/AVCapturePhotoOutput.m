@@ -1,4 +1,4 @@
-#import <AVFoundation/AVFoundation.h>
+#import "CharonAVCapturePhoto.h"
 #import <CoreImage/CoreImage.h>
 #import <ImageIO/ImageIO.h>
 #import <UIKit/UIKit.h>
@@ -42,14 +42,6 @@ static AVCaptureDevice *CharonDeviceForConnection(AVCaptureConnection *connectio
     AVCaptureInput *input = port.input;
     return [input isKindOfClass:[AVCaptureDeviceInput class]] ? ((AVCaptureDeviceInput *)input).device : nil;
 }
-
-@interface AVCaptureResolvedPhotoSettings ()
-@property (nonatomic, readwrite) int64_t uniqueID;
-@end
-
-@implementation AVCaptureResolvedPhotoSettings
-@synthesize uniqueID = _uniqueID;
-@end
 
 @implementation AVCapturePhotoSettings
 {
@@ -196,6 +188,16 @@ static size_t CharonPreviewLongestSide(NSDictionary *preview)
     return MIN((size_t)MAX(width.unsignedIntegerValue, height.unsignedIntegerValue), display);
 }
 
+// The dimensions of the preview of a photo of `photo`: its longest side `longest`, or the photo's own when that is
+// smaller, and the photo's aspect ratio.
+static CMVideoDimensions CharonPreviewDimensions(CMVideoDimensions photo, size_t longest)
+{
+    if (photo.width <= 0 || photo.height <= 0)
+        return (CMVideoDimensions){0, 0};
+    double scale = MIN(1.0, (double)longest / MAX(photo.width, photo.height));
+    return (CMVideoDimensions){MAX(1, (int32_t)llround(photo.width * scale)), MAX(1, (int32_t)llround(photo.height * scale))};
+}
+
 // The captured still as an image no longer on its longest side than `longest`: a JPEG through ImageIO's
 // thumbnail, which decodes at the reduced size; an uncompressed buffer through CoreImage.
 static CGImageRef CharonCreatePhotoImage(CMSampleBufferRef photo, size_t longest)
@@ -217,18 +219,16 @@ static CGImageRef CharonCreatePhotoImage(CMSampleBufferRef photo, size_t longest
     return image ? [[CIContext contextWithOptions:nil] createCGImage:image fromRect:image.extent] : NULL;
 }
 
-// The preview sample buffer: the still drawn into a 32BGRA pixel buffer whose longest side is `longest` (or
-// the still's own, when that is smaller), with the still's presentation time.
-static CMSampleBufferRef CharonCreatePreviewSample(CMSampleBufferRef photo, size_t longest)
+// The preview sample buffer: the still drawn into a 32BGRA pixel buffer of the resolved preview dimensions, with the
+// still's presentation time.
+static CMSampleBufferRef CharonCreatePreviewSample(CMSampleBufferRef photo, CMVideoDimensions dimensions)
 {
-    if (!photo)
+    if (!photo || dimensions.width <= 0 || dimensions.height <= 0)
         return NULL;
-    CGImageRef image = CharonCreatePhotoImage(photo, longest);
+    size_t width = (size_t)dimensions.width, height = (size_t)dimensions.height;
+    CGImageRef image = CharonCreatePhotoImage(photo, MAX(width, height));
     if (!image)
         return NULL;
-    size_t imageWidth = CGImageGetWidth(image), imageHeight = CGImageGetHeight(image);
-    double scale = MIN(1.0, (double)longest / MAX(imageWidth, imageHeight));
-    size_t width = MAX((size_t)1, (size_t)llround(imageWidth * scale)), height = MAX((size_t)1, (size_t)llround(imageHeight * scale));
     CVPixelBufferRef pixels = NULL;
     NSDictionary *attributes = @{(__bridge NSString *)kCVPixelBufferIOSurfacePropertiesKey: @{}};
     if (CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, (__bridge CFDictionaryRef)attributes, &pixels) != kCVReturnSuccess) {
@@ -290,18 +290,42 @@ static CMSampleBufferRef CharonCreatePreviewSample(CMSampleBufferRef photo, size
         [device unlockForConfiguration];
     }
 
-    AVCaptureResolvedPhotoSettings *resolved = ((id (*)(id, SEL))objc_msgSend)([AVCaptureResolvedPhotoSettings alloc], sel_registerName("init"));
-    resolved.uniqueID = settings.uniqueID;
+    // What the capture resolves to, known before it starts. The still comes at the dimensions of the video port's format
+    // as the session runs it, for every preset, JPEG or 32BGRA, and zoomed (facts, "The resolved settings"). The flash
+    // fires when the camera says it is active: "When the flash is active, it will flash if a still image is captured"
+    // (AVCaptureDevice, iOS 5). Stabilization is the still image output's own answer where it has one, from 7.0.
+    AVCaptureInputPort *port = connection.inputPorts.firstObject;
+    CMVideoDimensions portDimensions = port.formatDescription ? CMVideoFormatDescriptionGetDimensions(port.formatDescription) : (CMVideoDimensions){0, 0};
+    BOOL flashEnabled = device.hasFlash && device.flashMode != AVCaptureFlashModeOff && device.isFlashActive;
+    BOOL stabilized = [self respondsToSelector:@selector(isStillImageStabilizationActive)] && self.stillImageStabilizationActive;
+    int64_t uniqueID = settings.uniqueID;
+    AVCaptureResolvedPhotoSettings *(^resolve)(CMVideoDimensions) = ^(CMVideoDimensions photo) {
+        CMVideoDimensions preview = previewLongest ? CharonPreviewDimensions(photo, previewLongest) : (CMVideoDimensions){0, 0};
+        return [[AVCaptureResolvedPhotoSettings alloc] initCharonWithUniqueID:uniqueID photoDimensions:photo previewDimensions:preview
+                                                                  flashEnabled:flashEnabled stillImageStabilizationEnabled:stabilized];
+    };
 
     AVCapturePhotoOutput *output = (AVCapturePhotoOutput *)(id)self;
-    if ([delegate respondsToSelector:@selector(captureOutput:willBeginCaptureForResolvedSettings:)])
-        [delegate captureOutput:output willBeginCaptureForResolvedSettings:resolved];
+    BOOL willBegin = [delegate respondsToSelector:@selector(captureOutput:willBeginCaptureForResolvedSettings:)];
+    // A port can have no format yet: the first capture after the output joins a running session had none on an iPhone 4S
+    // (facts). The dimensions are then the still's own, and the settings are resolved, and willBeginCapture sent, when the
+    // still comes, before the other callbacks, so no callback is given dimensions that are not the photo's.
+    AVCaptureResolvedPhotoSettings *early = portDimensions.width > 0 && portDimensions.height > 0 ? resolve(portDimensions) : nil;
+    if (early && willBegin)
+        [delegate captureOutput:output willBeginCaptureForResolvedSettings:early];
 
     [self captureStillImageAsynchronouslyFromConnection:connection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+        AVCaptureResolvedPhotoSettings *resolved = early;
+        if (!resolved) {
+            CMFormatDescriptionRef format = imageDataSampleBuffer ? CMSampleBufferGetFormatDescription(imageDataSampleBuffer) : NULL;
+            resolved = resolve(format ? CMVideoFormatDescriptionGetDimensions(format) : (CMVideoDimensions){0, 0});
+            if (willBegin)
+                [delegate captureOutput:output willBeginCaptureForResolvedSettings:resolved];
+        }
         if ([delegate respondsToSelector:@selector(captureOutput:didCapturePhotoForResolvedSettings:)])
             [delegate captureOutput:output didCapturePhotoForResolvedSettings:resolved];
         if ([delegate respondsToSelector:@selector(captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:)]) {
-            CMSampleBufferRef previewSample = previewLongest ? CharonCreatePreviewSample(imageDataSampleBuffer, previewLongest) : NULL;
+            CMSampleBufferRef previewSample = previewLongest ? CharonCreatePreviewSample(imageDataSampleBuffer, resolved.previewDimensions) : NULL;
             if (previewLongest && imageDataSampleBuffer && !previewSample)
                 NSLog(@"AVCapturePhotoOutput: the preview photo asked for could not be made from the captured still; it is delivered without one");
             ((void (*)(id, SEL, id, CMSampleBufferRef, CMSampleBufferRef, id, id, id))objc_msgSend)(delegate, sel_registerName("captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:"),
