@@ -113,5 +113,15 @@ mutant CXCallDirectoryExtensionContext10.m "- (void)completeRequestWithCompletio
 }"
 mutant CXCallDirectoryExtensionContext10.m "    return NO;" "    return YES;"
 mutant CXCallDirectoryExtensionContext10.m "is unsupported" "is not supported"
+mutant CXProvider+VoIPPush145.m "code:CXErrorCodeNotificationServiceExtensionErrorMissingNotificationFilteringEntitlement" "code:CXErrorCodeNotificationServiceExtensionErrorInvalidClientProcess"
+mutant CXProvider+VoIPPush145.m "                                   userInfo:nil]);" "                                   userInfo:nil]);
+    if (completion)
+        completion(nil);"
+mutant CXProvider+VoIPPush145.m "    if (completion)
+        completion(" "    if (completion)
+        dispatch_async(dispatch_get_main_queue(), ^{ completion(nil); });
+    if (0)
+        completion("
+mutant CXProvider+VoIPPush145.m "userInfo:nil]);" "userInfo:@{NSLocalizedDescriptionKey: @\"refused\"}]);"
 echo "mutants surviving: $survived"
 [ "$survived" -eq 0 ]
