@@ -812,6 +812,7 @@ package("swift-runtime")
         local resources = path.join(package:installdir("lib"), "swift")
         local install = path.join(resources, "iphoneos")
         local libraries = install
+        local installed = {}
         if package:config("shared") then
             local shared = import("apple.shared_runtime", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
             libraries = path.join(package:installdir("share"), "root", shared.folder_of(shared.package_name("swift-runtime", package:buildhash())))
@@ -825,7 +826,9 @@ package("swift-runtime")
                 assert(not os.isfile(path.join(libraries, "lib" .. library .. ".dylib")), "lib" .. library .. ".dylib is in the runtime package too")
             end
             assert(#os.files(path.join(install, "*.dylib")) == 0, "the shared runtime keeps a second copy of its libraries")
+            installed = os.files(path.join(ui, "*.dylib"))
         end
+        table.join2(installed, os.files(path.join(libraries, "*.dylib")))
         for _, library in ipairs({"swiftCore", "swift_Concurrency", "swiftDarwin", "swiftSynchronization", "swiftObservation",
                                   "swift_StringProcessing", "swift_RegexParser", "swiftRegexBuilder"}) do
             assert(os.isfile(path.join(libraries, "lib" .. library .. ".dylib")), "the runtime has no lib" .. library .. ".dylib")
@@ -834,6 +837,21 @@ package("swift-runtime")
             assert(os.isdir(path.join(install, module .. ".swiftmodule")) or os.isfile(path.join(install, module .. ".swiftmodule")),
                    "the runtime has no " .. module .. " module")
         end
+        -- A weak import that neither these libraries nor the ones they link from their dependencies export is NULL on a
+        -- release in range that lacks it, and a program carrying a copy is refused it unless apple.runtime_guards names the
+        -- guard in front of every call. What was installed and what the table records are the same set, both ways.
+        local modules = path.join(package:scriptdir(), "..", "..", "..", "modules")
+        local linked = {}
+        for _, alias in ipairs({"libcxx", "apple-backports"}) do
+            local dep = package:dep(alias)
+            if dep then
+                table.join2(linked, os.files(path.join(dep:installdir("lib"), "*.dylib")))
+            end
+        end
+        local found = import("apple.dyld", {rootdir = modules, anonymous = true}).unexported_weak_imports(installed, linked, package:arch())
+        local differs = import("apple.runtime_guards", {rootdir = modules, anonymous = true}).compare(found)
+        assert(#differs == 0, "the runtime's weak imports and its guard table differ:\n  " .. table.concat(differs, "\n  "))
+
         -- What a port passes as its resource directory is this one, so the compiler's own parts are here too.
         for _, entry in ipairs({"shims", "clang", "apinotes", "module.modulemap"}) do
             assert(os.exists(path.join(resources, entry)),

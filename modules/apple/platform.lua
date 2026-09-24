@@ -8,6 +8,7 @@ import("objc")
 import("signing")
 import("bundle")
 import("backports")
+import("runtime_guards")
 
 function waivers(target)
     local waived = {}
@@ -19,8 +20,11 @@ end
 
 -- The libraries other packages provide (the backports, a shared runtime) are checked with the program, and a weak import in
 -- one of them is that package's to answer for when it is built, not a reason to refuse this program.
-function import_options(target, provided)
-    return {release = os.getenv("CHARON_RELEASE") ~= nil, waived = waivers(target)["weak-imports"], exempt = provided}
+-- runtime: the copies the program carries of the runtime's libraries, whose weak imports are the runtime's to answer for where
+-- its guard table records them (apple.runtime_guards).
+function import_options(target, provided, runtime)
+    return {release = os.getenv("CHARON_RELEASE") ~= nil, waived = waivers(target)["weak-imports"], exempt = provided,
+            runtime = runtime, guards = runtime_guards.GUARDS}
 end
 
 function deployment(target)
@@ -342,6 +346,12 @@ function carried_folder(target)
     return "/usr/lib/charon/" .. package
 end
 
+-- The copies a program carries of the runtime's libraries are that runtime's images, as they are when it shares them: a weak
+-- import its guard table records is the runtime's to answer for, and the program's own images are checked as usual.
+local function carries_runtime(library)
+    return library.package ~= nil and table.contains(SHARED, library.package)
+end
+
 function place_carried(target, root, binary)
     local offered = {}
     for _, library in ipairs(bundle.carried_libraries(target, "charon.libraries")) do
@@ -366,16 +376,19 @@ function place_carried(target, root, binary)
         return {binary}
     end
     local folder = carried_folder(target)
-    local identities, binaries = {}, {binary}
+    local identities, binaries, runtime = {}, {binary}, {}
     for _, library in ipairs(libraries) do
         local destination = path.join(root, folder, library.name)
         os.mkdir(path.directory(destination))
         os.vcp(library.source, destination)
         identities[destination] = folder .. "/" .. library.name
         table.insert(binaries, destination)
+        if carries_runtime(library) then
+            table.insert(runtime, destination)
+        end
     end
     bundle.retarget(binaries, identities, {home = folder .. "/", provided = shared and shared.identities})
-    return binaries
+    return binaries, runtime
 end
 
 function verify_placed(target, installed)
@@ -387,13 +400,13 @@ function verify_placed(target, installed)
     local binary = path.join(root, installed)
     os.mkdir(path.directory(binary))
     os.vcp(target:targetfile(), binary)
-    local binaries = place_carried(target, root, binary)
+    local binaries, runtime = place_carried(target, root, binary)
     for _, placed in ipairs(binaries) do
         verify(target, placed, {imports = false})
     end
     local source = imports_source(target)
     local provided = provided_libraries(target)
-    dyld.check(source, table.join(binaries, provided), root, import_options(target, provided))
+    dyld.check(source, table.join(binaries, provided), root, import_options(target, provided, runtime))
     report_selectors(source, binaries, target:arch(), root, provided)
 end
 
@@ -519,13 +532,16 @@ function application(target)
     os.mkdir(folder)
     os.vcp(target:targetfile(), executable)
     local identities = {}
-    local binaries = {executable}
+    local binaries, runtime = {executable}, {}
     for _, library in ipairs(bundle.carried_libraries(target)) do
         local destination = path.join(frameworks, library.name)
         os.mkdir(frameworks)
         os.vcp(library.source, destination)
         identities[destination] = "@executable_path/Frameworks/" .. library.name
         table.insert(binaries, destination)
+        if carries_runtime(library) then
+            table.insert(runtime, destination)
+        end
     end
     local shared = shared_runtime(target)
     bundle.retarget(binaries, identities, {provided = shared and shared.identities})
@@ -541,7 +557,7 @@ function application(target)
     if not os.getenv("CHARON_SLICE") then
         local source = imports_source(target)
         local provided = provided_libraries(target)
-        dyld.check(source, table.join(binaries, provided), folder, import_options(target, provided))
+        dyld.check(source, table.join(binaries, provided), folder, import_options(target, provided, runtime))
         report_selectors(source, binaries, target:arch(), folder, provided)
     end
     return folder

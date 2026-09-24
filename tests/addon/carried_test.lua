@@ -1,13 +1,14 @@
 import("fixtures")
 
-local function fake_target(folder, values, installdir)
-    local package = {installdir = function () return installdir end}
+local function fake_target(folder, values, installdir, alias)
+    -- A package that sets no CHARON_SHARED_PACKAGE: a runtime the program carries, not one it shares.
+    local package = {installdir = function () return installdir end, envs = function () return {} end}
     return {
         name = function () return "tweak" end,
         scriptdir = function () return folder end,
         values = function (_, key) return values[key] end,
         dep = function () return nil end,
-        pkg = function (_, name) return name == "runtime" and package or nil end
+        pkg = function (_, name) return name == (alias or "runtime") and package or nil end
     }
 end
 
@@ -130,8 +131,11 @@ function failures(opt)
     os.mkdir(path.directory(binary))
     os.cp(built, binary)
     local target = fake_target(folder, {["charon.libraries"] = "runtime", ["charon.control"] = "control"}, runtime)
-    local placed = platform.place_carried(target, root, binary)
+    local placed, runtime_images = platform.place_carried(target, root, binary)
     local carried = path.join(root, "usr", "lib", "charon", "org.example.carried")
+    if #runtime_images ~= 0 then
+        table.insert(found, "a library carried from a package that is not the runtime is the program's to answer for, and must not be exempted: " .. table.concat(runtime_images, " "))
+    end
     if #placed ~= 2 or not os.isfile(path.join(carried, "libabi.1.dylib")) then
         table.insert(found, "a tweak carries the library it loads into /usr/lib/charon/<Package>, got " .. table.concat(placed, " "))
     end
@@ -145,6 +149,19 @@ function failures(opt)
     local identity = references(folder, path.join(carried, "libabi.1.dylib"))
     if not identity:startswith("/usr/lib/charon/org.example.carried/libabi.1.dylib") then
         table.insert(found, "the carried library must be identified by its installed path: " .. identity)
+    end
+
+    -- The copy of a library the runtime package installs is the runtime's image, as it is when the runtime is shared: the
+    -- imports check reports its weak imports and does not refuse the program for them.
+    local runtime_root = path.join(folder, "runtime-root")
+    local runtime_binary = path.join(runtime_root, "Library", "MobileSubstrate", "DynamicLibraries", "tweak.dylib")
+    os.mkdir(path.directory(runtime_binary))
+    os.cp(built, runtime_binary)
+    local carrying = fake_target(folder, {["charon.libraries"] = "swift-runtime", ["charon.control"] = "control"}, runtime, "swift-runtime")
+    local _, exempted = platform.place_carried(carrying, runtime_root, runtime_binary)
+    local expected = path.join(runtime_root, "usr", "lib", "charon", "org.example.carried", "libabi.1.dylib")
+    if #exempted ~= 1 or exempted[1] ~= expected then
+        table.insert(found, "the copy of a library carried from the runtime package must be exempted as the runtime's image, got " .. table.concat(exempted, " "))
     end
 
     local unnamed = fake_target(folder, {["charon.libraries"] = "runtime"}, runtime)

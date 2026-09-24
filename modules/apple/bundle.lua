@@ -79,7 +79,7 @@ local function package_libraries(target, package, name)
     local carried = {}
     for _, file in ipairs(libraries) do
         local image = macho.images(macho.read(file))[1]
-        table.insert(carried, {source = file, name = path.filename(image.identity or file)})
+        table.insert(carried, {source = file, name = path.filename(image.identity or file), package = name})
     end
     return carried
 end

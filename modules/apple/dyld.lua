@@ -997,6 +997,33 @@ local function undefined_imports(data, image)
     return imported
 end
 
+-- The weak imports of the given images that none of them and none of the others exports, by file name: what an image has to
+-- guard in every release it runs on, since no release is asked. A runtime's libraries (and the C++ runtime they link) are
+-- given together, so what one of them exports to another is no import to guard.
+function unexported_weak_imports(binaries, others, architecture)
+    local loaded, exported = {}, {}
+    for _, binary in ipairs(table.join(binaries, others or {})) do
+        local data = macho.read(binary)
+        local image = loaded_image(macho.images(data), architecture)
+        if not image then
+            raise("%s has no slice a %s device loads", binary, architecture)
+        end
+        table.join2(exported, defined_exports(data, image, image.base))
+        loaded[binary] = {data = data, image = image}
+    end
+    local found = {}
+    for _, binary in ipairs(binaries) do
+        local names = {}
+        for _, symbol in ipairs(undefined_imports(loaded[binary].data, loaded[binary].image)) do
+            if symbol.weak and not exported[symbol.name] then
+                names[symbol.name] = true
+            end
+        end
+        found[path.filename(binary)] = table.orderkeys(names)
+    end
+    return found
+end
+
 function missing_imports(cachefile, binaries, root)
     local cache = load(cachefile)
     local missing, dangling, ordering = {}, {}, {}
@@ -1104,6 +1131,13 @@ function check(cachefile, binaries, folder, opt)
     for _, binary in ipairs(opt.exempt or {}) do
         exempt[folder and path.relative(binary, folder) or binary] = true
     end
+    -- A copy of a runtime's library that the program carries is that runtime's image: a weak import the runtime's guard table
+    -- (opt.guards, by file name, then symbol) records is guarded in the runtime's own source and is reported; any other is the
+    -- program's to answer for, as an import of its own image is.
+    local runtime = {}
+    for _, binary in ipairs(opt.runtime or {}) do
+        runtime[folder and path.relative(binary, folder) or binary] = (opt.guards or {})[path.filename(binary)] or {}
+    end
     -- A link order that puts a system library in front of the one carrying the symbol is answered where that image is built.
     -- In another package's image it is that package's to answer for, so it is reported and not a reason to refuse this program.
     for _, entry in ipairs(ordering) do
@@ -1126,14 +1160,30 @@ function check(cachefile, binaries, folder, opt)
     local unguarded = 0
     for _, binary in ipairs(table.orderkeys(guarded)) do
         local names = guarded[binary]
-        local shown = table.concat(names, " ")
-        local text = string.format("weakly imports %d symbol%s the %s release it is checked against (%s) does not export, each of which is NULL there and must be called only behind a check for it: %s",
-                                   #names, #names == 1 and "" or "s", cache.architecture, cachefile, shown)
-        if opt.release and not opt.waived and not exempt[binary] then
-            table.insert(missing, {binary, text .. "; a released image is refused these unless the target waives the check with charon.waive.weak-imports and says why every call is guarded"})
-        else
-            unguarded = unguarded + #names
-            table.insert(warnings, binary .. " " .. text)
+        local guards = runtime[binary]
+        if guards then
+            local recorded, unrecorded = {}, {}
+            for _, name in ipairs(names) do
+                table.insert(guards[name] and recorded or unrecorded, name)
+            end
+            if #recorded > 0 then
+                unguarded = unguarded + #recorded
+                table.insert(warnings, string.format("%s weakly imports %d symbol%s the %s release it is checked against (%s) does not export, each guarded in the runtime's source as its guard table records: %s",
+                                                     binary, #recorded, #recorded == 1 and "" or "s", cache.architecture, cachefile, table.concat(recorded, " ")))
+            end
+            names = unrecorded
+        end
+        if #names > 0 then
+            local shown = table.concat(names, " ")
+            local text = string.format("weakly imports %d symbol%s the %s release it is checked against (%s) does not export, each of which is NULL there and must be called only behind a check for it%s: %s",
+                                       #names, #names == 1 and "" or "s", cache.architecture, cachefile,
+                                       guards and ", and the runtime's guard table records no guard for it" or "", shown)
+            if opt.release and not opt.waived and not exempt[binary] then
+                table.insert(missing, {binary, text .. "; a released image is refused these unless the target waives the check with charon.waive.weak-imports and says why every call is guarded"})
+            else
+                unguarded = unguarded + #names
+                table.insert(warnings, binary .. " " .. text)
+            end
         end
     end
     for _, warning in ipairs(warnings) do
