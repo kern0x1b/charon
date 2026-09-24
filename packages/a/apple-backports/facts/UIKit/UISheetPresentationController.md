@@ -149,6 +149,11 @@ Sources:
   release puts the root view, under the status bar (0 20 320 460), which gives the same visible top (30) when it scales
   back. Derived from the read; the iPad 2 gave the root at 16 30 288 414 behind a large sheet.
 - The status bar's appearance is not changed while a sheet is up.
+- A keyboard change that arrives while the sheet is dragged or a spring moves it takes effect when that ends; UIKit
+  moves the sheet at once.
+- The grabber's tap is held on the iPad 2 by `sendActionsForControlEvents:` in `tests/backports/device/sheet.m`; a real
+  touch was not checked: `revtouch` delivered no touch to the phone-sized application in that session, the control tap
+  included.
 - In landscape the container is not rotated, a limitation of the port's presentation (`charon_presentation_run`)
   already.
 - The "magic" shadow is not drawn. UIKit draws it under a sheet whose parent does not stack with it (presented from a

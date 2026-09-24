@@ -65,6 +65,17 @@ value; the addresses are below. Held by `tests/backports/device/modaldefault.m`,
   16 and 4). Everything else asks the getter. The archive of an Automatic controller holds -2, as the
   release's does.
 
+## The release's own controllers in the sheet
+
+`tests/backports/device/releasesheet.m` presents 6.1.3's own controllers without a style from a program linked with SDK
+16.4, on the iPad 2 (the application phone-sized), 2026-09-24, 16 checks:
+- `MPMediaPickerController` and `UIImagePickerController` (the photo library) resolve to the page sheet and are shown
+  in the port's sheet at its large detent (0 40 320 440); dismissed, the presenter is itself again.
+- `UIActivityViewController` and `QLPreviewController` set a style in their own initializers on 6.1.3 (17 and full
+  screen), keep it, and are the release's own presentations; the port's sheet stays out of them.
+- `MFMailComposeViewController`, `MFMessageComposeViewController` and `SLComposeViewController` were not held: the iPad
+  has no account to send with, so they cannot be made there.
+
 ## Not carried
 
 - `UISplitViewController`'s preference (4 or 2): a split view controller presented modally resolves to the
