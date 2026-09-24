@@ -1,4 +1,5 @@
 #import "CharonBarAppearance.h"
+#import "../CharonSayOnce.h"
 
 NSDictionary *charon_attributes_merge(NSDictionary *base, NSDictionary *over)
 {
@@ -203,17 +204,7 @@ NSSet *charon_plist_classes(void)
 
 void charon_bar_say_once(NSString *key, NSString *text)
 {
-    static NSMutableSet *said;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        said = [[NSMutableSet alloc] init];
-    });
-    @synchronized (said) {
-        if ([said containsObject:key])
-            return;
-        [said addObject:key];
-    }
-    NSLog(@"%@", text);
+    charon_say_once_for(key, text);
 }
 
 UIImage *charon_solid_image(UIColor *colour)

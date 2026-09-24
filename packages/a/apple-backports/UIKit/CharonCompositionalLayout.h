@@ -1,4 +1,5 @@
 #import <UIKit/UIKit.h>
+#import "../CharonSayOnce.h"
 
 typedef NS_ENUM(NSInteger, CharonGroupDirection) {
     CharonGroupDirectionHorizontal,
@@ -15,17 +16,7 @@ typedef NS_ENUM(NSInteger, CharonDimensionKind) {
 
 static inline void charon_layout_say_once(NSString *key, NSString *text)
 {
-    static NSMutableSet *said;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        said = [[NSMutableSet alloc] init];
-    });
-    @synchronized (said) {
-        if ([said containsObject:key])
-            return;
-        [said addObject:key];
-    }
-    NSLog(@"%@", text);
+    charon_say_once_for(key, text);
 }
 
 @interface NSCollectionLayoutItem (CharonLayout)

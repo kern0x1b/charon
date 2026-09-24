@@ -1,18 +1,9 @@
 #import <UIKit/UIKit.h>
+#import "../CharonSayOnce.h"
 
 static inline void charon_menus_say_once(NSString *key, NSString *text)
 {
-    static NSMutableSet *said;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        said = [[NSMutableSet alloc] init];
-    });
-    @synchronized (said) {
-        if ([said containsObject:key])
-            return;
-        [said addObject:key];
-    }
-    NSLog(@"%@", text);
+    charon_say_once_for(key, text);
 }
 
 static inline NSString *charon_short_description(id object)

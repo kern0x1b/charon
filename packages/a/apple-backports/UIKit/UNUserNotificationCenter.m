@@ -1,4 +1,5 @@
 #import "CharonUserNotifications.h"
+#import "../CharonSayOnce.h"
 #import <objc/runtime.h>
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -160,17 +161,7 @@ static void charon_on_main(void (^work)(void))
 
 static void charon_say_once(NSString *key, NSString *text)
 {
-    static NSMutableSet *said;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        said = [[NSMutableSet alloc] init];
-    });
-    @synchronized (said) {
-        if ([said containsObject:key])
-            return;
-        [said addObject:key];
-    }
-    NSLog(@"%@", text);
+    charon_say_once_for(key, text);
 }
 
 static NSError *charon_unsupported(NSString *reason)
