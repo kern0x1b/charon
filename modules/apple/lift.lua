@@ -1800,8 +1800,20 @@ function lift(opt)
         raise("lift() found no declaration at all for %d registered class/protocol member(s), which should never be silently absent: %s",
               #silent, table.concat(silent, "; "))
     end
-    return {vfs = vfs, lifted = lifted, headers = #sorted_files, implemented = #entries, unmatched = unmatched,
-            undeclared = undeclared, types = lowered_types, kept_types = kept_types}
+    -- A class is matched by its name alone (matches()), in its @interface, any category of it or a bare @class, so one
+    -- still unmatched is a class no header the umbrella reads declares at all - a private class, or a later SDK's - and
+    -- has nothing to lower. It is named apart; what stays unmatched is told with its kind.
+    local classes, rest, kinds = {}, {}, {}
+    for _, api in ipairs(unmatched) do
+        if (listed[api] or {}).kind == "class" then
+            table.insert(classes, api)
+        else
+            table.insert(rest, api)
+            kinds[api] = (listed[api] or {}).kind or "function or constant"
+        end
+    end
+    return {vfs = vfs, lifted = lifted, headers = #sorted_files, implemented = #entries, unmatched = rest, kinds = kinds,
+            classes = classes, undeclared = undeclared, types = lowered_types, kept_types = kept_types}
 end
 
 -- The release of the availability macro that starts text rewritten to target, where the text itself spells it: ios(...),

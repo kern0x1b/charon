@@ -345,7 +345,18 @@ package("swift-runtime")
                                       minimum = minimum, registry = backported:installdir("share"),
                                       outputdir = path.join(package:installdir("share"), "lift")})
             print("lifted %d marks in %d headers for %d implemented API; %d not declared by the SDK's headers",
-                  result.lifted, result.headers, result.implemented, #result.unmatched)
+                  result.lifted, result.headers, result.implemented, #result.unmatched + #result.classes)
+            if #result.unmatched > 0 then
+                local told = {}
+                for _, api in ipairs(result.unmatched) do
+                    table.insert(told, string.format("%s (%s)", api, result.kinds[api]))
+                end
+                print("not declared by the SDK's headers: %s", table.concat(told, "; "))
+            end
+            if #result.classes > 0 then
+                print("%d implemented class(es) no header of the SDK declares, so nothing is lowered for them: %s",
+                      #result.classes, table.concat(result.classes, "; "))
+            end
             if #result.undeclared > 0 then
                 print("%d implemented member(s) the SDK declares nowhere their class reaches, so nothing is lowered for them: %s",
                       #result.undeclared, table.concat(result.undeclared, "; "))
