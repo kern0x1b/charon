@@ -51,8 +51,15 @@ Sources:
 ## Geometry (iPhone portrait, 16.0)
 
 - Margins (C function 0x1890cab64): the safe area plus 2 x topOffset = 20 on top and bottom; 8 in a compact height.
-  UIKit gives 20 to a phone with a home button (`-[UIDevice _hasHomeButton]`) and 10 to one without; every device iOS 6
-  runs on (iPhone 3GS, 4, 4S, 5, iPod touch 4 and 5, every iPad) has a home button, so the port uses 20 throughout.
+  A phone without a home button in a compact width gets topOffset once, 10 (0x1890cad1c: `+[UIDevice _hasHomeButton]`,
+  then the horizontal size class); every other idiom and a phone with one get 20. No public API names a home button
+  (SDK 16.4 declares none); the port takes a window with a bottom safe area inset for a device without one: such a
+  device keeps that inset for its home indicator in every window, from iOS 11, the first release it runs. Before 11
+  every device has a home button (iPhone 3GS to 8, every iPod touch and iPad of those releases) and the port's
+  `safeAreaInsets` answers no bottom inset. apple-backports is built by band up to the latest release of an
+  architecture (`firmware.versions`: arm64 up to 14.x below the sheet's own 15.0, `modules/apple/backports.lua`
+  `band_plan`), and the files that carry the sheet and the presentation machinery export nothing the release has before
+  15.0 or nothing at all, so they are in the bands of 11 to 14 too, where devices without a home button run.
 - Frame (`_stackAlignmentFrame` 0x189051544): centred, the container's width, from the top margin to the container's
   bottom edge. iPhone 4S with the status bar: top 40, the sheet 320 x 440.
 - Detents: large = the full height less the bottom safe inset (`maximumDetentValue` 0x1895e9958); medium = that times
@@ -132,7 +139,12 @@ Sources:
 
 ## Where the port differs
 
-- The display's corner radius is 0: the displays of iOS 6 devices have square corners.
+- The display's corner radius, which a full-width sheet's bottom corners match: UIKit reads it from the scene's settings
+  (`cornerRadiusConfiguration` of `-_effectiveUISettings`, 0x188f93318), which no public API answers (SDK 16.4 declares
+  none). The port answers 0 on a device with a home button, whose display has square corners (every device of iOS 6
+  to 10), and on one without asks the release's own `-[UIScreen _displayCornerRadius]`, a private method, because
+  nothing public names the value; it is in UIKit of the 11.0 cache (0x18a4df430, the main screen's radius, else 0), the
+  first release a device without a home button runs, and in UIKitCore of 16.0 (0x188f8f06c).
 - The root presenter: UIKit's root presentation is a full-screen sheet over the whole window; the port uses where the
   release puts the root view, under the status bar (0 20 320 460), which gives the same visible top (30) when it scales
   back. Derived from the read; the iPad 2 gave the root at 16 30 288 414 behind a large sheet.

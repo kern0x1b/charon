@@ -1,6 +1,7 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
+#import <objc/message.h>
 #include <math.h>
 #import "CharonCustomTransition.h"
 #import "CharonSheet.h"
@@ -62,6 +63,29 @@ static CGFloat charon_sheet_content_margin(UIWindow *window, CGFloat width)
     UIEdgeInsets insets = window ? window.safeAreaInsets : UIEdgeInsetsZero;
     BOOL both = insets.left > 0 && insets.right > 0;
     return width > 393 && !both ? 20 : 16;
+}
+
+/* -[UIDevice _hasHomeButton] has no public counterpart (SDK 16.4 declares none). A device
+   without one keeps a bottom safe area in every window for its home indicator, from iOS 11,
+   the first release such a device runs; before 11 every device has a home button, and the
+   port's safeAreaInsets answers no bottom inset there. */
+static BOOL charon_sheet_has_home_button(UIWindow *window)
+{
+    return !(window && window.safeAreaInsets.bottom > 0);
+}
+
+/* The display's corner radius, which UIKit reads from the scene's settings (cornerRadiusConfiguration
+   of -_effectiveUISettings, 0x188f93318); no public API answers it (SDK 16.4 declares none). A
+   device with a home button has a display with square corners. One without runs iOS 11 or later,
+   whose own -[UIScreen _displayCornerRadius] answers it (in UIKit of the 11.0 cache at 0x18a4df430
+   and UIKitCore of 16.0 at 0x188f8f06c: the main screen's radius, else 0), and the port asks that. */
+static CGFloat charon_sheet_display_corner_radius(UIWindow *window)
+{
+    if (charon_sheet_has_home_button(window))
+        return 0;
+    UIScreen *screen = window.screen;
+    SEL selector = NSSelectorFromString(@"_displayCornerRadius");
+    return [screen respondsToSelector:selector] ? ((CGFloat (*)(id, SEL))objc_msgSend)(screen, selector) : 0;
 }
 
 /* +[UIColor _alertControllerDimmingViewColor], which the sheet gives its dimming view
@@ -330,13 +354,15 @@ typedef NS_ENUM(NSInteger, CharonDetentType) {
 }
 
 /* The C function 0x1890cab64 for an edge-attached sheet: the safe area plus, on top and
-   bottom, topOffsetInCompactHeight in a compact height and else twice topOffset. Twice
-   topOffset is what UIKit gives a phone with a home button (-[UIDevice _hasHomeButton]) and
-   every idiom but the phone; every device this release runs on has a home button. */
+   bottom, topOffsetInCompactHeight in a compact height and else twice topOffset, except
+   for a phone without a home button in a compact width, which gets topOffset once
+   (0x1890cad1c: -[UIDevice _hasHomeButton], then the horizontal size class). */
 - (UIEdgeInsets)margins
 {
     UIEdgeInsets insets = [self safeInsets];
-    CGFloat vertical = [self verticallyCompact] ? charon_sheet_top_offset_compact_height : 2 * charon_sheet_top_offset;
+    BOOL phone = [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone;
+    BOOL single = phone && !charon_sheet_has_home_button(_container.window) && [self traits].horizontalSizeClass == UIUserInterfaceSizeClassCompact;
+    CGFloat vertical = [self verticallyCompact] ? charon_sheet_top_offset_compact_height : (single ? 1 : 2) * charon_sheet_top_offset;
     insets.top += vertical;
     insets.bottom += vertical;
     return insets;
@@ -553,12 +579,11 @@ typedef NS_ENUM(NSInteger, CharonDetentType) {
     return 0.5 * (1 - [self percentDimmedFromOffset]) * [self percentPresented];
 }
 
-/* -_cornerRadii 0x188f930e8, for a display whose corners are square (every device of this
-   release): the "match the display" value is 0. _dismissCornerRadius is the automatic value,
-   so the metrics' 10. */
+/* -_cornerRadii 0x188f930e8, where "match the display" is the display's corner radius
+   (0x188f93318). _dismissCornerRadius is the automatic value, so the metrics' 10. */
 - (void)getTopCornerRadius:(CGFloat *)top bottomCornerRadius:(CGFloat *)bottom
 {
-    CGFloat automatic = UISheetPresentationControllerAutomaticDimension, display = 0;
+    CGFloat automatic = UISheetPresentationControllerAutomaticDimension, display = charon_sheet_display_corner_radius(_container.window);
     CGFloat dismiss = charon_sheet_corner_radius;
     CGFloat own = _root || _preferredCornerRadius == automatic ? charon_sheet_corner_radius : _preferredCornerRadius;
     CGFloat childRadius = _child ? (_child.preferredCornerRadius == automatic ? charon_sheet_corner_radius : _child.preferredCornerRadius) : own;
