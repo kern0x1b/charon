@@ -9,18 +9,21 @@
     int64_t _charonUniqueID;
     CMVideoDimensions _charonPhotoDimensions;
     CMVideoDimensions _charonPreviewDimensions;
+    CMVideoDimensions _charonEmbeddedThumbnailDimensions;
     BOOL _charonFlashEnabled;
     BOOL _charonStillImageStabilizationEnabled;
 }
 
 - (instancetype)initCharonWithUniqueID:(int64_t)uniqueID photoDimensions:(CMVideoDimensions)photoDimensions
-                     previewDimensions:(CMVideoDimensions)previewDimensions flashEnabled:(BOOL)flashEnabled
+                     previewDimensions:(CMVideoDimensions)previewDimensions
+           embeddedThumbnailDimensions:(CMVideoDimensions)embeddedThumbnailDimensions flashEnabled:(BOOL)flashEnabled
         stillImageStabilizationEnabled:(BOOL)stillImageStabilizationEnabled
 {
     if ((self = [super init])) {
         _charonUniqueID = uniqueID;
         _charonPhotoDimensions = photoDimensions;
         _charonPreviewDimensions = previewDimensions;
+        _charonEmbeddedThumbnailDimensions = embeddedThumbnailDimensions;
         _charonFlashEnabled = flashEnabled;
         _charonStillImageStabilizationEnabled = stillImageStabilizationEnabled;
     }
@@ -89,14 +92,16 @@
     return 1;
 }
 
-// 11.0, 12.0, 13.0: no embedded thumbnail, RAW thumbnail, portrait effects matte or semantic segmentation matte is
-// written by this capture, which delivers the still image output's own photo. What the header answers for one not
-// requested, { 0, 0 }, is what is delivered.
+// 11.0: the thumbnail the capture embeds in the photo's Exif when the settings ask for one, { 0, 0 } when they do not
+// (the header).
 - (CMVideoDimensions)embeddedThumbnailDimensions
 {
-    return (CMVideoDimensions){0, 0};
+    return _charonEmbeddedThumbnailDimensions;
 }
 
+// 12.0, 13.0: no RAW thumbnail, portrait effects matte or semantic segmentation matte is written by this capture, which
+// delivers the still image output's own photo. What the header answers for one not requested, { 0, 0 }, is what is
+// delivered.
 - (CMVideoDimensions)rawEmbeddedThumbnailDimensions
 {
     return (CMVideoDimensions){0, 0};

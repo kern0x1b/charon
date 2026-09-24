@@ -2,6 +2,7 @@
 #import <ImageIO/ImageIO.h>
 #import <UIKit/UIKit.h>
 #import "check.h"
+#import "jpeg-exif.h"
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
@@ -12,7 +13,8 @@
 // one, the flash modes, and the resolved settings every capture reports. Built with AVCapturePhotoOutput.m and the
 // zoom's files, as the library carries them. A process of its own: the camera needs no permission on 6.1.3.
 // The camera's flash is held Off; captures with the flash On and Auto run only when asked, `photooutput <log> flash-on`,
-// as they fire the flash of a device someone may be using (Auto in a dark scene as On).
+// as they fire the flash of a device someone may be using (Auto in a dark scene as On). `photooutput <log> flash-auto`
+// takes the one capture in Auto alone, and puts the camera back to Off without another.
 
 @interface CharonPhotoCatcher : NSObject <AVCapturePhotoCaptureDelegate>
 @property (atomic) BOOL finished;
@@ -26,7 +28,10 @@
 @property (atomic, strong) NSError *error;
 // The resolved settings each callback was given, and what they answered at willBeginCapture and at the photo.
 @property (atomic, strong) NSMutableArray *resolvedSeen, *callbacks;
-@property (atomic) CMVideoDimensions beganPhoto, beganPreview, resolvedPhoto, resolvedPreview, resolvedRaw, resolvedLive;
+@property (atomic) CMVideoDimensions beganPhoto, beganPreview, resolvedPhoto, resolvedPreview, resolvedRaw, resolvedLive, resolvedThumbnail;
+// A JPEG photo as files: the sample buffer's own bytes, the port's +JPEGPhotoDataRepresentation... of it without and with
+// its preview, and the release's +jpegStillImageNSDataRepresentation: of it.
+@property (atomic, strong) NSData *photoBytes, *photoJPEG, *photoJPEGWithPreview, *releaseJPEG;
 @property (atomic) BOOL beganFlash, resolvedFlash, resolvedStabilized;
 @property (atomic) int64_t resolvedID;
 // The Exif Flash tag the release attached to the still, -1 when there is none.
@@ -74,15 +79,33 @@ static double difference(CVPixelBufferRef preview, CGImageRef photo, BOOL flippe
     CGContextDrawImage(context, CGRectMake(0, 0, width, height), photo);
     CGContextRelease(context);
     CVPixelBufferLockBaseAddress(preview, kCVPixelBufferLock_ReadOnly);
-    const uint8_t *base = CVPixelBufferGetBaseAddress(preview), *ours = drawn.bytes;
-    size_t row = CVPixelBufferGetBytesPerRow(preview);
+    const uint8_t *ours = drawn.bytes;
     double total = 0;
-    for (size_t y = 0; y < height; y++)
-        for (size_t x = 0; x < width; x++)
-            for (int c = 0; c < 3; c++)
-                total += abs((int)base[y * row + x * 4 + c] - (int)ours[(y * width + x) * 4 + c]);
+    OSType format = CVPixelBufferGetPixelFormatType(preview);
+    if (format == kCVPixelFormatType_32BGRA) {
+        const uint8_t *base = CVPixelBufferGetBaseAddress(preview);
+        size_t row = CVPixelBufferGetBytesPerRow(preview);
+        for (size_t y = 0; y < height; y++)
+            for (size_t x = 0; x < width; x++)
+                for (int c = 0; c < 3; c++)
+                    total += abs((int)base[y * row + x * 4 + c] - (int)ours[(y * width + x) * 4 + c]);
+        total /= 3;
+    } else {
+        // A 4:2:0 preview: its luma plane against the luma of the probe's drawing by ITU-R BT.601 (0.299 R + 0.587 G +
+        // 0.114 B), in levels of 255 over the preview's range (16...235 for video range, 0...255 for full range).
+        BOOL full = format == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange;
+        const uint8_t *luma = CVPixelBufferGetBaseAddressOfPlane(preview, 0);
+        size_t row = CVPixelBufferGetBytesPerRowOfPlane(preview, 0);
+        for (size_t y = 0; y < height; y++)
+            for (size_t x = 0; x < width; x++) {
+                const uint8_t *pixel = ours + (y * width + x) * 4;
+                double expected = 0.299 * pixel[2] + 0.587 * pixel[1] + 0.114 * pixel[0];
+                double measured = full ? luma[y * row + x] : (luma[y * row + x] - 16) * 255.0 / 219;
+                total += fabs(measured - expected);
+            }
+    }
     CVPixelBufferUnlockBaseAddress(preview, kCVPixelBufferLock_ReadOnly);
-    return total / (width * height * 3);
+    return total / (width * height);
 }
 
 // How much the picture varies: the mean distance of a channel from its mean, in levels of 255. A picture of one
@@ -128,6 +151,12 @@ static double spread(CVPixelBufferRef preview)
     self.beganFlash = resolved.flashEnabled;
 }
 
+- (void)captureOutput:(AVCapturePhotoOutput *)output willCapturePhotoForResolvedSettings:(AVCaptureResolvedPhotoSettings *)resolved
+{
+    [self.resolvedSeen addObject:resolved];
+    [self.callbacks addObject:@"willCapture"];
+}
+
 - (void)captureOutput:(AVCapturePhotoOutput *)output didCapturePhotoForResolvedSettings:(AVCaptureResolvedPhotoSettings *)resolved
 {
     [self.resolvedSeen addObject:resolved];
@@ -152,6 +181,7 @@ static double spread(CVPixelBufferRef preview)
     self.resolvedPreview = resolved.previewDimensions;
     self.resolvedRaw = resolved.rawPhotoDimensions;
     self.resolvedLive = resolved.livePhotoMovieDimensions;
+    self.resolvedThumbnail = resolved.embeddedThumbnailDimensions;
     self.resolvedFlash = resolved.flashEnabled;
     self.resolvedStabilized = resolved.stillImageStabilizationEnabled;
     CFDictionaryRef exif = photo ? CMGetAttachment(photo, kCGImagePropertyExifDictionary, NULL) : NULL;
@@ -160,6 +190,15 @@ static double spread(CVPixelBufferRef preview)
     BOOL jpeg = NO, bgra = NO;
     CGImageRef image = photo ? create_photo_image(photo, &jpeg, &bgra) : NULL;
     self.photoIsJPEG = jpeg;
+    CMBlockBufferRef block = jpeg ? CMSampleBufferGetDataBuffer(photo) : NULL;
+    if (block) {
+        NSMutableData *bytes = [NSMutableData dataWithLength:CMBlockBufferGetDataLength(block)];
+        if (CMBlockBufferCopyDataBytes(block, 0, bytes.length, bytes.mutableBytes) == kCMBlockBufferNoErr)
+            self.photoBytes = bytes;
+        self.photoJPEG = [AVCapturePhotoOutput JPEGPhotoDataRepresentationForJPEGSampleBuffer:photo previewPhotoSampleBuffer:NULL];
+        self.photoJPEGWithPreview = preview ? [AVCapturePhotoOutput JPEGPhotoDataRepresentationForJPEGSampleBuffer:photo previewPhotoSampleBuffer:preview] : nil;
+        self.releaseJPEG = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:photo];
+    }
     self.photoIsBGRA = bgra;
     self.photoWidth = image ? CGImageGetWidth(image) : 0;
     self.photoHeight = image ? CGImageGetHeight(image) : 0;
@@ -169,10 +208,11 @@ static double spread(CVPixelBufferRef preview)
         self.previewWidth = CVPixelBufferGetWidth(pixels);
         self.previewHeight = CVPixelBufferGetHeight(pixels);
         self.previewFormat = CVPixelBufferGetPixelFormatType(pixels);
-        if (image && self.previewFormat == kCVPixelFormatType_32BGRA) {
+        if (image) {
             self.previewDifference = difference(pixels, image, NO);
             self.flippedDifference = difference(pixels, image, YES);
-            self.previewSpread = spread(pixels);
+            if (self.previewFormat == kCVPixelFormatType_32BGRA)
+                self.previewSpread = spread(pixels);
         }
     }
     if (image)
@@ -204,7 +244,7 @@ static BOOL same_dimensions(CMVideoDimensions a, CMVideoDimensions b)
 static void check_resolved(CharonPhotoCatcher *c, AVCapturePhotoSettings *settings)
 {
     AVCaptureResolvedPhotoSettings *first = c.resolvedSeen.firstObject;
-    BOOL one = c.resolvedSeen.count == 4;
+    BOOL one = c.resolvedSeen.count == 5;
     for (id seen in c.resolvedSeen)
         one = one && seen == first;
     CMVideoDimensions photo = c.resolvedPhoto, preview = c.resolvedPreview, began = c.beganPhoto;
@@ -212,12 +252,13 @@ static void check_resolved(CharonPhotoCatcher *c, AVCapturePhotoSettings *settin
            one, c.resolvedSeen.count, c.resolvedID, settings.uniqueID, photo.width, photo.height, began.width, began.height, preview.width, preview.height,
            c.resolvedRaw.width, c.resolvedRaw.height, c.resolvedLive.width, c.resolvedLive.height, c.resolvedFlash, c.resolvedStabilized);
     CHECK(one && c.resolvedID == settings.uniqueID, "every callback of a capture gets one resolved settings, under the request's unique ID");
-    CHECK_EQUAL(c.callbacks, (@[@"willBegin", @"didCapture", @"didFinishProcessing", @"didFinishCapture"]), "in the header's order");
+    CHECK_EQUAL(c.callbacks, (@[@"willBegin", @"willCapture", @"didCapture", @"didFinishProcessing", @"didFinishCapture"]), "in the header's order");
     CHECK(photo.width == (int32_t)c.photoWidth && photo.height == (int32_t)c.photoHeight, "its photo dimensions are the photo's");
     CHECK(same_dimensions(preview, (CMVideoDimensions){(int32_t)c.previewWidth, (int32_t)c.previewHeight}), "its preview dimensions the preview's, 0x0 with none");
     CHECK(same_dimensions(began, photo) && same_dimensions(c.beganPreview, preview) && c.beganFlash == c.resolvedFlash, "and it says both already at willBeginCapture");
     CHECK(same_dimensions(c.resolvedRaw, (CMVideoDimensions){0, 0}) && same_dimensions(c.resolvedLive, (CMVideoDimensions){0, 0}), "no RAW photo, no Live Photo movie");
     CHECK(!c.resolvedStabilized, "no still image stabilization on this release");
+    CHECK(settings.embeddedThumbnailPhotoFormat || same_dimensions(c.resolvedThumbnail, (CMVideoDimensions){0, 0}), "no embedded thumbnail when none is asked");
     CHECK(settings.flashMode != AVCaptureFlashModeOff || !c.resolvedFlash, "the flash is not enabled when it is asked Off");
 }
 
@@ -287,7 +328,8 @@ int main(int argc, char **argv)
         if (argc > 1)
             charon_log_to(@(argv[1]));
         AVCapturePhotoSettings *probe = [AVCapturePhotoSettings photoSettings];
-        CHECK_EQUAL(probe.availablePreviewPhotoPixelFormatTypes, @[@(kCVPixelFormatType_32BGRA)], "32BGRA is the preview format offered");
+        NSArray *previewFormats = @[@(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange), @(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange), @(kCVPixelFormatType_32BGRA)];
+        CHECK_EQUAL(probe.availablePreviewPhotoPixelFormatTypes, previewFormats, "the preview formats offered are the host's: 420f, 420v, 32BGRA");
 
         AVCaptureSession *session = [[AVCaptureSession alloc] init];
         session.sessionPreset = AVCaptureSessionPresetPhoto;
@@ -295,7 +337,7 @@ int main(int argc, char **argv)
         [session addInput:input];
         AVCaptureDevice *camera = input.device;
         AVCaptureFlashMode cameraFlash = camera.flashMode;
-        BOOL flashOn = argc > 2 && strcmp(argv[2], "flash-on") == 0;
+        BOOL flashOn = argc > 2 && strcmp(argv[2], "flash-on") == 0, flashAuto = argc > 2 && strcmp(argv[2], "flash-auto") == 0;
         if (camera.hasFlash && [camera lockForConfiguration:NULL]) {
             camera.flashMode = AVCaptureFlashModeOff;
             [camera unlockForConfiguration];
@@ -321,7 +363,7 @@ int main(int argc, char **argv)
         CHECK_EQUAL(NSStringFromClass([output class]), @"AVCapturePhotoOutput", "the photo output keeps its class's name");
         CHECK([session.outputs containsObject:output], "and the session's outputs hold it");
 
-        NSString *wrongFormat = raised(^{ capture(output, @{(__bridge NSString *)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange)}); });
+        NSString *wrongFormat = raised(^{ capture(output, @{(__bridge NSString *)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_422YpCbCr8)}); });
         CHECK([wrongFormat hasPrefix:@"NSInvalidArgumentException"], "a preview format not offered raises");
         NSString *halfSize = raised(^{ capture(output, @{(__bridge NSString *)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32BGRA),
                                                          (__bridge NSString *)kCVPixelBufferWidthKey: @160}); });
@@ -348,6 +390,17 @@ int main(int argc, char **argv)
         CHECK(same_aspect(asked), "and the photo's aspect ratio is kept, not the one asked");
         CHECK(drawn_from_photo(asked), "and it is the photo at that size");
 
+        // The 4:2:0 previews, converted from the port's drawing by BT.601: the format asked, at the display's size, and
+        // their luma the photo's, the right way up.
+        for (NSNumber *format in @[@(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange), @(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]) {
+            CharonPhotoCatcher *ycbcr = capture(output, @{(__bridge NSString *)kCVPixelBufferPixelFormatTypeKey: format});
+            printf("preview %08x: %zux%zu format %08x, luma against the photo %.2f, upside down %.2f\n", format.unsignedIntValue, ycbcr.previewWidth,
+                   ycbcr.previewHeight, (unsigned)ycbcr.previewFormat, ycbcr.previewDifference, ycbcr.flippedDifference);
+            CHECK(ycbcr.finished && ycbcr.error == nil && ycbcr.hadPreview && ycbcr.previewFormat == format.unsignedIntValue, "a 4:2:0 preview comes in the format asked");
+            CHECK(ycbcr.previewWidth == full.previewWidth && ycbcr.previewHeight == full.previewHeight, "at the same size as the 32BGRA one");
+            CHECK(drawn_from_photo(ycbcr), "and its luma is the photo's, the right way up");
+        }
+
         CharonPhotoCatcher *huge = capture(output, @{(__bridge NSString *)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32BGRA),
                                                      (__bridge NSString *)kCVPixelBufferWidthKey: @100000, (__bridge NSString *)kCVPixelBufferHeightKey: @100000});
         CHECK(huge.hadPreview && MAX(huge.previewWidth, huge.previewHeight) == MAX(full.previewWidth, full.previewHeight), "a size past the display is held to it");
@@ -368,6 +421,86 @@ int main(int argc, char **argv)
         CHECK(MAX(raw.previewWidth, raw.previewHeight) == 320 && same_aspect(raw) && drawn_from_photo(raw), "whose preview is the photo at the size asked");
         CharonPhotoCatcher *again = capture(output, nil);
         CHECK(again.finished && again.photoIsJPEG, "the next settings without a format take a JPEG again");
+
+        // The embedded thumbnail: asked in a JPEG's settings, a JPEG in IFD1 of the photo's own Exif at the resolved
+        // dimensions (the larger side asked, the host's 160 with none, the photo's aspect ratio), read here by the Exif
+        // layout, and kept in the port's JPEG of the photo; with the preview given, the port's JPEG holds the preview
+        // no longer than 160 on its longest side, as the host writes it. What the release's own JPEG does is printed.
+        CHECK_EQUAL([probe availableEmbeddedThumbnailPhotoCodecTypes], @[AVVideoCodecJPEG], "a JPEG photo offers a JPEG thumbnail");
+        CHECK_EQUAL([uncompressed availableEmbeddedThumbnailPhotoCodecTypes], @[], "an uncompressed one none");
+        CHECK([raised(^{ uncompressed.embeddedThumbnailPhotoFormat = @{AVVideoCodecKey: AVVideoCodecJPEG}; }) hasPrefix:@"NSInvalidArgumentException"],
+              "and a thumbnail asked of it raises");
+        NSString *layout = @"IFD1 0103/3/1=6 011a/5/1=72/1 011b/5/1=72/1 0128/3/1=2 0201/4/1=set 0202/4/1=set next 0;";
+        NSArray *thumbnailFormats = @[@{AVVideoCodecKey: AVVideoCodecJPEG}, @{AVVideoCodecKey: AVVideoCodecJPEG, AVVideoWidthKey: @320, AVVideoHeightKey: @320}];
+        AVCapturePhotoSettings *captured = nil;
+        for (NSDictionary *thumbnailFormat in thumbnailFormats) {
+            AVCapturePhotoSettings *thumbnailed = [AVCapturePhotoSettings photoSettings];
+            thumbnailed.embeddedThumbnailPhotoFormat = thumbnailFormat;
+            thumbnailed.metadata = @{(__bridge NSString *)kCGImagePropertyExifDictionary: @{(__bridge NSString *)kCGImagePropertyExifUserComment: @"photooutput10"}};
+            CharonPhotoCatcher *t = capture_with(output, thumbnailed, @{(__bridge NSString *)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32BGRA)});
+            captured = thumbnailed;
+            CMVideoDimensions dimensions = t.resolvedThumbnail;
+            size_t longest = thumbnailFormat[AVVideoWidthKey] ? 320 : 160;
+            double scale = MIN(1.0, 160.0 / MAX(t.previewWidth, t.previewHeight));
+            NSString *expected = [NSString stringWithFormat:@"%@ thumbnail %dx%d", layout, dimensions.width, dimensions.height];
+            NSString *withPreview = [NSString stringWithFormat:@"%@ thumbnail %ldx%ld", layout, lround(t.previewWidth * scale), lround(t.previewHeight * scale)];
+            NSString *own = jpeg_contents(t.photoBytes), *port = jpeg_contents(t.photoJPEG), *release = jpeg_contents(t.releaseJPEG);
+            NSString *portWithPreview = jpeg_contents(t.photoJPEGWithPreview);
+            printf("thumbnail %s: resolved %dx%d\n  photo's bytes: %s\n  port's JPEG: %s\n  port's JPEG with the preview: %s\n  release's JPEG: %s\n",
+                   [[thumbnailFormat description] stringByReplacingOccurrencesOfString:@"\n" withString:@""].UTF8String, dimensions.width, dimensions.height,
+                   own.UTF8String, port.UTF8String, portWithPreview.UTF8String, release.UTF8String);
+            CHECK(t.finished && t.error == nil && t.photoIsJPEG, "a photo asked with a thumbnail comes");
+            CHECK((size_t)MAX(dimensions.width, dimensions.height) == longest && labs((long)dimensions.width * (long)t.photoHeight - (long)dimensions.height * (long)t.photoWidth) < (long)MAX(t.photoWidth, t.photoHeight),
+                  "its thumbnail resolves to the longest side asked and the photo's aspect ratio");
+            CHECK([own hasSuffix:expected], "the photo's own JPEG holds it in IFD1 of its Exif, at those dimensions");
+            CHECK([port hasSuffix:expected], "and the port's JPEG of the photo keeps it");
+            NSString *picture = [NSString stringWithFormat:@"%zux%zu comment photooutput10;", t.photoWidth, t.photoHeight];
+            CHECK([port hasPrefix:picture], "the port's JPEG carries the settings' metadata");
+            CHECK([release hasPrefix:picture], "and so does the release's JPEG of the photo");
+            CHECK([portWithPreview hasSuffix:withPreview], "with the preview given, the port's JPEG holds the preview, 160 on its longest side");
+        }
+
+        // Requests the header refuses on this output raise before anything is captured.
+        NSDictionary *refusals = @{
+            @"a RAW photo": ^{ [output capturePhotoWithSettings:[AVCapturePhotoSettings photoSettingsWithRawPixelFormatType:kCVPixelFormatType_14Bayer_RGGB]
+                                                       delegate:[CharonPhotoCatcher new]]; },
+            @"a Live Photo movie": ^{
+                AVCapturePhotoSettings *live = [AVCapturePhotoSettings photoSettings];
+                live.livePhotoMovieFileURL = [NSURL fileURLWithPath:@"/var/tmp/photooutput10-live.mov"];
+                [output capturePhotoWithSettings:live delegate:[CharonPhotoCatcher new]]; },
+            @"depth data": ^{
+                AVCapturePhotoSettings *depth = [AVCapturePhotoSettings photoSettings];
+                depth.depthDataDeliveryEnabled = YES;
+                [output capturePhotoWithSettings:depth delegate:[CharonPhotoCatcher new]]; },
+            @"a quality above the output's": ^{
+                AVCapturePhotoSettings *quality = [AVCapturePhotoSettings photoSettings];
+                quality.photoQualityPrioritization = AVCapturePhotoQualityPrioritizationQuality;
+                [output capturePhotoWithSettings:quality delegate:[CharonPhotoCatcher new]]; },
+            @"a settings object used twice": ^{ [output capturePhotoWithSettings:captured delegate:[CharonPhotoCatcher new]]; },
+            @"a thumbnail width without a height": ^{
+                AVCapturePhotoSettings *half = [AVCapturePhotoSettings photoSettings];
+                half.embeddedThumbnailPhotoFormat = @{AVVideoCodecKey: AVVideoCodecJPEG, AVVideoWidthKey: @320};
+                [output capturePhotoWithSettings:half delegate:[CharonPhotoCatcher new]]; },
+            @"a delegate without the photo callback": ^{ [output capturePhotoWithSettings:[AVCapturePhotoSettings photoSettings] delegate:(id)[NSObject new]]; },
+        };
+        for (NSString *refusal in refusals) {
+            NSString *answer = raised(refusals[refusal]);
+            printf("refused, %s: %s\n", refusal.UTF8String, answer.UTF8String);
+            CHECK([answer hasPrefix:@"NSInvalidArgumentException"], "a request the output cannot take raises");
+        }
+
+        // With the session running, settings are prepared at once, and the photo codec is the still image output's JPEG.
+        __block int preparedCalls = 0;
+        __block BOOL preparedAnswer = NO;
+        [output setPreparedPhotoSettingsArray:@[[AVCapturePhotoSettings photoSettings]] completionHandler:^(BOOL prepared, NSError *error) {
+            preparedCalls++;
+            preparedAnswer = prepared;
+        }];
+        for (int i = 0; i < 100 && preparedCalls == 0; i++)
+            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
+        printf("prepared: %d calls, answer %d; photo codecs %s\n", preparedCalls, preparedAnswer, [[output.availablePhotoCodecTypes componentsJoinedByString:@" "] UTF8String]);
+        CHECK(preparedCalls == 1 && preparedAnswer, "with the session running, prepared settings are answered YES, once");
+        CHECK_EQUAL(output.availablePhotoCodecTypes, @[AVVideoCodecJPEG], "the photo codec offered is the still image output's JPEG");
 
         // The zoom of iOS 7 over the still image connection's own scale and crop: the photo output is zoomed as any
         // still image output is, and still captures.
@@ -390,6 +523,33 @@ int main(int argc, char **argv)
             printf("zoom: this camera does not scale and crop its stills\n");
         }
 
+        // The scene: with settings monitored for Auto, their mode is on the camera and isFlashScene is the camera's own
+        // flashActive, once it has settled (0.03 s after the mode is set on the 4S, facts); with Off, NO. Nothing is
+        // captured, so the flash does not fire.
+        if (camera.hasFlash) {
+            AVCapturePhotoSettings *monitored = [AVCapturePhotoSettings photoSettings];
+            monitored.flashMode = AVCaptureFlashModeAuto;
+            output.photoSettingsForSceneMonitoring = monitored;
+            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.5]];
+            BOOL scene = output.isFlashScene, active = camera.isFlashActive;
+            AVCaptureFlashMode autoMode = camera.flashMode;
+            // A capture with the flash Off (it does not fire) takes its own mode onto the camera, and the monitored
+            // one comes back after it.
+            AVCapturePhotoSettings *unlit = [AVCapturePhotoSettings photoSettings];
+            unlit.flashMode = AVCaptureFlashModeOff;
+            CharonPhotoCatcher *between = capture_with(output, unlit, nil);
+            AVCaptureFlashMode afterCapture = camera.flashMode;
+            monitored.flashMode = AVCaptureFlashModeOff;
+            output.photoSettingsForSceneMonitoring = monitored;
+            printf("scene: monitored Auto, camera mode %ld, flashActive %d, isFlashScene %d; monitored Off, camera mode %ld, isFlashScene %d\n",
+                   (long)autoMode, active, scene, (long)camera.flashMode, output.isFlashScene);
+            CHECK(autoMode == AVCaptureFlashModeAuto && scene == active, "monitored for Auto, the scene is the camera's own flashActive");
+            CHECK(camera.flashMode == AVCaptureFlashModeOff && !output.isFlashScene, "monitored for Off, the camera is Off and no flash scene");
+            printf("scene: a capture Off while monitored for Auto: finished %d, camera mode after it %ld\n", between.finished, (long)afterCapture);
+            CHECK(between.finished && afterCapture == AVCaptureFlashModeAuto, "after a capture the camera is back on the monitored mode");
+            output.photoSettingsForSceneMonitoring = nil;
+        }
+
         // The flash: the header offers the modes of the camera behind the output, Off, On and Auto for a camera with a
         // flash and Off alone for one without (the iPad 2). A capture takes its settings' mode onto the camera, where the
         // release's still image output reads it, and a photo still comes; the resolved settings say the flash is enabled
@@ -402,7 +562,8 @@ int main(int argc, char **argv)
         printf("flash: camera has one %d, modes offered %s\n", camera.hasFlash, [[output.supportedFlashModes componentsJoinedByString:@" "] UTF8String]);
         CHECK_EQUAL(flashModes, cameraModes, "the flash modes offered are the camera's");
         if (camera.hasFlash) {
-            NSArray *modes = flashOn ? @[@(AVCaptureFlashModeOn), @(AVCaptureFlashModeAuto), @(AVCaptureFlashModeOff)] : @[@(AVCaptureFlashModeOff)];
+            NSArray *modes = flashOn ? @[@(AVCaptureFlashModeOn), @(AVCaptureFlashModeAuto), @(AVCaptureFlashModeOff)]
+                           : flashAuto ? @[@(AVCaptureFlashModeAuto)] : @[@(AVCaptureFlashModeOff)];
             for (NSNumber *mode in modes) {
                 AVCapturePhotoSettings *flash = [AVCapturePhotoSettings photoSettings];
                 flash.flashMode = mode.integerValue;
@@ -414,7 +575,13 @@ int main(int argc, char **argv)
                 CHECK(lit.stillFlash >= 0, "the still says in its Exif whether the flash fired");
                 CHECK(lit.resolvedFlash == (lit.stillFlash >= 0 && (lit.stillFlash & 1)), "and the resolved settings say the same");
             }
-            if (!flashOn)
+            if (flashAuto && [camera lockForConfiguration:NULL]) {
+                camera.flashMode = AVCaptureFlashModeOff;
+                [camera unlockForConfiguration];
+            }
+            if (flashAuto)
+                CHECK(camera.flashMode == AVCaptureFlashModeOff, "after the Auto capture the camera is Off again, before any other capture");
+            if (!flashOn && !flashAuto)
                 printf("flash: the On and Auto captures are not run; `flash-on` runs them\n");
         }
         [session beginConfiguration];
