@@ -2,80 +2,116 @@
 
 Source: SDK 16.4's own JSContext.h/JSValue.h/JSVirtualMachine.h/JSManagedValue.h/JSExport.h for the
 contract; `coordination/corpus/caches/6.0.tsv` for what iOS 6 itself exports; `tests/backports/host/jscontext`
-for the sixteen checks this was measured against on the host (renamed at compile time, since the classes
-share their names with the host's own JavaScriptCore.framework, which this file's checks are not a
-differential against - there is no host JSContext to hold the backport to, only the header's contract).
+for behaviour. That test is a differential: the same `checks.m` runs first against the host's own
+JavaScriptCore.framework, which ships these four classes and is the oracle every expectation has to pass,
+then against the backport, renamed at compile time and linked over the host's C API. Both answer 105 of
+105.
+
+**Device-unverified.** The host runs a modern engine; the release's is the 2012 one. Until `checks.m` has
+run on an iOS 6 device (iPad 2) as a device binary, everything below that depends on the engine - above all
+the Promise script, the weak object map and private properties - is measured on the host only.
 
 ## What iOS 6 already carries
 
 `facts/JavaScriptCore/JavaScriptCoreExports.md` said thirteen C API names, from an iPad 2 asked one by one
 with `dlsym` after every framework had loaded. That undercounts: `coordination/corpus/caches/6.0.tsv`, built
-from the release's own export table rather than a running process's memory, names 89 `JS`-prefixed symbols in
-the framework, including `JSEvaluateScript`, `JSObjectCallAsFunction`, `JSObjectSetProperty`,
-`JSClassCreate` and the rest of what a real bridge needs - not just the thirteen the device probe happened to
-ask for and find loaded. The dlsym probe is not wrong about what it found; it is silent about what it never
-asked. `JavaScriptCoreExports.md` is corrected alongside this file.
+from the release's own export table rather than a running process's memory, names 93 `JS`-prefixed symbols in
+the framework (`awk -F'\t' '$2=="JavaScriptCore" && $1~/^_JS/' 6.0.tsv | sort -u | wc -l`), including
+`JSEvaluateScript`, `JSObjectCallAsFunction`, `JSObjectSetProperty`, `JSClassCreate` and the rest of what a
+real bridge needs - not just the thirteen the device probe happened to ask for and find loaded. The dlsym
+probe is not wrong about what it found; it is silent about what it never asked.
+
+## Private C API this uses, and why
+
+Every call below is exported by the release but declared in no public header - WebKit's own private
+headers, which the release's own Objective-C bridge (iOS 7 and later) is built on. The public C API has no
+equivalent, so there is no public mechanism to prefer:
+
+| Call | Declared in | Why nothing public does it | Exported by (6.0.tsv ladder) |
+| --- | --- | --- | --- |
+| `JSWeakObjectMapCreate/Set/Get/Remove` | `JSWeakObjectMapRefPrivate.h` | the only reference to a JavaScript object the collector clears; `JSValueProtect` only keeps. JSManagedValue, the one-wrapper-per-object cache and the per-global Promise constructor need a reference that does not keep | 6.0, 7.0.1, 10.3.4, 12.0, 16.0, 18.0 |
+| `JSObjectGet/Set/DeletePrivateProperty` | `JSObjectRefPrivate.h` | a property script cannot see, enumerate or change: a promise's state, a managed-reference node | same six |
+| `_protocol_getMethodTypeEncoding` (libobjc) | objc-runtime's private header | a JSExport method's extended type encoding - the class of each argument; `protocol_getMethodDescription` answers `@` for every class | same six |
+
+Measured with `grep "^<symbol>\t" coordination/corpus/caches/<release>.tsv` over 6.0, 7.0.1, 10.3.4, 12.0,
+16.0 and 18.0: every one is exported by all six. The host's own JavaScriptCore imports `__protocol_getMethodTypeEncoding` (and
+`__Block_signature`), `dyld_info -imports /System/Library/Frameworks/JavaScriptCore.framework/JavaScriptCore`:
+the release's bridge reads method encodings the same way. A block's signature is not on this list: it is read as the
+documented clang Block ABI lays it out (below), not through `_Block_signature`.
 
 ## The shape of the bridge
 
 Every one of the four classes is a wrapper over the C API the table above confirms: `JSVirtualMachine` a
 `JSContextGroupRef`, `JSContext` a `JSGlobalContextRef`, `JSValue` a `JSValueRef` (protected with
-`JSValueProtect` for its own lifetime, unprotected on dealloc), `JSManagedValue` a weak hold on a `JSValue`.
-Conversion between an Objective-C object and a `JSValueRef` follows the table JSValue.h itself documents -
-nil/NSNull/NSNumber/NSString/NSDictionary/NSArray/NSDate/NSBlock/id each get their own JavaScript shape,
-recursively for the two collection types.
+`JSValueProtect` for its own lifetime, unprotected on dealloc), `JSManagedValue` a GC-weak hold on the
+JavaScript value itself (JSManagedValue.m and JSVirtualMachine.m describe the graph). An Objective-C object
+boxed more than once in a context gets the one wrapper, as the release keeps one.
 
-## JSExport
+## Conversions
 
-A class conforming to a protocol that incorporates JSExport gets one JavaScript wrapper object, built once
-per Objective-C class (not per instance) by walking that protocol's own `@required` properties and instance
-methods with the Objective-C runtime - `protocol_copyPropertyList` and
-`protocol_copyMethodDescriptionList` - and caching the name-to-selector table. A property becomes a
-JavaScript accessor; an instance method becomes a callable function, its JavaScript name the default
-colon-stripping conversion the header describes unless `JSExportAs` names it something else. Calling either
-marshals arguments and the return value through the object's own `-methodSignatureForSelector:` and an
-`NSInvocation` - not a re-derivation of the protocol's own encoded types, so what is marshaled is what the
-class actually implements, superclass methods included. Supported types: id and Objective-C instance
-pointers, BOOL, the C integer types to 64 bits, float, double, and the four structs JSValue itself converts
-(CGPoint, CGRect, CGSize, NSRange). A method outside that set is still exported; calling it from JavaScript
-throws rather than reading an argument off the wrong-sized slot.
+Measured against the host's JavaScriptCore case by case and written as its JSContainerConvertor walks it
+(JSInternal.m, `Convert`):
 
-## Blocks as JavaScript functions
+- `-toObject`: undefined is nil and null NSNull at the top; a wrapped Objective-C object is itself; a `Date`
+  is an NSDate (an invalid one an NSDate of NaN); an array is read by its `length`, anything else - a
+  function, an Error, a RegExp, a boxed number included - as a dictionary of its enumerable property
+  names, inherited ones included. Inside a container null is NSNull; undefined and a hole are NSNull in an
+  array and left out of a dictionary. Every object is converted once: a cycle or a shared reference gives
+  back the same Objective-C object, and the walk uses a worklist, not recursion. A getter that throws is
+  left out and reported nowhere, as the host reports it nowhere.
+- `-toArray`/`-toDictionary`: any object is read as the container asked for (`{a:1}` is an empty array,
+  `[5,6]` is `{0:5, 1:6}`), undefined and null are nil, any other primitive is nil and a TypeError
+  "Cannot convert primitive to NSArray/NSDictionary" to the context's exceptionHandler.
+- `-toString`/`-toDouble`/`-toInt32`/`-toNumber`/`-toDate` that run a throwing `toString`/`valueOf` answer
+  nil/NaN/0/NaN/nil and send the exception to the exceptionHandler.
 
-An NSBlock is exported as a callable JavaScript function only when its own Objective-C type encoding, read
-with `_Block_signature` rather than assumed, shows every argument and the return value as object-pointer
-shaped. Checked types, not just checked counts: a block that takes a `double` or returns a `struct` is still
-wrapped, and throws in JavaScript when called, rather than reading a garbage value off an argument slot
-sized for a pointer. The invoke happens through the block literal's own `invoke` field - `{isa, flags,
-reserved, invoke, ...}` - not the block's own address, which is a struct pointer whose first bytes are `isa`,
-not code; that distinction cost one segfault before `tests/backports/host/jscontext` caught it.
+## Arguments by their declared class
 
-## What is simplified, named rather than hidden
+A block's or JSExport method's object argument is converted by the class its extended type encoding names
+(`@"NSString"`), as the release does - measured on the host for thirteen declared types against thirteen
+kinds of value: `JSValue *` receives the value itself (a missing argument is undefined); `id` receives
+`-toObject`; `NSString`, `NSNumber`, `NSDate`, `NSArray` and `NSDictionary` receive the matching `-to...`
+conversion; any other class receives the bridge's own wrapper of an instance of it, nil for undefined and
+null, and for anything else a TypeError "Argument does not match Objective-C Class" is thrown into the
+calling script before the block or method runs. A conversion that fails is thrown the same way.
+`+currentArguments` holds every JavaScript argument, not only the declared ones.
 
-- **`+currentContext`/`+currentThis`/`+currentCallee`/`+currentArguments`** answer from a pthread-local stack
-  of frames, pushed before and popped after a callback JavaScript makes into an exported block or JSExport
-  method - nested callbacks each get their own frame, popped in order.
-- **`-[JSVirtualMachine addManagedReference:withOwner:]`** keeps a plain retaining map from owner to the
-  objects registered under it, in place of the real engine's garbage collector scanning the same graph: a
-  reference lasts exactly as long as the owner given to add it does, not for as long as some other path also
-  reaches it. `JSManagedValue` itself holds its value weakly, so it reads back nil exactly when nothing else
-  - ARC's own hold, or this map for a registered owner - keeps the value alive, which is the same outcome the
-  real "conditionally retained" contract describes, reached by a different mechanism (measured in
-  `tests/backports/host/jscontext`: a JSManagedValue's value reads back nil once the only other strong
-  reference to it is dropped).
-- **`valueWithNewPromiseFromExecutor:`/`valueWithNewPromiseResolvedWithResult:`/
-  `valueWithNewPromiseRejectedWithReason:`/`valueWithNewSymbolFromDescription:`/`isSymbol`** are iOS 13,
-  past the iOS 7-10 band JSContext itself is scoped to. The header declares them unconditionally, so they are
-  implemented as safe no-ops - a promise that never settles, a plain string standing in for a symbol - rather
-  than left to raise "unrecognized selector" the first time code built against a later SDK reaches them.
+A block's encoding is read as the documented clang Block ABI (clang's `docs/Block-ABI-Apple.rst`) lays it
+out: `flags & BLOCK_HAS_SIGNATURE (1 << 30)`, then the descriptor's signature field, past `copy`/`dispose`
+when `BLOCK_HAS_COPY_DISPOSE (1 << 25)` is set. The compiler that built the block writes it, not the
+runtime. Measured on the host: the pointer read this way is the very pointer `_Block_signature` answers, for
+a global, a capturing and a primitive-typed block. A method's comes from `_protocol_getMethodTypeEncoding`
+(table above); a property setter's from the property's own `property_getAttributes`.
+
+A block taking a block, a `Class`, a `SEL`, a pointer, a struct other than CGPoint, CGSize, CGRect and
+NSRange, or a class the runtime does not know is no function to JavaScript (`typeof` answers "object"), as
+on the host (measured for a block, `Class`, a one-int struct; NSRange and seven `id` arguments are
+functions). The invoke goes through the block literal's own
+`invoke` field, not the block's own address, which is a struct pointer whose first bytes are `isa`.
+
+## What differs from the release, named
+
+- **A block taking or returning a C number or one of those four structs, or taking more than six arguments,** is a function the
+  release would call; this bridge calls blocks through their `invoke` pointer with object-sized arguments
+  only, so calling one throws a TypeError in JavaScript instead of reading a value off the wrong-sized slot.
+  JSExport methods have no such limit: they go through `NSInvocation`, which marshals every C type.
+- **The JavaScript class name of a wrapper** is the bridge's own (`[object CharonOpaqueObject]`,
+  `[object CharonExportObject]`) where the host shows the Objective-C class (`[object NSURL]`), so
+  `String(wrapper)` differs.
+- **Promises** are the release engine's own ES5 script (JSValue.m, `CharonPromiseSource`) over native
+  helpers; a context made by `-init` gets a global `Promise` (the iOS 6 global has none), a context adopted
+  from a web view page does not. Reactions run when the outermost Objective-C call into JavaScript returns;
+  jobs queued with no such call on the stack (script run through the C API directly, a page) run on the
+  thread's next run-loop turn. JSValue's property accessors do not drain the queue.
+  `valueWithNewPromiseResolvedWithResult:nil` resolves with undefined, where the host raises
+  NSInvalidArgumentException: an API must never crash its caller (COORDINATION.md section 2).
+- **Symbols**: the 2012 engine has none. `valueWithNewSymbolFromDescription:` notes a TypeError on the
+  context and answers undefined, and `isSymbol` answers NO - an honest refusal at the seam.
 - **`-name`** is kept locally rather than shown anywhere, since the release exports no
-  `JSGlobalContextSetName` to show it to; **`-isInspectable`** is stored and has no other effect, since there
-  is no Web Inspector on this release to show it to either.
-- **A plain Objective-C object that does not derive from one of the bridged types and does not conform to a
-  JSExport protocol** becomes an opaque JavaScript wrapper with no properties or methods - it round-trips
-  back through `-toObject`, but nothing more.
-- **`-isArray`** asks the context's own `Array.isArray` rather than the C API's `JSValueIsArray`, which iOS 6
-  does not export (introduced iOS 9); `-isDate` asks `-isInstanceOf:` against the context's own `Date`.
+  `JSGlobalContextSetName`; **`-isInspectable`** is stored and has no other effect. Whether iOS 6's
+  webinspectord could list a bare JSGlobalContext at all is not measured.
+- **`-isArray`** asks the context's own `Array.isArray` rather than `JSValueIsArray`, which iOS 6 does not
+  export (introduced iOS 9); `-isDate` asks `-isInstanceOf:` against the context's own `Date`.
 
 ## Two build-system defects this port's own files exposed, both in `modules/apple/backports.lua`
 

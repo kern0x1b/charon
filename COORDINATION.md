@@ -83,6 +83,7 @@ Each is an independent session with its own worktree. Domains do not overlap.
 | Backports · iOS 11–12 | same, 11.x–12.x, and AVKit 11+; also owns canon builds, test-suite health and the demand engine's LAUNCH-BLOCK ranking |
 | Backports · iOS 13–14 | same, 13.x–16.x; the gate's category check |
 | Backports · frameworks | AVFoundation, AVKit before 11, CoreMedia, VideoToolbox, CoreSpotlight, MediaPlayer, Security, Metal, CoreImage, ImageIO, CoreVideo, QuartzCore, CoreTelephony, Accelerate, GameController, Intents, FileProvider |
+| Backports · fixes by review of main | JavaScriptCore: JSContext, JSValue, JSVirtualMachine, JSManagedValue and JSExport over the release's own C API (`facts/JavaScriptCore/JSContext.md`) |
 | Backports · SceneKit/PassKit/Speech/ReplayKit | those four frameworks, including a real `SCNView` renderer for Telegram |
 | charon: app launch in the emulator | `xmake emulate launch`, the guest tools it needs, and the `charon@eidolon` package |
 | Telegram from source | the official Telegram built from its own source with this toolchain; no stubs, no recompiler |
