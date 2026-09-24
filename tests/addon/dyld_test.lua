@@ -74,7 +74,7 @@ function failures(opt)
     public_path_step(dyld, fixtures.scratch(), found)
     local folder = fixtures.scratch()
     local armv7 = cache(path.join(folder, "dyld_shared_cache_armv7"), "armv7", "_exported")
-    io.writefile(path.join(folder, "libSystem.tbd"), fixtures.system_stub("dyld_stub_binder, _exported, _nested, ___divti3, _arrived, _objc_storeStrong"))
+    io.writefile(path.join(folder, "libSystem.tbd"), fixtures.system_stub("dyld_stub_binder, _exported, _nested, ___divti3, _arrived, _objc_storeStrong, __availability_version_check"))
     io.writefile(path.join(folder, "libother.tbd"), fixtures.system_stub("_elsewhere", "/usr/lib/libother.dylib"))
     io.writefile(path.join(folder, "libgone.tbd"), fixtures.system_stub("_gone", "/usr/lib/libgone.dylib"))
     local clean = dylib(folder, opt.ld64, "clean-armv7", "armv7-apple-ios6.0", "_exported")
@@ -162,6 +162,61 @@ function failures(opt)
     local refused = fixtures.refusal(function () dyld.check(armv7, {emitted}) end) or ""
     if not refused:find("_objc_storeStrong", 1, true) or not refused:find("arclite", 1, true) then
         table.insert(found, "a weak import of a symbol the compiler emits, which the release lacks and the image does not carry, must be refused naming what should carry it: " .. refused)
+    end
+    -- a weak import the toolchain's own code calls only behind a test for it (apple.compat's GUARDED) is reported, released or not
+    io.writefile(path.join(folder, "availability.c"),
+                 "extern int _availability_version_check(unsigned, void *) __attribute__((weak_import));\n" ..
+                 "int use(void *versions) { return _availability_version_check ? _availability_version_check(1, versions) : 0; }\n")
+    local availability = fixtures.link(folder, opt.ld64, "availability.dylib", "armv7-apple-ios6.0", "availability.c", {"-dynamiclib"})
+    local toolchain_refused = fixtures.refusal(function () dyld.check(armv7, {availability}, nil, {release = true}) end)
+    if toolchain_refused then
+        table.insert(found, "a released image must not be refused a weak import the toolchain's own code guards: " .. toolchain_refused)
+    else
+        local warned = table.concat(dyld.check(armv7, {availability}, nil, {release = true}) or {}, "\n")
+        if not warned:find("__availability_version_check", 1, true) or not warned:find("compiler-rt", 1, true) then
+            table.insert(found, "a weak import the toolchain's own code guards must be reported, naming the code that guards it: " .. warned)
+        end
+    end
+    -- a copy of the runtime the program carries: a weak import its guard table records is reported, any other is refused
+    local copy = fixtures.link(folder, opt.ld64, "libcarried.dylib", "armv7-apple-ios6.0", "weak.c", {"-dynamiclib"})
+    local recorded = {["libcarried.dylib"] = {_arrived = "weak.c: use tests arrived before calling it"}}
+    local carried_refused = fixtures.refusal(function () dyld.check(armv7, {copy}, nil, {release = true, runtime = {copy}, guards = recorded}) end)
+    if carried_refused then
+        table.insert(found, "a carried runtime copy's weak import its guard table records must be reported, not refused: " .. carried_refused)
+    else
+        local warned = table.concat(dyld.check(armv7, {copy}, nil, {release = true, runtime = {copy}, guards = recorded}) or {}, "\n")
+        if not warned:find("libcarried.dylib", 1, true) or not warned:find("guard table records", 1, true) then
+            table.insert(found, "a carried runtime copy's recorded weak import must be named in a warning: " .. warned)
+        end
+    end
+    local unrecorded = fixtures.refusal(function () dyld.check(armv7, {copy}, nil, {release = true, runtime = {copy}, guards = {}}) end) or ""
+    if not unrecorded:find("_arrived", 1, true) or not unrecorded:find("records no guard", 1, true) then
+        table.insert(found, "a carried runtime copy's weak import its guard table does not record must be refused as the program's own: " .. unrecorded)
+    end
+    local unreleased = fixtures.refusal(function () dyld.check(armv7, {copy}, nil, {runtime = {copy}, guards = {}}) end)
+    if unreleased then
+        table.insert(found, "an image that is not released is told of an unrecorded weak import, not refused it: " .. unreleased)
+    end
+    -- the table and what the installed runtime weakly imports are compared both ways, and the toolchain's guard is not the table's
+    local guards = import("apple.runtime_guards", {rootdir = opt.modules, anonymous = true})
+    local problems = table.concat(guards.compare({["libswiftCore.dylib"] = {"__availability_version_check", "_charon_never_recorded"}}), "\n")
+    if not problems:find("_charon_never_recorded", 1, true) or problems:find("__availability_version_check", 1, true) then
+        table.insert(found, "the guard table must refuse an unrecorded weak import and leave the toolchain's own guard to apple.compat: " .. problems)
+    end
+    for library, symbols in pairs(guards.GUARDS) do
+        for symbol, source in pairs(symbols) do
+            if type(source) ~= "string" or not source:find("%S") then
+                table.insert(found, "apple.runtime_guards must cite a source for " .. symbol .. " in " .. library)
+            end
+        end
+        local present = {}
+        for symbol in pairs(symbols) do
+            table.insert(present, symbol)
+        end
+        local stale = table.concat(guards.compare({[library] = {}}), "\n")
+        if #present > 0 and not stale:find(present[1], 1, true) then
+            table.insert(found, "the guard table must name a row the installed library no longer imports: " .. stale)
+        end
     end
     io.writefile(path.join(folder, "band.c"), "int band(void) { return 0; }\n")
     for _, case in ipairs({{"_exported", nil}, {"_arrived", "_arrived (re-exported from /usr/lib/libSystem.B.dylib, which does not export _arrived)"}}) do

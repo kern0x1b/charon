@@ -1121,6 +1121,7 @@ function check(cachefile, binaries, folder, opt)
     end
     local missing, count, cache, dangling, ordering = missing_imports(cachefile, binaries, folder)
     local emitted = compat.emitted()
+    local tested = compat.guarded()
     local guarded = {}
     -- What another package provides is checked, and reported, but it is that package's image and not this one's to refuse.
     -- The images are named as the check names them, relative to the folder when there is one.
@@ -1147,9 +1148,15 @@ function check(cachefile, binaries, folder, opt)
             table.insert(missing, entry)
         end
     end
+    local unguarded = 0
     for _, entry in ipairs(dangling) do
         local by = emitted[entry[2]:sub(2)]
-        if by then
+        local guard = tested[entry[2]:sub(2)]
+        if guard then
+            unguarded = unguarded + 1
+            table.insert(warnings, string.format("%s weakly imports %s from %s, which the %s release it is checked against (%s) does not export; it is called only behind a test for it, in %s",
+                                                 entry[1], entry[2], entry[3] or "the flat namespace", cache.architecture, cachefile, guard))
+        elseif by then
             table.insert(missing, {entry[1], string.format("%s (weakly imported from %s, which this release does not export; the compiler emits this, so no version check stands in front of it and it reaches NULL; the image should carry it from %s)",
                                                            entry[2], entry[3] or "the flat namespace", by)})
         else
@@ -1157,7 +1164,6 @@ function check(cachefile, binaries, folder, opt)
             table.insert(guarded[entry[1]], entry[2])
         end
     end
-    local unguarded = 0
     for _, binary in ipairs(table.orderkeys(guarded)) do
         local names = guarded[binary]
         local guards = runtime[binary]

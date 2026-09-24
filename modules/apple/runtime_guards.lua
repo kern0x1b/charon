@@ -1,3 +1,5 @@
+import("compat")
+
 -- The guards of the Swift runtime's weak imports. A weak import that no library of the runtime and no library of the C++
 -- runtime it links exports is NULL on a release in the runtime's range that lacks it, and every one of them is called only
 -- behind a guard in the runtime's own source; this table names that guard for each, by library file name and then symbol
@@ -9,13 +11,19 @@
 GUARDS = {
 }
 
--- found: what dyld.unexported_weak_imports answers for the installed libraries. Returns what differs, one line each.
+-- found: what dyld.unexported_weak_imports answers for the installed libraries. Returns what differs, one line each. A weak
+-- import the toolchain's own code guards (apple.compat's GUARDED) is answered there, for every image, and not here.
 function compare(found)
     local problems = {}
+    local tested = compat.guarded()
     for _, library in ipairs(table.orderkeys(found)) do
         local recorded = GUARDS[library] or {}
         for _, symbol in ipairs(found[library]) do
-            if not recorded[symbol] then
+            if tested[symbol:sub(2)] then
+                if recorded[symbol] then
+                    table.insert(problems, string.format("apple.runtime_guards records %s for %s, which apple.compat's GUARDED already answers for every image", symbol, library))
+                end
+            elseif not recorded[symbol] then
                 table.insert(problems, string.format("%s weakly imports %s, which no library of the runtime exports, and apple.runtime_guards records no guard for it", library, symbol))
             end
         end

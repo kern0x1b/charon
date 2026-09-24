@@ -89,6 +89,25 @@ EMITTED = {
      symbols = {"_tlv_atexit", "_tlv_bootstrap"}}
 }
 
+-- Weak imports the toolchain's own code links into an image and calls only behind a test of the symbol, answering the same
+-- question without it: no release lacking the symbol reaches NULL, and none needs a copy of it.
+GUARDED = {
+    {by = "compiler-rt's os_version_check.c, which the toolchain links into every image with an #available or @available: " ..
+          "__isPlatformVersionAtLeast calls it only after testing the pointer it keeps, and below the release that has it reads " ..
+          "the ProductVersion of SystemVersion.plist, the release's own record of its version",
+     symbols = {"_availability_version_check"}}
+}
+
+function guarded()
+    local found = {}
+    for _, group in ipairs(GUARDED) do
+        for _, symbol in ipairs(group.symbols) do
+            found[symbol] = group.by
+        end
+    end
+    return found
+end
+
 function emitted()
     local found = {}
     for _, group in ipairs(EMITTED) do
