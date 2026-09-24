@@ -248,7 +248,9 @@ function report_selectors(source, binaries, architecture, folder, provided)
             local named = folder and path.relative(binary, folder) or binary
             local limit = option.get("verbose") and #missing or 12
             local shown = table.concat(table.slice(missing, 1, math.min(limit, #missing)), " ") .. (#missing > limit and string.format(" and %d more, all of them under xmake -v", #missing - limit) or "")
-            wprint("%s sends %d selector%s no class of the %s release it is checked against implements, which must run only behind respondsToSelector: or a version check: %s",
+            -- xmake shows only the first wprint of a whole run without -v, and one run reports every binary of a
+            -- build, so each binary's warning is printed as its own line, as dyld.check prints its warnings.
+            cprint("${color.warning}warning:${clear} %s sends %d selector%s no class of the %s release it is checked against implements, which must run only behind respondsToSelector: or a version check: %s",
                    named, #missing, #missing == 1 and "" or "s", architecture, shown)
         end
     end
@@ -275,7 +277,7 @@ function report_registry(target, binary)
     for _, entry in ipairs(advised) do
         table.insert(told, string.format("  %s (iOS %s) is %s: %s", entry.api, entry.introduced or "?", entry.status, entry.effect or "?"))
     end
-    wprint("%s calls %d API the backports do not carry as the release that added them does:\n%s",
+    cprint("${color.warning}warning:${clear} %s calls %d API the backports do not carry as the release that added them does:\n%s",
            path.filename(binary), #advised, table.concat(told, "\n"))
 end
 
