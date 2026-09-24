@@ -66,9 +66,11 @@ Sources:
   the release's own present and dismiss. A custom, over-full-screen or over-current-context presentation goes to the
   release with its style and transitioning delegate untouched, and the release makes the application's presentation
   controller and runs its animators. The sheet goes through the same public custom presentation: for the release's
-  present call the style is Custom and the transitioning delegate gives the sheet and its `charon_transitionAnimator`; the
-  style is put back after the call, and the caller's delegate once the sheet is dismissed (until then
-  `transitioningDelegate` answers the port's object). The sheet lays itself out through the public hooks and
+  present call the style is Custom and the transitioning delegate gives the sheet; the animators and the interactive
+  controllers are those of the caller's delegate, and the sheet's `charon_transitionAnimator` where it gives none, as the
+  engine below 8.0 asks. The style is put back after the call, and the caller's delegate once the sheet is dismissed, or at
+  the controller's next presentation when a dismissal the port did not see took it away (its presenter's); until then
+  `transitioningDelegate` answers the port's object. The sheet lays itself out through the public hooks and
   `self.containerView`. Not measured: no fleet device or emulator runs 8.0 or later. Two parts have no public
   counterpart there: touches passing through the container at an undimmed detent (`charon_containerIgnoresDirectTouches`),
   and `presentationController` answering the sheet, which below 8.0 only the port's category makes one object. Before
