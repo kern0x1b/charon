@@ -42,6 +42,7 @@
 
 - (void)encodeWithCoder:(NSCoder *)coder
 {
+    [coder encodeObject:_charonPredicate forKey:@"predicate"];
     [coder encodeObject:_charonKeysToFetch forKey:@"keysToFetch"];
     [coder encodeBool:_charonMutableObjects forKey:@"mutableObjects"];
     [coder encodeBool:_charonUnifyResults forKey:@"unifyResults"];
@@ -52,6 +53,7 @@
 {
     self = [self initWithKeysToFetch:[coder decodeObjectOfClass:[NSArray class] forKey:@"keysToFetch"]];
     if (self) {
+        _charonPredicate = [coder decodeObjectOfClass:[NSPredicate class] forKey:@"predicate"];
         _charonMutableObjects = [coder decodeBoolForKey:@"mutableObjects"];
         _charonUnifyResults = [coder decodeBoolForKey:@"unifyResults"];
         _charonSortOrder = (CNContactSortOrder)[coder decodeIntegerForKey:@"sortOrder"];

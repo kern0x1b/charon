@@ -22,7 +22,10 @@ libs="-framework Foundation"
 
 # Nothing here needs to differ: every case avoids the one path (CNContactStore) that could disagree with the release for reasons that have
 # nothing to do with this port - a store the host is not an oracle for at all, since it is never opened.
-divergent=""
+# One the host cannot answer: the macOS 26 host's CNContactFetchRequest archives rankSort as a bool and reads it back with
+# decodeInt64ForKey:, so decoding its own archive raises NSInvalidUnarchiveOperationException (measured). The keys it writes still
+# include the predicate (predicate.fetchRequestArchivesPredicate, compared); the port reads its own archive back with the predicate kept.
+divergent="predicate.fetchRequestRoundTrip"
 
 xcrun clang $common -I"$device" "$here/record.m" "$device/contacts-cases.m" $libs -framework Contacts -o "$build/system"
 CONTACTS_RECORDS="$build/system.json" "$build/system"
@@ -66,5 +69,9 @@ mutant CNContact9.m "- (NSString *)givenName { return [self charon_stringForKey:
 mutant CNContactFormatter9.m "return composite.length > 0 ? composite : nil;" "return nil;"
 mutant CNGroup9.m "return _charonName ?: @\"\";" "return @\"mutated\";"
 mutant CNContactsUserDefaults9.m "return code.length > 0 ? [code lowercaseString] : @\"us\";" "return @\"\";"
+mutant CharonContactsBook.m "@\"identifier IN %@\"" "@\"identifier == %@\""
+mutant CharonContactsBook.m "[coder encodeObject:_value forKey:@\"value\"];" ";"
+mutant CharonContactsBook.m "return other->_match == _match &&" "return other->_match != _match ||"
+mutant CNContactFetchRequest9.m "[coder encodeObject:_charonPredicate forKey:@\"predicate\"];" ";"
 echo "mutants surviving: $survived"
 [ "$survived" -eq 0 ]

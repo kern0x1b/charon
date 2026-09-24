@@ -205,6 +205,79 @@ static void userDefaults(ContactsRecorder record)
     record(@"defaults.countryCodeIsTwoLetters", flag(defaults.countryCode.length == 2));
 }
 
+// A predicate travels as an object: it answers -predicateFormat and -description without raising (the
+// release answers a format only for the identifier lists), survives secure coding, and a fetch request
+// carries it through an archive.
+static id predicateRoundTrip(id object, Class cls, BOOL secure)
+{
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:object];
+    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
+    unarchiver.requiresSecureCoding = secure;
+    id back = nil;
+    @try {
+        back = secure ? [unarchiver decodeObjectOfClass:cls forKey:@"root"] : [unarchiver decodeObjectForKey:@"root"];
+    } @catch (NSException *exception) {
+        back = exception.name;
+    }
+    [unarchiver finishDecoding];
+    return back;
+}
+
+static void predicates(ContactsRecorder record)
+{
+    NSDictionary *all = @{
+        @"name": [CNContact predicateForContactsMatchingName:@"Appleseed"],
+        @"identifiers": [CNContact predicateForContactsWithIdentifiers:@[@"A", @"B"]],
+        @"inGroup": [CNContact predicateForContactsInGroupWithIdentifier:@"G"],
+        @"inContainer": [CNContact predicateForContactsInContainerWithIdentifier:@"C"],
+        @"email": [CNContact predicateForContactsMatchingEmailAddress:@"a@b.c"],
+        @"phone": [CNContact predicateForContactsMatchingPhoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"555-1234"]],
+        @"groupIdentifiers": [CNGroup predicateForGroupsWithIdentifiers:@[@"G1"]],
+        @"groupsInContainer": [CNGroup predicateForGroupsInContainerWithIdentifier:@"C"],
+        @"containerIdentifiers": [CNContainer predicateForContainersWithIdentifiers:@[@"C1"]],
+        @"containerOfContact": [CNContainer predicateForContainerOfContactWithIdentifier:@"X"],
+        @"containerOfGroup": [CNContainer predicateForContainerOfGroupWithIdentifier:@"G"],
+    };
+    for (NSString *key in [all.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
+        NSPredicate *predicate = all[key];
+        NSString *format = nil;
+        @try {
+            format = predicate.predicateFormat ?: @"(nil)";
+        } @catch (NSException *exception) {
+            format = exception.name;
+        }
+        record([@"predicate.format." stringByAppendingString:key], format);
+        NSString *description = nil;
+        @try {
+            description = predicate.description;
+        } @catch (NSException *exception) {
+            description = nil;
+        }
+        record([@"predicate.describes." stringByAppendingString:key], flag(description.length > 0));
+        id back = predicateRoundTrip(predicate, [NSPredicate class], YES);
+        record([@"predicate.secureRoundTripKeepsClass." stringByAppendingString:key], flag([back class] == [predicate class]));
+    }
+    NSPredicate *byName = all[@"name"];
+    record(@"predicate.nameDescriptionNamesFactory",
+           flag([byName.description rangeOfString:@"predicateForContactsMatchingName:"].location != NSNotFound));
+    NSPredicate *byIdentifiers = all[@"identifiers"];
+    record(@"predicate.identifiersEqualAfterSecureRoundTrip", flag([predicateRoundTrip(byIdentifiers, [NSPredicate class], YES) isEqual:byIdentifiers]));
+    record(@"predicate.equalForSameArguments", flag([byName isEqual:[CNContact predicateForContactsMatchingName:@"Appleseed"]]));
+    record(@"predicate.unequalForOtherKind", flag([[CNContact predicateForContactsInGroupWithIdentifier:@"G"]
+                                                     isEqual:[CNContact predicateForContactsInContainerWithIdentifier:@"G"]]));
+    record(@"predicate.unequalForOtherArguments", flag([byName isEqual:[CNContact predicateForContactsMatchingName:@"Other"]]));
+
+    CNContactFetchRequest *request = [[CNContactFetchRequest alloc] initWithKeysToFetch:@[CNContactGivenNameKey]];
+    request.predicate = byIdentifiers;
+    NSData *archive = [NSKeyedArchiver archivedDataWithRootObject:request];
+    NSDictionary *plist = [NSPropertyListSerialization propertyListWithData:archive options:0 format:NULL error:NULL];
+    NSArray *objects = plist[@"$objects"];
+    record(@"predicate.fetchRequestArchivesPredicate", flag(objects.count > 1 && [objects[1] isKindOfClass:[NSDictionary class]] && objects[1][@"predicate"] != nil));
+    id back = predicateRoundTrip(request, [CNContactFetchRequest class], NO);
+    record(@"predicate.fetchRequestRoundTrip", [back isKindOfClass:[NSString class]] ? back
+           : ([[back predicate] isEqual:byIdentifiers] ? @"kept" : @"lost"));
+}
+
 void contacts_run(ContactsRecorder record)
 {
     phoneNumbers(record);
@@ -218,5 +291,6 @@ void contacts_run(ContactsRecorder record)
     vCard(record);
     groups(record);
     containers(record);
+    predicates(record);
     userDefaults(record);
 }

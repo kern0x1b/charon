@@ -19,6 +19,83 @@
     return self;
 }
 
+// The factory each match is made by, the "kind" the release's own predicates name in their
+// -description (measured on the macOS 26 host's Contacts, facts/Contacts/Fetching.md).
+static NSString *CharonContactPredicateKind(CharonContactMatch match)
+{
+    switch (match) {
+        case CharonContactMatchAll: return @"all contacts";
+        case CharonContactMatchName: return @"-[CNContact predicateForContactsMatchingName:]";
+        case CharonContactMatchIdentifiers: return @"-[CNContact predicateForContactsWithIdentifiers:]";
+        case CharonContactMatchGroup: return @"-[CNContact predicateForContactsInGroupWithIdentifier:]";
+        case CharonContactMatchContainer: return @"-[CNContact predicateForContactsInContainerWithIdentifier:]";
+        case CharonContactMatchEmail: return @"-[CNContact predicateForContactsMatchingEmailAddress:]";
+        case CharonContactMatchPhone: return @"-[CNContact predicateForContactsMatchingPhoneNumber:]";
+        case CharonContactMatchGroupIdentifiers: return @"-[CNGroup predicateForGroupsWithIdentifiers:]";
+        case CharonContactMatchGroupsInContainer: return @"-[CNGroup predicateForGroupsInContainerWithIdentifier:]";
+        case CharonContactMatchContainerIdentifiers: return @"-[CNContainer predicateForContainersWithIdentifiers:]";
+        case CharonContactMatchContainerOfContact: return @"-[CNContainer predicateForContainerOfContactWithIdentifier:]";
+        case CharonContactMatchContainerOfGroup: return @"-[CNContainer predicateForContainerOfGroupWithIdentifier:]";
+    }
+    return [NSString stringWithFormat:@"match %ld", (long)match];
+}
+
+// The release answers a format only for the three identifier-list predicates
+// (`identifier IN {"A", "B"}`), and nil, without raising, for the rest (measured on the host).
+- (NSString *)predicateFormat
+{
+    switch (_match) {
+        case CharonContactMatchIdentifiers:
+        case CharonContactMatchGroupIdentifiers:
+        case CharonContactMatchContainerIdentifiers:
+            return [NSPredicate predicateWithFormat:@"identifier IN %@", _value].predicateFormat;
+        default:
+            return nil;
+    }
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<%@: %p: kind=%@, value=%@>", [self class], self, CharonContactPredicateKind(_match), _value];
+}
+
+- (BOOL)isEqual:(id)object
+{
+    if (object == self)
+        return YES;
+    if (![object isKindOfClass:[CharonContactPredicate class]])
+        return NO;
+    CharonContactPredicate *other = object;
+    return other->_match == _match && (other->_value == _value || [other->_value isEqual:_value]);
+}
+
+- (NSUInteger)hash
+{
+    return (NSUInteger)_match ^ [_value hash];
+}
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeInteger:_match forKey:@"match"];
+    [coder encodeObject:_value forKey:@"value"];
+}
+
+// Every value a factory stores is an NSString or an NSArray of them (CNContact9.m, CNGroup9.m,
+// CNContainer9.m).
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super init])) {
+        _match = (CharonContactMatch)[coder decodeIntegerForKey:@"match"];
+        _value = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSString class], [NSArray class], nil] forKey:@"value"];
+    }
+    return self;
+}
+
 - (BOOL)evaluateWithObject:(id)object substitutionVariables:(NSDictionary *)variables
 {
     return [self evaluateWithObject:object];
@@ -66,11 +143,6 @@
             return NO;
     }
     return NO;
-}
-
-- (NSString *)predicateFormat
-{
-    return [NSString stringWithFormat:@"charon_contactMatch == %ld AND charon_contactValue == %@", (long)_match, _value];
 }
 
 @end
