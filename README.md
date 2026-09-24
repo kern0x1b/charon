@@ -44,8 +44,8 @@ The rules, and the values each reads:
                            charon.libraries (packages whose shared libraries it
                            loads, carried in /usr/lib/charon/<Package>)
     @addon/charon/daemon   an executable in /usr/libexec (charon.install), with
-                           add_installfiles for its LaunchDaemons plist and /etc,
-                           and charon.libraries as a tweak
+                           its LaunchDaemons plist through add_installfiles, and
+                           charon.libraries as a tweak
     @addon/charon/app      Name.app with app.plist-file, app.plist ("KEY=VALUE",
                            over the file), app.resources (folders copied flat into
                            the bundle), app.frameworks (packages whose shared
@@ -56,8 +56,12 @@ The rules, and the values each reads:
                            where it links, stripped, signed and import-checked
                            with the bundle
     @addon/charon/swift    added next to one of the above, compiles the target's
-                           .swift files as one Embedded Swift module; swift.module
-                           (the module name, default the target's), swift.flags
+                           .swift files as one module, of the whole language when
+                           the project requires charon@swift-runtime (and
+                           charon@libcxx), which the port carries, or of Embedded
+                           Swift when it requires charon@swift-embedded, and
+                           refuses both or neither; swift.module (the module
+                           name, default the target's), swift.flags
 
 and, on any of them, charon.entitlements (signed with ldid and read back),
 charon.strip (default -x), charon.control, charon.maintainer-scripts,
@@ -66,7 +70,9 @@ charon.waive.<check> "reason". Every object a target links and every member of
 its packages' static archives has to record the port's minimum release; a
 package that cannot is waived with charon.waive.input-minimum.<package>. Info.plist keys the file and app.plist leave
 out are derived: the bundle and executable name, the project version, and
-MinimumOSVersion. A checkout nested inside another project (a worktree under
+MinimumOSVersion. The files a tweak, daemon or app target names with
+add_installfiles go into its package at the path given, under the package root.
+A checkout nested inside another project (a worktree under
 the main checkout) builds with `xmake -P .`; the rules refuse otherwise.
 
 Then:
