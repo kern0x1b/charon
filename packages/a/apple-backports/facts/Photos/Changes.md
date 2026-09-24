@@ -29,7 +29,12 @@ that still fails after the asset is made fails the change with the file system's
 fails after the ones before it does (below): the asset is then in the library and the file is still where it was. A video
 resource given as data is written by `ALAssetsLibrary` only from a file, so the data is staged in a file of the process's
 temporary folder and that file is removed once the library has copied it, whether the write succeeded or not; a staged file
-that cannot be removed after a successful write fails the change the same way. `+supportsAssetResourceTypes:` answers
+that cannot be removed after a successful write fails the change the same way. The staged file is named with the extension
+of the video's type, because the library tells a movie by its path: on the iPad 2 the same QuickTime bytes, and the same
+MPEG-4 bytes, are compatible with the saved photos album as `.mov` and `.mp4` and not with no extension, and a write of the
+data from a file with none failed with no asset. The extension is the one of the options' `uniformTypeIdentifier`, else of
+their `originalFilename`, else of the data's container: `mp4` for an ISO base media file whose `ftyp` brand is not
+QuickTime's `qt  `, `mov` otherwise. `+supportsAssetResourceTypes:` answers
 YES only for a single-element array naming the photo or the video type. `+[PHAssetResource assetResourcesForAsset:]` (iOS 9) describes
 the one resource an iOS 6 asset already has, read from `ALAssetRepresentation` (`defaultRepresentation`) rather than from a Photos
 database row; `+assetResourcesForLivePhoto:` always gives an empty array, since no live photo can exist on this release.
@@ -141,7 +146,13 @@ resource manager (completion once with `nil`, progress once with `1.0`, within f
 2026-09-23, called off the main thread, 17 of 19 checks passing; the two others are the release's rewrite below. The refusal of
 an album name in use below was run there too: 3300, and the number of 8-by-8 saved photos the same before and after.
 The change observers were run on the same iPad on 2026-09-23 with `tests/backports/device/photoschanges8.m`, an application of its
-own with the photo library allowed: 22 checks, 0 failures.
+own with the photo library allowed: 22 checks, 0 failures. The data of the resources (`tests/backports/device/photosdata9.m`: the
+chunked read and its cancel, the write to a file, `shouldMoveFile` and the hard-linked file, a video given as data in a QuickTime
+and an MPEG-4 container, the error codes, an album's placeholders after every creation of the change block) was run there on
+2026-09-24 with this tree's Photos sources: 34 checks, 0 failures. Controls: the same test over the Photos sources of main
+at 7bb1720d, in an earlier form whose small test videos the iPad's encoder refused, failed the album placeholder and the error
+code checks this tree passes (18 checks, 11 failed, the rest not reached); and before the staged file took an extension, the
+video given as data failed with no asset (32 checks, 1 failed).
 
 The saved photos of iOS 6 do not keep the bytes they are given: a 726-byte JPEG written with
 `writeImageDataToSavedPhotosAlbum:metadata:` and `nil` metadata reads back as 1929 bytes, measured the same with no port code on the

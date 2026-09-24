@@ -1,10 +1,31 @@
 #import "CharonPhotos.h"
+#import <MobileCoreServices/MobileCoreServices.h>
 #include <errno.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+// The file name extension a video's data is staged under. ALAssetsLibrary takes a video by its path and tells a movie by
+// the path's extension: the same QuickTime bytes are written from a .mov file and refused from one with no extension
+// (tests/backports/device/photosdata9.m, iPad 2, 2026-09-24). The type the options name comes first, then the extension
+// of their original file name, then the data's own container: an ISO base media file names its brand in its first box,
+// `ftyp`, and QuickTime's is "qt  "; a QuickTime movie from before `ftyp` has none.
+static NSString *charon_movie_extension(NSData *data, PHAssetResourceCreationOptions *options)
+{
+    if (options.uniformTypeIdentifier.length) {
+        NSString *extension = CFBridgingRelease(UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)options.uniformTypeIdentifier, kUTTagClassFilenameExtension));
+        if (extension.length)
+            return extension;
+    }
+    if (options.originalFilename.pathExtension.length)
+        return options.originalFilename.pathExtension;
+    const uint8_t *bytes = data.bytes;
+    if (data.length >= 12 && memcmp(bytes + 4, "ftyp", 4) == 0 && memcmp(bytes + 8, "qt  ", 4) != 0)
+        return @"mp4";
+    return @"mov";
+}
 
 static CharonPhotosTransaction *charon_transaction(void)
 {
@@ -34,6 +55,7 @@ static CharonPhotosTransaction *charon_transaction(void)
     BOOL _hasResource;
     PHAssetResourceType _resourceType;
     NSData *_resourceData;
+    PHAssetResourceCreationOptions *_resourceOptions;
     NSURL *_resourceFileURL;
     BOOL _moveFile;
 }
@@ -83,6 +105,7 @@ static CharonPhotosTransaction *charon_transaction(void)
 {
     [self charon_addResourceOfType:type];
     _resourceData = data;
+    _resourceOptions = [options copy];
 }
 
 - (BOOL)charon_validate:(NSError **)error
@@ -145,9 +168,10 @@ static CharonPhotosTransaction *charon_transaction(void)
     } else if (_resourceFileURL) {
         identifier = [CharonPhotosStore writeVideoAtURL:_resourceFileURL error:error];
     } else {
-        // ALAssetsLibrary takes a video only as a file: the data is staged in one of this process's own, which is
-        // removed once the library has copied it, whether the write succeeded or not.
-        staged = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[NSUUID UUID].UUIDString]];
+        // ALAssetsLibrary takes a video only as a file: the data is staged in one of this process's own, named with the
+        // extension of its type, which is removed once the library has copied it, whether the write succeeded or not.
+        NSString *name = [[NSUUID UUID].UUIDString stringByAppendingPathExtension:charon_movie_extension(_resourceData, _resourceOptions)];
+        staged = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:name]];
         if (![_resourceData writeToURL:staged options:NSDataWritingAtomic error:error])
             return NO;
         identifier = [CharonPhotosStore writeVideoAtURL:staged error:error];

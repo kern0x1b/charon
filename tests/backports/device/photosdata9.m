@@ -26,11 +26,12 @@ static void wait_until(double seconds, BOOL (^done)(void))
 
 // A blue video: noise in the blue channel (no red, no green) at a high bit rate, so the encoder cannot make it small,
 // or a solid blue one.
-static NSURL *blue_video(int frames, int width, int height, BOOL noise)
+static NSURL *blue_video_of_type(NSString *fileType, int frames, int width, int height, BOOL noise)
 {
-    NSURL *url = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"charon-%@.mov", [NSUUID UUID].UUIDString]]];
+    NSString *extension = [fileType isEqualToString:AVFileTypeMPEG4] ? @"mp4" : @"mov";
+    NSURL *url = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"charon-%@.%@", [NSUUID UUID].UUIDString, extension]]];
     NSError *error = nil;
-    AVAssetWriter *writer = [AVAssetWriter assetWriterWithURL:url fileType:AVFileTypeQuickTimeMovie error:&error];
+    AVAssetWriter *writer = [AVAssetWriter assetWriterWithURL:url fileType:fileType error:&error];
     AVAssetWriterInput *input = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:@{
         AVVideoCodecKey: AVVideoCodecH264, AVVideoWidthKey: @(width), AVVideoHeightKey: @(height),
         AVVideoCompressionPropertiesKey: @{AVVideoAverageBitRateKey: @(40 * 1000 * 1000), AVVideoMaxKeyFrameIntervalKey: @1}}];
@@ -76,6 +77,11 @@ static NSURL *blue_video(int frames, int width, int height, BOOL noise)
         return nil;
     }
     return url;
+}
+
+static NSURL *blue_video(int frames, int width, int height, BOOL noise)
+{
+    return blue_video_of_type(AVFileTypeQuickTimeMovie, frames, width, height, noise);
 }
 
 static NSString *album_name(void)
@@ -239,21 +245,22 @@ static NSError *add_video(NSURL *url, BOOL move, NSString **identifier)
 }
 
 // shouldMoveFile: the header's "the original file is removed if the asset is created successfully", and its hard-linked
-// file that cannot be moved. Each adds a solid-blue video, 64 by 64, the fixture the fleet keeps.
+// file that cannot be moved. Each adds a solid-blue video, 640 by 480, the fixture the fleet keeps. Not smaller: the
+// iPad 2's H.264 encoder refuses 64 by 64 (AVAssetWriter fails with OSStatus -12902, 2026-09-24) and writes 640 by 480.
 static void check_move(void)
 {
     NSFileManager *files = [NSFileManager defaultManager];
-    NSURL *kept = blue_video(15, 64, 64, NO);
+    NSURL *kept = blue_video(15, 640, 480, NO);
     NSString *identifier = nil;
     NSError *error = add_video(kept, NO, &identifier);
     CHECK(error == nil && asset_with_identifier(identifier) && [files fileExistsAtPath:kept.path], "a file not moved stays where it was");
     [files removeItemAtURL:kept error:NULL];
 
-    NSURL *moved = blue_video(15, 64, 64, NO);
+    NSURL *moved = blue_video(15, 640, 480, NO);
     error = add_video(moved, YES, &identifier);
     CHECK(error == nil && asset_with_identifier(identifier) && ![files fileExistsAtPath:moved.path], "a moved file is gone once the asset is made");
 
-    NSURL *linked = blue_video(15, 64, 64, NO);
+    NSURL *linked = blue_video(15, 640, 480, NO);
     NSURL *second = [linked URLByAppendingPathExtension:@"link.mov"];
     CHECK(link(linked.fileSystemRepresentation, second.fileSystemRepresentation) == 0, "a second hard link to a video is made");
     NSUInteger before = saved_photos_count();
@@ -265,13 +272,20 @@ static void check_move(void)
     [files removeItemAtURL:second error:NULL];
 }
 
-// A video given as data is staged in a file of the process for ALAssetsLibrary, which takes a video only as a file; the
-// staged file must be gone once the change is done. Adds one solid-blue video, 64 by 64.
-static void check_staged(void)
+// A video given as data is staged in a file of the process for ALAssetsLibrary, which takes a video only as a file and
+// tells a movie by the file's extension (printed below: the same bytes with and without it); the staged file must be
+// gone once the change is done. Adds one solid-blue video, 640 by 480, of the given container.
+static void check_staged(NSString *fileType)
 {
     NSFileManager *files = [NSFileManager defaultManager];
-    NSURL *source = blue_video(15, 64, 64, NO);
+    NSURL *source = blue_video_of_type(fileType, 15, 640, 480, NO);
     NSData *data = [NSData dataWithContentsOfURL:source];
+    NSURL *bare = [source URLByDeletingPathExtension];
+    [data writeToURL:bare atomically:NO];
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    printf("%s: the library takes it as %s %d, with no extension %d\n", fileType.UTF8String, source.pathExtension.UTF8String,
+           [library videoAtPathIsCompatibleWithSavedPhotosAlbum:source], [library videoAtPathIsCompatibleWithSavedPhotosAlbum:bare]);
+    [files removeItemAtURL:bare error:NULL];
     [files removeItemAtURL:source error:NULL];
     NSSet *before = [NSSet setWithArray:[files contentsOfDirectoryAtPath:NSTemporaryDirectory() error:NULL]];
     __block NSString *identifier = nil;
@@ -384,7 +398,8 @@ static void run_checks(void)
     }
     [[NSFileManager defaultManager] removeItemAtURL:video error:NULL];
     check_move();
-    check_staged();
+    check_staged(AVFileTypeQuickTimeMovie);
+    check_staged(AVFileTypeMPEG4);
     check_codes(albumIdentifier);
 
     NSString *summary = [NSString stringWithFormat:@"%d checks, %d failed\n", charon_checks, charon_failures];
