@@ -46,7 +46,8 @@ Sources:
   0x1895e88b0): scale s = 1 - 2m/width with the content margin m = 16 at width 320 (0x188f67350: 16 up to 393, 20 above),
   lifted to stand topOffset (10) above the sheet's top. 4S, one sheet at large: the root at 16 30 288 414 behind it; at
   medium it is not scaled. A second sheet stacks the same way: the first at 16 30 288 396, the root at 16 40 288 414.
-  These layout values are worked out from the read, not measured on a device.
+  These layout values are worked out from the read; `tests/backports/device/sheet.m` on an iPad 2 (6.1.3, the
+  application phone-sized) gave every one of them, 2026-09-24.
 - Corners (`_cornerRadii` 0x188f930e8): 10 on top; the bottom of a full-width sheet at depth 0 matches the display's
   corner, and a card behind a child blends towards the child's radius. The root card's corners run 0 to 10 as its child
   rises from medium to large.
@@ -79,13 +80,25 @@ Sources:
   does not scroll sideways, is not dismissing the keyboard interactively around the first responder, and the pan is not
   a quick repeat (0.4 s) of the last (0x18906b1b8). Which way the drag then goes is the documented rule
   (`prefersScrollingExpandsWhenScrolledToEdge`); that part of the release was not read.
+- On an iPad 2 (6.1.3), the application phone-sized and the drags posted by `revtouch` from a probe outside the tree,
+  2026-09-24: a slow drag from the large detent let go near the medium one settled at 202.8 with
+  `sheetPresentationControllerDidChangeSelectedDetentIdentifier:`; a drag below the medium detent took the sheet down
+  with `presentationControllerShouldDismiss:`, `WillDismiss:` and `DidDismiss:` in that order, and the release no longer
+  counted the controller as presented; a `modalInPresentation` sheet dragged as far rubber-banded, sent
+  `presentationControllerDidAttemptToDismiss:` once and settled at the medium detent. The flick and its spring were not
+  measured there.
+- The port's presentation calls the release's own dismissal after `dismissalTransitionDidEnd:`, as UIKit tells the
+  presentation controller before the controller is gone, and UIKit 6.1.3 ends that dismissal only while the presented
+  controller's view is in the window: taken out before, the presenter kept `presentedViewController` and the controller
+  stayed `isBeingDismissed` (measured on the iPad 2, with the view put back as the control). The sheet leaves its card
+  and that view in the container, which goes after the release's dismissal.
 
 ## Where the port differs
 
 - The display's corner radius is 0: the displays of iOS 6 devices have square corners.
 - The root presenter: UIKit's root presentation is a full-screen sheet over the whole window; the port uses where the
   release puts the root view, under the status bar (0 20 320 460), which gives the same visible top (30) when it scales
-  back. Derived, not measured.
+  back. Derived from the read; the iPad 2 gave the root at 16 30 288 414 behind a large sheet.
 - The status bar's appearance is not changed while a sheet is up.
 - There is no keyboard detent: the release's keyboard does not tell the sheet what it covers.
 - In landscape the container is not rotated, a limitation of the port's presentation (`charon_presentation_run`)
