@@ -11,7 +11,11 @@
    window with a 20 point status bar: the sheet 320 x 440 at y 40, the medium detent 440 x 0.63
    high, the root view (0 20 320 460) scaled by 1 - 2 x 16 / 320 = 0.9 behind a sheet at its
    full height with its top 10 above the sheet's, the first sheet the same way behind a second
-   one, and the root at depth 2 under the first. */
+   one, and the root at depth 2 under the first. A tap on the grabber moves to the detent
+   before the current one, the last after the first (-[_UISheetLayoutInfo
+   _indexOfActiveDetentForTappingGrabber]), and tells the delegate. While a text field in the
+   sheet has the keyboard the sheet stands at its first detent, the large one here, and keeps
+   its selection; a tap on the grabber then ends editing and the sheet goes back to it. */
 static NSDictionary *layout_expectations(void)
 {
     return @{
@@ -19,6 +23,12 @@ static NSDictionary *layout_expectations(void)
         @"layout.controller": @"same=1 presenting=1",
         @"layout.medium": @"root=0.0 20.0 320.0 460.0 first=0.0 202.8 320.0 440.0 second=- selected=com.apple.UIKit.medium container=1 calls=",
         @"layout.largeAgain": @"root=16.0 30.0 288.0 414.0 first=0.0 40.0 320.0 440.0 second=- selected=com.apple.UIKit.large container=1 calls=",
+        @"layout.grabberFromLarge": @"root=0.0 20.0 320.0 460.0 first=0.0 202.8 320.0 440.0 second=- selected=com.apple.UIKit.medium container=1 calls=didChangeDetent",
+        @"layout.grabberFromMedium": @"root=16.0 30.0 288.0 414.0 first=0.0 40.0 320.0 440.0 second=- selected=com.apple.UIKit.large container=1 calls=didChangeDetent,didChangeDetent",
+        @"layout.keyboard": @"root=16.0 30.0 288.0 414.0 first=0.0 40.0 320.0 440.0 second=- selected=com.apple.UIKit.medium container=1 calls=",
+        @"layout.keyboard.editing": @"1",
+        @"layout.keyboardEnded": @"root=0.0 20.0 320.0 460.0 first=0.0 202.8 320.0 440.0 second=- selected=com.apple.UIKit.medium container=1 calls=",
+        @"layout.keyboardEnded.editing": @"0",
         @"layout.stacked": @"root=16.0 40.0 288.0 414.0 first=16.0 30.0 288.0 396.0 second=0.0 40.0 320.0 440.0 selected=com.apple.UIKit.large container=1 calls=",
         @"layout.unstacked": @"root=16.0 30.0 288.0 414.0 first=0.0 40.0 320.0 440.0 second=- selected=com.apple.UIKit.large container=1 calls=",
         @"layout.dismissed": @"root=0.0 20.0 320.0 460.0 first=- second=- selected=com.apple.UIKit.large container=0 calls=",

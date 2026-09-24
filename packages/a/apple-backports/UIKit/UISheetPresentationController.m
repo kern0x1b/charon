@@ -119,14 +119,22 @@ static UIColor *charon_sheet_dimming_background(UITraitCollection *traits, CGFlo
 }
 
 
-static BOOL charon_sheet_first_responder_in(UIView *view)
+/* The first responder among a view and its descendants, found the public way. */
+static UIView *charon_sheet_first_responder(UIView *view)
 {
     if (view.isFirstResponder)
-        return YES;
-    for (UIView *subview in view.subviews)
-        if (charon_sheet_first_responder_in(subview))
-            return YES;
-    return NO;
+        return view;
+    for (UIView *subview in view.subviews) {
+        UIView *found = charon_sheet_first_responder(subview);
+        if (found)
+            return found;
+    }
+    return nil;
+}
+
+static BOOL charon_sheet_first_responder_in(UIView *view)
+{
+    return charon_sheet_first_responder(view) != nil;
 }
 
 #pragma mark - Detents
@@ -572,17 +580,35 @@ typedef NS_ENUM(NSInteger, CharonDetentType) {
 
 #pragma mark - The sheet's view
 
+/* UIKit's _UIGrabber is a control that sends its action on a touch up inside
+   (-_controlEventsForActionTriggered 0x1896b7964) and takes touches in at least 44 x 44
+   points around itself (-layoutSubviews 0x188e8c3e4 sets negative touch insets of half of
+   44 less its size). */
+@interface CharonSheetGrabber : UIControl
+@end
+
+@implementation CharonSheetGrabber
+
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
+{
+    CGRect bounds = self.bounds;
+    CGFloat dx = MIN(CGRectGetWidth(bounds) - 44, 0) / 2, dy = MIN(CGRectGetHeight(bounds) - 44, 0) / 2;
+    return CGRectContainsPoint(CGRectInset(bounds, dx, dy), point);
+}
+
+@end
+
 /* What UIKit calls the drop shadow view: the sheet's frame, its shadow and grabber, and a
    clipping view with the corners that holds the presented controller's view. */
 @interface CharonSheetView : UIView
 @property (nonatomic, readonly) UIView *clippingView;
-@property (nonatomic, readonly) UIView *grabber;
+@property (nonatomic, readonly) UIControl *grabber;
 - (void)setTopCornerRadius:(CGFloat)top bottomCornerRadius:(CGFloat)bottom;
 @end
 
 @implementation CharonSheetView {
     UIView *_clippingView;
-    UIView *_grabber;
+    UIControl *_grabber;
     CAShapeLayer *_mask;
     CGFloat _topCornerRadius;
     CGFloat _bottomCornerRadius;
@@ -600,7 +626,7 @@ typedef NS_ENUM(NSInteger, CharonDetentType) {
         _mask = [CAShapeLayer layer];
         _clippingView.layer.mask = _mask;
         [self addSubview:_clippingView];
-        _grabber = [[UIView alloc] initWithFrame:CGRectMake(0, 0, charon_sheet_grabber_width, charon_sheet_grabber_height)];
+        _grabber = [[CharonSheetGrabber alloc] initWithFrame:CGRectMake(0, 0, charon_sheet_grabber_width, charon_sheet_grabber_height)];
         _grabber.layer.cornerRadius = charon_sheet_grabber_height / 2;
         _grabber.backgroundColor = charon_sheet_grabber_color();
         _grabber.hidden = YES;
@@ -739,6 +765,10 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
     id<UIViewControllerContextTransitioning> _dismissalContext;
     UIScrollView *_trackedScrollView;
     CFAbsoluteTime _lastPanEnd;
+    CGRect _keyboardFrame;
+    BOOL _keyboardShown;
+    BOOL _firstResponderRequiresKeyboard;
+    BOOL _keyboardAdjusted;
 }
 
 @dynamic delegate;
@@ -751,8 +781,14 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
         _detents = @[ [UISheetPresentationControllerDetent largeDetent] ];
         _layout = [[CharonSheetLayoutInfo alloc] init];
         _layout.sheet = self;
+        _keyboardFrame = CGRectNull;
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark Properties
@@ -908,10 +944,19 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
     _pan.enabled = NO;
     _pan.delegate = self;
     [_sheetView addGestureRecognizer:_pan];
+    [_sheetView.grabber addTarget:self action:@selector(charon_grabberTapped) forControlEvents:UIControlEventTouchUpInside];
     [container addSubview:_sheetView];
     [self charon_updateLayoutInputs];
     _layout.offset = [self charon_dismissOffset];
     [self charon_layoutStack];
+
+    /* -presentationTransitionWillBegin 0x1890ff9cc: UIKit hears its private keyboard
+       notifications (UIKeyboardPrivateWillShow, WillHide, WillChangeFrame); the release posts
+       the public ones, with the same frame, duration and curve. */
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserver:self selector:@selector(charon_keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [center addObserver:self selector:@selector(charon_keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    [center addObserver:self selector:@selector(charon_keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
 }
 
 - (void)presentationTransitionDidEnd:(BOOL)completed
@@ -1046,6 +1091,12 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
         [content removeFromSuperview];
     [_sheetView removeGestureRecognizer:_pan];
     _pan = nil;
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [center removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    [center removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
+    _keyboardFrame = CGRectNull;
+    _keyboardShown = NO;
     if (removesViews)
         [_sheetView removeFromSuperview];
     _sheetView = nil;
@@ -1103,8 +1154,6 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
         [offsets addObject:entry[0]];
         [identifiers addObject:entry[1]];
     }
-    _resolvedOffsets = offsets;
-    _resolvedIdentifiers = identifiers;
     /* -_indexOfActiveDimmingDetent 0x188f94ba8: the smallest detent, or the one above the
        largest undimmed detent. */
     NSUInteger dimming = identifiers.count ? identifiers.count - 1 : NSNotFound;
@@ -1113,6 +1162,25 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
         if (undimmed != NSNotFound)
             dimming = undimmed == 0 ? NSNotFound : undimmed - 1;
     }
+    /* -[_UISheetLayoutInfo _activeDetents] 0x1895ea0e0: while a first responder in the sheet
+       that needs the keyboard has it, the sheet stands at its first detent; when that is below
+       the large detent, a detent with no identifier is put first, the first one raised by the
+       height of the keyboard over the sheet's full-height frame, no higher than the large
+       detent, and the dimming detent moves down one. */
+    CGRect keyboard = CGRectIntersection(_keyboardFrame, [_layout fullHeightFrame]);
+    _keyboardAdjusted = _firstResponderRequiresKeyboard && offsets.count && !CGRectIsNull(keyboard)
+        && charon_sheet_first_responder_in(self.presentedViewController.view);
+    if (_keyboardAdjusted) {
+        CGFloat large = [_layout offsetForDetentValue:[[UISheetPresentationControllerDetent largeDetent] charon_resolvedValueInContext:context]];
+        CGFloat first = [offsets[0] doubleValue];
+        if (first > large) {
+            [offsets insertObject:@(MAX(first - CGRectGetHeight(keyboard), large)) atIndex:0];
+            [identifiers insertObject:[NSNull null] atIndex:0];
+            dimming = dimming == NSNotFound ? 0 : dimming + 1;
+        }
+    }
+    _resolvedOffsets = offsets;
+    _resolvedIdentifiers = identifiers;
     _layout.dimmingIndex = dimming;
     _resolvedBounds = container.bounds;
 }
@@ -1128,8 +1196,17 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
     [self charon_updateLayoutInputs];
     if (!_resolvedOffsets.count)
         return CGRectGetMinY([_layout stackAlignmentFrame]);
+    return [_resolvedOffsets[[self charon_indexOfCurrentDetent]] doubleValue];
+}
+
+/* -_indexOfCurrentActiveDetent 0x189036a90: the first detent while the keyboard holds the
+   sheet there, else the selected one, else the smallest. */
+- (NSUInteger)charon_indexOfCurrentDetent
+{
+    if (_keyboardAdjusted)
+        return 0;
     NSUInteger index = _selectedDetentIdentifier ? [_resolvedIdentifiers indexOfObject:_selectedDetentIdentifier] : NSNotFound;
-    return [_resolvedOffsets[index != NSNotFound ? index : _resolvedOffsets.count - 1] doubleValue];
+    return index != NSNotFound ? index : _resolvedOffsets.count - 1;
 }
 
 - (void)charon_setOffset:(CGFloat)offset
@@ -1206,6 +1283,11 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
 {
     if (tap.state != UIGestureRecognizerStateEnded || [self charon_dimmingIgnoresTouches] || _interactiveDismissal)
         return;
+    [self charon_dismissFromGrabberOrDimmingViewIfPossible];
+}
+
+- (void)charon_dismissFromGrabberOrDimmingViewIfPossible
+{
     if ([self charon_shouldDismiss]) {
         _userDismissed = YES;
         id<UISheetPresentationControllerDelegate> delegate = self.delegate;
@@ -1223,6 +1305,83 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
     id<UISheetPresentationControllerDelegate> delegate = self.delegate;
     if ([delegate respondsToSelector:@selector(sheetPresentationControllerDidChangeSelectedDetentIdentifier:)])
         [delegate sheetPresentationControllerDidChangeSelectedDetentIdentifier:self];
+}
+
+/* -_dropShadowViewGrabberDidTriggerPrimaryAction: 0x189d33e74 by -[_UISheetLayoutInfo
+   _grabberAction] 0x1895ea700: while the keyboard holds the sheet at its first detent the
+   presented view ends editing; otherwise the detent before the current one, the last after the
+   first (-_indexOfActiveDetentForTappingGrabber 0x1895ea69c), becomes the selected one in an
+   animation, and the delegate hears of it; with one detent the sheet is dismissed if it may be,
+   as a tap on the dimming view does. */
+- (void)charon_grabberTapped
+{
+    if (_interactiveDismissal || !_resolvedOffsets.count)
+        return;
+    if (_keyboardAdjusted) {
+        [self.presentedViewController.view endEditing:YES];
+        return;
+    }
+    NSUInteger count = _resolvedOffsets.count, current = [self charon_indexOfCurrentDetent];
+    NSUInteger target = (count + current - 1) % count;
+    if (target == current) {
+        [self charon_dismissFromGrabberOrDimmingViewIfPossible];
+        return;
+    }
+    NSString *identifier = _resolvedIdentifiers[target];
+    [self animateChanges:^{
+        self.selectedDetentIdentifier = identifier;
+    }];
+    id<UISheetPresentationControllerDelegate> delegate = self.delegate;
+    if ([delegate respondsToSelector:@selector(sheetPresentationControllerDidChangeSelectedDetentIdentifier:)])
+        [delegate sheetPresentationControllerDidChangeSelectedDetentIdentifier:self];
+}
+
+#pragma mark The keyboard
+
+- (void)charon_keyboardWillShow:(NSNotification *)notification
+{
+    _keyboardShown = YES;
+    [self charon_keyboardChanged:notification hiding:NO];
+}
+
+- (void)charon_keyboardWillHide:(NSNotification *)notification
+{
+    _keyboardShown = NO;
+    [self charon_keyboardChanged:notification hiding:YES];
+}
+
+- (void)charon_keyboardWillChangeFrame:(NSNotification *)notification
+{
+    if (_keyboardShown)
+        [self charon_keyboardChanged:notification hiding:NO];
+}
+
+/* -_handleKeyboardNotification:aboutToHide: 0x18938274c: the keyboard's end frame in the
+   container (CGRectNull when it hides), whether the window's first responder needs the
+   keyboard, then the sheet moves to its current detent in an animation of the keyboard's
+   duration and curve (block 0x189323d7c: options are the curve shifted by 16). */
+- (void)charon_keyboardChanged:(NSNotification *)notification hiding:(BOOL)hiding
+{
+    UIView *container = self.containerView;
+    if (!container)
+        return;
+    NSDictionary *info = notification.userInfo;
+    UIWindow *window = container.window;
+    CGRect end = [info[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    _keyboardFrame = hiding || !window ? CGRectNull : [container convertRect:[window convertRect:end fromWindow:nil] fromView:window];
+    UIResponder *responder = charon_sheet_first_responder(window);
+    _firstResponderRequiresKeyboard = [responder conformsToProtocol:@protocol(UIKeyInput)];
+    _resolvedOffsets = nil;
+    /* A spring or a drag under way settles on the detents as they now are when it ends. */
+    if (_animator || _interactiveDismissal || _pan.state == UIGestureRecognizerStateBegan || _pan.state == UIGestureRecognizerStateChanged)
+        return;
+    NSTimeInterval duration = [info[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    UIViewAnimationCurve curve = [info[UIKeyboardAnimationCurveUserInfoKey] integerValue];
+    [UIView animateWithDuration:duration delay:0 options:(UIViewAnimationOptions)curve << 16 animations:^{
+        [self charon_updateLayoutInputs];
+        self->_layout.offset = [self charon_selectedOffset];
+        [self charon_layoutStack];
+    } completion:nil];
 }
 
 /* The sheet's container lets a touch that lands on it and on none of its views through to
@@ -1430,10 +1589,13 @@ static NSUInteger charon_sheet_closest(NSArray *offsets, CGFloat offset)
         }];
         return;
     }
-    NSString *identifier = _resolvedIdentifiers[index];
+    id identifier = _resolvedIdentifiers[index];
     NSString *before = _selectedDetentIdentifier;
-    BOOL wasThere = [identifier isEqualToString:before] || (![_resolvedIdentifiers containsObject:before ?: @""] && (NSUInteger)index == _resolvedIdentifiers.count - 1);
-    _selectedDetentIdentifier = [identifier copy];
+    /* The keyboard's detent has no identifier and changes no selection. */
+    BOOL keyboardDetent = identifier == [NSNull null];
+    BOOL wasThere = keyboardDetent || [identifier isEqualToString:before] || (![_resolvedIdentifiers containsObject:before ?: @""] && (NSUInteger)index == _resolvedIdentifiers.count - 1);
+    if (!keyboardDetent)
+        _selectedDetentIdentifier = [identifier copy];
     id<UIViewControllerContextTransitioning> context = _interactiveDismissal ? _dismissalContext : nil;
     [self charon_animateToOffset:target velocity:velocity damping:damping completion:^{
         if (context) {

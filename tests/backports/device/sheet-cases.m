@@ -168,6 +168,16 @@ static NSString *window_rect(UIView *view)
 }
 @end
 
+/* The sheet's grabber: the one control among the sheet view's own subviews, as UIKit's drop
+   shadow view holds its _UIGrabber. */
+static UIControl *sheet_grabber(UIView *sheetView)
+{
+    for (UIView *view in sheetView.subviews)
+        if ([view isKindOfClass:[UIControl class]])
+            return (UIControl *)view;
+    return nil;
+}
+
 void sheet_layout_run(UIWindow *window, SheetRecorder record, void (^done)(void))
 {
     UIViewController *root = window.rootViewController;
@@ -179,6 +189,9 @@ void sheet_layout_run(UIWindow *window, SheetRecorder record, void (^done)(void)
     sheet.delegate = delegate;
     sheet.detents = @[ [UISheetPresentationControllerDetent mediumDetent], [UISheetPresentationControllerDetent largeDetent] ];
     sheet.selectedDetentIdentifier = UISheetPresentationControllerDetentIdentifierLarge;
+    UITextField *field = [[UITextField alloc] initWithFrame:CGRectMake(20, 60, 280, 31)];
+    field.borderStyle = UITextBorderStyleRoundedRect;
+    [first.view addSubview:field];
     UIViewController *second = [[UIViewController alloc] init];
     second.view.backgroundColor = [UIColor lightGrayColor];
     second.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -196,7 +209,22 @@ void sheet_layout_run(UIWindow *window, SheetRecorder record, void (^done)(void)
         ^{ state(@"medium");
            sheet.selectedDetentIdentifier = UISheetPresentationControllerDetentIdentifierLarge; },
         ^{ state(@"largeAgain");
-           [first presentViewController:second animated:YES completion:nil]; },
+           sheet.prefersGrabberVisible = YES;
+           [sheet_grabber(sheet.presentedView) sendActionsForControlEvents:UIControlEventTouchUpInside]; },
+        ^{ state(@"grabberFromLarge");
+           [sheet_grabber(sheet.presentedView) sendActionsForControlEvents:UIControlEventTouchUpInside]; },
+        ^{ state(@"grabberFromMedium");
+           [delegate.calls removeAllObjects];
+           [sheet animateChanges:^{ sheet.selectedDetentIdentifier = UISheetPresentationControllerDetentIdentifierMedium; }]; },
+        ^{ [field becomeFirstResponder]; },
+        ^{ state(@"keyboard");
+           record(@"layout.keyboard.editing", flag(field.isFirstResponder));
+           [sheet_grabber(sheet.presentedView) sendActionsForControlEvents:UIControlEventTouchUpInside]; },
+        ^{ state(@"keyboardEnded");
+           record(@"layout.keyboardEnded.editing", flag(field.isFirstResponder));
+           sheet.prefersGrabberVisible = NO;
+           sheet.selectedDetentIdentifier = UISheetPresentationControllerDetentIdentifierLarge; },
+        ^{ [first presentViewController:second animated:YES completion:nil]; },
         ^{ state(@"stacked");
            [second dismissViewControllerAnimated:YES completion:nil]; },
         ^{ state(@"unstacked");

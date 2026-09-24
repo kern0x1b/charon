@@ -58,6 +58,24 @@ Sources:
   0.6 of the fraction, plus 0.2 of a grandchild's. Colour: black at 0.2 (0.48 dark; `_alertControllerDimmingViewColor`).
   At or below the largest undimmed detent the dimming view takes no touch and touches reach the presenter
   (`UITransitionView`'s ignoreDirectTouchEvents; the port's container answers `charon_containerIgnoresDirectTouches`).
+- Keyboard (`-[_UISheetLayoutInfo _activeDetents]` 0x1895ea0e0, `-_handleKeyboardNotification:aboutToHide:`
+  0x18938274c): the sheet hears the keyboard's will-show, will-hide and will-change-frame notifications (UIKit's private
+  ones; the release posts the public ones with the same frame, duration and curve; a frame change counts only while the
+  keyboard is shown). It keeps the keyboard's end frame in the container (CGRectNull once it hides) and whether the
+  window's first responder needs the keyboard (UIKit's private `-_requiresKeyboardWhenFirstResponder`; the port asks
+  whether it adopts `UIKeyInput`). While a first responder in the sheet needs the keyboard and the keyboard meets the
+  sheet's full-height frame, the sheet stands at its first detent: when that is below the large detent a detent with no
+  identifier is put first, the first detent raised by the height of the keyboard over the full-height frame and no
+  higher than the large detent, and the dimming detent moves down one. The selection stays; the sheet moves in an
+  animation of the keyboard's duration with its curve as the options (block 0x189323d7c), and goes back to the selected
+  detent when the keyboard hides.
+- Grabber tap (`-[UIDropShadowView _grabberPrimaryAction]` 0x189e9113c, `-_dropShadowViewGrabberDidTriggerPrimaryAction:`
+  0x189d33e74, `-[_UISheetLayoutInfo _grabberAction]` 0x1895ea700): the grabber is a control that acts on a touch up
+  inside (0x1896b7964) and takes touches in 44 x 44 points around itself (touch insets, 0x188e8c3e4). While the keyboard
+  holds the sheet the presented view ends editing; otherwise the detent before the current one, the last after the
+  first (`-_indexOfActiveDetentForTappingGrabber` 0x1895ea69c: (n + current - 1) mod n), is selected in an animation and
+  the delegate hears `sheetPresentationControllerDidChangeSelectedDetentIdentifier:`; with one detent the sheet is
+  dismissed if it may be, as by a tap on the dimming view.
 - Shadow: black at the dimming alpha, radius 2, zero offset, opacity 0.5 x (1 - dimmed) x presented (0x188f94848). Its shape
   is the card's: UIDropShadowView sets `shadowPathIsBounds` (0x189100748), so the shadow follows its bounds with the
   corners of its layer (`-updateCornerClippingViews` 0x18918964c); the port gives the layer the path it masks the card with.
@@ -102,10 +120,8 @@ Sources:
   release puts the root view, under the status bar (0 20 320 460), which gives the same visible top (30) when it scales
   back. Derived from the read; the iPad 2 gave the root at 16 30 288 414 behind a large sheet.
 - The status bar's appearance is not changed while a sheet is up.
-- There is no keyboard detent: the release's keyboard does not tell the sheet what it covers.
 - In landscape the container is not rotated, a limitation of the port's presentation (`charon_presentation_run`)
   already.
-- The grabber takes no tap (the release's grabber action was not read); the drag works on the whole sheet.
 - The "magic" shadow is not drawn. UIKit draws it for a sheet whose parent does not stack with it (presented from a
   full-screen or a custom presentation, or floating): the kit image `_UIPopoverShadow` under a private `CAFilter`
   vibrant colour matrix (`_UIRoundedRectShadowView` 0x189229340). iOS 6 has neither the image nor the filter. It is
