@@ -27,13 +27,10 @@
  * the graph, is reachable; a cycle through a wrapper is collected like any other cycle. A node
  * nothing references is collected and made again from its token when it is needed.
  *
- * A node is found under its token's key, an object of the token's own that the token's -dealloc
- * hands to the queued work that removes it (JSInternal.m, charon_js_defer), so a token made later at
- * the same address never answers for it; a token's private-property name is made from that key too.
- *
- * Locking: _lock guards the tokens' records and is never held across a C API call. A token's
- * -dealloc takes _lock and calls no C API: it queues what the graph must forget, which runs
- * outside the engine, on whichever thread runs the queue. The engine applies each C API call
+ * Locking: _lock guards the tokens' records and is never held across a C API call, because a
+ * token's -dealloc, which takes _lock and then calls the C API, can run on any thread: a wrapper's
+ * object is released after the collection that finalized it, by the thread that collected
+ * (charon_js_release_soon), never inside the collection. The engine applies each C API call
  * atomically; an edge is brought to its record's state and the record re-read until no other
  * thread changed it in between. _nodeLock only serialises making a node, so two threads never make
  * two nodes for one token; it is never taken from -dealloc.
@@ -65,7 +62,6 @@
     NSMapTable<CharonGraphToken *, CharonGraphEdge *> *_owned;
     NSHashTable<CharonGraphToken *> *_owners;
     NSMapTable *_wrapperKeys;
-    id _key;
     JSStringRef _name;
 }
 @end
@@ -81,24 +77,15 @@
     JSObjectRef _classOf;
     NSHashTable<CharonGraphToken *> *_tokens;
 }
-- (NSArray<CharonGraphToken *> *)charon_ownersOf:(CharonGraphToken *)token;
-- (void)charon_forgetKey:(id)key name:(JSStringRef)name owners:(NSArray<CharonGraphToken *> *)owners wrapperKeys:(NSArray *)wrapperKeys;
+- (void)charon_forgetToken:(CharonGraphToken *)token;
 @end
 
 @implementation CharonGraphToken
 
-/* No -dealloc here calls the C API (JSInternal.m, charon_js_defer). */
 - (void)dealloc
 {
-    JSVirtualMachine *machine = _machine;
-    NSArray<CharonGraphToken *> *owners = [machine charon_ownersOf:self];
-    NSArray *wrapperKeys = _wrapperKeys.objectEnumerator.allObjects;
-    id key = _key;
-    JSStringRef name = _name;
-    charon_js_defer(^{
-        [machine charon_forgetKey:key name:name owners:owners wrapperKeys:wrapperKeys];
-        JSStringRelease(name);
-    });
+    [_machine charon_forgetToken:self];
+    JSStringRelease(_name);
 }
 
 @end
@@ -214,9 +201,8 @@ static void MachinesInit(void)
 
 /*
  * The graph ends with the virtual machine, as WebKit's does: every node this made lets go of what
- * it references, though a wrapper may still reference the node. No -dealloc here calls the C API
- * (JSInternal.m, charon_js_defer); the queued work lets go of the group last, through its own
- * global context.
+ * it references, though a wrapper may still reference the node. The group goes last, with this
+ * machine's own global context.
  */
 - (void)dealloc
 {
@@ -224,23 +210,16 @@ static void MachinesInit(void)
     if ([charon_machines objectForKey:(__bridge id)_group] == nil)
         [charon_machines removeObjectForKey:(__bridge id)_group];
     [charon_machines_lock unlock];
-    NSArray<CharonGraphToken *> *tokens = _tokens.allObjects;
-    JSGlobalContextRef weakContext = _weakContext;
-    JSWeakObjectMapRef weak = _weak;
-    JSObjectRef isArray = _isArray, classOf = _classOf;
-    charon_js_defer(^{
-        /* no record changes now: every token's machine is gone */
-        for (CharonGraphToken *token in tokens) {
-            JSObjectRef node = JSWeakObjectMapGet(weakContext, weak, (__bridge void *)token->_key);
-            if (!node)
-                continue;
-            for (CharonGraphToken *owned in token->_owned.keyEnumerator.allObjects)
-                JSObjectDeletePrivateProperty(weakContext, node, owned->_name);
-        }
-        JSValueUnprotect(weakContext, isArray);
-        JSValueUnprotect(weakContext, classOf);
-        JSGlobalContextRelease(weakContext);
-    });
+    for (CharonGraphToken *token in _tokens.allObjects) {
+        JSObjectRef node = JSWeakObjectMapGet(_weakContext, _weak, (__bridge void *)token);
+        if (!node)
+            continue;
+        for (CharonGraphToken *owned in token->_owned.keyEnumerator.allObjects)
+            JSObjectDeletePrivateProperty(_weakContext, node, owned->_name);
+    }
+    JSValueUnprotect(_weakContext, _isArray);
+    JSValueUnprotect(_weakContext, _classOf);
+    JSGlobalContextRelease(_weakContext);
 }
 
 - (JSContextGroupRef)charon_group
@@ -264,8 +243,7 @@ static void MachinesInit(void)
     token->_owners = [NSHashTable weakObjectsHashTable];
     token->_wrapperKeys = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality
                                                 valueOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
-    token->_key = [NSObject new];
-    token->_name = JSStringCreateWithUTF8CString([NSString stringWithFormat:@"charon.managed.owned.%p", token->_key].UTF8String);
+    token->_name = JSStringCreateWithUTF8CString([NSString stringWithFormat:@"charon.managed.owned.%p", token].UTF8String);
     objc_setAssociatedObject(object, (__bridge const void *)self, token, OBJC_ASSOCIATION_RETAIN);
     [_tokens addObject:token];
     return token;
@@ -275,14 +253,14 @@ static void MachinesInit(void)
 {
     JSGlobalContextRef context = _weakContext;
     JSWeakObjectMapRef weak = _weak;
-    JSObjectRef node = JSWeakObjectMapGet(context, weak, (__bridge void *)token->_key);
+    JSObjectRef node = JSWeakObjectMapGet(context, weak, (__bridge void *)token);
     if (node || !create)
         return node;
     [_nodeLock lock];
-    node = JSWeakObjectMapGet(context, weak, (__bridge void *)token->_key);
+    node = JSWeakObjectMapGet(context, weak, (__bridge void *)token);
     if (!node) {
         node = JSObjectMake(context, NodeClass(), NULL);
-        JSWeakObjectMapSet(context, weak, (__bridge void *)token->_key, node);
+        JSWeakObjectMapSet(context, weak, (__bridge void *)token, node);
         id object = token->_object;
         JSObjectRef value = [object isKindOfClass:[JSManagedValue class]] ? [(JSManagedValue *)object charon_object] : NULL;
         if (value) {
@@ -311,7 +289,7 @@ static void MachinesInit(void)
         NSUInteger generation = edge ? edge->_generation : 0;
         BOOL wanted = edge && edge->_count > 0;
         [_lock unlock];
-        JSObjectRef node = JSWeakObjectMapGet(context, weak, (__bridge void *)owner->_key);
+        JSObjectRef node = JSWeakObjectMapGet(context, weak, (__bridge void *)owner);
         if (!node)
             return;
         JSObjectRef target = wanted && owned->_object ? [self charon_nodeOf:owned create:YES] : NULL;
@@ -384,27 +362,20 @@ static void MachinesInit(void)
         NSLog(@"JSVirtualMachine: a wrapper of %@ took no private property; what the object owns is not kept through it", [object class]);
 }
 
-/* The owners a token's record names, as its -dealloc reads them. */
-- (NSArray<CharonGraphToken *> *)charon_ownersOf:(CharonGraphToken *)token
+/* A token's object is gone: its owners' nodes stop referencing it. The name is its own alone. */
+- (void)charon_forgetToken:(CharonGraphToken *)token
 {
     [_lock lock];
     NSArray<CharonGraphToken *> *owners = token->_owners.allObjects;
     [_lock unlock];
-    return owners;
-}
-
-/* A token's object is gone: its owners' nodes stop referencing it, and its node and its wrappers
- * leave the weak map. The key and the name are its own alone. Run from the queue, never -dealloc. */
-- (void)charon_forgetKey:(id)key name:(JSStringRef)name owners:(NSArray<CharonGraphToken *> *)owners wrapperKeys:(NSArray *)wrapperKeys
-{
     for (CharonGraphToken *owner in owners) {
-        JSObjectRef node = JSWeakObjectMapGet(_weakContext, _weak, (__bridge void *)owner->_key);
+        JSObjectRef node = JSWeakObjectMapGet(_weakContext, _weak, (__bridge void *)owner);
         if (node)
-            JSObjectDeletePrivateProperty(_weakContext, node, name);
+            JSObjectDeletePrivateProperty(_weakContext, node, token->_name);
     }
-    JSWeakObjectMapRemove(_weakContext, _weak, (__bridge void *)key);
-    for (id wrapperKey in wrapperKeys)
-        JSWeakObjectMapRemove(_weakContext, _weak, (__bridge void *)wrapperKey);
+    JSWeakObjectMapRemove(_weakContext, _weak, (__bridge void *)token);
+    for (id key in token->_wrapperKeys.objectEnumerator)
+        JSWeakObjectMapRemove(_weakContext, _weak, (__bridge void *)key);
 }
 
 - (void)addManagedReference:(id)object withOwner:(id)owner

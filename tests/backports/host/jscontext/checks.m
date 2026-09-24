@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <JavaScriptCore/JavaScriptCore.h>
 #import <CoreGraphics/CoreGraphics.h>
+#import <pthread.h>
 
 @protocol PointExport <JSExport>
 @property (nonatomic) double x;
@@ -110,17 +111,8 @@ __attribute__((noinline)) static JSManagedValue *ManagedFromScript(JSContext *co
     }
 }
 
-/*
- * A named divergence in when a released JSValue, JSManagedValue or graph token lets go of what it
- * held: the release unprotects and forgets inside -dealloc; the backport calls no C API from
- * -dealloc (JSObjectRef.h forbids it in a finalizer, where a -dealloc can end up) and does it at the
- * thread's next run loop turn or next outermost call into script. So a turn of the run loop comes
- * before every collection asked for here, on both sides; on the device the collection itself comes
- * from the run loop, after the turn's queued work.
- */
 __attribute__((noinline)) static void Collect(JSContext *context)
 {
-    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
     volatile char stack[16384];
     for (size_t index = 0; index < sizeof(stack); index++)
         stack[index] = 0;
@@ -622,7 +614,6 @@ __attribute__((noinline)) static void ExportReleaseProbe(JSContext *context)
 
 __attribute__((noinline)) static void CollectOnly(JSContext *context)
 {
-    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
     volatile char stack[16384];
     for (size_t index = 0; index < sizeof(stack); index++)
         stack[index] = 0;
@@ -656,6 +647,94 @@ static void CheckReleaseAfterCollection(JSContext *context)
     CollectOnly(context);
     [context evaluateScript:@"0"];
     check(releasedOwners == 8, @"and released by the next call into script at the latest");
+}
+
+/*
+ * Which thread releases what a wrapper held: the one whose collection finalized the wrapper, as the
+ * release's Heap::releaseSoon does on the thread that collected - never another thread that only
+ * happens to call into script, and a thread's run loop turn is not held up by what another thread
+ * queued.
+ */
+static volatile int32_t releasedOnMain, releasedElsewhere;
+
+@interface ThreadProbe : NSObject
+@end
+
+@implementation ThreadProbe
+- (void)dealloc
+{
+    __sync_fetch_and_add(pthread_main_np() ? &releasedOnMain : &releasedElsewhere, 1);
+}
+@end
+
+__attribute__((noinline)) static void ExportThreadProbes(JSContext *context)
+{
+    @autoreleasepool {
+        for (int index = 0; index < 4; index++) {
+            context[@"threadProbe"] = [ThreadProbe new];
+            context[@"threadProbe"] = nil;
+        }
+    }
+}
+
+static void *CallScriptElsewhere(void *unused)
+{
+    (void)unused;
+    @autoreleasepool {
+        [[JSContext new] evaluateScript:@"1 + 1"];
+    }
+    return NULL;
+}
+
+static dispatch_semaphore_t workerQueued, workerMayExit;
+static int32_t workerReleasedBeforeExit;
+
+/* A thread with no run loop drops its only context and virtual machine: their teardown finalizes the
+ * wrappers of its four probes on this thread. It then waits, calling nothing, until told to exit. */
+static void *QueueElsewhere(void *unused)
+{
+    (void)unused;
+    @autoreleasepool {
+        JSContext *context = [[JSContext alloc] initWithVirtualMachine:[JSVirtualMachine new]];
+        ExportThreadProbes(context);
+        context = nil;
+    }
+    workerReleasedBeforeExit = releasedElsewhere;
+    dispatch_semaphore_signal(workerQueued);
+    dispatch_semaphore_wait(workerMayExit, DISPATCH_TIME_FOREVER);
+    return NULL;
+}
+
+static void CheckReleaseThread(JSContext *context)
+{
+    releasedOnMain = releasedElsewhere = 0;
+    ExportThreadProbes(context);
+    CollectOnly(context);
+    pthread_t thread;
+    pthread_create(&thread, NULL, CallScriptElsewhere, NULL);
+    pthread_join(thread, NULL);
+    check(releasedElsewhere == 0, @"a wrapper's object is not released by another thread's call into script");
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
+    check(releasedOnMain == 4 && releasedElsewhere == 0, @"it is released on the thread that collected");
+
+    releasedOnMain = releasedElsewhere = 0;
+    workerQueued = dispatch_semaphore_create(0);
+    workerMayExit = dispatch_semaphore_create(0);
+    pthread_create(&thread, NULL, QueueElsewhere, NULL);
+    dispatch_semaphore_wait(workerQueued, DISPATCH_TIME_FOREVER);
+    ExportThreadProbes(context);
+    CollectOnly(context);
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
+    check(releasedOnMain == 4, @"a thread's run loop turn releases what it queued while another thread's queue waits");
+    dispatch_semaphore_signal(workerMayExit);
+    pthread_join(thread, NULL);
+#ifdef CHARON_PORT
+    /* the backport has no end-of-collection hook: the worker's queue waits for its next leave, run
+     * loop turn or exit, and it has none of the first two */
+    check(workerReleasedBeforeExit == 0 && releasedElsewhere == 4, @"a thread with no run loop that calls nothing more releases what it queued when it exits");
+#else
+    check(workerReleasedBeforeExit == 4 && releasedElsewhere == 4, @"a torn-down virtual machine's wrapped objects are released as its teardown ends, on its thread");
+#endif
 }
 
 /* Arrays and Dates are told by the object's own class, as the release asks it. */
@@ -982,6 +1061,7 @@ int main(void)
         CheckExportArguments();
         CheckReleaseCAPI();
         CheckReleaseAfterCollection(context);
+        CheckReleaseThread(context);
         CheckOwnClass();
 
         JSVirtualMachine *vm = [[JSVirtualMachine alloc] init];

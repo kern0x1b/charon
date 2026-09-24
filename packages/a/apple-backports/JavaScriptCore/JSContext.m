@@ -63,8 +63,6 @@ static NSMapTable<id, JSContext *> *ContextRegistry(void)
     [charon_context_registry_lock unlock];
 }
 
-/* The global context is released once the queue runs (JSInternal.m, charon_js_defer): no -dealloc
- * here calls the C API. */
 - (void)dealloc
 {
     NSMapTable<id, JSContext *> *registry = ContextRegistry();
@@ -73,10 +71,7 @@ static NSMapTable<id, JSContext *> *ContextRegistry(void)
     if (![registry objectForKey:(__bridge id)_globalContext])
         [registry removeObjectForKey:(__bridge id)_globalContext];
     [charon_context_registry_lock unlock];
-    JSGlobalContextRef globalContext = _globalContext;
-    charon_js_defer(^{
-        JSGlobalContextRelease(globalContext);
-    });
+    JSGlobalContextRelease(_globalContext);
 }
 
 + (nullable JSContext *)charon_wrapperForGlobalContext:(JSGlobalContextRef)context create:(BOOL)create

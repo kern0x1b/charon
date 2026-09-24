@@ -411,87 +411,6 @@ static JSValueRef CallBlock(JSContextRef ctx, JSObjectRef function, JSObjectRef 
     return charon_js_invocation_result(invocation, signature.methodReturnType, ctx);
 }
 
-/*
- * What finalizers and -dealloc methods give up, waiting for a point outside the engine. A finalizer
- * must call nothing that may collect or allocate, "all functions that have a JSContextRef parameter"
- * included (JSObjectRef.h, JSObjectFinalizeCallback), and on the release's engine (2012) a finalizer
- * runs inside whichever allocation sweeps its block, anywhere in any C API call of any thread that
- * uses the group (measured on the iPad 2: the first finalizer ran inside JSObjectMake). So a
- * finalizer here only queues the object its wrapper retained, and no -dealloc here calls the C API:
- * each queues its C API work, which then runs in the order it was queued. The release's bridge hands
- * such objects to the heap to release after the collection (WebKit's Heap::releaseSoon); the C API
- * has no end-of-collection hook, so this runs the queue at the next outermost leave of any thread,
- * or on the next turn of the run loop of the thread that queued, whichever comes first. A run loop
- * turn runs its blocks before its timers, so the queue has run before a collection JSGarbageCollect
- * scheduled (the 2012 engine's collection timer) starts. The queue is shared and locked; each item
- * runs outside the lock, in a pool of its own, and what one queues is taken in turn.
- */
-typedef struct CharonDeferredNode {
-    struct CharonDeferredNode *next;
-    const void *object;      /* released, or NULL */
-    const void *work;        /* a copied block run and released, or NULL */
-} CharonDeferredNode;
-
-static pthread_mutex_t charon_deferred_lock = PTHREAD_MUTEX_INITIALIZER;
-static CharonDeferredNode *charon_deferred_first, *charon_deferred_last;
-
-static void Defer(const void *object, const void *work)
-{
-    CharonDeferredNode *node = malloc(sizeof(CharonDeferredNode));
-    node->next = NULL;
-    node->object = object;
-    node->work = work;
-    pthread_mutex_lock(&charon_deferred_lock);
-    BOOL wasEmpty = !charon_deferred_first;
-    if (charon_deferred_last)
-        charon_deferred_last->next = node;
-    else
-        charon_deferred_first = node;
-    charon_deferred_last = node;
-    pthread_mutex_unlock(&charon_deferred_lock);
-    if (wasEmpty) {
-        CFRunLoopRef loop = CFRunLoopGetCurrent();
-        CFRunLoopPerformBlock(loop, kCFRunLoopCommonModes, ^{
-            charon_js_release_pending();
-        });
-        CFRunLoopWakeUp(loop);
-    }
-}
-
-void charon_js_release_soon(const void *object)
-{
-    Defer(object, NULL);
-}
-
-void charon_js_defer(void (^work)(void))
-{
-    Defer(NULL, (__bridge_retained const void *)[work copy]);
-}
-
-void charon_js_release_pending(void)
-{
-    for (;;) {
-        pthread_mutex_lock(&charon_deferred_lock);
-        CharonDeferredNode *list = charon_deferred_first;
-        charon_deferred_first = charon_deferred_last = NULL;
-        pthread_mutex_unlock(&charon_deferred_lock);
-        if (!list)
-            return;
-        for (CharonDeferredNode *node = list, *next; node; node = next) {
-            next = node->next;
-            @autoreleasepool {
-                if (node->work) {
-                    void (^work)(void) = (__bridge_transfer void (^)(void))node->work;
-                    work();
-                }
-                if (node->object)
-                    CFRelease(node->object);
-            }
-            free(node);
-        }
-    }
-}
-
 static void BlockFinalize(JSObjectRef object)
 {
     charon_js_release_soon(JSObjectGetPrivate(object));
@@ -918,13 +837,22 @@ typedef struct CharonPendingJobs {
     JSObjectRef drain;
 } CharonPendingJobs;
 
+typedef struct CharonReleaseNode {
+    struct CharonReleaseNode *next;
+    const void *object;
+} CharonReleaseNode;
+
 typedef struct CharonJobState {
     unsigned depth;   /* every level of script on this thread's stack: ours and a callback's */
     unsigned entered; /* the levels this port entered itself (charon_js_enter), which a leave ends */
     BOOL scheduled;   /* a run loop turn of this thread is to drain the queue */
     CharonPendingJobs *first;
     CharonPendingJobs *last;
+    CharonReleaseNode *releases; /* what this thread's finalizers gave up, oldest first */
+    CharonReleaseNode *lastRelease;
 } CharonJobState;
+
+static void ReleaseQueued(CharonJobState *state);
 
 static pthread_key_t charon_jobs_key;
 static pthread_once_t charon_jobs_once = PTHREAD_ONCE_INIT;
@@ -932,6 +860,7 @@ static pthread_once_t charon_jobs_once = PTHREAD_ONCE_INIT;
 static void CharonFreeJobs(void *value)
 {
     CharonJobState *state = value;
+    ReleaseQueued(state);
     for (CharonPendingJobs *pending = state->first, *next; pending; pending = next) {
         next = pending->next;
         JSValueUnprotect(pending->context, pending->drain);
@@ -955,6 +884,60 @@ static CharonJobState *CharonJobs(void)
         pthread_setspecific(charon_jobs_key, state);
     }
     return state;
+}
+
+/*
+ * Objects whose wrappers the collector finalized, waiting to be released outside the collection.
+ * A finalizer must call nothing that may collect or allocate, "all functions that have a
+ * JSContextRef parameter" included (JSObjectRef.h, JSObjectFinalizeCallback), and on the release's
+ * engine (2012) a finalizer runs inside whichever allocation sweeps its block (measured on the iPad
+ * 2: inside JSObjectMake); the last release of a wrapped object runs its -dealloc, which may reach
+ * the C API (a JSValue, a JSManagedValue, a graph token of JSVirtualMachine). The release's bridge
+ * hands such objects to the heap to release after the collection, on the thread that collected
+ * (WebKit's Heap::releaseSoon); the C API has no end-of-collection hook, so each thread keeps its
+ * own queue here, and releases what its finalizers queued at its own next outermost leave or next
+ * run loop turn, whichever comes first, and at its exit. A thread that has no run loop and never
+ * calls into script again keeps what it queued until it exits.
+ */
+void charon_js_release_soon(const void *object)
+{
+    CharonJobState *state = CharonJobs();
+    CharonReleaseNode *node = malloc(sizeof(CharonReleaseNode));
+    node->next = NULL;
+    node->object = object;
+    BOOL wasEmpty = !state->releases;
+    if (state->lastRelease)
+        state->lastRelease->next = node;
+    else
+        state->releases = node;
+    state->lastRelease = node;
+    if (wasEmpty) {
+        CFRunLoopRef loop = CFRunLoopGetCurrent();
+        CFRunLoopPerformBlock(loop, kCFRunLoopCommonModes, ^{
+            charon_js_release_pending();
+        });
+        CFRunLoopWakeUp(loop);
+    }
+}
+
+/* Each release in a pool of its own; a -dealloc that finalizes more queues it here, taken in turn. */
+static void ReleaseQueued(CharonJobState *state)
+{
+    while (state->releases) {
+        CharonReleaseNode *node = state->releases;
+        state->releases = node->next;
+        if (!state->releases)
+            state->lastRelease = NULL;
+        @autoreleasepool {
+            CFRelease(node->object);
+        }
+        free(node);
+    }
+}
+
+void charon_js_release_pending(void)
+{
+    ReleaseQueued(CharonJobs());
 }
 
 void charon_js_push_callback(JSContext *context, JSValue *thisValue, JSValue *callee, NSArray<JSValue *> *arguments)
