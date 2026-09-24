@@ -908,19 +908,52 @@ static JSObjectRef PromiseConstructor(JSContext *context)
     return constructor;
 }
 
-/* A context -init made carries the constructor as its global Promise, as one with promises does.
- * The release's engine makes a fresh global object with no Promise of its own, so nothing is
- * replaced there; on an engine that has one, this constructor replaces it, which is how the host
- * test holds this implementation, not the host's, to the host's answers. */
+/* The value of `name` on `object`. */
+static JSValueRef NamedProperty(JSContextRef ctx, JSObjectRef object, const char *name)
+{
+    JSStringRef string = JSStringCreateWithUTF8CString(name);
+    JSValueRef value = JSObjectGetProperty(ctx, object, string, NULL);
+    JSStringRelease(string);
+    return value;
+}
+
+/* A context -init made carries the constructor as its global Promise, as one with promises does:
+ * writable, configurable and not enumerable (measured on the host). The release's engine makes a
+ * fresh global object with no Promise of its own, so nothing is replaced there; on an engine that
+ * has one, this constructor replaces it, which is how the host test holds this implementation, not
+ * the host's, to the host's answers. It is defined through the context's own Object.defineProperty,
+ * read before any script has run in the context: the 2012 engine's JSObjectSetProperty keeps no
+ * attribute on a global object (JSGlobalObject::putDirectVirtual puts the value first, then leaves
+ * the attributes of the property that now exists, JavaScriptCore-7536.26.7; measured on the iPad
+ * 2, kJSPropertyAttributeDontEnum there gives an enumerable global, and ES5's defineProperty does
+ * not), where [[DefineOwnProperty]] is ES5's own. */
 + (void)charon_installPromiseInContext:(JSContext *)context
 {
     JSObjectRef constructor = PromiseConstructor(context);
     if (!constructor)
         return;
     JSGlobalContextRef ctx = context.JSGlobalContextRef;
+    JSObjectRef global = JSContextGetGlobalObject(ctx);
+    JSObjectRef define = (JSObjectRef)NamedProperty(ctx, (JSObjectRef)NamedProperty(ctx, global, "Object"), "defineProperty");
+    JSObjectRef descriptor = JSObjectMake(ctx, NULL, NULL);
+    const struct { const char *name; JSValueRef value; } fields[] = {
+        {"value", constructor},
+        {"writable", JSValueMakeBoolean(ctx, true)},
+        {"enumerable", JSValueMakeBoolean(ctx, false)},
+        {"configurable", JSValueMakeBoolean(ctx, true)},
+    };
+    for (size_t index = 0; index < sizeof fields / sizeof fields[0]; index++) {
+        JSStringRef name = JSStringCreateWithUTF8CString(fields[index].name);
+        JSObjectSetProperty(ctx, descriptor, name, fields[index].value, kJSPropertyAttributeNone, NULL);
+        JSStringRelease(name);
+    }
     JSStringRef name = JSStringCreateWithUTF8CString("Promise");
-    JSObjectSetProperty(ctx, JSContextGetGlobalObject(ctx), name, constructor, kJSPropertyAttributeDontEnum, NULL);
+    JSValueRef arguments[] = {global, JSValueMakeString(ctx, name), descriptor};
     JSStringRelease(name);
+    JSValueRef exception = NULL;
+    JSObjectCallAsFunction(ctx, define, NULL, 3, arguments, &exception);
+    if (exception)
+        [context charon_noteException:exception];
 }
 
 /*
