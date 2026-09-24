@@ -241,12 +241,37 @@ static void check_physics_world(void)
     charon_check(hits != nil && hits.count == 0, "a ray through a world with no body hits nothing", [NSString stringWithFormat:@"%@", hits]);
 }
 
+// A flag stored as neither a boolean nor an integer keeps its default and is said once, naming the key.
+static void check_flags(void)
+{
+    __block SCNNode *node = nil;
+    __block NSString *failure = nil;
+    NSString *log = captured_stderr(^{
+        node = decode_node(stand_in([StandInNode class], @{@"castsShadow": @"no"}), &failure);
+    });
+    charon_check(node != nil && node.castsShadow, "a flag stored as a string keeps its default",
+                 [NSString stringWithFormat:@"node %@, castsShadow %d, %@", node, node.castsShadow, failure]);
+    charon_check(log != nil && count_lines_containing(log, @"the flag under castsShadow is neither") == 1,
+                 "a flag stored as a string is said once, naming its key", [NSString stringWithFormat:@"log: %@", log]);
+
+    node = nil;
+    failure = nil;
+    StandInNode *integer = stand_in_with([StandInNode class], nil, @{@"castsShadow": @0}, nil);
+    log = captured_stderr(^{
+        node = decode_node(integer, &failure);
+    });
+    charon_check(node != nil && !node.castsShadow && count_lines_containing(log, @"SceneKit:") == 0,
+                 "a flag stored as the integer 0 is NO, and nothing is said (control)",
+                 [NSString stringWithFormat:@"node %@, castsShadow %d, log %@, %@", node, node.castsShadow, log, failure]);
+}
+
 int main(void)
 {
     @autoreleasepool {
         check_single_objects();
         check_colours();
         check_physics_world();
+        check_flags();
         printf("%d of %d checks failed\n", charon_failures, charon_checks);
         return charon_failures;
     }

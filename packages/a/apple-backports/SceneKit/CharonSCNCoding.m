@@ -511,12 +511,16 @@ static UIColor *CharonSCNArchivedColorValue(CharonSCNArchivedColor *color, NSStr
     if (![coder containsValueForKey:key]) {
         return fallback;
     }
+    // An archive stores a flag either as a boolean or as an integer (facts: castsShadow is 0, hidden is false, in one
+    // file), each decode raises on the other, and NSKeyedUnarchiver answers no question about a value's type.
     @try {
         return [coder decodeBoolForKey:key];
     } @catch (NSException *exception) {
         @try {
             return [coder decodeIntegerForKey:key] != 0;
         } @catch (NSException *stillNotAnInteger) {
+            NSLog(@"SceneKit: the flag under %@ is neither a boolean nor an integer, and keeps its default %@: %@: %@", key,
+                  fallback ? @"YES" : @"NO", stillNotAnInteger.name, stillNotAnInteger.reason);
             return fallback;
         }
     }

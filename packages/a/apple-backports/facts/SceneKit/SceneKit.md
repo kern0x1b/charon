@@ -387,6 +387,10 @@ moving on, none described as a finding without a fix:
    `CharonSCNCoding.decodeBool:forKey:default:` that tries `decodeBoolForKey:`
    first and falls back to `decodeIntegerForKey:` on exception, rather than
    assuming either encoding.
+   Probing by exception stays, since `NSKeyedUnarchiver` answers no question
+   about a value's stored type; a flag that is neither (both decodes raise)
+   keeps its default and the log says so, naming the key
+   (`tests/backports/device/scenekit-decode.m`).
 
 **Honest remainder on the diff itself.** Every printed property whose value
 differs from its class's init default (`particleLifeSpan=2` vs default `1`,
