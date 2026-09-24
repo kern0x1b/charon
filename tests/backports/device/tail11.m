@@ -54,8 +54,8 @@ static void picker_presets(void)
 
 static void absences(void)
 {
-    CHECK(![UIScrollView instancesRespondToSelector:@selector(horizontalScrollIndicatorInsets)], "horizontalScrollIndicatorInsets is absent");
-    CHECK(![UIScrollView instancesRespondToSelector:@selector(verticalScrollIndicatorInsets)], "verticalScrollIndicatorInsets is absent");
+    CHECK_EQUAL(image_of_method([UIScrollView class], @selector(horizontalScrollIndicatorInsets)), @"libUIKitBackports.dylib", "horizontalScrollIndicatorInsets comes from the backports, held by uikit12");
+    CHECK_EQUAL(image_of_method([UIScrollView class], @selector(verticalScrollIndicatorInsets)), @"libUIKitBackports.dylib", "verticalScrollIndicatorInsets comes from the backports, held by uikit12");
     CHECK([UIScrollView instancesRespondToSelector:@selector(scrollIndicatorInsets)], "the release's own scrollIndicatorInsets stays");
     CHECK(NSClassFromString(@"UIPencilInteraction") == Nil, "UIPencilInteraction is absent");
     CHECK(dlsym(RTLD_DEFAULT, "UIGuidedAccessConfigureAccessibilityFeatures") == NULL, "UIGuidedAccessConfigureAccessibilityFeatures is absent");
