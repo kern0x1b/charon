@@ -18,6 +18,21 @@ static CustomPresentationRecorder recorder;
 static BOOL removesPresenter;
 static BOOL fullscreenPresentation;
 static NSInteger layoutCalls;
+static UIView *presenterView;
+static CGRect presenterFrame;
+
+/* Where the presenting view is on the screen, against where it was before the presentation. */
+static NSString *presenter_place(void)
+{
+    if (!presenterView.window)
+        return @"out of the window";
+    return CGRectEqualToRect([presenterView convertRect:presenterView.bounds toView:nil], presenterFrame) ? @"kept" : @"moved";
+}
+
+static NSString *presenter_text(void)
+{
+    return presenterView.window ? frame_text([presenterView convertRect:presenterView.bounds toView:nil]) : @"none";
+}
 
 @interface CPController : UIViewController
 @end
@@ -68,6 +83,8 @@ static NSInteger layoutCalls;
 {
     [events addObject:completed ? @"pc:didPresent:1" : @"pc:didPresent:0"];
     UIView *container = self.containerView;
+    recorder([self.tag stringByAppendingString:@".presented.presenterFrame"], presenter_place());
+    recorder([@"info." stringByAppendingString:[self.tag stringByAppendingString:@".presented.presenterFrame"]], [NSString stringWithFormat:@"before=%@ now=%@", frame_text(presenterFrame), presenter_text()]);
     recorder([self.tag stringByAppendingString:@".didPresent"], [NSString stringWithFormat:@"containerSubviews=%lu presentedFrameInContainer=%d presentedSuperIsContainer=%d dimmingIn=%d presenterWindow=%d presentedWindow=%d", (unsigned long)container.subviews.count, CGRectEqualToRect([self.presentedView convertRect:self.presentedView.bounds toView:container], [self frameOfPresentedViewInContainerView]), self.presentedView.superview == container, self.dimming.superview == container, self.presentingViewController.view.window != nil, self.presentedView.window != nil]);
 }
 
@@ -169,6 +186,44 @@ static NSInteger layoutCalls;
 }
 @end
 
+/* A full-screen presentation with an animator and no presentation controller, dismissed through an interaction
+   controller: the case where the port's interactive transition puts the presenting view back. */
+@interface CPFade : NSObject <UIViewControllerAnimatedTransitioning>
+@property (nonatomic) BOOL presenting;
+@end
+
+@implementation CPFade
+- (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)context { return 0.3; }
+- (void)animateTransition:(id<UIViewControllerContextTransitioning>)context
+{
+    UIViewController *to = [context viewControllerForKey:UITransitionContextToViewControllerKey];
+    UIView *moving = self.presenting ? [context viewForKey:UITransitionContextToViewKey] : [context viewForKey:UITransitionContextFromViewKey];
+    if (self.presenting) {
+        [context.containerView addSubview:moving];
+        moving.frame = [context finalFrameForViewController:to];
+        moving.alpha = 0;
+    }
+    [UIView animateWithDuration:0.3 animations:^{ moving.alpha = self.presenting ? 1 : 0; } completion:^(BOOL finished) {
+        [context completeTransition:![context transitionWasCancelled]];
+    }];
+}
+@end
+
+@interface CPInteractiveDelegate : NSObject <UIViewControllerTransitioningDelegate>
+@property (nonatomic, strong) UIPercentDrivenInteractiveTransition *interactor;
+@end
+
+@implementation CPInteractiveDelegate
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source
+{
+    CPFade *fade = [[CPFade alloc] init];
+    fade.presenting = YES;
+    return fade;
+}
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed { return [[CPFade alloc] init]; }
+- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>)animator { return self.interactor; }
+@end
+
 void custompresentation_run(UIWindow *window, CustomPresentationRecorder record, void (^done)(void))
 {
     events = [NSMutableArray array];
@@ -176,9 +231,12 @@ void custompresentation_run(UIWindow *window, CustomPresentationRecorder record,
     CPController *base = [[CPController alloc] init];
     base.title = @"base";
     window.rootViewController = base;
+    presenterView = base.view;
 
     NSMutableArray *steps = [NSMutableArray array];
     void (^step)(NSTimeInterval, void (^)(void)) = ^(NSTimeInterval wait, void (^block)(void)) { [steps addObject:@[@(wait), [block copy]]]; };
+    /* The frame the release gave the root view, which every presentation below is to leave as it is. */
+    step(0.3, ^{ presenterFrame = [base.view convertRect:base.view.bounds toView:nil]; });
     NSArray *variants = @[@[@"dim", @NO, @NO, @YES], @[@"remove", @NO, @YES, @YES], @[@"plain", @NO, @NO, @NO], @[@"full", @YES, @NO, @YES]];
     for (NSArray *variant in variants) {
         NSString *tag = variant[0];
@@ -211,8 +269,37 @@ void custompresentation_run(UIWindow *window, CustomPresentationRecorder record,
         step(1.0, ^{
             record([tag stringByAppendingString:@".dismiss.events"], [events componentsJoinedByString:@","]);
             record([tag stringByAppendingString:@".dismiss.end"], [NSString stringWithFormat:@"presented=%d modalWindow=%d baseWindow=%d", base.presentedViewController != nil, modal.view.window != nil, base.view.window != nil]);
+            record([tag stringByAppendingString:@".dismissed.presenterFrame"], presenter_place());
+            record([@"info." stringByAppendingString:[tag stringByAppendingString:@".dismissed.presenterFrame"]], [NSString stringWithFormat:@"before=%@ now=%@", frame_text(presenterFrame), presenter_text()]);
         });
     }
+    /* The control: the release's own full-screen presentation and dismissal, with no transitioning delegate. */
+    CPController *native = [[CPController alloc] init];
+    native.title = @"native";
+    native.modalPresentationStyle = UIModalPresentationFullScreen;
+    step(0.3, ^{ [base presentViewController:native animated:YES completion:nil]; });
+    step(1.0, ^{ [base dismissViewControllerAnimated:YES completion:nil]; });
+    step(1.0, ^{
+        record(@"native.dismissed.presenterFrame", presenter_place());
+        record(@"info.native.dismissed.presenterFrame", [NSString stringWithFormat:@"before=%@ now=%@", frame_text(presenterFrame), presenter_text()]);
+    });
+    CPController *interactive = [[CPController alloc] init];
+    interactive.title = @"interactive";
+    interactive.modalPresentationStyle = UIModalPresentationFullScreen;
+    static CPInteractiveDelegate *interactiveDelegate;
+    interactiveDelegate = [[CPInteractiveDelegate alloc] init];
+    interactive.transitioningDelegate = interactiveDelegate;
+    step(0.3, ^{ [base presentViewController:interactive animated:YES completion:nil]; });
+    step(1.0, ^{
+        interactiveDelegate.interactor = [[UIPercentDrivenInteractiveTransition alloc] init];
+        [base dismissViewControllerAnimated:YES completion:nil];
+    });
+    step(0.3, ^{ [interactiveDelegate.interactor updateInteractiveTransition:0.5]; });
+    step(0.2, ^{ [interactiveDelegate.interactor finishInteractiveTransition]; });
+    step(1.2, ^{
+        record(@"interactive.dismissed.presenterFrame", presenter_place());
+        record(@"info.interactive.dismissed.presenterFrame", [NSString stringWithFormat:@"before=%@ now=%@ presented=%d", frame_text(presenterFrame), presenter_text(), base.presentedViewController != nil]);
+    });
     step(0.3, ^{ done(); });
     __block void (^run)(NSUInteger);
     run = ^(NSUInteger index) {

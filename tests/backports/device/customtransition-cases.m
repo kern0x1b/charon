@@ -156,7 +156,16 @@ void customtransition_run(UIWindow *window, CustomTransitionRecorder record, voi
 
     NSMutableArray *steps = [NSMutableArray array];
     void (^step)(NSTimeInterval, void (^)(void)) = ^(NSTimeInterval wait, void (^block)(void)) { [steps addObject:@[@(wait), [block copy]]]; };
+    /* Where the presenting view is on the screen after a dismissal, against where it was before the presentation. */
+    __block CGRect presenterFrame = CGRectZero;
+    void (^recordPresenter)(NSString *) = ^(NSString *name) {
+        UIView *view = navigation.view;
+        CGRect now = [view convertRect:view.bounds toView:nil];
+        record([name stringByAppendingString:@".presenterFrame"], !view.window ? @"out of the window" : CGRectEqualToRect(now, presenterFrame) ? @"kept" : @"moved");
+        record([@"info." stringByAppendingString:[name stringByAppendingString:@".presenterFrame"]], [NSString stringWithFormat:@"before=%@ now=%@", frame_text(presenterFrame), view.window ? frame_text(now) : @"none"]);
+    };
     step(0.3, ^{
+        presenterFrame = [navigation.view convertRect:navigation.view.bounds toView:nil];
         [events removeAllObjects];
         [navigation presentViewController:modal animated:YES completion:^{ [events addObject:@"completion"]; }];
     });
@@ -170,6 +179,7 @@ void customtransition_run(UIWindow *window, CustomTransitionRecorder record, voi
     step(1.0, ^{
         record(@"dismiss.events", [events componentsJoinedByString:@","]);
         record(@"dismiss.end", [NSString stringWithFormat:@"presented=%d baseWindow=%d modalWindow=%d", navigation.presentedViewController == nil, base.view.window != nil, modal.view.window != nil]);
+        recordPresenter(@"dismiss");
         [events removeAllObjects];
         [navigation pushViewController:second animated:YES];
     });
@@ -219,6 +229,8 @@ void customtransition_run(UIWindow *window, CustomTransitionRecorder record, voi
         step(1.6, ^{
             record([name stringByAppendingString:@".events"], [events componentsJoinedByString:@","]);
             record([name stringByAppendingString:@".end"], [NSString stringWithFormat:@"presented=%d modalWindow=%d modalAlpha=%.0f", navigation.presentedViewController != nil, modal.view.window != nil, modal.view.alpha]);
+            if (finish)
+                recordPresenter(name);
             delegate.interactor = nil;
             delegate.dismissAnimator = animators[@"dismiss"];
             if (navigation.presentedViewController)
