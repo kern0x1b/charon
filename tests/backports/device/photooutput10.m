@@ -7,8 +7,8 @@
 
 // AVCapturePhotoOutput as the release's still image output (facts/AVFoundation/AVCapturePhotoOutput.md):
 // the release's own output in the same session as the control, the formats offered, the refusals, real
-// captures with a preview at the display's size and at a size asked for, an uncompressed photo, and a
-// zoomed one. Built with AVCapturePhotoOutput.m and the zoom's files, as the library carries them. A
+// captures with a preview at the display's size and at a size asked for, an uncompressed photo, a zoomed
+// one, and the flash modes. Built with AVCapturePhotoOutput.m and the zoom's files, as the library carries them. A
 // process of its own: the camera needs no permission on 6.1.3.
 
 @interface CharonPhotoCatcher : NSObject <AVCapturePhotoCaptureDelegate>
@@ -296,6 +296,25 @@ int main(int argc, char **argv)
             }
         } else {
             printf("zoom: this camera does not scale and crop its stills\n");
+        }
+
+        // The flash: the header offers the modes of the camera behind the output, Off, On and Auto for a camera with a
+        // flash and Off alone for one without (the iPad 2). A capture takes its settings' mode onto the camera, where the
+        // release's still image output reads it, and a photo still comes.
+        NSSet *flashModes = [NSSet setWithArray:output.supportedFlashModes];
+        NSSet *cameraModes = camera.hasFlash ? [NSSet setWithObjects:@(AVCaptureFlashModeOff), @(AVCaptureFlashModeOn), @(AVCaptureFlashModeAuto), nil]
+                                             : [NSSet setWithObject:@(AVCaptureFlashModeOff)];
+        printf("flash: camera has one %d, modes offered %s\n", camera.hasFlash, [[output.supportedFlashModes componentsJoinedByString:@" "] UTF8String]);
+        CHECK_EQUAL(flashModes, cameraModes, "the flash modes offered are the camera's");
+        if (camera.hasFlash) {
+            for (NSNumber *mode in @[@(AVCaptureFlashModeOn), @(AVCaptureFlashModeOff)]) {
+                AVCapturePhotoSettings *flash = [AVCapturePhotoSettings photoSettings];
+                flash.flashMode = mode.integerValue;
+                CharonPhotoCatcher *lit = capture_with(output, flash, nil);
+                printf("flash %ld: camera mode %ld, photo %zux%zu\n", (long)mode.integerValue, (long)camera.flashMode, lit.photoWidth, lit.photoHeight);
+                CHECK(camera.flashMode == mode.integerValue, "a capture sets its flash mode on the camera");
+                CHECK(lit.finished && lit.error == nil && lit.photoIsJPEG, "and the photo comes");
+            }
         }
         [session beginConfiguration];
         [session removeOutput:output];
