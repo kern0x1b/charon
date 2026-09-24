@@ -284,9 +284,10 @@ system's does, continuously while a finger moves. There is no spectrum, eyedropp
 presentation: the card slides up to its medium or large detent (or a custom one) over the presenter, which dims and scales
 back behind it, sheets stack behind one another, and a drag moves it between detents or takes it down, asking the
 delegate and `modalInPresentation` first, with the numbers of UIKitCore 16.0. In a regular width the release draws its
-own form sheet. The display's corners are square, there is no keyboard detent, and the "magic" shadow of a sheet whose
-parent does not stack with it is not drawn (it needs an image and a filter iOS 6 does not have). See
-`facts/UIKit/UISheetPresentationController.md`.
+own form sheet. A full-width sheet's bottom corners follow the display's (square on every device with a home button), the
+sheet rises over the keyboard while a first responder in it needs one, and the "magic" shadow of a sheet whose parent does
+not stack with it is drawn from a reading of what lies under it, refreshed a few times a second rather than composited by
+the render server. See `facts/UIKit/UISheetPresentationController.md`.
 
 A program linked with SDK 13.0 or later gets iOS 13's default presentation style: a new view controller starts with
 `UIModalPresentationAutomatic`, which `modalPresentationStyle` answers as the page sheet (full screen for an image picker of the
