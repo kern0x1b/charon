@@ -915,7 +915,7 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
 {
     [super presentationTransitionDidEnd:completed];
     if (!completed) {
-        [self charon_tearDown];
+        [self charon_tearDownRemovingViews:YES];
         return;
     }
     [self charon_linkParent];
@@ -941,7 +941,7 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
     _pan.enabled = YES;
     if (!completed)
         return;
-    [self charon_tearDown];
+    [self charon_tearDownRemovingViews:NO];
     if (_userDismissed) {
         _userDismissed = NO;
         /* After the release has taken the controller down: the delegate is told in the
@@ -1007,7 +1007,13 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
     _layout.parent = _rootLayout;
 }
 
-- (void)charon_tearDown
+/* A finished dismissal leaves the card and the presented controller's view in the container:
+   the release's own dismissal runs after this, and UIKit 6.1.3 ends it (presentingViewController
+   and presentedViewController cleared, isBeingDismissed back to NO) only when that view is in
+   the window then. Taken out here, the release kept the controller presented, and the next
+   dismissal from it reached nothing (measured on an iPad 2, 6.1.3). The container goes after the
+   release's dismissal, and the views with it. */
+- (void)charon_tearDownRemovingViews:(BOOL)removesViews
 {
     [_animator stopAnimation:YES];
     _animator = nil;
@@ -1033,11 +1039,12 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
     [_confinedDimmingView removeFromSuperview];
     _confinedDimmingView = nil;
     UIView *content = self.presentedViewController.view;
-    if (content.superview == _sheetView.clippingView)
+    if (removesViews && content.superview == _sheetView.clippingView)
         [content removeFromSuperview];
     [_sheetView removeGestureRecognizer:_pan];
     _pan = nil;
-    [_sheetView removeFromSuperview];
+    if (removesViews)
+        [_sheetView removeFromSuperview];
     _sheetView = nil;
     _layout.view = nil;
     _layout.container = nil;
