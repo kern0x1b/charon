@@ -42,7 +42,7 @@ delegate answers none, or that has no delegate, gets a plain `UIPresentationCont
 "bare" case). Otherwise the release presents as it always has (a style that is not its own is its full screen one). What is different from the system's is written below;
 everything else was recorded from the host by `tests/backports/host/custompresentation/run.sh` (five variants: a
 presentation that keeps the presenter's view and animates, one that removes it, one without an animator, one that says
-`shouldPresentInFullscreen` and one with no transitioning delegate) and is held on the iPad 2 by `tests/backports/device/custompresentation.m` (38 checks).
+`shouldPresentInFullscreen` and one with no transitioning delegate) and is held on the iPad 2 by `tests/backports/device/custompresentation.m` (53 checks).
 
 - `containerView` is a view on the window that the port makes, the same for the presentation and the dismissal, and is nil before
   the presentation begins and after the dismissal ends. It stays while the controller is presented, and it holds what the
