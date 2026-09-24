@@ -1,6 +1,7 @@
 #import <CoreSpotlight/CoreSpotlight.h>
 #import <dlfcn.h>
 #import <objc/message.h>
+#import "CharonSpotlightStore.h"
 
 NSString * const CSIndexErrorDomain = @"CSIndexErrorDomain";
 
@@ -16,7 +17,7 @@ static NSError *CharonIndexError(CSIndexErrorCode code, NSString *reason)
 // (CharonCallScreen.m): a shared, world-readable cache path rather than the sandboxed
 // NSApplicationSupportDirectory this store used before a search bundle needed to read it too, kept
 // one subdirectory per indexing application so one app's items never collide with another's.
-NSString *const CharonSpotlightSharedRoot = @"/var/mobile/Library/Caches/org.charon.corespotlight";
+NSString *const CharonSpotlightSharedRoot = CHARON_SPOTLIGHT_SHARED_ROOT;
 
 static NSString *CharonSpotlightStoreDirectory(void)
 {

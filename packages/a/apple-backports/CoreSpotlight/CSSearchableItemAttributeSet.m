@@ -83,11 +83,18 @@
     return YES;
 }
 
+// Under -requiresSecureCoding (the search bundle decodes this way inside searchd) a container's
+// elements must be allowed too, not only the container's own class.
+static NSSet *CharonStringArrayClasses(void)
+{
+    return [NSSet setWithObjects:[NSArray class], [NSString class], nil];
+}
+
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     if ((self = [super init])) {
         self.displayName = [coder decodeObjectOfClass:[NSString class] forKey:@"displayName"];
-        self.alternateNames = [coder decodeObjectOfClass:[NSArray class] forKey:@"alternateNames"];
+        self.alternateNames = [coder decodeObjectOfClasses:CharonStringArrayClasses() forKey:@"alternateNames"];
         self.path = [coder decodeObjectOfClass:[NSString class] forKey:@"path"];
         self.contentURL = [coder decodeObjectOfClass:[NSURL class] forKey:@"contentURL"];
         self.thumbnailURL = [coder decodeObjectOfClass:[NSURL class] forKey:@"thumbnailURL"];
@@ -95,8 +102,8 @@
         self.relatedUniqueIdentifier = [coder decodeObjectOfClass:[NSString class] forKey:@"relatedUniqueIdentifier"];
         self.metadataModificationDate = [coder decodeObjectOfClass:[NSDate class] forKey:@"metadataModificationDate"];
         self.contentType = [coder decodeObjectOfClass:[NSString class] forKey:@"contentType"];
-        self.contentTypeTree = [coder decodeObjectOfClass:[NSArray class] forKey:@"contentTypeTree"];
-        self.keywords = [coder decodeObjectOfClass:[NSArray class] forKey:@"keywords"];
+        self.contentTypeTree = [coder decodeObjectOfClasses:CharonStringArrayClasses() forKey:@"contentTypeTree"];
+        self.keywords = [coder decodeObjectOfClasses:CharonStringArrayClasses() forKey:@"keywords"];
         self.title = [coder decodeObjectOfClass:[NSString class] forKey:@"title"];
         self.version = [coder decodeObjectOfClass:[NSString class] forKey:@"version"];
         self.supportsPhoneCall = [coder decodeObjectOfClass:[NSNumber class] forKey:@"supportsPhoneCall"];

@@ -1572,7 +1572,8 @@ function write_searchbundle(opt)
     local output = path.join(folder, "org.charon.corespotlight")
     local triple = opt.architecture .. "-apple-ios" .. opt.deployment
     os.vrunv(driver(opt, {"-target", triple, "-isysroot", opt.sdkdir, "-fuse-ld=" .. opt.ld, "-fobjc-arc",
-                          "-bundle", "-Os", "-g0", "-Wall", "-o", output, source, "-framework", "Foundation"}))
+                          "-bundle", "-Os", "-g0", "-Wall",
+                          "-DCHARON_BACKPORTS_INSTALL_FOLDER=\"" .. INSTALL_FOLDER .. "\"", "-o", output, source, "-framework", "Foundation"}))
     os.vrunv("xcrun", {"strip", "-x", output})
     signing.sign(opt.ldid, output)
     os.cp(path.join(opt.root, "CoreSpotlight", "SearchBundle", "Info.plist"), path.join(folder, "Info.plist"))

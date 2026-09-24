@@ -22,11 +22,12 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 #import <dlfcn.h>
+#import "../CharonSpotlightStore.h"
 
-// Must match CSSearchableIndex.m's CharonSpotlightSharedRoot exactly - duplicated as a literal
-// rather than linked, since this bundle is built and installed on its own (write_searchbundle),
-// not against one specific band of libCoreSpotlightBackports.dylib.
-static NSString *const CharonSpotlightSharedRoot = @"/var/mobile/Library/Caches/org.charon.corespotlight";
+// write_searchbundle passes the package's install folder (INSTALL_FOLDER in modules/apple/backports.lua).
+#ifndef CHARON_BACKPORTS_INSTALL_FOLDER
+#error "CHARON_BACKPORTS_INSTALL_FOLDER must be defined by write_searchbundle"
+#endif
 
 // CSSearchableItem is this port's own class, not Apple's - iOS 6 carries no CoreSpotlight.framework
 // at all - so unarchiving one needs the class registered first, which only happens once the band's
@@ -37,7 +38,9 @@ static void CharonSearchLoadClasses(void)
 {
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        dlopen("/usr/lib/charon/org.charon.apple-backports/libCoreSpotlightBackports.dylib", RTLD_LAZY);
+        NSString *library = [@CHARON_BACKPORTS_INSTALL_FOLDER stringByAppendingPathComponent:@"libCoreSpotlightBackports.dylib"];
+        if (!dlopen(library.fileSystemRepresentation, RTLD_LAZY))
+            NSLog(@"CharonSearchDatastore: cannot load %@: %s", library, dlerror());
     });
 }
 
@@ -45,24 +48,36 @@ static NSArray *CharonSearchLoadAllItems(void)
 {
     CharonSearchLoadClasses();
     Class itemClass = NSClassFromString(@"CSSearchableItem");
-    if (!itemClass)
+    if (!itemClass) {
+        NSLog(@"CharonSearchDatastore: CSSearchableItem is not registered; no indexed item can be read");
         return [NSArray array];
+    }
     NSMutableArray *items = [NSMutableArray array];
     NSFileManager *files = [NSFileManager defaultManager];
-    for (NSString *application in [files contentsOfDirectoryAtPath:CharonSpotlightSharedRoot error:NULL]) {
-        NSString *appDirectory = [CharonSpotlightSharedRoot stringByAppendingPathComponent:application];
+    for (NSString *application in [files contentsOfDirectoryAtPath:CHARON_SPOTLIGHT_SHARED_ROOT error:NULL]) {
+        NSString *appDirectory = [CHARON_SPOTLIGHT_SHARED_ROOT stringByAppendingPathComponent:application];
         for (NSString *name in [files contentsOfDirectoryAtPath:appDirectory error:NULL]) {
             if (![name.pathExtension isEqualToString:@"plist"])
                 continue;
             NSDictionary *disk = [NSDictionary dictionaryWithContentsOfFile:[appDirectory stringByAppendingPathComponent:name]];
             NSDictionary<NSString *, NSData *> *entries = disk[@"entries"];
             for (NSData *archived in entries.allValues) {
+                // The store is written by every indexing application, so it is decoded the secure way
+                // (NSSecureCoding and -requiresSecureCoding are iOS 6.0): only a CSSearchableItem and
+                // the classes its own -initWithCoder: names are instantiated inside searchd. "root" is
+                // the key +[NSKeyedArchiver archivedDataWithRootObject:] writes the object under;
+                // NSKeyedArchiveRootObjectKey, its exported name, is iOS 7.0.
+                NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:archived];
+                unarchiver.requiresSecureCoding = YES;
+                id item = nil;
                 @try {
-                    id item = [NSKeyedUnarchiver unarchiveObjectWithData:archived];
-                    if ([item isKindOfClass:itemClass])
-                        [items addObject:item];
-                } @catch (__unused NSException *exception) {
+                    item = [unarchiver decodeObjectOfClass:itemClass forKey:@"root"];
+                } @catch (NSException *exception) {
+                    NSLog(@"CharonSearchDatastore: rejected an entry of %@/%@: %@: %@", application, name, exception.name, exception.reason);
                 }
+                [unarchiver finishDecoding];
+                if (item)
+                    [items addObject:item];
             }
         }
     }
@@ -71,13 +86,15 @@ static NSArray *CharonSearchLoadAllItems(void)
 
 static NSArray *CharonSearchMatches(id query)
 {
-    NSString *searchString = nil;
-    @try {
-        searchString = [(NSObject *)query valueForKey:@"searchString"];
-    } @catch (NSException *exception) {
-        NSLog(@"CharonSearchDatastore: the query does not answer searchString (%@)", exception.name);
+    // -searchString is a readonly property of the query searchd hands in (read with llvm-otool,
+    // facts/CoreSpotlight/CoreSpotlight.md); a query without it is a release this bundle does not
+    // know, said so rather than read as "nothing matched".
+    SEL getter = sel_registerName("searchString");
+    if (![query respondsToSelector:getter]) {
+        NSLog(@"CharonSearchDatastore: the query, a %@, has no -searchString; this datastore cannot answer it", [query class]);
+        return [NSArray array];
     }
-    searchString = searchString ?: @"";
+    NSString *searchString = ((id (*)(id, SEL))objc_msgSend)(query, getter);
     if (searchString.length == 0)
         return [NSArray array];
     NSArray *items = CharonSearchLoadAllItems();
