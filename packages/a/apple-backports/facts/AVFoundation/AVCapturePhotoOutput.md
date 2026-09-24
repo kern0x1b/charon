@@ -17,6 +17,24 @@ Ladder-walked with the same cache-by-cache inventory `tools/release-split.lua` u
 the SDK header's availability attribute (which names when Apple *published* the symbol, not when
 it first exports): all three classes first export at 10.0.1, not the header's bare "10.0".
 
+## What the gate does not see in these classes
+
+The package gate cannot tell a member of these three classes that works from one that does not, so every member
+needs a test of its own (host oracle and device). Read in `modules/apple/backports.lua` at 7bb1720d:
+
+- `check_registry` counts a member row as built when its class is built: `built = built or (owner and
+  found.classes[owner])` (line 782). A row `AVCapturePhotoSettings.depthDataDeliveryEnabled` listed `implemented`
+  passes whether the library answers the selector or not, and so does a row naming a member the class never had.
+- `surface()` records members only for categories on a class the library does not define (`if not class.image and
+  not ours[name]`, line 597), and `known()` takes any member of a listed class as described (line 741): a member
+  the port adds to its own class needs no row at all to pass.
+- A property the SDK header declares on the class and the port leaves unimplemented is synthesized by the compiler:
+  a getter answering zero and a setter nobody reads, both real methods in the binary. Even a check that looked for
+  the selectors would pass them. Measured 2026-09-24 on the gate's `libAVFoundationBackports.dylib` with
+  `otool -ov`: 28 such properties on `AVCapturePhotoSettings` (`depthDataDeliveryEnabled`,
+  `embeddedThumbnailPhotoFormat`, `highResolutionPhotoEnabled`, `livePhotoMovieFileURL`, ...), and until the bfw2
+  band's change every member but `uniqueID` of `AVCaptureResolvedPhotoSettings`.
+
 ## The delegate design decision, made from real evidence
 
 `-capturePhotoWithSettings:delegate:` needs to call back into the delegate the host app supplies.
