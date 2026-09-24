@@ -363,5 +363,26 @@ function failures(opt)
             table.insert(found, string.format("the declaration at %s could declare %s, not %s", case[1], tostring(words), case[2]))
         end
     end
+    -- The tokens a preprocessor keeps, by the line they came from, out of clang 23.1.1's -E of os/lock.h and
+    -- libkern/OSSpinLockDeprecated.h (C, armv7-apple-ios6.1.3; the SDK's path shortened, attributes cut): os/lock.h:115
+    -- takes os_unfair_lock_t, while OSSpinLockDeprecated.h:79 keeps os_unfair_lock only inside the message
+    -- OSSPINLOCK_DEPRECATED_REPLACE_WITH makes of it - no use of the type.
+    local output = table.concat({
+        "# 112 \"<sdk>/usr/include/os/lock.h\" 3 4",
+        "__attribute__((availability(ios,introduced=10.0)))",
+        "extern __attribute__((__visibility__(\"default\"))) __attribute__((__nothrow__)) __attribute__((__nonnull__))",
+        "__attribute__((__swift_attr__(\"@_unavailableFromAsync(message: \\\"\" \"Use OSAllocatedUnfairLock.performWhileLocked()\" \"\\\")\")))",
+        "void os_unfair_lock_lock(os_unfair_lock_t lock);",
+        "# 79 \"<sdk>/usr/include/libkern/OSSpinLockDeprecated.h\" 3 4",
+        "typedef int32_t OSSpinLock __attribute__((availability(ios,deprecated=10.0,message=\"Use \" \"os_unfair_lock\" \"() from <os/lock.h> instead\")));",
+        ""}, "\n")
+    local kept, reached = {}, {}
+    lift.tokens_kept(output, {os_unfair_lock = true, os_unfair_lock_t = true, OSSpinLock = true}, kept, reached)
+    local lock, spin = "<sdk>/usr/include/os/lock.h", "<sdk>/usr/include/libkern/OSSpinLockDeprecated.h"
+    if not (reached[lock] and reached[spin]) or not ((kept[lock] or {})[115] or {}).os_unfair_lock_t
+       or ((kept[spin] or {})[79] or {}).os_unfair_lock or not ((kept[spin] or {})[79] or {}).OSSpinLock
+       or #table.keys((kept[lock] or {})[114] or {}) > 0 then
+        table.insert(found, "the preprocessor's tokens were read back as " .. string.serialize(kept, {strip = true, indent = false}))
+    end
     return found
 end

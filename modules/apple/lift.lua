@@ -207,6 +207,54 @@ local function importer_arguments(opt)
     return arguments
 end
 
+-- The languages that read the lifted headers, and what each tells the compiler.
+local function languages_of(opt)
+    return {{name = "C", arguments = {"-x", "c"}}, {name = "Objective-C", arguments = {"-x", "objective-c"}},
+            {name = "C++", arguments = {"-x", "c++"}}, {name = "Objective-C++", arguments = {"-x", "objective-c++"}},
+            {name = "Swift", arguments = importer_arguments(opt)}}
+end
+
+-- Where the preprocessor keeps each of names as a token, in any of the languages: kept[file][line][name], for the lines
+-- of every file the umbrella reaches (reached[file]), read back through the line markers of clang -E. A name a line
+-- spells that no language keeps there is no use of it: a branch no language takes (OSSpinLockDeprecated.h's
+-- OSSPINLOCK_USE_INLINED), or a macro that makes a message of it (OSSPINLOCK_DEPRECATED_REPLACE_WITH(os_unfair_lock)).
+-- A file the umbrella does not reach is not told.
+local function preprocessed(opt, languages, names)
+    local wanted = {}
+    for _, name in ipairs(names) do
+        wanted[name] = true
+    end
+    local kept, reached = {}, {}
+    for _, language in ipairs(languages) do
+        local text = os.iorunv(opt.clang, table.join({"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-E"},
+                                                     language.arguments, {path.join(opt.outputdir, "umbrella.m")}))
+        tokens_kept(text, wanted, kept, reached)
+    end
+    return kept, reached
+end
+
+-- The names of wanted a preprocessor's output (clang -E, with its line markers) keeps as tokens, by the file and line
+-- each came from: added to kept[file][line][name], and every file it names to reached.
+function tokens_kept(text, wanted, kept, reached)
+    local file, line
+    for output in (text .. "\n"):gmatch("([^\n]*)\n") do
+        local number, marked = output:match('^# (%d+) "([^"]*)"')
+        if number then
+            file, line = marked, tonumber(number)
+            reached[file] = true
+        elseif file then
+            for word in code_of(output):gmatch("[%a_][%w_]*") do
+                if wanted[word] then
+                    kept[file] = kept[file] or {}
+                    kept[file][line] = kept[file][line] or {}
+                    kept[file][line][word] = true
+                end
+            end
+            line = line + 1
+        end
+    end
+end
+
 -- What the macro uses at sites of the headers expand to where they stand, for the port's triple: each header is laid
 -- over the SDK's own through a VFS overlay as a copy with each use between two markers, and the umbrella is
 -- preprocessed, so each use expands in its header's own context - the macros defined, redefined or undefined around it
@@ -219,10 +267,7 @@ end
 -- the expansions, and is not lowered. A use a language does not reach (inside #ifdef __OBJC__) is not read by it either.
 -- headers: the SDK's headers read, whose conditionals say which predefined macros they test. files: {file, lines, sites}
 -- each. Answers found[site] = expansion or {branches}, refused[site] = why.
-local function expander(opt, headers)
-    local languages = {{name = "C", arguments = {"-x", "c"}}, {name = "Objective-C", arguments = {"-x", "objective-c"}},
-                       {name = "C++", arguments = {"-x", "c++"}}, {name = "Objective-C++", arguments = {"-x", "objective-c++"}},
-                       {name = "Swift", arguments = importer_arguments(opt)}}
+local function expander(opt, headers, languages)
     -- The macros each language predefines (clang -dM on an empty input), and of those whose presence differs between
     -- the languages the ones the SDK's own #if, #ifdef, #ifndef and #elif test, most tested first.
     local empty = path.join(opt.outputdir, "empty.h")
@@ -509,19 +554,15 @@ local function type_marks(node)
     return found
 end
 
--- Every header of the frameworks read, and every header in the folders of the given system headers.
-local function header_files(sdk, frameworks, headers)
+-- Every header of the frameworks read, and every header of the SDK's usr/include: where a type's uses are looked for.
+-- A use left out of them would not keep its type where it is, and the type would come down past API that is not
+-- implemented; a use in a header the dump does not reach cannot be told, and keeps it.
+local function header_files(sdk, frameworks)
     local files = {}
     for _, framework in ipairs(frameworks) do
         table.join2(files, os.files(path.join(sdk, "System", "Library", "Frameworks", framework .. ".framework", "Headers", "*.h")))
     end
-    local folders = {}
-    for _, header in ipairs(headers) do
-        folders[path.directory(header)] = true
-    end
-    for _, folder in ipairs(table.orderkeys(folders)) do
-        table.join2(files, os.files(path.join(folder, "*.h")))
-    end
+    table.join2(files, os.files(path.join(sdk, "usr", "include", "**.h")))
     return files
 end
 
@@ -770,7 +811,9 @@ end
 -- a typedef's, and the availability macros beside them, but not ios or macos inside those macros' arguments. A return
 -- type on the line above its function's name (qos_class_t / qos_class_self(void);) and parameters over several lines
 -- are the same declaration.
-function statement_words(code, position)
+-- Where the C declaration that takes in byte position of code starts: after the ";", "{" or "}" that ends the one
+-- before it, an @end, or a directive's line.
+function statement_start(code, position)
     local start = 1
     for index = position - 1, 1, -1 do
         local char = code:sub(index, index)
@@ -785,6 +828,11 @@ function statement_words(code, position)
             break
         end
     end
+    return start
+end
+
+function statement_words(code, position)
+    local start = statement_start(code, position)
     -- a "#" that only blanks stand before on its line
     local function directive(index)
         local back = index - 1
@@ -840,8 +888,8 @@ function lift(opt)
     end
     local system = system_headers(opt.sdk, symbols)
     local dump = dumper(opt, frameworks, system)
-    local expand = expander(opt, table.join(header_files(opt.sdk, frameworks, {}),
-                                            os.files(path.join(opt.sdk, "usr", "include", "**.h"))))
+    local languages = languages_of(opt)
+    local expand = expander(opt, header_files(opt.sdk, frameworks), languages)
     local kept, entries = {}, {}
     for api, entry in pairs(listed) do
         if entry.status == "implemented" then
@@ -878,9 +926,7 @@ function lift(opt)
         return chain
     end
 
-    -- system_files: where what apple-compat carries is declared, the files a type it takes is looked for in beside the
-    -- frameworks' own
-    local edits, blocked, targets, unmatched, system_files = {}, {}, {}, {}, {}
+    local edits, blocked, targets, unmatched = {}, {}, {}, {}
     -- regional[file][id]: a declaration a region's attribute reaches, to be given its own (see declared_at)
     local regional = {}
     local function place(mark, target)
@@ -920,9 +966,6 @@ function lift(opt)
         for _, node in ipairs(found) do
             for _, mark in ipairs(marks(node)) do
                 place(mark, target)
-                if entry.system then
-                    system_files[mark.file] = true
-                end
             end
             if entry.kind == "type" then
                 -- a type from the header alone: the type and every value it names
@@ -1042,7 +1085,7 @@ function lift(opt)
         end
     end
     local lowered_types, kept_types = {}, {}
-    local headers = header_files(opt.sdk, frameworks, table.orderkeys(system_files))
+    local headers = header_files(opt.sdk, frameworks)
     local codes = {}
     local function code(file)
         codes[file] = codes[file] or code_of(io.readfile(file))
@@ -1052,6 +1095,11 @@ function lift(opt)
     -- release and not implemented, and every use whose declaration cannot be told; and the latest minimum among the
     -- implemented ones. A typedef that names it (dispatch_qos_class_t is qos_class_t) is no use of its own: its uses
     -- are the type's. declared: the type's own declarations, which are no uses of it.
+    local told = {}
+    for name in pairs(named) do
+        told[name] = true
+    end
+    local tokens, reached = preprocessed(opt, languages, table.keys(told))
     local function users(name, declared, seen)
         seen[name] = true
         local blocking, target = {}, opt.minimum
@@ -1059,8 +1107,26 @@ function lift(opt)
             local text = code(file)
             if text:find("%f[%w_]" .. name .. "%f[^%w_]") then
                 local starts, lines = line_starts(text), text:split("\n", {strict = true})
+                -- a mention no language keeps as a token, in a file the umbrella reaches, is none; its declaration's
+                -- lines count together, as a macro called over several lines expands on its first
+                local function dropped(index)
+                    if not (reached[file] and told[name]) then
+                        return false
+                    end
+                    local first = index
+                    local start = statement_start(text, starts[index])
+                    while first > 1 and starts[first] > start do
+                        first = first - 1
+                    end
+                    for line = first, index do
+                        if ((tokens[file] or {})[line] or {})[name] then
+                            return false
+                        end
+                    end
+                    return true
+                end
                 for index, line in ipairs(lines) do
-                    if line:find("%f[%w_]" .. name .. "%f[^%w_]") and not line:trim():startswith("#") then
+                    if line:find("%f[%w_]" .. name .. "%f[^%w_]") and not line:trim():startswith("#") and not dropped(index) then
                         local low, high = starts[index], starts[index + 1]
                         -- its own declaration, as the dump has it, or one in a branch the preprocessor did not take
                         -- (dispatch/object.h's typedef unsigned int dispatch_qos_class_t where sys/qos.h is missing)
