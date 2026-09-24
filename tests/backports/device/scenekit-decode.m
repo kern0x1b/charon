@@ -149,27 +149,34 @@ static NSUInteger count_lines_containing(NSString *text, NSString *needle)
     return count;
 }
 
+// How many objects a list property holds, or -1 when it holds something that is not a list: a decoder that keeps a
+// single object as it is hands one back, and asking it for a count would end the test instead of failing a check.
+static NSInteger list_count(id list)
+{
+    return [list isKindOfClass:[NSArray class]] ? (NSInteger)[(NSArray *)list count] : -1;
+}
+
 static void check_single_objects(void)
 {
     NSString *failure = nil;
     SCNNode *node = decode_node(stand_in([StandInNode class], @{@"particleSystem": [SCNParticleSystem particleSystem]}), &failure);
-    charon_check(node != nil && node.particleSystems.count == 1, "a single particle system under particleSystem is one system",
-                 [NSString stringWithFormat:@"node %@, systems %lu, %@", node, (unsigned long)node.particleSystems.count, failure]);
+    charon_check(node != nil && list_count(node.particleSystems) == 1, "a single particle system under particleSystem is one system",
+                 [NSString stringWithFormat:@"node %@, systems %ld, %@", node, (long)list_count(node.particleSystems), failure]);
 
     failure = nil;
     node = decode_node(stand_in([StandInNode class], @{@"particleSystems": [SCNParticleSystem particleSystem]}), &failure);
-    charon_check(node != nil && node.particleSystems.count == 1, "a single particle system under particleSystems is one system",
+    charon_check(node != nil && list_count(node.particleSystems) == 1, "a single particle system under particleSystems is one system",
                  [NSString stringWithFormat:@"node %@, %@", node, failure]);
 
     failure = nil;
     node = decode_node(stand_in([StandInNode class], @{@"particleSystems": @[[SCNParticleSystem particleSystem], [SCNParticleSystem particleSystem]]}), &failure);
-    charon_check(node != nil && node.particleSystems.count == 2, "an array of two particle systems is two systems (control)",
+    charon_check(node != nil && list_count(node.particleSystems) == 2, "an array of two particle systems is two systems (control)",
                  [NSString stringWithFormat:@"node %@, %@", node, failure]);
 
     failure = nil;
     StandInNode *child = stand_in([StandInNode class], @{@"name": @"child"});
     node = decode_node(stand_in([StandInNode class], @{@"childNodes": child}), &failure);
-    charon_check(node != nil && node.childNodes.count == 1 && [node.childNodes.firstObject.name isEqualToString:@"child"],
+    charon_check(node != nil && list_count(node.childNodes) == 1 && [[node.childNodes.firstObject name] isEqualToString:@"child"],
                  "a single child under childNodes is one child", [NSString stringWithFormat:@"node %@, %@", node, failure]);
 
     failure = nil;
@@ -177,7 +184,7 @@ static void check_single_objects(void)
                                                                   @"elements": [SCNGeometryElement geometryElementWithData:[NSData dataWithBytes:(uint16_t[]){0, 1, 2} length:6]
                                                                                                              primitiveType:SCNGeometryPrimitiveTypeTriangles primitiveCount:1 bytesPerIndex:2]});
     node = decode_node(stand_in([StandInNode class], @{@"geometry": geometry}), &failure);
-    charon_check(node.geometry.materials.count == 1 && node.geometry.geometryElements.count == 1,
+    charon_check(list_count(node.geometry.materials) == 1 && list_count(node.geometry.geometryElements) == 1,
                  "a single material and a single element are one of each", [NSString stringWithFormat:@"geometry %@, %@", node.geometry, failure]);
 }
 
@@ -190,9 +197,9 @@ static void check_stray_objects(void)
     NSString *log = captured_stderr(^{
         node = decode_root_securely(stand_in([StandInNode class], @{@"particleSystems": @"a string"}), [SCNNode class], NO, &failure);
     });
-    charon_check(node != nil && node.particleSystems.count == 0 && count_lines_containing(log, @"the archive's particleSystems holds a") == 1,
+    charon_check(node != nil && list_count(node.particleSystems) == 0 && count_lines_containing(log, @"the archive's particleSystems holds a") == 1,
                  "a string under particleSystems is left out and said, and the node loads",
-                 [NSString stringWithFormat:@"node %@, systems %lu, log %@, %@", node, (unsigned long)node.particleSystems.count, log, failure]);
+                 [NSString stringWithFormat:@"node %@, systems %ld, log %@, %@", node, (long)list_count(node.particleSystems), log, failure]);
 
     node = nil;
     failure = nil;
@@ -200,9 +207,9 @@ static void check_stray_objects(void)
         node = decode_root_securely(stand_in([StandInNode class], @{@"particleSystems": @[[SCNParticleSystem particleSystem], @"a string"]}),
                                     [SCNNode class], NO, &failure);
     });
-    charon_check(node != nil && node.particleSystems.count == 1 && count_lines_containing(log, @"the archive's particleSystems holds a") == 1,
+    charon_check(node != nil && list_count(node.particleSystems) == 1 && count_lines_containing(log, @"the archive's particleSystems holds a") == 1,
                  "a string among particle systems is left out and said, and the system loads",
-                 [NSString stringWithFormat:@"node %@, systems %lu, log %@, %@", node, (unsigned long)node.particleSystems.count, log, failure]);
+                 [NSString stringWithFormat:@"node %@, systems %ld, log %@, %@", node, (long)list_count(node.particleSystems), log, failure]);
 }
 
 // A colour the port cannot read leaves the material property at its default and is said once, naming the key; a
