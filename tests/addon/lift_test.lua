@@ -81,26 +81,49 @@ function failures(opt)
         end
     end
 
-    -- The redeclaration of a member the SDK gives only as a protocol requirement, from the nodes clang dumps for
-    -- UITraitEnvironment: a property whose type carries a nested availability macro (ios(8.0) has parens inside parens),
-    -- and a method whose selector part pairs with its parameter.
+    -- The redeclaration of a member the SDK gives a class only in a protocol it conforms to or in a superclass, and of a
+    -- setter apart from its property, from the nodes clang dumps for them (-ast-dump=json of iPhoneOS16.4.sdk; a
+    -- property's attributes are the ones clang says it has, inferred ones included, all of which compile together as
+    -- written here, with and without ARC). UITraitEnvironment: a property whose type carries a nested availability macro
+    -- (ios(8.0) has parens inside parens), and a method whose selector part pairs with its parameter.
     local declarations = {
-        {{kind = "ObjCPropertyDecl", type = {qualType = "API_AVAILABLE(ios(8.0)) UITraitCollection *"}}, "traitCollection", "6.0",
-         "@property (nonatomic, readonly) UITraitCollection * traitCollection API_AVAILABLE(ios(6.0));"},
-        {{kind = "ObjCMethodDecl", returnType = {qualType = "void"},
+        {{kind = "ObjCPropertyDecl", readonly = true, nonatomic = true, type = {qualType = "API_AVAILABLE(ios(8.0)) UITraitCollection *"}},
+         "traitCollection", "6.0", "@property (nonatomic, readonly) UITraitCollection * traitCollection API_AVAILABLE(ios(6.0));"},
+        {{kind = "ObjCMethodDecl", instance = true, returnType = {qualType = "void"},
           inner = {{kind = "ParmVarDecl", name = "previousTraitCollection", type = {qualType = "UITraitCollection * _Nullable"}}}},
          "traitCollectionDidChange:", "6.0",
          "- (void)traitCollectionDidChange:(UITraitCollection * _Nullable)previousTraitCollection API_AVAILABLE(ios(6.0));"},
-        {{kind = "ObjCMethodDecl", returnType = {qualType = "BOOL"},
+        {{kind = "ObjCMethodDecl", instance = true, returnType = {qualType = "BOOL"},
           inner = {{kind = "ParmVarDecl", name = "date", type = {qualType = "NSDate *"}},
                    {kind = "ParmVarDecl", name = "options", type = {qualType = "NSUInteger"}}}},
          "isDate:options:", "5.0", "- (BOOL)isDate:(NSDate *)date options:(NSUInteger)options API_AVAILABLE(ios(5.0));"},
-        {{kind = "ObjCMethodDecl", returnType = {qualType = "id"}}, "copy", "6.0", "- (id)copy API_AVAILABLE(ios(6.0));"},
+        {{kind = "ObjCMethodDecl", instance = true, returnType = {qualType = "id"}}, "copy", "6.0", "- (id)copy API_AVAILABLE(ios(6.0));"},
+        -- NSItemProviderReading: a class method (instance is false) and a class property
+        {{kind = "ObjCMethodDecl", instance = false, returnType = {qualType = "instancetype _Nullable"},
+          inner = {{kind = "ParmVarDecl", name = "data", type = {qualType = "NSData * _Nonnull"}},
+                   {kind = "ParmVarDecl", name = "typeIdentifier", type = {qualType = "NSString * _Nonnull"}},
+                   {kind = "ParmVarDecl", name = "outError", type = {qualType = "NSError * _Nullable * _Nullable"}}}},
+         "objectWithItemProviderData:typeIdentifier:error:", "6.1.3",
+         "+ (instancetype _Nullable)objectWithItemProviderData:(NSData * _Nonnull)data typeIdentifier:(NSString * _Nonnull)typeIdentifier error:(NSError * _Nullable * _Nullable)outError API_AVAILABLE(ios(6.1.3));"},
+        {{kind = "ObjCPropertyDecl", class = true, readonly = true, copy = true, nonatomic = true, type = {qualType = "NSArray<NSString *> * _Nonnull"}},
+         "readableTypeIdentifiersForItemProvider", "6.1.3",
+         "@property (class, nonatomic, readonly, copy) NSArray<NSString *> * _Nonnull readableTypeIdentifiersForItemProvider API_AVAILABLE(ios(6.1.3));"},
+        -- GCDevice's handlerQueue, readwrite, and UIControl's enabled, whose getter has a name of its own
+        {{kind = "ObjCPropertyDecl", readwrite = true, nonatomic = true, strong = true, type = {qualType = "dispatch_queue_t _Nonnull"}},
+         "handlerQueue", "6.1.3", "@property (nonatomic, readwrite, strong) dispatch_queue_t _Nonnull handlerQueue API_AVAILABLE(ios(6.1.3));"},
+        {{kind = "ObjCPropertyDecl", readwrite = true, nonatomic = true, assign = true, unsafe_unretained = true,
+          getter = {kind = "ObjCMethodDecl", name = "isEnabled"}, type = {qualType = "BOOL"}},
+         "enabled", "6.1.3", "@property (nonatomic, readwrite, assign, unsafe_unretained, getter=isEnabled) BOOL enabled API_AVAILABLE(ios(6.1.3));"},
+        -- refused: a block property needs a declarator around its name, and a type that keeps another macro's attribute
+        -- would lose it
+        {{kind = "ObjCPropertyDecl", copy = true, nonatomic = true, type = {qualType = "void (^)(void)"}}, "handler", "6.1.3", nil},
+        {{kind = "ObjCMethodDecl", instance = true, returnType = {qualType = "API_DEPRECATED(\"use x\", ios(8.0, 9.0)) NSString *"}},
+         "name", "6.1.3", nil},
     }
     for _, case in ipairs(declarations) do
-        local got = lift.protocol_member_declaration(case[1], case[2], case[3])
+        local got = lift.member_declaration(case[1], case[2], case[3])
         if got ~= case[4] then
-            table.insert(found, string.format("%s was redeclared as %s, not %s", case[2], got, case[4]))
+            table.insert(found, string.format("%s was redeclared as %s, not %s", case[2], tostring(got), tostring(case[4])))
         end
     end
     -- The text a use stands for in the five languages that read the lifted headers. clang -E of the SDK's

@@ -346,6 +346,10 @@ package("swift-runtime")
                                       outputdir = path.join(package:installdir("share"), "lift")})
             print("lifted %d marks in %d headers for %d implemented API; %d not declared by the SDK's headers",
                   result.lifted, result.headers, result.implemented, #result.unmatched)
+            if #result.undeclared > 0 then
+                print("%d implemented member(s) the SDK declares nowhere their class reaches, so nothing is lowered for them: %s",
+                      #result.undeclared, table.concat(result.undeclared, "; "))
+            end
             lifted = {"-vfsoverlay", result.vfs}
             package:setenv("CHARON_SWIFT_LIFTED_HEADERS", result.vfs)
             -- the configs of apple-backports whose libraries the overlays link, which a port must carry as well

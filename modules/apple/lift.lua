@@ -11,7 +11,9 @@
 -- availability macro was written, and the release is rewritten there. A class entry lowers the class and the members of
 -- its whole surface, but a member with an entry of its own that is not implemented keeps its mark, and so does every
 -- member that shares a mark with one (a property, its getter and its setter share the line). A member left out of a
--- superclass is left out of a subclass that declares it again. The result is checked both ways before it is used:
+-- superclass is left out of a subclass that declares it again. A member the SDK declares for a class only in a
+-- superclass or a protocol the class conforms to is redeclared on the class itself, at the lowered release, rather than
+-- lowered where every other heir would see it. The result is checked both ways before it is used:
 -- every implemented API the SDK declares answers the lowered release, and nothing that is not implemented moved.
 
 import("core.base.json")
@@ -172,6 +174,46 @@ local function dumper(opt, frameworks, headers)
         end
         cache[key] = found
         return found
+    end, umbrella
+end
+
+-- Which receivers conform to which protocols, as clang answers it: a receiver converts to id<P> without a diagnostic
+-- only where it conforms - through its class, a superclass, any category the umbrella reaches or a protocol it inherits,
+-- which no dump by name lists. A pair that conforms (NSObject to NSObject) and one that does not (NSObject to NSCopying)
+-- are asked beside the others, and a probe that tells either wrongly fails rather than answer the rest.
+local function conformer(opt, umbrella)
+    return function (questions)
+        local asked = table.join({{receiver = "NSObject *", protocol = "NSObject"}, {receiver = "NSObject *", protocol = "NSCopying"}},
+                                 questions)
+        local text = io.readfile(umbrella)
+        local _, base = text:gsub("\n", "")
+        local lines = {}
+        for index, question in ipairs(asked) do
+            table.insert(lines, string.format("static id<%s> charon_conforms_%d(%s x) { return x; }", question.protocol, index,
+                                              question.receiver))
+        end
+        local probe = path.join(opt.outputdir, "conforms.m")
+        io.writefile(probe, text .. table.concat(lines, "\n") .. "\n")
+        local _, diagnostics = os.iorunv(opt.clang, {"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot",
+                                                     "-fsyntax-only", "-x", "objective-c", "-fno-caret-diagnostics",
+                                                     "-fno-color-diagnostics", "-Wno-unguarded-availability",
+                                                     "-Wno-unguarded-availability-new", "-Wno-unused-function", probe})
+        local refused = {}
+        for line in (diagnostics or ""):gmatch("[^\n]+") do
+            local at = line:match("conforms%.m:(%d+):%d+: warning: returning .* from a function with incompatible result type")
+            if at then
+                refused[tonumber(at) - base] = true
+            end
+        end
+        if refused[1] or not refused[2] then
+            raise("the conformance probe %s tells NSObject's conformance to NSObject or to NSCopying wrongly: %s", probe,
+                  diagnostics or "")
+        end
+        local answers = {}
+        for index = 3, #asked do
+            answers[index - 2] = not refused[index]
+        end
+        return answers
     end
 end
 
@@ -505,6 +547,24 @@ local function owner_of(node)
     return qualified:match("^([%w_]+)::")
 end
 
+-- The member an entry names, whoever declares it: a method by its selector and whether it is a class's or an instance's,
+-- a property by its name, or by its getter's selector - a class property (+[NSString readableTypeIdentifiersForItemProvider])
+-- is the class's, and an instance property the instance's.
+local function member_matches(member, node)
+    if node.kind ~= "ObjCMethodDecl" and node.kind ~= "ObjCPropertyDecl" then
+        return false
+    end
+    if member.selector then
+        if node.kind == "ObjCMethodDecl" then
+            return node.name == member.selector and (node.instance ~= false) == (member.sign == "-")
+        end
+        -- a property is its getter's declaration; its setter has one of its own, implicit or written apart
+        return node.name == member.selector and (node.class == true) == (member.sign == "+")
+    end
+    return node.kind == "ObjCPropertyDecl" and node.name == member.property
+        or node.kind == "ObjCMethodDecl" and (node.name == member.property or setter_property(node.name) == member.property)
+end
+
 local function matches(entry, node)
     local api = entry.api:gsub("%(%)$", "")
     local member = member_api(api)
@@ -518,18 +578,7 @@ local function matches(entry, node)
         return node.kind == "ObjCProtocolDecl" and node.name == api
     end
     if member then
-        if (node.kind ~= "ObjCMethodDecl" and node.kind ~= "ObjCPropertyDecl") or owner_of(node) ~= member.owner then
-            return false
-        end
-        if member.selector then
-            if node.kind == "ObjCMethodDecl" then
-                return node.name == member.selector and (node.instance ~= false) == (member.sign == "-")
-            end
-            -- a property is its getter's declaration; its setter has one of its own, implicit or written apart
-            return node.name == member.selector
-        end
-        return node.kind == "ObjCPropertyDecl" and node.name == member.property
-            or node.kind == "ObjCMethodDecl" and (node.name == member.property or setter_property(node.name) == member.property)
+        return owner_of(node) == member.owner and member_matches(member, node)
     end
     -- typedef enum { ... } clockid_t: the enumeration has no name of its own, and clang dumps it under the typedef's
     if entry.kind == "type" then
@@ -647,16 +696,46 @@ function macro_use(lines, line, col)
     end
 end
 
--- The declaration of a member from its AST node, as a category would repeat a protocol's requirement for a class or an
--- interface would declare a property's setter apart from it: the member's own type, and for a method its selector's
--- parts paired in order with its parameters.
-function protocol_member_declaration(member, name, target)
-    -- API_AVAILABLE(...) may nest parens (ios(8.0)), so the balanced match %b() is stripped, not [^)]*
+-- The declaration of a member from its AST node, as a category would repeat for a class what a protocol it conforms to
+-- or a superclass declares, or an interface would declare a property's setter apart from it: the member's own type, a
+-- property's own attributes, and for a method whether it is a class's and its selector's parts paired in order with its
+-- parameters. nil where the text would not be the SDK's declaration: a property whose type needs a declarator around
+-- its name (a block or a function pointer), or a type that still carries an attribute the release does not replace.
+function member_declaration(member, name, target)
+    -- API_AVAILABLE(...) may nest parens (ios(8.0)), so the balanced match %b() is stripped, not [^)]*: it is the mark
+    -- target replaces
     local function typed(field)
-        return ((field or {}).qualType or "void"):gsub("^API_AVAILABLE%b()%s*", "")
+        return (((field or {}).qualType or "void"):gsub("^API_AVAILABLE%b()%s*", ""))
+    end
+    local types = {typed(member.type or member.returnType)}
+    for _, child in ipairs(member.inner or {}) do
+        if child.kind == "ParmVarDecl" then
+            table.insert(types, typed(child.type))
+        end
+    end
+    for _, type in ipairs(types) do
+        if type:find("^[%u_]+%b()") then
+            return nil
+        end
     end
     if member.kind == "ObjCPropertyDecl" then
-        return string.format("@property (nonatomic, readonly) %s %s API_AVAILABLE(ios(%s));", typed(member.type), name, target)
+        local type = typed(member.type)
+        if type:find("%(%s*[%^%*]") then
+            return nil
+        end
+        local attributes = {}
+        for _, attribute in ipairs({"class", "nonatomic", "atomic", "readonly", "readwrite", "copy", "strong", "weak",
+                                    "assign", "retain", "unsafe_unretained", "null_resettable"}) do
+            if member[attribute] then
+                table.insert(attributes, attribute)
+            end
+        end
+        for _, accessor in ipairs({"getter", "setter"}) do
+            if member[accessor] and member[accessor].name then
+                table.insert(attributes, accessor .. "=" .. member[accessor].name)
+            end
+        end
+        return string.format("@property (%s) %s %s API_AVAILABLE(ios(%s));", table.concat(attributes, ", "), type, name, target)
     end
     local parameters, parts = {}, {}
     for _, child in ipairs(member.inner or {}) do
@@ -676,7 +755,8 @@ function protocol_member_declaration(member, name, target)
             end
         end
     end
-    return string.format("- (%s)%s API_AVAILABLE(ios(%s));", typed(member.returnType), table.concat(parts, " "), target)
+    return string.format("%s (%s)%s API_AVAILABLE(ios(%s));", member.instance and "-" or "+", typed(member.returnType),
+                         table.concat(parts, " "), target)
 end
 
 -- What charon@apple-compat carries, in the registry's own entry shape: every symbol compat.provided() names is
@@ -887,7 +967,8 @@ function lift(opt)
         table.insert(symbols, entry.api)
     end
     local system = system_headers(opt.sdk, symbols)
-    local dump = dumper(opt, frameworks, system)
+    local dump, umbrella = dumper(opt, frameworks, system)
+    local conforms = conformer(opt, umbrella)
     local languages = languages_of(opt)
     local expand = expander(opt, header_files(opt.sdk, frameworks), languages)
     local kept, entries = {}, {}
@@ -1011,7 +1092,7 @@ function lift(opt)
     -- mark, so lowering the mark would lower the setter too. It is declared explicitly beside the property instead, at
     -- the release the SDK gives it - Swift then answers the property from the lowered release and refuses the setter
     -- below the SDK's, as it does for any setter declared apart from its property.
-    local setters = {}
+    local setters, unwritable = {}, {}
     for api in pairs(kept) do
         local member = member_api(api)
         if member and member.selector and member.selector:find(":$") then
@@ -1020,13 +1101,202 @@ function lift(opt)
                     for _, mark in ipairs(marks(node)) do
                         local at = mark.line .. ":" .. mark.col
                         if edits[mark.file] and edits[mark.file][at] and not blocked[mark.file .. ":" .. at] then
-                            setters[mark.file .. ":" .. at] = protocol_member_declaration(node, node.name, mark.introduced)
+                            setters[mark.file .. ":" .. at] = member_declaration(node, node.name, mark.introduced)
+                            if not setters[mark.file .. ":" .. at] then
+                                table.insert(unwritable, string.format("%s cannot be declared apart from its property, whose mark it shares at %s:%s",
+                                                                       api, mark.file, at))
+                            end
                         end
                     end
                 end
             end
         end
     end
+
+    -- A member the registry names on a class that the SDK declares not on the class itself but where a use of the class
+    -- reaches it: in a superclass (+[UICollectionViewLayout invalidationContextClass] for the flow layout), or as a
+    -- requirement of a protocol the class conforms to (UIView's traitCollection is UITraitEnvironment's, NSString's item
+    -- provider members are NSItemProviderReading's and NSItemProviderWriting's, conformed to by a category). Lowering that
+    -- declaration would reach every class that inherits it or conforms, with or without a backport. Instead the member is
+    -- redeclared on the class, in a category appended to the class's own header - which a Swift port reads whichever
+    -- branch of the header's own #if it takes, because the category comes after both - and is checked both ways below as
+    -- any member the class declares is. The text is the SDK's declaration, read from its AST, so this does not guess one.
+    -- Where the class reaches declarations that say different things, or one this cannot write as the SDK does, it fails
+    -- by name. A member the SDK declares nowhere a use of its class reaches - not in this SDK at all (a later release's),
+    -- a private method, one the SDK gives only a subclass or an unrelated class - has nothing to lower, and is named with
+    -- where the SDK does declare it.
+    local redeclared, resolved, undeclared, unreachable, accounted = {}, {}, {}, {}, {}
+    local function declares(name, kind)
+        for _, node in ipairs(dump(name)) do
+            if node.kind == kind and node.name == name then
+                return true
+            end
+        end
+        return false
+    end
+    local function carried(api)
+        return (listed[api] or {}).status == "implemented"
+    end
+    -- per member: the declarations a use of its owner reaches, those of protocols still to be asked about, and where else
+    local pending, questions = {}, {}
+    for _, api in ipairs(unmatched) do
+        local member = member_api(api:gsub("%(%)$", ""))
+        if member then
+            local owner = member.owner
+            local class = declares(owner, "ObjCInterfaceDecl")
+            local receiver = class and owner .. " *" or declares(owner, "ObjCProtocolDecl") and "id<" .. owner .. ">" or nil
+            local chain = {}
+            for _, name in ipairs(class and superclasses(owner) or {}) do
+                chain[name] = true
+            end
+            local found = {api = api, member = member, owner = owner, class = class, reached = {}, asked = {}, elsewhere = {}}
+            local by_owner = {}
+            for _, node in ipairs(dump(member.selector or member.property)) do
+                local by = owner_of(node)
+                if by and member_matches(member, node) then
+                    by_owner[by] = by_owner[by] or {}
+                    table.insert(by_owner[by], node)
+                end
+            end
+            for _, by in ipairs(table.orderkeys(by_owner)) do
+                -- a property is the declaration its implicit accessors come from; one only an accessor names is found
+                -- by the property's own name
+                local nodes, properties = {}, {}
+                for _, node in ipairs(by_owner[by]) do
+                    if node.kind == "ObjCPropertyDecl" then
+                        table.insert(properties, node)
+                    elseif not node.isImplicit then
+                        table.insert(nodes, node)
+                    end
+                end
+                if #properties == 0 and #nodes == 0 then
+                    local name = by_owner[by][1].name
+                    name = setter_property(name) or name
+                    for _, node in ipairs(dump(name)) do
+                        if node.kind == "ObjCPropertyDecl" and node.name == name and owner_of(node) == by then
+                            table.insert(properties, node)
+                        end
+                    end
+                    if #properties == 0 then
+                        table.insert(unreachable, string.format("%s is an implicit accessor of %s whose property cannot be found", api, by))
+                    end
+                end
+                table.join2(nodes, properties)
+                if by == owner then
+                    table.insert(unreachable, string.format("%s is declared by %s itself, and was not matched there", api, owner))
+                elseif chain[by] then
+                    table.join2(found.reached, nodes)
+                elseif receiver and declares(by, "ObjCProtocolDecl") then
+                    table.insert(questions, {receiver = receiver, protocol = by})
+                    found.asked[#questions] = nodes
+                    found.elsewhere[by] = true
+                else
+                    found.elsewhere[by] = true
+                end
+            end
+            table.insert(pending, found)
+        end
+    end
+    local conforming = conforms(questions)
+    local members = {}
+    for _, found in ipairs(pending) do
+        for index, nodes in pairs(found.asked) do
+            if conforming[index] then
+                table.join2(found.reached, nodes)
+                found.elsewhere[questions[index].protocol] = nil
+            end
+        end
+        local api, owner = found.api, found.owner
+        local entry = listed[api]
+        if #found.reached == 0 then
+            local elsewhere = table.orderkeys(found.elsewhere)
+            table.insert(undeclared, #elsewhere == 0 and api .. " (declared nowhere)"
+                                     or string.format("%s (declared only by %s)", api, table.concat(elsewhere, ", ")))
+            accounted[api] = true
+        elseif not found.class then
+            table.insert(unreachable, string.format("%s is declared only by a protocol %s inherits, and a protocol takes no category", api, owner))
+        else
+            local target = opt.minimum
+            if entry.minimum and later(entry.minimum, target) then
+                target = entry.minimum
+            end
+            local texts, sources = {}, {}
+            for _, node in ipairs(found.reached) do
+                local by = owner_of(node)
+                table.insert(sources, by)
+                for _, child in ipairs(node.inner or {}) do
+                    if child.kind:endswith("Attr") and child.kind ~= "AvailabilityAttr" then
+                        table.insert(unreachable, string.format("%s is declared by %s with %s, which a redeclaration would not carry", api, by, child.kind))
+                    end
+                end
+                local text = member_declaration(node, node.name, target)
+                if text then
+                    texts[text] = true
+                else
+                    table.insert(unreachable, string.format("%s is declared by %s in a form this cannot write again", api, by))
+                end
+                if node.kind == "ObjCPropertyDecl" then
+                    -- a property brings both its accessors down: each has to be carried for the class
+                    local sign = node.class and "+" or "-"
+                    local getter = node.getter and node.getter.name or node.name
+                    local setter = node.setter and node.setter.name or "set" .. node.name:sub(1, 1):upper() .. node.name:sub(2) .. ":"
+                    local accessors = {string.format("%s[%s %s]", sign, owner, getter)}
+                    if not node.readonly then
+                        table.insert(accessors, string.format("%s[%s %s]", sign, owner, setter))
+                    end
+                    for _, accessor in ipairs(accessors) do
+                        if not (carried(accessor) or carried(owner .. "." .. node.name) and not kept[accessor]) then
+                            table.insert(unreachable, string.format("%s is %s's property %s, whose accessor %s is not carried",
+                                                                    api, by, node.name, accessor))
+                        end
+                    end
+                end
+            end
+            local written = table.orderkeys(texts)
+            if #written > 1 then
+                table.insert(unreachable, string.format("%s is declared differently by %s: %s", api,
+                                                        table.concat(table.unique(sources), ", "), table.concat(written, " / ")))
+            elseif #written == 1 then
+                members[owner] = members[owner] or {}
+                members[owner][written[1]] = true
+                targets[api] = target
+                resolved[api] = found.reached
+                accounted[api] = true
+            end
+        end
+    end
+    for _, owner in ipairs(table.orderkeys(members)) do
+        -- dump(owner) answers one entry per file that names the class, most a forward declaration (@class UIView;); the
+        -- class's own header is the one whose entry carries its members.
+        local file
+        for _, node in ipairs(dump(owner)) do
+            if node.kind == "ObjCInterfaceDecl" and node.name == owner then
+                for _, member in ipairs(node.inner or {}) do
+                    if member.kind == "ObjCMethodDecl" or member.kind == "ObjCPropertyDecl" or member.kind == "ObjCIvarDecl" then
+                        file = (node.loc or {}).file
+                        break
+                    end
+                end
+            end
+        end
+        if file then
+            redeclared[file] = redeclared[file] or {}
+            table.insert(redeclared[file], string.format("\n@interface %s (CharonLifted)\n%s\n@end\n", owner,
+                                                         table.concat(table.orderkeys(members[owner]), "\n")))
+        else
+            table.insert(unreachable, string.format("the own header of %s, which would carry what it redeclares, cannot be found", owner))
+        end
+    end
+    -- what is redeclared is matched on its class from here on, and what the SDK declares nowhere the class reaches is
+    -- named; anything else stays unmatched, and the check for silent members below still sees it
+    local left = {}
+    for _, api in ipairs(unmatched) do
+        if not accounted[api] then
+            table.insert(left, api)
+        end
+    end
+    unmatched = left
+    table.sort(undeclared)
 
     -- The types the headers alone declare that implemented API names in its signature: the prefixed names its signature
     -- spells, every typedef its type goes through (a function's return type and parameters, a variable's type: the
@@ -1039,8 +1309,15 @@ function lift(opt)
         return type.typeAliasDeclId and (type.qualType or ""):gsub("%f[%w_]const%f[^%w_]", ""):match("[%a_][%w_]*") or nil
     end
     for _, entry in ipairs(entries) do
+        -- a member redeclared on its class names what the declaration it repeats names
+        local nodes = table.join(resolved[entry.api] or {})
         for _, node in ipairs(dump(filter_of(entry))) do
             if matches(entry, node) then
+                table.insert(nodes, node)
+            end
+        end
+        for _, node in ipairs(nodes) do
+            do
                 local signature = {(node.type or {}).qualType or "", (node.returnType or {}).qualType or ""}
                 for _, name in ipairs(node._typedefs or {}) do
                     named[name] = true
@@ -1245,66 +1522,6 @@ function lift(opt)
         end
     end
 
-    -- A member the SDK declares only as a requirement of a protocol, never on the class itself: lowering the protocol
-    -- would reach every type that conforms to it, including ones with no backport (checked and rejected: see the README
-    -- and 7-10's answer). Instead, for exactly the registry's entries that name a class and a member of this protocol,
-    -- the member is redeclared as a category on that class, appended to the class's own header - which a Swift port
-    -- reads whichever branch of the header's own `#if` it takes, because the category comes after both. The signature
-    -- is the protocol's own, read from its AST, so this does not guess one.
-    local PROTOCOL_ONLY = {{protocol = "UITraitEnvironment", members = {"traitCollection", "traitCollectionDidChange:"},
-                            owners = {"UIView", "UIScreen", "UIViewController"}}}
-    local redeclared = {}
-    for _, rule in ipairs(PROTOCOL_ONLY) do
-        local requirements = {}
-        for _, node in ipairs(dump(rule.protocol)) do
-            if node.kind == "ObjCProtocolDecl" and node.name == rule.protocol then
-                for _, member in ipairs(node.inner or {}) do
-                    if member.kind == "ObjCMethodDecl" or member.kind == "ObjCPropertyDecl" then
-                        for _, name in ipairs(rule.members) do
-                                    if member.name == name and (member.kind == "ObjCPropertyDecl" or not requirements[name]) then
-                                requirements[name] = member
-                            end
-                        end
-                    end
-                end
-            end
-        end
-        for _, owner in ipairs(rule.owners) do
-            local declaration, target = {}, opt.minimum
-            for _, name in ipairs(rule.members) do
-                local api = string.format("-[%s %s]", owner, name)
-                local entry = listed[api]
-                local member = requirements[name]
-                if entry and entry.status == "implemented" and member then
-                    if entry.minimum and later(entry.minimum, target) then
-                        target = entry.minimum
-                    end
-                    table.insert(declaration, protocol_member_declaration(member, name, target))
-                end
-            end
-            if #declaration == #rule.members then
-                -- dump(owner) answers one entry per file that names the class, most a forward declaration
-                -- (@class UIView;); the class's own header is the one whose entry carries its members.
-                local file
-                for _, node in ipairs(dump(owner)) do
-                    if node.kind == "ObjCInterfaceDecl" and node.name == owner then
-                        for _, member in ipairs(node.inner or {}) do
-                            if member.kind == "ObjCMethodDecl" or member.kind == "ObjCPropertyDecl" or member.kind == "ObjCIvarDecl" then
-                                file = (node.loc or {}).file
-                                break
-                            end
-                        end
-                    end
-                end
-                if file then
-                    redeclared[file] = redeclared[file] or {}
-                    table.insert(redeclared[file], string.format("\n@interface %s (CharonBackports%s)\n%s\n@end\n",
-                                 owner, rule.protocol, table.concat(declaration, "\n")))
-                end
-            end
-        end
-    end
-
     -- The copies: each mark rewritten where its macro was written - the release inside ios(...) or the positional argument
     -- lift_macro knows, and for any other macro its own expansion at that place, with the release lowered. Only the
     -- places our marks name change: a macro's definition, and every other place it is used, stay as the SDK wrote them.
@@ -1436,7 +1653,7 @@ function lift(opt)
 
     -- Both ways: what is implemented answers the lowered release, and nothing else moved. A use no one text can stand
     -- for in every language fails by its own name, whatever else it would have shown.
-    local failures = table.join(refusals)
+    local failures = table.join(refusals, unwritable, unreachable)
     for name, target in pairs(lowered_types) do
         for _, node in ipairs(latest(dump(name, vfs))) do
             if (node.kind == "TypedefDecl" or node.kind == "EnumDecl" or node.kind == "RecordDecl") and (node.name or node._qualified) == name then
@@ -1492,12 +1709,12 @@ function lift(opt)
     -- A plain function or type can be unmatched honestly (a compiler-rt intrinsic, a private header this dumper
     -- does not read) - lift.lua's own header comment already documents that as expected. A protocol, and a class or
     -- protocol member, cannot: a protocol is dumped by its name, and entry.kind == "class"/nil-with-member-syntax names a
-    -- method or property the AST-dump filter should find
-    -- directly under its owner's own qualified scope, whether or not that owner has a registry entry of its own (this
-    -- lookup never consults listed[owner] - see matches()). An entry that names a real member and still matches
-    -- nothing is not a gap in SDK coverage, it is filter_of()/matches() failing to find something that is really
-    -- there, and reporting it only inside a count nobody is required to look at is exactly the silent loss this
-    -- checks against.
+    -- method or property the AST-dump filter should find under its owner's own qualified scope, whether or not that
+    -- owner has a registry entry of its own (this lookup never consults listed[owner] - see matches()), or else in a
+    -- superclass or a protocol the owner conforms to, where it is redeclared, or nowhere the owner reaches, where it is
+    -- named in undeclared with where the SDK does declare it (above). A member still here matched none of those: that
+    -- is not a gap in SDK coverage, it is this lookup failing to find something that is really there, and reporting it
+    -- only inside a count nobody is required to look at is exactly the silent loss this checks against.
     local silent = {}
     for _, api in ipairs(unmatched) do
         if member_api(api:gsub("%(%)$", "")) or (listed[api] or {}).kind == "protocol" then
@@ -1509,7 +1726,7 @@ function lift(opt)
               #silent, table.concat(silent, "; "))
     end
     return {vfs = vfs, lifted = lifted, headers = #sorted_files, implemented = #entries, unmatched = unmatched,
-            types = lowered_types, kept_types = kept_types}
+            undeclared = undeclared, types = lowered_types, kept_types = kept_types}
 end
 
 -- The release of the availability macro that starts text rewritten to target, where the text itself spells it: ios(...),
