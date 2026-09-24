@@ -1,4 +1,6 @@
 #import <UIKit/UIKit.h>
+#import <AVKit/AVKit.h>
+#import <MediaPlayer/MediaPlayer.h>
 #import "check.h"
 
 /* The default modalPresentationStyle, held to UIKitCore 16.0 (facts/UIKit/UIModalPresentationAutomatic.md). One
@@ -60,6 +62,10 @@ int main(void)
         } else {
             printf("no camera here: the camera's full screen is not checked\n");
         }
+        /* AVKit's player prefers full screen, MediaPlayer's media picker the page sheet (their
+           _preferredModalPresentationStyle in 16.0). */
+        CHECK_EQUAL(style_of([[AVPlayerViewController alloc] init]), @(UIModalPresentationFullScreen), "a player view controller");
+        CHECK_EQUAL(style_of([[MPMediaPickerController alloc] initWithMediaTypes:MPMediaTypeAnyAudio]), @(UIModalPresentationPageSheet), "a media picker");
 #endif
     }
     printf("checks=%d failures=%d\n", charon_checks, charon_failures);

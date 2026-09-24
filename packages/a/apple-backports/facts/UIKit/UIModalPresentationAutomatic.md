@@ -33,6 +33,11 @@ value; the addresses are below. Held by `tests/backports/device/modaldefault.m`,
   `_UIPresentationControllerNullVisualStyleProvider` answers: the page sheet (1, 0x189ab9524). The getter
   never answers Automatic.
 - `UIImagePickerController` prefers full screen when its source is the camera (0x1895fc4ac).
+- `AVPlayerViewController` prefers full screen (AVKit 16.0, 0x1aa12184c answers 0) and `MPMediaPickerController` the
+  page sheet (MediaPlayer 16.0, 0x196a554e4 answers 1). The overrides of `-_preferredModalPresentationStyle` in the 16.0
+  cache are these, UIKitCore's four and the base (listed by the review of 2026-09-24 from a class dump of AVKit,
+  MessageUI, SafariServices, QuickLook, StoreKit, GameKit, Social, MediaPlayer, ContactsUI, EventKitUI, PhotosUI and
+  UIKitCore; the addresses here read from the objc metadata of the cache).
 - `UIDocumentPickerViewController` prefers the form sheet behind the feature flag `UIKit/dci_navbar`
   (0x1896c0ef8); `UISplitViewController` prefers 4, or 2 for a program linked with SDK 16.0 or later and
   a style other than unspecified (0x188e995ac).
@@ -47,8 +52,12 @@ value; the addresses are below. Held by `tests/backports/device/modaldefault.m`,
 - For such a program, and only on a release whose `UIViewController` lacks `isModalInPresentation` (the
   release decides in `+load`, before the port's own categories are attached), the port writes Automatic
   through the release's own setter after `-initWithNibName:bundle:` and after `-initWithCoder:` of an
-  archive without the key, and its getter answers Automatic as the page sheet, or full screen for an image
-  picker of the camera. A style set explicitly, an archived one and a subclass's own setting after `super`
+  archive without the key, and its getter answers Automatic as the controller's own preference, and the page
+  sheet when that is Automatic too. The preference is a method of the port's own name on `UIViewController` that
+  answers Automatic, overridden as the release overrides `-_preferredModalPresentationStyle`: by the image picker
+  (full screen for the camera) in this file, by `AVPlayerViewController` (full screen) in AVKit's
+  `AVPlayerViewController+AutomaticPresentation.m`, which exports nothing and so is in every band, for the port's
+  class and the release's alike, and by `MPMediaPickerController` (the page sheet) in MediaPlayer's. A style set explicitly, an archived one and a subclass's own setting after `super`
   are left as they are.
 - Writing -2 into the release's ivar is safe on the releases it runs on: UIKit 6.1.3 reads the ivar
   directly only in its getter and setter, in `-_useSheetRotation` (compared with 16), `-initWithCoder:` and

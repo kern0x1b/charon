@@ -978,7 +978,7 @@ writes `/private/var/backports/swipeui.log` and `swipeui.done`.
 
 `device/modaldefault.m` holds the default `modalPresentationStyle` to UIKitCore 16.0 (`facts/UIKit/UIModalPresentationAutomatic.md`), a process of its own built twice against the band, as charon links it and with an older SDK in its load command:
 
-    clang ... -DMODALDEFAULT_LINKED_ON_13=1 device/modaldefault.m device/check.m -LBAND -lUIKitBackports -framework UIKit -framework Foundation -o modaldefault13
+    clang ... -DMODALDEFAULT_LINKED_ON_13=1 device/modaldefault.m device/check.m -LBAND -lUIKitBackports -lAVKitBackports -lMediaPlayerBackports -framework UIKit -framework MediaPlayer -framework Foundation -o modaldefault13
     clang ... -DMODALDEFAULT_LINKED_ON_13=0 -Wl,-platform_version,ios,6.0,12.4 device/modaldefault.m device/check.m -LBAND -lUIKitBackports -framework UIKit -framework Foundation -o modaldefault12
 
 The first expects the page sheet from every way a controller is made without a style, the second full screen; both keep a style that is set or archived. Both ran on an iPad 2 (6.1.3), with the band's libraries beside them: 11 and 7 checks.

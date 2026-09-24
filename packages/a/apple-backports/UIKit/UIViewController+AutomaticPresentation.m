@@ -24,15 +24,36 @@ static uint32_t charon_program_sdk(void)
     return 0;
 }
 
+/* The controller's own preference, as UIKit asks -_preferredModalPresentationStyle: Automatic for a
+   view controller (0x188e987d0), and whatever a class that prefers a style answers. The image picker
+   prefers full screen for the camera (0x1895fc4ac); AVKit's player and MediaPlayer's media picker
+   answer theirs in their own libraries (AVPlayerViewController+AutomaticPresentation.m,
+   MPMediaPickerController+AutomaticPresentation.m). */
+@interface UIViewController (CharonAutomaticPresentation)
+- (UIModalPresentationStyle)charon_preferredModalPresentationStyle;
+@end
+
+@implementation UIViewController (CharonAutomaticPresentation)
+- (UIModalPresentationStyle)charon_preferredModalPresentationStyle
+{
+    return UIModalPresentationAutomatic;
+}
+@end
+
+@implementation UIImagePickerController (CharonAutomaticPresentation)
+- (UIModalPresentationStyle)charon_preferredModalPresentationStyle
+{
+    return self.sourceType == UIImagePickerControllerSourceTypeCamera ? UIModalPresentationFullScreen : [super charon_preferredModalPresentationStyle];
+}
+@end
+
 /* What Automatic resolves to: the controller's own preference, else the default provider's, which is
    the page sheet for every idiom UIKit registers (-[_UIPresentationControllerNullVisualStyleProvider
-   defaultConcretePresentationStyleForViewController:] 0x189ab9524). The image picker prefers full
-   screen for the camera (-[UIImagePickerController _preferredModalPresentationStyle] 0x1895fc4ac). */
+   defaultConcretePresentationStyleForViewController:] 0x189ab9524). */
 static UIModalPresentationStyle charon_automatic_style(UIViewController *controller)
 {
-    if ([controller isKindOfClass:[UIImagePickerController class]] && ((UIImagePickerController *)controller).sourceType == UIImagePickerControllerSourceTypeCamera)
-        return UIModalPresentationFullScreen;
-    return UIModalPresentationPageSheet;
+    UIModalPresentationStyle preferred = [controller charon_preferredModalPresentationStyle];
+    return preferred == UIModalPresentationAutomatic ? UIModalPresentationPageSheet : preferred;
 }
 
 @interface CharonAutomaticPresentationInstaller : NSObject
