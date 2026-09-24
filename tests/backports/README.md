@@ -582,14 +582,15 @@ clang force-load arclite below iOS 9.
   notification is never posted, the export presets of the image picker are kept per
   picker and the video one is copied, the key `UIImagePickerControllerPHAsset` carries
   its own name, the key `NSLocalizedFailureErrorKey` carries `NSLocalizedFailure` from
-  `libFoundationBackports.dylib` and `-localizedDescription` leaves it out, the two
+  `libFoundationBackports.dylib` and `-localizedDescription` makes of it what the host's
+  Foundation does, in the order of `NSError.h` and against a value provider, the two
   split scroll indicator insets come from `libUIKitBackports.dylib` (`uikit12.m` holds
   what they do), and what is absent stays absent. It also holds the four volume keys
   of iOS 11 to what an iPad 2 answers - success and no value for a key it does not
   know, the available capacity for the important usage key - the refusal of a
   pattern that names a group, and `-trashItemAtURL:resultingItemURL:error:`
   answering the feature unsupported error, and the swipe action classes, whose
-  answers it holds to those of the host. It ran on an iPad 2 (6.1.3): 58 checks
+  answers it holds to those of the host. It ran on an iPad 2 (6.1.3): 67 checks
   and no failure.
 - `probes.m`: a process of its own for the capability probes, run on an
   iPhone 4S and an iPad 2 (6.1.3). It checks that every class the probes carry

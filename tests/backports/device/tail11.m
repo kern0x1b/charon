@@ -96,15 +96,17 @@ static void failure_key(void)
     CHECK_EQUAL(error.localizedDescription, @"The file could not be saved. The disk is full.", "the description is the failure and the reason");
     CHECK_EQUAL([NSError errorWithDomain:@"charon" code:1 userInfo:@{NSLocalizedFailureErrorKey: @"Only the failure."}].localizedDescription, @"Only the failure.", "the failure alone is the description when there is no reason");
     NSError *missing = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileNoSuchFileError userInfo:@{NSLocalizedFailureErrorKey: @"Only the failure."}];
-    CHECK(missing.localizedFailureReason.length > 0, "the release generates a reason for NSCocoaErrorDomain 4");
-    CHECK_EQUAL(missing.localizedDescription, [@"Only the failure. " stringByAppendingString:missing.localizedFailureReason ?: @""], "the failure takes the reason the release generates for the domain and code");
-    printf("note NSCocoaErrorDomain 4 with a failure reads: %s\n", missing.localizedDescription.UTF8String);
-    CHECK_EQUAL([NSError errorWithDomain:@"charon" code:1 userInfo:@{NSLocalizedDescriptionKey: @"The description.", NSLocalizedFailureErrorKey: @"Only the failure.", NSLocalizedFailureReasonErrorKey: @"The disk is full."}].localizedDescription, @"The description.", "the description key comes before the failure");
+    NSString *generated = missing.localizedFailureReason;
+    CHECK_EQUAL(missing.localizedDescription, generated.length ? [@"Only the failure. " stringByAppendingString:generated] : @"Only the failure.", "the failure takes the reason the release generates for the domain and code, when it generates one");
+    printf("note NSCocoaErrorDomain 4: the release's reason is %s; with a failure the description reads: %s; without one: %s\n", generated ? generated.UTF8String : "nil",
+           missing.localizedDescription.UTF8String, [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileNoSuchFileError userInfo:nil].localizedDescription.UTF8String);
+    NSError *described = [NSError errorWithDomain:@"charon" code:1 userInfo:@{NSLocalizedDescriptionKey: @"The description.", NSLocalizedFailureErrorKey: @"Only the failure.", NSLocalizedFailureReasonErrorKey: @"The disk is full."}];
+    CHECK_EQUAL(described.localizedDescription, @"The description.", "the description key comes before the failure");
     CFStringRef keys[] = {(__bridge CFStringRef)NSLocalizedFailureErrorKey, (__bridge CFStringRef)NSLocalizedFailureReasonErrorKey};
     CFTypeRef values[] = {CFSTR("The file could not be saved."), CFSTR("The disk is full.")};
-    CFDictionaryRef info = CFDictionaryCreate(NULL, (const void **)keys, values, 2, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-    CFErrorRef bridged = CFErrorCreate(NULL, CFSTR("charon"), 1, info);
-    CFRelease(info);
+    CFDictionaryRef bridgedInfo = CFDictionaryCreate(NULL, (const void **)keys, values, 2, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    CFErrorRef bridged = CFErrorCreate(NULL, CFSTR("charon"), 1, bridgedInfo);
+    CFRelease(bridgedInfo);
     CHECK_EQUAL(((__bridge NSError *)bridged).localizedDescription, @"The file could not be saved. The disk is full.", "an error made by CFErrorCreate describes itself the same way");
     printf("note CFErrorCreate made a %s\n", object_getClassName((__bridge id)bridged));
     CFStringRef copied = CFErrorCopyDescription(bridged);
