@@ -1,4 +1,14 @@
 #import "CharonSCN.h"
+#import "../CharonSayOnce.h"
+
+// Nothing steps a simulation here: no SCNPhysicsBody is carried, so there is nothing for gravity, speed, the time
+// step, a behavior or the contact delegate to act on. The values are kept as given and read back, and the first
+// time an application sets one it is said, once.
+static void CharonSCNPhysicsWorldSay(void)
+{
+    charon_say_once_for(@"SCNPhysicsWorld", @"SCNPhysicsWorld: nothing is simulated on this port; gravity, speed, the time step, "
+                                            @"behaviors and the contact delegate are kept and never act");
+}
 
 @implementation SCNPhysicsWorld
 {
@@ -21,6 +31,36 @@
 @synthesize timeStep = _timeStep;
 @synthesize contactDelegate = _contactDelegate;
 
+- (void)setGravity:(SCNVector3)gravity
+{
+    CharonSCNPhysicsWorldSay();
+    _gravity = gravity;
+}
+
+- (void)setSpeed:(CGFloat)speed
+{
+    CharonSCNPhysicsWorldSay();
+    _speed = speed;
+}
+
+- (void)setTimeStep:(NSTimeInterval)timeStep
+{
+    CharonSCNPhysicsWorldSay();
+    _timeStep = timeStep;
+}
+
+// The property is atomic, so its getter is written beside the setter; a weak load is atomic by itself.
+- (id<SCNPhysicsContactDelegate>)contactDelegate
+{
+    return _contactDelegate;
+}
+
+- (void)setContactDelegate:(id<SCNPhysicsContactDelegate>)contactDelegate
+{
+    CharonSCNPhysicsWorldSay();
+    _contactDelegate = contactDelegate;
+}
+
 - (NSArray<SCNPhysicsBehavior *> *)allBehaviors
 {
     return [_behaviors copy];
@@ -28,6 +68,7 @@
 
 - (void)addBehavior:(SCNPhysicsBehavior *)behavior
 {
+    CharonSCNPhysicsWorldSay();
     if (behavior && ![_behaviors containsObject:behavior]) {
         [_behaviors addObject:behavior];
     }

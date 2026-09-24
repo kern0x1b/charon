@@ -138,9 +138,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "measured on coin.scn's real SCNScene: the archive keys 'physicsWorld' on the scene object (matches the public property name, no divergence) to a nested SCNPhysicsWorld carrying gravity/speed/timeStep -- decoded and cross-checked against a macOS SceneKit oracle: gravity (0, 1.75, 0) exact, not the class default (0, -9.8, 0), so the authored value is proven read, not coincidentally equal to a default",
-      "effect": "gravity/speed/timeStep decode faithfully; addBehavior:/removeBehavior:/removeAllBehaviors/allBehaviors are real array management (coin.scn attaches none); rayTest/contactTest/convexSweep return an honest empty result -- there are no SCNPhysicsBody instances anywhere in this port yet, so an empty result is the true answer, not a stub pretending success; updateCollisionPairs is a genuine no-op for the same reason. The archive's own 'scale' key (float, seen at 1.0) has no public property to carry it to and is not decoded; 'scene' is a back-reference to the owning SCNScene, not a settable property, and is not decoded either",
+      "status": "inert",
+      "reason": "nothing steps a physics simulation on this port: no SCNPhysicsBody is carried, so gravity, speed, the time step, a behavior and the contact delegate have nothing to act on. What an archive holds is read: coin.scn keys 'physicsWorld' on the scene to a nested SCNPhysicsWorld whose gravity (0, 1.75, 0) decodes exactly against a macOS SceneKit oracle, not the class default (0, -9.8, 0)",
+      "effect": "gravity/speed/timeStep/contactDelegate and the behaviors are kept as decoded or set and read back, and never act: nothing falls, collides or calls the contact delegate; the first time an application sets one of them or adds a behavior, the log says so once. rayTest/contactTest/convexSweep answer an empty array, which is the true answer with no body to hit, and updateCollisionPairs has no pairs to update. The archive's 'scale' key (float, seen at 1.0) has no public property to carry it to and is not decoded; 'scene' is a back-reference to the owning SCNScene, not a settable property, and is not decoded either",
       "source": "coordination/corpus/sdk-introduced.json: SCNPhysicsWorld, class, version null; release cache measurement: _OBJC_CLASS_$_SCNPhysicsWorld absent from the 7.1.2 armv7 dyld_shared_cache, present at 8.0",
       "facts": "facts/SceneKit/SceneKit.md"
     },

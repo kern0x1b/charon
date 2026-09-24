@@ -8,6 +8,17 @@ has none. This file is the reasoning behind the answers, a section per range of
 releases, so that a port can see at a glance what it gets, what it gets with a
 difference, and what it will never get here and why.
 
+## iOS 8
+
+### SceneKit's physics world, kept and not simulated
+
+A `.scn` scene can carry an `SCNPhysicsWorld`, and it is decoded: `coin.scn`'s gravity of
+(0, 1.75, 0) reads back as the authored value, not the class default. Nothing steps a simulation,
+though, because no `SCNPhysicsBody` is carried, so the world is **inert**: gravity, speed, the time
+step, behaviors and the contact delegate are kept and read back and never act, and the first time
+an application sets one the log says so once. Its queries answer an empty array, which is the true
+answer with no body to hit.
+
 ## iOS 9
 
 ### Contacts, over the address book the release already has

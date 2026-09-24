@@ -513,6 +513,14 @@ variants/`convexSweepTest...` return an honest empty array and `updateCollisionP
 genuine no-op — there is no `SCNPhysicsBody` anywhere in this port, so "no bodies, no
 contacts" is the true answer for this scene, not a placeholder pretending to work.
 
+**Nothing is simulated, so the class is `inert`, not `implemented`** (review of 2026-09-23,
+item 4). With no body carried there is nothing for `gravity`, `speed`, `timeStep`, a behavior or
+`contactDelegate` to act on: they are kept and read back and never act. The first time an
+application sets one of them or adds a behavior, the log says so once (`SCNPhysicsWorld: nothing
+is simulated on this port; ...`); values read from an archive say nothing, since the application
+did not ask for them. `tests/backports/device/scenekit-decode.m` checks the decode, the read-back,
+the one log line over several sets and the empty queries.
+
 ## Colors on the guest: every light, shadow, particle and material color matches the oracle
 
 Measured 2026-09-23 on the armv7 guest (`xmake emulate -d iPhone4,1 -r 6.1.3`, 10B329), through

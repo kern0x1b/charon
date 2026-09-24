@@ -7,17 +7,20 @@
 #import "check.h"
 #include <unistd.h>
 
-// Writes the keys it is given, as a SceneKit or AppKit class would write them: objects, integers and raw bytes.
+// Writes the keys it is given, as a SceneKit or AppKit class would write them: objects, integers, doubles and raw
+// bytes.
 @interface StandIn : NSObject <NSCoding>
 @property (nonatomic, strong) NSDictionary<NSString *, id> *keys;
 @property (nonatomic, strong) NSDictionary<NSString *, NSNumber *> *integers;
 @property (nonatomic, strong) NSDictionary<NSString *, NSData *> *bytes;
+@property (nonatomic, strong) NSDictionary<NSString *, NSNumber *> *doubles;
 @end
 
 @implementation StandIn
 @synthesize keys = _keys;
 @synthesize integers = _integers;
 @synthesize bytes = _bytes;
+@synthesize doubles = _doubles;
 - (instancetype)initWithCoder:(NSCoder *)coder { return [super init]; }
 - (void)encodeWithCoder:(NSCoder *)coder
 {
@@ -29,6 +32,9 @@
     }
     for (NSString *key in _bytes) {
         [coder encodeBytes:_bytes[key].bytes length:_bytes[key].length forKey:key];
+    }
+    for (NSString *key in _doubles) {
+        [coder encodeDouble:_doubles[key].doubleValue forKey:key];
     }
 }
 @end
@@ -46,6 +52,11 @@
 @interface StandInMaterialProperty : StandIn
 @end
 @implementation StandInMaterialProperty
+@end
+
+@interface StandInPhysicsWorld : StandIn
+@end
+@implementation StandInPhysicsWorld
 @end
 
 // Written under AppKit's NSColor, as a .scn file authored on macOS holds a material's colour.
@@ -78,6 +89,7 @@ static id decode_root(StandIn *root, Class cls, NSString **failure)
     [archiver setClassName:@"SCNGeometry" forClass:[StandInGeometry class]];
     [archiver setClassName:@"SCNMaterialProperty" forClass:[StandInMaterialProperty class]];
     [archiver setClassName:@"NSColor" forClass:[StandInColor class]];
+    [archiver setClassName:@"SCNPhysicsWorld" forClass:[StandInPhysicsWorld class]];
     [archiver encodeObject:root forKey:NSKeyedArchiveRootObjectKey];
     [archiver finishEncoding];
     NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
@@ -194,11 +206,47 @@ static void check_colours(void)
                  [NSString stringWithFormat:@"log: %@", log]);
 }
 
+// SCNPhysicsWorld is inert: what an archive holds is read, what an application sets is kept and read back, the first
+// set is said once in the log, and the queries answer empty because no body exists to hit.
+static void check_physics_world(void)
+{
+    __block SCNPhysicsWorld *world = nil;
+    __block NSString *failure = nil;
+    SCNVector3 authored = SCNVector3Make(0, 1.75, 0);
+    StandInPhysicsWorld *archived = stand_in([StandInPhysicsWorld class], nil);
+    archived.bytes = @{@"gravity": [NSData dataWithBytes:&authored length:sizeof authored]};
+    archived.doubles = @{@"speed": @2.5, @"timeStep": @0.02};
+    NSString *log = captured_stderr(^{
+        world = decode_root(archived, [SCNPhysicsWorld class], &failure);
+    });
+    charon_check(world != nil && world.gravity.x == 0 && world.gravity.y == 1.75f && world.gravity.z == 0 && world.speed == 2.5 &&
+                     world.timeStep == 0.02,
+                 "an archived physics world reads its gravity, speed and time step",
+                 [NSString stringWithFormat:@"world %@, gravity (%g, %g, %g), speed %g, time step %g, %@", world, world.gravity.x,
+                                            world.gravity.y, world.gravity.z, (double)world.speed, world.timeStep, failure]);
+    charon_check(log != nil && count_lines_containing(log, @"SCNPhysicsWorld:") == 0, "decoding a physics world says nothing",
+                 [NSString stringWithFormat:@"log: %@", log]);
+
+    SCNPhysicsWorld *fresh = [SCNScene scene].physicsWorld;
+    log = captured_stderr(^{
+        fresh.gravity = SCNVector3Make(0, -1, 0);
+        fresh.speed = 0.5;
+        fresh.timeStep = 1.0 / 30.0;
+    });
+    charon_check(fresh.gravity.y == -1 && fresh.speed == 0.5 && fresh.timeStep == 1.0 / 30.0, "what is set on a physics world reads back",
+                 [NSString stringWithFormat:@"gravity y %g, speed %g, time step %g", fresh.gravity.y, (double)fresh.speed, fresh.timeStep]);
+    charon_check(log != nil && count_lines_containing(log, @"SCNPhysicsWorld: nothing is simulated") == 1,
+                 "setting a physics world says once that nothing is simulated", [NSString stringWithFormat:@"log: %@", log]);
+    NSArray *hits = [fresh rayTestWithSegmentFromPoint:SCNVector3Make(0, 10, 0) toPoint:SCNVector3Make(0, -10, 0) options:nil];
+    charon_check(hits != nil && hits.count == 0, "a ray through a world with no body hits nothing", [NSString stringWithFormat:@"%@", hits]);
+}
+
 int main(void)
 {
     @autoreleasepool {
         check_single_objects();
         check_colours();
+        check_physics_world();
         printf("%d of %d checks failed\n", charon_failures, charon_checks);
         return charon_failures;
     }
