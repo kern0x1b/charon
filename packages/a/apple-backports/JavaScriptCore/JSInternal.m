@@ -780,10 +780,10 @@ void charon_js_push_callback(JSContext *context, JSValue *thisValue, JSValue *ca
     pthread_once(&charon_frame_once, CharonMakeFrameKey);
     CharonJSFrame *frame = calloc(1, sizeof(CharonJSFrame));
     frame->up = CharonCurrentFrame();
-    frame->context = context;
-    frame->thisValue = thisValue;
-    frame->callee = callee;
-    frame->arguments = arguments;
+    frame->context = CFBridgingRetain(context);
+    frame->thisValue = thisValue ? CFBridgingRetain(thisValue) : NULL;
+    frame->callee = callee ? CFBridgingRetain(callee) : NULL;
+    frame->arguments = arguments ? CFBridgingRetain(arguments) : NULL;
     JSValue *preserved = context.exception;
     frame->preservedException = preserved ? (void *)CFBridgingRetain(preserved) : NULL;
     context.exception = nil;
@@ -798,9 +798,12 @@ JSValue *charon_js_pop_callback(void)
         return nil;
     CharonJobs()->depth--;
     pthread_setspecific(charon_frame_key, frame->up);
-    JSContext *context = frame->context;
+    JSContext *context = CFBridgingRelease(frame->context);
     JSValue *thrown = context.exception;
     context.exception = frame->preservedException ? CFBridgingRelease(frame->preservedException) : nil;
+    for (const void *held[] = {frame->thisValue, frame->callee, frame->arguments}, **each = held; each < held + 3; each++)
+        if (*each)
+            CFRelease(*each);
     free(frame);
     return thrown;
 }

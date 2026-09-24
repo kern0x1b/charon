@@ -187,25 +187,25 @@ static NSMapTable<id, JSContext *> *ContextRegistry(void)
 + (JSContext *)currentContext
 {
     CharonJSFrame *frame = CharonCurrentFrame();
-    return frame ? frame->context : nil;
+    return frame ? (__bridge JSContext *)frame->context : nil;
 }
 
 + (JSValue *)currentThis
 {
     CharonJSFrame *frame = CharonCurrentFrame();
-    return frame ? frame->thisValue : nil;
+    return frame ? (__bridge JSValue *)frame->thisValue : nil;
 }
 
 + (JSValue *)currentCallee
 {
     CharonJSFrame *frame = CharonCurrentFrame();
-    return frame ? frame->callee : nil;
+    return frame ? (__bridge JSValue *)frame->callee : nil;
 }
 
 + (NSArray *)currentArguments
 {
     CharonJSFrame *frame = CharonCurrentFrame();
-    return frame ? frame->arguments : nil;
+    return frame ? (__bridge NSArray *)frame->arguments : nil;
 }
 
 - (JSValue *)objectForKeyedSubscript:(id)key

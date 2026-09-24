@@ -155,10 +155,13 @@ void charon_js_note_jobs(JSContextRef context, JSObjectRef drain);
 
 typedef struct CharonJSFrame {
     struct CharonJSFrame *up;
-    __unsafe_unretained JSContext *context;
-    __unsafe_unretained JSValue *thisValue;
-    __unsafe_unretained JSValue *callee;
-    __unsafe_unretained NSArray<JSValue *> *arguments;
+    /* Each retained for the frame's life, since the caller's values are often temporaries ARC
+     * releases as soon as the push returns: a retained JSContext, JSValue, JSValue, NSArray of
+     * JSValue, or NULL; read them with __bridge. */
+    const void *context;
+    const void *_Nullable thisValue;
+    const void *_Nullable callee;
+    const void *_Nullable arguments;
     void *_Nullable preservedException; /* a retained JSValue, or NULL */
 } CharonJSFrame;
 

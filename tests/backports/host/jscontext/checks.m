@@ -85,6 +85,7 @@ __attribute__((noinline)) static void Collect(JSContext *context)
 
 @interface TypedObject : NSObject <TypedExport>
 @property (nonatomic, strong) id got;
+@property (nonatomic, copy) void (^onCall)(void);
 @property (nonatomic) BOOL called;
 @end
 
@@ -92,7 +93,7 @@ __attribute__((noinline)) static void Collect(JSContext *context)
 @synthesize link = _link;
 - (void)takeValue:(JSValue *)value { self.called = YES; self.got = value; }
 - (void)takeURL:(NSURL *)url { self.called = YES; self.got = url; }
-- (void)takeString:(NSString *)string { self.called = YES; self.got = string; }
+- (void)takeString:(NSString *)string { self.called = YES; self.got = string; if (self.onCall) self.onCall(); }
 @end
 
 @interface ManagedOwner : NSObject
@@ -394,6 +395,25 @@ static void CheckPromises(JSContext *context)
         check([raised isEqualToString:NSInvalidArgumentException] && !context.exception,
               rejected ? @"valueWithNewPromiseRejectedWithReason:nil raises NSInvalidArgumentException" : @"valueWithNewPromiseResolvedWithResult:nil raises NSInvalidArgumentException");
     }
+}
+
+/* What a callback reads of its own call: the callee and `this` it was called with, alive for the call. */
+static void CheckCallbackFrame(JSContext *context)
+{
+    __block BOOL blockSaw = NO, methodSaw = NO;
+    context[@"whoCalls"] = ^{
+        JSValue *callee = [JSContext currentCallee], *thisValue = [JSContext currentThis];
+        blockSaw = [callee isEqualToObject:[JSContext currentContext][@"whoCalls"]] && [[thisValue[@"tag"] toString] isEqualToString:@"t"];
+    };
+    [context evaluateScript:@"({tag: 't', m: whoCalls}).m()"];
+    check(blockSaw, @"a block reads the callee and this it was called with");
+    TypedObject *typed = [TypedObject new];
+    context[@"typedCalls"] = typed;
+    typed.onCall = ^{
+        methodSaw = [[JSContext currentThis] isEqualToObject:[JSContext currentContext][@"typedCalls"]] && [JSContext currentCallee] != nil;
+    };
+    [context evaluateScript:@"typedCalls.takeString('x')"];
+    check(methodSaw, @"a JSExport method reads the callee and this it was called with");
 }
 
 /*
@@ -791,6 +811,7 @@ int main(void)
         CheckWrapperIdentity(context);
         CheckPromises(context);
         CheckSymbols(context);
+        CheckCallbackFrame(context);
         CheckConversions();
         CheckBlockArguments();
         CheckExportArguments();
