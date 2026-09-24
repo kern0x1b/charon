@@ -206,122 +206,6 @@ BOOL charon_js_class_conforms_to_export(Class objcClass)
     return NO;
 }
 
-static BOOL SetInvocationArgument(NSInvocation *invocation, NSUInteger index, const char *type, JSContextRef ctx, JSValueRef jsValue, JSValueRef *exception)
-{
-    switch (type[0]) {
-    case '#': {
-        id object = charon_js_unbox(ctx, jsValue);
-        [invocation setArgument:&object atIndex:index];
-        return YES;
-    }
-    case 'c':
-    case 'B': {
-        BOOL value = JSValueToBoolean(ctx, jsValue);
-        [invocation setArgument:&value atIndex:index];
-        return YES;
-    }
-    case 'i': case 's': case 'l': case 'q': case 'I': case 'S': case 'L': case 'Q': {
-        long long value = (long long)JSValueToNumber(ctx, jsValue, exception);
-        [invocation setArgument:&value atIndex:index];
-        return YES;
-    }
-    case 'f': {
-        float value = (float)JSValueToNumber(ctx, jsValue, exception);
-        [invocation setArgument:&value atIndex:index];
-        return YES;
-    }
-    case 'd': {
-        double value = JSValueToNumber(ctx, jsValue, exception);
-        [invocation setArgument:&value atIndex:index];
-        return YES;
-    }
-    case '{': {
-        JSContext *context = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(ctx) create:YES];
-        JSValue *value = [JSValue charon_valueWithJSValueRef:jsValue context:context];
-        if (strstr(type, "CGPoint")) {
-            CGPoint point = value.toPoint;
-            [invocation setArgument:&point atIndex:index];
-        } else if (strstr(type, "CGRect")) {
-            CGRect rect = value.toRect;
-            [invocation setArgument:&rect atIndex:index];
-        } else if (strstr(type, "CGSize")) {
-            CGSize size = value.toSize;
-            [invocation setArgument:&size atIndex:index];
-        } else if (strstr(type, "_NSRange") || strstr(type, "NSRange")) {
-            NSRange range = value.toRange;
-            [invocation setArgument:&range atIndex:index];
-        } else {
-            return NO;
-        }
-        return YES;
-    }
-    default:
-        return NO;
-    }
-}
-
-static JSValueRef BoxInvocationReturn(NSInvocation *invocation, const char *returnType, JSContextRef ctx)
-{
-    switch (returnType[0]) {
-    case 'v':
-        return JSValueMakeUndefined(ctx);
-    case '@':
-    case '#': {
-        __unsafe_unretained id object = nil;
-        [invocation getReturnValue:&object];
-        return charon_js_box(ctx, object);
-    }
-    case 'c':
-    case 'B': {
-        BOOL value = NO;
-        [invocation getReturnValue:&value];
-        return JSValueMakeBoolean(ctx, value);
-    }
-    case 'i': case 's': case 'l': case 'I': case 'S': case 'L': {
-        int value = 0;
-        [invocation getReturnValue:&value];
-        return JSValueMakeNumber(ctx, value);
-    }
-    case 'q': case 'Q': {
-        long long value = 0;
-        [invocation getReturnValue:&value];
-        return JSValueMakeNumber(ctx, (double)value);
-    }
-    case 'f': {
-        float value = 0;
-        [invocation getReturnValue:&value];
-        return JSValueMakeNumber(ctx, value);
-    }
-    case 'd': {
-        double value = 0;
-        [invocation getReturnValue:&value];
-        return JSValueMakeNumber(ctx, value);
-    }
-    case '{': {
-        JSContext *context = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(ctx) create:YES];
-        if (strstr(returnType, "CGPoint")) {
-            CGPoint point; [invocation getReturnValue:&point];
-            return [JSValue valueWithPoint:point inContext:context].JSValueRef;
-        }
-        if (strstr(returnType, "CGRect")) {
-            CGRect rect; [invocation getReturnValue:&rect];
-            return [JSValue valueWithRect:rect inContext:context].JSValueRef;
-        }
-        if (strstr(returnType, "CGSize")) {
-            CGSize size; [invocation getReturnValue:&size];
-            return [JSValue valueWithSize:size inContext:context].JSValueRef;
-        }
-        if (strstr(returnType, "NSRange")) {
-            NSRange range; [invocation getReturnValue:&range];
-            return [JSValue valueWithRange:range inContext:context].JSValueRef;
-        }
-        return JSValueMakeUndefined(ctx);
-    }
-    default:
-        return JSValueMakeUndefined(ctx);
-    }
-}
-
 static JSValueRef InvokeSelector(JSContextRef ctx, id target, SEL selector, const char *argumentTypes, size_t argumentCount, const JSValueRef arguments[], JSValueRef *exception)
 {
     NSMethodSignature *signature = [target methodSignatureForSelector:selector];
@@ -335,7 +219,7 @@ static JSValueRef InvokeSelector(JSContextRef ctx, id target, SEL selector, cons
     invocation.selector = selector;
     invocation.target = target;
     /* -setArgument:atIndex: only copies bytes; without this, an object argument set from a local
-     * that goes out of scope once SetInvocationArgument returns dangles by the time -invoke
+     * that goes out of scope once its branch below ends dangles by the time -invoke
      * actually runs. */
     [invocation retainArguments];
     NSUInteger expected = signature.numberOfArguments - 2;
@@ -355,15 +239,24 @@ static JSValueRef InvokeSelector(JSContextRef ctx, id target, SEL selector, cons
                 return JSValueMakeUndefined(ctx);
             }
             [invocation setArgument:&object atIndex:index + 2];
-        } else if (!SetInvocationArgument(invocation, index + 2, type, ctx, value, exception)) {
-            JSContext *context = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(ctx) create:YES];
-            if (exception)
-                *exception = [JSValue valueWithNewErrorFromMessage:[NSString stringWithFormat:@"argument %lu of %@ has an unsupported type for JSExport", (unsigned long)index, NSStringFromSelector(selector)] inContext:context].JSValueRef;
-            return JSValueMakeUndefined(ctx);
+        } else if (type[0] == '#') {
+            id object = charon_js_unbox(ctx, value);
+            [invocation setArgument:&object atIndex:index + 2];
+        } else {
+            JSValueRef failure = NULL;
+            if (!charon_js_set_scalar_argument(invocation, index + 2, type, ctx, value, &failure)) {
+                JSContext *context = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(ctx) create:YES];
+                failure = [JSValue valueWithNewErrorFromMessage:[NSString stringWithFormat:@"argument %lu of %@ has an unsupported type for JSExport", (unsigned long)index, NSStringFromSelector(selector)] inContext:context].JSValueRef;
+            }
+            if (failure) {
+                if (exception)
+                    *exception = failure;
+                return JSValueMakeUndefined(ctx);
+            }
         }
     }
     [invocation invoke];
-    return BoxInvocationReturn(invocation, signature.methodReturnType, ctx);
+    return charon_js_invocation_result(invocation, signature.methodReturnType, ctx);
 }
 
 static JSValueRef BoundFunctionCallAsFunction(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef *exception)

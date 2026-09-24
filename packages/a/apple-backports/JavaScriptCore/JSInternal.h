@@ -100,6 +100,15 @@ const char *charon_js_skip_type(const char *type);
 BOOL charon_js_is_array(JSContextRef context, JSValueRef value);
 BOOL charon_js_is_date(JSContextRef context, JSValueRef value);
 
+/*
+ * A block's or JSExport method's C number, bool or CGPoint/CGSize/CGRect/NSRange argument set at
+ * `index` of `invocation` as the release converts it, a thrown valueOf or toString left in
+ * *exception (which must start NULL); NO for a type the release does not carry. And the value an
+ * invocation returned, as the release gives it to JavaScript.
+ */
+BOOL charon_js_set_scalar_argument(NSInvocation *invocation, NSUInteger index, const char *type, JSContextRef context, JSValueRef value, JSValueRef _Nullable *_Nonnull exception);
+JSValueRef charon_js_invocation_result(NSInvocation *invocation, const char *type, JSContextRef context);
+
 /* ECMAScript ToUint32: NaN and the infinities are 0, anything else is taken modulo 2^32. */
 uint32_t charon_js_uint32(double value);
 
@@ -108,6 +117,9 @@ JSValueRef charon_js_type_error(JSContextRef context, NSString *message);
 
 /* The Objective-C object `value` is the bridge's wrapper of, or nil for any other value. */
 id _Nullable charon_js_wrapped_object(JSContextRef context, JSValueRef value);
+
+/* What a wrapper of `jsClass` needs once JSObjectMake has made it (JSVirtualMachine's -charon_wrapperOf:...). */
+void charon_js_wrapper_made(JSContextRef context, JSObjectRef wrapper, JSClassRef jsClass);
 
 /* The JSStringRef equivalents, released by the caller. */
 JSStringRef charon_js_string(NSString *string);

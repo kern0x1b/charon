@@ -110,18 +110,42 @@ static const char *SkipType(const char *cursor)
     return cursor;
 }
 
+/* Which of the four structs JSValue converts `type` (`{CGPoint=dd}`) is, by its name. */
+typedef enum { CharonStructNone, CharonStructPoint, CharonStructSize, CharonStructRect, CharonStructRange } CharonStruct;
+
+static CharonStruct StructKind(const char *type)
+{
+    static const struct { const char *name; CharonStruct kind; } known[] = {
+        {"CGPoint", CharonStructPoint}, {"CGSize", CharonStructSize}, {"CGRect", CharonStructRect}, {"_NSRange", CharonStructRange}};
+    if (*type != '{')
+        return CharonStructNone;
+    for (size_t index = 0; index < sizeof(known) / sizeof(known[0]); index++) {
+        size_t length = strlen(known[index].name);
+        if (!strncmp(type + 1, known[index].name, length) && type[1 + length] == '=')
+            return known[index].kind;
+    }
+    return CharonStructNone;
+}
+
 /*
  * One type of a block's extended encoding (`@"NSString"` names the class), classified as the
  * release's own JSContext treats it (measured against the host's, tests/backports/host/jscontext):
  * JSValue, id, any other class - `@"Class<Protocol>"` counts as the class, a bare `@"<Protocol>"`
- * as id; a C number, BOOL, CGPoint, CGSize, CGRect or NSRange is a scalar; anything else - a
- * block, Class, SEL, a pointer, another struct, a class the runtime does not know - is unsupported, and the release does not make such a block a
- * function at all (`typeof` answers "object").
+ * as id; a C number, bool, CGPoint, CGSize, CGRect or NSRange is a scalar; anything else - a
+ * block, Class, SEL, a pointer, another struct, a class the runtime does not know - is
+ * unsupported, and the release does not make such a block a function at all (`typeof` answers
+ * "object").
  */
-static CharonType ClassifyType(const char *cursor)
+static const char *SkipQualifiers(const char *cursor)
 {
     while (*cursor && strchr("rnNoORVA", *cursor))
         cursor++;
+    return cursor;
+}
+
+static CharonType ClassifyType(const char *cursor)
+{
+    cursor = SkipQualifiers(cursor);
     CharonType type = {CharonTypeUnsupported, Nil};
     switch (*cursor) {
     case 'v':
@@ -149,52 +173,33 @@ static CharonType ClassifyType(const char *cursor)
         break;
     case '{':
         /* the four structs JSValue converts; any other struct makes no function (measured) */
-        for (const char *name = "CGPoint\0CGSize\0CGRect\0_NSRange\0"; *name; name += strlen(name) + 1)
-            if (!strncmp(cursor + 1, name, strlen(name)) && cursor[1 + strlen(name)] == '=')
-                type.kind = CharonTypeScalar;
+        if (StructKind(cursor) != CharonStructNone)
+            type.kind = CharonTypeScalar;
         break;
     }
     return type;
 }
 
-/* What a block can be to JavaScript, from its encoding: a function whose every argument and
- * return is carried, a function the release could call but this bridge refuses (a scalar - see
- * BlockCallAsFunction), or no function at all. */
-typedef enum { CharonBlockNotFunction, CharonBlockRefused, CharonBlockCallable } CharonBlockShape;
-enum { CharonBlockMaxArguments = 6 };
-
-static CharonBlockShape BlockShape(id block, CharonType *arguments, NSUInteger *outCount, BOOL *outReturnsVoid)
+/* Whether a block is a function to JavaScript, from its encoding: its return is void, an object
+ * or a scalar, and every argument is a class, id or a scalar. */
+static BOOL BlockIsFunction(id block)
 {
     const char *cursor = BlockSignature(block);
     if (!cursor)
-        return CharonBlockNotFunction;
-    while (*cursor && strchr("rnNoORVA", *cursor))
-        cursor++;
-    CharonBlockShape shape = CharonBlockCallable;
-    BOOL returnsVoid = *cursor == 'v';
-    if (ClassifyType(cursor).kind == CharonTypeScalar)
-        shape = CharonBlockRefused;
-    else if (!returnsVoid && *cursor != '@') /* any object, a block included, is returned boxed */
-        return CharonBlockNotFunction;
-    cursor = SkipType(cursor);
+        return NO;
+    CharonTypeKind returned = ClassifyType(cursor).kind;
+    /* any object, a block included, is returned boxed */
+    if (returned != CharonTypeVoid && returned != CharonTypeScalar && *SkipQualifiers(cursor) != '@')
+        return NO;
+    cursor = SkipQualifiers(SkipType(cursor));
     if (cursor[0] != '@' || cursor[1] != '?') /* argument 0 is the block itself */
-        return CharonBlockNotFunction;
-    cursor = SkipType(cursor);
-    NSUInteger count = 0;
-    while (*cursor) {
-        CharonType type = ClassifyType(cursor);
-        if (type.kind == CharonTypeUnsupported || type.kind == CharonTypeVoid)
-            return CharonBlockNotFunction;
-        if (type.kind == CharonTypeScalar || count == CharonBlockMaxArguments)
-            shape = CharonBlockRefused;
-        else
-            arguments[count] = type;
-        count++;
-        cursor = SkipType(cursor);
+        return NO;
+    for (cursor = SkipType(cursor); *cursor; cursor = SkipType(cursor)) {
+        CharonTypeKind kind = ClassifyType(cursor).kind;
+        if (kind == CharonTypeUnsupported || kind == CharonTypeVoid)
+            return NO;
     }
-    *outCount = count;
-    *outReturnsVoid = returnsVoid;
-    return shape;
+    return YES;
 }
 
 /* One JavaScript argument as its declared class wants it, per the release: JSValue takes the
@@ -223,29 +228,168 @@ const char *charon_js_skip_type(const char *type)
 }
 
 /*
- * A block is exported as a JS function through one shared JSClassRef, whose private data on
- * each JSObjectRef is the retained block. Its arguments are converted by the class its own
- * encoding declares. A block taking or returning a C number or struct, or taking more than six
- * arguments, is a function the release would call; this bridge calls blocks through their invoke
- * pointer with object-sized arguments only, so it throws a TypeError in JavaScript instead of
- * reading a value off the wrong-sized slot.
+ * A C number, bool or one of the four structs, as the release's bridge converts it for a block's or
+ * JSExport method's argument (ObjCCallbackFunction.mm, CallbackArgument*; measured on the host for
+ * thirteen types against twenty-seven values): char, short, int, long and their unsigned forms take
+ * ECMAScript ToInt32 of the number, cast to the type; long long, unsigned long long, float and
+ * double take the number cast to the type; bool takes ToBoolean; CGPoint, CGSize, CGRect and
+ * NSRange take -toPoint, -toSize, -toRect and -toRange. A number whose valueOf or toString throws
+ * leaves the exception in *exception and sets nothing. NO for any other type.
  */
-static JSValueRef BlockCallAsFunction(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef *exception)
+BOOL charon_js_set_scalar_argument(NSInvocation *invocation, NSUInteger index, const char *type, JSContextRef ctx, JSValueRef value, JSValueRef *exception)
+{
+    type = SkipQualifiers(type);
+    double number = 0;
+    if (*type && strchr("cislCISLqQfd", *type)) {
+        number = JSValueToNumber(ctx, value, exception);
+        if (*exception)
+            return YES;
+    }
+    int32_t integer = (int32_t)charon_js_uint32(number);
+#define CHARON_SET(T, v) do { T set = (T)(v); [invocation setArgument:&set atIndex:index]; } while (0)
+    switch (*type) {
+    case 'c': CHARON_SET(char, integer); return YES;
+    case 's': CHARON_SET(short, integer); return YES;
+    case 'i': CHARON_SET(int, integer); return YES;
+    case 'l': CHARON_SET(long, integer); return YES;
+    case 'C': CHARON_SET(unsigned char, integer); return YES;
+    case 'S': CHARON_SET(unsigned short, integer); return YES;
+    case 'I': CHARON_SET(unsigned int, integer); return YES;
+    case 'L': CHARON_SET(unsigned long, integer); return YES;
+    /* the release's own cast, out of range and NaN included, as its compiler makes it for this architecture */
+    case 'q': CHARON_SET(long long, number); return YES;
+    case 'Q': CHARON_SET(unsigned long long, number); return YES;
+    case 'f': CHARON_SET(float, number); return YES;
+    case 'd': CHARON_SET(double, number); return YES;
+    case 'B': CHARON_SET(bool, JSValueToBoolean(ctx, value)); return YES;
+    }
+#undef CHARON_SET
+    CharonStruct kind = StructKind(type);
+    if (kind == CharonStructNone)
+        return NO;
+    JSContext *context = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(ctx) create:YES];
+    JSValue *wrapped = [JSValue charon_valueWithJSValueRef:value context:context];
+    switch (kind) {
+    case CharonStructPoint: { CGPoint point = wrapped.toPoint; [invocation setArgument:&point atIndex:index]; break; }
+    case CharonStructSize: { CGSize size = wrapped.toSize; [invocation setArgument:&size atIndex:index]; break; }
+    case CharonStructRect: { CGRect rect = wrapped.toRect; [invocation setArgument:&rect atIndex:index]; break; }
+    case CharonStructRange: { NSRange range = wrapped.toRange; [invocation setArgument:&range atIndex:index]; break; }
+    case CharonStructNone: break;
+    }
+    return YES;
+}
+
+/*
+ * What an invocation returned, as the release's bridge gives it to JavaScript (CallbackResult*):
+ * void is undefined, an object is boxed, a C number is that number (a char included), bool is a
+ * boolean, the four structs are JSValue's +valueWithPoint:... objects.
+ */
+JSValueRef charon_js_invocation_result(NSInvocation *invocation, const char *type, JSContextRef ctx)
+{
+    type = SkipQualifiers(type);
+#define CHARON_GET(T) do { T got = 0; [invocation getReturnValue:&got]; return JSValueMakeNumber(ctx, (double)got); } while (0)
+    switch (*type) {
+    case 'v': return JSValueMakeUndefined(ctx);
+    case '@':
+    case '#': {
+        __unsafe_unretained id object = nil;
+        [invocation getReturnValue:&object];
+        return charon_js_box(ctx, object);
+    }
+    case 'c': CHARON_GET(char);
+    case 's': CHARON_GET(short);
+    case 'i': CHARON_GET(int);
+    case 'l': CHARON_GET(long);
+    case 'q': CHARON_GET(long long);
+    case 'C': CHARON_GET(unsigned char);
+    case 'S': CHARON_GET(unsigned short);
+    case 'I': CHARON_GET(unsigned int);
+    case 'L': CHARON_GET(unsigned long);
+    case 'Q': CHARON_GET(unsigned long long);
+    case 'f': CHARON_GET(float);
+    case 'd': CHARON_GET(double);
+    case 'B': {
+        bool got = false;
+        [invocation getReturnValue:&got];
+        return JSValueMakeBoolean(ctx, got);
+    }
+    }
+#undef CHARON_GET
+    JSContext *context = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(ctx) create:YES];
+    switch (StructKind(type)) {
+    case CharonStructPoint: { CGPoint point; [invocation getReturnValue:&point]; return [JSValue valueWithPoint:point inContext:context].JSValueRef; }
+    case CharonStructSize: { CGSize size; [invocation getReturnValue:&size]; return [JSValue valueWithSize:size inContext:context].JSValueRef; }
+    case CharonStructRect: { CGRect rect; [invocation getReturnValue:&rect]; return [JSValue valueWithRect:rect inContext:context].JSValueRef; }
+    case CharonStructRange: { NSRange range; [invocation getReturnValue:&range]; return [JSValue valueWithRange:range inContext:context].JSValueRef; }
+    case CharonStructNone: break;
+    }
+    return JSValueMakeUndefined(ctx);
+}
+
+/*
+ * The block's encoding as NSMethodSignature documents its input: plain Objective-C type encodings,
+ * without the class names (`@"NSString"`) and block signatures (`@?<v@?>`) of the extended form.
+ */
+static NSMethodSignature *BlockMethodSignature(const char *extended)
+{
+    size_t length = strlen(extended);
+    char *plain = malloc(length + 1), *out = plain;
+    for (const char *cursor = extended; *cursor;) {
+        if (cursor[0] == '@' && cursor[1] == '"') {
+            *out++ = '@';
+            const char *end = strchr(cursor + 2, '"');
+            cursor = end ? end + 1 : cursor + strlen(cursor);
+        } else if (cursor[0] == '@' && cursor[1] == '?' && cursor[2] == '<') {
+            *out++ = '@';
+            *out++ = '?';
+            cursor += 2;
+            for (int depth = 0; *cursor; cursor++) {
+                if (*cursor == '<')
+                    depth++;
+                else if (*cursor == '>' && !--depth) {
+                    cursor++;
+                    break;
+                }
+            }
+        } else {
+            *out++ = *cursor++;
+        }
+    }
+    *out = 0;
+    NSMethodSignature *signature = [NSMethodSignature signatureWithObjCTypes:plain];
+    free(plain);
+    return signature;
+}
+
+/*
+ * A block is exported as a JS function through one shared JSClassRef, whose private data on
+ * each JSObjectRef is the retained block. It is called as the release calls it: through an
+ * NSInvocation whose target is the block (ObjCCallbackFunction.mm, CallbackBlock), which carries
+ * every C type the encoding names. Object arguments are converted by the class the encoding
+ * declares, the others by charon_js_set_scalar_argument; a missing argument is undefined.
+ */
+static JSValueRef CallBlock(JSContextRef ctx, JSObjectRef function, JSObjectRef _Nullable thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef *exception)
 {
     id block = (__bridge id)JSObjectGetPrivate(function);
     JSContext *context = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(ctx) create:YES];
-    CharonType types[CharonBlockMaxArguments];
-    NSUInteger wanted = 0;
-    BOOL returnsVoid = NO;
-    if (BlockShape(block, types, &wanted, &returnsVoid) != CharonBlockCallable) {
-        if (exception)
-            *exception = charon_js_type_error(ctx, @"this block's argument or return type is not supported");
-        return JSValueMakeUndefined(ctx);
-    }
-    id args[CharonBlockMaxArguments + 1] = {block};
-    for (NSUInteger index = 0; index < wanted; index++) {
+    const char *encoding = BlockSignature(block);
+    NSMethodSignature *signature = BlockMethodSignature(encoding);
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+    /* -setArgument:atIndex: copies bytes only; an object converted below must outlive -invoke */
+    [invocation retainArguments];
+    invocation.target = block;
+    const char *cursor = SkipType(SkipType(encoding)); /* past the return type and the block itself */
+    for (NSUInteger index = 1; index < signature.numberOfArguments; index++, cursor = SkipType(cursor)) {
+        JSValueRef value = index - 1 < argumentCount ? arguments[index - 1] : JSValueMakeUndefined(ctx);
         JSValueRef failure = NULL;
-        args[index + 1] = ObjectArgument(ctx, context, types[index], index < argumentCount ? arguments[index] : JSValueMakeUndefined(ctx), &failure);
+        CharonType type = ClassifyType(cursor);
+        if (type.kind == CharonTypeScalar) {
+            charon_js_set_scalar_argument(invocation, index, [signature getArgumentTypeAtIndex:index], ctx, value, &failure);
+        } else {
+            id object = ObjectArgument(ctx, context, type, value, &failure);
+            if (!failure)
+                [invocation setArgument:&object atIndex:index];
+        }
         if (failure) {
             if (exception)
                 *exception = failure;
@@ -255,52 +399,16 @@ static JSValueRef BlockCallAsFunction(JSContextRef ctx, JSObjectRef function, JS
     NSMutableArray<JSValue *> *callArguments = [NSMutableArray arrayWithCapacity:argumentCount];
     for (size_t index = 0; index < argumentCount; index++)
         [callArguments addObject:[JSValue charon_valueWithJSValueRef:arguments[index] context:context]];
-    JSValue *thisValue = [JSValue charon_valueWithJSValueRef:thisObject context:context];
+    JSValue *thisValue = thisObject ? [JSValue charon_valueWithJSValueRef:thisObject context:context] : nil;
     charon_js_push_callback(context, thisValue, [JSValue charon_valueWithJSValueRef:function context:context], callArguments);
-    id result = nil;
-    /* The callable function pointer is the `invoke` field, not the block's own address, which is a
-     * struct pointer whose first bytes are `isa`, not code. ARC also will not let an Objective-C
-     * pointer be called as a raw C function pointer directly; bridging through void first strips
-     * that tracking, which is safe here since `block` is kept alive by `args[0]` throughout. */
-    void *blockPointer = (__bridge void *)block;
-    void *invoke = ((struct CharonBlockLayout *)blockPointer)->invoke;
-    void *rawArgs[7] = {blockPointer, (__bridge void *)args[1], (__bridge void *)args[2], (__bridge void *)args[3], (__bridge void *)args[4], (__bridge void *)args[5], (__bridge void *)args[6]};
-    /* A block returning void leaves whatever r0 last held; reading that as an id would retain and
-     * box a garbage pointer, so it is called through a void-returning type and answers undefined,
-     * as the release's own JSContext does for such a block. */
-    if (returnsVoid) {
-        switch (wanted) {
-        case 0: ((void (*)(void *))invoke)(rawArgs[0]); break;
-        case 1: ((void (*)(void *, void *))invoke)(rawArgs[0], rawArgs[1]); break;
-        case 2: ((void (*)(void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2]); break;
-        case 3: ((void (*)(void *, void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2], rawArgs[3]); break;
-        case 4: ((void (*)(void *, void *, void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2], rawArgs[3], rawArgs[4]); break;
-        case 5: ((void (*)(void *, void *, void *, void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2], rawArgs[3], rawArgs[4], rawArgs[5]); break;
-        case 6: ((void (*)(void *, void *, void *, void *, void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2], rawArgs[3], rawArgs[4], rawArgs[5], rawArgs[6]); break;
-        }
-        JSValue *thrown = charon_js_pop_callback();
-        if (thrown && exception)
-            *exception = thrown.JSValueRef;
-        return JSValueMakeUndefined(ctx);
-    }
-    id unretainedResult = nil;
-    switch (wanted) {
-    case 0: unretainedResult = ((id (*)(void *))invoke)(rawArgs[0]); break;
-    case 1: unretainedResult = ((id (*)(void *, void *))invoke)(rawArgs[0], rawArgs[1]); break;
-    case 2: unretainedResult = ((id (*)(void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2]); break;
-    case 3: unretainedResult = ((id (*)(void *, void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2], rawArgs[3]); break;
-    case 4: unretainedResult = ((id (*)(void *, void *, void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2], rawArgs[3], rawArgs[4]); break;
-    case 5: unretainedResult = ((id (*)(void *, void *, void *, void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2], rawArgs[3], rawArgs[4], rawArgs[5]); break;
-    case 6: unretainedResult = ((id (*)(void *, void *, void *, void *, void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2], rawArgs[3], rawArgs[4], rawArgs[5], rawArgs[6]); break;
-    }
-    result = unretainedResult;
+    [invocation invoke];
     JSValue *thrown = charon_js_pop_callback();
     if (thrown) {
         if (exception)
             *exception = thrown.JSValueRef;
         return JSValueMakeUndefined(ctx);
     }
-    return charon_js_box(ctx, result);
+    return charon_js_invocation_result(invocation, signature.methodReturnType, ctx);
 }
 
 /*
@@ -365,14 +473,62 @@ static void BlockFinalize(JSObjectRef object)
     charon_js_release_soon(JSObjectGetPrivate(object));
 }
 
+static JSValueRef BlockCallAsFunction(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef *exception)
+{
+    return CallBlock(ctx, function, thisObject, argumentCount, arguments, exception);
+}
+
+/* `new` on a block, as the release allows it: the block runs with no `this`, and what it returns
+ * must be an object. */
+static JSObjectRef BlockCallAsConstructor(JSContextRef ctx, JSObjectRef constructor, size_t argumentCount, const JSValueRef arguments[], JSValueRef *exception)
+{
+    JSValueRef failure = NULL;
+    JSValueRef result = CallBlock(ctx, constructor, NULL, argumentCount, arguments, &failure);
+    if (!failure && !JSValueIsObject(ctx, result))
+        failure = charon_js_type_error(ctx, @"Objective-C blocks called as constructors must return an object.");
+    if (failure) {
+        if (exception)
+            *exception = failure;
+        return NULL;
+    }
+    return (JSObjectRef)result;
+}
+
+static void DefineHidden(JSContextRef ctx, JSObjectRef object, const char *name, JSValueRef value, JSPropertyAttributes attributes)
+{
+    JSStringRef string = JSStringCreateWithUTF8CString(name);
+    JSObjectSetProperty(ctx, object, string, value, attributes | kJSPropertyAttributeDontEnum, NULL);
+    JSStringRelease(string);
+}
+
+/*
+ * A block's function is a function to script, as the release's is (measured on the host): it has
+ * a read-only `length` of 0 and `name` of "" and a `prototype` object of its own, and its
+ * prototype is the context's Function.prototype, so call, apply and bind work. The properties go
+ * on first, while nothing read-only of that prototype's shadows them. Function.prototype is read
+ * off a function the engine itself makes, so a script that replaced the global Function changes
+ * nothing. JSObjectMake sets a new object's prototype after the class's initialize callback, so
+ * this runs once the wrapper is made (charon_js_wrapper_made).
+ */
+static void MakeBlockFunction(JSContextRef ctx, JSObjectRef object)
+{
+    DefineHidden(ctx, object, "length", JSValueMakeNumber(ctx, 0), kJSPropertyAttributeReadOnly);
+    JSStringRef empty = JSStringCreateWithUTF8CString("");
+    DefineHidden(ctx, object, "name", JSValueMakeString(ctx, empty), kJSPropertyAttributeReadOnly);
+    JSStringRelease(empty);
+    DefineHidden(ctx, object, "prototype", JSObjectMake(ctx, NULL, NULL), kJSPropertyAttributeNone);
+    JSObjectSetPrototype(ctx, object, JSObjectGetPrototype(ctx, JSObjectMakeFunctionWithCallback(ctx, NULL, NULL)));
+}
+
 static JSClassRef BlockClass(void)
 {
     static JSClassRef blockClass;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
         JSClassDefinition definition = kJSClassDefinitionEmpty;
-        definition.className = "CharonBlockFunction";
+        definition.className = "Function";
         definition.callAsFunction = BlockCallAsFunction;
+        definition.callAsConstructor = BlockCallAsConstructor;
         definition.finalize = BlockFinalize;
         blockClass = JSClassCreate(&definition);
     });
@@ -384,6 +540,12 @@ static JSClassRef BlockClass(void)
 static void OpaqueFinalize(JSObjectRef object)
 {
     charon_js_release_soon(JSObjectGetPrivate(object));
+}
+
+void charon_js_wrapper_made(JSContextRef context, JSObjectRef wrapper, JSClassRef jsClass)
+{
+    if (jsClass == BlockClass())
+        MakeBlockFunction(context, wrapper);
 }
 
 static JSClassRef OpaqueClass(void)
@@ -455,12 +617,8 @@ JSValueRef charon_js_box(JSContextRef context, id object)
         }];
         return result;
     }
-    if ([object isKindOfClass:NSClassFromString(@"NSBlock")]) {
-        CharonType arguments[CharonBlockMaxArguments];
-        NSUInteger count = 0;
-        BOOL returnsVoid = NO;
-        return Wrapper(context, object, BlockShape(object, arguments, &count, &returnsVoid) == CharonBlockNotFunction ? OpaqueClass() : BlockClass());
-    }
+    if ([object isKindOfClass:NSClassFromString(@"NSBlock")])
+        return Wrapper(context, object, BlockIsFunction(object) ? BlockClass() : OpaqueClass());
     if (charon_js_class_conforms_to_export(object_getClass(object)))
         return Wrapper(context, object, charon_js_export_class());
     return Wrapper(context, object, OpaqueClass());

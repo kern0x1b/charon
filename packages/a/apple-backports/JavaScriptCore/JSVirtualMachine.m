@@ -367,6 +367,7 @@ static void MachinesInit(void)
     JSObjectRef wrapper = JSWeakObjectMapGet(weakContext, weak, (__bridge void *)key);
     if (!wrapper) {
         wrapper = JSObjectMake(context, jsClass, (void *)CFBridgingRetain(object));
+        charon_js_wrapper_made(context, wrapper, jsClass);
         JSWeakObjectMapSet(weakContext, weak, (__bridge void *)key, wrapper);
         [self charon_attachWrapper:wrapper token:token context:context];
     }

@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <JavaScriptCore/JavaScriptCore.h>
+#import <CoreGraphics/CoreGraphics.h>
 
 @protocol PointExport <JSExport>
 @property (nonatomic) double x;
@@ -81,6 +82,9 @@ __attribute__((noinline)) static void Collect(JSContext *context)
 - (void)takeValue:(JSValue *)value;
 - (void)takeURL:(NSURL *)url;
 - (void)takeString:(NSString *)string;
+- (unsigned)echoUnsigned:(unsigned)value;
+- (char)echoChar:(char)value;
+- (CGPoint)echoPoint:(CGPoint)point;
 @end
 
 @interface TypedObject : NSObject <TypedExport>
@@ -94,6 +98,9 @@ __attribute__((noinline)) static void Collect(JSContext *context)
 - (void)takeValue:(JSValue *)value { self.called = YES; self.got = value; }
 - (void)takeURL:(NSURL *)url { self.called = YES; self.got = url; }
 - (void)takeString:(NSString *)string { self.called = YES; self.got = string; if (self.onCall) self.onCall(); }
+- (unsigned)echoUnsigned:(unsigned)value { return value; }
+- (char)echoChar:(char)value { return value; }
+- (CGPoint)echoPoint:(CGPoint)point { return point; }
 @end
 
 @interface ManagedOwner : NSObject
@@ -723,6 +730,88 @@ static void CheckBlockArguments(void)
     check([got isEqual:@3], @"currentArguments holds every JavaScript argument, not only the declared ones");
 }
 
+/*
+ * Blocks taking and returning C numbers, bool and the four structs JSValue converts, called as the
+ * release calls them. The full matrix is PrintBlockMatrix's, which run.sh diffs against the oracle.
+ */
+static void CheckBlockScalars(void)
+{
+    JSContext *context = [JSContext new];
+    __block NSString *handled = nil;
+    context.exceptionHandler = ^(JSContext *c, JSValue *exception) { handled = [exception toString]; };
+    __block BOOL called = NO;
+    context[@"addInts"] = ^int(int a, int b) { called = YES; return a + b; };
+    context[@"asChar"] = ^char(char a) { return a; };
+    context[@"asUnsigned"] = ^unsigned(unsigned a) { return a; };
+    context[@"asLongLong"] = ^long long(long long a) { return a; };
+    context[@"asFloat"] = ^float(float a) { return a; };
+    context[@"asBool"] = ^bool(bool a) { return a; };
+    context[@"movePoint"] = ^CGPoint(CGPoint p, CGSize by) { return CGPointMake(p.x + by.width, p.y + by.height); };
+    context[@"rangeOf"] = ^NSRange(NSRange r) { return r; };
+    context[@"rect"] = ^CGRect(CGRect r) { return r; };
+    context[@"seven"] = ^int(int a, int b, int c, int d, int e, int f, int g) { return a * 1000000 + b * 100000 + c * 10000 + d * 1000 + e * 100 + f * 10 + g; };
+    check([Run(context, @"addInts(2, 3.9)") isEqualToString:@"5"], @"int arguments take ToInt32 and an int return is a number");
+    check([Run(context, @"addInts(4294967301, 0)") isEqualToString:@"5"], @"an int argument wraps modulo 2^32");
+    check([Run(context, @"asChar(300)") isEqualToString:@"44"] && [Run(context, @"typeof asChar(1)") isEqualToString:@"number"], @"a char argument is ToInt32 cast to char, and a char return is a number");
+    check([Run(context, @"asUnsigned(-1)") isEqualToString:@"4294967295"], @"an unsigned argument is ToInt32 cast to unsigned");
+    check([Run(context, @"asLongLong(4294967301)") isEqualToString:@"4294967301"], @"a long long argument takes the whole number");
+    check([Run(context, @"asFloat(3.7)") isEqualToString:@"3.700000047683716"], @"a float argument is the number rounded to float");
+    check([Run(context, @"asBool('s') + ' ' + asBool(0) + ' ' + typeof asBool(1)") isEqualToString:@"true false boolean"], @"a bool argument takes ToBoolean and a bool return is a boolean");
+    check([Run(context, @"JSON.stringify(movePoint({x: 1, y: 2}, {width: 10, height: 20}))") isEqualToString:@"{\"x\":11,\"y\":22}"], @"CGPoint and CGSize arguments are read by their fields and a CGPoint return is an object");
+    check([Run(context, @"var r = rangeOf('abc'); r.location + ',' + r.length") isEqualToString:@"0,3"], @"an NSRange argument reads location and length");
+    check([Run(context, @"var q = rect({x: 1, y: 2, width: 3, height: 4}); [q.x, q.y, q.width, q.height].join()") isEqualToString:@"1,2,3,4"], @"a CGRect round trips");
+    check([Run(context, @"seven(1, 2, 3, 4, 5, 6, 7)") isEqualToString:@"1234567"] && [Run(context, @"seven(1)") isEqualToString:@"1000000"], @"a block takes seven arguments, and a missing one is undefined");
+    called = NO;
+    handled = nil;
+    [context evaluateScript:@"addInts({valueOf: function () { throw 'boom'; }}, 1)"];
+    check(!called && [handled isEqualToString:@"boom"], @"an argument whose valueOf throws is thrown before the block runs");
+
+    /* The function a block is, as the release's is. */
+    check([Run(context, @"addInts.length + '|' + addInts.name + '|' + (addInts instanceof Function) + '|' + Object.prototype.toString.call(addInts)") isEqualToString:@"0||true|[object Function]"],
+          @"a block's function has length 0, an empty name and Function.prototype");
+    check([Run(context, @"addInts.call(null, 2, 3) + addInts.apply(null, [2, 3]) + addInts.bind(null, 2)(3)") isEqualToString:@"15"], @"a block's function takes call, apply and bind");
+    check([Run(context, @"JSON.stringify(Object.getOwnPropertyNames(addInts))") isEqualToString:@"[\"length\",\"name\",\"prototype\"]"], @"a block's function has length, name and prototype of its own");
+    __block BOOL thisWasNil = NO;
+    context[@"makeObject"] = ^id(int a) { thisWasNil = [JSContext currentThis] == nil; return @{@"a": @(a)}; };
+    check([Run(context, @"new makeObject(3).a") isEqualToString:@"3"] && thisWasNil, @"new on a block that returns an object answers it, and the block has no this");
+    handled = nil;
+    [context evaluateScript:@"new addInts(1, 2)"];
+    check([handled isEqualToString:@"TypeError: Objective-C blocks called as constructors must return an object."], @"new on a block that returns no object is a TypeError");
+}
+
+/*
+ * The whole matrix of thirteen argument and return types against twenty-seven values, printed for
+ * run.sh to diff against the oracle's: what the block received, and what JavaScript got back.
+ */
+static void PrintBlockMatrix(void)
+{
+    JSContext *context = [JSContext new];
+    __block NSString *got = nil;
+    context.exceptionHandler = ^(JSContext *c, JSValue *exception) { got = [NSString stringWithFormat:@"THROW %@", [exception toString]]; };
+    context[@"url"] = [NSURL URLWithString:@"http://example.com/"];
+    context[@"obj"] = [PointObject new];
+#define CHARON_MATRIX(T, name, format) context[@"m_" name] = ^T(T a) { got = [NSString stringWithFormat:format, a]; return a; };
+    CHARON_MATRIX(char, "char", @"%d") CHARON_MATRIX(short, "short", @"%d") CHARON_MATRIX(int, "int", @"%d") CHARON_MATRIX(unsigned, "unsigned", @"%u")
+    CHARON_MATRIX(long long, "longlong", @"%lld") CHARON_MATRIX(unsigned long long, "ulonglong", @"%llu")
+    CHARON_MATRIX(float, "float", @"%.9g") CHARON_MATRIX(double, "double", @"%.17g")
+#undef CHARON_MATRIX
+    context[@"m_bool"] = ^bool(bool a) { got = a ? @"true" : @"false"; return a; };
+    context[@"m_CGPoint"] = ^CGPoint(CGPoint a) { got = [NSString stringWithFormat:@"{%g,%g}", a.x, a.y]; return a; };
+    context[@"m_CGSize"] = ^CGSize(CGSize a) { got = [NSString stringWithFormat:@"{%g,%g}", a.width, a.height]; return a; };
+    context[@"m_CGRect"] = ^CGRect(CGRect a) { got = [NSString stringWithFormat:@"{%g,%g,%g,%g}", a.origin.x, a.origin.y, a.size.width, a.size.height]; return a; };
+    context[@"m_NSRange"] = ^NSRange(NSRange a) { got = [NSString stringWithFormat:@"{%lu,%lu}", (unsigned long)a.location, (unsigned long)a.length]; return a; };
+    NSArray *types = @[@"char", @"short", @"int", @"unsigned", @"longlong", @"ulonglong", @"float", @"double", @"bool", @"CGPoint", @"CGSize", @"CGRect", @"NSRange"];
+    NSArray *inputs = @[@"5", @"'s'", @"true", @"null", @"undefined", @"", @"({a:1})", @"[1,2]", @"new Date(0)", @"(function(){})", @"url", @"obj", @"new String('q')",
+                        @"3.7", @"-3.7", @"300", @"-1", @"4294967301", @"9007199254740993", @"1e20", @"NaN", @"Infinity", @"'12'", @"({valueOf: function () { throw 'boom'; }})",
+                        @"({x:1.5,y:2,width:3,height:4,location:5,length:6})", @"({x:'7',y:null})", @"({origin:{x:1},size:{width:2}})"];
+    for (NSString *type in types)
+        for (NSString *input in inputs) {
+            got = @"(not called)";
+            JSValue *answer = [context evaluateScript:[NSString stringWithFormat:@"(function (r) { return typeof r === 'object' && r !== null ? JSON.stringify(r) : typeof r + ' ' + String(r); })(m_%@(%@))", type, input]];
+            printf("matrix %s(%s): %s -> %s\n", type.UTF8String, input.UTF8String, got.UTF8String, [answer toString].UTF8String);
+        }
+}
+
 static void CheckExportArguments(void)
 {
     JSContext *context = [JSContext new];
@@ -746,6 +835,9 @@ static void CheckExportArguments(void)
     check(!object.link && [handled isEqualToString:@"TypeError: Argument does not match Objective-C Class"], @"a JSExport property setter refuses a value of another class");
     [context evaluateScript:@"typed.link = url"];
     check([object.link isEqual:[NSURL URLWithString:@"http://example.com/"]], @"a JSExport property setter takes a value of its class");
+    check([Run(context, @"typed.echoUnsigned(-1) + ' ' + typed.echoChar(300) + ' ' + typeof typed.echoChar(1)") isEqualToString:@"4294967295 44 number"],
+          @"a JSExport method's C numbers are converted and returned as a block's are");
+    check([Run(context, @"JSON.stringify(typed.echoPoint({x: 1.5, y: -2}))") isEqualToString:@"{\"x\":1.5,\"y\":-2}"], @"a JSExport method takes and returns a CGPoint");
 }
 
 
@@ -816,6 +908,8 @@ int main(void)
         CheckCallbackFrame(context);
         CheckConversions();
         CheckBlockArguments();
+        CheckBlockScalars();
+        PrintBlockMatrix();
         CheckExportArguments();
         CheckReleaseCAPI();
         CheckReleaseAfterCollection(context);

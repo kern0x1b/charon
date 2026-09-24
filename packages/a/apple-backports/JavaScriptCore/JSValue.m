@@ -417,38 +417,26 @@ static id Reported(JSContext *context, id result, JSValueRef exception)
     [self setValue:object atIndex:index];
 }
 
+/* The release makes these four from a dictionary literal, so their properties come in that
+ * dictionary's order, and so do these. */
 + (JSValue *)valueWithPoint:(CGPoint)point inContext:(JSContext *)context
 {
-    JSValue *value = [self valueWithNewObjectInContext:context];
-    [value setValue:@(point.x) forProperty:@"x"];
-    [value setValue:@(point.y) forProperty:@"y"];
-    return value;
+    return [self valueWithObject:@{@"x": @(point.x), @"y": @(point.y)} inContext:context];
 }
 
 + (JSValue *)valueWithRange:(NSRange)range inContext:(JSContext *)context
 {
-    JSValue *value = [self valueWithNewObjectInContext:context];
-    [value setValue:@(range.location) forProperty:@"location"];
-    [value setValue:@(range.length) forProperty:@"length"];
-    return value;
+    return [self valueWithObject:@{@"location": @(range.location), @"length": @(range.length)} inContext:context];
 }
 
 + (JSValue *)valueWithRect:(CGRect)rect inContext:(JSContext *)context
 {
-    JSValue *value = [self valueWithNewObjectInContext:context];
-    [value setValue:@(rect.origin.x) forProperty:@"x"];
-    [value setValue:@(rect.origin.y) forProperty:@"y"];
-    [value setValue:@(rect.size.width) forProperty:@"width"];
-    [value setValue:@(rect.size.height) forProperty:@"height"];
-    return value;
+    return [self valueWithObject:@{@"x": @(rect.origin.x), @"y": @(rect.origin.y), @"width": @(rect.size.width), @"height": @(rect.size.height)} inContext:context];
 }
 
 + (JSValue *)valueWithSize:(CGSize)size inContext:(JSContext *)context
 {
-    JSValue *value = [self valueWithNewObjectInContext:context];
-    [value setValue:@(size.width) forProperty:@"width"];
-    [value setValue:@(size.height) forProperty:@"height"];
-    return value;
+    return [self valueWithObject:@{@"width": @(size.width), @"height": @(size.height)} inContext:context];
 }
 
 - (CGPoint)toPoint

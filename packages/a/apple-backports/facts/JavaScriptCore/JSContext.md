@@ -91,15 +91,34 @@ a global, a capturing and a primitive-typed block. A method's comes from `_proto
 A block taking a block, a `Class`, a `SEL`, a pointer, a struct other than CGPoint, CGSize, CGRect and
 NSRange, or a class the runtime does not know is no function to JavaScript (`typeof` answers "object"), as
 on the host (measured for a block, `Class`, a one-int struct; NSRange and seven `id` arguments are
-functions). The invoke goes through the block literal's own
-`invoke` field, not the block's own address, which is a struct pointer whose first bytes are `isa`.
+functions).
+
+A block is called as the release calls it: through an `NSInvocation` whose target is the block
+(WebKit's ObjCCallbackFunction.mm, `CallbackBlock`), made from the block's encoding with the class names and
+block signatures of the extended form left out - the plain encoding `+signatureWithObjCTypes:` documents.
+So any number of arguments and every C number, `bool` and the four structs are carried, arguments and
+return. A C number argument is converted as the release's `CallbackArgument*` do: char, short, int, long
+and their unsigned forms take ECMAScript ToInt32 cast to the type, long long, unsigned long long, float and
+double the number cast to the type, bool ToBoolean, the structs `-toPoint`/`-toSize`/`-toRect`/`-toRange`;
+a valueOf that throws is thrown into the calling script before the block runs. A returned number is a
+number (a char included - so on armv7, where BOOL is `char`, a BOOL return is 0 or 1, not a boolean), a
+bool a boolean, a struct JSValue's `+valueWith...` object, built from a dictionary literal as the
+release builds it. JSExport methods convert through the same code. Measured on the host for thirteen types
+against twenty-seven values (tests/backports/host/jscontext/run.sh diffs the whole matrix against the
+host's JavaScriptCore) - the same, value for value. Whether `NSInvocation` invokes a block target on iOS
+6.1.3 is measured on the device run (it does on iOS 7, whose bridge is built on it; iOS 6's
+CoreFoundation already carries `NSBlockInvocation`).
+
+A block's function is a function to script as the release's is: `Function.prototype` (read off a function
+the engine makes, so a replaced global `Function` changes nothing), read-only `length` 0 and `name` "",
+its own `prototype`, call/apply/bind, `[object Function]`; `new` runs the block with no `this` and answers
+the object it returns, or a TypeError "Objective-C blocks called as constructors must return an object."
 
 ## What differs from the release, named
 
-- **A block taking or returning a C number or one of those four structs, or taking more than six arguments,** is a function the
-  release would call; this bridge calls blocks through their `invoke` pointer with object-sized arguments
-  only, so calling one throws a TypeError in JavaScript instead of reading a value off the wrong-sized slot.
-  JSExport methods have no such limit: they go through `NSInvocation`, which marshals every C type.
+- **`String(block)`** is the engine's text for an object with a JSClassRef (`function CallbackObject() {
+  [native code] }` on the host), where the release's reads `function () { [native code] }`; on the 2012
+  engine Function.prototype.toString may refuse such an object outright (device run).
 - **Where a JSExport wrapper's properties and methods live.** A property reads and writes through its
   getter and setter, and those accessors are not methods of their own (`typeof obj.setX` is undefined), as
   on the host; but the port answers them on the wrapper itself (`obj.hasOwnProperty('x')` is true), where
