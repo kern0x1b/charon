@@ -8,6 +8,7 @@
         _fieldOfView = 60;
         _zNear = 1;
         _zFar = 100;
+        _orthographicScale = 1;
         _projectionTransform = SCNMatrix4Identity;
     }
     return self;

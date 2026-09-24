@@ -551,6 +551,34 @@ guessed:
 Fix: `CharonSCNArchivedData`, an `NSMutableData` subclass mapped for `NSMutableData` on the
 unarchiver `decodeColor:` is handed, reads `NS.bytes` or `NS.data` itself.
 
+## Class defaults, from macOS SceneKit's new objects
+
+What a new object answers is taken from macOS SceneKit, not from the documentation or from memory: the same
+cases file, `tests/backports/device/scenekit-defaults-cases.m`, reads every property the port carries on a new
+`SCNLight`, `SCNCamera`, `SCNParticleSystem`, `SCNMaterial` (each slot's contents and intensity),
+`SCNMaterialProperty`, `SCNNode`, `SCNPlane`, a scene's `SCNPhysicsWorld`, a radial-gravity `SCNPhysicsField` and an
+`SCNParticlePropertyController` by key-value coding. `tests/backports/host/scenekit-defaults/refresh.sh` runs it
+against the host and writes `scenekit-defaults-expectations.h`; `tests/backports/device/scenekit-defaults.m` runs it
+against the port and holds each answer to the host's (numbers to six significant digits, one unit in the last digit
+for a CGFloat that is a float here and a double there; a mask of every bit is compared as "all bits", since
+`NSUIntegerMax` has the platform's width).
+
+The first run, on the emulator (iPhone2,1 6.0, 2026-09-24), found 22 port defaults that were not SceneKit's, and
+they are SceneKit's now:
+
+- `SCNLight`: `shadowColor` black (was nil), `spotOuterAngle` 45 (was 0; an archive without the key no longer resets
+  it to 0).
+- `SCNCamera`: `orthographicScale` 1 (was 0).
+- `SCNParticleSystem`: `birthRate` 0 (was 100), `particleSize` 1 (was 0.1), `emittingDirection` (0, 1, 0) (was zero,
+  while the decoder already used (0, 1, 0) for a missing key), `affectedByGravity` and `affectedByPhysicsFields` NO
+  (were YES, in `init` and as the decoder's fallback). Apple's documentation says 1 for `birthRate`; the running
+  framework answers 0, and the running framework decides.
+- `SCNMaterial`: every slot had nil contents. SceneKit's are white for diffuse, normal, transparent, multiply and
+  ambient occlusion; black for specular, reflective, emission, displacement, self-illumination and metalness; and
+  sRGB 0.484529 for ambient and roughness, which is 0.2 in linear light (sRGB-encoding 0.2 gives 0.48453), so it is
+  made as `+[CharonSCNCoding colorWithLinearWhite:0.2]`.
+- `SCNNode`: `rotation` (0, 0, 0, 0) (was (0, 0, 1, 0)).
+
 ## Demand row that is not SceneKit's: `SCNSceneRenderer.audioEngine`
 
 `coordination/corpus/crash-demand-top.tsv` (2026-09-23) ranks `SCNSceneRenderer.audioEngine` 126th,

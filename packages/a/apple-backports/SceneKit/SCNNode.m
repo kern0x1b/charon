@@ -16,7 +16,7 @@
         _childNodes = [NSMutableArray array];
         _particleSystems = [NSMutableArray array];
         _position = SCNVector3Make(0, 0, 0);
-        _rotation = SCNVector4Make(0, 0, 1, 0);
+        _rotation = SCNVector4Make(0, 0, 0, 0);
         _orientation = SCNVector4Make(0, 0, 0, 1);
         _scale = SCNVector3Make(1, 1, 1);
         _opacity = 1;
@@ -150,7 +150,7 @@
         _geometry = [coder decodeObjectOfClass:[SCNGeometry class] forKey:@"geometry"];
         _physicsField = [coder decodeObjectOfClass:[SCNPhysicsField class] forKey:@"physicsField"];
         _position = [coder containsValueForKey:@"position"] ? [CharonSCNCoding decodeVector3:coder forKey:@"position"] : SCNVector3Make(0, 0, 0);
-        _rotation = [coder containsValueForKey:@"rotation"] ? [CharonSCNCoding decodeVector4:coder forKey:@"rotation"] : SCNVector4Make(0, 0, 1, 0);
+        _rotation = [coder containsValueForKey:@"rotation"] ? [CharonSCNCoding decodeVector4:coder forKey:@"rotation"] : _rotation;
         _orientation = [coder containsValueForKey:@"orientation"] ? [CharonSCNCoding decodeVector4:coder forKey:@"orientation"] : SCNVector4Make(0, 0, 0, 1);
         _scale = [coder containsValueForKey:@"scale"] ? [CharonSCNCoding decodeVector3:coder forKey:@"scale"] : SCNVector3Make(1, 1, 1);
         _hidden = [CharonSCNCoding decodeBool:coder forKey:@"hidden" default:NO];

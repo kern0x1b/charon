@@ -14,6 +14,8 @@
 // them, and both pass a decode that allows the class and NSArray; an absent key is an empty array.
 + (NSArray *)decodeArrayOfClass:(Class)cls coder:(NSCoder *)coder forKey:(NSString *)key;
 + (UIColor *)decodeColor:(NSCoder *)coder forKey:(NSString *)key;
+// A grey given in linear light, as SceneKit states its defaults, in the sRGB a UIColor means on this platform.
++ (UIColor *)colorWithLinearWhite:(double)white;
 + (NSString *)decodeFileReferenceName:(NSCoder *)coder forKey:(NSString *)key;
 + (BOOL)decodeBool:(NSCoder *)coder forKey:(NSString *)key default:(BOOL)fallback;
 

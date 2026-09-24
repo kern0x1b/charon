@@ -15,11 +15,13 @@ SCNLightType const SCNLightTypeSpot = @"spot";
         _intensity = 1000;
         _temperature = 6500;
         _castsShadow = NO;
+        _shadowColor = [UIColor blackColor];
         _shadowRadius = 3;
         _categoryBitMask = NSUIntegerMax;
         _attenuationFalloffExponent = 2;
         _zNear = 1;
         _zFar = 100;
+        _spotOuterAngle = 45;
     }
     return self;
 }
@@ -91,7 +93,9 @@ SCNLightType const SCNLightTypeSpot = @"spot";
             _attenuationFalloffExponent = [coder decodeDoubleForKey:@"attenuationFalloffExponent"];
         }
         _spotInnerAngle = [coder decodeDoubleForKey:@"spotInnerAngle"];
-        _spotOuterAngle = [coder decodeDoubleForKey:@"spotOuterAngle"];
+        if ([coder containsValueForKey:@"spotOuterAngle"]) {
+            _spotOuterAngle = [coder decodeDoubleForKey:@"spotOuterAngle"];
+        }
         _gobo = [coder decodeObjectOfClass:[SCNMaterialProperty class] forKey:@"gobo"];
         _probeEnvironment = [coder decodeObjectOfClass:[SCNMaterialProperty class] forKey:@"probeEnvironment"];
         if ([coder containsValueForKey:@"lightCategoryBitMask"]) {

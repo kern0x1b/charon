@@ -10,19 +10,24 @@ SCNLightingModel const SCNLightingModelConstant = @"SCNLightingModelConstant";
 - (instancetype)init
 {
     if ((self = [super init])) {
-        _diffuse = [SCNMaterialProperty new];
-        _ambient = [SCNMaterialProperty new];
-        _specular = [SCNMaterialProperty new];
-        _normal = [SCNMaterialProperty new];
-        _reflective = [SCNMaterialProperty new];
-        _emission = [SCNMaterialProperty new];
-        _transparent = [SCNMaterialProperty new];
-        _multiply = [SCNMaterialProperty new];
-        _displacement = [SCNMaterialProperty new];
-        _ambientOcclusion = [SCNMaterialProperty new];
-        _selfIllumination = [SCNMaterialProperty new];
-        _metalness = [SCNMaterialProperty new];
-        _roughness = [SCNMaterialProperty new];
+        // Each slot's contents as macOS SceneKit's new material answers them (tests/backports/device/
+        // scenekit-defaults-expectations.h). Ambient and roughness are a grey of 0.2 in linear light, which SceneKit
+        // works in; a UIColor here is sRGB.
+        UIColor *white = [UIColor whiteColor], *black = [UIColor blackColor];
+        UIColor *grey = [CharonSCNCoding colorWithLinearWhite:0.2];
+        _diffuse = [SCNMaterialProperty materialPropertyWithContents:white];
+        _ambient = [SCNMaterialProperty materialPropertyWithContents:grey];
+        _specular = [SCNMaterialProperty materialPropertyWithContents:black];
+        _normal = [SCNMaterialProperty materialPropertyWithContents:white];
+        _reflective = [SCNMaterialProperty materialPropertyWithContents:black];
+        _emission = [SCNMaterialProperty materialPropertyWithContents:black];
+        _transparent = [SCNMaterialProperty materialPropertyWithContents:white];
+        _multiply = [SCNMaterialProperty materialPropertyWithContents:white];
+        _displacement = [SCNMaterialProperty materialPropertyWithContents:black];
+        _ambientOcclusion = [SCNMaterialProperty materialPropertyWithContents:white];
+        _selfIllumination = [SCNMaterialProperty materialPropertyWithContents:black];
+        _metalness = [SCNMaterialProperty materialPropertyWithContents:black];
+        _roughness = [SCNMaterialProperty materialPropertyWithContents:grey];
         _lightingModelName = SCNLightingModelBlinn;
         _transparency = 1;
         _shininess = 1;

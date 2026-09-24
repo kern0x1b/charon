@@ -500,6 +500,12 @@ static UIColor *CharonSCNArchivedColorValue(CharonSCNArchivedColor *color, NSStr
     return archived;
 }
 
++ (UIColor *)colorWithLinearWhite:(double)white
+{
+    double encoded = CharonSRGBEncode(white);
+    return [UIColor colorWithRed:encoded green:encoded blue:encoded alpha:1];
+}
+
 + (BOOL)decodeBool:(NSCoder *)coder forKey:(NSString *)key default:(BOOL)fallback
 {
     if (![coder containsValueForKey:key]) {
