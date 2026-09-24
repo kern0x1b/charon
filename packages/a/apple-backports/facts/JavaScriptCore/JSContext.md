@@ -151,9 +151,9 @@ the object it returns, or a TypeError "Objective-C blocks called as constructors
   unwind through the engine's frames.
 - **When a wrapped object is released.** A finalizer must not call the C API (JSObjectRef.h,
   `JSObjectFinalizeCallback`), and on the 2012 engine a finalizer runs inside whichever allocation sweeps
-  its block (below); the last release of a wrapped object runs its `-dealloc`, which may (a JSValue, a
-  JSManagedValue, a graph token). So a finalizer here only queues the object its wrapper retained, on a
-  queue of the thread it runs on - the thread that collected. The release hands such objects to the heap
+  its block (below); the last release of a wrapped object runs its `-dealloc`, which may call the C API (a
+  JSValue, a JSManagedValue, a graph token). So a finalizer here only queues the object its wrapper retained, on a
+  queue of the thread it runs on - the thread that swept its block. The release hands such objects to the heap
   to release as the collection ends (WebKit's `Heap::releaseSoon`), still inside the call that collected;
   the C API has no end-of-collection hook, so each thread releases what it queued at its own next
   outermost call into script or next run-loop turn, whichever comes first, and at its exit (JSInternal.m,
