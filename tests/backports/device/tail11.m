@@ -92,7 +92,40 @@ static void failure_key(void)
     CHECK(address && dladdr(address, &info) && [@(info.dli_fname).lastPathComponent isEqualToString:@"libFoundationBackports.dylib"], "the failure key comes from the backports");
     NSError *error = [NSError errorWithDomain:@"charon" code:1 userInfo:@{NSLocalizedFailureErrorKey: @"The file could not be saved.", NSLocalizedFailureReasonErrorKey: @"The disk is full."}];
     CHECK_EQUAL(error.userInfo[NSLocalizedFailureErrorKey], @"The file could not be saved.", "an error keeps the failure in its user info");
-    CHECK([error.localizedDescription rangeOfString:@"The file could not be saved."].location == NSNotFound, "-localizedDescription ignores the failure, as the registry records");
+    // The expected descriptions are what the host's Foundation answers, facts/Foundation/NSError.md.
+    CHECK_EQUAL(error.localizedDescription, @"The file could not be saved. The disk is full.", "the description is the failure and the reason");
+    CHECK_EQUAL([NSError errorWithDomain:@"charon" code:1 userInfo:@{NSLocalizedFailureErrorKey: @"Only the failure."}].localizedDescription, @"Only the failure.", "the failure alone is the description when there is no reason");
+    NSError *missing = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileNoSuchFileError userInfo:@{NSLocalizedFailureErrorKey: @"Only the failure."}];
+    CHECK(missing.localizedFailureReason.length > 0, "the release generates a reason for NSCocoaErrorDomain 4");
+    CHECK_EQUAL(missing.localizedDescription, [@"Only the failure. " stringByAppendingString:missing.localizedFailureReason ?: @""], "the failure takes the reason the release generates for the domain and code");
+    printf("note NSCocoaErrorDomain 4 with a failure reads: %s\n", missing.localizedDescription.UTF8String);
+    CHECK_EQUAL([NSError errorWithDomain:@"charon" code:1 userInfo:@{NSLocalizedDescriptionKey: @"The description.", NSLocalizedFailureErrorKey: @"Only the failure.", NSLocalizedFailureReasonErrorKey: @"The disk is full."}].localizedDescription, @"The description.", "the description key comes before the failure");
+    CFStringRef keys[] = {(__bridge CFStringRef)NSLocalizedFailureErrorKey, (__bridge CFStringRef)NSLocalizedFailureReasonErrorKey};
+    CFTypeRef values[] = {CFSTR("The file could not be saved."), CFSTR("The disk is full.")};
+    CFDictionaryRef info = CFDictionaryCreate(NULL, (const void **)keys, values, 2, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    CFErrorRef bridged = CFErrorCreate(NULL, CFSTR("charon"), 1, info);
+    CFRelease(info);
+    CHECK_EQUAL(((__bridge NSError *)bridged).localizedDescription, @"The file could not be saved. The disk is full.", "an error made by CFErrorCreate describes itself the same way");
+    printf("note CFErrorCreate made a %s\n", object_getClassName((__bridge id)bridged));
+    CFStringRef copied = CFErrorCopyDescription(bridged);
+    printf("note CFErrorCopyDescription reads: %s\n", [(__bridge NSString *)copied UTF8String]);
+    CFRelease(copied);
+    CFRelease(bridged);
+    [NSError setUserInfoValueProviderForDomain:@"charon.provided" provider:^id(NSError *provided, NSErrorUserInfoKey key) {
+        if ([key isEqualToString:NSLocalizedDescriptionKey] && provided.code == 1)
+            return @"Provided description.";
+        if ([key isEqualToString:NSLocalizedFailureErrorKey])
+            return @"Provided failure.";
+        if ([key isEqualToString:NSLocalizedFailureReasonErrorKey] && provided.code != 3)
+            return @"Provided reason.";
+        return nil;
+    }];
+    CHECK_EQUAL([NSError errorWithDomain:@"charon.provided" code:1 userInfo:@{NSLocalizedFailureErrorKey: @"Own failure."}].localizedDescription, @"Own failure. Provided reason.", "the failure of the user info comes before the provider's description");
+    CHECK_EQUAL([NSError errorWithDomain:@"charon.provided" code:1 userInfo:nil].localizedDescription, @"Provided description.", "the provider's description comes before its failure");
+    CHECK_EQUAL([NSError errorWithDomain:@"charon.provided" code:2 userInfo:nil].localizedDescription, @"Provided failure. Provided reason.", "the provider's failure takes the provider's reason");
+    CHECK_EQUAL([NSError errorWithDomain:@"charon.provided" code:3 userInfo:nil].localizedDescription, @"Provided failure.", "the provider's failure alone when nothing gives a reason");
+    CHECK_EQUAL([NSError errorWithDomain:@"charon.provided" code:2 userInfo:@{NSLocalizedFailureReasonErrorKey: @"Own reason."}].localizedDescription, @"Provided failure. Own reason.", "the provider's failure takes the reason of the user info");
+    [NSError setUserInfoValueProviderForDomain:@"charon.provided" provider:nil];
 }
 
 static void swipe_actions(void)
