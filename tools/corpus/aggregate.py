@@ -272,17 +272,25 @@ GAP_STATUS = {"gap?", "absent"}   # not carried today => real priority
 # The registry records what the port decided, not what it exports: an `ignored` row can name a
 # symbol no backport defines (NSLocalizedFailureErrorKey was one), and dyld stops an application
 # that imports it strongly exactly as it would for an `absent` row. What the 6.1.3 band exports
-# decides that: one Mach-O name per line, `nm -gUj` over the canon's bands/6.1.3/*.dylib (README).
+# decides that: built-exports.py writes it here from a canon build, one Mach-O name per line under
+# a first line `# canon <version>` naming the canon it was read from.
 BUILT_EXPORTS = os.environ.get("CHARON_BUILT_EXPORTS") or os.path.join(CORPUS, "built-exports-6.1.3.txt")
+BUILT_EXPORTS_HEADER = "# canon "
 def load_built_exports():
+    """(names, canon version) of the 6.1.3 band's export list."""
     # Missing is not "nothing is exported": every carried row would read as a launch blocker.
     if not os.path.exists(BUILT_EXPORTS):
         sys.exit("aggregate.py: export list of the 6.1.3 band not found at %s (CHARON_BUILT_EXPORTS); "
-                  "see README, 'built exports'." % BUILT_EXPORTS)
-    built = {line.strip() for line in open(BUILT_EXPORTS) if line.strip()}
+                  "make it with built-exports.py <canon-run> (README, 'Built exports')." % BUILT_EXPORTS)
+    with open(BUILT_EXPORTS) as f:
+        header = f.readline().rstrip("\n")
+        built = {line.strip() for line in f if line.strip()}
+    if not header.startswith(BUILT_EXPORTS_HEADER):
+        sys.exit("aggregate.py: %s does not name the canon it was read from; make it again with "
+                  "built-exports.py <canon-run>." % BUILT_EXPORTS)
     if not any(name.startswith("_OBJC_CLASS_$_") for name in built):
         sys.exit("aggregate.py: %s names no class; it is not the export list of a backports band." % BUILT_EXPORTS)
-    return built
+    return built, header[len(BUILT_EXPORTS_HEADER):]
 def launch_blocks(strong, status, kind, name, built):
     """A strong import the device cannot bind: a gap, or a carried row whose symbol the band does not export."""
     if strong < 1 or status == "n/a-A5":

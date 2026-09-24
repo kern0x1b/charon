@@ -63,7 +63,7 @@ holds ingest output that changes on every scan run:
 | `crash-demand-top.tsv`, `crash-demand-ambiguous-owners.tsv`, `crash-demand-dropped.tsv` | the main ranked output, from `crash-demand.py` (no arguments; reads everything above). |
 | `weak-imports-ranked.tsv`, `weak-imports-by-image{,-any}.tsv` | from `weak-imports.py <symbol-list-file>` then `weak-per-image.py <dir-of-nm-outputs>`. |
 | `band-*.tsv`, `corpus-report.md` | from `gen-report.py` (no arguments). |
-| `built-exports-6.1.3.txt` | every name the canon's 6.1.3 band exports, read by `gen-report.py` for `LAUNCH-BLOCK` (`CHARON_BUILT_EXPORTS` overrides); see "Built exports" below. |
+| `built-exports-6.1.3.txt` | every name the canon's 6.1.3 band exports and the canon's version, from `built-exports.py <canon-run>`, read by `gen-report.py` for `LAUNCH-BLOCK` (`CHARON_BUILT_EXPORTS` overrides); see "Built exports" below. |
 | `selector-demand-*.tsv`, `static-candidates-demand.tsv`, `observed-device.tsv`, `crash-demand-owner-unknown.tsv`, `hint-ledger.tsv`, `absent-reversals.tsv`, `registry-last.tsv` | from `selector-demand.py`, `static-candidates.py <surface-diff --list output>`, `observed.py`, `hint-track.py [batch-label]` respectively. |
 
 `CHARON_CORPUS_ROOT` overrides the root for a one-off run from a different checkout or a scratch
@@ -98,8 +98,13 @@ Built exports, after each canon build (the canon's run directory from the worksp
 `canon-install`):
 
 ```
-nm -gUj <canon-run>/build/stage/usr/lib/charon/org.charon.apple-backports/bands/6.1.3/*.dylib | grep -v ':$' | sort -u > <corpus>/built-exports-6.1.3.txt
+python3 built-exports.py <canon-run>
 ```
+
+It writes the list where `gen-report.py` reads it (`aggregate.BUILT_EXPORTS`, so
+`CHARON_CORPUS_ROOT` and `CHARON_BUILT_EXPORTS` apply), under a first line naming the canon's
+version, which the report prints beside the launch-blocker tally: a list older than the canon
+shows its version there.
 
 `gen-report.py` marks a strong import `LAUNCH-BLOCK` when the registry has no carried row for it
 or when the 6.1.3 band does not export it: an `ignored` or even `implemented` row decides nothing

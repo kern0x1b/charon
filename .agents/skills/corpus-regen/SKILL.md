@@ -35,10 +35,11 @@ cp /private/tmp/charon-registry-export/carried-registry.tsv $HOME/Git/projects/i
 ## 2. Regenerate the ranking
 
 After a canon build (workspace skill `canon-install`), refresh what the 6.1.3 band exports;
-`gen-report.py` reads it for `LAUNCH-BLOCK` and stops without it:
+`gen-report.py` reads it for `LAUNCH-BLOCK`, stops without it and names the canon it came from
+(`tools/corpus/README.md`, "Built exports"):
 
 ```
-nm -gUj <canon-run>/build/stage/usr/lib/charon/org.charon.apple-backports/bands/6.1.3/*.dylib | grep -v ':$' | sort -u > $HOME/Git/projects/ios/coordination/corpus/built-exports-6.1.3.txt
+python3 $HOME/Git/projects/ios/coordination/corpus-tools/built-exports.py <canon-run>
 ```
 
 ```

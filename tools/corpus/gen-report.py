@@ -19,7 +19,7 @@ if not os.path.isdir(CORPUS):
               "directory that contains corpus/ (holds store.json, caches/, band-*.tsv)." % CORPUS)
 store = json.load(open(os.path.join(CORPUS, "store.json")))
 reg = agg.load_registry()
-built = agg.load_built_exports()
+built, built_canon = agg.load_built_exports()
 DROP = os.path.join(CORPUS, "absent")
 
 # Katabasis class rows per app (cleaned system-only)
@@ -124,7 +124,7 @@ with open(R, "w") as f:
             continue
         if agg.launch_blocks(len(e["strong"]), agg.carried_status(reg, kind, name, fw), kind, name, built):
             lb[band] += 1
-    w(f"\n**LAUNCH-BLOCKERS (strong/hard-linked imports the 6.1.3 band does not export, bands 7–12):** {lb['7']+lb['8-10']+lb['11-12']}, beside {g7['7']+g7['8-10']+g7['11-12']} gaps; a carried row the band does not export (an `ignored` decision with no symbol) counts too — a missing hard-linked symbol aborts dyld before main, so the app never starts (proven: iSH won't launch without NSUserActivity). These are the load-gating set: apps stay dead until they exist (or Katabasis weak-binds them). The rest are `#available`-guarded and degrade to nil.\n")
+    w(f"\n**LAUNCH-BLOCKERS (strong/hard-linked imports the 6.1.3 band of canon {built_canon} does not export, bands 7–12):** {lb['7']+lb['8-10']+lb['11-12']}, beside {g7['7']+g7['8-10']+g7['11-12']} gaps; a carried row the band does not export (an `ignored` decision with no symbol) counts too — a missing hard-linked symbol aborts dyld before main, so the app never starts (proven: iSH won't launch without NSUserActivity). These are the load-gating set: apps stay dead until they exist (or Katabasis weak-binds them). The rest are `#available`-guarded and degrade to nil.\n")
     w(f"\n**Frontier (band 13+, beyond current backports):** {g7['13+']} distinct system class+constant demands introduced iOS 13–18 — real for the \"all apps\" goal but out of current 7–12 scope.\n\n")
     w("## Top gaps, bands 7–12, most-apps-first\n")
     w("`LB` = LAUNCH-BLOCKER: a strong (hard-linked) gap — if absent, dyld aborts before main and the app never starts (proven on iPad2: iSH won't launch without NSUserActivity). All-weak gaps (blank) degrade to nil gracefully. Katabasis is separately weak-binding uncovered classrefs so the long tail degrades instead of hard-failing.\n\n```\n")
