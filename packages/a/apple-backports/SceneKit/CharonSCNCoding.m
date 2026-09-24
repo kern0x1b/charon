@@ -422,6 +422,12 @@ static void CharonSCNMapColorClasses(NSKeyedUnarchiver *unarchiver)
     if ([decoded isKindOfClass:cls]) {
         return @[decoded];
     }
+    // Only a secure decode holds the value to the two classes asked for; an application's own plain unarchiver
+    // hands back whatever the archive holds.
+    if (![decoded isKindOfClass:[NSArray class]]) {
+        NSLog(@"SceneKit: the archive's %@ holds a %@ where a %@ or an array of them belongs; it is left out", key, [decoded class], cls);
+        return @[];
+    }
     NSMutableArray *objects = [NSMutableArray array];
     for (id object in (NSArray *)decoded) {
         if ([object isKindOfClass:cls]) {

@@ -80,8 +80,9 @@ static id stand_in_with(Class cls, NSDictionary *keys, NSDictionary *integers, N
     return object;
 }
 
-// A root archived from the stand-ins, decoded by the port with secure coding, as SCNScene's loader does.
-static id decode_root(StandIn *root, Class cls, NSString **failure)
+// A root archived from the stand-ins, decoded by the port with secure coding, as SCNScene's loader does, or without
+// it, as an application's own unarchiver may.
+static id decode_root_securely(StandIn *root, Class cls, BOOL secure, NSString **failure)
 {
     NSMutableData *data = [NSMutableData data];
     NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
@@ -93,13 +94,18 @@ static id decode_root(StandIn *root, Class cls, NSString **failure)
     [archiver encodeObject:root forKey:NSKeyedArchiveRootObjectKey];
     [archiver finishEncoding];
     NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
-    unarchiver.requiresSecureCoding = YES;
+    unarchiver.requiresSecureCoding = secure;
     @try {
         return [unarchiver decodeObjectOfClass:cls forKey:NSKeyedArchiveRootObjectKey];
     } @catch (NSException *exception) {
         *failure = [NSString stringWithFormat:@"%@: %@", exception.name, exception.reason];
         return nil;
     }
+}
+
+static id decode_root(StandIn *root, Class cls, NSString **failure)
+{
+    return decode_root_securely(root, cls, YES, failure);
 }
 
 static SCNNode *decode_node(StandInNode *root, NSString **failure)
@@ -173,6 +179,30 @@ static void check_single_objects(void)
     node = decode_node(stand_in([StandInNode class], @{@"geometry": geometry}), &failure);
     charon_check(node.geometry.materials.count == 1 && node.geometry.geometryElements.count == 1,
                  "a single material and a single element are one of each", [NSString stringWithFormat:@"geometry %@, %@", node.geometry, failure]);
+}
+
+// Without secure coding the unarchiver hands back whatever a key holds: something that is neither the class nor an
+// array is left out and said, and so is a stray object inside an array, while the rest of the node still loads.
+static void check_stray_objects(void)
+{
+    __block SCNNode *node = nil;
+    __block NSString *failure = nil;
+    NSString *log = captured_stderr(^{
+        node = decode_root_securely(stand_in([StandInNode class], @{@"particleSystems": @"a string"}), [SCNNode class], NO, &failure);
+    });
+    charon_check(node != nil && node.particleSystems.count == 0 && count_lines_containing(log, @"the archive's particleSystems holds a") == 1,
+                 "a string under particleSystems is left out and said, and the node loads",
+                 [NSString stringWithFormat:@"node %@, systems %lu, log %@, %@", node, (unsigned long)node.particleSystems.count, log, failure]);
+
+    node = nil;
+    failure = nil;
+    log = captured_stderr(^{
+        node = decode_root_securely(stand_in([StandInNode class], @{@"particleSystems": @[[SCNParticleSystem particleSystem], @"a string"]}),
+                                    [SCNNode class], NO, &failure);
+    });
+    charon_check(node != nil && node.particleSystems.count == 1 && count_lines_containing(log, @"the archive's particleSystems holds a") == 1,
+                 "a string among particle systems is left out and said, and the system loads",
+                 [NSString stringWithFormat:@"node %@, systems %lu, log %@, %@", node, (unsigned long)node.particleSystems.count, log, failure]);
 }
 
 // A colour the port cannot read leaves the material property at its default and is said once, naming the key; a
@@ -269,6 +299,7 @@ int main(void)
 {
     @autoreleasepool {
         check_single_objects();
+        check_stray_objects();
         check_colours();
         check_physics_world();
         check_flags();

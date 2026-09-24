@@ -142,6 +142,9 @@ both `NSArray` and the class lets either through. `+[CharonSCNCoding decodeArray
 is the one place that reads such a key: a single object becomes a one-element list, and an element
 of another class is left out with a log line naming the key. Before it, a single particle system
 reached `.count` and died on an unrecognized selector (`tests/backports/device/scenekit-decode.m`).
+Only a secure decode (SCNScene's loader) holds the value to those two classes; an application's own
+unarchiver without secure coding hands back whatever the key holds, so a value that is neither the
+class nor an array is left out the same way, with the same log line, instead of being enumerated.
 
 ## Skip list: keys read from the archive but not decoded, by class, with visual weight
 
