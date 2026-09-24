@@ -45,6 +45,7 @@
       "api": "+[UIDeferredMenuElement elementWithUncachedProvider:]",
       "kind": "method",
       "introduced": "15.0",
+      "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/UIKit/UIDeferredMenuElement.md",
       "source": "SDK 16.4, UIKit"
