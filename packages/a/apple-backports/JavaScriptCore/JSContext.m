@@ -3,6 +3,7 @@
 static NSMapTable<id, JSContext *> *charon_context_registry;
 static NSLock *charon_context_registry_lock;
 
+/* The registry, made with its lock on first use: take it before taking the lock. */
 static NSMapTable<id, JSContext *> *ContextRegistry(void)
 {
     static dispatch_once_t once;
@@ -56,25 +57,35 @@ static NSMapTable<id, JSContext *> *ContextRegistry(void)
 
 - (void)charon_register
 {
+    NSMapTable<id, JSContext *> *registry = ContextRegistry();
     [charon_context_registry_lock lock];
-    [ContextRegistry() setObject:self forKey:(__bridge id)_globalContext];
+    [registry setObject:self forKey:(__bridge id)_globalContext];
     [charon_context_registry_lock unlock];
 }
 
+/* The global context is released once the queue runs (JSInternal.m, charon_js_defer): no -dealloc
+ * here calls the C API. */
 - (void)dealloc
 {
+    NSMapTable<id, JSContext *> *registry = ContextRegistry();
     [charon_context_registry_lock lock];
-    [ContextRegistry() removeObjectForKey:(__bridge id)_globalContext];
+    /* a wrapper made for the same global context once this one's weak entry read nil stays */
+    if (![registry objectForKey:(__bridge id)_globalContext])
+        [registry removeObjectForKey:(__bridge id)_globalContext];
     [charon_context_registry_lock unlock];
-    JSGlobalContextRelease(_globalContext);
+    JSGlobalContextRef globalContext = _globalContext;
+    charon_js_defer(^{
+        JSGlobalContextRelease(globalContext);
+    });
 }
 
 + (nullable JSContext *)charon_wrapperForGlobalContext:(JSGlobalContextRef)context create:(BOOL)create
 {
     if (!context)
         return nil;
+    NSMapTable<id, JSContext *> *registry = ContextRegistry();
     [charon_context_registry_lock lock];
-    JSContext *found = [ContextRegistry() objectForKey:(__bridge id)context];
+    JSContext *found = [registry objectForKey:(__bridge id)context];
     [charon_context_registry_lock unlock];
     if (found || !create)
         return found;

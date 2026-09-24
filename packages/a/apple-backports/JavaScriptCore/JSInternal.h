@@ -151,16 +151,18 @@ JSValue *_Nullable charon_js_pop_callback(void);
  * left. Jobs queued under script this port did not enter (a direct C API call, a web view's page,
  * and a callback such script makes, whose own last leave still has that script on the stack) run
  * on the thread's next run loop turn instead; the property accessors of JSValue are not a level,
- * so a job a getter or setter queues waits for the next leave. The outermost leave also releases
- * what finalized wrappers held (charon_js_release_soon).
+ * so a job a getter or setter queues waits for the next leave. The outermost leave also runs what
+ * finalizers and -dealloc methods queued (charon_js_release_soon, charon_js_defer).
  */
 void charon_js_enter(void);
 /*
- * The one way a JSClassRef's finalizer here gives up the object its wrapper retained: the object
- * is released after the collection, never inside it (JSInternal.m). charon_js_release_pending
- * releases every such object now; the outermost leave calls it.
+ * The one way a JSClassRef's finalizer here gives up the object its wrapper retained, and a -dealloc
+ * here its C API work: the object is released, and the work runs, outside the engine, never inside a
+ * collection or a -dealloc (JSInternal.m). Both keep the order they were queued in.
+ * charon_js_release_pending runs everything queued now; the outermost leave calls it.
  */
 void charon_js_release_soon(const void *object);
+void charon_js_defer(void (^work)(void));
 void charon_js_release_pending(void);
 void charon_js_leave(void);
 void charon_js_note_jobs(JSContextRef context, JSObjectRef drain);

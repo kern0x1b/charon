@@ -24,9 +24,15 @@
     return [self charon_valueWithJSValueRef:value context:context];
 }
 
+/* No -dealloc here calls the C API (JSInternal.m, charon_js_defer): the value is unprotected once
+ * the queue runs, and the work keeps the context, with its JSGlobalContextRef, until then. */
 - (void)dealloc
 {
-    JSValueUnprotect(_context.JSGlobalContextRef, _value);
+    JSContext *context = _context;
+    JSValueRef value = _value;
+    charon_js_defer(^{
+        JSValueUnprotect(context.JSGlobalContextRef, value);
+    });
 }
 
 - (JSValueRef)JSValueRef

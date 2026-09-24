@@ -13,11 +13,14 @@
  *   JSVirtualMachine.m), and so is the value's global object: a read answers nil once the global
  *   object is gone, as WebKit's does, and only while it is alive is the value's JSGlobalContextRef
  *   used at all. A weak map's destroyed callback cannot say so instead: measured on the host, it
- *   runs neither when its global object is collected nor when the group is torn down;
+ *   runs neither when its global object is collected nor when the group is torn down, and on the
+ *   iPad 2 (6.1.3) it runs when its global object is destroyed, not when a value's is;
  * - the weak map lives in the virtual machine's own global context, which this retains, and with
  *   it the context group: the C API has no other way to know the group is still there, and a map
  *   read after its group is gone reads freed memory. This keeps the heap, not the value's global
- *   object or context;
+ *   object or context. Its two keys are a block of its own, not addresses inside this object: the
+ *   removals run after -dealloc (JSInternal.m, charon_js_defer), when a new JSManagedValue may
+ *   already live at this one's address, and the block is freed only once they have run;
  * - a primitive (undefined, null, a boolean, a number) and a string are kept by value and made
  *   again in the same context on each read, as WebKit keeps a primitive directly. WebKit holds a
  *   string weakly; a string references nothing, so keeping it cannot form the cycle this class
@@ -30,6 +33,7 @@
 {
     JSGlobalContextRef _weakContext;
     JSWeakObjectMapRef _weak;
+    char *_keys; /* the object's key, then the global object's */
     JSGlobalContextRef _globalContext;
     JSType _type;
     BOOL _boolean;
@@ -53,15 +57,15 @@
     return managed;
 }
 
-/* The two keys this holds in the weak map: addresses inside this object, so no other key's. */
+/* The two keys this holds in the weak map: addresses in a block of this object's own, so no other key's. */
 - (void *)charon_objectKey
 {
-    return (__bridge void *)self;
+    return _keys;
 }
 
 - (void *)charon_globalKey
 {
-    return &_globalContext;
+    return _keys + 1;
 }
 
 - (instancetype)initWithValue:(JSValue *)value
@@ -73,6 +77,7 @@
     if (!globalContext)
         return self;
     _weakContext = JSGlobalContextRetain([context.virtualMachine charon_weakContext:&_weak]);
+    _keys = malloc(2);
     _globalContext = globalContext;
     JSWeakObjectMapSet(_weakContext, _weak, self.charon_globalKey, JSContextGetGlobalObject(globalContext));
     JSValueRef ref = value.JSValueRef;
@@ -100,13 +105,20 @@
     return self;
 }
 
+/* No -dealloc here calls the C API (JSInternal.m, charon_js_defer). */
 - (void)dealloc
 {
     if (!_weakContext)
         return;
-    JSWeakObjectMapRemove(_weakContext, _weak, self.charon_objectKey);
-    JSWeakObjectMapRemove(_weakContext, _weak, self.charon_globalKey);
-    JSGlobalContextRelease(_weakContext);
+    JSGlobalContextRef weakContext = _weakContext;
+    JSWeakObjectMapRef weak = _weak;
+    char *keys = _keys;
+    charon_js_defer(^{
+        JSWeakObjectMapRemove(weakContext, weak, keys);
+        JSWeakObjectMapRemove(weakContext, weak, keys + 1);
+        JSGlobalContextRelease(weakContext);
+        free(keys);
+    });
 }
 
 - (JSObjectRef)charon_object
