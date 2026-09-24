@@ -75,6 +75,12 @@ SCNLightingModel const SCNLightingModelConstant = @"SCNLightingModelConstant";
             if ([coder containsValueForKey:key]) {
                 SCNMaterialProperty *property = [coder decodeObjectOfClass:[SCNMaterialProperty class] forKey:key];
                 if (property) {
+                    // A colour this port cannot read keeps the slot at the default init gave it, as the log line says;
+                    // an archive with no colour at all is contents set to nil, and stays nil (measured on macOS
+                    // SceneKit: facts/SceneKit/SceneKit.md).
+                    if (property.charonColorNotRead) {
+                        property.contents = [(SCNMaterialProperty *)[self valueForKey:key] contents];
+                    }
                     [self setValue:property forKey:key];
                 }
             }

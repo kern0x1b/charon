@@ -54,6 +54,11 @@
 @implementation StandInMaterialProperty
 @end
 
+@interface StandInMaterial : StandIn
+@end
+@implementation StandInMaterial
+@end
+
 @interface StandInPhysicsWorld : StandIn
 @end
 @implementation StandInPhysicsWorld
@@ -89,6 +94,7 @@ static id decode_root_securely(StandIn *root, Class cls, BOOL secure, NSString *
     [archiver setClassName:@"SCNNode" forClass:[StandInNode class]];
     [archiver setClassName:@"SCNGeometry" forClass:[StandInGeometry class]];
     [archiver setClassName:@"SCNMaterialProperty" forClass:[StandInMaterialProperty class]];
+    [archiver setClassName:@"SCNMaterial" forClass:[StandInMaterial class]];
     [archiver setClassName:@"NSColor" forClass:[StandInColor class]];
     [archiver setClassName:@"SCNPhysicsWorld" forClass:[StandInPhysicsWorld class]];
     [archiver encodeObject:root forKey:NSKeyedArchiveRootObjectKey];
@@ -247,6 +253,65 @@ static void check_colours(void)
                  [NSString stringWithFormat:@"log: %@", log]);
 }
 
+// A colour's RGBA, or NO: iOS 6 answers getRed: only for an RGB colour, and a white one answers getWhite:.
+static BOOL colour_rgba(id contents, CGFloat rgba[4])
+{
+    if (![contents isKindOfClass:[UIColor class]]) {
+        return NO;
+    }
+    UIColor *colour = contents;
+    if ([colour getRed:&rgba[0] green:&rgba[1] blue:&rgba[2] alpha:&rgba[3]]) {
+        return YES;
+    }
+    if ([colour getWhite:&rgba[0] alpha:&rgba[3]]) {
+        rgba[1] = rgba[2] = rgba[0];
+        return YES;
+    }
+    return NO;
+}
+
+static BOOL colour_is(id contents, CGFloat r, CGFloat g, CGFloat b, CGFloat a)
+{
+    CGFloat rgba[4];
+    return colour_rgba(contents, rgba) && rgba[0] == r && rgba[1] == g && rgba[2] == b && rgba[3] == a;
+}
+
+// In a material, a slot whose colour the port cannot read keeps the slot's default, which a new material holds: diffuse
+// white, specular black (macOS SceneKit's new material, scenekit-defaults-expectations.h). A slot archived with no colour
+// is contents set to nil, and macOS SceneKit decodes it to nil (measured: it writes no color, image or float key for
+// nil and reads nil back): the control that the fallback takes only an unread colour.
+static void check_material_colours(void)
+{
+    __block SCNMaterial *material = nil;
+    __block NSString *failure = nil;
+    StandInColor *catalog = stand_in_with([StandInColor class], nil, @{@"NSColorSpace": @6}, nil);
+    const char *red = "1 0 0 1";
+    StandInColor *device = stand_in_with([StandInColor class], nil, @{@"NSColorSpace": @2},
+                                         @{@"NSRGB": [NSData dataWithBytes:red length:strlen(red) + 1]});
+    StandInMaterial *archived = stand_in([StandInMaterial class], @{
+        @"diffuse": stand_in([StandInMaterialProperty class], @{@"color": catalog}),
+        @"specular": stand_in([StandInMaterialProperty class], @{@"color": catalog}),
+        @"emission": stand_in([StandInMaterialProperty class], @{}),
+        @"multiply": stand_in([StandInMaterialProperty class], @{@"color": device}),
+    });
+    NSString *log = captured_stderr(^{
+        material = decode_root(archived, [SCNMaterial class], &failure);
+    });
+    charon_check(material != nil && colour_is(material.diffuse.contents, 1, 1, 1, 1),
+                 "a material's unreadable diffuse colour keeps the slot's default, white",
+                 [NSString stringWithFormat:@"material %@, diffuse %@, %@", material, material.diffuse.contents, failure]);
+    charon_check(colour_is(material.specular.contents, 0, 0, 0, 1), "a material's unreadable specular colour keeps the slot's default, black",
+                 [NSString stringWithFormat:@"specular %@", material.specular.contents]);
+    charon_check(material != nil && material.emission != nil && material.emission.contents == nil,
+                 "a material slot archived with no colour decodes to nil, as on macOS (control)",
+                 [NSString stringWithFormat:@"emission %@, contents %@", material.emission, material.emission.contents]);
+    charon_check(colour_is(material.multiply.contents, 1, 0, 0, 1), "a material slot's readable colour is read (control)",
+                 [NSString stringWithFormat:@"multiply %@", material.multiply.contents]);
+    charon_check(log != nil && count_lines_containing(log, @"the colour under color is not read, and the property keeps its default") == 2 &&
+                 count_lines_containing(log, @"SceneKit:") == 2,
+                 "each of the two unreadable colours is said once, and nothing else", [NSString stringWithFormat:@"log: %@", log]);
+}
+
 // SCNPhysicsWorld is inert: what an archive holds is read, what an application sets is kept and read back, the first
 // set is said once in the log, and the queries answer empty because no body exists to hit.
 static void check_physics_world(void)
@@ -312,6 +377,7 @@ int main(void)
         check_single_objects();
         check_stray_objects();
         check_colours();
+        check_material_colours();
         check_physics_world();
         check_flags();
         printf("%d of %d checks failed\n", charon_failures, charon_checks);

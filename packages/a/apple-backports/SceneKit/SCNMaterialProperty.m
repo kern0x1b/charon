@@ -1,6 +1,9 @@
 #import "CharonSCN.h"
 
 @implementation SCNMaterialProperty
+{
+    BOOL _colorNotRead;
+}
 
 - (instancetype)init
 {
@@ -34,6 +37,11 @@
 @synthesize wrapT = _wrapT;
 @synthesize mappingChannel = _mappingChannel;
 
+- (BOOL)charonColorNotRead
+{
+    return _colorNotRead;
+}
+
 + (BOOL)supportsSecureCoding
 {
     return YES;
@@ -47,6 +55,7 @@
             _contents = image;
         } else if ([coder containsValueForKey:@"color"]) {
             _contents = [CharonSCNCoding decodeColor:coder forKey:@"color"];
+            _colorNotRead = _contents == nil;
         } else if ([coder containsValueForKey:@"float"]) {
             _contents = [NSNumber numberWithFloat:[coder decodeFloatForKey:@"float"]];
         }

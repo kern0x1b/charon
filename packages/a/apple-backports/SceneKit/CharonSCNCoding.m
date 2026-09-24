@@ -481,8 +481,17 @@ static UIColor *CharonSCNArchivedColorValue(CharonSCNArchivedColor *color, NSStr
         return decoded;
     }
     NSData *nested = decoded;
-    if (![nested isKindOfClass:[NSData class]] || nested.length == 0) {
-        CharonSCNColorFailed(key, decoded ? [NSString stringWithFormat:@"it holds an empty %@", [decoded class]] : @"it holds nothing");
+    if (decoded == nil) {
+        CharonSCNColorFailed(key, @"it holds nothing");
+        return nil;
+    }
+    if (![nested isKindOfClass:[NSData class]]) {
+        // only a decode without secure coding hands back an object of another class
+        CharonSCNColorFailed(key, [NSString stringWithFormat:@"it holds a %@ where a colour belongs", [decoded class]]);
+        return nil;
+    }
+    if (nested.length == 0) {
+        CharonSCNColorFailed(key, @"it holds an empty NSData");
         return nil;
     }
     NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:nested];

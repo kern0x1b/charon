@@ -4,6 +4,12 @@
 @interface SCNPhysicsRadialGravityField : SCNPhysicsField <NSSecureCoding>
 @end
 
+@interface SCNMaterialProperty (CharonSCNCoding)
+// YES when the archive this property was decoded from held a colour this port could not read: its contents are then
+// nil, and a material puts its own default for the slot in their place.
+@property (nonatomic, readonly) BOOL charonColorNotRead;
+@end
+
 @interface CharonSCNCoding : NSObject
 + (SCNVector3)decodeVector3:(NSCoder *)coder forKey:(NSString *)key;
 + (void)encodeVector3:(SCNVector3)vector coder:(NSCoder *)coder forKey:(NSString *)key;

@@ -59,7 +59,17 @@ holds the color: the caller's for the graph shape, a fresh inner one for the nes
 A colour that is not read (a refused space, a profile that does not convert, a catalog or
 pattern colour, an empty or unreadable nested archive, an exception from the decode) leaves the
 property at its default, and the log says so once, naming the key and the reason
-(`SceneKit: the colour under <key> is not read, ...`); the scene still loads.
+(`SceneKit: the colour under <key> is not read, ...`); the scene still loads. In a material the
+default is the slot's, as a new material holds it (diffuse white, emission black, roughness
+grey); a property decoded on its own has nil. Measured on macOS SceneKit (macOS 27,
+`.agent-work/runs/f1-oracle` of the band): a slot whose contents are nil is archived with no
+`color`, `image` or `float` key and decodes to nil, so that shape stays nil here and only a
+`color` key that is present and not read falls back. macOS itself never reads such a key as
+nothing: AppKit decodes every `NSColor` shape tried (an unknown colour space number, no
+components, an unknown catalog name) to some colour object, and one SceneKit cannot convert
+(the last two) is drawn black. This port holds no `NSColor`, so it keeps the slot's default
+and says so; a `color` key holding an object that is not a colour raises inside macOS SceneKit
+(`-scn_C3DColorIgnoringColorSpace:success:` unrecognised) and is refused here instead.
 
 Checked against the oracle's `usingColorSpace(.sRGB)` components, host prototype
 (`color-oracle/proto.py`): 102 of 103 colors match to 1.2e-4, the worst being Display P3
