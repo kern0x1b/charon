@@ -152,11 +152,14 @@ answers explicitly, and one registry row names each.
 - `stillImageStabilizationEnabled`: the still image output's `isStillImageStabilizationActive` where it has it (7.0
   on); NO on 6.x, which has no stabilization.
 - `uniqueID`: the settings' own.
-- `rawPhotoDimensions`, `livePhotoMovieDimensions` (10.0.1), `embeddedThumbnailDimensions` (11.0),
-  `rawEmbeddedThumbnailDimensions`, `portraitEffectsMatteDimensions` (12.0), `-dimensionsForSemanticSegmentationMatteOfType:`
-  (13.0): 0x0, the header's answer for each when the capture did not request it, and what this capture delivers: the
-  still image output's own photo, with none of them. A request for one set on `AVCapturePhotoSettings` is not
-  honored (below, "Open").
+- `embeddedThumbnailDimensions` (11.0): the thumbnail the capture embeds when the settings ask for one ("The
+  embedded thumbnail", below): the photo's dimensions with its aspect ratio and, as the longest side, the larger of the
+  format's `AVVideoWidthKey` and `AVVideoHeightKey`, or 160 when it gives neither; never more than the photo. 0x0 when
+  none is asked (the header).
+- `rawPhotoDimensions`, `livePhotoMovieDimensions` (10.0.1), `rawEmbeddedThumbnailDimensions`,
+  `portraitEffectsMatteDimensions` (12.0), `-dimensionsForSemanticSegmentationMatteOfType:` (13.0): 0x0, the header's
+  answer for each when the capture did not request it, and what this capture delivers: the still image output's own
+  photo, with none of them. A request for one is refused at capture ("The photo output", below).
 - `expectedPhotoCount` (11.0): 1. The header counts calls of `-captureOutput:didFinishProcessingPhoto:error:`; a
   request here delivers its one photo through the 10.0 callback with sample buffers, once.
 - `dualCameraFusionEnabled` (10.2), `virtualDeviceFusionEnabled` (13.0): NO. The class is carried only below 10.0.1,
@@ -183,29 +186,31 @@ the header's 11.0.
 - `AVCapturePhotoOutput.availableRawPhotoPixelFormatTypes` is always an empty array: RAW capture has
   no path on this release's sensor pipeline.
 - The preview photo is drawn by the port. `AVCapturePhotoSettings.availablePreviewPhotoPixelFormatTypes`
-  is `[32BGRA]`, the format CoreGraphics draws into directly. At capture a `previewPhotoFormat` whose
+  is the host's `[420f, 420v, 32BGRA]`, in its order. At capture a `previewPhotoFormat` whose
   pixel format is not in that list, or that gives a width without a height or the other way round,
   raises `NSInvalidArgumentException` (the text is the port's). Otherwise the captured still is decoded
   (a JPEG through ImageIO's thumbnail, which decodes at the reduced size; an uncompressed buffer through
-  CoreImage) and drawn into an IOSurface-backed 32BGRA pixel buffer, delivered with the still's
-  presentation time as `previewPhotoSampleBuffer`. Its size follows the header: "Width and height are
+  CoreImage) and drawn into an IOSurface-backed 32BGRA pixel buffer, the format CoreGraphics draws into; for 420v and
+  420f that picture is converted to bi-planar 4:2:0 YCbCr by ITU-R BT.601 (luma 0.299 R + 0.587 G + 0.114 B, video
+  range 16...235 and 16...240, full range 0...255, each chroma sample the mean of its two by two pixels) and the
+  buffer says its matrix (`kCVImageBufferYCbCrMatrix_ITU_R_601_4`). It is delivered with the still's presentation
+  time as `previewPhotoSampleBuffer`. Its size follows the header: "Width and height are
   only honored up to the display dimensions. If you specify a width and height whose aspect ratio
   differs from the RAW or processed photo, the larger of the two dimensions is honored and aspect ratio
   of the RAW or processed photo is always preserved": the longest side is the larger of the two asked,
   held to the display's longest side in pixels, the display's when none is asked, and never more than
   the still's own. A preview that cannot be made is said in the log, and the photo comes without it.
-- `-isFlashScene` always answers `NO`. Apple's own header already documents this as the correct
-  default "unless you set `photoSettingsForSceneMonitoring` to a non-nil value" - this port carries
-  no scene-monitoring pipeline, so that property is never non-nil, and `NO` is the release's own
-  documented answer for that state, not a fabricated one.
-- `-livePhotoCaptureEnabled` always answers `NO`, and setting it to `YES` throws
-  `NSInvalidArgumentException` - the same exception real `AVCapturePhotoOutput` throws when
-  `livePhotoCaptureSupported` is `NO`, which it unconditionally is here: no motion/video pipeline
-  paired to still capture exists on this release.
-- `-highResolutionCaptureEnabled` is real, settable `BOOL` storage that this port always honors for
-  free: the underlying `AVCaptureStillImageOutput` already captures at the device's full
-  active-format resolution regardless of this flag, unlike a video data output's preview-resolution
-  stream, so there is no lower-resolution path to opt out of.
+- `-isFlashScene` is `NO` "unless you set `photoSettingsForSceneMonitoring` to a non-nil value" (the header). Setting
+  them puts their flash mode on the camera, as a capture does, and a capture puts it back after its own; with Auto the
+  answer is the camera's own `flashActive`
+  ("When the flash is active, it will flash if a still image is captured", iOS 5), `NO` with On or Off. Nothing fires
+  until a capture.
+- `-livePhotoCaptureEnabled` is `NO`, and setting it to `YES` raises `NSInvalidArgumentException` with the host's text
+  for a device without Live Photo: `livePhotoCaptureSupported` is `NO`, as no movie is paired to a still on this
+  release.
+- `-highResolutionCaptureEnabled` is stored, and from 8.0 turns the still image output's own
+  `highResolutionStillImageOutputEnabled` on and off. Before 8.0 the still image output takes a still at the size its
+  session's preset gives, and there is no other size to ask for.
 
 ## Measured on device
 
@@ -234,6 +239,21 @@ and its resolved settings say NO. That NO is the Off branch, answered before the
 shows that the release attaches the tag and that the port's keys find it, not the Exif branch, which only the captures
 with the flash On and Auto of `flash-on` reach and which has not run on a device.
 
+With every member of the settings and the output (the bfw3 band), `photooutput10` on the same 4S, 2026-09-24, the flash
+held Off: 160 checks, 0 failed (`bfw3/.agent-work/runs/capture4s/device-4s-photooutput-4.log`). Every capture calls
+its five callbacks in the header's order, `willCapturePhoto` second. A thumbnail asked with no size resolves to
+160x120 and one asked 320x320 to 320x240 for the 3264x2448 photo; each is in IFD1 of the delivered photo's own JPEG at
+those dimensions, read by the Exif layout, with the host's tags, and the port's JPEG of the photo keeps it; the
+release's `+jpegStillImageNSDataRepresentation:` of it has no IFD1 (as on the host). With the 960x720 preview given,
+the port's JPEG holds a 160x120 thumbnail. The settings' Exif user comment is in both JPEGs. A RAW photo, a Live Photo
+movie, depth data, quality 3 over the output's 2, a unique ID used twice, a thumbnail width without a height and a
+delegate without the sample buffer callback each raise `NSInvalidArgumentException`; prepared settings are answered YES once with the session running;
+`availablePhotoCodecTypes` is `[jpeg]`. With scene monitoring for Auto the camera's mode is Auto and `isFlashScene`
+equals `flashActive`, a capture with the flash Off in between leaves the camera back on Auto, and with Off the camera is
+Off and `isFlashScene` NO; `flashActive` was NO in that scene,
+and the YES answer is not measured. The 420v and 420f previews came after this run; `photooutput10` checks their format,
+size and BT.601 luma against the photo (with the upside-down control), and that run has not been made yet.
+
 Not measured: Telegram's own `-captureOutput:didFinishProcessingPhotoSampleBuffer:...` with a `nil`
 `bracketSettings` (documented `nullable` in the header).
 
@@ -247,13 +267,104 @@ nonsense selector as negative control, `-isFlashScene` on the output as positive
 the registry key with it. Every other selector of these classes first appears at 10.0.1, the release
 their registry rows carry.
 
-## Open: the other members of the settings and the output
+## The photo settings
 
-Found while doing the resolved settings, 2026-09-24, not changed here. `AVCapturePhotoSettings` has the same
-compiler synthesis: `otool -ov` of the gate's `libAVFoundationBackports.dylib` lists an ivar and a getter/setter pair
-for each of 28 header properties the port does not implement (34 ivars, less `_internal`, `_charonUniqueID` and the four it synthesizes on purpose) (`depthDataDeliveryEnabled`,
-`embeddedThumbnailPhotoFormat`, `highResolutionPhotoEnabled`, `rawPhotoPixelFormatType`, `livePhotoMovieFileURL`,
-...): a caller may set them, and the capture never reads them. The class adopts `NSCopying` in its protocol list
-but has no `-copyWithZone:`, so `-copy` is an unrecognized selector, and `+photoSettingsFromPhotoSettings:` and the
-three RAW constructors are absent. The output (`CharonPhotoOutput`, declared under its own name, so nothing is
-synthesized) answers only the members listed in the registry; the header's others are unrecognized selectors.
+Since the bfw3 band's change every member of `AVCapturePhotoSettings` in the 16.4 header (38 properties, the six
+constructors, `NSCopying`) has an accessor or a method of the port's own, with an explicit `_charon…` ivar: the host
+oracle `tests/backports/host/photosettings/run.sh` reads the member list from clang's AST of the header, checks each
+against the host class's type encoding, and refuses any ivar synthesized for a declared property. The same oracle
+refuses the class as `7bb1720d` carried it (390 failures), its negative control.
+
+Measured on the host (macOS 27.0 Catalyst, the real class, no camera; `bfw3/.agent-work/runs/probe/`, `defaults.log`,
+`gaps.log`, `aliases.log`, `metakeys.log`, summary in `NOTES.md`) and held by the oracle, port against host:
+
+- Defaults: format `{AVVideoCodecKey: jpeg}`, processedFileType `public.jpeg`, flash Off, quality Balanced (2), fusion
+  YES, `embeds*` YES, `depthDataFiltered` YES, the rest NO, metadata `{}`, Live Photo codec `avc1`, the Live Photo movie
+  metadata one content identifier item of the settings' own.
+- The constructors: `photoSettingsWithFormat:` raises for `{}` ("source passthru (empty dictionary) is not
+  supported"), for neither key and for both; a codec gives its file type (jpeg JPEG, hvc1 HEIC, avc1 none), a pixel
+  format TIFF. The RAW constructors raise for a pixel format that is not RAW ("Unrecognized raw pixel format type"); a
+  Bayer one gives quality Speed and no fusion, Apple ProRAW Balanced with fusion. `-copy` keeps the unique ID,
+  `+photoSettingsFromPhotoSettings:` takes a new one; both keep every setting.
+- The set-time checks, with the host's texts: metadata keys outside the CGImageProperties top level, quality outside
+  1..3, a preview or thumbnail format without the key it needs or with a value not offered, and the Live Photo content
+  identifier item given by the application. Everything else is stored and checked at capture.
+- The two fusion flags share one value; `setHighResolutionPhotoEnabled:` puts `maxPhotoDimensions` back to 0x0.
+
+Named divergences, each a check that fails if the host ever stops answering so:
+
+- `autoStillImageStabilizationEnabled` is YES by default, the header's default; the Mac answers NO. It acts at capture
+  from 7.0 (above).
+- `availableEmbeddedThumbnailPhotoCodecTypes` is `[jpeg]` for a JPEG format, as on the host, and `[]` for a pixel format
+  or HEVC, where the host answers `[jpeg]` and `[hvc1, jpeg]`: the port delivers an uncompressed photo as a pixel
+  buffer, with no file to hold a thumbnail, and makes no HEIC. `availableRawEmbeddedThumbnailPhotoCodecTypes` is `[]`:
+  no RAW photo is taken here.
+- `setMetadata:` refuses `{MakerApple}`, which the host takes: its constant is not in 6.1.3's ImageIO.
+
+## The photo output
+
+`CharonPhotoOutput` answers every member of the header's `AVCapturePhotoOutput` and its category
+`AVCapturePhotoOutputDepthDataDeliverySupport`, checked against the host by the same oracle.
+
+- Without a camera behind it, as the host with no session answers: every `*Supported` NO, the `available*` lists empty,
+  `supportedFlashModes` `[Off]`. With the 4S camera (`photooutput10`): `supportedFlashModes` Off, On and Auto,
+  `availablePhotoCodecTypes` `[jpeg]`, the still image output's own codecs. `availablePhotoFileTypes` is JPEG for its
+  JPEG codec and TIFF for its pixel formats (not checked on the device).
+- The setters of features no camera of these releases has (depth, portrait matte, segmentation mattes, Live Photo,
+  its suspension and trimming, dual photo, constituent photos, content-aware correction, Apple ProRAW) raise
+  `NSInvalidArgumentException` for YES with the host's texts, as a device without the feature does.
+  `maxPhotoQualityPrioritization` is stored and raises outside 1..3 (the host's text); `maxPhotoDimensions` goes through
+  the camera's `activeFormat` (7.0) and otherwise raises the host's text.
+- `photoSettingsForSceneMonitoring` holds a copy, and answers one (the host does). `setPreparedPhotoSettingsArray:`
+  stores copies and calls the handler with YES once the session runs, at once when it already does; a later call
+  answers the earlier handler NO (the host's answer).
+- `-capturePhotoWithSettings:delegate:` checks the request against the header's rule list before anything is
+  captured and raises `NSInvalidArgumentException` for each broken rule: first the host's own "No active and enabled
+  video connection", then a unique ID used twice, a RAW format, a format, file type or quality the output does not
+  offer, a flash mode not supported, a preview or thumbnail size with a width and no height or the other way round
+  ("you must specify both width and height", the header), a Live Photo movie without Live Photo capture, a maximum size above the output's,
+  depth, mattes, calibration, dual and constituent photos and content-aware correction asked where the output cannot
+  enable them, and a delegate without
+  `-captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:`
+  (the header's 10.0 rule: the photo is delivered through that callback alone, and a delegate without it got no photo,
+  silently, until this change). The texts after the first are the port's own, each naming its rule: the host cannot
+  show them without a camera.
+- The capture takes "a defensive copy" of the settings (the header), puts their flash mode on the camera, enables
+  stabilization from 7.0 when asked and the quality is not Speed, merges their metadata into the dictionaries the
+  release attaches to the still (the settings' values win), so both JPEGs of the photo carry it, and sends
+  `-captureOutput:willCapturePhotoForResolvedSettings:` after willBeginCapture: right before the still image output's
+  capture when the settings are resolved before it, right after willBeginCapture when they are resolved from the still.
+- `+JPEGPhotoDataRepresentationForJPEGSampleBuffer:previewPhotoSampleBuffer:` is the release's own JPEG of the sample
+  with its attachments, and a thumbnail (next section); a sample that is not a JPEG raises the host's "Not a jpeg sample
+  buffer". `+DNGPhotoDataRepresentationForRawSampleBuffer:previewPhotoSampleBuffer:` raises the host's "Unrecognized
+  raw format" for a sample that is not RAW, and is nil for one that is: no RAW sample comes from this release.
+
+## The embedded thumbnail
+
+The Exif standard keeps a thumbnail in IFD1 of the TIFF block of the JPEG's APP1 "Exif" segment, as a JPEG (Compression
+6) found by JPEGInterchangeFormat and JPEGInterchangeFormatLength. ImageIO writes one only from 8.0
+(`kCGImageDestinationEmbedThumbnail`); the format is open, so the port writes the segment itself
+(`CharonJPEGWithThumbnail` in `AVCapturePhotoOutput.m`): it keeps the TIFF block as it is, appends IFD1 and the
+thumbnail, and links IFD1 from IFD0; a JPEG with no Exif segment gets one. A segment longer than 65535 bytes cannot be
+written: the thumbnail is then written again at ImageIO's lowest quality, and when that does not fit either, the
+photo comes without one, the log says so, and `embeddedThumbnailDimensions` is 0x0. So that it can say so, settings
+that ask for a thumbnail are resolved, and willBeginCapture sent, when the still comes, as when the flash may fire.
+
+What the host writes, measured with `bfw3/.agent-work/runs/probe/thumbs.m` (`thumbs.log`): the host's
+`+JPEGPhotoDataRepresentationForJPEGSampleBuffer:previewPhotoSampleBuffer:` puts the preview into IFD1 with Compression
+6, XResolution and YResolution 72/1, ResolutionUnit 2, the offset and the length, and the thumbnail JPEG has no APPn
+segment. It is the preview no longer than 160 on its longest side, never enlarged: 32x24 stays 32x24; 160x120,
+320x240, 640x480 and 1600x1200 all give 160x120; 200x200 gives 160x160, 120x160 stays. With no preview there is no
+IFD1, and a thumbnail the sample's own JPEG carries is dropped by the repackaging. The port writes the same tags and
+sizes, and the oracle compares the two for both photo sizes and every preview above. (On the host,
+`CGImageSourceCreateThumbnailAtIndex` with no options answers the full image for a file with no thumbnail, so the
+oracle and the device test read IFD1 by the Exif layout, `tests/backports/device/jpeg-exif.h`.)
+
+At capture, settings with `embeddedThumbnailPhotoFormat` (a JPEG photo only, above) get the still drawn at the resolved
+`embeddedThumbnailDimensions` embedded in the photo's own JPEG "before calling the AVCapturePhotoCaptureDelegate" (the
+header): the delegate's photo sample buffer is the still's, with the same format, timing and attachments, whose data
+is that JPEG. With no size asked the longest side is 160, the host's own thumbnail size above. The release's
+`+jpegStillImageNSDataRepresentation:` of that sample does not keep the thumbnail, as the host's repackaging does not;
+the port's `+JPEGPhotoDataRepresentationForJPEGSampleBuffer:previewPhotoSampleBuffer:` with no preview puts it back,
+where the host keeps none (a named divergence: on the host no capture can put one there).
+
