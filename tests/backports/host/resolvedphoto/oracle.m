@@ -74,6 +74,13 @@ int main(int argc, char **argv)
             NSString *bare = [ivar substringFromIndex:1];
             NSString *getter = [@"is" stringByAppendingString:[[bare substringToIndex:1].uppercaseString stringByAppendingString:[bare substringFromIndex:1]]];
             BOOL synthesized = [declared containsObject:bare] || [declared containsObject:getter];
+            BOOL own = [ivar hasPrefix:@"_charon"] || [ivar isEqualToString:@"_internal"];
+            if (!synthesized && !own) {
+                // A property of the host's newer SDK, synthesized in this host build only: the package's SDK does not
+                // declare it, so the package build has no such ivar.
+                printf("note the port's ivar %s is synthesized for a property the SDK header does not declare\n", ivar.UTF8String);
+                continue;
+            }
             check(!synthesized, [NSString stringWithFormat:@"the port's ivar %@ is its own, not one synthesized for a declared property", ivar]);
         }
         free(list_);
