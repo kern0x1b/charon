@@ -15,6 +15,8 @@ BOOL charon_custom_transition(CharonTransitionKind kind, UIViewController *from,
 
 @interface UIPresentationController (CharonContainer)
 - (void)charon_setContainerView:(UIView *)view;
+/* Stops holding the presented controller, which now holds this presentation controller. */
+- (void)charon_ownedByPresentedViewController;
 /* Whether this presentation controller presents its controller itself from that presenting
    controller (a sheet does in a compact width), and the animator it presents and dismisses
    with when the transitioning delegate answers none; NO and nil here. */

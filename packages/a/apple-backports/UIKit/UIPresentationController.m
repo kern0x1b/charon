@@ -8,7 +8,8 @@
 
 @implementation UIPresentationController {
 @private
-    UIViewController *_presentedViewController;
+    __weak UIViewController *_presentedViewController;
+    UIViewController *_presentedOwner;
     UIViewController *_presentingViewController;
     __weak id<UIAdaptivePresentationControllerDelegate> _delegate;
     UITraitCollection *_overrideTraitCollection;
@@ -19,6 +20,7 @@
 {
     if ((self = [super init])) {
         _presentedViewController = presentedViewController;
+        _presentedOwner = presentedViewController;
         _presentingViewController = presentingViewController;
     }
     return self;
@@ -67,6 +69,13 @@
 - (void)charon_setContainerView:(UIView *)view
 {
     _containerView = view;
+}
+
+/* A controller the caller made holds its presented controller; once that controller owns it, it does not, so the two
+   are freed together, as UIKit 16.0's are on the host (host/sheet, sheet.lifetime). */
+- (void)charon_ownedByPresentedViewController
+{
+    _presentedOwner = nil;
 }
 
 - (BOOL)charon_presentsFrom:(UIViewController *)presenting

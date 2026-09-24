@@ -564,6 +564,8 @@ UIPresentationController *charon_presentation_controller_of(UIViewController *co
 void charon_set_presentation_controller(UIViewController *controller, UIPresentationController *presentation)
 {
     objc_setAssociatedObject(controller, &charon_presentation_key, presentation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    if (presentation.presentedViewController == controller && [presentation respondsToSelector:@selector(charon_ownedByPresentedViewController)])
+        [presentation charon_ownedByPresentedViewController];
 }
 
 @interface CharonPresentationContainer : UIView

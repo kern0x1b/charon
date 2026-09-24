@@ -13,8 +13,9 @@ static const char sheet_expectations[] =
     "tion=132.00\",\"resolve.768x1024.v1\":\"medium=max large=440.00 constant=-5.00 fraction=132.00\",\"resolve.768x1024.v2\":\"medium=246.40 large=440.00 constant=-5.00 fra"
     "ction=132.00\",\"resolve.bare\":\"medium raises NSInvalidArgumentException large=440.00\",\"sheet.base\":\"style=1 fullscreen=1 removes=0 frame={{0, 0}, {0, 0}}\",\"sheet"
     ".defaults\":\"detents=com.apple.UIKit.large selected=nil undimmed=nil grabber=0 radius=max expands=1 edge=0 width=0 source=0 delegate=0 presented=1 presenting=0 c"
-    "ontainer=0\",\"sheet.reset\":\"equal=1 selected=nil\",\"sheet.set\":\"detents=com.apple.UIKit.medium,com.apple.UIKit.large selected=bogus undimmed=com.apple.UIKit.mediu"
-    "m grabber=1 radius=12.00 expands=0 edge=1 width=1 source=1 delegate=1 animateRan=1 calls=\",\"style.0\":\"sheet=0 same=1 again=1\",\"style.1\":\"sheet=1 same=1 again=1\""
-    ",\"style.2\":\"sheet=1 same=1 again=1\",\"style.4\":\"sheet=0 same=1 again=1\",\"style.5\":\"sheet=0 same=1 again=1\",\"style.first.0\":\"sheet=0 same=1\",\"style.first.1\":\"shee"
-    "t=1 same=1\",\"style.first.2\":\"sheet=1 same=1\",\"style.first.4\":\"sheet=0 same=1\",\"style.first.5\":\"sheet=0 same=1\"}"
+    "ontainer=0\",\"sheet.lifetime\":\"controller=0 sheet=0 heldSheetController=0 heldSheetPresented=0 customPresented=1 customPresenting=1\",\"sheet.reset\":\"equal=1 selec"
+    "ted=nil\",\"sheet.set\":\"detents=com.apple.UIKit.medium,com.apple.UIKit.large selected=bogus undimmed=com.apple.UIKit.medium grabber=1 radius=12.00 expands=0 edge="
+    "1 width=1 source=1 delegate=1 animateRan=1 calls=\",\"style.0\":\"sheet=0 same=1 again=1\",\"style.1\":\"sheet=1 same=1 again=1\",\"style.2\":\"sheet=1 same=1 again=1\",\"sty"
+    "le.4\":\"sheet=0 same=1 again=1\",\"style.5\":\"sheet=0 same=1 again=1\",\"style.first.0\":\"sheet=0 same=1\",\"style.first.1\":\"sheet=1 same=1\",\"style.first.2\":\"sheet=1 sam"
+    "e=1\",\"style.first.4\":\"sheet=0 same=1\",\"style.first.5\":\"sheet=0 same=1\"}"
 ;

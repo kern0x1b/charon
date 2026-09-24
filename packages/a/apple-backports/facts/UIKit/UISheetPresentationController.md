@@ -77,6 +77,14 @@ Sources:
   but still ran the engine for an animated custom style with a delegate's animator and gave the release full screen.
   On 7.0 and 7.1 the release carries custom transitions with a transitioning delegate too, and the port's engine still
   takes an animated custom presentation there; that is older than the sheet and not changed here.
+- Lifetime (host, `sheet.lifetime`): a controller owns the sheet it was asked for and the sheet does not own it back, so the
+  two are freed together, and a sheet kept alone answers nil for `presentedViewController` once its controller is gone; a
+  presentation controller the caller made holds both of its controllers. Below 8.0 the port's class does the same: it holds
+  its presented controller until `charon_set_presentation_controller` gives it to that controller
+  (`-charon_ownedByPresentedViewController`), and weakly after, which the popover and the document menu share. From 8.0 on the
+  sheet is a subclass of the release's class, whose `initWithPresentedViewController:` holds the controller as the host's
+  holds a caller-made one, so a controller asked for its sheet and the sheet hold each other and neither is freed. There is
+  no public way to make the release's reference weak; not measured, as nothing in the fleet runs 8.0 or later.
 - Frame (`_stackAlignmentFrame` 0x189051544): centred, the container's width, from the top margin to the container's
   bottom edge. iPhone 4S with the status bar: top 40, the sheet 320 x 440.
 - Detents: large = the full height less the bottom safe inset (`maximumDetentValue` 0x1895e9958); medium = that times

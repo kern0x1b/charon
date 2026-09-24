@@ -118,6 +118,32 @@ void sheet_api_run(SheetRecorder record)
     }
     record(@"resolve.bare", [NSString stringWithFormat:@"%@ large=%@", bareMedium, number([[UISheetPresentationControllerDetent largeDetent] resolvedValueInContext:bare])]);
 
+    /* A controller owns the sheet it was asked for and the sheet does not own it back; a presentation controller the
+       caller made holds both of its controllers. */
+    __weak UIViewController *ownerGone = nil;
+    __weak UIViewController *heldGone = nil;
+    __weak UIViewController *customPresented = nil;
+    __weak UIViewController *customPresenting = nil;
+    __weak UIPresentationController *sheetGone = nil;
+    UIPresentationController *heldSheet = nil;
+    UIPresentationController *custom = nil;
+    @autoreleasepool {
+        UIViewController *owner = [[UIViewController alloc] init];
+        owner.modalPresentationStyle = UIModalPresentationPageSheet;
+        sheetGone = owner.sheetPresentationController;
+        ownerGone = owner;
+        UIViewController *held = [[UIViewController alloc] init];
+        held.modalPresentationStyle = UIModalPresentationPageSheet;
+        heldSheet = held.sheetPresentationController;
+        heldGone = held;
+        UIViewController *presented = [[UIViewController alloc] init], *presenting = [[UIViewController alloc] init];
+        custom = [[UIPresentationController alloc] initWithPresentedViewController:presented presentingViewController:presenting];
+        customPresented = presented;
+        customPresenting = presenting;
+    }
+    record(@"sheet.lifetime", [NSString stringWithFormat:@"controller=%@ sheet=%@ heldSheetController=%@ heldSheetPresented=%@ customPresented=%@ customPresenting=%@",
+        flag(ownerGone != nil), flag(sheetGone != nil), flag(heldGone != nil), flag(heldSheet.presentedViewController != nil), flag(customPresented != nil), flag(customPresenting != nil)]);
+
     for (NSNumber *style in @[ @(UIModalPresentationFullScreen), @(UIModalPresentationPageSheet), @(UIModalPresentationFormSheet), @(UIModalPresentationCustom), @(UIModalPresentationOverFullScreen) ]) {
         UIViewController *controller = [[UIViewController alloc] init];
         controller.modalPresentationStyle = style.integerValue;
