@@ -304,14 +304,65 @@ static JSValueRef BlockCallAsFunction(JSContextRef ctx, JSObjectRef function, JS
 }
 
 /*
- * A wrapper's finalizer releases its object with CFRelease, not CFBridgingRelease: the latter
- * returns the object to ARC, which may autorelease it, and a finalizer runs inside whatever pool
- * the call that collected has - the object then outlives its wrapper until that pool drains
- * (measured on the host: an owner released only at the end of main).
+ * Objects whose wrappers the collector finalized, waiting to be released outside the collection.
+ * A finalizer must call nothing that may collect or allocate, "all functions that have a
+ * JSContextRef parameter" included (JSObjectRef.h, JSObjectFinalizeCallback), and the last
+ * release of a wrapped object runs its -dealloc, which may reach the C API (a JSManagedValue, a
+ * graph token of JSVirtualMachine). The release's bridge hands such objects to the heap to release
+ * after the collection (WebKit's Heap::releaseSoon); the C API has no end-of-collection hook, so
+ * this releases them at the next outermost leave of any thread, or on the next turn of the run
+ * loop of the thread that finalized them, whichever comes first. A finalizer can run on any thread
+ * that uses the context group, so the list is shared and locked; each release happens outside the
+ * lock, in a pool of its own, and a -dealloc that collects and finalizes more is taken in turn.
  */
+typedef struct CharonReleaseNode {
+    struct CharonReleaseNode *next;
+    const void *object;
+} CharonReleaseNode;
+
+static pthread_mutex_t charon_release_lock = PTHREAD_MUTEX_INITIALIZER;
+static CharonReleaseNode *charon_release_list;
+
+void charon_js_release_soon(const void *object)
+{
+    CharonReleaseNode *node = malloc(sizeof(CharonReleaseNode));
+    node->object = object;
+    pthread_mutex_lock(&charon_release_lock);
+    BOOL wasEmpty = !charon_release_list;
+    node->next = charon_release_list;
+    charon_release_list = node;
+    pthread_mutex_unlock(&charon_release_lock);
+    if (wasEmpty) {
+        CFRunLoopRef loop = CFRunLoopGetCurrent();
+        CFRunLoopPerformBlock(loop, kCFRunLoopCommonModes, ^{
+            charon_js_release_pending();
+        });
+        CFRunLoopWakeUp(loop);
+    }
+}
+
+void charon_js_release_pending(void)
+{
+    for (;;) {
+        pthread_mutex_lock(&charon_release_lock);
+        CharonReleaseNode *list = charon_release_list;
+        charon_release_list = NULL;
+        pthread_mutex_unlock(&charon_release_lock);
+        if (!list)
+            return;
+        @autoreleasepool {
+            for (CharonReleaseNode *node = list, *next; node; node = next) {
+                next = node->next;
+                CFRelease(node->object);
+                free(node);
+            }
+        }
+    }
+}
+
 static void BlockFinalize(JSObjectRef object)
 {
-    CFRelease(JSObjectGetPrivate(object));
+    charon_js_release_soon(JSObjectGetPrivate(object));
 }
 
 static JSClassRef BlockClass(void)
@@ -332,7 +383,7 @@ static JSClassRef BlockClass(void)
  * trips through -toObject, but exposes no properties or methods to JavaScript. */
 static void OpaqueFinalize(JSObjectRef object)
 {
-    CFRelease(JSObjectGetPrivate(object));
+    charon_js_release_soon(JSObjectGetPrivate(object));
 }
 
 static JSClassRef OpaqueClass(void)
@@ -421,13 +472,30 @@ JSValueRef charon_js_type_error(JSContextRef context, NSString *message)
     return [wrapper[@"TypeError"] constructWithArguments:@[message]].JSValueRef;
 }
 
-static BOOL IsInstanceOfGlobal(JSContextRef context, JSValueRef value, NSString *constructorName)
+/* Object.prototype.toString of the object `value` (classOf) or Array.isArray(value), both the
+ * virtual machine's own. Neither can throw for an object (ES5 15.2.4.2, 15.4.3.2). */
+static JSValueRef AskOwnContext(JSContextRef context, JSValueRef value, BOOL classOf)
 {
-    JSStringRef name = charon_js_string(constructorName);
-    JSValueRef constructor = JSObjectGetProperty(context, JSContextGetGlobalObject(context), name, NULL);
-    JSStringRelease(name);
-    return constructor && JSValueIsObject(context, constructor) &&
-           JSValueIsInstanceOfConstructor(context, value, (JSObjectRef)constructor, NULL);
+    JSVirtualMachine *machine = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(context) create:YES].virtualMachine;
+    JSObjectRef isArray, toString;
+    JSGlobalContextRef own = [machine charon_ownContextIsArray:&isArray classOf:&toString];
+    return classOf ? JSObjectCallAsFunction(own, toString, (JSObjectRef)value, 0, NULL, NULL)
+                   : JSObjectCallAsFunction(own, isArray, NULL, 1, &value, NULL);
+}
+
+BOOL charon_js_is_array(JSContextRef context, JSValueRef value)
+{
+    return JSValueIsObject(context, value) && JSValueToBoolean(context, AskOwnContext(context, value, NO));
+}
+
+BOOL charon_js_is_date(JSContextRef context, JSValueRef value)
+{
+    if (!JSValueIsObject(context, value))
+        return NO;
+    JSStringRef tag = JSValueToStringCopy(context, AskOwnContext(context, value, YES), NULL);
+    BOOL date = JSStringIsEqualToUTF8CString(tag, "[object Date]");
+    JSStringRelease(tag);
+    return date;
 }
 
 uint32_t charon_js_uint32(double value)
@@ -492,9 +560,9 @@ static id ConvertorConvert(CharonConvertor *convertor, JSValueRef value)
     id object = charon_js_wrapped_object(context, value);
     BOOL fill = NO;
     if (object) {
-    } else if (IsInstanceOfGlobal(context, value, @"Date")) {
+    } else if (charon_js_is_date(context, value)) {
         object = [NSDate dateWithTimeIntervalSince1970:JSValueToNumber(context, value, NULL) / 1000.0];
-    } else if (IsInstanceOfGlobal(context, value, @"Array")) {
+    } else if (charon_js_is_array(context, value)) {
         object = [NSMutableArray array];
         fill = YES;
     } else {
@@ -669,7 +737,9 @@ typedef struct CharonPendingJobs {
 } CharonPendingJobs;
 
 typedef struct CharonJobState {
-    unsigned depth;
+    unsigned depth;   /* every level of script on this thread's stack: ours and a callback's */
+    unsigned entered; /* the levels this port entered itself (charon_js_enter), which a leave ends */
+    BOOL scheduled;   /* a run loop turn of this thread is to drain the queue */
     CharonPendingJobs *first;
     CharonPendingJobs *last;
 } CharonJobState;
@@ -737,7 +807,30 @@ JSValue *charon_js_pop_callback(void)
 
 void charon_js_enter(void)
 {
-    CharonJobs()->depth++;
+    CharonJobState *state = CharonJobs();
+    state->depth++;
+    state->entered++;
+}
+
+/*
+ * Script this port did not enter - a direct C API call, a web view's own page - has no leave of
+ * ours to run its jobs at, and neither has a callback such script makes: the callback's own calls
+ * into script are levels of ours, but the last of them ends with the caller's script still on the
+ * stack, where no job may run. The thread's run loop runs them on its next turn instead. The
+ * release runs them as the outermost C API call returns, which nothing outside the engine sees.
+ */
+static void ScheduleDrain(CharonJobState *state)
+{
+    if (state->scheduled)
+        return;
+    state->scheduled = YES;
+    CFRunLoopRef loop = CFRunLoopGetCurrent();
+    CFRunLoopPerformBlock(loop, kCFRunLoopCommonModes, ^{
+        CharonJobs()->scheduled = NO;
+        charon_js_enter();
+        charon_js_leave();
+    });
+    CFRunLoopWakeUp(loop);
 }
 
 void charon_js_note_jobs(JSContextRef context, JSObjectRef drain)
@@ -747,31 +840,27 @@ void charon_js_note_jobs(JSContextRef context, JSObjectRef drain)
     pending->context = JSGlobalContextRetain(JSContextGetGlobalContext(context));
     pending->drain = drain;
     JSValueProtect(pending->context, drain);
-    BOOL wasEmpty = !state->first;
     if (state->last)
         state->last->next = pending;
     else
         state->first = pending;
     state->last = pending;
-    /* Script this port did not enter - a direct C API call, a web view's own page - has no leave
-     * of ours to run the jobs at; the thread's run loop runs them on its next turn instead. */
-    if (wasEmpty && !state->depth) {
-        CFRunLoopRef loop = CFRunLoopGetCurrent();
-        CFRunLoopPerformBlock(loop, kCFRunLoopCommonModes, ^{
-            charon_js_enter();
-            charon_js_leave();
-        });
-        CFRunLoopWakeUp(loop);
-    }
+    if (!state->entered)
+        ScheduleDrain(state);
 }
 
 void charon_js_leave(void)
 {
     CharonJobState *state = CharonJobs();
-    if (--state->depth)
+    state->entered--;
+    if (--state->depth) {
+        if (!state->entered && state->first)
+            ScheduleDrain(state);
         return;
+    }
     /* The drains run a level deep, so a call they make into script and back leaves them alone. */
     state->depth++;
+    state->entered++;
     while (state->first) {
         CharonPendingJobs *pending = state->first;
         state->first = pending->next;
@@ -786,4 +875,6 @@ void charon_js_leave(void)
         free(pending);
     }
     state->depth--;
+    state->entered--;
+    charon_js_release_pending();
 }

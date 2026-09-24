@@ -28,8 +28,9 @@
  * nothing references is collected and made again from its token when it is needed.
  *
  * Locking: _lock guards the tokens' records and is never held across a C API call, because a
- * collection on another thread can finalize a wrapper, release its object, and end in a token's
- * -dealloc, which takes _lock while that thread holds the engine's lock. The engine applies each
+ * token's -dealloc, which takes _lock and then calls the C API, can run on any thread: a wrapper's
+ * object is released after the collection that finalized it by whichever thread comes to release
+ * it (charon_js_release_soon), never inside the collection. The engine applies each
  * C API call atomically; an edge is brought to its record's state and the record re-read until no
  * other thread changed it in between. _nodeLock only serialises making a node, so two threads
  * never make two nodes for one token; it is never taken from -dealloc.
@@ -65,6 +66,8 @@
     NSRecursiveLock *_nodeLock;
     JSGlobalContextRef _weakContext;
     JSWeakObjectMapRef _weak;
+    JSObjectRef _isArray; /* the weak context's own Array.isArray and Object.prototype.toString */
+    JSObjectRef _classOf;
     NSHashTable<CharonGraphToken *> *_tokens;
 }
 - (void)charon_forgetToken:(CharonGraphToken *)token;
@@ -99,6 +102,19 @@ static void WeakDestroyed(JSWeakObjectMapRef map, void *data)
 {
     (void)map;
     (void)data;
+}
+
+/* The function a NULL-terminated path of names reaches from a fresh context's global object, protected. */
+static JSObjectRef OwnFunction(JSGlobalContextRef context, const char *const *path)
+{
+    JSValueRef value = JSContextGetGlobalObject(context);
+    for (; *path; path++) {
+        JSStringRef name = JSStringCreateWithUTF8CString(*path);
+        value = JSObjectGetProperty(context, (JSObjectRef)value, name, NULL);
+        JSStringRelease(name);
+    }
+    JSValueProtect(context, value);
+    return (JSObjectRef)value;
 }
 
 /*
@@ -189,6 +205,8 @@ static void MachinesInit(void)
             for (CharonGraphToken *owned in token->_owned.keyEnumerator.allObjects)
                 JSObjectDeletePrivateProperty(_weakContext, node, owned->_name);
         }
+        JSValueUnprotect(_weakContext, _isArray);
+        JSValueUnprotect(_weakContext, _classOf);
         JSGlobalContextRelease(_weakContext);
     }
     JSContextGroupRelease(_group);
@@ -234,9 +252,13 @@ static void MachinesInit(void)
     if (!_weakContext) {
         JSGlobalContextRef made = JSGlobalContextCreateInGroup(_group, NULL);
         JSWeakObjectMapRef weak = JSWeakObjectMapCreate(made, NULL, WeakDestroyed);
+        JSObjectRef isArray = OwnFunction(made, (const char *const[]){"Array", "isArray", NULL});
+        JSObjectRef classOf = OwnFunction(made, (const char *const[]){"Object", "prototype", "toString", NULL});
         [_lock lock];
         _weakContext = made;
         _weak = weak;
+        _isArray = isArray;
+        _classOf = classOf;
         [_lock unlock];
     }
     [_nodeLock unlock];
@@ -308,6 +330,17 @@ static void MachinesInit(void)
 - (JSGlobalContextRef)charon_weakContext:(JSWeakObjectMapRef *)outWeak
 {
     return [self charon_weakContext:outWeak create:YES];
+}
+
+- (JSGlobalContextRef)charon_ownContextIsArray:(JSObjectRef *)outIsArray classOf:(JSObjectRef *)outClassOf
+{
+    JSWeakObjectMapRef weak;
+    JSGlobalContextRef context = [self charon_weakContext:&weak create:YES];
+    [_lock lock];
+    *outIsArray = _isArray;
+    *outClassOf = _classOf;
+    [_lock unlock];
+    return context;
 }
 
 /*

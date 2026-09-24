@@ -216,21 +216,16 @@ static id Reported(JSContext *context, id result, JSValueRef exception)
     return JSValueIsObject(_context.JSGlobalContextRef, _value);
 }
 
-/* JSValueIsArray only arrived in iOS 9; asking the object itself its own kind through
- * Array.isArray keeps the same answer without it. */
+/* JSValueIsArray and JSValueIsDate only arrived in iOS 9; the object's own class answers the
+ * same without them (charon_js_is_array, charon_js_is_date). */
 - (BOOL)isArray
 {
-    if (!self.isObject)
-        return NO;
-    JSValue *global = self.context.globalObject;
-    JSValue *arrayCtor = [global valueForProperty:@"Array"];
-    JSValue *isArray = [arrayCtor valueForProperty:@"isArray"];
-    return [[isArray callWithArguments:@[self]] toBool];
+    return charon_js_is_array(_context.JSGlobalContextRef, _value);
 }
 
 - (BOOL)isDate
 {
-    return [self isInstanceOf:[self.context.globalObject valueForProperty:@"Date"]];
+    return charon_js_is_date(_context.JSGlobalContextRef, _value);
 }
 
 - (BOOL)isEqualToObject:(id)value
@@ -977,22 +972,26 @@ static JSObjectRef PromiseConstructor(JSContext *context)
     return result;
 }
 
-/* The release builds these two on the executor form above and so does this. Where it raises
- * NSInvalidArgumentException for a nil result or reason (it puts it into an array), this resolves
- * or rejects with undefined: an API must not crash its caller. */
+/* The release builds these two on the executor form above and so does this. It puts the result
+ * or reason into an array literal, so a nil one raises NSInvalidArgumentException out of it
+ * (measured on the host: "attempt to insert nil object from objects[0]"); this makes the same
+ * literal before any script runs, so the exception reaches the caller without unwinding through
+ * the engine's frames. */
 + (JSValue *)valueWithNewPromiseResolvedWithResult:(id)result inContext:(JSContext *)context
 {
+    NSArray *arguments = @[result];
     return [self valueWithNewPromiseInContext:context fromExecutor:^(JSValue *resolve, JSValue *reject) {
         (void)reject;
-        [resolve callWithArguments:result ? @[result] : @[]];
+        [resolve callWithArguments:arguments];
     }];
 }
 
 + (JSValue *)valueWithNewPromiseRejectedWithReason:(id)reason inContext:(JSContext *)context
 {
+    NSArray *arguments = @[reason];
     return [self valueWithNewPromiseInContext:context fromExecutor:^(JSValue *resolve, JSValue *reject) {
         (void)resolve;
-        [reject callWithArguments:reason ? @[reason] : @[]];
+        [reject callWithArguments:arguments];
     }];
 }
 

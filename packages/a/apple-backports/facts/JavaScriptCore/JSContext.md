@@ -53,9 +53,14 @@ Measured against the host's JavaScriptCore case by case and written as its JSCon
 (JSInternal.m, `Convert`):
 
 - `-toObject`: undefined is nil and null NSNull at the top; a wrapped Objective-C object is itself; a `Date`
-  is an NSDate (an invalid one an NSDate of NaN); an array is read by its `length`, anything else - a
-  function, an Error, a RegExp, a boxed number included - as a dictionary of its enumerable property
-  names, inherited ones included. Inside a container null is NSNull; undefined and a hole are NSNull in an
+  is an NSDate (an invalid one an NSDate of NaN); an array is read by its `length`. Array and Date are told
+  by the object's own class, as the release asks it: one made in another context of the same virtual
+  machine counts, one that only inherits `Array.prototype`/`Date.prototype` does not, and script replacing
+  `Array.isArray`, `Object.prototype.toString` or `Date` changes nothing (measured on the host, checks.m
+  `CheckOwnClass`). The port asks ES5's own answer - `Array.isArray` and `Object.prototype.toString`'s
+  `[object Date]` - of the virtual machine's own context, where no script but the port's runs. Anything
+  else - a function, an Error, a RegExp, a boxed number included - is read as a dictionary of its
+  enumerable property names, inherited ones included. Inside a container null is NSNull; undefined and a hole are NSNull in an
   array and left out of a dictionary. Every object is converted once: a cycle or a shared reference gives
   back the same Objective-C object, and the walk uses a worklist, not recursion. A getter that throws is
   left out and reported nowhere, as the host reports it nowhere.
@@ -102,16 +107,28 @@ functions). The invoke goes through the block literal's own
   helpers; a context made by `-init` gets a global `Promise` (the iOS 6 global has none), a context adopted
   from a web view page does not. Reactions run when the outermost Objective-C call into JavaScript returns;
   jobs queued with no such call on the stack (script run through the C API directly, a page) run on the
-  thread's next run-loop turn. JSValue's property accessors do not drain the queue.
-  `valueWithNewPromiseResolvedWithResult:nil` resolves with undefined, where the host raises
-  NSInvalidArgumentException: an API must never crash its caller (COORDINATION.md section 2).
+  thread's next run-loop turn. So do jobs a block or JSExport method queues when script run through the C
+  API directly called it: the release runs both as the outermost C API call returns, which the 2012
+  engine lets nothing outside it see (checks.m holds each side to its own answer). JSValue's property
+  accessors do not drain the queue. `valueWithNewPromiseResolvedWithResult:nil` and
+  `...RejectedWithReason:nil` raise NSInvalidArgumentException, as the release does (it puts the value
+  into an array literal); the port makes that literal before any script runs, so the exception does not
+  unwind through the engine's frames.
+- **When a wrapped object is released.** A finalizer must not call the C API (JSObjectRef.h,
+  `JSObjectFinalizeCallback`), and the last release of a wrapped object runs its `-dealloc`, which may
+  (a JSManagedValue, a graph token). The release hands such objects to the heap to release as the
+  collection ends (WebKit's `Heap::releaseSoon`), still inside the call that collected; the C API has no
+  end-of-collection hook, so the port releases them at the thread's next outermost call into script or
+  next run-loop turn, whichever comes first (JSInternal.m, `charon_js_release_soon`). Measured on the host:
+  the release's owner is released by the time the collection returns, the port's on the next turn and
+  never inside the collection; before this, the port's `-dealloc` ran inside the finalizer.
 - **Symbols**: the 2012 engine has none. `valueWithNewSymbolFromDescription:` notes a TypeError on the
   context and answers undefined, and `isSymbol` answers NO - an honest refusal at the seam.
 - **`-name`** is kept locally rather than shown anywhere, since the release exports no
   `JSGlobalContextSetName`; **`-isInspectable`** is stored and has no other effect. Whether iOS 6's
   webinspectord could list a bare JSGlobalContext at all is not measured.
-- **`-isArray`** asks the context's own `Array.isArray` rather than `JSValueIsArray`, which iOS 6 does not
-  export (introduced iOS 9); `-isDate` asks `-isInstanceOf:` against the context's own `Date`.
+- **`-isArray`/`-isDate`** answer by the object's own class as `-toObject` does (above), rather than through
+  `JSValueIsArray`/`JSValueIsDate`, which iOS 6 does not export (introduced iOS 9).
 
 ## Two build-system defects this port's own files exposed, both in `modules/apple/backports.lua`
 

@@ -380,7 +380,7 @@ static JSValueRef BoundFunctionCallAsFunction(JSContextRef ctx, JSObjectRef func
 
 static void BoundFunctionFinalize(JSObjectRef object)
 {
-    CFRelease(JSObjectGetPrivate(object));
+    charon_js_release_soon(JSObjectGetPrivate(object));
 }
 
 static JSClassRef BoundFunctionClass(void)
@@ -452,7 +452,7 @@ static bool ExportHasProperty(JSContextRef ctx, JSObjectRef object, JSStringRef 
 
 static void ExportFinalize(JSObjectRef object)
 {
-    CFRelease(JSObjectGetPrivate(object));
+    charon_js_release_soon(JSObjectGetPrivate(object));
 }
 
 JSClassRef charon_js_export_class(void)

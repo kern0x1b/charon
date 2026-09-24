@@ -43,10 +43,17 @@ static void check(BOOL condition, NSString *name)
 
 /*
  * The collector scans the stack conservatively, so a value is made in a frame of its own and the
- * stack it used is overwritten before collecting. JSSynchronousGarbageCollectForDebugging is the
- * host engine's own exported collect-now entry point; JSGarbageCollect only schedules one.
+ * stack it used is overwritten before collecting. On the host, JSSynchronousGarbageCollectForDebugging
+ * is the engine's own exported collect-now entry point and JSGarbageCollect only schedules one. The
+ * release's engine (2012) exports no such entry point; there JSGarbageCollect is the collect-now
+ * call, which the device run of these checks measures: every check after a Collect needs it.
  */
+#if TARGET_OS_IPHONE
+#define CollectNow JSGarbageCollect
+#else
 extern void JSSynchronousGarbageCollectForDebugging(JSContextRef context);
+#define CollectNow JSSynchronousGarbageCollectForDebugging
+#endif
 
 __attribute__((noinline)) static JSManagedValue *ManagedFromScript(JSContext *context, NSString *script)
 {
@@ -60,7 +67,10 @@ __attribute__((noinline)) static void Collect(JSContext *context)
     volatile char stack[16384];
     for (size_t index = 0; index < sizeof(stack); index++)
         stack[index] = 0;
-    JSSynchronousGarbageCollectForDebugging(context.JSGlobalContextRef);
+    CollectNow(context.JSGlobalContextRef);
+    /* the backport releases what finalized wrappers held after the collection, on this turn at the
+     * latest (CheckReleaseAfterCollection); the release has by the time the collection returns */
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
 }
 
 
@@ -338,13 +348,52 @@ static void CheckPromises(JSContext *context)
     check([Run(context, @"var caught; try { setsException(); caught = 'no'; } catch (e) { caught = 'caught ' + e.message; } caught") isEqualToString:@"caught from a block"] && handled == 0 && !context.exception, @"an exception a block sets on its context is thrown into the script that called it");
     context.exceptionHandler = previous;
 
-    /* Script run through the C API directly: the release with promises runs the jobs as that call
-     * returns, the backport on the thread's next run loop turn; after one turn both have. */
-    JSStringRef direct = JSStringCreateWithUTF8CString("var direct = 'unset'; Promise.resolve('ran').then(function (v) { direct = v; })");
-    JSEvaluateScript(context.JSGlobalContextRef, direct, NULL, NULL, 1, NULL);
-    JSStringRelease(direct);
-    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
-    check([[context[@"direct"] toString] isEqualToString:@"ran"], @"jobs queued by script run through the C API directly have run after one run loop turn");
+    /* Script run through the C API directly, and a block such script calls: a named divergence.
+     * The release with promises runs the jobs as the outermost C API call returns; the release's
+     * 2012 engine lets nothing outside it see that return, so the backport runs them on the
+     * thread's next run loop turn. Each side is held to its own answer. */
+    __weak JSContext *weakContext = context;
+    context[@"queueFromBlock"] = ^{
+        [weakContext evaluateScript:@"Promise.resolve('ran').then(function (v) { fromBlock = v; })"];
+    };
+    context[@"queueFromCall"] = ^{
+        [[weakContext evaluateScript:@"(function () { Promise.resolve('ran').then(function (v) { fromCall = v; }); })"] callWithArguments:@[]];
+    };
+    struct { const char *script, *name, *what; } directCases[] = {
+        {"var direct = 'unset'; Promise.resolve('ran').then(function (v) { direct = v; })", "direct", "script run through the C API directly"},
+        {"var fromBlock = 'unset'; queueFromBlock()", "fromBlock", "a block's -evaluateScript: under script run through the C API"},
+        {"var fromCall = 'unset'; queueFromCall()", "fromCall", "a block's -callWithArguments: under script run through the C API"},
+    };
+    for (size_t index = 0; index < sizeof(directCases) / sizeof(directCases[0]); index++) {
+        JSStringRef direct = JSStringCreateWithUTF8CString(directCases[index].script);
+        JSEvaluateScript(context.JSGlobalContextRef, direct, NULL, NULL, 1, NULL);
+        JSStringRelease(direct);
+        NSString *onReturn = [context[@(directCases[index].name)] toString];
+        CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
+        NSString *afterTurn = [context[@(directCases[index].name)] toString];
+#ifdef CHARON_PORT
+        check([onReturn isEqualToString:@"unset"] && [afterTurn isEqualToString:@"ran"],
+              [NSString stringWithFormat:@"jobs queued by %s run on the next run loop turn, not as the C API call returns", directCases[index].what]);
+#else
+        check([onReturn isEqualToString:@"ran"] && [afterTurn isEqualToString:@"ran"],
+              [NSString stringWithFormat:@"jobs queued by %s have run when the C API call returns", directCases[index].what]);
+#endif
+    }
+
+    /* The release puts the result or reason into an array literal: nil raises. */
+    for (int rejected = 0; rejected < 2; rejected++) {
+        NSString *raised = nil;
+        @try {
+            if (rejected)
+                [JSValue valueWithNewPromiseRejectedWithReason:nil inContext:context];
+            else
+                [JSValue valueWithNewPromiseResolvedWithResult:nil inContext:context];
+        } @catch (NSException *exception) {
+            raised = exception.name;
+        }
+        check([raised isEqualToString:NSInvalidArgumentException] && !context.exception,
+              rejected ? @"valueWithNewPromiseRejectedWithReason:nil raises NSInvalidArgumentException" : @"valueWithNewPromiseResolvedWithResult:nil raises NSInvalidArgumentException");
+    }
 }
 
 /*
@@ -362,6 +411,180 @@ static void CheckSymbols(JSContext *context)
     check(symbol.isSymbol && [[[context evaluateScript:@"(function (x) { return typeof x; })"] callWithArguments:@[symbol]].toString isEqualToString:@"symbol"], @"the host's engine makes a symbol (the divergence the backport names)");
 #endif
     context.exception = nil;
+}
+
+/*
+ * The private parts of the release's C API the backport is built on (JSInternal.h), asked directly,
+ * so that the device run answers for the release's own engine: private properties take on objects
+ * made with a JSClassRef only, and keep what they hold alive; the weak object map holds weakly.
+ */
+typedef struct OpaqueJSWeakObjectMap *JSWeakObjectMapRef;
+typedef void (*JSWeakMapDestroyedCallback)(JSWeakObjectMapRef map, void *data);
+extern JSWeakObjectMapRef JSWeakObjectMapCreate(JSContextRef ctx, void *data, JSWeakMapDestroyedCallback destructor);
+extern void JSWeakObjectMapSet(JSContextRef ctx, JSWeakObjectMapRef map, void *key, JSObjectRef object);
+extern JSObjectRef JSWeakObjectMapGet(JSContextRef ctx, JSWeakObjectMapRef map, void *key);
+extern bool JSObjectSetPrivateProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName, JSValueRef value);
+extern bool JSObjectDeletePrivateProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName);
+extern JSValueRef JSObjectGetPrivateProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName);
+
+static void CountDestroyed(JSWeakObjectMapRef map, void *data)
+{
+    (void)map;
+    (*(int *)data)++;
+}
+
+/* An object only the weak map knows of, made in a frame of its own; set as `holder`'s private property if given. */
+__attribute__((noinline)) static void MakeWeaklyHeld(JSGlobalContextRef context, JSWeakObjectMapRef weak, void *key, JSObjectRef holder, JSStringRef name)
+{
+    JSObjectRef object = JSObjectMake(context, NULL, NULL);
+    JSWeakObjectMapSet(context, weak, key, object);
+    if (holder)
+        JSObjectSetPrivateProperty(context, holder, name, object);
+}
+
+__attribute__((noinline)) static void CollectContext(JSGlobalContextRef context)
+{
+    volatile char stack[16384];
+    for (size_t index = 0; index < sizeof(stack); index++)
+        stack[index] = 0;
+    CollectNow(context);
+}
+
+static void CheckReleaseCAPI(void)
+{
+    JSClassDefinition definition = kJSClassDefinitionEmpty;
+    JSClassRef jsClass = JSClassCreate(&definition);
+    JSGlobalContextRef context = JSGlobalContextCreate(NULL);
+    JSStringRef name = JSStringCreateWithUTF8CString("charon.check");
+    JSObjectRef classed = JSObjectMake(context, jsClass, NULL);
+    JSObjectRef plain = JSObjectMake(context, NULL, NULL);
+    JSValueProtect(context, classed);
+    check(JSObjectSetPrivateProperty(context, classed, name, plain) && JSObjectGetPrivateProperty(context, classed, name) == plain,
+          @"a private property takes on an object made with a JSClassRef and reads back");
+    check(!JSObjectSetPrivateProperty(context, plain, name, classed), @"a private property is refused on an object made with no JSClassRef");
+    check(!JSObjectSetPrivateProperty(context, JSObjectMakeFunctionWithCallback(context, NULL, NULL), name, classed), @"a private property is refused on a function made with a callback");
+    JSStringRef names = JSStringCreateWithUTF8CString("Object.getOwnPropertyNames(this).length");
+    JSValueRef count = JSEvaluateScript(context, names, classed, NULL, 1, NULL);
+    JSStringRelease(names);
+    check(JSValueToNumber(context, count, NULL) == 0, @"script does not see a private property");
+
+    JSWeakObjectMapRef weak = JSWeakObjectMapCreate(context, NULL, CountDestroyed);
+    char keptKey, looseKey;
+    MakeWeaklyHeld(context, weak, &keptKey, classed, name);
+    MakeWeaklyHeld(context, weak, &looseKey, NULL, NULL);
+    CollectContext(context);
+    check(JSWeakObjectMapGet(context, weak, &keptKey) != NULL, @"a private property keeps its value through a collection");
+    check(JSWeakObjectMapGet(context, weak, &looseKey) == NULL, @"the weak object map does not keep an object alive");
+    JSObjectDeletePrivateProperty(context, classed, name);
+    CollectContext(context);
+    check(JSWeakObjectMapGet(context, weak, &keptKey) == NULL, @"a deleted private property lets its value go");
+    JSValueUnprotect(context, classed);
+
+    /* Measured, not held: the backport's destroyed callback does nothing, so no check needs it. */
+    int destroyed = 0;
+    JSContextGroupRef group = JSContextGroupCreate();
+    JSGlobalContextRef doomed = JSGlobalContextCreateInGroup(group, NULL);
+    JSGlobalContextRef other = JSGlobalContextCreateInGroup(group, NULL);
+    JSWeakObjectMapCreate(doomed, &destroyed, CountDestroyed);
+    JSGlobalContextRelease(doomed);
+    CollectContext(other);
+    printf("measured: the weak object map's destroyed callback ran %d times after its global context was released and its group collected\n", destroyed);
+    JSGlobalContextRelease(other);
+    JSContextGroupRelease(group);
+    printf("measured: and %d times after the group was released\n", destroyed);
+
+    JSStringRelease(name);
+    JSGlobalContextRelease(context);
+    JSClassRelease(jsClass);
+}
+
+/*
+ * Where a wrapper's Objective-C object is released: never inside the collection that finalized the
+ * wrapper (JSObjectRef.h forbids the C API a -dealloc may call in a finalizer). A named divergence
+ * in when: the release hands it to the heap to release as the collection ends, still inside the
+ * call that collected; the backport, which has no end-of-collection hook, on the thread's next run
+ * loop turn or its next outermost call into script. Each side is held to its own answer.
+ */
+static int releasedOwners, releasedWhileCollecting;
+static BOOL collecting;
+
+@interface ReleaseProbe : NSObject
+@property (strong) JSManagedValue *managed;
+@end
+
+@implementation ReleaseProbe
+- (void)dealloc
+{
+    releasedOwners++;
+    if (collecting)
+        releasedWhileCollecting++;
+}
+@end
+
+__attribute__((noinline)) static void ExportReleaseProbe(JSContext *context)
+{
+    @autoreleasepool {
+        ReleaseProbe *owner = [ReleaseProbe new];
+        context[@"releaseProbe"] = owner;
+        owner.managed = [JSManagedValue managedValueWithValue:[context evaluateScript:@"({n: 1})"]];
+        [context.virtualMachine addManagedReference:owner.managed withOwner:owner];
+        context[@"releaseProbe"] = nil;
+    }
+}
+
+__attribute__((noinline)) static void CollectOnly(JSContext *context)
+{
+    volatile char stack[16384];
+    for (size_t index = 0; index < sizeof(stack); index++)
+        stack[index] = 0;
+    collecting = YES;
+    CollectNow(context.JSGlobalContextRef);
+    collecting = NO;
+}
+
+static void CheckReleaseAfterCollection(JSContext *context)
+{
+    for (int index = 0; index < 4; index++)
+        ExportReleaseProbe(context);
+    CollectOnly(context);
+    int onReturn = releasedOwners;
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
+#ifdef CHARON_PORT
+    check(onReturn == 0 && releasedWhileCollecting == 0 && releasedOwners == 4,
+          @"an exported owner whose wrapper was collected is released on the next run loop turn, outside the collection");
+#else
+    check(onReturn == 4 && releasedOwners == 4, @"an exported owner whose wrapper was collected is released by the time the collection returns");
+#endif
+    for (int index = 0; index < 4; index++)
+        ExportReleaseProbe(context);
+    CollectOnly(context);
+    [context evaluateScript:@"0"];
+    check(releasedOwners == 8, @"and released by the next call into script at the latest");
+}
+
+/* Arrays and Dates are told by the object's own class, as the release asks it. */
+static void CheckOwnClass(void)
+{
+    JSVirtualMachine *machine = [JSVirtualMachine new];
+    JSContext *a = [[JSContext alloc] initWithVirtualMachine:machine];
+    JSContext *b = [[JSContext alloc] initWithVirtualMachine:machine];
+    a[@"arrayOfB"] = [b evaluateScript:@"[1, 2]"];
+    a[@"dateOfB"] = [b evaluateScript:@"new Date(5000)"];
+    JSValue *arrayOfB = a[@"arrayOfB"], *dateOfB = a[@"dateOfB"];
+    check([[arrayOfB toObject] isKindOfClass:[NSArray class]] && arrayOfB.isArray, @"an array of another context of the same virtual machine is an array");
+    check([[dateOfB toObject] isEqual:[NSDate dateWithTimeIntervalSince1970:5]] && dateOfB.isDate, @"a Date of another context of the same virtual machine is a Date");
+    NSArray *wrapped = [[a evaluateScript:@"[arrayOfB]"] toObject];
+    check([wrapped[0] isKindOfClass:[NSArray class]], @"and so is one met inside a container");
+    JSValue *dateLike = [a evaluateScript:@"Object.create(Date.prototype)"];
+    check([[dateLike toObject] isKindOfClass:[NSDictionary class]] && !dateLike.isDate, @"an object that only inherits Date.prototype is not a Date");
+    JSValue *arrayLike = [a evaluateScript:@"Object.create(Array.prototype)"];
+    check([[arrayLike toObject] isKindOfClass:[NSDictionary class]] && !arrayLike.isArray, @"an object that only inherits Array.prototype is not an array");
+    JSValue *rebased = [a evaluateScript:@"var d = new Date(1000); d.__proto__ = Object.prototype; d"];
+    check([[rebased toObject] isKindOfClass:[NSDate class]] && rebased.isDate, @"a Date whose prototype was replaced is still a Date");
+    [a evaluateScript:@"var RealDate = Date; Array.isArray = function () { return false; }; Object.prototype.toString = function () { return '[object Object]'; }; Date = function () {};"];
+    JSValue *array = [a evaluateScript:@"[3]"], *date = [a evaluateScript:@"new RealDate(2000)"];
+    check([[array toObject] isKindOfClass:[NSArray class]] && array.isArray && [[date toObject] isKindOfClass:[NSDate class]] && date.isDate,
+          @"script that replaces Array.isArray, Object.prototype.toString and Date does not change the answer");
 }
 
 /* JSValue's conversions, each expectation measured on the host's own JavaScriptCore. */
@@ -571,6 +794,9 @@ int main(void)
         CheckConversions();
         CheckBlockArguments();
         CheckExportArguments();
+        CheckReleaseCAPI();
+        CheckReleaseAfterCollection(context);
+        CheckOwnClass();
 
         JSVirtualMachine *vm = [[JSVirtualMachine alloc] init];
         JSContext *second = [[JSContext alloc] initWithVirtualMachine:vm];

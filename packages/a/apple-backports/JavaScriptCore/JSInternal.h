@@ -37,6 +37,8 @@ extern JSValueRef _Nullable JSObjectGetPrivateProperty(JSContextRef ctx, JSObjec
 + (nullable JSVirtualMachine *)charon_machineForGroup:(JSContextGroupRef)group;
 /* The weak object map every weak reference of this virtual machine is kept in, and its context. */
 - (JSGlobalContextRef)charon_weakContext:(JSWeakObjectMapRef _Nonnull *_Nonnull)outWeak;
+/* That context, which runs no script but ours, and its own Array.isArray and Object.prototype.toString. */
+- (JSGlobalContextRef)charon_ownContextIsArray:(JSObjectRef _Nonnull *_Nonnull)outIsArray classOf:(JSObjectRef _Nonnull *_Nonnull)outClassOf;
 /* The one wrapper of `object` in `context`'s global object, made with `jsClass` if there is none. */
 - (JSObjectRef)charon_wrapperOf:(id)object class:(JSClassRef)jsClass context:(JSContextRef)context;
 @end
@@ -86,6 +88,18 @@ id _Nullable charon_js_to_class(JSContextRef context, JSValueRef value, Class ob
 id _Nullable charon_js_argument(JSContextRef context, const char *type, JSValueRef value, JSValueRef _Nullable *_Nonnull exception);
 const char *charon_js_skip_type(const char *type);
 
+/*
+ * Whether `value` is an array, or a Date, by its own class, as the release asks the object itself
+ * (JSC's inherits(JSArray) and inherits(DateInstance)): a value of another context of the same
+ * virtual machine answers as it does in its own, an object that only inherits Array.prototype or
+ * Date.prototype is neither, and script that replaces Array.isArray or Object.prototype.toString
+ * changes nothing. ES5 gives exactly that answer as Array.isArray and as Object.prototype.toString's
+ * [[Class]] (15.4.3.2, 15.2.4.2); both are asked of the virtual machine's own context, where no
+ * script but this port's runs.
+ */
+BOOL charon_js_is_array(JSContextRef context, JSValueRef value);
+BOOL charon_js_is_date(JSContextRef context, JSValueRef value);
+
 /* ECMAScript ToUint32: NaN and the infinities are 0, anything else is taken modulo 2^32. */
 uint32_t charon_js_uint32(double value);
 
@@ -120,13 +134,22 @@ JSValue *_Nullable charon_js_pop_callback(void);
  * The job queue promise reactions run from. The JavaScriptCore that has promises runs its queued
  * jobs when the outermost API call on a thread returns, never while script is on the stack.
  * charon_js_enter and charon_js_leave bracket every call this port makes into script, a callback
- * counts as a level too, and the leave that ends the outermost level runs `drain` for every
- * context charon_js_note_jobs named, in the order they were named, until none is left. Jobs
- * queued by script this port did not enter (a direct C API call, a web view's page) run on the
- * thread's next run loop turn instead; the property accessors of JSValue are not a level, so a
- * job a getter or setter queues waits for the next leave.
+ * counts as a level of script on the stack too, and the leave that ends the outermost level runs
+ * `drain` for every context charon_js_note_jobs named, in the order they were named, until none is
+ * left. Jobs queued under script this port did not enter (a direct C API call, a web view's page,
+ * and a callback such script makes, whose own last leave still has that script on the stack) run
+ * on the thread's next run loop turn instead; the property accessors of JSValue are not a level,
+ * so a job a getter or setter queues waits for the next leave. The outermost leave also releases
+ * what finalized wrappers held (charon_js_release_soon).
  */
 void charon_js_enter(void);
+/*
+ * The one way a JSClassRef's finalizer here gives up the object its wrapper retained: the object
+ * is released after the collection, never inside it (JSInternal.m). charon_js_release_pending
+ * releases every such object now; the outermost leave calls it.
+ */
+void charon_js_release_soon(const void *object);
+void charon_js_release_pending(void);
 void charon_js_leave(void);
 void charon_js_note_jobs(JSContextRef context, JSObjectRef drain);
 
