@@ -231,7 +231,8 @@ typedef NS_ENUM(NSInteger, CharonDetentType) {
 }
 
 /* The medium detent asks the context for _containerBounds, as UIKit's block (0x189d322b4)
-   does; a context of the caller's own that has none reads as empty. */
+   does, whether or not the context answers it: a context of the caller's own without it raises
+   there, as it does on the host (host/sheet, resolve.bare). */
 - (CGFloat)charon_resolvedValueInContext:(id)context
 {
     CharonSheetDetentContext *known = context;
@@ -241,7 +242,7 @@ typedef NS_ENUM(NSInteger, CharonDetentType) {
     case CharonDetentMedium: {
         if (known.containerTraitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact)
             return CGFLOAT_MAX;
-        CGRect bounds = [context respondsToSelector:@selector(_containerBounds)] ? [known _containerBounds] : CGRectZero;
+        CGRect bounds = [known _containerBounds];
         return known.maximumDetentValue * (CGRectGetHeight(bounds) > charon_sheet_medium_threshold ? charon_sheet_medium_large : charon_sheet_medium_small);
     }
     case CharonDetentCustom:

@@ -13,6 +13,16 @@
 - (CGRect)_containerBounds { return self.bounds; }
 @end
 
+/* A context of the caller's own with the protocol's members only: UIKit's medium detent sends it _containerBounds all the
+   same (0x189d322b4). */
+@interface BareSheetContext : NSObject <UISheetPresentationControllerDetentResolutionContext>
+@property (nonatomic, strong) UITraitCollection *containerTraitCollection;
+@property (nonatomic, assign) CGFloat maximumDetentValue;
+@end
+
+@implementation BareSheetContext
+@end
+
 @interface SheetDelegate : NSObject <UISheetPresentationControllerDelegate>
 @property (nonatomic, strong) NSMutableArray *calls;
 @end
@@ -96,6 +106,17 @@ void sheet_api_run(SheetRecorder record)
                     number([[UISheetPresentationControllerDetent customDetentWithIdentifier:nil resolver:fraction] resolvedValueInContext:context])]);
         }
     }
+
+    BareSheetContext *bare = [[BareSheetContext alloc] init];
+    bare.containerTraitCollection = [UITraitCollection traitCollectionWithVerticalSizeClass:UIUserInterfaceSizeClassRegular];
+    bare.maximumDetentValue = 440;
+    NSString *bareMedium = nil;
+    @try {
+        bareMedium = [NSString stringWithFormat:@"medium=%@", number([[UISheetPresentationControllerDetent mediumDetent] resolvedValueInContext:bare])];
+    } @catch (NSException *exception) {
+        bareMedium = [NSString stringWithFormat:@"medium raises %@", exception.name];
+    }
+    record(@"resolve.bare", [NSString stringWithFormat:@"%@ large=%@", bareMedium, number([[UISheetPresentationControllerDetent largeDetent] resolvedValueInContext:bare])]);
 
     for (NSNumber *style in @[ @(UIModalPresentationFullScreen), @(UIModalPresentationPageSheet), @(UIModalPresentationFormSheet), @(UIModalPresentationCustom), @(UIModalPresentationOverFullScreen) ]) {
         UIViewController *controller = [[UIViewController alloc] init];
