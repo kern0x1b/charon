@@ -2,12 +2,15 @@
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
 #import <objc/message.h>
+#include "CharonSheetShadow.h"
 
 /* The magic shadow of UIKit's sheet, asked of the host's own UIKit and Core Animation under Mac Catalyst (a probe of the
-   oracle: private classes are asked by name here, never in the port). It prints what the shadow is made of and checks
-   the one thing the port's facts rest on: a vibrant colour matrix set with -[CALayer setFilters:] (what 16.0's
-   -[_UIShadowView _updateShadowVisualStyling] sets) computes its colour from what lies behind the layer, not from the
-   layer's own content, which iOS 6 has no way to do. */
+   oracle: private classes are asked by name here, never in the port). It checks what the port's shadow
+   (packages/a/apple-backports/UIKit/CharonSheetShadow.c) rests on: a vibrant colour matrix set with -[CALayer setFilters:]
+   (what 16.0's -[_UIShadowView _updateShadowVisualStyling] sets) computes its colour from what lies behind the layer, not
+   from the layer's own content, and a view's alpha scales it as the content's does; the port's matrix, cap insets and
+   generated image are the host shadow view's; and the port's pixel, laid over a destination, leaves what the filter
+   leaves. It writes the host's image along an edge and its matrix where the device test reads them (SHADOW_RECORDS). */
 typedef struct { float m11, m12, m13, m14, m15, m21, m22, m23, m24, m25, m31, m32, m33, m34, m35, m41, m42, m43, m44, m45; } Matrix;
 @interface NSValue (Matrix)
 + (NSValue *)valueWithCAColorMatrix:(Matrix)matrix;
@@ -35,6 +38,21 @@ static void pixels(UIImage *image, CGSize size, void (^use)(const uint8_t *data,
     CGContextRelease(context);
     CGColorSpaceRelease(space);
     free(data);
+}
+
+static UIImage *port_pixel(const float d[3])
+{
+    uint8_t pixel[4] = {(uint8_t)lroundf(d[0] * 255), (uint8_t)lroundf(d[1] * 255), (uint8_t)lroundf(d[2] * 255), 255};
+    charon_sheet_shadow_pixel(pixel, 1);
+    CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(NULL, 1, 1, 8, 4, space, kCGImageAlphaPremultipliedLast);
+    memcpy(CGBitmapContextGetData(context), pixel, 4);
+    CGImageRef image = CGBitmapContextCreateImage(context);
+    CGContextRelease(context);
+    CGColorSpaceRelease(space);
+    UIImage *result = [UIImage imageWithCGImage:image];
+    CGImageRelease(image);
+    return result;
 }
 
 static UIImage *solid(CGFloat alpha)
@@ -95,28 +113,82 @@ static void expected(const Matrix *m, float alpha, const float d[3], float out[3
 {
     UIImage *kit = [UIImage performSelector:@selector(kitImageNamed:) withObject:@"_UIPopoverShadow"];
     printf("note the kit image _UIPopoverShadow: %s at scale %g\n", NSStringFromCGSize(kit.size).UTF8String, kit.scale);
+    NSMutableDictionary *records = [NSMutableDictionary dictionary];
     Class shadowClass = NSClassFromString(@"_UIRoundedRectShadowView");
-    if (shadowClass) {
+    check(shadowClass != Nil, @"the host has _UIRoundedRectShadowView");
+    for (NSValue *card in @[[NSValue valueWithCGSize:CGSizeMake(200, 200)], [NSValue valueWithCGSize:CGSizeMake(40, 200)]]) {
         UIImageView *shadow = ((id (*)(id, SEL, CGFloat))objc_msgSend)([shadowClass alloc], NSSelectorFromString(@"initWithCornerRadius:"), 10);
-        CGRect frame = ((CGRect (*)(id, SEL, CGRect))objc_msgSend)(shadow, NSSelectorFromString(@"frameWithContentWithFrame:"), CGRectMake(0, 0, 200, 200));
+        ((void (*)(id, SEL, BOOL))objc_msgSend)(shadow, NSSelectorFromString(@"setUseLowerIntensity:"), YES);
+        CGSize size = card.CGSizeValue;
+        CGRect frame = ((CGRect (*)(id, SEL, CGRect))objc_msgSend)(shadow, NSSelectorFromString(@"frameWithContentWithFrame:"), CGRectMake(0, 0, size.width, size.height));
         shadow.frame = frame;
         [self.window addSubview:shadow];
         [shadow layoutIfNeeded];
-        printf("note the shadow view around a 200 x 200 card: frame %s, image %s, cap insets %s\n", NSStringFromCGRect(frame).UTF8String,
-               NSStringFromCGSize(shadow.image.size).UTF8String, NSStringFromUIEdgeInsets(shadow.image.capInsets).UTF8String);
+        double cap = charon_sheet_shadow_cap(frame.size.width, frame.size.height, 10, self.window.screen.scale);
+        UIEdgeInsets insets = shadow.image.capInsets;
+        check(CGRectEqualToRect(frame, CGRectInset(CGRectMake(0, 0, size.width, size.height), -150, -150)) && fabs(insets.top - cap) < 1e-6 && fabs(insets.left - cap) < 1e-6
+                  && fabs(insets.bottom - cap) < 1e-6 && fabs(insets.right - cap) < 1e-6,
+              [NSString stringWithFormat:@"the shadow view around a %@ card: frame %@, image %@, cap insets %@; the port: 150 points out, cap %g",
+                  NSStringFromCGSize(size), NSStringFromCGRect(frame), NSStringFromCGSize(shadow.image.size), NSStringFromUIEdgeInsets(insets), cap]);
+        if (size.width == 200) {
+            id vibrant = nil;
+            for (id f in shadow.layer.filters)
+                if ([[f valueForKey:@"type"] isEqual:@"vibrantColorMatrix"])
+                    vibrant = f;
+            Matrix m = {0};
+            [[vibrant valueForKey:@"inputColorMatrix"] getValue:&m];
+            BOOL same = vibrant != nil;
+            NSMutableArray *matrix = [NSMutableArray array];
+            for (int i = 0; i < 20; i++) {
+                same = same && (&m.m11)[i] == charon_sheet_shadow_matrix[i];
+                [matrix addObject:@((&m.m11)[i])];
+            }
+            check(same, [NSString stringWithFormat:@"the lower-intensity shadow view's vibrant matrix is the port's: %@", [matrix componentsJoinedByString:@" "]]);
+            records[@"matrix"] = matrix;
+        }
         [shadow removeFromSuperview];
     }
 
+    /* The port's corner against the host's image, pixel by pixel at its scale, and at 1x against the mean of each 2 x 2
+       block, which is what drawing the 2x image at 1x gives. The bound is the fit's error (CharonSheetShadow.c). */
+    CGSize kitPixels = CGSizeMake(kit.size.width * kit.scale, kit.size.height * kit.scale);
+    pixels(kit, kitPixels, ^(const uint8_t *d, size_t w, size_t h) {
+        const uint8_t *two = charon_sheet_shadow_corner((unsigned)kit.scale), *one = charon_sheet_shadow_corner(1);
+        int worst = 0, worstOne = 0;
+        double sum = 0;
+        for (size_t i = 0; i < w * h; i++) {
+            int e = abs((int)two[i] - (int)d[i * 4 + 3]);
+            worst = MAX(worst, e);
+            sum += e * e;
+        }
+        for (size_t y = 0; y < h / 2; y++)
+            for (size_t x = 0; x < w / 2; x++) {
+                double mean = (d[((2 * y) * w + 2 * x) * 4 + 3] + d[((2 * y) * w + 2 * x + 1) * 4 + 3] + d[((2 * y + 1) * w + 2 * x) * 4 + 3] + d[((2 * y + 1) * w + 2 * x + 1) * 4 + 3]) / 4.0;
+                worstOne = MAX(worstOne, (int)ceil(fabs(one[y * (w / 2) + x] - mean) - 1e-9));
+            }
+        check(w == 400 && h == 400 && worst <= 3, [NSString stringWithFormat:@"the port's corner at scale %g is the host's image within 3/255: %zu x %zu, worst %d, rms %.2f", kit.scale, w, h, worst, sqrt(sum / (w * h))]);
+        check(worstOne <= 3, [NSString stringWithFormat:@"the port's corner at scale 1 is the host's image drawn at 1x within 3/255: worst %d", worstOne]);
+        NSMutableArray *edge = [NSMutableArray array];
+        for (size_t y = 0; y < h; y++)
+            [edge addObject:@(d[(y * w + w - 1) * 4 + 3])];
+        records[@"edge"] = edge;
+        records[@"edgeScale"] = @(kit.scale);
+    });
+
     NSArray *backgrounds = @[[UIColor redColor], [UIColor blueColor], [UIColor colorWithWhite:0.5 alpha:1], [UIColor whiteColor]];
     UIView *root = self.window.rootViewController.view;
+    /* Per background: a black layer at 0.5 plain, with a reddening matrix, with the vibrant matrix; then the vibrant
+       matrix over an opaque layer in a view at alpha 0.5, as UIKit sets the magic alpha on its view; then the port's pixel
+       for that background in a view at alpha 0.5. */
     for (NSUInteger b = 0; b < backgrounds.count; b++)
-        for (NSUInteger k = 0; k < 3; k++) {
+        for (NSUInteger k = 0; k < 5; k++) {
             UIView *back = [[UIView alloc] initWithFrame:CGRectMake(10 + k * 60, 10 + b * 60, 50, 50)];
             back.backgroundColor = backgrounds[b];
             UIView *layerView = [[UIView alloc] initWithFrame:CGRectMake(5, 5, 40, 40)];
-            layerView.layer.contents = (id)solid(0.5).CGImage;
+            layerView.layer.contents = (id)(k == 3 ? solid(1) : k == 4 ? port_pixel(colours[b]) : solid(0.5)).CGImage;
             if (k == 1) layerView.layer.filters = @[filter(@"colorMatrix", &redden)];
-            if (k == 2) layerView.layer.filters = @[filter(@"vibrantColorMatrix", &lower)];
+            if (k == 2 || k == 3) layerView.layer.filters = @[filter(@"vibrantColorMatrix", &lower)];
+            if (k >= 3) layerView.alpha = 0.5;
             [back addSubview:layerView];
             [root addSubview:back];
         }
@@ -135,6 +207,8 @@ static void expected(const Matrix *m, float alpha, const float d[3], float out[3
                 const uint8_t *plain = d + ((10 + b * 60 + 25) * w + 10 + 25) * 4;
                 const uint8_t *red = d + ((10 + b * 60 + 25) * w + 70 + 25) * 4;
                 const uint8_t *vibrant = d + ((10 + b * 60 + 25) * w + 130 + 25) * 4;
+                const uint8_t *faded = d + ((10 + b * 60 + 25) * w + 190 + 25) * 4;
+                const uint8_t *port = d + ((10 + b * 60 + 25) * w + 250 + 25) * 4;
                 NSString *name = @[@"red", @"blue", @"grey", @"white"][b];
                 float red_expected[3] = {0.5f + 0.5f * colours[b][0], 0.5f * colours[b][1], 0.5f * colours[b][2]};
                 BOOL control = YES;
@@ -150,8 +224,18 @@ static void expected(const Matrix *m, float alpha, const float d[3], float out[3
                 }
                 check(matches && differs, [NSString stringWithFormat:@"the vibrant matrix over %@ leaves %u %u %u: the matrix of what is behind (%.0f %.0f %.0f), not the black layer laid over it (%u %u %u)",
                       name, vibrant[0], vibrant[1], vibrant[2], model[0] * full, model[1] * full, model[2] * full, plain[0], plain[1], plain[2]]);
+                BOOL alike = YES, portAlike = YES;
+                for (int c = 0; c < 3; c++) {
+                    alike = alike && abs((int)faded[c] - (int)vibrant[c]) <= 3;
+                    portAlike = portAlike && abs((int)port[c] - (int)vibrant[c]) <= 3;
+                }
+                check(alike, [NSString stringWithFormat:@"a view's alpha of 0.5 scales the vibrant matrix over %@ as the content's does: %u %u %u", name, faded[0], faded[1], faded[2]]);
+                check(portAlike, [NSString stringWithFormat:@"the port's pixel in a view at alpha 0.5 over %@ leaves what the vibrant matrix leaves: %u %u %u", name, port[0], port[1], port[2]]);
             }
         });
+        NSString *out = [NSProcessInfo processInfo].environment[@"SHADOW_RECORDS"];
+        if (out)
+            [[NSJSONSerialization dataWithJSONObject:records options:NSJSONWritingSortedKeys error:NULL] writeToFile:out atomically:YES];
         printf("checks=%d failures=%d\n", checks, failures);
         fflush(stdout);
         exit(failures ? 1 : 0);

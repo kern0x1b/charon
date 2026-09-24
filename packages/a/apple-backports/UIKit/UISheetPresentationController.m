@@ -3,8 +3,10 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 #include <math.h>
+#import "CharonBackdrop.h"
 #import "CharonCustomTransition.h"
 #import "CharonSheet.h"
+#include "CharonSheetShadow.h"
 
 #pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 #pragma clang diagnostic ignored "-Wobjc-property-implementation"
@@ -579,6 +581,17 @@ typedef NS_ENUM(NSInteger, CharonDetentType) {
     return 0.5 * (1 - [self percentDimmedFromOffset]) * [self percentPresented];
 }
 
+/* -_magicShadowOpacity 0x188f92204, which -_percentDimmed 0x188f936bc sets: none under a
+   parent that stacks with the sheet or while the sheet itself fills the screen, else the
+   dimming. A sheet over a full-screen or custom presentation has no parent here, and
+   [nil _stacksWithChild] is NO in UIKit too, so it has the shadow. */
+- (CGFloat)magicShadowOpacity
+{
+    if (_parent && [_parent stacksWithChild])
+        return 0;
+    return [self percentFullScreen] == 1 ? 0 : [self percentDimmedFromOffset];
+}
+
 /* -_cornerRadii 0x188f930e8, where "match the display" is the display's corner radius
    (0x188f93318). _dismissCornerRadius is the automatic value, so the metrics' 10. */
 - (void)getTopCornerRadius:(CGFloat *)top bottomCornerRadius:(CGFloat *)bottom
@@ -623,13 +636,25 @@ typedef NS_ENUM(NSInteger, CharonDetentType) {
 
 @end
 
+/* The magic shadow view of -[UIDropShadowView initWithFrame:] 0x189100234: a
+   _UIRoundedRectShadowView of corner radius 10, reaching 150 points beyond the card
+   (+_expansionInsetForShadowImage -150). */
+static const CGFloat charon_sheet_magic_shadow_outset = 150;
+static const CGFloat charon_sheet_magic_shadow_radius = 10;
+
 /* What UIKit calls the drop shadow view: the sheet's frame, its shadow and grabber, and a
    clipping view with the corners that holds the presented controller's view. */
-@interface CharonSheetView : UIView
+@interface CharonSheetView : UIView <CharonBackdropClient>
 @property (nonatomic, readonly) UIView *clippingView;
 @property (nonatomic, readonly) UIControl *grabber;
 - (void)setTopCornerRadius:(CGFloat)top bottomCornerRadius:(CGFloat)bottom;
+- (void)setMagicShadowAlpha:(CGFloat)alpha;
 @end
+
+static void charon_sheet_free_pixels(void *info, const void *data, size_t size)
+{
+    free((void *)data);
+}
 
 @implementation CharonSheetView {
     UIView *_clippingView;
@@ -637,6 +662,9 @@ typedef NS_ENUM(NSInteger, CharonDetentType) {
     CAShapeLayer *_mask;
     CGFloat _topCornerRadius;
     CGFloat _bottomCornerRadius;
+    UIView *_magicShadowView;
+    CALayer *_magicShadowLayer;
+    CharonBackdrop *_magicShadowReader;
 }
 
 @synthesize clippingView = _clippingView;
@@ -694,6 +722,92 @@ typedef NS_ENUM(NSInteger, CharonDetentType) {
     self.layer.shadowPath = [path CGPath];
     [CATransaction commit];
     _grabber.center = CGPointMake(CGRectGetMidX(self.bounds), charon_sheet_grabber_spacing + charon_sheet_grabber_height / 2);
+}
+
+/* -[UIDropShadowView hitTest:withEvent:] 0x189041df4: the grabbers first, so that their touch
+   area reaches beyond the card, then the view's own; the view itself takes no touch. A hit in
+   the content is kept only inside the content touch insets, which _containerViewLayoutSubviews
+   sets from -[_UISheetLayoutInfo _touchInsets] 0x189035fc8: the untransformed frame less the
+   hosted one, which is the same frame for a sheet that is not hosting another, as none is here. */
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    UIView *hit = [_grabber hitTest:[self convertPoint:point toView:_grabber] withEvent:event];
+    if (hit)
+        return hit;
+    hit = [super hitTest:point withEvent:event];
+    return hit == self ? nil : hit;
+}
+
+/* The magic shadow is a vibrant colour matrix over what lies under the sheet, which the
+   release cannot composite: the view reads what lies under it (CharonBackdrop) and lays the
+   matrix of it, masked by the shadow's image, over it (CharonSheetShadow.c). Its view is
+   made on the first alpha above zero, below everything, as -setMagicShadowAlpha: 0x188f94b48
+   sets the alpha of UIKit's. */
+- (void)setMagicShadowAlpha:(CGFloat)alpha
+{
+    if (!_magicShadowView && alpha <= 0)
+        return;
+    if (!_magicShadowView) {
+        _magicShadowView = [[UIView alloc] initWithFrame:CGRectInset(self.bounds, -charon_sheet_magic_shadow_outset, -charon_sheet_magic_shadow_outset)];
+        _magicShadowView.userInteractionEnabled = NO;
+        _magicShadowView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        _magicShadowLayer = [CALayer layer];
+        [_magicShadowView.layer addSublayer:_magicShadowLayer];
+        [self insertSubview:_magicShadowView atIndex:0];
+        _magicShadowReader = [[CharonBackdrop alloc] initWithView:self client:self];
+    }
+    _magicShadowView.alpha = alpha;
+    [self charon_updateMagicShadowReader];
+}
+
+- (void)charon_updateMagicShadowReader
+{
+    if (self.window && _magicShadowView.alpha > 0) {
+        _magicShadowReader.scale = self.window.screen.scale;
+        [_magicShadowReader start];
+    } else {
+        [_magicShadowReader stop];
+    }
+}
+
+- (void)didMoveToWindow
+{
+    [super didMoveToWindow];
+    [self charon_updateMagicShadowReader];
+}
+
+- (BOOL)backdropIsWanted:(CharonBackdrop *)backdrop
+{
+    return !self.hidden && _magicShadowView.alpha > 0;
+}
+
+- (CGRect)backdropRegion:(CharonBackdrop *)backdrop
+{
+    return _magicShadowView.frame;
+}
+
+- (void)backdrop:(CharonBackdrop *)backdrop captured:(uint8_t *)pixels width:(size_t)width height:(size_t)height rowBytes:(size_t)rowBytes rect:(CGRect)captured
+{
+    CGRect frame = _magicShadowView.frame;
+    CGFloat scale = self.window.screen.scale;
+    double cap = charon_sheet_shadow_cap(CGRectGetWidth(frame), CGRectGetHeight(frame), charon_sheet_magic_shadow_radius, scale);
+    CGImageRef image = NULL;
+    if (charon_sheet_shadow_shade(pixels, width, height, rowBytes, CGRectGetMinX(captured) - CGRectGetMinX(frame), CGRectGetMinY(captured) - CGRectGetMinY(frame),
+                                  CGRectGetWidth(captured) / width, CGRectGetHeight(captured) / height, CGRectGetWidth(frame), CGRectGetHeight(frame), cap, (unsigned)lround(scale))) {
+        CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
+        CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, pixels, rowBytes * height, charon_sheet_free_pixels);
+        image = CGImageCreate(width, height, 8, 32, rowBytes, space, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrderDefault, provider, NULL, false, kCGRenderingIntentDefault);
+        CGDataProviderRelease(provider);
+        CGColorSpaceRelease(space);
+    } else {
+        free(pixels);
+    }
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+    _magicShadowLayer.frame = [self convertRect:captured toView:_magicShadowView];
+    _magicShadowLayer.contents = (__bridge id)image;
+    [CATransaction commit];
+    CGImageRelease(image);
 }
 
 @end
@@ -1263,6 +1377,7 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
     _sheetView.grabber.hidden = !_prefersGrabberVisible;
     _sheetView.grabber.alpha = [_layout grabberAlpha];
     _sheetView.layer.shadowOpacity = [_layout shadowOpacity];
+    [_sheetView setMagicShadowAlpha:[_layout magicShadowOpacity]];
     UITraitCollection *traits = self.containerView.traitCollection;
     _sheetView.grabber.backgroundColor = [charon_sheet_grabber_color() resolvedColorWithTraitCollection:traits];
 
@@ -1395,7 +1510,9 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
     CGRect end = [info[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     _keyboardFrame = hiding || !window ? CGRectNull : [container convertRect:[window convertRect:end fromWindow:nil] fromView:window];
     UIResponder *responder = charon_sheet_first_responder(window);
-    _firstResponderRequiresKeyboard = [responder conformsToProtocol:@protocol(UIKeyInput)];
+    /* -[UIResponder _requiresKeyboardWhenFirstResponder] 0x18910488c: a responder that takes
+       key input, unless it answers isEditable and is not. */
+    _firstResponderRequiresKeyboard = [responder conformsToProtocol:@protocol(UIKeyInput)] && (![responder respondsToSelector:@selector(isEditable)] || [(id)responder isEditable]);
     _resolvedOffsets = nil;
     /* A spring or a drag under way settles on the detents as they now are when it ends. */
     if (_animator || _interactiveDismissal || _pan.state == UIGestureRecognizerStateBegan || _pan.state == UIGestureRecognizerStateChanged)

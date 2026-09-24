@@ -1,5 +1,6 @@
 #import <UIKit/UIKit.h>
 #import "sheet-cases.h"
+#import "sheet-shadow-expectations.h"
 
 /* A context of the test's own, with the container bounds the medium detent asks for. */
 @interface SheetContext : NSObject <UISheetPresentationControllerDetentResolutionContext>
@@ -178,6 +179,77 @@ static UIControl *sheet_grabber(UIView *sheetView)
     return nil;
 }
 
+/* A responder that takes key input and says it is not editable, as a text view that is not. */
+@interface SheetReadOnlyInput : UIView <UIKeyInput>
+@end
+
+@implementation SheetReadOnlyInput
+- (BOOL)canBecomeFirstResponder { return YES; }
+- (BOOL)isEditable { return NO; }
+- (BOOL)hasText { return NO; }
+- (void)insertText:(NSString *)text {}
+- (void)deleteBackward {}
+@end
+
+static void post_keyboard(NSString *name, UIWindow *window)
+{
+    CGRect end = CGRectMake(0, CGRectGetHeight(window.bounds) - 216, CGRectGetWidth(window.bounds), 216);
+    [[NSNotificationCenter defaultCenter] postNotificationName:name object:nil userInfo:@{
+        UIKeyboardFrameEndUserInfoKey: [NSValue valueWithCGRect:end], UIKeyboardAnimationDurationUserInfoKey: @0.25, UIKeyboardAnimationCurveUserInfoKey: @(UIViewAnimationCurveEaseInOut)}];
+}
+
+static NSString *hits(UIWindow *window, CGPoint point, UIView *view)
+{
+    return flag([window hitTest:point withEvent:nil] == view);
+}
+
+/* One pixel of the window at the screen's scale, its top left corner at a point. */
+static void window_pixel(UIWindow *window, CGPoint point, uint8_t pixel[4])
+{
+    CGFloat scale = window.screen.scale;
+    memset(pixel, 0, 4);
+    CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(pixel, 1, 1, 8, 4, space, kCGImageAlphaPremultipliedLast);
+    CGColorSpaceRelease(space);
+    CGContextTranslateCTM(context, 0, 1);
+    CGContextScaleCTM(context, scale, -scale);
+    CGContextTranslateCTM(context, -point.x, -point.y);
+    [window.layer renderInContext:context];
+    CGContextRelease(context);
+}
+
+/* The magic shadow 20 points above a sheet's card, over what lies under it, per the host's shadow view
+   (host/sheetshadow/run.sh): the alpha of its image along an edge at the pixel's distance from the shadow's outer
+   edge, 150 points above the card, and its vibrant matrix of the destination laid over it with the matrix's alpha.
+   The destination is read 162 points above the card, beyond the shadow. */
+static NSString *magic_shadow(UIWindow *window, UIView *card, SheetRecorder record)
+{
+    NSDictionary *host = [NSJSONSerialization JSONObjectWithData:[NSData dataWithBytes:sheet_shadow_expectations length:strlen(sheet_shadow_expectations)] options:0 error:NULL];
+    NSArray *edge = host[@"edge"], *matrix = host[@"matrix"];
+    CGFloat scale = window.screen.scale, top = [card convertRect:card.bounds toView:nil].origin.y;
+    CGFloat x = floor(CGRectGetMidX(window.bounds) * scale) / scale, y = floor((top - 20) * scale) / scale;
+    uint8_t near[4], far[4];
+    window_pixel(window, CGPointMake(x, y), near);
+    window_pixel(window, CGPointMake(x, floor((top - 162) * scale) / scale), far);
+    double u = (y + 0.5 / scale - (top - 150)) * [host[@"edgeScale"] doubleValue] - 0.5;
+    NSUInteger i = (NSUInteger)floor(u);
+    double f = u - i, alpha = ((1 - f) * [edge[i] doubleValue] + f * [edge[i + 1] doubleValue]) / 255;
+    double d[3] = {far[0] / 255.0, far[1] / 255.0, far[2] / 255.0}, m[20];
+    for (int k = 0; k < 20; k++)
+        m[k] = [matrix[k] doubleValue];
+    double a = fmin(fmax(m[15] * d[0] + m[16] * d[1] + m[17] * d[2] + m[18] + m[19], 0), 1);
+    BOOL within = YES;
+    double expected[3];
+    for (int c = 0; c < 3; c++) {
+        double v = fmin(fmax(m[c * 5] * d[0] + m[c * 5 + 1] * d[1] + m[c * 5 + 2] * d[2] + m[c * 5 + 3] + m[c * 5 + 4], 0), 1);
+        expected[c] = 255 * (d[c] + alpha * a * (v - d[c]));
+        within = within && fabs(near[c] - expected[c]) <= 3;
+    }
+    record(@"layout.shadow.values", [NSString stringWithFormat:@"under=%u %u %u near=%u %u %u expected=%.1f %.1f %.1f alpha=%.3f",
+        far[0], far[1], far[2], near[0], near[1], near[2], expected[0], expected[1], expected[2], alpha]);
+    return [NSString stringWithFormat:@"near=%@", flag(within)];
+}
+
 void sheet_layout_run(UIWindow *window, SheetRecorder record, void (^done)(void))
 {
     UIViewController *root = window.rootViewController;
@@ -195,6 +267,17 @@ void sheet_layout_run(UIWindow *window, SheetRecorder record, void (^done)(void)
     UIViewController *second = [[UIViewController alloc] init];
     second.view.backgroundColor = [UIColor lightGrayColor];
     second.modalPresentationStyle = UIModalPresentationFormSheet;
+    SheetReadOnlyInput *input = [[SheetReadOnlyInput alloc] initWithFrame:CGRectMake(20, 100, 100, 30)];
+    [first.view addSubview:input];
+    /* A sheet over a full-screen presentation has no parent to stack with, so it has the magic shadow. */
+    UIViewController *under = [[UIViewController alloc] init];
+    under.view.backgroundColor = [UIColor redColor];
+    under.modalPresentationStyle = UIModalPresentationFullScreen;
+    UIViewController *shadowed = [[UIViewController alloc] init];
+    shadowed.view.backgroundColor = [UIColor whiteColor];
+    shadowed.modalPresentationStyle = UIModalPresentationPageSheet;
+    shadowed.sheetPresentationController.detents = @[ [UISheetPresentationControllerDetent mediumDetent], [UISheetPresentationControllerDetent largeDetent] ];
+    shadowed.sheetPresentationController.selectedDetentIdentifier = UISheetPresentationControllerDetentIdentifierMedium;
     void (^state)(NSString *) = ^(NSString *name) {
         record([@"layout." stringByAppendingString:name], [NSString stringWithFormat:@"root=%@ first=%@ second=%@ selected=%@ container=%@ calls=%@",
             window_rect(root.view), first.view.window ? window_rect(first.view) : @"-", second.view.window ? window_rect(second.view) : @"-",
@@ -212,7 +295,12 @@ void sheet_layout_run(UIWindow *window, SheetRecorder record, void (^done)(void)
            sheet.prefersGrabberVisible = YES;
            [sheet_grabber(sheet.presentedView) sendActionsForControlEvents:UIControlEventTouchUpInside]; },
         ^{ state(@"grabberFromLarge");
-           [sheet_grabber(sheet.presentedView) sendActionsForControlEvents:UIControlEventTouchUpInside]; },
+           /* The grabber takes touches in 44 points around itself, beyond the card's top edge too. */
+           UIControl *grabber = sheet_grabber(sheet.presentedView);
+           CGPoint centre = [grabber convertPoint:CGPointMake(CGRectGetMidX(grabber.bounds), CGRectGetMidY(grabber.bounds)) toView:nil];
+           CGFloat top = [sheet.presentedView convertRect:sheet.presentedView.bounds toView:nil].origin.y;
+           record(@"layout.hit.visible", [NSString stringWithFormat:@"centre=%@ above=%@", hits(window, centre, grabber), hits(window, CGPointMake(centre.x, top - 10), grabber)]);
+           [grabber sendActionsForControlEvents:UIControlEventTouchUpInside]; },
         ^{ state(@"grabberFromMedium");
            [delegate.calls removeAllObjects];
            [sheet animateChanges:^{ sheet.selectedDetentIdentifier = UISheetPresentationControllerDetentIdentifierMedium; }]; },
@@ -222,7 +310,23 @@ void sheet_layout_run(UIWindow *window, SheetRecorder record, void (^done)(void)
            [sheet_grabber(sheet.presentedView) sendActionsForControlEvents:UIControlEventTouchUpInside]; },
         ^{ state(@"keyboardEnded");
            record(@"layout.keyboardEnded.editing", flag(field.isFirstResponder));
-           sheet.prefersGrabberVisible = NO;
+           sheet.prefersGrabberVisible = NO; },
+        ^{ UIControl *grabber = sheet_grabber(sheet.presentedView);
+           CGFloat top = [sheet.presentedView convertRect:sheet.presentedView.bounds toView:nil].origin.y;
+           record(@"layout.hit.hidden", [NSString stringWithFormat:@"above=%@", hits(window, CGPointMake(CGRectGetMidX(window.bounds), top - 10), grabber)]);
+           /* Whether the release lets a text view that is not editable hold the keyboard: a note, not a check. */
+           UITextView *text = [[UITextView alloc] initWithFrame:CGRectMake(20, 140, 100, 40)];
+           text.editable = NO;
+           [first.view addSubview:text];
+           record(@"layout.note.readOnlyTextView", [NSString stringWithFormat:@"becameFirstResponder=%@", flag([text becomeFirstResponder])]);
+           [text resignFirstResponder];
+           [text removeFromSuperview];
+           [input becomeFirstResponder];
+           post_keyboard(UIKeyboardWillShowNotification, window); },
+        ^{ state(@"readOnly");
+           record(@"layout.readOnly.responder", flag(input.isFirstResponder));
+           [input resignFirstResponder];
+           post_keyboard(UIKeyboardWillHideNotification, window);
            sheet.selectedDetentIdentifier = UISheetPresentationControllerDetentIdentifierLarge; },
         ^{ [first presentViewController:second animated:YES completion:nil]; },
         ^{ state(@"stacked");
@@ -231,7 +335,12 @@ void sheet_layout_run(UIWindow *window, SheetRecorder record, void (^done)(void)
            [first dismissViewControllerAnimated:YES completion:nil]; },
         ^{ state(@"dismissed");
            record(@"layout.after", [NSString stringWithFormat:@"transform=%@ radius=%.1f masks=%@", NSStringFromCGAffineTransform(root.view.transform), root.view.layer.cornerRadius, flag(root.view.layer.masksToBounds)]);
-           done(); },
+           [root presentViewController:under animated:NO completion:nil]; },
+        ^{ [under presentViewController:shadowed animated:YES completion:nil]; },
+        ^{ record(@"layout.shadow", magic_shadow(window, shadowed.sheetPresentationController.presentedView, record));
+           [shadowed dismissViewControllerAnimated:NO completion:nil]; },
+        ^{ [under dismissViewControllerAnimated:NO completion:nil]; },
+        ^{ done(); },
         nil];
     /* The delayed perform keeps the steps alive until the last one has run. */
     [steps next];
