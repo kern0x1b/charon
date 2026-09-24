@@ -107,6 +107,9 @@ static BOOL charon_release_presents(void)
 
 @implementation CharonSheetHandover
 
+@synthesize sheet = _sheet;
+@synthesize original = _original;
+
 - (UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(UIViewController *)presenting sourceViewController:(UIViewController *)source
 {
     return self.sheet;
