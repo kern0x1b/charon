@@ -82,6 +82,53 @@ function failures(opt)
         table.insert(found, "a fat static library beside the cache is neither a library taken nor a failure: " .. tostring(errors))
     end
 
+    -- A system image's files are HFS-compressed, and a library beside the cache whose compressed data
+    -- is large (TSReading beside 10.3.4's) comes out of os.cp flagged compressed with no data. The
+    -- library is an armv7 dylib padded with random-looking bytes printed in hex, as xxd -p prints
+    -- them, which ditto compresses to about 2.4 MB on an HFS+ image.
+    local name = "/usr/lib/libLarge.dylib"
+    local command = string.pack("<I4I4I4I4I4I4", 0xD, 24 + 24, 24, 0, 0x10000, 0x10000) .. name .. string.rep("\0", 24 - #name)
+    local library = string.pack("<I4i4i4I4I4I4I4", 0xfeedface, 12, 9, 6, 1, #command, 0) .. command
+    local padding, state = {}, 1
+    for _ = 1, 50000 do
+        local line = {}
+        for _ = 1, 30 do
+            state = (state * 1103515245 + 12345) & 0xFFFFFFFF
+            table.insert(line, string.format("%02x", state >> 24))
+        end
+        table.insert(padding, table.concat(line) .. "\n")
+    end
+    library = library .. table.concat(padding)
+    local plain = path.join(folder, "libLarge.dylib")
+    io.writefile(plain, library, {encoding = "binary"})
+    local hfs, volume = path.join(folder, "hfs.dmg"), path.join(folder, "hfs")
+    os.vrunv("hdiutil", {"create", "-quiet", "-size", "40m", "-fs", "HFS+", "-volname", "charon", "-type", "UDIF", hfs})
+    os.mkdir(volume)
+    os.vrunv("hdiutil", {"attach", "-quiet", "-nobrowse", "-mountpoint", volume, hfs})
+    try {
+        function ()
+            io.writefile(path.join(volume, "System", "Library", "Caches", "com.apple.dyld", "dyld_shared_cache_armv7"), "the cache of one firmware")
+            os.mkdir(path.join(volume, "usr", "lib"))
+            os.vrunv("ditto", {"--hfsCompression", plain, path.join(volume, "usr", "lib", "libLarge.dylib")})
+            local flags = tonumber(os.iorunv("stat", {"-f", "%Xf", path.join(volume, "usr", "lib", "libLarge.dylib")}):trim(), 16)
+            if flags & 0x20 == 0 then
+                table.insert(found, "the fixture library is not HFS-compressed on the image, so the copy is not tested")
+            end
+            os.tryrm(outside)
+            errors = fixtures.refusal(function () firmware.harvest(volume, "9.9", first, "armv7") end)
+            local taken, bytes = path.join(outside, "usr", "lib", "libLarge.dylib"), nil
+            local unread = errors or fixtures.refusal(function () bytes = io.readfile(taken, {encoding = "binary"}) end)
+            if unread or bytes ~= library then
+                table.insert(found, "a compressed library beside the cache is taken readable, byte for byte: " .. (unread or "the bytes differ"))
+            end
+        end,
+        finally {
+            function ()
+                os.vrunv("hdiutil", {"detach", "-quiet", volume})
+            end
+        }
+    }
+
     -- A held armv7s cache of iOS 10 came with the arm64 one from a 64-bit device's image: its
     -- libraries come from that firmware, found among the architectures the folder holds, though the
     -- armv7s devices are listed first; neither needs a download while both root filesystems are here.

@@ -388,6 +388,14 @@ local function plain_image(firmware, file)
     return file
 end
 
+-- Copies a file out of a mounted system image with ditto, as rootfs() copies the whole image. The
+-- image's files are HFS-compressed, and copyfile(3) with COPYFILE_ALL, which os.cp calls, gives a
+-- larger one the compressed flag and no data, so it cannot be read at all (TSReading, iWorkImport
+-- and FaceCore's .dat beside the caches of 7.0 to 10.3.4; COPYFILE_DATA alone and ditto keep them).
+local function copy_out(file, target)
+    os.vrunv("ditto", {file, target})
+end
+
 local function copy_libraries(mount, destination, accept)
     local copied = 0
     for _, top in ipairs(LIBRARY_FOLDERS) do
@@ -395,7 +403,7 @@ local function copy_libraries(mount, destination, accept)
             if macho.is_macho(file) and (not accept or accept(file)) then
                 local target = path.join(destination, path.relative(file, mount))
                 os.mkdir(path.directory(target))
-                os.cp(file, target)
+                copy_out(file, target)
                 copied = copied + 1
             end
         end
@@ -480,7 +488,7 @@ function harvest(mount, release, firmware, architecture)
             local taken = false
             if not os.isfile(held) then
                 os.mkdir(folder)
-                os.cp(file, held .. ".partial")
+                copy_out(file, held .. ".partial")
                 os.mv(held .. ".partial", held)
                 taken = true
             elseif same_file(file, held) then
