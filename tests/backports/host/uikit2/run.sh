@@ -198,6 +198,7 @@ group localauth "../LocalAuthentication/LAContext.m ../LocalAuthentication/LAErr
 group documentpicker "UIDocumentPickerViewController.m CharonDocumentBrowser.m" "*" documentpicker_test.m
 group datecomponentsformatter "../Foundation/NSDateComponentsFormatter.m" "*" datecomponentsformatter_test.m
 group runloopobserver "../Foundation/CFRunLoopObserverHandler.m" "*" runloopobserver_test.m
+group tabledimension "UITableViewAutomaticDimension.m" "*" tabledimension_test.m
 group scenes "UISceneValues.m UISceneConstants.m UISceneConstants16.m" "*" scenes_test.m
 group cornercurve "CALayer+CornerCurve.m" "" cornercurve_test.m
 group relativedatetimeformatter "../Foundation/NSRelativeDateTimeFormatter.m" "*" relativedatetimeformatter_test.m
