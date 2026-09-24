@@ -109,9 +109,18 @@
     return [self charon_valueWithJSValueRef:JSValueMakeUndefined(context.JSGlobalContextRef) context:context];
 }
 
+/* A conversion that runs script (a valueOf or toString) and throws reports the exception to the
+ * context's handler and answers NaN, 0 or nil, as the release's JSValue does. */
+static id Reported(JSContext *context, id result, JSValueRef exception)
+{
+    if (exception)
+        [context charon_noteException:exception];
+    return result;
+}
+
 - (id)toObject
 {
-    return charon_js_unbox(_context.JSGlobalContextRef, _value, NULL);
+    return charon_js_unbox(_context.JSGlobalContextRef, _value);
 }
 
 - (id)toObjectOfClass:(Class)expectedClass
@@ -125,17 +134,21 @@
     return JSValueToBoolean(_context.JSGlobalContextRef, _value);
 }
 
+
 - (double)toDouble
 {
-    return JSValueToNumber(_context.JSGlobalContextRef, _value, NULL);
+    JSValueRef exception = NULL;
+    double value = JSValueToNumber(_context.JSGlobalContextRef, _value, &exception);
+    if (exception) {
+        [_context charon_noteException:exception];
+        return NAN;
+    }
+    return value;
 }
 
 - (int32_t)toInt32
 {
-    double value = self.toDouble;
-    if (!(value == value) || isinf(value))
-        return 0;
-    return (int32_t)(uint32_t)(int64_t)fmod(trunc(value), 4294967296.0);
+    return (int32_t)charon_js_uint32(self.toDouble);
 }
 
 - (uint32_t)toUInt32
@@ -145,40 +158,32 @@
 
 - (NSNumber *)toNumber
 {
-    return self.isBoolean ? @(self.toBool) : @(self.toDouble);
+    JSValueRef exception = NULL;
+    return Reported(_context, charon_js_to_number(_context.JSGlobalContextRef, _value, &exception), exception);
 }
 
 - (NSString *)toString
 {
-    JSStringRef string = JSValueToStringCopy(_context.JSGlobalContextRef, _value, NULL);
-    NSString *result = charon_ns_string(string);
-    if (string)
-        JSStringRelease(string);
-    return result;
+    JSValueRef exception = NULL;
+    return Reported(_context, charon_js_to_string(_context.JSGlobalContextRef, _value, &exception), exception);
 }
 
 - (NSDate *)toDate
 {
-    return [NSDate dateWithTimeIntervalSince1970:self.toDouble / 1000.0];
+    JSValueRef exception = NULL;
+    return Reported(_context, charon_js_to_date(_context.JSGlobalContextRef, _value, &exception), exception);
 }
 
 - (NSArray *)toArray
 {
-    id object = self.toObject;
-    return [object isKindOfClass:[NSArray class]] ? object : nil;
+    JSValueRef exception = NULL;
+    return Reported(_context, charon_js_to_array(_context.JSGlobalContextRef, _value, &exception), exception);
 }
 
 - (NSDictionary *)toDictionary
 {
-    id object = self.toObject;
-    if ([object isKindOfClass:[NSDictionary class]])
-        return object;
-    if ([object isKindOfClass:[NSArray class]]) {
-        NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
-        [(NSArray *)object enumerateObjectsUsingBlock:^(id item, NSUInteger index, BOOL *stop) { (void)stop; dictionary[@(index).stringValue] = item; }];
-        return dictionary;
-    }
-    return nil;
+    JSValueRef exception = NULL;
+    return Reported(_context, charon_js_to_dictionary(_context.JSGlobalContextRef, _value, &exception), exception);
 }
 
 - (BOOL)isUndefined
@@ -766,12 +771,6 @@ static JSClassRef PromiseClass(void)
     return promiseClass;
 }
 
-static JSValueRef PromiseTypeError(JSContextRef ctx, NSString *message)
-{
-    JSContext *context = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(ctx) create:YES];
-    JSValue *error = [context[@"TypeError"] constructWithArguments:@[message]];
-    return error.JSValueRef;
-}
 
 /* makePromise(prototype, state): a promise object holding `state` where script cannot reach it. */
 static JSValueRef MakePromise(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef *exception)
@@ -784,7 +783,7 @@ static JSValueRef MakePromise(JSContextRef ctx, JSObjectRef function, JSObjectRe
     bool kept = argumentCount == 2 && JSObjectSetPrivateProperty(ctx, promise, name, arguments[1]);
     JSStringRelease(name);
     if (!kept) {
-        *exception = PromiseTypeError(ctx, @"this release's JavaScriptCore keeps no private property on a promise object");
+        *exception = charon_js_type_error(ctx, @"this release's JavaScriptCore keeps no private property on a promise object");
         return JSValueMakeUndefined(ctx);
     }
     return promise;
@@ -813,7 +812,7 @@ static JSValueRef CallFunction(JSContextRef ctx, JSObjectRef function, JSObjectR
     JSObjectRef callee = argumentCount > 0 ? JSValueToObject(ctx, arguments[0], exception) : NULL;
     if (!callee || !JSObjectIsFunction(ctx, callee)) {
         if (!*exception)
-            *exception = PromiseTypeError(ctx, @"the value is not a function");
+            *exception = charon_js_type_error(ctx, @"the value is not a function");
         return JSValueMakeUndefined(ctx);
     }
     JSObjectRef receiver = argumentCount > 1 ? JSValueToObject(ctx, arguments[1], exception) : NULL;

@@ -19,19 +19,46 @@
  * JavaScript throws rather than reading an argument off the wrong-sized slot.
  */
 
+/*
+ * argumentTypes points at the first argument's type in the entry's extended type encoding - the
+ * form that names each argument's class, which the release converts arguments by - or is NULL
+ * when there is none, and the arguments are then converted as id. A method's comes from
+ * _protocol_getMethodTypeEncoding, an SPI of objc-runtime's private header: the public
+ * protocol_getMethodDescription answers the plain encoding, with every class reduced to `@`, and
+ * no public call answers the extended one. The release's own bridge (WebKit's ObjCCallbackFunction)
+ * reads it the same way; iOS 6's libobjc exports it (coordination/corpus/caches/6.0.tsv). A
+ * property setter's is the property's own type, public through property_getAttributes. Both
+ * strings belong to the runtime and live as long as the protocol.
+ */
 typedef struct {
     SEL selector;
     BOOL isMethod;
+    const char *argumentTypes;
 } CharonExportEntry;
+
+extern const char *_protocol_getMethodTypeEncoding(Protocol *protocol, SEL selector, BOOL isRequiredMethod, BOOL isInstanceMethod);
+
+/* The first argument's type in a method's extended encoding: past the return type, self and _cmd. */
+static const char *MethodArgumentTypes(Protocol *protocol, SEL selector)
+{
+    const char *types = _protocol_getMethodTypeEncoding(protocol, selector, YES, YES);
+    if (!types)
+        return NULL;
+    for (int skip = 0; skip < 3 && *types; skip++)
+        types = charon_js_skip_type(types);
+    return types;
+}
 
 @interface CharonExportBinding : NSObject
 @property (nonatomic, strong) id target;
 @property (nonatomic, assign) SEL selector;
+@property (nonatomic, assign) const char *argumentTypes;
 @end
 
 @implementation CharonExportBinding
 @synthesize target = _target;
 @synthesize selector = _selector;
+@synthesize argumentTypes = _argumentTypes;
 @end
 
 static NSMapTable<Class, NSDictionary *> *ExportTables(void)
@@ -42,17 +69,6 @@ static NSMapTable<Class, NSDictionary *> *ExportTables(void)
         tables = [NSMapTable strongToStrongObjectsMapTable];
     });
     return tables;
-}
-
-static NSString *PropertyNameForSetter(NSString *selectorName)
-{
-    /* setFoo: -> foo */
-    if (![selectorName hasPrefix:@"set"] || selectorName.length < 4)
-        return nil;
-    NSString *rest = [selectorName substringWithRange:NSMakeRange(3, selectorName.length - 4)];
-    if (rest.length == 0)
-        return nil;
-    return [[[rest substringToIndex:1] lowercaseString] stringByAppendingString:[rest substringFromIndex:1]];
 }
 
 static NSString *JavaScriptNameForSelector(NSString *selectorName)
@@ -113,10 +129,10 @@ static void CollectProtocol(Protocol *protocol, NSMutableDictionary<NSString *, 
         SEL getter = sel_registerName(getterAttribute ?: name);
         NSString *defaultSetterName = [NSString stringWithFormat:@"set%@%@:", [[propertyName substringToIndex:1] uppercaseString], [propertyName substringFromIndex:1]];
         SEL setter = sel_registerName(setterAttribute ?: defaultSetterName.UTF8String);
-        CharonExportEntry getEntry = {getter, NO};
+        CharonExportEntry getEntry = {getter, NO, NULL};
         entries[propertyName] = [NSValue value:&getEntry withObjCType:@encode(CharonExportEntry)];
         if (!readonly) {
-            CharonExportEntry setEntry = {setter, NO};
+            CharonExportEntry setEntry = {setter, NO, property_getAttributes(properties[index]) + 1};
             entries[[propertyName stringByAppendingString:@"$set"]] = [NSValue value:&setEntry withObjCType:@encode(CharonExportEntry)];
         }
         free(getterAttribute);
@@ -132,7 +148,7 @@ static void CollectProtocol(Protocol *protocol, NSMutableDictionary<NSString *, 
     for (unsigned index = 0; index < methodCount; index++) {
         NSString *selectorName = NSStringFromSelector(required[index].name);
         NSString *jsName = renames[selectorName] ?: JavaScriptNameForSelector(selectorName);
-        CharonExportEntry entry = {required[index].name, YES};
+        CharonExportEntry entry = {required[index].name, YES, MethodArgumentTypes(protocol, required[index].name)};
         entries[jsName] = [NSValue value:&entry withObjCType:@encode(CharonExportEntry)];
     }
     free(required);
@@ -186,9 +202,8 @@ BOOL charon_js_class_conforms_to_export(Class objcClass)
 static BOOL SetInvocationArgument(NSInvocation *invocation, NSUInteger index, const char *type, JSContextRef ctx, JSValueRef jsValue, JSValueRef *exception)
 {
     switch (type[0]) {
-    case '@':
     case '#': {
-        id object = charon_js_unbox(ctx, jsValue, exception);
+        id object = charon_js_unbox(ctx, jsValue);
         [invocation setArgument:&object atIndex:index];
         return YES;
     }
@@ -300,7 +315,7 @@ static JSValueRef BoxInvocationReturn(NSInvocation *invocation, const char *retu
     }
 }
 
-static JSValueRef InvokeSelector(JSContextRef ctx, id target, SEL selector, size_t argumentCount, const JSValueRef arguments[], JSValueRef *exception)
+static JSValueRef InvokeSelector(JSContextRef ctx, id target, SEL selector, const char *argumentTypes, size_t argumentCount, const JSValueRef arguments[], JSValueRef *exception)
 {
     NSMethodSignature *signature = [target methodSignatureForSelector:selector];
     if (!signature) {
@@ -320,7 +335,20 @@ static JSValueRef InvokeSelector(JSContextRef ctx, id target, SEL selector, size
     for (NSUInteger index = 0; index < expected; index++) {
         const char *type = [signature getArgumentTypeAtIndex:index + 2];
         JSValueRef value = index < argumentCount ? arguments[index] : JSValueMakeUndefined(ctx);
-        if (!SetInvocationArgument(invocation, index + 2, type, ctx, value, exception)) {
+        const char *declared = argumentTypes && *argumentTypes ? argumentTypes : NULL;
+        if (declared)
+            argumentTypes = charon_js_skip_type(argumentTypes);
+        if (type[0] == '@') {
+            /* converted by its declared class; refused before the method runs, as the release does */
+            JSValueRef failure = NULL;
+            id object = declared ? charon_js_argument(ctx, declared, value, &failure) : charon_js_unbox(ctx, value);
+            if (failure) {
+                if (exception)
+                    *exception = failure;
+                return JSValueMakeUndefined(ctx);
+            }
+            [invocation setArgument:&object atIndex:index + 2];
+        } else if (!SetInvocationArgument(invocation, index + 2, type, ctx, value, exception)) {
             JSContext *context = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(ctx) create:YES];
             if (exception)
                 *exception = [JSValue valueWithNewErrorFromMessage:[NSString stringWithFormat:@"argument %lu of %@ has an unsupported type for JSExport", (unsigned long)index, NSStringFromSelector(selector)] inContext:context].JSValueRef;
@@ -340,7 +368,7 @@ static JSValueRef BoundFunctionCallAsFunction(JSContextRef ctx, JSObjectRef func
     for (size_t index = 0; index < argumentCount; index++)
         [boxedArguments addObject:[JSValue charon_valueWithJSValueRef:arguments[index] context:context]];
     charon_js_push_callback(context, [JSValue charon_valueWithJSValueRef:thisObject context:context], [JSValue charon_valueWithJSValueRef:function context:context], boxedArguments);
-    JSValueRef result = InvokeSelector(ctx, binding.target, binding.selector, argumentCount, arguments, exception);
+    JSValueRef result = InvokeSelector(ctx, binding.target, binding.selector, binding.argumentTypes, argumentCount, arguments, exception);
     JSValue *thrown = charon_js_pop_callback();
     if (thrown) {
         if (exception)
@@ -389,10 +417,11 @@ static JSValueRef ExportGetProperty(JSContextRef ctx, JSObjectRef object, JSStri
     if (!LookupEntry(table, name, &entry))
         return NULL;
     if (!entry.isMethod)
-        return InvokeSelector(ctx, target, entry.selector, 0, NULL, exception);
+        return InvokeSelector(ctx, target, entry.selector, NULL, 0, NULL, exception);
     CharonExportBinding *binding = [CharonExportBinding new];
     binding.target = target;
     binding.selector = entry.selector;
+    binding.argumentTypes = entry.argumentTypes;
     return JSObjectMake(ctx, BoundFunctionClass(), (void *)CFBridgingRetain(binding));
 }
 
@@ -406,7 +435,7 @@ static bool ExportSetProperty(JSContextRef ctx, JSObjectRef object, JSStringRef 
     CharonExportEntry entry;
     if (!LookupEntry(table, name, &entry))
         return false;
-    InvokeSelector(ctx, target, entry.selector, 1, &value, exception);
+    InvokeSelector(ctx, target, entry.selector, entry.argumentTypes, 1, &value, exception);
     return true;
 }
 
@@ -426,9 +455,8 @@ static void ExportFinalize(JSObjectRef object)
     CFRelease(JSObjectGetPrivate(object));
 }
 
-JSClassRef charon_js_export_class(Class objcClass)
+JSClassRef charon_js_export_class(void)
 {
-    (void)objcClass;
     static JSClassRef exportClass;
     static dispatch_once_t once;
     dispatch_once(&once, ^{

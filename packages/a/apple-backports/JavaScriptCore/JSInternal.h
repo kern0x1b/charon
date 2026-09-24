@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
  * Two private parts of the release's C API, declared with WebKit's own signatures
  * (JSWeakObjectMapRefPrivate.h, JSObjectRefPrivate.h; neither header is in the SDK). Both are
  * exported by the JavaScriptCore of iOS 6.0 and of every later release in the ladder
- * (coordination/corpus/caches/*.tsv) and by the host's. They are the only way the iOS 6 C API has
+ * (coordination/corpus/caches/<release>.tsv) and by the host's. They are the only way the iOS 6 C API has
  * to hold a JavaScript object without keeping it alive (JSValueProtect is strong and nothing public
  * observes a collection), and to give one JavaScript object a reference to another that script
  * cannot see or change (an ordinary property is visible to Object.getOwnPropertyNames). A weak
@@ -61,7 +61,36 @@ extern JSValueRef _Nullable JSObjectGetPrivateProperty(JSContextRef ctx, JSObjec
 JSValueRef charon_js_box(JSContextRef context, id _Nullable object);
 
 /* Unbox a JSValueRef back to a native Objective-C object, per JSValue.toObject's own rules. */
-id _Nullable charon_js_unbox(JSContextRef context, JSValueRef value, JSValueRef _Nullable *exception);
+id _Nullable charon_js_unbox(JSContextRef context, JSValueRef value);
+
+/*
+ * JSValue's other conversions, as the release makes them both for its -toString... methods and for
+ * a block argument of that declared class. A failure is left in *exception (which must start
+ * NULL) for the caller to report - to the context's handler from a JSValue method, thrown into
+ * the calling script from a block. charon_js_to_class dispatches NSString, NSNumber, NSDate,
+ * NSArray and NSDictionary to these, and takes any other class only as the bridge's own wrapper of
+ * an instance of it, or nil for undefined and null.
+ */
+NSString *_Nullable charon_js_to_string(JSContextRef context, JSValueRef value, JSValueRef _Nullable *_Nonnull exception);
+NSNumber *charon_js_to_number(JSContextRef context, JSValueRef value, JSValueRef _Nullable *_Nonnull exception);
+NSDate *_Nullable charon_js_to_date(JSContextRef context, JSValueRef value, JSValueRef _Nullable *_Nonnull exception);
+NSArray *_Nullable charon_js_to_array(JSContextRef context, JSValueRef value, JSValueRef _Nullable *_Nonnull exception);
+NSDictionary *_Nullable charon_js_to_dictionary(JSContextRef context, JSValueRef value, JSValueRef _Nullable *_Nonnull exception);
+id _Nullable charon_js_to_class(JSContextRef context, JSValueRef value, Class objcClass, JSValueRef _Nullable *_Nonnull exception);
+
+/*
+ * An object-typed argument of a block or a JSExport method, converted by the class its extended
+ * type encoding `type` (`@"NSString"`, `@"JSValue"`, `@`) declares, as the release converts it; a
+ * refusal is left in *exception. charon_js_skip_type steps past one type of such an encoding.
+ */
+id _Nullable charon_js_argument(JSContextRef context, const char *type, JSValueRef value, JSValueRef _Nullable *_Nonnull exception);
+const char *charon_js_skip_type(const char *type);
+
+/* ECMAScript ToUint32: NaN and the infinities are 0, anything else is taken modulo 2^32. */
+uint32_t charon_js_uint32(double value);
+
+/* A new TypeError of `message` in `context`, as script's own `new TypeError(message)` makes it. */
+JSValueRef charon_js_type_error(JSContextRef context, NSString *message);
 
 /* The Objective-C object `value` is the bridge's wrapper of, or nil for any other value. */
 id _Nullable charon_js_wrapped_object(JSContextRef context, JSValueRef value);
@@ -71,11 +100,11 @@ JSStringRef charon_js_string(NSString *string);
 NSString *charon_ns_string(JSStringRef string);
 
 /*
- * The class used for a JSExport-conforming object's JavaScript wrapper, one JSClassRef cached
- * per Objective-C class - see JSExportBridge.m for how its static functions and values are built
- * from the protocol's own method list.
+ * The class used for every JSExport-conforming object's JavaScript wrapper: one JSClassRef, whose
+ * callbacks look each name up in a per-Objective-C-class table built from the protocol's own method
+ * list (JSExportBridge.m).
  */
-JSClassRef charon_js_export_class(Class objcClass);
+JSClassRef charon_js_export_class(void);
 BOOL charon_js_class_conforms_to_export(Class objcClass);
 
 /*

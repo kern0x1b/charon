@@ -23,7 +23,6 @@
  * gets reexported.
  */
 
-extern const char *_Block_signature(void *block);
 
 JSStringRef charon_js_string(NSString *string)
 {
@@ -41,72 +40,228 @@ static BOOL IsCFBoolean(id value)
 }
 
 /*
- * A block is exported as a JS function through one shared JSClassRef, whose private data on
- * each JSObjectRef is the retained block. Supported blocks: every argument and the return value
- * is object-pointer-shaped (id, an NSObject subclass, or another block) - checked once, against
- * the block's own Objective-C type encoding from _Block_signature, not assumed. A block with a
- * primitive argument or return type is still wrapped, but calling it throws in JavaScript rather
- * than reading a garbage value off the wrong-sized argument slot.
+ * A block's Objective-C type encoding, read as the documented clang Block ABI lays it out
+ * (clang's docs/Block-ABI-Apple.rst): a block literal is {isa, flags, reserved, invoke,
+ * descriptor}; the descriptor is {reserved, size}, then {copy, dispose} when
+ * BLOCK_HAS_COPY_DISPOSE (1 << 25) is set, then the encoding when BLOCK_HAS_SIGNATURE (1 << 30)
+ * is. The compiler that built the block writes it there, not the runtime, so the release's
+ * libsystem_blocks has no say in it. This is the pointer _Block_signature (an SPI of
+ * Block_private.h) answers - measured equal on the host for a global, a capturing and a
+ * primitive-typed block - read without the SPI. A block with no signature (built by a compiler
+ * older than blocks' extended encodings) answers NULL.
  */
-static BOOL BlockSignatureIsAllObjects(const char *encoding, NSUInteger *outArgumentCount, BOOL *outReturnsVoid)
+struct CharonBlockDescriptor { unsigned long reserved; unsigned long size; void *rest[]; };
+struct CharonBlockLayout { void *isa; int flags; int reserved; void *invoke; struct CharonBlockDescriptor *descriptor; };
+enum { CharonBlockHasCopyDispose = 1 << 25, CharonBlockHasSignature = 1 << 30 };
+
+static const char *BlockSignature(id block)
 {
-    if (!encoding)
-        return NO;
-    NSMethodSignature *signature = nil;
-    @try {
-        signature = [NSMethodSignature signatureWithObjCTypes:encoding];
-    } @catch (__unused NSException *exception) {
-        return NO;
-    }
-    if (!signature)
-        return NO;
-    const char *returnType = signature.methodReturnType;
-    if (!(returnType[0] == '@' || returnType[0] == 'v'))
-        return NO;
-    NSUInteger arguments = signature.numberOfArguments; /* argument 0 is the block itself */
-    if (arguments < 1 || arguments > 7)
-        return NO;
-    for (NSUInteger index = 1; index < arguments; index++) {
-        const char *type = [signature getArgumentTypeAtIndex:index];
-        if (type[0] != '@')
-            return NO;
-    }
-    if (outArgumentCount)
-        *outArgumentCount = arguments - 1;
-    if (outReturnsVoid)
-        *outReturnsVoid = returnType[0] == 'v';
-    return YES;
+    struct CharonBlockLayout *layout = (__bridge void *)block;
+    if (!(layout->flags & CharonBlockHasSignature))
+        return NULL;
+    void **field = layout->descriptor->rest;
+    if (layout->flags & CharonBlockHasCopyDispose)
+        field += 2;
+    return *(const char **)field;
 }
 
+typedef enum { CharonTypeVoid, CharonTypeJSValue, CharonTypeId, CharonTypeClass, CharonTypeScalar, CharonTypeUnsupported } CharonTypeKind;
+typedef struct { CharonTypeKind kind; __unsafe_unretained Class objcClass; } CharonType;
+
+/* The end of the one type at `cursor`, qualifiers, nesting and trailing offset included. */
+static const char *SkipType(const char *cursor)
+{
+    while (*cursor && strchr("rnNoORVA", *cursor))
+        cursor++;
+    char open = *cursor, close = open == '{' ? '}' : open == '(' ? ')' : open == '[' ? ']' : 0;
+    if (close) {
+        int depth = 0;
+        do {
+            if (*cursor == open)
+                depth++;
+            else if (*cursor == close)
+                depth--;
+            cursor++;
+        } while (*cursor && depth);
+    } else if (open == '^') {
+        cursor = SkipType(cursor + 1);
+    } else if (open == '@') {
+        cursor++;
+        if (*cursor == '"') {
+            const char *end = strchr(cursor + 1, '"');
+            cursor = end ? end + 1 : cursor + strlen(cursor);
+        } else if (*cursor == '?') {
+            cursor++;
+            if (*cursor == '<') {
+                const char *end = cursor;
+                for (int depth = 0; *end; end++)
+                    if (*end == '<')
+                        depth++;
+                    else if (*end == '>' && !--depth)
+                        break;
+                cursor = *end ? end + 1 : end;
+            }
+        }
+    } else if (*cursor) {
+        cursor++;
+    }
+    while (*cursor >= '0' && *cursor <= '9')
+        cursor++;
+    return cursor;
+}
+
+/*
+ * One type of a block's extended encoding (`@"NSString"` names the class), classified as the
+ * release's own JSContext treats it (measured against the host's, tests/backports/host/jscontext):
+ * JSValue, id, any other class - `@"Class<Protocol>"` counts as the class, a bare `@"<Protocol>"`
+ * as id; a C number, BOOL, CGPoint, CGSize, CGRect or NSRange is a scalar; anything else - a
+ * block, Class, SEL, a pointer, another struct, a class the runtime does not know - is unsupported, and the release does not make such a block a
+ * function at all (`typeof` answers "object").
+ */
+static CharonType ClassifyType(const char *cursor)
+{
+    while (*cursor && strchr("rnNoORVA", *cursor))
+        cursor++;
+    CharonType type = {CharonTypeUnsupported, Nil};
+    switch (*cursor) {
+    case 'v':
+        type.kind = CharonTypeVoid;
+        break;
+    case '@': {
+        if (cursor[1] != '"') {
+            type.kind = cursor[1] == '?' ? CharonTypeUnsupported : CharonTypeId;
+            break;
+        }
+        const char *name = cursor + 2;
+        size_t length = strcspn(name, "\"<");
+        if (!length) {
+            type.kind = CharonTypeId;
+            break;
+        }
+        type.objcClass = NSClassFromString([[NSString alloc] initWithBytes:name length:length encoding:NSUTF8StringEncoding]);
+        if (type.objcClass)
+            type.kind = type.objcClass == [JSValue class] ? CharonTypeJSValue : CharonTypeClass;
+        break;
+    }
+    case 'c': case 'i': case 's': case 'l': case 'q': case 'C': case 'I': case 'S': case 'L': case 'Q':
+    case 'f': case 'd': case 'B':
+        type.kind = CharonTypeScalar;
+        break;
+    case '{':
+        /* the four structs JSValue converts; any other struct makes no function (measured) */
+        for (const char *name = "CGPoint\0CGSize\0CGRect\0_NSRange\0"; *name; name += strlen(name) + 1)
+            if (!strncmp(cursor + 1, name, strlen(name)) && cursor[1 + strlen(name)] == '=')
+                type.kind = CharonTypeScalar;
+        break;
+    }
+    return type;
+}
+
+/* What a block can be to JavaScript, from its encoding: a function whose every argument and
+ * return is carried, a function the release could call but this bridge refuses (a scalar - see
+ * BlockCallAsFunction), or no function at all. */
+typedef enum { CharonBlockNotFunction, CharonBlockRefused, CharonBlockCallable } CharonBlockShape;
+enum { CharonBlockMaxArguments = 6 };
+
+static CharonBlockShape BlockShape(id block, CharonType *arguments, NSUInteger *outCount, BOOL *outReturnsVoid)
+{
+    const char *cursor = BlockSignature(block);
+    if (!cursor)
+        return CharonBlockNotFunction;
+    while (*cursor && strchr("rnNoORVA", *cursor))
+        cursor++;
+    CharonBlockShape shape = CharonBlockCallable;
+    BOOL returnsVoid = *cursor == 'v';
+    if (ClassifyType(cursor).kind == CharonTypeScalar)
+        shape = CharonBlockRefused;
+    else if (!returnsVoid && *cursor != '@') /* any object, a block included, is returned boxed */
+        return CharonBlockNotFunction;
+    cursor = SkipType(cursor);
+    if (cursor[0] != '@' || cursor[1] != '?') /* argument 0 is the block itself */
+        return CharonBlockNotFunction;
+    cursor = SkipType(cursor);
+    NSUInteger count = 0;
+    while (*cursor) {
+        CharonType type = ClassifyType(cursor);
+        if (type.kind == CharonTypeUnsupported || type.kind == CharonTypeVoid)
+            return CharonBlockNotFunction;
+        if (type.kind == CharonTypeScalar || count == CharonBlockMaxArguments)
+            shape = CharonBlockRefused;
+        else
+            arguments[count] = type;
+        count++;
+        cursor = SkipType(cursor);
+    }
+    *outCount = count;
+    *outReturnsVoid = returnsVoid;
+    return shape;
+}
+
+/* One JavaScript argument as its declared class wants it, per the release: JSValue takes the
+ * value itself, id takes -toObject, a class goes through charon_js_to_class. */
+static id ObjectArgument(JSContextRef ctx, JSContext *context, CharonType type, JSValueRef value, JSValueRef *exception)
+{
+    switch (type.kind) {
+    case CharonTypeJSValue:
+        return [JSValue charon_valueWithJSValueRef:value context:context];
+    case CharonTypeClass:
+        return charon_js_to_class(ctx, value, type.objcClass, exception);
+    default:
+        return charon_js_unbox(ctx, value);
+    }
+}
+
+id charon_js_argument(JSContextRef context, const char *type, JSValueRef value, JSValueRef *exception)
+{
+    JSContext *wrapper = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(context) create:YES];
+    return ObjectArgument(context, wrapper, ClassifyType(type), value, exception);
+}
+
+const char *charon_js_skip_type(const char *type)
+{
+    return SkipType(type);
+}
+
+/*
+ * A block is exported as a JS function through one shared JSClassRef, whose private data on
+ * each JSObjectRef is the retained block. Its arguments are converted by the class its own
+ * encoding declares. A block taking or returning a C number or struct, or taking more than six
+ * arguments, is a function the release would call; this bridge calls blocks through their invoke
+ * pointer with object-sized arguments only, so it throws a TypeError in JavaScript instead of
+ * reading a value off the wrong-sized slot.
+ */
 static JSValueRef BlockCallAsFunction(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef *exception)
 {
     id block = (__bridge id)JSObjectGetPrivate(function);
-    const char *encoding = _Block_signature((__bridge void *)block);
+    JSContext *context = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(ctx) create:YES];
+    CharonType types[CharonBlockMaxArguments];
     NSUInteger wanted = 0;
     BOOL returnsVoid = NO;
-    if (!BlockSignatureIsAllObjects(encoding, &wanted, &returnsVoid)) {
-        JSContext *context = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(ctx) create:YES];
-        JSValue *error = [JSValue valueWithNewErrorFromMessage:@"this block's argument or return type is not supported" inContext:context];
+    if (BlockShape(block, types, &wanted, &returnsVoid) != CharonBlockCallable) {
         if (exception)
-            *exception = error.JSValueRef;
+            *exception = charon_js_type_error(ctx, @"this block's argument or return type is not supported");
         return JSValueMakeUndefined(ctx);
     }
-    JSContext *context = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(ctx) create:YES];
-    id args[7] = {block, nil, nil, nil, nil, nil, nil};
-    for (NSUInteger index = 0; index < wanted && index < argumentCount; index++)
-        args[index + 1] = charon_js_unbox(ctx, arguments[index], exception);
-    NSMutableArray<JSValue *> *boxedArguments = [NSMutableArray array];
-    for (NSUInteger index = 0; index < wanted; index++)
-        [boxedArguments addObject:[JSValue charon_valueWithJSValueRef:charon_js_box(ctx, args[index + 1]) context:context]];
+    id args[CharonBlockMaxArguments + 1] = {block};
+    for (NSUInteger index = 0; index < wanted; index++) {
+        JSValueRef failure = NULL;
+        args[index + 1] = ObjectArgument(ctx, context, types[index], index < argumentCount ? arguments[index] : JSValueMakeUndefined(ctx), &failure);
+        if (failure) {
+            if (exception)
+                *exception = failure;
+            return JSValueMakeUndefined(ctx);
+        }
+    }
+    NSMutableArray<JSValue *> *callArguments = [NSMutableArray arrayWithCapacity:argumentCount];
+    for (size_t index = 0; index < argumentCount; index++)
+        [callArguments addObject:[JSValue charon_valueWithJSValueRef:arguments[index] context:context]];
     JSValue *thisValue = [JSValue charon_valueWithJSValueRef:thisObject context:context];
-    charon_js_push_callback(context, thisValue, [JSValue charon_valueWithJSValueRef:function context:context], boxedArguments);
+    charon_js_push_callback(context, thisValue, [JSValue charon_valueWithJSValueRef:function context:context], callArguments);
     id result = nil;
-    /* A block literal is {isa, flags, reserved, invoke, descriptor, ...captures} - the callable
-     * function pointer is the `invoke` field, not the block's own address, which is a struct
-     * pointer whose first bytes are `isa`, not code. ARC also will not let an Objective-C
+    /* The callable function pointer is the `invoke` field, not the block's own address, which is a
+     * struct pointer whose first bytes are `isa`, not code. ARC also will not let an Objective-C
      * pointer be called as a raw C function pointer directly; bridging through void first strips
      * that tracking, which is safe here since `block` is kept alive by `args[0]` throughout. */
-    struct CharonBlockLayout { void *isa; int flags; int reserved; void *invoke; };
     void *blockPointer = (__bridge void *)block;
     void *invoke = ((struct CharonBlockLayout *)blockPointer)->invoke;
     void *rawArgs[7] = {blockPointer, (__bridge void *)args[1], (__bridge void *)args[2], (__bridge void *)args[3], (__bridge void *)args[4], (__bridge void *)args[5], (__bridge void *)args[6]};
@@ -196,7 +351,7 @@ static JSClassRef OpaqueClass(void)
 id charon_js_wrapped_object(JSContextRef context, JSValueRef value)
 {
     if (!JSValueIsObjectOfClass(context, value, BlockClass()) && !JSValueIsObjectOfClass(context, value, OpaqueClass()) &&
-        !JSValueIsObjectOfClass(context, value, charon_js_export_class(Nil)))
+        !JSValueIsObjectOfClass(context, value, charon_js_export_class()))
         return nil;
     return (__bridge id)JSObjectGetPrivate((JSObjectRef)value);
 }
@@ -249,74 +404,236 @@ JSValueRef charon_js_box(JSContextRef context, id object)
         }];
         return result;
     }
-    if ([object isKindOfClass:NSClassFromString(@"NSBlock")])
-        return Wrapper(context, object, BlockClass());
+    if ([object isKindOfClass:NSClassFromString(@"NSBlock")]) {
+        CharonType arguments[CharonBlockMaxArguments];
+        NSUInteger count = 0;
+        BOOL returnsVoid = NO;
+        return Wrapper(context, object, BlockShape(object, arguments, &count, &returnsVoid) == CharonBlockNotFunction ? OpaqueClass() : BlockClass());
+    }
     if (charon_js_class_conforms_to_export(object_getClass(object)))
-        return Wrapper(context, object, charon_js_export_class(object_getClass(object)));
+        return Wrapper(context, object, charon_js_export_class());
     return Wrapper(context, object, OpaqueClass());
 }
 
-id charon_js_unbox(JSContextRef context, JSValueRef value, JSValueRef *exception)
+JSValueRef charon_js_type_error(JSContextRef context, NSString *message)
 {
-    if (!value)
-        return nil;
+    JSContext *wrapper = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(context) create:YES];
+    return [wrapper[@"TypeError"] constructWithArguments:@[message]].JSValueRef;
+}
+
+static BOOL IsInstanceOfGlobal(JSContextRef context, JSValueRef value, NSString *constructorName)
+{
+    JSStringRef name = charon_js_string(constructorName);
+    JSValueRef constructor = JSObjectGetProperty(context, JSContextGetGlobalObject(context), name, NULL);
+    JSStringRelease(name);
+    return constructor && JSValueIsObject(context, constructor) &&
+           JSValueIsInstanceOfConstructor(context, value, (JSObjectRef)constructor, NULL);
+}
+
+uint32_t charon_js_uint32(double value)
+{
+    if (!(value == value) || isinf(value))
+        return 0;
+    return (uint32_t)(int64_t)fmod(trunc(value), 4294967296.0);
+}
+
+/*
+ * JSValue's container conversion, walked as the release's JSContainerConvertor walks it: every
+ * object met is recorded once against the Objective-C object made for it, so a cycle or a shared
+ * reference answers that same object (`d[@"self"] == d`), and containers are filled from a
+ * worklist rather than by recursion, so depth costs no stack. null is NSNull wherever it stands;
+ * undefined is nil at the top, NSNull in an array, and left out of a dictionary. An array is read
+ * by its length, anything else by its enumerable property names, inherited ones included. A
+ * getter that throws is passed over and the exception reported nowhere, as the release does
+ * (measured: its handler is not called). Each recorded value is protected until the walk ends,
+ * since the map and worklist live on the heap where the collector does not look.
+ */
+typedef struct {
+    JSContextRef context;
+    NSMapTable *seen;              /* JSValueRef -> the Objective-C object made for it */
+    NSPointerArray *pendingValues; /* worklist: the containers still to fill ... */
+    NSMutableArray *pendingObjects; /* ... and their JavaScript objects, by index */
+} CharonConvertor;
+
+static void ConvertorRecord(CharonConvertor *convertor, JSValueRef value, id object, BOOL fill)
+{
+    JSValueProtect(convertor->context, value);
+    [convertor->seen setObject:object forKey:(__bridge id)(void *)value];
+    if (fill) {
+        [convertor->pendingValues addPointer:(void *)value];
+        [convertor->pendingObjects addObject:object];
+    }
+}
+
+static id ConvertorConvert(CharonConvertor *convertor, JSValueRef value)
+{
+    JSContextRef context = convertor->context;
     switch (JSValueGetType(context, value)) {
     case kJSTypeUndefined:
-    case kJSTypeNull:
         return nil;
+    case kJSTypeNull:
+        return [NSNull null];
     case kJSTypeBoolean:
         return @(JSValueToBoolean(context, value));
     case kJSTypeNumber:
-        return @(JSValueToNumber(context, value, exception));
+        return @(JSValueToNumber(context, value, NULL));
     case kJSTypeString: {
-        JSStringRef string = JSValueToStringCopy(context, value, exception);
+        JSStringRef string = JSValueToStringCopy(context, value, NULL);
         NSString *result = charon_ns_string(string);
-        if (string)
-            JSStringRelease(string);
+        JSStringRelease(string);
         return result;
     }
     default:
         break;
     }
-    if (!JSValueIsObject(context, value))
-        return nil;
-    JSObjectRef object = JSValueToObject(context, value, exception);
-    if (!object)
-        return nil;
-    id wrapped = charon_js_wrapped_object(context, object);
-    if (wrapped)
-        return wrapped;
-    if (JSObjectIsFunction(context, object) || JSObjectIsConstructor(context, object))
-        return [JSValue charon_valueWithJSValueRef:value context:[JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(context) create:YES]];
-    /* a plain JavaScript object or array with no private data: copy its own properties */
-    JSObjectRef globalObject = JSContextGetGlobalObject(context);
-    JSStringRef arrayName = charon_js_string(@"Array");
-    JSValueRef arrayConstructor = JSObjectGetProperty(context, globalObject, arrayName, NULL);
-    JSStringRelease(arrayName);
-    BOOL isArray = arrayConstructor && JSValueIsObject(context, arrayConstructor) &&
-                   JSValueIsInstanceOfConstructor(context, value, JSValueToObject(context, arrayConstructor, NULL), NULL);
-    if (isArray) {
+    id known = [convertor->seen objectForKey:(__bridge id)(void *)value];
+    if (known)
+        return known;
+    id object = charon_js_wrapped_object(context, value);
+    BOOL fill = NO;
+    if (object) {
+    } else if (IsInstanceOfGlobal(context, value, @"Date")) {
+        object = [NSDate dateWithTimeIntervalSince1970:JSValueToNumber(context, value, NULL) / 1000.0];
+    } else if (IsInstanceOfGlobal(context, value, @"Array")) {
+        object = [NSMutableArray array];
+        fill = YES;
+    } else {
+        object = [NSMutableDictionary dictionary];
+        fill = YES;
+    }
+    ConvertorRecord(convertor, value, object, fill);
+    return object;
+}
+
+static void ConvertorFill(CharonConvertor *convertor, JSObjectRef object, id container)
+{
+    JSContextRef context = convertor->context;
+    if ([container isKindOfClass:[NSMutableArray class]]) {
         JSStringRef lengthName = charon_js_string(@"length");
-        double length = JSValueToNumber(context, JSObjectGetProperty(context, object, lengthName, exception), exception);
+        uint32_t length = charon_js_uint32(JSValueToNumber(context, JSObjectGetProperty(context, object, lengthName, NULL), NULL));
         JSStringRelease(lengthName);
-        if (length == length && length >= 0 && length < 1e9) {
-            NSMutableArray *array = [NSMutableArray array];
-            for (NSUInteger index = 0; index < (NSUInteger)length; index++)
-                [array addObject:charon_js_unbox(context, JSObjectGetPropertyAtIndex(context, object, (unsigned)index, exception), exception) ?: [NSNull null]];
-            return array;
+        for (uint32_t index = 0; index < length; index++) {
+            JSValueRef thrown = NULL;
+            JSValueRef value = JSObjectGetPropertyAtIndex(context, object, index, &thrown);
+            [container addObject:(thrown ? nil : ConvertorConvert(convertor, value)) ?: [NSNull null]];
         }
+        return;
     }
     JSPropertyNameArrayRef names = JSObjectCopyPropertyNames(context, object);
     size_t count = JSPropertyNameArrayGetCount(names);
-    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:count];
     for (size_t index = 0; index < count; index++) {
         JSStringRef name = JSPropertyNameArrayGetNameAtIndex(names, index);
-        id unboxed = charon_js_unbox(context, JSObjectGetProperty(context, object, name, exception), exception);
-        if (unboxed)
-            dictionary[charon_ns_string(name)] = unboxed;
+        JSValueRef thrown = NULL;
+        JSValueRef property = JSObjectGetProperty(context, object, name, &thrown);
+        id value = thrown ? nil : ConvertorConvert(convertor, property);
+        if (value)
+            container[charon_ns_string(name)] = value;
     }
     JSPropertyNameArrayRelease(names);
-    return dictionary;
+}
+
+/* Convert `value`; a non-nil `container` is the top's container, filled as `value` read that way. */
+static id Convert(JSContextRef context, JSValueRef value, id container)
+{
+    CharonConvertor convertor = {
+        context,
+        [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality valueOptions:NSPointerFunctionsStrongMemory],
+        [NSPointerArray pointerArrayWithOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality],
+        [NSMutableArray array],
+    };
+    id result = container;
+    if (container)
+        ConvertorRecord(&convertor, value, container, YES);
+    else
+        result = ConvertorConvert(&convertor, value);
+    for (NSUInteger next = 0; next < convertor.pendingObjects.count; next++)
+        ConvertorFill(&convertor, (JSObjectRef)[convertor.pendingValues pointerAtIndex:next], convertor.pendingObjects[next]);
+    for (id key in convertor.seen)
+        JSValueUnprotect(context, (__bridge void *)key);
+    return result;
+}
+
+id charon_js_unbox(JSContextRef context, JSValueRef value)
+{
+    return value ? Convert(context, value, nil) : nil;
+}
+
+/* -toArray and -toDictionary: any object is read as the container asked for, undefined and null
+ * are nil, and any other primitive is a TypeError, as the release words it. */
+static id ToContainer(JSContextRef context, JSValueRef value, Class containerClass, JSValueRef *exception)
+{
+    id wrapped = charon_js_wrapped_object(context, value);
+    if ([wrapped isKindOfClass:containerClass])
+        return wrapped;
+    BOOL array = containerClass == [NSArray class];
+    if (JSValueIsObject(context, value))
+        return Convert(context, value, array ? [NSMutableArray array] : [NSMutableDictionary dictionary]);
+    if (!JSValueIsNull(context, value) && !JSValueIsUndefined(context, value))
+        *exception = charon_js_type_error(context, array ? @"Cannot convert primitive to NSArray" : @"Cannot convert primitive to NSDictionary");
+    return nil;
+}
+
+NSArray *charon_js_to_array(JSContextRef context, JSValueRef value, JSValueRef *exception)
+{
+    return ToContainer(context, value, [NSArray class], exception);
+}
+
+NSDictionary *charon_js_to_dictionary(JSContextRef context, JSValueRef value, JSValueRef *exception)
+{
+    return ToContainer(context, value, [NSDictionary class], exception);
+}
+
+NSString *charon_js_to_string(JSContextRef context, JSValueRef value, JSValueRef *exception)
+{
+    id wrapped = charon_js_wrapped_object(context, value);
+    if ([wrapped isKindOfClass:[NSString class]])
+        return wrapped;
+    JSStringRef string = JSValueToStringCopy(context, value, exception);
+    if (!string)
+        return nil;
+    NSString *result = charon_ns_string(string);
+    JSStringRelease(string);
+    return result;
+}
+
+NSNumber *charon_js_to_number(JSContextRef context, JSValueRef value, JSValueRef *exception)
+{
+    id wrapped = charon_js_wrapped_object(context, value);
+    if ([wrapped isKindOfClass:[NSNumber class]])
+        return wrapped;
+    if (JSValueIsBoolean(context, value))
+        return @(JSValueToBoolean(context, value));
+    double number = JSValueToNumber(context, value, exception);
+    return @(*exception ? NAN : number);
+}
+
+NSDate *charon_js_to_date(JSContextRef context, JSValueRef value, JSValueRef *exception)
+{
+    id wrapped = charon_js_wrapped_object(context, value);
+    if ([wrapped isKindOfClass:[NSDate class]])
+        return wrapped;
+    double milliseconds = JSValueToNumber(context, value, exception);
+    return *exception ? nil : [NSDate dateWithTimeIntervalSince1970:milliseconds / 1000.0];
+}
+
+id charon_js_to_class(JSContextRef context, JSValueRef value, Class objcClass, JSValueRef *exception)
+{
+    if (objcClass == [NSString class])
+        return charon_js_to_string(context, value, exception);
+    if (objcClass == [NSNumber class])
+        return charon_js_to_number(context, value, exception);
+    if (objcClass == [NSDate class])
+        return charon_js_to_date(context, value, exception);
+    if (objcClass == [NSArray class])
+        return charon_js_to_array(context, value, exception);
+    if (objcClass == [NSDictionary class])
+        return charon_js_to_dictionary(context, value, exception);
+    id wrapped = charon_js_wrapped_object(context, value);
+    if ([wrapped isKindOfClass:objcClass])
+        return wrapped;
+    if (!JSValueIsNull(context, value) && !JSValueIsUndefined(context, value))
+        *exception = charon_js_type_error(context, @"Argument does not match Objective-C Class");
+    return nil;
 }
 
 /*

@@ -65,6 +65,26 @@ __attribute__((noinline)) static void Collect(JSContext *context)
 
 
 /* An Objective-C object that owns a managed value, the pattern JSManagedValue.h documents. */
+/* A JSExport method's and property setter's arguments arrive by their declared class, too. */
+@protocol TypedExport <JSExport>
+@property (nonatomic, strong) NSURL *link;
+- (void)takeValue:(JSValue *)value;
+- (void)takeURL:(NSURL *)url;
+- (void)takeString:(NSString *)string;
+@end
+
+@interface TypedObject : NSObject <TypedExport>
+@property (nonatomic, strong) id got;
+@property (nonatomic) BOOL called;
+@end
+
+@implementation TypedObject
+@synthesize link = _link;
+- (void)takeValue:(JSValue *)value { self.called = YES; self.got = value; }
+- (void)takeURL:(NSURL *)url { self.called = YES; self.got = url; }
+- (void)takeString:(NSString *)string { self.called = YES; self.got = string; }
+@end
+
 @interface ManagedOwner : NSObject
 @property (strong) JSManagedValue *managed;
 @end
@@ -344,6 +364,148 @@ static void CheckSymbols(JSContext *context)
     context.exception = nil;
 }
 
+/* JSValue's conversions, each expectation measured on the host's own JavaScriptCore. */
+static void CheckConversions(void)
+{
+    JSContext *context = [JSContext new];
+    __block NSString *handled = nil;
+    context.exceptionHandler = ^(JSContext *c, JSValue *exception) { handled = [exception toString]; };
+    NSDictionary *cyclic = [[context evaluateScript:@"var a = {n: 1}; a.self = a; a"] toObject];
+    check(cyclic[@"self"] == cyclic, @"toObject gives a cyclic object back as the same dictionary");
+    NSArray *cyclicArray = [[context evaluateScript:@"var b = []; b.push(b); b"] toObject];
+    check(cyclicArray.count == 1 && cyclicArray[0] == cyclicArray, @"toObject gives a cyclic array back as the same array");
+    NSDictionary *shared = [[context evaluateScript:@"var s = {k: 1}; ({x: s, y: s})"] toObject];
+    check(shared[@"x"] == shared[@"y"], @"toObject converts an object reached twice once");
+    NSDictionary *dates = [[context evaluateScript:@"({d: new Date(1000), a: [new Date(2000)]})"] toObject];
+    check([dates[@"d"] isEqual:[NSDate dateWithTimeIntervalSince1970:1]] && [dates[@"a"][0] isEqual:[NSDate dateWithTimeIntervalSince1970:2]],
+          @"toObject turns a Date, nested too, into an NSDate");
+    NSDate *invalid = [[context evaluateScript:@"new Date(NaN)"] toObject];
+    check([invalid isKindOfClass:[NSDate class]] && isnan(invalid.timeIntervalSince1970), @"an invalid Date is an NSDate of NaN");
+    NSDictionary *nulls = [[context evaluateScript:@"({a: null, b: undefined, c: 1})"] toObject];
+    check(nulls[@"a"] == [NSNull null] && !nulls[@"b"] && nulls.count == 2, @"null is NSNull in a dictionary and undefined is left out");
+    NSArray *holes = [[context evaluateScript:@"[1, , undefined, null]"] toObject];
+    check(holes.count == 4 && holes[1] == [NSNull null] && holes[2] == [NSNull null] && holes[3] == [NSNull null], @"a hole, undefined and null are NSNull in an array");
+    check([[context evaluateScript:@"null"] toObject] == [NSNull null] && ![[context evaluateScript:@"undefined"] toObject], @"top-level null is NSNull and undefined nil");
+    id function = [[context evaluateScript:@"(function f() {})"] toObject];
+    check([function isKindOfClass:[NSDictionary class]] && [function count] == 0, @"a function converts to an empty dictionary");
+    NSDictionary *inherited = [[context evaluateScript:@"var P = function () { this.own = 1; }; P.prototype.inh = 2; new P()"] toObject];
+    check([inherited[@"own"] isEqual:@1] && [inherited[@"inh"] isEqual:@2], @"enumerable inherited properties are converted");
+    handled = nil;
+    NSDictionary *getter = [[context evaluateScript:@"({get x() { throw new Error('g'); }, y: 1})"] toObject];
+    check(getter.count == 1 && [getter[@"y"] isEqual:@1] && !handled, @"a throwing getter is left out and reported nowhere");
+    NSArray *asArray = [[context evaluateScript:@"({a: 1})"] toArray];
+    check([asArray isKindOfClass:[NSArray class]] && asArray.count == 0, @"toArray reads any object as an array");
+    NSDictionary *asDictionary = [[context evaluateScript:@"[5, 6]"] toDictionary];
+    check([asDictionary[@"0"] isEqual:@5] && [asDictionary[@"1"] isEqual:@6], @"toDictionary reads an array by its indexes");
+    handled = nil;
+    check(![[context evaluateScript:@"'ab'"] toArray] && [handled isEqualToString:@"TypeError: Cannot convert primitive to NSArray"], @"toArray of a primitive is nil and a TypeError to the handler");
+    handled = nil;
+    check(![[context evaluateScript:@"5"] toDictionary] && [handled isEqualToString:@"TypeError: Cannot convert primitive to NSDictionary"], @"toDictionary of a primitive is nil and a TypeError to the handler");
+    handled = nil;
+    check(![[context evaluateScript:@"null"] toArray] && !handled, @"toArray of null is nil with no exception");
+    JSValue *badString = [context evaluateScript:@"({toString: function () { throw new Error('ts'); }})"];
+    JSValue *badNumber = [context evaluateScript:@"({valueOf: function () { throw new Error('vo'); }})"];
+    handled = nil;
+    check(![badString toString] && [handled isEqualToString:@"Error: ts"], @"toString that throws is nil and reaches the handler");
+    handled = nil;
+    check(isnan([badNumber toDouble]) && [handled isEqualToString:@"Error: vo"], @"toDouble that throws is NaN and reaches the handler");
+    handled = nil;
+    check([badNumber toInt32] == 0 && [handled isEqualToString:@"Error: vo"], @"toInt32 that throws is 0 and reaches the handler");
+    handled = nil;
+    check(isnan([[badNumber toNumber] doubleValue]) && [handled isEqualToString:@"Error: vo"], @"toNumber that throws is NaN and reaches the handler");
+    check([[[context evaluateScript:@"'x'"] toDate] isKindOfClass:[NSDate class]] && isnan([[[context evaluateScript:@"'x'"] toDate] timeIntervalSince1970]), @"toDate of a non-number is an NSDate of NaN");
+}
+
+/* A block's arguments arrive as the class its own signature declares (measured on the host). */
+static void CheckBlockArguments(void)
+{
+    JSContext *context = [JSContext new];
+    __block NSString *handled = nil;
+    context.exceptionHandler = ^(JSContext *c, JSValue *exception) { handled = [exception toString]; };
+    __block id got = nil;
+    __block BOOL called = NO;
+    context[@"takeValue"] = ^(JSValue *value) { called = YES; got = value; };
+    context[@"takeString"] = ^(NSString *value) { called = YES; got = value; };
+    context[@"takeNumber"] = ^(NSNumber *value) { called = YES; got = value; };
+    context[@"takeDate"] = ^(NSDate *value) { called = YES; got = value; };
+    context[@"takeArray"] = ^(NSArray *value) { called = YES; got = value; };
+    context[@"takeURL"] = ^(NSURL *value) { called = YES; got = value; };
+    context[@"takeAny"] = ^(id value) { called = YES; got = value; };
+    context[@"takeBlock"] = ^(void (^value)(void)) { called = YES; };
+    context[@"url"] = [NSURL URLWithString:@"http://example.com/"];
+    [context evaluateScript:@"takeValue(5)"];
+    check([got isKindOfClass:[JSValue class]] && [got toInt32] == 5, @"a JSValue argument receives the JavaScript value itself");
+    [context evaluateScript:@"takeValue({a: 1})"];
+    check([got isKindOfClass:[JSValue class]] && [got[@"a"] toInt32] == 1, @"a JSValue argument receives an object as a JSValue");
+    [context evaluateScript:@"takeValue()"];
+    check([got isKindOfClass:[JSValue class]] && [got isUndefined], @"a missing JSValue argument is undefined");
+    [context evaluateScript:@"takeString(5)"];
+    check([got isEqual:@"5"], @"an NSString argument receives the value's string");
+    [context evaluateScript:@"takeString(null)"];
+    check([got isEqual:@"null"], @"an NSString argument receives null as \"null\"");
+    [context evaluateScript:@"takeNumber('12')"];
+    check([got isEqual:@12], @"an NSNumber argument receives the value's number");
+    [context evaluateScript:@"takeDate(new Date(3000))"];
+    check([got isEqual:[NSDate dateWithTimeIntervalSince1970:3]], @"an NSDate argument receives a Date as an NSDate");
+    [context evaluateScript:@"takeArray([1, 2])"];
+    check([got isEqual:(@[@1, @2])], @"an NSArray argument receives an array");
+    called = NO;
+    handled = nil;
+    [context evaluateScript:@"takeArray(5)"];
+    check(!called && [handled isEqualToString:@"TypeError: Cannot convert primitive to NSArray"], @"an NSArray argument refuses a primitive with a TypeError before the block runs");
+    [context evaluateScript:@"takeURL(url)"];
+    check([got isEqual:[NSURL URLWithString:@"http://example.com/"]], @"a class-typed argument receives the wrapped object of that class");
+    got = @"";
+    [context evaluateScript:@"takeURL(null)"];
+    check(!got, @"a class-typed argument receives nil for null");
+    called = NO;
+    handled = nil;
+    [context evaluateScript:@"takeURL('http://example.com/')"];
+    check(!called && [handled isEqualToString:@"TypeError: Argument does not match Objective-C Class"], @"a class-typed argument refuses another value with a TypeError");
+    [context evaluateScript:@"takeAny(null)"];
+    check(got == [NSNull null], @"an id argument receives null as NSNull, as toObject does");
+    [context evaluateScript:@"takeAny(function () {})"];
+    check([got isKindOfClass:[NSDictionary class]], @"an id argument receives a function as toObject converts it");
+    check([[[context evaluateScript:@"typeof takeBlock"] toString] isEqualToString:@"object"], @"a block taking a block is no function, as the release has it");
+    typedef struct { int field; } CharonCheckStruct;
+    context[@"takeStruct"] = ^(CharonCheckStruct value) { (void)value; };
+    context[@"takeRange"] = ^(NSRange value) { (void)value; };
+    check([[[context evaluateScript:@"typeof takeStruct"] toString] isEqualToString:@"object"], @"a block taking a struct JSValue does not convert is no function");
+    check([[[context evaluateScript:@"typeof takeRange"] toString] isEqualToString:@"function"], @"a block taking an NSRange is a function");
+    context[@"two"] = ^(NSString *first, JSValue *second) { got = @[first, [second toString]]; };
+    [context evaluateScript:@"two(1, 2, 3)"];
+    check([got isEqual:(@[@"1", @"2"])], @"extra JavaScript arguments are dropped");
+    context[@"count"] = ^(id first) { got = @([JSContext currentArguments].count); };
+    [context evaluateScript:@"count(1, 2, 3)"];
+    check([got isEqual:@3], @"currentArguments holds every JavaScript argument, not only the declared ones");
+}
+
+static void CheckExportArguments(void)
+{
+    JSContext *context = [JSContext new];
+    __block NSString *handled = nil;
+    context.exceptionHandler = ^(JSContext *c, JSValue *exception) { handled = [exception toString]; };
+    TypedObject *object = [TypedObject new];
+    context[@"typed"] = object;
+    context[@"url"] = [NSURL URLWithString:@"http://example.com/"];
+    [context evaluateScript:@"typed.takeValue(function () { return 7; })"];
+    check([object.got isKindOfClass:[JSValue class]] && [[object.got callWithArguments:@[]] toInt32] == 7, @"a JSExport method's JSValue argument receives a function it can call");
+    [context evaluateScript:@"typed.takeString(5)"];
+    check([object.got isEqual:@"5"], @"a JSExport method's NSString argument receives the value's string");
+    [context evaluateScript:@"typed.takeURL(url)"];
+    check([object.got isEqual:[NSURL URLWithString:@"http://example.com/"]], @"a JSExport method's class-typed argument receives the wrapped object");
+    object.called = NO;
+    handled = nil;
+    [context evaluateScript:@"typed.takeURL('x')"];
+    check(!object.called && [handled isEqualToString:@"TypeError: Argument does not match Objective-C Class"], @"a JSExport method refuses a value of another class before it runs");
+    handled = nil;
+    [context evaluateScript:@"typed.link = 'x'"];
+    check(!object.link && [handled isEqualToString:@"TypeError: Argument does not match Objective-C Class"], @"a JSExport property setter refuses a value of another class");
+    [context evaluateScript:@"typed.link = url"];
+    check([object.link isEqual:[NSURL URLWithString:@"http://example.com/"]], @"a JSExport property setter takes a value of its class");
+}
+
+
 int main(void)
 {
     @autoreleasepool {
@@ -406,6 +568,9 @@ int main(void)
         CheckWrapperIdentity(context);
         CheckPromises(context);
         CheckSymbols(context);
+        CheckConversions();
+        CheckBlockArguments();
+        CheckExportArguments();
 
         JSVirtualMachine *vm = [[JSVirtualMachine alloc] init];
         JSContext *second = [[JSContext alloc] initWithVirtualMachine:vm];
