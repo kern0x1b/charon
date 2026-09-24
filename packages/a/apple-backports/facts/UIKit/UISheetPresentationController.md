@@ -58,7 +58,9 @@ Sources:
   0.6 of the fraction, plus 0.2 of a grandchild's. Colour: black at 0.2 (0.48 dark; `_alertControllerDimmingViewColor`).
   At or below the largest undimmed detent the dimming view takes no touch and touches reach the presenter
   (`UITransitionView`'s ignoreDirectTouchEvents; the port's container answers `charon_containerIgnoresDirectTouches`).
-- Shadow: black at the dimming alpha, radius 2, zero offset, opacity 0.5 x (1 - dimmed) x presented (0x188f94848).
+- Shadow: black at the dimming alpha, radius 2, zero offset, opacity 0.5 x (1 - dimmed) x presented (0x188f94848). Its shape
+  is the card's: UIDropShadowView sets `shadowPathIsBounds` (0x189100748), so the shadow follows its bounds with the
+  corners of its layer (`-updateCornerClippingViews` 0x18918964c); the port gives the layer the path it masks the card with.
 
 ## The drag (16.0)
 

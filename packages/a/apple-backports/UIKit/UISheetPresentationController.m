@@ -638,6 +638,9 @@ typedef NS_ENUM(NSInteger, CharonDetentType) {
     [CATransaction setDisableActions:YES];
     _mask.frame = bounds;
     _mask.path = path.CGPath;
+    /* The shadow follows the card's corners: a layer's shadow drawn from its path ignores what the
+       mask leaves transparent, and a rectangle would show dark corners outside the arcs. */
+    self.layer.shadowPath = [path CGPath];
     [CATransaction commit];
     _grabber.center = CGPointMake(CGRectGetMidX(self.bounds), charon_sheet_grabber_spacing + charon_sheet_grabber_height / 2);
 }
@@ -1158,7 +1161,6 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
     _sheetView.grabber.hidden = !_prefersGrabberVisible;
     _sheetView.grabber.alpha = [_layout grabberAlpha];
     _sheetView.layer.shadowOpacity = [_layout shadowOpacity];
-    _sheetView.layer.shadowPath = [UIBezierPath bezierPathWithRect:_sheetView.bounds].CGPath;
     UITraitCollection *traits = self.containerView.traitCollection;
     _sheetView.grabber.backgroundColor = [charon_sheet_grabber_color() resolvedColorWithTraitCollection:traits];
 
