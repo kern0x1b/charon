@@ -83,14 +83,16 @@ function failures(opt)
                                    "-lprovider", "-lSystem", "-dynamiclib", "-o", "provider-first.dylib", "weak.c"})
     local provider_first = path.join(folder, "provider-first.dylib")
     local unprovided = fixtures.link(folder, opt.ld64, "unprovided.dylib", "armv7-apple-ios6.0", "weak.c", {"-dynamiclib"})
-    local weak = ""
-    for _, entry in ipairs(dyld.missing_imports(armv7, {system_first, provider})) do
-        weak = weak .. entry[2]
-    end
+    local weak = fixtures.refusal(function () dyld.check(armv7, {system_first, provider}) end) or ""
     if not weak:find("_arrived (weakly bound to /usr/lib/libSystem.B.dylib, which does not export it, while /usr/lib/charon/libprovider.dylib does", 1, true) then
         table.insert(found, "a weak import bound to a system library that lacks it, while a library of the build provides it, must be refused: " .. weak)
     end
-    if #dyld.missing_imports(armv7, {provider_first, provider}) > 0 then
+    local exempted_order = fixtures.refusal(function () dyld.check(armv7, {system_first, provider}, nil, {exempt = {system_first}}) end)
+    if exempted_order then
+        table.insert(found, "a link order inside another package's image is that package's to answer for, and must be reported, not refused: " .. exempted_order)
+    end
+    local missing, _, _, _, ordering = dyld.missing_imports(armv7, {provider_first, provider})
+    if #missing > 0 or #ordering > 0 then
         table.insert(found, "a weak import bound to the library of the build that provides it must pass")
     end
     if #dyld.missing_imports(armv7, {unprovided}) > 0 then
