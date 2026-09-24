@@ -48,7 +48,7 @@ static BOOL IsCFBoolean(id value)
  * primitive argument or return type is still wrapped, but calling it throws in JavaScript rather
  * than reading a garbage value off the wrong-sized argument slot.
  */
-static BOOL BlockSignatureIsAllObjects(const char *encoding, NSUInteger *outArgumentCount)
+static BOOL BlockSignatureIsAllObjects(const char *encoding, NSUInteger *outArgumentCount, BOOL *outReturnsVoid)
 {
     if (!encoding)
         return NO;
@@ -73,6 +73,8 @@ static BOOL BlockSignatureIsAllObjects(const char *encoding, NSUInteger *outArgu
     }
     if (outArgumentCount)
         *outArgumentCount = arguments - 1;
+    if (outReturnsVoid)
+        *outReturnsVoid = returnType[0] == 'v';
     return YES;
 }
 
@@ -81,7 +83,8 @@ static JSValueRef BlockCallAsFunction(JSContextRef ctx, JSObjectRef function, JS
     id block = (__bridge id)JSObjectGetPrivate(function);
     const char *encoding = _Block_signature((__bridge void *)block);
     NSUInteger wanted = 0;
-    if (!BlockSignatureIsAllObjects(encoding, &wanted)) {
+    BOOL returnsVoid = NO;
+    if (!BlockSignatureIsAllObjects(encoding, &wanted, &returnsVoid)) {
         JSContext *context = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(ctx) create:YES];
         JSValue *error = [JSValue valueWithNewErrorFromMessage:@"this block's argument or return type is not supported" inContext:context];
         if (exception)
@@ -107,6 +110,22 @@ static JSValueRef BlockCallAsFunction(JSContextRef ctx, JSObjectRef function, JS
     void *blockPointer = (__bridge void *)block;
     void *invoke = ((struct CharonBlockLayout *)blockPointer)->invoke;
     void *rawArgs[7] = {blockPointer, (__bridge void *)args[1], (__bridge void *)args[2], (__bridge void *)args[3], (__bridge void *)args[4], (__bridge void *)args[5], (__bridge void *)args[6]};
+    /* A block returning void leaves whatever r0 last held; reading that as an id would retain and
+     * box a garbage pointer, so it is called through a void-returning type and answers undefined,
+     * as the release's own JSContext does for such a block. */
+    if (returnsVoid) {
+        switch (wanted) {
+        case 0: ((void (*)(void *))invoke)(rawArgs[0]); break;
+        case 1: ((void (*)(void *, void *))invoke)(rawArgs[0], rawArgs[1]); break;
+        case 2: ((void (*)(void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2]); break;
+        case 3: ((void (*)(void *, void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2], rawArgs[3]); break;
+        case 4: ((void (*)(void *, void *, void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2], rawArgs[3], rawArgs[4]); break;
+        case 5: ((void (*)(void *, void *, void *, void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2], rawArgs[3], rawArgs[4], rawArgs[5]); break;
+        case 6: ((void (*)(void *, void *, void *, void *, void *, void *, void *))invoke)(rawArgs[0], rawArgs[1], rawArgs[2], rawArgs[3], rawArgs[4], rawArgs[5], rawArgs[6]); break;
+        }
+        charon_js_pop_callback();
+        return JSValueMakeUndefined(ctx);
+    }
     id unretainedResult = nil;
     switch (wanted) {
     case 0: unretainedResult = ((id (*)(void *))invoke)(rawArgs[0]); break;
@@ -122,9 +141,15 @@ static JSValueRef BlockCallAsFunction(JSContextRef ctx, JSObjectRef function, JS
     return charon_js_box(ctx, result);
 }
 
+/*
+ * A wrapper's finalizer releases its object with CFRelease, not CFBridgingRelease: the latter
+ * returns the object to ARC, which may autorelease it, and a finalizer runs inside whatever pool
+ * the call that collected has - the object then outlives its wrapper until that pool drains
+ * (measured on the host: an owner released only at the end of main).
+ */
 static void BlockFinalize(JSObjectRef object)
 {
-    CFBridgingRelease(JSObjectGetPrivate(object));
+    CFRelease(JSObjectGetPrivate(object));
 }
 
 static JSClassRef BlockClass(void)
@@ -145,7 +170,7 @@ static JSClassRef BlockClass(void)
  * trips through -toObject, but exposes no properties or methods to JavaScript. */
 static void OpaqueFinalize(JSObjectRef object)
 {
-    CFBridgingRelease(JSObjectGetPrivate(object));
+    CFRelease(JSObjectGetPrivate(object));
 }
 
 static JSClassRef OpaqueClass(void)
@@ -159,6 +184,20 @@ static JSClassRef OpaqueClass(void)
         opaqueClass = JSClassCreate(&definition);
     });
     return opaqueClass;
+}
+
+id charon_js_wrapped_object(JSContextRef context, JSValueRef value)
+{
+    if (!JSValueIsObjectOfClass(context, value, BlockClass()) && !JSValueIsObjectOfClass(context, value, OpaqueClass()) &&
+        !JSValueIsObjectOfClass(context, value, charon_js_export_class(Nil)))
+        return nil;
+    return (__bridge id)JSObjectGetPrivate((JSObjectRef)value);
+}
+
+static JSObjectRef Wrapper(JSContextRef context, id object, JSClassRef jsClass)
+{
+    JSContext *wrapper = [JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(context) create:YES];
+    return [wrapper.virtualMachine charon_wrapperOf:object class:jsClass context:context];
 }
 
 JSValueRef charon_js_box(JSContextRef context, id object)
@@ -203,13 +242,11 @@ JSValueRef charon_js_box(JSContextRef context, id object)
         }];
         return result;
     }
-    if ([object isKindOfClass:NSClassFromString(@"NSBlock")]) {
-        JSObjectRef function = JSObjectMake(context, BlockClass(), (void *)CFBridgingRetain(object));
-        return function;
-    }
+    if ([object isKindOfClass:NSClassFromString(@"NSBlock")])
+        return Wrapper(context, object, BlockClass());
     if (charon_js_class_conforms_to_export(object_getClass(object)))
-        return JSObjectMake(context, charon_js_export_class(object_getClass(object)), (void *)CFBridgingRetain(object));
-    return JSObjectMake(context, OpaqueClass(), (void *)CFBridgingRetain(object));
+        return Wrapper(context, object, charon_js_export_class(object_getClass(object)));
+    return Wrapper(context, object, OpaqueClass());
 }
 
 id charon_js_unbox(JSContextRef context, JSValueRef value, JSValueRef *exception)
@@ -239,9 +276,9 @@ id charon_js_unbox(JSContextRef context, JSValueRef value, JSValueRef *exception
     JSObjectRef object = JSValueToObject(context, value, exception);
     if (!object)
         return nil;
-    void *private = JSObjectGetPrivate(object);
-    if (private)
-        return (__bridge id)private;
+    id wrapped = charon_js_wrapped_object(context, object);
+    if (wrapped)
+        return wrapped;
     if (JSObjectIsFunction(context, object) || JSObjectIsConstructor(context, object))
         return [JSValue charon_valueWithJSValueRef:value context:[JSContext charon_wrapperForGlobalContext:JSContextGetGlobalContext(context) create:YES]];
     /* a plain JavaScript object or array with no private data: copy its own properties */

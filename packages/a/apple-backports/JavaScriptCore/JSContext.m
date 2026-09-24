@@ -78,7 +78,7 @@ static NSMapTable<id, JSContext *> *ContextRegistry(void)
     if (found || !create)
         return found;
     JSGlobalContextRetain(context);
-    JSVirtualMachine *vm = [[JSVirtualMachine alloc] initWithCharonGroup:JSContextGetGroup(context) retained:YES];
+    JSVirtualMachine *vm = [JSVirtualMachine charon_machineForGroup:JSContextGetGroup(context)] ?: [[JSVirtualMachine alloc] initWithCharonGroup:JSContextGetGroup(context) retained:YES];
     return [[JSContext alloc] initCharonWrapping:context virtualMachine:vm];
 }
 

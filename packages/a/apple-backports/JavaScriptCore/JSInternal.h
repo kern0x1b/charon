@@ -9,9 +9,40 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/*
+ * Two private parts of the release's C API, declared with WebKit's own signatures
+ * (JSWeakObjectMapRefPrivate.h, JSObjectRefPrivate.h; neither header is in the SDK). Both are
+ * exported by the JavaScriptCore of iOS 6.0 and of every later release in the ladder
+ * (coordination/corpus/caches/*.tsv) and by the host's. They are the only way the iOS 6 C API has
+ * to hold a JavaScript object without keeping it alive (JSValueProtect is strong and nothing public
+ * observes a collection), and to give one JavaScript object a reference to another that script
+ * cannot see or change (an ordinary property is visible to Object.getOwnPropertyNames). A weak
+ * object map belongs to a global object, which calls `destructor` when it is destroyed; private
+ * properties exist only on objects made with a JSClassRef.
+ */
+typedef struct OpaqueJSWeakObjectMap *JSWeakObjectMapRef;
+typedef void (*JSWeakMapDestroyedCallback)(JSWeakObjectMapRef map, void *_Nullable data);
+extern JSWeakObjectMapRef JSWeakObjectMapCreate(JSContextRef ctx, void *_Nullable data, JSWeakMapDestroyedCallback destructor);
+extern void JSWeakObjectMapSet(JSContextRef ctx, JSWeakObjectMapRef map, void *key, JSObjectRef object);
+extern JSObjectRef _Nullable JSWeakObjectMapGet(JSContextRef ctx, JSWeakObjectMapRef map, void *key);
+extern void JSWeakObjectMapRemove(JSContextRef ctx, JSWeakObjectMapRef map, void *key);
+extern bool JSObjectSetPrivateProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName, JSValueRef _Nullable value);
+extern bool JSObjectDeletePrivateProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName);
+
 @interface JSVirtualMachine (CharonInternal)
 - (JSContextGroupRef)charon_group;
 - (instancetype)initWithCharonGroup:(JSContextGroupRef)group retained:(BOOL)retained;
+/* The live virtual machine of a context group, or nil: there is one per group. */
++ (nullable JSVirtualMachine *)charon_machineForGroup:(JSContextGroupRef)group;
+/* The weak object map every weak reference of this virtual machine is kept in, and its context. */
+- (JSGlobalContextRef)charon_weakContext:(JSWeakObjectMapRef _Nonnull *_Nonnull)outWeak;
+/* The one wrapper of `object` in `context`'s global object, made with `jsClass` if there is none. */
+- (JSObjectRef)charon_wrapperOf:(id)object class:(JSClassRef)jsClass context:(JSContextRef)context;
+@end
+
+@interface JSManagedValue (CharonInternal)
+/* The object this holds, or NULL for a primitive, a string, or once it has been collected. */
+- (nullable JSObjectRef)charon_object;
 @end
 
 @interface JSContext (CharonInternal)
@@ -28,6 +59,9 @@ JSValueRef charon_js_box(JSContextRef context, id _Nullable object);
 
 /* Unbox a JSValueRef back to a native Objective-C object, per JSValue.toObject's own rules. */
 id _Nullable charon_js_unbox(JSContextRef context, JSValueRef value, JSValueRef _Nullable *exception);
+
+/* The Objective-C object `value` is the bridge's wrapper of, or nil for any other value. */
+id _Nullable charon_js_wrapped_object(JSContextRef context, JSValueRef value);
 
 /* The JSStringRef equivalents, released by the caller. */
 JSStringRef charon_js_string(NSString *string);
