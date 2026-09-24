@@ -71,6 +71,7 @@
       "api": "CLBeaconRegion",
       "kind": "class",
       "introduced": "7.0",
+      "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/CoreLocation/CLBeacon.md",
       "source": "CoreLocation 12.0 arm64"
@@ -79,6 +80,7 @@
       "api": "CLBeacon",
       "kind": "class",
       "introduced": "7.0",
+      "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/CoreLocation/CLBeacon.md",
       "source": "CoreLocation 12.0 arm64"
@@ -87,6 +89,7 @@
       "api": "CLBeaconRegion.notifyEntryStateOnDisplay",
       "kind": "property",
       "introduced": "7.0",
+      "minimum": "6.0",
       "status": "inert",
       "reason": "nothing in the release watches for the display to come on and asks the daemon about a region's state then",
       "effect": "the value is kept and answered back, and the delegate is never told an entry state when the display turns on",
@@ -96,6 +99,7 @@
       "api": "-[CLLocationManager startRangingBeaconsInRegion:]",
       "kind": "method",
       "introduced": "7.0",
+      "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/CoreLocation/CLBeacon.md",
       "source": "CoreLocation 12.0 arm64"
@@ -104,6 +108,7 @@
       "api": "-[CLLocationManager stopRangingBeaconsInRegion:]",
       "kind": "method",
       "introduced": "7.0",
+      "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/CoreLocation/CLBeacon.md",
       "source": "CoreLocation 12.0 arm64"

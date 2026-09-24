@@ -52,6 +52,10 @@ What the port cannot prevent: a beacon region handed to `-startMonitoringForRegi
 the release's manager, which will monitor it and never report it entered. An application that asks
 `+isMonitoringAvailableForClass:` first, as the newest release asks it to, does not get there.
 
+Below iOS 6.0 the two classes and the ranging calls are not carried: a region is made from an `NSUUID` and a beacon
+decodes one with `-[NSCoder decodeObjectOfClass:forKey:]`, and both arrive in 6.0, with neither in the backports. The
+registry holds them to 6.0; `+isMonitoringAvailableForClass:` finds no `CLBeaconRegion` there and answers NO.
+
 ## What was measured
 
 The emulated iOS 6.0, an iPad 2 and an iPhone 4S on iOS 6.1.3, the same answers on all three: the two classes come from
