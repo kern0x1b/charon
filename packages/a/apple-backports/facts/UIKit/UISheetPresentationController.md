@@ -139,10 +139,14 @@ Sources:
 - The status bar's appearance is not changed while a sheet is up.
 - In landscape the container is not rotated, a limitation of the port's presentation (`charon_presentation_run`)
   already.
-- The "magic" shadow is not drawn. UIKit draws it for a sheet whose parent does not stack with it (presented from a
-  full-screen or a custom presentation, or floating): the kit image `_UIPopoverShadow` under a private `CAFilter`
-  vibrant colour matrix (`_UIRoundedRectShadowView` 0x189229340). iOS 6 has neither the image nor the filter. It is
-  invisible whenever the parent stacks, which is every phone sheet over the root or over another sheet. Listed in the
-  workspace's `coordination/crutches.md`.
+- The "magic" shadow is not drawn. UIKit draws it under a sheet whose parent does not stack with it (presented from a
+  full-screen or a custom presentation, or floating), at `_magicShadowOpacity` (the sheet's dimming fraction there, 0
+  whenever the parent stacks, which is every phone sheet over the root or over another sheet): a `_UIRoundedRectShadowView`
+  150 points beyond the card, the kit image `_UIPopoverShadow` (a 200 x 200 corner drawn four times into 400 x 400,
+  stretched with cap insets 199.5; `-_loadImageIfNecessary` 0x188efd9d0) under `kCAFilterVibrantColorMatrix` with the
+  lower-intensity matrix (`-_updateShadowVisualStyling` 0x189229340). `tests/backports/host/sheetshadow/run.sh` measured
+  on the host that this filter takes its colour from what lies behind the layer, the matrix of the destination laid over
+  it, not from the layer's black: its whole colour is a function of the destination, which iOS 6 cannot composite (no
+  such filter, no backdrop layer). Listed in the workspace's `coordination/crutches.md`.
 - `presentationController` of a controller with a page or form sheet style answers the sheet; for other styles the port
   answers the controller a transitioning delegate gave, or nil, where UIKit has its own full-screen controller.

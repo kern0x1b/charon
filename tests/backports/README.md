@@ -974,6 +974,8 @@ writes `/private/var/backports/swipeui.log` and `swipeui.done`.
 
 `host/sheetmetrics/run.sh` holds the constants the port's sheet takes from UIKitCore 16.0, read from `UISheetPresentationController.m` itself, against the host's own `_UISheetPresentationMetrics` under Mac Catalyst: the top offsets, the maximum depth, the transition's duration and its springs agree; the host's corner radius (8, a later design) differs from 16.0's 10 and is checked to differ.
 
+`host/sheetshadow/run.sh` asks the host's UIKit what the sheet's "magic" shadow is made of (the kit image, the shadow view's frame and cap insets) and checks that the vibrant colour matrix 16.0 gives it takes its colour from what lies behind the layer - over red, blue, grey and white it leaves the matrix of the destination laid over it with the layer's alpha - with a colour matrix that reddens the layer as the control that the capture shows filters at all. It fails if the host stops reading the destination; the port's ledger entry for the shadow rests on it.
+
 `device/modaldefault.m` holds the default `modalPresentationStyle` to UIKitCore 16.0 (`facts/UIKit/UIModalPresentationAutomatic.md`), a process of its own built twice against the band, as charon links it and with an older SDK in its load command:
 
     clang ... -DMODALDEFAULT_LINKED_ON_13=1 device/modaldefault.m device/check.m -LBAND -lUIKitBackports -framework UIKit -framework Foundation -o modaldefault13
