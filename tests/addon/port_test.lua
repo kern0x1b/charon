@@ -17,14 +17,14 @@ local MAIN = "int main(void) { return 0; }\n"
 local LOCKED = "extern void os_unfair_lock_lock(void *lock);\nstatic long word;\nint main(void) { os_unfair_lock_lock(&word); return 0; }\n"
 local LATER = "extern void dispatch_activate(void *object);\nint main(void) { dispatch_activate(0); return 0; }\n"
 
--- A release mode strips a target that sets no strip of its own, and on Apple platforms its strip is -Wl,-x
--- -Wl,-dead_strip: the checks after the link would find no function names for the rebased code pointer below, and refuse
--- the port as stripped. The rules keep the dead-code removal and leave the names to their own strip afterwards, so the
+-- A release mode (mode.release, mode.releasedbg) strips a target that sets no strip of its own, and on Apple platforms its
+-- strip is -Wl,-x -Wl,-dead_strip: the checks after the link would find no function names for the rebased code pointer
+-- below, and refuse the port as stripped. The rules keep the dead-code removal and leave the names to their own strip afterwards, so the
 -- port builds and the function nothing references is gone; a debug build, which strips nothing, is the control that the
 -- function is there to be removed. A target that asks for strip "all" itself still reaches the checks stripped.
 local RELEASED = "int unreferenced_probe(void) { return 2; }\nstatic int answer(void) { return 1; }\n" ..
                  "int (*volatile hook)(void) = answer;\nint main(void) { return hook(); }\n"
-local MODES = 'add_rules("mode.release", "mode.debug")'
+local MODES = 'add_rules("mode.release", "mode.releasedbg", "mode.debug")'
 
 local CONTROL = "Package: org.charon.porttest\nName: Port test\nArchitecture: iphoneos-arm\nDescription: a port the tests build\n"
 
@@ -81,22 +81,31 @@ function failures(opt)
         end
     end
     -- A release mode's strip waits for the checks after the link, and its dead-code removal stays.
+    -- The symbols of the port's binary in a mode, or nil when that build left no binary to read.
     local names = function (at, mode)
         local binary = os.files(path.join(at, "build", "iphoneos", "armv7", mode, "probe"))[1]
-        return binary and os.iorunv("nm", {binary}) or ""
+        return binary and os.iorunv("nm", {binary})
     end
     local released = port(folder, version, "released", RELEASED, MODES)
     refused = fixtures.refusal(function () fixtures.build(released, "debug") end)
+    local kept = not refused and names(released, "debug")
     if refused then
         table.insert(found, "the release-mode port must build in debug mode: " .. refused)
-    elseif not names(released, "debug"):find("_unreferenced_probe", 1, true) then
-        table.insert(found, "a debug build must keep the function nothing references, the control for the release build")
+    elseif not kept then
+        table.insert(found, "the debug build of the release-mode port left no binary")
+    elseif not kept:find("_unreferenced_probe", 1, true) then
+        table.insert(found, "a debug build must keep the function nothing references, the control for the release builds")
     else
-        refused = fixtures.refusal(function () fixtures.build(released, "release") end)
-        if refused then
-            table.insert(found, "a port that sets no strip must build in mode.release: " .. refused)
-        elseif names(released, "release"):find("_unreferenced_probe", 1, true) then
-            table.insert(found, "mode.release must still link with -dead_strip: the function nothing references is in the binary")
+        for _, mode in ipairs({"release", "releasedbg"}) do
+            refused = fixtures.refusal(function () fixtures.build(released, mode) end)
+            local symbols = not refused and names(released, mode)
+            if refused then
+                table.insert(found, string.format("a port that sets no strip must build in mode.%s: %s", mode, refused))
+            elseif not symbols then
+                table.insert(found, string.format("the mode.%s build of the port left no binary", mode))
+            elseif symbols:find("_unreferenced_probe", 1, true) then
+                table.insert(found, string.format("mode.%s must still link with -dead_strip: the function nothing references is in the binary", mode))
+            end
         end
     end
     local told = fixtures.refusal(function () fixtures.build(port(folder, version, "stripped", RELEASED, MODES, '    set_strip("all")'), "release") end)
