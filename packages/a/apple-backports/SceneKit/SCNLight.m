@@ -65,7 +65,10 @@ SCNLightType const SCNLightTypeSpot = @"spot";
         if (color) {
             _color = color;
         }
-        _shadowColor = [CharonSCNCoding decodeColor:coder forKey:@"shadowColor"];
+        UIColor *shadowColor = [CharonSCNCoding decodeColor:coder forKey:@"shadowColor"];
+        if (shadowColor) {
+            _shadowColor = shadowColor;
+        }
         if ([coder containsValueForKey:@"temperature"]) {
             _temperature = [coder decodeDoubleForKey:@"temperature"];
         }

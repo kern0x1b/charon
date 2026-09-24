@@ -227,6 +227,7 @@ static NSUInteger CharonParseComponents(NSCoder *coder, NSString *key, double *o
 @interface CharonSCNArchivedColor : NSObject <NSSecureCoding>
 @property(nonatomic) CGFloat red, green, blue, alpha;
 @property(nonatomic) BOOL valid;
+@property(nonatomic, copy) NSString *failure;
 @end
 
 @implementation CharonSCNArchivedColor
@@ -236,6 +237,7 @@ static NSUInteger CharonParseComponents(NSCoder *coder, NSString *key, double *o
 @synthesize blue = _blue;
 @synthesize alpha = _alpha;
 @synthesize valid = _valid;
+@synthesize failure = _failure;
 
 + (BOOL)supportsSecureCoding
 {
@@ -265,6 +267,9 @@ static NSUInteger CharonParseComponents(NSCoder *coder, NSString *key, double *o
             NSUInteger channels = count - 1;
             if (CharonICCComponentsToSRGB(space.profile, components, channels, rgb)) {
                 [self setRGB:rgb alpha:components[count - 1]];
+            } else {
+                _failure = [NSString stringWithFormat:@"its ICC profile (%lu bytes) does not convert %lu components to sRGB",
+                                                      (unsigned long)space.profile.length, (unsigned long)channels];
             }
             return self;
         }
@@ -276,6 +281,10 @@ static NSUInteger CharonParseComponents(NSCoder *coder, NSString *key, double *o
                 rgb[1] = components[1];
                 rgb[2] = components[2];
                 [self setRGB:rgb alpha:count > 3 ? components[3] : 1];
+            } else if (model == 1) {
+                _failure = @"it is calibrated RGB without a profile (Generic RGB), which this port does not convert";
+            } else {
+                _failure = [NSString stringWithFormat:@"its NSRGB holds %lu components", (unsigned long)count];
             }
         } else if (model == 3 || model == 4) {
             count = CharonParseComponents(coder, @"NSWhite", components, 2);
@@ -283,7 +292,11 @@ static NSUInteger CharonParseComponents(NSCoder *coder, NSString *key, double *o
                 double white = model == 3 ? CharonSRGBEncode(pow(fmax(components[0], 0), 1.8)) : components[0];
                 rgb[0] = rgb[1] = rgb[2] = white;
                 [self setRGB:rgb alpha:count > 1 ? components[1] : 1];
+            } else {
+                _failure = @"its NSWhite holds no component";
             }
+        } else {
+            _failure = [NSString stringWithFormat:@"its colour space model %ld (catalog, pattern or other) is not read by this port", (long)model];
         }
     }
     return self;
@@ -420,6 +433,22 @@ static void CharonSCNMapColorClasses(NSKeyedUnarchiver *unarchiver)
     return objects;
 }
 
+// A colour the archive holds and this port cannot read leaves the property at its default; it is said, with the key
+// and the reason, so that a scene drawn in the wrong colour is not silent.
+static void CharonSCNColorFailed(NSString *key, NSString *reason)
+{
+    NSLog(@"SceneKit: the colour under %@ is not read, and the property keeps its default: %@", key, reason);
+}
+
+static UIColor *CharonSCNArchivedColorValue(CharonSCNArchivedColor *color, NSString *key)
+{
+    if (!color.valid) {
+        CharonSCNColorFailed(key, color.failure ?: @"it holds no components this port reads");
+        return nil;
+    }
+    return [color toUIColor];
+}
+
 // Three shapes reach here: an NSColor object directly in the graph (material property
 // `color`), an NSData holding a separate keyed archive of one (SCNLight/SCNParticleSystem), or a
 // UIColor from an iOS-authored archive. NSColor/NSColorSpace are mapped on whichever unarchiver
@@ -436,16 +465,18 @@ static void CharonSCNMapColorClasses(NSKeyedUnarchiver *unarchiver)
     @try {
         decoded = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSData class], [UIColor class], [CharonSCNArchivedColor class], nil] forKey:key];
     } @catch (NSException *exception) {
+        CharonSCNColorFailed(key, [NSString stringWithFormat:@"%@: %@", exception.name, exception.reason]);
         return nil;
     }
     if ([decoded isKindOfClass:[CharonSCNArchivedColor class]]) {
-        return [(CharonSCNArchivedColor *)decoded toUIColor];
+        return CharonSCNArchivedColorValue(decoded, key);
     }
     if ([decoded isKindOfClass:[UIColor class]]) {
         return decoded;
     }
     NSData *nested = decoded;
     if (![nested isKindOfClass:[NSData class]] || nested.length == 0) {
+        CharonSCNColorFailed(key, decoded ? [NSString stringWithFormat:@"it holds an empty %@", [decoded class]] : @"it holds nothing");
         return nil;
     }
     NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:nested];
@@ -455,13 +486,18 @@ static void CharonSCNMapColorClasses(NSKeyedUnarchiver *unarchiver)
     @try {
         archived = [unarchiver decodeObjectOfClasses:[NSSet setWithObjects:[CharonSCNArchivedColor class], [UIColor class], nil] forKey:NSKeyedArchiveRootObjectKey];
     } @catch (NSException *exception) {
+        CharonSCNColorFailed(key, [NSString stringWithFormat:@"its nested archive: %@: %@", exception.name, exception.reason]);
         return nil;
     }
     [unarchiver finishDecoding];
     if ([archived isKindOfClass:[CharonSCNArchivedColor class]]) {
-        return [(CharonSCNArchivedColor *)archived toUIColor];
+        return CharonSCNArchivedColorValue(archived, key);
     }
-    return [archived isKindOfClass:[UIColor class]] ? archived : nil;
+    if (![archived isKindOfClass:[UIColor class]]) {
+        CharonSCNColorFailed(key, @"its nested archive holds no colour");
+        return nil;
+    }
+    return archived;
 }
 
 + (BOOL)decodeBool:(NSCoder *)coder forKey:(NSString *)key default:(BOOL)fallback

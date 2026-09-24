@@ -56,6 +56,10 @@ Calibrated RGB without a profile (Generic RGB) appears in no measured file and i
 so `nil`, as is a LUT-based profile. `CharonSCNArchivedColorSpace` (mapped for `NSColorSpace`)
 carries only `NSICC`. `decodeColor:` maps both class names on whichever `NSKeyedUnarchiver`
 holds the color: the caller's for the graph shape, a fresh inner one for the nested shape.
+A colour that is not read (a refused space, a profile that does not convert, a catalog or
+pattern colour, an empty or unreadable nested archive, an exception from the decode) leaves the
+property at its default, and the log says so once, naming the key and the reason
+(`SceneKit: the colour under <key> is not read, ...`); the scene still loads.
 
 Checked against the oracle's `usingColorSpace(.sRGB)` components, host prototype
 (`color-oracle/proto.py`): 102 of 103 colors match to 1.2e-4, the worst being Display P3
