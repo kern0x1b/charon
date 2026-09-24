@@ -72,6 +72,13 @@ package that cannot is waived with charon.waive.input-minimum.<package>. Info.pl
 out are derived: the bundle and executable name, the project version, and
 MinimumOSVersion. The files a tweak, daemon or app target names with
 add_installfiles go into its package at the path given, under the package root.
+The rules strip after their checks, with charon.strip, because the Thumb
+interworking check reads the names of the functions a binary's code pointers
+point at: where a release mode (mode.release, mode.releasedbg, mode.minsizerel)
+would strip a target that sets no strip of its own at the link, the target is
+linked with -dead_strip, as that strip would, and keeps its symbols until the
+checks have run. A target that sets set_strip("all") itself arrives stripped at
+the check and is refused.
 A checkout nested inside another project (a worktree under
 the main checkout) builds with `xmake -P .`; the rules refuse otherwise.
 
