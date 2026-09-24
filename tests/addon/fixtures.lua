@@ -114,7 +114,8 @@ function repository(folder)
     return copy, version
 end
 
-function build(at)
-    os.vrunv("xmake", {"f", "-p", "iphoneos", "-a", "armv7", "-y"}, {curdir = at})
+-- mode: the build mode to configure (-m), when the project declares mode rules.
+function build(at, mode)
+    os.vrunv("xmake", table.join({"f", "-p", "iphoneos", "-a", "armv7", "-y"}, mode and {"-m", mode} or {}), {curdir = at})
     os.vrunv("xmake", {"build", "-y"}, {curdir = at})
 end
