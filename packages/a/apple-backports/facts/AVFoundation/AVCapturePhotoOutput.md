@@ -146,9 +146,9 @@ answers explicitly, and one registry row names each.
   running and no still captured (a probe outside the tree, `device-4s-flashmeasure.log` of the bfw2 band): with the
   mode set to Auto, `flashActive` read right after `-unlockForConfiguration` is NO, and its KVO change to YES comes
   28 ms later (the scene was dark); set to On, it is YES at once; set to Off, NO at once. An earlier version read
-  `flashActive` right after setting the mode, and would have said NO for an Auto flash that fires. The flash has
-  never been fired for a measurement, so the Exif branch (Auto/On) has not run on a device, in either direction: the
-  NO measured below is the Off branch, answered before the still without reading its Exif.
+  `flashActive` right after setting the mode, and would have said NO for an Auto flash that fires. The Exif branch
+  has run on a device once, in Auto (below): the flash did not fire, and it resolved NO, as the Exif said. YES is not
+  measured.
 - `stillImageStabilizationEnabled`: the still image output's `isStillImageStabilizationActive` where it has it (7.0
   on); NO on 6.x, which has no stabilization.
 - `uniqueID`: the settings' own.
@@ -237,7 +237,7 @@ phone someone may be using and were not run, so `flashEnabled` YES is not measur
 still's Exif (above), the same run on the same 4S the same day: 96 checks, 0 failed; the still captured with the flash Off carries Exif Flash 16 ("did not fire"),
 and its resolved settings say NO. That NO is the Off branch, answered before the still without reading the Exif: the run
 shows that the release attaches the tag and that the port's keys find it, not the Exif branch, which only the captures
-with the flash On and Auto of `flash-on` reach and which has not run on a device.
+with the flash On and Auto reach (`flash-on`, `flash-auto`; its one run is below).
 
 With every member of the settings and the output (the bfw3 band), `photooutput10` on the same 4S, 2026-09-24, the flash
 held Off: 160 checks, 0 failed (`bfw3/.agent-work/runs/capture4s/device-4s-photooutput-4.log`). Every capture calls
@@ -250,9 +250,21 @@ movie, depth data, quality 3 over the output's 2, a unique ID used twice, a thum
 delegate without the sample buffer callback each raise `NSInvalidArgumentException`; prepared settings are answered YES once with the session running;
 `availablePhotoCodecTypes` is `[jpeg]`. With scene monitoring for Auto the camera's mode is Auto and `isFlashScene`
 equals `flashActive`, a capture with the flash Off in between leaves the camera back on Auto, and with Off the camera is
-Off and `isFlashScene` NO; `flashActive` was NO in that scene,
-and the YES answer is not measured. The 420v and 420f previews came after this run; `photooutput10` checks their format,
-size and BT.601 luma against the photo (with the upside-down control), and that run has not been made yet.
+Off and `isFlashScene` NO; `flashActive` was NO in that scene.
+
+With the 420v and 420f previews, the late resolution of a thumbnail and the rest of the series, the same 4S,
+2026-09-25, in a dark scene, the flash held Off: 184 checks, 0 failed (`device-4s-photooutput-6.log`). The 4:2:0
+previews come at 960x720 in the format asked, their luma 0.29 (420v) and 0.22 (420f) levels from BT.601's luma of the
+photo drawn at that size, 15.1 from the photo upside down. Monitored for Auto, `flashActive` was YES and `isFlashScene`
+YES.
+
+The one capture in Auto the owner allowed (`photooutput10 <log> flash-auto`, the same dark scene, right after that run,
+`device-4s-photooutput-flashauto.log`, 185 checks, 0 failed): the still carries Exif Flash 24 (0b11000: flash mode
+Auto, bit 0 clear, did not fire), and the resolved `flashEnabled` is NO, as that says; the camera went back to Off
+with no other capture. So the Exif branch ran once and answered NO; YES is still not measured. Why the flash did not
+fire is not measured: `flashActive` was YES in the same scene during scene monitoring, and the capture sets Auto on the
+camera right before it captures, where `flashActive` turns YES about 28 ms after the mode is set (above). Telling that
+apart needs another capture in Auto that fires the flash.
 
 Not measured: Telegram's own `-captureOutput:didFinishProcessingPhotoSampleBuffer:...` with a `nil`
 `bracketSettings` (documented `nullable` in the header).
