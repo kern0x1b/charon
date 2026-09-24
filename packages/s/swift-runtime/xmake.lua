@@ -25,7 +25,7 @@ package("swift-runtime")
 
     -- What every image of the runtime and of the port renames, because the release the port is built for either does not
     -- have the call or gives it a narrower meaning.
-    local renamed = {"clock_gettime", "clock_getres", "dispatch_get_global_queue"}
+    local renamed = {"clock_gettime", "clock_getres", "dispatch_get_global_queue", "os_system_version_get_current_version"}
 
     -- With the backports, the files of Foundation's overlay whose iOS 7 marks stay: what they mark the backports do not
     -- carry. Found by building without the marks and reading what the compiler refused: Progress has no entry in the

@@ -1568,6 +1568,42 @@ int main(int argc, char **argv)
 """
 
 
+SYSTEM_VERSION = r"""
+#include <dlfcn.h>
+#include <stdio.h>
+#include <string.h>
+
+struct os_system_version_s {
+    unsigned int major;
+    unsigned int minor;
+    unsigned int patch;
+};
+
+int charon_os_system_version_get_current_version(struct os_system_version_s *version);
+
+/* The host has the call, so its answer is the oracle for the answer the shim reads where a release has none. */
+int main(void)
+{
+    int (*system)(struct os_system_version_s *) = dlsym(RTLD_DEFAULT, "os_system_version_get_current_version");
+    struct os_system_version_s ours = {0, 0, 0}, darwins = {0, 0, 0};
+    int failed = 0;
+    if (!system) {
+        printf("FAIL  the host must have os_system_version_get_current_version to compare against\n");
+        return 1;
+    }
+    if (system(&darwins) != 0 || charon_os_system_version_get_current_version(&ours) != 0) {
+        printf("FAIL  os_system_version_get_current_version must answer\n");
+        return 1;
+    }
+    if (memcmp(&ours, &darwins, sizeof ours) != 0 || ours.major == 0) {
+        printf("FAIL  the release's version is %u.%u.%u, and the shim answers %u.%u.%u\n", darwins.major, darwins.minor,
+               darwins.patch, ours.major, ours.minor, ours.patch);
+        failed = 1;
+    }
+    return failed;
+}
+"""
+
 ALLOC_WITH_ZONE = r"""
 #import <Foundation/Foundation.h>
 #include <dlfcn.h>
@@ -1833,6 +1869,28 @@ def failures():
             found.append("the shims of later dispatch, clock and memory calls must compile: {}".format(built.stderr[-400:]))
         else:
             found += outcome("later calls", run(folder / "calls", cwd=folder))
+        (folder / "version.c").write_text(SYSTEM_VERSION)
+        for system in ("0", "1"):
+            built = run("xcrun", "clang", "-O2", "-w", "-DCHARON_COMPAT_SYSTEM=" + system,
+                        SHIMS / "os_system_version_get_current_version.c", "version.c", "-framework", "CoreFoundation",
+                        "-o", "version" + system, cwd=folder)
+            if built.returncode:
+                found.append("the os_system_version_get_current_version shim must compile: {}".format(built.stderr[-400:]))
+            else:
+                found += outcome("system version, the system's own call {}".format("used" if system == "1" else "left out"),
+                                 run(folder / ("version" + system), cwd=folder))
+        # Swift's runtime declares the call itself, weakly, after defining the structure (stdlib/public/stubs/Availability.mm).
+        (folder / "availability.mm").write_text(
+            "struct os_system_version_s { unsigned int major, minor, patch; };\n"
+            "extern \"C\" int os_system_version_get_current_version(struct os_system_version_s *) __attribute__((weak_import));\n"
+            "unsigned int major(void) { os_system_version_s v = {0, 0, 0}; os_system_version_get_current_version(&v); return v.major; }\n")
+        declared = run("xcrun", "clang++", "-target", "armv7-apple-ios6.0", "-Wno-incompatible-sysroot", "-include",
+                       SHIMS.parent / "include" / "charon" / "os_system_version_get_current_version.h", "-c", "availability.mm",
+                       "-o", "availability.o", cwd=folder)
+        undefined = run("xcrun", "nm", "-u", "availability.o", cwd=folder).stdout.split() if not declared.returncode else []
+        if declared.returncode or "_charon_os_system_version_get_current_version" not in undefined:
+            found.append("Swift's own declaration of os_system_version_get_current_version must compile with the header forced "
+                         "in and reach the shim: {} {}".format(declared.stderr[-300:], undefined))
         blocks = [SHIMS / "{}.c".format(symbol) for symbol in ("dispatch_block_create", "dispatch_block_create_with_qos_class",
                                                             "dispatch_block_perform", "dispatch_block_wait", "dispatch_block_notify",
                                                             "dispatch_block_cancel", "dispatch_block_testcancel")]
@@ -1876,7 +1934,8 @@ def failures():
         else:
             found += outcome("objc_allocWithZone", run("./alloc", cwd=folder))
 
-        for symbol in [path.stem for path in locks] + later + [path.stem for path in blocks + asserts + queue_shims] + ["objc_allocWithZone", "objc_opt_self"]:
+        for symbol in ([path.stem for path in locks] + later + [path.stem for path in blocks + asserts + queue_shims] +
+                       ["objc_allocWithZone", "objc_opt_self", "os_system_version_get_current_version"]):
             process_wide = symbol in ("os_unfair_lock_lock", "os_unfair_lock_trylock", "os_unfair_lock_unlock",
                                       "os_unfair_recursive_lock_lock_with_options", "os_unfair_recursive_lock_unlock")
             if (SHIMS.parent / "include" / "charon" / "{}.h".format(symbol)).exists():

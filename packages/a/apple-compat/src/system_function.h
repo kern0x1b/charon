@@ -31,6 +31,10 @@ static inline void *charon_system_function(_Atomic(uintptr_t) *slot, const char 
     return found == CHARON_SYSTEM_ABSENT ? NULL : (void *)found;
 }
 
+/* The umbrella, which re-exports the rest of the C library: the lookup for a call whose defining library moved between
+   releases (arc4random_buf, libinfo in 4.3 and libSystem from 5; os_system_version_get_current_version, liblaunch on the
+   32-bit slices and libxpc on the 64-bit ones). */
+#define CHARON_LIBSYSTEM "/usr/lib/libSystem.B.dylib"
 #define CHARON_LIBSYSTEM_PLATFORM "/usr/lib/system/libsystem_platform.dylib"
 #define CHARON_LIBDISPATCH "/usr/lib/system/libdispatch.dylib"
 #define CHARON_LIBSYSTEM_PTHREAD "/usr/lib/system/libsystem_pthread.dylib"

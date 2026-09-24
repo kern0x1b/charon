@@ -5,9 +5,8 @@
 
 static _Atomic(uintptr_t) charon_system_arc4random_buf;
 
-/* The library that defines this call moved: iOS 4.3, which brought it, has it in libinfo, and iOS 5 in libSystem itself,
-   which every release re-exports the rest of the C library through. So the umbrella is what the lookup asks. */
-#define CHARON_LIBSYSTEM "/usr/lib/libSystem.B.dylib"
+/* The library that defines this call moved: iOS 4.3, which brought it, has it in libinfo, and iOS 5 in libSystem itself.
+   So the umbrella is what the lookup asks (CHARON_LIBSYSTEM). */
 
 __attribute__((constructor))
 static void charon_resolve_arc4random_buf(void)
