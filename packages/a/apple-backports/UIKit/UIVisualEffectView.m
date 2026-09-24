@@ -32,6 +32,12 @@ static const CGFloat CharonMaximumScale = 0.25;
     return _reader;
 }
 
+/* Reads what lies under the view now; the picture is made again only when that changed. */
+- (void)charon_refresh
+{
+    [[self charon_reader] refresh];
+}
+
 - (void)charon_removeBackdrop
 {
     [_backdrop removeFromSuperlayer];
@@ -86,7 +92,7 @@ static const CGFloat CharonMaximumScale = 0.25;
     if (self.window) {
         [[self charon_reader] start];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self->_reader refresh];
+            [self charon_refresh];
         });
     } else {
         [_reader stop];
