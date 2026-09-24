@@ -8,7 +8,7 @@ device=${DEVICE:-$here/../../device}
 build=${BUILD:-$(mktemp -d)}
 sdk=$(xcrun --show-sdk-path)
 xcrun clang -target arm64-apple-ios16.0-macabi -isysroot "$sdk" -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w -I"$device" \
-    "$here/record.m" "$device/sheet-cases.m" -framework UIKit -framework Foundation -o "$build/record"
+    "$here/record.m" "$device/sheet-cases.m" -framework UIKit -framework Foundation -framework QuartzCore -framework CoreGraphics -o "$build/record"
 SHEET_RECORDS="$build/sheet.json" "$build/record" > "$build/sheet.log"
 python3 "$here/../foundation2/embed.py" "$build/sheet.json" "$device/sheet-expectations.h"
 sed -i.bak 's/foundation2_expectations/sheet_expectations/' "$device/sheet-expectations.h" && rm -f "$device/sheet-expectations.h.bak"
