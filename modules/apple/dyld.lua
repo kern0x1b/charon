@@ -1091,6 +1091,8 @@ function check(cachefile, binaries, folder, opt)
     -- What another package provides is checked, and reported, but it is that package's image and not this one's to refuse.
     -- The images are named as the check names them, relative to the folder when there is one.
     local exempt = {}
+    -- xmake shows only the first wprint of a run without -v, so every warning of the check is one: each image's own line.
+    local warnings = {}
     for _, binary in ipairs(opt.exempt or {}) do
         exempt[folder and path.relative(binary, folder) or binary] = true
     end
@@ -1098,7 +1100,7 @@ function check(cachefile, binaries, folder, opt)
     -- In another package's image it is that package's to answer for, so it is reported and not a reason to refuse this program.
     for _, entry in ipairs(ordering) do
         if exempt[entry[1]] then
-            wprint("%s %s", entry[1], entry[2])
+            table.insert(warnings, entry[1] .. " " .. entry[2])
         else
             table.insert(missing, entry)
         end
@@ -1113,17 +1115,21 @@ function check(cachefile, binaries, folder, opt)
             table.insert(guarded[entry[1]], entry[2])
         end
     end
+    local unguarded = 0
     for _, binary in ipairs(table.orderkeys(guarded)) do
         local names = guarded[binary]
-        local limit = option.get("verbose") and #names or 12
-        local shown = table.concat(table.slice(names, 1, math.min(limit, #names)), " ") .. (#names > limit and string.format(" and %d more, all of them under xmake -v", #names - limit) or "")
+        local shown = table.concat(names, " ")
         local text = string.format("weakly imports %d symbol%s the %s release it is checked against does not export, each of which is NULL there and must be called only behind a check for it: %s",
                                    #names, #names == 1 and "" or "s", cache.architecture, shown)
         if opt.release and not opt.waived and not exempt[binary] then
             table.insert(missing, {binary, text .. "; a released image is refused these unless the target waives the check with charon.waive.weak-imports and says why every call is guarded"})
         else
-            wprint("%s %s", binary, text)
+            unguarded = unguarded + #names
+            table.insert(warnings, binary .. " " .. text)
         end
+    end
+    if #warnings > 0 then
+        wprint("%s", table.concat(warnings, "\n"))
     end
     if #missing > 0 then
         table.sort(missing, function (a, b)
@@ -1135,7 +1141,9 @@ function check(cachefile, binaries, folder, opt)
         end
         raise(table.concat(lines, "\n"))
     end
-    cprint("imports: every non-weak import of the %s slices of %d binaries resolves against %d exports", cache.architecture, count, cache.count)
+    cprint("imports: every non-weak import of the %s slices of %d binaries resolves against %d exports%s", cache.architecture, count, cache.count,
+           unguarded > 0 and string.format("; %d weak import%s it does not export, named in the warning above", unguarded, unguarded == 1 and "" or "s") or "")
+    return warnings
 end
 
 function image_symbols(cache, loaded)

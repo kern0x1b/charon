@@ -38,7 +38,9 @@ Reading the verdict (`$out.log`):
 
 - **Green:** no `error:` line; the log has
   `imports: every non-weak import of the armv7 slices of N binaries resolves against M exports`
-  followed by one `.../lib<Framework>Backports.dylib` path per library.
+  followed by one `.../lib<Framework>Backports.dylib` path per library. When that line goes on with
+  `; K weak imports it does not export`, the one `warning:` above it names each: a call through NULL
+  at that release unless a check stands in front of it, so read them before calling the run green.
 - **Red:** `error: the registry does not describe what the backports carry:` and the lines under it —
   `built, but no entry in registry/`, `listed as implemented, but nothing of that name is built`,
   `listed as absent, but what is built answers it`, and the rest. Each names symbols; fix the
