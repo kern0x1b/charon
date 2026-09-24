@@ -121,10 +121,10 @@ function failures(opt)
     if not mixed:find("unprovided.dylib", 1, true) or mixed:find("other.dylib", 1, true) then
         table.insert(found, "the program's own weak import must still be refused, and only it, when a provided library is exempt: " .. mixed)
     end
-    -- xmake prints only a run's first warning without -v, so every image's unguarded weak imports are one warning
+    -- every image's unguarded weak imports are a warning of their own, printed and returned by the check
     local warned = table.concat(dyld.check(armv7, {unprovided, other}) or {}, "\n")
     if not warned:find("unprovided.dylib", 1, true) or not warned:find("other.dylib", 1, true) then
-        table.insert(found, "one warning must name the weak imports of every image the release lacks, not the first image's alone: " .. warned)
+        table.insert(found, "the check's warnings must name the weak imports of every image the release lacks, not the first image's alone: " .. warned)
     end
     io.writefile(path.join(folder, "emitted.c"),
                  "extern void objc_storeStrong(void **, void *) __attribute__((weak_import));\nvoid use(void **slot) { if (objc_storeStrong) objc_storeStrong(slot, 0); }\n")

@@ -4,7 +4,7 @@ import("fixtures")
 -- object is read from the entries its names answer to: a registry with one function at 4.3 and one
 -- at 6.0, a helper only the 6.0 object calls, and an installer that exports nothing and that nothing
 -- names. For 4.3 the 6.0 object and its helper are left out and the installer is kept with no floor;
--- for 6.0 all four are kept. An object holding entries of two minimums is refused, and so is one whose
+-- for 6.0 all four are kept. A helper the 4.3 object calls too is kept at 4.3. An object holding entries of two minimums is refused, and so is one whose
 -- entries place it below an object it calls: it would not link in between. An installer that
 -- calls into the 6.0 object takes its minimum, as it links only where that object is carried: the band
 -- for 6.0 keeps it and the band for 4.3 leaves it out.
@@ -12,7 +12,7 @@ local function range_step(backports, folder, found)
     local work = path.join(folder, "range")
     os.mkdir(path.join(work, "registry"))
     local entries = {}
-    for _, row in ipairs({{"range_early", "4.3"}, {"range_late", "6.0"}, {"range_both_early", "4.3"}, {"range_both_late", "6.0"}, {"range_caller", "4.3"}}) do
+    for _, row in ipairs({{"range_early", "4.3"}, {"range_late", "6.0"}, {"range_both_early", "4.3"}, {"range_both_late", "6.0"}, {"range_caller", "4.3"}, {"range_sharer", "4.3"}}) do
         table.insert(entries, string.format('{"api": "%s", "kind": "function", "introduced": "9.0", "minimum": "%s", "status": "implemented"}', row[1], row[2]))
     end
     io.writefile(path.join(work, "registry", "range.json"), '{"framework": "Range", "entries": [' .. table.concat(entries, ", ") .. ']}\n')
@@ -24,6 +24,7 @@ local function range_step(backports, folder, found)
     local installer = fixtures.object(work, "installer", "static int installed;\n__attribute__((constructor)) static void install(void) { installed = 1; }\n")
     local mixed = fixtures.object(work, "mixed", api .. "int range_both_early(void) { return 4; }\n" .. api .. "int range_both_late(void) { return 6; }\n")
     local caller = fixtures.object(work, "caller", "int range_late(void);\n" .. api .. "int range_caller(void) { return range_late(); }\n")
+    local sharer = fixtures.object(work, "sharer", "int range_shared(void);\n" .. api .. "int range_sharer(void) { return range_shared() + 4; }\n")
     local upward = fixtures.object(work, "upward", "int range_late(void);\nstatic int installed;\n__attribute__((constructor)) static void install(void) { installed = range_late(); }\n")
     local objects = {early, late, helper, installer}
     local minimums, problems, unreached = backports.minimums(listed, objects, "armv7", "4.3")
@@ -50,6 +51,17 @@ local function range_step(backports, folder, found)
     _, problems = backports.minimums(listed, {early, late, helper, caller}, "armv7", "4.3")
     if #problems ~= 1 or not problems[1]:find("caller.o", 1, true) or not problems[1]:find("_range_late", 1, true) then
         table.insert(found, "an object the registry carries at 4.3 that calls the 6.0 object must be refused naming both: " .. table.concat(problems, "; "))
+    end
+    -- a helper the 4.3 object calls as well as the 6.0 one takes the lower minimum, which bounds nothing at 4.3
+    local shared = {early, late, helper, sharer}
+    minimums, problems = backports.minimums(listed, shared, "armv7", "4.3")
+    if #problems > 0 or minimums[helper] or minimums[sharer] or minimums[late] ~= "6.0" then
+        table.insert(found, string.format("a helper called by the 4.3 and the 6.0 object is carried with the 4.3 one, not helper %s sharer %s late %s, refused %s",
+                                          tostring(minimums[helper]), tostring(minimums[sharer]), tostring(minimums[late]), table.concat(problems, "; ")))
+    end
+    kept, _, left = backports.band({}, shared, nil, {release = "4.3", minimums = minimums})
+    if table.concat(kept, ",") ~= table.concat({early, helper, sharer}, ",") or table.concat(left, ",") ~= late then
+        table.insert(found, "the band for iOS 4.3 keeps the helper the 4.3 object calls and leaves only the 6.0 object out, not keep " .. table.concat(kept, ",") .. " and leave " .. table.concat(left, ","))
     end
     local upwards = {early, late, helper, upward}
     local inherited
