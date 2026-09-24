@@ -662,10 +662,12 @@ function fetch(architecture, minimum, opt)
             return dyld.held_source(path.join(dyld.root(), release), architecture), release
         end
         failed(firmware, refusal or broken)
-        -- Only one firmware carries a held cache: once its image failed, no other can stand in.
+        -- This image carried the held cache and failed after it was matched. Whether another
+        -- firmware carries the same bytes is known only once it is downloaded (7.0 has fifteen, and
+        -- 6.1.3's iPhone2,1 carries another cache), so fetch stops on this failure rather than try them.
         if broken and firmware.carries_held then
-            raise("the firmware of the cache held for iOS %s, %s %s, did not yield the %s libraries beside it:\n  %s",
-                  release, firmware.identifier, firmware.build, architecture, table.concat(failures, "\n  "))
+            raise("%s %s carries the cache held for iOS %s and did not yield the %s libraries beside it:\n  %s",
+                  firmware.identifier, firmware.build, release, architecture, table.concat(failures, "\n  "))
         end
     end
     raise("no firmware of iOS %s yielded the %s system libraries:\n  %s", release, architecture, table.concat(failures, "\n  "))
