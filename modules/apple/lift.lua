@@ -260,9 +260,10 @@ end
 -- of every file the umbrella reaches (reached[file]), read back through the line markers of clang -E. A name a line
 -- spells that no language keeps there is no use of it: a branch no language takes (OSSpinLockDeprecated.h's
 -- OSSPINLOCK_USE_INLINED), or a macro that makes a message of it (OSSPINLOCK_DEPRECATED_REPLACE_WITH(os_unfair_lock)).
--- A file the umbrella does not reach is not told.
-local function preprocessed(opt, languages, names)
-    local wanted = {}
+-- A file the umbrella does not reach is not told. For the names of apart, each language's own is told as well:
+-- own[language name] = {kept = ..., reached = ...}.
+local function preprocessed(opt, languages, names, apart)
+    local wanted, own = {}, {}
     for _, name in ipairs(names) do
         wanted[name] = true
     end
@@ -271,8 +272,12 @@ local function preprocessed(opt, languages, names)
         local text = os.iorunv(opt.clang, table.join({"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-E"},
                                                      language.arguments, {path.join(opt.outputdir, "umbrella.m")}))
         tokens_kept(text, wanted, kept, reached)
+        if apart then
+            own[language.name] = {kept = {}, reached = {}}
+            tokens_kept(text, apart, own[language.name].kept, own[language.name].reached)
+        end
     end
-    return kept, reached
+    return kept, reached, own
 end
 
 -- The names of wanted a preprocessor's output (clang -E, with its line markers) keeps as tokens, by the file and line
@@ -1118,9 +1123,8 @@ function lift(opt)
     -- requirement of a protocol the class conforms to (UIView's traitCollection is UITraitEnvironment's, NSString's item
     -- provider members are NSItemProviderReading's and NSItemProviderWriting's, conformed to by a category). Lowering that
     -- declaration would reach every class that inherits it or conforms, with or without a backport. Instead the member is
-    -- redeclared on the class, in a category appended to the class's own header - which a Swift port reads whichever
-    -- branch of the header's own #if it takes, because the category comes after both - and is checked both ways below as
-    -- any member the class declares is. The text is the SDK's declaration, read from its AST, so this does not guess one.
+    -- redeclared on the class, in its own @interface - which every language that reads the class must read, or this
+    -- fails by name - and is checked both ways below as any member the class declares is. The text is the SDK's declaration, read from its AST, so this does not guess one.
     -- Where the class reaches declarations that say different things, or one this cannot write as the SDK does, it fails
     -- by name. A member the SDK declares nowhere a use of its class reaches - not in this SDK at all (a later release's),
     -- a private method, one the SDK gives only a subclass or an unrelated class - has nothing to lower, and is named with
@@ -1267,22 +1271,32 @@ function lift(opt)
     end
     for _, owner in ipairs(table.orderkeys(members)) do
         -- dump(owner) answers one entry per file that names the class, most a forward declaration (@class UIView;); the
-        -- class's own header is the one whose entry carries its members.
-        local file
+        -- class's own @interface is the entry that carries its members, and they go in before its @end. Not into a
+        -- category: Swift's importer takes the requirement of a protocol that @interface adopts over a category's
+        -- redeclaration of the same method on the class (UIView's -traitCollectionDidChange: stays UITraitEnvironment's,
+        -- introduced in iOS 8), where it takes a redeclaration in the @interface itself.
+        local interface
         for _, node in ipairs(dump(owner)) do
             if node.kind == "ObjCInterfaceDecl" and node.name == owner then
                 for _, member in ipairs(node.inner or {}) do
                     if member.kind == "ObjCMethodDecl" or member.kind == "ObjCPropertyDecl" or member.kind == "ObjCIvarDecl" then
-                        file = (node.loc or {}).file
+                        interface = node
                         break
                     end
                 end
             end
         end
-        if file then
+        local file = interface and (interface.loc or {}).file
+        -- clang places the @interface's end at the "end" after the "@", and a location in a macro has no offset of its own
+        local ending = file and ((interface.range or {})["end"] or {}).offset
+        local content = ending and io.readfile(file)
+        if content and interface.loc.offset and content:sub(ending, ending + 3) == "@end" then
             redeclared[file] = redeclared[file] or {}
-            table.insert(redeclared[file], string.format("\n@interface %s (CharonLifted)\n%s\n@end\n", owner,
-                                                         table.concat(table.orderkeys(members[owner]), "\n")))
+            table.insert(redeclared[file], {owner = owner, name = interface.loc.offset, at = ending - 1,
+                                            text = table.concat(table.orderkeys(members[owner]), "\n") .. "\n"})
+        elseif file then
+            table.insert(unreachable, string.format("the @end of the @interface of %s in %s is not where clang places it", owner,
+                                                    path.relative(file, opt.sdk)))
         else
             table.insert(unreachable, string.format("the own header of %s, which would carry what it redeclares, cannot be found", owner))
         end
@@ -1376,7 +1390,35 @@ function lift(opt)
     for name in pairs(named) do
         told[name] = true
     end
-    local tokens, reached = preprocessed(opt, languages, table.keys(told))
+    local owners = {}
+    for _, entries in pairs(redeclared) do
+        for _, entry in ipairs(entries) do
+            owners[entry.owner] = true
+        end
+    end
+    local tokens, reached, own = preprocessed(opt, languages, table.keys(told), owners)
+    -- Every language that reads a class whose members go into its @interface reads that @interface: a header whose own
+    -- #if gave a language another @interface of the class would leave the language without them.
+    for file, entries in pairs(redeclared) do
+        local starts = line_starts(io.readfile(file))
+        for _, entry in ipairs(entries) do
+            local line = 1
+            while starts[line + 1] and starts[line + 1] <= entry.name + 1 do
+                line = line + 1
+            end
+            for _, language in ipairs(languages) do
+                local lines = own[language.name].kept[file] or {}
+                local reads = false
+                for _, names in pairs(lines) do
+                    reads = reads or names[entry.owner] or false
+                end
+                if reads and not (lines[line] or {})[entry.owner] then
+                    table.insert(unreachable, string.format("%s reads the class %s in %s, but not from the @interface at line %d",
+                                                            language.name, entry.owner, path.relative(file, opt.sdk), line))
+                end
+            end
+        end
+    end
     local function users(name, declared, seen)
         seen[name] = true
         local blocking, target = {}, opt.minimum
@@ -1563,6 +1605,13 @@ function lift(opt)
                 table.insert(sites, {line = line, col = offset + 2 - starts[line], insert = text})
             end
         end
+        for _, entry in ipairs(redeclared[file] or {}) do
+            local line = 1
+            while starts[line + 1] and starts[line + 1] <= entry.at + 1 do
+                line = line + 1
+            end
+            table.insert(sites, {line = line, col = entry.at + 2 - starts[line], insert = entry.text, redeclares = entry.owner})
+        end
         table.sort(sites, function (a, b)
             return a.line == b.line and a.col > b.col or a.line < b.line
         end)
@@ -1597,7 +1646,9 @@ function lift(opt)
             if site.insert then
                 local text = lines[site.line]
                 lines[site.line] = text:sub(1, site.col - 1) .. site.insert .. text:sub(site.col)
-                lifted = lifted + 1
+                if not site.redeclares then
+                    lifted = lifted + 1
+                end
             else
                 local rewritten = lift_macro(site.use, site.target)
                 local declarations = table.getn(table.keys(site.declarations))
@@ -1634,9 +1685,6 @@ function lift(opt)
         end
         local copy = path.join(opt.outputdir, "headers", path.relative(file, opt.sdk))
         local text = table.concat(lines, "\n")
-        for _, category in ipairs(redeclared[file] or {}) do
-            text = text .. category
-        end
         io.writefile(copy, text)
         local folder = path.directory(file)
         roots[folder] = roots[folder] or {}
