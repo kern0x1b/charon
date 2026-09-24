@@ -151,9 +151,9 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the object -capturePhotoWithSettings:delegate:'s own delegate callbacks pass to the caller; telegram's own selector cache reads its uniqueID",
-      "effect": "made by -capturePhotoWithSettings:delegate: before -captureOutput:willBeginCaptureForResolvedSettings:, from the camera and the still about to be taken, and handed as one object to every callback of the request; every member the SDK 16.4 header declares answers explicitly (AVCaptureResolvedPhotoSettings.m), where an earlier version carried uniqueID alone and let the compiler synthesize the other properties to zeros",
+      "effect": "made by -capturePhotoWithSettings:delegate: before -captureOutput:willBeginCaptureForResolvedSettings:, from the camera and the still about to be taken (from the still once it comes, and willBeginCapture sent then, when the port has no format yet or the flash may fire), and handed as one object to every callback of the request; every member the SDK 16.4 header declares answers explicitly (AVCaptureResolvedPhotoSettings.m), where an earlier version carried uniqueID alone and let the compiler synthesize the other properties to zeros",
       "facts": "facts/AVFoundation/AVCapturePhotoOutput.md",
-      "source": "SDK 16.4, AVFoundation/AVCapturePhotoOutput.h"
+      "source": "SDK 16.4, AVFoundation/AVCapturePhotoOutput.h, for the members; the values held to real captures on an iPhone 4S running 6.1.3 with tests/backports/device/photooutput10.m on 2026-09-24, 96 checks, 0 failures, the flash held Off"
     },
     {
       "api": "AVCaptureResolvedPhotoSettings.uniqueID",
@@ -217,7 +217,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the header's member of the class at 10.0.1; the compiler had synthesized it to NO",
-      "effect": "YES when the camera has a flash, its flash mode is not Off after the request's mode is set, and it says flashActive (iOS 5: it will flash if a still image is captured)",
+      "effect": "NO when the camera has no flash or its flash mode is Off after the request's mode is set; otherwise bit 0 (flash fired) of the Exif Flash tag the release attaches to the still, the settings then resolved when the still comes - flashActive answers NO right after the mode is set to Auto and YES about 30 ms later (measured on an iPhone 4S), so it cannot say it before the capture. NO measured on an iPhone 4S (the still with the flash Off carries Exif Flash 16 and resolves NO); YES not measured on device, since the flash has never been fired for a measurement",
       "facts": "facts/AVFoundation/AVCapturePhotoOutput.md",
       "source": "see AVCaptureResolvedPhotoSettings"
     },

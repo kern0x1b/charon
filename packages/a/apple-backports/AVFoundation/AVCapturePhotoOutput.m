@@ -188,6 +188,14 @@ static size_t CharonPreviewLongestSide(NSDictionary *preview)
     return MIN((size_t)MAX(width.unsignedIntegerValue, height.unsignedIntegerValue), display);
 }
 
+// Whether the flash fired for a still: bit 0 of the Exif Flash tag the release attaches to the still's sample buffer.
+static BOOL CharonStillFlashFired(CMSampleBufferRef still)
+{
+    CFDictionaryRef exif = still ? CMGetAttachment(still, kCGImagePropertyExifDictionary, NULL) : NULL;
+    NSNumber *flash = exif ? ((__bridge NSDictionary *)exif)[(__bridge NSString *)kCGImagePropertyExifFlash] : nil;
+    return (flash.unsignedIntegerValue & 1) != 0;
+}
+
 // The dimensions of the preview of a photo of `photo`: its longest side `longest`, or the photo's own when that is
 // smaller, and the photo's aspect ratio.
 static CMVideoDimensions CharonPreviewDimensions(CMVideoDimensions photo, size_t longest)
@@ -291,15 +299,17 @@ static CMSampleBufferRef CharonCreatePreviewSample(CMSampleBufferRef photo, CMVi
     }
 
     // What the capture resolves to, known before it starts. The still comes at the dimensions of the video port's format
-    // as the session runs it, for every preset, JPEG or 32BGRA, and zoomed (facts, "The resolved settings"). The flash
-    // fires when the camera says it is active: "When the flash is active, it will flash if a still image is captured"
-    // (AVCaptureDevice, iOS 5). Stabilization is the still image output's own answer where it has one, from 7.0.
+    // as the session runs it, for every preset, JPEG or 32BGRA, and zoomed (facts, "The resolved settings"). With the
+    // flash Off, or no flash, it does not fire. Otherwise the camera's flashActive cannot say it before the capture: with
+    // the mode just set to Auto it answers NO and turns YES about 30 ms later on an iPhone 4S (facts), so the answer is the
+    // still's own, bit 0 of its Exif Flash tag, and the settings are resolved when the still comes. Stabilization is the
+    // still image output's own answer where it has one, from 7.0.
     AVCaptureInputPort *port = connection.inputPorts.firstObject;
     CMVideoDimensions portDimensions = port.formatDescription ? CMVideoFormatDescriptionGetDimensions(port.formatDescription) : (CMVideoDimensions){0, 0};
-    BOOL flashEnabled = device.hasFlash && device.flashMode != AVCaptureFlashModeOff && device.isFlashActive;
+    BOOL flashMayFire = device.hasFlash && device.flashMode != AVCaptureFlashModeOff;
     BOOL stabilized = [self respondsToSelector:@selector(isStillImageStabilizationActive)] && self.stillImageStabilizationActive;
     int64_t uniqueID = settings.uniqueID;
-    AVCaptureResolvedPhotoSettings *(^resolve)(CMVideoDimensions) = ^(CMVideoDimensions photo) {
+    AVCaptureResolvedPhotoSettings *(^resolve)(CMVideoDimensions, BOOL) = ^(CMVideoDimensions photo, BOOL flashEnabled) {
         CMVideoDimensions preview = previewLongest ? CharonPreviewDimensions(photo, previewLongest) : (CMVideoDimensions){0, 0};
         return [[AVCaptureResolvedPhotoSettings alloc] initCharonWithUniqueID:uniqueID photoDimensions:photo previewDimensions:preview
                                                                   flashEnabled:flashEnabled stillImageStabilizationEnabled:stabilized];
@@ -309,8 +319,9 @@ static CMSampleBufferRef CharonCreatePreviewSample(CMSampleBufferRef photo, CMVi
     BOOL willBegin = [delegate respondsToSelector:@selector(captureOutput:willBeginCaptureForResolvedSettings:)];
     // A port can have no format yet: the first capture after the output joins a running session had none on an iPhone 4S
     // (facts). The dimensions are then the still's own, and the settings are resolved, and willBeginCapture sent, when the
-    // still comes, before the other callbacks, so no callback is given dimensions that are not the photo's.
-    AVCaptureResolvedPhotoSettings *early = portDimensions.width > 0 && portDimensions.height > 0 ? resolve(portDimensions) : nil;
+    // still comes, before the other callbacks, so no callback is given dimensions that are not the photo's. The same
+    // when the flash may fire, for the flash's answer.
+    AVCaptureResolvedPhotoSettings *early = portDimensions.width > 0 && portDimensions.height > 0 && !flashMayFire ? resolve(portDimensions, NO) : nil;
     if (early && willBegin)
         [delegate captureOutput:output willBeginCaptureForResolvedSettings:early];
 
@@ -318,7 +329,8 @@ static CMSampleBufferRef CharonCreatePreviewSample(CMSampleBufferRef photo, CMVi
         AVCaptureResolvedPhotoSettings *resolved = early;
         if (!resolved) {
             CMFormatDescriptionRef format = imageDataSampleBuffer ? CMSampleBufferGetFormatDescription(imageDataSampleBuffer) : NULL;
-            resolved = resolve(format ? CMVideoFormatDescriptionGetDimensions(format) : (CMVideoDimensions){0, 0});
+            resolved = resolve(format ? CMVideoFormatDescriptionGetDimensions(format) : (CMVideoDimensions){0, 0},
+                               flashMayFire && CharonStillFlashFired(imageDataSampleBuffer));
             if (willBegin)
                 [delegate captureOutput:output willBeginCaptureForResolvedSettings:resolved];
         }

@@ -1,4 +1,5 @@
 #import <AVFoundation/AVFoundation.h>
+#import <ImageIO/ImageIO.h>
 #import <UIKit/UIKit.h>
 #import "check.h"
 
@@ -28,6 +29,8 @@
 @property (atomic) CMVideoDimensions beganPhoto, beganPreview, resolvedPhoto, resolvedPreview, resolvedRaw, resolvedLive;
 @property (atomic) BOOL beganFlash, resolvedFlash, resolvedStabilized;
 @property (atomic) int64_t resolvedID;
+// The Exif Flash tag the release attached to the still, -1 when there is none.
+@property (atomic) long stillFlash;
 @end
 
 // The photo as an image: a JPEG through UIImage, a 32BGRA buffer through a bitmap context over its bytes.
@@ -151,6 +154,9 @@ static double spread(CVPixelBufferRef preview)
     self.resolvedLive = resolved.livePhotoMovieDimensions;
     self.resolvedFlash = resolved.flashEnabled;
     self.resolvedStabilized = resolved.stillImageStabilizationEnabled;
+    CFDictionaryRef exif = photo ? CMGetAttachment(photo, kCGImagePropertyExifDictionary, NULL) : NULL;
+    NSNumber *flashTag = exif ? ((__bridge NSDictionary *)exif)[(__bridge NSString *)kCGImagePropertyExifFlash] : nil;
+    self.stillFlash = flashTag ? flashTag.longValue : -1;
     BOOL jpeg = NO, bgra = NO;
     CGImageRef image = photo ? create_photo_image(photo, &jpeg, &bgra) : NULL;
     self.photoIsJPEG = jpeg;
@@ -387,8 +393,7 @@ int main(int argc, char **argv)
         // The flash: the header offers the modes of the camera behind the output, Off, On and Auto for a camera with a
         // flash and Off alone for one without (the iPad 2). A capture takes its settings' mode onto the camera, where the
         // release's still image output reads it, and a photo still comes; the resolved settings say the flash is enabled
-        // when the camera's flash is active for the capture (flashActive, which iOS 5 documents as "it will flash if a
-        // still image is captured"). On only when asked (above).
+        // as the still's own Exif Flash tag says it fired (bit 0). On only when asked (above).
         NSSet *flashModes = [NSSet setWithArray:output.supportedFlashModes];
         NSSet *cameraModes = camera.hasFlash ? [NSSet setWithObjects:@(AVCaptureFlashModeOff), @(AVCaptureFlashModeOn), @(AVCaptureFlashModeAuto), nil]
                                              : [NSSet setWithObject:@(AVCaptureFlashModeOff)];
@@ -400,12 +405,12 @@ int main(int argc, char **argv)
                 AVCapturePhotoSettings *flash = [AVCapturePhotoSettings photoSettings];
                 flash.flashMode = mode.integerValue;
                 CharonPhotoCatcher *lit = capture_with(output, flash, nil);
-                printf("flash %ld: camera mode %ld, available %d, photo %zux%zu, resolved flash %d\n", (long)mode.integerValue, (long)camera.flashMode,
-                       camera.flashAvailable, lit.photoWidth, lit.photoHeight, lit.resolvedFlash);
+                printf("flash %ld: camera mode %ld, available %d, photo %zux%zu, resolved flash %d, Exif Flash %ld\n", (long)mode.integerValue,
+                       (long)camera.flashMode, camera.flashAvailable, lit.photoWidth, lit.photoHeight, lit.resolvedFlash, lit.stillFlash);
                 CHECK(camera.flashMode == mode.integerValue, "a capture sets its flash mode on the camera");
                 CHECK(lit.finished && lit.error == nil && lit.photoIsJPEG, "and the photo comes");
-                if (mode.integerValue == AVCaptureFlashModeOn)
-                    CHECK(lit.resolvedFlash == camera.flashAvailable, "with the flash On, the resolved settings say it fires when the flash is available");
+                CHECK(lit.stillFlash >= 0, "the still says in its Exif whether the flash fired");
+                CHECK(lit.resolvedFlash == (lit.stillFlash >= 0 && (lit.stillFlash & 1)), "and the resolved settings say the same");
             }
             if (!flashOn)
                 printf("flash: the On capture is not run; `flash-on` runs it\n");

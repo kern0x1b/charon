@@ -120,9 +120,16 @@ answers explicitly, and one registry row names each.
   differs from 10.0's, which sends it before the shutter.
 - `previewDimensions`: the preview's longest side (above) applied to `photoDimensions` with its aspect ratio, before
   the capture; the preview buffer is made at exactly these. 0x0 with no preview format.
-- `flashEnabled`: YES when the camera has a flash, its flash mode is not Off once the request's mode is set on it,
-  and it says `flashActive`, which iOS 5 documents as "When the flash is active, it will flash if a still image is
-  captured". This is the camera's own answer for Auto too.
+- `flashEnabled`: NO when the camera has no flash or its flash mode is Off once the request's mode is set on it.
+  Otherwise the still's own answer: bit 0 ("flash fired") of the Exif Flash tag the release attaches to the still's
+  sample buffer, and the settings are resolved, and willBeginCapture sent, when the still comes, as when the port has
+  no format (above). The camera's `flashActive` ("When the flash is active, it will flash if a still image is
+  captured", iOS 5) cannot answer before the capture. Measured on an iPhone 4S, 6.1.3, 2026-09-24, with the session
+  running and no still captured (a probe outside the tree, `device-4s-flashmeasure.log` of the bfw2 band): with the
+  mode set to Auto, `flashActive` read right after `-unlockForConfiguration` is NO, and its KVO change to YES comes
+  28 ms later (the scene was dark); set to On, it is YES at once; set to Off, NO at once. An earlier version read
+  `flashActive` right after setting the mode, and would have said NO for an Auto flash that fires. The flash has
+  never been fired for a measurement, so `flashEnabled` YES is not measured; NO is (below).
 - `stillImageStabilizationEnabled`: the still image output's `isStillImageStabilizationActive` where it has it (7.0
   on); NO on 6.x, which has no stabilization.
 - `uniqueID`: the settings' own.
@@ -202,7 +209,9 @@ request's unique ID; its photo dimensions are the photo's (3264x2448) and its pr
 160x120, 320x240, 0x0 with none), both already at willBeginCapture; RAW and Live Photo 0x0; no stabilization; the flash
 not enabled with the flash Off. The camera's flash is held Off for the whole run and put back to its mode after; the
 capture with the flash On (`photooutput <log> flash-on`) fires the flash of a phone someone may be using and was not
-run, so `flashEnabled` YES is not measured.
+run, so `flashEnabled` YES is not measured. With `flashEnabled` taken from the still's Exif (above), the same run on the
+same 4S the same day: 96 checks, 0 failed; the still captured with the flash Off carries Exif Flash 16 ("did not fire"),
+and its resolved settings say NO, as it does.
 
 Not measured: Telegram's own `-captureOutput:didFinishProcessingPhotoSampleBuffer:...` with a `nil`
 `bracketSettings` (documented `nullable` in the header).
