@@ -972,6 +972,8 @@ writes `/private/var/backports/swipeui.log` and `swipeui.done`.
 
 `host/sheet/run.sh` records what the host's own `UISheetPresentationController` and its detents answer - the constants, descriptions and equality of detents, their resolution for eleven containers, which styles have a sheet and when it is made, the defaults - into `device/sheet-expectations.h`; the host shows a sheet in a window of its own, so the layout is not recorded. `device/sheet.m` (`sheet-Info.plist`, the phone family only, so an iPad runs it phone-sized) holds the port to the records and checks the layout of a large, a medium and a stacked sheet against the values read from UIKitCore 16.0 (`facts/UIKit/UISheetPresentationController.md`), and that the presenter is itself again once they are dismissed. It ran on an iPad 2 (6.1.3): 50 checks.
 
+`host/sheetmetrics/run.sh` holds the constants the port's sheet takes from UIKitCore 16.0, read from `UISheetPresentationController.m` itself, against the host's own `_UISheetPresentationMetrics` under Mac Catalyst: the top offsets, the maximum depth, the transition's duration and its springs agree; the host's corner radius (8, a later design) differs from 16.0's 10 and is checked to differ.
+
 `device/modaldefault.m` holds the default `modalPresentationStyle` to UIKitCore 16.0 (`facts/UIKit/UIModalPresentationAutomatic.md`), a process of its own built twice against the band, as charon links it and with an older SDK in its load command:
 
     clang ... -DMODALDEFAULT_LINKED_ON_13=1 device/modaldefault.m device/check.m -LBAND -lUIKitBackports -framework UIKit -framework Foundation -o modaldefault13

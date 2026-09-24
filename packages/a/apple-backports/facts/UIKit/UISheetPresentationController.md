@@ -15,6 +15,22 @@ Sources:
   host shows a sheet in a bridged window of its own (581 x 641), so it is no oracle for layout, and its idiom is the pad,
   so it is none for the grabber (60 x 4 there, 36 x 5 on the phone).
 
+## What has an oracle besides the read
+
+- The API (defaults, descriptions, equality, which styles have a sheet) and the resolution of the medium and large
+  detents for eleven containers (0.63 of the maximum up to a height of 568, 0.56 above): the host's UIKit, recorded by
+  `tests/backports/host/sheet/run.sh`.
+- The metrics the port takes as constants - topOffset 10, 8 in a compact height, the maximum depth 2, the transition
+  duration 0.4, the spring's response 0.3441442326 and damping 1 and 0.8: the host's `_UISheetPresentationMetrics`
+  agrees, `tests/backports/host/sheetmetrics/run.sh`, which reads them from the port's source. Its corner radius is 8,
+  of the design after iOS 26; 16.0 answers 10, and the test fails if the host stops differing.
+- Nothing else. The host (Mac Catalyst of macOS 27) shows a sheet in a bridged window of its own (581 x 641) in the pad
+  idiom, and has no `_UISheetLayoutInfo` class to drive with a phone-sized container (measured: `NSClassFromString`
+  answers nil). What rests on the read of the 16.0 cache alone: the margins and the frame, the presenter's scale and
+  lift and the stack of sheets, the corner radii and their blending, the dimming fractions, the shadow's opacity, the
+  grabber's size and spacing (the host's pad grabber is 60 x 4), the drag's rubber band and projection, the keyboard
+  detent and the grabber's tap.
+
 ## The API
 
 - `mediumDetent` and `largeDetent` make a new object each call; detents of one type are equal and hash as NSObject does;
@@ -47,7 +63,8 @@ Sources:
   lifted to stand topOffset (10) above the sheet's top. 4S, one sheet at large: the root at 16 30 288 414 behind it; at
   medium it is not scaled. A second sheet stacks the same way: the first at 16 30 288 396, the root at 16 40 288 414.
   These layout values are worked out from the read; `tests/backports/device/sheet.m` on an iPad 2 (6.1.3, the
-  application phone-sized) gave every one of them, 2026-09-24.
+  application phone-sized) gave every one of them, 2026-09-24, which shows the port computes what the read says, not
+  that the read is the release.
 - Corners (`_cornerRadii` 0x188f930e8): 10 on top; the bottom of a full-width sheet at depth 0 matches the display's
   corner, and a card behind a child blends towards the child's radius. The root card's corners run 0 to 10 as its child
   rises from medium to large.
