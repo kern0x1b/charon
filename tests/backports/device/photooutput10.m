@@ -11,8 +11,8 @@
 // captures with a preview at the display's size and at a size asked for, an uncompressed photo, a zoomed
 // one, the flash modes, and the resolved settings every capture reports. Built with AVCapturePhotoOutput.m and the
 // zoom's files, as the library carries them. A process of its own: the camera needs no permission on 6.1.3.
-// The camera's flash is held Off; a capture with the flash On runs only when asked, `photooutput <log> flash-on`, as it
-// fires the flash of a device someone may be using.
+// The camera's flash is held Off; captures with the flash On and Auto run only when asked, `photooutput <log> flash-on`,
+// as they fire the flash of a device someone may be using (Auto in a dark scene as On).
 
 @interface CharonPhotoCatcher : NSObject <AVCapturePhotoCaptureDelegate>
 @property (atomic) BOOL finished;
@@ -393,14 +393,16 @@ int main(int argc, char **argv)
         // The flash: the header offers the modes of the camera behind the output, Off, On and Auto for a camera with a
         // flash and Off alone for one without (the iPad 2). A capture takes its settings' mode onto the camera, where the
         // release's still image output reads it, and a photo still comes; the resolved settings say the flash is enabled
-        // as the still's own Exif Flash tag says it fired (bit 0). On only when asked (above).
+        // as the still's own Exif Flash tag says it fired (bit 0). On and Auto only when asked (above), Off last so the camera
+        // is put back: with Off the port answers NO before the still and never reads its Exif, so only On and Auto reach
+        // the Exif, and Auto in the dark is the case where `flashActive` read at once would have said NO.
         NSSet *flashModes = [NSSet setWithArray:output.supportedFlashModes];
         NSSet *cameraModes = camera.hasFlash ? [NSSet setWithObjects:@(AVCaptureFlashModeOff), @(AVCaptureFlashModeOn), @(AVCaptureFlashModeAuto), nil]
                                              : [NSSet setWithObject:@(AVCaptureFlashModeOff)];
         printf("flash: camera has one %d, modes offered %s\n", camera.hasFlash, [[output.supportedFlashModes componentsJoinedByString:@" "] UTF8String]);
         CHECK_EQUAL(flashModes, cameraModes, "the flash modes offered are the camera's");
         if (camera.hasFlash) {
-            NSArray *modes = flashOn ? @[@(AVCaptureFlashModeOn), @(AVCaptureFlashModeOff)] : @[@(AVCaptureFlashModeOff)];
+            NSArray *modes = flashOn ? @[@(AVCaptureFlashModeOn), @(AVCaptureFlashModeAuto), @(AVCaptureFlashModeOff)] : @[@(AVCaptureFlashModeOff)];
             for (NSNumber *mode in modes) {
                 AVCapturePhotoSettings *flash = [AVCapturePhotoSettings photoSettings];
                 flash.flashMode = mode.integerValue;
@@ -413,7 +415,7 @@ int main(int argc, char **argv)
                 CHECK(lit.resolvedFlash == (lit.stillFlash >= 0 && (lit.stillFlash & 1)), "and the resolved settings say the same");
             }
             if (!flashOn)
-                printf("flash: the On capture is not run; `flash-on` runs it\n");
+                printf("flash: the On and Auto captures are not run; `flash-on` runs them\n");
         }
         [session beginConfiguration];
         [session removeOutput:output];

@@ -129,7 +129,8 @@ answers explicitly, and one registry row names each.
   mode set to Auto, `flashActive` read right after `-unlockForConfiguration` is NO, and its KVO change to YES comes
   28 ms later (the scene was dark); set to On, it is YES at once; set to Off, NO at once. An earlier version read
   `flashActive` right after setting the mode, and would have said NO for an Auto flash that fires. The flash has
-  never been fired for a measurement, so `flashEnabled` YES is not measured; NO is (below).
+  never been fired for a measurement, so the Exif branch (Auto/On) has not run on a device, in either direction: the
+  NO measured below is the Off branch, answered before the still without reading its Exif.
 - `stillImageStabilizationEnabled`: the still image output's `isStillImageStabilizationActive` where it has it (7.0
   on); NO on 6.x, which has no stabilization.
 - `uniqueID`: the settings' own.
@@ -208,10 +209,12 @@ failed. Every capture hands one resolved settings object to its four callbacks i
 request's unique ID; its photo dimensions are the photo's (3264x2448) and its preview dimensions the preview's (960x720,
 160x120, 320x240, 0x0 with none), both already at willBeginCapture; RAW and Live Photo 0x0; no stabilization; the flash
 not enabled with the flash Off. The camera's flash is held Off for the whole run and put back to its mode after; the
-capture with the flash On (`photooutput <log> flash-on`) fires the flash of a phone someone may be using and was not
-run, so `flashEnabled` YES is not measured. With `flashEnabled` taken from the still's Exif (above), the same run on the
-same 4S the same day: 96 checks, 0 failed; the still captured with the flash Off carries Exif Flash 16 ("did not fire"),
-and its resolved settings say NO, as it does.
+captures with the flash On and Auto (`photooutput <log> flash-on`; Auto in the dark fires it as On) fire the flash of a
+phone someone may be using and were not run, so `flashEnabled` YES is not measured. With `flashEnabled` taken from the
+still's Exif (above), the same run on the same 4S the same day: 96 checks, 0 failed; the still captured with the flash Off carries Exif Flash 16 ("did not fire"),
+and its resolved settings say NO. That NO is the Off branch, answered before the still without reading the Exif: the run
+shows that the release attaches the tag and that the port's keys find it, not the Exif branch, which only the captures
+with the flash On and Auto of `flash-on` reach and which has not run on a device.
 
 Not measured: Telegram's own `-captureOutput:didFinishProcessingPhotoSampleBuffer:...` with a `nil`
 `bracketSettings` (documented `nullable` in the header).

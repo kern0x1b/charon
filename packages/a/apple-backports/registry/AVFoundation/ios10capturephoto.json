@@ -217,7 +217,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the header's member of the class at 10.0.1; the compiler had synthesized it to NO",
-      "effect": "NO when the camera has no flash or its flash mode is Off after the request's mode is set; otherwise bit 0 (flash fired) of the Exif Flash tag the release attaches to the still, the settings then resolved when the still comes - flashActive answers NO right after the mode is set to Auto and YES about 30 ms later (measured on an iPhone 4S), so it cannot say it before the capture. NO measured on an iPhone 4S (the still with the flash Off carries Exif Flash 16 and resolves NO); YES not measured on device, since the flash has never been fired for a measurement",
+      "effect": "NO when the camera has no flash or its flash mode is Off after the request's mode is set; otherwise bit 0 (flash fired) of the Exif Flash tag the release attaches to the still, the settings then resolved when the still comes - flashActive answers NO right after the mode is set to Auto and YES about 30 ms later (measured on an iPhone 4S), so it cannot say it before the capture. The Exif branch (Auto/On) has not run on a device, in either direction, since the flash has never been fired for a measurement; on an iPhone 4S the still captured with the flash Off carries Exif Flash 16 and resolves NO, but on the Off branch, answered before the still without reading its Exif, so it shows only that the release attaches the tag and that it is read under these keys",
       "facts": "facts/AVFoundation/AVCapturePhotoOutput.md",
       "source": "see AVCaptureResolvedPhotoSettings"
     },
