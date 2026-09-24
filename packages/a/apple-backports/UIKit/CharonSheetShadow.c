@@ -39,17 +39,24 @@ static double charon_clamp01(double x)
 
 /* One term at n pixels per side: the blurred quadrant is the product of two blurred edges, less the blur of what the
    rounded corner cuts off (the r x r square outside the arc). That cut-off is blurred along x exactly, one thin row at
-   a time, and the rows, gathered per pixel row, along y. */
-static void charon_shadow_term(const CharonShadowTerm *t, size_t n, double scale, double *out)
+   a time, and the rows, gathered per pixel row, along y. 0 when the memory could not be had. */
+static int charon_shadow_term(const CharonShadowTerm *t, size_t n, double scale, double *out)
 {
-    double *edge = malloc(n * sizeof(double));
-    for (size_t i = 0; i < n; i++)
-        edge[i] = charon_phi(((i + 0.5) / scale - t->e) / t->s);
     size_t first = (size_t)floor(t->e * scale), last = (size_t)ceil((t->e + t->r) * scale);
     if (last > n)
         last = n;
     size_t rows = last > first ? last - first : 0;
+    double *edge = malloc(n * sizeof(double));
     double *cut = calloc(rows * n + 1, sizeof(double));
+    double *weight = malloc(rows * sizeof(double) + 1);
+    if (!edge || !cut || !weight) {
+        free(weight);
+        free(cut);
+        free(edge);
+        return 0;
+    }
+    for (size_t i = 0; i < n; i++)
+        edge[i] = charon_phi(((i + 0.5) / scale - t->e) / t->s);
     const int steps = 8;
     for (size_t j = 0; j < rows; j++)
         for (int q = 0; q < steps; q++) {
@@ -60,7 +67,6 @@ static void charon_shadow_term(const CharonShadowTerm *t, size_t n, double scale
             for (size_t i = 0; i < n; i++)
                 cut[j * n + i] += (edge[i] - charon_phi(((i + 0.5) / scale - end) / t->s)) / (steps * scale);
         }
-    double *weight = malloc(rows * sizeof(double) + 1);
     for (size_t y = 0; y < n; y++) {
         for (size_t j = 0; j < rows; j++) {
             double z = ((y + 0.5) - (first + j + 0.5)) / scale / t->s;
@@ -76,6 +82,7 @@ static void charon_shadow_term(const CharonShadowTerm *t, size_t n, double scale
     free(weight);
     free(cut);
     free(edge);
+    return 1;
 }
 
 const uint8_t *charon_sheet_shadow_corner(unsigned scale)
@@ -90,14 +97,13 @@ const uint8_t *charon_sheet_shadow_corner(unsigned scale)
     size_t n = (size_t)(charon_shadow_corner_points * scale);
     double *a = malloc(n * n * sizeof(double)), *b = malloc(n * n * sizeof(double));
     uint8_t *corner = malloc(n * n);
-    if (!a || !b || !corner) {
+    if (!a || !b || !corner || !charon_shadow_term(&charon_shadow_terms[0], n, scale, a)
+        || !charon_shadow_term(&charon_shadow_terms[1], n, scale, b)) {
         free(a);
         free(b);
         free(corner);
         return NULL;
     }
-    charon_shadow_term(&charon_shadow_terms[0], n, scale, a);
-    charon_shadow_term(&charon_shadow_terms[1], n, scale, b);
     for (size_t i = 0; i < n * n; i++)
         corner[i] = (uint8_t)lround(255 * charon_clamp01(1 - (1 - a[i]) * (1 - b[i])));
     free(a);
