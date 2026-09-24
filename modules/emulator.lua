@@ -22,13 +22,12 @@ LAUNCHD_CONF = "private/etc/launchd.conf"
 RUNNER_TASK = RESULTS .. "/job"
 MIGRATOR = "System/Library/PrivateFrameworks/DataMigration.framework/Support/DataMigrator"
 SETUP_KEYS = {{"SetupDone", "-bool", "YES"}, {"SetupFinishedAllSteps", "-bool", "YES"}, {"AssistantPresented", "-bool", "YES"}}
--- The SetupVersion Setup.app writes when it finishes, by release: below it,
--- Setup runs again at every boot as "Update Completed" and SpringBoard launches
--- nothing else. Read from Setup's own code (the integer it passes before
--- -setObject:forKey:@"SetupVersion", and compares the stored one against):
--- 10A403 writes 2, 10B329 writes 3. The Setup of 5.0, 5.1.1 and 9.3.6 has no
--- such key.
-SETUP_VERSIONS = {["6.0"] = 2, ["6.1"] = 3}
+-- Setup.app stores a SetupVersion when it finishes, and below the one it
+-- stores it runs again at every boot as "Update Completed", while SpringBoard
+-- launches nothing else. The number is a constant in Setup's own code and in no
+-- file: Setup stores [NSNumber numberWithInt:N] under @"SetupVersion" (10A403
+-- stores 2, 10B329 3), and the Setup of 5.0, 5.1.1 and 9.3.6 has no such key.
+SETUP = "Applications/Setup.app/Setup"
 -- What Setup.app leaves with lockdownd when it finishes, which iOS 6.1 asks
 -- instead of the preferences; plutil reads a dot as a key-path separator, so
 -- the dots are escaped.
@@ -334,24 +333,152 @@ function clone(source, destination)
     os.vrunv("cp", {"-c", "-R", source, destination})
 end
 
-function setup_keys(release)
+-- The integers a 32-bit ARM image stores as NSNumbers under the constant
+-- string key, read by following its registers through its Thumb-2 code from one
+-- message send to the next, and the stores under that key it could not follow.
+-- Only the few instructions such a store is made of are decoded; any other one
+-- forgets every register, so a form this does not know is reported as not
+-- followed, never guessed at.
+local function stored_numbers(data, found, key)
+    local sections = {}
+    for _, section in ipairs(found.sections) do
+        sections[section.name] = section
+    end
+    local function offset(address)
+        for _, segment in ipairs(found.segments) do
+            if address >= segment.vmaddr and address < segment.vmaddr + segment.vmsize then
+                return found.base + segment.fileoff + address - segment.vmaddr
+            end
+        end
+    end
+    local function inside(name, address)
+        local section = sections[name]
+        return section and address >= section.addr and address < section.addr + section.size
+    end
+    local function word(address)
+        return string.unpack("<I4", data, offset(address) + 1)
+    end
+    local function text(address)
+        local at = offset(address)
+        return at and data:sub(at + 1, data:find("\0", at + 1, true) - 1)
+    end
+    local code = sections["__text"]
+    local numbers, unfollowed = {}, 0
+    local registers = {}
+    local at, finish = offset(code.addr), offset(code.addr) + code.size
+    while at < finish do
+        local address = code.addr + at - offset(code.addr)
+        local first = string.unpack("<I2", data, at + 1)
+        if (first >> 11) >= 0x1d then
+            local second = string.unpack("<I2", data, at + 3)
+            local kind = first & 0xfbf0
+            if (kind == 0xf240 or kind == 0xf2c0) and second & 0x8000 == 0 then
+                -- movw / movt rd, #imm16
+                local immediate = ((first & 0xf) << 12) | (((first >> 10) & 1) << 11) | (((second >> 12) & 7) << 8) | (second & 0xff)
+                local destination, known = (second >> 8) & 0xf, registers[(second >> 8) & 0xf]
+                if kind == 0xf240 then
+                    registers[destination] = {immediate = immediate}
+                elseif known and known.immediate then
+                    registers[destination] = {immediate = known.immediate | (immediate << 16)}
+                else
+                    registers[destination] = nil
+                end
+            elseif first & 0xf800 == 0xf000 and second & 0xc000 == 0xc000 then
+                -- bl / blx: a message send, whose r0 is the receiver, r1 the selector, r2 and r3 the arguments
+                local selector, value, stored = registers[1], registers[2], registers[3]
+                if selector and selector.selector == "setObject:forKey:" and stored and stored.address and
+                   inside("__cfstring", stored.address) and text(word(stored.address + 8)) == key then
+                    if value and value.sent and (value.sent == "numberWithInt:" or value.sent == "numberWithInteger:") and
+                       value.argument and value.argument.immediate then
+                        table.insert(numbers, value.argument.immediate)
+                    else
+                        unfollowed = unfollowed + 1
+                    end
+                end
+                local kept = {}
+                for _, callee_saved in ipairs({4, 5, 6, 8, 10, 11}) do
+                    kept[callee_saved] = registers[callee_saved]
+                end
+                kept[0] = {sent = selector and selector.selector, argument = value}
+                registers = kept
+            elseif first & 0xfff0 == 0xf8d0 then
+                -- ldr.w rt, [rn, #imm12]
+                registers[(second >> 12) & 0xf] = nil
+            else
+                registers = {}
+            end
+            at = at + 4
+        else
+            if first & 0xff78 == 0x4478 then
+                -- add rdn, pc
+                local destination = (first & 7) | ((first >> 4) & 8)
+                local known = registers[destination]
+                registers[destination] = known and known.immediate and {address = (known.immediate + address + 4) & 0xffffffff} or nil
+            elseif first & 0xffc0 == 0x6800 then
+                -- ldr rt, [rn]: a selector when rn points into the selector references
+                local known = registers[(first >> 3) & 7]
+                registers[first & 7] = known and known.address and inside("__objc_selrefs", known.address) and
+                                       {selector = text(word(known.address))} or nil
+            elseif first & 0xf800 == 0x2000 then
+                -- movs rd, #imm8
+                registers[(first >> 8) & 7] = {immediate = first & 0xff}
+            elseif first & 0xff00 == 0x4600 then
+                -- mov rd, rm
+                registers[(first & 7) | ((first >> 4) & 8)] = registers[(first >> 3) & 0xf]
+            else
+                registers = {}
+            end
+            at = at + 2
+        end
+    end
+    return numbers, unfollowed
+end
+
+-- The SetupVersion the firmware's own Setup stores, nil when its Setup stores
+-- none; raises when it stores one that cannot be read.
+function setup_version(rootfs, build)
+    local file = guest_path(rootfs, SETUP, {follow = true})
+    if not os.isfile(file) then
+        return nil
+    end
+    local data = macho.read(file)
+    if not data:find("\0SetupVersion\0", 1, true) then
+        return nil
+    end
+    for _, found in ipairs(macho.images(data)) do
+        if found.architecture == "armv7" or found.architecture == "armv7s" then
+            local numbers, unfollowed = stored_numbers(data, found, "SetupVersion")
+            local distinct = table.unique(numbers)
+            if #distinct == 1 and unfollowed == 0 then
+                return distinct[1]
+            end
+            raise("the SetupVersion of %s is not known: its Setup (%s) %s", build, file,
+                  #distinct > 1 and ("stores " .. table.concat(distinct, " and ")) or
+                  "stores one in a form not read here, and without it Setup runs again at every boot")
+        end
+    end
+    raise("the SetupVersion of %s is not known: its Setup (%s) names one and has no armv7 code to read it from", build, file)
+end
+
+function setup_keys(rootfs, build)
     local keys = table.copy(SETUP_KEYS)
-    local version = SETUP_VERSIONS[table.concat(table.slice(release:split(".", {plain = true}), 1, 2), ".")]
+    local version = setup_version(rootfs, build)
     if version then
         table.insert(keys, {"SetupVersion", "-integer", tostring(version)})
     end
     return keys
 end
 
-function home(rootfs, release)
+function home(rootfs, build)
     local preferences = guest_path(rootfs, "private/var/mobile/Library/Preferences")
     os.mkdir(preferences)
+    local keys = setup_keys(rootfs, build)
     for _, name in ipairs({"com.apple.purplebuddy", "com.apple.purplebuddy.notbackedup"}) do
         local file = path.join(preferences, name .. ".plist")
         if not os.isfile(file) then
             os.vrunv("plutil", {"-create", "binary1", file})
         end
-        for _, key in ipairs(setup_keys(release)) do
+        for _, key in ipairs(keys) do
             os.vrunv("plutil", {"-replace", key[1], key[2], key[3], file})
         end
         os.vrunv("xattr", {"-w", "hfsfuse.record.owner_id", "501", file})
@@ -1253,7 +1380,7 @@ function golden(opt)
     -- The image is what the emulator and the home step made of the firmware, so
     -- it is keyed by both: a change to what home writes is another image.
     local written = {}
-    for _, key in ipairs(table.join(setup_keys(opt.version), LOCKDOWN_KEYS)) do
+    for _, key in ipairs(table.join(setup_keys(opt.firmware, opt.build), LOCKDOWN_KEYS)) do
         table.insert(written, table.concat(key, " "))
     end
     local key = string.format("%s_%s_%s", opt.identifier, opt.build, hash.strhash128(opt.shade_hash .. ";" ..
@@ -1278,7 +1405,7 @@ function golden(opt)
             local staging = path.join(parent, key .. ".partial-" .. os.getpid())
             local rootfs = path.join(staging, "rootfs")
             clone(opt.firmware, rootfs)
-            home(rootfs, opt.version)
+            home(rootfs, opt.build)
             local migrates = os.isfile(guest_path(rootfs, MIGRATOR))
             cprint("${bright}booting %s %s once past its first-boot migration${clear} for a golden image", opt.identifier, opt.build)
             local booted = opt.boot(table.join(opt, {rootfs = rootfs, run = staging, stop = function (state)

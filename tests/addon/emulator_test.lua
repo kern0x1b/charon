@@ -70,16 +70,53 @@ local function verdicts(emulator, folder, found)
     end
 end
 
-local function home_step(emulator, folder, found)
+-- A Setup.app executable of 32-bit ARM code that stores SetupVersion the way the
+-- firmware's own does, [NSNumber numberWithInt:N] under @"SetupVersion", with N
+-- the given C expression; a Setup that stores its state under another key is
+-- made with that key instead.
+local SETUP = [[
+@interface NSNumber
++ (id)numberWithInt:(int)value;
+@end
+@interface NSUserDefaults
++ (id)standardUserDefaults;
+- (void)setObject:(id)object forKey:(id)key;
+@end
+int start(int argc)
+{
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:SETUP_VERSION] forKey:@"SetupVersion"];
+    return 0;
+}
+]]
+
+local function setup_app(folder, ld64, rootfs, version, key)
+    local work = path.join(folder, "setup")
+    os.mkdir(work)
+    io.writefile(path.join(work, "setup.m"), (SETUP:gsub("SetupVersion", key or "SetupVersion")))
+    io.writefile(path.join(work, "libSystem.tbd"), fixtures.system_stub(
+        "dyld_stub_binder, _objc_msgSend, ___CFConstantStringClassReference, '_OBJC_CLASS_$_NSNumber', '_OBJC_CLASS_$_NSUserDefaults'"))
+    local built = fixtures.link(work, ld64, "Setup-" .. path.filename(rootfs), "armv7-apple-ios6.0", "setup.m",
+                                {"-w", "-Os", "-Wl,-e,_start", "-DSETUP_VERSION=" .. version})
+    os.mkdir(path.join(rootfs, "Applications", "Setup.app"))
+    os.cp(built, path.join(rootfs, "Applications", "Setup.app", "Setup"))
+end
+
+local function home_step(emulator, folder, opt, found)
     local rootfs = path.join(folder, "home-rootfs")
     os.mkdir(path.join(rootfs, "private", "var", "mobile"))
+    setup_app(folder, opt.ld64, rootfs, "3")
     os.mkdir(path.join(rootfs, "private", "var", "root", "Library", "Lockdown"))
     os.ln("private/var", path.join(rootfs, "var"))
     local ark = path.join(rootfs, "private", "var", "root", "Library", "Lockdown", "data_ark.plist")
     os.vrunv("plutil", {"-create", "binary1", ark})
     os.vrunv("plutil", {"-insert", "-DeviceName", "-string", "iPhone", ark})
-    emulator.home(rootfs, "6.1.3")
+    emulator.home(rootfs, "10B329")
     local state = try {function () return os.iorunv("plutil", {"-extract", "com\\.apple\\.purplebuddy-SetupState", "raw", ark}):trim() end}
+    local stored = try {function () return os.iorunv("plutil", {"-extract", "SetupVersion", "raw",
+        path.join(rootfs, "private", "var", "mobile", "Library", "Preferences", "com.apple.purplebuddy.plist")}):trim() end}
+    if stored ~= "3" then
+        table.insert(found, "the home step writes the SetupVersion the image's own Setup stores, 3, read " .. tostring(stored))
+    end
     if state ~= "DONE" then
         table.insert(found, "iOS 6.1 reads the setup state from lockdownd, expected DONE, read " .. tostring(state))
     end
@@ -91,20 +128,32 @@ local function home_step(emulator, folder, found)
     local fresh = path.join(folder, "home-fresh")
     os.mkdir(path.join(fresh, "private", "var", "mobile"))
     os.ln("private/var", path.join(fresh, "var"))
-    emulator.home(fresh, "6.0")
+    setup_app(folder, opt.ld64, fresh, "2")
+    emulator.home(fresh, "10A403")
     local fresh_plist = path.join(fresh, "private", "var", "mobile", "Library", "Preferences", "com.apple.purplebuddy.plist")
     local written = try {function () return os.iorunv("plutil", {"-extract", "SetupVersion", "raw", fresh_plist}):trim() end}
     if written ~= "2" then
-        table.insert(found, "on 6.0 the home step writes the SetupVersion 10A403's Setup writes, 2, read " .. tostring(written))
+        table.insert(found, "the home step writes the SetupVersion the image's own Setup stores, 2, read " .. tostring(written))
     end
     local older = path.join(folder, "home-older")
     os.mkdir(path.join(older, "private", "var", "mobile"))
     os.ln("private/var", path.join(older, "var"))
-    emulator.home(older, "5.1.1")
+    setup_app(folder, opt.ld64, older, "2", "SetupDone")
+    emulator.home(older, "9B206")
     local none = try {function () return os.iorunv("plutil", {"-extract", "SetupVersion", "raw",
         path.join(older, "private", "var", "mobile", "Library", "Preferences", "com.apple.purplebuddy.plist")}):trim() end}
     if none then
         table.insert(found, "a release whose Setup has no SetupVersion gets none written, read " .. tostring(none))
+    end
+    -- A Setup that stores a SetupVersion this cannot read is refused, not left
+    -- to run again at every boot.
+    local unread = path.join(folder, "home-unread")
+    os.mkdir(path.join(unread, "private", "var", "mobile"))
+    os.ln("private/var", path.join(unread, "var"))
+    setup_app(folder, opt.ld64, unread, "argc")
+    local refused = fixtures.refusal(function () emulator.home(unread, "10X000") end)
+    if not refused or not refused:find("the SetupVersion of 10X000 is not known", 1, true) then
+        table.insert(found, "a SetupVersion Setup stores in a form not read is refused, got " .. tostring(refused))
     end
     local created = path.join(fresh, "private", "var", "root", "Library", "Lockdown", "data_ark.plist")
     state = try {function () return os.iorunv("plutil", {"-extract", "com\\.apple\\.purplebuddy-SetupState", "raw", created}):trim() end}
@@ -887,7 +936,7 @@ function failures(opt)
     local found = {}
     local folder = fixtures.scratch()
     verdicts(emulator, folder, found)
-    home_step(emulator, folder, found)
+    home_step(emulator, folder, opt, found)
     deb_step(emulator, debian, folder, found)
     runner_job(emulator, folder, found)
     registration_step(emulator, debian, folder, found)
