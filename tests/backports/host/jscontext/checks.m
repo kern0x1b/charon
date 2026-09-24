@@ -44,13 +44,60 @@ static void check(BOOL condition, NSString *name)
 
 /*
  * The collector scans the stack conservatively, so a value is made in a frame of its own and the
- * stack it used is overwritten before collecting. On the host, JSSynchronousGarbageCollectForDebugging
- * is the engine's own exported collect-now entry point and JSGarbageCollect only schedules one. The
- * release's engine (2012) exports no such entry point; there JSGarbageCollect is the collect-now
- * call, which the device run of these checks measures: every check after a Collect needs it.
+ * stack it used is overwritten before collecting.
+ *
+ * On the host, JSSynchronousGarbageCollectForDebugging is the engine's own exported collect-now
+ * entry point, and JSGarbageCollect only schedules a collection. The release's engine (2012) exports
+ * no collect-now entry point (JSSynchronousGarbageCollectForDebugging first appears in 7.0.1's
+ * cache, coordination/corpus/caches): its JSGarbageCollect only reports an abandoned object graph,
+ * which brings the heap's collection timer on the thread's run loop forward, and that timer's
+ * collection marks and then sweeps the whole heap, running every finalizer (JSBase.cpp,
+ * Heap::reportAbandonedObjectGraph and GCActivityCallbackCF.cpp in JavaScriptCore-7536.26.7).
+ * Measured on the iPad 2: nothing is collected when JSGarbageCollect returns, everything on the next
+ * run loop turn, and once the heap has collected before, only seconds later. So there a collection is
+ * asked for and the run loop turned until one has run: until an object made unreachable before
+ * asking has been finalized. A collection that never comes fails the check that asked for it.
  */
 #if TARGET_OS_IPHONE
-#define CollectNow JSGarbageCollect
+static BOOL sentinelFinalized;
+
+static void SentinelFinalize(JSObjectRef object)
+{
+    (void)object;
+    sentinelFinalized = YES;
+}
+
+__attribute__((noinline)) static void MakeSentinel(JSContextRef context)
+{
+    static JSClassRef sentinelClass;
+    if (!sentinelClass) {
+        JSClassDefinition definition = kJSClassDefinitionEmpty;
+        definition.className = "CollectionSentinel";
+        definition.finalize = SentinelFinalize;
+        sentinelClass = JSClassCreate(&definition);
+    }
+    JSObjectMake(context, sentinelClass, NULL);
+}
+
+__attribute__((noinline)) static void ScrubStack(void)
+{
+    volatile char stack[16384];
+    for (size_t index = 0; index < sizeof(stack); index++)
+        stack[index] = 0;
+}
+
+static void CollectNow(JSContextRef context)
+{
+    sentinelFinalized = NO;
+    MakeSentinel(context);
+    ScrubStack();
+    for (int turn = 0; !sentinelFinalized && turn < 600; turn++) {
+        JSGarbageCollect(context);
+        CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.05, false);
+    }
+    if (!sentinelFinalized)
+        check(NO, @"a collection ran within 30 s of asking for one");
+}
 #else
 extern void JSSynchronousGarbageCollectForDebugging(JSContextRef context);
 #define CollectNow JSSynchronousGarbageCollectForDebugging
@@ -63,8 +110,17 @@ __attribute__((noinline)) static JSManagedValue *ManagedFromScript(JSContext *co
     }
 }
 
+/*
+ * A named divergence in when a released JSValue, JSManagedValue or graph token lets go of what it
+ * held: the release unprotects and forgets inside -dealloc; the backport calls no C API from
+ * -dealloc (JSObjectRef.h forbids it in a finalizer, where a -dealloc can end up) and does it at the
+ * thread's next run loop turn or next outermost call into script. So a turn of the run loop comes
+ * before every collection asked for here, on both sides; on the device the collection itself comes
+ * from the run loop, after the turn's queued work.
+ */
 __attribute__((noinline)) static void Collect(JSContext *context)
 {
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
     volatile char stack[16384];
     for (size_t index = 0; index < sizeof(stack); index++)
         stack[index] = 0;
@@ -183,7 +239,7 @@ __attribute__((noinline)) static void CheckManagedReferences(JSContext *context)
 {
     JSVirtualMachine *vm = context.virtualMachine;
 
-    JSManagedValue *reachable = ManagedFromScript(context, @"globalThis.keptByScript = {n: 1}; keptByScript");
+    JSManagedValue *reachable = ManagedFromScript(context, @"this.keptByScript = {n: 1}; keptByScript");
     JSManagedValue *unowned = ManagedFromScript(context, @"({n: 3})");
     ManagedOwner *reachableOwner = OwnerWithManaged(context, @"reachableOwner", @"({n: 2})");
     ManagedOwner *hiddenOwner = OwnerWithManaged(context, nil, @"({n: 4})");
@@ -229,7 +285,7 @@ __attribute__((noinline)) static void CheckManagedReferences(JSContext *context)
 
     JSManagedValue *other = nil;
     @autoreleasepool {
-        root.managed = ManagedFromScript(context, @"globalThis.shared = {n: 8}; shared");
+        root.managed = ManagedFromScript(context, @"this.shared = {n: 8}; shared");
         [vm addManagedReference:root.managed withOwner:root];
         other = [JSManagedValue managedValueWithValue:root.managed.value];
         Forget(context, @"shared");
@@ -454,10 +510,13 @@ extern bool JSObjectSetPrivateProperty(JSContextRef ctx, JSObjectRef object, JSS
 extern bool JSObjectDeletePrivateProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName);
 extern JSValueRef JSObjectGetPrivateProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName);
 
+/* Counts into `data`, if the map was made with a counter: the 2012 engine calls the destroyed callback
+ * of every map, the uncounted one below included, when the map's global object is destroyed. */
 static void CountDestroyed(JSWeakObjectMapRef map, void *data)
 {
     (void)map;
-    (*(int *)data)++;
+    if (data)
+        (*(int *)data)++;
 }
 
 /* An object only the weak map knows of, made in a frame of its own; set as `holder`'s private property if given. */
@@ -516,8 +575,10 @@ static void CheckReleaseCAPI(void)
     JSGlobalContextRelease(doomed);
     CollectContext(other);
     printf("measured: the weak object map's destroyed callback ran %d times after its global context was released and its group collected\n", destroyed);
-    JSGlobalContextRelease(other);
+    /* the group's own reference goes first: the 2012 engine's JSContextGroupRelease dropping a group's
+     * last reference frees its identifiers against the wrong table and crashes (JSVirtualMachine.m) */
     JSContextGroupRelease(group);
+    JSGlobalContextRelease(other);
     printf("measured: and %d times after the group was released\n", destroyed);
 
     JSStringRelease(name);
@@ -561,6 +622,7 @@ __attribute__((noinline)) static void ExportReleaseProbe(JSContext *context)
 
 __attribute__((noinline)) static void CollectOnly(JSContext *context)
 {
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
     volatile char stack[16384];
     for (size_t index = 0; index < sizeof(stack); index++)
         stack[index] = 0;
@@ -576,7 +638,14 @@ static void CheckReleaseAfterCollection(JSContext *context)
     CollectOnly(context);
     int onReturn = releasedOwners;
     CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true);
-#ifdef CHARON_PORT
+#if defined(CHARON_PORT) && TARGET_OS_IPHONE
+    /* The release's engine collects only from its run loop timer, and the port's queue runs on the
+     * same run loop, after the timer: which turn released an owner is all the device shows. That it
+     * is outside the collection is held by the host run of the same code, whose collection returns
+     * before the run loop turns. */
+    (void)onReturn;
+    check(releasedOwners == 4, @"an exported owner whose wrapper was collected is released once the collection has run");
+#elif defined(CHARON_PORT)
     check(onReturn == 0 && releasedWhileCollecting == 0 && releasedOwners == 4,
           @"an exported owner whose wrapper was collected is released on the next run loop turn, outside the collection");
 #else
