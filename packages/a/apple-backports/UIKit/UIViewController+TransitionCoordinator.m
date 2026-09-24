@@ -89,12 +89,45 @@ static UIPresentationController *charon_sheet_for(UIViewController *presented, U
     return [sheet charon_presentsFrom:presenting] ? sheet : nil;
 }
 
+/* This file is linked into every band, UIPresentationController.m only into those below 8.0: from 8.0 on the class is the
+   release's, which has none of the methods the port's engine sends a presentation controller, and the release presents
+   the custom styles itself (asking the transitioning delegate for the controller and the animators). */
+static BOOL charon_release_presents(void)
+{
+    return ![UIPresentationController instancesRespondToSelector:@selector(charon_setContainerView:)];
+}
+
+/* From 8.0 on the port's sheet is presented by the release, through its public custom presentation: while the sheet is
+   presented, its view controller's style is Custom only for the release's present call and its transitioning delegate is
+   this object, which gives the sheet and the sheet's animator; the caller's delegate is put back when the sheet is gone. */
+@interface CharonSheetHandover : NSObject <UIViewControllerTransitioningDelegate>
+@property (nonatomic, weak) UIPresentationController *sheet;
+@property (nonatomic, weak) id<UIViewControllerTransitioningDelegate> original;
+@end
+
+@implementation CharonSheetHandover
+
+- (UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(UIViewController *)presenting sourceViewController:(UIViewController *)source
+{
+    return self.sheet;
+}
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source
+{
+    return [self.sheet charon_transitionAnimator];
+}
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed
+{
+    return [self.sheet charon_transitionAnimator];
+}
+
+@end
+
+static const void *const charon_sheet_handover_key = &charon_sheet_handover_key;
+
 static UIPresentationController *charon_presentation_for(UIViewController *presented, UIViewController *presenting, UIViewController *source)
 {
-    /* This file is linked into every band, UIPresentationController.m only into those below 8.0: from 8.0 on the class is
-       the release's, which presents every custom and sheet style itself and has none of the methods this path sends it. */
-    if (![UIPresentationController instancesRespondToSelector:@selector(charon_setContainerView:)])
-        return nil;
     UIModalPresentationStyle style = presented.modalPresentationStyle;
     UIPresentationController *sheet = charon_sheet_for(presented, presenting);
     if (sheet)
@@ -179,6 +212,23 @@ static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewCo
             return;
         UIViewController *presenting = charon_presenting_root(self);
         UIModalPresentationStyle style = presented.modalPresentationStyle;
+        if (charon_release_presents()) {
+            UIPresentationController *sheet = charon_sheet_for(presented, presenting);
+            if (sheet || (style >= 4 && style <= 6)) {
+                if (sheet) {
+                    CharonSheetHandover *handover = [[CharonSheetHandover alloc] init];
+                    handover.sheet = sheet;
+                    id<UIViewControllerTransitioningDelegate> current = presented.transitioningDelegate;
+                    handover.original = [current isKindOfClass:[CharonSheetHandover class]] ? ((CharonSheetHandover *)current).original : current;
+                    objc_setAssociatedObject(presented, charon_sheet_handover_key, handover, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+                    presented.transitioningDelegate = handover;
+                    presented.modalPresentationStyle = UIModalPresentationCustom;
+                }
+                presentOriginal(self, present, presented, animated, completion);
+                presented.modalPresentationStyle = style;
+                return;
+            }
+        }
         UIPresentationController *presentation = charon_presentation_for(presented, presenting, self);
         if (presentation) {
             id<UIViewControllerAnimatedTransitioning> presentationAnimator = animated ? charon_present_animator(presented, presenting, self) ?: [presentation charon_transitionAnimator] : nil;
@@ -220,6 +270,22 @@ static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewCo
             return;
         UIViewController *presented = self.presentedViewController ?: self;
         UIViewController *presenting = presented.presentingViewController ?: self;
+        if (charon_release_presents()) {
+            CharonSheetHandover *handover = objc_getAssociatedObject(presented, charon_sheet_handover_key);
+            UIModalPresentationStyle style = presented.modalPresentationStyle;
+            if (handover || (style >= 4 && style <= 6)) {
+                dismissOriginal(self, dismiss, animated, ^{
+                    if (handover && !presented.presentingViewController) {
+                        if (presented.transitioningDelegate == handover)
+                            presented.transitioningDelegate = handover.original;
+                        objc_setAssociatedObject(presented, charon_sheet_handover_key, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+                    }
+                    if (completion)
+                        completion();
+                });
+                return;
+            }
+        }
         UIPresentationController *presentation = presented.presentingViewController ? charon_presentation_controller_of(presented) : nil;
         if (presentation && presentation.containerView) {
             id<UIViewControllerAnimatedTransitioning> presentationAnimator = animated ? charon_dismiss_animator(presented) ?: [presentation charon_transitionAnimator] : nil;

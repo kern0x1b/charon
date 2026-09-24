@@ -60,13 +60,23 @@ Sources:
   architecture (`firmware.versions`: arm64 up to 14.x below the sheet's own 15.0, `modules/apple/backports.lua`
   `band_plan`), and the files that carry the sheet and the presentation machinery export nothing the release has before
   15.0 or nothing at all, so they are in the bands of 11 to 14 too, where devices without a home button run.
-  The port does not present the sheet in any band from 8.0 on, though: there `UIPresentationController` is the release's
-  class and `UIPresentationController.m`, which carries the methods the port's presentation path sends
-  (`-charon_setContainerView:` and the rest), is left out, so `UIViewController+TransitionCoordinator.m` hands every
-  presentation to the release, which draws its own page sheet (full screen in a compact width before 13.0) and knows
-  nothing of the controller's detents. Before that change the path sent those methods to the release's class and the
-  application died with an unrecognized selector (the 8.0 to 10.3 bands of canon `0.8.10+8cfbbe9d` carry the path and not
-  the methods). Presenting the sheet on the release's class from 8.0 on is open.
+  From 8.0 on `UIPresentationController` is the release's class and `UIPresentationController.m`, which carries the
+  methods the port's engine sends a presentation controller (`-charon_setContainerView:` and the rest), is left out, so
+  `UIViewController+TransitionCoordinator.m` does not run its engine there for styles 4 to 6 or for the sheet: it calls
+  the release's own present and dismiss. A custom, over-full-screen or over-current-context presentation goes to the
+  release with its style and transitioning delegate untouched, and the release makes the application's presentation
+  controller and runs its animators. The sheet goes through the same public custom presentation: for the release's
+  present call the style is Custom and the transitioning delegate gives the sheet and its `charon_transitionAnimator`; the
+  style is put back after the call, and the caller's delegate once the sheet is dismissed (until then
+  `transitioningDelegate` answers the port's object). The sheet lays itself out through the public hooks and
+  `self.containerView`. Not measured: no fleet device or emulator runs 8.0 or later. Two parts have no public
+  counterpart there: touches passing through the container at an undimmed detent (`charon_containerIgnoresDirectTouches`),
+  and `presentationController` answering the sheet, which below 8.0 only the port's category makes one object. Before
+  e5522579 the path sent `-charon_setContainerView:` to the release's class and the application died with an unrecognized
+  selector (the 8.0 to 10.3 bands of canon `0.8.10+8cfbbe9d` carry the path and not the class); e5522579 stopped the crash
+  but still ran the engine for an animated custom style with a delegate's animator and gave the release full screen.
+  On 7.0 and 7.1 the release carries custom transitions with a transitioning delegate too, and the port's engine still
+  takes an animated custom presentation there; that is older than the sheet and not changed here.
 - Frame (`_stackAlignmentFrame` 0x189051544): centred, the container's width, from the top margin to the container's
   bottom edge. iPhone 4S with the status bar: top 40, the sheet 320 x 440.
 - Detents: large = the full height less the bottom safe inset (`maximumDetentValue` 0x1895e9958); medium = that times
