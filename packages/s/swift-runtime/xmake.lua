@@ -341,8 +341,9 @@ package("swift-runtime")
         local backported = package:dep("apple-backports")
         if package:config("backports") then
             local lift = import("apple.lift", {rootdir = modules, anonymous = true})
-            local result = lift.lift({clang = toolchain:tool("cc"), sdk = toolchain:config("sdkdir"), triple = triple, minimum = minimum,
-                                      registry = backported:installdir("share"), outputdir = path.join(package:installdir("share"), "lift")})
+            local result = lift.lift({clang = toolchain:tool("cc"), swiftc = swiftc, sdk = toolchain:config("sdkdir"), triple = triple,
+                                      minimum = minimum, registry = backported:installdir("share"),
+                                      outputdir = path.join(package:installdir("share"), "lift")})
             print("lifted %d marks in %d headers for %d implemented API; %d not declared by the SDK's headers",
                   result.lifted, result.headers, result.implemented, #result.unmatched)
             lifted = {"-vfsoverlay", result.vfs}

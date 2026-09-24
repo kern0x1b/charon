@@ -109,6 +109,24 @@ local function system_headers(sdk, symbols)
     return table.orderkeys(found)
 end
 
+-- The declarations of a text dump (-ast-dump with -ast-dump-decl-types), in order: the qualified name each is headed with,
+-- and every typedef its type goes through.
+function listing_sections(listing)
+    local starts, sections = {}, {}
+    for start, heading in listing:gmatch("()Dumping ([^\n]*):\n") do
+        table.insert(starts, {start = start, heading = heading})
+    end
+    for index, section in ipairs(starts) do
+        local body = listing:sub(section.start, starts[index + 1] and starts[index + 1].start - 1 or -1)
+        local typedefs = {}
+        for name in body:gmatch("%f[%w]Typedef 0x%x+ '([%w_]+)'") do
+            table.insert(typedefs, name)
+        end
+        table.insert(sections, {heading = section.heading, typedefs = typedefs})
+    end
+    return sections
+end
+
 local function dumper(opt, frameworks, headers)
     local umbrella = path.join(opt.outputdir, "umbrella.m")
     local lines = {}
@@ -138,18 +156,18 @@ local function dumper(opt, frameworks, headers)
         end
         local found = objects(text)
         -- The JSON names no owner; the text dump of the same filter heads each declaration with its qualified name, in
-        -- the same order.
-        local headings = {}
-        local listing = os.iorunv(opt.clang, table.join(arguments, {"-Xclang", "-ast-dump"}))
+        -- the same order. With the declaration's type written after it (-ast-dump-decl-types: a function's, a variable's,
+        -- a typedef's own), it also names every typedef that type goes through - a return type, a parameter's, and the
+        -- typedef a typedef names in turn (dispatch_qos_class_t, then qos_class_t) - which the JSON gives no way to follow.
+        local listing = os.iorunv(opt.clang, table.join(arguments, {"-Xclang", "-ast-dump", "-Xclang", "-ast-dump-decl-types"}))
         if not listing then
             raise("clang gave no dump for the filter %s", filter)
         end
-        for heading in listing:gmatch("Dumping ([^\n]*):\n") do
-            table.insert(headings, heading)
-        end
-        if #headings == #found then
+        local sections = listing_sections(listing)
+        if #sections == #found then
             for index, node in ipairs(found) do
-                node._qualified = headings[index]
+                node._qualified = sections[index].heading
+                node._typedefs = sections[index].typedefs
             end
         end
         cache[key] = found
@@ -157,52 +175,126 @@ local function dumper(opt, frameworks, headers)
     end
 end
 
--- What the macro uses at sites of a header expand to where they stand, for the port's triple: the header is laid over the
--- SDK's own through a VFS overlay as a copy with each use between two markers, and the umbrella is preprocessed, so each
--- use expands in the header's own context - the macros defined, redefined or undefined around it (time.h undefines
--- __CLOCK_AVAILABILITY after its last use) and the include that brings the header in (dispatch/block.h refuses to be
--- included on its own).
-local function expander(opt)
-    return function (file, lines, sites)
-        local insertions = {}
-        for index, site in ipairs(sites) do
-            local last = site.line + site.count - 1
-            local finish = site.count == 1 and site.col - 1 + #site.use or #site.use:match("[^\n]*$")
-            table.insert(insertions, {line = site.line, col = site.col, order = 1, text = "charon_expansion_" .. index .. " "})
-            table.insert(insertions, {line = last, col = finish + 1, order = 2, text = " charon_expansion_end"})
-        end
-        -- last position first, so each insertion leaves the positions before it where they were
-        table.sort(insertions, function (a, b)
-            if a.line ~= b.line then
-                return a.line > b.line
-            elseif a.col ~= b.col then
-                return a.col > b.col
-            end
-            return a.order < b.order
-        end)
-        local marked = table.join(lines)
-        for _, insertion in ipairs(insertions) do
-            local text = marked[insertion.line]
-            marked[insertion.line] = text:sub(1, insertion.col - 1) .. insertion.text .. text:sub(insertion.col)
-        end
-        local copy = path.join(opt.outputdir, "expand", path.relative(file, opt.sdk))
-        io.writefile(copy, table.concat(marked, "\n"))
-        local overlay = path.join(opt.outputdir, "expand.yaml")
-        json.savefile(overlay, {version = 0, ["case-sensitive"] = "false", roots = {{type = "directory", name = path.directory(file),
-                               contents = {{type = "file", name = path.filename(file), ["external-contents"] = copy}}}}})
-        local text = os.iorunv(opt.clang, {"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-E", "-P",
-                                           "-x", "objective-c", path.join(opt.outputdir, "umbrella.m"), "-ivfsoverlay", overlay})
-        local found = {}
-        for index, expansion in text:gmatch("charon_expansion_(%d+)(.-)charon_expansion_end") do
-            found[sites[tonumber(index)]] = expansion:trim()
-        end
-        return found
+-- What the Swift compiler's clang importer is told beside the headers it reads: the language it reads them in, its
+-- definitions (__swift__ among them) and its dialect, as the compiler itself names them (-dump-clang-diagnostics). Its
+-- modules, search paths and API notes decide which files are read, which the umbrella decides here; the importer's own
+-- clang is not there to preprocess with (charon@swift installs no clang driver), so the one the lift runs reads them.
+local function importer_arguments(opt)
+    local source = path.join(opt.outputdir, "importer.swift")
+    io.writefile(source, "")
+    local _, errors = os.iorunv(opt.swiftc, {"-frontend", "-typecheck", source, "-parse-stdlib", "-target", opt.triple,
+                                             "-sdk", opt.sdk, "-dump-clang-diagnostics"})
+    local line = (errors or ""):match("clang importer driver args: ([^\n]+)")
+    if not line then
+        raise("%s named no arguments of its clang importer", opt.swiftc)
     end
+    local given = {}
+    for argument in line:gmatch("'([^']*)'") do
+        table.insert(given, argument)
+    end
+    local arguments = {}
+    for index, argument in ipairs(given) do
+        if argument == "-x" and given[index + 1] then
+            table.join2(arguments, {"-x", given[index + 1]})
+        elseif argument:startswith("-D") or argument:startswith("-U") or argument:startswith("-std=")
+               or argument == "-fblocks" or argument == "-fobjc-arc" then
+            table.insert(arguments, argument)
+        end
+    end
+    if not table.contains(arguments, "-x") then
+        raise("%s named no language for its clang importer", opt.swiftc)
+    end
+    return arguments
+end
+
+-- What the macro uses at sites of the headers expand to where they stand, for the port's triple: each header is laid
+-- over the SDK's own through a VFS overlay as a copy with each use between two markers, and the umbrella is
+-- preprocessed, so each use expands in its header's own context - the macros defined, redefined or undefined around it
+-- (time.h undefines __CLOCK_AVAILABILITY after its last use) and the include that brings the header in
+-- (dispatch/block.h refuses to be included on its own). It is preprocessed once for every language that reads the
+-- lifted headers - C, Objective-C, C++, Objective-C++, and Swift through its importer - since the text written in place of
+-- a use is read by all of them: UIKIT_CLASS_AVAILABLE_IOS_ONLY is extern in C and extern "C" in C++. A use two languages
+-- expand differently has no one text to be replaced by; it is answered in refused, with both expansions, and not
+-- lowered. A use a language does not reach (inside #ifdef __OBJC__) is not read by it either.
+-- files: {file, lines, sites} each. Answers found[site] = expansion, refused[site] = why.
+local function expander(opt)
+    local languages = {{name = "C", arguments = {"-x", "c"}}, {name = "Objective-C", arguments = {"-x", "objective-c"}},
+                       {name = "C++", arguments = {"-x", "c++"}}, {name = "Objective-C++", arguments = {"-x", "objective-c++"}},
+                       {name = "Swift", arguments = importer_arguments(opt)}}
+    return function (files)
+        local all, roots = {}, {}
+        for _, item in ipairs(files) do
+            local insertions = {}
+            for _, site in ipairs(item.sites) do
+                table.insert(all, site)
+                local last = site.line + site.count - 1
+                local finish = site.count == 1 and site.col - 1 + #site.use or #site.use:match("[^\n]*$")
+                table.insert(insertions, {line = site.line, col = site.col, order = 1, text = "charon_expansion_" .. #all .. " "})
+                table.insert(insertions, {line = last, col = finish + 1, order = 2, text = " charon_expansion_end"})
+            end
+            -- last position first, so each insertion leaves the positions before it where they were
+            table.sort(insertions, function (a, b)
+                if a.line ~= b.line then
+                    return a.line > b.line
+                elseif a.col ~= b.col then
+                    return a.col > b.col
+                end
+                return a.order < b.order
+            end)
+            local marked = table.join(item.lines)
+            for _, insertion in ipairs(insertions) do
+                local text = marked[insertion.line]
+                marked[insertion.line] = text:sub(1, insertion.col - 1) .. insertion.text .. text:sub(insertion.col)
+            end
+            local copy = path.join(opt.outputdir, "expand", path.relative(item.file, opt.sdk))
+            io.writefile(copy, table.concat(marked, "\n"))
+            local folder = path.directory(item.file)
+            roots[folder] = roots[folder] or {}
+            table.insert(roots[folder], {type = "file", name = path.filename(item.file), ["external-contents"] = copy})
+        end
+        local overlay = {version = 0, ["case-sensitive"] = "false", roots = {}}
+        for _, folder in ipairs(table.orderkeys(roots)) do
+            table.insert(overlay.roots, {type = "directory", name = folder, contents = roots[folder]})
+        end
+        local vfs = path.join(opt.outputdir, "expand.yaml")
+        json.savefile(vfs, overlay)
+        local forms = {}
+        for _, language in ipairs(languages) do
+            local text = os.iorunv(opt.clang, table.join({"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot",
+                                                          "-E", "-P"}, language.arguments,
+                                                         {path.join(opt.outputdir, "umbrella.m"), "-ivfsoverlay", vfs}))
+            for index, expansion in text:gmatch("charon_expansion_(%d+)(.-)charon_expansion_end") do
+                local site = all[tonumber(index)]
+                forms[site] = forms[site] or {}
+                table.insert(forms[site], {language = language.name, text = expansion:trim()})
+            end
+        end
+        local found, refused = {}, {}
+        for site, expansions in pairs(forms) do
+            found[site], refused[site] = one_expansion(expansions)
+        end
+        return found, refused
+    end
+end
+
+-- The one text a use's expansions in every language that reaches it agree on, told apart by their tokens and not by the
+-- spaces between them; nil and why where two of them differ. expansions: {language, text} each.
+function one_expansion(expansions)
+    local function tokens(text)
+        return (text:gsub("%s+", " ")):trim()
+    end
+    local first = expansions[1]
+    for _, other in ipairs(expansions) do
+        if tokens(other.text) ~= tokens(first.text) then
+            return nil, string.format("%s in %s, %s in %s", tokens(first.text), first.language, tokens(other.text), other.language)
+        end
+    end
+    return first and first.text
 end
 
 -- The declarations among nodes a use reaches: one another of them redeclares (previousDecl) is not, as clang answers a use
 -- from the latest - NS_ENUM's forward enum X : T X keeps a region's release its definition no longer has.
-local function latest(nodes)
+function latest(nodes)
     local superseded = {}
     for _, node in ipairs(nodes) do
         if node.previousDecl then
@@ -483,6 +575,10 @@ function declared_at(content, node, target)
     end
     local attribute = string.format("__attribute__((availability(ios,introduced=%s)))", version(target))
     local name = (node.name or ""):match("^[%w_]+")
+    -- a category is located at the name of the class it extends (@interface NSObject (ZzCat): at NSObject)
+    if node.kind == "ObjCCategoryDecl" then
+        name = (node.interface or {}).name
+    end
     local loc = spelled(node.loc)
     local first, last = at((node.range or {}).begin), at((node.range or {})["end"])
     local kind = node.kind
@@ -517,7 +613,116 @@ function declared_at(content, node, target)
     end
 end
 
--- lift(opt): opt.clang, opt.sdk, opt.triple, opt.minimum, opt.registry (the folder holding registry/), opt.outputdir.
+-- text with its comments and the insides of its string and character literals blanked, every byte and newline kept
+-- where it was: where a type's name is looked for, since a mention in a comment (a header's documentation) or in a message
+-- (API_DEPRECATED_WITH_REPLACEMENT's) uses nothing.
+function code_of(text)
+    local parts, index = {}, 1
+    while true do
+        local found = text:find("[/\"']", index)
+        if not found then
+            table.insert(parts, text:sub(index))
+            break
+        end
+        table.insert(parts, text:sub(index, found - 1))
+        local char, following = text:sub(found, found), text:sub(found + 1, found + 1)
+        local finish
+        if char == "/" and following == "/" then
+            finish = (text:find("\n", found, true) or #text + 1) - 1
+            table.insert(parts, string.rep(" ", finish - found + 1))
+        elseif char == "/" and following == "*" then
+            local _, closing = text:find("*/", found + 2, true)
+            finish = closing or #text
+            table.insert(parts, (text:sub(found, finish):gsub("[^\n]", " ")))
+        elseif char == "/" then
+            finish = found
+            table.insert(parts, char)
+        else
+            -- a literal ends at its own quote or, unclosed (an apostrophe in a #warning), at the line's end
+            finish = found + 1
+            while finish <= #text do
+                local at = text:sub(finish, finish)
+                if at == "\\" then
+                    finish = finish + 2
+                elseif at == char or at == "\n" then
+                    break
+                else
+                    finish = finish + 1
+                end
+            end
+            finish = math.min(finish, #text)
+            local closing = text:sub(finish, finish)
+            if closing == char then
+                table.insert(parts, char .. string.rep(" ", finish - found - 1) .. char)
+            else
+                table.insert(parts, char .. (text:sub(found + 1, finish):gsub("[^\n]", " ")))
+            end
+        end
+        index = finish + 1
+    end
+    return table.concat(parts)
+end
+
+-- The words a C declaration that takes in byte position of code could declare: the declaration runs from the end of the
+-- one before it (a ";", "{" or "}", an @end, or a directive's line) to its own ";" or "{", and a word counts where it
+-- stands outside every paren and bracket and a "(", ";", "=", "[" or "," follows it - a function's name, a variable's,
+-- a typedef's, and the availability macros beside them, but not ios or macos inside those macros' arguments. A return
+-- type on the line above its function's name (qos_class_t / qos_class_self(void);) and parameters over several lines
+-- are the same declaration.
+function statement_words(code, position)
+    local start = 1
+    for index = position - 1, 1, -1 do
+        local char = code:sub(index, index)
+        if char == ";" or char == "{" or char == "}" then
+            start = index + 1
+            break
+        elseif code:sub(index, index + 3) == "@end" then
+            start = index + 4
+            break
+        elseif char == "\n" and index + 1 < position and code:match("^[ \t]*#", index + 1) then
+            start = (code:find("\n", index + 1, true) or #code) + 1
+            break
+        end
+    end
+    -- a "#" that only blanks stand before on its line
+    local function directive(index)
+        local back = index - 1
+        while back > 0 and code:sub(back, back):match("[ \t]") do
+            back = back - 1
+        end
+        return back == 0 or code:sub(back, back) == "\n"
+    end
+    local words, depth, index = {}, 0, start
+    while index <= #code do
+        local char = code:sub(index, index)
+        if depth == 0 and (char == ";" or char == "{") and index >= position then
+            break
+        elseif char == "(" or char == "[" then
+            depth = depth + 1
+            index = index + 1
+        elseif char == ")" or char == "]" then
+            depth = math.max(depth - 1, 0)
+            index = index + 1
+        elseif char:match("%d") then
+            index = index + #code:match("^[%w_%.]+", index)
+        elseif char:match("[%a_]") then
+            local word = code:match("^[%a_][%w_]*", index)
+            if depth == 0 and code:match("^%s*[%(;=%[,]", index + #word) then
+                table.insert(words, word)
+            end
+            index = index + #word
+        elseif char == "#" and directive(index) then
+            -- a directive inside the declaration (#if around a parameter) is no part of it
+            index = (code:find("\n", index, true) or #code) + 1
+        else
+            index = index + 1
+        end
+    end
+    return words
+end
+
+-- lift(opt): opt.clang, opt.swiftc (the Swift compiler whose importer reads the result), opt.sdk, opt.triple, opt.minimum,
+-- opt.registry (the folder holding registry/), opt.outputdir.
 -- Answers the VFS overlay to hand the compiler and what was done; raises when either check finds a difference.
 function lift(opt)
     os.tryrm(opt.outputdir)
@@ -679,21 +884,34 @@ function lift(opt)
     end
 
     -- The types the headers alone declare that implemented API names in its signature: the prefixed names its signature
-    -- spells, and every parameter whose type the AST gives as a typedef (os_unfair_lock_t, clockid_t).
+    -- spells, every typedef its type goes through (a function's return type and parameters, a variable's type: the
+    -- dump's _typedefs), every typedef a method or property names for its result, a parameter or itself, and then every
+    -- typedef those name in turn - qos_class_self returns qos_class_t, dispatch_queue_attr_make_with_qos_class takes
+    -- dispatch_qos_class_t, which is qos_class_t, whose enumerators are the values both mean.
     local named = {}
+    local function alias(type)
+        type = type or {}
+        return type.typeAliasDeclId and (type.qualType or ""):gsub("%f[%w_]const%f[^%w_]", ""):match("[%a_][%w_]*") or nil
+    end
     for _, entry in ipairs(entries) do
         for _, node in ipairs(dump(filter_of(entry))) do
             if matches(entry, node) then
-                local signature = {(node.type or {}).qualType or ""}
+                local signature = {(node.type or {}).qualType or "", (node.returnType or {}).qualType or ""}
+                for _, name in ipairs(node._typedefs or {}) do
+                    named[name] = true
+                end
+                for _, type in ipairs({node.type or {}, node.returnType or {}}) do
+                    local name = alias(type)
+                    if name then
+                        named[name] = true
+                    end
+                end
                 for _, child in ipairs(node.inner or {}) do
                     if child.kind == "ParmVarDecl" then
-                        local type = child.type or {}
-                        table.insert(signature, type.qualType or "")
-                        if type.typeAliasDeclId then
-                            local alias = (type.qualType or ""):gsub("%f[%w_]const%f[^%w_]", ""):match("[%a_][%w_]*")
-                            if alias then
-                                named[alias] = true
-                            end
+                        table.insert(signature, (child.type or {}).qualType or "")
+                        local name = alias(child.type)
+                        if name then
+                            named[name] = true
                         end
                     end
                 end
@@ -703,8 +921,131 @@ function lift(opt)
             end
         end
     end
+    local followed = {}
+    local pending = table.keys(named)
+    while #pending > 0 do
+        local name = table.remove(pending)
+        if not followed[name] then
+            followed[name] = true
+            for _, node in ipairs(dump(name)) do
+                if node.kind == "TypedefDecl" and node.name == name then
+                    for _, further in ipairs(node._typedefs or {}) do
+                        if not named[further] then
+                            named[further] = true
+                            table.insert(pending, further)
+                        end
+                    end
+                end
+            end
+        end
+    end
     local lowered_types, kept_types = {}, {}
     local headers = header_files(opt.sdk, frameworks, table.orderkeys(system_files))
+    local codes = {}
+    local function code(file)
+        codes[file] = codes[file] or code_of(io.readfile(file))
+        return codes[file]
+    end
+    -- What keeps a type from coming down: every use of it in the headers read whose declaration is above the port's
+    -- release and not implemented, and every use whose declaration cannot be told; and the latest minimum among the
+    -- implemented ones. A typedef that names it (dispatch_qos_class_t is qos_class_t) is no use of its own: its uses
+    -- are the type's. declared: the type's own declarations, which are no uses of it.
+    local function users(name, declared, seen)
+        seen[name] = true
+        local blocking, target = {}, opt.minimum
+        for _, file in ipairs(headers) do
+            local text = code(file)
+            if text:find("%f[%w_]" .. name .. "%f[^%w_]") then
+                local starts, lines = line_starts(text), text:split("\n", {strict = true})
+                for index, line in ipairs(lines) do
+                    if line:find("%f[%w_]" .. name .. "%f[^%w_]") and not line:trim():startswith("#") then
+                        local low, high = starts[index], starts[index + 1]
+                        -- its own declaration, as the dump has it, or one in a branch the preprocessor did not take
+                        -- (dispatch/object.h's typedef unsigned int dispatch_qos_class_t where sys/qos.h is missing)
+                        local own = covering(declared, text, low, high, name)
+                                    or table.contains(statement_words(text, low), name)
+                        if not own then
+                            -- the class or protocol the line is inside, read back to its @interface or @protocol
+                            local owner
+                            for back = index, 1, -1 do
+                                local kind, found = lines[back]:match("^%s*@(%a+)%s+([%w_]+)")
+                                if kind == "interface" or kind == "protocol" then
+                                    owner = found
+                                    break
+                                elseif lines[back]:match("^%s*@end") then
+                                    break
+                                end
+                            end
+                            local user, api, alias
+                            if owner then
+                                user = covering(dump(owner .. "::"), text, low, high, name)
+                                if user and user.kind == "ObjCMethodDecl" then
+                                    api = string.format("%s[%s %s]", user.instance == false and "+" or "-", owner, user.name)
+                                elseif user and user.kind == "ObjCPropertyDecl" then
+                                    api = owner .. "." .. user.name
+                                end
+                            else
+                                -- only a word C syntax could declare in the declaration the line is part of is looked
+                                -- up (see statement_words); "int" or "in" names no declaration, and a dump of every
+                                -- name containing it is the whole SDK
+                                for _, word in ipairs(statement_words(text, low)) do
+                                    if not user and word ~= name then
+                                        for _, node in ipairs(dump(word)) do
+                                            if (node.kind == "FunctionDecl" or node.kind == "VarDecl" or node.kind == "TypedefDecl")
+                                               and node.name == word and covering({node}, text, low, high, name) then
+                                                user, api = node, word
+                                                alias = node.kind == "TypedefDecl" and node or nil
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                            local release
+                            for _, mark in ipairs(user and marks(user) or {}) do
+                                release = (not release or later(mark.introduced, release)) and mark.introduced or release
+                            end
+                            if not user then
+                                table.insert(blocking, string.format("%s:%d", path.filename(file), index))
+                            elseif alias then
+                                if not seen[api] then
+                                    local more, floor = users(api, {alias}, seen)
+                                    table.join2(blocking, more)
+                                    if later(floor, target) then
+                                        target = floor
+                                    end
+                                end
+                            elseif release and later(release, opt.minimum) then
+                                local spellings = {api, api .. "()"}
+                                local class, property = api:match("^([%w_]+)%.([%w_]+)$")
+                                if class then
+                                    table.join2(spellings, {string.format("-[%s %s]", class, property),
+                                                            string.format("-[%s set%s%s:]", class, property:sub(1, 1):upper(), property:sub(2))})
+                                end
+                                local implemented, told = true, false
+                                for _, spelling in ipairs(spellings) do
+                                    if listed[spelling] then
+                                        told = true
+                                        implemented = implemented and listed[spelling].status == "implemented"
+                                        if listed[spelling].minimum and later(listed[spelling].minimum, target) then
+                                            target = listed[spelling].minimum
+                                        end
+                                    end
+                                end
+                                if not told then
+                                    local whole = owner and listed[owner]
+                                    implemented = whole and whole.kind == "class" and whole.status == "implemented" or false
+                                end
+                                if not implemented then
+                                    table.insert(blocking, api)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        return blocking, target
+    end
     local names = table.keys(named)
     table.sort(names)
     for _, name in ipairs(names) do
@@ -721,92 +1062,7 @@ function lift(opt)
             end
         end
         if above then
-            local blocking, target = {}, opt.minimum
-            for _, file in ipairs(headers) do
-                local text = io.readfile(file)
-                if text:find("%f[%w_]" .. name .. "%f[^%w_]") then
-                    local starts, lines = line_starts(text), text:split("\n", {strict = true})
-                    for index, line in ipairs(lines) do
-                        local trimmed = line:trim()
-                        if line:find("%f[%w_]" .. name .. "%f[^%w_]") and not trimmed:startswith("//") and not trimmed:startswith("*")
-                           and not trimmed:startswith("/*") and not trimmed:startswith("#") then
-                            local low, high = starts[index], starts[index + 1]
-                            local own = covering(declared, text, low, high, name)
-                            if not own then
-                                -- the class or protocol the line is inside, read back to its @interface or @protocol
-                                local owner
-                                for back = index, 1, -1 do
-                                    local kind, found = lines[back]:match("^%s*@(%a+)%s+([%w_]+)")
-                                    if kind == "interface" or kind == "protocol" then
-                                        owner = found
-                                        break
-                                    elseif lines[back]:match("^%s*@end") then
-                                        break
-                                    end
-                                end
-                                local user, api
-                                if owner then
-                                    user = covering(dump(owner .. "::"), text, low, high, name)
-                                    if user and user.kind == "ObjCMethodDecl" then
-                                        api = string.format("%s[%s %s]", user.instance == false and "+" or "-", owner, user.name)
-                                    elseif user and user.kind == "ObjCPropertyDecl" then
-                                        api = owner .. "." .. user.name
-                                    end
-                                else
-                                    -- only a word C syntax could declare here - before the "(" of a function, before
-                                    -- the ";", "=", "[" or "," after a variable - is looked up; "int" or "in" names
-                                    -- no declaration, and a dump of every name containing it is the whole SDK
-                                    local candidates = {}
-                                    for word in line:gmatch("([%a_][%w_]*)%s*[%(;=%[,]") do
-                                        table.insert(candidates, word)
-                                    end
-                                    for _, word in ipairs(candidates) do
-                                        if not user and word ~= name then
-                                            for _, node in ipairs(dump(word)) do
-                                                if (node.kind == "FunctionDecl" or node.kind == "VarDecl") and node.name == word
-                                                   and covering({node}, text, low, high, name) then
-                                                    user, api = node, word
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                                local release
-                                for _, mark in ipairs(user and marks(user) or {}) do
-                                    release = (not release or later(mark.introduced, release)) and mark.introduced or release
-                                end
-                                if not user then
-                                    table.insert(blocking, string.format("%s:%d", path.filename(file), index))
-                                elseif release and later(release, opt.minimum) then
-                                    local spellings = {api, api .. "()"}
-                                    local class, property = api:match("^([%w_]+)%.([%w_]+)$")
-                                    if class then
-                                        table.join2(spellings, {string.format("-[%s %s]", class, property),
-                                                                string.format("-[%s set%s%s:]", class, property:sub(1, 1):upper(), property:sub(2))})
-                                    end
-                                    local implemented, told = true, false
-                                    for _, spelling in ipairs(spellings) do
-                                        if listed[spelling] then
-                                            told = true
-                                            implemented = implemented and listed[spelling].status == "implemented"
-                                            if listed[spelling].minimum and later(listed[spelling].minimum, target) then
-                                                target = listed[spelling].minimum
-                                            end
-                                        end
-                                    end
-                                    if not told then
-                                        local whole = owner and listed[owner]
-                                        implemented = whole and whole.kind == "class" and whole.status == "implemented" or false
-                                    end
-                                    if not implemented then
-                                        table.insert(blocking, api)
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
+            local blocking, target = users(name, declared, {})
             if #blocking == 0 then
                 lowered_types[name] = target
                 for _, node in ipairs(declared) do
@@ -816,7 +1072,7 @@ function lift(opt)
                 end
             else
                 table.sort(blocking)
-                kept_types[name] = blocking
+                kept_types[name] = table.unique(blocking)
             end
         end
     end
@@ -890,6 +1146,7 @@ function lift(opt)
     end
     local sorted_files = table.keys(edits)
     table.sort(sorted_files)
+    local copies, unrewritten = {}, {}
     for _, file in ipairs(sorted_files) do
         local content = io.readfile(file)
         if not content then
@@ -924,13 +1181,33 @@ function lift(opt)
         table.sort(sites, function (a, b)
             return a.line == b.line and a.col > b.col or a.line < b.line
         end)
-        local unrewritten = {}
+        local expanding = {}
         for _, site in ipairs(sites) do
             if site.use and lift_macro(site.use, site.target) == site.use then
-                table.insert(unrewritten, site)
+                table.insert(expanding, site)
             end
         end
-        local expanded = #unrewritten > 0 and expand(file, lines, unrewritten) or {}
+        if #expanding > 0 then
+            table.insert(unrewritten, {file = file, lines = lines, sites = expanding})
+        end
+        table.insert(copies, {file = file, lines = lines, sites = sites})
+    end
+    -- every file's uses at once, one preprocess for each language
+    local expanded, refused = {}, {}
+    if #unrewritten > 0 then
+        expanded, refused = expand(unrewritten)
+    end
+    local refusals = {}
+    for _, item in ipairs(unrewritten) do
+        for _, site in ipairs(item.sites) do
+            if refused[site] then
+                table.insert(refusals, string.format("%s:%d %s expands differently by language (%s)",
+                             path.relative(item.file, opt.sdk), site.line, (site.use:gsub("%s+", " ")), refused[site]))
+            end
+        end
+    end
+    for _, item in ipairs(copies) do
+        local file, lines, sites = item.file, item.lines, item.sites
         for _, site in ipairs(sites) do
             if site.insert then
                 local text = lines[site.line]
@@ -985,8 +1262,9 @@ function lift(opt)
     local vfs = path.join(opt.outputdir, "vfs.yaml")
     json.savefile(vfs, overlay)
 
-    -- Both ways: what is implemented answers the lowered release, and nothing else moved.
-    local failures = {}
+    -- Both ways: what is implemented answers the lowered release, and nothing else moved. A use no one text can stand
+    -- for in every language fails by its own name, whatever else it would have shown.
+    local failures = table.join(refusals)
     for name, target in pairs(lowered_types) do
         for _, node in ipairs(latest(dump(name, vfs))) do
             if (node.kind == "TypedefDecl" or node.kind == "EnumDecl" or node.kind == "RecordDecl") and (node.name or node._qualified) == name then
