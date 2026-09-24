@@ -535,7 +535,7 @@ item 4). With no body carried there is nothing for `gravity`, `speed`, `timeStep
 application sets one of them or adds a behavior, the log says so once (`SCNPhysicsWorld: nothing
 is simulated on this port; ...`); values read from an archive say nothing, since the application
 did not ask for them. `tests/backports/device/scenekit-decode.m` checks the decode, the read-back,
-the one log line over several sets and the empty queries.
+the one log line over several sets and a ray test that hits nothing.
 
 ## Colors on the guest: every light, shadow, particle and material color matches the oracle
 
