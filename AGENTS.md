@@ -164,7 +164,7 @@ Each entry: wrong pattern → right pattern → the mechanical reason.
 - **A working copy installed as the addon.** Wrong: a scratch project with `add_addons("charon")`
   whose `add_repositories` points at a worktree or a clone, run against the shared `~/.xmake`.
   Right: check a package or a module through `coordination/build-gate.lua`'s checkout argument, or
-  inside a test that sets its own `XMAKE_GLOBALDIR`, as `tests/addon` does. Reason: on xmake 3.1.1
+  inside a test that sets its own `XMAKE_GLOBALDIR`, as `tests/addon/store_test.lua` does. Reason: on xmake 3.1.1
   every addon install becomes the machine's `active` version, and every new project anywhere then
   locks that copy instead of the version it declares (`coordination/crutches.md`, the xmake addon
   lock entry); restoring it needs the coordinator.
