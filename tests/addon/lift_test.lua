@@ -103,25 +103,76 @@ function failures(opt)
             table.insert(found, string.format("%s was redeclared as %s, not %s", case[2], got, case[4]))
         end
     end
-    -- One text for a use only where every language that reaches it expands it alike: clang -E of the SDK's
-    -- UIKIT_CLASS_AVAILABLE_IOS_ONLY(13.0) (UISearchTextField.h) through UIKIT_EXTERN is extern in C and Objective-C and
-    -- extern "C" in C++ and Objective-C++, and NS_CLASS_AVAILABLE_IOS(8_0) is one text in all five. Spaces between the
-    -- same tokens do not tell two expansions apart.
+    -- The text a use stands for in the five languages that read the lifted headers. clang -E of the SDK's
+    -- UIKIT_CLASS_AVAILABLE_IOS_ONLY(13.0) (UISearchTextField.h) through UIKIT_EXTERN is extern in C, Objective-C and
+    -- Swift's importer and extern "C" in C++ and Objective-C++; NS_CLASS_AVAILABLE_IOS(8_0) is one text in all five, and
+    -- spaces between the same tokens tell no two apart. Which macros each predefines is clang -dM's for the same
+    -- languages (armv7-apple-ios6.1.3): __cplusplus in C++ and Objective-C++, __OBJC__ in Objective-C, Objective-C++ and
+    -- Swift, __swift__ in Swift alone.
     local uikit = " __attribute__((visibility (\"default\"))) __attribute__((availability(ios,introduced=13.0))) "
                   .. "__attribute__((availability(watchos,unavailable))) __attribute__((availability(tvos,unavailable)))"
     local class = "__attribute__((visibility(\"default\"))) __attribute__((availability(ios,introduced=8_0)))"
-    local agreements = {
-        {{{language = "C", text = "extern" .. uikit}, {language = "Objective-C", text = "extern" .. uikit},
-          {language = "C++", text = "extern \"C\"" .. uikit}, {language = "Objective-C++", text = "extern \"C\"" .. uikit},
-          {language = "Swift", text = "extern" .. uikit}}, nil},
-        {{{language = "C", text = class}, {language = "Objective-C", text = class}, {language = "C++", text = class},
-          {language = "Objective-C++", text = class}, {language = "Swift", text = class}}, class},
-        {{{language = "C", text = class}, {language = "C++", text = class:gsub(" ", "\n  ")}}, class},
+    local predefined = {C = {}, ["Objective-C"] = {__OBJC__ = true}, ["C++"] = {__cplusplus = true},
+                        ["Objective-C++"] = {__cplusplus = true, __OBJC__ = true}, Swift = {__OBJC__ = true, __swift__ = true}}
+    local function five(c, objc, cxx, objcxx, swift)
+        return {{language = "C", text = c}, {language = "Objective-C", text = objc}, {language = "C++", text = cxx},
+                {language = "Objective-C++", text = objcxx}, {language = "Swift", text = swift}}
+    end
+    local linkage = five("extern" .. uikit, "extern" .. uikit, "extern \"C\"" .. uikit, "extern \"C\"" .. uikit, "extern" .. uikit)
+    local split = {{"!defined(__cplusplus)", "extern" .. uikit}, {"defined(__cplusplus)", "extern \"C\"" .. uikit}}
+    local languages = {
+        -- one text where all agree
+        {five(class, class, class, class, class), {"__cplusplus", "__OBJC__", "__swift__"}, class},
+        {{{language = "C", text = class}, {language = "C++", text = (class:gsub(" ", "\n  "))}}, {"__cplusplus"}, class},
+        -- the linkage splits on __cplusplus, the fewest macros that tell it apart, whichever the SDK tests more
+        {linkage, {"__cplusplus", "__OBJC__", "__swift__"}, split},
+        {linkage, {"__OBJC__", "__swift__", "__cplusplus"}, split},
+        -- three texts no one macro tells apart: two, and a combination no language has is left to refuse
+        {{{language = "C", text = "a"}, {language = "Objective-C", text = "b"}, {language = "Swift", text = "c"}},
+         {"__OBJC__", "__swift__"},
+         {{"!defined(__OBJC__) && !defined(__swift__)", "a"}, {"defined(__OBJC__) && !defined(__swift__)", "b"},
+          {"defined(__OBJC__) && defined(__swift__)", "c"}}, true},
+        -- C and Objective-C differ, and no macro given tells them apart: refused
+        {five("a", "b", "a", "a", "a"), {"__cplusplus"}, nil},
     }
-    for index, case in ipairs(agreements) do
-        local got, why = lift.one_expansion(case[1])
-        if got ~= case[2] or (got == nil) ~= (why ~= nil) then
-            table.insert(found, string.format("expansions %d agreed on %s (%s), not %s", index, tostring(got), tostring(why), tostring(case[2])))
+    for index, case in ipairs(languages) do
+        local got, why = lift.by_language(case[1], predefined, case[2])
+        local shown = got
+        if type(got) == "table" then
+            local parts = {}
+            for _, branch in ipairs(got.branches) do
+                table.insert(parts, branch.condition .. " => " .. branch.text)
+            end
+            shown = table.concat(parts, " | ") .. (got.rest and " | rest" or "")
+        end
+        local wanted = case[3]
+        if type(wanted) == "table" then
+            local parts = {}
+            for _, branch in ipairs(wanted) do
+                table.insert(parts, branch[1] .. " => " .. branch[2])
+            end
+            wanted = table.concat(parts, " | ") .. (case[4] and " | rest" or "")
+        end
+        if shown ~= wanted or (got == nil) ~= (why ~= nil) then
+            table.insert(found, string.format("languages %d gave %s (%s), not %s", index, tostring(shown), tostring(why), tostring(wanted)))
+        end
+    end
+    -- and the text written for the split: each branch lowered on lines of its own, and a combination no language has
+    -- stopped with the use's name
+    local lowered = uikit:gsub("introduced=13%.0", "introduced=6.1.3")
+    local conditionals = {
+        {lift.by_language(linkage, predefined, {"__cplusplus"}), "\n#if !defined(__cplusplus)\nextern" .. lowered
+         .. "\n#elif defined(__cplusplus)\nextern \"C\"" .. lowered .. "\n#endif\n"},
+        {{branches = {{condition = "!defined(__OBJC__)", text = "extern" .. uikit}}, rest = true},
+         "\n#if !defined(__OBJC__)\nextern" .. lowered .. "\n#else\n#error \"the lifted UIKIT_CLASS_AVAILABLE_IOS_ONLY was "
+         .. "expanded for no language with these macros\"\n#endif\n"},
+        -- a branch with no iOS release is not lowered, and neither is the use
+        {{branches = {{condition = "defined(__cplusplus)", text = "extern"}}}, nil},
+    }
+    for index, case in ipairs(conditionals) do
+        local got = lift.language_conditional(case[1], "6.1.3", 1, "UIKIT_CLASS_AVAILABLE_IOS_ONLY(13.0)")
+        if got ~= case[2] then
+            table.insert(found, string.format("conditional %d was %s, not %s", index, tostring(got), tostring(case[2])))
         end
     end
 

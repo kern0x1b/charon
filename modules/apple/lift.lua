@@ -213,14 +213,46 @@ end
 -- (time.h undefines __CLOCK_AVAILABILITY after its last use) and the include that brings the header in
 -- (dispatch/block.h refuses to be included on its own). It is preprocessed once for every language that reads the
 -- lifted headers - C, Objective-C, C++, Objective-C++, and Swift through its importer - since the text written in place of
--- a use is read by all of them: UIKIT_CLASS_AVAILABLE_IOS_ONLY is extern in C and extern "C" in C++. A use two languages
--- expand differently has no one text to be replaced by; it is answered in refused, with both expansions, and not
--- lowered. A use a language does not reach (inside #ifdef __OBJC__) is not read by it either.
--- files: {file, lines, sites} each. Answers found[site] = expansion, refused[site] = why.
-local function expander(opt)
+-- a use is read by all of them: UIKIT_CLASS_AVAILABLE_IOS_ONLY is extern in C and extern "C" in C++. Where the languages
+-- expand a use differently and the macros they predefine tell the expansions apart, each gets its own under a conditional
+-- on those macros (by_language); any other difference has no text to be replaced by, is answered in refused with two of
+-- the expansions, and is not lowered. A use a language does not reach (inside #ifdef __OBJC__) is not read by it either.
+-- headers: the SDK's headers read, whose conditionals say which predefined macros they test. files: {file, lines, sites}
+-- each. Answers found[site] = expansion or {branches}, refused[site] = why.
+local function expander(opt, headers)
     local languages = {{name = "C", arguments = {"-x", "c"}}, {name = "Objective-C", arguments = {"-x", "objective-c"}},
                        {name = "C++", arguments = {"-x", "c++"}}, {name = "Objective-C++", arguments = {"-x", "objective-c++"}},
                        {name = "Swift", arguments = importer_arguments(opt)}}
+    -- The macros each language predefines (clang -dM on an empty input), and of those whose presence differs between
+    -- the languages the ones the SDK's own #if, #ifdef, #ifndef and #elif test, most tested first.
+    local empty = path.join(opt.outputdir, "empty.h")
+    io.writefile(empty, "")
+    local defined, count = {}, {}
+    for _, language in ipairs(languages) do
+        defined[language.name] = {}
+        local text = os.iorunv(opt.clang, table.join({"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot",
+                                                      "-E", "-dM"}, language.arguments, {empty}))
+        for name in text:gmatch("#define ([%w_]+)") do
+            defined[language.name][name] = true
+            count[name] = (count[name] or 0) + 1
+        end
+    end
+    local tested = {}
+    for _, file in ipairs(headers) do
+        for line in io.readfile(file):gmatch("[^\n]+") do
+            local condition = line:match("^%s*#%s*if%s(.*)") or line:match("^%s*#%s*ifdef%s(.*)")
+                              or line:match("^%s*#%s*ifndef%s(.*)") or line:match("^%s*#%s*elif%s(.*)")
+            for name in (condition or ""):gmatch("[%a_][%w_]*") do
+                if count[name] and count[name] < #languages then
+                    tested[name] = (tested[name] or 0) + 1
+                end
+            end
+        end
+    end
+    local keys = table.orderkeys(tested)
+    table.sort(keys, function (a, b)
+        return tested[a] ~= tested[b] and tested[a] > tested[b] or tested[a] == tested[b] and a < b
+    end)
     return function (files)
         local all, roots = {}, {}
         for _, item in ipairs(files) do
@@ -271,25 +303,94 @@ local function expander(opt)
         end
         local found, refused = {}, {}
         for site, expansions in pairs(forms) do
-            found[site], refused[site] = one_expansion(expansions)
+            found[site], refused[site] = by_language(expansions, defined, keys)
         end
         return found, refused
     end
 end
 
--- The one text a use's expansions in every language that reaches it agree on, told apart by their tokens and not by the
--- spaces between them; nil and why where two of them differ. expansions: {language, text} each.
-function one_expansion(expansions)
+-- The text a use's expansions stand for in every language that reaches it, told apart by their tokens and not by the
+-- spaces between them: the one text they agree on, or where they differ, {branches = {{condition, text}}, rest} - a text
+-- for each set of the predefined macros that tells them apart, the fewest such macros that do, taken in the order of
+-- keys (the macros the SDK's conditionals test, most tested first). rest is true where a combination of those macros
+-- no language here has is left, which the conditional then refuses to compile. nil and why where no macros tell the
+-- expansions apart. expansions: {language, text} each; defined[language]: the macros it predefines.
+function by_language(expansions, defined, keys)
     local function tokens(text)
         return (text:gsub("%s+", " ")):trim()
     end
-    local first = expansions[1]
+    local first, differing = expansions[1], nil
     for _, other in ipairs(expansions) do
         if tokens(other.text) ~= tokens(first.text) then
-            return nil, string.format("%s in %s, %s in %s", tokens(first.text), first.language, tokens(other.text), other.language)
+            differing = differing or other
         end
     end
-    return first and first.text
+    if not first or not differing then
+        return first and first.text
+    end
+    local why = string.format("%s in %s, %s in %s", tokens(first.text), first.language, tokens(differing.text), differing.language)
+    -- the combinations of size macros out of keys, in order
+    local function combinations(size, from, chosen, found)
+        if #chosen == size then
+            table.insert(found, table.join(chosen))
+            return found
+        end
+        for index = from, #keys do
+            table.insert(chosen, keys[index])
+            combinations(size, index + 1, chosen, found)
+            table.remove(chosen)
+        end
+        return found
+    end
+    for size = 1, math.min(#expansions - 1, #keys) do
+        for _, chosen in ipairs(combinations(size, 1, {}, {})) do
+            local texts, order, apart = {}, {}, true
+            for _, expansion in ipairs(expansions) do
+                local signs = {}
+                for _, key in ipairs(chosen) do
+                    table.insert(signs, string.format("%sdefined(%s)", defined[expansion.language][key] and "" or "!", key))
+                end
+                local condition = table.concat(signs, " && ")
+                if texts[condition] and tokens(texts[condition].text) ~= tokens(expansion.text) then
+                    apart = false
+                elseif not texts[condition] then
+                    texts[condition] = expansion
+                    table.insert(order, condition)
+                end
+            end
+            if apart then
+                local branches = {}
+                for _, condition in ipairs(order) do
+                    table.insert(branches, {condition = condition, text = texts[condition].text, language = texts[condition].language})
+                end
+                return {branches = branches, rest = #order < 2 ^ size}
+            end
+        end
+    end
+    return nil, why .. ", and no macro the languages predefine differently and the SDK tests tells them apart"
+end
+
+-- The text a use is replaced by where the languages expand it differently: each branch's expansion lowered to target
+-- (lift_expansion) under its own condition, on lines of their own, so the preprocessor of each language that reads the
+-- header picks its own; a combination no language measured has fails to compile, naming the use. nil where a branch
+-- cannot be lowered.
+function language_conditional(split, target, declarations, use)
+    local lines = {""}
+    for index, branch in ipairs(split.branches) do
+        local lowered = lift_expansion(branch.text, target, declarations)
+        if not lowered then
+            return nil
+        end
+        table.insert(lines, string.format("#%s %s", index == 1 and "if" or "elif", branch.condition))
+        table.insert(lines, lowered)
+    end
+    if split.rest then
+        table.insert(lines, "#else")
+        table.insert(lines, string.format("#error \"the lifted %s was expanded for no language with these macros\"", use:match("^[%w_]+")))
+    end
+    table.insert(lines, "#endif")
+    table.insert(lines, "")
+    return table.concat(lines, "\n")
 end
 
 -- The declarations among nodes a use reaches: one another of them redeclares (previousDecl) is not, as clang answers a use
@@ -739,7 +840,8 @@ function lift(opt)
     end
     local system = system_headers(opt.sdk, symbols)
     local dump = dumper(opt, frameworks, system)
-    local expand = expander(opt)
+    local expand = expander(opt, table.join(header_files(opt.sdk, frameworks, {}),
+                                            os.files(path.join(opt.sdk, "usr", "include", "**.h"))))
     local kept, entries = {}, {}
     for api, entry in pairs(listed) do
         if entry.status == "implemented" then
@@ -1215,8 +1317,11 @@ function lift(opt)
                 lifted = lifted + 1
             else
                 local rewritten = lift_macro(site.use, site.target)
-                if rewritten == site.use and expanded[site] then
-                    rewritten = lift_expansion(expanded[site], site.target, table.getn(table.keys(site.declarations))) or site.use
+                local declarations = table.getn(table.keys(site.declarations))
+                if rewritten == site.use and type(expanded[site]) == "table" then
+                    rewritten = language_conditional(expanded[site], site.target, declarations, site.use) or site.use
+                elseif rewritten == site.use and expanded[site] then
+                    rewritten = lift_expansion(expanded[site], site.target, declarations) or site.use
                 end
                 local setter = setters[file .. ":" .. site.line .. ":" .. site.col]
                 local last = site.line + site.count - 1
@@ -1234,10 +1339,11 @@ function lift(opt)
                     end
                 end
                 if rewritten ~= site.use then
-                    -- back over the same lines, so every later mark's line still means what marks() found it to mean
+                    -- back over the same lines, so every later mark's line still means what marks() found it to mean;
+                    -- the lines a conditional adds stay with the last
                     local parts = (before .. rewritten .. after):split("\n", {strict = true})
                     for index = 1, site.count do
-                        lines[site.line + index - 1] = parts[index] or ""
+                        lines[site.line + index - 1] = index < site.count and parts[index] or table.concat(parts, "\n", index)
                     end
                     lifted = lifted + 1
                 end
