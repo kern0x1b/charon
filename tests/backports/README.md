@@ -577,6 +577,12 @@ clang force-load arclite below iOS 9.
   passes all twenty-four of its checks, so the expectations are the host's answers and not
   ours. It links `libSecurityBackports.dylib`. It ran on an iPad 2 (6.1.3): twenty-seven checks and
   no failure.
+- `cvpages.m`: a process of its own that links UIKit, for the compositional layout in a collection view on iOS 6: a group of
+  700 points in a 320 x 480 view, scrolled so that it reaches past both ends of the bounds, has its view, once, at its own frame,
+  where a plain layout's element of that shape has none (the release's answer is printed as a `note`); the layout answers
+  such an element twice, the frame cut to the bounds first and its own last, which is what iOS 6's `UICollectionViewData`
+  needs to file it under a page (`facts/UIKit/UICollectionViewCompositionalLayout.md`). It ran on an iPad 2 (6.1.3): 17 checks,
+  no failure.
 - `tail11.m`: a process of its own that links UIKit, for the small rows that answer
   the same on every device: `-[NSProcessInfo thermalState]` answers nominal and its
   notification is never posted, the export presets of the image picker are kept per

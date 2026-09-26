@@ -296,20 +296,32 @@ device stand reports through `printf` into its redirected `stdout`.
 With the stand built with ARC, `device/compositional.m` on the 4S failed 10 checks. Five were the
 test's own (fixed in the test); the rest came to three causes, each measured on the 4S.
 
-**iOS 6 loses an element whose frame spans the rectangle it checks - repaired.** iOS 6's collection
-view asks its private `UICollectionViewData` which elements its bounds show; that object asks the
-layout for `_validLayoutRect` (the bounds cut to the content) and files each answer under the pages
-of its frame's edges (`_screenPageForPoint:`), so an element reaching past both ends of that
-rectangle is under no page inside it and never gets a view. A plain `UICollectionViewLayout`
-subclass shows it with iOS 6's own code: with content 244 in a 320 x 480 view, frames
-{234,-1,160,246} and {10,-10,100,260} get no cell, {234,-1,160,240} and {234,3,160,242} do; with
-content 480, {10,-10,100,500} gets none. The transform plays no part: 0.3 of "modified at 250",
-turned by 0.3 rad, has the bounding frame {202.7,-15.4,222.6,272.7}, and the same frame with no
-transform is lost too, while a smaller turn or scale is shown. The system's layout shows it. For this
-layout only, `-[UICollectionViewData layoutAttributesForElementsInRect:]` now adds back what the
-layout returned and the pages lost: elements that reach past both ends of the checked rectangle,
-only when missing, so where nothing is lost the answer is unchanged. The selector and both ivars are
-present in every armv7 cache from 6.0 to 9.3.6; where one is missing the repair is not installed.
+**iOS 6 loses an element whose frame spans the rectangle it checks - the layout answers it twice.** iOS 6's
+collection view asks its private `UICollectionViewData` which elements its bounds show; that object asks the
+layout for `_validLayoutRect` (the bounds cut to the content, the rectangle `-layoutAttributesForElementsInRect:`
+receives) and files each answer under the pages of its frame's four corners (`_screenPageForPoint:`, a corner
+outside the rectangle has no page), so an element reaching past both ends of that rectangle is under no page inside
+it and never gets a view. A plain `UICollectionViewLayout` subclass shows it with iOS 6's own code: with content 244
+in a 320 x 480 view, frames {234,-1,160,246} and {10,-10,100,260} get no cell, {234,-1,160,240} and {234,3,160,242}
+do; with content 480, {10,-10,100,500} gets none. The transform plays no part: 0.3 of "modified at 250", turned by
+0.3 rad, has the bounding frame {202.7,-15.4,222.6,272.7}, and the same frame with no transform is lost too, while a
+smaller turn or scale is shown. The system's layout shows it.
+
+The object keeps `[attributes copy]` in an array of its own by the element's index, so the last attributes it was
+given for an index path are the ones it answers with, and the pages hold only which indexes to look at. The
+layout therefore gives an element that reaches past both ends of the rectangle a second attributes first: the same
+element, its frame cut to the rectangle (`CGRectIntersection` with the bounds cut to the content), which has
+corners inside and files the index, and then the attributes with its own frame, which the object keeps. Measured on
+an iPad 2 (6.1.3) with a plain layout and the release's UIKit alone (`device/cvpages.m`, run 2026-09-26 and
+`.agent-work/runs/cvdata/probe`): with the true attributes only, the four frames above give two cells; with the cut
+one first, all four, each at its own frame; with the cut one last, four cells at the cut frames, which is the
+last-wins storage. Only cells (category 0) are given one: supplementary and decoration attributes are not filed
+under pages. This is done for iOS 6 only (`NSFoundationVersionNumber` up to 6.1), where it was measured; the class has the same
+selectors and ivars in every armv7 cache to 9.3.6, but no device of 7 to 10 held a measurement, so nothing is done
+there and whether it loses the element there is open. A caller on iOS 6 that asks the layout for the rectangle itself sees
+that element twice: the cut one first, the element's own last.
+`device/cvpages.m` holds it on the compositional layout (17 checks, iPad 2), and the `compositional.m` stand gives the same
+43 checks with the same two failures with this layout as with the one that repaired the answer of the private object.
 
 **The recording's font is not the device's.** `compositional-sized-expectations.h` was written on the
 host, where the system and the port measure a label in the same font (SF). The device's is
