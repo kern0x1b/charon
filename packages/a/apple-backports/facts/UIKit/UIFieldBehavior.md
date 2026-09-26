@@ -274,8 +274,9 @@ wins; a group in two behaviours shares one body.
   by rounding only (member B at f20: Apple (220, 183.5), box (220, 183.5551), max 0.2068 pt over 20 frames); after the first
   contact they diverge (more than 0.5 pt from frame 34; f120 B Apple (251.0624, 296.8200, 0.0746), box (220.1598, 294.7867,
   0.0733), max 30.97 pt).
-- **Registry `maximum`: approximate, "the compound collision shape is not expressible through the public 7.0 API: the 7.0
-  animator builds exactly one rectangle per item; measured 31 pt divergence after contact, 0.21 pt in free fall".**
+- **Registry `maximum`: approximate, "the compound collision shape is not carried below 7.0 (deferred: the port's own animator
+  can build it); not expressible on 7.0-8.x, whose animator builds exactly one rectangle per item; measured 31 pt divergence
+  after contact, 0.21 pt in free fall".**
 - Measured (the port against the host, `group_test.m` G3): over 20 frames of free fall member B of the port's group stays
   within 1e-3 pt of the host driving a plain item of the union box, and within 0.21 pt of the host's own group.
 
@@ -292,7 +293,7 @@ Measured (host, `g_cb1.m`):
   the method: `UIDynamicItem (%@) MUST implement -[UIDynamicItem boundingPath] when specifying a collision bounds of
   UIDynamicItemCollisionBoundsPath` (the selector name wrong in the original). An out-of-range type crashes the host in
   `-[__NSArrayM insertObject:atIndex:]`: not copied.
-- **Not expressible over the public 7.0 API** (registry `maximum`): read (7.0), `_registerBodyForItem:shape:` never sends
+- **Not carried below 7.0 (deferred); not expressible over the public 7.0 API on 7.0-8.x** (registry `maximum`): read (7.0), `_registerBodyForItem:shape:` never sends
   `collisionBoundsType`, so every item gets its bounds rectangle; the only shape switch is the private
   `_setUseCircularBoundingBox:`, which is private API and not used.
 - Were the port's own animator to honour them below 7.0: a circle shape, and for a polygon of more than 2.2.1's 8 vertices a
@@ -309,8 +310,8 @@ Measured (host, `g_cb1.m`):
 | electric, magnetic | exact (charge 0) | approximate | §10.7 |
 | noise, turbulence | approximate | approximate | the force exact, the trajectory lagged (M7) |
 | UIDynamicItemGroup object | exact | exact | §12.1 |
-| UIDynamicItemGroup in an animator | approximate | approximate | §12.5 |
-| collisionBoundsType Ellipse, Path | not expressible | not expressible | §13 |
+| UIDynamicItemGroup in an animator | approximate (not expressible) | approximate (deferred: §12.2's compound body) | §12.5 |
+| collisionBoundsType Ellipse, Path | not expressible | not carried yet (deferred: §13's circle and fan of convex pieces) | §13 |
 | 9.0 members of the 7.0 classes | absent (Apple's class) | exact | `UIDynamicAnimator.md` §2.10, §5, §6.4 |
 
 ## §15. Implementation rules
@@ -346,6 +347,10 @@ In `tests/backports/host/dynamics`, beside the 7.0 rows (`UIDynamicAnimator.md` 
 - A rectangle region's inverse on its exact edge: settled, measured (`p1.m`, §10.6): the inverse contains it.
 - The mass the emulation uses on 7.0-8.x is approximate (§10.7), its error for density != 1 not measured.
 - The per-step trajectory error of noise and turbulence is not measured (M7).
+- **Deferred below 7.0** (the port's own animator, not Apple's, so nothing here is a wall): the compound body of an
+  `UIDynamicItemGroup` (§12.2: one fixture per member) and the `collisionBoundsType` Ellipse and Path bounds (§13: a circle
+  shape, a fan of convex pieces). Until they are built the group is one rectangle and an Ellipse or Path item keeps its
+  bounds rectangle; on 7.0-8.x they stay not expressible.
 - Noise's factor after the falloff: settled by M7. The ellipse's vertex count: settled by M6. Whether Apple leaves a 33rd
   field registered: settled by M5 (it does not).
 

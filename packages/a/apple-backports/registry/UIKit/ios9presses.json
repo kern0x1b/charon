@@ -248,7 +248,7 @@
       "kind": "class",
       "introduced": "9.0",
       "status": "implemented",
-      "effect": "the 11 field kinds, their properties, region, items and the 32-field limit as 9.0's, built over the public 7.0 UIDynamicBehavior, UIPushBehavior and UIDynamicItemBehavior; the force of every kind is 9.0's, but it is applied once per animator step after the world step, a one-step lag where 9.0 applies it per Box2D sub-step: 0.09 to 2.1 pt from 9.0's own field over 60 frames (electric and magnetic act on a charge, which the release below 7.0 lacks); collisionBoundsType Ellipse and Path are not expressible over the 7.0 collision behavior and the item keeps its rectangle",
+      "effect": "the 11 field kinds, their properties, region, items and the 32-field limit as 9.0's, built over the public 7.0 UIDynamicBehavior, UIPushBehavior and UIDynamicItemBehavior; the force of every kind is 9.0's, but it is applied once per animator step after the world step, a one-step lag where 9.0 applies it per Box2D sub-step: 0.09 to 2.1 pt from 9.0's own field over 60 frames (electric and magnetic act on a charge, which the release below 7.0 lacks); collisionBoundsType Ellipse and Path are not carried below 7.0 (deferred: the port's own animator can build a circle and a fan of convex pieces) and are not expressible on 7.0-8.x, over Apple's collision behavior; the item keeps its rectangle",
       "facts": "facts/UIKit/UIFieldBehavior.md",
       "source": "the host's UIKitCore and PhysicsKit through Mac Catalyst, held against the port by tests/backports/host/dynamics; the port's emulation against the host's field, frame by frame, in the fields group"
     },
@@ -266,7 +266,7 @@
       "kind": "class",
       "introduced": "9.0",
       "status": "implemented",
-      "effect": "the group object as 9.0's: items, bounds, center and transform derived from the members; in an animator the group is one rectangle of its bounds, where 9.0 builds a compound body of the members' shapes: 0.21 pt from 9.0's own group in free fall, 31 pt after the first contact",
+      "effect": "the group object as 9.0's: items, bounds, center and transform derived from the members; in an animator the group is one rectangle of its bounds, where 9.0 builds a compound body of the members' shapes (not carried below 7.0, deferred: the port's own animator can build it; not expressible on 7.0-8.x): 0.21 pt from 9.0's own group in free fall, 31 pt after the first contact",
       "facts": "facts/UIKit/UIFieldBehavior.md",
       "source": "the host's UIKitCore and PhysicsKit through Mac Catalyst, held against the port by tests/backports/host/dynamics"
     },
