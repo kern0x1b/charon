@@ -10,8 +10,8 @@
 // AVCapturePhotoOutput as the release's still image output (facts/AVFoundation/AVCapturePhotoOutput.md):
 // the release's own output in the same session as the control, the formats offered, the refusals, real
 // captures with a preview at the display's size and at a size asked for, an uncompressed photo, a zoomed
-// one, the flash modes, and the resolved settings every capture reports. Built with AVCapturePhotoOutput.m and the
-// zoom's files, as the library carries them. A process of its own: the camera needs no permission on 6.1.3.
+// one, the flash modes, and the resolved settings every capture reports. Built with AVCapturePhotoOutput.m, the
+// zoom's files, Accelerate/vImageYpCbCr8.m and Graphics/ImageIONames70.m, as the library carries them. A process of its own: the camera needs no permission on 6.1.3.
 // The camera's flash is held Off, and the run sets neither On nor Auto on it unless asked, as they fire the flash of a
 // device someone may be using: `photooutput <log> flash-on` takes the captures with the flash On and Auto,
 // `photooutput <log> flash-auto` the one capture in Auto alone, and `photooutput <log> flash-scene` (or either of the
@@ -623,6 +623,8 @@ int main(int argc, char **argv)
                        (long)mode.integerValue, lit.cameraFlashAtCapture, (long)camera.flashMode, camera.flashAvailable, lit.photoWidth,
                        lit.photoHeight, lit.resolvedFlash, lit.stillFlash);
                 CHECK(lit.cameraFlashAtCapture == mode.integerValue, "a capture has its flash mode on the camera when it is taken");
+                // With the flash Off on a camera that is Off nothing is saved or given back, so this holds whether or not the
+                // give-back works: the give-back is not measured (facts, "The flash waits for the camera").
                 CHECK(camera.flashMode == AVCaptureFlashModeOff, "and after it the camera has the application's own mode back, Off");
                 CHECK(lit.finished && lit.error == nil && lit.photoIsJPEG, "and the photo comes");
                 CHECK(lit.stillFlash >= 0, "the still says in its Exif whether the flash fired");

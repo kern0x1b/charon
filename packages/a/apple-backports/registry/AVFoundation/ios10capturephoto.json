@@ -139,8 +139,8 @@
       "introduced": "14.3",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header's member of the class at 14.3; no implementation answered it",
-      "effect": "NO: no camera of the releases this class serves takes RAW",
+      "reason": "the header's member of the class at 14.3; not implemented: RAW needs a RAW sample the release's still image output does not give (facts, \"Open\")",
+      "effect": "NO: RAW is not implemented, the release's still image output gives no RAW sample",
       "facts": "facts/AVFoundation/AVCapturePhotoOutput.md",
       "source": "see AVCapturePhotoOutput"
     },
@@ -194,8 +194,8 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the header's member of the class at 11.0; no implementation answered it",
-      "effect": "empty: no camera of these releases takes RAW",
+      "reason": "the header's member of the class at 11.0; not implemented: RAW needs a RAW sample the release's still image output does not give (facts, \"Open\")",
+      "effect": "empty: RAW is not implemented, the release's still image output gives no RAW sample",
       "facts": "facts/AVFoundation/AVCapturePhotoOutput.md",
       "source": "see AVCapturePhotoOutput"
     },
@@ -569,7 +569,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "rank 634, class_confirmed for telegram, needed to make AVCapturePhotoSettings.previewPhotoFormat's own contract (see below) checkable",
-      "effect": "[420f, 420v, 32BGRA], the host's list in its order: the port draws the preview itself from the captured still into 32BGRA, the format CoreGraphics draws into, and converts it to 4:2:0 YCbCr by ITU-R BT.601 for 420v and 420f; the 4:2:0 previews measured on an iPhone 4S (photooutput10): luma 0.29 (420v) and 0.22 (420f) levels from BT.601's of the photo, 15.1 upside down",
+      "effect": "[420f, 420v, 32BGRA], the host's list in its order: the port draws the preview itself from the captured still into 32BGRA, the format CoreGraphics draws into, and converts it to 4:2:0 YCbCr by ITU-R BT.601 (vImageConvert_ARGB8888To420Yp8_CbCr8) for 420v and 420f; the 4:2:0 previews measured on an iPhone 4S (photooutput10, device-4s-photooutput-8): luma 0.30 (420v) and 0.23 (420f) levels from BT.601's of the photo, further from it upside down",
       "facts": "facts/AVFoundation/AVCapturePhotoOutput.md",
       "source": "see AVCapturePhotoOutput"
     },

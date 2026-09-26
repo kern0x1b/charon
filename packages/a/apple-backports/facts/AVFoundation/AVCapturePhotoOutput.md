@@ -256,10 +256,12 @@ equals `flashActive`, a capture with the flash Off in between leaves the camera 
 Off and `isFlashScene` NO; `flashActive` was NO in that scene.
 
 With the 420v and 420f previews, the late resolution of a thumbnail and the rest of the series, the same 4S,
-2026-09-25, in a dark scene, the flash held Off: 184 checks, 0 failed (`device-4s-photooutput-6.log`). The 4:2:0
-previews come at 960x720 in the format asked, their luma 0.29 (420v) and 0.22 (420f) levels from BT.601's luma of the
-photo drawn at that size, 15.1 from the photo upside down. Monitored for Auto, `flashActive` was YES and `isFlashScene`
-YES.
+2026-09-25, in a dark scene, the flash held Off: 184 checks, 0 failed (`device-4s-photooutput-6.log`; that run measured the
+hand-written BT.601 loop the port had then). With `vImageConvert_ARGB8888To420Yp8_CbCr8`, 2026-09-26, the flash held Off:
+194 checks, 0 failed (`device-4s-photooutput-8.log`). The 4:2:0 previews come at 960x720 in the format asked, their luma
+0.30 (420v) and 0.23 (420f) levels from BT.601's luma of the photo drawn at that size, and further from the photo upside
+down than from the photo (the check is `previewDifference < 6 && flippedDifference > previewDifference`; the upside-down
+number is the scene's, not the converter's). Monitored for Auto, `flashActive` was YES and `isFlashScene` YES.
 
 The two captures in Auto, in the same dark scene, after which the owner forbade any further capture with the flash On
 or Auto (no run sets the camera to On or Auto any more):
@@ -299,7 +301,9 @@ still. It does not wait when the mode does not change or the camera cannot fire 
 with Auto `flashActive` stays NO, the wait runs its bound, and the photo is taken. Captures run one at a time on the
 output's queue. Host check of the wait: `tests/backports/host/photosettings/flashwait.m`, which drives a camera object of its
 own whose `flashActive` is observable. Not measured: the port's capture in Auto on the device after the wait (no capture in
-Auto is allowed), and the wait's length in a bright scene.
+Auto is allowed), the wait's length in a bright scene, and the give-back of the application's own flash mode: every device
+run held the flash Off on a camera that was Off, where nothing is saved or given back, and no host check has a camera with a
+flash behind the save, the give-back, the in-flight condition and the logged lock failure.
 
 The port also gives the application's flash mode back. The first change of the camera's mode by the port (a capture or
 scene monitoring) keeps the mode the application had; when no capture runs and nothing is monitored (at
