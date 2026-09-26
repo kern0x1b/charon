@@ -47,8 +47,8 @@ picture. The blur is the port's, made by a box filter, and not the render server
 Vibrancy is not carried: the views in the content view of a vibrancy effect are drawn as they are.
 
 Every frame is not within reach on the iPad 2 (6.1.3, 768 x 1024, scale 1; the port's `CharonBackdrop`, `CharonBlur` and `CharonSheetShadow` compiled into a probe, one
-refresh called from a display link at 60 Hz over a scroll view of 100 labels that moved by 7 points a frame, 149 frames each; the probe, `cost.m`, and its log are kept in the band's handoff
-directory). The window's `renderInContext:` alone, with nothing done to the pixels, took 21 ms (mean; p95 22 ms) for the shadow's 620 x 740
+refresh called from a display link at 60 Hz over a scroll view of 100 labels that moved by 7 points a frame, 149 frames each; the probe, `cost.m`, its `build.sh` and its log, `ipad2.log`, are kept in
+`charon/.agent-work/handoffs/2026-09-26-b1314-sheet-17/`). The window's `renderInContext:` alone, with nothing done to the pixels, took 21 ms (mean; p95 22 ms) for the shadow's 620 x 740
 region and 31 to 33 ms for one of 768 x 920 or more, so the display link ran at 46, 32 and 30 frames a second before any filter ran. It does not shrink below the cost of
 the window itself: a 90 x 36 region at the blur's quarter scale still took 14 ms, 146 x 86 took 24 ms and the whole screen (192 x 256) 63 ms, which is more than the read
 of the same screen at scale 1 (33 ms): a reduced context draws the layer tree slower. With the box blur and the picture added, a refresh took 19 ms (320 x 100), 50 ms
