@@ -23,9 +23,9 @@
 // -captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:
 // (the original, iOS 10-era CMSampleBufferRef-based callback, deprecated in 13.0 but never
 // removed) - the second is the one iOS 10 itself used before AVCapturePhoto existed, needs no
-// AVCapturePhoto object (out of scope: not itself demanded, and would need image processing this
-// release does not do for us), and is a real fallback path Telegram already ships for pre-11
-// devices. This port targets exactly that path.
+// AVCapturePhoto object, and is a real fallback path Telegram already ships for pre-11
+// devices. This port targets exactly that path. The AVCapturePhoto callback is not implemented: it is not demanded
+// yet, and it is work the port can do, as it builds previews, thumbnails and Exif itself (facts, "Open").
 //
 // On this release AVCapturePhotoOutput is an AVCaptureStillImageOutput itself, the one output class that captures
 // stills, so the session builds and runs it as its own: 6.1.3's AVCaptureSession reads its own -outputs while it
@@ -124,8 +124,8 @@ static void CharonOutputRaise(NSString *format, ...)
 }
 
 // What this output holds of its own. Every member the SDK 16.4 header declares answers explicitly: what the release's
-// still image output can do is its answer, and what no camera of this release can do answers the way the host's output
-// answers with no camera behind it, each unsupported feature NO and each setter that would turn one on raising
+// still image output can do is its answer, and what the port does not implement, or the 4S's one camera has no hardware
+// for, answers the way the host's output answers with no camera behind it, each such feature NO and each setter that would turn one on raising
 // NSInvalidArgumentException with the host's text (facts/AVFoundation/AVCapturePhotoOutput.md, "The photo output").
 @implementation CharonPhotoOutput
 {
@@ -231,7 +231,8 @@ static void CharonOutputRaise(NSString *format, ...)
     return [fileType isEqualToString:AVFileTypeJPEG] && [self.availablePhotoFileTypes containsObject:fileType] ? @[AVVideoCodecTypeJPEG] : @[];
 }
 
-// No camera of this release delivers RAW: the still image output has no Bayer or ProRAW path.
+// RAW is not implemented: the release's still image output gives no Bayer or ProRAW sample to build on, and the port
+// writes no DNG (facts, "Open").
 - (NSArray<NSNumber *> *)availableRawPhotoPixelFormatTypes
 {
     return @[];
@@ -285,7 +286,8 @@ static void CharonOutputRaise(NSString *format, ...)
     _charonMaxPhotoQualityPrioritization = maxPhotoQualityPrioritization;
 }
 
-// Still image stabilization arrived on AVCaptureStillImageOutput in 7.0: its own answer from then, none on 6.x.
+// Still image stabilization arrived on AVCaptureStillImageOutput in 7.0: its own answer from then. Before 7.0 it is not
+// implemented: the still image output has nothing to read (facts, "Open").
 - (BOOL)isStillImageStabilizationSupported
 {
     return [AVCaptureStillImageOutput instancesRespondToSelector:@selector(isStillImageStabilizationSupported)] && [super isStillImageStabilizationSupported];
@@ -496,7 +498,8 @@ static void CharonOutputRaise(NSString *format, ...)
     _charonMaxPhotoDimensions = maxPhotoDimensions;
 }
 
-// Bracketed capture needs AVCapturePhotoBracketSettings, which this port does not carry, so no bracket can be asked for.
+// Bracketed capture is not implemented: it needs AVCapturePhotoBracketSettings, which this port does not carry, so no
+// bracket can be asked for (facts, "Open").
 - (NSUInteger)maxBracketedCapturePhotoCount
 {
     return 0;
@@ -507,7 +510,8 @@ static void CharonOutputRaise(NSString *format, ...)
     return NO;
 }
 
-// Live Photo capture needs a movie recorded around the still, which the release's still image output does not make.
+// Live Photo capture is not implemented: it needs a movie recorded around the still, which the port does not make
+// (facts, "Open").
 - (BOOL)isLivePhotoCaptureSupported
 {
     return NO;
@@ -562,8 +566,8 @@ static void CharonOutputRaise(NSString *format, ...)
     return @[];
 }
 
-// No RAW sample comes from this release, and none can be written as DNG here; a sample that is not RAW is refused with
-// the host's text.
+// RAW and DNG are not implemented (facts, "Open"): no RAW sample comes from the release's still image output, and no DNG
+// is written; a sample that is not RAW is refused with the host's text.
 + (NSData *)DNGPhotoDataRepresentationForRawSampleBuffer:(CMSampleBufferRef)rawSampleBuffer previewPhotoSampleBuffer:(CMSampleBufferRef)previewPhotoSampleBuffer
 {
     CMFormatDescriptionRef format = rawSampleBuffer ? CMSampleBufferGetFormatDescription(rawSampleBuffer) : NULL;
@@ -1167,7 +1171,8 @@ static void CharonAttachMetadata(CMSampleBufferRef still, NSDictionary *metadata
     [self charon_checkSettings:settings connection:connection];
     // "If format is non-nil, your delegate must respond to -captureOutput:didFinishProcessingPhotoSampleBuffer:..." (the
     // header's 10.0 rule, which a RAW request, refused above, is the only exception to): the photo is delivered through
-    // that callback alone, as on 10.0, which has no AVCapturePhoto. A delegate without it would get no photo, silently.
+    // that callback alone, as on 10.0, which has no AVCapturePhoto. A delegate without it would get no photo, silently:
+    // the AVCapturePhoto callback (11.0) is not implemented (facts, "Open"), so a delegate that has only it is refused.
     if (![delegate respondsToSelector:@selector(captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:)])
         CharonOutputRaise(@"*** -[AVCapturePhotoOutput capturePhotoWithSettings:delegate:] the delegate must respond to "
                           @"-captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:");
@@ -1194,8 +1199,8 @@ static void CharonAttachMetadata(CMSampleBufferRef still, NSDictionary *metadata
     // ones asked after it, which would otherwise put their mode on the camera before it is taken.
     dispatch_queue_t queue = _charonCaptureQueue;
     dispatch_async(queue, ^{
-        // Still image stabilization arrived on AVCaptureStillImageOutput in 7.0; 6.x has none, and the setting is then
-        // what it is on a device without it: kept, and nothing to enable. A request prioritized for speed is not stabilized.
+        // Still image stabilization arrived on AVCaptureStillImageOutput in 7.0; before it the port implements none, and the
+        // setting is then what it is on a device without it: kept, and nothing to enable. A request prioritized for speed is not stabilized.
         if ([self respondsToSelector:@selector(setAutomaticallyEnablesStillImageStabilizationWhenAvailable:)])
             self.automaticallyEnablesStillImageStabilizationWhenAvailable =
                 settings.autoStillImageStabilizationEnabled && settings.photoQualityPrioritization != AVCapturePhotoQualityPrioritizationSpeed;

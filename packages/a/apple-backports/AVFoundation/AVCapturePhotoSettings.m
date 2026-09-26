@@ -593,7 +593,7 @@ static BOOL CharonIsContentIdentifierItem(AVMetadataItem *item)
 // The thumbnail the capture can embed: a JPEG, written by the photo output into the Exif of a JPEG photo (IFD1, the
 // Exif standard's thumbnail), so it is offered for a JPEG format and for nothing else: the port delivers an uncompressed
 // photo as a pixel buffer, with no file to hold a thumbnail, and makes no HEIC. The host offers JPEG for those too
-// (facts, "The photo settings"). No RAW photo is taken on this release, so no RAW thumbnail is offered.
+// (facts, "The photo settings"): a thumbnail for an uncompressed, HEVC or RAW photo is not implemented (facts, "Open").
 - (NSArray<AVVideoCodecType> *)availableEmbeddedThumbnailPhotoCodecTypes
 {
     return [CharonCodecOf(_charonFormat) isEqualToString:AVVideoCodecTypeJPEG] ? @[AVVideoCodecTypeJPEG] : @[];

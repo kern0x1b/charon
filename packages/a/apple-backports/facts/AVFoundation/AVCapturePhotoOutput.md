@@ -39,8 +39,8 @@ needs a test of its own (host oracle and device). Read in `modules/apple/backpor
 
 `-capturePhotoWithSettings:delegate:` needs to call back into the delegate the host app supplies.
 Modern code implements `-captureOutput:didFinishProcessingPhoto:error:`, which needs a real
-`AVCapturePhoto` object this port does not build (out of scope: no demand row names it, and
-building one would need image-processing machinery this release does not have). The alternative is
+`AVCapturePhoto` object this port does not build yet (not implemented: no demand row names it; the port builds previews,
+thumbnails and Exif itself, so the object is work it can do, see "Open"). The alternative is
 the original, `CMSampleBufferRef`-based callback from iOS 10 itself, before `AVCapturePhoto`
 existed - deprecated in 13.0, never removed.
 
@@ -147,10 +147,11 @@ answers explicitly, and one registry row names each.
   mode set to Auto, `flashActive` read right after `-unlockForConfiguration` is NO, and its KVO change to YES comes
   28 ms later (the scene was dark); set to On, it is YES at once; set to Off, NO at once. An earlier version read
   `flashActive` right after setting the mode, and would have said NO for an Auto flash that fires. The Exif branch
-  has run on a device once, in Auto (below): the flash did not fire, and it resolved NO, as the Exif said. YES is not
-  measured.
+  has run on a device once, in Auto (below): the flash did not fire, and it resolved NO, as the Exif said. That capture
+  was made at once after the mode was set; the capture now waits for the camera ("The flash waits for the camera",
+  below), and the port's `flashEnabled` YES is not measured: no further capture in Auto is allowed.
 - `stillImageStabilizationEnabled`: the still image output's `isStillImageStabilizationActive` where it has it (7.0
-  on); NO on 6.x, which has no stabilization.
+  on); NO before 7.0, where stabilization is not implemented (see "Open").
 - `uniqueID`: the settings' own.
 - `embeddedThumbnailDimensions` (11.0): the thumbnail the capture embeds when the settings ask for one ("The
   embedded thumbnail", below): the photo's dimensions with its aspect ratio and, as the longest side, the larger of the
@@ -183,15 +184,16 @@ the header's 11.0.
   answers `YES` and it responds to the still image output's own methods, where 10.0's
   `AVCapturePhotoOutput` sits directly under `AVCaptureOutput`. An application that looks through
   `session.outputs` for a still image output finds the photo output, and capturing from it works.
-- `AVCapturePhotoOutput.availableRawPhotoPixelFormatTypes` is always an empty array: RAW capture has
-  no path on this release's sensor pipeline.
+- `AVCapturePhotoOutput.availableRawPhotoPixelFormatTypes` is always an empty array: RAW is not implemented
+  (the release's still image output gives no RAW sample; see "Open").
 - The preview photo is drawn by the port. `AVCapturePhotoSettings.availablePreviewPhotoPixelFormatTypes`
   is the host's `[420f, 420v, 32BGRA]`, in its order. At capture a `previewPhotoFormat` whose
   pixel format is not in that list, or that gives a width without a height or the other way round,
   raises `NSInvalidArgumentException` (the text is the port's). Otherwise the captured still is decoded
   (a JPEG through ImageIO's thumbnail, which decodes at the reduced size; an uncompressed buffer through
   CoreImage) and drawn into an IOSurface-backed 32BGRA pixel buffer, the format CoreGraphics draws into; for 420v and
-  420f that picture is converted to bi-planar 4:2:0 YCbCr by ITU-R BT.601 (luma 0.299 R + 0.587 G + 0.114 B, video
+  420f that picture is converted to bi-planar 4:2:0 YCbCr by `vImageConvert_ARGB8888To420Yp8_CbCr8` of AccelerateBackports,
+  generated with `kvImage_ARGBToYpCbCrMatrix_ITU_R_601_4` (luma 0.299 R + 0.587 G + 0.114 B, video
   range 16...235 and 16...240, full range 0...255, each chroma sample the mean of its two by two pixels) and the
   buffer says its matrix (`kCVImageBufferYCbCrMatrix_ITU_R_601_4`). It is delivered with the still's presentation
   time as `previewPhotoSampleBuffer`. Its size follows the header: "Width and height are
@@ -201,13 +203,14 @@ the header's 11.0.
   held to the display's longest side in pixels, the display's when none is asked, and never more than
   the still's own. A preview that cannot be made is said in the log, and the photo comes without it.
 - `-isFlashScene` is `NO` "unless you set `photoSettingsForSceneMonitoring` to a non-nil value" (the header). Setting
-  them puts their flash mode on the camera, as a capture does, and a capture puts it back after its own; with Auto the
+  them puts their flash mode on the camera, as a capture does, and the application's own mode is given back when no capture
+  runs and nothing is monitored ("The flash waits for the camera", below); with Auto the
   answer is the camera's own `flashActive`
   ("When the flash is active, it will flash if a still image is captured", iOS 5), `NO` with On or Off. Nothing fires
   until a capture.
 - `-livePhotoCaptureEnabled` is `NO`, and setting it to `YES` raises `NSInvalidArgumentException` with the host's text
-  for a device without Live Photo: `livePhotoCaptureSupported` is `NO`, as no movie is paired to a still on this
-  release.
+  for a device without Live Photo: `livePhotoCaptureSupported` is `NO`, as Live Photo is not implemented: no movie is
+  paired to a still (see "Open").
 - `-highResolutionCaptureEnabled` is stored, and from 8.0 turns the still image output's own
   `highResolutionStillImageOutputEnabled` on and off. Before 8.0 the still image output takes a still at the size its
   session's preset gives, and there is no other size to ask for.
@@ -232,8 +235,8 @@ failed. Every capture hands one resolved settings object to its four callbacks i
 request's unique ID; its photo dimensions are the photo's (3264x2448) and its preview dimensions the preview's (960x720,
 160x120, 320x240, 0x0 with none), both already at willBeginCapture; RAW and Live Photo 0x0; no stabilization; the flash
 not enabled with the flash Off. The camera's flash is held Off for the whole run and put back to its mode after; the
-captures with the flash On and Auto (`photooutput <log> flash-on`; Auto in the dark fires it as On) fire the flash of a
-phone someone may be using and were not run, so `flashEnabled` YES is not measured. With `flashEnabled` taken from the
+captures with the flash On and Auto (`photooutput <log> flash-on`) fire the flash of a phone someone may be using and
+were not run, so `flashEnabled` YES is not measured. With `flashEnabled` taken from the
 still's Exif (above), the same run on the same 4S the same day: 96 checks, 0 failed; the still captured with the flash Off carries Exif Flash 16 ("did not fire"),
 and its resolved settings say NO. That NO is the Off branch, answered before the still without reading the Exif: the run
 shows that the release attaches the tag and that the port's keys find it, not the Exif branch, which only the captures
@@ -258,16 +261,50 @@ previews come at 960x720 in the format asked, their luma 0.29 (420v) and 0.22 (4
 photo drawn at that size, 15.1 from the photo upside down. Monitored for Auto, `flashActive` was YES and `isFlashScene`
 YES.
 
-The one capture in Auto the owner allowed (`photooutput10 <log> flash-auto`, the same dark scene, right after that run,
-`device-4s-photooutput-flashauto.log`, 185 checks, 0 failed): the still carries Exif Flash 24 (0b11000: flash mode
-Auto, bit 0 clear, did not fire), and the resolved `flashEnabled` is NO, as that says; the camera went back to Off
-with no other capture. So the Exif branch ran once and answered NO; YES is still not measured. Why the flash did not
-fire is not measured: `flashActive` was YES in the same scene during scene monitoring, and the capture sets Auto on the
-camera right before it captures, where `flashActive` turns YES about 28 ms after the mode is set (above). Telling that
-apart needs another capture in Auto that fires the flash.
+The two captures in Auto, in the same dark scene, after which the owner forbade any further capture with the flash On
+or Auto (no run sets the camera to On or Auto any more):
+
+- The port's, without a wait (`photooutput10 <log> flash-auto`, right after the run above,
+  `device-4s-photooutput-flashauto.log`, 185 checks, 0 failed): the still carries Exif Flash 24 (0b11000: flash mode
+  Auto, bit 0 clear, did not fire), and the resolved `flashEnabled` is NO, as that says; the camera went back to Off
+  with no other capture. The capture set Auto on the camera right before it captured.
+- The release's own still image output, after the wait (`device-4s-flashsettle.log`, "The flash waits for the camera"
+  below): Exif Flash 25 (0b11001), fired.
+
+So the Exif branch of `flashEnabled` ran once and answered NO. The port's capture after the wait was not run: YES is
+not measured for the port until a capture in Auto is allowed, and the wait's effect on the port is shown only by the
+release's output firing after it, and by the host check of the wait (`tests/backports/host/photosettings/flashwait.m`).
 
 Not measured: Telegram's own `-captureOutput:didFinishProcessingPhotoSampleBuffer:...` with a `nil`
 `bracketSettings` (documented `nullable` in the header).
+
+## The flash waits for the camera
+
+`flashActive` is the camera's judgement of the frames it delivers, and after the flash mode changes it answers for the
+old mode until a frame is judged for the new one. The release's still image output fires the flash by that judgement, so
+a capture made right after the mode is set does not fire in a scene where Auto should. Measured on the iPhone 4S, 6.1.3,
+2026-09-25, in the dark, with a probe outside the tree (`flashsettle.m`, `device-4s-flashsettle.log`, the release's own
+still image output, the flash mode Off before and after): Auto set, `flashActive` 0 at once; KVO shows 1 at 0.035 s,
+`adjustingExposure` 1 at 0.180 s (with `flashActive` 0 at 0.181 s) and 0 at 0.389 s, `flashActive` 1 again at 0.631 s and 0
+at 0.694 s. A capture made after that first change gave Exif Flash 25 (0b11001, fired). The port's own capture, made at
+once after the mode was set, gave Exif Flash 24 (did not fire; above). These are the two captures in Auto (above);
+the owner forbade any more.
+
+How long the camera takes is bound by its frame: `AVCaptureConnection.videoMaxFrameDuration` of the still connection
+is 1/15 s at the photo preset, and the video connection's the same (`device-4s-framedur.log`: min 1/20 s on both, the
+device's `activeVideoMinFrameDuration` 1/20 and `activeVideoMaxFrameDuration` 1/1). The port's capture therefore sets
+the mode, then waits for the first KVO change of `flashActive` on the camera, at most that long, and only then starts the
+still. It does not wait when the mode does not change or the camera cannot fire (Off, or no flash); in a bright scene
+with Auto `flashActive` stays NO, the wait runs its bound, and the photo is taken. Captures run one at a time on the
+output's queue. Host check of the wait: `tests/backports/host/photosettings/flashwait.m`, which drives a camera object of its
+own whose `flashActive` is observable. Not measured: the port's capture in Auto on the device after the wait (no capture in
+Auto is allowed), and the wait's length in a bright scene.
+
+The port also gives the application's flash mode back. The first change of the camera's mode by the port (a capture or
+scene monitoring) keeps the mode the application had; when no capture runs and nothing is monitored (at
+`didFinishCapture` and when `photoSettingsForSceneMonitoring` is set to `nil`) it is written back. A failed
+`lockForConfiguration:` is logged, and the capture is made with the mode as it stands. The host's photo output does not
+touch the camera's `flashMode`, so this is the port's own state to leave as it found it.
 
 ## Owner of `availablePreviewPhotoPixelFormatTypes`, corrected
 
@@ -309,9 +346,15 @@ Named divergences, each a check that fails if the host ever stops answering so:
   from 7.0 (above).
 - `availableEmbeddedThumbnailPhotoCodecTypes` is `[jpeg]` for a JPEG format, as on the host, and `[]` for a pixel format
   or HEVC, where the host answers `[jpeg]` and `[hvc1, jpeg]`: the port delivers an uncompressed photo as a pixel
-  buffer, with no file to hold a thumbnail, and makes no HEIC. `availableRawEmbeddedThumbnailPhotoCodecTypes` is `[]`:
-  no RAW photo is taken here.
-- `setMetadata:` refuses `{MakerApple}`, which the host takes: its constant is not in 6.1.3's ImageIO.
+  buffer, with no file to hold a thumbnail, and makes no HEIC; a thumbnail for these is not implemented (see "Open").
+  `availableRawEmbeddedThumbnailPhotoCodecTypes` is `[]`: RAW is not implemented.
+- `setMetadata:` takes `{MakerApple}` as the host does (`kCGImagePropertyMakerAppleDictionary`, which GraphicsBackports
+  exports for 6.x) and the capture merges it into the still's attachments, like the other keys. 6.1.3's JPEG writer does
+  not keep it: on the iPhone 4S, 2026-09-26, the flash Off (`device-4s-photooutput-8.log`, 194 checks, 0 failed), a capture
+  with `{MakerApple}` = `{1: 77}` carries it as an attachment of the photo's sample buffer (a capture without it none),
+  and neither the release's `+jpegStillImageNSDataRepresentation:` of that sample nor the port's JPEG of it holds a
+  `{MakerApple}` through ImageIO or the bytes `Apple iOS` (the MakerNote's header), the baseline JPEG holding neither.
+  Writing the MakerNote into the Exif segment is not implemented (see "Open").
 
 ## The photo output
 
@@ -322,8 +365,9 @@ Named divergences, each a check that fails if the host ever stops answering so:
   `supportedFlashModes` `[Off]`. With the 4S camera (`photooutput10`): `supportedFlashModes` Off, On and Auto,
   `availablePhotoCodecTypes` `[jpeg]`, the still image output's own codecs. `availablePhotoFileTypes` is JPEG for its
   JPEG codec and TIFF for its pixel formats (not checked on the device).
-- The setters of features no camera of these releases has (depth, portrait matte, segmentation mattes, Live Photo,
-  its suspension and trimming, dual photo, constituent photos, content-aware correction, Apple ProRAW) raise
+- The setters of features the 4S's one camera has no hardware for (depth, portrait matte, segmentation mattes, dual
+  photo, constituent photos, content-aware correction) and of those not implemented (Live Photo, its suspension and
+  trimming, Apple ProRAW) raise
   `NSInvalidArgumentException` for YES with the host's texts, as a device without the feature does.
   `maxPhotoQualityPrioritization` is stored and raises outside 1..3 (the host's text); `maxPhotoDimensions` goes through
   the camera's `activeFormat` (7.0) and otherwise raises the host's text.
@@ -349,7 +393,7 @@ Named divergences, each a check that fails if the host ever stops answering so:
 - `+JPEGPhotoDataRepresentationForJPEGSampleBuffer:previewPhotoSampleBuffer:` is the release's own JPEG of the sample
   with its attachments, and a thumbnail (next section); a sample that is not a JPEG raises the host's "Not a jpeg sample
   buffer". `+DNGPhotoDataRepresentationForRawSampleBuffer:previewPhotoSampleBuffer:` raises the host's "Unrecognized
-  raw format" for a sample that is not RAW, and is nil for one that is: no RAW sample comes from this release.
+  raw format" for a sample that is not RAW, and is nil for one that is: RAW is not implemented, and no RAW sample reaches it.
 
 ## The embedded thumbnail
 
@@ -380,3 +424,36 @@ is that JPEG. With no size asked the longest side is 160, the host's own thumbna
 the port's `+JPEGPhotoDataRepresentationForJPEGSampleBuffer:previewPhotoSampleBuffer:` with no preview puts it back,
 where the host keeps none (a named divergence: on the host no capture can put one there).
 
+## Open
+
+What the port does not implement yet. Each was written before as a limit of the release; each is work, and `effect` in
+the registry says what the class answers meanwhile, `reason` "not implemented". Hardware stays a fact: the iPhone 4S has
+one camera and no depth sensor, so dual and constituent photos, depth data, mattes and calibration data are refused as a
+device without them refuses.
+
+- **Live Photo** (`livePhotoCaptureEnabled`, its suspension and trimming, `livePhotoMovieFileURL`,
+  `livePhotoMovieMetadata`, `livePhotoVideoCodecType`, `livePhotoMovieDimensions`, `availableLivePhotoVideoCodecTypes`).
+  It takes a movie recorded around the still (the session's frames before and after it, written by an asset writer or a
+  movie file output) and paired to the still by the content identifier the settings already carry, and the two callbacks
+  of the movie.
+- **Bracketed capture** (`AVCapturePhotoBracketSettings`, `maxBracketedCapturePhotoCount`, lens stabilization during
+  a bracket). It takes the bracket classes and a series of stills at each bracket's exposure (bias or duration and ISO),
+  delivered with the bracket settings the sample buffer callback already has a parameter for.
+- **`AVCapturePhoto`** (11.0) and `-captureOutput:didFinishProcessingPhoto:error:`. It takes the class over the delivered
+  still: `fileDataRepresentation`, `pixelBuffer`, `previewPixelBuffer`, `metadata`, `resolvedSettings`, the embedded
+  thumbnail; the port already builds the still's previews, thumbnails and Exif. Until then a delegate with only that
+  callback is refused at capture (`-capturePhotoWithSettings:delegate:`), which is valid under the 16.4 header.
+- **Thumbnails for an uncompressed, HEVC and RAW photo** (`availableEmbeddedThumbnailPhotoCodecTypes`,
+  `availableRawEmbeddedThumbnailPhotoCodecTypes`; the host's lists are in the 59 rows of
+  `tests/backports/host/photosettings/divergences.tsv`). An uncompressed photo takes a container to hold the thumbnail
+  (the `AVCapturePhoto` above, or a file), HEVC and RAW take their writers.
+- **`{MakerApple}` in the JPEG.** The key is taken and attached, and the release's JPEG writer drops it (above). It takes
+  a MakerNote writer beside the IFD1 writer of "The embedded thumbnail": `Apple iOS` header and an IFD of the tags, in
+  the Exif segment.
+- **Still image stabilization before 7.0.** 6.x's still image output has none: the port would merge frames itself.
+- **RAW and HEIC** (`availableRawPhotoPixelFormatTypes`, `availableRawPhotoFileTypes`, `appleProRAWSupported`,
+  `+DNGPhotoDataRepresentationForRawSampleBuffer:...`, HEIC in `supportedPhotoCodecTypesForFileType:`). RAW takes a sample
+  from the sensor, which the release's still image output does not give, and a DNG writer; HEIC takes an HEVC still
+  encoder, which 6.x does not have.
+- **The port's `flashEnabled` YES and a capture in Auto after the wait** are not measured: no capture with the flash On
+  or Auto is allowed (above).
