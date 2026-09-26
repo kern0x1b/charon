@@ -7,7 +7,8 @@ import("compat")
 -- table differ in either direction, and the checks after a program's link (platform.import_options), which report a weak
 -- import a carried copy of the runtime makes only if it is recorded here and refuse any other as the program's own.
 -- source is the line of the guard at the commit the recipe builds (swift b8189d76), or the patch of this repository
--- that adds it.
+-- that adds it. A row is prose the machine cannot check: the pinned commit is what keeps it from going stale, so a bump
+-- of the pin, or a patch that adds or drops a guard, must re-read this table.
 GUARDS = {
     ["libswiftCore.dylib"] = {
         ["__dyld_is_objc_constant"] = "stdlib/public/stubs/FoundationHelpers.mm:124 @ swiftlang/swift b8189d766d86ad7fc8106787d6ce9e402f38dd72",

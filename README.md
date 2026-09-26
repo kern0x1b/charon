@@ -662,7 +662,14 @@ stays on, so what a later release adds stays behind `#available`. A port writes
 `import SwiftUI` and an `@main` `App`, with `add_requires("charon@eidolon",
 {alias = "swiftui"})` and `add_packages("swiftui")` beside the runtime and
 libcxx; the package names Styx's module folders too, since SwiftUI re-exports
-Combine.
+Combine. A SwiftUI port takes the `backports` variant of all three: Styx's own
+weak import, `_CFRunLoopTimerSetTolerance`, is answered by
+`charon@apple-backports`, which the port then carries (`coredata = true`, and
+`add_packages` plus `set_values("charon.libraries", ...)` for it), as
+`eidolon/rtpkg/xmake.lua` does. The runtime's own weak imports are checked against
+`modules/apple/runtime_guards.lua`. That a SwiftUI port passes `xmake deb`
+with no `charon.waive.weak-imports` has not been run end to end yet: it needs the
+rebuilt runtime.
 
 The runtime carries the Swift overlays of the system's own frameworks, which
 Apple ships inside a newer OS: ObjectiveC, Dispatch, CoreFoundation,
