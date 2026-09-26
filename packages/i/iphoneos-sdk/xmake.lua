@@ -13,6 +13,10 @@ package("iphoneos-sdk")
     add_versions("16.4", "5e0fd3f01266cce4ce012d4a99b38eb56578fca40d09edc81cd83dee958202fb")
     add_versions("26.2", "581b16f4f8902355364bd20f84cd46eb055b131c9b8cc2c7d6d229e36fd5067f")
     add_patches("16.4", "patches/16.4-driverkit-22-availability.patch")
+    -- the stubs of 26.2 carry no `$ld$` marker, so what an older release lacks, and where it kept what it has, is told by those of
+    -- the 16.5 SDK, the newest that has them, and by markers/iPhoneOS26.2.tsv for what 16.5 did not have
+    add_resources("26.2", "markers", "https://github.com/theos/sdks/releases/download/master-146e41f/iPhoneOS16.5.sdk.tar.xz",
+                  "5e0fd3f01266cce4ce012d4a99b38eb56578fca40d09edc81cd83dee958202fb")
     for _, version in ipairs({"16.4", "26.2"}) do
         add_resources(version, "csu", "https://github.com/apple-oss-distributions/Csu.git", "de2a331398a7d13a132a630bbf4d27c12b2466ec")
     end
@@ -21,7 +25,9 @@ package("iphoneos-sdk")
     add_configs("layout", {description = "The SDK sits in the package at Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk, where clang's driver finds the toolchain's libarclite and CMake's iOS platform files the SDK name.", default = "developer-folder", type = "string", readonly = true})
 
     local digests = {}
-    local inputs = table.join({path.join(os.scriptdir(), "xmake.lua")}, os.files(path.join(os.scriptdir(), "usr", "**")), os.files(path.join(os.scriptdir(), "arclite", "*")), os.files(path.join(os.scriptdir(), "blocks", "*")))
+    local inputs = table.join({path.join(os.scriptdir(), "xmake.lua"), path.join(os.scriptdir(), "..", "..", "..", "modules", "apple", "sdkstubs.lua")},
+                              os.files(path.join(os.scriptdir(), "usr", "**")), os.files(path.join(os.scriptdir(), "arclite", "*")),
+                              os.files(path.join(os.scriptdir(), "blocks", "*")), os.files(path.join(os.scriptdir(), "markers", "*")))
     table.sort(inputs)
     for _, file in ipairs(inputs) do
         table.insert(digests, path.relative(file, os.scriptdir()) .. "=" .. hash.sha256(file))
@@ -48,8 +54,61 @@ package("iphoneos-sdk")
         os.vcp("*", folder .. "/")
         local libraries = path.join(folder, "usr", "lib")
 
+        local stubs = import("apple.sdkstubs", {rootdir = path.join(package:scriptdir(), "..", "..", "..", "modules"), anonymous = true})
+        local markers = package:resourcedir("markers")
+        if markers then
+            -- an SDK whose stubs carry none takes those of an older one, and the release each symbol it lacks came with
+            local older = os.isfile(path.join(markers, "SDKSettings.json")) and markers or assert(os.dirs(path.join(markers, "iPhoneOS*.sdk"))[1], "the older SDK's archive holds no SDK")
+            local first = stubs.releases(io.readfile(path.join(package:scriptdir(), "markers", "iPhoneOS" .. package:version_str() .. ".tsv")))
+            local carried, versions, seen = {}, {}, {}
+            for _, file in ipairs(os.files(path.join(older, "**.tbd"))) do
+                local text = not file:find("/DriverKit/", 1, true) and io.readfile(file)
+                if text and text:find("$ld$", 1, true) then
+                    for _, part in ipairs(stubs.documents(text)) do
+                        local doc = stubs.read(part)
+                        for _, marker in ipairs(stubs.markers(doc)) do
+                            local key = doc.install .. "\t" .. table.concat(marker.archs, ",") .. "\t" .. marker.token
+                            if not seen[key] then
+                                seen[key] = true
+                                carried[doc.install] = carried[doc.install] or {}
+                                table.insert(carried[doc.install], marker)
+                                if marker.kind == "hide" and stubs.in_libsystem(doc.install) then
+                                    versions[marker.version] = true
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+            versions = table.keys(versions)
+            table.sort(versions, function (a, b) return stubs.older(a, b) end)
+            local changed = 0
+            for _, stub in ipairs(os.files(path.join(folder, "**.tbd"))) do
+                local text = not stub:find("/DriverKit/", 1, true) and io.readfile(stub)
+                if text then
+                    local parts = stubs.documents(text)
+                    for index, part in ipairs(parts) do
+                        local install = stubs.install(part)
+                        if carried[install] or stubs.in_libsystem(install) then
+                            local wanted = stubs.group(carried[install] or {})
+                            if stubs.in_libsystem(install) then
+                                table.join2(wanted, stubs.derived(stubs.read(part), first, versions))
+                            end
+                            parts[index] = stubs.add_markers(part, wanted)
+                        end
+                    end
+                    if table.concat(parts) ~= text then
+                        io.writefile(stub, table.concat(parts))
+                        changed = changed + 1
+                    end
+                end
+            end
+            vprint("%d stubs of %s took markers from %s", changed, folder, older)
+        end
+
+        -- what iPhone OS 2 to 4.3 took from libgcc_s the libSystem stubs hide from 3.0 to 4.3; the package extends that to iPhone OS 2
         local extended = 0
-        for _, stub in ipairs(os.files(path.join(libraries, "libSystem*.tbd"))) do
+        for _, stub in ipairs(table.join(os.files(path.join(libraries, "libSystem*.tbd")), os.files(path.join(libraries, "system", "*.tbd")))) do
             local text, count = io.readfile(stub):gsub("'%$ld%$hide%$os3%.0%$([%w_]+)'", function (symbol)
                 return string.format("'$ld$hide$os2.0$%s', '$ld$hide$os2.1$%s', '$ld$hide$os2.2$%s', '$ld$hide$os3.0$%s'", symbol, symbol, symbol, symbol)
             end)
@@ -58,18 +117,19 @@ package("iphoneos-sdk")
                 extended = extended + 1
             end
         end
-        -- the 26.2 archive's libSystem stubs are tbd v3 and carry no $ld$ marker, so there is nothing to extend: what older
-        -- releases lack is then told apart by the imports check against the device, not by the stub
-        if extended == 0 and import("core.base.semver").compare(package:version_str(), "17.0") < 0 then
+        if extended == 0 then
             raise("no libSystem stub in %s hides anything from iOS 3.0, so none says which of its symbols older releases took from libgcc_s", libraries)
         end
         for _, stub in ipairs(os.files(path.join(folder, "**.tbd"))) do
             local text = io.readfile(stub)
             if text:find("$ld$", 1, true) then
-                local lines, item, targets, markers = {}, {}, nil, {}
+                local lines, item, targets, key, markers = {}, {}, nil, nil, {}
+                local function has(list, architecture)
+                    return list:find("%f[%w]" .. architecture .. "%f[%W]") ~= nil
+                end
                 local function flush()
                     table.join2(lines, item)
-                    if targets and targets:find("armv7-ios", 1, true) and not targets:find("arm64-ios", 1, true) then
+                    if targets and has(targets, "armv7") and not has(targets, "arm64") then
                         local wanted = {}
                         for _, marker in ipairs(markers) do
                             if tonumber(marker.major) >= 7 then
@@ -77,19 +137,24 @@ package("iphoneos-sdk")
                             end
                         end
                         if #wanted > 0 then
-                            table.insert(lines, "  - targets:         [ arm64-ios, arm64e-ios ]")
-                            table.insert(lines, "    symbols:         [ " .. table.concat(wanted, ", ") .. " ]")
+                            -- tbd 4 names targets (arm64-ios), tbd 3 architectures (arm64)
+                            local names = key == "targets" and "arm64-ios, arm64e-ios" or "arm64, arm64e"
+                            table.insert(lines, "  - " .. key .. ": [ " .. names .. " ]")
+                            table.insert(lines, "    symbols: [ " .. table.concat(wanted, ", ") .. " ]")
                         end
                     end
-                    item, targets, markers = {}, nil, {}
+                    item, targets, key, markers = {}, nil, nil, {}
                 end
                 for line in (text .. "\n"):gmatch("([^\n]*)\n") do
-                    local listed = line:match("^  %- targets:%s+%[(.*)%]")
+                    local named, listed = line:match("^  %- (%a+):%s+%[(.*)%]")
+                    if not (named == "targets" or named == "archs") then
+                        listed = nil
+                    end
                     if listed or not line:startswith("    ") then
                         flush()
                     end
                     if listed then
-                        targets = listed
+                        targets, key = listed, named
                     end
                     if targets then
                         table.insert(item, line)

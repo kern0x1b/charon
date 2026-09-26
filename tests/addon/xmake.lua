@@ -48,6 +48,7 @@ end
 light("descriptions_test")
 light("checkout_test")
 light("lift_test")
+light("sdkstubs_test")
 light("digest_test")
 light("dependency_test")
 light("swift_rule_test")

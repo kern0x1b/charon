@@ -181,7 +181,15 @@ below iOS 5 and that holds those releases' arithmetic helpers and SjLj
 unwinder, listing what the library exports on every release from 3.1.3 to
 6.1.3. The SDK's libSystem stubs hide those symbols from 3.0 to 4.3 so they bind
 to libgcc_s; the package extends that to iPhone OS 2, whose libSystem did not
-export them either. The SDK's stubs also say only for armv7 and armv7s where
+export them either. An SDK whose stubs carry no `$ld$` marker at all, such as
+26.2's, is not fit as it comes: the package takes the markers from the 16.5 SDK's
+stubs (one archive, downloaded beside it), library by library by install name,
+and for the symbols of libSystem that 16.5 does not have it writes one hide marker
+for each release the 16.5 markers name below the first release the held dyld
+caches export the symbol from (`markers/iPhoneOS26.2.tsv`, written by
+`tools/sdk-markers.lua`). So the linker of 26.2 knows what the one of 16.5 knew, and
+`__Unwind_GetIPInfo` still binds to libgcc_s below iOS 5. A libSystem without any hide
+marker is refused whatever its version. The SDK's stubs also say only for armv7 and armv7s where
 symbols lived on iOS 7 to 10 (`$ld$hide$os7.0$` in CFNetwork, `$ld$add$os7.0$`
 in Foundation for NSURLCache, NSURLRequest and their neighbours), although
 arm64 ran those releases too; the package repeats each such marker for arm64,
