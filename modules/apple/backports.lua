@@ -281,6 +281,17 @@ local function provides(release, install, symbol, seen)
     return false
 end
 
+-- A .tbd that says a library at `install` exports these symbols and classes: what a link needs to name a
+-- library the SDK does not have, or has elsewhere, and what the release's own cache says it holds.
+local function write_stub(architecture, folder, install, symbols, classes)
+    local target = architecture .. "-ios"
+    local file = path.join(folder, path.basename(install) .. ".tbd")
+    io.writefile(file, table.concat({"--- !tapi-tbd", "tbd-version: 4", "targets: [ " .. target .. " ]", "install-name: '" .. install .. "'", "exports:",
+                                     "  - targets: [ " .. target .. " ]", "    symbols: [ " .. table.concat(symbols, ", ") .. " ]",
+                                     "    objc-classes: [ " .. table.concat(classes, ", ") .. " ]", "..."}, "\n") .. "\n")
+    return file
+end
+
 function stubs(architecture, library, reexported, releases, folder)
     local preferred = {}
     for index, framework in ipairs(library.frameworks) do
@@ -324,12 +335,7 @@ function stubs(architecture, library, reexported, releases, folder)
         end
         table.sort(symbols)
         table.sort(classes)
-        local target = architecture .. "-ios"
-        local file = path.join(folder, path.basename(install) .. ".tbd")
-        io.writefile(file, table.concat({"--- !tapi-tbd", "tbd-version: 4", "targets: [ " .. target .. " ]", "install-name: '" .. install .. "'", "exports:",
-                                         "  - targets: [ " .. target .. " ]", "    symbols: [ " .. table.concat(symbols, ", ") .. " ]",
-                                         "    objc-classes: [ " .. table.concat(classes, ", ") .. " ]", "..."}, "\n") .. "\n")
-        table.insert(files, file)
+        table.insert(files, write_stub(architecture, folder, install, symbols, classes))
     end
     return files
 end
@@ -402,6 +408,28 @@ local function carried_classes(cache)
     return release_inventory(cache).classes
 end
 
+-- The C++ runtime a band's objects link: libc++ where every release of the band has it, from iOS 5.0. Below
+-- that the Itanium C++ ABI they need (operator new and delete, the personality routine, terminate) is
+-- libstdc++.6's, which every release carries and the SDK does not, so the stub is written from what the first
+-- release's cache says it exports.
+function cxx_runtime(opt, library, releases, folder)
+    local libcxx, libstdcxx = "/usr/lib/libc++.1.dylib", "/usr/lib/libstdc++.6.dylib"
+    local without = false
+    for _, release in ipairs(releases) do
+        without = without or not release.libraries[libcxx]
+    end
+    if not without then
+        return {"-lc++"}
+    end
+    if not releases[1].libraries[libstdcxx] then
+        raise("%s keeps C++ objects, and the first release of its band has neither %s nor %s", library.name, libcxx, libstdcxx)
+    end
+    local symbols = exported_through(releases[1], libstdcxx, {})
+    table.sort(symbols)
+    os.mkdir(folder)
+    return {write_stub(opt.architecture, folder, libstdcxx, symbols, {})}
+end
+
 local function link(opt, library, attach, objects, releases, outputdir, checked)
     local release = checked and checked.release or opt.deployment
     local kept, reexported, left = band(releases[1].exports, objects, checked and later_than(opt, checked.release), {release = release, minimums = opt.minimums or {}})
@@ -455,7 +483,7 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
         table.insert(arguments, path.join(archive.linkdir, "lib" .. archive.link .. ".a"))
     end
     if cxx then
-        table.insert(arguments, "-lc++")
+        table.join2(arguments, cxx_runtime(opt, library, releases, path.join(opt.builddir, "stubs", path.filename(outputdir), library.name)))
     end
     -- A framework the band's release does not have is not linked: it could not load there. What the
     -- band keeps then needs none of it, or the link names the symbols that do.
