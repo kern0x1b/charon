@@ -14,7 +14,7 @@
 -- not replace band() -- see the divergence note below -- so it does not
 -- replace write_deb() either. It is the fast, mandatory check in between.
 --
--- For every *.o in OBJECTSDIR, lists the symbols it defines (nm -gU, with
+-- For every *.o in OBJECTSDIR, lists the symbols it defines (nm -gUm, without the private external ones, with
 -- ivars, $shim and Charon-/charon-prefixed internal symbols and ObjC protocol
 -- metadata excluded -- the same exclusions modules/apple/backports.lua's own
 -- internal_symbol()/exported_symbols() apply) and, for each symbol, walks
@@ -98,11 +98,13 @@ local function internal(name)
 end
 
 local function symbols_of(object)
-    local out = os.iorunv("nm", {"-gU", object})
+    -- -m says which of them are private external: a hidden weak definition (clang's ___clang_call_terminate
+    -- of a noexcept destructor) is nm -g visible, is in no release, and is not what band() weighs.
+    local out = os.iorunv("nm", {"-gUm", object})
     local found = {}
     for line in out:gmatch("[^\n]+") do
         local name = line:match("%S+$")
-        if name and not internal(name) then
+        if name and not line:find("private external", 1, true) and not internal(name) then
             table.insert(found, name)
         end
     end
