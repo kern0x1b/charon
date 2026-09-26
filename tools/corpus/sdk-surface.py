@@ -12,7 +12,7 @@ sdk-16.4-declared.json, the newest and the oldest by version if not named), the 
 carried-registry-*.tsv and crash-demand-top.tsv, and writes, named after the new SDK's version:
 
     sdk-<v>-surface.tsv                    what arrived after 6.1: name, framework, kind, language,
-                                           availability, charon registry status, demand, impl-source
+                                           availability, charon registry status, demand, impl-lead
     sdk-<v>-removed-since-<old>.tsv        what the old SDK declared and the new one does not, or
                                            declares unavailable or obsoleted (the removed API); a Swift
                                            name that came back under other labels is `changed`, not removed
@@ -67,7 +67,7 @@ if not os.path.isdir(CORPUS):
 AFTER = (6, 1)
 DEPRECATED_NO_VERSION = "yes"
 
-# name shown in impl-source, GitHub repository, branch, frameworks it stands for (None: every
+# name shown in impl-lead, GitHub repository, branch, frameworks it stands for (None: every
 # framework it has a directory for), where its sources sit, and the aliases a name may also go by.
 REPOS = [
     {"source": "swift-foundation", "repo": "swiftlang/swift-foundation", "branch": "main",
@@ -343,7 +343,8 @@ def build(options):
             unannotated[(row["lang"], row["framework"])] += 1
             continue
         if not introduced_after(row):
-            before[row["lang"]] += 1
+            # a version taken from the container is a floor (that version or later): such a row may be newer than 6.1
+            before[(row["lang"], "own" if row["via"] == "own" else "floor")] += 1
             continue
         surface.append(row)
     surface.sort(key=lambda r: (parse_version(r["introduced"]), r["framework"], r["lang"], r["kind"], r["api"]))
@@ -361,9 +362,13 @@ def build(options):
             present[key] = row
     # A Swift name that is gone under its labels but declared again under others (`f(function:_:)` ->
     # `f(isolation:function:_:)`) has a changed signature, it is not removed.
+    # Only labels the old walk does not have count: when the other overload was already there, one overload was
+    # removed and the other kept, which is a removal.
+    old_live = {(row["lang"], row["api"]) for row in old["rows"] if is_live(row, old_version)}
     relabelled = {}
     for row in new["rows"]:
-        if row["lang"] == "swift" and "(" in row["api"] and is_live(row, new_version):
+        if (row["lang"] == "swift" and "(" in row["api"] and is_live(row, new_version)
+                and (row["lang"], row["api"]) not in old_live):
             relabelled.setdefault((row["kind"], row["api"].split("(")[0]), row)
     removed = []
     for row in old["rows"]:
@@ -411,7 +416,10 @@ def not_in_surface(new, new_path, unannotated, before, floor_in_table):
     no_row = dropped["no-row"]
     return ["## Not in the surface", "",
             "Everything the walk of `%s` sees and does not put in the table, counted; what it cannot see at all is the last item." % os.path.basename(new_path), "",
-            "- Introduced at or before iOS 6.1 (in the walk, not in the table): %d Objective-C / C and %d Swift rows." % (before["objc"], before["swift"]),
+            "- Introduced at or before iOS 6.1 (in the walk, not in the table): %d Objective-C / C and %d Swift rows with a version of their own; "
+            "%d Objective-C / C and %d Swift rows more whose version at or before 6.1 is only a floor taken from their class, protocol, category "
+            "or enum (`via=container` or `class-floor`), so any of them may have arrived after 6.1 and is not shown as such." % (
+                before[("objc", "own")], before[("swift", "own")], before[("objc", "floor")], before[("swift", "floor")]),
             "- No iOS version at all (%d Objective-C / C and %d Swift rows): API from before the availability annotations, or Swift API "
             "whose module states no version. In the walk, not in the table. Objective-C members of a category with no annotation of its own take "
             "their class's or protocol's version as a floor (`via=class-floor`) and are not among these (a Swift extension member with no @available keeps `none`): %d rows took one, "
