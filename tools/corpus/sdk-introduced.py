@@ -2,6 +2,16 @@
 """Dump SDK-declared API -> (kind, introduced) per framework by reusing surface-diff.declared()
 (clang -ast-dump over the Mac Catalyst SDK). Output: corpus/sdk-introduced.json
 
+    sdk-introduced.py --sdk <path to an iPhoneOS SDK> [--out FILE] [--frameworks A,B] [--no-swift]
+
+takes a real iPhoneOS SDK whole instead: every framework that has headers is walked with clang
+(objective-c, C), every module that has a .swiftinterface is read by swiftinterface-surface.py, and
+what comes out is one row per declaration with its whole availability, not the (kind, introduced)
+pair above: name, framework, kind, language, introduced, deprecated, obsoleted, unavailable. The
+default output is corpus/sdk-<version>-declared.json; sdk-introduced.json is left as it is, its
+readers (crash-demand.py and the others) expect the shape above. The run is one clang per
+framework, sequential: start it through coordination/heavy.sh.
+
 Two things this does beyond a bare re-export of declared():
 
 - A member with no @available of its own falls back to its containing class's or protocol's own
@@ -33,6 +43,7 @@ Two things this does beyond a bare re-export of declared():
   effort exists to stop; the two categories are named to the file above for a human decision, not
   merged into one guess.
 """
+import argparse
 import glob
 import importlib.util
 import json
@@ -73,7 +84,86 @@ def newest_iphoneos_sdk():
     return found[-1] if found else None
 
 
+def load_neighbor(name, filename):
+    path = os.path.join(HERE, filename)
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def show(version):
+    if version is None:
+        return ""
+    return "yes" if version == sd.DEPRECATED_NO_VERSION else sd.show_version(version)
+
+
+def walk_sdk(sd, sdk_path, only, with_swift):
+    """Every declaration of an iPhoneOS SDK: {"sdk", "version", "target", "rows", "frameworks", "failed"}."""
+    version = sd.sdk_version(sdk_path)
+    target = "arm64-apple-ios" + version
+    names = set()
+    for base in sd.framework_bases(sdk_path, target, full=True):
+        for entry in os.listdir(base):
+            if entry.endswith(".framework") and sd.framework_headers_dir(sdk_path, entry[:-len(".framework")], target, full=True):
+                names.add(entry[:-len(".framework")])
+    if only:
+        names &= set(only)
+    rows = []
+    failed = []
+    frameworks = {}
+    for fw in sorted(names):
+        problems = []
+        try:
+            surface = sd.declared_surface(sdk_path, fw, target, full=True, failed=problems)
+        except SystemExit as e:
+            failed.append("%s: %s" % (fw, str(e)[:300]))
+            print("%s: skipped (%s)" % (fw, str(e)[:120]), flush=True)
+            continue
+        failed += problems
+        for api, (kind, introduced) in surface.rows.items():
+            detail = surface.details[api]
+            rows.append({"api": api, "framework": fw, "kind": kind, "lang": "objc",
+                         "introduced": show(detail["introduced"]), "deprecated": show(detail["deprecated"]),
+                         "obsoleted": show(detail["obsoleted"]), "unavailable": "yes" if detail["unavailable"] else "",
+                         "via": detail["via"]})
+        frameworks[fw] = {"objc": len(surface.rows), "swift": 0}
+        print("%s: %d rows" % (fw, len(surface.rows)), flush=True)
+    if with_swift:
+        swift = load_neighbor("swiftinterface_surface", "swiftinterface-surface.py")
+        found = set()
+        for row in swift.rows(sdk_path, set(only) if only else None):
+            found.add(row["framework"])
+            rows.append({"api": row["api"], "framework": row["framework"], "kind": row["kind"], "lang": "swift",
+                         "introduced": show(row["introduced"]), "deprecated": show(row["deprecated"]),
+                         "obsoleted": show(row["obsoleted"]), "unavailable": "yes" if row["unavailable"] else "",
+                         "via": row["via"]})
+            entry = frameworks.setdefault(row["framework"], {"objc": 0, "swift": 0})
+            entry["swift"] += 1
+        print("swiftinterface: %d modules, %d rows" % (len(found), sum(1 for r in rows if r["lang"] == "swift")), flush=True)
+    # A forward declaration (`@class CIImage;`, `@protocol MTLTexture;`) in another framework's header
+    # is a row with no version beside the real one; the real one is the row.
+    versioned = {(r["lang"], r["kind"], r["api"]) for r in rows if r["introduced"]}
+    rows = [r for r in rows if r["introduced"] or (r["lang"], r["kind"], r["api"]) not in versioned]
+    return {"sdk": os.path.basename(sdk_path.rstrip("/")), "version": version, "target": target,
+            "rows": rows, "frameworks": frameworks, "failed": failed}
+
+
+_parser = argparse.ArgumentParser(description="SDK-declared API with its availability")
+_parser.add_argument("--sdk", help="an iPhoneOS SDK to walk whole (see the docstring); without it the Mac Catalyst run below")
+_parser.add_argument("--out", help="with --sdk: where to write (default corpus/sdk-<version>-declared.json)")
+_parser.add_argument("--frameworks", help="with --sdk: only these, comma separated")
+_parser.add_argument("--no-swift", action="store_true", help="with --sdk: skip the .swiftinterface pass")
+options = _parser.parse_args()
+
 sd = load_surface_diff()
+if options.sdk:
+    result = walk_sdk(sd, os.path.realpath(options.sdk), options.frameworks.split(",") if options.frameworks else None, not options.no_swift)
+    out = options.out or os.path.join(CORPUS, "sdk-%s-declared.json" % result["version"])
+    with open(out, "w") as stream:
+        json.dump(result, stream)
+    print("wrote %d rows, %d failed header(s), to %s" % (len(result["rows"]), len(result["failed"]), out), flush=True)
+    sys.exit(0)
 sdk = sd.newest_sdk()
 IOS_SDK = newest_iphoneos_sdk()
 IOS_TARGET = "arm64-apple-ios16.4"
