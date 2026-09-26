@@ -47,6 +47,11 @@ oracle() { # oracle NAME SOURCE...: the oracle over port classes built from SOUR
 echo "== the port"
 oracle port "$AV/AVCapturePhotoSettings.m" "$AV/AVCapturePhotoOutput.m" "$AV/AVCaptureResolvedPhotoSettings.m"
 
+echo "== the capture's wait for the camera's flash"
+xcrun clang -fobjc-arc $target $quiet -I"$AV" "$here/flashwait.m" "$B"/port-*.o -framework AVFoundation -framework CoreMedia -framework CoreVideo \
+    -framework CoreImage -framework ImageIO -framework CoreGraphics -framework UIKit -framework Foundation -o "$B/flashwait"
+"$B/flashwait"
+
 echo "== the control: the classes as 7bb1720d carried them"
 git -C "$root" show 7bb1720d:packages/a/apple-backports/AVFoundation/AVCapturePhotoOutput.m > "$B/control.m"
 grep -q '^@implementation AVCapturePhotoSettings' "$B/control.m" || { echo "FAIL the control's classes were not found in 7bb1720d"; exit 1; }

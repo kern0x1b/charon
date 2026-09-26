@@ -12,9 +12,10 @@
 // captures with a preview at the display's size and at a size asked for, an uncompressed photo, a zoomed
 // one, the flash modes, and the resolved settings every capture reports. Built with AVCapturePhotoOutput.m and the
 // zoom's files, as the library carries them. A process of its own: the camera needs no permission on 6.1.3.
-// The camera's flash is held Off; captures with the flash On and Auto run only when asked, `photooutput <log> flash-on`,
-// as they fire the flash of a device someone may be using (Auto in a dark scene as On). `photooutput <log> flash-auto`
-// takes the one capture in Auto alone, and puts the camera back to Off without another.
+// The camera's flash is held Off, and the run sets neither On nor Auto on it unless asked, as they fire the flash of a
+// device someone may be using: `photooutput <log> flash-on` takes the captures with the flash On and Auto,
+// `photooutput <log> flash-auto` the one capture in Auto alone, and `photooutput <log> flash-scene` (or either of the
+// others) monitors the scene for Auto, with a capture Off in between.
 
 @interface CharonPhotoCatcher : NSObject <AVCapturePhotoCaptureDelegate>
 @property (atomic) BOOL finished;
@@ -36,7 +37,11 @@
 @property (atomic) int64_t resolvedID;
 // The Exif Flash tag the release attached to the still, -1 when there is none.
 @property (atomic) long stillFlash;
+// The camera's flash mode at willCapturePhoto, right before the still image output is asked for the still.
+@property (atomic) long cameraFlashAtCapture;
 @end
+
+static AVCaptureDevice *charon_camera;
 
 // The photo as an image: a JPEG through UIImage, a 32BGRA buffer through a bitmap context over its bytes.
 static CGImageRef create_photo_image(CMSampleBufferRef photo, BOOL *jpeg, BOOL *bgra)
@@ -155,6 +160,7 @@ static double spread(CVPixelBufferRef preview)
 {
     [self.resolvedSeen addObject:resolved];
     [self.callbacks addObject:@"willCapture"];
+    self.cameraFlashAtCapture = charon_camera.flashMode;
 }
 
 - (void)captureOutput:(AVCapturePhotoOutput *)output didCapturePhotoForResolvedSettings:(AVCaptureResolvedPhotoSettings *)resolved
@@ -337,7 +343,9 @@ int main(int argc, char **argv)
         [session addInput:input];
         AVCaptureDevice *camera = input.device;
         AVCaptureFlashMode cameraFlash = camera.flashMode;
+        charon_camera = camera;
         BOOL flashOn = argc > 2 && strcmp(argv[2], "flash-on") == 0, flashAuto = argc > 2 && strcmp(argv[2], "flash-auto") == 0;
+        BOOL flashScene = flashOn || flashAuto || (argc > 2 && strcmp(argv[2], "flash-scene") == 0);
         if (camera.hasFlash && [camera lockForConfiguration:NULL]) {
             camera.flashMode = AVCaptureFlashModeOff;
             [camera unlockForConfiguration];
@@ -524,9 +532,9 @@ int main(int argc, char **argv)
         }
 
         // The scene: with settings monitored for Auto, their mode is on the camera and isFlashScene is the camera's own
-        // flashActive, once it has settled (0.03 s after the mode is set on the 4S, facts); with Off, NO. Nothing is
-        // captured, so the flash does not fire.
-        if (camera.hasFlash) {
+        // flashActive, once it has settled (0.035 s after the mode is set on the 4S, facts); with Off, NO. With none, the
+        // camera has the application's own mode back (Off, above). The one capture is Off, so the flash does not fire.
+        if (camera.hasFlash && flashScene) {
             AVCapturePhotoSettings *monitored = [AVCapturePhotoSettings photoSettings];
             monitored.flashMode = AVCaptureFlashModeAuto;
             output.photoSettingsForSceneMonitoring = monitored;
@@ -539,20 +547,27 @@ int main(int argc, char **argv)
             unlit.flashMode = AVCaptureFlashModeOff;
             CharonPhotoCatcher *between = capture_with(output, unlit, nil);
             AVCaptureFlashMode afterCapture = camera.flashMode;
+            output.photoSettingsForSceneMonitoring = nil;
+            AVCaptureFlashMode unmonitored = camera.flashMode;
             monitored.flashMode = AVCaptureFlashModeOff;
             output.photoSettingsForSceneMonitoring = monitored;
-            printf("scene: monitored Auto, camera mode %ld, flashActive %d, isFlashScene %d; monitored Off, camera mode %ld, isFlashScene %d\n",
-                   (long)autoMode, active, scene, (long)camera.flashMode, output.isFlashScene);
+            printf("scene: monitored Auto, camera mode %ld, flashActive %d, isFlashScene %d; none, camera mode %ld; monitored Off, camera mode %ld, isFlashScene %d\n",
+                   (long)autoMode, active, scene, (long)unmonitored, (long)camera.flashMode, output.isFlashScene);
             CHECK(autoMode == AVCaptureFlashModeAuto && scene == active, "monitored for Auto, the scene is the camera's own flashActive");
+            CHECK(unmonitored == AVCaptureFlashModeOff, "monitored for none, the camera has the application's own mode back");
             CHECK(camera.flashMode == AVCaptureFlashModeOff && !output.isFlashScene, "monitored for Off, the camera is Off and no flash scene");
-            printf("scene: a capture Off while monitored for Auto: finished %d, camera mode after it %ld\n", between.finished, (long)afterCapture);
-            CHECK(between.finished && afterCapture == AVCaptureFlashModeAuto, "after a capture the camera is back on the monitored mode");
+            printf("scene: a capture Off while monitored for Auto: finished %d, camera mode at it %ld, after it %ld\n", between.finished,
+                   between.cameraFlashAtCapture, (long)afterCapture);
+            CHECK(between.finished && between.cameraFlashAtCapture == AVCaptureFlashModeOff && afterCapture == AVCaptureFlashModeAuto,
+                  "a capture takes its own mode, and after it the camera is back on the monitored mode");
             output.photoSettingsForSceneMonitoring = nil;
+        } else if (camera.hasFlash) {
+            printf("scene: not run, as monitoring for Auto sets Auto on the camera; `flash-scene` runs it\n");
         }
 
         // The flash: the header offers the modes of the camera behind the output, Off, On and Auto for a camera with a
         // flash and Off alone for one without (the iPad 2). A capture takes its settings' mode onto the camera, where the
-        // release's still image output reads it, and a photo still comes; the resolved settings say the flash is enabled
+        // release's still image output reads it, and gives the application's own back after it; a photo still comes; the resolved settings say the flash is enabled
         // as the still's own Exif Flash tag says it fired (bit 0). On and Auto only when asked (above), Off last so the camera
         // is put back: with Off the port answers NO before the still and never reads its Exif, so only On and Auto reach
         // the Exif, and Auto in the dark is the case where `flashActive` read at once would have said NO.
@@ -568,19 +583,15 @@ int main(int argc, char **argv)
                 AVCapturePhotoSettings *flash = [AVCapturePhotoSettings photoSettings];
                 flash.flashMode = mode.integerValue;
                 CharonPhotoCatcher *lit = capture_with(output, flash, nil);
-                printf("flash %ld: camera mode %ld, available %d, photo %zux%zu, resolved flash %d, Exif Flash %ld\n", (long)mode.integerValue,
-                       (long)camera.flashMode, camera.flashAvailable, lit.photoWidth, lit.photoHeight, lit.resolvedFlash, lit.stillFlash);
-                CHECK(camera.flashMode == mode.integerValue, "a capture sets its flash mode on the camera");
+                printf("flash %ld: camera mode at the capture %ld, after it %ld, available %d, photo %zux%zu, resolved flash %d, Exif Flash %ld\n",
+                       (long)mode.integerValue, lit.cameraFlashAtCapture, (long)camera.flashMode, camera.flashAvailable, lit.photoWidth,
+                       lit.photoHeight, lit.resolvedFlash, lit.stillFlash);
+                CHECK(lit.cameraFlashAtCapture == mode.integerValue, "a capture has its flash mode on the camera when it is taken");
+                CHECK(camera.flashMode == AVCaptureFlashModeOff, "and after it the camera has the application's own mode back, Off");
                 CHECK(lit.finished && lit.error == nil && lit.photoIsJPEG, "and the photo comes");
                 CHECK(lit.stillFlash >= 0, "the still says in its Exif whether the flash fired");
                 CHECK(lit.resolvedFlash == (lit.stillFlash >= 0 && (lit.stillFlash & 1)), "and the resolved settings say the same");
             }
-            if (flashAuto && [camera lockForConfiguration:NULL]) {
-                camera.flashMode = AVCaptureFlashModeOff;
-                [camera unlockForConfiguration];
-            }
-            if (flashAuto)
-                CHECK(camera.flashMode == AVCaptureFlashModeOff, "after the Auto capture the camera is Off again, before any other capture");
             if (!flashOn && !flashAuto)
                 printf("flash: the On and Auto captures are not run; `flash-on` runs them\n");
         }

@@ -3,6 +3,7 @@
 #import <ImageIO/ImageIO.h>
 #import <UIKit/UIKit.h>
 #import <objc/message.h>
+#include <stdatomic.h>
 
 // Ranks 16/17 of coordination/corpus/crash-demand-top.tsv, LOAD-FAIL, class_confirmed against
 // both telegram and session's own trees. Two-step check first: apple.objc.inventory() against
@@ -44,14 +45,72 @@ static AVCaptureDevice *CharonDeviceForConnection(AVCaptureConnection *connectio
 }
 
 // A flash mode onto the camera, where the release's still image output reads it: the one place this release keeps the
-// flash mode a request asks for. A camera without a flash, or without that mode, is left as it is.
-static void CharonSetCameraFlashMode(AVCaptureDevice *device, AVCaptureFlashMode flashMode)
+// flash mode a request asks for. A camera without a flash, or without that mode, is left as it is, and so is one that
+// cannot be locked, which is logged. YES when the camera's mode was changed.
+static BOOL CharonSetCameraFlashMode(AVCaptureDevice *device, AVCaptureFlashMode flashMode)
 {
-    if (device.hasFlash && [device isFlashModeSupported:flashMode] && [device lockForConfiguration:NULL]) {
-        device.flashMode = flashMode;
-        [device unlockForConfiguration];
+    if (!device.hasFlash || ![device isFlashModeSupported:flashMode] || device.flashMode == flashMode)
+        return NO;
+    NSError *error = nil;
+    if (![device lockForConfiguration:&error]) {
+        NSLog(@"AVCapturePhotoOutput: the camera could not be locked to set its flash mode to %ld; it stays %ld: %@", (long)flashMode,
+              (long)device.flashMode, error);
+        return NO;
     }
+    device.flashMode = flashMode;
+    [device unlockForConfiguration];
+    return YES;
 }
+
+// flashActive, "When the flash is active, it will flash if a still image is captured" (iOS 5), is the camera's judgement
+// of the frames it delivers: after its flash mode changes it answers for the old mode until a frame is judged for the new
+// one, which took 0.035 s on an iPhone 4S in the dark, and the release's still image output fires the flash by it (facts,
+// "The flash waits for the camera"). The wait runs `then` once: at flashActive's first change, or after `bound` seconds
+// when it does not change, as in a bright scene with Auto, where it stays NO.
+static char CharonFlashActiveContext;
+
+__attribute__((visibility("hidden")))
+@interface CharonFlashActiveWait : NSObject
+@end
+
+@implementation CharonFlashActiveWait
+{
+    id _camera;
+    void (^_then)(void);
+    atomic_flag _done;
+}
+
+- (void)finish
+{
+    if (atomic_flag_test_and_set(&_done))
+        return;
+    [_camera removeObserver:self forKeyPath:@"flashActive" context:&CharonFlashActiveContext];
+    _then();
+    _then = nil;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (context == &CharonFlashActiveContext)
+        [self finish];
+    else
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+}
+
+void CharonAfterFlashActiveChanges(id camera, NSTimeInterval bound, void (^then)(void))
+{
+    CharonFlashActiveWait *wait = [[CharonFlashActiveWait alloc] init];
+    wait->_camera = camera;
+    wait->_then = [then copy];
+    [camera addObserver:wait forKeyPath:@"flashActive" options:0 context:&CharonFlashActiveContext];
+    // The wait lives until the bound has passed, also when flashActive came first, so that a change notification already
+    // on its way never reaches a released observer.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(bound * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [wait finish];
+    });
+}
+
+@end
 
 static void CharonOutputRaise(NSString *format, ...) NS_FORMAT_FUNCTION(1, 2);
 static void CharonOutputRaise(NSString *format, ...)
@@ -77,6 +136,10 @@ static void CharonOutputRaise(NSString *format, ...)
     id _charonPrepareObserver;
     CMVideoDimensions _charonMaxPhotoDimensions;
     NSMutableSet *_charonCapturedUniqueIDs;
+    dispatch_queue_t _charonCaptureQueue;
+    NSUInteger _charonCapturesInFlight;
+    AVCaptureDevice *_charonFlashModeCamera;
+    AVCaptureFlashMode _charonApplicationFlashMode;
 }
 
 - (instancetype)init
@@ -86,6 +149,7 @@ static void CharonOutputRaise(NSString *format, ...)
         // "By default, [the output] prepares for +[AVCapturePhotoSettings photoSettings]" (the header).
         _charonPreparedPhotoSettingsArray = @[[AVCapturePhotoSettings photoSettings]];
         _charonCapturedUniqueIDs = [NSMutableSet set];
+        _charonCaptureQueue = dispatch_queue_create("AVCapturePhotoOutput.capture", DISPATCH_QUEUE_SERIAL);
     }
     return self;
 }
@@ -94,6 +158,37 @@ static void CharonOutputRaise(NSString *format, ...)
 {
     if (_charonPrepareObserver)
         [[NSNotificationCenter defaultCenter] removeObserver:_charonPrepareObserver];
+}
+
+// The output changes the camera's flash mode only while it needs it, where the host's output leaves the camera's own
+// alone: the mode the application had is kept at the first change, and given back once no capture is running and no
+// scene is monitored.
+- (BOOL)charon_setFlashMode:(AVCaptureFlashMode)flashMode ofCamera:(AVCaptureDevice *)camera
+{
+    AVCaptureFlashMode before = camera.flashMode;
+    if (!CharonSetCameraFlashMode(camera, flashMode))
+        return NO;
+    @synchronized (self) {
+        if (!_charonFlashModeCamera) {
+            _charonFlashModeCamera = camera;
+            _charonApplicationFlashMode = before;
+        }
+    }
+    return YES;
+}
+
+- (void)charon_giveBackCameraFlashMode
+{
+    AVCaptureDevice *camera;
+    AVCaptureFlashMode flashMode;
+    @synchronized (self) {
+        if (!_charonFlashModeCamera || _charonCapturesInFlight || _charonPhotoSettingsForSceneMonitoring)
+            return;
+        camera = _charonFlashModeCamera;
+        flashMode = _charonApplicationFlashMode;
+        _charonFlashModeCamera = nil;
+    }
+    CharonSetCameraFlashMode(camera, flashMode);
 }
 
 - (AVCaptureConnection *)charon_videoConnection
@@ -288,12 +383,17 @@ static void CharonOutputRaise(NSString *format, ...)
 }
 
 // The settings the scene is monitored for: their flash mode goes onto the camera, as a capture's does, so that the camera
-// judges the scene for it (isFlashScene). Nothing fires until a capture.
+// judges the scene for it (isFlashScene). Nothing fires until a capture. With none, the camera gets the application's own
+// mode back once no capture is running.
 - (void)setPhotoSettingsForSceneMonitoring:(AVCapturePhotoSettings *)photoSettingsForSceneMonitoring
 {
-    _charonPhotoSettingsForSceneMonitoring = [photoSettingsForSceneMonitoring copy];
+    @synchronized (self) {
+        _charonPhotoSettingsForSceneMonitoring = [photoSettingsForSceneMonitoring copy];
+    }
     if (photoSettingsForSceneMonitoring)
-        CharonSetCameraFlashMode(CharonDeviceForConnection(self.charon_videoConnection), photoSettingsForSceneMonitoring.flashMode);
+        [self charon_setFlashMode:photoSettingsForSceneMonitoring.flashMode ofCamera:CharonDeviceForConnection(self.charon_videoConnection)];
+    else
+        [self charon_giveBackCameraFlashMode];
 }
 
 - (NSArray<AVCapturePhotoSettings *> *)preparedPhotoSettingsArray
@@ -1086,94 +1186,129 @@ static void CharonAttachMetadata(CMSampleBufferRef still, NSDictionary *metadata
     size_t thumbnailLongest = thumbnail ? CharonThumbnailLongestSide(thumbnail) : 0;
     NSDictionary *metadata = settings.metadata;
 
-    // Still image stabilization arrived on AVCaptureStillImageOutput in 7.0; 6.x has none, and the setting is then
-    // what it is on a device without it: kept, and nothing to enable. A request prioritized for speed is not stabilized.
-    if ([self respondsToSelector:@selector(setAutomaticallyEnablesStillImageStabilizationWhenAvailable:)])
-        self.automaticallyEnablesStillImageStabilizationWhenAvailable =
-            settings.autoStillImageStabilizationEnabled && settings.photoQualityPrioritization != AVCapturePhotoQualityPrioritizationSpeed;
-    // Every capture takes its own settings' format; without one, a photo settings object asks for a JPEG.
-    self.outputSettings = settings.format ?: @{AVVideoCodecKey: AVVideoCodecJPEG};
-
-    AVCaptureDevice *device = CharonDeviceForConnection(connection);
-    CharonSetCameraFlashMode(device, settings.flashMode);
-
-    // What the capture resolves to, known before it starts. The still comes at the dimensions of the video port's format
-    // as the session runs it, for every preset, JPEG or 32BGRA, and zoomed (facts, "The resolved settings"). With the
-    // flash Off, or no flash, it does not fire. Otherwise the camera's flashActive cannot say it before the capture: with
-    // the mode just set to Auto it answers NO and turns YES about 30 ms later on an iPhone 4S (facts), so the answer is the
-    // still's own, bit 0 of its Exif Flash tag, and the settings are resolved when the still comes. Stabilization is the
-    // still image output's own answer where it has one, from 7.0.
-    AVCaptureInputPort *port = connection.inputPorts.firstObject;
-    CMVideoDimensions portDimensions = port.formatDescription ? CMVideoFormatDescriptionGetDimensions(port.formatDescription) : (CMVideoDimensions){0, 0};
-    BOOL flashMayFire = device.hasFlash && device.flashMode != AVCaptureFlashModeOff;
-    BOOL stabilized = [self respondsToSelector:@selector(isStillImageStabilizationActive)] && self.stillImageStabilizationActive;
-    int64_t uniqueID = settings.uniqueID;
-    AVCaptureResolvedPhotoSettings *(^resolve)(CMVideoDimensions, BOOL, CMVideoDimensions) = ^(CMVideoDimensions photo, BOOL flashEnabled,
-                                                                                                 CMVideoDimensions thumbnail) {
-        CMVideoDimensions preview = previewLongest ? CharonPreviewDimensions(photo, previewLongest) : (CMVideoDimensions){0, 0};
-        return [[AVCaptureResolvedPhotoSettings alloc] initCharonWithUniqueID:uniqueID photoDimensions:photo previewDimensions:preview
-                                                   embeddedThumbnailDimensions:thumbnail flashEnabled:flashEnabled
-                                                stillImageStabilizationEnabled:stabilized];
-    };
-
+    AVCaptureDevice *camera = CharonDeviceForConnection(connection);
     AVCapturePhotoOutput *output = (AVCapturePhotoOutput *)(id)self;
     BOOL willBegin = [delegate respondsToSelector:@selector(captureOutput:willBeginCaptureForResolvedSettings:)];
-    // A port can have no format yet: the first capture after the output joins a running session had none on an iPhone 4S
-    // (facts). The dimensions are then the still's own, and the settings are resolved, and willBeginCapture sent, when the
-    // still comes, before the other callbacks, so no callback is given dimensions that are not the photo's. The same
-    // when the flash may fire, for the flash's answer, and when a thumbnail is asked, for the dimensions of the one
-    // embedded: 0x0 when it could not be.
-    AVCaptureResolvedPhotoSettings *early = portDimensions.width > 0 && portDimensions.height > 0 && !flashMayFire && !thumbnailLongest
-                                                ? resolve(portDimensions, NO, (CMVideoDimensions){0, 0}) : nil;
-    // willCapturePhoto comes "just before the photo is taken" (the header), after willBeginCapture. The still image output
-    // shows no moment between its call and the still it hands back, so it is sent right before that call; when the
-    // settings are resolved from the still, right after willBeginCapture, before didCapturePhoto.
     BOOL willCapture = [delegate respondsToSelector:@selector(captureOutput:willCapturePhotoForResolvedSettings:)];
-    if (early && willBegin)
-        [delegate captureOutput:output willBeginCaptureForResolvedSettings:early];
-    if (early && willCapture)
-        [delegate captureOutput:output willCapturePhotoForResolvedSettings:early];
+    @synchronized (self) {
+        _charonCapturesInFlight++;
+    }
+    // The captures run one after another on the output's queue, each with its own settings on the still image output and
+    // its own flash mode on the camera, which every capture shares: a capture waiting for the flash (below) holds back the
+    // ones asked after it, which would otherwise put their mode on the camera before it is taken.
+    dispatch_queue_t queue = _charonCaptureQueue;
+    dispatch_async(queue, ^{
+        // Still image stabilization arrived on AVCaptureStillImageOutput in 7.0; 6.x has none, and the setting is then
+        // what it is on a device without it: kept, and nothing to enable. A request prioritized for speed is not stabilized.
+        if ([self respondsToSelector:@selector(setAutomaticallyEnablesStillImageStabilizationWhenAvailable:)])
+            self.automaticallyEnablesStillImageStabilizationWhenAvailable =
+                settings.autoStillImageStabilizationEnabled && settings.photoQualityPrioritization != AVCapturePhotoQualityPrioritizationSpeed;
+        // Every capture takes its own settings' format; without one, a photo settings object asks for a JPEG.
+        self.outputSettings = settings.format ?: @{AVVideoCodecKey: AVVideoCodecJPEG};
 
-    [self captureStillImageAsynchronouslyFromConnection:connection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
-        CharonAttachMetadata(imageDataSampleBuffer, metadata);
-        CMFormatDescriptionRef format = imageDataSampleBuffer ? CMSampleBufferGetFormatDescription(imageDataSampleBuffer) : NULL;
-        CMVideoDimensions dimensions = format ? CMVideoFormatDescriptionGetDimensions(format) : (CMVideoDimensions){0, 0};
-        // The thumbnail asked for is "embedded in that image before calling the AVCapturePhotoCaptureDelegate" (the
-        // header): the photo delivered is the still with it, the metadata already attached.
-        CMVideoDimensions thumbnail = thumbnailLongest ? CharonPreviewDimensions(dimensions, thumbnailLongest) : (CMVideoDimensions){0, 0};
-        CMSampleBufferRef thumbnailed = thumbnailLongest && imageDataSampleBuffer ? CharonCreateSampleWithThumbnail(imageDataSampleBuffer, thumbnail) : NULL;
-        if (thumbnailLongest && imageDataSampleBuffer && !thumbnailed)
-            NSLog(@"AVCapturePhotoOutput: the thumbnail asked for could not be embedded in the captured photo; it is delivered without one");
-        CMSampleBufferRef photo = thumbnailed ?: imageDataSampleBuffer;
-        AVCaptureResolvedPhotoSettings *resolved = early;
-        if (!resolved) {
-            resolved = resolve(dimensions, flashMayFire && CharonStillFlashFired(imageDataSampleBuffer), thumbnailed ? thumbnail : (CMVideoDimensions){0, 0});
-            if (willBegin)
-                [delegate captureOutput:output willBeginCaptureForResolvedSettings:resolved];
-            if (willCapture)
-                [delegate captureOutput:output willCapturePhotoForResolvedSettings:resolved];
+        BOOL flashChanged = [self charon_setFlashMode:settings.flashMode ofCamera:camera];
+
+        // What the capture resolves to, known before it starts. The still comes at the dimensions of the video port's
+        // format as the session runs it, for every preset, JPEG or 32BGRA, and zoomed (facts, "The resolved settings").
+        // With the flash Off, or no flash, it does not fire. Otherwise the camera's flashActive cannot say it before the
+        // capture: with the mode just set to Auto it answers NO and turns YES 0.035 s later on an iPhone 4S (facts), and
+        // the capture waits for it (below) only up to a bound, whose end says nothing. So the answer is the still's own,
+        // bit 0 of its Exif Flash tag, and the settings are resolved when the still comes. Stabilization is the still
+        // image output's own answer where it has one, from 7.0.
+        AVCaptureInputPort *port = connection.inputPorts.firstObject;
+        CMVideoDimensions portDimensions = port.formatDescription ? CMVideoFormatDescriptionGetDimensions(port.formatDescription) : (CMVideoDimensions){0, 0};
+        BOOL flashMayFire = camera.hasFlash && camera.flashMode != AVCaptureFlashModeOff;
+        BOOL stabilized = [self respondsToSelector:@selector(isStillImageStabilizationActive)] && self.stillImageStabilizationActive;
+        int64_t uniqueID = settings.uniqueID;
+        AVCaptureResolvedPhotoSettings *(^resolve)(CMVideoDimensions, BOOL, CMVideoDimensions) = ^(CMVideoDimensions photo, BOOL flashEnabled,
+                                                                                                     CMVideoDimensions thumbnail) {
+            CMVideoDimensions preview = previewLongest ? CharonPreviewDimensions(photo, previewLongest) : (CMVideoDimensions){0, 0};
+            return [[AVCaptureResolvedPhotoSettings alloc] initCharonWithUniqueID:uniqueID photoDimensions:photo previewDimensions:preview
+                                                       embeddedThumbnailDimensions:thumbnail flashEnabled:flashEnabled
+                                                    stillImageStabilizationEnabled:stabilized];
+        };
+
+        // A port can have no format yet: the first capture after the output joins a running session had none on an iPhone 4S
+        // (facts). The dimensions are then the still's own, and the settings are resolved, and willBeginCapture sent, when the
+        // still comes, before the other callbacks, so no callback is given dimensions that are not the photo's. The same
+        // when the flash may fire, for the flash's answer, and when a thumbnail is asked, for the dimensions of the one
+        // embedded: 0x0 when it could not be.
+        AVCaptureResolvedPhotoSettings *early = portDimensions.width > 0 && portDimensions.height > 0 && !flashMayFire && !thumbnailLongest
+                                                    ? resolve(portDimensions, NO, (CMVideoDimensions){0, 0}) : nil;
+        // willCapturePhoto comes "just before the photo is taken" (the header), after willBeginCapture. The still image output
+        // shows no moment between its call and the still it hands back, so it is sent right before that call; when the
+        // settings are resolved from the still, right after willBeginCapture, before didCapturePhoto.
+        if (early && willBegin)
+            [delegate captureOutput:output willBeginCaptureForResolvedSettings:early];
+        if (early && willCapture)
+            [delegate captureOutput:output willCapturePhotoForResolvedSettings:early];
+        void (^capture)(void) = ^{
+            [self captureStillImageAsynchronouslyFromConnection:connection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+                CharonAttachMetadata(imageDataSampleBuffer, metadata);
+                CMFormatDescriptionRef format = imageDataSampleBuffer ? CMSampleBufferGetFormatDescription(imageDataSampleBuffer) : NULL;
+                CMVideoDimensions dimensions = format ? CMVideoFormatDescriptionGetDimensions(format) : (CMVideoDimensions){0, 0};
+                // The thumbnail asked for is "embedded in that image before calling the AVCapturePhotoCaptureDelegate" (the
+                // header): the photo delivered is the still with it, the metadata already attached.
+                CMVideoDimensions thumbnail = thumbnailLongest ? CharonPreviewDimensions(dimensions, thumbnailLongest) : (CMVideoDimensions){0, 0};
+                CMSampleBufferRef thumbnailed = thumbnailLongest && imageDataSampleBuffer ? CharonCreateSampleWithThumbnail(imageDataSampleBuffer, thumbnail) : NULL;
+                if (thumbnailLongest && imageDataSampleBuffer && !thumbnailed)
+                    NSLog(@"AVCapturePhotoOutput: the thumbnail asked for could not be embedded in the captured photo; it is delivered without one");
+                CMSampleBufferRef photo = thumbnailed ?: imageDataSampleBuffer;
+                AVCaptureResolvedPhotoSettings *resolved = early;
+                if (!resolved) {
+                    resolved = resolve(dimensions, flashMayFire && CharonStillFlashFired(imageDataSampleBuffer), thumbnailed ? thumbnail : (CMVideoDimensions){0, 0});
+                    if (willBegin)
+                        [delegate captureOutput:output willBeginCaptureForResolvedSettings:resolved];
+                    if (willCapture)
+                        [delegate captureOutput:output willCapturePhotoForResolvedSettings:resolved];
+                }
+                if ([delegate respondsToSelector:@selector(captureOutput:didCapturePhotoForResolvedSettings:)])
+                    [delegate captureOutput:output didCapturePhotoForResolvedSettings:resolved];
+                if ([delegate respondsToSelector:@selector(captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:)]) {
+                    OSType previewFormat = [preview[(__bridge NSString *)kCVPixelBufferPixelFormatTypeKey] unsignedIntValue];
+                    CMSampleBufferRef previewSample = previewLongest ? CharonCreatePreviewSample(imageDataSampleBuffer, resolved.previewDimensions, previewFormat) : NULL;
+                    if (previewLongest && imageDataSampleBuffer && !previewSample)
+                        NSLog(@"AVCapturePhotoOutput: the preview photo asked for could not be made from the captured still; it is delivered without one");
+                    ((void (*)(id, SEL, id, CMSampleBufferRef, CMSampleBufferRef, id, id, id))objc_msgSend)(delegate, sel_registerName("captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:"),
+                        output, photo, previewSample, resolved, nil, error);
+                    if (previewSample)
+                        CFRelease(previewSample);
+                }
+                if (thumbnailed)
+                    CFRelease(thumbnailed);
+                // The scene is monitored for its settings' flash mode again, which the capture's own replaced on the camera, or the
+                // camera gets the application's mode back when this was the last capture.
+                AVCapturePhotoSettings *monitored = output.photoSettingsForSceneMonitoring;
+                if (monitored)
+                    [self charon_setFlashMode:monitored.flashMode ofCamera:camera];
+                @synchronized (self) {
+                    self->_charonCapturesInFlight--;
+                }
+                [self charon_giveBackCameraFlashMode];
+                if ([delegate respondsToSelector:@selector(captureOutput:didFinishCaptureForResolvedSettings:error:)])
+                    [delegate captureOutput:output didFinishCaptureForResolvedSettings:resolved error:error];
+            }];
+        };
+        // With the flash mode just changed to one that may fire, the capture waits for flashActive to be judged for it, at
+        // most as long as the camera's longest frame: the connection's videoMaxFrameDuration, 1/15 s on an iPhone 4S at the
+        // photo preset (facts, "The flash waits for the camera"), or the camera's own from 7.0, where the connection's is
+        // deprecated. With the mode unchanged the camera has judged its frames for it already and nothing waits.
+        CMTime frame = connection.isVideoMaxFrameDurationSupported ? connection.videoMaxFrameDuration : kCMTimeInvalid;
+        if (!CMTIME_IS_NUMERIC(frame) || CMTimeGetSeconds(frame) <= 0)
+            frame = camera.activeVideoMaxFrameDuration;
+        if (!flashChanged || !flashMayFire) {
+            capture();
+        } else if (!CMTIME_IS_NUMERIC(frame) || CMTimeGetSeconds(frame) <= 0) {
+            NSLog(@"AVCapturePhotoOutput: the camera answers no frame duration to wait for its flash; the photo is taken at once");
+            capture();
+        } else {
+            dispatch_suspend(queue);
+            CharonAfterFlashActiveChanges(camera, CMTimeGetSeconds(frame), ^{
+                capture();
+                dispatch_resume(queue);
+            });
         }
-        if ([delegate respondsToSelector:@selector(captureOutput:didCapturePhotoForResolvedSettings:)])
-            [delegate captureOutput:output didCapturePhotoForResolvedSettings:resolved];
-        if ([delegate respondsToSelector:@selector(captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:)]) {
-            OSType previewFormat = [preview[(__bridge NSString *)kCVPixelBufferPixelFormatTypeKey] unsignedIntValue];
-            CMSampleBufferRef previewSample = previewLongest ? CharonCreatePreviewSample(imageDataSampleBuffer, resolved.previewDimensions, previewFormat) : NULL;
-            if (previewLongest && imageDataSampleBuffer && !previewSample)
-                NSLog(@"AVCapturePhotoOutput: the preview photo asked for could not be made from the captured still; it is delivered without one");
-            ((void (*)(id, SEL, id, CMSampleBufferRef, CMSampleBufferRef, id, id, id))objc_msgSend)(delegate, sel_registerName("captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:"),
-                output, photo, previewSample, resolved, nil, error);
-            if (previewSample)
-                CFRelease(previewSample);
-        }
-        if (thumbnailed)
-            CFRelease(thumbnailed);
-        // The scene is monitored for its settings' flash mode again, which the capture's own replaced on the camera.
-        AVCapturePhotoSettings *monitored = output.photoSettingsForSceneMonitoring;
-        if (monitored)
-            CharonSetCameraFlashMode(device, monitored.flashMode);
-        if ([delegate respondsToSelector:@selector(captureOutput:didFinishCaptureForResolvedSettings:error:)])
-            [delegate captureOutput:output didFinishCaptureForResolvedSettings:resolved error:error];
-    }];
+    });
 }
 
 @end
