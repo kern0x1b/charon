@@ -6,10 +6,13 @@
 // set_values("charon.libraries", ...), README's test port) and run it with `xmake emulate -d iPhone4,1 -r 6.1.3 run
 // /usr/libexec/<name>`. It exits with the number of failed checks; the KVO line of a leaked observer is on stderr, and
 // the run's log is read for it: `was deallocated while key value observers were still registered` must not be there.
-// A process with no display has no display link to start: on an emulated 4.3, where `-[CADisplay mainDisplay]` is nil in a
-// bare process, `+[CADisplayLink displayLinkWithTarget:selector:]` itself faults (QuartzCore, before any of this code). There
-// the animators are kept from starting one, the changes are made and the wake checks are skipped with a line saying so; the
-// lifetimes, which are about the observers and not the wake, run whole.
+// A process with no display has no display link to start, and on an emulated 4.3 asking for one faults: `[UIScreen screens]` is
+// empty in a bare process there (as on 6.0 and 6.1.3, where the link is nil, and on 5.1.1 until the first UIView is made, after
+// which it holds the main screen), and `-[UIScreen displayLinkWithTarget:selector:]`, like `+[CADisplayLink
+// displayLinkWithTarget:selector:]`, faults in QuartzCore (display-probe.m, its logs cited in facts/UIKit/UIDynamicAnimator.md
+// M3). No public call says beforehand whether the link call will fault; the screens are what the process can be asked, so with
+// none the animators are kept from starting a link, the changes are made and the wake checks are skipped with a line saying
+// so; the lifetimes, which are about the observers and not the wake, run whole.
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 
@@ -103,14 +106,14 @@ int main(void)
 {
     @autoreleasepool {
         NSLog(@"dynamics watch: %@", [[UIDevice currentDevice] systemVersion]);
-        Class display = NSClassFromString(@"CADisplay");
-        have_display = !display || ![display respondsToSelector:@selector(mainDisplay)] || [display performSelector:@selector(mainDisplay)];
-        NSLog(@"a main display: %s", have_display ? "yes" : "no");
         {
             UIView *superview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 600, 800)];
             UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 400)];
             view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             [superview addSubview:view];
+            // After the first view: on 5.1.1 the main screen appears with it.
+            have_display = [[UIScreen screens] count] > 0;
+            NSLog(@"screens: %lu, so %s", (unsigned long)[[UIScreen screens] count], have_display ? "the wake checks run" : "no display link, the wake checks are skipped");
             Resumes *resumes = [Resumes new];
             UIDynamicAnimator *animator = animator_in_pool(view, resumes);
             check_wake(animator, resumes, YES, @"(a) view.frame wakes", ^{ view.frame = CGRectMake(0, 0, 300, 600); });
