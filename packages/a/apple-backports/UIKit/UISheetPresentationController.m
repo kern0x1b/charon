@@ -666,6 +666,8 @@ static void charon_sheet_free_pixels(void *info, const void *data, size_t size)
     UIView *_magicShadowView;
     CALayer *_magicShadowLayer;
     CharonBackdrop *_magicShadowReader;
+    dispatch_queue_t _magicShadowQueue;
+    BOOL _magicShadowShading;
 }
 
 @synthesize clippingView = _clippingView;
@@ -756,6 +758,7 @@ static void charon_sheet_free_pixels(void *info, const void *data, size_t size)
         [_magicShadowView.layer addSublayer:_magicShadowLayer];
         [self insertSubview:_magicShadowView atIndex:0];
         _magicShadowReader = [[CharonBackdrop alloc] initWithView:self client:self];
+        _magicShadowQueue = dispatch_queue_create("org.charon.sheet.shadow", DISPATCH_QUEUE_SERIAL);
     }
     _magicShadowView.alpha = alpha;
     [self charon_updateMagicShadowReader];
@@ -777,9 +780,11 @@ static void charon_sheet_free_pixels(void *info, const void *data, size_t size)
     [self charon_updateMagicShadowReader];
 }
 
+/* A reading is not worth taking while the last one is being shaded: it would wait behind it, and the read is what holds the
+   main thread. */
 - (BOOL)backdropIsWanted:(CharonBackdrop *)backdrop
 {
-    return !self.hidden && _magicShadowView.alpha > 0;
+    return !self.hidden && _magicShadowView.alpha > 0 && !_magicShadowShading;
 }
 
 - (CGRect)backdropRegion:(CharonBackdrop *)backdrop
@@ -787,28 +792,39 @@ static void charon_sheet_free_pixels(void *info, const void *data, size_t size)
     return _magicShadowView.frame;
 }
 
+/* The reading is shaded on a queue of its own (charon_sheet_shadow_shade is a function of the pixels and what places them,
+   a pass over each of them that took an iPad 2 hundreds of milliseconds), and the main thread only shows the result. */
 - (void)backdrop:(CharonBackdrop *)backdrop captured:(uint8_t *)pixels width:(size_t)width height:(size_t)height rowBytes:(size_t)rowBytes rect:(CGRect)captured
 {
     CGRect frame = _magicShadowView.frame;
     CGFloat scale = self.window.screen.scale;
     double cap = charon_sheet_shadow_cap(CGRectGetWidth(frame), CGRectGetHeight(frame), charon_sheet_magic_shadow_radius, scale);
-    CGImageRef image = NULL;
-    if (charon_sheet_shadow_shade(pixels, width, height, rowBytes, CGRectGetMinX(captured) - CGRectGetMinX(frame), CGRectGetMinY(captured) - CGRectGetMinY(frame),
-                                  CGRectGetWidth(captured) / width, CGRectGetHeight(captured) / height, CGRectGetWidth(frame), CGRectGetHeight(frame), cap, (unsigned)lround(scale))) {
-        CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
-        CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, pixels, rowBytes * height, charon_sheet_free_pixels);
-        image = CGImageCreate(width, height, 8, 32, rowBytes, space, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrderDefault, provider, NULL, false, kCGRenderingIntentDefault);
-        CGDataProviderRelease(provider);
-        CGColorSpaceRelease(space);
-    } else {
-        free(pixels);
-    }
-    [CATransaction begin];
-    [CATransaction setDisableActions:YES];
-    _magicShadowLayer.frame = [self convertRect:captured toView:_magicShadowView];
-    _magicShadowLayer.contents = (__bridge id)image;
-    [CATransaction commit];
-    CGImageRelease(image);
+    double x = CGRectGetMinX(captured) - CGRectGetMinX(frame), y = CGRectGetMinY(captured) - CGRectGetMinY(frame);
+    double dx = CGRectGetWidth(captured) / width, dy = CGRectGetHeight(captured) / height;
+    CGSize size = frame.size;
+    unsigned shadowScale = (unsigned)lround(scale);
+    _magicShadowShading = YES;
+    dispatch_async(_magicShadowQueue, ^{
+        CGImageRef image = NULL;
+        if (charon_sheet_shadow_shade(pixels, width, height, rowBytes, x, y, dx, dy, size.width, size.height, cap, shadowScale)) {
+            CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
+            CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, pixels, rowBytes * height, charon_sheet_free_pixels);
+            image = CGImageCreate(width, height, 8, 32, rowBytes, space, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrderDefault, provider, NULL, false, kCGRenderingIntentDefault);
+            CGDataProviderRelease(provider);
+            CGColorSpaceRelease(space);
+        } else {
+            free(pixels);
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [CATransaction begin];
+            [CATransaction setDisableActions:YES];
+            _magicShadowLayer.frame = [self convertRect:captured toView:_magicShadowView];
+            _magicShadowLayer.contents = (__bridge id)image;
+            [CATransaction commit];
+            CGImageRelease(image);
+            _magicShadowShading = NO;
+        });
+    });
 }
 
 @end

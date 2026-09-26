@@ -1,5 +1,6 @@
 #include "CharonSheetShadow.h"
 #include <math.h>
+#include <pthread.h>
 #include <stdlib.h>
 
 const float charon_sheet_shadow_matrix[20] = {
@@ -85,15 +86,10 @@ static int charon_shadow_term(const CharonShadowTerm *t, size_t n, double scale,
     return 1;
 }
 
-const uint8_t *charon_sheet_shadow_corner(unsigned scale)
+/* Made once per scale, on whichever thread first asks: the sheet shades off the main thread, and a test reads the corner
+   on it. */
+static uint8_t *charon_shadow_make_corner(unsigned scale)
 {
-    static uint8_t *made[4];
-    if (scale < 1)
-        scale = 1;
-    if (scale > 4)
-        scale = 4;
-    if (made[scale - 1])
-        return made[scale - 1];
     size_t n = (size_t)(charon_shadow_corner_points * scale);
     double *a = malloc(n * n * sizeof(double)), *b = malloc(n * n * sizeof(double));
     uint8_t *corner = malloc(n * n);
@@ -108,7 +104,22 @@ const uint8_t *charon_sheet_shadow_corner(unsigned scale)
         corner[i] = (uint8_t)lround(255 * charon_clamp01(1 - (1 - a[i]) * (1 - b[i])));
     free(a);
     free(b);
-    made[scale - 1] = corner;
+    return corner;
+}
+
+const uint8_t *charon_sheet_shadow_corner(unsigned scale)
+{
+    static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+    static uint8_t *made[4];
+    if (scale < 1)
+        scale = 1;
+    if (scale > 4)
+        scale = 4;
+    pthread_mutex_lock(&lock);
+    if (!made[scale - 1])
+        made[scale - 1] = charon_shadow_make_corner(scale);
+    uint8_t *corner = made[scale - 1];
+    pthread_mutex_unlock(&lock);
     return corner;
 }
 
@@ -124,14 +135,29 @@ double charon_sheet_shadow_cap(double width, double height, double radius, doubl
     return cap;
 }
 
-void charon_sheet_shadow_pixel(uint8_t *pixel, double alpha)
+/* In single precision and without lround: it runs once per pixel of a reading, up to 768 x 992 of them on the device that
+   shades (an iPad 2 spent 261 to 432 ms a reading on it in doubles), and the matrix (multiples of 1/64) and the pixels
+   (0 to 255) are exact in a float. The rows are scaled by 255 so the destination stays in bytes: 255 * clamp01(m . d + c)
+   is clamp255(m . (255 d) + 255 c), and the result's byte is the shadow's alpha times that, a positive number rounded by
+   adding a half. */
+static inline float charon_clamp255(float x)
+{
+    return x < 0 ? 0 : x > 255 ? 255 : x;
+}
+
+static inline void charon_shadow_pixel(uint8_t *pixel, float alpha)
 {
     const float *m = charon_sheet_shadow_matrix;
-    double d[3] = {pixel[0] / 255.0, pixel[1] / 255.0, pixel[2] / 255.0};
-    double a = alpha * charon_clamp01(m[15] * d[0] + m[16] * d[1] + m[17] * d[2] + m[18] + m[19]);
+    float r = pixel[0], g = pixel[1], b = pixel[2];
+    float a = alpha * charon_clamp255(m[15] * r + m[16] * g + m[17] * b + 255 * (m[18] + m[19])) * (1 / 255.0f);
     for (int c = 0; c < 3; c++)
-        pixel[c] = (uint8_t)lround(255 * a * charon_clamp01(m[c * 5] * d[0] + m[c * 5 + 1] * d[1] + m[c * 5 + 2] * d[2] + m[c * 5 + 3] + m[c * 5 + 4]));
-    pixel[3] = (uint8_t)lround(255 * a);
+        pixel[c] = (uint8_t)(a * charon_clamp255(m[c * 5] * r + m[c * 5 + 1] * g + m[c * 5 + 2] * b + 255 * (m[c * 5 + 3] + m[c * 5 + 4])) + 0.5f);
+    pixel[3] = (uint8_t)(a * 255 + 0.5f);
+}
+
+void charon_sheet_shadow_pixel(uint8_t *pixel, double alpha)
+{
+    charon_shadow_pixel(pixel, (float)alpha);
 }
 
 /* Where a point of the shadow view falls in the corner, in the corner's pixels: the caps keep their size, the middle of
@@ -153,7 +179,7 @@ int charon_sheet_shadow_shade(uint8_t *pixels, size_t columns, size_t rows, size
 {
     const uint8_t *corner = charon_sheet_shadow_corner(scale);
     size_t *index = malloc(columns * sizeof(size_t));
-    double *fraction = malloc(columns * sizeof(double));
+    float *fraction = malloc(columns * sizeof(float));
     if (!corner || !index || !fraction) {
         free(index);
         free(fraction);
@@ -163,19 +189,19 @@ int charon_sheet_shadow_shade(uint8_t *pixels, size_t columns, size_t rows, size
     for (size_t column = 0; column < columns; column++) {
         double u = fmax(charon_shadow_corner_coordinate(x + (column + 0.5) * dx, width, cap, scale), 0);
         index[column] = (size_t)u < n - 1 ? (size_t)u : n - 2;
-        fraction[column] = fmin(u - index[column], 1);
+        fraction[column] = (float)fmin(u - index[column], 1);
     }
     for (size_t row = 0; row < rows; row++) {
         double v = fmax(charon_shadow_corner_coordinate(y + (row + 0.5) * dy, height, cap, scale), 0);
         size_t j = (size_t)v < n - 1 ? (size_t)v : n - 2;
-        double fy = fmin(v - j, 1);
+        float fy = (float)fmin(v - j, 1);
         const uint8_t *top = corner + j * n, *bottom = top + n;
         uint8_t *line = pixels + row * rowBytes;
         for (size_t column = 0; column < columns; column++) {
             size_t i = index[column];
-            double fx = fraction[column];
-            double alpha = ((1 - fy) * ((1 - fx) * top[i] + fx * top[i + 1]) + fy * ((1 - fx) * bottom[i] + fx * bottom[i + 1])) / 255;
-            charon_sheet_shadow_pixel(line + column * 4, alpha);
+            float fx = fraction[column];
+            float alpha = ((1 - fy) * ((1 - fx) * top[i] + fx * top[i + 1]) + fy * ((1 - fx) * bottom[i] + fx * bottom[i + 1])) * (1 / 255.0f);
+            charon_shadow_pixel(line + column * 4, alpha);
         }
     }
     free(fraction);
