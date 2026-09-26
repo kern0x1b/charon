@@ -5,20 +5,10 @@
 # comparison proves nothing. The source is the recipe's own pinned archive, checked by its digest.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-recipe=$here/../../../../packages/b/box2d/xmake.lua
+box2d=$here
 BUILD=${BUILD:-$(mktemp -d)}
-version=$(sed -n 's/.*add_versions("\([^"]*\)", "[0-9a-f]*").*/\1/p' "$recipe")
-digest=$(sed -n 's/.*add_versions("[^"]*", "\([0-9a-f]*\)").*/\1/p' "$recipe")
-url=$(sed -n 's/.*add_urls("\([^"]*\)").*/\1/p' "$recipe" | sed "s/\$(version)/$version/")
-flags=$(sed -n 's/.*local FLAGS = {\(.*\)}.*/\1/p' "$recipe" | tr -d '",')
-[ -n "$version" ] && [ -n "$digest" ] && [ -n "$url" ] && [ -n "$flags" ] || { echo "FAIL: the recipe names no version, digest, URL or flags"; exit 1; }
-archive=$BUILD/Box2D_v$version.zip
-[ -f "$archive" ] || curl -fsSL "$url" -o "$archive"
-[ "$(shasum -a 256 "$archive" | cut -d' ' -f1)" = "$digest" ] || { echo "FAIL: $archive is not the recipe's archive"; exit 1; }
-rm -rf "$BUILD/src" "$BUILD/mutant"
-mkdir -p "$BUILD/src"
-unzip -q "$archive" -d "$BUILD/src"
-source=$BUILD/src/Box2D_v$version
+. "$here/source.sh"
+rm -rf "$BUILD/mutant"
 cp -R "$source" "$BUILD/mutant"
 sed -i '' 's/#define b2_baumgarte[[:space:]]*0.2f/#define b2_baumgarte 0.21f/' "$BUILD/mutant/Box2D/Common/b2Settings.h"
 cmp -s "$source/Box2D/Common/b2Settings.h" "$BUILD/mutant/Box2D/Common/b2Settings.h" && { echo "FAIL: the mutant changed nothing"; exit 1; }
