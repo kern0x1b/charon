@@ -541,7 +541,7 @@ Read (7.0): the animator marks its reference view (`_registerAsReferenceView`, a
 `-setBounds:` call `_notifyReferenceViewSizeChange` only when the bounds size changed, and it calls
 `+[UIDynamicAnimator _referenceViewSizeChanged:]` for a marked view: the only two callers, no layer-side hook.
 
-**Measured on 6.1.3** (`xmake emulate -d iPhone4,1 -r 6.1.3`, `kvo.m`: a command-line program, no `UIApplicationMain`; the same
+**Measured on 6.1.3** (`xmake emulate -d iPhone4,1 -r 6.1.3`, `tests/backports/device/uiview-kvo.m`: a command-line program, no `UIApplicationMain`; the same
 nine paths, with `-[UIView setFrame:]` and `-setBounds:` counted by a probe-only wrap and KVO on the view's `frame` and `bounds`
 with the prior option):
 
@@ -559,7 +559,7 @@ compared in the one after), fires on exactly the calls that wake on 7.0: the sam
 size-changed test is 7.0's own (the prior/after comparison came out 1 wake per wake path and 0 for the rest, `priors` 1 per
 setter call).
 
-**Lifetime on 6.1.3** (`kvo.m`, the same run). An observer left on a view that deallocates: the process lives, and KVO logs
+**Lifetime on 6.1.3** (`uiview-kvo.m`, the same run). An observer left on a view that deallocates: the process lives, and KVO logs
 `An instance ... of class UIView was deallocated while key value observers were still registered with it. Observation info was
 leaked, and may even become mistakenly attached to some other object` with the observation info; 400 views made after it saw
 no stray callback, but the log line is KVO's own report of a defect. An observer removed by an object the view holds
