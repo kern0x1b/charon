@@ -43,6 +43,14 @@ static void say(const char* state)
     fflush(stdout);
 }
 
+// How a refusal names the lock state, as a token of its own that xmake emulate launch reads, so that it depends on this
+// word and not on the wording of the sentence around it: ", screen=locked" (unlock it), ", screen=passcode" (nothing
+// can unlock it), nothing when SpringBoard did not say.
+static const char* screen(bool locked, bool passcode)
+{
+    return locked ? (passcode ? ", screen=passcode" : ", screen=locked") : "";
+}
+
 static CFStringRef string(const char* text)
 {
     return text ? CFStringCreateWithCString(NULL, text, kCFStringEncodingUTF8) : NULL;
@@ -121,7 +129,7 @@ int main(int argc, char** argv)
             char reason[96], refused[192];
             c_string(error_string ? error_string(result) : NULL, reason, sizeof reason);
             snprintf(refused, sizeof refused, "SpringBoard refused with %d (%s)%s", result, reason,
-                     locked ? (passcode ? ", the screen is locked with a passcode" : ", the screen is locked") : "");
+                     screen(locked, passcode));
             say(refused);
         }
         if (now() - started >= wait)
@@ -138,7 +146,7 @@ int main(int argc, char** argv)
         char reason[96];
         c_string(error_string ? error_string(result) : NULL, reason, sizeof reason);
         fprintf(stderr, "charon-sblaunch: SpringBoard refused %s with %d (%s)%s\n", bundle, result, reason,
-                locked ? (passcode ? ", the screen is locked with a passcode" : ", the screen is locked") : "");
+                screen(locked, passcode));
         return 1;
     }
     say("launched");

@@ -855,10 +855,22 @@ local function launch_step(emulator, folder, found)
             return driver.stop(state, function (command) table.insert(sent, command) end)
         end
     end
+    do
+        local _, sent, tick = driven()
+        local state = {}
+        tick(state)
+        io.writefile(path.join(results, "test.stdout"), "charon-sblaunch: 21.5 s: SpringBoard refused with 3 (device locked), screen=passcode\n")
+        tick(state)
+        state.ready = true
+        tick(state)
+        if #sent ~= 0 then
+            table.insert(found, "a screen locked with a passcode is not unlocked, sent " .. table.concat(sent, ";"))
+        end
+    end
     local driver, sent, tick = driven()
     local state = {}
     tick(state)
-    io.writefile(path.join(results, "test.stdout"), "charon-sblaunch: 0.0 s: waiting for SpringBoard\ncharon-sblaunch: 21.5 s: SpringBoard refused with 3 (device locked), the screen is locked\n")
+    io.writefile(path.join(results, "test.stdout"), "charon-sblaunch: 0.0 s: waiting for SpringBoard\ncharon-sblaunch: 21.5 s: SpringBoard refused with 3 (device locked), screen=locked\n")
     tick(state)
     state.ready = true
     tick(state)

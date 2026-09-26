@@ -70,9 +70,12 @@ xmake emulate -d iPhone4,1 -r 6.1.3 launch org.example.app tap 160 260
 
 - Daemons (`@addon/charon/daemon`, no `UIApplicationMain`) run: use it for them.
 - A UIKit app started by `run` never reaches `application:didFinishLaunchingWithOptions:` — it
-  bypasses SpringBoard's launch, and the frames drawn are SpringBoard's. Use `launch` for an app.
-  The emulator is not the device: what depends on timing, the GPU or hardware is still held to
-  hardware (workspace skill `device-session`).
+  bypasses SpringBoard's launch, and the frames drawn are SpringBoard's. Use `launch` for an app,
+  which goes through SpringBoard but is not a tap on the icon: it runs with an environment of its
+  own (`CFLOG_FORCE_STDERR=1`, `NSUnbufferedIO=YES`) and its output redirected to files.
+  Anything living inside an app (text views, collection layout, gestures) is checked on hardware
+  (workspace skill `device-session`): the emulator draws through SwiftShader, which is not the
+  oracle for UIKit text or collection layout. What depends on timing or the GPU is held to hardware too.
 - No audio daemon: `kAudioSessionNotInitialized` there is the emulator, not the code.
 - Without a time scale the guest's own watchdogs expire (SpringBoard is lost to a mediaserverd
   timeout); keep the default `--scale 10`.

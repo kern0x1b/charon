@@ -674,7 +674,8 @@ clang force-load arclite below iOS 9.
   `SBSLaunchApplicationForDebugging` with the application's output in files.
   - Exit codes: 0 when the launch is accepted (with `--wait`, once the
     application is frontmost); 1 with SpringBoard's code, its description and
-    whether the screen is locked, on standard error when it is refused; 2 for a
+    whether the screen is locked (as the token `screen=locked`, or `screen=passcode`,
+    which `xmake emulate launch` reads), on standard error when it is refused; 2 for a
     wrong argument; 3 when a function it needs is missing; 4 when SpringBoard
     took the launch and the application did not become frontmost in time.
   - SpringBoard refuses a caller without the entitlement

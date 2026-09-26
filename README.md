@@ -314,8 +314,13 @@ the data migration.
 
 `run` starts a program as a child of `charon-runner`, outside SpringBoard, so a
 UIKit application started that way never reaches
-`application:didFinishLaunchingWithOptions:`. `launch BUNDLE-ID` starts one the
-way a tap on its icon does. For each application bundle a package puts under
+`application:didFinishLaunchingWithOptions:`. `launch BUNDLE-ID` starts one through
+SpringBoard, so it does reach it, but not the way a tap on its icon does: the
+launch is `SBSLaunchApplicationForDebugging`, which gives the application an
+environment of its own (`CFLOG_FORCE_STDERR=1`, `NSUnbufferedIO=YES`) and its
+standard output and error in files. What a run shows (an application that
+printed, a tap that redrew it) stays true; what a tap's environment would add
+or change is not checked. For each application bundle a package puts under
 `/Applications`, `install` removes MobileInstallation's cache from the image
 (`com.apple.mobile.installation.plist`, which `uicache` rewrites on a device),
 and MobileInstallation builds it again from `/Applications` at boot, as on a

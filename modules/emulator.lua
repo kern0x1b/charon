@@ -955,7 +955,7 @@ function parse_steps(words)
 end
 
 -- What launch does while the guest runs, as the stop function of boot. It
--- unlocks the screen while charon-sblaunch says it is locked, one unlock at a
+-- unlocks the screen while charon-sblaunch says screen=locked, one unlock at a
 -- time; once the launch is done and the application frontmost, it has the
 -- emulator settle and takes a snapshot when the screen has stopped changing,
 -- then takes each step, settles and takes a snapshot after it. Settling is
@@ -998,7 +998,9 @@ function launch_driver(opt)
             -- The unlock gesture is the next transition; another is sent only
             -- once that one has settled and the screen is still locked.
             local idle = not driver.unlocking or (state.stable or {})[driver.unlocking]
-            if idle and last:find("the screen is locked", 1, true) and not last:find("passcode", 1, true) then
+            -- charon-sblaunch names the lock state of a refusal as the token screen=locked, or screen=passcode when
+            -- nothing can unlock it.
+            if idle and last:find("screen=locked", 1, true) then
                 send("unlock")
                 driver.unlocks = driver.unlocks + 1
                 driver.unlocking = (state.transition or 0) + 1
