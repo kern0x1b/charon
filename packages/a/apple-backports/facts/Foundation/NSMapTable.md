@@ -80,19 +80,32 @@ holds them.
   before it answers, and lets go of what it held. Both are held by `tests/backports/host/maptable6`, which fails if
   the divergence stops. What the release's enumerations and lookups answer is the same as the port's (a dead side is not
   handed out on 6.0).
-- **The one race the port does not close, and how long it is.** A lock guards an entry's sides against the object going
-  on another thread while the table reads it: a watch, released with its object, takes the lock to mark the entry. That
-  release happens in `object_dispose`, after the object's `-dealloc` has run, so the window is not the instant between
-  a read and its retain: it is everything from the moment the object's last release takes its retain count to zero
-  until its associations are released. In that time the entry's pointer is to an object that is being freed, and a
-  reader on another thread (`-key`, `-value`, a lookup, an enumeration) retains it and hands it out, then it is freed
-  under the reader. 6.0's zeroing weak reference is cleared at the start of deallocation and has no such window. It is
-  a property of learning of a death through an association: before 6.0 nothing runs before an object's `-dealloc`
-  (`-release` cannot be watched for objects with their own retain count, and `__weak` is refused for them), so nothing
-  native closes it, and it is not measured with two threads, since a test of it would be a test of a crash. The same
-  window applies to the port taking a watch off an object that dies on another thread while the entry goes. A table
-  is not thread-safe otherwise, as NSMapTable is not: keep the last release of a key off the threads that read a table
-  of weak keys.
+- **Reading a key or a value that is being freed on another thread.** An object's watch is released in `object_dispose`,
+  after the object's `-dealloc` has run, so between the object's last release taking its retain count to zero and that
+  release of its associations the table's pointer is to an object that is being freed, and a thread that retains it there
+  takes hold of an object that is freed under it. Closed as far as the releases allow:
+  - **5.0 and later: closed.** A weak side is also held by a `__weak` reference, and every read of a side goes through it;
+    the runtime's own `objc_storeWeak` clears it at the start of deallocation, so no read retains an object that is
+    going. `__weak` to `NSMutableString`, `NSString` made with a format, `NSNumber`, `NSDate`, `NSArray` and `NSObject` was
+    tried under `xmake emulate` on iPhone2,1 5.0 (9A334), 5.1.1 (9B206) and 6.0: each is set and is nil after the object
+    is released (4.3: `NSObject` is set and released, `NSMutableString` aborts, below). The owner thread enumerating a
+    table's keys while other threads dropped the keys and values, 100000 rounds a table: clean for all three tables on 5.1.1
+    and on the host, where the same with the port before this change (an entry read through its
+    unretained pointer) ended in SIGSEGV in each of 3 runs, at the first table.
+  - **4.3: not closed, only narrowed.** The runtime has no `objc_storeWeak`, and arclite's abort for the objects that keep
+    their own retain count (`cannot form weak reference to instance of class NSCFString: it manages its own retain count`,
+    measured on 4.3 with an `NSMutableString`), so a watch is all there is and it runs after the object's `-dealloc`
+    (`-release` cannot be watched for objects with their own retain count). What is closed there is everything but a read
+    of another entry's side: an entry is found by its hash first, so a call on the table reads a key only for the key it was
+    asked for or one whose hash equals it; taking a watch off an object that is going is done with the lock held, which the
+    object's own watch needs to finish its `-dealloc`, so that object is whole for as long as the lock is; the owner thread
+    adding entries, asking `-count` and `-objectForKey:` of a live key, while other threads dropped the keys and values, 200000
+    rounds a table, clean for all three tables on 4.3 and 5.1.1 under `xmake emulate`. What is left is
+    **the calls that read every entry's key** (the enumerators, `-dictionaryRepresentation`, `-copy`) and a hash collision
+    with a key that is going while another thread drops a key or a value: the same enumeration as above on 4.3 ends in SIGSEGV
+    within 1.1 guest seconds. It is a property of learning of a death through an association, so nothing native
+    closes it on 4.3, and it is in `coordination/crutches.md`. Keep the last release of a weak key or of a weak value from
+    happening on another thread while the table is enumerated or copied. A table is not thread-safe otherwise, as NSMapTable is not.
 - `charon_watch` answers the watch's address, not the watch. Measured on 4.3, 5.1.1 and 6.0 under `xmake emulate`: with
   the watch returned as an object, every watch taken off its object stayed alive (the count of live watches only grew,
   1000 after 1000 set-and-remove of one key) while the same source on the host freed it at once. The reading: ARC's
@@ -107,7 +120,9 @@ each of the three weak factories: live keys, an equal key keeping the first, a k
 it, values retained, removal, mutation during enumeration, copy, nil keys and values, string and number keys going with
 their entries, a value going with its entry or replaced, the pointer functions, nested enumeration, and the archive; the
 divergences named above; the watches left on an object that lives on; and the work a table of a thousand keys takes,
-counted in reads of an entry's key (a scan of every entry on every call reads it n times n) - 103 checks on the host.
+counted in reads of an entry's key (a scan of every entry on every call reads it n times n); and, for each of the three, the owner thread adding
+entries, asking `-count` and a live key's value while blocks on a concurrent queue drop the keys and values (20000 rounds; `MAPTABLE6_ROUNDS` sets the
+device build's) - 109 checks on the host.
 Negative controls, run once: a table that scans every entry on every read fails the work check (500540 reads for 1000
 keys against a limit of 20000), one that does not take its watches off fails the watch checks, and one whose watch marks nothing when its object
 goes ends in SIGSEGV on the dead object (a watch that only leaves the object's pointer alone is not caught: the entry is

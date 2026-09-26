@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
+#include <dispatch/dispatch.h>
+#include <unistd.h>
 #import "check.h"
 
 // The port's four factories (renamed charonHost_*) against the host's own, driven the same way side by side.
@@ -417,11 +419,47 @@ static void cost_checks(const char *variant, BOOL weakKeys, NSMapTable *(^make)(
     CHECK(key_calls < 20 * n, label(variant, "forgetting n keys that went reads entries a few times each"));
 }
 
+// The owner thread of a table against the deaths of its sides on other threads, the one thing the port's lock and queue
+// are for: keys and values are dropped by blocks on a concurrent queue, that never read the table, while the owner adds
+// entries and asks -count and a live key's value. Only what a table claims is asked: nothing reads a key that is dying.
+// It must finish, answer for the live key every time, and end with the live entry alone.
+#ifndef THREAD_ROUNDS
+#define THREAD_ROUNDS 20000
+#endif
+static void thread_checks(const char *variant, NSMapTable *(^make)(void))
+{
+    const long n = THREAD_ROUNDS;
+    NSMapTable *table = make();
+    id live = [NSObject new], liveValue = [NSObject new];
+    [table setObject:liveValue forKey:live];
+    dispatch_queue_t queue = dispatch_queue_create("maptable6.release", DISPATCH_QUEUE_CONCURRENT);
+    dispatch_group_t group = dispatch_group_create();
+    BOOL answered = YES;
+    for (long i = 0; i < n; i++) {
+        @autoreleasepool {
+            NSObject *key = [NSObject new], *value = [NSObject new];
+            [table setObject:value forKey:key];
+            dispatch_group_async(group, queue, ^{
+                (void)key;
+                (void)value;
+                usleep(i % 3);
+            });
+            if (i % 16 == 0) {
+                (void)[table count];
+                answered = answered && [table objectForKey:live] == liveValue;
+            }
+        }
+    }
+    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+    CHECK(answered, label(variant, "a live key answers its value while others die on other threads"));
+    CHECK_EQUAL(@([table count]), @1, label(variant, "and once they have gone the live entry is alone"));
+}
+
 int main(void)
 {
     @autoreleasepool {
-        count_calls(NSClassFromString(@"CharonSideWatch"), @selector(init), ^{ watches_made++; });
-        count_calls(NSClassFromString(@"CharonSideWatch"), NSSelectorFromString(@"dealloc"), ^{ watches_gone++; });
+        count_calls(NSClassFromString(@"CharonSideWatch"), @selector(init), ^{ __sync_fetch_and_add(&watches_made, 1); });
+        count_calls(NSClassFromString(@"CharonSideWatch"), NSSelectorFromString(@"dealloc"), ^{ __sync_fetch_and_add(&watches_gone, 1); });
         count_calls(NSClassFromString(@"CharonMapEntry"), @selector(key), ^{ key_calls++; });
 
         // What the port makes, and what the release makes where it has the factory.
@@ -452,6 +490,7 @@ int main(void)
                 held_side_checks(name, variants[i].weakKeys, ours(), released ? theirs() : nil);
             watch_checks(name, ours, (variants[i].weakKeys ? 1 : 0) + (variants[i].weakValues ? 1 : 0));
             cost_checks(name, variants[i].weakKeys, ours);
+            thread_checks(name, ours);
         }
 
         // Strong keys are retained, not copied, and values retained, as the host's own.

@@ -3,7 +3,7 @@
 # 6.0, and the port alone on 4.3 and 5.1.1, whose answers to the weak scenarios must be 6.0's. One heavy job (a build and
 # three emulated boots), so run it in a slot of the machine:
 #     $HOME/Git/projects/ios/coordination/heavy.sh sh tests/backports/host/maptable6/emulate.sh
-# It needs the addon v0.8.10 in the shared xmake store, as any port does, and the firmware of the releases named below.
+# MAPTABLE6_ROUNDS=n sets the rounds of the two-thread check (default 20000). It needs the addon v0.8.10 in the shared xmake store, as any port does, and the firmware of the releases named below.
 # Leaves the logs in $MAPTABLE6_BUILD/<release>.log and exits 1 on a failed check or an answer that is not 6.0's.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)

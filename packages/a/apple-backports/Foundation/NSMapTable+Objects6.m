@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
+#include <dlfcn.h>
 #include <pthread.h>
 
 // iOS 6.0's NSMapTable factories. +strongToStrongObjectsMapTable is the release's own table with strong keys and
@@ -9,17 +10,50 @@
 // NSPointerFunctionsZeroingWeakMemory they keep a released object's entry and hand the dead object out (facts). So below
 // 6.0 they are CharonWeakMapTable: each entry holds a strong side strongly and a weak side unretained, told by a watch
 // the object holds as an associated object when it goes, and an entry with a side that has gone is dropped before the
-// table is next read.
+// table is next read. Where the runtime has weak references (5.0 and later) a weak side is also held by a __weak one, so
+// that a read never takes hold of an object that is being freed; 4.3 has only the watch (facts).
 
 @class CharonMapEntry, CharonWeakMapTable;
 
-// Guards an entry's weak sides and their watches against the objects going on another thread.
-static pthread_mutex_t charon_weak_lock = PTHREAD_MUTEX_INITIALIZER;
+// Guards an entry's weak sides and their watches against the objects going on another thread. It is recursive: taking a
+// watch off an object releases it, which can be its last release, and the watch's -dealloc takes this lock.
+static pthread_mutex_t charon_weak_lock;
+static pthread_once_t charon_weak_lock_once = PTHREAD_ONCE_INIT;
+// Whether the runtime itself has weak references, as 5.0 and later do: 4.3's are arclite's own, which refuse the objects
+// that keep their own retain count (NSCFString among them) by aborting.
+static BOOL charon_native_weak;
+
+static void charon_weak_lock_make(void)
+{
+    pthread_mutexattr_t attributes;
+    pthread_mutexattr_init(&attributes);
+    pthread_mutexattr_settype(&attributes, PTHREAD_MUTEX_RECURSIVE);
+    pthread_mutex_init(&charon_weak_lock, &attributes);
+    pthread_mutexattr_destroy(&attributes);
+    charon_native_weak = dlsym(RTLD_DEFAULT, "objc_loadWeakRetained") != NULL;
+}
+
+static void charon_lock(void)
+{
+    pthread_once(&charon_weak_lock_once, charon_weak_lock_make);
+    pthread_mutex_lock(&charon_weak_lock);
+}
+
+static BOOL charon_has_native_weak(void)
+{
+    pthread_once(&charon_weak_lock_once, charon_weak_lock_make);
+    return charon_native_weak;
+}
+
+static void charon_unlock(void)
+{
+    pthread_mutex_unlock(&charon_weak_lock);
+}
 
 // Held by a key or a value as an associated object, so it goes when the object does, and tells its entry so. An object's
 // associated objects are released with it on 4.3 and 5.1.1 for every class measured, CoreFoundation's bridged ones
-// included (facts); a __weak reference is not, since arclite refuses objects that keep their own retain count,
-// NSCFString among them.
+// included (facts); a __weak reference is not on 4.3, since arclite refuses objects that keep their own retain
+// count, NSCFString among them.
 @interface CharonSideWatch : NSObject {
 @public
     __unsafe_unretained CharonMapEntry *_entry;
@@ -33,6 +67,12 @@ static pthread_mutex_t charon_weak_lock = PTHREAD_MUTEX_INITIALIZER;
 @public
     __unsafe_unretained id _key;
     __unsafe_unretained id _value;
+    // The same sides as weak references, for a weak side where the runtime has them: nil from the start of the object's
+    // deallocation, so a read through them never retains an object that is being freed.
+    __weak id _weakRefKey;
+    __weak id _weakRefValue;
+    BOOL _nativeKey;
+    BOOL _nativeValue;
     __unsafe_unretained CharonSideWatch *_keyWatch;
     __unsafe_unretained CharonSideWatch *_valueWatch;
     __unsafe_unretained CharonWeakMapTable *_table;
@@ -71,11 +111,13 @@ static void *charon_watch(id object, CharonMapEntry *entry, BOOL onKey)
     return (__bridge void *)watch;
 }
 
-// Takes a watch off the object it was put on, outside the lock: the watch's own -dealloc takes the lock, so it cannot be
-// released inside it. Only the watch's address is used, as the association's key.
+// Takes a watch off the object it was put on, with the lock held. The object's own watch cannot finish its -dealloc, which
+// takes the lock, so an object that is being freed on another thread is still whole until the lock is let go: that is
+// what makes it safe to touch the object here, where an entry's side is known to be alive only while the watch is.
+// Only the watch's address is used, as the association's key.
 static void charon_unwatch(__unsafe_unretained id object, const void *watch)
 {
-    if (watch)
+    if (watch && object)
         objc_setAssociatedObject(object, watch, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
@@ -83,7 +125,7 @@ static void charon_unwatch(__unsafe_unretained id object, const void *watch)
 
 - (void)dealloc
 {
-    pthread_mutex_lock(&charon_weak_lock);
+    charon_lock();
     __unsafe_unretained CharonMapEntry *entry = _entry;
     if (entry) {
         if (_onKey) {
@@ -100,7 +142,7 @@ static void charon_unwatch(__unsafe_unretained id object, const void *watch)
             [table->_pending addObject:entry];
         }
     }
-    pthread_mutex_unlock(&charon_weak_lock);
+    charon_unlock();
 }
 
 @end
@@ -123,6 +165,10 @@ static void charon_unwatch(__unsafe_unretained id object, const void *watch)
         _weakValue = weakValue;
         _table = table;
         _keyWatch = (__bridge CharonSideWatch *)charon_watch(key, self, YES);
+        if (charon_has_native_weak()) {
+            _weakRefKey = key;
+            _nativeKey = YES;
+        }
     }
     return self;
 }
@@ -153,15 +199,17 @@ static void charon_unwatch(__unsafe_unretained id object, const void *watch)
         return;
     __unsafe_unretained id key = nil, value = nil;
     const void *keyWatch = NULL, *valueWatch = NULL;
-    __attribute__((objc_precise_lifetime)) id heldKey, heldValue;
-    pthread_mutex_lock(&charon_weak_lock);
+    __attribute__((objc_precise_lifetime)) id heldKey, heldValue, liveKey, liveValue;
+    charon_lock();
+    // A side with a weak reference is taken off its object only while the object is alive, held for that long: one that is
+    // going takes its watch with it. Released after the lock, since its -dealloc may be anything.
     if (_keyWatch) {
-        key = _key;
+        key = _nativeKey ? (liveKey = _weakRefKey) : _key;
         keyWatch = (__bridge const void *)_keyWatch;
         _keyWatch->_entry = nil;
     }
     if (_valueWatch) {
-        value = _value;
+        value = _nativeValue ? (liveValue = _weakRefValue) : _value;
         valueWatch = (__bridge const void *)_valueWatch;
         _valueWatch->_entry = nil;
     }
@@ -174,25 +222,29 @@ static void charon_unwatch(__unsafe_unretained id object, const void *watch)
     heldValue = _heldValue;
     _heldKey = nil;
     _heldValue = nil;
-    pthread_mutex_unlock(&charon_weak_lock);
     charon_unwatch(key, keyWatch);
     charon_unwatch(value, valueWatch);
-    // heldKey and heldValue are released here, at the end, outside the lock: their own -dealloc may be anything.
+    charon_unlock();
+    // The sides held here are released at the end, outside the lock.
 }
 
 - (id)key
 {
-    pthread_mutex_lock(&charon_weak_lock);
+    if (_nativeKey)
+        return _weakRefKey;
+    charon_lock();
     id key = _key;
-    pthread_mutex_unlock(&charon_weak_lock);
+    charon_unlock();
     return key;
 }
 
 - (id)value
 {
-    pthread_mutex_lock(&charon_weak_lock);
+    if (_nativeValue)
+        return _weakRefValue;
+    charon_lock();
     id value = _value;
-    pthread_mutex_unlock(&charon_weak_lock);
+    charon_unlock();
     return value;
 }
 
@@ -205,19 +257,24 @@ static void charon_unwatch(__unsafe_unretained id object, const void *watch)
         fresh = (__bridge CharonSideWatch *)charon_watch(value, self, NO);
     __unsafe_unretained id old = nil;
     const void *oldWatch = NULL;
-    __attribute__((objc_precise_lifetime)) id heldOld;
-    pthread_mutex_lock(&charon_weak_lock);
+    __attribute__((objc_precise_lifetime)) id heldOld, liveOld;
+    charon_lock();
     if (_valueWatch) {
-        old = _value;
+        old = _nativeValue ? (liveOld = _weakRefValue) : _value;
         oldWatch = (__bridge const void *)_valueWatch;
         _valueWatch->_entry = nil;
     }
     heldOld = _heldValue;
     _value = value;
+    if (_weakValue) {
+        _nativeValue = charon_has_native_weak();
+        if (_nativeValue)
+            _weakRefValue = value;
+    }
     _valueWatch = fresh;
     _heldValue = _weakValue ? nil : value;
-    pthread_mutex_unlock(&charon_weak_lock);
     charon_unwatch(old, oldWatch);
+    charon_unlock();
 }
 
 // An entry is found by the key's -hash and -isEqual:, as 6.0's object personality finds it; the hash is the one the
@@ -232,6 +289,11 @@ static void charon_unwatch(__unsafe_unretained id object, const void *watch)
     if (other == self)
         return YES;
     if (![other isKindOfClass:[CharonMapEntry class]])
+        return NO;
+    // Equal keys have equal hashes, so the hashes are compared before either key is read: a set asks colliding entries
+    // -isEqual:, and reading the key of an entry that is not the one asked for would retain a key that may be in its last
+    // release on another thread.
+    if (_hash != ((CharonMapEntry *)other)->_hash)
         return NO;
     id key = [self key], theirs = [(CharonMapEntry *)other key];
     return key && theirs && (key == theirs || [key isEqual:theirs]);
@@ -275,10 +337,10 @@ static void charon_unwatch(__unsafe_unretained id object, const void *watch)
 
 - (NSArray *)takePending
 {
-    pthread_mutex_lock(&charon_weak_lock);
+    charon_lock();
     NSArray *pending = _pending;
     _pending = nil;
-    pthread_mutex_unlock(&charon_weak_lock);
+    charon_unlock();
     return pending;
 }
 

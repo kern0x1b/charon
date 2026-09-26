@@ -26,6 +26,8 @@ target("maptable6")
               path.join(root, "tests/backports/device/check.m"))
     add_includedirs(path.join(root, "tests/backports/device"))
     add_mflags("-fobjc-arc", "-fvisibility=hidden", "-Wno-deprecated-declarations")
+    -- The rounds of the two-thread check, as the build asks (MAPTABLE6_ROUNDS), for a longer stress than the default.
+    if os.getenv("MAPTABLE6_ROUNDS") then add_defines("THREAD_ROUNDS=" .. os.getenv("MAPTABLE6_ROUNDS")) end
     add_ldflags("-fobjc-arc")
     add_frameworks("Foundation")
     set_values("charon.version", "1.0")
