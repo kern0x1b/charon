@@ -458,7 +458,7 @@ local function expander(opt, headers, languages)
             roots[folder] = roots[folder] or {}
             table.insert(roots[folder], {type = "file", name = path.filename(item.file), ["external-contents"] = copy})
         end
-        local overlay = {version = 0, ["case-sensitive"] = "false", roots = json.mark_as_array({})}
+        local overlay = {version = 0, ["case-sensitive"] = "false", roots = {}}
         for _, folder in ipairs(table.orderkeys(roots)) do
             table.insert(overlay.roots, {type = "directory", name = folder, contents = roots[folder]})
         end
