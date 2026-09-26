@@ -3,7 +3,8 @@
 
 extern NSString *const CharonHostUISceneWillConnectNotification, *const CharonHostUISceneDidDisconnectNotification, *const CharonHostUISceneDidActivateNotification,
     *const CharonHostUISceneWillDeactivateNotification, *const CharonHostUISceneWillEnterForegroundNotification, *const CharonHostUISceneDidEnterBackgroundNotification,
-    *const CharonHostUIWindowSceneSessionRoleApplication, *const CharonHostUIWindowSceneSessionRoleExternalDisplay;
+    *const CharonHostUIWindowSceneSessionRoleApplication, *const CharonHostUIWindowSceneSessionRoleExternalDisplay,
+    *const CharonHostUIWindowSceneSessionRoleExternalDisplayNonInteractive;
 
 #define ROLE(object) [(UISceneConfiguration *)(object) role]
 
@@ -31,6 +32,7 @@ int main(void)
         CHECK_EQUAL(CharonHostUISceneDidEnterBackgroundNotification, UISceneDidEnterBackgroundNotification, "the did enter background notification");
         CHECK_EQUAL(CharonHostUIWindowSceneSessionRoleApplication, UIWindowSceneSessionRoleApplication, "the application role");
         CHECK_EQUAL(CharonHostUIWindowSceneSessionRoleExternalDisplay, UIWindowSceneSessionRoleExternalDisplay, "the external display role");
+        CHECK_EQUAL(CharonHostUIWindowSceneSessionRoleExternalDisplayNonInteractive, UIWindowSceneSessionRoleExternalDisplayNonInteractive, "the non-interactive external display role");
 
         Class ourConfiguration = NSClassFromString(@"CharonHostUISceneConfiguration");
         CHECK(ourConfiguration != Nil, "the port defines the configuration");
