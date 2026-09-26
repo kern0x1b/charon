@@ -48,7 +48,12 @@ As an object it behaves the way the release's own predicates were measured to on
 the macOS 26 host's Contacts (`tests/backports/host/contacts/run.sh`, the
 `predicate.*` records): `-predicateFormat` answers `identifier IN {"A", "B"}` for
 the three identifier-list predicates and nil, without raising, for the other
-eight; `-description` names the factory that made it and its argument;
+eight; `-description` answers a non-empty string without raising for every
+factory, and the name predicate's names its factory (`predicateForContactsMatchingName:`) -
+that is all the records hold. Beyond it the host's own descriptions differ by class
+(`CNContainerOfGroupPredicate` answers only `<CNContainerOfGroupPredicate: 0x...>`; the
+others list their own keys, such as `name=..., options=...` or `identifiers (count)=...`),
+and the port approximates them with one format, its kind and `value=` its argument;
 predicates made with the same factory and argument are equal, and nothing else
 is; it conforms to `NSSecureCoding` and comes back from a secure archive as the
 same predicate. `CNContactFetchRequest` archives its predicate with the other
