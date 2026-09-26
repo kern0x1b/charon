@@ -1,21 +1,37 @@
+diff --git a/stdlib/public/Darwin/Dispatch/Block.swift b/stdlib/public/Darwin/Dispatch/Block.swift
+--- a/stdlib/public/Darwin/Dispatch/Block.swift
++++ b/stdlib/public/Darwin/Dispatch/Block.swift
+@@ -44,4 +44,8 @@
+ 	internal var _block: _DispatchBlock
++	internal let _qos: DispatchQoS
++	internal let _flags: DispatchWorkItemFlags
+ 
+ 	public init(qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], block: @escaping @convention(block) () -> Void) {
++		_qos = qos
++		_flags = flags
+ 		_block =  _swift_dispatch_block_create_with_qos_class(
+@@ -54,2 +58,4 @@
+ 	internal init(flags: DispatchWorkItemFlags = [], noescapeBlock: () -> Void) {
++		_qos = .unspecified
++		_flags = flags
+ 		_block = _swift_dispatch_block_create_noescape(
 diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/Dispatch/Source.swift
 --- a/stdlib/public/Darwin/Dispatch/Source.swift
 +++ b/stdlib/public/Darwin/Dispatch/Source.swift
-@@ -12,7 +12,45 @@
- 
- // import Foundation
+@@ -14,3 +14,59 @@
  @_implementationOnly import _SwiftDispatchOverlayShims
 +import Darwin
 +import ObjectiveC
  
 +/* A source that replaces its pending data arrived in iOS 11. Before it the overlay makes a source that ORs, beside a
 +   record of the latest value replaced into it: replace(data:) records the value and merges a 1, which coalesces the
-+   calls of the handler as the pending data of the release's source does, and the data the handler reads is the value
-+   recorded. It differs from the release's source in one case: a value replaced while the handler runs is what that
-+   handler reads from then on, where the release's handler reads the value it was called with. */
++   calls of the handler as the pending data of the release's source does. The event handler is set wrapped, and the
++   wrapper takes a snapshot of the latest value on entry: the data the handler reads is the value it was called with,
++   and a value replaced while it runs is the next call's, as on the release. */
 +internal final class _ReplacedData {
 +	private let lock = UnsafeMutablePointer<pthread_mutex_t>.allocate(capacity: 1)
 +	private var latest: UInt = 0
++	private var called: UInt = 0
 +
 +	init() { pthread_mutex_init(lock, nil) }
 +
@@ -24,17 +40,24 @@ diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/D
 +		lock.deallocate()
 +	}
 +
++	/// The value of the latest replace(data:), for that call to record.
++	func replace(_ value: UInt) {
++		pthread_mutex_lock(lock)
++		latest = value
++		pthread_mutex_unlock(lock)
++	}
++
++	/// What the event handler is called with: the latest value at its entry, until its next entry.
++	func enter() {
++		pthread_mutex_lock(lock)
++		called = latest
++		pthread_mutex_unlock(lock)
++	}
++
 +	var value: UInt {
-+		get {
-+			pthread_mutex_lock(lock)
-+			defer { pthread_mutex_unlock(lock) }
-+			return latest
-+		}
-+		set {
-+			pthread_mutex_lock(lock)
-+			latest = newValue
-+			pthread_mutex_unlock(lock)
-+		}
++		pthread_mutex_lock(lock)
++		defer { pthread_mutex_unlock(lock) }
++		return called
 +	}
 +}
 +
@@ -44,12 +67,38 @@ diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/D
 +	return objc_getAssociatedObject(source, &_replacedDataKey) as? _ReplacedData
 +}
 +
++/// The handler of a replace source, wrapped to take its snapshot on entry; any other handler as it is.
++private func _snapshotting(_ handler: @escaping @convention(block) () -> Void, of source: DispatchSource) -> @convention(block) () -> Void {
++	guard let replaced = _replacedData(of: source) else { return handler }
++	return { replaced.enter(); handler() }
++}
++
++private func _snapshotting(_ handler: (@convention(block) () -> Void)?, of source: DispatchSource) -> (@convention(block) () -> Void)? {
++	return handler.map { _snapshotting($0, of: source) }
++}
++
  extension DispatchSourceProtocol {
- 	public typealias DispatchSourceHandler = @convention(block) () -> Void
- 
-@@ -90,7 +128,11 @@
+@@ -22,6 +78,6 @@
+                    qos != .unspecified || !flags.isEmpty {
+-			let item = DispatchWorkItem(qos: qos, flags: flags, block: h)
++			let item = DispatchWorkItem(qos: qos, flags: flags, block: _snapshotting(h, of: self as! DispatchSource))
+ 			_swift_dispatch_source_set_event_handler(self as! DispatchSource, item._block)
+ 		} else {
+-			_swift_dispatch_source_set_event_handler(self as! DispatchSource, handler)
++			_swift_dispatch_source_set_event_handler(self as! DispatchSource, _snapshotting(handler, of: self as! DispatchSource))
+ 		}
+@@ -31,3 +87,9 @@
+ 	public func setEventHandler(handler: DispatchWorkItem) {
+-		_swift_dispatch_source_set_event_handler(self as! DispatchSource, handler._block)
++		let source = self as! DispatchSource
++		guard let replaced = _replacedData(of: source) else {
++			_swift_dispatch_source_set_event_handler(source, handler._block)
++			return
++		}
++		let item = DispatchWorkItem(qos: handler._qos, flags: handler._flags, block: { replaced.enter(); handler.perform() })
++		_swift_dispatch_source_set_event_handler(source, item._block)
  	}
- 
+@@ -92,3 +154,7 @@
  	public var data: UInt {
 -		return __dispatch_source_get_data(self as! DispatchSource)
 +		let source = self as! DispatchSource
@@ -58,11 +107,7 @@ diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/D
 +		}
 +		return __dispatch_source_get_data(source)
  	}
- 
- 	public var isCancelled: Bool {
-@@ -194,7 +236,12 @@
- 	}
- 
+@@ -196,3 +262,8 @@
  	public class func makeUserDataReplaceSource(queue: DispatchQueue? = nil) -> DispatchSourceUserDataReplace {
 -		return _swift_dispatch_source_create(_swift_dispatch_source_type_DATA_REPLACE(), 0, 0, queue) as DispatchSourceUserDataReplace
 +		if let type = _swift_dispatch_source_type_DATA_REPLACE() {
@@ -72,11 +117,7 @@ diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/D
 +		objc_setAssociatedObject(source, &_replacedDataKey, _ReplacedData(), .OBJC_ASSOCIATION_RETAIN)
 +		return source as DispatchSourceUserDataReplace
  	}
- 
- 	public class func makeFileSystemObjectSource(
-@@ -656,6 +703,14 @@
- 	/// The value that will replace the current pending data. A value of zero will be stored
- 	/// but will not result in the submission of the event handler block.
+@@ -658,3 +729,11 @@
  	public func replace(data: UInt) {
 -		__dispatch_source_merge_data(self as! DispatchSource, data)
 +		let source = self as! DispatchSource
@@ -84,24 +125,19 @@ diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/D
 +			__dispatch_source_merge_data(source, data)
 +			return
 +		}
-+		replaced.value = data
++		replaced.replace(data)
 +		if data != 0 {
 +			__dispatch_source_merge_data(source, 1)
 +		}
  	}
- }
 diff --git a/stdlib/public/SwiftShims/DispatchOverlayShims.h b/stdlib/public/SwiftShims/DispatchOverlayShims.h
 --- a/stdlib/public/SwiftShims/DispatchOverlayShims.h
 +++ b/stdlib/public/SwiftShims/DispatchOverlayShims.h
-@@ -91,12 +91,23 @@
- 
- SWIFT_DISPATCH_SOURCE_TYPE(DATA_ADD)
+@@ -93,3 +93,2 @@
  SWIFT_DISPATCH_SOURCE_TYPE(DATA_OR)
 -SWIFT_DISPATCH_SOURCE_TYPE(DATA_REPLACE)
  SWIFT_DISPATCH_SOURCE_TYPE(READ)
- SWIFT_DISPATCH_SOURCE_TYPE(SIGNAL)
- SWIFT_DISPATCH_SOURCE_TYPE(TIMER)
- SWIFT_DISPATCH_SOURCE_TYPE(WRITE)
+@@ -99,2 +98,14 @@
  
 +/* The source type that replaces its pending data, which iOS 11 brought; NULL on a release without it. */
 +#pragma clang diagnostic push
@@ -116,5 +152,3 @@ diff --git a/stdlib/public/SwiftShims/DispatchOverlayShims.h b/stdlib/public/Swi
 +#pragma clang diagnostic pop
 +
  #if __APPLE__
- SWIFT_DISPATCH_SOURCE_TYPE(MACH_SEND)
- SWIFT_DISPATCH_SOURCE_TYPE(MACH_RECV)
