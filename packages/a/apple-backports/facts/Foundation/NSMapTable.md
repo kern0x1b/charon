@@ -97,8 +97,8 @@ holds them.
     then `NSNumber` ones, 200000 rounds each: clean for the three tables on 5.0, 5.1.1 and 6.0, the release's own tables on
     6.0 as well. On the host an enumeration probe of the same shape (100000 rounds, `NSObject` keys) against the port before
     this change (an entry read through its unretained pointer) ended in SIGSEGV in each of 3 runs, at the first table. `control.sh` runs the same suite against a copy of the
-    port whose lookup answers "none": it fails on 5.1.1 and on 6.0, the path check first and then a SIGSEGV in the
-    enumeration, so the test tells the two paths apart.
+    port whose lookup answers "none": it fails on 5.1.1 and on 6.0 in two runs, the path check first and then a crash in the
+    enumeration (SIGSEGV in one run, SIGABRT in the other), so the test tells the two paths apart.
   - **A class that refuses a weak reference** (`-allowsWeakReference` answering NO) as a weak side: 6.0's own three factories
     abort (`cannot form weak reference to instance of class ...`, SIGILL) for each of the four weak sides (the key of
     `weakToStrong`, the value of `strongToWeak`, both sides of `weakToWeak`), and the port does the same on 5.0, 5.1.1 and
@@ -117,7 +117,8 @@ holds them.
     **the calls that read every entry's key** (the enumerators, `-dictionaryRepresentation`, `-copy`) and **a key equal to
     a key that is going**: `-objectForKey:` and `-setObject:forKey:` with a key whose hash is that of a key another thread is
     dropping read the dying key in `-isEqual:` once the hashes match, and for value-like keys (strings, numbers) an equal
-    key is the ordinary case, not a collision. The same enumeration as above on 4.3 ends in SIGSEGV within 1.1 guest seconds.
+    key is the ordinary case, not a collision. The same enumeration as above on 4.3 ends in SIGSEGV within 1.1 guest seconds (`probes.sh`, run again: 0.1 guest seconds, the
+    same `pc`; 5.1.1 clean in the same run).
     It is a property of learning of a death through an association, so nothing native closes it on 4.3, and it is in
     `coordination/crutches.md`. Keep the last release of a weak key or of a weak value from happening on another thread while
     the table is enumerated or copied, or while it is asked for, or given, a key equal to one that may be going. A table is
