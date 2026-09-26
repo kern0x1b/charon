@@ -1,4 +1,5 @@
 #import "CharonSCN.h"
+#import "../CharonSRGB.h"
 #import <objc/runtime.h>
 
 // An archived NSColor carries its components in the color space it was authored in (sRGB,
@@ -100,12 +101,6 @@ static BOOL CharonICCEvaluateCurve(const uint8_t *tag, uint32_t length, double x
     return NO;
 }
 
-static double CharonSRGBEncode(double linear)
-{
-    linear = fmin(fmax(linear, 0), 1);
-    return linear <= 0.0031308 ? 12.92 * linear : 1.055 * pow(linear, 1 / 2.4) - 0.055;
-}
-
 // The sRGB profile's D50-adapted colorants, as carried by the sRGB profiles in real .scn files.
 static const double CharonSRGBColorants[3][3] = {
     {0.436065673828125, 0.3851470947265625, 0.14306640625},
@@ -144,7 +139,7 @@ static BOOL CharonICCComponentsToSRGB(NSData *profile, const double *components,
         if (curve == NULL || !CharonICCEvaluateCurve(curve, length, components[0], &luminance)) {
             return NO;
         }
-        rgb[0] = rgb[1] = rgb[2] = CharonSRGBEncode(luminance);
+        rgb[0] = rgb[1] = rgb[2] = charon_srgb_encode(luminance);
         return YES;
     }
     if (memcmp(header + 16, "RGB ", 4) != 0 || memcmp(header + 20, "XYZ ", 4) != 0 || count < 3) {
@@ -174,7 +169,7 @@ static BOOL CharonICCComponentsToSRGB(NSData *profile, const double *components,
         xyz[row] = colorants[row][0] * linear[0] + colorants[row][1] * linear[1] + colorants[row][2] * linear[2];
     }
     for (int row = 0; row < 3; row++) {
-        rgb[row] = CharonSRGBEncode(toSRGB[row][0] * xyz[0] + toSRGB[row][1] * xyz[1] + toSRGB[row][2] * xyz[2]);
+        rgb[row] = charon_srgb_encode(toSRGB[row][0] * xyz[0] + toSRGB[row][1] * xyz[1] + toSRGB[row][2] * xyz[2]);
     }
     return YES;
 }
@@ -289,7 +284,7 @@ static NSUInteger CharonParseComponents(NSCoder *coder, NSString *key, double *o
         } else if (model == 3 || model == 4) {
             count = CharonParseComponents(coder, @"NSWhite", components, 2);
             if (count >= 1) {
-                double white = model == 3 ? CharonSRGBEncode(pow(fmax(components[0], 0), 1.8)) : components[0];
+                double white = model == 3 ? charon_srgb_encode(pow(fmax(components[0], 0), 1.8)) : components[0];
                 rgb[0] = rgb[1] = rgb[2] = white;
                 [self setRGB:rgb alpha:count > 1 ? components[1] : 1];
             } else {
@@ -413,6 +408,25 @@ static void CharonSCNMapColorClasses(NSKeyedUnarchiver *unarchiver)
     [coder encodeBytes:(const uint8_t *)&vector length:sizeof(SCNVector4) forKey:key];
 }
 
+// SCNMatrix4 is archived the same way as the vectors: its sixteen floats m11..m44 as raw bytes (star2.scn's
+// contentsTransform keys, 64 bytes each).
++ (SCNMatrix4)decodeMatrix4:(NSCoder *)coder forKey:(NSString *)key
+{
+    NSUInteger length = 0;
+    const uint8_t *bytes = [coder decodeBytesForKey:key returnedLength:&length];
+    if (bytes == NULL || length != sizeof(SCNMatrix4)) {
+        return SCNMatrix4Identity;
+    }
+    SCNMatrix4 matrix;
+    memcpy(&matrix, bytes, sizeof(SCNMatrix4));
+    return matrix;
+}
+
++ (void)encodeMatrix4:(SCNMatrix4)matrix coder:(NSCoder *)coder forKey:(NSString *)key
+{
+    [coder encodeBytes:(const uint8_t *)&matrix length:sizeof(SCNMatrix4) forKey:key];
+}
+
 + (NSArray *)decodeArrayOfClass:(Class)cls coder:(NSCoder *)coder forKey:(NSString *)key
 {
     id decoded = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSArray class], cls, nil] forKey:key];
@@ -517,7 +531,7 @@ static UIColor *CharonSCNArchivedColorValue(CharonSCNArchivedColor *color, NSStr
 
 + (UIColor *)colorWithLinearWhite:(double)white
 {
-    double encoded = CharonSRGBEncode(white);
+    double encoded = charon_srgb_encode(white);
     return [UIColor colorWithRed:encoded green:encoded blue:encoded alpha:1];
 }
 

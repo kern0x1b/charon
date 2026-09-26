@@ -22,6 +22,17 @@
       "effect": "SCNLight.type accepts this string; none of the four target assets (gift/diamond/star2/coin) use a probe light",
       "source": "release cache measurement: _SCNLightTypeProbe present in the armv7 dyld_shared_cache of 9.0 through 9.3.6, absent before it (8.0/8.4.1 checked)",
       "facts": "facts/SceneKit/SceneKit.md"
+    },
+    {
+      "api": "SCNSceneRendererDelegate",
+      "kind": "protocol",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "SCNView sends it; the protocol status is not pushed onto the class that sends it",
+      "effect": "renderer:updateAtTime:, didApplyAnimationsAtTime:, didSimulatePhysicsAtTime:, didApplyConstraintsAtTime:, willRenderScene:atTime: and didRenderScene:atTime: are sent in that order for every frame the view draws, on the main thread, and once at time 0 from -snapshot",
+      "source": "measured on the cache ladder with objc.inventory: the protocol is absent from the armv7 caches up to 8.4.1 and present from 9.0; the order and the snapshot's messages from macOS SceneKit's SCNView (facts)",
+      "facts": "facts/SceneKit/SCNView.md"
     }
   ]
 }

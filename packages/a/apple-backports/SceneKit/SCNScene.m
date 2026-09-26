@@ -8,6 +8,9 @@ NSString *const SCNSceneUpAxisAttributeKey = @"SCNSceneUpAxisAttributeKey";
 @implementation SCNScene
 {
     NSMutableDictionary<NSString *, id> *_attributes;
+    NSURL *_sourceURL;
+    SCNMaterialProperty *_background;
+    SCNMaterialProperty *_lightingEnvironment;
 }
 
 - (instancetype)init
@@ -16,6 +19,12 @@ NSString *const SCNSceneUpAxisAttributeKey = @"SCNSceneUpAxisAttributeKey";
         _rootNode = [SCNNode node];
         _attributes = [NSMutableDictionary dictionary];
         _physicsWorld = [[SCNPhysicsWorld alloc] init];
+        // made with their scene, as a material's slots are: they sample the nearest mipmap level (mipFilter 1 on macOS,
+        // tests/backports/device/scenekit-defaults-expectations.h), a property made alone does not
+        _background = [SCNMaterialProperty new];
+        _background.mipFilter = SCNFilterModeNearest;
+        _lightingEnvironment = [SCNMaterialProperty new];
+        _lightingEnvironment.mipFilter = SCNFilterModeNearest;
     }
     return self;
 }
@@ -27,6 +36,21 @@ NSString *const SCNSceneUpAxisAttributeKey = @"SCNSceneUpAxisAttributeKey";
 
 @synthesize rootNode = _rootNode;
 @synthesize physicsWorld = _physicsWorld;
+
+- (SCNMaterialProperty *)background
+{
+    return _background;
+}
+
+- (SCNMaterialProperty *)lightingEnvironment
+{
+    return _lightingEnvironment;
+}
+
+- (NSURL *)charonSourceURL
+{
+    return _sourceURL;
+}
 
 - (id)attributeForKey:(NSString *)key
 {
@@ -69,6 +93,7 @@ NSString *const SCNSceneUpAxisAttributeKey = @"SCNSceneUpAxisAttributeKey";
         }
         return nil;
     }
+    ((SCNScene *)root)->_sourceURL = url;
     return root;
 }
 
@@ -90,6 +115,15 @@ NSString *const SCNSceneUpAxisAttributeKey = @"SCNSceneUpAxisAttributeKey";
         if (physicsWorld) {
             _physicsWorld = physicsWorld;
         }
+        // the archive keys are background and environment (star2.scn)
+        SCNMaterialProperty *background = [coder decodeObjectOfClass:[SCNMaterialProperty class] forKey:@"background"];
+        if (background) {
+            _background = background;
+        }
+        SCNMaterialProperty *environment = [coder decodeObjectOfClass:[SCNMaterialProperty class] forKey:@"environment"];
+        if (environment) {
+            _lightingEnvironment = environment;
+        }
     }
     return self;
 }
@@ -98,6 +132,8 @@ NSString *const SCNSceneUpAxisAttributeKey = @"SCNSceneUpAxisAttributeKey";
 {
     [coder encodeObject:_rootNode forKey:@"rootNode"];
     [coder encodeObject:_physicsWorld forKey:@"physicsWorld"];
+    [coder encodeObject:_background forKey:@"background"];
+    [coder encodeObject:_lightingEnvironment forKey:@"environment"];
 }
 
 @end

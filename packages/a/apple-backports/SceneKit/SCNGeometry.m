@@ -49,6 +49,7 @@ static NSArray<SCNGeometrySourceSemantic> *CharonSCNKnownSemantics(void)
 
 @synthesize name = _name;
 @synthesize materials = _materials;
+@synthesize subdivisionLevel = _subdivisionLevel;
 
 - (SCNMaterial *)firstMaterial
 {
@@ -143,6 +144,7 @@ static NSArray<SCNGeometrySourceSemantic> *CharonSCNKnownSemantics(void)
             }
         }
         _elements = [CharonSCNCoding decodeArrayOfClass:[SCNGeometryElement class] coder:coder forKey:@"elements"];
+        _subdivisionLevel = (NSUInteger)[coder decodeIntegerForKey:@"subdivisionLevel"];
     }
     return self;
 }
@@ -155,6 +157,7 @@ static NSArray<SCNGeometrySourceSemantic> *CharonSCNKnownSemantics(void)
         [coder encodeObject:_sourcesBySemantic[semantic] forKey:semantic];
     }
     [coder encodeObject:_elements forKey:@"elements"];
+    [coder encodeInteger:(NSInteger)_subdivisionLevel forKey:@"subdivisionLevel"];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -167,6 +170,7 @@ static NSArray<SCNGeometrySourceSemantic> *CharonSCNKnownSemantics(void)
     copy->_hasExplicitBoundingBox = _hasExplicitBoundingBox;
     copy->_sourcesBySemantic = [_sourcesBySemantic mutableCopy];
     copy->_elements = [_elements copy];
+    copy->_subdivisionLevel = _subdivisionLevel;
     return copy;
 }
 

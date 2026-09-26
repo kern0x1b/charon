@@ -3,6 +3,8 @@
 @implementation SCNMaterialProperty
 {
     BOOL _colorNotRead;
+    BOOL _holdsDefault;
+    CharonSCNAnimations *_animations;
 }
 
 - (instancetype)init
@@ -27,6 +29,34 @@
     return property;
 }
 
++ (instancetype)charonDefaultWithContents:(id)contents
+{
+    SCNMaterialProperty *property = [self materialPropertyWithContents:contents];
+    property->_holdsDefault = YES;
+    // a new material's slots, unlike a property made alone, sample the nearest mipmap level: macOS SceneKit answers 1
+    // for every slot and 0 alone (scenekit-defaults-expectations.h), and a 256-texel gradient drawn 16 texels to the
+    // pixel shows 248 at its clamped edge, the mean of the 16 edge texels, where level 0 gives 255 (facts/SceneKit/SCNView.md)
+    property->_mipFilter = SCNFilterModeNearest;
+    return property;
+}
+
+- (BOOL)charonHoldsDefault
+{
+    return _holdsDefault;
+}
+
+- (void)charonKeepDefaultOf:(SCNMaterialProperty *)fallback
+{
+    _contents = fallback->_contents;
+    _holdsDefault = fallback->_holdsDefault;
+}
+
+- (void)setContents:(id)contents
+{
+    _contents = contents;
+    _holdsDefault = NO;
+}
+
 @synthesize contents = _contents;
 @synthesize intensity = _intensity;
 @synthesize minificationFilter = _minificationFilter;
@@ -40,6 +70,69 @@
 - (BOOL)charonColorNotRead
 {
     return _colorNotRead;
+}
+
+#pragma mark SCNAnimatable
+
+- (CharonSCNAnimations *)charonAnimations
+{
+    return _animations;
+}
+
+- (void)addAnimation:(id<SCNAnimation>)animation forKey:(NSString *)key
+{
+    if (_animations == nil) {
+        _animations = [CharonSCNAnimations new];
+    }
+    [_animations addAnimation:animation forKey:key];
+}
+
+- (void)removeAnimationForKey:(NSString *)key
+{
+    [_animations removeAnimationForKey:key];
+}
+
+- (void)removeAllAnimations
+{
+    [_animations removeAllAnimations];
+}
+
+- (NSArray<NSString *> *)animationKeys
+{
+    return _animations ? [_animations animationKeys] : @[];
+}
+
+- (CAAnimation *)animationForKey:(NSString *)key
+{
+    return [_animations animationForKey:key];
+}
+
+- (void)pauseAnimationForKey:(NSString *)key
+{
+    [_animations pauseAnimationForKey:key];
+}
+
+- (void)resumeAnimationForKey:(NSString *)key
+{
+    [_animations resumeAnimationForKey:key];
+}
+
+- (BOOL)isAnimationForKeyPaused:(NSString *)key
+{
+    return [_animations isAnimationForKeyPaused:key];
+}
+
+// contentsTransform is the key path measured against macOS SceneKit; others are said and left
+- (NSValue *)charonModelValueForKeyPath:(NSString *)keyPath
+{
+    if ([keyPath isEqualToString:@"contentsTransform"]) return [NSValue valueWithSCNMatrix4:_contentsTransform];
+    return nil;
+}
+
+- (SCNMatrix4)charonPresentedContentsTransform
+{
+    NSValue *presented = [_animations presented][@"contentsTransform"];
+    return presented ? [presented SCNMatrix4Value] : _contentsTransform;
 }
 
 + (BOOL)supportsSecureCoding
@@ -78,6 +171,9 @@
             _wrapT = [coder decodeIntegerForKey:@"wrapT"];
         }
         _mappingChannel = [coder decodeIntegerForKey:@"mappingChannel"];
+        if ([coder containsValueForKey:@"contentsTransform"]) {
+            _contentsTransform = [CharonSCNCoding decodeMatrix4:coder forKey:@"contentsTransform"];
+        }
     }
     return self;
 }
@@ -91,6 +187,7 @@
     [coder encodeInteger:_wrapS forKey:@"wrapS"];
     [coder encodeInteger:_wrapT forKey:@"wrapT"];
     [coder encodeInteger:_mappingChannel forKey:@"mappingChannel"];
+    [CharonSCNCoding encodeMatrix4:_contentsTransform coder:coder forKey:@"contentsTransform"];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -105,6 +202,8 @@
     copy->_wrapS = _wrapS;
     copy->_wrapT = _wrapT;
     copy->_mappingChannel = _mappingChannel;
+    copy->_holdsDefault = _holdsDefault;
+    copy->_animations = [_animations charonCopy];
     return copy;
 }
 

@@ -6,11 +6,14 @@ resource, not user data. Read with `plutil -p` and with Python's `plistlib`
 (walking `$objects`/`$class`/`$classname` to trace which object references
 which). Cross-checked against a real `SCNScene(url:)` load on macOS SceneKit
 via a throwaway Swift script, which is a real, running Apple SceneKit acting
-as a behavior oracle, not a guess. iOS-asset equivalence is assumed, not
-measured: the iOS bundle carries `gift2_<version>.scn` behind a decompression
-step, and the version suffix is a real reason the two could differ. If they
-do, `SCNKeyedUnarchiver`'s failure will name the missing class or leave a
-property at its default — loud or silent-but-visible, not a crash.
+as a behavior oracle, not a guess.
+
+**Retracted 2026-09-23: iOS-asset equivalence was assumed, and half of it is wrong.** Measured since: the iOS
+Telegram 12.9.2 loads ten scenes (`submodules/PremiumUI/Resources/`, gzip): `star2`, `coin`, `gift2` and seven without geometry (`badge`, `emoji`, `tag`, `business`, `boost`, `lightspeed`, `swirl`). Decompressed, `star2`
+and `coin` are byte for byte the macOS files above; `gift2` — what GiftAvatarComponent and PremiumDiamondComponent
+load — matches neither `gift.scn` nor `diamond.scn`, which the iOS client does not load at all. What this file says
+about `gift`/`diamond` is true of those macOS files and says nothing about `gift2`. `SCNView.md` has the inventory of
+the ten iOS scenes.
 
 ## Fact: an archived color is an `NSColor` in its authoring color space — nested or in the graph
 

@@ -19,7 +19,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the node graph the archive decodes into -- position/rotation/orientation/scale as the archive's own 12/16-byte blobs, childNodes, geometry, light, camera, physicsField and the particleSystems the SCNParticleSystemSupport category adds",
-      "effect": "carries the confirmed surface (getBoundingBoxMin:max:/getBoundingSphereCenter:radius:/setBoundingBoxMin:max: from SCNBoundingVolume) honestly: answers NO when no explicit bounding box was set rather than fabricating one",
+      "effect": "carries the confirmed surface (getBoundingBoxMin:max:/getBoundingSphereCenter:radius:/setBoundingBoxMin:max: from SCNBoundingVolume) honestly: answers NO when no explicit bounding box was set rather than fabricating one; a transform set as a matrix is kept as given (a shear stays; position, scale and orientation are its split), worldTransform composes the parents', animations are evaluated as facts/SceneKit/SCNView.md says, presentationNode is one node for each node with the hierarchy, and copy keeps the animations and movabilityHint but no children",
       "source": "coordination/corpus/sdk-introduced.json: SCNNode, class, version null; release cache measurement: SceneKit.framework absent at 7.1.2, present at 8.0",
       "facts": "facts/SceneKit/SceneKit.md"
     },
@@ -30,7 +30,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "materials/name/firstMaterial and the SCNBoundingVolume protocol, the base every parametric and mesh geometry in the archive extends",
-      "effect": "materials decodes from the archive's array; geometrySources/geometryElements answer empty until the mesh-bearing subclasses (SCNGeometrySource/SCNGeometryElement, star2/coin tier) are carried",
+      "effect": "materials decodes from the archive's array; geometrySources/geometryElements answer the sources and elements the archive or SCNGeometry(sources:elements:) gave, which SCNView draws",
       "source": "coordination/corpus/sdk-introduced.json: SCNGeometry, class, version null; release cache measurement: SceneKit.framework absent at 7.1.2, present at 8.0",
       "facts": "facts/SceneKit/SceneKit.md"
     },
@@ -74,7 +74,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the readonly SCNMaterialProperty slots (diffuse/ambient/specular/normal/reflective/emission/transparent/multiply/displacement/ambientOcclusion/selfIllumination/metalness/roughness), lightingModelName, doubleSided, transparency, shininess, blendMode",
-      "effect": "carries both the Blinn and the PhysicallyBased lighting model names the archive names; the PBR shading itself is an OpenGL ES 2.0 approximation, not the real physically-based pipeline",
+      "effect": "carries both the Blinn and the PhysicallyBased lighting model names the archive names; SCNView draws every lighting model but ShadowOnly (drawn as Blinn, said once) over OpenGL ES 2.0 as measured against macOS SceneKit (facts/SceneKit/SCNView.md, \"Lighting\"), with the physically based self-illumination term a fit of macOS's pixels, not SceneKit's formula (coordination/crutches.md); the clear coat slots are decoded and not drawn, and doubleSided, cullMode, readsFromDepthBuffer, writesToDepthBuffer and locksAmbientWithDiffuse are drawn",
       "source": "coordination/corpus/sdk-introduced.json: SCNMaterial, class, version null; release cache measurement: SceneKit.framework absent at 7.1.2, present at 8.0",
       "facts": "facts/SceneKit/SceneKit.md"
     },
@@ -85,7 +85,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "contents (through the archive's {\"path\": \"<name>\"} resource reference, resolved against the scene's own source URL, or the nested-archive color), intensity, wrap/filter modes, mappingChannel",
-      "effect": "a contents reference to a file beside the .scn resolves to its NSURL; the image itself is decoded by whatever loads it for rendering, not by this class",
+      "effect": "a contents reference to a file beside the .scn is kept as the file name string the archive holds, not an NSURL; SCNView looks a bare name up beside the scene, then in the main bundle, and holds one texture for each file it resolves to",
       "source": "coordination/corpus/sdk-introduced.json: SCNMaterialProperty, class, version null; release cache measurement: SceneKit.framework absent at 7.1.2, present at 8.0",
       "facts": "facts/SceneKit/SceneKit.md"
     },
@@ -594,6 +594,182 @@
       "effect": "SCNGeometry.geometrySourcesForSemantic: and the archive decoder both key off this exact string; a guessed value would silently return zero sources instead of failing",
       "source": "coordination/corpus/sdk-introduced.json: SCNGeometrySourceSemanticTexcoord, constant, version null; release cache measurement: the literal string kGeometrySourceSemanticVertex is absent from the 7.1.2 armv7 dyld_shared_cache and present at 8.0; confirmed against the real star2.scn archive read with plistlib",
       "facts": "facts/SceneKit/SceneKit.md"
+    },
+    {
+      "api": "SCNView",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a strong import of the class kills Telegram at launch (crash-demand LOAD-FAIL, caller telegram); the release has no SceneKit, so the view is a CAEAGLLayer view drawing the scene with this library's own OpenGL ES 2.0 renderer",
+      "effect": "initWithFrame:options:, initWithFrame:, scene, delegate, pointOfView (the scene's first camera node once a scene is set), preferredFramesPerSecond (a CADisplayLink interval; 0 is every frame), jitteringEnabled, snapshot, eaglContext, renderingAPI (OpenGLES2), context; the delegate gets update, didApplyAnimations, didSimulatePhysics, didApplyConstraints, willRenderScene and didRenderScene in SceneKit's order, and -snapshot sends them once at time 0 on the calling thread, as macOS SceneKit does; meshes are lit with SceneKit's constant, lambert, blinn, phong and physically based models as measured against macOS SceneKit (facts). the animations of SCNAnimatable are evaluated before each frame, and every part of a scene the view does not draw is said once in the log. Not done yet, named in facts: jittered accumulation (the flag is kept, nothing is accumulated), idle frames (the view redraws every display frame), antialiasingMode, allowsCameraControl, playing/loops/sceneTime, hit testing and projection, particles, subdivision and clear coat",
+      "source": "measured on the cache ladder with objc.inventory and dyld.load (tests/backports/host/scenekit/ladder/ladder.lua and symladder.lua, run as `xmake l ladder.lua <modules> <out>`; controls -[UIView setNeedsLayout] found at 6.1.3, an invented selector, class and symbol found nowhere): absent from 6.1.3 and 7.1.2, present from the armv7 cache of 8.0; members of Telegram's own calls read from the release-12.9.2 source (PremiumStarComponent, PremiumCoinComponent, GiftAvatarComponent, PremiumDiamondComponent)",
+      "facts": "facts/SceneKit/SCNView.md"
+    },
+    {
+      "api": "SCNSceneRenderer",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "SCNView adopts it; the protocol status is not pushed onto the class that adopts it",
+      "effect": "SCNView answers scene, delegate, pointOfView, jitteringEnabled, renderingAPI, context, and nil for the Metal device, command queue and encoder a renderer that is not Metal has; its other members are not implemented and are named in facts",
+      "source": "measured on the cache ladder with objc.inventory and dyld.load (tests/backports/host/scenekit/ladder/ladder.lua and symladder.lua, run as `xmake l ladder.lua <modules> <out>`; controls -[UIView setNeedsLayout] found at 6.1.3, an invented selector, class and symbol found nowhere): absent from 6.1.3 and 7.1.2, present from the armv7 cache of 8.0",
+      "facts": "facts/SceneKit/SCNView.md"
+    },
+    {
+      "api": "SCNMatrix4Mult()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the renderer and the node transforms need the arithmetic, and the release exports it itself from SceneKit, which iOS 6 does not have",
+      "effect": "the product a * b of row-vector matrices, a applied first; the answer macOS SceneKit gives for the same matrices (tests/backports/host/scenekit)",
+      "source": "measured on the cache ladder with objc.inventory and dyld.load (tests/backports/host/scenekit/ladder/ladder.lua and symladder.lua, run as `xmake l ladder.lua <modules> <out>`; controls -[UIView setNeedsLayout] found at 6.1.3, an invented selector, class and symbol found nowhere): absent from 6.1.3 and 7.1.2, present from the armv7 cache of 8.0",
+      "facts": "facts/SceneKit/SCNView.md"
+    },
+    {
+      "api": "SCNMatrix4Invert()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "as SCNMatrix4Mult",
+      "effect": "the inverse by cofactors; a matrix with no inverse is answered unchanged, which is macOS SceneKit's answer for SCNMatrix4MakeScale(1, 0, 1)",
+      "source": "measured on the cache ladder with objc.inventory and dyld.load (tests/backports/host/scenekit/ladder/ladder.lua and symladder.lua, run as `xmake l ladder.lua <modules> <out>`; controls -[UIView setNeedsLayout] found at 6.1.3, an invented selector, class and symbol found nowhere): absent from 6.1.3 and 7.1.2, present from the armv7 cache of 8.0",
+      "facts": "facts/SceneKit/SCNView.md"
+    },
+    {
+      "api": "SCNMatrix4MakeRotation()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "as SCNMatrix4Mult",
+      "effect": "the rotation about the normalised axis; a zero axis gives the identity, as macOS SceneKit answers",
+      "source": "measured on the cache ladder with objc.inventory and dyld.load (tests/backports/host/scenekit/ladder/ladder.lua and symladder.lua, run as `xmake l ladder.lua <modules> <out>`; controls -[UIView setNeedsLayout] found at 6.1.3, an invented selector, class and symbol found nowhere): absent from 6.1.3 and 7.1.2, present from the armv7 cache of 8.0",
+      "facts": "facts/SceneKit/SCNView.md"
+    },
+    {
+      "api": "SCNMatrix4Scale()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "as SCNMatrix4Mult",
+      "effect": "the scale applied before m (its rows scaled, the translation kept), macOS SceneKit's answer",
+      "source": "measured on the cache ladder with objc.inventory and dyld.load (tests/backports/host/scenekit/ladder/ladder.lua and symladder.lua, run as `xmake l ladder.lua <modules> <out>`; controls -[UIView setNeedsLayout] found at 6.1.3, an invented selector, class and symbol found nowhere): absent from 6.1.3 and 7.1.2, present from the armv7 cache of 8.0",
+      "facts": "facts/SceneKit/SCNView.md"
+    },
+    {
+      "api": "SCNMatrix4Rotate()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "as SCNMatrix4Mult",
+      "effect": "the rotation applied before m, the translation kept, macOS SceneKit's answer",
+      "source": "measured on the cache ladder with objc.inventory and dyld.load (tests/backports/host/scenekit/ladder/ladder.lua and symladder.lua, run as `xmake l ladder.lua <modules> <out>`; controls -[UIView setNeedsLayout] found at 6.1.3, an invented selector, class and symbol found nowhere): absent from 6.1.3 and 7.1.2, present from the armv7 cache of 8.0",
+      "facts": "facts/SceneKit/SCNView.md"
+    },
+    {
+      "api": "SCNMatrix4IsIdentity()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "as SCNMatrix4Mult",
+      "effect": "exact float comparison with the identity",
+      "source": "measured on the cache ladder with objc.inventory and dyld.load (tests/backports/host/scenekit/ladder/ladder.lua and symladder.lua, run as `xmake l ladder.lua <modules> <out>`; controls -[UIView setNeedsLayout] found at 6.1.3, an invented selector, class and symbol found nowhere): absent from 6.1.3 and 7.1.2, present from the armv7 cache of 8.0",
+      "facts": "facts/SceneKit/SCNView.md"
+    },
+    {
+      "api": "SCNMatrix4EqualToMatrix4()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "as SCNMatrix4Mult",
+      "effect": "element by element with ==, so a NaN is unequal to itself and -0 equals 0, as macOS SceneKit answers",
+      "source": "measured on the cache ladder with objc.inventory and dyld.load (tests/backports/host/scenekit/ladder/ladder.lua and symladder.lua, run as `xmake l ladder.lua <modules> <out>`; controls -[UIView setNeedsLayout] found at 6.1.3, an invented selector, class and symbol found nowhere): absent from 6.1.3 and 7.1.2, present from the armv7 cache of 8.0",
+      "facts": "facts/SceneKit/SCNView.md"
+    },
+    {
+      "api": "SCNVector3EqualToVector3()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "as SCNMatrix4Mult",
+      "effect": "component by component with ==, NaN unequal and -0 equal to 0, macOS SceneKit's answers",
+      "source": "measured on the cache ladder with objc.inventory and dyld.load (tests/backports/host/scenekit/ladder/ladder.lua and symladder.lua, run as `xmake l ladder.lua <modules> <out>`; controls -[UIView setNeedsLayout] found at 6.1.3, an invented selector, class and symbol found nowhere): absent from 6.1.3 and 7.1.2, present from the armv7 cache of 8.0",
+      "facts": "facts/SceneKit/SCNView.md"
+    },
+    {
+      "api": "SCNVector4EqualToVector4()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "as SCNMatrix4Mult",
+      "effect": "component by component with ==",
+      "source": "measured on the cache ladder with objc.inventory and dyld.load (tests/backports/host/scenekit/ladder/ladder.lua and symladder.lua, run as `xmake l ladder.lua <modules> <out>`; controls -[UIView setNeedsLayout] found at 6.1.3, an invented selector, class and symbol found nowhere): absent from 6.1.3 and 7.1.2, present from the armv7 cache of 8.0",
+      "facts": "facts/SceneKit/SCNView.md"
+    },
+    {
+      "api": "SCNMatrix4ToGLKMatrix4()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "as SCNMatrix4Mult",
+      "effect": "the same sixteen floats in the same order, macOS SceneKit's answer",
+      "source": "measured on the cache ladder with objc.inventory and dyld.load (tests/backports/host/scenekit/ladder/ladder.lua and symladder.lua, run as `xmake l ladder.lua <modules> <out>`; controls -[UIView setNeedsLayout] found at 6.1.3, an invented selector, class and symbol found nowhere): absent from 6.1.3 and 7.1.2, present from the armv7 cache of 8.0",
+      "facts": "facts/SceneKit/SCNView.md"
+    },
+    {
+      "api": "SCNMatrix4FromGLKMatrix4()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "as SCNMatrix4Mult",
+      "effect": "the same sixteen floats in the same order",
+      "source": "measured on the cache ladder with objc.inventory and dyld.load (tests/backports/host/scenekit/ladder/ladder.lua and symladder.lua, run as `xmake l ladder.lua <modules> <out>`; controls -[UIView setNeedsLayout] found at 6.1.3, an invented selector, class and symbol found nowhere): absent from 6.1.3 and 7.1.2, present from the armv7 cache of 8.0",
+      "facts": "facts/SceneKit/SCNView.md"
+    },
+    {
+      "api": "SCNVector3Zero",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "as SCNMatrix4Mult",
+      "effect": "(0, 0, 0)",
+      "source": "measured on the cache ladder with objc.inventory and dyld.load (tests/backports/host/scenekit/ladder/ladder.lua and symladder.lua, run as `xmake l ladder.lua <modules> <out>`; controls -[UIView setNeedsLayout] found at 6.1.3, an invented selector, class and symbol found nowhere): absent from 6.1.3 and 7.1.2, present from the armv7 cache of 8.0",
+      "facts": "facts/SceneKit/SCNView.md"
+    },
+    {
+      "api": "SCNVector4Zero",
+      "kind": "constant",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "as SCNMatrix4Mult",
+      "effect": "(0, 0, 0, 0)",
+      "source": "measured on the cache ladder with objc.inventory and dyld.load (tests/backports/host/scenekit/ladder/ladder.lua and symladder.lua, run as `xmake l ladder.lua <modules> <out>`; controls -[UIView setNeedsLayout] found at 6.1.3, an invented selector, class and symbol found nowhere): absent from 6.1.3 and 7.1.2, present from the armv7 cache of 8.0",
+      "facts": "facts/SceneKit/SCNView.md"
+    },
+    {
+      "api": "SCNAnimatable",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "Telegram's star and coin components add Core Animation objects to SCNNode and SCNMaterialProperty, which adopt it; the protocol status is not pushed onto the classes that adopt it",
+      "effect": "SCNNode and SCNMaterialProperty answer addAnimation:forKey:, removeAnimationForKey:, removeAllAnimations, animationKeys, animationForKey:, pauseAnimationForKey:, resumeAnimationForKey: and isAnimationForKeyPaused:, and SCNView evaluates CABasicAnimation, CASpringAnimation and CAAnimationGroup on eulerAngles, scale, position, opacity and contentsTransform each frame as macOS SceneKit does (facts); another key path or animation class is said once in the log and not evaluated; removeAnimationForKey:fadeOutDuration:, setSpeed:forAnimationKey: and the SCNAnimationPlayer members of iOS 11 are not carried",
+      "source": "measured on the cache ladder with objc.inventory: absent up to 7.1.2, present from 8.0; the behaviour from macOS SceneKit's own series of Telegram's animations (tests/backports/host/scenekit/animation)",
+      "facts": "facts/SceneKit/SCNView.md"
     }
   ]
 }
