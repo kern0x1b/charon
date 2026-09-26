@@ -212,7 +212,9 @@ static void landing(Side side, double y[4])
 
 static void test_landing(void)
 {
-    // s_oracle.m, facts/UIKit/UIDynamicAnimator.md §12 (T5): y at frames 26, 27, 28 and at rest (frame 300).
+    // s_oracle.m, facts/UIKit/UIDynamicAnimator.md §12 (T5): y at frames 26, 27, 28 and at rest (frame 300). In this build
+    // (the host's integrator and shapes: no skin, full-size box) the port's rest is the oracle's to the digit, measured
+    // 248.216629 on both, so the rest is held to the same 1e-3 pt as the fall.
     const double measured[4] = {192.083298, 199.374969, 206.944397, 248.216629};
     double oracle[4], ours[4];
     landing(Oracle, oracle);
@@ -220,9 +222,7 @@ static void test_landing(void)
     for (int index = 0; index < 4; index++) {
         NSString *context = index < 3 ? [NSString stringWithFormat:@"frame %d", 26 + index] : @"at rest, frame 300";
         check_near(oracle[index], measured[index], 5e-5, "oracle lands as s_oracle measured", context);
-        // 1e-3 pt before the contact; 2.5 pt at rest (the edge skin and the host's radii,
-        // facts/UIKit/UIDynamicAnimator.md §2.3).
-        check_near(ours[index], oracle[index], index < 3 ? 1e-3 : 2.5, index < 3 ? "T5 fall before the contact as the oracle" : "T5 rest on the boundary as the oracle", context);
+        check_near(ours[index], oracle[index], 1e-3, index < 3 ? "T5 fall before the contact as the oracle" : "T5 rest on the boundary as the oracle", context);
     }
 }
 

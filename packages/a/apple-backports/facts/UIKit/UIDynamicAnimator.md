@@ -150,7 +150,7 @@ Read (7.0 `-_registerBodyForItem:shape:`), in order:
 Measured (host, `b_raw.m`): `SetAsBox(w/2/ptm, h/2/ptm)`, no inset, radius 0. Read (7.0): inset 2 pt, `w' = (w > 3) ? w - 2 :
 max(w - 2, w/2)` (same for h), `_areaFactor = (w*h)/(w'*h')`, `m_radius = 0.001f` set after `SetAsBox`; fixture density =
 density * areaFactor, so mass = density * w*h/ptm^2 whatever the inset. 2.2.1's collision is the fork's: polygon-polygon skin
-0.002 m, edge or chain a fixed 0.02 m. So the host's contacts sit about 1 pt per side off 7.0's: 2.5 pt at rest in T5 (§12).
+0.002 m, edge or chain a fixed 0.02 m. Measured on the host (T5, §12): in the host build (no skin, full-size box) the port rests at 248.216629, the oracle's to the digit; as shipped (skin 0.001 m, box 1 pt inside) the same scene rests at 249.0188141, its bottom 0.98 pt above the boundary, which is about what the device probe expects (1 pt, `device/dynamics.m`). The earlier "about 1 pt per side, 2.5 pt at rest" was a bound, not a measurement; the two builds differ by 0.80 pt at rest, not derived further.
 Measured masses: 100x100 density 1 -> 1 kg; 200x50 density 3 -> 3 kg, I 1.0625; 1x1 -> 1e-4 (no minimum size).
 
 ### §2.5 Material properties, and several item behaviours on one item
@@ -419,7 +419,7 @@ Read (7.0 `-initWithReferenceSystem:`), shared by the three initializers:
 - **On the main thread `+_registerAnimator:self`**, the list `+_referenceViewSizeChanged:view` walks to tickle every animator
   whose reference view is `view` (the boundary is rebuilt in the next step). The port keeps a non-retaining list of the
   animators made on the main thread; one leaves it in `-dealloc`. **The specification had called this wake lost on iOS 6;
-  M3 measured it, and the port wraps UIView's two setters (M3).**
+  M3 measured it: the port observes the reference view's `frame` and `bounds` (M3).**
 - `elapsedTime` = the sum of the dt given (measured 0.0666666667 after 4 steps of 1/60), never reset.
 - `description` (measured, `desc.m`): `<UIDynamicAnimator: p> Stopped (0.250000s) in <UIView: p> {{0, 0}, {400, 300}}`,
   `Stopped ` only while no display link runs; nil reference `<(null): 0x0>` with CGRectNull.
@@ -462,12 +462,12 @@ The port is compared with the oracle live, the oracle with the numbers its probe
 | row | scene | tolerance |
 |---|---|---|
 | T1, T1b | fall, resistance 0 and 0.1 (§1.3) | 1e-4 pt; T1b carries the damping formula's 4e-6 pt |
-| T1c | the same, as shipped, against the 7.0 prediction (§1.3) | 1e-5 pt |
+| T1c | the same, as shipped, against the 7.0 prediction (§1.3): `w_sim7.c`, this band's own float simulation of its reading of 7.0's listing, **not a 7.0 measurement** (no 7.0 device is in the fleet) | 1e-5 pt |
 | T2 | push continuous, instantaneous, offset, impulse (§4.2) | 1e-5 relative |
 | T3 | push algebra (§4.1) | exact |
 | T4 | pendulum, 40x40 at (200, 100), anchor (100, 100), gravity, resistances 0: f1 (199.999969, 100.069443), f10 (199.132126, 113.146225), f30 (139.359573, 191.92836), f60 (2.06188917, 120.202171), length 100 (`s_oracle.m`) | 0.05 pt at f30, 0.5 pt at f60 |
 | T4b | spring, 40x40 at (100, 250), anchor (100, 100), 2 Hz, damping 0.3, length 100 set first: f1 (100, 249.48938), f10 (100, 201.092148), f30 (100, 204.031586), f60 (100, 200.142715) (`s_oracle.m`) | 0.05 pt |
-| T5 | 100x100 at (100, 100), elasticity 0, resistance 0, onto a boundary at y 300 (`s_oracle.m`): f26 192.083298, f27 199.374969, f28 206.944397, rest 248.216629 | 1e-3 pt before contact, 2.5 pt at rest (§2.3) |
+| T5 | 100x100 at (100, 100), elasticity 0, resistance 0, onto a boundary at y 300 (`s_oracle.m`): f26 192.083298, f27 199.374969, f28 206.944397, rest 248.216629 | 1e-3 pt, before contact and at rest (§2.3) |
 | T6 | snap (§5) | 2e-4 pt |
 | T7 | collision masks and the group counter (§7.1, §7.2) | exact |
 | T8 | world gravity of several gravity behaviours (§3.2, §3.3) | exact |
@@ -481,14 +481,14 @@ The port is compared with the oracle live, the oracle with the numbers its probe
 | T17 | several item behaviours, reset on removal (§2.5) | exact |
 
 Groups and counts, measured 2026-09-24 on this host: `fall_ios70` 5/5 (T1c), `structure` 203/203 (T3, T7-T14, T17 and an
-animator released while its display link could start), `trajectory` 100/100 (T1, T1b, T2, T4, T4b, T5, T6, T15, T16).
+animator released while its display link could start), `trajectory` 100/100 (T1, T1b, T2, T4, T4b, T5, T6, T15, T16), `wake` 16/16 (M3; 2026-09-26).
 
 **Negative controls**, `sh tests/backports/host/dynamics/mutants.sh`: each mutant of a copy of `UIKit/` must fail its group.
-Measured: the exception name made internal inconsistency -> `structure` fails; gravity scale 10 -> 10.5 -> all three fail;
-the 7.0 sub-step 0.004 -> 0.005 -> `fall_ios70` fails; no restart guard in `-dealloc` -> `structure` aborts (exit 134).
+Measured: a wake on any change of the frame or bounds (not only of the size) -> `wake` fails 2 checks; the bounds observer
+without the prior option -> `wake` fails 1; the exception name made internal inconsistency -> `structure` fails; gravity scale
+10 -> 10.5 -> all three fail; the 7.0 sub-step 0.004 -> 0.005 -> `fall_ios70` fails; no restart guard in `-dealloc` -> `structure` aborts (exit 134).
 
-**Not covered by the host test**: the resize wake (M3; a window cannot be made in a command-line Catalyst process), the display
-link's cadence (§1.6), 7.0's own numbers other than T1c's prediction, and anything on a device.
+**Not covered by the host test**: the display link's cadence (§1.6), 7.0's own numbers other than T1c's prediction, and anything on a device.
 
 ## §13. Open
 
@@ -541,15 +541,43 @@ Read (7.0): the animator marks its reference view (`_registerAsReferenceView`, a
 `-setBounds:` call `_notifyReferenceViewSizeChange` only when the bounds size changed, and it calls
 `+[UIDynamicAnimator _referenceViewSizeChanged:]` for a marked view: the only two callers, no layer-side hook.
 
-**Why the port wraps the two setters, and not KVO.** iOS 6's setters tell no one. Measured (the table): KVO of the view's
-`frame` misses path (b), KVO of its `bounds` misses (a), and the layer's `bounds` fires on every size change but also on (c) and
-(d), which must not wake. Reasoned, not measured by `m_wake`: an observer must be removed before the observed view
-deallocates, or KVO faults on the observation info left behind, and the animator does not own its reference view's lifetime
-(it holds it weakly). There is no public hook, so
-`UIDynamicAnimator.mm` replaces the implementations of `-[UIView setFrame:]` and `-setBounds:` once, with
-`method_setImplementation`, when the first animator is listed (§9): each calls the original, and if some animator is listed
-and the bounds size changed, tickles the animators whose reference view it is, as 7.0's setters do after the change.
-Autoresizing and Auto Layout reach it through the same two setters, as on 7.0. Not covered by the host test (§12).
+**Measured on 6.1.3** (`xmake emulate -d iPhone4,1 -r 6.1.3`, `kvo.m`: a command-line program, no `UIApplicationMain`; the same
+nine paths, with `-[UIView setFrame:]` and `-setBounds:` counted by a probe-only wrap and KVO on the view's `frame` and `bounds`
+with the prior option):
+
+| path | `setFrame:` / `setBounds:` calls | size changed | KVO fired |
+|---|---|---|---|
+| (a) `view.frame =` | 1 / 0 | yes | frame |
+| (b) `view.bounds =` | 0 / 1 | yes | bounds |
+| (c) `view.layer.bounds =`, (d) `view.layer.frame =` | 0 / 0 | (layer only) | neither |
+| (e) superview resized, autoresizing | 1 / 0 | yes | frame |
+| (f) Auto Layout constant 400 -> 600 | 0 / 1 | yes | bounds |
+| (g) center, (h) transform, (i) layer position | 0 / 0 | no | neither |
+
+So on 6.1.3 KVO of `frame` together with `bounds`, each with the prior option (the bounds size read in the prior notification,
+compared in the one after), fires on exactly the calls that wake on 7.0: the same set as the host's table above, and the
+size-changed test is 7.0's own (the prior/after comparison came out 1 wake per wake path and 0 for the rest, `priors` 1 per
+setter call).
+
+**Lifetime on 6.1.3** (`kvo.m`, the same run). An observer left on a view that deallocates: the process lives, and KVO logs
+`An instance ... of class UIView was deallocated while key value observers were still registered with it. Observation info was
+leaked, and may even become mistakenly attached to some other object` with the observation info; 400 views made after it saw
+no stray callback, but the log line is KVO's own report of a defect. An observer removed by an object the view holds
+(`objc_setAssociatedObject`, released while the view deallocates, its `-dealloc` calling `removeObserver:forKeyPath:` on the
+view): no log line, no exception, the removal works in the middle of the view's deallocation; and the same object released
+early (association set to nil on a live view) removes the observers, the view then moves with no callback and deallocates
+without a log line. So the lifetime is solved by the public runtime API and no swizzle is needed.
+
+**The port**: `UIDynamicAnimator.mm`'s `CharonReferenceViewWatch`, one per reference view, held by the view (associated object)
+when an animator on the main thread lists it; it observes `frame` and `bounds` with the prior option and tickles the animators
+whose reference view it is when the bounds size differs. It goes with the view, or when the last animator over that view
+deallocates. Autoresizing and Auto Layout reach it through the same two setters, as on 7.0. Covered by the host test `wake`
+(§12; its two mutants in `mutants.sh`); the 6.1.3 numbers above are the emulator's, not a device's.
+
+**Retracted**: the port first wrapped the two setters with `method_setImplementation`, on the reading that KVO of `frame` misses
+`setBounds:` and KVO of `bounds` misses `setFrame:` (true, each alone) and that an observer would fault when its view deallocated
+(reasoned, not measured). The review (A1) asked for the union and the measurement; the union covers every waking path and the
+lifetime is benign or avoidable as above, so the wrap is gone.
 
 ## M4. limitAttachment maximum length
 

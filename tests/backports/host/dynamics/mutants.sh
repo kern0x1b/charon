@@ -17,3 +17,5 @@ run restart-in-dealloc UIDynamicAnimator.mm ' || _disableDisplayLink || _dealloc
 run circle-edge UIRegion.m 'charon_region_ellipse(halfWidth, halfHeight, point) <= 1.0f;' 'charon_region_ellipse(halfWidth, halfHeight, point) < 1.0f;'
 run group-transform UIDynamicItemGroup.m 'transform.c \* offset.y' 'transform.b * offset.y'
 run vortex-mass UIFieldBehavior.m '(uy \* scale) \/ m, (-ux \* scale) \/ m' '(uy * scale), (-ux * scale)'
+run wake-on-move UIDynamicAnimator.mm 'else if (!CGSizeEqualToSize(size, _sizeBefore))' 'else'
+run wake-without-prior UIDynamicAnimator.mm 'forKeyPath:@"bounds" options:NSKeyValueObservingOptionPrior' 'forKeyPath:@"bounds" options:0'

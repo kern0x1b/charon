@@ -538,11 +538,13 @@ typedef NS_ENUM(NSInteger, CharonReferenceSystem) {
 // +[UIDynamicAnimator _registerAnimator:] and +_referenceViewSizeChanged: (7.0, facts/UIKit/UIDynamicAnimator.md §9):
 // animators made on the main thread are listed, and 7.0's -[UIView setFrame:] and -setBounds: wake those whose
 // reference view's bounds size they changed. Autoresizing and Auto Layout reach it through the two setters; a
-// layer-level resize, center and transform do not (facts/UIKit/UIDynamicAnimator.md M3). iOS 6's setters tell no one:
-// KVO of frame misses setBounds:, KVO of bounds misses setFrame:, and an observer would have to leave before a view
-// the animator holds only weakly deallocates (reasoned, M3). So UIView's two setters are wrapped, once, when the first
-// animator is listed, and do what 7.0's do after the change. The list does not retain: an animator leaves it in its -dealloc.
+// layer-level resize, center and transform do not (facts/UIKit/UIDynamicAnimator.md M3). iOS 6's setters tell no one, but
+// they are KVO-compliant, and KVO of frame and bounds together fires on exactly the calls that wake on 7.0 (measured on
+// 6.1.3, M3). The observer is an object the reference view holds (an associated object), so it goes with the view: an
+// observer left on a view that deallocates is leaked by KVO with a log line (measured, M3). The list does not retain: an
+// animator leaves it in its -dealloc.
 static CFMutableArrayRef charon_animators;
+static char charon_watch_key;
 
 static void charon_reference_view_size_changed(UIView *view)
 {
@@ -553,27 +555,56 @@ static void charon_reference_view_size_changed(UIView *view)
     }
 }
 
-static void charon_wrap_geometry_setter(SEL selector)
-{
-    Method method = class_getInstanceMethod([UIView class], selector);
-    void (*original)(id, SEL, CGRect) = (void (*)(id, SEL, CGRect))method_getImplementation(method);
-    method_setImplementation(method, imp_implementationWithBlock(^(UIView *view, CGRect rect) {
-        CGSize old = view.bounds.size;
-        original(view, selector, rect);
-        if (CFArrayGetCount(charon_animators) && !CGSizeEqualToSize(old, view.bounds.size))
-            charon_reference_view_size_changed(view);
-    }));
+// Observes a reference view's frame and bounds until it is deallocated or an animator drops it. The prior notification
+// reads the bounds size before the setter changes it, the notification after compares: 7.0's own test.
+@interface CharonReferenceViewWatch : NSObject
+- (instancetype)initWithView:(UIView *)view;
+@end
+
+@implementation CharonReferenceViewWatch {
+    __unsafe_unretained UIView *_view;
+    CGSize _sizeBefore;
 }
+
+- (instancetype)initWithView:(UIView *)view
+{
+    if (!(self = [super init]))
+        return nil;
+    _view = view;
+    _sizeBefore = view.bounds.size;
+    [view addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionPrior context:NULL];
+    [view addObserver:self forKeyPath:@"bounds" options:NSKeyValueObservingOptionPrior context:NULL];
+    return self;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    CGSize size = _view.bounds.size;
+    if ([[change objectForKey:NSKeyValueChangeNotificationIsPriorKey] boolValue])
+        _sizeBefore = size;
+    else if (!CGSizeEqualToSize(size, _sizeBefore))
+        charon_reference_view_size_changed(_view);
+}
+
+// Runs from the view's own deallocation when the view holds this object last.
+- (void)dealloc
+{
+    [_view removeObserver:self forKeyPath:@"frame"];
+    [_view removeObserver:self forKeyPath:@"bounds"];
+}
+
+@end
 
 static void charon_register_animator(UIDynamicAnimator *animator)
 {
     static dispatch_once_t once;
     dispatch_once(&once, ^{
         charon_animators = CFArrayCreateMutable(NULL, 0, NULL);
-        charon_wrap_geometry_setter(@selector(setFrame:));
-        charon_wrap_geometry_setter(@selector(setBounds:));
     });
     CFArrayAppendValue(charon_animators, (__bridge const void *)animator);
+    UIView *view = animator.referenceView;
+    if (view && !objc_getAssociatedObject(view, &charon_watch_key))
+        objc_setAssociatedObject(view, &charon_watch_key, [[CharonReferenceViewWatch alloc] initWithView:view], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 static void charon_unregister_animator(UIDynamicAnimator *animator)
@@ -581,8 +612,16 @@ static void charon_unregister_animator(UIDynamicAnimator *animator)
     if (!charon_animators)
         return;
     CFIndex index = CFArrayGetFirstIndexOfValue(charon_animators, CFRangeMake(0, CFArrayGetCount(charon_animators)), (__bridge const void *)animator);
-    if (index != kCFNotFound)
-        CFArrayRemoveValueAtIndex(charon_animators, index);
+    if (index == kCFNotFound)
+        return;
+    CFArrayRemoveValueAtIndex(charon_animators, index);
+    UIView *view = animator.referenceView;
+    if (!view)
+        return;
+    for (index = 0; index < CFArrayGetCount(charon_animators); index++)
+        if (((__bridge UIDynamicAnimator *)CFArrayGetValueAtIndex(charon_animators, index)).referenceView == view)
+            return;
+    objc_setAssociatedObject(view, &charon_watch_key, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @implementation UIDynamicAnimator {
