@@ -551,6 +551,11 @@ static void run_gestures(void (^finished)(void))
         NSString *actual = list_value_line(factories[index], [UIListContentConfiguration performSelector:NSSelectorFromString(factories[index])]);
         charon_check(list_text_agrees(actual, @(lists_values[index]), 0.001), [NSString stringWithFormat:@"the %@ has the recorded values", factories[index]].UTF8String, [NSString stringWithFormat:@"\n  actual   %@\n  recorded %s", actual, lists_values[index]]);
     }
+    UIFont *header_font = [UIListContentConfiguration sidebarHeaderConfiguration].textProperties.font;
+    UIFont *system_font = [UIFont systemFontOfSize:17];
+    charon_check([header_font.fontName isEqualToString:system_font.fontName] && header_font.pointSize == system_font.pointSize && header_font.lineHeight == system_font.lineHeight,
+                 "on iOS 6 the sidebar header's text font is the release's 17-point system font: it has no medium face and no text style leading",
+                 [NSString stringWithFormat:@"header %@ %g line %g, system %@ %g line %g", header_font.fontName, header_font.pointSize, header_font.lineHeight, system_font.fontName, system_font.pointSize, system_font.lineHeight]);
     NSArray *backgrounds = @[@"clearConfiguration", @"listPlainCellConfiguration", @"listPlainHeaderFooterConfiguration", @"listGroupedCellConfiguration", @"listGroupedHeaderFooterConfiguration", @"listSidebarHeaderConfiguration",
                              @"listSidebarCellConfiguration", @"listAccompaniedSidebarCellConfiguration"];
     for (NSUInteger index = 0; index < backgrounds.count; index++) {

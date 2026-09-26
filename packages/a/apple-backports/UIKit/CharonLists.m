@@ -60,8 +60,10 @@ UIFont *charon_medium_font(CGFloat pointSize)
 
 UIFont *charon_medium_body_font(void)
 {
-    /* The sidebar header's font is the body text style at the medium weight, so it keeps the style's line
-       spacing and follows the content size category; a plain medium system font has neither. */
+    /* The sidebar header's font is the body text style at the medium weight, as the host builds it: it keeps the
+       style's line spacing there, which a plain medium system font lacks. iOS 6 has no medium face and no style
+       leading: this is the release's regular 17-point system font (measured on an iPad 2, 6.1.3;
+       facts/UIKit/UIListContentConfiguration.md). */
     UIFontDescriptor *descriptor = [[UIFont preferredFontForTextStyle:UIFontTextStyleBody].fontDescriptor fontDescriptorByAddingAttributes:@{UIFontDescriptorTraitsAttribute: @{UIFontWeightTrait: @(UIFontWeightMedium)}}];
     return [UIFont fontWithDescriptor:descriptor size:0];
 }
