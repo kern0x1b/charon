@@ -92,7 +92,7 @@ holds them.
     `objc_loadWeakRetained` in libobjc alone (`dlopen` of it with `RTLD_NOLOAD`, `dlsym` on that handle), not in every image:
     arclite, linked into a process, exports a function of that name of its own, and it is the one that aborts for
     `NSCFString`. The suite reads the path from an entry and holds it to the release's Foundation version: the `__weak`
-    reference on 5.0, 5.1.1 and 6.0, the watch alone on 4.3 (libobjc's answer on 4.3 is none: measured, by the suite's path check passing there). The owner thread enumerating a table's keys (reading each
+    reference on 5.0, 5.1.1 and 6.0, the watch alone on 4.3 (libobjc's answer on 4.3 is none: `probes/weak.m` prints, on 4.3, `libobjc handle: non-NULL` and `dlsym objc_loadWeakRetained: NULL` (`objc_storeWeak` and `objc_loadWeak` NULL as well), so the `dlopen` worked and the symbol is absent; on 5.0, 5.1.1 and 6.0 the handle is non-NULL and all three are found). The owner thread enumerating a table's keys (reading each
     key's `-hash`) and taking `-copy` while other threads dropped the keys and values, `NSMutableString` keys and values and
     then `NSNumber` ones, 200000 rounds each: clean for the three tables on 5.0, 5.1.1 and 6.0, the release's own tables on
     6.0 as well. On the host an enumeration probe of the same shape (100000 rounds, `NSObject` keys) against the port before
@@ -104,7 +104,7 @@ holds them.
     `weakToStrong`, the value of `strongToWeak`, both sides of `weakToWeak`), and the port does the same on 5.0, 5.1.1 and
     6.0; the same class as either side of `strongToStrong` is held and found, so it is the weak side that refuses. Nothing
     is dropped silently at those releases, and the outcome is 6.0's. The port on 4.3, which forms no weak reference, holds
-    the entry and finds it: it does not abort where 6.0 does. `emulate.sh` compares the outcome of each case with 6.0's.
+    the entry and finds it: it does not abort where 6.0 does. `emulate.sh` compares the outcome of each case with 6.0's on 5.0 and later, and on 4.3 holds it to `held, count 1, lookup found`.
   - **4.3: not closed, only narrowed.** The runtime has no `objc_storeWeak`, and arclite's abort for the objects that keep
     their own retain count (`cannot form weak reference to instance of class NSCFString: it manages its own retain count`,
     measured on 4.3 with an `NSMutableString`), so a watch is all there is and it runs after the object's `-dealloc`
