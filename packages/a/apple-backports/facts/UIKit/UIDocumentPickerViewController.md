@@ -14,7 +14,11 @@ MacOSX26.5.sdk` - which documents each default in its doc comment; see `UTType.m
 
 `initWithDocumentTypes:inMode:` takes the import and open modes and raises `NSInternalInconsistencyException` for the
 others; `initWithURL:inMode:` and `initWithURLs:inMode:` take the export and move modes and raise the same for the
-others, with the system's reasons. `init` and `initWithNibName:bundle:` raise `NSInvalidArgumentException`. The
+others, with the system's reasons. The export and move initializers also refuse a `nil` URL or `nil` array ("must be
+called with a valid URL") and a file URL whose file is not there ("must be called with a URL pointing to an existing
+file", followed by the error `-checkResourceIsReachableAndReturnError:` gave); a folder, a web address and an empty
+array are taken. The reason names the initializer the caller used, so `initForExportingURLs:asCopy:` is named for
+itself, not for the `initWithURLs:inMode:` it stands on. `init` and `initWithNibName:bundle:` raise `NSInvalidArgumentException`. The
 properties are kept and the delegate is weak.
 
 ## The iOS 14 initializers
@@ -24,7 +28,7 @@ properties are kept and the delegate is weak.
 port's browser already implements. `initForOpeningContentTypes:` calls it with `asCopy:NO`, matching the header's own
 doc comment ("giving you access to the original document").
 
-`initForExportingURLs:urls asCopy:asCopy` calls `initWithURLs:inMode:` with Export if `asCopy` is set, Move otherwise.
+`initForExportingURLs:urls asCopy:asCopy` takes the same route as `initWithURLs:inMode:` with Export if `asCopy` is set, Move otherwise.
 `initForExportingURLs:` calls it with `asCopy:NO`, matching the header's own doc comment for the single-argument form
 ("the original document will be moved to the destination") - the opposite default from the opening pair, read
 directly off the header rather than assumed to match.

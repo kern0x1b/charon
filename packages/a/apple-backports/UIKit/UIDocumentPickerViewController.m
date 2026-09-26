@@ -26,28 +26,35 @@
     return self;
 }
 
-- (instancetype)initWithURL:(NSURL *)url inMode:(UIDocumentPickerMode)mode
+- (instancetype)initWithURLs:(NSArray<NSURL *> *)urls inMode:(UIDocumentPickerMode)mode calledBy:(NSString *)caller
 {
-    if (mode != UIDocumentPickerModeExportToService && mode != UIDocumentPickerModeMoveToService)
-        [NSException raise:NSInternalInconsistencyException format:@"-[UIDocumentPickerViewController initWithURL:inMode:] can only be called with mode Export or Move"];
-    self = [super initWithNibName:nil bundle:nil];
-    if (self) {
-        _URLs = url ? @[url] : @[];
-        _documentPickerMode = mode;
+    if (!urls)
+        [NSException raise:NSInternalInconsistencyException format:@"-[UIDocumentPickerViewController %@] must be called with a valid URL", caller];
+    for (NSURL *url in urls) {
+        NSError *error = nil;
+        if ([url isFileURL] && ![url checkResourceIsReachableAndReturnError:&error])
+            [NSException raise:NSInternalInconsistencyException format:@"-[UIDocumentPickerViewController %@] must be called with a URL pointing to an existing file: %@", caller, error];
     }
-    return self;
-}
-
-- (instancetype)initWithURLs:(NSArray<NSURL *> *)urls inMode:(UIDocumentPickerMode)mode
-{
-    if (mode != UIDocumentPickerModeExportToService && mode != UIDocumentPickerModeMoveToService)
-        [NSException raise:NSInternalInconsistencyException format:@"-[UIDocumentPickerViewController initWithURLs:inMode:] can only be called with mode Export or Move"];
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         _URLs = [urls copy];
         _documentPickerMode = mode;
     }
     return self;
+}
+
+- (instancetype)initWithURL:(NSURL *)url inMode:(UIDocumentPickerMode)mode
+{
+    if (mode != UIDocumentPickerModeExportToService && mode != UIDocumentPickerModeMoveToService)
+        [NSException raise:NSInternalInconsistencyException format:@"-[UIDocumentPickerViewController initWithURL:inMode:] can only be called with mode Export or Move"];
+    return [self initWithURLs:url ? @[url] : nil inMode:mode calledBy:@"initWithURL:inMode:"];
+}
+
+- (instancetype)initWithURLs:(NSArray<NSURL *> *)urls inMode:(UIDocumentPickerMode)mode
+{
+    if (mode != UIDocumentPickerModeExportToService && mode != UIDocumentPickerModeMoveToService)
+        [NSException raise:NSInternalInconsistencyException format:@"-[UIDocumentPickerViewController initWithURLs:inMode:] can only be called with mode Export or Move"];
+    return [self initWithURLs:urls inMode:mode calledBy:@"initWithURLs:inMode:"];
 }
 
 - (instancetype)initForOpeningContentTypes:(NSArray<UTType *> *)contentTypes asCopy:(BOOL)asCopy
@@ -65,7 +72,7 @@
 
 - (instancetype)initForExportingURLs:(NSArray<NSURL *> *)urls asCopy:(BOOL)asCopy
 {
-    return [self initWithURLs:urls inMode:asCopy ? UIDocumentPickerModeExportToService : UIDocumentPickerModeMoveToService];
+    return [self initWithURLs:urls inMode:asCopy ? UIDocumentPickerModeExportToService : UIDocumentPickerModeMoveToService calledBy:@"initForExportingURLs:asCopy:"];
 }
 
 - (instancetype)initForExportingURLs:(NSArray<NSURL *> *)urls

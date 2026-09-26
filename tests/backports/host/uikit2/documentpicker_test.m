@@ -5,6 +5,7 @@
 - (instancetype)initWithDocumentTypes:(NSArray<NSString *> *)types inMode:(UIDocumentPickerMode)mode;
 - (instancetype)initWithURL:(NSURL *)url inMode:(UIDocumentPickerMode)mode;
 - (instancetype)initWithURLs:(NSArray<NSURL *> *)urls inMode:(UIDocumentPickerMode)mode;
+- (instancetype)initForExportingURLs:(NSArray<NSURL *> *)urls asCopy:(BOOL)asCopy;
 @property (nonatomic, readonly) UIDocumentPickerMode documentPickerMode;
 @property (nonatomic, weak) id delegate;
 @property (nonatomic) BOOL allowsMultipleSelection;
@@ -34,14 +35,23 @@ static NSString *raised(id (^block)(void))
         id result = block();
         return [NSString stringWithFormat:@"made %ld", (long)[[result valueForKey:@"documentPickerMode"] integerValue]];
     } @catch (NSException *exception) {
-        return [NSString stringWithFormat:@"%@: %@", exception.name, exception.reason];
+        /* the reason carries an NSError, whose description names the underlying error by address */
+        NSString *reason = [exception.reason stringByReplacingOccurrencesOfString:@"0x[0-9a-f]+" withString:@"0x" options:NSRegularExpressionSearch range:NSMakeRange(0, exception.reason.length)];
+        return [NSString stringWithFormat:@"%@: %@", exception.name, reason];
     }
 }
 
 int main(void)
 {
     @autoreleasepool {
-        NSURL *file = [NSURL fileURLWithPath:@"/tmp/x.txt"];
+        NSFileManager *manager = [NSFileManager defaultManager];
+        NSString *root = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSUUID UUID] UUIDString]];
+        [manager createDirectoryAtPath:[root stringByAppendingPathComponent:@"dest"] withIntermediateDirectories:YES attributes:nil error:NULL];
+        [@"hello" writeToFile:[root stringByAppendingPathComponent:@"a.txt"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+        [@"x" writeToFile:[root stringByAppendingPathComponent:@"b.png"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+        [@"y" writeToFile:[root stringByAppendingPathComponent:@"noext"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+        NSURL *file = [NSURL fileURLWithPath:[root stringByAppendingPathComponent:@"a.txt"]];
+        NSURL *missing = [NSURL fileURLWithPath:[root stringByAppendingPathComponent:@"missing.txt"]];
         for (NSInteger mode = 0; mode < 4; mode++) {
             NSString *one = raised(^{ return [[CharonHostUIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.text"] inMode:(UIDocumentPickerMode)mode]; });
             NSString *two = raised(^{ return [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.text"] inMode:(UIDocumentPickerMode)mode]; });
@@ -52,6 +62,35 @@ int main(void)
             one = raised(^{ return [[CharonHostUIDocumentPickerViewController alloc] initWithURLs:@[file] inMode:(UIDocumentPickerMode)mode]; });
             two = raised(^{ return [[UIDocumentPickerViewController alloc] initWithURLs:@[file] inMode:(UIDocumentPickerMode)mode]; });
             charon_check([one isEqualToString:two], [[NSString stringWithFormat:@"a picker for URLs in mode %ld", (long)mode] UTF8String], ([NSString stringWithFormat:@"%@ != %@", one, two]));
+        }
+        NSURL *folder = [NSURL fileURLWithPath:[root stringByAppendingPathComponent:@"dest"] isDirectory:YES];
+        NSURL *web = [NSURL URLWithString:@"https://example.org/a"];
+        for (NSInteger mode = 2; mode < 4; mode++) {
+            NSArray *cases = @[@[@"a file that is not there", @[missing]], @[@"a folder", @[folder]], @[@"a web address", @[web]], @[@"a file and one that is not there", @[file, missing]],
+                               @[@"one that is not there and a file", @[missing, file]], @[@"no URLs", @[]]];
+            for (NSArray *entry in cases) {
+                NSString *name = entry[0];
+                NSArray *urls = entry[1];
+                NSString *one = raised(^{ return [[CharonHostUIDocumentPickerViewController alloc] initWithURLs:urls inMode:(UIDocumentPickerMode)mode]; });
+                NSString *two = raised(^{ return [[UIDocumentPickerViewController alloc] initWithURLs:urls inMode:(UIDocumentPickerMode)mode]; });
+                charon_check([one isEqualToString:two], [[NSString stringWithFormat:@"URLs in mode %ld: %@", (long)mode, name] UTF8String], ([NSString stringWithFormat:@"%@ != %@", one, two]));
+            }
+            NSString *one = raised(^{ return [[CharonHostUIDocumentPickerViewController alloc] initWithURL:missing inMode:(UIDocumentPickerMode)mode]; });
+            NSString *two = raised(^{ return [[UIDocumentPickerViewController alloc] initWithURL:missing inMode:(UIDocumentPickerMode)mode]; });
+            charon_check([one isEqualToString:two] && [one hasPrefix:@"NSInternalInconsistencyException"], [[NSString stringWithFormat:@"a URL that is not there in mode %ld is refused with the system's reason", (long)mode] UTF8String], ([NSString stringWithFormat:@"%@ != %@", one, two]));
+            one = raised(^{ return [[CharonHostUIDocumentPickerViewController alloc] initWithURL:nil inMode:(UIDocumentPickerMode)mode]; });
+            two = raised(^{ return [[UIDocumentPickerViewController alloc] initWithURL:nil inMode:(UIDocumentPickerMode)mode]; });
+            charon_check([one isEqualToString:two] && [one hasPrefix:@"NSInternalInconsistencyException"], [[NSString stringWithFormat:@"no URL in mode %ld", (long)mode] UTF8String], ([NSString stringWithFormat:@"%@ != %@", one, two]));
+            one = raised(^{ return [[CharonHostUIDocumentPickerViewController alloc] initWithURLs:nil inMode:(UIDocumentPickerMode)mode]; });
+            two = raised(^{ return [[UIDocumentPickerViewController alloc] initWithURLs:nil inMode:(UIDocumentPickerMode)mode]; });
+            charon_check([one isEqualToString:two] && [one hasPrefix:@"NSInternalInconsistencyException"], [[NSString stringWithFormat:@"no array of URLs in mode %ld", (long)mode] UTF8String], ([NSString stringWithFormat:@"%@ != %@", one, two]));
+        }
+        for (NSNumber *copy in @[@YES, @NO]) {
+            for (NSArray *urls in @[@[missing], @[file], @[]]) {
+                NSString *one = raised(^{ return [[CharonHostUIDocumentPickerViewController alloc] initForExportingURLs:urls asCopy:copy.boolValue]; });
+                NSString *two = raised(^{ return [[UIDocumentPickerViewController alloc] initForExportingURLs:urls asCopy:copy.boolValue]; });
+                charon_check([one isEqualToString:two], [[NSString stringWithFormat:@"exporting %lu URLs, copy %@, names the call it came in by", (unsigned long)urls.count, copy] UTF8String], ([NSString stringWithFormat:@"%@ != %@", one, two]));
+            }
         }
         NSString *one = raised(^{ return [[CharonHostUIDocumentPickerViewController alloc] init]; });
         NSString *two = raised(^{ return [[UIDocumentPickerViewController alloc] init]; });
@@ -74,12 +113,6 @@ int main(void)
         object = nil;
         charon_check(ours.delegate == nil && system.delegate == nil, "the delegate is held weakly", @"it is held");
 
-        NSFileManager *manager = [NSFileManager defaultManager];
-        NSString *root = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSUUID UUID] UUIDString]];
-        [manager createDirectoryAtPath:[root stringByAppendingPathComponent:@"dest"] withIntermediateDirectories:YES attributes:nil error:NULL];
-        [@"hello" writeToFile:[root stringByAppendingPathComponent:@"a.txt"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];
-        [@"x" writeToFile:[root stringByAppendingPathComponent:@"b.png"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];
-        [@"y" writeToFile:[root stringByAppendingPathComponent:@"noext"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];
         CharonHostUIDocumentPickerViewController *text = [[CharonHostUIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.text"] inMode:UIDocumentPickerModeOpen];
         CharonHostUIDocumentPickerViewController *image = [[CharonHostUIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.image"] inMode:UIDocumentPickerModeOpen];
         CharonHostUIDocumentPickerViewController *any = [[CharonHostUIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.item"] inMode:UIDocumentPickerModeOpen];
