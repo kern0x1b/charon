@@ -14,7 +14,7 @@ Telegram 12.9.2 (`git grep loadCompressedScene` in release-12.9.2) loads ten sce
 (GiftAvatarComponent and PremiumDiamondComponent; the diamond itself is `DiamondLayer`, not SceneKit), and seven that
 carry no geometry, `badge`, `emoji` and `tag` (BadgeStarsView), `business` (BadgeBusinessView), `boost`
 (BoostHeaderBackgroundComponent), `lightspeed` (FasterStarsView) and `swirl` (SwirlStarsView). Inventory (macOS
-SceneKit loading each decompressed file, 2026-09-26): `star2` 15 nodes, one geometry (subdivided), four lights, seven
+SceneKit loading each decompressed file, 2026-09-26, `tests/backports/host/scenekit/inventory.swift`): `star2` 15 nodes, one geometry (subdivided), four lights, seven
 particle systems, physically based, 2 image slots; `coin` 20 nodes, five geometries, four lights, seven particle
 systems, physically based, 10 image slots; `gift2` 14 nodes, no geometry, four lights, seven particle systems; the seven
 others 3 to 8 nodes each, a camera, no geometry, no lights but `boost`'s ambient one, and one to six particle
@@ -39,7 +39,7 @@ macOS app's `star2.scn` and `coin.scn`; `gift2` is neither `gift.scn` nor `diamo
   then z: `eulerAngles (0.3, 0.5, 0.7)` is `orientation (0.0521324, 0.2794439, 0.2937772, 0.9126272)`, reproduced to
   seven digits. Angles that were set come back unchanged (`(2.0, 0.2, -2.5)` reads back as given); angles derived
   from an orientation are the principal ones (`(0.1, 0.2, 0.3, 0.9274)` gives `(0.3272129, 0.3161869, 0.6783701)`).
-- An archived node carries `rotation` and, in `star2`, `coin`, `gift2` and `boost` every node, in `emoji` and `tag` all but one, `orientation` too; `orientation` is the one read, and `rotation` where there is none (`badge`, `business`, `lightspeed`, `swirl`: their nodes have no `orientation`, and their `rotation` is the axis and angle of the `eulerAngles` they also carry in each of the eight nodes that carry them, and zero in the other six). `rotation` is all zero in `star2`.
+- An archived node carries `rotation` and, in `star2`, `coin`, `gift2` and `boost` every node, in `emoji` and `tag` all but one, `orientation` too; `orientation` is the one read, and `rotation` where there is none (`badge`, `business`, `lightspeed`, `swirl`: their nodes have no `orientation`, and their `rotation` is the axis and angle of the `eulerAngles` they also carry in each of the eight nodes that carry them, and zero in the other six). `rotation` is all zero in `star2` (`inventory.py`).
 - `SCNMatrix4MakeRotation` normalises its axis and answers the identity for a zero axis; `SCNMatrix4Scale` and
   `SCNMatrix4Rotate` apply before m and keep its translation; `SCNMatrix4Invert` of a matrix without an inverse
   answers the matrix itself; the equality functions compare with `==` (NaN unequal, -0 equal to 0).

@@ -129,11 +129,17 @@ static void read_keys(NSString *name, id object, NSArray<NSString *> *keys, void
 void charon_scenekit_default_cases(void (^report)(NSString *name, NSString *value))
 {
     NSArray *slots = @[@"diffuse", @"ambient", @"specular", @"normal", @"reflective", @"emission", @"transparent", @"multiply",
-                       @"displacement", @"ambientOcclusion", @"selfIllumination", @"metalness", @"roughness"];
+                       @"displacement", @"ambientOcclusion", @"selfIllumination", @"metalness", @"roughness", @"clearCoat",
+                       @"clearCoatRoughness", @"clearCoatNormal"];
     NSMutableArray *slotKeys = [NSMutableArray array];
     for (NSString *slot in slots) {
         [slotKeys addObject:[slot stringByAppendingString:@".contents"]];
         [slotKeys addObject:[slot stringByAppendingString:@".intensity"]];
+        // a material's own properties sample differently from a property made alone (mipFilter)
+        for (NSString *key in @[@"minificationFilter", @"magnificationFilter", @"mipFilter", @"wrapS", @"wrapT", @"mappingChannel",
+                                @"contentsTransform"]) {
+            [slotKeys addObject:[NSString stringWithFormat:@"%@.%@", slot, key]];
+        }
     }
 
     read_keys(@"SCNLight", [SCNLight light], @[@"type", @"color", @"temperature", @"intensity", @"name", @"castsShadow", @"shadowColor",
@@ -148,7 +154,8 @@ void charon_scenekit_default_cases(void (^report)(NSString *name, NSString *valu
                 @"particleSizeVariation", @"blendMode", @"orientationMode", @"sortingMode", @"lightingEnabled", @"affectedByGravity",
                 @"affectedByPhysicsFields", @"speedFactor", @"stretchFactor", @"propertyControllers", @"emitterShape"], report);
     read_keys(@"SCNMaterial", [SCNMaterial material],
-              [@[@"name", @"lightingModelName", @"doubleSided", @"transparency", @"shininess", @"blendMode"] arrayByAddingObjectsFromArray:slotKeys],
+              [@[@"name", @"lightingModelName", @"doubleSided", @"transparency", @"shininess", @"blendMode", @"locksAmbientWithDiffuse",
+                @"cullMode", @"writesToDepthBuffer", @"readsFromDepthBuffer"] arrayByAddingObjectsFromArray:slotKeys],
               report);
     read_keys(@"SCNMaterialProperty", [SCNMaterialProperty materialPropertyWithContents:@"contents"],
               @[@"intensity", @"minificationFilter", @"magnificationFilter", @"mipFilter", @"contentsTransform", @"wrapS", @"wrapT",
@@ -157,6 +164,15 @@ void charon_scenekit_default_cases(void (^report)(NSString *name, NSString *valu
                                             @"renderingOrder", @"castsShadow", @"categoryBitMask", @"movabilityHint"], report);
     read_keys(@"SCNPlane", [SCNPlane planeWithWidth:1 height:1], @[@"widthSegmentCount", @"heightSegmentCount", @"cornerRadius",
                                                                   @"cornerSegmentCount"], report);
+    // the scene's own background and lighting environment are properties made with their scene, as a material's slots are
+    NSMutableArray *sceneKeys = [NSMutableArray array];
+    for (NSString *slot in @[@"background", @"lightingEnvironment"]) {
+        for (NSString *key in @[@"contents", @"intensity", @"minificationFilter", @"magnificationFilter", @"mipFilter", @"wrapS", @"wrapT",
+                                @"mappingChannel", @"contentsTransform"]) {
+            [sceneKeys addObject:[NSString stringWithFormat:@"%@.%@", slot, key]];
+        }
+    }
+    read_keys(@"SCNScene", [SCNScene scene], sceneKeys, report);
     read_keys(@"SCNPhysicsWorld", [SCNScene scene].physicsWorld, @[@"gravity", @"speed", @"timeStep"], report);
     read_keys(@"SCNPhysicsField", [SCNPhysicsField radialGravityField],
               @[@"strength", @"falloffExponent", @"minimumDistance", @"active", @"exclusive", @"halfExtent", @"usesEllipsoidalExtent",
