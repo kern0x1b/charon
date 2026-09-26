@@ -35,6 +35,12 @@ def show_version(version):
     return ".".join(str(part) for part in parts)
 
 
+def anonymous(name):
+    """True for what clang prints in place of a name for an enum or struct that has none: `col:N` and
+    `line:N:M` when the previous node sits in the same file, `/path/File.h:N:M` when it does not."""
+    return bool(re.match(r"^(?:col|line):\d+", name) or "/" in name or re.search(r"\.h:\d+", name))
+
+
 def member_name(kind, rest):
     match = re.search(r"(?:col:\d+|line:\d+:\d+|[\w/.+-]+:\d+:\d+)\s+(.*)$", rest)
     text = match.group(1) if match else rest
@@ -48,15 +54,20 @@ class Surface:
     """rows: api -> (kind, introduced), what declared() has always returned. details: api -> the
     whole availability of the declaration, filled alongside: introduced, deprecated, obsoleted (a
     version tuple, DEPRECATED_NO_VERSION for a deprecation with no version, or None), unavailable
-    (bool) and via ("own", or "container" when introduced came from the enclosing class, protocol,
-    category or enum). full=True also walks what declared() leaves out for the callers that only
+    (bool) and via ("own" when introduced is the declaration's own; "container" when it came from the
+    enclosing class, protocol, category or enum, which makes it a floor: the member arrived in that
+    version or later; "none" when no version reaches it). full=True also walks what declared() leaves out for the callers that only
     match names: enum types and their cases, struct types, inline functions, and it lets a
     category's availability reach its members. A member with no availability of its own takes
-    unavailable and obsoleted from its container as well as introduced."""
+    unavailable and obsoleted from its container as well as introduced. `owns` says which header
+    paths belong to this walk (default: the framework's own bundle); `anonymous` counts the enums
+    and structs that have no name and so no row (their cases and members still get one)."""
 
-    def __init__(self, framework, full=False):
+    def __init__(self, framework, full=False, owns=None):
         self.framework = framework
         self.full = full
+        self.owns = owns
+        self.anonymous = collections.Counter()
         self.file = None
         self.rows = {}
         self.details = {}
@@ -92,12 +103,12 @@ class Surface:
             if found[2] and found[2] != (0,):
                 obsoleted = found[2] if obsoleted is None else min(obsoleted, found[2])
             unavailable = unavailable or found[3]
-        via = "own"
+        via = "own" if introduced is not None else "none"
         container = self.container_detail if kind in ("method", "property", "case") else None
         if container is not None:
             if introduced is None:
                 introduced = container["introduced"]
-                via = "container" if introduced is not None else "own"
+                via = "container" if introduced is not None else "none"
             if not self.target_attrs:
                 obsoleted = container["obsoleted"]
                 unavailable = container["unavailable"]
@@ -131,7 +142,12 @@ class Surface:
             for path in PATH.findall(rest):
                 self.file = path
             # SubFrameworks are every framework's in the Catalyst walk, and each its own in the whole-SDK one
-            owned = self.file is not None and (("/%s.framework/" % self.framework) in self.file or (not self.full and "/SubFrameworks/" in self.file))
+            if self.file is None:
+                owned = False
+            elif self.owns:
+                owned = self.owns(self.file)
+            else:
+                owned = ("/%s.framework/" % self.framework) in self.file or (not self.full and "/SubFrameworks/" in self.file)
             if kind == "AvailabilityAttr":
                 if self.target is not None and depth == self.target_depth + 1:
                     found = ATTRIBUTE.search(rest)
@@ -178,11 +194,15 @@ class Surface:
                     name = rest.split("'")[0].split()[-1]
                     self.enum_open = True
                     self.container_version = None
-                    self.target = (None if re.match(r"^(?:col|line):\d+", name) else name, "enum", [])
+                    self.target = (None if anonymous(name) else name, "enum", [])
+                    if self.target[0] is None:
+                        self.anonymous["enum"] += 1
                     self.target_depth = 0
                 elif self.full and kind == "RecordDecl" and " definition" in rest and " struct " in rest:
                     name = rest.split(" definition")[0].split()[-1]
-                    self.target = (None if name == "struct" or re.match(r"^(?:col|line):\d+", name) else name, "struct", [])
+                    self.target = (None if name == "struct" or anonymous(name) else name, "struct", [])
+                    if self.target[0] is None:
+                        self.anonymous["struct"] += 1
                     self.target_depth = 0
                 elif kind == "VarDecl" and " extern" in rest:
                     name = rest.split("'")[0].split()[-1]
@@ -346,28 +366,83 @@ def declared_surface_full(sdk, framework, target, failed=None):
     reaches). When the lot does not parse, each header is read on its own and the ones clang rejects
     are named in `failed` (a list, when the caller passes one) instead of taking the rest down with
     them. A framework with no header at all yields an empty Surface."""
-    command = clang_command(sdk, target, full=True)
     headers_dir = framework_headers_dir(sdk, framework, target, full=True)
     headers = sorted(f for f in os.listdir(headers_dir) if f.endswith(".h")) if headers_dir else []
     surface = Surface(framework, full=True)
-    if not headers:
-        return surface
     imports = [h for h in headers if h != framework + ".h"]
     if framework + ".h" in headers:
         imports.insert(0, framework + ".h")
-    dump = dump_headers(command, "".join("#import <%s/%s>\n" % (framework, h) for h in imports))
+    walk_imports(surface, clang_command(sdk, target, full=True), ["%s/%s" % (framework, h) for h in imports], failed)
+    return surface
+
+
+def walk_imports(surface, command, imports, failed):
+    """Feed surface with `#import <h>` of every h in imports, in one translation unit; when that
+    does not parse, one translation unit per header, and a header clang rejects is named in
+    `failed` (a list, when the caller passes one) instead of taking the rest down with it."""
+    if not imports:
+        return
+    dump = dump_headers(command, "".join("#import <%s>\n" % h for h in imports))
     if dump.returncode == 0 and dump.stdout:
         surface.feed(dump.stdout.splitlines())
-        return surface
+        return
     for h in imports:
-        single = dump_headers(command, "#import <%s/%s>\n" % (framework, h))
+        single = dump_headers(command, "#import <%s>\n" % h)
         if single.returncode != 0 or not single.stdout:
             if failed is not None:
                 lines = single.stderr.strip().splitlines()
-                failed.append("%s/%s: %s" % (framework, h, lines[-1][:200] if lines else "no output"))
+                errors = [line for line in lines if "error:" in line]
+                failed.append("%s: %s" % (h, re.sub(r"/\S*?\.sdk/", "", (errors or lines or ["no output"])[0])[:200]))
             continue
         surface.feed(single.stdout.splitlines())
         surface.file = None
+
+
+# What usr/include holds that is not C API to walk: the C++ standard library, whose headers are not C
+# and which no availability annotation reaches, and the shims (_modules of the Darwin module), each of
+# which is a `#error` when included by anything but the header it stands in for; the same holds for
+# secure/ (the _FORTIFY_SOURCE wrappers of string.h and stdio.h).
+INCLUDE_SKIPPED = ("c++", "_modules", "secure")
+INCLUDE_TOP = "include"
+
+
+def include_libraries(sdk):
+    """The C libraries under usr/include (libSystem and the rest: os, dispatch, xpc, mach, sys,
+    libkern, CommonCrypto, objc, ...) as {name: [header paths relative to usr/include]}. A directory is
+    one library named `include/<directory>`, the loose top-level headers together are `include`; the
+    umbrella (`dispatch/dispatch.h`) comes first, as in a framework: the other headers of dispatch, xpc
+    and the like are an `#error` until it has been included."""
+    root = os.path.join(sdk, "usr", "include")
+    libraries = {}
+    for directory, subdirectories, files in os.walk(root):
+        relative = os.path.relpath(directory, root)
+        top = relative.split(os.sep)[0]
+        if top in INCLUDE_SKIPPED:
+            subdirectories[:] = []
+            continue
+        name = INCLUDE_TOP if relative == "." else "%s/%s" % (INCLUDE_TOP, top)
+        for f in files:
+            if f.endswith(".h"):
+                libraries.setdefault(name, []).append(os.path.normpath(os.path.join(relative, f)))
+    for name, headers in libraries.items():
+        headers.sort()
+        umbrella = "%s/%s.h" % (name.split("/", 1)[-1], name.split("/", 1)[-1])
+        if name != INCLUDE_TOP and umbrella in headers:
+            headers.remove(umbrella)
+            headers.insert(0, umbrella)
+    return dict(sorted(libraries.items()))
+
+
+def library_surface(sdk, library, headers, target, failed=None):
+    """The Surface of one usr/include library (see include_libraries), walked like a framework:
+    every header of it in one translation unit, and one by one when that does not parse. The headers
+    the walk reaches through #include belong to their own library, by path."""
+    if library == INCLUDE_TOP:
+        owns = lambda path: re.search(r"/usr/include/[^/]+$", path) is not None
+    else:
+        owns = lambda path: "/usr/include/%s/" % library.split("/", 1)[1] in path
+    surface = Surface(library, full=True, owns=owns)
+    walk_imports(surface, clang_command(sdk, target, full=True), headers, failed)
     return surface
 
 

@@ -8,7 +8,8 @@ overlays over C and Objective-C frameworks. clang never sees any of it: there is
 `introduced`, `deprecated` and `obsoleted` are iOS versions from `@available(iOS ...)`; "deprecated"
 alone (`@available(*, deprecated)`) prints `yes`. `unavailable` is `yes` when `@available(iOS,
 unavailable)` or `@available(*, unavailable)` holds. `via` is `own` when the declaration carries
-its own iOS version, `container` when it took the version of the type or extension it sits in,
+its own iOS version, `container` when it took the version of the type or extension it sits in (a floor:
+the member arrived in that version or later),
 `none` when no @available of iOS reaches it (the module's own baseline then applies, which the
 interface does not state).
 

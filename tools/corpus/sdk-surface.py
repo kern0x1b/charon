@@ -14,7 +14,8 @@ carried-registry-*.tsv and crash-demand-top.tsv, and writes, named after the new
     sdk-<v>-surface.tsv                    what arrived after 6.1: name, framework, kind, language,
                                            availability, charon registry status, demand, impl-source
     sdk-<v>-removed-since-<old>.tsv        what the old SDK declared and the new one does not, or
-                                           declares unavailable or obsoleted (the removed API)
+                                           declares unavailable or obsoleted (the removed API); a Swift
+                                           name that came back under other labels is `changed`, not removed
     sdk-<v>-surface.md                     the counts
 
 Columns of the surface table:
@@ -24,18 +25,26 @@ Columns of the surface table:
     owner-registry  for a member with no row of its own: the status of the class or protocol it belongs to
     demand-*        the demand corpus row (crash-demand-top.tsv): its rank and severity, how many of the
                     corpus apps call it, and whether Telegram is one of them
-    impl-source     where an implementation can be read: swift-foundation, swift-corelibs-foundation,
-                    apple-oss (CF, objc4, libdispatch), OpenCombine, OpenSwiftUI, WinObjC; empty where
-                    none of those has it. impl-file names the file in each.
+    via             where `introduced` came from: `own` (the declaration's own @available), `container` (the
+                    class, protocol, category or enum it sits in) or `class-floor` (the class a category
+                    with no annotation extends). The last two are a FLOOR: the member arrived in that
+                    version or later, not necessarily in it (`MTLGPUFamilyApple8` says 13.0 through its
+                    enum and came with iOS 16). Rows with no version at all are not in the table.
+    impl-lead       a lead to where an implementation might be read, by file name: swift-foundation,
+                    swift-corelibs-foundation, apple-oss (CF, objc4, libdispatch), OpenCombine, OpenSwiftUI,
+                    WinObjC; empty where none of those has a file of that name. impl-file-lead names the file.
 
-`impl-source` is a lead by file name, not a proof: a repository has a file named after the type
+`impl-lead` is a lead by file name, not a proof and not a fact of implementation: a repository has a file named after the type
 (Calendar.swift, CFArray.c, UIView.mm) in the frameworks that repository stands for. For a member it
 is the file of the type it belongs to; whether that file implements this member is for whoever reads
 it. Functions and constants are matched to the longest file name their own name starts with
 (CFArrayCreate -> CFArray.c).
 
 What the surface leaves out, because neither clang nor a swiftinterface shows it: macros (#define
-constants), typedefs and struct fields, conformances (`extension X: P`), SPI, private headers.
+constants), typedefs and struct fields, conformances (`extension X: P`), SPI, private headers. The
+C libraries under usr/include are in it, one library per directory (`include/os`, `include/dispatch`,
+`include/xpc`, `include/mach`, ..., and `include` for the loose top-level headers), except the C++
+standard library. Every row the walk drops or cannot read is counted and named at the end of the `.md`.
 """
 import argparse
 import collections
@@ -290,7 +299,7 @@ def enrich(row, registry, demand, impl):
             ",".join(dict.fromkeys(h[0] for h in hits)), ";".join(h[1] for h in hits)]
 
 
-ENRICHED = ["registry", "owner-registry", "demand-rank", "demand-severity", "demand-apps", "demand-telegram", "impl-source", "impl-file"]
+ENRICHED = ["registry", "owner-registry", "demand-rank", "demand-severity", "demand-apps", "demand-telegram", "impl-lead", "impl-file-lead"]
 SURFACE_HEAD = ["framework", "kind", "lang", "api", "introduced", "deprecated", "obsoleted", "unavailable", "via"] + ENRICHED
 REMOVED_HEAD = ["framework", "kind", "lang", "api", "introduced", "deprecated", "old-obsoleted", "state", "new-framework", "new-introduced",
                 "new-obsoleted", "new-unavailable"] + ENRICHED
@@ -328,11 +337,13 @@ def build(options):
 
     surface = []
     unannotated = collections.Counter()
+    before = collections.Counter()
     for row in new["rows"]:
         if not row["introduced"]:
             unannotated[(row["lang"], row["framework"])] += 1
             continue
         if not introduced_after(row):
+            before[row["lang"]] += 1
             continue
         surface.append(row)
     surface.sort(key=lambda r: (parse_version(r["introduced"]), r["framework"], r["lang"], r["kind"], r["api"]))
@@ -348,12 +359,21 @@ def build(options):
         # the same name can be declared in more than one framework; a usable declaration is the one that counts
         if key not in present or (not is_live(present[key], new_version) and is_live(row, new_version)):
             present[key] = row
+    # A Swift name that is gone under its labels but declared again under others (`f(function:_:)` ->
+    # `f(isolation:function:_:)`) has a changed signature, it is not removed.
+    relabelled = {}
+    for row in new["rows"]:
+        if row["lang"] == "swift" and "(" in row["api"] and is_live(row, new_version):
+            relabelled.setdefault((row["kind"], row["api"].split("(")[0]), row)
     removed = []
     for row in old["rows"]:
         if not is_live(row, old_version):
             continue
         current = present.get((row["lang"], row["api"]))
-        if current is None:
+        if current is None and row["lang"] == "swift" and "(" in row["api"]:
+            current = relabelled.get((row["kind"], row["api"].split("(")[0]))
+            state = "changed" if current else "removed"
+        elif current is None:
             state = "removed"
         elif current["unavailable"]:
             state = "unavailable"
@@ -368,7 +388,7 @@ def build(options):
     old_stem = "sdk-%s-removed-since-%s.tsv" % (new["version"], old["version"])
     tsv(os.path.join(CORPUS, old_stem), REMOVED_HEAD, removed)
     write_summary(os.path.join(CORPUS, stem + "-surface.md"), new, old, new_path, old_path, registry_path, demand_path,
-                  enriched, removed, unannotated, impl)
+                  enriched, removed, unannotated, before, impl)
     print("wrote %s-surface.tsv (%d rows), %s (%d rows), %s-surface.md" % (stem, len(enriched), old_stem, len(removed), stem))
 
 
@@ -378,11 +398,50 @@ def table(head, rows):
     return "\n".join(lines)
 
 
-def write_summary(path, new, old, new_path, old_path, registry_path, demand_path, rows, removed, unannotated, impl):
+def named(names):
+    return ", ".join("`%s`" % n for n in names) if names else "none"
+
+
+def not_in_surface(new, new_path, unannotated, before, floor_in_table):
+    """The last section of the .md: everything the walk drops, cannot read or leaves out, counted and named."""
+    dropped = new["dropped"]
+    unversioned = {lang: sum(v for (l, _), v in unannotated.items() if l == lang) for lang in ("objc", "swift")}
+    forward = dropped["forward-declaration"]
+    anonymous = dropped["anonymous"]
+    no_row = dropped["no-row"]
+    return ["## Not in the surface", "",
+            "Everything the walk of `%s` sees and does not put in the table, counted; what it cannot see at all is the last item." % os.path.basename(new_path), "",
+            "- Introduced at or before iOS 6.1 (in the walk, not in the table): %d Objective-C / C and %d Swift rows." % (before["objc"], before["swift"]),
+            "- No iOS version at all (%d Objective-C / C and %d Swift rows): API from before the availability annotations, or Swift API "
+            "whose module states no version. In the walk, not in the table. Objective-C members of a category with no annotation of its own take "
+            "their class's or protocol's version as a floor (`via=class-floor`) and are not among these (a Swift extension member with no @available keeps `none`): %d rows took one, "
+            "%d of them are in the table (the others took a version at or before 6.1)." % (
+                unversioned["objc"], unversioned["swift"], dropped["class-floor"], floor_in_table),
+            "- Forward declarations (`@class CIImage;`, `@protocol MTLTexture;`) in another framework's header, a row with no version "
+            "beside the real one: %d Objective-C and %d Swift rows removed from the walk." % (forward["objc"], forward["swift"]),
+            "- Enums and structs with no name of their own, which have no row (a `typedef struct {...} X` is one; the cases of an anonymous enum "
+            "do have theirs): %d enums and %d structs." % (anonymous.get("enum", 0), anonymous.get("struct", 0)),
+            "- Headers clang rejects, named with the first error (%d):%s" % (len(new["failed"]), "".join("\n  - " + f for f in new["failed"][:40])),
+            "- %d frameworks with headers were walked and %d libraries under `usr/include` (`include/<directory>`, `include` for the loose "
+            "top-level headers; the C++ standard library `c++`, the Darwin module's `_modules` shims and the `secure` wrappers are not walked, "
+            "each is an `#error` or C++ when read alone). The C API of libSystem (`os_unfair_lock_*`, `dispatch_*`, `xpc_*`, `os_log_*`, `mach_*`) "
+            "is in these." % (dropped["frameworks-walked"], dropped["libraries-walked"]),
+            "- Frameworks, libraries and Swift modules that give no row at all (%d): %s." % (
+                len(no_row), "; ".join("`%s` (%s)" % kv for kv in no_row.items())),
+            "- Frameworks with headers that give no Objective-C / C row (%d; those of them named above give no row at all, the rest have Swift rows): %s." % (
+                len(dropped["no-objc-row"]), named(dropped["no-objc-row"])),
+            "- Swift modules: %d found, %d with rows; without rows: %s." % (
+                dropped["swift-modules-found"], dropped["swift-modules-found"] - len(dropped["swift-modules-without-rows"]),
+                named(dropped["swift-modules-without-rows"])),
+            "- What neither clang nor a swiftinterface shows: macros (`#define` constants), typedefs and struct fields, conformances "
+            "(`extension X: P`), SPI, private headers; frameworks that ship only a `.tbd` (%s)." % named([n for n, why in no_row.items() if ".tbd" in why]), ""]
+
+
+def write_summary(path, new, old, new_path, old_path, registry_path, demand_path, rows, removed, unannotated, before, impl):
     at = {name: i for i, name in enumerate(SURFACE_HEAD)}
     total = len(rows)
     carried = sum(1 for r in rows if r[at["registry"]] == "carried")
-    with_impl = sum(1 for r in rows if r[at["impl-source"]])
+    with_impl = sum(1 for r in rows if r[at["impl-lead"]])
     by_registry = collections.Counter(r[at["registry"]] for r in rows)
     by_owner = collections.Counter(r[at["owner-registry"]] for r in rows if r[at["registry"]] == "none")
     demanded = sum(1 for r in rows if r[at["demand-rank"]])
@@ -393,10 +452,22 @@ def write_summary(path, new, old, new_path, old_path, registry_path, demand_path
         frameworks[r[at["framework"]]][int(r[at["introduced"]].split(".")[0])] += 1
     per_source = collections.Counter()
     for r in rows:
-        for source in r[at["impl-source"]].split(","):
+        for source in r[at["impl-lead"]].split(","):
             if source:
                 per_source[source] += 1
+    by_via = collections.Counter(r[at["via"]] for r in rows)
+    floor = lambda r: r[at["via"]] in ("container", "class-floor")
+    dropped_total = sum(1 for r in removed if r[7] != "changed")
     lines = ["# SDK %s surface after iOS %s" % (new["version"], ".".join(str(p) for p in AFTER)), "",
+             "Two things to read before using a number below:", "",
+             "- **`impl-lead` is a lead by file name, not a fact of implementation.** A row has one when a reference "
+             "implementation (WinObjC, swift-foundation, ...) has a *file* named after the type it belongs to (`UIView.mm` for "
+             "`UIView.safeAreaInsets`). Nothing checks that the file implements that member, or that the repository's snapshot is "
+             "as new as the API (WinObjC is years older than most of these rows).",
+             "- **`via=container` and `via=class-floor` versions are a floor, not the arrival.** The member came in that iOS version "
+             "*or later*: it took the version of the class, protocol, category or enum it sits in "
+             "(`MTLGPUFamilyApple8` says 13.0 through its enum and came with iOS 16). Only `via=own` is the declaration's own "
+             "`@available`.", "",
              "Generated by `tools/corpus/sdk-surface.py build`. Inputs: `%s` (%s, target %s), `%s`, registry `%s`, demand `%s`, "
              "implementation file lists `impl-source-trees/` (%s)." % (
                  os.path.basename(new_path), new["sdk"], new["target"], os.path.basename(old_path), os.path.basename(registry_path),
@@ -414,38 +485,38 @@ def write_summary(path, new, old, new_path, old_path, registry_path, demand_path
                      by_owner["carried"], by_owner["absent"], sum(v for k, v in by_owner.items() if k not in ("", "carried", "absent")))],
                  ["in the demand corpus", demanded],
                  ["  of those called by Telegram", telegram],
-                 ["with an `impl-source`", with_impl],
-                 ["dropped since %s (`removed-since-%s.tsv`)" % (old["version"], old["version"]), len(removed)]]), "",
-             "`impl-source` by repository (a row may have several): " + ", ".join("%s %d" % kv for kv in sorted(per_source.items())), "",
+                 ["  `via` own / container / class-floor", "%d / %d / %d" % (by_via["own"], by_via["container"], by_via["class-floor"])],
+                 ["with an `impl-lead` (a file name match, not an implementation, see above)", with_impl],
+                 ["dropped since %s: removed / unavailable / obsoleted (`removed-since-%s.tsv`)" % (old["version"], old["version"]), dropped_total],
+                 ["  and signature `changed` (same Swift name, other labels; in the same file, not counted above)", len(removed) - dropped_total]]), "",
+             "`impl-lead` by repository (a row may have several): " + ", ".join("%s %d" % kv for kv in sorted(per_source.items())), "",
              "## By introduced iOS version", "",
-             table(["iOS", "rows", "objc", "swift", "carried", "with impl-source"], [
+             table(["iOS", "rows", "objc", "swift", "of them a floor", "carried", "with impl-lead"], [
                  [m, sum(1 for r in rows if int(r[at["introduced"]].split(".")[0]) == m),
                   sum(1 for r in rows if int(r[at["introduced"]].split(".")[0]) == m and r[at["lang"]] == "objc"),
                   sum(1 for r in rows if int(r[at["introduced"]].split(".")[0]) == m and r[at["lang"]] == "swift"),
+                  sum(1 for r in rows if int(r[at["introduced"]].split(".")[0]) == m and floor(r)),
                   sum(1 for r in rows if int(r[at["introduced"]].split(".")[0]) == m and r[at["registry"]] == "carried"),
-                  sum(1 for r in rows if int(r[at["introduced"]].split(".")[0]) == m and r[at["impl-source"]])] for m in majors]), "",
+                  sum(1 for r in rows if int(r[at["introduced"]].split(".")[0]) == m and r[at["impl-lead"]])] for m in majors]), "",
              "## By framework and version", "",
-             "Rows per framework and the major iOS version they arrived in; `carried` and `impl` are the two counts the task asked for.", "",
+             "Rows per framework and the major iOS version they arrived in; `carried` and `impl` (an `impl-lead`) are the two counts the task asked for.", "",
              table(["framework", "rows", "carried", "impl"] + [str(m) for m in majors], [
                  [fw, sum(counts.values()),
                   sum(1 for r in rows if r[at["framework"]] == fw and r[at["registry"]] == "carried"),
-                  sum(1 for r in rows if r[at["framework"]] == fw and r[at["impl-source"]])] + [counts[m] or "" for m in majors]
+                  sum(1 for r in rows if r[at["framework"]] == fw and r[at["impl-lead"]])] + [counts[m] or "" for m in majors]
                  for fw, counts in sorted(frameworks.items(), key=lambda kv: -sum(kv[1].values()))]), "",
              "## Dropped since %s" % old["version"], "",
-             "What %s declares and %s does not, or declares unavailable, or obsoleted at or below its version." % (old["sdk"], new["sdk"]), "",
+             "What %s declares and %s does not, or declares unavailable, or obsoleted at or below its version. A Swift name that "
+             "is gone under its labels but declared again under others (`withCheckedContinuation(function:_:)` -> "
+             "`withCheckedContinuation(isolation:function:_:)`) is `changed`, not removed: its signature moved, the name did not. "
+             "Rows are matched by name and labels, so the `changed` and `removed` counts are a split of one comparison, and "
+             "`changed` is not in the dropped total." % (old["sdk"], new["sdk"]), "",
              table(["state", "rows", "objc", "swift", "carried in the registry", "demanded"], [
                  [state, sum(1 for r in removed if r[7] == state), sum(1 for r in removed if r[7] == state and r[2] == "objc"),
                   sum(1 for r in removed if r[7] == state and r[2] == "swift"),
                   sum(1 for r in removed if r[7] == state and r[12] == "carried"),
-                  sum(1 for r in removed if r[7] == state and r[14])] for state in ("removed", "unavailable", "obsoleted")]), "",
-             "## Not in the surface", "",
-             "- Declarations with no iOS version at all (%d Objective-C and %d Swift rows): API from before the availability annotations, "
-             "or Swift API whose module states no version. They are in the walk (`%s`), not in the table." % (
-                 sum(v for (lang, _), v in unannotated.items() if lang == "objc"),
-                 sum(v for (lang, _), v in unannotated.items() if lang == "swift"), os.path.basename(new_path)),
-             "- Failed headers of the new walk: %d%s" % (len(new["failed"]), "".join("\n  - " + f for f in new["failed"][:20])),
-             "- What neither clang nor a swiftinterface shows: macros (`#define` constants), typedefs and struct fields, conformances "
-             "(`extension X: P`), SPI, private headers; frameworks that ship only a `.tbd`.", ""]
+                  sum(1 for r in removed if r[7] == state and r[14])] for state in ("removed", "unavailable", "obsoleted", "changed")]), ""]
+    lines += not_in_surface(new, new_path, unannotated, before, by_via["class-floor"])
     with open(path, "w") as stream:
         stream.write("\n".join(lines))
 

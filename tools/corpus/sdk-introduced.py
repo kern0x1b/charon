@@ -2,12 +2,18 @@
 """Dump SDK-declared API -> (kind, introduced) per framework by reusing surface-diff.declared()
 (clang -ast-dump over the Mac Catalyst SDK). Output: corpus/sdk-introduced.json
 
-    sdk-introduced.py --sdk <path to an iPhoneOS SDK> [--out FILE] [--frameworks A,B] [--no-swift]
+    sdk-introduced.py --sdk <path to an iPhoneOS SDK> [--out FILE] [--frameworks A,B] [--no-swift] [--no-include]
 
 takes a real iPhoneOS SDK whole instead: every framework that has headers is walked with clang
-(objective-c, C), every module that has a .swiftinterface is read by swiftinterface-surface.py, and
+(objective-c, C), every C library under usr/include (os, dispatch, xpc, mach, sys, libkern, ... one
+"framework" named include/<directory> each, `include` for the loose top-level headers) is walked the
+same way, every module that has a .swiftinterface is read by swiftinterface-surface.py, and
 what comes out is one row per declaration with its whole availability, not the (kind, introduced)
-pair above: name, framework, kind, language, introduced, deprecated, obsoleted, unavailable. The
+pair above: name, framework, kind, language, introduced, deprecated, obsoleted, unavailable, via.
+`via` says where `introduced` came from: own, container (class, protocol, category or enum), class-floor
+(the class of a category with no annotation of its own) or none; container and class-floor are a floor,
+the member arrived in that version or later. The file also carries `dropped`, the count and the names of
+everything the walk sees and does not turn into a row. The
 default output is corpus/sdk-<version>-declared.json; sdk-introduced.json is left as it is, its
 readers (crash-demand.py and the others) expect the shape above. The run is one clang per
 framework, sequential: start it through coordination/heavy.sh.
@@ -44,10 +50,12 @@ Two things this does beyond a bare re-export of declared():
   merged into one guess.
 """
 import argparse
+import collections
 import glob
 import importlib.util
 import json
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.realpath(__file__))
@@ -98,8 +106,46 @@ def show(version):
     return "yes" if version == sd.DEPRECATED_NO_VERSION else sd.show_version(version)
 
 
-def walk_sdk(sd, sdk_path, only, with_swift):
-    """Every declaration of an iPhoneOS SDK: {"sdk", "version", "target", "rows", "frameworks", "failed"}."""
+def objc_row(name, api, kind, detail):
+    return {"api": api, "framework": name, "kind": kind, "lang": "objc",
+            "introduced": show(detail["introduced"]), "deprecated": show(detail["deprecated"]),
+            "obsoleted": show(detail["obsoleted"]), "unavailable": "yes" if detail["unavailable"] else "",
+            "via": detail["via"]}
+
+
+def inherit_class_floor(rows):
+    """A member of a category with no availability of its own has no version in the AST, though the
+    class it extends has one: `-[HKQuery ...]` in `@interface HKQuery (HKObjectPredicates)` under
+    HKQuery 8.0. It takes the class's version, as a floor (via `class-floor`): the member arrived in
+    that version or later, which is enough to tell it from what was there before 6.1. Returns how many
+    rows took one. The class is looked up by name across every framework, since a category may sit
+    in another framework than its class."""
+    floor = {}
+    for row in rows:
+        if row["lang"] == "objc" and row["kind"] in ("class", "protocol") and row["introduced"]:
+            have = floor.get(row["api"])
+            if have is None or parse_version(row["introduced"]) < parse_version(have):
+                floor[row["api"]] = row["introduced"]
+    taken = 0
+    for row in rows:
+        if row["lang"] != "objc" or row["kind"] not in ("method", "property") or row["via"] != "none":
+            continue
+        found = re.match(r"^[-+]\[(\w+) ", row["api"]) or re.match(r"^(\w+)\.", row["api"])
+        if found and found.group(1) in floor:
+            row["introduced"] = floor[found.group(1)]
+            row["via"] = "class-floor"
+            taken += 1
+    return taken
+
+
+def parse_version(text):
+    return tuple(int(part) for part in text.split("."))
+
+
+def walk_sdk(sd, sdk_path, only, with_swift, with_include=True):
+    """Every declaration of an iPhoneOS SDK: {"sdk", "version", "target", "rows", "frameworks", "failed",
+    "libraries", "dropped"}. `frameworks` maps every walked framework and usr/include library to its
+    row counts; `dropped` names and counts everything the walk sees and does not turn into a row."""
     version = sd.sdk_version(sdk_path)
     target = "arm64-apple-ios" + version
     names = set()
@@ -112,6 +158,7 @@ def walk_sdk(sd, sdk_path, only, with_swift):
     rows = []
     failed = []
     frameworks = {}
+    anonymous = collections.Counter()
     for fw in sorted(names):
         problems = []
         try:
@@ -121,32 +168,77 @@ def walk_sdk(sd, sdk_path, only, with_swift):
             print("%s: skipped (%s)" % (fw, str(e)[:120]), flush=True)
             continue
         failed += problems
-        for api, (kind, introduced) in surface.rows.items():
-            detail = surface.details[api]
-            rows.append({"api": api, "framework": fw, "kind": kind, "lang": "objc",
-                         "introduced": show(detail["introduced"]), "deprecated": show(detail["deprecated"]),
-                         "obsoleted": show(detail["obsoleted"]), "unavailable": "yes" if detail["unavailable"] else "",
-                         "via": detail["via"]})
+        anonymous.update(surface.anonymous)
+        rows += [objc_row(fw, api, kind, surface.details[api]) for api, (kind, introduced) in surface.rows.items()]
         frameworks[fw] = {"objc": len(surface.rows), "swift": 0}
         print("%s: %d rows" % (fw, len(surface.rows)), flush=True)
+    # The C libraries under usr/include (libSystem and the rest), each directory as a library of its own.
+    libraries = []
+    if with_include:
+        for name, headers in sd.include_libraries(sdk_path).items():
+            if only and name not in only:
+                continue
+            problems = []
+            surface = sd.library_surface(sdk_path, name, headers, target, failed=problems)
+            failed += problems
+            anonymous.update(surface.anonymous)
+            rows += [objc_row(name, api, kind, surface.details[api]) for api, (kind, introduced) in surface.rows.items()]
+            frameworks[name] = {"objc": len(surface.rows), "swift": 0}
+            libraries.append(name)
+            print("%s: %d rows" % (name, len(surface.rows)), flush=True)
+    walked = sorted(frameworks)
+    swift_found = []
+    swift_with_rows = set()
     if with_swift:
         swift = load_neighbor("swiftinterface_surface", "swiftinterface-surface.py")
-        found = set()
-        for row in swift.rows(sdk_path, set(only) if only else None):
-            found.add(row["framework"])
+        swift_found = sorted(m for m in swift.interfaces(sdk_path) if not only or m in only)
+        problems = []
+        for row in swift.rows(sdk_path, set(only) if only else None, problems):
+            swift_with_rows.add(row["framework"])
             rows.append({"api": row["api"], "framework": row["framework"], "kind": row["kind"], "lang": "swift",
                          "introduced": show(row["introduced"]), "deprecated": show(row["deprecated"]),
                          "obsoleted": show(row["obsoleted"]), "unavailable": "yes" if row["unavailable"] else "",
                          "via": row["via"]})
             entry = frameworks.setdefault(row["framework"], {"objc": 0, "swift": 0})
             entry["swift"] += 1
-        print("swiftinterface: %d modules, %d rows" % (len(found), sum(1 for r in rows if r["lang"] == "swift")), flush=True)
+        failed += problems
+        print("swiftinterface: %d modules found, %d with rows, %d rows" % (len(swift_found), len(swift_with_rows), sum(1 for r in rows if r["lang"] == "swift")), flush=True)
     # A forward declaration (`@class CIImage;`, `@protocol MTLTexture;`) in another framework's header
     # is a row with no version beside the real one; the real one is the row.
+    before = collections.Counter(r["lang"] for r in rows)
     versioned = {(r["lang"], r["kind"], r["api"]) for r in rows if r["introduced"]}
     rows = [r for r in rows if r["introduced"] or (r["lang"], r["kind"], r["api"]) not in versioned]
+    forward = {lang: before[lang] - sum(1 for r in rows if r["lang"] == lang) for lang in ("objc", "swift")}
+    floor = inherit_class_floor(rows)
+    counts = collections.Counter((r["framework"], r["lang"]) for r in rows)
+    frameworks = {name: {"objc": counts[(name, "objc")], "swift": counts[(name, "swift")]} for name in sorted(frameworks)}
+    slashed = [r["api"] for r in rows if r["lang"] == "objc" and "/" in r["api"]]
+    if slashed:
+        sys.exit("walk_sdk: %d Objective-C row(s) named after a path, an anonymous enum or struct that went through as a name: %s" % (len(slashed), slashed[:3]))
+    # Every framework bundle and usr/include library, and every swiftinterface module, that gives no row at all.
+    bundles = {entry[:-len(".framework")] for base in sd.framework_bases(sdk_path, target, full=True)
+               for entry in os.listdir(base) if entry.endswith(".framework")}
+    if only:
+        bundles &= set(only)
+    with_headers = set(walked)
+    modules = set(swift_found)
+    no_row = {}
+    for name in sorted(bundles | with_headers | modules):
+        if frameworks.get(name, {"objc": 0, "swift": 0}) != {"objc": 0, "swift": 0}:
+            continue
+        no_row[name] = ("headers, none declares an API clang shows" if name in with_headers
+                        else "a .swiftinterface with no public declaration" if name in modules
+                        else "no headers and no .swiftinterface (a .tbd only)")
+    dropped = {"forward-declaration": forward, "anonymous": dict(anonymous), "class-floor": floor,
+               "frameworks-walked": len([n for n in walked if n not in libraries]),
+               "libraries-walked": len(libraries),
+               "no-row": no_row,
+               "no-objc-row": [n for n in walked if n not in libraries and not counts[(n, "objc")]],
+               "swift-modules-found": len(swift_found),
+               "swift-modules-without-rows": [m for m in swift_found if m not in swift_with_rows]}
+    print("dropped: %s" % json.dumps(dropped), flush=True)
     return {"sdk": os.path.basename(sdk_path.rstrip("/")), "version": version, "target": target,
-            "rows": rows, "frameworks": frameworks, "failed": failed}
+            "rows": rows, "frameworks": frameworks, "failed": failed, "libraries": libraries, "dropped": dropped}
 
 
 _parser = argparse.ArgumentParser(description="SDK-declared API with its availability")
@@ -154,11 +246,12 @@ _parser.add_argument("--sdk", help="an iPhoneOS SDK to walk whole (see the docst
 _parser.add_argument("--out", help="with --sdk: where to write (default corpus/sdk-<version>-declared.json)")
 _parser.add_argument("--frameworks", help="with --sdk: only these, comma separated")
 _parser.add_argument("--no-swift", action="store_true", help="with --sdk: skip the .swiftinterface pass")
+_parser.add_argument("--no-include", action="store_true", help="with --sdk: skip the C libraries under usr/include")
 options = _parser.parse_args()
 
 sd = load_surface_diff()
 if options.sdk:
-    result = walk_sdk(sd, os.path.realpath(options.sdk), options.frameworks.split(",") if options.frameworks else None, not options.no_swift)
+    result = walk_sdk(sd, os.path.realpath(options.sdk), options.frameworks.split(",") if options.frameworks else None, not options.no_swift, not options.no_include)
     out = options.out or os.path.join(CORPUS, "sdk-%s-declared.json" % result["version"])
     with open(out, "w") as stream:
         json.dump(result, stream)
