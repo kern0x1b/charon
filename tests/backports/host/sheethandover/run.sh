@@ -6,7 +6,8 @@
 # one thing the installer asks of it, and the host's own sheet is the presentation controller the handover gives. It holds:
 # a controller is asked for its sheet only when it is presented as one (a page or form sheet from a compact width), the
 # release presents it through the handover (the style is put back, the caller's delegate is asked for the animators first
-# and is back after the dismissal), and the sheet a dismissal took away is not kept.
+# and is back after the dismissal), and the sheet a dismissal took away is not kept, by whichever route the dismissal came:
+# the controller's own, or an ancestor's that takes it down with it.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 uikit=${UIKIT:-$here/../../../../packages/a/apple-backports/UIKit}

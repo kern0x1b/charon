@@ -1158,6 +1158,14 @@ static void charon_sheet_apply_stack(CharonSheetLayoutInfo *node)
                 [delegate presentationControllerDidDismiss:strongSelf];
         });
     }
+    /* Where the release presents the sheet through the handover, the controller lets go of it now (its association is
+       the last thing that may hold it); the reference kept here goes a turn later, after the delegate's block above,
+       as this method is still running on the sheet. */
+    UIPresentationController *sheet = self;
+    [self.presentedViewController charon_sheetDidDismiss:self];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        (void)sheet;
+    });
 }
 
 - (void)containerViewWillLayoutSubviews

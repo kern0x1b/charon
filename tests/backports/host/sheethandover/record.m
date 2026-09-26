@@ -27,6 +27,25 @@ static int asked;
 }
 @end
 
+/* The categories of the installer file are attached to the host's classes under a prefix (host-attach.c), as the host's UIKit
+   has some of their selectors already: the one the sheet sends its controller is then charonHost_charon_sheetDidDismiss:. */
+void host_attach_prefixed(const char *prefix);
+
+@interface UIViewController (CharonHostSheetHold)
+- (void)charonHost_charon_sheetDidDismiss:(UIPresentationController *)sheet;
+@end
+
+/* What the port's sheet does when its dismissal ends (UISheetPresentationController.m, dismissalTransitionDidEnd:): it says so to
+   its controller. The host's class of that name is the release's, so its method is exchanged for one that says the same. */
+@implementation UISheetPresentationController (CharonHostEnd)
+- (void)charonHost_dismissalTransitionDidEnd:(BOOL)completed
+{
+    [self charonHost_dismissalTransitionDidEnd:completed];
+    if (completed)
+        [self.presentedViewController charonHost_charon_sheetDidDismiss:self];
+}
+@end
+
 @interface CallerDelegate : NSObject <UIViewControllerTransitioningDelegate>
 @property (nonatomic) int presented, dismissed;
 @end
@@ -97,8 +116,11 @@ static UIViewController *presenter(UIViewController *root, UIUserInterfaceSizeCl
 
 static void run(UIViewController *root)
 {
+    host_attach_prefixed("charonHost_");
     Method original = class_getInstanceMethod([UIViewController class], @selector(sheetPresentationController));
     method_exchangeImplementations(original, class_getInstanceMethod([UIViewController class], @selector(charonHost_sheetPresentationController)));
+
+    method_exchangeImplementations(class_getInstanceMethod([UISheetPresentationController class], @selector(dismissalTransitionDidEnd:)), class_getInstanceMethod([UISheetPresentationController class], @selector(charonHost_dismissalTransitionDidEnd:)));
 
     CHECK([UIPresentationController instancesRespondToSelector:@selector(charon_setContainerView:)] == NO, "host.presents");
 
@@ -172,6 +194,36 @@ static void run(UIViewController *root)
     step(^{
         CHECK(asked == 0 && charon_presentation_controller_of(full) == nil, "fullscreen.asked.none");
         [compact dismissViewControllerAnimated:NO completion:nil];
+    });
+
+    /* A controller presented on top of another (compact -> ancestor -> chained) that goes down with its ancestor: the dismissal is the
+       ancestor's, not its own, and the release ends the sheet's dismissal all the same. */
+    UIViewController *ancestor = [[UIViewController alloc] init];
+    ancestor.modalPresentationStyle = UIModalPresentationFullScreen;
+    UIViewController *chained = [[UIViewController alloc] init];
+    chained.modalPresentationStyle = UIModalPresentationPageSheet;
+    CallerDelegate *chainCaller = [[CallerDelegate alloc] init];
+    chained.transitioningDelegate = chainCaller;
+    static __weak UIPresentationController *chainSheet;
+    step(^{
+        [compact presentViewController:ancestor animated:NO completion:nil];
+    });
+    step(^{
+        asked = 0;
+        [ancestor presentViewController:chained animated:NO completion:nil];
+    });
+    step(^{
+        UIPresentationController *sheet = charon_presentation_controller_of(chained);
+        chainSheet = sheet;
+        CHECK(chained.presentingViewController == ancestor && asked == 1, "chain.presented");
+        CHECK([sheet isKindOfClass:[UISheetPresentationController class]] && [NSStringFromClass([chained.transitioningDelegate class]) isEqualToString:@"CharonSheetHandover"], "chain.has.sheet.while.presented");
+        [compact dismissViewControllerAnimated:NO completion:nil];
+    });
+    step(^{
+        CHECK(chained.presentingViewController == nil && ancestor.presentingViewController == nil, "chain.dismissed");
+        CHECK(charon_presentation_controller_of(chained) == nil, "chain.sheet.dropped");
+        CHECK(chainSheet == nil, "chain.sheet.freed");
+        CHECK(chained.transitioningDelegate == chainCaller, "chain.delegate.back");
     });
     advance();
 }

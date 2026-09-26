@@ -91,7 +91,10 @@ Sources:
   (`-charon_ownedByPresentedViewController`), and weakly after, which the popover and the document menu share. From 8.0 on the
   sheet is a subclass of the release's class, whose `initWithPresentedViewController:` holds the controller as the host's
   holds a caller-made one, so a controller asked for its sheet and the sheet hold each other and neither is freed, from the
-  moment it is asked until the port drops its own reference at the end of the dismissal. There is no public way to make the
+  moment it is asked until the port drops its own reference at the end of the dismissal: the sheet's
+  `dismissalTransitionDidEnd:`, which the release calls once, with `completed` true, on every route (the controller's own
+  dismissal, and the dismissal of an ancestor that takes it down: root, A, S and root dismissed; the host's UIKit measured
+  both, `tests/backports/host/sheethandover`). There is no public way to make the
   release's reference weak. What stays held is a sheet asked for and never presented as one (never presented, or presented
   from a regular width): UIKit's frees it with its controller, the port's cannot on those releases.
 - Frame (`_stackAlignmentFrame` 0x189051544): centred, the container's width, from the top margin to the container's
@@ -218,9 +221,9 @@ Sources:
   has the probe): the read alone took 21 to 33 ms, against 16.7 ms a frame at 60, so a refresh every frame is out of reach.
   The shading of the read took 261 ms for the 620 x 740 region of a 320 x 440 card, 402 ms for 768 x 920 (540 x 620) and 432 ms
   for 768 x 992 (768 x 700) in doubles with a `lround` per channel per pixel, on the main thread (3.8, 2.5 and 2.3 frames a second
-  while it ran). In floats and off the main thread (`org.charon.sheet.shadow`) it takes 108, 162 and 174 ms a reading, 8, 5.5 and
+  while it ran). In floats and off the main thread (`org.charon.sheet.shadow`) it takes 108, 162 and 174 ms a reading, 8.1, 5.5 and
   5.2 readings a second, and the display link keeps 60.0, 54.8 and 55.5 frames a second while the shadow is followed; what is
-  left on the main thread is the read (p95 25 to 39 ms, once per refresh). Not measured on the iPhone 4S (the screen stayed
+  left on the main thread is the read (p95 25.5 to 37.6 ms, once per refresh). Not measured on the iPhone 4S (the screen stayed
   locked to `wake`); its 640 x 960 screen reads four times the pixels of the same region on the iPad 2's generation of chip.
 - `presentationController` of a controller with a page or form sheet style answers the sheet; for a custom style the
   port answers the controller a transitioning delegate gave, else a plain `UIPresentationController`, as UIKit does; for

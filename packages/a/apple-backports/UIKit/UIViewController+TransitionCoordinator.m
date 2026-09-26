@@ -158,8 +158,8 @@ static BOOL charon_release_presents(void)
 
 static const void *const charon_sheet_handover_key = &charon_sheet_handover_key;
 
-/* Puts the caller's delegate back once the sheet is gone: when its dismissal completes, or at the next presentation of
-   the controller when it went away by a dismissal this file did not see (its presenter's own, for one). */
+/* Puts the caller's delegate back once the sheet is gone: when its dismissal ends, or at the next presentation of the
+   controller when the presentation the handover was made for never happened. */
 static void charon_sheet_handover_end(UIViewController *presented, CharonSheetHandover *handover)
 {
     if (presented.transitioningDelegate == handover)
@@ -167,16 +167,24 @@ static void charon_sheet_handover_end(UIViewController *presented, CharonSheetHa
     objc_setAssociatedObject(presented, charon_sheet_handover_key, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+@implementation UIViewController (CharonSheetHold)
+
 /* The sheet a dismissal took away is not kept for the controller: UIKit's controller has none after its dismissal and
    makes another, with the default detents, when asked again, and a sheet kept is a sheet the release's presentation
-   controller holds the controller for (from 8.0 on its class is the release's, whose init holds it strongly). */
-static void charon_sheet_dismissed(UIViewController *presented, CharonSheetHandover *handover)
+   controller holds the controller for (from 8.0 on its class is the release's, whose init holds it strongly). The sheet
+   says so when its dismissal ends, which the release does on every route: the controller's own dismiss, its presenter's,
+   and the dismissal of an ancestor that takes it down with it. */
+- (void)charon_sheetDidDismiss:(UIPresentationController *)sheet
 {
-    UIPresentationController *sheet = handover.sheet;
-    charon_sheet_handover_end(presented, handover);
-    if (sheet && charon_presentation_controller_of(presented) == sheet)
-        charon_set_presentation_controller(presented, nil);
+    CharonSheetHandover *handover = objc_getAssociatedObject(self, charon_sheet_handover_key);
+    if (!handover || handover.sheet != sheet)
+        return;
+    charon_sheet_handover_end(self, handover);
+    if (charon_presentation_controller_of(self) == sheet)
+        charon_set_presentation_controller(self, nil);
 }
+
+@end
 
 static UIPresentationController *charon_presentation_for(UIViewController *presented, UIViewController *presenting, UIViewController *source)
 {
@@ -312,12 +320,7 @@ static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewCo
             CharonSheetHandover *handover = objc_getAssociatedObject(presented, charon_sheet_handover_key);
             UIModalPresentationStyle style = presented.modalPresentationStyle;
             if (handover || (style >= 4 && style <= 6)) {
-                dismissOriginal(self, dismiss, animated, ^{
-                    if (handover && !presented.presentingViewController)
-                        charon_sheet_dismissed(presented, handover);
-                    if (completion)
-                        completion();
-                });
+                dismissOriginal(self, dismiss, animated, completion);
                 return;
             }
         }

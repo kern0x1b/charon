@@ -56,7 +56,7 @@ of the same screen at scale 1 (33 ms): a reduced context draws the layer tree sl
 took) is what those costs leave. What would improve it, not measured: reading the whole window once at scale 1 (33 ms whatever the region) and scaling that down, in
 place of a reduced context; and even then a read above 16.7 ms alone keeps 60 frames a second out of reach on this device, whatever the filter costs.
 The shadow's shading is not part of this: since the client shades off the main thread (`UISheetPresentationController.md`) the display link kept 60, 55 and 55 frames a second
-with a shadow refresh running (the read, 3 ms a frame on average, 25 to 39 ms at p95, is what is left on the main thread). The blur's box filter is still on the main thread.
+with a shadow refresh running (the read, 3 ms a frame on average, 25.5 to 37.6 ms at p95, is what is left on the main thread). The blur's box filter is still on the main thread.
 
 The system's view has three private subviews (the backdrop, an effect subview and the content view) and the port has one, the content view, and a layer for the
 picture, so an application that walks `subviews` of a visual effect view sees fewer. The styles that iOS 10
