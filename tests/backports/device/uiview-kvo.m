@@ -2,7 +2,9 @@
 // setters -[UIView setFrame:] and -setBounds: were called with, and what KVO does with an observer left on a view that
 // deallocates (facts/UIKit/UIDynamicAnimator.md M3). A command-line program, no UIApplicationMain: build it as a
 // daemon target (@addon/charon/daemon; Foundation, UIKit, QuartzCore, CoreGraphics; -fobjc-arc) and run it with
-// `xmake emulate -d iPhone4,1 -r 6.1.3 run /usr/libexec/<name>`, as tools/probe-exports.py does for its probe.
+// `xmake emulate -d iPhone4,1 -r 6.1.3 run /usr/libexec/<name>`, as tools/probe-exports.py does for its probe. It runs
+// from 4.3 (apple_minimum 4.3, -d iPhone3,1) too, when -fobjc-arc is on the link line as well as the compile, so that
+// clang force-loads Charon's arclite; path (f) is skipped on a release without NSLayoutConstraint (6.0 and later).
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
@@ -183,27 +185,35 @@ int main(void)
         path("(c) layer.bounds", NULL, ^(UIView *s, UIView *v) { v.layer.bounds = CGRectMake(0, 0, 300, 600); });
         path("(d) layer.frame", NULL, ^(UIView *s, UIView *v) { v.layer.frame = CGRectMake(0, 0, 300, 600); });
         path("(e) superview resized, autoresizing", NULL, ^(UIView *s, UIView *v) { s.frame = CGRectMake(0, 0, 600, 1000); });
-        path("(f) Auto Layout constant",
-             ^(UIView *s, UIView *v) {
-                 v.translatesAutoresizingMaskIntoConstraints = NO;
-                 [s addConstraint:[NSLayoutConstraint constraintWithItem:v attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:s attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
-                 [s addConstraint:[NSLayoutConstraint constraintWithItem:v attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:s attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
-                 [v addConstraint:[NSLayoutConstraint constraintWithItem:v attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:300]];
-                 g_height = [NSLayoutConstraint constraintWithItem:v attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:400];
-                 [v addConstraint:g_height];
-                 [s layoutIfNeeded];
-             },
-             ^(UIView *s, UIView *v) {
-                 g_height.constant = 600;
-                 [s setNeedsLayout];
-                 [s layoutIfNeeded];
-             });
+        // Looked up by name: a reference to the class itself would be a weak import that is NULL below 6.0.
+        Class constraint = NSClassFromString(@"NSLayoutConstraint");
+        if (constraint) {
+            path("(f) Auto Layout constant",
+                 ^(UIView *s, UIView *v) {
+                     v.translatesAutoresizingMaskIntoConstraints = NO;
+                     [s addConstraint:[constraint constraintWithItem:v attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:s attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
+                     [s addConstraint:[constraint constraintWithItem:v attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:s attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+                     [v addConstraint:[constraint constraintWithItem:v attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:300]];
+                     g_height = [constraint constraintWithItem:v attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:400];
+                     [v addConstraint:g_height];
+                     [s layoutIfNeeded];
+                 },
+                 ^(UIView *s, UIView *v) {
+                     g_height.constant = 600;
+                     [s setNeedsLayout];
+                     [s layoutIfNeeded];
+                 });
+        } else {
+            printf("path (f) Auto Layout constant: skipped, no NSLayoutConstraint on this release\n");
+        }
         path("(g) center", NULL, ^(UIView *s, UIView *v) { v.center = CGPointMake(200, 300); });
         path("(h) transform", NULL, ^(UIView *s, UIView *v) { v.transform = CGAffineTransformMakeScale(2, 2); });
         path("(i) layer.position", NULL, ^(UIView *s, UIView *v) { v.layer.position = CGPointMake(200, 300); });
-        lifetime("A, observer left on the dying view", NO);
-        lifetime("B, observer removed by an object the view holds", YES);
+        // A leaks on purpose, and on 5.1.1 the leaked observation stays with the address and comes back on the next
+        // objects built there: it goes last, so that B and the early release run on a clean process.
         released_early();
+        lifetime("B, observer removed by an object the view holds", YES);
+        lifetime("A, observer left on the dying view", NO);
     }
     printf("done\n");
     return 0;
