@@ -18,16 +18,17 @@ diff --git a/stdlib/public/Darwin/Dispatch/Block.swift b/stdlib/public/Darwin/Di
 diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/Dispatch/Source.swift
 --- a/stdlib/public/Darwin/Dispatch/Source.swift
 +++ b/stdlib/public/Darwin/Dispatch/Source.swift
-@@ -14,3 +14,59 @@
+@@ -14,3 +14,63 @@
  @_implementationOnly import _SwiftDispatchOverlayShims
 +import Darwin
 +import ObjectiveC
  
-+/* A source that replaces its pending data arrived in iOS 11. Before it the overlay makes a source that ORs, beside a
-+   record of the latest value replaced into it: replace(data:) records the value and merges a 1, which coalesces the
-+   calls of the handler as the pending data of the release's source does. The event handler is set wrapped, and the
-+   wrapper takes a snapshot of the latest value on entry: the data the handler reads is the value it was called with,
-+   and a value replaced while it runs is the next call's, as on the release. */
++/* A source that replaces its pending data arrived in iOS 11. Before it the overlay makes a source that ORs, beside the
++   pending value of the release's source: replace(data:) stores the value and merges a 1, which only wakes the source
++   and coalesces the wake-ups as the release's does. The event handler is set wrapped, and the wrapper takes the
++   release's latch on entry: the value is taken and the pending one becomes zero, as the release's
++   xchg(ds_pending_data, 0) does, and a zero value never reaches the handler. The data the handler reads is the value it
++   was called with, and a value replaced while it runs is the next call's. */
 +internal final class _ReplacedData {
 +	private let lock = UnsafeMutablePointer<pthread_mutex_t>.allocate(capacity: 1)
 +	private var latest: UInt = 0
@@ -40,18 +41,21 @@ diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/D
 +		lock.deallocate()
 +	}
 +
-+	/// The value of the latest replace(data:), for that call to record.
++	/// The pending value: what the latest replace(data:) stored, until a latch takes it.
 +	func replace(_ value: UInt) {
 +		pthread_mutex_lock(lock)
 +		latest = value
 +		pthread_mutex_unlock(lock)
 +	}
 +
-+	/// What the event handler is called with: the latest value at its entry, until its next entry.
-+	func enter() {
++	/// The release's latch: the pending value becomes what the event handler is called with, until its next entry, and
++	/// the pending one is zero. Whether there is anything to call it with: a zero value is never delivered.
++	func enter() -> Bool {
 +		pthread_mutex_lock(lock)
++		defer { pthread_mutex_unlock(lock) }
 +		called = latest
-+		pthread_mutex_unlock(lock)
++		latest = 0
++		return called != 0
 +	}
 +
 +	var value: UInt {
@@ -70,7 +74,7 @@ diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/D
 +/// The handler of a replace source, wrapped to take its snapshot on entry; any other handler as it is.
 +private func _snapshotting(_ handler: @escaping @convention(block) () -> Void, of source: DispatchSource) -> @convention(block) () -> Void {
 +	guard let replaced = _replacedData(of: source) else { return handler }
-+	return { replaced.enter(); handler() }
++	return { if replaced.enter() { handler() } }
 +}
 +
 +private func _snapshotting(_ handler: (@convention(block) () -> Void)?, of source: DispatchSource) -> (@convention(block) () -> Void)? {
@@ -78,7 +82,7 @@ diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/D
 +}
 +
  extension DispatchSourceProtocol {
-@@ -22,6 +78,6 @@
+@@ -22,6 +82,6 @@
                     qos != .unspecified || !flags.isEmpty {
 -			let item = DispatchWorkItem(qos: qos, flags: flags, block: h)
 +			let item = DispatchWorkItem(qos: qos, flags: flags, block: _snapshotting(h, of: self as! DispatchSource))
@@ -87,7 +91,7 @@ diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/D
 -			_swift_dispatch_source_set_event_handler(self as! DispatchSource, handler)
 +			_swift_dispatch_source_set_event_handler(self as! DispatchSource, _snapshotting(handler, of: self as! DispatchSource))
  		}
-@@ -31,3 +87,9 @@
+@@ -31,3 +91,9 @@
  	public func setEventHandler(handler: DispatchWorkItem) {
 -		_swift_dispatch_source_set_event_handler(self as! DispatchSource, handler._block)
 +		let source = self as! DispatchSource
@@ -95,10 +99,10 @@ diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/D
 +			_swift_dispatch_source_set_event_handler(source, handler._block)
 +			return
 +		}
-+		let item = DispatchWorkItem(qos: handler._qos, flags: handler._flags, block: { replaced.enter(); handler.perform() })
++		let item = DispatchWorkItem(qos: handler._qos, flags: handler._flags, block: { if replaced.enter() { handler.perform() } })
 +		_swift_dispatch_source_set_event_handler(source, item._block)
  	}
-@@ -92,3 +154,7 @@
+@@ -92,3 +158,7 @@
  	public var data: UInt {
 -		return __dispatch_source_get_data(self as! DispatchSource)
 +		let source = self as! DispatchSource
@@ -107,7 +111,7 @@ diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/D
 +		}
 +		return __dispatch_source_get_data(source)
  	}
-@@ -196,3 +262,8 @@
+@@ -196,3 +266,8 @@
  	public class func makeUserDataReplaceSource(queue: DispatchQueue? = nil) -> DispatchSourceUserDataReplace {
 -		return _swift_dispatch_source_create(_swift_dispatch_source_type_DATA_REPLACE(), 0, 0, queue) as DispatchSourceUserDataReplace
 +		if let type = _swift_dispatch_source_type_DATA_REPLACE() {
@@ -117,7 +121,7 @@ diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/D
 +		objc_setAssociatedObject(source, &_replacedDataKey, _ReplacedData(), .OBJC_ASSOCIATION_RETAIN)
 +		return source as DispatchSourceUserDataReplace
  	}
-@@ -658,3 +729,11 @@
+@@ -658,3 +733,11 @@
  	public func replace(data: UInt) {
 -		__dispatch_source_merge_data(self as! DispatchSource, data)
 +		let source = self as! DispatchSource
