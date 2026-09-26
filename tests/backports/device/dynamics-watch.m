@@ -6,13 +6,12 @@
 // set_values("charon.libraries", ...), README's test port) and run it with `xmake emulate -d iPhone4,1 -r 6.1.3 run
 // /usr/libexec/<name>`. It exits with the number of failed checks; the KVO line of a leaked observer is on stderr, and
 // the run's log is read for it: `was deallocated while key value observers were still registered` must not be there.
-// A process with no display has no display link to start, and on an emulated 4.3 asking for one faults: `[UIScreen screens]` is
-// empty in a bare process there (as on 6.0 and 6.1.3, where the link is nil, and on 5.1.1 until the first UIView is made, after
-// which it holds the main screen), and `-[UIScreen displayLinkWithTarget:selector:]`, like `+[CADisplayLink
-// displayLinkWithTarget:selector:]`, faults in QuartzCore (display-probe.m, its logs cited in facts/UIKit/UIDynamicAnimator.md
-// M3). No public call says beforehand whether the link call will fault; the screens are what the process can be asked, so with
-// none the animators are kept from starting a link, the changes are made and the wake checks are skipped with a line saying
-// so; the lifetimes, which are about the observers and not the wake, run whole.
+// A process with no display has no display link to start, and on an emulated 4.3 asking for one faults in QuartzCore
+// (display-probe.m; its measurements are in facts/UIKit/UIDynamicAnimator.md M3). No public call says beforehand whether the
+// link call will fault; what the process can be asked is `[UIScreen screens]`, which is empty on 4.3 and holds the main screen on
+// 5.1.1, 6.0 and 6.1.3 once the first UIView exists. With no screen the animators are kept from starting a link, the changes
+// are made and the wake checks are skipped with a line saying so; the lifetimes, which are about the observers and not the
+// wake, run whole.
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 
