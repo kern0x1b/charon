@@ -3,6 +3,7 @@
 #include <float.h>
 #include <math.h>
 #include <string.h>
+#include "../CharonSpring.h"
 
 static const double charon_spring_settled = 0.001;
 static const NSUInteger charon_spring_iterations = 20;
@@ -53,13 +54,7 @@ double charon_spring_frequency(double duration, double dampingRatio, double velo
 
 double charon_spring_progress(double omega, double dampingRatio, double velocity, double time)
 {
-    double zeta = MIN(MAX(dampingRatio, FLT_EPSILON), 1.0);
-    if (zeta < 1) {
-        double damped = omega * sqrt(1 - zeta * zeta);
-        double amplitude = (zeta * omega - velocity) / damped;
-        return 1 - exp(-zeta * omega * time) * (cos(damped * time) + amplitude * sin(damped * time));
-    }
-    return 1 - (1 + (omega - velocity) * time) * exp(-omega * time);
+    return charon_spring_value(omega, MIN(MAX(dampingRatio, FLT_EPSILON), 1.0), velocity, time);
 }
 
 static BOOL charon_decompose(CATransform3D transform, double *components)

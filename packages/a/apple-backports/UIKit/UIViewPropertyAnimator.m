@@ -1,5 +1,6 @@
 #import "CharonTimingParameters.h"
 #include <math.h>
+#include "../CharonBezier.h"
 
 /* The animator runs the animation blocks through UIView's own animation, and, when
    it is interruptible, immediately stops the layers it touched and moves their time
@@ -163,24 +164,8 @@ static double charon_curve_at(id <UITimingCurveProvider> parameters, double frac
     }
     UICubicTimingParameters *cubic = parameters.cubicTimingParameters;
     CGPoint first = cubic.controlPoint1, second = cubic.controlPoint2;
-    /* The cubic Bézier of Core Animation: x and y both run on the control points,
-       so the time has to be solved for before the value can be read off. */
-    double low = 0, high = 1, guess = fraction;
-    for (unsigned step = 0; step < 24; step++) {
-        double inverse = 1 - guess;
-        double x = 3 * inverse * inverse * guess * first.x + 3 * inverse * guess * guess * second.x
-                 + guess * guess * guess;
-        if (fabs(x - fraction) < 1e-6)
-            break;
-        if (x < fraction)
-            low = guess;
-        else
-            high = guess;
-        guess = (low + high) / 2;
-    }
-    double inverse = 1 - guess;
-    return 3 * inverse * inverse * guess * first.y + 3 * inverse * guess * guess * second.y
-         + guess * guess * guess;
+    /* The cubic Bézier of Core Animation: x and y both run on the control points. */
+    return charon_bezier_progress(first.x, first.y, second.x, second.y, fraction);
 }
 
 static void charon_walk(CALayer *layer, void (^visit)(CALayer *))

@@ -1,5 +1,6 @@
 #import "CharonBarAppearance.h"
 #import "../CharonSayOnce.h"
+#import "../CharonSRGB.h"
 
 NSDictionary *charon_attributes_merge(NSDictionary *base, NSDictionary *over)
 {
@@ -22,9 +23,9 @@ UIColor *charon_disabled_colour(UIColor *colour)
     CGFloat linear[3] = {red, green, blue}, weights[3] = {0.2224, 0.7167, 0.0606}, luminance = 0;
     for (int index = 0; index < 3; index++) {
         CGFloat value = linear[index];
-        luminance += weights[index] * (value <= 0.04045 ? value / 12.92 : pow((value + 0.055) / 1.055, 2.4));
+        luminance += weights[index] * charon_srgb_decode(value);
     }
-    CGFloat grey = luminance <= 0.0031308 ? luminance * 12.92 : 1.055 * pow(luminance, 1 / 2.4) - 0.055;
+    CGFloat grey = charon_srgb_encode(luminance);
     return [UIColor colorWithWhite:MIN(grey, 0.6) alpha:alpha * 0.45];
 }
 
