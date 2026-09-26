@@ -426,7 +426,7 @@ static void cost_checks(const char *variant, BOOL weakKeys, NSMapTable *(^make)(
 #ifndef THREAD_ROUNDS
 #define THREAD_ROUNDS 20000
 #endif
-static void thread_checks(const char *variant, NSMapTable *(^make)(void))
+static void thread_checks(const char *variant, BOOL port, NSMapTable *(^make)(void))
 {
     const long n = THREAD_ROUNDS;
     NSMapTable *table = make();
@@ -452,11 +452,143 @@ static void thread_checks(const char *variant, NSMapTable *(^make)(void))
     }
     dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
     CHECK(answered, label(variant, "a live key answers its value while others die on other threads"));
-    CHECK_EQUAL(@([table count]), @1, label(variant, "and once they have gone the live entry is alone"));
+    // The release keeps counting an entry that has gone until it grows (above), so what it enumerates is what is asked.
+    CHECK_EQUAL(@(port ? [table count] : [[[table keyEnumerator] allObjects] count]), @1,
+                label(variant, "and once they have gone the live entry is alone"));
 }
 
-int main(void)
+// Whether the release has weak references of its own (5.0 and later), from its Foundation version, not from the port:
+// which of the port's two paths a release takes is checked against this, and the checks that need the runtime's weak
+// references run where this answers YES. 881.0 is NSFoundationVersionNumber of 5.0 (4.3 is 751.x).
+static BOOL release_has_weak(void)
 {
+    return NSFoundationVersionNumber >= 881.0;
+}
+
+static BOOL ivar_flag(id object, const char *name)
+{
+    Ivar ivar = class_getInstanceVariable(object_getClass(object), name);
+    return *(BOOL *)((char *)(__bridge void *)object + ivar_getOffset(ivar));
+}
+
+// The port's own choice of path for a weak side, read from its entry: through the runtime's weak reference where the
+// release has one, the watch alone where it has none. A release that answers otherwise (a lookup that finds a function
+// where there is none, or none where there is) fails here, before the calls the path makes safe are tried.
+static void path_checks(const char *variant, BOOL weakKeys, BOOL weakValues, NSMapTable *table)
+{
+    id key = [NSObject new], value = [NSObject new];
+    [table setObject:value forKey:key];
+    id entry = [object_getIvar(table, class_getInstanceVariable(object_getClass(table), "_entries")) anyObject];
+    BOOL native = release_has_weak();
+    CHECK(entry != nil, label(variant, "an entry to read the path from"));
+    if (weakKeys)
+        CHECK_EQUAL(@(ivar_flag(entry, "_nativeKey")), @(native),
+                    label(variant, native ? "a weak key is read through the runtime's weak reference" : "a weak key is watched only"));
+    if (weakValues)
+        CHECK_EQUAL(@(ivar_flag(entry, "_nativeValue")), @(native),
+                    label(variant, native ? "a weak value is read through the runtime's weak reference" : "a weak value is watched only"));
+}
+
+// A key or a value of the kinds that keep their own retain count and that a table is really given: a mutable string, then
+// a number too large for a tagged pointer.
+static id enumerated_object(int kind, long i, const char *tag)
+{
+    if (kind == 0)
+        return [NSMutableString stringWithFormat:@"%s%ld", tag, i];
+    return [NSNumber numberWithUnsignedLongLong:ULLONG_MAX - 2 * (unsigned long long)i - (tag[0] == 'v')];
+}
+
+// The calls that read every entry's key - the enumerators, -copy - while the keys and values go on other threads, which
+// the watch alone does not survive (4.3: the contract of the facts), and the runtime's weak references do. It runs where
+// the release has them, and says so where it does not. The owner reads each key it is handed (-hash) and takes -copy; the
+// live entry must be in every enumeration and every copy, and alone at the end.
+static void enumeration_checks(const char *variant, BOOL port, NSMapTable *(^make)(void))
+{
+    if (!release_has_weak()) {
+        printf("skip %s: the calls that read every entry's key are not held before 5.0 (coordination/crutches.md)\n", variant);
+        return;
+    }
+    const long n = THREAD_ROUNDS;
+    NSMapTable *table = make();
+    id live = [NSObject new], liveValue = [NSObject new];
+    [table setObject:liveValue forKey:live];
+    dispatch_queue_t queue = dispatch_queue_create("maptable6.enumerate", DISPATCH_QUEUE_CONCURRENT);
+    dispatch_group_t group = dispatch_group_create();
+    BOOL whole = YES;
+    long seen = 0;
+    for (int kind = 0; kind < 2; kind++) {
+        for (long i = 0; i < n; i++) {
+            @autoreleasepool {
+                id key = enumerated_object(kind, i, "k"), value = enumerated_object(kind, i, "v");
+                [table setObject:value forKey:key];
+                dispatch_group_async(group, queue, ^{
+                    (void)key;
+                    (void)value;
+                    usleep(i % 3);
+                });
+                if (i % 16 == 0) {
+                    BOOL sawLive = NO;
+                    for (id each in [table keyEnumerator]) {
+                        seen++;
+                        sawLive = sawLive || each == live;
+                        (void)[each hash];
+                    }
+                    NSMapTable *copy = [table copy];
+                    whole = whole && sawLive && [copy objectForKey:live] == liveValue;
+                }
+            }
+        }
+    }
+    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+    CHECK(seen > 0, label(variant, "keys were enumerated meanwhile"));
+    CHECK(whole, label(variant, "every enumeration and copy meanwhile held the live entry"));
+    CHECK_EQUAL(@(port ? [table count] : [[[table keyEnumerator] allObjects] count]), @1,
+                label(variant, "and after the enumerations the live entry is alone"));
+}
+
+// A class that refuses a weak reference to its instances, as the weak side of a table: what a release does with it is its
+// own answer (6.0 aborts: "cannot form weak reference"), and the port must give the same one where the release has weak
+// references. An abort ends the process, so each case is a run of its own, asked for by argument:
+//     maptable6 theirs|port weakToStrong|strongToWeak|weakToWeak|strongToStrong key|value
+// and emulate.sh compares the outcomes. strongToStrong is the control: the class alone is not what aborts.
+@interface CharonHostRefusesWeak : NSObject
+@end
+
+@implementation CharonHostRefusesWeak
+- (BOOL)allowsWeakReference
+{
+    return NO;
+}
+@end
+
+static int refusal(const char *who, const char *variant, const char *side)
+{
+    BOOL port = strcmp(who, "port") == 0, key = strcmp(side, "key") == 0;
+    NSString *selector = [NSString stringWithFormat:port ? @"charonHost_%sObjectsMapTable" : @"%sObjectsMapTable", variant];
+    if (![NSMapTable respondsToSelector:NSSelectorFromString(selector)]) {
+        printf("outcome %s %s %s: no such factory\n", who, variant, side);
+        return 0;
+    }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+    NSMapTable *table = [NSMapTable performSelector:NSSelectorFromString(selector)];
+#pragma clang diagnostic pop
+    id refuses = [CharonHostRefusesWeak new], other = [NSObject new];
+    printf("outcome %s %s %s: ", who, variant, side);
+    fflush(stdout);
+    [table setObject:key ? other : refuses forKey:key ? refuses : other];
+    id found = [table objectForKey:key ? refuses : other];
+    printf("held, count %lu, lookup %s\n", (unsigned long)[table count], found == (key ? other : refuses) ? "found" : "nil");
+    return 0;
+}
+
+int main(int argc, char **argv)
+{
+    if (argc == 4) {
+        @autoreleasepool {
+            return refusal(argv[1], argv[2], argv[3]);
+        }
+    }
     @autoreleasepool {
         count_calls(NSClassFromString(@"CharonSideWatch"), @selector(init), ^{ __sync_fetch_and_add(&watches_made, 1); });
         count_calls(NSClassFromString(@"CharonSideWatch"), NSSelectorFromString(@"dealloc"), ^{ __sync_fetch_and_add(&watches_gone, 1); });
@@ -490,7 +622,14 @@ int main(void)
                 held_side_checks(name, variants[i].weakKeys, ours(), released ? theirs() : nil);
             watch_checks(name, ours, (variants[i].weakKeys ? 1 : 0) + (variants[i].weakValues ? 1 : 0));
             cost_checks(name, variants[i].weakKeys, ours);
-            thread_checks(name, ours);
+            path_checks(name, variants[i].weakKeys, variants[i].weakValues, ours());
+            thread_checks(name, YES, ours);
+            enumeration_checks(name, YES, ours);
+            if (theirs) {
+                const char *release_name = [NSString stringWithFormat:@"release %s", name].UTF8String;
+                thread_checks(release_name, NO, theirs);
+                enumeration_checks(release_name, NO, theirs);
+            }
         }
 
         // Strong keys are retained, not copied, and values retained, as the host's own.

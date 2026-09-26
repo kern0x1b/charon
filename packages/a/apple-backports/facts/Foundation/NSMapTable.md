@@ -88,10 +88,23 @@ holds them.
     the runtime's own `objc_storeWeak` clears it at the start of deallocation, so no read retains an object that is
     going. `__weak` to `NSMutableString`, `NSString` made with a format, `NSNumber`, `NSDate`, `NSArray` and `NSObject` was
     tried under `xmake emulate` on iPhone2,1 5.0 (9A334), 5.1.1 (9B206) and 6.0: each is set and is nil after the object
-    is released (4.3: `NSObject` is set and released, `NSMutableString` aborts, below). The owner thread enumerating a
-    table's keys while other threads dropped the keys and values, 100000 rounds a table: clean for all three tables on 5.1.1
-    and on the host, where the same with the port before this change (an entry read through its
-    unretained pointer) ended in SIGSEGV in each of 3 runs, at the first table.
+    is released (4.3: `NSObject` is set and released, `NSMutableString` aborts, below). The path is chosen by looking for
+    `objc_loadWeakRetained` in libobjc alone (`dlopen` of it with `RTLD_NOLOAD`, `dlsym` on that handle), not in every image:
+    arclite, linked into a process, exports a function of that name of its own, and it is the one that aborts for
+    `NSCFString`. The suite reads the path from an entry and holds it to the release's Foundation version: the `__weak`
+    reference on 5.0, 5.1.1 and 6.0, the watch alone on 4.3 (libobjc's answer on 4.3 is none: measured, by the suite's path check passing there). The owner thread enumerating a table's keys (reading each
+    key's `-hash`) and taking `-copy` while other threads dropped the keys and values, `NSMutableString` keys and values and
+    then `NSNumber` ones, 200000 rounds each: clean for the three tables on 5.0, 5.1.1 and 6.0, the release's own tables on
+    6.0 as well. On the host an enumeration probe of the same shape (100000 rounds, `NSObject` keys) against the port before
+    this change (an entry read through its unretained pointer) ended in SIGSEGV in each of 3 runs, at the first table. `control.sh` runs the same suite against a copy of the
+    port whose lookup answers "none": it fails on 5.1.1 and on 6.0, the path check first and then a SIGSEGV in the
+    enumeration, so the test tells the two paths apart.
+  - **A class that refuses a weak reference** (`-allowsWeakReference` answering NO) as a weak side: 6.0's own three factories
+    abort (`cannot form weak reference to instance of class ...`, SIGILL) for each of the four weak sides (the key of
+    `weakToStrong`, the value of `strongToWeak`, both sides of `weakToWeak`), and the port does the same on 5.0, 5.1.1 and
+    6.0; the same class as either side of `strongToStrong` is held and found, so it is the weak side that refuses. Nothing
+    is dropped silently at those releases, and the outcome is 6.0's. The port on 4.3, which forms no weak reference, holds
+    the entry and finds it: it does not abort where 6.0 does. `emulate.sh` compares the outcome of each case with 6.0's.
   - **4.3: not closed, only narrowed.** The runtime has no `objc_storeWeak`, and arclite's abort for the objects that keep
     their own retain count (`cannot form weak reference to instance of class NSCFString: it manages its own retain count`,
     measured on 4.3 with an `NSMutableString`), so a watch is all there is and it runs after the object's `-dealloc`
@@ -101,11 +114,14 @@ holds them.
     object's own watch needs to finish its `-dealloc`, so that object is whole for as long as the lock is; the owner thread
     adding entries, asking `-count` and `-objectForKey:` of a live key, while other threads dropped the keys and values, 200000
     rounds a table, clean for all three tables on 4.3 and 5.1.1 under `xmake emulate`. What is left is
-    **the calls that read every entry's key** (the enumerators, `-dictionaryRepresentation`, `-copy`) and a hash collision
-    with a key that is going while another thread drops a key or a value: the same enumeration as above on 4.3 ends in SIGSEGV
-    within 1.1 guest seconds. It is a property of learning of a death through an association, so nothing native
-    closes it on 4.3, and it is in `coordination/crutches.md`. Keep the last release of a weak key or of a weak value from
-    happening on another thread while the table is enumerated or copied. A table is not thread-safe otherwise, as NSMapTable is not.
+    **the calls that read every entry's key** (the enumerators, `-dictionaryRepresentation`, `-copy`) and **a key equal to
+    a key that is going**: `-objectForKey:` and `-setObject:forKey:` with a key whose hash is that of a key another thread is
+    dropping read the dying key in `-isEqual:` once the hashes match, and for value-like keys (strings, numbers) an equal
+    key is the ordinary case, not a collision. The same enumeration as above on 4.3 ends in SIGSEGV within 1.1 guest seconds.
+    It is a property of learning of a death through an association, so nothing native closes it on 4.3, and it is in
+    `coordination/crutches.md`. Keep the last release of a weak key or of a weak value from happening on another thread while
+    the table is enumerated or copied, or while it is asked for, or given, a key equal to one that may be going. A table is
+    not thread-safe otherwise, as NSMapTable is not.
 - `charon_watch` answers the watch's address, not the watch. Measured on 4.3, 5.1.1 and 6.0 under `xmake emulate`: with
   the watch returned as an object, every watch taken off its object stayed alive (the count of live watches only grew,
   1000 after 1000 set-and-remove of one key) while the same source on the host freed it at once. The reading: ARC's
@@ -122,7 +138,8 @@ their entries, a value going with its entry or replaced, the pointer functions, 
 divergences named above; the watches left on an object that lives on; and the work a table of a thousand keys takes,
 counted in reads of an entry's key (a scan of every entry on every call reads it n times n); and, for each of the three, the owner thread adding
 entries, asking `-count` and a live key's value while blocks on a concurrent queue drop the keys and values (20000 rounds; `MAPTABLE6_ROUNDS` sets the
-device build's) - 109 checks on the host.
+device build's), and, where the release has weak references, the same with the enumerators and `-copy` for `NSMutableString` and
+`NSNumber` keys and values, on the port and on the release's own tables.
 Negative controls, run once: a table that scans every entry on every read fails the work check (500540 reads for 1000
 keys against a limit of 20000), one that does not take its watches off fails the watch checks, and one whose watch marks nothing when its object
 goes ends in SIGSEGV on the dead object (a watch that only leaves the object's pointer alone is not caught: the entry is
@@ -130,7 +147,9 @@ queued and dropped before any read, which is the point of the queue).
 
 `sh tests/backports/host/maptable6/emulate.sh` (in a heavy slot: `coordination/heavy.sh sh ...`) builds the same test as a
 device binary through the `daemon` rule against the addon v0.8.10 in the shared store and runs it under `xmake emulate` on
-iPhone2,1, on 6.0 against the release's own factories and on 4.3 and 5.1.1, which have none, alone; it then compares the
-port's answers to the 14 scenarios of each factory (42 answers) on 4.3 and 5.1.1 with the release's on 6.0. Measured: 100
-checks, 0 failures on 6.0; 53 checks, 0 failures on 4.3 and on 5.1.1 (the 47 fewer are the ones that hold the port
-against a release's own factory, which 4.3 and 5.1.1 do not have); the 42 answers of 4.3 and of 5.1.1 identical to 6.0's.
+iPhone2,1, on 6.0 against the release's own factories and on 4.3, 5.0 and 5.1.1, which have none, alone; it then compares the
+port's answers to the 14 scenarios of each factory (42 answers) on 4.3, 5.0 and 5.1.1 with the release's on 6.0. Measured (200000 rounds): 137
+checks, 0 failures on 6.0; 75 on 5.0 and on 5.1.1; 66 on 4.3, where the enumeration and `-copy` phase is skipped and says so in the log (6.0 has more than 5.0 and 5.1.1
+because it also runs the release's own factories through every check); the 42
+answers of 4.3, 5.0 and 5.1.1 identical to 6.0's; the refusal cases of the weak side (above) on each, compared with 6.0's for
+5.0 and later. 140 checks on the host.

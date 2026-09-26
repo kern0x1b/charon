@@ -1,16 +1,19 @@
 #!/bin/sh
 # tests/backports/host/maptable6 as a device binary under xmake emulate: the port against the release's own factories on
-# 6.0, and the port alone on 4.3 and 5.1.1, whose answers to the weak scenarios must be 6.0's. One heavy job (a build and
-# three emulated boots), so run it in a slot of the machine:
+# 6.0, and the port alone on 4.3, 5.0 and 5.1.1, whose answers to the weak scenarios must be 6.0's; then, on each, a class
+# that refuses a weak reference as the weak side of each table, whose outcome on 5.0 and later must be 6.0's. One heavy job
+# (a build and an emulated boot a release, and one a case of the refusal), so run it in a slot of the machine:
 #     $HOME/Git/projects/ios/coordination/heavy.sh sh tests/backports/host/maptable6/emulate.sh
 # MAPTABLE6_ROUNDS=n sets the rounds of the two-thread check (default 20000). It needs the addon v0.8.10 in the shared xmake store, as any port does, and the firmware of the releases named below.
+# MAPTABLE6_PORT names the port's source, for control.sh, which builds a port with its native path taken out.
 # Leaves the logs in $MAPTABLE6_BUILD/<release>.log and exits 1 on a failed check or an answer that is not 6.0's.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 export MAPTABLE6_ROOT=$(cd "$here/../../../.." && pwd)
 build=${MAPTABLE6_BUILD:-${TMPDIR:-/tmp}/charon-maptable6-device}
 device=${MAPTABLE6_DEVICE:-iPhone2,1}
-releases=${MAPTABLE6_RELEASES:-"6.0 4.3 5.1.1"}
+releases=${MAPTABLE6_RELEASES:-"6.0 4.3 5.0 5.1.1"}
+export MAPTABLE6_PORT=${MAPTABLE6_PORT:-}
 rm -rf "$build"
 mkdir -p "$build"
 cp "$here/emulate/xmake.lua" "$here/emulate/control" "$build/"
@@ -40,6 +43,37 @@ for release in $releases; do
         echo "$release: answers that are not 6.0's:"; cat "diff-$release.txt"
         failed=1
     fi
+done
+# A class that refuses a weak reference, as the weak side: 6.0 aborts, and so must the port wherever it forms the runtime's
+# weak reference (5.0 and later). 4.3 has only the watch and holds the entry: its outcome is printed, not compared. A
+# run that ends is one that aborted or held, so the line each leaves is what is compared, without addresses.
+outcome() {
+    sed 's/\x1b\[[0-9;]*m//g' "$1" | grep '^outcome ' | head -1 | sed -E 's/objc\[[0-9]+\]: //; s/\(0x[0-9a-f]+\)//'
+}
+cases="weakToStrong:key strongToWeak:value weakToWeak:key weakToWeak:value strongToStrong:key strongToStrong:value"
+for release in $releases; do
+    for c in $cases; do
+        variant=${c%%:*}; side=${c##*:}
+        for who in theirs port; do
+            [ "$who" = theirs ] && [ "$release" != 6.0 ] && continue
+            xmake emulate -d "$device" -r "$release" run /usr/libexec/maptable6 $who $variant $side > "refuse-$release-$who-$variant-$side.log" 2>&1 || true
+        done
+    done
+done
+for release in $releases; do
+    for c in $cases; do
+        variant=${c%%:*}; side=${c##*:}
+        expected=$(outcome "refuse-6.0-theirs-$variant-$side.log" | sed 's/^outcome theirs /outcome port /')
+        answered=$(outcome "refuse-$release-port-$variant-$side.log")
+        if [ "$release" = 4.3 ]; then
+            echo "$release: $answered (the watch alone; not compared)"
+        elif [ -n "$expected" ] && [ "$expected" = "$answered" ]; then
+            echo "$release: $answered"
+        else
+            echo "$release: not 6.0's: wanted '$expected', got '$answered'"
+            failed=1
+        fi
+    done
 done
 echo "logs=$build"
 exit $failed

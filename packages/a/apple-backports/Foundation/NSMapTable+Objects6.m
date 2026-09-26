@@ -30,7 +30,13 @@ static void charon_weak_lock_make(void)
     pthread_mutexattr_settype(&attributes, PTHREAD_MUTEX_RECURSIVE);
     pthread_mutex_init(&charon_weak_lock, &attributes);
     pthread_mutexattr_destroy(&attributes);
-    charon_native_weak = dlsym(RTLD_DEFAULT, "objc_loadWeakRetained") != NULL;
+    // Asked of libobjc alone: an image that exports the function (arclite, linked into the process, exports its own) would
+    // answer for 4.3, whose arclite refuses the objects that keep their own retain count by aborting.
+    void *objc = dlopen("/usr/lib/libobjc.A.dylib", RTLD_LAZY | RTLD_NOLOAD);
+    if (objc) {
+        charon_native_weak = dlsym(objc, "objc_loadWeakRetained") != NULL;
+        dlclose(objc);
+    }
 }
 
 static void charon_lock(void)

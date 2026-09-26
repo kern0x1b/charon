@@ -13,15 +13,17 @@ set_defaultplat("iphoneos")
 set_defaultarchs("iphoneos|armv7")
 
 -- differential.m as a device binary: the port, under names of its own, against the release's factories where the release
--- has them (6.0), and alone where it does not (4.3, 5.1.1). One binary, built for the lowest release, runs on all three.
+-- has them (6.0), and alone where it does not (4.3, 5.0, 5.1.1). One binary, built for the lowest release, runs on all four.
 local root = os.getenv("MAPTABLE6_ROOT") or path.join(os.scriptdir(), "../../../../..")
+local source = os.getenv("MAPTABLE6_PORT")
+if not source or source == "" then source = path.join(root, "packages/a/apple-backports/Foundation/NSMapTable+Objects6.m") end
 local port = {defines = {"weakToStrongObjectsMapTable=charonHost_weakToStrongObjectsMapTable",
                          "strongToWeakObjectsMapTable=charonHost_strongToWeakObjectsMapTable",
                          "weakToWeakObjectsMapTable=charonHost_weakToWeakObjectsMapTable",
                          "strongToStrongObjectsMapTable=charonHost_strongToStrongObjectsMapTable"}}
 target("maptable6")
     add_rules("@addon/charon/daemon")
-    add_files(path.join(root, "packages/a/apple-backports/Foundation/NSMapTable+Objects6.m"), port)
+    add_files(source, port)
     add_files(path.join(root, "tests/backports/host/maptable6/differential.m"),
               path.join(root, "tests/backports/device/check.m"))
     add_includedirs(path.join(root, "tests/backports/device"))
@@ -32,3 +34,25 @@ target("maptable6")
     add_frameworks("Foundation")
     set_values("charon.version", "1.0")
     set_values("charon.control", "control")
+
+-- The probes the facts cite (probes/), built only when asked for: probes.sh sets MAPTABLE6_PROBES.
+if os.getenv("MAPTABLE6_PROBES") then
+    target("enumprobe")
+        add_rules("@addon/charon/daemon")
+        add_files(source, port)
+        add_files(path.join(root, "tests/backports/host/maptable6/probes/enum.m"), path.join(root, "tests/backports/device/check.m"))
+        add_includedirs(path.join(root, "tests/backports/device"))
+        add_mflags("-fobjc-arc", "-fvisibility=hidden", "-Wno-deprecated-declarations")
+        add_ldflags("-fobjc-arc")
+        add_frameworks("Foundation")
+        set_values("charon.version", "1.0")
+        set_values("charon.control", "control-enum")
+    target("weakprobe")
+        add_rules("@addon/charon/daemon")
+        add_files(path.join(root, "tests/backports/host/maptable6/probes/weak.m"))
+        add_mflags("-fobjc-arc")
+        add_ldflags("-fobjc-arc")
+        add_frameworks("Foundation")
+        set_values("charon.version", "1.0")
+        set_values("charon.control", "control-weak")
+end
