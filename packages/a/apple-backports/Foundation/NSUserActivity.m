@@ -42,7 +42,6 @@ NSString *const NSUserActivityTypeBrowsingWeb = @"NSUserActivityTypeBrowsingWeb"
     _userInfo = @{};
     _needsSave = YES;
     _eligibleForHandoff = YES;
-    _eligibleForPrediction = YES;
     return self;
 }
 

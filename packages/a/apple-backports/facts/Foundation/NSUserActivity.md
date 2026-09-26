@@ -28,7 +28,8 @@ or handed to another device, and the class is `inert`. The delegate messages `us
 `userActivity:didReceiveInputStream:outputStream:` and the application delegate's continuation messages are never sent.
 The system saves a current activity again whenever `needsSave` is set; the port asks once, at `becomeCurrent`.
 `eligibleForPrediction` (iOS 12) is carried the same way `eligibleForHandoff` and `eligibleForPublicIndexing` already
-were: a plain stored `BOOL`, default `YES` as on every release that has it, nothing acting on it. Predictions rest on
+were: a plain stored `BOOL`, nothing acting on it. It starts off, unlike handoff: the host answers no for a new
+activity, and an application opts in by setting it. Predictions rest on
 a system daemon iOS 6 does not run either, exactly as Handoff and the Spotlight index do, and that reasoning did not
 stop those two from being honest storage; it does not stop this one. Held against the host's real `NSUserActivity` by
 `tests/backports/host/uikit2/useractivity_test.m`.
