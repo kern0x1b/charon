@@ -30,8 +30,9 @@ function failures(opt)
     put("os/lock.h", "void os_unfair_lock_lock(void);\n")
     put("plain.modulemap", "module Plain [system] {\n\theader \"solo.h\"\n}\n")
     put("solo.h", "void solo_fn(void);\n")
-    -- a header that cannot stand alone is reached through the one that includes it, whether the #include is the first line of that one
-    -- (a scan that skips the first line takes lock2.h for a header of its own) or comes after a comment
+    -- a header that cannot stand alone is reached through the one that includes it, whether that #include is the first line of the includer or
+    -- comes after a comment (measured: an includer scan that skips the first line does not change the answer here, so the two are not a control
+    -- of it; the block-only symbol below is what fails against the earlier versions)
     put("pair.modulemap", "module Pair [system] {\n\theader \"spin.h\"\n\theader \"lock2.h\"\n\theader \"spin3.h\"\n\theader \"lock4.h\"\n}\n")
     put("spin.h", "#define SPIN_INDIRECT\n#include <lock2.h>\nvoid spin_fn(void);\n")
     put("lock2.h", "#ifndef SPIN_INDIRECT\n#error \"lock2.h is not a header of its own\"\n#endif\nvoid lock2_fn(void);\n")
