@@ -341,26 +341,15 @@ package("swift-runtime")
         local backported = package:dep("apple-backports")
         if package:config("backports") then
             local lift = import("apple.lift", {rootdir = modules, anonymous = true})
+            -- what the lift leaves alone is checked against the set measured for this SDK (lift/<sdk folder>.txt, as the lift writes it to
+            -- share/lift/left-alone.txt): a name that is not in it, or one that is gone, fails the build with the name
+            local measured = path.join(package:scriptdir(), "lift", path.filename(toolchain:config("sdkdir")) .. ".txt")
             local result = lift.lift({clang = toolchain:tool("cc"), swiftc = swiftc, sdk = toolchain:config("sdkdir"), triple = triple,
                                       minimum = minimum, registry = backported:installdir("share"),
-                                      outputdir = path.join(package:installdir("share"), "lift")})
-            print("lifted %d marks in %d headers for %d implemented API; %d not declared by the SDK's headers",
-                  result.lifted, result.headers, result.implemented, #result.unmatched + #result.classes)
-            if #result.unmatched > 0 then
-                local told = {}
-                for _, api in ipairs(result.unmatched) do
-                    table.insert(told, string.format("%s (%s)", api, result.kinds[api]))
-                end
-                print("not declared by the SDK's headers: %s", table.concat(told, "; "))
-            end
-            if #result.classes > 0 then
-                print("%d implemented class(es) no header of the SDK declares, so nothing is lowered for them: %s",
-                      #result.classes, table.concat(result.classes, "; "))
-            end
-            if #result.undeclared > 0 then
-                print("%d implemented member(s) the SDK declares nowhere their class reaches, so nothing is lowered for them: %s",
-                      #result.undeclared, table.concat(result.undeclared, "; "))
-            end
+                                      outputdir = path.join(package:installdir("share"), "lift"),
+                                      expected = os.isfile(measured) and io.readfile(measured) or ""})
+            print("lifted %d marks in %d headers for %d implemented API; left alone: %d classes no header declares, %d other names no header declares, %d members no class reaches a declaration of (share/lift/left-alone.txt)",
+                  result.lifted, result.headers, result.implemented, #result.classes, #result.unmatched, #result.undeclared)
             lifted = {"-vfsoverlay", result.vfs}
             package:setenv("CHARON_SWIFT_LIFTED_HEADERS", result.vfs)
             -- the configs of apple-backports whose libraries the overlays link, which a port must carry as well

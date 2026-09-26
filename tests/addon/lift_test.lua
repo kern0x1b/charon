@@ -1,5 +1,11 @@
 -- The rewrite at the heart of the header lift: the iOS release an availability macro spells as ios(...) comes down to the
 -- target, and nothing else in the line moves; any other spelling is left for its expansion.
+local function expect_equal(found, what, got, wanted)
+    if got ~= wanted then
+        table.insert(found, string.format("%s was %s, not %s", what, tostring(got), tostring(wanted)))
+    end
+end
+
 function failures(opt)
     local lift = import("apple.lift", {rootdir = opt.modules, anonymous = true})
     local found = {}
@@ -407,35 +413,22 @@ function failures(opt)
        or #table.keys((kept[lock] or {})[114] or {}) > 0 then
         table.insert(found, "the preprocessor's tokens were read back as " .. string.serialize(kept, {strip = true, indent = false}))
     end
-    -- The public headers that name a symbol, as module maps reach them. SDK 26.2's dispatch.modulemap lists every dispatch header
-    -- (block.h among them, which #errors unless dispatch.h includes it); SDK 16.4's dispatch/module.modulemap names the umbrella
-    -- header dispatch.h. Either way the include is dispatch/dispatch.h. A listed header another one includes but that compiles
-    -- alone (os/lock.h under Darwin.modulemap, included by OSSpinLockDeprecated.h) stays, as does a header of its own (solo.h).
-    local sdk = path.join(os.tmpdir(), "lift_test_system_headers")
-    os.tryrm(sdk)
-    local function put(name, text)
-        io.writefile(path.join(sdk, "usr", "include", name), text)
+    -- What the lift leaves alone is compared with the set measured for the SDK: a line that is new, or gone, is named; comments are not lines.
+    local registry = {_ceil = {}, _floor = {kind = "protocol"}, NSNoSuchClass = {kind = "class"}}
+    local lines = lift.left_alone({"_ceil", "_floor", "NSNoSuchClass"}, {{api = "-[NSCoder setX:]", how = "declared nowhere"}, {api = "-[NSY z]", how = "owner not found"}}, registry)
+    expect_equal(found, "what is left alone, with its kinds", table.concat(lines, "|"),
+                 "class\tNSNoSuchClass\t|undeclared\t-[NSCoder setX:]\tdeclared nowhere|undeclared\t-[NSY z]\towner not found|" ..
+                 "unmatched\t_ceil\tfunction or constant|unmatched\t_floor\tprotocol")
+    local measured = "# measured on SDK x\n" .. table.concat(lines, "\n") .. "\n"
+    local function named(list)
+        return table.concat(list, "; ")
     end
-    put("dispatch.modulemap", "module Dispatch [system] {\n\theader \"dispatch/dispatch.h\"\n\theader \"dispatch/block.h\"\n\texport *\n}\n")
-    put("dispatch/dispatch.h", "#define __DISPATCH_INDIRECT__\n#include <dispatch/block.h>\nvoid dispatch_main(void);\n")
-    put("dispatch/block.h", "#ifndef __DISPATCH_INDIRECT__\n#error \"Please #include <dispatch/dispatch.h>\"\n#endif\nvoid dispatch_block_create(void);\n")
-    put("os/module.modulemap", "module os [system] {\n\tumbrella header \"os.h\"\n}\n")
-    put("os/os.h", "#include <os/lock.h>\n")
-    put("os/lock.h", "void os_unfair_lock_lock(void);\n")
-    put("plain.modulemap", "module Plain [system] {\n\theader \"solo.h\"\n}\n")
-    put("solo.h", "void solo_fn(void);\n")
-    put("pair.modulemap", "module Pair [system] {\n\theader \"spin.h\"\n\theader \"lock2.h\"\n}\n")
-    put("spin.h", "#include <lock2.h>\nvoid spin_fn(void);\n")
-    put("lock2.h", "void lock2_fn(void);\n")
-    local function standalone(name)
-        return not io.readfile(path.join(sdk, "usr", "include", name)):find("#error", 1, true)
-    end
-    local reached = table.concat(lift.system_headers(sdk, {"dispatch_main", "dispatch_block_create", "os_unfair_lock_lock", "solo_fn",
-                                                          "spin_fn", "lock2_fn"}, standalone), ", ")
-    os.tryrm(sdk)
-    local wanted = "dispatch/dispatch.h, lock2.h, os/os.h, solo.h, spin.h"
-    if reached ~= wanted then
-        table.insert(found, "the headers a module map reaches were " .. reached .. ", not " .. wanted)
-    end
+    expect_equal(found, "a lift that finds what was measured", named(lift.differences(lines, measured)), "")
+    expect_equal(found, "a name that is new", named(lift.differences(lines, measured:gsub("unmatched\t_ceil\tfunction or constant\n", ""))), "new: unmatched _ceil function or constant")
+    expect_equal(found, "a name that is gone", named(lift.differences({lines[1], lines[2], lines[3], lines[4]}, measured)), "no longer found: unmatched _floor protocol")
+    expect_equal(found, "a member found another way than measured", named(lift.differences(lift.left_alone({"_ceil", "_floor", "NSNoSuchClass"},
+                 {{api = "-[NSCoder setX:]", how = "declared only by NSSecureCoding"}, {api = "-[NSY z]", how = "owner not found"}}, registry), measured)),
+                 "new: undeclared -[NSCoder setX:] declared only by NSSecureCoding; no longer found: undeclared -[NSCoder setX:] declared nowhere")
+    expect_equal(found, "no measured set at all", #lift.differences(lines, ""), 5)
     return found
 end

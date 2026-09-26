@@ -72,14 +72,14 @@ end
 
 -- The public headers of the SDK's usr/include that bring in what charon@apple-compat carries: every file that names a
 -- symbol followed by a paren outside a directive, as a module map reaches it - the file itself where a module map names
--- it as a header, the umbrella header of its folder where one covers the folder (dispatch/block.h is reached through
--- dispatch/dispatch.h and refuses to be included on its own). A header a module map lists that another header of the same
--- map includes is left to that header when standalone(name) says it cannot be included alone: SDK 16.4's dispatch map names
--- an umbrella, 26.2's lists every dispatch header, block.h among them. Which of them declares the symbol is the dump's to
--- say. A symbol no public header names - a compiler-rt intrinsic - brings none; the dump then finds no declaration of it.
+-- it as a header, the umbrella header of its folder where one covers the folder. A header a module map lists that another
+-- header of the same map includes is left to that header when standalone(name) says it cannot be included alone
+-- (dispatch/block.h refuses to be, and is reached through dispatch/dispatch.h): SDK 16.4's dispatch map names an umbrella,
+-- 26.2's lists every dispatch header, block.h among them, and a symbol found in such a header brings the headers that
+-- include it. Which of them declares the symbol is the dump's to say. A symbol no public header names - a compiler-rt intrinsic - brings none; the dump then finds no declaration of it.
 function system_headers(sdk, symbols, standalone)
     local root = path.join(sdk, "usr", "include")
-    local public, umbrellas = {}, {}
+    local public, umbrellas, includers = {}, {}, {}
     for _, map in ipairs(os.files(path.join(root, "**.modulemap"))) do
         local folder = path.directory(map)
         local listed = {}
@@ -97,8 +97,11 @@ function system_headers(sdk, symbols, standalone)
             local file = path.join(root, name)
             if os.isfile(file) then
                 for target in ("\n" .. io.readfile(file)):gmatch('\n%s*#%s*include%s*[<"]([^>"\n]+)[>"]') do
-                    included[target] = true
-                    included[path.relative(path.join(path.directory(file), target), root)] = true
+                    for _, key in ipairs({target, path.relative(path.join(path.directory(file), target), root)}) do
+                        included[key] = true
+                        includers[key] = includers[key] or {}
+                        table.insert(includers[key], name)
+                    end
                 end
             end
         end
@@ -108,6 +111,42 @@ function system_headers(sdk, symbols, standalone)
             end
         end
     end
+    -- the headers a symbol found in `name` is reached through: itself where it is public, otherwise those that include it, and
+    -- theirs in turn, or the umbrella header of its folder. An includer counts where the compiler reads it alone: libc++'s headers,
+    -- which include the one a symbol is in, do not without their C++ include path, and are no header of this umbrella.
+    local alone = {}
+    local function stands(name)
+        if alone[name] == nil then
+            alone[name] = standalone(name)
+        end
+        return alone[name]
+    end
+    local function through(name, seen)
+        local found = {}
+        for _, includer in ipairs(includers[name] or {}) do
+            if not seen[includer] then
+                seen[includer] = true
+                if public[includer] then
+                    if stands(includer) then
+                        table.insert(found, includer)
+                    end
+                else
+                    table.join2(found, through(includer, seen))
+                end
+            end
+        end
+        return found
+    end
+    local function reached_through(name)
+        if public[name] then
+            return {name}
+        end
+        local found = through(name, {[name] = true})
+        if #found == 0 and umbrellas[path.directory(name)] then
+            found = {umbrellas[path.directory(name)]}
+        end
+        return found
+    end
     local found = {}
     for _, file in ipairs(os.files(path.join(root, "**.h"))) do
         local text = io.readfile(file)
@@ -115,9 +154,7 @@ function system_headers(sdk, symbols, standalone)
             if text:find(symbol, 1, true) then
                 for line in text:gmatch("[^\n]+") do
                     if not line:match("^%s*#") and line:find("%f[%w_]" .. symbol .. "%s*%(") then
-                        local name = path.relative(file, root)
-                        local reached = public[name] and name or umbrellas[path.directory(name)]
-                        if reached then
+                        for _, reached in ipairs(reached_through(path.relative(file, root))) do
                             found[reached] = true
                         end
                         break
@@ -127,6 +164,33 @@ function system_headers(sdk, symbols, standalone)
         end
     end
     return table.orderkeys(found)
+end
+
+-- Whether a header can be included alone: the compiler reads `#include <name>` and finds an error in it or not. An error of the header
+-- says it cannot, and so does one of its own includes it cannot find (a libc++ header needs its C++ include path, which it does not
+-- have here). A compiler that does not run, a crash, or the probed header not being there at all raise, because answering "cannot"
+-- for them would leave the header to its includer for the wrong reason. opt.clang, opt.triple, opt.sdk, and opt.outputdir for the
+-- probe file.
+function stands_alone(opt, name)
+    local probe = path.join(opt.outputdir, "standalone.m")
+    local errors = path.join(opt.outputdir, "standalone.err")
+    io.writefile(probe, string.format("#include <%s>\n", name))
+    local status, launch = os.execv(opt.clang, {"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-fsyntax-only",
+                                                "-ferror-limit=0", "-x", "objective-c", probe}, {try = true, stderr = errors})
+    local diagnostics = os.isfile(errors) and io.readfile(errors) or ""
+    if status == 0 then
+        return true
+    end
+    local absent, crashed = false, diagnostics:find("PLEASE submit a bug report", 1, true) or diagnostics:find("Stack dump", 1, true)
+    for line in diagnostics:gmatch("[^\n]+") do
+        if line:startswith(probe .. ":") and line:find("file not found", 1, true) then
+            absent = true
+        end
+    end
+    if status == nil or crashed or absent or not diagnostics:find("error: ", 1, true) then
+        raise("the probe of %s did not end in an error of the header (%s): %s", name, tostring(launch or status), diagnostics)
+    end
+    return false
 end
 
 -- The declarations of a text dump (-ast-dump with -ast-dump-decl-types), in order: the qualified name each is headed with,
@@ -989,16 +1053,7 @@ function lift(opt)
     for _, entry in ipairs(system_entries()) do
         table.insert(symbols, entry.api)
     end
-    local function standalone(name)
-        local probe = path.join(opt.outputdir, "standalone.m")
-        io.writefile(probe, string.format("#include <%s>\n", name))
-        return try {function ()
-            os.runv(opt.clang, {"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-fsyntax-only",
-                                "-x", "objective-c", probe})
-            return true
-        end} == true
-    end
-    local system = system_headers(opt.sdk, symbols, standalone)
+    local system = system_headers(opt.sdk, symbols, function (name) return stands_alone(opt, name) end)
     local dump, umbrella = dumper(opt, frameworks, system)
     local conforms = conformer(opt, umbrella)
     local languages = languages_of(opt)
@@ -1180,7 +1235,7 @@ function lift(opt)
             for _, name in ipairs(class and superclasses(owner) or {}) do
                 chain[name] = true
             end
-            local found = {api = api, member = member, owner = owner, class = class, reached = {}, asked = {}, elsewhere = {}}
+            local found = {api = api, member = member, owner = owner, class = class, known = receiver ~= nil, reached = {}, asked = {}, elsewhere = {}}
             local by_owner = {}
             for _, node in ipairs(dump(member.selector or member.property)) do
                 local by = owner_of(node)
@@ -1241,8 +1296,10 @@ function lift(opt)
         local entry = listed[api]
         if #found.reached == 0 then
             local elsewhere = table.orderkeys(found.elsewhere)
-            table.insert(undeclared, #elsewhere == 0 and api .. " (declared nowhere)"
-                                     or string.format("%s (declared only by %s)", api, table.concat(elsewhere, ", ")))
+            -- what the search did not find is not what the SDK does not declare: an owner no header declares is a member the
+            -- search could not have found, and it is named as that
+            table.insert(undeclared, {api = api, how = #elsewhere > 0 and "declared only by " .. table.concat(elsewhere, ", ")
+                                                       or found.known and "declared nowhere" or "owner not found"})
             accounted[api] = true
         elseif not found.class then
             table.insert(unreachable, string.format("%s is declared only by a protocol %s inherits, and a protocol takes no category", api, owner))
@@ -1337,7 +1394,7 @@ function lift(opt)
         end
     end
     unmatched = left
-    table.sort(undeclared)
+    table.sort(undeclared, function (a, b) return a.api < b.api end)
 
     -- The types the headers alone declare that implemented API names in its signature: the prefixed names its signature
     -- spells, every typedef its type goes through (a function's return type and parameters, a variable's type: the
@@ -1800,6 +1857,17 @@ function lift(opt)
         raise("lift() found no declaration at all for %d registered class/protocol member(s), which should never be silently absent: %s",
               #silent, table.concat(silent, "; "))
     end
+    -- what the lift leaves alone is written beside its result, and compared with the set measured for this SDK
+    local left = left_alone(unmatched, undeclared, listed)
+    io.writefile(path.join(opt.outputdir, "left-alone.txt"), table.concat(left, "\n") .. "\n")
+    assert(opt.expected ~= nil, "lift: opt.expected is the text of the measured set of what is left alone, or false to only measure")
+    if opt.expected then
+        local differing = differences(left, opt.expected)
+        if #differing > 0 then
+            raise("what the lift leaves alone is not the set measured for this SDK (%d differences; left-alone.txt in the output has what was found): %s",
+                  #differing, table.concat(differing, "; "))
+        end
+    end
     -- A class is matched by its name alone (matches()), in its @interface, any category of it or a bare @class, so one
     -- still unmatched is a class no header the umbrella reads declares at all - a private class, or a later SDK's - and
     -- has nothing to lower. It is named apart; what stays unmatched is told with its kind.
@@ -1814,6 +1882,45 @@ function lift(opt)
     end
     return {vfs = vfs, lifted = lifted, headers = #sorted_files, implemented = #entries, unmatched = rest, kinds = kinds,
             classes = classes, undeclared = undeclared, types = lowered_types, kept_types = kept_types}
+end
+
+-- What the lift leaves alone, one line each, sorted: `class<TAB>name<TAB>` for an implemented class no header declares,
+-- `unmatched<TAB>name<TAB>kind` for another name the search found no declaration of (kind as the registry gives it, or
+-- "function or constant"), `undeclared<TAB>member<TAB>how` for a registered member whose owner reaches none.
+function left_alone(unmatched, undeclared, listed)
+    local lines = {}
+    for _, api in ipairs(unmatched) do
+        local kind = (listed[api] or {}).kind
+        table.insert(lines, kind == "class" and "class\t" .. api .. "\t" or "unmatched\t" .. api .. "\t" .. (kind or "function or constant"))
+    end
+    for _, item in ipairs(undeclared) do
+        table.insert(lines, "undeclared\t" .. item.api .. "\t" .. item.how)
+    end
+    table.sort(lines)
+    return lines
+end
+
+-- The lines found that the measured set (its text; lines starting with # are comments) does not hold, and the lines it holds that
+-- were not found, each named.
+function differences(lines, expected)
+    local measured, found, differing = {}, {}, {}
+    for line in expected:gmatch("[^\n]+") do
+        if not line:startswith("#") then
+            measured[line] = true
+        end
+    end
+    for _, line in ipairs(lines) do
+        found[line] = true
+        if not measured[line] then
+            table.insert(differing, "new: " .. line:gsub("\t", " "))
+        end
+    end
+    for _, line in ipairs(table.orderkeys(measured)) do
+        if not found[line] then
+            table.insert(differing, "no longer found: " .. line:gsub("\t", " "))
+        end
+    end
+    return differing
 end
 
 -- The release of the availability macro that starts text rewritten to target, where the text itself spells it: ios(...),

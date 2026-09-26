@@ -54,6 +54,7 @@ light("dependency_test")
 light("swift_rule_test")
 light("firmware_test")
 
+suite("lift_headers_test")
 suite("architectures_test")
 suite("macho_test")
 suite("dyld_test")
