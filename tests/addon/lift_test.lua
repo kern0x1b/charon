@@ -430,5 +430,15 @@ function failures(opt)
                  {{api = "-[NSCoder setX:]", how = "declared only by NSSecureCoding"}, {api = "-[NSY z]", how = "owner not found"}}, registry), measured)),
                  "new: undeclared -[NSCoder setX:] declared only by NSSecureCoding; no longer found: undeclared -[NSCoder setX:] declared nowhere")
     expect_equal(found, "no measured set at all", #lift.differences(lines, ""), 5)
+
+    -- an implemented class no header declares stays unmatched and is named apart as a class; the rest keep their kind
+    local classes, rest, kinds = lift.split_unmatched({"CharonNoSuchClassAnywhere", "_ceil", "CharonProto"}, {CharonNoSuchClassAnywhere = {kind = "class"},
+                                                      CharonProto = {kind = "protocol"}, _ceil = {}})
+    expect_equal(found, "the classes among what stays unmatched", table.concat(classes, ","), "CharonNoSuchClassAnywhere")
+    expect_equal(found, "the rest among what stays unmatched", table.concat(rest, ","), "_ceil,CharonProto")
+    expect_equal(found, "the kinds of the rest", kinds._ceil .. "|" .. kinds.CharonProto .. "|" .. tostring(kinds.CharonNoSuchClassAnywhere), "function or constant|protocol|nil")
+    -- and a lift that found only that fails against a measured set without it, by its name
+    expect_equal(found, "a class no header declares, not measured", named(lift.differences(lift.left_alone({"CharonNoSuchClassAnywhere"}, {},
+                 {CharonNoSuchClassAnywhere = {kind = "class"}}), "")), "new: class CharonNoSuchClassAnywhere ")
     return found
 end

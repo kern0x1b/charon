@@ -1868,18 +1868,7 @@ function lift(opt)
                   #differing, table.concat(differing, "; "))
         end
     end
-    -- A class is matched by its name alone (matches()), in its @interface, any category of it or a bare @class, so one
-    -- still unmatched is a class no header the umbrella reads declares at all - a private class, or a later SDK's - and
-    -- has nothing to lower. It is named apart; what stays unmatched is told with its kind.
-    local classes, rest, kinds = {}, {}, {}
-    for _, api in ipairs(unmatched) do
-        if (listed[api] or {}).kind == "class" then
-            table.insert(classes, api)
-        else
-            table.insert(rest, api)
-            kinds[api] = (listed[api] or {}).kind or "function or constant"
-        end
-    end
+    local classes, rest, kinds = split_unmatched(unmatched, listed)
     return {vfs = vfs, lifted = lifted, headers = #sorted_files, implemented = #entries, unmatched = rest, kinds = kinds,
             classes = classes, undeclared = undeclared, types = lowered_types, kept_types = kept_types}
 end
@@ -1889,15 +1878,35 @@ end
 -- "function or constant"), `undeclared<TAB>member<TAB>how` for a registered member whose owner reaches none.
 function left_alone(unmatched, undeclared, listed)
     local lines = {}
-    for _, api in ipairs(unmatched) do
-        local kind = (listed[api] or {}).kind
-        table.insert(lines, kind == "class" and "class\t" .. api .. "\t" or "unmatched\t" .. api .. "\t" .. (kind or "function or constant"))
+    local classes, rest, kinds = split_unmatched(unmatched, listed)
+    for _, api in ipairs(classes) do
+        table.insert(lines, "class\t" .. api .. "\t")
+    end
+    for _, api in ipairs(rest) do
+        table.insert(lines, "unmatched\t" .. api .. "\t" .. kinds[api])
     end
     for _, item in ipairs(undeclared) do
         table.insert(lines, "undeclared\t" .. item.api .. "\t" .. item.how)
     end
     table.sort(lines)
     return lines
+end
+
+-- What stays unmatched, in the classes and the rest, and the kind of each of the rest. A class is matched by its name alone
+-- (matches()), in its @interface, any category of it or a bare @class, so one still unmatched is a class no header the umbrella
+-- reads declares at all - a private class, or a later SDK's - and has nothing to lower. It is named apart; the rest is told with
+-- its kind, as the registry gives it ("function or constant" where it gives none).
+function split_unmatched(unmatched, listed)
+    local classes, rest, kinds = {}, {}, {}
+    for _, api in ipairs(unmatched) do
+        if (listed[api] or {}).kind == "class" then
+            table.insert(classes, api)
+        else
+            table.insert(rest, api)
+            kinds[api] = (listed[api] or {}).kind or "function or constant"
+        end
+    end
+    return classes, rest, kinds
 end
 
 -- The lines found that the measured set (its text; lines starting with # are comments) does not hold, and the lines it holds that
