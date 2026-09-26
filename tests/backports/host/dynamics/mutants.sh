@@ -14,3 +14,6 @@ run exception-name UIDynamicAnimator.mm 'raise:NSInvalidArgumentException format
 run gravity-scale UIDynamicAnimator.mm ' \* 10.0)' ' * 10.5)'
 run substep-7.0 UIDynamicAnimator.mm '(double)_speed \* 0.004)' '(double)_speed * 0.005)'
 run restart-in-dealloc UIDynamicAnimator.mm ' || _disableDisplayLink || _deallocating)' ' || _disableDisplayLink)'
+run circle-edge UIRegion.m 'charon_region_ellipse(halfWidth, halfHeight, point) <= 1.0f;' 'charon_region_ellipse(halfWidth, halfHeight, point) < 1.0f;'
+run group-transform UIDynamicItemGroup.m 'transform.c \* offset.y' 'transform.b * offset.y'
+run vortex-mass UIFieldBehavior.m '(uy \* scale) \/ m, (-ux \* scale) \/ m' '(uy * scale), (-ux * scale)'
