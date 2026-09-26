@@ -409,7 +409,8 @@ function failures(opt)
     end
     -- The public headers that name a symbol, as module maps reach them. SDK 26.2's dispatch.modulemap lists every dispatch header
     -- (block.h among them, which #errors unless dispatch.h includes it); SDK 16.4's dispatch/module.modulemap names the umbrella
-    -- header dispatch.h. Either way the include is dispatch/dispatch.h, and a header of its own (solo.h) stays.
+    -- header dispatch.h. Either way the include is dispatch/dispatch.h. A listed header another one includes but that compiles
+    -- alone (os/lock.h under Darwin.modulemap, included by OSSpinLockDeprecated.h) stays, as does a header of its own (solo.h).
     local sdk = path.join(os.tmpdir(), "lift_test_system_headers")
     os.tryrm(sdk)
     local function put(name, text)
@@ -423,10 +424,18 @@ function failures(opt)
     put("os/lock.h", "void os_unfair_lock_lock(void);\n")
     put("plain.modulemap", "module Plain [system] {\n\theader \"solo.h\"\n}\n")
     put("solo.h", "void solo_fn(void);\n")
-    local reached = table.concat(lift.system_headers(sdk, {"dispatch_main", "dispatch_block_create", "os_unfair_lock_lock", "solo_fn"}), ", ")
+    put("pair.modulemap", "module Pair [system] {\n\theader \"spin.h\"\n\theader \"lock2.h\"\n}\n")
+    put("spin.h", "#include <lock2.h>\nvoid spin_fn(void);\n")
+    put("lock2.h", "void lock2_fn(void);\n")
+    local function standalone(name)
+        return not io.readfile(path.join(sdk, "usr", "include", name)):find("#error", 1, true)
+    end
+    local reached = table.concat(lift.system_headers(sdk, {"dispatch_main", "dispatch_block_create", "os_unfair_lock_lock", "solo_fn",
+                                                          "spin_fn", "lock2_fn"}, standalone), ", ")
     os.tryrm(sdk)
-    if reached ~= "dispatch/dispatch.h, os/os.h, solo.h" then
-        table.insert(found, "the headers a module map reaches were " .. reached .. ", not dispatch/dispatch.h, os/os.h, solo.h")
+    local wanted = "dispatch/dispatch.h, lock2.h, os/os.h, solo.h, spin.h"
+    if reached ~= wanted then
+        table.insert(found, "the headers a module map reaches were " .. reached .. ", not " .. wanted)
     end
     return found
 end
