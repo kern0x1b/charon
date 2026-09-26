@@ -1,7 +1,9 @@
 -- xmake l tools/release-split.lua OBJECTSDIR [OUTPUT] [SDKDIR]
 --
--- SDKDIR is the iPhoneOS SDK whose .tbd files say which library each symbol belongs to (the newest
--- one in the shared xmake store when not given). A symbol counts as exported only by that library
+-- SDKDIR is the iPhoneOS SDK whose .tbd files say which library each symbol belongs to: the one the
+-- objects were compiled against, which the build records in `objects/sdkdir` beside the folders of
+-- objects (OBJECTSDIR's parent). An objects folder with no such record needs SDKDIR, and the tool
+-- names the SDK it measured with. A symbol counts as exported only by that library
 -- or one it re-exports, where a client binds it, not by a same-named symbol elsewhere in the cache.
 --
 -- What a run measures is kept in $CHARON_HOME/cache (dyld.sdk_owners, dyld.first_releases), keyed
@@ -115,17 +117,22 @@ local function ladder()
     return dyld.held_ladder({"armv7", "armv7s"})
 end
 
-local function newest_sdk()
-    local found = os.dirs(path.join(os.getenv("HOME"), ".xmake", "packages", "i", "iphoneos-sdk", "*", "*", "Developer.app",
-                                    "Contents", "Developer", "Platforms", "iPhoneOS.platform", "Developer", "SDKs", "iPhoneOS*.sdk"))
-    table.sort(found, function (a, b) return os.mtime(a) > os.mtime(b) end)
-    return found[1]
+-- The SDK the build of these objects recorded, or nil.
+local function recorded_sdk(objectsdir)
+    local file = path.join(path.directory(path.absolute(objectsdir)), "sdkdir")
+    if os.isfile(file) then
+        return io.readfile(file):trim()
+    end
 end
 
 function main(objectsdir, output, sdkdir)
     assert(objectsdir, "usage: xmake l tools/release-split.lua OBJECTSDIR [OUTPUT] [SDKDIR]")
-    sdkdir = sdkdir or newest_sdk()
-    assert(sdkdir and os.isdir(sdkdir), "release-split: no iPhoneOS SDK found; pass SDKDIR")
+    sdkdir = sdkdir or recorded_sdk(objectsdir)
+    if not sdkdir then
+        raise("release-split: %s has no record of the SDK it was compiled against (objects/sdkdir, written by the build); pass SDKDIR", objectsdir)
+    end
+    assert(os.isdir(sdkdir), "release-split: the SDK " .. sdkdir .. " is not there; pass SDKDIR")
+    print("release-split: SDK " .. sdkdir)
     local files = os.files(path.join(objectsdir, "*.o"))
     assert(#files > 0, objectsdir .. " holds no *.o")
     table.sort(files)

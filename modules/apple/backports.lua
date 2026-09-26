@@ -229,6 +229,9 @@ end
 local function compiled(opt)
     local attach = path.join(opt.builddir, "objects", "attach.o")
     os.mkdir(path.directory(attach))
+    -- the SDK these objects are compiled against, for tools/release-split.lua: which release first exports a symbol depends on
+    -- which SDK's stubs say what library it belongs to, and guessing the SDK from what is installed answers for another build
+    io.writefile(path.join(opt.builddir, "objects", "sdkdir"), opt.sdkdir)
     compile(opt, path.join(opt.root, "attach.c"), attach)
     local placed = floors(opt)
     local objects, origins, minimums = {}, {}, {}
