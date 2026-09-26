@@ -1,8 +1,9 @@
 diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/Dispatch/Source.swift
 --- a/stdlib/public/Darwin/Dispatch/Source.swift
 +++ b/stdlib/public/Darwin/Dispatch/Source.swift
-@@ -61,2 +61,128 @@
- 
+@@ -60,3 +60,132 @@
+ private var _replacedDataKey: UInt8 = 0
++
 +/* The memory pressure source type arrived in iOS 8. Before it the kernel reports one event, NOTE_VM_PRESSURE of the
 +   source type that came first, which is what iOS 8 calls a warning; the other two levels are read here from the
 +   quantity the kernel itself decides them by, and by its rule (xnu, osfmk/vm/vm_pageout.c, VM_PRESSURE_NORMAL_TO_WARNING
@@ -109,6 +110,9 @@ diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/D
 +		level = new
 +		if let timer = timer {
 +			if new != _MemoryPressure.normal && timerIsSuspended {
++				// The kernel decides by events; the level is read, once a second while it is not normal, because that
++				// is the one reading these releases give (measured on 6.1.3: the level steps in fives of a percent, and the
++				// kernel posts no event for it). The interval is this overlay's, not the release's.
 +				timer.schedule(deadline: .now() + .seconds(1), repeating: .seconds(1), leeway: .milliseconds(100))
 +				timer.resume()
 +				timerIsSuspended = false
@@ -122,7 +126,7 @@ diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/D
 +		}
 +	}
 +}
-+
+ 
 +private var _memoryPressureKey: UInt8 = 0
 +
 +private func _memoryPressure(of source: DispatchSource) -> _MemoryPressure? {
@@ -130,7 +134,7 @@ diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/D
 +}
 +
  private func _replacedData(of source: DispatchSource) -> _ReplacedData? {
-@@ -234,4 +360,8 @@
+@@ -234,4 +363,8 @@
  	public class func makeMemoryPressureSource(eventMask: MemoryPressureEvent, queue: DispatchQueue? = nil) -> DispatchSourceMemoryPressure {
 -		return _swift_dispatch_source_create(
 -			_swift_dispatch_source_type_MEMORYPRESSURE(), 0, eventMask.rawValue, queue) as DispatchSourceMemoryPressure
@@ -141,13 +145,13 @@ diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/D
 +		objc_setAssociatedObject(source, &_memoryPressureKey, _MemoryPressure(mask: eventMask.rawValue, client: source), .OBJC_ASSOCIATION_RETAIN)
 +		return source as DispatchSourceMemoryPressure
  	}
-@@ -311,3 +441,4 @@
+@@ -311,3 +444,4 @@
  	public var data: DispatchSource.MemoryPressureEvent {
 -		let data = __dispatch_source_get_data(self as! DispatchSource)
 +		let source = self as! DispatchSource
 +		let data = __dispatch_source_get_data(source)
  		return DispatchSource.MemoryPressureEvent(rawValue: data)
-@@ -316,3 +447,7 @@
+@@ -316,3 +450,7 @@
  	public var mask: DispatchSource.MemoryPressureEvent {
 -		let mask = __dispatch_source_get_mask(self as! DispatchSource)
 +		let source = self as! DispatchSource
