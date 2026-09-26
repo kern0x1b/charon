@@ -19,24 +19,7 @@ if [ -n "${CHARON_DATA_ASSET_CATALOG:-}" ] && [ -f "$CHARON_DATA_ASSET_CATALOG" 
     assetutil --info "$CHARON_DATA_ASSET_CATALOG" > "${TMPDIR:-/tmp}/charon-dataassets.json"
 fi
 
-renames() {
-    # $1: newline separated object files, $2: selectors that must keep their name
-    keep=$2
-    defined=$(nm -m $1 | grep -v '(undefined)')
-    printf '%s\n' "$defined" | sed -n 's/.* external _OBJC_CLASS_\$_\(.*\)/-D\1=CharonHost\1/p' | sort -u
-    printf '%s\n' "$defined" | sed -n 's/.* external _\([A-Za-z_][A-Za-z0-9_]*\)$/\1/p' | grep -v '^OBJC_' | sort -u |
-        awk '{ print "-D" $0 "=CharonHost" $0 }'
-    [ "$keep" = "*" ] && return 0
-    keep="$keep init initWithCoder copyWithZone mutableCopyWithZone encodeWithCoder description isEqual hash supportsSecureCoding dealloc load initialize"
-    nm $1 | sed -n 's/.*[-+]\[[A-Za-z_]*(*[A-Za-z]*)* \([A-Za-z_][A-Za-z0-9_]*\).*\]$/\1/p' | grep -v '^charon_' | sort -u |
-        awk -v keep="$keep" '
-            BEGIN { split(keep, kept, " "); for (index_ in kept) skip[kept[index_]] = 1 }
-            { if ($0 in skip) next
-              name = $0
-              if (name ~ /^set[A-Z]/) { rest = substr(name, 4); print "-D" name "=setCharonHost" rest; print "-D" tolower(substr(rest, 1, 1)) substr(rest, 2) "=charonHost" rest }
-              else if (name ~ /^is[A-Z]/) { rest = substr(name, 3); print "-D" name "=isCharonHost" rest; print "-D" tolower(substr(rest, 1, 1)) substr(rest, 2) "=charonHost" rest }
-              else print "-D" name "=charonHost" toupper(substr(name, 1, 1)) substr(name, 2) }' | sort -u
-}
+. "$here/renames.sh"
 
 group() {
     # $1: group name, $2: sources, $3: selectors to keep, $4: test source
@@ -207,6 +190,7 @@ group sizes "UIContentSizeCategory.m UIContentSizeCategory+Unspecified.m" "" siz
 group tint "UIView+TintColor.m" "" tint_test.m
 group bars "UINavigationBar+BarAppearance.m UISearchBar+BarStyle.m UIToolbar+BarTintColor.m UITabBar+BarTintColor.m" "" bars_test.m
 group viewmisc "UIView+MaskView.m UIView+PerformWithoutAnimation.m UIView+SemanticContentAttribute.m UIViewController+ViewLoading.m UIViewController+PreferredContentSize.m UIViewController+StatusBarAppearance.m" "" viewmisc_test.m
+group attributestransform "UICollectionViewLayoutAttributes+Transform7.m" "" attributestransform_test.m
 group rowaction "UITableViewRowAction.m" "rowActionWithStyle style title setTitle backgroundColor setBackgroundColor backgroundEffect setBackgroundEffect" rowaction_test.m
 group visualeffect "UIVisualEffect.m UIVisualEffectView.m CharonBlur.m CharonBackdrop.m" "effectWithStyle effectForBlurEffect initWithEffect effect setEffect contentView addSubview insertSubview initWithFrame initWithView invalidate" visualeffect_test.m
 group useractivity "../Foundation/NSUserActivity.m" "*" useractivity_test.m
