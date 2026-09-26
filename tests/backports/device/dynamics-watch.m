@@ -6,6 +6,10 @@
 // set_values("charon.libraries", ...), README's test port) and run it with `xmake emulate -d iPhone4,1 -r 6.1.3 run
 // /usr/libexec/<name>`. It exits with the number of failed checks; the KVO line of a leaked observer is on stderr, and
 // the run's log is read for it: `was deallocated while key value observers were still registered` must not be there.
+// A process with no display has no display link to start: on an emulated 4.3, where `-[CADisplay mainDisplay]` is nil in a
+// bare process, `+[CADisplayLink displayLinkWithTarget:selector:]` itself faults (QuartzCore, before any of this code). There
+// the animators are kept from starting one, the changes are made and the wake checks are skipped with a line saying so; the
+// lifetimes, which are about the observers and not the wake, run whole.
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 
@@ -20,8 +24,8 @@
 }
 @end
 
-// A reference view that says when it deallocates, so that the log shows the order of the releases.
-// A reference view that counts its deallocations, so that a release that does not come is a failed check and not a silent one.
+// A reference view that counts its deallocations and logs each, so that a release that does not come is a failed check and not a
+// silent one, and the log shows the order of the releases.
 static int deallocations;
 
 @interface Tracked : UIView
@@ -40,6 +44,7 @@ static int deallocations;
 @end
 
 static int failures;
+static BOOL have_display;
 
 static void check(BOOL ok, NSString *what)
 {
@@ -51,6 +56,8 @@ static void check(BOOL ok, NSString *what)
 static UIDynamicAnimator *animator_over(UIView *view, Resumes *resumes)
 {
     UIDynamicAnimator *animator = [[UIDynamicAnimator alloc] initWithReferenceView:view];
+    if (!have_display)
+        [animator _setAlwaysDisableDisplayLink:YES];
     animator.delegate = resumes;
     UIView *item = [[UIView alloc] initWithFrame:CGRectMake(100, 100, 40, 40)];
     [view addSubview:item];
@@ -70,6 +77,17 @@ static BOOL wakes(UIDynamicAnimator *animator, Resumes *resumes, void (^change)(
     return resumes.count > before;
 }
 
+// The check that `change` woke (or, expected NO, did not wake) a resting animator; with no display it only makes the change.
+static void check_wake(UIDynamicAnimator *animator, Resumes *resumes, BOOL expected, NSString *what, void (^change)(void))
+{
+    if (!have_display) {
+        change();
+        NSLog(@"skip %@: no display in this process, so no display link to start", what);
+        return;
+    }
+    check(wakes(animator, resumes, change) == expected, what);
+}
+
 // An animator over `view` with a gravity behavior and an item, built in a pool of its own so that what the run loop and
 // UIKit autoreleased on the way is gone before the caller releases anything.
 static UIDynamicAnimator *animator_in_pool(UIView *view, Resumes *resumes)
@@ -85,6 +103,9 @@ int main(void)
 {
     @autoreleasepool {
         NSLog(@"dynamics watch: %@", [[UIDevice currentDevice] systemVersion]);
+        Class display = NSClassFromString(@"CADisplay");
+        have_display = !display || ![display respondsToSelector:@selector(mainDisplay)] || [display performSelector:@selector(mainDisplay)];
+        NSLog(@"a main display: %s", have_display ? "yes" : "no");
         {
             UIView *superview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 600, 800)];
             UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 400)];
@@ -92,12 +113,12 @@ int main(void)
             [superview addSubview:view];
             Resumes *resumes = [Resumes new];
             UIDynamicAnimator *animator = animator_in_pool(view, resumes);
-            check(wakes(animator, resumes, ^{ view.frame = CGRectMake(0, 0, 300, 600); }), @"(a) view.frame wakes");
-            check(wakes(animator, resumes, ^{ view.bounds = CGRectMake(0, 0, 320, 600); }), @"(b) view.bounds wakes");
-            check(wakes(animator, resumes, ^{ superview.frame = CGRectMake(0, 0, 600, 1000); }), @"(e) autoresizing wakes");
-            check(!wakes(animator, resumes, ^{ view.layer.bounds = CGRectMake(0, 0, 300, 700); }), @"(c) layer.bounds does not wake");
-            check(!wakes(animator, resumes, ^{ view.center = CGPointMake(200, 300); }), @"(g) center does not wake");
-            check(!wakes(animator, resumes, ^{ view.transform = CGAffineTransformMakeScale(2, 2); }), @"(h) transform does not wake");
+            check_wake(animator, resumes, YES, @"(a) view.frame wakes", ^{ view.frame = CGRectMake(0, 0, 300, 600); });
+            check_wake(animator, resumes, YES, @"(b) view.bounds wakes", ^{ view.bounds = CGRectMake(0, 0, 320, 600); });
+            check_wake(animator, resumes, YES, @"(e) autoresizing wakes", ^{ superview.frame = CGRectMake(0, 0, 600, 1000); });
+            check_wake(animator, resumes, NO, @"(c) layer.bounds does not wake", ^{ view.layer.bounds = CGRectMake(0, 0, 300, 700); });
+            check_wake(animator, resumes, NO, @"(g) center does not wake", ^{ view.center = CGPointMake(200, 300); });
+            check_wake(animator, resumes, NO, @"(h) transform does not wake", ^{ view.transform = CGAffineTransformMakeScale(2, 2); });
         }
         // Each lifetime holds its view and animators in variables of its own, so that setting them to nil is the release.
         // Reading a weak property (the animator's own reference view, in its -dealloc) autoreleases what it returns, so a
@@ -130,7 +151,7 @@ int main(void)
             UIDynamicAnimator *two = animator_in_pool(view, second);
             NSLog(@"lifetime 3: two animators over one view, releasing the first");
             one = nil;
-            check(wakes(two, second, ^{ view.frame = CGRectMake(0, 0, 300, 600); }), @"lifetime 3: (a) still wakes the second animator once the first is gone");
+            check_wake(two, second, YES, @"lifetime 3: (a) still wakes the second animator once the first is gone", ^{ view.frame = CGRectMake(0, 0, 300, 600); });
             two = nil;
             view.frame = CGRectMake(0, 0, 300, 700);
             NSLog(@"lifetime 3: both released, the view moved, releasing the view");
