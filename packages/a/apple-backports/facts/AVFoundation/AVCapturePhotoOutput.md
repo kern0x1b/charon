@@ -281,8 +281,9 @@ Not measured: Telegram's own `-captureOutput:didFinishProcessingPhotoSampleBuffe
 ## The flash waits for the camera
 
 `flashActive` is the camera's judgement of the frames it delivers, and after the flash mode changes it answers for the
-old mode until a frame is judged for the new one. The release's still image output fires the flash by that judgement, so
-a capture made right after the mode is set does not fire in a scene where Auto should. Measured on the iPhone 4S, 6.1.3,
+old mode until a frame is judged for the new one. A capture made right after the mode is set did not fire in a dark scene
+where Auto should, and one made after that change did; that the release's still image output fires by this judgement is
+the reading of the two measurements, not measured alone. Measured on the iPhone 4S, 6.1.3,
 2026-09-25, in the dark, with a probe outside the tree (`flashsettle.m`, `device-4s-flashsettle.log`, the release's own
 still image output, the flash mode Off before and after): Auto set, `flashActive` 0 at once; KVO shows 1 at 0.035 s,
 `adjustingExposure` 1 at 0.180 s (with `flashActive` 0 at 0.181 s) and 0 at 0.389 s, `flashActive` 1 again at 0.631 s and 0

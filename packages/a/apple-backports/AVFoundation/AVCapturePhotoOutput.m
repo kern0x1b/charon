@@ -65,8 +65,8 @@ static BOOL CharonSetCameraFlashMode(AVCaptureDevice *device, AVCaptureFlashMode
 
 // flashActive, "When the flash is active, it will flash if a still image is captured" (iOS 5), is the camera's judgement
 // of the frames it delivers: after its flash mode changes it answers for the old mode until a frame is judged for the new
-// one, which took 0.035 s on an iPhone 4S in the dark, and the release's still image output fires the flash by it (facts,
-// "The flash waits for the camera"). The wait runs `then` once: at flashActive's first change, or after `bound` seconds
+// one, which took 0.035 s on an iPhone 4S in the dark: a still captured after that change fired the flash in Auto, and one
+// captured at once did not (facts, "The flash waits for the camera"). The wait runs `then` once: at flashActive's first change, or after `bound` seconds
 // when it does not change, as in a bright scene with Auto, where it stays NO.
 static char CharonFlashActiveContext;
 
