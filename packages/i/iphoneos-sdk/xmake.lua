@@ -4,10 +4,18 @@ package("iphoneos-sdk")
     set_description("The iPhoneOS SDK a build compiles and links against, fetched and verified on the machine that uses it, laid out as an Xcode developer folder with what Xcode once shipped and dropped: Csu's startup objects and libgcc_s.1 in usr/lib, and libarclite in the toolchain")
     set_license("LicenseRef-Apple-SDK")
 
-    add_urls("https://github.com/theos/sdks/releases/download/master-146e41f/iPhoneOS16.5.sdk.tar.xz")
+    -- 16.4 is the theos archive of the 16.5 SDK; 26.2 is the SDK Telegram 12.9.2 is pinned to (versions.json, xcode 26.2), from the
+    -- archive xybp888/iOS-SDKs publishes: a zip that carries a __MACOSX folder beside the SDK's own.
+    add_urls("https://github.com/$(version)", {version = function (version)
+        return ({["16.4"] = "theos/sdks/releases/download/master-146e41f/iPhoneOS16.5.sdk.tar.xz",
+                 ["26.2"] = "xybp888/iOS-SDKs/releases/download/iOS26.2-SDKs/iPhoneOS26.2.sdk.zip"})[tostring(version)]
+    end})
     add_versions("16.4", "5e0fd3f01266cce4ce012d4a99b38eb56578fca40d09edc81cd83dee958202fb")
+    add_versions("26.2", "581b16f4f8902355364bd20f84cd46eb055b131c9b8cc2c7d6d229e36fd5067f")
     add_patches("16.4", "patches/16.4-driverkit-22-availability.patch")
-    add_resources("16.4", "csu", "https://github.com/apple-oss-distributions/Csu.git", "de2a331398a7d13a132a630bbf4d27c12b2466ec")
+    for _, version in ipairs({"16.4", "26.2"}) do
+        add_resources(version, "csu", "https://github.com/apple-oss-distributions/Csu.git", "de2a331398a7d13a132a630bbf4d27c12b2466ec")
+    end
     add_deps("charon@ld64", {alias = "ld64"})
 
     add_configs("layout", {description = "The SDK sits in the package at Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk, where clang's driver finds the toolchain's libarclite and CMake's iOS platform files the SDK name.", default = "developer-folder", type = "string", readonly = true})
@@ -22,6 +30,13 @@ package("iphoneos-sdk")
 
     on_install("@macosx", function (package)
         import("core.base.json")
+        if not os.isfile("SDKSettings.json") then
+            local roots = os.dirs(path.join(os.curdir(), "iPhoneOS*.sdk"))
+            if #roots ~= 1 then
+                raise("the archive holds no SDKSettings.json, and %d iPhoneOS*.sdk folders beside it where one is wanted", #roots)
+            end
+            os.cd(roots[1])
+        end
         local settings = json.loadfile("SDKSettings.json")
         local wanted = "iphoneos" .. package:version_str()
         if settings.CanonicalName ~= wanted then
@@ -43,7 +58,9 @@ package("iphoneos-sdk")
                 extended = extended + 1
             end
         end
-        if extended == 0 then
+        -- the 26.2 archive's libSystem stubs are tbd v3 and carry no $ld$ marker, so there is nothing to extend: what older
+        -- releases lack is then told apart by the imports check against the device, not by the stub
+        if extended == 0 and import("core.base.semver").compare(package:version_str(), "17.0") < 0 then
             raise("no libSystem stub in %s hides anything from iOS 3.0, so none says which of its symbols older releases took from libgcc_s", libraries)
         end
         for _, stub in ipairs(os.files(path.join(folder, "**.tbd"))) do

@@ -218,7 +218,9 @@ refuse a binary whose recorded minimum is not the port's.
 `includes("@addon/charon/apple-ios")` requires the SDK, ld64 and ldid at the
 versions it pins, and hands every other package the `apple-ios` toolchain named
 with those versions and `apple_minimum`, so a change of any of them rebuilds
-what was built with it. A library comes from here as `charon@name`. The rules
+what was built with it. The SDK is 16.4; a project whose source needs a newer
+one sets `apple_sdk` before the include (`set_config("apple_sdk", "26.2")`), and
+the package carries the versions it lists. A library comes from here as `charon@name`. The rules
 bind the same toolchain to their targets. Commit `xmake-requires.lock` and
 `xmake-addons.lock`. The addon is pinned by its tag: a new release is a new
 tag in `add_addons` (and a fresh `xmake-requires.lock`, since the addon and the

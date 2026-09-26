@@ -1,4 +1,6 @@
-local sdk = {name = "iphoneos-sdk", version = "16.4"}
+-- The SDK is 16.4 unless the project sets apple_sdk to another the iphoneos-sdk package carries (a port whose source is pinned to a
+-- newer SDK, as Telegram is to 26.2); the version is part of the toolchain every package is built with, so a change rebuilds them.
+local sdk = {name = "iphoneos-sdk", version = get_config("apple_sdk") or "16.4"}
 local ld64 = {name = "ld64", version = "956.6"}
 local ldid = {name = "ldid", version = "2.1.5-procursus7+23.gaf86971"}
 local llvm = {name = "llvm", version = "23.1.1"}

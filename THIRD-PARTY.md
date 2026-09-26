@@ -33,6 +33,7 @@ the linker, signer and SDK stubs do not.
 | ld64, from cctools-port (with apple-libtapi to read the SDK's `.tbd` stubs) | 956.6 | APSL-2.0; libtapi is Apache-2.0 WITH LLVM-exception plus NCSA | `packages/l/ld64` |
 | ldid | 2.1.5-procursus7+23.gaf86971 | AGPL-3.0-or-later (build-time signer; linked into nothing that ships) | `packages/l/ldid` |
 | iPhone OS SDK | 16.4 | Apple SDK license terms (from [`theos/sdks`](https://github.com/theos/sdks)) | `packages/i/iphoneos-sdk` |
+| iPhone OS SDK (opt-in per project, `apple_sdk`) | 26.2 | Apple SDK license terms (from [`xybp888/iOS-SDKs`](https://github.com/xybp888/iOS-SDKs)) | `packages/i/iphoneos-sdk` |
 
 ## The emulator, the signer, and their libraries
 
