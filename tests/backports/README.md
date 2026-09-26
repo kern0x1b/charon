@@ -94,7 +94,7 @@ freshly made UUIDs in its header on every run.
     sh host/scenekit/animation/record.sh <dir>  macOS SceneKit's series of Telegram's animations (gradient and shimmer over srgblevels.swift's levels, and over Metal's own as -metal); compare.py <dir> <device-dir> holds device/scenekit-animation.m's to them and reports the -metal ones
     host/scenekit/animation/mipmaps.swift | fitmipmaps.py  what Metal's mip levels of an sRGB texture hold and how SceneKit samples them, against srgblevels.swift's rule (the port's), the models before it and GL ES 2.0's
     host/scenekit/animation/givenlevels.swift  whether SceneKit samples the levels of an MTLTexture it is given or makes its own
-    sh host/maptable6/run.sh  holds the port's four NSMapTable factories of iOS 6.0 to the host's own; host/maptable6/emulate.sh runs the same test as a device binary on 6.0, 4.3 and 5.1.1 (one heavy job)
+    sh host/maptable6/run.sh  holds the port's four NSMapTable factories of iOS 6.0 to the host's own; host/maptable6/emulate.sh runs the same test as a device binary on 6.0, 4.3, 5.0 and 5.1.1 (one heavy job), control.sh its negative control (a port without the runtime's weak references, which must fail) and probes.sh the enumeration and __weak probes the facts cite (a heavy job each)
 
 `host/air2es/run.sh` assembles the AIR fixtures written for the test (a vertex function that reads its buffer by vertex
 identifier, one that takes its inputs from a vertex descriptor, a fragment function that samples a texture, one with a loop and branches, and one with a second render target), wraps them as a library, runs
