@@ -701,15 +701,20 @@ static void charon_unregister_animator(UIDynamicAnimator *animator)
 }
 
 // Dissociating the behaviors below tickles the animator, which would start a display link whose ticker holds a
-// weak reference to an animator already deallocating; nothing restarts it from here on.
+// weak reference to an animator already deallocating; nothing restarts it from here on. A behavior reads the animator
+// through -charon_context, which returns it retained and autoreleased (below iOS 5 nothing cancels the pair), so the
+// dissociation has a pool of its own: the animator is released while it is still there, not by a pool that drains
+// after it is freed.
 - (void)dealloc
 {
     _deallocating = YES;
     charon_unregister_animator(self);
     [_displayLink invalidate];
-    for (UIDynamicBehavior *behavior in [_registeredBehaviors copy]) {
-        [behavior charon_dissociate];
-        [behavior charon_setContext:nil];
+    @autoreleasepool {
+        for (UIDynamicBehavior *behavior in [_registeredBehaviors copy]) {
+            [behavior charon_dissociate];
+            [behavior charon_setContext:nil];
+        }
     }
     delete _world;
     delete _contactFilter;
@@ -1063,7 +1068,8 @@ static void charon_unregister_animator(UIDynamicAnimator *animator)
     CGPoint position = item.center;
     if (view && _referenceSystemType == CharonReferenceSystemView)
         position = [(UIView *)_referenceSystem convertPoint:position fromView:[(UIView *)item superview]];
-    if (view) {
+    // Auto Layout arrived in iOS 6.0: below it a view has no constraints to take the item out of and no switch to set.
+    if (view && [item respondsToSelector:@selector(setTranslatesAutoresizingMaskIntoConstraints:)]) {
         UIView *itemView = (UIView *)item;
         NSMutableArray *constraints = [NSMutableArray array];
         for (NSLayoutConstraint *constraint in itemView.superview.constraints) {
