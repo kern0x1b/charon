@@ -9,8 +9,8 @@ package("shade")
     -- different commit under the same name must be a different install. xmake keeps one source
     -- checkout per version name and builds what it holds without fetching again, so each commit
     -- takes a name of its own, and the install checks it built that commit.
-    local revision = "e6566546746debc3130378876a65494fe7f8da02"
-    add_versions("2026.09.23", revision)
+    local revision = "6b694b1337421aa0b481880677de89e8f8d4da00"
+    add_versions("2026.09.25", revision)
     add_configs("revision", {description = "The Shade commit this package builds, so another commit is another emulator.", default = revision, type = "string", readonly = true})
     add_configs("sdl", {description = "Build the SDL2 window backend, for watching a guest on the desktop.", default = false, type = "boolean"})
     add_configs("ffmpeg", {description = "Build the FFmpeg audio decoder, for a guest that plays compressed audio.", default = false, type = "boolean"})
