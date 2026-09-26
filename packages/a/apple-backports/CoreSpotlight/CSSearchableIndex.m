@@ -5,9 +5,17 @@
 
 NSString * const CSIndexErrorDomain = @"CSIndexErrorDomain";
 
+static NSError *CharonIndexErrorBecause(CSIndexErrorCode code, NSString *reason, NSError *cause)
+{
+    NSMutableDictionary *info = [NSMutableDictionary dictionaryWithObject:reason forKey:NSLocalizedDescriptionKey];
+    if (cause)
+        info[NSUnderlyingErrorKey] = cause;
+    return [NSError errorWithDomain:CSIndexErrorDomain code:code userInfo:info];
+}
+
 static NSError *CharonIndexError(CSIndexErrorCode code, NSString *reason)
 {
-    return [NSError errorWithDomain:CSIndexErrorDomain code:code userInfo:@{NSLocalizedDescriptionKey: reason}];
+    return CharonIndexErrorBecause(code, reason, nil);
 }
 
 // A search bundle - CharonSearchDatastore.m, the principal class of
@@ -81,7 +89,8 @@ static NSString *CharonSpotlightCategory(void)
             ((id (*)(id, SEL, id, id))objc_msgSend)(_manager, start, self, category);
             [_registeredCategories addObject:category];
         }
-    } @catch (__unused NSException *exception) {
+    } @catch (NSException *exception) {
+        NSLog(@"CSSearchableIndex: SPSpotlightManager refused to start record updates for %@: %@: %@", category, exception.name, exception.reason);
     }
 }
 
@@ -97,7 +106,8 @@ static NSString *CharonSpotlightCategory(void)
             ((id (*)(id, SEL, id, id, id))objc_msgSend)(_manager, request, self, category, identifiers ?: @[]);
         if ([_manager respondsToSelector:notify])
             ((id (*)(id, SEL))objc_msgSend)(_manager, notify);
-    } @catch (__unused NSException *exception) {
+    } @catch (NSException *exception) {
+        NSLog(@"CSSearchableIndex: SPSpotlightManager refused the changed records of %@: %@: %@", category, exception.name, exception.reason);
     }
 }
 
@@ -117,7 +127,7 @@ static NSString *CharonSpotlightCategory(void)
 @property (nonatomic, strong) NSData *clientState;
 - (instancetype)initWithName:(NSString *)name;
 - (NSString *)path;
-- (NSError *)save;
+- (NSError *)apply:(void (^)(void))change;
 @end
 
 @implementation CharonSpotlightStore
@@ -161,19 +171,49 @@ static NSString *CharonSpotlightCategory(void)
 
 // Answers nil once the store is on disk, where the search bundle reads it, or the error the caller's
 // completion handler receives: an index that could not be written holds nothing a search can find.
+// The code is CSIndexErrorCodeIndexUnavailableError, which the SDK's CSSearchableIndex.h documents as
+// "The indexer was unavailable": this file store is the port's indexer (facts/CoreSpotlight/
+// CoreSpotlight.md, "What differs from the release"). The cause goes under NSUnderlyingErrorKey.
 - (NSError *)save
 {
     NSString *path = [self path];
-    NSError *error = nil;
-    if (![[NSFileManager defaultManager] createDirectoryAtPath:path.stringByDeletingLastPathComponent withIntermediateDirectories:YES attributes:nil error:&error])
-        return CharonIndexError(CSIndexErrorCodeIndexUnavailableError, [NSString stringWithFormat:@"cannot create %@: %@", path.stringByDeletingLastPathComponent, error.localizedDescription]);
+    NSString *directory = path.stringByDeletingLastPathComponent;
+    NSError *cause = nil;
+    if (![[NSFileManager defaultManager] createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:&cause])
+        return CharonIndexErrorBecause(CSIndexErrorCodeIndexUnavailableError, [NSString stringWithFormat:@"cannot create %@: %@", directory, cause.localizedDescription], cause);
     NSMutableDictionary *disk = [NSMutableDictionary dictionary];
     disk[@"entries"] = self.entries;
     if (self.clientState)
         disk[@"clientState"] = self.clientState;
-    if (![disk writeToFile:path atomically:YES])
-        return CharonIndexError(CSIndexErrorCodeIndexUnavailableError, [NSString stringWithFormat:@"cannot write %@", path]);
+    NSData *data = [NSPropertyListSerialization dataWithPropertyList:disk format:NSPropertyListXMLFormat_v1_0 options:0 error:&cause];
+    if (!data)
+        return CharonIndexErrorBecause(CSIndexErrorCodeIndexUnavailableError, [NSString stringWithFormat:@"cannot serialize the store for %@: %@", path, cause.localizedDescription], cause);
+    if (![data writeToFile:path options:NSDataWritingAtomic error:&cause])
+        return CharonIndexErrorBecause(CSIndexErrorCodeIndexUnavailableError, [NSString stringWithFormat:@"cannot write %@: %@", path, cause.localizedDescription], cause);
     return nil;
+}
+
+// Runs a change and saves it; when the save fails, the entries and the client state go back to what
+// they were, so memory never holds what the caller was told was not stored - a later save would write
+// it without searchd being told, and -fetchLastClientState would answer it.
+- (NSError *)apply:(void (^)(void))change
+{
+    NSMutableDictionary<NSString *, NSData *> *entries = [_entries mutableCopy];
+    NSData *clientState = _clientState;
+    @try {
+        change();
+    } @catch (NSException *exception) {
+        // An item that cannot be archived raises from inside the change; what it changed so far goes too.
+        _entries = entries;
+        _clientState = clientState;
+        @throw;
+    }
+    NSError *error = [self save];
+    if (error) {
+        _entries = entries;
+        _clientState = clientState;
+    }
+    return error;
 }
 
 - (void)setItem:(CSSearchableItem *)item
@@ -273,11 +313,12 @@ static NSString *CharonSpotlightCategory(void)
     NSError *error = nil;
     NSMutableArray<NSString *> *identifiers = [NSMutableArray array];
     @synchronized (store) {
-        for (CSSearchableItem *item in items) {
-            [store setItem:item];
-            [identifiers addObject:item.uniqueIdentifier];
-        }
-        error = [store save];
+        error = [store apply:^{
+            for (CSSearchableItem *item in items) {
+                [store setItem:item];
+                [identifiers addObject:item.uniqueIdentifier];
+            }
+        }];
     }
     if (!error)
         [self charonNotifyChangedIdentifiers:identifiers];
@@ -290,8 +331,9 @@ static NSString *CharonSpotlightCategory(void)
     CharonSpotlightStore *store = self.charonStore;
     NSError *error = nil;
     @synchronized (store) {
-        [store removeIdentifiers:identifiers];
-        error = [store save];
+        error = [store apply:^{
+            [store removeIdentifiers:identifiers];
+        }];
     }
     if (!error)
         [self charonNotifyChangedIdentifiers:identifiers];
@@ -304,8 +346,9 @@ static NSString *CharonSpotlightCategory(void)
     CharonSpotlightStore *store = self.charonStore;
     NSError *error = nil;
     @synchronized (store) {
-        [store removeDomainIdentifiers:domainIdentifiers];
-        error = [store save];
+        error = [store apply:^{
+            [store removeDomainIdentifiers:domainIdentifiers];
+        }];
     }
     if (!error)
         [self charonNotifyChangedIdentifiers:nil];
@@ -318,8 +361,9 @@ static NSString *CharonSpotlightCategory(void)
     CharonSpotlightStore *store = self.charonStore;
     NSError *error = nil;
     @synchronized (store) {
-        [store removeAll];
-        error = [store save];
+        error = [store apply:^{
+            [store removeAll];
+        }];
     }
     if (!error)
         [self charonNotifyChangedIdentifiers:nil];
@@ -341,8 +385,9 @@ static NSString *CharonSpotlightCategory(void)
     CharonSpotlightStore *store = self.charonStore;
     NSError *error = nil;
     @synchronized (store) {
-        store.clientState = clientState;
-        error = [store save];
+        error = [store apply:^{
+            store.clientState = clientState;
+        }];
     }
     if (completionHandler)
         completionHandler(error);

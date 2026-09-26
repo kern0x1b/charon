@@ -59,25 +59,43 @@ static NSArray *CharonSearchLoadAllItems(void)
         for (NSString *name in [files contentsOfDirectoryAtPath:appDirectory error:NULL]) {
             if (![name.pathExtension isEqualToString:@"plist"])
                 continue;
-            NSDictionary *disk = [NSDictionary dictionaryWithContentsOfFile:[appDirectory stringByAppendingPathComponent:name]];
-            NSDictionary<NSString *, NSData *> *entries = disk[@"entries"];
-            for (NSData *archived in entries.allValues) {
+            NSString *file = [appDirectory stringByAppendingPathComponent:name];
+            // Any application can write this directory, so nothing read from it is trusted to have the
+            // shape CSSearchableIndex.m writes: a file that is not a dictionary of "entries", an entry
+            // that is not archive data, an archive that raises, and an archive that decodes to nothing
+            // (garbage, or no "root" object) are each logged as rejected rather than dropped silently.
+            NSDictionary *disk = [NSDictionary dictionaryWithContentsOfFile:file];
+            id entries = disk[@"entries"];
+            if (![entries isKindOfClass:[NSDictionary class]]) {
+                NSLog(@"CharonSearchDatastore: rejected %@: %@", file, disk ? [NSString stringWithFormat:@"its entries are %@, not a dictionary", entries ? [NSString stringWithFormat:@"a %@", [entries class]] : @"missing"] : @"not a property list dictionary");
+                continue;
+            }
+            for (id key in entries) {
+                id archived = entries[key];
+                if (![archived isKindOfClass:[NSData class]]) {
+                    NSLog(@"CharonSearchDatastore: rejected entry %@ of %@: a %@, not archive data", key, file, [archived class]);
+                    continue;
+                }
                 // The store is written by every indexing application, so it is decoded the secure way
                 // (NSSecureCoding and -requiresSecureCoding are iOS 6.0): only a CSSearchableItem and
                 // the classes its own -initWithCoder: names are instantiated inside searchd. "root" is
                 // the key +[NSKeyedArchiver archivedDataWithRootObject:] writes the object under;
                 // NSKeyedArchiveRootObjectKey, its exported name, is iOS 7.0.
-                NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:archived];
-                unarchiver.requiresSecureCoding = YES;
                 id item = nil;
                 @try {
+                    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:archived];
+                    unarchiver.requiresSecureCoding = YES;
                     item = [unarchiver decodeObjectOfClass:itemClass forKey:@"root"];
+                    [unarchiver finishDecoding];
                 } @catch (NSException *exception) {
-                    NSLog(@"CharonSearchDatastore: rejected an entry of %@/%@: %@: %@", application, name, exception.name, exception.reason);
+                    NSLog(@"CharonSearchDatastore: rejected entry %@ of %@: %@: %@", key, file, exception.name, exception.reason);
+                    continue;
                 }
-                [unarchiver finishDecoding];
-                if (item)
-                    [items addObject:item];
+                if (![item isKindOfClass:itemClass]) {
+                    NSLog(@"CharonSearchDatastore: rejected entry %@ of %@: it decodes to no %@ (%@)", key, file, itemClass, item ? NSStringFromClass([item class]) : @"nothing");
+                    continue;
+                }
+                [items addObject:item];
             }
         }
     }

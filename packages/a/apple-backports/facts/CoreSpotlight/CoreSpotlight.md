@@ -311,3 +311,25 @@ ever posted by this port: no item of this port's making is ever surfaced by the 
 for the user to tap, so the continuation path they describe never runs here — see above for why, and
 for what closing that gap actually requires. `CSIndexErrorDomain` = `"CSIndexErrorDomain"`, extracted
 the same way.
+
+A write that fails is answered, and nothing of it is kept. The index is a plist per index name
+under `CHARON_SPOTLIGHT_SHARED_ROOT` (`CoreSpotlight/CharonSpotlightStore.h`), written by
+`-[CharonSpotlightStore save]` in `CSSearchableIndex.m`. When the directory cannot be made, the
+store cannot be serialized, or the file cannot be written, the five mutating calls
+(`indexSearchableItems:`, the three deletes, `endIndexBatchWithClientState:`) hand their completion
+handler an error in `CSIndexErrorDomain`:
+- it describes the path;
+- it carries the Foundation error that caused it under `NSUnderlyingErrorKey`;
+- its code is `CSIndexErrorCodeIndexUnavailableError` (-1000).
+
+The store in memory goes back to what it held before the call, so `fetchLastClientState...` and a
+later save never answer or write what the caller was told failed, and searchd is not told of
+records that were not stored.
+
+The code is reasoned, not measured. The SDK's `CSSearchableIndex.h` (iPhoneOS16.4.sdk) documents
+-1000 as "The indexer was unavailable", and this file store is the port's indexer. None of the other
+codes fits: -1001 is an invalid item, -1002 an invalid client state, -1003 a failed connection to a
+remote process (this port has none), -1004 an exceeded quota, -1005 no indexing on the device. The
+release has no exact counterpart to measure: it writes inside its indexing daemon, and an
+application does not see a write failure of its own. What would decide it is the answer of an iOS 9+
+device whose index cannot be written, for example with a full disk; that has not been run.

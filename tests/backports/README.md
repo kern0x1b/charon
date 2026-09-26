@@ -85,6 +85,7 @@ freshly made UUIDs in its header on every run.
     sh host/pasteboard10/run.sh  writes device/pasteboard10-expectations.h
     sh host/previewing/run.sh  writes device/previewing-expectations.h
     sh host/contacts/run.sh  writes device/contacts-expectations.h, then holds the port's Contacts classes, under names of their own, to it with mutants
+    sh host/spotlightstore/run.sh  builds the port's CoreSpotlight and the search bundle's reading of its store on the host: a refused write, a store holding entries no application should write, and mutants of both
     sh host/air2es/run.sh    builds tools/air2es against the llvm package and needs glslangValidator
 
 `host/air2es/run.sh` assembles the AIR fixtures written for the test (a vertex function that reads its buffer by vertex
