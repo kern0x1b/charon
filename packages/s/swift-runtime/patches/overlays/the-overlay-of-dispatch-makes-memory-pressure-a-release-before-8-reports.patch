@@ -165,21 +165,12 @@ diff --git a/stdlib/public/SwiftShims/DispatchOverlayShims.h b/stdlib/public/Swi
 +#include <sys/event.h>
 +#endif
  
-@@ -113,3 +116,30 @@
+@@ -117,3 +120,20 @@
  SWIFT_DISPATCH_SOURCE_TYPE(MACH_RECV)
 -SWIFT_DISPATCH_SOURCE_TYPE(MEMORYPRESSURE)
 +
-+/* The memory pressure source type, which iOS 8 brought; NULL on a release without it. */
-+#pragma clang diagnostic push
-+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-+static inline dispatch_source_type_t _Nullable
-+_swift_dispatch_source_type_MEMORYPRESSURE(void) {
-+  if (&_dispatch_source_type_memorypressure == NULL) {
-+    return NULL;
-+  }
-+  return DISPATCH_SOURCE_TYPE_MEMORYPRESSURE;
-+}
-+#pragma clang diagnostic pop
++/* The memory pressure source type, which iOS 8 brought. */
++SWIFT_DISPATCH_WEAK_SOURCE_TYPE(MEMORYPRESSURE, _dispatch_source_type_memorypressure)
 +
 +/* What reported memory pressure before it: libdispatch has exported this source type since iOS 4.3 and the SDK no longer
 +   declares it, and the event is NOTE_VM_PRESSURE of <sys/event.h>. It is imported weakly and asked for only where the
@@ -195,5 +186,4 @@ diff --git a/stdlib/public/SwiftShims/DispatchOverlayShims.h b/stdlib/public/Swi
 +_swift_dispatch_vm_pressure(void) {
 +  return NOTE_VM_PRESSURE;
 +}
-+
  SWIFT_DISPATCH_SOURCE_TYPE(PROC)

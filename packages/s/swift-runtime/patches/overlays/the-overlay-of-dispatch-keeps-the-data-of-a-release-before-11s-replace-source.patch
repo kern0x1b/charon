@@ -141,18 +141,22 @@ diff --git a/stdlib/public/SwiftShims/DispatchOverlayShims.h b/stdlib/public/Swi
  SWIFT_DISPATCH_SOURCE_TYPE(DATA_OR)
 -SWIFT_DISPATCH_SOURCE_TYPE(DATA_REPLACE)
  SWIFT_DISPATCH_SOURCE_TYPE(READ)
-@@ -99,2 +98,14 @@
+@@ -99,2 +98,18 @@
  
-+/* The source type that replaces its pending data, which iOS 11 brought; NULL on a release without it. */
-+#pragma clang diagnostic push
-+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-+static inline dispatch_source_type_t _Nullable
-+_swift_dispatch_source_type_DATA_REPLACE(void) {
-+  if (&_dispatch_source_type_data_replace == NULL) {
-+    return NULL;
-+  }
-+  return DISPATCH_SOURCE_TYPE_DATA_REPLACE;
-+}
-+#pragma clang diagnostic pop
++/* A source type a later release brought: NULL where the release has not got its symbol, which is imported weakly. */
++#define SWIFT_DISPATCH_WEAK_SOURCE_TYPE(t, symbol)                             \
++  _Pragma("clang diagnostic push")                                             \
++  _Pragma("clang diagnostic ignored \"-Wunguarded-availability-new\"")         \
++  static inline dispatch_source_type_t _Nullable                               \
++  _swift_dispatch_source_type_##t(void) {                                      \
++    if (&symbol == NULL) {                                                     \
++      return NULL;                                                             \
++    }                                                                          \
++    return DISPATCH_SOURCE_TYPE_##t;                                           \
++  }                                                                            \
++  _Pragma("clang diagnostic pop")
++
++/* The source type that replaces its pending data, which iOS 11 brought. */
++SWIFT_DISPATCH_WEAK_SOURCE_TYPE(DATA_REPLACE, _dispatch_source_type_data_replace)
 +
  #if __APPLE__
