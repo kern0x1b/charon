@@ -81,8 +81,7 @@ static NSString *CharonDefaultProcessedFileType(NSDictionary *format)
 }
 
 // The top-level metadata keys the host's -setMetadata: takes, of every key <ImageIO/CGImageProperties.h> declares:
-// the dictionaries of TIFF, Exif, PNG, IPTC, GPS, DNG and ExifAux, and the image's own properties. The host also takes
-// {MakerApple}, which ImageIO exports from 7.0 and 6.x does not know.
+// the dictionaries of TIFF, Exif, PNG, IPTC, GPS, DNG, ExifAux and MakerApple, and the image's own properties.
 static NSSet *CharonMetadataKeys(void)
 {
     static NSSet *keys;
@@ -91,7 +90,8 @@ static NSSet *CharonMetadataKeys(void)
         keys = [NSSet setWithObjects:(__bridge NSString *)kCGImagePropertyTIFFDictionary, (__bridge NSString *)kCGImagePropertyExifDictionary,
                                      (__bridge NSString *)kCGImagePropertyPNGDictionary, (__bridge NSString *)kCGImagePropertyIPTCDictionary,
                                      (__bridge NSString *)kCGImagePropertyGPSDictionary, (__bridge NSString *)kCGImagePropertyDNGDictionary,
-                                     (__bridge NSString *)kCGImagePropertyExifAuxDictionary, (__bridge NSString *)kCGImagePropertyFileSize,
+                                     (__bridge NSString *)kCGImagePropertyExifAuxDictionary, (__bridge NSString *)kCGImagePropertyMakerAppleDictionary,
+                                     (__bridge NSString *)kCGImagePropertyFileSize,
                                      (__bridge NSString *)kCGImagePropertyPixelHeight, (__bridge NSString *)kCGImagePropertyPixelWidth,
                                      (__bridge NSString *)kCGImagePropertyDPIHeight, (__bridge NSString *)kCGImagePropertyDPIWidth,
                                      (__bridge NSString *)kCGImagePropertyOrientation, (__bridge NSString *)kCGImagePropertyIsFloat,

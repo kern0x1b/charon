@@ -1,4 +1,5 @@
 #import "CharonAVCapturePhoto.h"
+#import <Accelerate/Accelerate.h>
 #import <CoreImage/CoreImage.h>
 #import <ImageIO/ImageIO.h>
 #import <UIKit/UIKit.h>
@@ -694,10 +695,9 @@ static CGImageRef CharonCreatePhotoImage(CMSampleBufferRef photo, size_t longest
     return image ? [[CIContext contextWithOptions:nil] createCGImage:image fromRect:image.extent] : NULL;
 }
 
-// A 32BGRA picture as bi-planar 4:2:0 YCbCr, video range (420v) or full range (420f), by ITU-R BT.601: E'y = 0.299 R +
-// 0.587 G + 0.114 B, E'cb = (B - E'y) / 1.772, E'cr = (R - E'y) / 1.402; Y = 16 + 219 E'y and Cb, Cr = 128 + 224 E'c in
-// video range, Y = 255 E'y and Cb, Cr = 128 + 255 E'c (held to 0...255) in full range. Each chroma sample is the mean of
-// its two by two pixels. The buffer says its matrix (kCVImageBufferYCbCrMatrix_ITU_R_601_4). NULL on failure.
+// A 32BGRA picture as bi-planar 4:2:0 YCbCr, video range (420v) or full range (420f), by ITU-R BT.601, converted by
+// vImageConvert_ARGB8888To420Yp8_CbCr8 (libAccelerateBackports before 8.0), each chroma sample the mean of its two by two
+// pixels. The buffer says its matrix (kCVImageBufferYCbCrMatrix_ITU_R_601_4). NULL on failure.
 static CVPixelBufferRef CharonCreateYCbCrBuffer(CVPixelBufferRef bgra, OSType pixelFormat)
 {
     size_t width = CVPixelBufferGetWidth(bgra), height = CVPixelBufferGetHeight(bgra);
@@ -705,36 +705,32 @@ static CVPixelBufferRef CharonCreateYCbCrBuffer(CVPixelBufferRef bgra, OSType pi
     NSDictionary *attributes = @{(__bridge NSString *)kCVPixelBufferIOSurfacePropertiesKey: @{}};
     if (CVPixelBufferCreate(kCFAllocatorDefault, width, height, pixelFormat, (__bridge CFDictionaryRef)attributes, &ycbcr) != kCVReturnSuccess)
         return NULL;
+    // Video range takes Y 16...235 and Cb, Cr 16...240, full range 0...255 for all three.
     BOOL full = pixelFormat == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange;
-    double lumaScale = full ? 255 : 219, lumaOffset = full ? 0 : 16, chromaScale = full ? 255 : 224;
-    CVPixelBufferLockBaseAddress(bgra, kCVPixelBufferLock_ReadOnly);
-    CVPixelBufferLockBaseAddress(ycbcr, 0);
-    const uint8_t *source = CVPixelBufferGetBaseAddress(bgra);
-    size_t sourceRow = CVPixelBufferGetBytesPerRow(bgra);
-    uint8_t *luma = CVPixelBufferGetBaseAddressOfPlane(ycbcr, 0), *chroma = CVPixelBufferGetBaseAddressOfPlane(ycbcr, 1);
-    size_t lumaRow = CVPixelBufferGetBytesPerRowOfPlane(ycbcr, 0), chromaRow = CVPixelBufferGetBytesPerRowOfPlane(ycbcr, 1);
-    for (size_t y = 0; y < height; y += 2) {
-        for (size_t x = 0; x < width; x += 2) {
-            double cb = 0, cr = 0;
-            int count = 0;
-            for (size_t dy = 0; dy < 2 && y + dy < height; dy++) {
-                for (size_t dx = 0; dx < 2 && x + dx < width; dx++) {
-                    const uint8_t *pixel = source + (y + dy) * sourceRow + (x + dx) * 4;
-                    double b = pixel[0] / 255.0, g = pixel[1] / 255.0, r = pixel[2] / 255.0;
-                    double ey = 0.299 * r + 0.587 * g + 0.114 * b;
-                    luma[(y + dy) * lumaRow + x + dx] = (uint8_t)lround(lumaOffset + lumaScale * ey);
-                    cb += (b - ey) / 1.772;
-                    cr += (r - ey) / 1.402;
-                    count++;
-                }
-            }
-            uint8_t *sample = chroma + (y / 2) * chromaRow + x;
-            sample[0] = (uint8_t)MAX(0, MIN(255, lround(128 + chromaScale * cb / count)));
-            sample[1] = (uint8_t)MAX(0, MIN(255, lround(128 + chromaScale * cr / count)));
-        }
+    vImage_YpCbCrPixelRange range = full ? (vImage_YpCbCrPixelRange){0, 128, 255, 255, 255, 0, 255, 0}
+                                         : (vImage_YpCbCrPixelRange){16, 128, 235, 240, 235, 16, 240, 16};
+    vImage_ARGBToYpCbCr conversion;
+    vImage_Error error = vImageConvert_ARGBToYpCbCr_GenerateConversion(kvImage_ARGBToYpCbCrMatrix_ITU_R_601_4, &range, &conversion,
+                                                                       kvImageARGB8888, kvImage420Yp8_CbCr8, kvImageNoFlags);
+    if (error == kvImageNoError) {
+        CVPixelBufferLockBaseAddress(bgra, kCVPixelBufferLock_ReadOnly);
+        CVPixelBufferLockBaseAddress(ycbcr, 0);
+        vImage_Buffer source = {CVPixelBufferGetBaseAddress(bgra), height, width, CVPixelBufferGetBytesPerRow(bgra)};
+        vImage_Buffer luma = {CVPixelBufferGetBaseAddressOfPlane(ycbcr, 0), CVPixelBufferGetHeightOfPlane(ycbcr, 0),
+                              CVPixelBufferGetWidthOfPlane(ycbcr, 0), CVPixelBufferGetBytesPerRowOfPlane(ycbcr, 0)};
+        vImage_Buffer chroma = {CVPixelBufferGetBaseAddressOfPlane(ycbcr, 1), CVPixelBufferGetHeightOfPlane(ycbcr, 1),
+                                CVPixelBufferGetWidthOfPlane(ycbcr, 1), CVPixelBufferGetBytesPerRowOfPlane(ycbcr, 1)};
+        // The pixels are B, G, R, A in memory: the map takes the channels of ARGB from them.
+        const uint8_t permute[4] = {3, 2, 1, 0};
+        error = vImageConvert_ARGB8888To420Yp8_CbCr8(&source, &luma, &chroma, &conversion, permute, kvImageNoFlags);
+        CVPixelBufferUnlockBaseAddress(ycbcr, 0);
+        CVPixelBufferUnlockBaseAddress(bgra, kCVPixelBufferLock_ReadOnly);
     }
-    CVPixelBufferUnlockBaseAddress(ycbcr, 0);
-    CVPixelBufferUnlockBaseAddress(bgra, kCVPixelBufferLock_ReadOnly);
+    if (error != kvImageNoError) {
+        NSLog(@"AVCapturePhotoOutput: the preview photo could not be converted to 4:2:0 (vImage error %ld)", (long)error);
+        CVPixelBufferRelease(ycbcr);
+        return NULL;
+    }
     CVBufferSetAttachment(ycbcr, kCVImageBufferYCbCrMatrixKey, kCVImageBufferYCbCrMatrix_ITU_R_601_4, kCVAttachmentMode_ShouldPropagate);
     return ycbcr;
 }

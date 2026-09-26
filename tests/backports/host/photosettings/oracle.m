@@ -299,11 +299,14 @@ static void settingsChecks(void)
             setters[name](settings);
             return settingsDump(settings);
         });
-    // The previews and thumbnails the host takes and the port refuses (named divergences).
+    // A 420f preview, and the metadata's {MakerApple}, which the host takes: the port takes both.
     same(@"set previewPhotoFormat 420f",
          ^id(Class s, Class o) { ((AVCapturePhotoSettings *)[s photoSettings]).previewPhotoFormat = @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)}; return @"ok"; });
-    differs(@"set metadata {MakerApple}", @"ok", @"RAISES NSInvalidArgumentException: *** -[AVCapturePhotoSettings setMetadata:] Invalid top-level keys passed in metadata: {(\n    \"{MakerApple}\"\n)}",
-            ^id(Class s, Class o) { ((AVCapturePhotoSettings *)[s photoSettings]).metadata = @{@"{MakerApple}": @{}}; return @"ok"; });
+    same(@"set metadata {MakerApple}", ^id(Class s, Class o) {
+        AVCapturePhotoSettings *settings = [s photoSettings];
+        settings.metadata = @{@"{MakerApple}": @{@"1": @1}};
+        return settings.metadata;
+    });
 
     // The Live Photo movie metadata: the settings' own content identifier, last; the application may not give one.
     same(@"livePhotoMovieMetadata", ^id(Class s, Class o) {

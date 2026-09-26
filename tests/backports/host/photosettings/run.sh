@@ -40,7 +40,7 @@ oracle() { # oracle NAME SOURCE...: the oracle over port classes built from SOUR
         objects="$objects $object"
     done
     xcrun clang -fobjc-arc $target $quiet "$here/oracle.m" $objects -framework AVFoundation -framework CoreMedia -framework CoreVideo \
-        -framework CoreImage -framework ImageIO -framework CoreGraphics -framework UIKit -framework Foundation -o "$B/$name"
+        -framework Accelerate -framework CoreImage -framework ImageIO -framework CoreGraphics -framework UIKit -framework Foundation -o "$B/$name"
     "$B/$name" "$B/declared.txt"
 }
 
@@ -49,7 +49,7 @@ oracle port "$AV/AVCapturePhotoSettings.m" "$AV/AVCapturePhotoOutput.m" "$AV/AVC
 
 echo "== the capture's wait for the camera's flash"
 xcrun clang -fobjc-arc $target $quiet -I"$AV" "$here/flashwait.m" "$B"/port-*.o -framework AVFoundation -framework CoreMedia -framework CoreVideo \
-    -framework CoreImage -framework ImageIO -framework CoreGraphics -framework UIKit -framework Foundation -o "$B/flashwait"
+    -framework Accelerate -framework CoreImage -framework ImageIO -framework CoreGraphics -framework UIKit -framework Foundation -o "$B/flashwait"
 "$B/flashwait"
 
 echo "== the control: the classes as 7bb1720d carried them"
