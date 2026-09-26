@@ -296,7 +296,7 @@ device stand reports through `printf` into its redirected `stdout`.
 With the stand built with ARC, `device/compositional.m` on the 4S failed 10 checks. Five were the
 test's own (fixed in the test); the rest came to three causes, each measured on the 4S.
 
-**iOS 6 loses an element whose frame spans the rectangle it checks - the layout answers it twice.** iOS 6's
+**iOS 6 loses an element whose frame spans the rectangle it checks - the layout works around it by answering it twice.** iOS 6's
 collection view asks its private `UICollectionViewData` which elements its bounds show; that object asks the
 layout for `_validLayoutRect` (the bounds cut to the content, the rectangle `-layoutAttributesForElementsInRect:`
 receives) and files each answer under the pages of its frame's four corners (`_screenPageForPoint:`, a corner
@@ -307,19 +307,35 @@ do; with content 480, {10,-10,100,500} gets none. The transform plays no part: 0
 0.3 rad, has the bounding frame {202.7,-15.4,222.6,272.7}, and the same frame with no transform is lost too, while a
 smaller turn or scale is shown. The system's layout shows it.
 
-The object keeps `[attributes copy]` in an array of its own by the element's index, so the last attributes it was
-given for an index path are the ones it answers with, and the pages hold only which indexes to look at. The
-layout therefore gives an element that reaches past both ends of the rectangle a second attributes first: the same
-element, its frame cut to the rectangle (`CGRectIntersection` with the bounds cut to the content), which has
-corners inside and files the index, and then the attributes with its own frame, which the object keeps. Measured on
-an iPad 2 (6.1.3) with a plain layout and the release's UIKit alone (`device/cvpages.m`, run 2026-09-26 and
-`.agent-work/runs/cvdata/probe`): with the true attributes only, the four frames above give two cells; with the cut
-one first, all four, each at its own frame; with the cut one last, four cells at the cut frames, which is the
-last-wins storage. Only cells (category 0) are given one: supplementary and decoration attributes are not filed
-under pages. This is done for iOS 6 only (`NSFoundationVersionNumber` up to 6.1), where it was measured; the class has the same
-selectors and ivars in every armv7 cache to 9.3.6, but no device of 7 to 10 held a measurement, so nothing is done
-there and whether it loses the element there is open. A caller on iOS 6 that asks the layout for the rectangle itself sees
-that element twice: the cut one first, the element's own last.
+**This is a workaround, not a repair, and it is a crutch on record** (`coordination/crutches.md`, "charon: compositional layout
+answers an element spanning the bounds twice on iOS 6"). It rests on the private object keeping the last attributes it was
+given for an index path (`[attributes copy]` in an array of its own by the element's index; the pages hold only which indexes
+to look at). No document of Apple's names that order; it was measured, not specified. The layout therefore gives an element
+that reaches past both ends of the rectangle a second attributes first: the same element, its frame cut to the rectangle
+(`CGRectIntersection` with the bounds cut to the content), which has corners inside and files the index, and then the attributes
+with its own frame, which the object keeps. The cause, the page filing by frame corners, is not repaired: a plain
+`UICollectionViewLayout` still loses the element in the same process, and the layout's public answer is wrong on purpose. A
+caller on iOS 6 that asks the layout for the rectangle itself sees that element twice, the cut one first and the element's own
+last. Only cells (category 0) are given one: supplementary and decoration attributes are not filed under pages.
+
+Why there is no other public way. The filing is inside Apple's object, which the workspace does not own, and the two things a
+layout hands it are the attributes and the content size. The rectangle is the bounds cut to the content and the frames are the
+true frames, so changing either changes what the user sees; a size, centre or transform compensation would give the cell cut
+bounds and lay its content out wrong (reasoned, not measured). PSTCollectionView's `PSTCollectionViewData` (MIT) has no page
+filing and answers what the layout answers, which is the semantics iOS 6 lacks, but it replaces the collection view: an app's own
+`UICollectionView` cannot be given that path, and the only ways to put it under `UICollectionView` are the replaced private method
+(the earlier repair, removed) or a class swap. A measurement that would overturn this is a public knob that reaches the filing
+with the true frames; none is known.
+
+Measured on an iPad 2 (6.1.3) with a plain layout and the release's UIKit alone (`device/cvpages.m`, run 2026-09-26 and
+`.agent-work/runs/cvdata/probe`, `probe-x`): with the true attributes only, the four frames above give two cells; with the cut
+one first, all four, each at its own frame; with the cut one last, four cells at the cut frames, which is the last-wins storage.
+The same holds along x (content 244 in a 480 x 320 view, the four frames transposed: two cells, four at their own frames, four
+at the cut frames), so both branches of `charon_spans` are measured. Not measured: iOS 6.0 and 7 to 10 (no such device; the
+iPad 2 and the 4S both run 6.1.3, and the release check `NSFoundationVersionNumber <= 6.1` cannot tell 6.0 or 5.x from it). The
+workaround is done for iOS 6 only; the class has the same selectors and ivars in every armv7 cache to 9.3.6, but whether the
+object loses the element on 7 to 10, and whether it keeps the last attributes there, is open, and a second attributes on a release
+whose storage was not verified could show two cells, so the gate is not widened.
 `device/cvpages.m` holds it on the compositional layout (17 checks, iPad 2), and the `compositional.m` stand gives the same
 43 checks with the same two failures with this layout as with the one that repaired the answer of the private object.
 

@@ -974,17 +974,23 @@ static BOOL charon_spans(CGRect frame, CGRect rect)
         || (CGRectGetMinX(frame) < CGRectGetMinX(rect) && CGRectGetMaxX(frame) > CGRectGetMaxX(rect));
 }
 
-// iOS 6's collection view asks its private UICollectionViewData which elements a rectangle shows,
-// and that object files each attributes it gets from the layout under the pages of its frame's four
-// corners that lie inside the rectangle it asked for (the bounds cut to the content, which is also
-// the rectangle the layout is asked about). An element whose frame reaches past both ends of the
-// rectangle has no corner inside it, is filed under no page and never gets a view, although the
-// layout returned it; a plain UICollectionViewLayout subclass loses it the same way. The object keeps
-// the last attributes it was given for an index path and answers with those, so a layout that gives a
-// second attributes of the same element first, its frame cut to the rectangle, has the element filed
-// and shown at the frame the layout later gave it. Measured on an iPad 2 (6.1.3) and done for iOS 6
-// only: no device of 7 to 10 has told whether that object loses the element there
-// (facts/UIKit/UICollectionViewCompositionalLayout.md).
+// A workaround for iOS 6's private UICollectionViewData, not a repair, and a crutch on record
+// (coordination/crutches.md, "compositional layout answers an element spanning the bounds twice
+// on iOS 6"). That object asks the layout which elements a rectangle shows (the bounds cut to the
+// content, which is also the rectangle the layout is asked about) and files each answer under the
+// pages of its frame's four corners that lie inside that rectangle. An element whose frame reaches
+// past both ends of the rectangle has no corner inside it, is filed under no page and never gets a
+// view, although the layout returned it; a plain UICollectionViewLayout subclass loses it the same
+// way, and that is not repaired here. The object keeps the last attributes it was given for an index
+// path and answers with those. That order is undocumented and only measured, so a layout that gives
+// a second attributes of the same element first, its frame cut to the rectangle, has the element
+// filed and shown at the frame the layout later gave it, and its own public answer names the element
+// twice. There is no other public way: the layout can hand the object only its attributes and its
+// content size, and the true frames and the true size are what the user sees; PSTCollectionView
+// replaces the collection view and is no seam under UICollectionView. Measured on an iPad 2
+// (6.1.3), along y and along x, and done for iOS 6 only: no device of 6.0 or 7 to 10 has told
+// whether that object loses the element or keeps the last attributes there, so this is not
+// widened (facts/UIKit/UICollectionViewCompositionalLayout.md).
 static BOOL charon_files_by_pages(void)
 {
     return NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_6_1;
