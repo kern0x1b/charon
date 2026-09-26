@@ -410,8 +410,8 @@ end
 
 -- The C++ runtime a band's objects link: libc++ where every release of the band has it, from iOS 5.0. Below
 -- that the Itanium C++ ABI they need (operator new and delete, the personality routine, terminate) is
--- libstdc++.6's, which every release carries and the SDK does not, so the stub is written from what the first
--- release's cache says it exports.
+-- libstdc++.6's, which every release of the band must carry (checked for each) and the SDK does not, so the stub is
+-- written from what the first release's cache says it exports.
 function cxx_runtime(opt, library, releases, folder)
     local libcxx, libstdcxx = "/usr/lib/libc++.1.dylib", "/usr/lib/libstdc++.6.dylib"
     local without = false
@@ -421,8 +421,10 @@ function cxx_runtime(opt, library, releases, folder)
     if not without then
         return {"-lc++"}
     end
-    if not releases[1].libraries[libstdcxx] then
-        raise("%s keeps C++ objects, and the first release of its band has neither %s nor %s", library.name, libcxx, libstdcxx)
+    for _, release in ipairs(releases) do
+        if not release.libraries[libstdcxx] then
+            raise("%s keeps C++ objects, and a release of its band has neither %s nor %s", library.name, libcxx, libstdcxx)
+        end
     end
     local symbols = exported_through(releases[1], libstdcxx, {})
     table.sort(symbols)
