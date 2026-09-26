@@ -86,6 +86,7 @@ freshly made UUIDs in its header on every run.
     sh host/previewing/run.sh  writes device/previewing-expectations.h
     sh host/contacts/run.sh  writes device/contacts-expectations.h, then holds the port's Contacts classes, under names of their own, to it with mutants
     sh host/spotlightstore/run.sh  builds the port's CoreSpotlight and the search bundle's reading of its store on the host: a refused write, a store holding entries no application should write, and mutants of both
+    sh host/dynamics/run.sh  the port's UIKit Dynamics, under names of their own, beside the host's own animator; host/dynamics/mutants.sh holds the tests to their negative controls
     sh host/air2es/run.sh    builds tools/air2es against the llvm package and needs glslangValidator
     sh host/scenekit/run.sh  writes device/scenekit-expectations.h: macOS SceneKit's matrix functions, node rotations and SCNView defaults
     sh host/scenekit/frames.sh <scenes> <frames>  device/scenekit-frames.m's snapshots of Telegram's star2 and coin against macOS SceneKit's frames, and a renderer a little wrong beside them (no bound yet)

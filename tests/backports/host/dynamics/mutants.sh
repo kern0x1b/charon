@@ -1,0 +1,16 @@
+#!/bin/sh
+# Negative controls of tests/backports/host/dynamics: each mutant of a copy of UIKit/ must fail its group.
+w=$(cd "$(dirname "$0")/../../../.." && pwd)
+m=${TMPDIR:-/tmp}/charon-dynamics-mutant
+run() {
+    name=$1 file=$2 from=$3 to=$4
+    rm -rf "$m"; cp -R "$w/packages/a/apple-backports/UIKit" "$m"
+    sed -i '' "s/$from/$to/g" "$m/$file"
+    if cmp -s "$w/packages/a/apple-backports/UIKit/$file" "$m/$file"; then echo "MUTANT $name changed nothing"; return; fi
+    echo "== mutant $name"
+    DYNAMICS_SOURCES=$m DYNAMICS_BUILD=${TMPDIR:-/tmp}/charon-dynamics-mutant-build sh "$w/tests/backports/host/dynamics/run.sh" 2>&1 | grep -E 'passed=|^FAIL [^T]' | cut -c1-160
+}
+run exception-name UIDynamicAnimator.mm 'raise:NSInvalidArgumentException format:@"View item' 'raise:NSInternalInconsistencyException format:@"View item'
+run gravity-scale UIDynamicAnimator.mm ' \* 10.0)' ' * 10.5)'
+run substep-7.0 UIDynamicAnimator.mm '(double)_speed \* 0.004)' '(double)_speed * 0.005)'
+run restart-in-dealloc UIDynamicAnimator.mm ' || _disableDisplayLink || _deallocating)' ' || _disableDisplayLink)'

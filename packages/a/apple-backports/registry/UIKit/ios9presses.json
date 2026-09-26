@@ -92,81 +92,156 @@
       "api": "UIDynamicAnimator",
       "kind": "class",
       "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
-      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+      "status": "implemented",
+      "effect": "iOS 7.0's animator over unmodified Box2D 2.2.1: bodies, joints, masks, boundaries, exceptions, callback order and the write-back of center and transform follow 7.0; the trajectory is 7.0's integrator (fixed 0.004 s sub-steps, a box 1 pt inside the item with a 0.001 m skin), predicted from the 7.0 listing, while the host's integrator, which the test compares with, sub-steps at 1/120 s; removeAllBehaviors dissociates a child once where 7.0 does it twice; an empty boundary path raises where 7.0's Box2D asserts",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "the host's UIKitCore and PhysicsKit through Mac Catalyst, held against the port by tests/backports/host/dynamics; UIKit and PhysicsKit of the iOS 7.0 arm64 cache, read function by function; Box2D 2.2.1 (charon@box2d), the engine 7.0's PhysicsKit is a fork of"
     },
     {
       "api": "UIDynamicBehavior",
       "kind": "class",
       "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
-      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "the host's UIKitCore and PhysicsKit through Mac Catalyst, held against the port by tests/backports/host/dynamics; UIKit and PhysicsKit of the iOS 7.0 arm64 cache, read function by function; Box2D 2.2.1 (charon@box2d), the engine 7.0's PhysicsKit is a fork of"
     },
     {
       "api": "UIDynamicItemBehavior",
       "kind": "class",
       "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
-      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "the host's UIKitCore and PhysicsKit through Mac Catalyst, held against the port by tests/backports/host/dynamics; UIKit and PhysicsKit of the iOS 7.0 arm64 cache, read function by function; Box2D 2.2.1 (charon@box2d), the engine 7.0's PhysicsKit is a fork of"
     },
     {
       "api": "UIGravityBehavior",
       "kind": "class",
       "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
-      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "the host's UIKitCore and PhysicsKit through Mac Catalyst, held against the port by tests/backports/host/dynamics; UIKit and PhysicsKit of the iOS 7.0 arm64 cache, read function by function; Box2D 2.2.1 (charon@box2d), the engine 7.0's PhysicsKit is a fork of"
     },
     {
       "api": "UICollisionBehavior",
       "kind": "class",
       "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
-      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "the host's UIKitCore and PhysicsKit through Mac Catalyst, held against the port by tests/backports/host/dynamics; UIKit and PhysicsKit of the iOS 7.0 arm64 cache, read function by function; Box2D 2.2.1 (charon@box2d), the engine 7.0's PhysicsKit is a fork of"
     },
     {
       "api": "UIAttachmentBehavior",
       "kind": "class",
       "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
-      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "the host's UIKitCore and PhysicsKit through Mac Catalyst, held against the port by tests/backports/host/dynamics; UIKit and PhysicsKit of the iOS 7.0 arm64 cache, read function by function; Box2D 2.2.1 (charon@box2d), the engine 7.0's PhysicsKit is a fork of"
     },
     {
       "api": "UIPushBehavior",
       "kind": "class",
       "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
-      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "the host's UIKitCore and PhysicsKit through Mac Catalyst, held against the port by tests/backports/host/dynamics; UIKit and PhysicsKit of the iOS 7.0 arm64 cache, read function by function; Box2D 2.2.1 (charon@box2d), the engine 7.0's PhysicsKit is a fork of"
     },
     {
       "api": "UISnapBehavior",
       "kind": "class",
       "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a faithful UIDynamicAnimator is a physics simulation with its own timing and collisions, which the release has nothing of, and the port has no such engine",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; an application that guards the class goes without the animation",
-      "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "the host's UIKitCore and PhysicsKit through Mac Catalyst, held against the port by tests/backports/host/dynamics; UIKit and PhysicsKit of the iOS 7.0 arm64 cache, read function by function; Box2D 2.2.1 (charon@box2d), the engine 7.0's PhysicsKit is a fork of"
+    },
+    {
+      "api": "UIDynamicItemBehavior.charge",
+      "kind": "property",
+      "introduced": "9.0",
+      "maximum": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
+    },
+    {
+      "api": "UIDynamicItemBehavior.anchored",
+      "kind": "property",
+      "introduced": "9.0",
+      "maximum": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
+    },
+    {
+      "api": "UISnapBehavior.snapPoint",
+      "kind": "property",
+      "introduced": "9.0",
+      "maximum": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
+    },
+    {
+      "api": "UIAttachmentBehavior.frictionTorque",
+      "kind": "property",
+      "introduced": "9.0",
+      "maximum": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
+    },
+    {
+      "api": "UIAttachmentBehavior.attachmentRange",
+      "kind": "property",
+      "introduced": "9.0",
+      "maximum": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
+    },
+    {
+      "api": "+[UIAttachmentBehavior fixedAttachmentWithItem:attachedToItem:attachmentAnchor:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "maximum": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
+    },
+    {
+      "api": "+[UIAttachmentBehavior pinAttachmentWithItem:attachedToItem:attachmentAnchor:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "maximum": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
+    },
+    {
+      "api": "+[UIAttachmentBehavior slidingAttachmentWithItem:attachedToItem:attachmentAnchor:axisOfTranslation:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "maximum": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
+    },
+    {
+      "api": "+[UIAttachmentBehavior slidingAttachmentWithItem:attachmentAnchor:axisOfTranslation:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "maximum": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
+    },
+    {
+      "api": "+[UIAttachmentBehavior limitAttachmentWithItem:offsetFromCenter:attachedToItem:offsetFromCenter:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "maximum": "7.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIDynamicAnimator.md",
+      "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
     },
     {
       "api": "UIFieldBehavior",
