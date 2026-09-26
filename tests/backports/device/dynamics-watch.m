@@ -58,8 +58,9 @@ static UIDynamicAnimator *animator_over(UIView *view, Resumes *resumes)
     return animator;
 }
 
-// Whether `change` woke an animator that was at rest: stopped the way an animator at rest is, the switch that keeps it
-// from a display link, then released.
+// Whether `change` woke an animator that was at rest: stopped the way an animator at rest is, with 7.0's own switch
+// that keeps it from a display link (facts/UIKit/UIDynamicAnimator.md §1.6; no public call stops one), then released.
+// The class and the helpers repeat wake_test.m's on the host: that program links the host's harness, this one runs on the guest.
 static BOOL wakes(UIDynamicAnimator *animator, Resumes *resumes, void (^change)(void))
 {
     [animator _setAlwaysDisableDisplayLink:YES];
