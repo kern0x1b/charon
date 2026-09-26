@@ -23,9 +23,11 @@ libs="-framework Foundation"
 # Nothing here needs to differ: every case avoids the one path (CNContactStore) that could disagree with the release for reasons that have
 # nothing to do with this port - a store the host is not an oracle for at all, since it is never opened.
 # One the host cannot answer: the macOS 26 host's CNContactFetchRequest archives rankSort as a bool and reads it back with
-# decodeInt64ForKey:, so decoding its own archive raises NSInvalidUnarchiveOperationException (measured). The keys it writes still
-# include the predicate (predicate.fetchRequestArchivesPredicate, compared); the port reads its own archive back with the predicate kept.
-divergent="predicate.fetchRequestRoundTrip"
+# decodeInt64ForKey:, so decoding its own archive raises NSInvalidUnarchiveOperationException (measured). What the port must answer
+# there is pinned, from two host records that are compared: the host's archive carries the predicate
+# (predicate.fetchRequestArchivesPredicate) and the host's predicate comes back equal from a secure archive
+# (predicate.identifiersEqualAfterSecureRoundTrip), so a request read back keeps its predicate: "kept".
+divergent="predicate.fetchRequestRoundTrip=kept"
 
 xcrun clang $common -I"$device" "$here/record.m" "$device/contacts-cases.m" $libs -framework Contacts -o "$build/system"
 CONTACTS_RECORDS="$build/system.json" "$build/system"
@@ -45,7 +47,7 @@ CONTACTS_RECORDS="$build/port.json" "$build/port/run"
 python3 "$here/compare.py" "$build/system.json" "$build/port.json" "$divergent"
 echo "port: agrees with the system on every record"
 
-python3 "$here/expectations.py" "$build/system.json" "$build/port.json" "$divergent" "$build/expectations.json"
+python3 "$here/expectations.py" "$build/system.json" "$divergent" "$build/expectations.json"
 python3 "$here/../foundation2/embed.py" "$build/expectations.json" "$device/contacts-expectations.h"
 sed -i.bak 's/foundation2_expectations/contacts_expectations/' "$device/contacts-expectations.h" && rm -f "$device/contacts-expectations.h.bak"
 
@@ -73,5 +75,6 @@ mutant CharonContactsBook.m "@\"identifier IN %@\"" "@\"identifier == %@\""
 mutant CharonContactsBook.m "[coder encodeObject:_value forKey:@\"value\"];" ";"
 mutant CharonContactsBook.m "return other->_match == _match &&" "return other->_match != _match ||"
 mutant CNContactFetchRequest9.m "[coder encodeObject:_charonPredicate forKey:@\"predicate\"];" ";"
+mutant CNContactFetchRequest9.m "_charonPredicate = [coder decodeObjectOfClass:[NSPredicate class] forKey:@\"predicate\"];" ";"
 echo "mutants surviving: $survived"
 [ "$survived" -eq 0 ]
