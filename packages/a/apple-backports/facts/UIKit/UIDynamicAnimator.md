@@ -541,7 +541,7 @@ Read (7.0): the animator marks its reference view (`_registerAsReferenceView`, a
 `-setBounds:` call `_notifyReferenceViewSizeChange` only when the bounds size changed, and it calls
 `+[UIDynamicAnimator _referenceViewSizeChanged:]` for a marked view: the only two callers, no layer-side hook.
 
-**Measured on 6.1.3** (`xmake emulate -d iPhone4,1 -r 6.1.3`, `tests/backports/device/uiview-kvo.m`: a command-line program, no `UIApplicationMain`; the same
+**Measured on emulated 4.3, 5.1.1, 6.0 and 6.1.3** (`xmake emulate -d iPhone3,1 -r 4.3` and `-r 5.1.1`, `-d iPhone4,1 -r 6.0` and `-r 6.1.3`, `tests/backports/device/uiview-kvo.m`: a command-line program, no `UIApplicationMain`; the same
 nine paths, with `-[UIView setFrame:]` and `-setBounds:` counted by a probe-only wrap and KVO on the view's `frame` and `bounds`
 with the prior option):
 
@@ -554,25 +554,27 @@ with the prior option):
 | (f) Auto Layout constant 400 -> 600 | 0 / 1 | yes | bounds |
 | (g) center, (h) transform, (i) layer position | 0 / 0 | no | neither |
 
-So on 6.1.3 KVO of `frame` together with `bounds`, each with the prior option (the bounds size read in the prior notification,
+The table is the same, row by row, on all four releases; (f) is not run on 4.3 and 5.1.1, which have no `NSLayoutConstraint` (6.0 and later do), and the probe says so instead of measuring it. So on 6.1.3 KVO of `frame` together with `bounds`, each with the prior option (the bounds size read in the prior notification,
 compared in the one after), fires on exactly the calls that wake on 7.0: the same set as the host's table above, and the
 size-changed test is 7.0's own (the prior/after comparison came out 1 wake per wake path and 0 for the rest, `priors` 1 per
 setter call).
 
-**Lifetime on 6.1.3** (`uiview-kvo.m`, the same run). An observer left on a view that deallocates: the process lives, and KVO logs
+**Lifetime on 4.3, 5.1.1, 6.0 and 6.1.3** (`uiview-kvo.m`, the same runs). An observer left on a view that deallocates: the process lives, and KVO logs
 `An instance ... of class UIView was deallocated while key value observers were still registered with it. Observation info was
 leaked, and may even become mistakenly attached to some other object` with the observation info; 400 views made after it saw
 no stray callback, but the log line is KVO's own report of a defect. An observer removed by an object the view holds
 (`objc_setAssociatedObject`, released while the view deallocates, its `-dealloc` calling `removeObserver:forKeyPath:` on the
 view): no log line, no exception, the removal works in the middle of the view's deallocation; and the same object released
 early (association set to nil on a live view) removes the observers, the view then moves with no callback and deallocates
-without a log line. So the lifetime is solved by the public runtime API and no swizzle is needed.
+without a log line. That is the same on all four releases: one KVO line per run, the control's, none for the remover's view or the early release, 0 stray callbacks in 400 new views. Order matters on 5.1.1: with the leaking control run first (the probe's first order), the run logged the leaked observation three times, all three naming one instance and one observation info, and the early-release view got 2 callbacks after its observers were removed (read as the leaked observation staying with the address and reaching the next views built there; not taken further); the probe now runs the control last, and the four numbers above are from that order. So the lifetime is solved by the public runtime API and no swizzle is needed, and an observer left on a dying view is worse on 5.1.1 than a log line, which is the reason to remove it before the view goes.
 
 **The port**: `UIDynamicAnimator.mm`'s `CharonReferenceViewWatch`, one per reference view, held by the view (associated object)
 when an animator on the main thread lists it; it observes `frame` and `bounds` with the prior option and tickles the animators
 whose reference view it is when the bounds size differs. It goes with the view, or when the last animator over that view
 deallocates. Autoresizing and Auto Layout reach it through the same two setters, as on 7.0. Covered by the host test `wake`
-(§12; its two mutants in `mutants.sh`); the 6.1.3 numbers above are the emulator's, not a device's.
+(§12; its two mutants in `mutants.sh`); the numbers above are the emulator's, not a device's.
+
+**The shipped watch, on 6.1.3** (`tests/backports/device/dynamics-watch.m`, `charon@apple-backports` with `uikit` linked, `xmake emulate -d iPhone4,1 -r 6.1.3`; the probe's own observer above is not the port's, this runs `CharonReferenceViewWatch`): a resting animator wakes on (a) `view.frame`, (b) `view.bounds` and (e) autoresizing, and not on (c) layer bounds, (g) center or (h) transform; with the animator released first and then the view, with the view released first and the animator alive (its `referenceView` is nil after), and with two animators over one view of which the first is released (the second still wakes), the view deallocates each time when the run says it does (a counting subclass) and stderr has no `was deallocated while key value observers were still registered` line; 400 views made after saw nothing. 0 failed checks. Not measured: the shipped class on 4.3, 5.1.1 and 6.0 (the arrangement is measured there with the probe's own observer, above), and (f) on the shipped class.
 
 **Retracted**: the port first wrapped the two setters with `method_setImplementation`, on the reading that KVO of `frame` misses
 `setBounds:` and KVO of `bounds` misses `setFrame:` (true, each alone) and that an observer would fault when its view deallocated

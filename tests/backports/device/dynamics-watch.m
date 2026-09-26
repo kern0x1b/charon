@@ -2,7 +2,7 @@
 // UIDynamicAnimator.mm) on the release it runs on: what wakes a resting animator, and what KVO says when the
 // animator or the view is released first (facts/UIKit/UIDynamicAnimator.md M3). Where uiview-kvo.m measures the release's
 // KVO with a probe's own observer, this runs the class the backport ships. A command-line program, no UIApplicationMain:
-// build it as a daemon target that requires charon@apple-backports (add_packages and
+// build it as a daemon target that requires charon@apple-backports with {configs = {uikit = true}} (add_packages and
 // set_values("charon.libraries", ...), README's test port) and run it with `xmake emulate -d iPhone4,1 -r 6.1.3 run
 // /usr/libexec/<name>`. It exits with the number of failed checks; the KVO line of a leaked observer is on stderr, and
 // the run's log is read for it: `was deallocated while key value observers were still registered` must not be there.
@@ -17,6 +17,21 @@
 - (void)dynamicAnimatorWillResume:(UIDynamicAnimator *)animator
 {
     self.count++;
+}
+@end
+
+// A reference view that says when it deallocates, so that the log shows the order of the releases.
+// A reference view that counts its deallocations, so that a release that does not come is a failed check and not a silent one.
+static int deallocations;
+
+@interface Tracked : UIView
+@end
+
+@implementation Tracked
+- (void)dealloc
+{
+    deallocations++;
+    NSLog(@"  (a Tracked view deallocates, %d)", deallocations);
 }
 @end
 
@@ -54,6 +69,17 @@ static BOOL wakes(UIDynamicAnimator *animator, Resumes *resumes, void (^change)(
     return resumes.count > before;
 }
 
+// An animator over `view` with a gravity behavior and an item, built in a pool of its own so that what the run loop and
+// UIKit autoreleased on the way is gone before the caller releases anything.
+static UIDynamicAnimator *animator_in_pool(UIView *view, Resumes *resumes)
+{
+    UIDynamicAnimator *animator;
+    @autoreleasepool {
+        animator = animator_over(view, resumes);
+    }
+    return animator;
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -64,41 +90,52 @@ int main(void)
             view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             [superview addSubview:view];
             Resumes *resumes = [Resumes new];
-            UIDynamicAnimator *animator = animator_over(view, resumes);
+            UIDynamicAnimator *animator = animator_in_pool(view, resumes);
             check(wakes(animator, resumes, ^{ view.frame = CGRectMake(0, 0, 300, 600); }), @"(a) view.frame wakes");
             check(wakes(animator, resumes, ^{ view.bounds = CGRectMake(0, 0, 320, 600); }), @"(b) view.bounds wakes");
             check(wakes(animator, resumes, ^{ superview.frame = CGRectMake(0, 0, 600, 1000); }), @"(e) autoresizing wakes");
             check(!wakes(animator, resumes, ^{ view.layer.bounds = CGRectMake(0, 0, 300, 700); }), @"(c) layer.bounds does not wake");
             check(!wakes(animator, resumes, ^{ view.center = CGPointMake(200, 300); }), @"(g) center does not wake");
             check(!wakes(animator, resumes, ^{ view.transform = CGAffineTransformMakeScale(2, 2); }), @"(h) transform does not wake");
+        }
+        // Each lifetime holds its view and animators in variables of its own, so that setting them to nil is the release.
+        // Reading a weak property (the animator's own reference view, in its -dealloc) autoreleases what it returns, so a
+        // view the animator was over dies when the pool of its lifetime drains, and the check comes after the pool.
+        int before = deallocations;
+        @autoreleasepool {
+            Tracked *view = [[Tracked alloc] initWithFrame:CGRectMake(0, 0, 300, 400)];
+            UIDynamicAnimator *animator = animator_in_pool(view, [Resumes new]);
             NSLog(@"lifetime 1: releasing the animator, then the view");
             animator = nil;
             NSLog(@"lifetime 1: animator released, releasing the view");
-        }
-        NSLog(@"lifetime 1: view released");
-        {
-            UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 400)];
-            Resumes *resumes = [Resumes new];
-            UIDynamicAnimator *animator = animator_over(view, resumes);
-            NSLog(@"lifetime 2: releasing the view, the animator still alive (%@)", animator);
             view = nil;
-            NSLog(@"lifetime 2: view released, releasing the animator");
+        }
+        check(deallocations == before + 1, @"lifetime 1: the view deallocated with the animator gone");
+        before = deallocations;
+        @autoreleasepool {
+            Tracked *view = [[Tracked alloc] initWithFrame:CGRectMake(0, 0, 300, 400)];
+            UIDynamicAnimator *animator = animator_in_pool(view, [Resumes new]);
+            NSLog(@"lifetime 2: releasing the view, the animator still alive");
+            view = nil;
+            check(deallocations == before + 1, @"lifetime 2: the view deallocated with the animator alive");
+            NSLog(@"lifetime 2: view released, releasing the animator (%@)", animator.referenceView);
             animator = nil;
         }
-        NSLog(@"lifetime 2: animator released");
-        {
-            UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 400)];
-            Resumes *first = [Resumes new], *second = [Resumes new];
-            UIDynamicAnimator *one = animator_over(view, first);
-            UIDynamicAnimator *two = animator_over(view, second);
+        before = deallocations;
+        @autoreleasepool {
+            Tracked *view = [[Tracked alloc] initWithFrame:CGRectMake(0, 0, 300, 400)];
+            Resumes *second = [Resumes new];
+            UIDynamicAnimator *one = animator_in_pool(view, [Resumes new]);
+            UIDynamicAnimator *two = animator_in_pool(view, second);
             NSLog(@"lifetime 3: two animators over one view, releasing the first");
             one = nil;
-            check(wakes(two, second, ^{ view.frame = CGRectMake(0, 0, 300, 600); }), @"(a) still wakes the second animator once the first is gone");
+            check(wakes(two, second, ^{ view.frame = CGRectMake(0, 0, 300, 600); }), @"lifetime 3: (a) still wakes the second animator once the first is gone");
             two = nil;
             view.frame = CGRectMake(0, 0, 300, 700);
             NSLog(@"lifetime 3: both released, the view moved, releasing the view");
+            view = nil;
         }
-        NSLog(@"lifetime 3: view released");
+        check(deallocations == before + 1, @"lifetime 3: the view deallocated with both animators gone");
         // views built now may take the addresses the dead ones had: a leaked observation would reach them
         for (int index = 0; index < 400; index++) {
             @autoreleasepool {
