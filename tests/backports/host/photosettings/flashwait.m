@@ -4,7 +4,8 @@
 // The wait of a capture for the camera's flash (CharonAfterFlashActiveChanges, AVCapturePhotoOutput.m) against a camera
 // of its own whose flashActive is observable as the release's is: it ends at the first change of flashActive, at the
 // latest after its bound, runs its block once, and leaves no observer on the camera. The host's cameras have no flash,
-// so this is the one place the wait is run with no device; the capture that waits is measured on a device.
+// so this is the one place the wait is run with no device; the capture that waits is not measured on a device, where no capture in
+// Auto is allowed.
 
 static int checks, failures;
 

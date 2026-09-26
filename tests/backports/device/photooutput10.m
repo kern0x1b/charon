@@ -37,6 +37,8 @@
 @property (atomic) int64_t resolvedID;
 // The Exif Flash tag the release attached to the still, -1 when there is none.
 @property (atomic) long stillFlash;
+// The {MakerApple} attachment of the photo's sample buffer, nil when it carries none.
+@property (atomic, strong) NSDictionary *attachedMaker;
 // The camera's flash mode at willCapturePhoto, right before the still image output is asked for the still.
 @property (atomic) long cameraFlashAtCapture;
 @end
@@ -193,6 +195,8 @@ static double spread(CVPixelBufferRef preview)
     CFDictionaryRef exif = photo ? CMGetAttachment(photo, kCGImagePropertyExifDictionary, NULL) : NULL;
     NSNumber *flashTag = exif ? ((__bridge NSDictionary *)exif)[(__bridge NSString *)kCGImagePropertyExifFlash] : nil;
     self.stillFlash = flashTag ? flashTag.longValue : -1;
+    CFTypeRef maker = photo ? CMGetAttachment(photo, kCGImagePropertyMakerAppleDictionary, NULL) : NULL;
+    self.attachedMaker = maker ? (__bridge NSDictionary *)maker : nil;
     BOOL jpeg = NO, bgra = NO;
     CGImageRef image = photo ? create_photo_image(photo, &jpeg, &bgra) : NULL;
     self.photoIsJPEG = jpeg;
@@ -299,6 +303,21 @@ static BOOL drawn_from_photo(CharonPhotoCatcher *c)
 
 // The control: the release's own still image output, captured the way the facade captures, so a failure can be
 // told from the release's answer.
+// The {MakerApple} dictionary and the MakerNote of a JPEG, read through ImageIO: what the release's own JPEG writer kept of it.
+static NSDictionary *maker_apple(NSData *jpeg)
+{
+    CGImageSourceRef source = jpeg ? CGImageSourceCreateWithData((__bridge CFDataRef)jpeg, NULL) : NULL;
+    NSDictionary *properties = source ? CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(source, 0, NULL)) : nil;
+    if (source)
+        CFRelease(source);
+    return properties[(__bridge NSString *)kCGImagePropertyMakerAppleDictionary];
+}
+
+static BOOL has_maker_note(NSData *jpeg)
+{
+    return jpeg && [jpeg rangeOfData:[NSData dataWithBytes:"Apple iOS" length:9] options:0 range:NSMakeRange(0, jpeg.length)].location != NSNotFound;
+}
+
 static BOOL bare_capture(AVCaptureStillImageOutput *still, const char *label)
 {
     AVCaptureConnection *connection = [still connectionWithMediaType:AVMediaTypeVideo];
@@ -466,6 +485,23 @@ int main(int argc, char **argv)
             CHECK([port hasPrefix:picture], "the port's JPEG carries the settings' metadata");
             CHECK([release hasPrefix:picture], "and so does the release's JPEG of the photo");
             CHECK([portWithPreview hasSuffix:withPreview], "with the preview given, the port's JPEG holds the preview, 160 on its longest side");
+        }
+
+        // {MakerApple}: the settings take the key, as the host does, and the capture merges it into the still's attachments.
+        // Whether 6.1.3's JPEG writer keeps it is measured against a capture without it, and printed.
+        {
+            NSString *maker = (__bridge NSString *)kCGImagePropertyMakerAppleDictionary;
+            CharonPhotoCatcher *plain = capture_with(output, [AVCapturePhotoSettings photoSettings], nil);
+            AVCapturePhotoSettings *marked = [AVCapturePhotoSettings photoSettings];
+            NSString *taken = raised(^{ marked.metadata = @{maker: @{@"1": @77}}; });
+            CHECK([taken isEqualToString:@"nothing"] && [marked.metadata[maker][@"1"] isEqual:@77], "the settings take {MakerApple}");
+            CharonPhotoCatcher *m = capture_with(output, marked, nil);
+            CHECK(plain.finished && m.finished && m.error == nil && m.photoIsJPEG, "a photo with {MakerApple} in its metadata comes");
+            CHECK(plain.attachedMaker == nil && [m.attachedMaker[@"1"] isEqual:@77], "the capture merges it into the still's attachments, and only when asked");
+            printf("MakerApple: without: release's JPEG %s, MakerNote %d; with 1=77: release's JPEG %s, MakerNote %d; port's JPEG %s, MakerNote %d\n",
+                   maker_apple(plain.releaseJPEG).description.UTF8String, has_maker_note(plain.releaseJPEG),
+                   maker_apple(m.releaseJPEG).description.UTF8String, has_maker_note(m.releaseJPEG),
+                   maker_apple(m.photoJPEG).description.UTF8String, has_maker_note(m.photoJPEG));
         }
 
         // Requests the header refuses on this output raise before anything is captured.
