@@ -1,7 +1,9 @@
 // landing_ios70_test.m — facts/UIKit/UIDynamicAnimator.md §12 T5 and the scene of device/dynamics.m, on our animator as
 // shipped: iOS 7.0's 0.004 s sub-steps, a box 1 pt inside the item, a skin of 0.001 m. There is no oracle here: the host's
 // animator runs neither of them, so each number is a measurement of this port's build, held to 1e-3 pt so that a change to
-// the inset, the skin or the sub-step shows. They are the port's values, not 7.0's (there is no 7.0 device to have measured).
+// the box's inset or the sub-step shows. The skin is not guarded: T5's rest is the same with none as with 0.001 m, and with
+// 0.01 m on the host's build (§2.3), so a guard of the skin needs a scene where it acts (0.05 m does there). They are the
+// port's values, not 7.0's (there is no 7.0 device to have measured).
 #import "dynamics.h"
 
 int main(void)

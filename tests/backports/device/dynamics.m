@@ -141,7 +141,8 @@ static void check_layout_transform(void)
     // body rests 0.134 pt past the bounds' bottom, the loop 1 pt outside them and the box 1 pt inside the view cancelling,
     // and the animator rounds the center onto the screen's grid (0.5 pt at 2x), so the view's bottom edge is at the
     // bounds' bottom, gap 0. Not a 7.0 measurement, none exists. 0.5 pt is Box2D's linear slop (0.005 m).
-    check_near(bottom - CGRectGetMaxY(_item.frame), 0, 0.5, "the item rests on the reference bounds' bottom",
+    check_near(bottom - CGRectGetMaxY(_item.frame), 0, 0.5,
+               "the item rests on the reference bounds' bottom (the port's value, not 7.0)",
                [NSString stringWithFormat:@"gap after %.2f s", CFAbsoluteTimeGetCurrent() - _started]);
     [self finish];
 }
