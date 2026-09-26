@@ -78,20 +78,65 @@ static NSSet *settingsIdentity(void)
     return [NSSet setWithObjects:@"uniqueID", @"livePhotoMovieMetadata", nil];
 }
 
-// The settings getters the port answers otherwise on purpose (facts, "The photo settings"): stabilization is YES by
-// the header's default where the Mac answers NO; a thumbnail is embedded in a JPEG
-// photo alone, and none in a RAW one (checked one by one below).
-static NSSet *settingsDivergent(void)
+// The three settings getters the port answers otherwise than the host in some settings (facts, "The photo settings"):
+// stabilization is YES by the header's default where the Mac answers NO, and the thumbnail codecs of an uncompressed, an
+// HEVC or a RAW photo are not offered, which is work still to do. They are left out of `settingsDump` and compared apart
+// by `settingsSame`, for every settings object every check builds: equal, or as the row of `divergences()` for that check
+// states, the host's answer and the port's.
+static NSArray<NSString *> *divergentGetters(void)
 {
-    return [NSSet setWithObjects:@"isAutoStillImageStabilizationEnabled",
-                                 @"availableEmbeddedThumbnailPhotoCodecTypes", @"availableRawEmbeddedThumbnailPhotoCodecTypes", nil];
+    return @[@"isAutoStillImageStabilizationEnabled", @"availableEmbeddedThumbnailPhotoCodecTypes", @"availableRawEmbeddedThumbnailPhotoCodecTypes"];
 }
 
 static NSString *settingsDump(AVCapturePhotoSettings *settings)
 {
     NSMutableSet *skip = [settingsIdentity() mutableCopy];
-    [skip unionSet:settingsDivergent()];
+    [skip addObjectsFromArray:divergentGetters()];
     return dump(settings, getters(@"AVCapturePhotoSettings", skip));
+}
+
+// The three answers on one line, a codec list as `jpeg,hvc1` and an empty one as nothing.
+static NSString *divergentDump(AVCapturePhotoSettings *settings)
+{
+    NSMutableArray *parts = [NSMutableArray array];
+    for (NSString *key in divergentGetters()) {
+        NSString *text = answer(^{ return [settings valueForKey:key]; });
+        text = [[text componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"() \n"]] componentsJoinedByString:@""];
+        [parts addObject:[NSString stringWithFormat:@"%@=%@", [key hasPrefix:@"isAuto"] ? @"stabilization" : [key hasPrefix:@"availableRaw"] ? @"rawThumbnails" : @"thumbnails", text]];
+    }
+    return [parts componentsJoinedByString:@" "];
+}
+
+// Every getter of a dump and the three of `divergentDump`, of one side's own settings.
+static NSString *fullDump(AVCapturePhotoSettings *settings)
+{
+    return [settingsDump(settings) stringByAppendingFormat:@" %@", divergentDump(settings)];
+}
+
+// The rows of divergences.tsv: a check's key, the host's answer of the three getters and the port's, tab separated.
+static NSDictionary<NSString *, NSArray<NSString *> *> *divergenceRows;
+
+static NSDictionary<NSString *, NSArray<NSString *> *> *divergences(void)
+{
+    return divergenceRows;
+}
+
+// Two settings the same but in the three getters above, which are either equal or as `key`'s row states. The settings come
+// from `block`, built for the host and for the port.
+static void settingsSame(NSString *what, NSString *key, id (^block)(Class settings, Class output))
+{
+    same(what, ^id(Class s, Class o) { return settingsDump(block(s, o)); });
+    NSString *host = answer(^{ return divergentDump(block(hostSettings, hostOutput)); }), *port = answer(^{ return divergentDump(block(portSettings, portOutput)); });
+    NSArray<NSString *> *row = divergences()[key];
+    // A setter that raises builds no settings: what it raised is `same`'s to compare above.
+    if ([host hasPrefix:@"RAISES"] && [host isEqualToString:port])
+        check(YES, [NSString stringWithFormat:@"%@: raised on both sides, no settings to compare", what]);
+    else if (row)
+        check([host isEqualToString:row[0]] && [port isEqualToString:row[1]],
+              [NSString stringWithFormat:@"%@: stabilization and thumbnail codecs, as its row of divergences.tsv states\n     host: %@ (expected %@)\n     port: %@ (expected %@)", what, host, row[0], port, row[1]]);
+    else
+        check([host isEqualToString:port], [host isEqualToString:port] ? [NSString stringWithFormat:@"%@: stabilization and thumbnail codecs %@", what, host]
+                                                                        : [NSString stringWithFormat:@"%@: stabilization and thumbnail codecs\n     row: %@\t%@\t%@", what, key, host, port]);
 }
 
 static void members(NSString *className, Class system, Class ours)
@@ -186,7 +231,7 @@ static CMSampleBufferRef jpeg_sample(void)
 static void settingsChecks(void)
 {
     // Defaults and every constructor.
-    same(@"+photoSettings", ^id(Class s, Class o) { return settingsDump([s photoSettings]); });
+    settingsSame(@"+photoSettings", @"+photoSettings", ^id(Class s, Class o) { return [s photoSettings]; });
     differs(@"+photoSettings stabilization", @"0", @"1", ^id(Class s, Class o) { return @([[s photoSettings] isAutoStillImageStabilizationEnabled]); });
     same(@"+photoSettings preview formats", ^id(Class s, Class o) { return [[[s photoSettings] availablePreviewPhotoPixelFormatTypes] componentsJoinedByString:@","]; });
     same(@"+photoSettings thumbnail codecs", ^id(Class s, Class o) { return [[[s photoSettings] availableEmbeddedThumbnailPhotoCodecTypes] componentsJoinedByString:@","]; });
@@ -199,7 +244,7 @@ static void settingsChecks(void)
     differs(@"RAW + JPEG RAW thumbnail codecs", @"jpeg", @"", ^id(Class s, Class o) {
         return [[[s photoSettingsWithRawPixelFormatType:kCVPixelFormatType_14Bayer_RGGB processedFormat:@{AVVideoCodecKey: AVVideoCodecTypeJPEG}]
                    availableRawEmbeddedThumbnailPhotoCodecTypes] componentsJoinedByString:@","]; });
-    same(@"-init", ^id(Class s, Class o) { return settingsDump([[s alloc] init]); });
+    settingsSame(@"-init", @"-init", ^id(Class s, Class o) { return [[s alloc] init]; });
     NSDictionary *formats = @{@"nil": [NSNull null], @"BGRA": @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32BGRA)},
                               @"420f": @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)},
                               @"hvc1": @{AVVideoCodecKey: AVVideoCodecTypeHEVC}, @"avc1": @{AVVideoCodecKey: AVVideoCodecTypeH264},
@@ -208,29 +253,37 @@ static void settingsChecks(void)
                               @"both keys": @{AVVideoCodecKey: AVVideoCodecTypeJPEG, (id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32BGRA)}};
     for (NSString *name in [formats.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
         NSDictionary *format = formats[name] == [NSNull null] ? nil : formats[name];
-        same([@"+photoSettingsWithFormat: " stringByAppendingString:name], ^id(Class s, Class o) { return settingsDump([s photoSettingsWithFormat:format]); });
-        same([@"+photoSettingsWithRawPixelFormatType:rgg4 processedFormat: " stringByAppendingString:name],
-             ^id(Class s, Class o) { return settingsDump([s photoSettingsWithRawPixelFormatType:kCVPixelFormatType_14Bayer_RGGB processedFormat:format]); });
-        same([@"+photoSettingsWithRawPixelFormatType:0 rawFileType:nil processedFormat: " stringByAppendingString:name],
-             ^id(Class s, Class o) { return settingsDump([s photoSettingsWithRawPixelFormatType:0 rawFileType:nil processedFormat:format processedFileType:nil]); });
+        NSString *withFormat = [@"+photoSettingsWithFormat: " stringByAppendingString:name];
+        settingsSame(withFormat, withFormat, ^id(Class s, Class o) { return [s photoSettingsWithFormat:format]; });
+        NSString *rawProcessed = [@"+photoSettingsWithRawPixelFormatType:rgg4 processedFormat: " stringByAppendingString:name];
+        settingsSame(rawProcessed, rawProcessed,
+                     ^id(Class s, Class o) { return [s photoSettingsWithRawPixelFormatType:kCVPixelFormatType_14Bayer_RGGB processedFormat:format]; });
+        NSString *processed = [@"+photoSettingsWithRawPixelFormatType:0 rawFileType:nil processedFormat: " stringByAppendingString:name];
+        settingsSame(processed, processed,
+                     ^id(Class s, Class o) { return [s photoSettingsWithRawPixelFormatType:0 rawFileType:nil processedFormat:format processedFileType:nil]; });
     }
     for (NSNumber *raw in @[@0, @(kCVPixelFormatType_14Bayer_GRBG), @(kCVPixelFormatType_14Bayer_RGGB), @(kCVPixelFormatType_14Bayer_BGGR),
                             @(kCVPixelFormatType_14Bayer_GBRG), @(kCVPixelFormatType_16VersatileBayer), @(kCVPixelFormatType_64RGBALE),
                             @(kCVPixelFormatType_32BGRA), @(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)])
-        same([NSString stringWithFormat:@"+photoSettingsWithRawPixelFormatType: %@", raw],
-             ^id(Class s, Class o) { return settingsDump([s photoSettingsWithRawPixelFormatType:raw.unsignedIntValue]); });
+        settingsSame([NSString stringWithFormat:@"+photoSettingsWithRawPixelFormatType: %@", raw], [NSString stringWithFormat:@"+photoSettingsWithRawPixelFormatType: %@", raw],
+                     ^id(Class s, Class o) { return [s photoSettingsWithRawPixelFormatType:raw.unsignedIntValue]; });
     NSArray *fileTypes = @[[NSNull null], AVFileTypeJPEG, AVFileTypeHEIC, AVFileTypeTIFF, AVFileTypeDNG];
     for (id rawType in fileTypes)
         for (id processedType in fileTypes)
             for (NSNumber *raw in @[@0, @(kCVPixelFormatType_14Bayer_RGGB)])
                 for (id format in @[[NSNull null], @{AVVideoCodecKey: AVVideoCodecTypeJPEG}, @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32BGRA)}])
-                    same([NSString stringWithFormat:@"+photoSettingsWithRawPixelFormatType:%@ rawFileType:%@ processedFormat:%@ processedFileType:%@", raw, rawType,
-                                                    [[format description] stringByReplacingOccurrencesOfString:@"\n" withString:@""], processedType],
-                         ^id(Class s, Class o) {
-                             return settingsDump([s photoSettingsWithRawPixelFormatType:raw.unsignedIntValue rawFileType:rawType == [NSNull null] ? nil : rawType
-                                                                        processedFormat:format == [NSNull null] ? nil : format
-                                                                      processedFileType:processedType == [NSNull null] ? nil : processedType]);
-                         });
+                {
+                    // The RAW file type changes none of the three getters: a row is a RAW format, a processed format and its file type.
+                    NSString *formatText = [[format description] stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+                    settingsSame([NSString stringWithFormat:@"+photoSettingsWithRawPixelFormatType:%@ rawFileType:%@ processedFormat:%@ processedFileType:%@", raw, rawType,
+                                                            formatText, processedType],
+                                 [NSString stringWithFormat:@"+photoSettingsWithRawPixelFormatType:%@ processedFormat:%@ processedFileType:%@", raw, formatText, processedType],
+                                 ^id(Class s, Class o) {
+                                     return [s photoSettingsWithRawPixelFormatType:raw.unsignedIntValue rawFileType:rawType == [NSNull null] ? nil : rawType
+                                                                   processedFormat:format == [NSNull null] ? nil : format
+                                                                 processedFileType:processedType == [NSNull null] ? nil : processedType];
+                                 });
+                }
 
     // Setters: what each takes, what it refuses, and what the settings answer after.
     typedef void (^Setter)(AVCapturePhotoSettings *);
@@ -245,6 +298,8 @@ static void settingsChecks(void)
     NSDictionary<NSString *, Setter> *setters = @{
         @"flashMode 7": ^(AVCapturePhotoSettings *s) { s.flashMode = (AVCaptureFlashMode)7; },
         @"autoRedEyeReductionEnabled YES": ^(AVCapturePhotoSettings *s) { s.autoRedEyeReductionEnabled = YES; },
+        @"autoStillImageStabilizationEnabled YES": ^(AVCapturePhotoSettings *s) { s.autoStillImageStabilizationEnabled = YES; },
+        @"autoStillImageStabilizationEnabled NO": ^(AVCapturePhotoSettings *s) { s.autoStillImageStabilizationEnabled = NO; },
         @"photoQualityPrioritization 0": ^(AVCapturePhotoSettings *s) { s.photoQualityPrioritization = 0; },
         @"photoQualityPrioritization 1": ^(AVCapturePhotoSettings *s) { s.photoQualityPrioritization = AVCapturePhotoQualityPrioritizationSpeed; },
         @"photoQualityPrioritization 3": ^(AVCapturePhotoSettings *s) { s.photoQualityPrioritization = AVCapturePhotoQualityPrioritizationQuality; },
@@ -294,10 +349,10 @@ static void settingsChecks(void)
         @"autoContentAwareDistortionCorrectionEnabled YES": ^(AVCapturePhotoSettings *s) { s.autoContentAwareDistortionCorrectionEnabled = YES; },
     };
     for (NSString *name in [setters.allKeys sortedArrayUsingSelector:@selector(compare:)])
-        same([@"set " stringByAppendingString:name], ^id(Class s, Class o) {
+        settingsSame([@"set " stringByAppendingString:name], divergences()[[@"set " stringByAppendingString:name]] ? [@"set " stringByAppendingString:name] : @"+photoSettings", ^id(Class s, Class o) {
             AVCapturePhotoSettings *settings = [s photoSettings];
             setters[name](settings);
-            return settingsDump(settings);
+            return settings;
         });
     // A 420f preview, and the metadata's {MakerApple}, which the host takes: the port takes both.
     same(@"set previewPhotoFormat 420f",
@@ -345,8 +400,8 @@ static void settingsChecks(void)
         settings.livePhotoMovieFileURL = [NSURL fileURLWithPath:@"/tmp/x.mov"];
         AVCapturePhotoSettings *copy = [settings copy], *from = [s photoSettingsFromPhotoSettings:settings];
         return [NSString stringWithFormat:@"copy: class %d, same object %d, same ID %d, every setting %d; from: class %d, new ID %d, every setting %d",
-                                          [copy class] == s, copy == settings, copy.uniqueID == settings.uniqueID, [settingsDump(copy) isEqualToString:settingsDump(settings)],
-                                          [from class] == s, from.uniqueID > settings.uniqueID, [settingsDump(from) isEqualToString:settingsDump(settings)]];
+                                          [copy class] == s, copy == settings, copy.uniqueID == settings.uniqueID, [fullDump(copy) isEqualToString:fullDump(settings)],
+                                          [from class] == s, from.uniqueID > settings.uniqueID, [fullDump(from) isEqualToString:fullDump(settings)]];
     });
     same(@"NSCopying", ^id(Class s, Class o) { return @([s conformsToProtocol:@protocol(NSCopying)]); });
     same(@"unique IDs", ^id(Class s, Class o) {
@@ -359,10 +414,8 @@ static void outputChecks(void)
 {
     NSArray *outputGetters = getters(@"AVCapturePhotoOutput", [NSSet setWithObjects:@"init", @"preparedPhotoSettingsArray", nil]);
     same(@"a new output", ^id(Class s, Class o) { return dump([o new], outputGetters); });
-    same(@"its prepared settings", ^id(Class s, Class o) {
-        AVCapturePhotoSettings *prepared = [[o new] preparedPhotoSettingsArray].firstObject;
-        return [NSString stringWithFormat:@"%lu, %@", (unsigned long)[[o new] preparedPhotoSettingsArray].count, settingsDump(prepared)];
-    });
+    same(@"its prepared settings' count", ^id(Class s, Class o) { return @([[o new] preparedPhotoSettingsArray].count); });
+    settingsSame(@"its prepared settings", @"its prepared settings", ^id(Class s, Class o) { return [[o new] preparedPhotoSettingsArray].firstObject; });
     NSDictionary<NSString *, void (^)(AVCapturePhotoOutput *)> *setters = @{
         @"appleProRAWEnabled YES": ^(AVCapturePhotoOutput *x) { x.appleProRAWEnabled = YES; },
         @"appleProRAWEnabled NO": ^(AVCapturePhotoOutput *x) { x.appleProRAWEnabled = NO; },
@@ -407,7 +460,7 @@ static void outputChecks(void)
         output.photoSettingsForSceneMonitoring = settings;
         AVCapturePhotoSettings *held = output.photoSettingsForSceneMonitoring;
         return [NSString stringWithFormat:@"same object %d, same ID %d, same settings %d, flash scene %d, stabilization scene %d", held == settings,
-                                          held.uniqueID == settings.uniqueID, [settingsDump(held) isEqualToString:settingsDump(settings)],
+                                          held.uniqueID == settings.uniqueID, [fullDump(held) isEqualToString:fullDump(settings)],
                                           output.isFlashScene, output.isStillImageStabilizationScene];
     });
     same(@"setPreparedPhotoSettingsArray:completionHandler: with no session", ^id(Class s, Class o) {
@@ -425,7 +478,7 @@ static void outputChecks(void)
         @synchronized (calls) {
             return [NSString stringWithFormat:@"calls [%@]; holds %lu, the second's ID %d, a copy %d, its settings %d", [calls componentsJoinedByString:@", "],
                                               (unsigned long)output.preparedPhotoSettingsArray.count, held.uniqueID == second.uniqueID, held != second,
-                                              [settingsDump(held) isEqualToString:settingsDump(second)]];
+                                              [fullDump(held) isEqualToString:fullDump(second)]];
         }
     });
     for (NSString *fileType in @[AVFileTypeJPEG, AVFileTypeTIFF, AVFileTypeHEIC, AVFileTypeDNG, @"x.y"])
@@ -490,6 +543,13 @@ int main(int argc, char **argv)
         portOutput = NSClassFromString(@"CharonHostAVCapturePhotoOutput");
         check(hostSettings && portSettings && hostOutput && portOutput && hostSettings != portSettings && hostOutput != portOutput,
               @"the host's classes and the port's are all here, apart");
+        NSMutableDictionary *rows = [NSMutableDictionary dictionary];
+        for (NSString *line in [[NSString stringWithContentsOfFile:@(argv[2]) encoding:NSUTF8StringEncoding error:NULL] componentsSeparatedByString:@"\n"]) {
+            NSArray *fields = [line componentsSeparatedByString:@"\t"];
+            if (fields.count == 3)
+                rows[fields[0]] = @[fields[1], fields[2]];
+        }
+        divergenceRows = rows;
         declared = [NSMutableDictionary dictionary];
         NSString *list = [NSString stringWithContentsOfFile:@(argv[1]) encoding:NSUTF8StringEncoding error:NULL];
         for (NSString *line in [list componentsSeparatedByString:@"\n"]) {

@@ -41,7 +41,7 @@ oracle() { # oracle NAME SOURCE...: the oracle over port classes built from SOUR
     done
     xcrun clang -fobjc-arc $target $quiet "$here/oracle.m" $objects -framework AVFoundation -framework CoreMedia -framework CoreVideo \
         -framework Accelerate -framework CoreImage -framework ImageIO -framework CoreGraphics -framework UIKit -framework Foundation -o "$B/$name"
-    "$B/$name" "$B/declared.txt"
+    "$B/$name" "$B/declared.txt" "$here/divergences.tsv"
 }
 
 echo "== the port"
