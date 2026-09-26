@@ -207,7 +207,11 @@ Sources:
   pixel to the filter's over four colours; `tests/backports/device/sheet-cases.m` holds one pixel 20 points above a
   sheet over a red full-screen presentation to the host's image and matrix. The residual difference is the blur's
   (`UIVisualEffect.md`): what moves under the sheet is followed a few times a second, not every frame, and what is drawn
-  with OpenGL ES is not in the reading.
+  with OpenGL ES is not in the reading. Every frame was measured on the iPad 2 (`UIVisualEffect.md`, "What it cannot do"
+  has the probe): the read alone took 24 to 36 ms, and the shading of the read took 261 ms for the 620 x 740 region of a
+  320 x 440 card, 402 ms for 768 x 920 (540 x 620) and 432 ms for 768 x 992 (768 x 700), against 16.7 ms a frame at 60.
+  The shading is in doubles with a `lround` per channel per pixel and dominates; a rewrite of it would bring the refresh to
+  the read's cost at best, which is still above one frame. Not measured: that rewrite.
 - `presentationController` of a controller with a page or form sheet style answers the sheet; for a custom style the
   port answers the controller a transitioning delegate gave, else a plain `UIPresentationController`, as UIKit does; for
   other styles it answers nil where UIKit has its own full-screen controller.
