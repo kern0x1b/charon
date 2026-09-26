@@ -57,3 +57,11 @@ UIFont *charon_medium_font(CGFloat pointSize)
 {
     return [UIFont systemFontOfSize:pointSize weight:UIFontWeightMedium];
 }
+
+UIFont *charon_medium_body_font(void)
+{
+    /* The sidebar header's font is the body text style at the medium weight, so it keeps the style's line
+       spacing and follows the content size category; a plain medium system font has neither. */
+    UIFontDescriptor *descriptor = [[UIFont preferredFontForTextStyle:UIFontTextStyleBody].fontDescriptor fontDescriptorByAddingAttributes:@{UIFontDescriptorTraitsAttribute: @{UIFontWeightTrait: @(UIFontWeightMedium)}}];
+    return [UIFont fontWithDescriptor:descriptor size:0];
+}

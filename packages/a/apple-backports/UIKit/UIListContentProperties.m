@@ -20,7 +20,7 @@ static UIFont *charon_list_font(NSInteger kind)
     case 3:
         return charon_private_style_font(@"UICTFontTextStyleEmphasizedBody", UIFontTextStyleHeadline, 17);
     case 4:
-        return charon_medium_font(17);
+        return charon_medium_body_font();
     }
     return [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 }

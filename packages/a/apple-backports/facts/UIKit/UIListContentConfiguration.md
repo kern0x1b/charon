@@ -20,4 +20,6 @@ Source: the host's own UIKit under Mac Catalyst (macOS 27.0), measured with rand
 
 ## On iOS 6
 
+The sidebar header's default text is the host's: the body text style at the medium weight, built from the body font's descriptor with the weight trait, so it has the style's line spacing (a line half a point taller than a plain medium system font's) and follows the content size category; a plain medium system font at 17 points measured half a point short in every content view of that style.
+
 The medium weight the sidebar takes for a selected row is the release's system font: the weight backport of `UIFont` maps every weight up to medium to the regular font, so a selected sidebar row is not different in its font, only in its colours and transformers when focused or highlighted.

@@ -48,6 +48,7 @@ CGFloat charon_pixel_ceil(CGFloat value, CGFloat scale);
 CGFloat charon_pixel_round(CGFloat value, CGFloat scale);
 CGFloat charon_screen_scale(void);
 UIFont *charon_medium_font(CGFloat pointSize);
+UIFont *charon_medium_body_font(void);
 
 @interface UIListContentTextProperties (CharonLists)
 - (instancetype)initCharonWithStyle:(NSInteger)style secondary:(BOOL)secondary;
