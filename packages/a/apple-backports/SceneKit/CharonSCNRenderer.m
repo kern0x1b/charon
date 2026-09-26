@@ -807,7 +807,8 @@ static GLuint CharonSCNCompile(GLenum kind, NSString *source)
     [vertex appendString:@"}\n"];
 
     NSMutableString *fragment = [NSMutableString string];
-    [fragment appendString:@"precision highp float;\n"
+    // a sampler with no qualifier is lowp in a fragment shader (GLSL ES 1.00 4.5.3), whatever `precision ... float` says
+    [fragment appendString:@"precision highp float;\nprecision highp sampler2D;\n"
                             "varying highp vec3 v_position;\nvarying highp vec3 v_normal;\nvarying mediump vec4 v_color;\n"
                             "varying highp vec2 v_uv0;\nvarying highp vec2 v_uv1;\n"
                             "uniform vec3 u_cameraPosition;\nuniform vec4 u_coatView;\nuniform vec3 u_ambientLight;\nuniform float u_opacity;\nuniform float u_transparency;\n"

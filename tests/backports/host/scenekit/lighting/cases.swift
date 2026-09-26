@@ -165,12 +165,25 @@ for rough in [0.1, 0.2, 0.3, 0.45, 0.6, 0.8, 1.0] {
         }
     }
 }
-// roughness 0 and 0.05, where the shader's alpha = roughness^2 is exact to the last bit and the port's GGX holds; between them
-// macOS's own answer leaves the formula (`cases ladder`, below, prints it, and facts/SceneKit/SCNView.md, "Open", says how)
-for rough in [0.0, 0.05] {
+// the smallest roughnesses: 0 and 0.05, where the shader's alpha = roughness^2 is exact to the last bit and the port's GGX holds, and
+// 0.01 and 0.02 between them, where macOS's own answer leaves the formula (`cases ladder`, below, prints it, and
+// facts/SceneKit/SCNView.md, "Open", says how). The seven cases of 0.01 and 0.02 the port does not draw as macOS does are named in
+// device/scenekit-lighting.m as known open, not left out of the grid
+for rough in [0.0, 0.01, 0.02, 0.05] {
     for a in [0.0, 0.02, 0.05, 0.1, 0.2, 0.4] {
         for (met, alb) in [(1.0, 1.0), (0.0, 1.0)] {
             add("PBR low roughness \(rough) metal \(met) albedo \(alb) at \(a)", "PhysicallyBased", [alb, alb, alb, 1], [light("directional", 250, euler: [a, 0, 0])], ["metalness": met, "roughness": rough])
+        }
+    }
+}
+// dark colours in the diffuse slot as an image, beside the same colour as a colour: the image is read by a sampler, whose precision
+// (lowp unless the shader says otherwise) holds a dark linear value in coarser steps than the colour's uniform does
+for dark in [0.01, 0.03, 0.06, 0.1] {
+    for a in [0.0, 0.1, 0.2] {
+        for image in [false, true] {
+            var extra: [String: Any] = ["metalness": 1.0, "roughness": 0.2]
+            if image { extra["diffuseImage"] = true }
+            add("PBR dark diffuse \(image ? "image" : "colour") \(dark) metal 1.0 rough 0.2 at \(a)", "PhysicallyBased", [dark, dark, dark, 1], [light("directional", 250, euler: [a, 0, 0])], extra)
         }
     }
 }

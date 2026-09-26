@@ -108,8 +108,12 @@ linearised first. A light's intensity of 1000 is 1.0.
   With no light at all the surface is black.
 - Precision: on the iPad 2 (SGX543, iOS 6.1.3) a fragment mediump float holds 10 bits over 2^-15..2^15, a half float,
   and highp 23 bits (`scenekit-lighting` asks `glGetShaderPrecisionFormat`). The normal therefore runs highp from the
-  attribute to the fragment: with a mediump one the grazing cases of the grid were up to 12 levels off (roughness 0.2
-  seen at 0.9 rad: 142 for SceneKit's 130); with a highp one all 1304 cases are within one level.
+  attribute to the fragment (a lowp float holds 8 bits over -1 to 1). A `uniform sampler2D` with no qualifier is lowp in a
+  fragment shader (GLSL ES 1.00, 4.5.3), whatever `precision highp float` says, so the shader declares `precision highp sampler2D`;
+  switching it (iPad 2, 2026-09-26, `scenekit-frames` on coin and star2 before and after) moved every frame's bias by at most
+  0.01 level, and the grid's histogram of errors (with dark colours as images in the diffuse slot among its cases) did not move: it is not the cause of the dark metal
+  ("Open"). With a mediump one the grazing cases of the grid were up to 12 levels off (roughness 0.2
+  seen at 0.9 rad: 142 for SceneKit's 130); with a highp one all of the 1304 cases of that date were within one level.
 - The scalar slots (`metalness`, `roughness`) read a colour's first component as it is: grey 0.45, the number 0.45
   and white at intensity 0.45 draw the same pixels; so do greys of 0.2 in sRGB, linear sRGB, linear grey, generic
   gamma 2.2, calibrated and device white and Display P3.
@@ -230,20 +234,22 @@ other stay within 0.81 of the tube (the worst is the gradient's pixel rounding),
 SceneKit's own series with the tap rotation 5% long and the spring 22 stiff instead of 21, fall outside it on every
 pairing (2.16 and 6.11 at least).
 
-On the iPad 2 (iPad2,2, iOS 6.1.3, 2026-09-24, against `oracle-1`): seven of the eight cases within the tube (worst 1.00,
-the shimmer), both negative controls outside (2.15, 6.17). The `gradient` is outside by a little: 3 of its 105
-samples at 1.01 to 1.18 of the tube, where it was 2.27 before its levels were averaged in linear light ("Textures").
-What is left is Metal's own level bytes: they stray above the exact linear mean the port builds (level 5: 18, 49, 81
-for 17.19, 48.46, 80.13) by a rounding of the M4 GPU's no simple rule reproduces (level 1 makes 0.50 into 1 and 2.50
-into 2), and the port's model gives SceneKit's frames within 1.26 levels on the host, as the device's 1.18 shows. The
-tube is not widened for it.
+On the iPad 2 (iPad2,2, iOS 6.1.3, 2026-09-26, against the series `record.sh` wrote on macOS the same day): all eight cases within the
+tube (worst 1.00, the gradient's 97 samples; the shimmer 0.29), and both negative controls outside it (2.17 and 6.12). The
+gradient was outside on 2026-09-24 (3 of its 105 samples, 2.27 before its levels were averaged in linear light): the port
+now builds each mip level from the stored 8-bit level above it ("Textures"), which SceneKit's own frames follow. Metal's own
+level bytes are the other comparison, reported and not held: the gradient's worst is 1.12 of the tube with 2 samples outside,
+the shimmer's 0.66 with none (the band's earlier run of the same day gave 1.19 with 5 outside and 0.62 with none). The tube is
+not widened for it.
 
 ## What the view says it does not draw
 
 The first frame of each scene lists in the log, once, what the scene has and this renderer does not draw: particle
 systems (by the nodes that carry them), a geometry's subdivision level, a clear coat, a normal, ambient occlusion or
 displacement map from an image, a reflective slot that is not black, and a background or lighting environment that
-shows anything. `jitteringEnabled` set to YES says once that no jittered frames are accumulated. `gift2`, which is only
+shows anything; the lighting model `ShadowOnly`, which is drawn as Blinn; a blend mode other than alpha, drawn as alpha; a light
+of a type this renderer does not draw (IES, area, probe: a node lit only by such lights is drawn unlit); a light's shadow
+(`castsShadow`) and its colour temperature. `jitteringEnabled` set to YES says once that no jittered frames are accumulated. `gift2`, which is only
 particles, says so instead of drawing empty without a word.
 
 ## Wrap and images
@@ -284,7 +290,9 @@ Named so that nobody reads them as done: jittered accumulation (`jitteringEnable
 idle frames (the view redraws every display frame), `antialiasingMode`, `allowsCameraControl`,
 `playing`/`loops`/`sceneTime`, hit testing and projection, particles, animations of key paths other than the five
 measured and of keyframe animations on a node, `removeAnimationForKey:fadeOutDuration:`, subdivision, clear coat, normal and ambient occlusion maps from images, reflective and
-environment lighting, the default camera SceneKit makes for a scene without one (the view then draws from the
+environment lighting, the lighting model `ShadowOnly` (drawn as Blinn), blend modes other than alpha (drawn as alpha), lights of
+the types IES, area and probe, a light's shadow (shadow maps are shader work the SGX can do, so this is work not done, not a
+boundary) and its colour temperature, the default camera SceneKit makes for a scene without one (the view then draws from the
 origin down -z with a 60 degree camera), and more than eight lights on one node (the rest are logged and not drawn).
 
 ## Open
@@ -303,11 +311,25 @@ frames (see "The frame tolerance").
 - **star2's shift**: with every fit in, star2's drawn frame is off macOS's by -0.15, -0.16 and -0.14 levels on average
   (mean 0.95, p95 2), which the coverage lost to the missing subdivision does not explain by itself.
 - **Lit metal at roughness 0.2 on curved, textured geometry** is about a level and a half too dark under a point or a
-  directional light (coin -1.25/-0.81/-1.77 with only its omni lights, -1.49/-0.87/-1.81 with only the directional one;
-  star2 with metalness 1 and roughness 0.2 everywhere -1.65/-1.35/-1.74, p95 11): unexplained. The flat-quad grid does not
-  show it (all its cases within one level). Candidates: the specular `D` and visibility at alpha 0.04 in the shader's
-  precision, the omni light's `L` per fragment, the half-float normal. The next probe: a sphere (curved) case with an omni
-  light, metalness 1 and roughness 0.2, in the grid on macOS and on the port.
+  directional light (coin -1.25/-0.81/-1.76 with only its omni lights, -1.49/-0.87/-1.81 with only the directional one;
+  star2 with metalness 1 and roughness 0.2 everywhere -1.65/-1.35/-1.74, p95 11; iPad 2, 2026-09-26): unexplained. The
+  flat-quad grid does not show it (all its cases within one level but the seven known open ones). Ruled out by
+  measurement: the sampler's precision, which is lowp when a shader does not say otherwise; with `precision highp sampler2D`
+  the biases move by 0.01 at most, and dark colours as images in the diffuse slot are in the grid and within one level.
+  Candidates left: the specular `D` and visibility at alpha 0.04 in the shader's precision, the omni light's `L` per
+  fragment, the half-float normal. The next probe: a sphere (curved) case with an omni light, metalness 1 and roughness
+  0.2, in the grid on macOS and on the port.
+- **Unchecked in the renderer** (named; the iPad 2 is the only device asked): blending mixes sRGB-encoded
+  values, and only a premultiplied colour over black was compared with macOS, so a translucent surface over another colour
+  is unmeasured; a texture is uploaded with no check of `GL_MAX_TEXTURE_SIZE` (4096 on the iPad 2) and no `glGetError` after
+  `glTexImage2D`, so what an image larger than the limit gives is not known; a mesh with an index above 65535 is drawn with
+  `GL_UNSIGNED_INT` indices and no check of `GL_OES_element_index_uint` (present on the iPad 2, `scenekit-lighting` prints
+  it), so what a device without it does is not known either.
+- **Animation timing and values left unmeasured** (the log says the timing members once, `CharonSCNAnimation.m`): a pause
+  before the animation's first frame stores the media time minus a begin of 0; an additive animation of a matrix adds
+  the components one by one (`CharonSCNAdd`), which no series has compared with SceneKit; what happens to the value when a
+  finished animation's removal meets another animation on the same key path is not measured. `position` is evaluated as
+  the other four key paths are and no series has recorded it: it is not held to macOS's.
 - **The smallest roughnesses**: below roughness 0.05 macOS SceneKit leaves the GGX formula. `cases ladder` (metalness 1, a
   directional light of 250, albedo 1) prints macOS's pixel face-on: 0 up to roughness 0.0125, then 55 at 0.015, 78 at
   0.0175, 95 at 0.02, 193 at 0.03, and 255 (saturated) from 0.04; the formula, which the port draws, gives more than 0 at
@@ -361,12 +383,12 @@ frame is off by -0.15, -0.16 and -0.14 on average, mean 0.95, p95 2. coin's went
 on it is -1.25, -0.81, -1.77, with only the directional light -1.49, -0.87, -1.81; with every roughness 0.9 it is +0.09,
 -0.03, -0.03 and with every metalness 0 it is -0.11, -0.20, -0.16. So the port's lit metal at roughness 0.2 (coin's
 materials, metalness 1) is about a level and a half too dark under a point or a directional light, on curved
-geometry with textures, where the flat-quad grid (all 1374 cases within one level, off by 0 in 1244, iPad 2 2026-09-26) does not show a
-sign. star2 with every metalness 1 and roughness 0.2 shows it larger: bias -1.65, -1.35, -1.74, p95 11, and 61 with the
+geometry with textures, where the flat-quad grid (1415 of its 1422 cases within one level, off by 0 in 1277, and the seven known
+open cases at roughness 0.01 and 0.02; iPad 2 2026-09-26) does not show a sign. star2 with every metalness 1 and roughness 0.2 shows it larger: bias -1.65, -1.35, -1.74, p95 11, and 61 with the
 ambient light off. It is unexplained, and open (below). A frame bound would still not tell a renderer
 whose roughness is 0.05 off (star2's mean 0.95 against 1.03), so none is set; a bound over an unexplained bias would
 hide a cause. Nor would a bound on these numbers tell a renderer whose roughness is 0.02 off (star2's mean 1.59
-against 1.72, p95 3 in both); the lighting grid does (`scenekit-lighting`: the port misses a renderer with roughness 0.02 too large on every one of the 228 cases where its pixel is more than two levels from SceneKit's; an exponent 3% too large is within two levels of SceneKit's on every case, and no check holds it). The earlier
+against 1.72, p95 3 in both); the lighting grid does (`scenekit-lighting`: the port misses a renderer with roughness 0.02 too large on every one of the 256 cases where its pixel is more than two levels from SceneKit's; an exponent 3% too large is within two levels of SceneKit's on every case, and no check holds it). The earlier
 bound, IoU >= 0.97, mean <= 12, p95 <= 40, was fixed before any comparison and is withdrawn; the iPhone 4S run it was
 held to (star2 mean 3.79, coin 3.23) predates the lighting fixes.
 
