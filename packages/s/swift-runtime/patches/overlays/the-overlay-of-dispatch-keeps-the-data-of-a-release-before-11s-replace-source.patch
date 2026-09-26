@@ -1,0 +1,120 @@
+diff --git a/stdlib/public/Darwin/Dispatch/Source.swift b/stdlib/public/Darwin/Dispatch/Source.swift
+--- a/stdlib/public/Darwin/Dispatch/Source.swift
++++ b/stdlib/public/Darwin/Dispatch/Source.swift
+@@ -12,7 +12,45 @@
+ 
+ // import Foundation
+ @_implementationOnly import _SwiftDispatchOverlayShims
++import Darwin
++import ObjectiveC
+ 
++/* A source that replaces its pending data arrived in iOS 11. Before it the overlay makes a source that ORs, beside a
++   record of the latest value replaced into it: replace(data:) records the value and merges a 1, which coalesces the
++   calls of the handler as the pending data of the release's source does, and the data the handler reads is the value
++   recorded. It differs from the release's source in one case: a value replaced while the handler runs is what that
++   handler reads from then on, where the release's handler reads the value it was called with. */
++internal final class _ReplacedData {
++	private let lock = UnsafeMutablePointer<pthread_mutex_t>.allocate(capacity: 1)
++	private var latest: UInt = 0
++
++	init() { pthread_mutex_init(lock, nil) }
++
++	deinit {
++		pthread_mutex_destroy(lock)
++		lock.deallocate()
++	}
++
++	var value: UInt {
++		get {
++			pthread_mutex_lock(lock)
++			defer { pthread_mutex_unlock(lock) }
++			return latest
++		}
++		set {
++			pthread_mutex_lock(lock)
++			latest = newValue
++			pthread_mutex_unlock(lock)
++		}
++	}
++}
++
++private var _replacedDataKey: UInt8 = 0
++
++private func _replacedData(of source: DispatchSource) -> _ReplacedData? {
++	return objc_getAssociatedObject(source, &_replacedDataKey) as? _ReplacedData
++}
++
+ extension DispatchSourceProtocol {
+ 	public typealias DispatchSourceHandler = @convention(block) () -> Void
+ 
+@@ -90,7 +128,11 @@
+ 	}
+ 
+ 	public var data: UInt {
+-		return __dispatch_source_get_data(self as! DispatchSource)
++		let source = self as! DispatchSource
++		if let replaced = _replacedData(of: source) {
++			return replaced.value
++		}
++		return __dispatch_source_get_data(source)
+ 	}
+ 
+ 	public var isCancelled: Bool {
+@@ -194,7 +236,12 @@
+ 	}
+ 
+ 	public class func makeUserDataReplaceSource(queue: DispatchQueue? = nil) -> DispatchSourceUserDataReplace {
+-		return _swift_dispatch_source_create(_swift_dispatch_source_type_DATA_REPLACE(), 0, 0, queue) as DispatchSourceUserDataReplace
++		if let type = _swift_dispatch_source_type_DATA_REPLACE() {
++			return _swift_dispatch_source_create(type, 0, 0, queue) as DispatchSourceUserDataReplace
++		}
++		let source = _swift_dispatch_source_create(_swift_dispatch_source_type_DATA_OR(), 0, 0, queue)
++		objc_setAssociatedObject(source, &_replacedDataKey, _ReplacedData(), .OBJC_ASSOCIATION_RETAIN)
++		return source as DispatchSourceUserDataReplace
+ 	}
+ 
+ 	public class func makeFileSystemObjectSource(
+@@ -656,6 +703,14 @@
+ 	/// The value that will replace the current pending data. A value of zero will be stored
+ 	/// but will not result in the submission of the event handler block.
+ 	public func replace(data: UInt) {
+-		__dispatch_source_merge_data(self as! DispatchSource, data)
++		let source = self as! DispatchSource
++		guard let replaced = _replacedData(of: source) else {
++			__dispatch_source_merge_data(source, data)
++			return
++		}
++		replaced.value = data
++		if data != 0 {
++			__dispatch_source_merge_data(source, 1)
++		}
+ 	}
+ }
+diff --git a/stdlib/public/SwiftShims/DispatchOverlayShims.h b/stdlib/public/SwiftShims/DispatchOverlayShims.h
+--- a/stdlib/public/SwiftShims/DispatchOverlayShims.h
++++ b/stdlib/public/SwiftShims/DispatchOverlayShims.h
+@@ -91,12 +91,23 @@
+ 
+ SWIFT_DISPATCH_SOURCE_TYPE(DATA_ADD)
+ SWIFT_DISPATCH_SOURCE_TYPE(DATA_OR)
+-SWIFT_DISPATCH_SOURCE_TYPE(DATA_REPLACE)
+ SWIFT_DISPATCH_SOURCE_TYPE(READ)
+ SWIFT_DISPATCH_SOURCE_TYPE(SIGNAL)
+ SWIFT_DISPATCH_SOURCE_TYPE(TIMER)
+ SWIFT_DISPATCH_SOURCE_TYPE(WRITE)
+ 
++/* The source type that replaces its pending data, which iOS 11 brought; NULL on a release without it. */
++#pragma clang diagnostic push
++#pragma clang diagnostic ignored "-Wunguarded-availability-new"
++static inline dispatch_source_type_t _Nullable
++_swift_dispatch_source_type_DATA_REPLACE(void) {
++  if (&_dispatch_source_type_data_replace == NULL) {
++    return NULL;
++  }
++  return DISPATCH_SOURCE_TYPE_DATA_REPLACE;
++}
++#pragma clang diagnostic pop
++
+ #if __APPLE__
+ SWIFT_DISPATCH_SOURCE_TYPE(MACH_SEND)
+ SWIFT_DISPATCH_SOURCE_TYPE(MACH_RECV)
