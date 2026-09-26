@@ -84,15 +84,17 @@ static id<UIViewControllerAnimatedTransitioning> charon_dismiss_animator(id<UIVi
     return [delegate animationControllerForDismissedController:presented];
 }
 
-/* A page or form sheet presented in a compact width is the sheet's own presentation
-   (UISheetPresentationController.m); the class is asked by name for its controller, as this
-   file is linked into releases that do not carry it. */
+/* A page or form sheet presented in a compact width is the sheet's own presentation (UISheetPresentationController.m).
+   The sheet is made only when the presentation is one: asking for it makes it and the controller holds it, so a
+   controller that is not presented as a sheet asks for none. The class is asked by name, and by a selector only the port's
+   own carries, as this file is linked into releases that do not carry it and into those whose sheet is the release's. */
 static UIPresentationController *charon_sheet_for(UIViewController *presented, UIViewController *presenting)
 {
-    if (![presented respondsToSelector:@selector(sheetPresentationController)])
+    if (!charon_sheet_style(presented.modalPresentationStyle) || presenting.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact)
         return nil;
-    UIPresentationController *sheet = [presented performSelector:@selector(sheetPresentationController)];
-    return [sheet charon_presentsFrom:presenting] ? sheet : nil;
+    if (![NSClassFromString(@"UISheetPresentationController") instancesRespondToSelector:@selector(charon_transitionAnimator)] || ![presented respondsToSelector:@selector(sheetPresentationController)])
+        return nil;
+    return [presented performSelector:@selector(sheetPresentationController)];
 }
 
 static id<UIViewControllerInteractiveTransitioning> charon_interactor_for(id<UIViewControllerTransitioningDelegate> delegate, id<UIViewControllerAnimatedTransitioning> animator, BOOL presenting)
@@ -163,6 +165,17 @@ static void charon_sheet_handover_end(UIViewController *presented, CharonSheetHa
     if (presented.transitioningDelegate == handover)
         presented.transitioningDelegate = handover.original;
     objc_setAssociatedObject(presented, charon_sheet_handover_key, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+/* The sheet a dismissal took away is not kept for the controller: UIKit's controller has none after its dismissal and
+   makes another, with the default detents, when asked again, and a sheet kept is a sheet the release's presentation
+   controller holds the controller for (from 8.0 on its class is the release's, whose init holds it strongly). */
+static void charon_sheet_dismissed(UIViewController *presented, CharonSheetHandover *handover)
+{
+    UIPresentationController *sheet = handover.sheet;
+    charon_sheet_handover_end(presented, handover);
+    if (sheet && charon_presentation_controller_of(presented) == sheet)
+        charon_set_presentation_controller(presented, nil);
 }
 
 static UIPresentationController *charon_presentation_for(UIViewController *presented, UIViewController *presenting, UIViewController *source)
@@ -301,7 +314,7 @@ static void (^charon_finisher(CharonTransitionCoordinator *coordinator, UIViewCo
             if (handover || (style >= 4 && style <= 6)) {
                 dismissOriginal(self, dismiss, animated, ^{
                     if (handover && !presented.presentingViewController)
-                        charon_sheet_handover_end(presented, handover);
+                        charon_sheet_dismissed(presented, handover);
                     if (completion)
                         completion();
                 });

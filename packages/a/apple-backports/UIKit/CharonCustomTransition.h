@@ -17,15 +17,20 @@ BOOL charon_custom_transition(CharonTransitionKind kind, UIViewController *from,
 - (void)charon_setContainerView:(UIView *)view;
 /* Stops holding the presented controller, which now holds this presentation controller. */
 - (void)charon_ownedByPresentedViewController;
-/* Whether this presentation controller presents its controller itself from that presenting
-   controller (a sheet does in a compact width), and the animator it presents and dismisses
-   with when the transitioning delegate answers none; NO and nil here. */
-- (BOOL)charon_presentsFrom:(UIViewController *)presenting;
+/* The animator this presentation controller presents and dismisses with when the transitioning
+   delegate answers none; nil here. */
 - (id<UIViewControllerAnimatedTransitioning>)charon_transitionAnimator;
 /* Whether a touch on the container itself, on none of its views, goes through to what is
    under it; NO here, as UIKit's transition view keeps it. */
 - (BOOL)charon_containerIgnoresDirectTouches;
 @end
+
+/* A page or form sheet (automatic is a page sheet) is the sheet's own presentation in a compact width; in a
+   regular one UIKit shows it as the form sheet the release draws itself. */
+static inline BOOL charon_sheet_style(UIModalPresentationStyle style)
+{
+    return style == UIModalPresentationPageSheet || style == UIModalPresentationFormSheet || style == UIModalPresentationAutomatic;
+}
 
 UIPresentationController *charon_presentation_controller_of(UIViewController *controller);
 void charon_set_presentation_controller(UIViewController *controller, UIPresentationController *presentation);

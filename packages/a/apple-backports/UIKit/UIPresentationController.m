@@ -78,11 +78,6 @@
     _presentedOwner = nil;
 }
 
-- (BOOL)charon_presentsFrom:(UIViewController *)presenting
-{
-    return NO;
-}
-
 - (id<UIViewControllerAnimatedTransitioning>)charon_transitionAnimator
 {
     return nil;

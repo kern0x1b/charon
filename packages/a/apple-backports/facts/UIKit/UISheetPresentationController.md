@@ -70,8 +70,13 @@ Sources:
   controllers are those of the caller's delegate, and the sheet's `charon_transitionAnimator` where it gives none, as the
   engine below 8.0 asks. The style is put back after the call, and the caller's delegate once the sheet is dismissed, or at
   the controller's next presentation when a dismissal the port did not see took it away (its presenter's); until then
-  `transitioningDelegate` answers the port's object. The sheet lays itself out through the public hooks and
-  `self.containerView`. Not measured: no fleet device or emulator runs 8.0 or later. Two parts have no public
+  `transitioningDelegate` answers the port's object. The sheet is asked for only when the presentation is one, a page,
+  form or automatic style from a compact width (a controller that is asked for its sheet holds it), and the port's hold on
+  it ends with the dismissal: UIKit's controller has no sheet after its dismissal either and makes another, with the
+  default detents, when asked again (host `sheethandover`, which runs the installer itself on the host's UIKit, a release
+  that presents the custom styles as one from 8.0 on does; the host's own sheet class stands in for the port's). The sheet
+  lays itself out through the public hooks and `self.containerView`. Not measured on a device: no fleet device or emulator
+  runs 8.0 or later; the handover is measured against the host's UIKit only. Two parts have no public
   counterpart there: touches passing through the container at an undimmed detent (`charon_containerIgnoresDirectTouches`),
   and `presentationController` answering the sheet, which below 8.0 only the port's category makes one object. Before
   e5522579 the path sent `-charon_setContainerView:` to the release's class and the application died with an unrecognized
@@ -85,8 +90,10 @@ Sources:
   its presented controller until `charon_set_presentation_controller` gives it to that controller
   (`-charon_ownedByPresentedViewController`), and weakly after, which the popover and the document menu share. From 8.0 on the
   sheet is a subclass of the release's class, whose `initWithPresentedViewController:` holds the controller as the host's
-  holds a caller-made one, so a controller asked for its sheet and the sheet hold each other and neither is freed. There is
-  no public way to make the release's reference weak; not measured, as nothing in the fleet runs 8.0 or later.
+  holds a caller-made one, so a controller asked for its sheet and the sheet hold each other and neither is freed, from the
+  moment it is asked until the port drops its own reference at the end of the dismissal. There is no public way to make the
+  release's reference weak. What stays held is a sheet asked for and never presented as one (never presented, or presented
+  from a regular width): UIKit's frees it with its controller, the port's cannot on those releases.
 - Frame (`_stackAlignmentFrame` 0x189051544): centred, the container's width, from the top margin to the container's
   bottom edge. iPhone 4S with the status bar: top 40, the sheet 320 x 440.
 - Detents: large = the full height less the bottom safe inset (`maximumDetentValue` 0x1895e9958); medium = that times

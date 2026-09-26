@@ -1799,22 +1799,6 @@ static NSUInteger charon_sheet_closest(NSArray *offsets, CGFloat offset)
 
 @end
 
-static BOOL charon_sheet_style(UIModalPresentationStyle style)
-{
-    return style == UIModalPresentationPageSheet || style == UIModalPresentationFormSheet || style == UIModalPresentationAutomatic;
-}
-
-@implementation UISheetPresentationController (CharonSheetStyle)
-
-/* A page or form sheet (automatic is a page sheet) is a sheet in a compact width; in a
-   regular one UIKit shows it as the form sheet the release draws itself. */
-- (BOOL)charon_presentsFrom:(UIViewController *)presenting
-{
-    return charon_sheet_style(self.presentedViewController.modalPresentationStyle) && presenting.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact;
-}
-
-@end
-
 @interface UIViewController (CharonSheetPresentation)
 @end
 
