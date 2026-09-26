@@ -458,7 +458,7 @@ local function expander(opt, headers, languages)
             roots[folder] = roots[folder] or {}
             table.insert(roots[folder], {type = "file", name = path.filename(item.file), ["external-contents"] = copy})
         end
-        local overlay = {version = 0, ["case-sensitive"] = "false", roots = {}}
+        local overlay = {version = 0, ["case-sensitive"] = "false", roots = json.mark_as_array({})}
         for _, folder in ipairs(table.orderkeys(roots)) do
             table.insert(overlay.roots, {type = "directory", name = folder, contents = roots[folder]})
         end
@@ -1774,7 +1774,8 @@ function lift(opt)
         roots[folder] = roots[folder] or {}
         table.insert(roots[folder], {type = "file", name = path.filename(file), ["external-contents"] = copy})
     end
-    local overlay = {version = 0, ["case-sensitive"] = "false", roots = {}}
+    -- marked, so that no edit at all still writes `"roots": []`, which clang reads, not `{}`, which it refuses
+    local overlay = {version = 0, ["case-sensitive"] = "false", roots = json.mark_as_array({})}
     local folders = table.keys(roots)
     table.sort(folders)
     for _, folder in ipairs(folders) do
