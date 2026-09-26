@@ -72,22 +72,44 @@ end
 
 -- The public headers of the SDK's usr/include that bring in what charon@apple-compat carries: every file that names a
 -- symbol followed by a paren outside a directive, as a module map reaches it - the file itself where a module map names
--- it as a header, the umbrella header of its folder where one covers the folder (dispatch/block.h is reached through
--- dispatch/dispatch.h and refuses to be included on its own). Which of them declares the symbol is the dump's to say. A
--- symbol no public header names - a compiler-rt intrinsic - brings none; the dump then finds no declaration of it.
-local function system_headers(sdk, symbols)
+-- it as a header unless another header the same module map names includes it, the umbrella header of its folder where one
+-- covers the folder (dispatch/block.h is reached through dispatch/dispatch.h and refuses to be included on its own, whether
+-- a module map of the folder names an umbrella, as SDK 16.4 does, or lists every header, as 26.2 does). Which of them
+-- declares the symbol is the dump's to say. A symbol no public header names - a compiler-rt intrinsic - brings none; the
+-- dump then finds no declaration of it.
+function system_headers(sdk, symbols)
     local root = path.join(sdk, "usr", "include")
     local public, umbrellas = {}, {}
     for _, map in ipairs(os.files(path.join(root, "**.modulemap"))) do
         local folder = path.directory(map)
+        local listed = {}
         for line in io.readfile(map):gmatch("[^\n]+") do
             local umbrella = line:match('^%s*umbrella%s+header%s+"([^"]+)"')
             local header = line:match('^%s*header%s+"([^"]+)"')
             if umbrella then
                 umbrellas[path.relative(folder, root)] = path.relative(path.join(folder, umbrella), root)
             elseif header then
-                public[path.relative(path.join(folder, header), root)] = true
+                table.insert(listed, path.relative(path.join(folder, header), root))
             end
+        end
+        local included = {}
+        for _, name in ipairs(listed) do
+            local file = path.join(root, name)
+            if os.isfile(file) then
+                for target in io.readfile(file):gmatch('\n%s*#%s*include%s*[<"]([^>"\n]+)[>"]') do
+                    included[target] = true
+                    included[path.relative(path.join(path.directory(file), target), root)] = true
+                end
+            end
+        end
+        local roots = {}
+        for _, name in ipairs(listed) do
+            if not included[name] then
+                table.insert(roots, name)
+            end
+        end
+        for _, name in ipairs(#roots > 0 and roots or listed) do
+            public[name] = true
         end
     end
     local found = {}

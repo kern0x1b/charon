@@ -407,5 +407,26 @@ function failures(opt)
        or #table.keys((kept[lock] or {})[114] or {}) > 0 then
         table.insert(found, "the preprocessor's tokens were read back as " .. string.serialize(kept, {strip = true, indent = false}))
     end
+    -- The public headers that name a symbol, as module maps reach them. SDK 26.2's dispatch.modulemap lists every dispatch header
+    -- (block.h among them, which #errors unless dispatch.h includes it); SDK 16.4's dispatch/module.modulemap names the umbrella
+    -- header dispatch.h. Either way the include is dispatch/dispatch.h, and a header of its own (solo.h) stays.
+    local sdk = path.join(os.tmpdir(), "lift_test_system_headers")
+    os.tryrm(sdk)
+    local function put(name, text)
+        io.writefile(path.join(sdk, "usr", "include", name), text)
+    end
+    put("dispatch.modulemap", "module Dispatch [system] {\n\theader \"dispatch/dispatch.h\"\n\theader \"dispatch/block.h\"\n\texport *\n}\n")
+    put("dispatch/dispatch.h", "#define __DISPATCH_INDIRECT__\n#include <dispatch/block.h>\nvoid dispatch_main(void);\n")
+    put("dispatch/block.h", "#ifndef __DISPATCH_INDIRECT__\n#error \"Please #include <dispatch/dispatch.h>\"\n#endif\nvoid dispatch_block_create(void);\n")
+    put("os/module.modulemap", "module os [system] {\n\tumbrella header \"os.h\"\n}\n")
+    put("os/os.h", "#include <os/lock.h>\n")
+    put("os/lock.h", "void os_unfair_lock_lock(void);\n")
+    put("plain.modulemap", "module Plain [system] {\n\theader \"solo.h\"\n}\n")
+    put("solo.h", "void solo_fn(void);\n")
+    local reached = table.concat(lift.system_headers(sdk, {"dispatch_main", "dispatch_block_create", "os_unfair_lock_lock", "solo_fn"}), ", ")
+    os.tryrm(sdk)
+    if reached ~= "dispatch/dispatch.h, os/os.h, solo.h" then
+        table.insert(found, "the headers a module map reaches were " .. reached .. ", not dispatch/dispatch.h, os/os.h, solo.h")
+    end
     return found
 end
