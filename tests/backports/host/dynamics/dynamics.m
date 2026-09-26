@@ -1,5 +1,6 @@
 #import "dynamics.h"
 #include <math.h>
+#include <objc/message.h>
 #include <stdlib.h>
 
 @implementation Item
@@ -54,6 +55,28 @@ BOOL animator_step(UIDynamicAnimator *animator, double dt)
     return is_oracle(animator) ? [animator _animatorStep:dt] : [animator charon_animatorStep:dt];
 }
 
+// facts/UIKit/UIDynamicAnimator.md §12 (T5): a 100x100 item at (100,100), gravity, no elasticity or resistance, over a floor
+// at y=300, 300 frames of 1/60 s; y[0..2] is the item's center at frames 26, 27 and 28, y[3] at rest (frame 300).
+void landing_scene(Side side, double y[4])
+{
+    UIDynamicAnimator *animator = make_animator(side, nil);
+    Item *item = [Item itemAt:CGPointMake(100, 100) size:CGSizeMake(100, 100)];
+    UIDynamicItemBehavior *material = [MAKE(side, UIDynamicItemBehavior) initWithItems:@[item]];
+    material.elasticity = 0;
+    material.resistance = 0;
+    [animator addBehavior:material];
+    [animator addBehavior:[MAKE(side, UIGravityBehavior) initWithItems:@[item]]];
+    UICollisionBehavior *collision = [MAKE(side, UICollisionBehavior) initWithItems:@[item]];
+    [collision addBoundaryWithIdentifier:@"floor" fromPoint:CGPointMake(0, 300) toPoint:CGPointMake(1000, 300)];
+    [animator addBehavior:collision];
+    for (int index = 1; index <= 300; index++) {
+        animator_step(animator, 1.0 / 60.0);
+        if (index >= 26 && index <= 28)
+            y[index - 26] = item.center.y;
+    }
+    y[3] = item.center.y;
+}
+
 id animator_body(UIDynamicAnimator *animator, id item)
 {
     return is_oracle(animator) ? [animator _bodyForItem:item] : [animator charon_bodyForItem:item];
@@ -88,6 +111,13 @@ BOOL body_dynamic(id body)
 BOOL body_resting(id body)
 {
     return is_oracle(body) ? [body isResting] : [body resting];
+}
+
+// The body's own position, before the animator rounds it onto the screen's grid for the item. Sent by cast: `position`
+// is also the name of an AppKit method the compiler would otherwise choose.
+CGPoint body_position(id body)
+{
+    return ((CGPoint(*)(id, SEL))objc_msgSend)(body, @selector(position));
 }
 
 void turn_run_loop(void)

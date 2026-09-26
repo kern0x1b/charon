@@ -28,6 +28,7 @@ Class side_class(Side side, NSString *name);
 
 UIDynamicAnimator *make_animator(Side side, UIView *reference);
 BOOL animator_step(UIDynamicAnimator *animator, double dt);
+void landing_scene(Side side, double y[4]);
 id animator_body(UIDynamicAnimator *animator, id item);
 // World gravity in m/s^2.
 CGVector animator_gravity(UIDynamicAnimator *animator);
@@ -36,6 +37,7 @@ void *our_world(UIDynamicAnimator *animator);
 void *our_b2body(id body);
 BOOL body_dynamic(id body);
 BOOL body_resting(id body);
+CGPoint body_position(id body);
 
 // One turn of the main run loop: what runs the main-queue blocks both implementations schedule.
 void turn_run_loop(void);

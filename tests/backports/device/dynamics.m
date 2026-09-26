@@ -137,10 +137,11 @@ static void check_layout_transform(void)
     CGFloat bottom = CGRectGetMaxY(_animator.referenceView.bounds);
     CHECK(_paused == 1, "the animator comes to rest and dynamicAnimatorDidPause: comes once");
     CHECK(!_animator.running, "a paused animator is not running");
-    // Reasoned (facts/UIKit/UIDynamicAnimator.md §2.3): 7.0's box sits 1 pt inside the item and an edge's skin is
-    // 0.02 m (2 pt at 100 pt/m), so the view rests with its bottom about 1 pt above the boundary (0.98 pt in the port's
-    // own as-shipped run on the host); 0.5 pt is Box2D's linear slop (0.005 m).
-    check_near(bottom - CGRectGetMaxY(_item.frame), 1, 0.5, "the item rests on the reference bounds' bottom",
+    // The port's own value on the host (tests/backports/host/dynamics/landing_ios70_test.m, this scene as shipped): the
+    // body rests 0.134 pt past the bounds' bottom, the loop 1 pt outside them and the box 1 pt inside the view cancelling,
+    // and the animator rounds the center onto the screen's grid (0.5 pt at 2x), so the view's bottom edge is at the
+    // bounds' bottom, gap 0. Not a 7.0 measurement, none exists. 0.5 pt is Box2D's linear slop (0.005 m).
+    check_near(bottom - CGRectGetMaxY(_item.frame), 0, 0.5, "the item rests on the reference bounds' bottom",
                [NSString stringWithFormat:@"gap after %.2f s", CFAbsoluteTimeGetCurrent() - _started]);
     [self finish];
 }

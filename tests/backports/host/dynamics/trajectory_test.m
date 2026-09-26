@@ -190,26 +190,6 @@ static void test_pendulum(void)
 
 #pragma mark T5: fall onto a boundary
 
-static void landing(Side side, double y[4])
-{
-    UIDynamicAnimator *animator = make_animator(side, nil);
-    Item *item = [Item itemAt:CGPointMake(100, 100) size:CGSizeMake(100, 100)];
-    UIDynamicItemBehavior *material = [MAKE(side, UIDynamicItemBehavior) initWithItems:@[item]];
-    material.elasticity = 0;
-    material.resistance = 0;
-    [animator addBehavior:material];
-    [animator addBehavior:[MAKE(side, UIGravityBehavior) initWithItems:@[item]]];
-    UICollisionBehavior *collision = [MAKE(side, UICollisionBehavior) initWithItems:@[item]];
-    [collision addBoundaryWithIdentifier:@"floor" fromPoint:CGPointMake(0, 300) toPoint:CGPointMake(1000, 300)];
-    [animator addBehavior:collision];
-    for (int index = 1; index <= 300; index++) {
-        animator_step(animator, frame);
-        if (index >= 26 && index <= 28)
-            y[index - 26] = item.center.y;
-    }
-    y[3] = item.center.y;
-}
-
 static void test_landing(void)
 {
     // s_oracle.m, facts/UIKit/UIDynamicAnimator.md §12 (T5): y at frames 26, 27, 28 and at rest (frame 300). In this build
@@ -217,8 +197,8 @@ static void test_landing(void)
     // 248.216629 on both, so the rest is held to the same 1e-3 pt as the fall.
     const double measured[4] = {192.083298, 199.374969, 206.944397, 248.216629};
     double oracle[4], ours[4];
-    landing(Oracle, oracle);
-    landing(Ours, ours);
+    landing_scene(Oracle, oracle);
+    landing_scene(Ours, ours);
     for (int index = 0; index < 4; index++) {
         NSString *context = index < 3 ? [NSString stringWithFormat:@"frame %d", 26 + index] : @"at rest, frame 300";
         check_near(oracle[index], measured[index], 5e-5, "oracle lands as s_oracle measured", context);
