@@ -48,13 +48,15 @@ Vibrancy is not carried: the views in the content view of a vibrancy effect are 
 
 Every frame is not within reach on the iPad 2 (6.1.3, 768 x 1024, scale 1; the port's `CharonBackdrop`, `CharonBlur` and `CharonSheetShadow` compiled into a probe, one
 refresh called from a display link at 60 Hz over a scroll view of 100 labels that moved by 7 points a frame, 149 frames each; the probe, `cost.m`, and its log are kept in the band's handoff
-directory). The window's `renderInContext:` alone, with nothing done to the pixels, took 24 ms (mean; p95 30 ms) for the shadow's 620 x 740
-region and 34 to 36 ms for one of 768 x 920 or more, so the display link ran at 41 and 28 frames a second before any filter ran; it does not shrink with the region.
-Read at the blur's quarter scale it took 13 ms for a 90 x 36 region, 27 ms for 146 x 86 and 67 ms for the whole screen (192 x 256), which is more than the read
-of the same screen at scale 1 (36 ms): a reduced context draws the layer tree slower. With the box blur and the picture added, a refresh took 21 ms (320 x 100), 53 ms
-(540 x 300) and 181 ms (768 x 1024), 46, 19 and 5.5 frames a second. What the port does now (a refresh at most every 0.1 s, and after three times what the last one
-took) is what those costs leave. What would improve it, not measured: reading the whole window once at scale 1 (36 ms whatever the region) and scaling that down, in
+directory). The window's `renderInContext:` alone, with nothing done to the pixels, took 21 ms (mean; p95 22 ms) for the shadow's 620 x 740
+region and 31 to 33 ms for one of 768 x 920 or more, so the display link ran at 46, 32 and 30 frames a second before any filter ran. It does not shrink below the cost of
+the window itself: a 90 x 36 region at the blur's quarter scale still took 14 ms, 146 x 86 took 24 ms and the whole screen (192 x 256) 63 ms, which is more than the read
+of the same screen at scale 1 (33 ms): a reduced context draws the layer tree slower. With the box blur and the picture added, a refresh took 19 ms (320 x 100), 50 ms
+(540 x 300) and 172 ms (768 x 1024), 50, 20 and 5.8 frames a second. What the port does now (a refresh at most every 0.1 s, and after three times what the last one
+took) is what those costs leave. What would improve it, not measured: reading the whole window once at scale 1 (33 ms whatever the region) and scaling that down, in
 place of a reduced context; and even then a read above 16.7 ms alone keeps 60 frames a second out of reach on this device, whatever the filter costs.
+The shadow's shading is not part of this: since the client shades off the main thread (`UISheetPresentationController.md`) the display link kept 60, 55 and 55 frames a second
+with a shadow refresh running (the read, 3 ms a frame on average, 25 to 39 ms at p95, is what is left on the main thread). The blur's box filter is still on the main thread.
 
 The system's view has three private subviews (the backdrop, an effect subview and the content view) and the port has one, the content view, and a layer for the
 picture, so an application that walks `subviews` of a visual effect view sees fewer. The styles that iOS 10
