@@ -566,3 +566,33 @@ settles: a source narrower than the destination, and the weights of the survivin
 
 Not committed as working, and not claimed to be: the code is committed because it is the engine the
 remaining work is one defect deep, and the check that says so is committed with it.
+
+## The slope term is a DIAGONAL resample, and that is the whole of it
+
+A source ramped on **both** axes - every value is `row * 1000 + column + 1` - so every whole-pixel answer
+names the `(row, column)` it read. Over a 9x6 picture into 9x6, a scale-1 filter and
+`kvImageBackgroundColorFill`:
+
+- **every whole-pixel answer reads the source row that equals the destination row.** At a slope of 1, of 2, of
+  0.5 and of -1, the row named is `dy` in every case where the answer is a whole pixel. So the
+  "cross-axis term" is not in the mapping - your correction was right about that, and the cross-row values
+  are the *kernel* reaching across rows, not the mapping moving.
+- **the column the whole-pixel answers name is irregular in the row.** At a slope of 1 the offsets read 5, 3,
+  3, 2, 1, 0 down the six rows; at a slope of 2 they are larger and the top rows are entirely backColor; at
+  0.5 they are 1, 1, 1, 1, 1, 1 with a blend at the left. A constant step per row would be 1, 2, 3, 4, 5 and
+  it is not that.
+- **between the whole-pixel answers the values are blends of two rows** - an answer near 500 is half of a
+  row-1 value and half of a row-0 value, one near 300 of a row-2 and a row-3. So the kernel reads along a
+  **diagonal**: a tap one step along the shear is one column across *and* `shearSlope` rows down, so at a
+  slope of 1 the taps of one destination pixel land in three different rows and the sample is a blend of all
+  of them.
+
+That is the characterisation, and it is a different engine from the one committed: a shear is a one-
+dimensional resample **along the direction of the shear**, with the taps at
+`(x + k, dy + shearSlope * k)` rather than along a row. The slope-0 case the port ships is that engine with
+the slope zero, where the taps stay in the row - which is why it is exact there and why the whole-pixel answers
+at a non-zero slope are irregular: the port's row-taps are not the system's diagonal taps.
+
+So the three items are: the left edge and the renormalisation over the surviving taps, both one-dimensional and
+both in the committed loop, and the slope, which needs the tap walk to become `(x + k, dy + slope * k)`. The
+first two are arithmetic in what is committed; the third is the loop's tap geometry.
