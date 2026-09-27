@@ -93,7 +93,12 @@ static NSUInteger CharonMDLIndexSize(MDLIndexBitDepth depth)
         return nil;
     // Every index of the submesh, read at the depth it is stored at and written at the one asked for.
     NSUInteger wanted = to * _indexCount;
+    // A buffer that came from a zone or an allocator of its own is re-read through it; one that came
+    // from a caller with neither is re-read into a buffer of the port's own, because the indices are
+    // there to be read either way.
     id<MDLMeshBuffer> buffer = [_indexBuffer.allocator newBuffer:wanted type:MDLMeshBufferTypeIndex];
+    if (!buffer)
+        buffer = [[MDLMeshBufferData alloc] initWithType:MDLMeshBufferTypeIndex length:wanted];
     if (!buffer)
         return nil;
     NSMutableData *out = [NSMutableData dataWithLength:wanted];
