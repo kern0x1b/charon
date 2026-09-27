@@ -23,6 +23,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+// What the two setups have in common, and what each of them spells with its own struct. The scalar type's
+// own behaviour lives here rather than in a cell, because a setup of no sections or no channels has no cell
+// at all and the setters still have to read it.
+typedef struct CharonBiquadCommon {
+    vDSP_Length sections;   // M
+    vDSP_Length channels;   // N
+    int interpolates;       // 1 for a float setup, whose coefficients approach their targets, 0 for a double one
+} CharonBiquadCommon;
+
 // One section of one channel: its five coefficients, the target the SetTargets calls aim at with the two
 // numbers that describe how to approach it, whether the section is active, and its two state values.
 typedef struct CharonBiquadCell {
@@ -32,14 +41,7 @@ typedef struct CharonBiquadCell {
     double threshold;   // its interp_threshold
     double state[2];    // the transposed direct form II state, s1 and s2
     int active;         // SetActiveFilters, 1 until a call says otherwise
-    int interpolates;   // 1 for a float setup, whose coefficients approach their targets, 0 for a double one
 } CharonBiquadCell;
-
-// What the two setups have in common, and what each of them spells with its own struct.
-typedef struct CharonBiquadCommon {
-    vDSP_Length sections;   // M
-    vDSP_Length channels;   // N
-} CharonBiquadCommon;
 
 struct vDSP_biquadm_SetupStruct {
     CharonBiquadCommon common;
@@ -108,8 +110,8 @@ static inline void *CharonBiquadCreate(const double *coefficients, vDSP_Length s
             cell->target[k] = cell->coeff[k];
         }
         cell->active = 1;
-        cell->interpolates = interpolates;
     }
+    ((CharonBiquadCommon *)setup)->interpolates = interpolates;
     return setup;
 }
 
@@ -230,7 +232,7 @@ static inline void CharonBiquadSetTargets(void *setup, const double *values, dou
                                           vDSP_Length start_section, vDSP_Length start_channel, vDSP_Length sections,
                                           vDSP_Length channels)
 {
-    int interpolates = CharonBiquadCells(setup)[0].interpolates;
+    int interpolates = ((CharonBiquadCommon *)setup)->interpolates;
     for (vDSP_Length section = 0; section < sections; section++) {
         for (vDSP_Length channel = 0; channel < channels; channel++) {
             CharonBiquadCell *cell = CharonBiquadCellOf(setup, start_section + section, start_channel + channel);
@@ -262,7 +264,7 @@ static inline void CharonBiquadSetTargetsFloat(void *setup, const float *values,
                                                vDSP_Length start_section, vDSP_Length start_channel,
                                                vDSP_Length sections, vDSP_Length channels)
 {
-    int interpolates = CharonBiquadCells(setup)[0].interpolates;
+    int interpolates = ((CharonBiquadCommon *)setup)->interpolates;
     for (vDSP_Length section = 0; section < sections; section++) {
         for (vDSP_Length channel = 0; channel < channels; channel++) {
             CharonBiquadCell *cell = CharonBiquadCellOf(setup, start_section + section, start_channel + channel);
