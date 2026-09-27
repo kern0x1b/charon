@@ -679,11 +679,11 @@ static void CharonMDLReadPLY(NSData *data, NSMutableArray<MDLObject *> *objects,
             continue;
         if ([key isEqualToString:@"format"] && words.count > 1)
             format = words[1];
-        else if ([key isEqualToString:@"element"] && words.count > 3) {
+        else if ([key isEqualToString:@"element"] && words.count > 2) {
             [elements addObject:words[1]];
             [elementCounts addObject:@(words[2].integerValue)];
             [elementTypes addObject:words[1]];
-            [elementProperties addObject:@[]];
+            [elementProperties addObject:[NSMutableArray array]];
         } else if ([key isEqualToString:@"property"] && elements.count) {
             CharonMDLPLYProperty property;
             memset(&property, 0, sizeof property);

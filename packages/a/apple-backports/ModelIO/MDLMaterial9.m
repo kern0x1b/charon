@@ -267,7 +267,12 @@
 // The properties of a scattering function, which a material looks a property up by semantic through.
 @interface MDLScatteringFunction ()
 - (MDLMaterialProperty *)charon_propertyNamed:(NSString *)name;
+- (NSArray<MDLMaterialProperty *> *)charon_allProperties;
 - (void)charon_add:(NSString *)name semantic:(MDLMaterialSemantic)semantic type:(MDLMaterialPropertyType)type;
+- (void)charon_add:(NSString *)name
+           semantic:(MDLMaterialSemantic)semantic
+               type:(MDLMaterialPropertyType)type
+              value:(float)value;
 @end
 
 @implementation MDLScatteringFunction {
@@ -284,18 +289,22 @@
         _properties = [[NSMutableDictionary alloc] init];
         // What every scattering function carries: the colour, the emission, the two indices of
         // refraction, the normal and the ambient occlusion, each of the type a renderer reads it in.
-        [self charon_add:@"baseColor" semantic:MDLMaterialSemanticBaseColor type:MDLMaterialPropertyTypeFloat3];
-        [self charon_add:@"emission" semantic:MDLMaterialSemanticEmission type:MDLMaterialPropertyTypeFloat3];
-        [self charon_add:@"specular" semantic:MDLMaterialSemanticSpecular type:MDLMaterialPropertyTypeFloat3];
+        [self charon_add:@"baseColor" semantic:MDLMaterialSemanticBaseColor type:MDLMaterialPropertyTypeColor value:1];
+        [self charon_add:@"emission" semantic:MDLMaterialSemanticEmission type:MDLMaterialPropertyTypeColor value:0];
+        [self charon_add:@"specular" semantic:MDLMaterialSemanticSpecular type:MDLMaterialPropertyTypeColor value:0];
         [self charon_add:@"materialIndexOfRefraction"
                 semantic:MDLMaterialSemanticMaterialIndexOfRefraction
-                    type:MDLMaterialPropertyTypeFloat];
+                    type:MDLMaterialPropertyTypeFloat
+                   value:1];
         [self charon_add:@"interfaceIndexOfRefraction"
                 semantic:MDLMaterialSemanticInterfaceIndexOfRefraction
-                    type:MDLMaterialPropertyTypeFloat];
-        [self charon_add:@"normal" semantic:MDLMaterialSemanticTangentSpaceNormal type:MDLMaterialPropertyTypeFloat3];
-        [self charon_add:@"ambientOcclusion" semantic:MDLMaterialSemanticAmbientOcclusion type:MDLMaterialPropertyTypeFloat];
-        [self charon_add:@"ambientOcclusionScale" semantic:MDLMaterialSemanticAmbientOcclusionScale type:MDLMaterialPropertyTypeFloat];
+                    type:MDLMaterialPropertyTypeFloat
+                   value:1];
+        [self charon_add:@"ambientOcclusion" semantic:MDLMaterialSemanticAmbientOcclusion type:MDLMaterialPropertyTypeFloat value:0];
+        [self charon_add:@"ambientOcclusionScale"
+                semantic:MDLMaterialSemanticAmbientOcclusionScale
+                    type:MDLMaterialPropertyTypeFloat
+                   value:1];
     }
     return self;
 }
@@ -324,9 +333,32 @@
     [_properties setObject:property forKey:name];
 }
 
+- (void)charon_add:(NSString *)name
+           semantic:(MDLMaterialSemantic)semantic
+               type:(MDLMaterialPropertyType)type
+              value:(float)value
+{
+    // The value of a property of the framework's own, read on the host rather than chosen here.
+    id given = [NSNumber numberWithFloat:value];
+    if (type == MDLMaterialPropertyTypeColor) {
+        // A colour of that value, opaque: white where the framework's default is a white.
+        CGFloat components[4] = {value, value, value, 1};
+        given = (__bridge id)CGColorCreateGenericRGB(components[0], components[1], components[2], components[3]);
+    }
+    MDLMaterialProperty *property = [[MDLMaterialProperty alloc] initWithName:name semantic:semantic value:given];
+    [_properties setObject:property forKey:name];
+}
+
 - (MDLMaterialProperty *)charon_propertyNamed:(NSString *)name
 {
     return _properties[name];
+}
+
+- (NSArray<MDLMaterialProperty *> *)charon_allProperties
+{
+    return [_properties.allValues sortedArrayUsingComparator:^NSComparisonResult(MDLMaterialProperty *a, MDLMaterialProperty *b) {
+        return (NSComparisonResult)(a.semantic - b.semantic);
+    }];
 }
 
 - (MDLMaterialProperty *)baseColor
@@ -378,17 +410,22 @@
     if ((self = [super init])) {
         // The properties a physically based material has that the older function does not: the
         // metallic-roughness set, the sheen, the clear coat and the subsurface colour.
-        [self charon_add:@"metallic" semantic:MDLMaterialSemanticMetallic type:MDLMaterialPropertyTypeFloat];
-        [self charon_add:@"specularAmount" semantic:MDLMaterialSemanticSpecular type:MDLMaterialPropertyTypeFloat3];
-        [self charon_add:@"specularTint" semantic:MDLMaterialSemanticSpecularTint type:MDLMaterialPropertyTypeFloat3];
-        [self charon_add:@"roughness" semantic:MDLMaterialSemanticRoughness type:MDLMaterialPropertyTypeFloat];
-        [self charon_add:@"anisotropic" semantic:MDLMaterialSemanticAnisotropic type:MDLMaterialPropertyTypeFloat];
-        [self charon_add:@"anisotropicRotation" semantic:MDLMaterialSemanticAnisotropicRotation type:MDLMaterialPropertyTypeFloat];
-        [self charon_add:@"sheen" semantic:MDLMaterialSemanticSheen type:MDLMaterialPropertyTypeFloat3];
-        [self charon_add:@"sheenTint" semantic:MDLMaterialSemanticSheenTint type:MDLMaterialPropertyTypeFloat3];
-        [self charon_add:@"clearcoat" semantic:MDLMaterialSemanticClearcoat type:MDLMaterialPropertyTypeFloat];
-        [self charon_add:@"clearcoatGloss" semantic:MDLMaterialSemanticClearcoatGloss type:MDLMaterialPropertyTypeFloat];
-        [self charon_add:@"subsurface" semantic:MDLMaterialSemanticSubsurface type:MDLMaterialPropertyTypeFloat3];
+        // The ten of a physically plausible material, and the values the framework gives them by
+        // default: zero for most of them, a ninth of a unit of roughness, a twentieth of a unit of
+        // sheen, and no anisotropy.
+        [self charon_add:@"subsurface" semantic:MDLMaterialSemanticSubsurface type:MDLMaterialPropertyTypeFloat value:0];
+        [self charon_add:@"metallic" semantic:MDLMaterialSemanticMetallic type:MDLMaterialPropertyTypeFloat value:0];
+        [self charon_add:@"specular" semantic:MDLMaterialSemanticSpecular type:MDLMaterialPropertyTypeColor value:0];
+        [self charon_add:@"specularTint" semantic:MDLMaterialSemanticSpecularTint type:MDLMaterialPropertyTypeFloat value:0];
+        [self charon_add:@"roughness" semantic:MDLMaterialSemanticRoughness type:MDLMaterialPropertyTypeFloat value:0.9f];
+        [self charon_add:@"anisotropicRotation"
+                semantic:MDLMaterialSemanticAnisotropicRotation
+                    type:MDLMaterialPropertyTypeFloat
+                   value:0];
+        [self charon_add:@"sheen" semantic:MDLMaterialSemanticSheen type:MDLMaterialPropertyTypeFloat value:0.05f];
+        [self charon_add:@"sheenTint" semantic:MDLMaterialSemanticSheenTint type:MDLMaterialPropertyTypeFloat value:0];
+        [self charon_add:@"clearcoat" semantic:MDLMaterialSemanticClearcoat type:MDLMaterialPropertyTypeFloat value:0];
+        [self charon_add:@"clearcoatGloss" semantic:MDLMaterialSemanticClearcoatGloss type:MDLMaterialPropertyTypeFloat value:0];
     }
     return self;
 }
@@ -478,9 +515,10 @@
         _bySemantic = [[NSMutableDictionary alloc] init];
         _scatteringFunction = scatteringFunction;
         _materialFace = MDLMaterialFaceFront;
-        [self setProperty:[scatteringFunction baseColor]];
-        if ([scatteringFunction isKindOfClass:[MDLPhysicallyPlausibleScatteringFunction class]])
-            [self setProperty:[(MDLPhysicallyPlausibleScatteringFunction *)scatteringFunction roughness]];
+        // Every property of the scattering function the material was made with, which is what gives a
+        // new material its sixteen: the function's own defaults, not a pair invented here.
+        for (MDLMaterialProperty *property in [scatteringFunction charon_allProperties])
+            [self setProperty:property];
     }
     return self;
 }
