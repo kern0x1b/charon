@@ -24,6 +24,7 @@ sed -e 's/CIFilterShape/CharonCIFilterShape/g' -e 's/CharonCharon/Charon/g' "$GR
 # objects each, and the two never meet.
 cp "$GRAPHICS/CIColor10.m" "$BUILD/port/CIColor.m"
 cp "$GRAPHICS/CIContextRepresentations10.m" "$BUILD/port/CIContextRepresentations.m"
+cp "$GRAPHICS/CIImageAlgebra10.m" "$BUILD/port/CIImageAlgebra.m"
 sed -e 's/\bCIImageAccumulator\b/CharonCIImageAccumulator/g' -e 's/\bCIFilterShape\b/CharonCIFilterShape/g' -e 's/CharonCharon/Charon/g' "$here/port-support.h" > "$BUILD/port/declarations.h"
 
 # The system answers: the probe alone, against the framework the host carries.

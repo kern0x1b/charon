@@ -178,6 +178,48 @@ static void reportRepresentations(void)
     [[NSFileManager defaultManager] removeItemAtURL:url error:NULL];
 }
 
+// The algebra of an image, measured as the extent of what comes out and the bytes it renders to. The
+// input is a field with an alpha in it, so a step that multiplies by the alpha and one that divides by
+// it are both visible in the result.
+static void put_algebra(NSString *key, CIImage *image, CGRect bounds)
+{
+    if (!image) {
+        put(@"%@ none", key);
+        return;
+    }
+    put_box([key stringByAppendingString:@" extent"], image.extent);
+    NSData *pixels = render([image imageByCroppingToRect:bounds]);
+    put_bytes([key stringByAppendingString:@" pixels"], pixels);
+    put_pixels([key stringByAppendingString:@" pixels"], pixels);
+}
+
+static void reportAlgebra(void)
+{
+    CGRect bounds = CGRectMake(0, 0, 6, 4);
+    CIImage *image = [[[CIImage alloc] initWithColor:[[CIColor alloc] initWithRed:0.6 green:0.3 blue:0.9 alpha:0.5]]
+        imageByCroppingToRect:bounds];
+    put_algebra(@"alg source", image, bounds);
+    put_algebra(@"alg blurred", [image imageByApplyingGaussianBlurWithSigma:1.5], bounds);
+    put_algebra(@"alg clamped extent", [image imageByClampingToExtent], bounds);
+    put_algebra(@"alg clamped rect", [image imageByClampingToRect:CGRectMake(0, 0, 3, 2)], CGRectMake(0, 0, 6, 4));
+    put_algebra(@"alg intermediate", [image imageByInsertingIntermediate], bounds);
+    put_algebra(@"alg intermediate cached", [image imageByInsertingIntermediate:YES], bounds);
+    put_algebra(@"alg premultiplied", [image imageByPremultiplyingAlpha], bounds);
+    put_algebra(@"alg alpha one", [image imageBySettingAlphaOneInExtent:bounds], bounds);
+    put_algebra(@"alg alpha one half", [image imageBySettingAlphaOneInExtent:CGRectMake(0, 0, 3, 2)], bounds);
+    put_algebra(@"alg transformed", [image imageByApplyingTransform:CGAffineTransformMakeScale(2, 2) highQualityDownsample:NO],
+                 CGRectMake(0, 0, 12, 8));
+    put_algebra(@"alg transformed hq",
+                 [image imageByApplyingTransform:CGAffineTransformMakeScale(0.5, 0.5) highQualityDownsample:YES], bounds);
+    put_algebra(@"alg properties", [image imageBySettingProperties:@{@"charonProbe": @"one"}], bounds);
+    for (NSString *name in @[ @"blackImage", @"whiteImage", @"grayImage", @"redImage", @"greenImage", @"blueImage",
+                              @"cyanImage", @"magentaImage", @"yellowImage", @"clearImage" ]) {
+        SEL selector = NSSelectorFromString(name);
+        CIImage *constant = [CIImage respondsToSelector:selector] ? [CIImage performSelector:selector] : nil;
+        put_algebra([@"alg " stringByAppendingString:name], constant, CGRectMake(0, 0, 2, 2));
+    }
+}
+
 // A colour, measured as the numbers the colour object holds and as the bytes an image of that colour
 // renders to. The named colours and the two spellings of the colour-space initialisers are asked with
 // the same components, so a conversion that is not the system's shows up as a different pixel.
@@ -307,6 +349,7 @@ int main(void)
                                                           colorSpace:probeSpace()];
         [spaced setImage:field(extent)];
         report(@"spaced", spaced);
+        reportAlgebra();
         reportColors();
         reportRepresentations();
         reportShapes();
