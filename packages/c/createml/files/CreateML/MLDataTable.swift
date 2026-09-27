@@ -84,6 +84,18 @@ extension MLDataTableAggregator {
             return false
         }
 
+        /// The name of the column this operation's answer is written into, given the column it
+        /// reads: the column's own name and the operation's, run together, in the framework's own
+        /// camel case — a price summed is `priceSum` and a price averaged is `priceMean`.
+        ///
+        /// `count` is the exception and is named for the operation alone, as `Count`. Measured: the
+        /// host groups eight rows by city with a sum, a mean and a count over the ids and answers the
+        /// columns `city`, `Count`, `priceMean`, `priceSum` — and `Count` carries no column of its own
+        /// because the count of anything in a group is the same number whichever column is read.
+        public func aggregatedColumn(of column: String) -> String {
+            self == .count ? "Count" : column + name.capitalized
+        }
+
         /// The name of the column this operation writes, and nil for the ones that write into the
         /// aggregated column itself.
         public var outputColumn: String? {
@@ -520,27 +532,37 @@ public struct MLDataTable {
         for aggregator in aggregators where columns[aggregator.columnName] == nil {
             throw MLDataTableError.noSuchColumn(aggregator.columnName)
         }
-        var order = [[MLDataValue]]()
         var groups = [[MLDataValue]: [Int]]()
         for index in 0..<count {
             // The key of a group is the tuple of its rows' values in the named columns, which is why
             // a `[MLDataValue]` and not a `MLDataValue`: grouping by two columns and by one are
             // different questions and a single value cannot tell them apart.
             let key = names.map { columns[$0]?[index] ?? .invalid }
-            if groups[key] == nil { order.append(key) }
             groups[key, default: []].append(index)
+        }
+        // The groups come out in key order, not in the order the rows happened to arrive in. The
+        // host's do — measured, grouping eight rows by city answers `berlin`, `madrid`, `paris` for a
+        // file whose first city is `berlin`, its second `paris` and its fifth `berlin` again — and a
+        // group's order is part of what a caller reads the table back as.
+        let order = groups.keys.sorted { left, right in
+            for (a, b) in zip(left, right) {
+                let order = valueOrder(a, b)
+                if order != .orderedSame { return order == .orderedAscending }
+            }
+            return left.count < right.count
         }
         var out = MLDataTable()
         for (position, name) in names.enumerated() {
             out.addColumn(MLUntypedColumn(order.map { $0[position] }, name: name), named: name)
         }
-        // Each aggregator's operations write into the column they read, except the three that name
-        // a column of their own — the index of the smallest, the index of the largest and the merged
-        // dictionaries — which write into that.
+        // Each operation writes into a column named after the one it reads and the operation itself
+        // — `price` summed is `price_sum` — because two operations over one column have two answers
+        // and a table has one column per name. The three that name a column of their own, the index
+        // of the smallest, the index of the largest and the merged dictionaries, write into that.
         for aggregator in aggregators {
             let source = columns[aggregator.columnName]!
             for operation in aggregator.operations {
-                let target = operation.outputColumn ?? aggregator.columnName
+                let target = operation.outputColumn ?? operation.aggregatedColumn(of: aggregator.columnName)
                 if out.column(target) != nil { continue }
                 let values = order.map { key -> MLDataValue in
                     let groupValues = source.select(groups[key]!).values
@@ -554,13 +576,23 @@ public struct MLDataTable {
     }
 
     /// A random split of the rows into two tables.
+    ///
+    /// Every row is drawn **independently with probability `proportion`**, not a cut at
+    /// `count * proportion` of a shuffle. That is measured and it is the difference between a split
+    /// whose halves are the sizes a caller asked for and one whose halves scatter: over two thousand
+    /// rows at a half the host answers 968, 1004 and 999 for three seeds, and a cut would answer
+    /// 1000 every time. At eight rows and three quarters the host answers five, which a cut at
+    /// `8 * 0.75 = 6` cannot be, and the host's own answer is reproducible for a seed — so the draw
+    /// is random and the seed is what makes it repeatable.
     public func randomSplit(by proportion: Double, seed: UInt64) -> (MLDataTable, MLDataTable) {
         var generator = SeededGenerator(seed: seed)
-        let total = self.count
-        let taken = Swift.max(0, Swift.min(total, Int((Double(total) * proportion).rounded())))
-        var indices = [Int](0..<total)
-        generator.shuffle(&indices)
-        return (rows(Array(indices[0..<taken])), rows(Array(indices[taken...])))
+        let share = Swift.max(0, Swift.min(1, proportion))
+        var taken = [Int]()
+        var left = [Int]()
+        for index in 0..<count {
+            if generator.nextUniform() < share { taken.append(index) } else { left.append(index) }
+        }
+        return (rows(taken), rows(left))
     }
 
     /// A random split that keeps the groups' proportions, so that a table whose rows come from

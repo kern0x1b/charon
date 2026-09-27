@@ -59,20 +59,36 @@ public struct TreeParameters {
     /// value is the cheap guard against a split that separates one row from the rest and predicts
     /// nothing.
     public var minimumLossReduction: Double
+    /// The framework's `minChildWeight`: a bound on the summed hessian of a leaf.
+    ///
+    /// For a squared-error loss and for a count objective the hessian is constant per row, so the
+    /// summed hessian *is* the number of rows and the bound is one. The framework's own default of
+    /// 0.1 is then below one row and does not constrain anything, which is worth saying rather than
+    /// quietly rounding it up: a caller who wants a leaf to hold ten rows asks for ten.
+    public var minimumChildWeight: Double
     public var seed: UInt64
 
     public init(maximumDepth: Int = 0, minimumSamplesToSplit: Int = 2, minimumSamplesToLeaf: Int = 1,
-                minimumLossReduction: Double = 0, seed: UInt64 = SeededGenerator.timestampSeed()) {
+                minimumLossReduction: Double = 0, minimumChildWeight: Double = 0,
+                seed: UInt64 = SeededGenerator.timestampSeed()) {
         self.maximumDepth = maximumDepth
         self.minimumSamplesToSplit = minimumSamplesToSplit
         self.minimumSamplesToLeaf = minimumSamplesToLeaf
         self.minimumLossReduction = minimumLossReduction
+        self.minimumChildWeight = minimumChildWeight
         self.seed = seed
     }
 
     /// A maximum depth of zero means "no limit", which is what the framework's own default says: a
     /// tree grown until it cannot split is a tree, and a depth of one would be a stump.
     public var depthLimit: Int? { maximumDepth > 0 ? maximumDepth : nil }
+
+    /// The fewest rows a leaf may hold, from both of the framework's row bounds: the explicit
+    /// `minimumSamplesToLeaf` and the `minChildWeight` read as a hessian sum, which for every loss
+    /// this package fits is a count of rows.
+    public var leafRowLimit: Int {
+        Swift.max(minimumSamplesToLeaf, Int(minimumChildWeight.rounded(.up)))
+    }
 }
 
 /// A fitted decision tree, for a regression or a classification.
@@ -285,8 +301,8 @@ public enum SplitSearch {
                     end += 1
                 }
                 guard end < order.count else { break }
-                if left.count >= parameters.minimumSamplesToLeaf,
-                   right.count >= parameters.minimumSamplesToLeaf {
+                if left.count >= parameters.leafRowLimit,
+                   right.count >= parameters.leafRowLimit {
                     let score = parent - (left.impurity() * Double(left.count) / weight
                                           + right.impurity() * Double(right.count) / weight)
                     if score > bestScore {
@@ -317,8 +333,8 @@ public enum SplitSearch {
                         var trial = chosen
                         trial.insert(category)
                         let leftRows = trial.flatMap { byCategory[$0] ?? [] }
-                        guard leftRows.count >= parameters.minimumSamplesToLeaf,
-                              rows.count - leftRows.count >= parameters.minimumSamplesToLeaf else { continue }
+                        guard leftRows.count >= parameters.leafRowLimit,
+                              rows.count - leftRows.count >= parameters.leafRowLimit else { continue }
                         let leftSide = side(of: training, rows: leftRows, labels: labels, labelOrder: labelOrder)
                         let rightRows = rows.filter { !trial.contains(TrainingColumn.describe(training.design[$0, feature])) }
                         let rightSide = side(of: training, rows: rightRows, labels: labels, labelOrder: labelOrder)

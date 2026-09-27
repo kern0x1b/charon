@@ -133,15 +133,20 @@ public struct RowMatrix {
         return out
     }
 
-    /// `transpose(self) * other`, the Gram matrix of a design matrix, by the system's own SYRK where
-    /// the shape allows it and GEMM otherwise.
+    /// `transpose(self) * self`: the Gram matrix of a design matrix, which is what every
+    /// least-squares fit and every ridge term is built from, and which is `columns x columns` for a
+    /// design of any height.
     ///
-    /// The Gram matrix is what every least-squares fit and every ridge term is built from, and it is
-    /// symmetric — so when `other` is `self`, SYRK computes the half the GEMM would compute twice.
+    /// It is *not* the same shape as the operand — a design of forty rows and three features has a
+    /// three-by-three Gram matrix — so this is a square-matrix shortcut and not a precondition. A
+    /// square operand goes through the system's own SYRK, which computes the half the GEMM would
+    /// compute twice; anything else goes through the general product. The port's own arithmetic here
+    /// was once written with a `precondition(isSquare)`, which refused the shape a least-squares fit
+    /// actually asks for; the host differential is what found it, on a four-row one-column design.
     public func gram() -> RowMatrix {
-        precondition(isSquare, "a Gram matrix needs a square operand")
+        guard rows > 0, columns > 0 else { return RowMatrix(rows: columns, columns: columns) }
+        guard isSquare else { return transposed().multiplied(by: self) }
         var out = RowMatrix(rows: rows, columns: rows)
-        guard rows > 0 else { return out }
         let alpha = 1.0, beta = 0.0
         let order = CBLAS_ORDER(rawValue: CblasRowMajor.rawValue)
         let upper = CBLAS_UPLO(rawValue: CblasUpper.rawValue)
@@ -163,9 +168,17 @@ public struct RowMatrix {
     }
 
     /// `transpose(self) * vector`.
+    /// `transpose(self) * vector`, which is `columns` long and so takes a vector as long as this
+    /// matrix is *tall* — the rows, not the columns. A design of forty rows and three features is
+    /// multiplied on the left by a forty-long vector of targets and answers three, and a precondition
+    /// on the columns here would refuse exactly the call a least-squares fit is made of.
     public func transposedMultiplied(by vector: [Double]) -> [Double] {
-        precondition(vector.count == columns, "the vector is \(vector.count) long, the matrix is \(columns) wide")
-        var out = [Double](repeating: 0, count: rows)
+        precondition(vector.count == rows, "the vector is \(vector.count) long, the matrix is \(rows) tall")
+        // The answer is `columns` long, not `rows`: a four-row one-column design multiplied by a
+        // four-long vector of targets answers one number. Allocating `rows` here handed the ridge
+        // fit a four-long right-hand side to a one-by-one system, which is what the host
+        // differential's precondition named.
+        var out = [Double](repeating: 0, count: columns)
         guard rows > 0 else { return out }
         values.withUnsafeBufferPointer { left in
             vector.withUnsafeBufferPointer { right in

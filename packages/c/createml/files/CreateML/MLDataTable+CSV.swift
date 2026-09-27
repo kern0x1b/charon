@@ -159,6 +159,8 @@ extension MLDataTable {
         while index < characters.count {
             let character = characters[index]
             if let quote = options.quote, character == quote {
+                // The doubled quote is one quote, and only inside a quoted field — the same rule the
+                // line splitter applies, for the same reason.
                 if quoted, index + 1 < characters.count, characters[index + 1] == quote, options.doubleQuote {
                     // A doubled quote inside a quoted field is one quote, which is CSV's own rule and
                     // not an escape character: the field says what it says.
@@ -207,15 +209,15 @@ extension MLDataTable {
             // A field may hold the terminator inside quotes, so this split reads the quoting too: a
             // naive split on newlines cuts a quoted field in half and then reports a row of the
             // wrong width, which is a file error that is not in the file.
-            if characters[index] == "\"", index + 1 < characters.count, characters[index + 1] == "\"" {
-                // A doubled quote is one quote, which is the same rule the field splitter applies.
+            // A doubled quote is one quote, and only *inside* a quoted field: outside one, two
+            // quotes are an empty quoted field followed by the start of another, and consuming them
+            // as one leaves the reader inside a string for the rest of the file. The host's reader
+            // found this one — a field whose text ends in a doubled quote swallowed every line
+            // after it.
+            if inQuotes, characters[index] == "\"", index + 1 < characters.count,
+               characters[index + 1] == "\"" {
                 current.append("\"\"")
                 index += 2
-                continue
-            }
-            if characters[index] == "\"", inQuotes {
-                current.append(characters[index])
-                index += 1
                 continue
             }
             if characters[index] == "\"" {
