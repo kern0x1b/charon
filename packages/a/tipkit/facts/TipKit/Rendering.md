@@ -28,3 +28,33 @@ What is *not* there and why:
   `View.tipAnchor(_:)` and `Image.widgetAccentedRenderingMode(_:)`: extensions on `SwiftUI.View` and
   `SwiftUI.Image`, which no release this port builds for has. They belong to the SwiftUI band; the
   module declares `TipView`, the value such a modifier attaches, and the app's own surface draws it.
+
+## What the host differential found, and the three rows that are declared but unreachable
+
+`MacOSX27.sdk` carries `TipKit.framework`, so this module's differential ran against Apple's own
+(`.agent-work/host/README.md`, `.agent-work/host/tipkit-diff.txt`): the same probe against Apple's
+`TipKit` and against this module built as `CharonTipKit`, 37 lines each, **37 of 37 identical** after
+the module name is normalised. What it changed:
+
+1. **`Tips.Status.invalidated` carries its reason.** Both interfaces declare
+   `case invalidated(InvalidationReason)` (`TipKit-ios.swiftinterface:682`); this module had a bare
+   `case invalidated`, so `Tip.status` could not say why a tip was off the list. The store now answers
+   with the reason it recorded, and with the option's own reason when the option ended it:
+   `.displayCountExceeded` once `MaxDisplayCount` is reached, `.displayDurationExceeded` once
+   `MaxDisplayDuration` has passed. A tip that has merely been *shown* is `.available`, which the old
+   code got wrong (it reported `.invalidated` for any shown tip, with nothing to explain it).
+2. **`TipKitError` exists** (`Sources/TipKit/Errors.swift`, the ten rows the ledger listed as
+   missing). Its `description` and `errorDescription` are the case's own name, which is what Apple's
+   own `TipKit` returns — measured, not guessed (`.agent-work/host/apple-tipkit.txt`, the `error.`
+   rows). The `~=` operator the interface declares is there, so a port may catch a case by name.
+   `Tips.configure` matches the interface now: an array (`TipKit-ios.swiftinterface:921`), `throws`,
+   and `tipsDatastoreAlreadyConfigured` when the app configures its datastore twice — the datastore
+   is one file in the app's own container, so a second call would drop the first configuration.
+3. **Which of the three cases this module can raise, and which it cannot.** `configure` raises
+   `tipsDatastoreAlreadyConfigured` for real. `missingGroupContainerEntitlements` names a condition
+   these releases do not have: an app-group container needs an app-group entitlement and iOS 6 has no
+   facility for one. `invalidPredicateValueType` is raised by the typed predicate evaluation, and this
+   module's evaluation reads every donated value as text through `CharonDonationValue`, so a value
+   type it does not have cannot arise — a rule it cannot compare answers `false` instead. Both are
+   declared because the framework declares them, so a port that catches one compiles; they are not
+   raised here, and that is the whole of the difference.

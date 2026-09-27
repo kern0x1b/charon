@@ -99,7 +99,7 @@ public struct AnyTip: Tip {
         self.init(tip)
     }
 
-    public var status: Tips.Status { return Tips.Store.shared.status(of: id) }
+    public var status: Tips.Status { return Tips.Store.shared.status(of: self) }
     public var statusUpdates: AsyncStream<Tips.Status> { return Tips.statusStream(for: id) }
     public var shouldDisplay: Bool { return Tips.Store.shared.shouldDisplay(self) }
     public var shouldDisplayUpdates: AsyncMapSequence<AsyncStream<Tips.Status>, Bool> {
@@ -120,18 +120,29 @@ public enum Tips {
         case pending
         /// The tip may be shown now.
         case available
-        /// The tip is off the list, and why is in the datastore.
-        case invalidated
+        /// The tip is off the list, and why.
+        case invalidated(Tips.InvalidationReason)
 
-        public static func == (a: Status, b: Status) -> Bool { return a.raw == b.raw }
-        public func hash(into hasher: inout Hasher) { hasher.combine(raw) }
-        public var hashValue: Int { return raw.hashValue }
-        private var raw: Int {
+        public static func == (a: Status, b: Status) -> Bool {
+            switch (a, b) {
+                case (.pending, .pending), (.available, .available): return true
+                case (.invalidated(let l), .invalidated(let r)): return l == r
+                default: return false
+                }
+        }
+        public func hash(into hasher: inout Hasher) {
             switch self {
-            case .pending: return 0
-            case .available: return 1
-            case .invalidated: return 2
-            }
+                case .pending: hasher.combine(0)
+                case .available: hasher.combine(1)
+                case .invalidated(let reason): hasher.combine(2); hasher.combine(reason)
+                }
+        }
+        public var hashValue: Int {
+            switch self {
+                case .pending: return 0
+                case .available: return 1
+                case .invalidated(let reason): return 2 &* 31 &+ reason.hashValue
+                }
         }
     }
 

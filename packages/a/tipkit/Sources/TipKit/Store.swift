@@ -100,6 +100,8 @@ extension Tips {
         public var displayFrequency: ConfigurationOption.DisplayFrequency = .immediate
         /// The container the app shares its tips through, when it named one.
         public var cloudKitContainer: ConfigurationOption.CloudKitContainer?
+        /// Whether the app has configured its tips yet, which is what a second `configure` finds.
+        public private(set) var configured = false
 
         /// The file the datastore is kept in, which is the app's own container.
         public let defaultURL: URL
@@ -114,22 +116,21 @@ extension Tips {
             self.defaultURL = URL(fileURLWithPath: folder).appendingPathComponent("tips.plist")
             load()
         }
-
-        /// The app's own configuration of its tips, which the datastore answers with from then on.
-        public static func configure(_ options: ConfigurationOption...) {
-            for option in options {
-                if let frequency = option.value as? ConfigurationOption.DisplayFrequency {
-                    Store.shared.displayFrequency = frequency
-                } else if let container = option.value as? ConfigurationOption.CloudKitContainer {
-                    Store.shared.cloudKitContainer = container
-                }
+        /// Where a tip is in its life, which the datastore answers. A tip is off the list either
+        /// because the owner took it off, or because its own options say it has been offered as
+        /// often as it may be; the reason the framework carries is the one that is recorded, and
+        /// the option's own reason when it is the option that ended it.
+        public func status(of tip: AnyTip) -> Tips.Status {
+            if let reason = invalidated[tip.id] { return .invalidated(reason) }
+            if let count = tip.options.compactMap({ $0 as? Tips.MaxDisplayCount }).first,
+               shown[tip.id]?.count ?? 0 >= count.count {
+                return .invalidated(.displayCountExceeded)
             }
-        }
-
-        /// Where a tip is in its life, which the datastore answers.
-        public func status(of tipID: String) -> Tips.Status {
-            if invalidated[tipID] != nil { return .invalidated }
-            return shown[tipID]?.isEmpty == false ? .invalidated : .available
+            if let duration = tip.options.compactMap({ $0 as? Tips.MaxDisplayDuration }).first,
+               let first = shown[tip.id]?.first, Date().timeIntervalSince(first) >= duration.duration {
+                return .invalidated(.displayDurationExceeded)
+            }
+            return .available
         }
 
         /// Whether a tip may be shown now: it is not invalidated, its rules hold, and the display
@@ -175,6 +176,7 @@ extension Tips {
         public mutating func resetDatastore() {
             invalidated = [:]
             shown = [:]
+            configured = false
             save()
         }
 
@@ -259,7 +261,8 @@ extension Tips.InvalidationReason {
 /// The stream of a tip's status, which the datastore answers with the one value it holds.
 extension Tips {
     static func statusStream(for id: String) -> AsyncStream<Tips.Status> {
-        let status = Store.shared.invalidated[id] == nil ? Tips.Status.available : .invalidated
+        let status: Tips.Status
+        if let reason = Store.shared.invalidated[id] { status = .invalidated(reason) } else { status = .available }
         return AsyncStream { continuation in
             continuation.yield(status)
             continuation.finish()
@@ -290,9 +293,14 @@ enum CharonTipRules {
 
 extension Tips {
     /// The app's own configuration of its tips, which the datastore answers with from then on.
-    public static func configure(_ options: ConfigurationOption...) {
+    ///
+    /// The datastore is one file in the app's own container, so the app configures it once: a second
+    /// call would drop the configuration the first one set, and throws
+    /// `TipKitError.tipsDatastoreAlreadyConfigured` instead.
+    public static func configure(_ configuration: [ConfigurationOption] = []) throws {
+        if Store.shared.configured { throw TipKitError.tipsDatastoreAlreadyConfigured }
         var store = Store.shared
-        store.configure(options)
+        store.configure(configuration)
         Store.shared = store
     }
 
@@ -332,6 +340,7 @@ extension Tips.Store {
                 cloudKitContainer = container
             }
         }
+        configured = true
     }
 
     /// Put one tip back in the list.
