@@ -642,3 +642,44 @@ filled rather than read.
 
 So: the 36 functions stay **out** of the registry, and what is left is one decision - refuse the edge, or
 reproduce a wild read - and a coordinator's ruling on which. Everything upstream of it is measured and written.
+
+## The guard page settles what the system is doing, and the documented edging does not fit
+
+**The proof, first.** The picture's last row placed flush against a `PROT_NONE` guard page - two pages mapped,
+the second protected, the six rows of a 9x6 picture ending exactly at the boundary - and the system's own
+`vImageHorizontalShear_PlanarF` run at the edge, under `SIGSEGV`/`SIGBUS` handlers that catch a read:
+
+    slope 0  no fault, the largest value written is 5001
+    slope 1  no fault, the largest value written is 5558
+    slope 2  no fault, the largest value written is 5001
+    slope 3  no fault, the largest value written is 5558
+
+**No fault at any slope**, so the system reads nothing outside the allocation: it is not an out-of-bounds
+read, and my harness was not under-allocating. And it writes **5558** where the largest value in a six-row
+source is 5001 - a value **no convex combination of the source can produce**, so the weights it uses at the
+edge do not sum to one.
+
+What does produce it is **clamping the out-of-picture tap to the edge row and not renormalising over the
+survivors**, so the edge row is counted twice. And that is the header's own `kvImageEdgeExtend` - the ruling's
+step 2, implemented.
+
+**And it does not fit, which is the result worth having.** With the clamp applied at both edges, the
+*diagonal* cases match the system's fingerprint and the *in-row* cases break: at a translate of 1 the first
+column now differs by 3.83, and a translate of -1 by 3.83 again, where the system plainly drops the
+out-of-range taps - at a whole-pixel phase their Lanczos lobes are exactly zero, so the destination's first
+column **is** the source's first column, and the port's earlier measurement said so over an 8x4 grid. The run
+goes to a worst difference of 3.8 on cases that were exact before the change.
+
+So the two edges are **not the same rule**: along the row the system drops the out-of-range taps, and along
+the shear direction it clamps them without renormalising. The header documents one of those behaviours and
+names one flag for it, and the system does the other thing as well. That is the state:
+
+- the shears are exact for slope 0, in the whole picture, and that is the path the port ships;
+- the diagonal edge is characterised down to the fingerprint that distinguishes clamping from dropping, and
+  the port implements dropping, which is what the in-row edge measures;
+- the 36 registry entries stay **out**, because the diagonal edge is not yet matched.
+
+What is left is to find which taps the system clamps and which it drops - the two rules cannot both be right
+and one measurement separates them: a picture where the *last* row is a ramp and the *first* column is a
+constant, so the row edge and the column edge have different values and a single destination pixel's answer
+says which was treated how.
