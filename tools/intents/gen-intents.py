@@ -997,7 +997,7 @@ def banner(name, classes, release, deferred):
 //
 
 #import <Intents/Intents.h>
-#import "../Foundation/CharonCoding.h"
+#import "CharonIntentsCoding.h"
 #import "CharonIntentsResolution.h"
 #import "CharonIntents262.h"
 

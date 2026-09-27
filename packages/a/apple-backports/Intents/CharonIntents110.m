@@ -11,7 +11,7 @@
 #import <Intents/INParameter.h>
 #import <objc/runtime.h>
 
-#import "../Foundation/CharonCoding.h"
+#import "CharonIntentsCoding.h"
 
 #pragma mark - INParameter
 

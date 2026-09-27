@@ -16,7 +16,7 @@
 //
 
 #import <Intents/Intents.h>
-#import "../Foundation/CharonCoding.h"
+#import "CharonIntentsCoding.h"
 #import "CharonIntentsResolution.h"
 #import "CharonIntents262.h"
 
@@ -267,7 +267,7 @@
 - (instancetype)initWithCode:(INCancelWorkoutIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -283,7 +283,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -453,7 +453,7 @@
 - (instancetype)initWithAmount:(NSDecimalNumber *)amount currencyCode:(NSString *)currencyCode
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _amount = [amount copy];
         _currencyCode = [currencyCode copy];
@@ -469,7 +469,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class])))
         charon_intents_decode(self, coder);
     return self;
@@ -529,7 +529,7 @@
 - (instancetype)initWithStartDateComponents:(NSDateComponents *)startDateComponents endDateComponents:(NSDateComponents *)endDateComponents
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _endDateComponents = [endDateComponents copy];
         _startDateComponents = [startDateComponents copy];
@@ -540,7 +540,7 @@
 - (instancetype)initWithStartDateComponents:(NSDateComponents *)startDateComponents endDateComponents:(NSDateComponents *)endDateComponents recurrenceRule:(INRecurrenceRule *)recurrenceRule
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _endDateComponents = [endDateComponents copy];
         _recurrenceRule = [recurrenceRule copy];
@@ -557,7 +557,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class])))
         charon_intents_decode(self, coder);
     return self;
@@ -699,7 +699,7 @@
 - (instancetype)initWithCode:(INEndWorkoutIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -715,7 +715,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -1143,7 +1143,7 @@
 - (instancetype)initWithCode:(INGetRideStatusIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -1159,7 +1159,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -1441,7 +1441,7 @@
 - (instancetype)initWithCode:(INListRideOptionsIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -1457,7 +1457,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -1507,7 +1507,7 @@
 - (instancetype)initWithIdentifier:(NSString *)identifier conversationIdentifier:(NSString *)conversationIdentifier content:(NSString *)content dateSent:(NSDate *)dateSent sender:(INPerson *)sender recipients:(NSArray<INPerson *> *)recipients groupName:(INSpeakableString *)groupName messageType:(INMessageType)messageType serviceName:(NSString *)serviceName audioMessageFile:(INFile *)audioMessageFile
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _audioMessageFile = [audioMessageFile copy];
         _content = [content copy];
@@ -1526,7 +1526,7 @@
 - (instancetype)initWithIdentifier:(NSString *)identifier conversationIdentifier:(NSString *)conversationIdentifier content:(NSString *)content dateSent:(NSDate *)dateSent sender:(INPerson *)sender recipients:(NSArray<INPerson *> *)recipients groupName:(INSpeakableString *)groupName messageType:(INMessageType)messageType serviceName:(NSString *)serviceName
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _content = [content copy];
         _conversationIdentifier = [conversationIdentifier copy];
@@ -1544,7 +1544,7 @@
 - (instancetype)initWithIdentifier:(NSString *)identifier conversationIdentifier:(NSString *)conversationIdentifier content:(NSString *)content dateSent:(NSDate *)dateSent sender:(INPerson *)sender recipients:(NSArray<INPerson *> *)recipients groupName:(INSpeakableString *)groupName messageType:(INMessageType)messageType
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _content = [content copy];
         _conversationIdentifier = [conversationIdentifier copy];
@@ -1561,7 +1561,7 @@
 - (instancetype)initWithIdentifier:(NSString *)identifier conversationIdentifier:(NSString *)conversationIdentifier content:(NSString *)content dateSent:(NSDate *)dateSent sender:(INPerson *)sender recipients:(NSArray<INPerson *> *)recipients messageType:(INMessageType)messageType
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _content = [content copy];
         _conversationIdentifier = [conversationIdentifier copy];
@@ -1577,7 +1577,7 @@
 - (instancetype)initWithIdentifier:(NSString *)identifier content:(NSString *)content dateSent:(NSDate *)dateSent sender:(INPerson *)sender recipients:(NSArray<INPerson *> *)recipients
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _content = [content copy];
         _dateSent = [dateSent copy];
@@ -1596,7 +1596,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class])))
         charon_intents_decode(self, coder);
     return self;
@@ -1739,7 +1739,7 @@
 - (instancetype)initWithCode:(INPauseWorkoutIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -1755,7 +1755,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -1799,7 +1799,7 @@
 - (instancetype)initWithPayee:(INPerson *)payee payer:(INPerson *)payer currencyAmount:(INCurrencyAmount *)currencyAmount paymentMethod:(INPaymentMethod *)paymentMethod note:(NSString *)note status:(INPaymentStatus)status feeAmount:(INCurrencyAmount *)feeAmount
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _currencyAmount = [currencyAmount copy];
         _feeAmount = [feeAmount copy];
@@ -1815,7 +1815,7 @@
 - (instancetype)initWithPayee:(INPerson *)payee payer:(INPerson *)payer currencyAmount:(INCurrencyAmount *)currencyAmount paymentMethod:(INPaymentMethod *)paymentMethod note:(NSString *)note status:(INPaymentStatus)status
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _currencyAmount = [currencyAmount copy];
         _note = [note copy];
@@ -1835,7 +1835,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class])))
         charon_intents_decode(self, coder);
     return self;
@@ -1886,7 +1886,7 @@
 - (instancetype)initWithPersonHandle:(INPersonHandle *)personHandle nameComponents:(NSPersonNameComponents *)nameComponents displayName:(NSString *)displayName image:(INImage *)image contactIdentifier:(NSString *)contactIdentifier customIdentifier:(NSString *)customIdentifier
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _contactIdentifier = [contactIdentifier copy];
         _customIdentifier = [customIdentifier copy];
@@ -1901,7 +1901,7 @@
 - (instancetype)initWithPersonHandle:(INPersonHandle *)personHandle nameComponents:(NSPersonNameComponents *)nameComponents displayName:(NSString *)displayName image:(INImage *)image contactIdentifier:(NSString *)contactIdentifier customIdentifier:(NSString *)customIdentifier relationship:(INPersonRelationship)relationship
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _contactIdentifier = [contactIdentifier copy];
         _customIdentifier = [customIdentifier copy];
@@ -1917,7 +1917,7 @@
 - (instancetype)initWithPersonHandle:(INPersonHandle *)personHandle nameComponents:(NSPersonNameComponents *)nameComponents displayName:(NSString *)displayName image:(INImage *)image contactIdentifier:(NSString *)contactIdentifier customIdentifier:(NSString *)customIdentifier isMe:(BOOL)isMe
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _contactIdentifier = [contactIdentifier copy];
         _customIdentifier = [customIdentifier copy];
@@ -1933,7 +1933,7 @@
 - (instancetype)initWithPersonHandle:(INPersonHandle *)personHandle nameComponents:(NSPersonNameComponents *)nameComponents displayName:(NSString *)displayName image:(INImage *)image contactIdentifier:(NSString *)contactIdentifier customIdentifier:(NSString *)customIdentifier isMe:(BOOL)isMe suggestionType:(INPersonSuggestionType)suggestionType
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _contactIdentifier = [contactIdentifier copy];
         _customIdentifier = [customIdentifier copy];
@@ -1950,7 +1950,7 @@
 - (instancetype)initWithPersonHandle:(INPersonHandle *)personHandle nameComponents:(NSPersonNameComponents *)nameComponents displayName:(NSString *)displayName image:(INImage *)image contactIdentifier:(NSString *)contactIdentifier customIdentifier:(NSString *)customIdentifier isContactSuggestion:(BOOL)isContactSuggestion suggestionType:(INPersonSuggestionType)suggestionType
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _contactIdentifier = [contactIdentifier copy];
         _contactSuggestion = isContactSuggestion;
@@ -1967,7 +1967,7 @@
 - (instancetype)initWithPersonHandle:(INPersonHandle *)personHandle nameComponents:(NSPersonNameComponents *)nameComponents displayName:(NSString *)displayName image:(INImage *)image contactIdentifier:(NSString *)contactIdentifier customIdentifier:(NSString *)customIdentifier aliases:(NSArray<INPersonHandle *> *)aliases suggestionType:(INPersonSuggestionType)suggestionType
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _aliases = [aliases copy];
         _contactIdentifier = [contactIdentifier copy];
@@ -1984,7 +1984,7 @@
 - (instancetype)initWithHandle:(NSString *)handle nameComponents:(NSPersonNameComponents *)nameComponents contactIdentifier:(NSString *)contactIdentifier
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _contactIdentifier = [contactIdentifier copy];
         _handle = [handle copy];
@@ -1996,7 +1996,7 @@
 - (instancetype)initWithHandle:(NSString *)handle displayName:(NSString *)displayName contactIdentifier:(NSString *)contactIdentifier
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _contactIdentifier = [contactIdentifier copy];
         _displayName = [displayName copy];
@@ -2008,7 +2008,7 @@
 - (instancetype)initWithHandle:(NSString *)handle nameComponents:(NSPersonNameComponents *)nameComponents displayName:(NSString *)displayName image:(INImage *)image contactIdentifier:(NSString *)contactIdentifier
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _contactIdentifier = [contactIdentifier copy];
         _displayName = [displayName copy];
@@ -2027,7 +2027,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class])))
         charon_intents_decode(self, coder);
     return self;
@@ -2100,7 +2100,7 @@
 - (instancetype)initWithValue:(NSString *)value type:(INPersonHandleType)type label:(INPersonHandleLabel)label
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _label = label;
         _type = type;
@@ -2112,7 +2112,7 @@
 - (instancetype)initWithValue:(NSString *)value type:(INPersonHandleType)type
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _type = type;
         _value = [value copy];
@@ -2128,7 +2128,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class])))
         charon_intents_decode(self, coder);
     return self;
@@ -2212,7 +2212,7 @@
 - (instancetype)initWithRangeBetweenPrice:(NSDecimalNumber *)firstPrice andPrice:(NSDecimalNumber *)secondPrice currencyCode:(NSString *)currencyCode
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _currencyCode = [currencyCode copy];
         _maximumPrice = [secondPrice copy];
@@ -2224,7 +2224,7 @@
 - (instancetype)initWithMaximumPrice:(NSDecimalNumber *)maximumPrice currencyCode:(NSString *)currencyCode
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _currencyCode = [currencyCode copy];
         _maximumPrice = [maximumPrice copy];
@@ -2235,7 +2235,7 @@
 - (instancetype)initWithMinimumPrice:(NSDecimalNumber *)minimumPrice currencyCode:(NSString *)currencyCode
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _currencyCode = [currencyCode copy];
         _minimumPrice = [minimumPrice copy];
@@ -2246,7 +2246,7 @@
 - (instancetype)initWithPrice:(NSDecimalNumber *)price currencyCode:(NSString *)currencyCode
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _currencyCode = [currencyCode copy];
         _maximumPrice = [price copy];
@@ -2263,7 +2263,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class])))
         charon_intents_decode(self, coder);
     return self;
@@ -2453,7 +2453,7 @@
 - (instancetype)initWithCode:(INRequestPaymentIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -2469,7 +2469,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -2578,7 +2578,7 @@
 - (instancetype)initWithCode:(INRequestRideIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -2594,7 +2594,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -2715,7 +2715,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INPerson class])))
         charon_intents_decode(self, coder);
     return self;
@@ -3191,7 +3191,7 @@
 - (instancetype)initWithCode:(INResumeWorkoutIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -3207,7 +3207,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -3246,7 +3246,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INPerson class])))
         charon_intents_decode(self, coder);
     return self;
@@ -3282,7 +3282,7 @@
 - (instancetype)initWithTitle:(NSString *)title price:(NSDecimalNumber *)price currencyCode:(NSString *)currencyCode
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _currencyCode = [currencyCode copy];
         _price = [price copy];
@@ -3299,7 +3299,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class])))
         charon_intents_decode(self, coder);
     return self;
@@ -3412,7 +3412,7 @@
 - (instancetype)initWithName:(NSString *)name estimatedPickupDate:(NSDate *)estimatedPickupDate
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _estimatedPickupDate = [estimatedPickupDate copy];
         _name = [name copy];
@@ -3428,7 +3428,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class])))
         charon_intents_decode(self, coder);
     return self;
@@ -3478,7 +3478,7 @@
 - (instancetype)initWithPartySizeRange:(NSRange)partySizeRange sizeDescription:(NSString *)sizeDescription priceRange:(INPriceRange *)priceRange
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _partySizeRange = partySizeRange;
         _priceRange = [priceRange copy];
@@ -3495,7 +3495,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class])))
         charon_intents_decode(self, coder);
     return self;
@@ -3798,7 +3798,7 @@
 - (instancetype)initWithCode:(INSaveProfileInCarIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -3814,7 +3814,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -3929,7 +3929,7 @@
 - (instancetype)initWithCode:(INSearchCallHistoryIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -3945,7 +3945,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -4111,7 +4111,7 @@
 - (instancetype)initWithCode:(INSearchForMessagesIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -4127,7 +4127,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -4231,7 +4231,7 @@
 - (instancetype)initWithCode:(INSearchForPhotosIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -4247,7 +4247,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -4405,7 +4405,7 @@
 - (instancetype)initWithCode:(INSendMessageIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -4421,7 +4421,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -4523,7 +4523,7 @@
 - (instancetype)initWithCode:(INSendPaymentIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -4539,7 +4539,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -4617,7 +4617,7 @@
 - (instancetype)initWithCode:(INSetAudioSourceInCarIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -4633,7 +4633,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -4759,7 +4759,7 @@
 - (instancetype)initWithCode:(INSetClimateSettingsInCarIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -4775,7 +4775,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -4865,7 +4865,7 @@
 - (instancetype)initWithCode:(INSetDefrosterSettingsInCarIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -4881,7 +4881,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -4959,7 +4959,7 @@
 - (instancetype)initWithCode:(INSetMessageAttributeIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -4975,7 +4975,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -5089,7 +5089,7 @@
 - (instancetype)initWithCode:(INSetProfileInCarIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -5105,7 +5105,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -5192,7 +5192,7 @@
 - (instancetype)initWithCode:(INSetRadioStationIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -5208,7 +5208,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -5314,7 +5314,7 @@
 - (instancetype)initWithCode:(INSetSeatSettingsInCarIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -5330,7 +5330,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -5440,7 +5440,7 @@
 - (instancetype)initWithCode:(INStartAudioCallIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -5456,7 +5456,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -5560,7 +5560,7 @@
 - (instancetype)initWithCode:(INStartPhotoPlaybackIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -5576,7 +5576,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -5651,7 +5651,7 @@
 - (instancetype)initWithCode:(INStartVideoCallIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -5667,7 +5667,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;
@@ -5754,7 +5754,7 @@
 - (instancetype)initWithCode:(INStartWorkoutIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -5770,7 +5770,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonCoding.h's one definition of it.
+    // -init is called through CharonIntentsCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;

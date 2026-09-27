@@ -27,7 +27,7 @@
 // about behaviour: each of them is the header's own chain.
 #pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 
-#import "../Foundation/CharonCoding.h"
+#import "CharonIntentsCoding.h"
 #import "CharonIntentsResolution.h"
 #import "CharonIntentsStore.h"
 
@@ -328,7 +328,7 @@
 }
 
 // The allocation both builders above share, reached through objc_msgSendSuper for the reason the
-// class's own header marks -init unavailable (see CharonCoding.h).
+// class's own header marks -init unavailable (see CharonIntentsCoding.h).
 + (instancetype)charon_adopted:(INIntentResolutionResult *)inner
 {
     INIntentResolutionResult *result = charon_intents_super_init(self, [INIntentResolutionResult class]);

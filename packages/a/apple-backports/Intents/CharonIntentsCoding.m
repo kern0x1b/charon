@@ -1,13 +1,13 @@
 //
-//  CharonCoding.m
+//  CharonIntentsCoding.m
 //  Intents
 //
-//  The three functions CharonCoding.h declares, and nothing else: this file exports no
+//  The three functions CharonIntentsCoding.h declares, and nothing else: this file exports no
 //  symbol of the framework's surface, so the package's release check has no API to place in an
 //  object of its own and every band keeps it.
 //
 
-#import "CharonCoding.h"
+#import "CharonIntentsCoding.h"
 
 #import <string.h>
 
