@@ -1,0 +1,894 @@
+//
+//  CharonIntents100.m
+//  Intents
+//
+//  The ten Intents classes whose behaviour is more than storage, and the two stores an
+//  application on this release can really keep: the interactions it donates and the vocabulary
+//  it offers. Everything here is hand written; the rest of the framework's 10.0.1 classes are
+//  generated into IN10_0.m from the SDK's own declarations.
+//
+//  What this release cannot do, and what it answers instead, is written down in
+//  facts/Intents/Intents.md, which every registry entry of this framework points at. In short:
+//  there is no assistant daemon here, so nothing is ever asked of the user, no interaction is
+//  ever read by the system, and every one of those seams says so — by storing what the
+//  application gave it in a real per-application store, or by answering with the value Apple's
+//  own documentation gives a system that cannot reach the service.
+//
+
+#import <Intents/Intents.h>
+#import <Intents/INIntentHandlerProviding.h>
+#import <UIKit/UIKit.h>
+#import <objc/runtime.h>
+
+// The SDK marks each class's initialiser as the designated one, in a header this package does
+// not own, so clang reads the -initWithCoder: and -copyWithZone: below as convenience
+// initialisers of classes that have a designated one. The warning is about a convention and not
+// about behaviour: each of them is the header's own chain.
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+
+#import "CharonIntentsCoding.h"
+#import "CharonIntentsResolution.h"
+#import "CharonIntentsStore.h"
+
+#pragma mark - INImage
+
+@implementation INImage {
+    NSString *_name;
+    NSData *_data;
+    double _width;
+    double _height;
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<INImage %@%@>", _name ?: @"", _data ? @" data" : @""];
+}
+
++ (instancetype)imageNamed:(NSString *)name
+{
+    if (!name.length) {
+        return nil;
+    }
+    // The app's own asset catalogue is the release's, and an Intents image is one of the app's
+    // images: it is resolved through UIKit, which is where the catalogue lives on every release
+    // this port covers, and carried afterwards as the data itself so nothing holds a UIImage.
+    UIImage *image = [UIImage imageNamed:name];
+    NSData *data = image ? UIImagePNGRepresentation(image) : nil;
+    if (!data) {
+        return nil;
+    }
+    return [self charon_imageWithName:name data:data width:image.size.width height:image.size.height];
+}
+
++ (instancetype)systemImageNamed:(NSString *)systemImageName
+{
+    // The system images are SF Symbols, which arrived with iOS 13, and this release carries no
+    // set of them: the answer for a name the system has no symbol for is no image, which is
+    // what the class's own imageNamed: answers for a name the app has none of.
+    return nil;
+}
+
++ (instancetype)imageWithImageData:(NSData *)imageData
+{
+    if (!imageData) {
+        return nil;
+    }
+    return [self charon_imageWithName:nil data:imageData width:0 height:0];
+}
+
++ (instancetype)imageWithURL:(NSURL *)URL
+{
+    return [self imageWithURL:URL width:0 height:0];
+}
+
++ (instancetype)imageWithURL:(NSURL *)URL width:(double)width height:(double)height
+{
+    NSData *data = URL ? [NSData dataWithContentsOfURL:URL] : nil;
+    if (!data) {
+        return nil;
+    }
+    return [self charon_imageWithName:URL.lastPathComponent data:data width:width height:height];
+}
+
++ (instancetype)charon_imageWithName:(NSString *)name data:(NSData *)data width:(double)width height:(double)height
+{
+    INImage *image = [[self alloc] init];
+    image->_name = [name copy];
+    image->_data = [data copy];
+    image->_width = width;
+    image->_height = height;
+    return image;
+}
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super init]))
+        charon_intents_decode(self, coder);
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    charon_intents_encode(self, coder);
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    INImage *copy = [[[self class] allocWithZone:zone] init];
+    charon_intents_copy(copy, self);
+    return copy;
+}
+
+@end
+
+#pragma mark - INIntent
+
+@implementation INIntent {
+    NSString *_identifier;
+    NSString *_intentDescription;
+    NSString *_suggestedInvocationPhrase;
+    INShortcutAvailabilityOptions _shortcutAvailability;
+    NSMutableDictionary *_imagesByParameter;
+}
+
+// The phrase the system offers to speak for this intent, which the system reads and the
+// application sets: kept as given, and nil until it is set, which is what the header's
+// readwrite, copy, nullable says.
+- (NSString *)suggestedInvocationPhrase
+{
+    return _suggestedInvocationPhrase;
+}
+
+- (void)setSuggestedInvocationPhrase:(NSString *)suggestedInvocationPhrase
+{
+    _suggestedInvocationPhrase = [suggestedInvocationPhrase copy];
+}
+
+- (INShortcutAvailabilityOptions)shortcutAvailability
+{
+    return _shortcutAvailability;
+}
+
+- (void)setShortcutAvailability:(INShortcutAvailabilityOptions)shortcutAvailability
+{
+    _shortcutAvailability = shortcutAvailability;
+}
+
+// donationMetadata is an INIntentDonationMetadata, a class of iOS 15 that is in a later group
+// of this delivery, so the property is dynamic below: the header keeps its availability mark, a
+// port on this release cannot call it, and respondsToSelector: answers no rather than a process
+// dying on a setter this class does not have.
+@dynamic donationMetadata;
+
+- (instancetype)init
+{
+    if ((self = [super init])) {
+        // The system assigns an intent's identifier when the interaction carrying it is donated;
+        // this release donates nothing to a system, and the interaction store below is keyed by
+        // this value, so it is made where the intent is made. It is the same UUID string the
+        // system would have written, and a port that reads it back sees a stable key.
+        _identifier = [[NSUUID UUID] UUIDString];
+    }
+    return self;
+}
+
+- (NSString *)identifier
+{
+    return _identifier;
+}
+
+- (NSString *)intentDescription
+{
+    if (_intentDescription) {
+        return _intentDescription;
+    }
+    // The SDK does not document how the framework derives this from the intent's class, and
+    // this release has no framework to ask. The class name is the whole of what an intent
+    // knows about itself, so the words of the class are the description, with the framework's
+    // own IN prefix and Intent suffix off: INSendMessageIntent reads "Send message".
+    NSString *name = [NSString stringWithCString:class_getName([self class]) encoding:NSUTF8StringEncoding];
+    if ([name hasPrefix:@"IN"]) {
+        name = [name substringFromIndex:2];
+    }
+    if ([name hasSuffix:@"Intent"]) {
+        name = [name substringToIndex:name.length - @"Intent".length];
+    }
+    NSMutableString *words = [NSMutableString stringWithCapacity:name.length];
+    for (NSUInteger index = 0; index < name.length; index++) {
+        unichar letter = [name characterAtIndex:index];
+        unichar before = index ? [name characterAtIndex:index - 1] : 0;
+        // A class name is ASCII, and a capital that follows a lower-case letter starts a word.
+        BOOL startsWord = index > 0 && letter >= 'A' && letter <= 'Z' &&
+            before >= 'a' && before <= 'z';
+        if (startsWord && words.length > 0) {
+            [words appendString:@" "];
+        }
+        [words appendFormat:@"%C", letter];
+    }
+    _intentDescription = [words copy];
+    return _intentDescription;
+}
+
+- (void)setImage:(INImage *)image forParameterNamed:(NSString *)parameterName
+{
+    if (!parameterName) {
+        return;
+    }
+    if (!image) {
+        [_imagesByParameter removeObjectForKey:parameterName];
+        return;
+    }
+    if (!_imagesByParameter) {
+        _imagesByParameter = [NSMutableDictionary dictionaryWithCapacity:1];
+    }
+    _imagesByParameter[parameterName] = image;
+}
+
+- (INImage *)imageForParameterNamed:(NSString *)parameterName
+{
+    return parameterName ? _imagesByParameter[parameterName] : nil;
+}
+
+- (INImage *)keyImage
+{
+    // The image of the first parameter that has one. The parameters are read in name order so
+    // the answer is the same on every call, which a dictionary's own order would not promise.
+    for (NSString *name in [_imagesByParameter.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
+        INImage *image = _imagesByParameter[name];
+        if (image) {
+            return image;
+        }
+    }
+    return nil;
+}
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super init]))
+        charon_intents_decode(self, coder);
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    charon_intents_encode(self, coder);
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    INIntent *copy = [[[self class] allocWithZone:zone] init];
+    charon_intents_copy(copy, self);
+    return copy;
+}
+
+@end
+
+#pragma mark - INIntentResolutionResult
+
+@implementation INIntentResolutionResult {
+    CharonIntentsResolutionStatus _status;
+    id _resolvedValue;
+    NSArray *_valuesToDisambiguate;
+    id _valueToConfirm;
+}
+
++ (instancetype)needsValue
+{
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNeedsValue
+                             resolvedValue:nil
+                       valuesToDisambiguate:nil
+                              valueToConfirm:nil];
+}
+
++ (instancetype)notRequired
+{
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+                             resolvedValue:nil
+                       valuesToDisambiguate:nil
+                              valueToConfirm:nil];
+}
+
++ (instancetype)unsupported
+{
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionUnsupported
+                             resolvedValue:nil
+                       valuesToDisambiguate:nil
+                              valueToConfirm:nil];
+}
+
++ (instancetype)charon_resolutionWithStatus:(CharonIntentsResolutionStatus)status
+                            resolvedValue:(id)resolvedValue
+                      valuesToDisambiguate:(NSArray *)valuesToDisambiguate
+                             valueToConfirm:(id)valueToConfirm
+{
+    INIntentResolutionResult *result = [[self alloc] init];
+    result->_status = status;
+    result->_resolvedValue = [resolvedValue copy];
+    result->_valuesToDisambiguate = [valuesToDisambiguate copy];
+    result->_valueToConfirm = [valueToConfirm copy];
+    return result;
+}
+
+- (id)resolvedValue
+{
+    return _resolvedValue;
+}
+
+- (NSArray *)valuesToDisambiguate
+{
+    return _valuesToDisambiguate;
+}
+
+- (id)valueToConfirm
+{
+    return _valueToConfirm;
+}
+
+- (CharonIntentsResolutionStatus)resolutionStatus
+{
+    return _status;
+}
+
+- (NSString *)description
+{
+    static const char *names[] = {"needsValue", "notRequired", "unsupported", "success",
+                                  "disambiguation", "confirmationRequired"};
+    return [NSString stringWithFormat:@"<%@ %s%@%@>",
+            [NSString stringWithCString:class_getName([self class]) encoding:NSUTF8StringEncoding],
+            names[_status], _resolvedValue ? @" value" : @"",
+            _valuesToDisambiguate ? @" choices" : (_valueToConfirm ? @" to confirm" : @"")];
+}
+
+@end
+
+#pragma mark - INSpeakableString
+
+@implementation INSpeakableString {
+    NSString *_spokenPhrase;
+    NSString *_pronunciationHint;
+    NSString *_vocabularyIdentifier;
+    NSString *_identifier;
+    NSArray *_alternativeSpeakableMatches;
+}
+
+@synthesize spokenPhrase = _spokenPhrase;
+@synthesize pronunciationHint = _pronunciationHint;
+@synthesize vocabularyIdentifier = _vocabularyIdentifier;
+@synthesize alternativeSpeakableMatches = _alternativeSpeakableMatches;
+
+// INSpeakable's identifier is the vocabulary identifier, and the header says so in as many
+// words ("Please use vocabularyIdentifier"), so the deprecated accessor answers it from the same
+// value rather than keeping a second one.
+- (NSString *)identifier
+{
+    return _vocabularyIdentifier;
+}
+
+- (instancetype)initWithVocabularyIdentifier:(NSString *)vocabularyIdentifier
+                                spokenPhrase:(NSString *)spokenPhrase
+                           pronunciationHint:(NSString *)pronunciationHint
+{
+    if ((self = [super init])) {
+        _vocabularyIdentifier = [vocabularyIdentifier copy];
+        _spokenPhrase = [spokenPhrase copy];
+        _pronunciationHint = [pronunciationHint copy];
+    }
+    return self;
+}
+
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                      spokenPhrase:(NSString *)spokenPhrase
+                 pronunciationHint:(NSString *)pronunciationHint
+{
+    // Deprecated in iOS 11 in favour of the initialiser that takes a vocabulary identifier,
+    // and the identifier is where the vocabulary identifier has been ever since, which is what
+    // a release that answers this call at all has to do with it.
+    if ((self = [self initWithVocabularyIdentifier:identifier
+                                      spokenPhrase:spokenPhrase
+                                 pronunciationHint:pronunciationHint]))
+        _identifier = [identifier copy];
+    return self;
+}
+
+- (instancetype)initWithSpokenPhrase:(NSString *)spokenPhrase
+{
+    // The header's own second initialiser, and the only one that gives a phrase with no
+    // vocabulary: the state is the phrase alone, and no vocabulary identifier is invented for
+    // it, which the designated initialiser above would have had to invent one for.
+    if ((self = [super init])) {
+        _spokenPhrase = [spokenPhrase copy];
+    }
+    return self;
+}
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super init]))
+        charon_intents_decode(self, coder);
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    charon_intents_encode(self, coder);
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    INSpeakableString *copy = [[[self class] allocWithZone:zone] init];
+    charon_intents_copy(copy, self);
+    return copy;
+}
+
+@end
+
+#pragma mark - INExtension
+
+// INExtension's own surface is empty: everything it is asked for comes from
+// INIntentHandlerProviding, whose one requirement is the handler for an intent. The handlers an
+// extension vends are the extension's own classes, so this looks them up in the loaded classes
+// by the protocol each intent's handling declares, and answers nil where there is none - which is
+// what a release with no assistant daemon to launch the extension has to say.
+
+@implementation INExtension
+
++ (NSString *)charon_handlingProtocolNameForIntent:(INIntent *)intent
+{
+    // The handling protocol of an intent is named after it: INBookRestaurantReservationIntent is
+    // handled by something conforming to INBookRestaurantReservationIntentHandling. The class is
+    // asked for its own name rather than the string being guessed, so a class named differently
+    // than its protocol is simply not found.
+    NSString *name = [NSString stringWithCString:class_getName([intent class]) encoding:NSUTF8StringEncoding];
+    return [name stringByAppendingString:@"Handling"];
+}
+
+- (id)handlerForIntent:(INIntent *)intent
+{
+    if (!intent) {
+        return nil;
+    }
+    NSString *wanted = [[self class] charon_handlingProtocolNameForIntent:intent];
+    unsigned count = objc_getClassList(NULL, 0);
+    if (!count) {
+        return nil;
+    }
+    Class *loaded = (Class *)malloc(sizeof(Class) * count);
+    count = objc_getClassList(loaded, count);
+    Class candidate = nil;
+    for (unsigned index = 0; index < count && !candidate; index++) {
+        unsigned held = 0;
+        Protocol *__unsafe_unretained *list = class_copyProtocolList(loaded[index], &held);
+        for (unsigned other = 0; other < held && !candidate; other++) {
+            const char *name = protocol_getName((Protocol *)list[other]);
+            if (name && [wanted isEqualToString:[NSString stringWithCString:name
+                                                                  encoding:NSUTF8StringEncoding]]) {
+                candidate = loaded[index];
+            }
+        }
+        free((void *)list);
+    }
+    free(loaded);
+    if (!candidate) {
+        return nil;
+    }
+    // A handler is a new object the caller owns, and a method whose name does not begin with
+    // alloc, new, copy or init has to hand it over autoreleased, which is what this returns.
+    id instance = [[self class] charon_newHandlerOfClass:candidate];
+    return [instance respondsToSelector:@selector(handleIntent:)] ? instance : nil;
+}
+
++ (id)charon_newHandlerOfClass:(Class)candidate
+{
+    return [[candidate alloc] init];
+}
+
+@end
+
+#pragma mark - INPaymentMethod
+
+@implementation INPaymentMethod {
+    INPaymentMethodType _type;
+    NSString *_name;
+    NSString *_identificationHint;
+    INImage *_icon;
+}
+
+- (instancetype)initWithType:(INPaymentMethodType)type
+                        name:(NSString *)name
+          identificationHint:(NSString *)identificationHint
+                        icon:(INImage *)icon
+{
+    if ((self = [super init])) {
+        _type = type;
+        _name = [name copy];
+        _identificationHint = [identificationHint copy];
+        _icon = [icon copy];
+    }
+    return self;
+}
+
++ (instancetype)applePayPaymentMethod
+{
+    // The one payment method the system itself provides, so it is the same object every time:
+    // the type is the one the header gives, and the name, the hint and the icon are the
+    // system's own, which this release has no image of and no name for.
+    static INPaymentMethod *method;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        method = [[INPaymentMethod alloc] initWithType:INPaymentMethodTypeApplePay
+                                                  name:nil
+                                    identificationHint:nil
+                                                  icon:nil];
+    });
+    return method;
+}
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super init]))
+        charon_intents_decode(self, coder);
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    charon_intents_encode(self, coder);
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    INPaymentMethod *copy = [[[self class] allocWithZone:zone] init];
+    charon_intents_copy(copy, self);
+    return copy;
+}
+
+@end
+
+#pragma mark - INRideCompletionStatus
+
+typedef NS_ENUM(NSInteger, CharonIntentsRideOutcome) {
+    CharonIntentsRideCompleted = 0,
+    CharonIntentsRideCanceled,
+    CharonIntentsRideMissedPickup,
+};
+
+@implementation INRideCompletionStatus {
+    CharonIntentsRideOutcome _outcome;
+    BOOL _outstanding;
+    INCurrencyAmount *_paymentAmount;
+    INRideFeedbackTypeOptions _feedbackType;
+    NSUserActivity *_completionUserActivity;
+    NSSet *_defaultTippingOptions;
+}
+
++ (instancetype)charon_completionWithOutcome:(CharonIntentsRideOutcome)outcome
+                                  outstanding:(BOOL)outstanding
+                                paymentAmount:(INCurrencyAmount *)paymentAmount
+                                 feedbackType:(INRideFeedbackTypeOptions)feedbackType
+{
+    INRideCompletionStatus *status = [[self alloc] init];
+    status->_outcome = outcome;
+    status->_outstanding = outstanding;
+    status->_paymentAmount = [paymentAmount copy];
+    status->_feedbackType = feedbackType;
+    return status;
+}
+
++ (instancetype)completed
+{
+    return [self charon_completionWithOutcome:CharonIntentsRideCompleted
+                                    outstanding:NO
+                                  paymentAmount:nil
+                                   feedbackType:0];
+}
+
++ (instancetype)completedWithSettledPaymentAmount:(INCurrencyAmount *)settledPaymentAmount
+{
+    return [self charon_completionWithOutcome:CharonIntentsRideCompleted
+                                    outstanding:NO
+                                  paymentAmount:settledPaymentAmount
+                                   feedbackType:0];
+}
+
++ (instancetype)completedWithOutstandingPaymentAmount:(INCurrencyAmount *)outstandingPaymentAmount
+{
+    return [self charon_completionWithOutcome:CharonIntentsRideCompleted
+                                    outstanding:YES
+                                  paymentAmount:outstandingPaymentAmount
+                                   feedbackType:0];
+}
+
++ (instancetype)completedWithOutstandingFeedbackType:(INRideFeedbackTypeOptions)feedbackType
+{
+    return [self charon_completionWithOutcome:CharonIntentsRideCompleted
+                                    outstanding:YES
+                                  paymentAmount:nil
+                                   feedbackType:feedbackType];
+}
+
++ (instancetype)canceledByService
+{
+    return [self charon_completionWithOutcome:CharonIntentsRideCanceled
+                                    outstanding:NO
+                                  paymentAmount:nil
+                                   feedbackType:0];
+}
+
++ (instancetype)canceledByUser
+{
+    // The header tells a canceled status apart from a service cancellation and from a missed
+    // pickup, and exposes nothing else about it, so the two answers differ only in what a
+    // reader of the class can already see: both are canceled, neither missed the pickup.
+    return [self canceledByService];
+}
+
++ (instancetype)canceledMissedPickup
+{
+    return [self charon_completionWithOutcome:CharonIntentsRideMissedPickup
+                                    outstanding:NO
+                                  paymentAmount:nil
+                                   feedbackType:0];
+}
+
+- (BOOL)isCompleted
+{
+    return _outcome == CharonIntentsRideCompleted;
+}
+
+- (BOOL)isCanceled
+{
+    return _outcome != CharonIntentsRideCompleted;
+}
+
+- (BOOL)isMissedPickup
+{
+    return _outcome == CharonIntentsRideMissedPickup;
+}
+
+- (BOOL)isOutstanding
+{
+    return _outstanding;
+}
+
+- (INCurrencyAmount *)paymentAmount
+{
+    return _paymentAmount;
+}
+
+- (INRideFeedbackTypeOptions)feedbackType
+{
+    return _feedbackType;
+}
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super init]))
+        charon_intents_decode(self, coder);
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    charon_intents_encode(self, coder);
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    INRideCompletionStatus *copy = [[[self class] allocWithZone:zone] init];
+    charon_intents_copy(copy, self);
+    return copy;
+}
+
+@end
+
+#pragma mark - INPreferences
+
+@implementation INPreferences
+
++ (INSiriAuthorizationStatus)siriAuthorizationStatus
+{
+    // The header's own words for this value: not authorized to use Siri, and unable to change
+    // that answer, because Siri services are restricted on this release. There is no assistant
+    // daemon here to ask, so this is the status, and it is the last of the four that is not a
+    // statement about the user.
+    return INSiriAuthorizationStatusRestricted;
+}
+
++ (void)requestSiriAuthorization:(void (^)(INSiriAuthorizationStatus status))handler
+{
+    // There is no authorization to ask for: the same restriction is already in force, so the
+    // handler is answered with it rather than left waiting for a prompt this release cannot
+    // show. A handler of nil is not called, as everywhere else in this package.
+    if (handler) {
+        handler([self siriAuthorizationStatus]);
+    }
+}
+
++ (NSString *)siriLanguageCode
+{
+    // The code Siri is configured to speak with. This release has no Siri and therefore no such
+    // setting, and the language the release itself is set to is the one a voice would use, so
+    // that is what it answers, read from the same list every other part of the system reads.
+    return [[[NSLocale preferredLanguages] firstObject] copy];
+}
+
+@end
+
+#pragma mark - INVocabulary
+
+@implementation INVocabulary
+
++ (instancetype)sharedVocabulary
+{
+    static INVocabulary *shared;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        shared = [[INVocabulary alloc] init];
+    });
+    return shared;
+}
+
+- (void)setVocabularyStrings:(NSOrderedSet *)vocabulary ofType:(INVocabularyStringType)type
+{
+    charon_intents_store_vocabulary(type, [vocabulary array]);
+}
+
+- (void)setVocabulary:(NSOrderedSet *)vocabulary ofType:(INVocabularyStringType)type
+{
+    // The same store, read out of the speakable values it is given rather than out of plain
+    // strings: what a voice says for a term is the term's spoken phrase.
+    NSMutableArray *phrases = [NSMutableArray arrayWithCapacity:vocabulary.count];
+    for (id<INSpeakable> value in vocabulary) {
+        NSString *phrase = value.spokenPhrase;
+        if (phrase) {
+            [phrases addObject:phrase];
+        }
+    }
+    charon_intents_store_vocabulary(type, phrases);
+}
+
+- (void)removeAllVocabularyStrings
+{
+    charon_intents_remove_vocabulary();
+}
+
+- (NSOrderedSet *)charon_vocabularyStringsOfType:(INVocabularyStringType)type
+{
+    return charon_intents_vocabulary(type);
+}
+
+@end
+
+#pragma mark - INInteraction
+
+@implementation INInteraction {
+    INIntent *_intent;
+    INIntentResponse *_intentResponse;
+    INIntentHandlingStatus _intentHandlingStatus;
+    INInteractionDirection _direction;
+    NSDateInterval *_dateInterval;
+    NSString *_identifier;
+    NSString *_groupIdentifier;
+}
+
+- (instancetype)initWithIntent:(INIntent *)intent response:(INIntentResponse *)response
+{
+    if ((self = [super init])) {
+        _intent = [intent copy];
+        _intentResponse = [response copy];
+        _identifier = [[NSUUID UUID] UUIDString];
+        _direction = INInteractionDirectionOutgoing;
+    }
+    return self;
+}
+
+- (void)donateInteractionWithCompletion:(void (^)(NSError *))completion
+{
+    // The system reads a donation and learns the interaction from it. This release runs no
+    // assistant daemon, so there is nothing to hand it to, and what the application meant is
+    // kept instead: the interaction is archived into this application's own store, stamped
+    // with the moment it was donated, and read back through the two accessors below. The
+    // donation is reported as the completion handler is given a nil error, because the store
+    // took it — never a fabricated error and never silence.
+    if (!_dateInterval) {
+        _dateInterval = [[NSDateInterval alloc] initWithStartDate:[NSDate date] endDate:[NSDate date]];
+    }
+    NSError *error = charon_intents_store_interaction(self);
+    if (completion) {
+        completion(error);
+    }
+}
+
++ (void)deleteAllInteractionsWithCompletion:(void (^)(NSError *))completion
+{
+    if (completion) {
+        completion(charon_intents_delete_interactions(nil, nil));
+    }
+}
+
++ (void)deleteInteractionsWithIdentifiers:(NSArray *)identifiers completion:(void (^)(NSError *))completion
+{
+    if (completion) {
+        completion(charon_intents_delete_interactions(identifiers, nil));
+    }
+}
+
++ (void)deleteInteractionsWithGroupIdentifier:(NSString *)groupIdentifier completion:(void (^)(NSError *))completion
+{
+    if (completion) {
+        completion(charon_intents_delete_interactions(nil, groupIdentifier));
+    }
+}
+
+- (id)parameterValueForParameter:(NSString *)parameterName
+{
+    // The value the interaction's intent carries for a parameter of that name, read out of the
+    // intent's own state through the runtime: the intent is a data class whose properties are the
+    // parameters it resolves, and a name the intent does not have is a name with no value.
+    if (!parameterName) {
+        return nil;
+    }
+    id value = [_intent valueForKey:parameterName];
+    return value == [NSNull null] ? nil : value;
+}
+
++ (NSArray *)charon_interactions
+{
+    return charon_intents_stored_interactions(nil);
+}
+
++ (NSArray *)charon_interactionsWithGroupIdentifier:(NSString *)groupIdentifier
+{
+    return charon_intents_stored_interactions(groupIdentifier);
+}
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super init]))
+        charon_intents_decode(self, coder);
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    charon_intents_encode(self, coder);
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    INInteraction *copy = [[[self class] allocWithZone:zone] init];
+    charon_intents_copy(copy, self);
+    return copy;
+}
+
+@end
