@@ -17,8 +17,13 @@
 
 static Class ourClass;
 
-static int failures;
+/* Three counts, and the exit reads one of them: the failures. The divergences are the places the two
+   sides deliberately differ, each named and asserted rather than compared, so that a difference which
+   is written down is not also a failure. check.m is shared with every other host test, so the third
+   count is this file's own. */
 static int checks;
+static int failures;
+static int divergences;
 
 static void compare(NSString *label, id system, id ours)
 {
@@ -119,8 +124,8 @@ int main(void)
                            template asks the phonetic object for component keys it has not got. The port
                            answers the two initials, because an API here must not crash its caller, and
                            the facts file records it. It is asserted, not compared. */
-                        checks++;
-                        printf("ok   %s: the system %s, the backport answers %s (a recorded divergence)\n",
+                        divergences++;
+                        printf("divergence %s: the system %s, the backport answers %s\n",
                                label.UTF8String, [system UTF8String], [ours description].UTF8String);
                         continue;
                     }
@@ -218,7 +223,7 @@ int main(void)
             compare(name, system, ours);
         }
 
-        printf("checks=%d failures=%d\n", checks, failures);
+        printf("checks=%d failures=%d divergences=%d\n", checks, failures, divergences);
     }
     return failures ? 1 : 0;
 }

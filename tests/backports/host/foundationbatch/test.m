@@ -25,6 +25,15 @@
 
 void host_attach_prefixed(const char *prefix);
 
+/* Three counts, and the exit reads one of them.
+   checks       the comparisons the two sides answered alike
+   failures     the comparisons the two sides answered differently -- charon_failures, and the exit
+   divergences  the places the two sides deliberately differ, each named and each asserted rather
+                than compared, so that a difference which is written down is not also a failure
+   The count of divergences is here rather than in check.m because check.m is shared with every other
+   host test, and a third count in it would be a third thing for every one of them to mean. */
+static int charon_divergences;
+
 static SEL ported(const char *selector)
 {
     return NSSelectorFromString([NSString stringWithFormat:@"charonHost_%s", selector]);
@@ -189,7 +198,7 @@ int main(void)
         number_formatter();
         url_encoding();
         promised_item();
-        printf("checks=%d failures=%d\n", charon_checks, charon_failures);
+        printf("checks=%d failures=%d divergences=%d\n", charon_checks, charon_failures, charon_divergences);
     }
     return charon_failures;
 }
