@@ -101,6 +101,16 @@ CHARON_VALUE_PROPERTY(NSMeasurement *, peakMemoryUsage)
 CHARON_VALUE_PROPERTY(MXAverage *, averageSuspendedMemory)
 
 @end
+@implementation MXMetaData
+@dynamic regionFormat, osVersion, deviceType, applicationBuildVersion, platformArchitecture;
+
+CHARON_VALUE_PROPERTY(NSString *, regionFormat)
+CHARON_VALUE_PROPERTY(NSString *, osVersion)
+CHARON_VALUE_PROPERTY(NSString *, deviceType)
+CHARON_VALUE_PROPERTY(NSString *, applicationBuildVersion)
+CHARON_VALUE_PROPERTY(NSString *, platformArchitecture)
+
+@end
 @implementation MXMetaData (CharonMetricKit)
 @dynamic lowPowerModeEnabled, isTestFlightApp, pid, bundleIdentifier;
 
@@ -108,6 +118,30 @@ CHARON_SCALAR_PROPERTY(bool, lowPowerModeEnabled)
 CHARON_SCALAR_PROPERTY(bool, isTestFlightApp)
 CHARON_SCALAR_PROPERTY(pid_t, pid)
 CHARON_VALUE_PROPERTY(NSString *, bundleIdentifier)
+
+@end
+@implementation MXMetricPayload
+@dynamic latestApplicationVersion, includesMultipleApplicationVersions, timeStampBegin, timeStampEnd, cpuMetrics, gpuMetrics, cellularConditionMetrics, applicationTimeMetrics, locationActivityMetrics, networkTransferMetrics, applicationLaunchMetrics, applicationResponsivenessMetrics, diskIOMetrics, memoryMetrics, displayMetrics, animationMetrics, applicationExitMetrics, signpostMetrics, metaData;
+
+CHARON_VALUE_PROPERTY(NSString *, latestApplicationVersion)
+CHARON_SCALAR_PROPERTY(BOOL, includesMultipleApplicationVersions)
+CHARON_VALUE_PROPERTY(NSDate *, timeStampBegin)
+CHARON_VALUE_PROPERTY(NSDate *, timeStampEnd)
+CHARON_VALUE_PROPERTY(MXCPUMetric *, cpuMetrics)
+CHARON_VALUE_PROPERTY(MXGPUMetric *, gpuMetrics)
+CHARON_VALUE_PROPERTY(MXCellularConditionMetric *, cellularConditionMetrics)
+CHARON_VALUE_PROPERTY(MXAppRunTimeMetric *, applicationTimeMetrics)
+CHARON_VALUE_PROPERTY(MXLocationActivityMetric *, locationActivityMetrics)
+CHARON_VALUE_PROPERTY(MXNetworkTransferMetric *, networkTransferMetrics)
+CHARON_VALUE_PROPERTY(MXAppLaunchMetric *, applicationLaunchMetrics)
+CHARON_VALUE_PROPERTY(MXAppResponsivenessMetric *, applicationResponsivenessMetrics)
+CHARON_VALUE_PROPERTY(MXDiskIOMetric *, diskIOMetrics)
+CHARON_VALUE_PROPERTY(MXMemoryMetric *, memoryMetrics)
+CHARON_VALUE_PROPERTY(MXDisplayMetric *, displayMetrics)
+CHARON_VALUE_PROPERTY(MXAnimationMetric *, animationMetrics)
+CHARON_VALUE_PROPERTY(MXAppExitMetric *, applicationExitMetrics)
+CHARON_VALUE_PROPERTY(NSArray *, signpostMetrics)
+CHARON_VALUE_PROPERTY(MXMetaData *, metaData)
 
 @end
 @implementation MXMetricPayload (CharonMetricKit)

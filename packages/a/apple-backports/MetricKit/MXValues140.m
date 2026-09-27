@@ -4,6 +4,12 @@
 // object carries API that arrived in one release, so this is the iOS 14.0 half and no two of them are one
 // object.
 
+@implementation MXAnimationMetric
+@dynamic scrollHitchTimeRatio;
+
+CHARON_VALUE_PROPERTY(NSMeasurement *, scrollHitchTimeRatio)
+
+@end
 @implementation MXAnimationMetric (CharonMetricKit)
 @dynamic hitchTimeRatio;
 
@@ -50,12 +56,15 @@ CHARON_VALUE_PROPERTY(NSMeasurement *, totalSampledTime)
 @end
 @implementation MXCallStackTree
 @end
-
-@implementation MXDiskWriteExceptionDiagnostic
-@dynamic callStackTree, totalWritesCaused;
+@implementation MXCrashDiagnostic
+@dynamic callStackTree, terminationReason, virtualMemoryRegionInfo, exceptionType, exceptionCode, signal;
 
 CHARON_VALUE_PROPERTY(MXCallStackTree *, callStackTree)
-CHARON_VALUE_PROPERTY(NSMeasurement *, totalWritesCaused)
+CHARON_VALUE_PROPERTY(NSString *, terminationReason)
+CHARON_VALUE_PROPERTY(NSString *, virtualMemoryRegionInfo)
+CHARON_VALUE_PROPERTY(NSNumber *, exceptionType)
+CHARON_VALUE_PROPERTY(NSNumber *, exceptionCode)
+CHARON_VALUE_PROPERTY(NSNumber *, signal)
 
 @end
 @implementation MXCrashDiagnostic (CharonMetricKit)
@@ -78,7 +87,13 @@ CHARON_VALUE_PROPERTY(NSDate *, timeStampBegin)
 CHARON_VALUE_PROPERTY(NSDate *, timeStampEnd)
 
 @end
+@implementation MXDiskWriteExceptionDiagnostic
+@dynamic callStackTree, totalWritesCaused;
 
+CHARON_VALUE_PROPERTY(MXCallStackTree *, callStackTree)
+CHARON_VALUE_PROPERTY(NSMeasurement *, totalWritesCaused)
+
+@end
 @implementation MXForegroundExitData
 @dynamic cumulativeNormalAppExitCount, cumulativeMemoryResourceLimitExitCount, cumulativeBadAccessExitCount, cumulativeAbnormalExitCount, cumulativeIllegalInstructionExitCount, cumulativeAppWatchdogExitCount;
 
