@@ -129,8 +129,6 @@ NSString *MLCArithmeticOperationDebugDescription(MLCArithmeticOperation operatio
         default:
             return nil;
     }
-            return nil;
-    return nil;
 }
 
 NSString *MLCReductionTypeDebugDescription(MLCReductionType reductionType)
@@ -159,8 +157,6 @@ NSString *MLCReductionTypeDebugDescription(MLCReductionType reductionType)
         default:
             return nil;
     }
-            return nil;
-    return nil;
 }
 
 NSString *MLCLossTypeDebugDescription(MLCLossType lossType)
@@ -187,8 +183,6 @@ NSString *MLCLossTypeDebugDescription(MLCLossType lossType)
         default:
             return nil;
     }
-            return nil;
-    return nil;
 }
 
 NSString *MLCPaddingTypeDebugDescription(MLCPaddingType paddingType)
@@ -205,8 +199,6 @@ NSString *MLCPaddingTypeDebugDescription(MLCPaddingType paddingType)
         default:
             return nil;
     }
-            return nil;
-    return nil;
 }
 
 NSString *MLCConvolutionTypeDebugDescription(MLCConvolutionType convolutionType)
@@ -221,8 +213,6 @@ NSString *MLCConvolutionTypeDebugDescription(MLCConvolutionType convolutionType)
         default:
             return nil;
     }
-            return nil;
-    return nil;
 }
 
 NSString *MLCPoolingTypeDebugDescription(MLCPoolingType poolingType)
@@ -237,8 +227,6 @@ NSString *MLCPoolingTypeDebugDescription(MLCPoolingType poolingType)
         default:
             return nil;
     }
-            return nil;
-    return nil;
 }
 
 NSString *MLCSoftmaxOperationDebugDescription(MLCSoftmaxOperation operation)
@@ -251,8 +239,6 @@ NSString *MLCSoftmaxOperationDebugDescription(MLCSoftmaxOperation operation)
         default:
             return nil;
     }
-            return nil;
-    return nil;
 }
 
 NSString *MLCSampleModeDebugDescription(MLCSampleMode mode)
@@ -265,8 +251,6 @@ NSString *MLCSampleModeDebugDescription(MLCSampleMode mode)
         default:
             return nil;
     }
-            return nil;
-    return nil;
 }
 
 NSString *MLCLSTMResultModeDebugDescription(MLCLSTMResultMode mode)
@@ -279,8 +263,6 @@ NSString *MLCLSTMResultModeDebugDescription(MLCLSTMResultMode mode)
         default:
             return nil;
     }
-            return nil;
-    return nil;
 }
 
 NSString *MLCPaddingPolicyDebugDescription(MLCPaddingPolicy paddingPolicy)
@@ -295,8 +277,6 @@ NSString *MLCPaddingPolicyDebugDescription(MLCPaddingPolicy paddingPolicy)
         default:
             return nil;
     }
-            return nil;
-    return nil;
 }
 
 NSString *MLCComparisonOperationDebugDescription(MLCComparisonOperation operation)
@@ -329,8 +309,6 @@ NSString *MLCComparisonOperationDebugDescription(MLCComparisonOperation operatio
         default:
             return nil;
     }
-            return nil;
-    return nil;
 }
 
 NSString *MLCGradientClippingTypeDebugDescription(MLCGradientClippingType gradientClippingType)
@@ -345,8 +323,6 @@ NSString *MLCGradientClippingTypeDebugDescription(MLCGradientClippingType gradie
         default:
             return nil;
     }
-            return nil;
-    return nil;
 }
 
 // The seed the random initializers of this port draw from, and the one +[MLCPlatform getRNGseed] answers.
