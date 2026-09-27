@@ -322,6 +322,7 @@ typedef NS_ENUM(NSUInteger, CharonHKAuthorizationBits) {
         @"CREATE TABLE IF NOT EXISTS characteristic (identifier TEXT PRIMARY KEY NOT NULL, value BLOB)",
         @"CREATE TABLE IF NOT EXISTS source_order (type TEXT NOT NULL, bundle TEXT NOT NULL, position INTEGER NOT NULL, PRIMARY KEY (type, bundle))",
         @"CREATE TABLE IF NOT EXISTS background_delivery (type TEXT NOT NULL, frequency INTEGER NOT NULL, PRIMARY KEY (type, frequency))",
+        @"CREATE TABLE IF NOT EXISTS activity_summary (start REAL PRIMARY KEY NOT NULL, archive BLOB NOT NULL)",
         @"CREATE TABLE IF NOT EXISTS anchor (uuid TEXT PRIMARY KEY NOT NULL, data BLOB NOT NULL)",
         @"CREATE TABLE IF NOT EXISTS deleted (uuid TEXT PRIMARY KEY NOT NULL, sequence INTEGER NOT NULL)",
     ];
@@ -896,6 +897,34 @@ typedef NS_ENUM(NSUInteger, CharonHKAuthorizationBits) {
         [_lock unlock];
     }
     return uuids;
+}
+
+#pragma mark Activity summaries
+
+// The days the store holds a ring for. Nothing writes that table on this release - see the header's
+// note on it - and it is read the same way every other object is: the archive of the object, beside the
+// day it is for so that a query can be narrowed by date before anything is read back.
+- (NSArray *)activitySummariesMatching:(nullable NSPredicate *)predicate error:(NSError **)error
+{
+    __block NSMutableArray *summaries = [NSMutableArray array];
+    [_lock lock];
+    @try {
+        if (![self charon_openLocked:error])
+            return nil;
+        for (NSDictionary *raw in [self charon_rowsLocked:@"SELECT * FROM activity_summary ORDER BY start" bindings:@[]]) {
+            id summary = [HKActivitySummary charon_objectFromArchive:[raw objectForKey:@"archive"]
+                                                                type:[HKObjectType activitySummaryType]
+                                                               store:self];
+            if (!summary)
+                continue;
+            if (predicate && ![predicate evaluateWithObject:summary])
+                continue;
+            [summaries addObject:summary];
+        }
+    } @finally {
+        [_lock unlock];
+    }
+    return summaries;
 }
 
 #pragma mark Sources

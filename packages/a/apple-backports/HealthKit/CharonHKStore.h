@@ -83,6 +83,11 @@ NS_ASSUME_NONNULL_BEGIN
 // answers with. The store's own deleted table is where they come from.
 - (nullable NSArray *)deletedObjectsSinceSequence:(NSInteger)sequence;
 
+// The activity summaries the store holds that a predicate matches. The rings are counted by the phone
+// and recorded by the Activity application of a release that has one; nothing writes this table on
+// this release, so the answer is an empty array and the reason is said once in the log.
+- (NSArray *)activitySummariesMatching:(nullable NSPredicate *)predicate error:(NSError **)error;
+
 // Every source the store holds a sample from, and the order the owner set for a type.
 - (NSArray *)allSources;
 - (NSArray *)sourcesForType:(HKObjectType *)type;
@@ -110,6 +115,7 @@ NS_ASSUME_NONNULL_BEGIN
 // class's own @implementation, never in a category, so none of them is a selector the registry has
 // to describe as a member this port adds to somebody else's class.
 @protocol CharonHKStorable <NSObject>
++ (nullable instancetype)charon_objectFromArchive:(NSData *)archive type:(HKObjectType *)type store:(CharonHKStore *)store;
 // The row's own facts, which SQLite indexes and narrows by.
 - (NSString *)charon_storeTypeIdentifier;
 - (NSInteger)charon_storeKind;
@@ -167,6 +173,10 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 - (nullable HKSourceRevision *)sourceRevision;
 - (nullable HKDevice *)device;
 - (void)charon_setSourceRevision:(nullable HKSourceRevision *)revision device:(nullable HKDevice *)device;
+@end
+
+@interface HKObjectType (CharonInternal)
++ (instancetype)charon_typeWithIdentifier:(NSString *)identifier;
 @end
 
 @interface HKObject (CharonInternal)
@@ -232,6 +242,22 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 - (void)charon_complete:(nullable void (^)(BOOL success, NSError *_Nullable error))completion
                      ok:(BOOL)ok
                   error:(nullable NSError *)error;
+@end
+
+@interface HKQuery (CharonInternalStop)
+@property (nonatomic) BOOL charon_stopsAfterResults;
+@end
+
+@interface HKActivitySummary (CharonInternal)
+- (instancetype)charon_initWithStartDate:(NSDate *)startDate;
+- (nullable NSDateComponents *)dateComponents;
++ (nullable instancetype)charon_objectFromArchive:(NSData *)archive type:(HKObjectType *)type store:(CharonHKStore *)store;
+@end
+
+@interface HKActivitySummaryQuery (CharonInternal)
+@property (nonatomic, copy, nullable) void (^charon_updateHandlerForSummaries)(HKActivitySummaryQuery *query,
+                                                                                 NSArray<HKActivitySummary *> *_Nullable summaries,
+                                                                                 NSError *_Nullable error);
 @end
 
 @interface HKQuery (CharonInternal)
