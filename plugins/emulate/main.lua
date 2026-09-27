@@ -122,25 +122,41 @@ local function run(ctx, argv)
     local seconds = tonumber(option.get("seconds"))
     emulator.install_runner(rootfs, ctx.guest, argv, seconds, ctx.version)
     local results = emulator.results(rootfs)
-    local booted = booter(ctx)(table.join(ctx, {rootfs = rootfs, run = folder, stop = function ()
-        return os.isfile(path.join(results, "verdict.json"))
-    end}))
-    local reports = emulator.reports(rootfs)
-    local result = emulator.verdict(booted.state, results, {frame = booted.frame, errors = booted.errors,
-                                                            scale = booted.scale, host_seconds = booted.seconds,
-                                                            reports = reports})
-    os.cp(results, path.join(folder, "results"))
-    for _, report in ipairs(reports) do
-        os.cp(report.file, path.join(folder, "results", "reports", path.filename(report.file)))
-        report.file = path.join(folder, "results", "reports", path.filename(report.file))
-    end
-    result.stdout = path.join(folder, "results", "test.stdout")
-    result.stderr = path.join(folder, "results", "test.stderr")
-    json.savefile(path.join(folder, "verdict.json"), table.join(result, {reason = booted.reason, seconds = booted.seconds}))
+    -- The clone is a whole root filesystem, and it goes whatever the run did: a boot that times out, a
+    -- command that raises, a harness that gives up - each of those left one behind, and 125 of them are
+    -- what filled the cache. Only --keep holds it, and then beside the log the run leaves.
+    local ok, result, booted, errors = try {
+        function ()
+            local boot = booter(ctx)(table.join(ctx, {rootfs = rootfs, run = folder, stop = function ()
+                return os.isfile(path.join(results, "verdict.json"))
+            end}))
+            local reports = emulator.reports(rootfs)
+            local verdict = emulator.verdict(boot.state, results, {frame = boot.frame, errors = boot.errors,
+                                                                   scale = boot.scale, host_seconds = boot.seconds,
+                                                                   reports = reports})
+            os.cp(results, path.join(folder, "results"))
+            for _, report in ipairs(reports) do
+                os.cp(report.file, path.join(folder, "results", "reports", path.filename(report.file)))
+                report.file = path.join(folder, "results", "reports", path.filename(report.file))
+            end
+            verdict.stdout = path.join(folder, "results", "test.stdout")
+            verdict.stderr = path.join(folder, "results", "test.stderr")
+            json.savefile(path.join(folder, "verdict.json"), table.join(verdict, {reason = boot.reason, seconds = boot.seconds}))
+            return true, verdict, boot
+        end,
+        catch {
+            function (caught)
+                return false, nil, nil, caught
+            end
+        }
+    }
     if not option.get("keep") then
         emulator.remove(rootfs)
         emulator.remove(path.join(folder, "runtime"))
         emulator.remove(path.join(folder, ".shade-device-state"))
+    end
+    if not ok then
+        raise(errors)
     end
     for _, name in ipairs({"test.stdout", "test.stderr"}) do
         local file = path.join(folder, "results", name)
@@ -233,6 +249,12 @@ local function debug_command(ctx, command)
     end
     cprint("${dim}%d images loaded; the report is %s and the emulator log is %s", #report.images,
            path.join(folder, "debug.json"), report.log)
+    -- the clone is a whole root filesystem here too, and it is not the report that keeps it alive
+    if not option.get("keep") then
+        emulator.remove(rootfs)
+        emulator.remove(path.join(folder, "runtime"))
+        emulator.remove(path.join(folder, ".shade-device-state"))
+    end
 end
 
 function main()
@@ -249,6 +271,12 @@ function main()
             cprint("${bright}removed${clear} %s", folder)
         end
         return
+    end
+    -- Before anything else an emulate does: what earlier runs left behind. A run that was killed cannot
+    -- clean up after itself, so the next one is what bounds the cache.
+    local hours = tonumber(option.get("prune-hours"))
+    for _, folder in ipairs(emulator.prune({hours = hours})) do
+        cprint("${bright}pruned${clear} %s, unused for more than %d hours", folder, hours or emulator.PRUNE_HOURS)
     end
     local ctx = context()
     emulator.directory(path.directory(ctx.image))

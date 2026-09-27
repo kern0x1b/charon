@@ -497,6 +497,84 @@ local function copy_step(opt, found)
     os.tryrm(folder)
 end
 
+-- A root filesystem holds read-only directories - the dyld cache ships as one - and a directory needs
+-- execute as well as write for the entries in it to be unlinked, so remove() has to grant both. And an
+-- image nothing has used for the age, an owner nothing has used for the age, and the root filesystem a
+-- killed run left inside an image that is otherwise wanted all go at the start of the next xmake emulate.
+local function prune_step(emulator, folder, found)
+    local base = path.join(folder, "images.noindex")
+    local function image(owner, name)
+        local here = path.join(base, owner, name)
+        io.writefile(path.join(here, "image.json"), "{}")
+        return here
+    end
+    local function stale(what)
+        if os.isdir(what) or os.isfile(what) then
+            os.execv("touch", {"-t", os.date("%Y%m%d%H%M", os.time() - 48 * 3600), what}, {try = true, stdout = os.nul, stderr = os.nul})
+        end
+    end
+    -- a read-only directory holding a file, as the root filesystem holds the dyld cache
+    local readonly = path.join(folder, "readonly", "System", "Library", "Caches", "com.apple.dyld")
+    io.writefile(path.join(readonly, "dyld_shared_cache_armv7"), "cache")
+    -- the file first: a directory at 444 cannot be entered to have its contents changed
+    os.execv("chmod", {"444", path.join(readonly, "dyld_shared_cache_armv7")}, {try = true, stdout = os.nul, stderr = os.nul})
+    os.execv("chmod", {"444", path.directory(readonly)}, {try = true, stdout = os.nul, stderr = os.nul})
+    local refused = try {function () emulator.remove(path.join(folder, "readonly")) return true end,
+                         catch {function (errors) return false, errors end}}
+    if not refused then
+        table.insert(found, "a root filesystem holding a read-only directory cannot be removed: " .. tostring(refused))
+    end
+    if os.isdir(path.join(folder, "readonly")) then
+        table.insert(found, "the read-only directory is still there after remove()")
+    end
+
+    -- wanted: the image itself is recent, and only the run a killed run left inside it is not
+    local fresh = image("owner-fresh", "iPhone3,1_7A")
+    local used = image("owner-used", "iPhone3,1_7A")
+    local leftover = path.join(used, "run")
+    io.writefile(path.join(leftover, "rootfs", "placeholder"), "x")
+    stale(leftover)
+    stale(path.join(leftover, "rootfs"))
+    -- abandoned: neither the image nor the owner that holds it has been touched
+    local abandoned = image("owner-unused", "iPhone3,1_7A")
+    stale(abandoned)
+    stale(path.join(base, "owner-unused"))
+    -- held: an xmake emulate is using it, whatever its age
+    local held = image("owner-held", "iPhone3,1_7A")
+    stale(held)
+    stale(path.join(base, "owner-held"))
+    local lock = io.openlock(held .. ".lock")
+    lock:lock()
+    local removed = emulator.prune({root = folder, hours = 24})
+    lock:unlock()
+    lock:close()
+    local gone = {}
+    for _, entry in ipairs(removed) do
+        gone[entry:sub(#base + 2)] = true
+    end
+    if not gone["owner-used/run"] and os.isdir(leftover) then
+        table.insert(found, "the root filesystem a killed run left inside an image that is still wanted is pruned, not kept: " .. table.concat(removed, " "))
+    end
+    if (not gone["owner-unused/iPhone3,1_7A"] and not gone["owner-unused"]) or os.isdir(abandoned) then
+        table.insert(found, "an image nothing has booted for the age is pruned with the owner that holds nothing else, not kept: " .. table.concat(removed, " "))
+    end
+    if not os.isdir(fresh) then
+        table.insert(found, "an image used within the age is kept")
+    end
+    if not os.isdir(used) then
+        table.insert(found, "an image whose run was pruned is kept: only the run goes")
+    end
+    if not os.isdir(held) or not os.isdir(path.join(base, "owner-held")) then
+        table.insert(found, "an image another xmake emulate holds the lock of is kept whatever its age")
+    end
+    -- a fresh tree is left alone entirely, which is what every normal run sees
+    local only = path.join(folder, "only")
+    io.writefile(path.join(only, "owner", "iPhone3,1_7A", "image.json"), "{}")
+    if #emulator.prune({root = only}) ~= 0 or not os.isdir(path.join(only, "owner", "iPhone3,1_7A")) then
+        table.insert(found, "a prune of images all used within the age removes nothing")
+    end
+end
+
 function failures(opt)
     local emulator = import("emulator", {rootdir = opt.modules, anonymous = true})
     local debian = import("debian", {rootdir = opt.modules, anonymous = true})
@@ -514,6 +592,7 @@ function failures(opt)
     queue_step(emulator, folder, opt, found)
     naming_step(emulator, found)
     copy_step(opt, found)
+    prune_step(emulator, folder, found)
     os.tryrm(folder)
     return found
 end

@@ -42,9 +42,14 @@ end
 
 function remove(folder)
     if os.isdir(folder) or os.isfile(folder) or os.islink(folder) then
-        os.execv("chmod", {"-R", "u+w", folder}, {try = true})
+        -- u+rwX, not u+w: a directory needs execute as well as write for the entries in it to be unlinked,
+        -- and a root filesystem holds read-only directories - the dyld cache ships as one. Measured
+        -- 2026-09-27 on the CommandLineTools host: u+w left
+        -- rootfs/System/Library/Caches/com.apple.dyld at rw-r--r-- and rm answered "Permission denied" for
+        -- the cache inside it, so every image that holds one could not be removed and stayed.
+        os.execv("chmod", {"-R", "u+rwX", folder}, {try = true})
         os.tryrm(folder)
-        if os.isdir(folder) then
+        if os.isdir(folder) or os.isfile(folder) or os.islink(folder) then
             raise("cannot remove %s", folder)
         end
     end
@@ -931,6 +936,77 @@ function retire(parent, opt, kept)
             end
         end
     end
+end
+
+-- How long an image, an owner's images, or the root filesystem one run booted is kept unused, in hours.
+PRUNE_HOURS = 24
+
+-- A folder another xmake emulate holds the lock of is in use, whatever its age.
+function unlocks(folder)
+    local lock = io.openlock(folder .. ".lock")
+    if not lock then
+        return false
+    end
+    local held = lock:trylock()
+    if held then
+        lock:unlock()
+    end
+    lock:close()
+    return held
+end
+
+-- A folder counts as used when it or any direct child is newer than the age. One stat per child, never a
+-- walk of a root filesystem: a run creates and removes the image's run/ and debug/ folder, so the image's
+-- own mtime is the last time it was booted, and an owner's mtime follows the images under it.
+function used(folder, hours)
+    local limit = os.time() - (hours or PRUNE_HOURS) * 3600
+    local newest = os.mtime(folder)
+    for _, child in ipairs(os.files(path.join(folder, "*"))) do
+        newest = math.max(newest, os.mtime(child))
+    end
+    for _, child in ipairs(os.dirs(path.join(folder, "*"))) do
+        newest = math.max(newest, os.mtime(child))
+    end
+    return newest >= limit
+end
+
+-- The root filesystems runs booted that nothing has removed, the images nothing has booted for the age, and
+-- the owners nothing has used for the age. A run that was killed cannot clean up after itself: there is no
+-- signal handler in Lua and the process is gone, so the next xmake emulate is what bounds the cache. The
+-- owner is a hash of the project directory, so every worktree and every scratch project keeps its own and
+-- a clean of one project never reaches the others' - measured 2026-09-27, 125 root filesystems of about
+-- 205 GB under images.noindex, one per run, across owners no clean had visited.
+function prune(opt)
+    opt = opt or {}
+    local base = path.join(opt.root or root(), "images.noindex")
+    local removed = {}
+    if not os.isdir(base) then
+        return removed
+    end
+    for _, owner in ipairs(os.dirs(path.join(base, "*"))) do
+        if used(owner, opt.hours) then
+            for _, image in ipairs(os.dirs(path.join(owner, "*"))) do
+                if used(image, opt.hours) then
+                    -- the image itself is wanted; only what a killed run left inside it goes
+                    for _, name in ipairs({"run", "debug"}) do
+                        local clone = path.join(image, name)
+                        if os.isdir(clone) and not used(clone, opt.hours) and unlocks(image) then
+                            remove(clone)
+                            table.insert(removed, clone)
+                        end
+                    end
+                elseif unlocks(image) then
+                    remove(image)
+                    table.insert(removed, image)
+                    os.tryrm(image .. ".lock")
+                end
+            end
+        elseif unlocks(owner) then
+            remove(owner)
+            table.insert(removed, owner)
+        end
+    end
+    return removed
 end
 
 function clean(opt)
