@@ -1,0 +1,60 @@
+{
+  "framework": "Accelerate",
+  "entries": [
+    {
+      "api": "vImageRotate90_ARGB16U()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a quarter turn moves pixels and does not resample, so the answer is a copy of one source pixel per destination pixel - a mapping and a range test, with no arithmetic to get wrong",
+      "effect": "four 16-bit unsigned channels copied whole. the four constants are 0 -> src(dx,dy), 1 -> src(dy, W-1-dx), 2 -> src(W-1-dx, H-1-dy) and 3 -> src(dy, H-1-dx), measured over eight shapes both destination ways; a destination of the other shape is answered by centring the turned picture and back-colouring what does not fit. Every sample equal: a quarter turn is a copy, so there is no rounding to allow. The refusals are the system's own - a constant outside 0 to 3 is kvImageInvalidParameter, a flag outside EdgeExtend, BackgroundColorFill, DoNotTile and NoFlags is kvImageUnknownFlagsBit, and a NULL buffer is kvImageNullPointerArgument",
+      "facts": "facts/Accelerate/vImageGeometry.md",
+      "source": "the host's own vImage, compared sample for sample in tests/backports/host/rotate90 over twelve shapes and both destination shapes for each, and the refusals held to the system's codes"
+    },
+    {
+      "api": "vImageRotate90_ARGB16S()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a quarter turn moves pixels and does not resample, so the answer is a copy of one source pixel per destination pixel - a mapping and a range test, with no arithmetic to get wrong",
+      "effect": "four 16-bit signed channels copied whole, with no clamping: a pixel is moved, not computed. the four constants are 0 -> src(dx,dy), 1 -> src(dy, W-1-dx), 2 -> src(W-1-dx, H-1-dy) and 3 -> src(dy, H-1-dx), measured over eight shapes both destination ways; a destination of the other shape is answered by centring the turned picture and back-colouring what does not fit. Every sample equal: a quarter turn is a copy, so there is no rounding to allow. The refusals are the system's own - a constant outside 0 to 3 is kvImageInvalidParameter, a flag outside EdgeExtend, BackgroundColorFill, DoNotTile and NoFlags is kvImageUnknownFlagsBit, and a NULL buffer is kvImageNullPointerArgument",
+      "facts": "facts/Accelerate/vImageGeometry.md",
+      "source": "the host's own vImage, compared sample for sample in tests/backports/host/rotate90 over twelve shapes and both destination shapes for each, and the refusals held to the system's codes"
+    },
+    {
+      "api": "vImageRotate90_ARGB16F()",
+      "kind": "function",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a quarter turn moves pixels and does not resample, so the answer is a copy of one source pixel per destination pixel - a mapping and a range test, with no arithmetic to get wrong",
+      "effect": "four half-precision channels copied as sixteen bits each - a quarter turn computes nothing, so there is no half to round. kvImageUseFP16Accumulator is accepted, as the header says, and changes nothing: it governs the internal filtering and a quarter turn has none. the four constants are 0 -> src(dx,dy), 1 -> src(dy, W-1-dx), 2 -> src(W-1-dx, H-1-dy) and 3 -> src(dy, H-1-dx), measured over eight shapes both destination ways; a destination of the other shape is answered by centring the turned picture and back-colouring what does not fit. Every sample equal: a quarter turn is a copy, so there is no rounding to allow. The refusals are the system's own - a constant outside 0 to 3 is kvImageInvalidParameter, a flag outside EdgeExtend, BackgroundColorFill, DoNotTile and NoFlags is kvImageUnknownFlagsBit, and a NULL buffer is kvImageNullPointerArgument",
+      "facts": "facts/Accelerate/vImageGeometry.md",
+      "source": "the host's own vImage, compared sample for sample in tests/backports/host/rotate90 over twelve shapes and both destination shapes for each, and the flag accepted and the refusals held to the system's codes"
+    },
+    {
+      "api": "vImageRotate90_CbCr16F()",
+      "kind": "function",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a quarter turn moves pixels and does not resample, so the answer is a copy of one source pixel per destination pixel - a mapping and a range test, with no arithmetic to get wrong",
+      "effect": "two half-precision channels copied whole. the four constants are 0 -> src(dx,dy), 1 -> src(dy, W-1-dx), 2 -> src(W-1-dx, H-1-dy) and 3 -> src(dy, H-1-dx), measured over eight shapes both destination ways; a destination of the other shape is answered by centring the turned picture and back-colouring what does not fit. Every sample equal: a quarter turn is a copy, so there is no rounding to allow. The refusals are the system's own - a constant outside 0 to 3 is kvImageInvalidParameter, a flag outside EdgeExtend, BackgroundColorFill, DoNotTile and NoFlags is kvImageUnknownFlagsBit, and a NULL buffer is kvImageNullPointerArgument",
+      "facts": "facts/Accelerate/vImageGeometry.md",
+      "source": "the host's own vImage, compared sample for sample in tests/backports/host/rotate90 over twelve shapes and both destination shapes for each, and the refusals held to the system's codes"
+    },
+    {
+      "api": "vImageRotate90_Planar16F()",
+      "kind": "function",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a quarter turn moves pixels and does not resample, so the answer is a copy of one source pixel per destination pixel - a mapping and a range test, with no arithmetic to get wrong",
+      "effect": "one half-precision channel copied whole. the four constants are 0 -> src(dx,dy), 1 -> src(dy, W-1-dx), 2 -> src(W-1-dx, H-1-dy) and 3 -> src(dy, H-1-dx), measured over eight shapes both destination ways; a destination of the other shape is answered by centring the turned picture and back-colouring what does not fit. Every sample equal: a quarter turn is a copy, so there is no rounding to allow. The refusals are the system's own - a constant outside 0 to 3 is kvImageInvalidParameter, a flag outside EdgeExtend, BackgroundColorFill, DoNotTile and NoFlags is kvImageUnknownFlagsBit, and a NULL buffer is kvImageNullPointerArgument",
+      "facts": "facts/Accelerate/vImageGeometry.md",
+      "source": "the host's own vImage, compared sample for sample in tests/backports/host/rotate90 over twelve shapes and both destination shapes for each, and the refusals held to the system's codes"
+    }
+  ]
+}

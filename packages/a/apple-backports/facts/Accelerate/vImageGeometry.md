@@ -279,3 +279,34 @@ That also settles what the corpus's five `rotate90` functions need: `vImageRotat
 `vImageRotate90_ARGB16U` at 7.0, and `vImageRotate90_ARGB16F`, `vImageRotate90_CbCr16F` and
 `vImageRotate90_Planar16F` at 15.0 - the loop above over their pixel type, the three half-precision ones
 using the two conversions now in the tree from the conversion band.
+
+## The five `rotate90` functions: written, and the differential is red
+
+`Accelerate/vImageGeometry7.m` and `Accelerate/vImageGeometry15.m` carry the five functions the corpus asks
+for, over the mapping table above, and `tests/backports/host/rotate90` holds them against the host's own
+over twelve shapes and both destination shapes for each. **The differential runs 655 checks and 208 of them
+fail**, and the failures are all one bug: the *axis assignment* inside `charon_turn`.
+
+The eight measured shapes agreed, and the differential reaches twelve - and the four it adds, 7x1, 1x7, 1x1
+and the degenerate single-row and single-column cases, are where it breaks. A quarter turn's mapping mixes
+the two axes: for constant 1 the first component of the source coordinate comes from the destination's
+*column* and the second from its *row*, and `charon_turn` then range-tests the first against the source's
+**width** and the second against its **height**. For a source whose two extents differ, that test is applied
+to the wrong axis - for a 7x1 source the second component is a *column* index and is tested against a height
+of one - so the port answers the backColor where the system answers a source pixel. Where the two extents
+happen to agree, or where the sample lands inside either way, the bug is invisible, which is exactly why the
+eight-shape probe missed it and a twelfth shape caught it.
+
+Two things are already known from the same run and are recorded here rather than fixed blind:
+
+- **The flag set is wider than the header's.** The system **accepts** `0x40000000` and
+  `kvImageGetTempBufferSize` for these functions, answering `kvImageNoError` where the port answers
+  `kvImageUnknownFlagsBit`. The header's list for the geometry functions is `kvImageEdgeExtend`,
+  `kvImageBackgroundColorFill`, `kvImageDoNotTile` and `kvImageNoFlags`, and the port implements that list.
+  Per COORDINATION §5 the system wins, so the accepted set has to be measured rather than taken from the
+  header - one loop over the flag bits settles it.
+- **`kvImageEdgeExtend` agrees with the port** on the twelve shapes it was tried on, which is the one flag
+  the header describes and the port implements by clamping to the source's edge.
+
+So the family is written, the check is written, and the check is red on a named bug with a named cause. That
+is the state to pick up, and it is further along than not having written either.
