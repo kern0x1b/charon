@@ -2,7 +2,7 @@
 // storage a graph is built out of, and the numbers a program reads back from it.
 //
 // Every answer here was measured on the host's own MLCompute and is held to it case by case
-// (tests/backports/host/mlcompare); facts/MLCompute/Tensors.md carries the table and names the three
+// (tests/backports/host/mlcompute); facts/MLCompute/Tensors.md carries the table and names the three
 // places the port answers differently and why. What the measurements settled:
 //
 //   - a shape is reported outermost dimension first and the width last, each dimension varying faster

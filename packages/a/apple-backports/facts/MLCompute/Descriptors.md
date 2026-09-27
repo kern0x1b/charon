@@ -1,7 +1,7 @@
 # The ten descriptors, and the two host defects the port keeps
 
 Every default, every refusal and every array order below was measured on the host's own MLCompute
-and is held to it case by case by `tests/backports/host/mlcompare`, which asks each factory of each
+and is held to it case by case by `tests/backports/host/mlcompute`, which asks each factory of each
 class with the arguments that matter and prints what came back.
 
 ## The way an argument array is read

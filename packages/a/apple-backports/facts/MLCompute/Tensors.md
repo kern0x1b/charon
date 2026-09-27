@@ -1,7 +1,7 @@
 # The tensors: what a tensor of this port is made of, and every answer measured
 
 All of it read off the host's own MLCompute on macOS through Mac Catalyst, and held to it case by
-case by `tests/backports/host/mlcompare` - 377 cases, of which the tensor family is about two
+case by `tests/backports/host/mlcompute` - 377 cases, of which the tensor family is about two
 hundred. What is below is what the measurements settled; nothing here is reasoned from the
 header's comments.
 

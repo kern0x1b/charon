@@ -1,7 +1,7 @@
 # MLCLayer, the base of the thirty layers
 
 Everything here was measured on the host and is held to it case by case by
-`tests/backports/host/mlcompare`. Three answers are worth writing down because they are the ones a
+`tests/backports/host/mlcompute`. Three answers are worth writing down because they are the ones a
 program reads and none of them is the obvious one.
 
 ## The number a layer has

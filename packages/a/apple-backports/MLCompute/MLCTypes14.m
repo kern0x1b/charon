@@ -2,7 +2,7 @@
 // MLCompute program reads out of MLCPlatform.
 //
 // The strings are Apple's own, read by asking the host for each case in turn (facts/MLCompute/Values.md
-// holds the whole table, and tests/backports/host/mlcompare holds this file to it case by case). Nothing
+// holds the whole table, and tests/backports/host/mlcompute holds this file to it case by case). Nothing
 // here is spelled from the header's comments: "ElementwiseMin" for MLCArithmeticOperationMin and "Use
 // Padding Size" for MLCPaddingPolicyUsePaddingSize are what the framework answers, and they are not what
 // the case is called.

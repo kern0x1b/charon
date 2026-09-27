@@ -24,7 +24,7 @@ Every value in this delivery was read off the host's own MLCompute, on macOS, th
 Catalyst, by asking it and writing down what it said. `tests/backports/host/mlcompute` is that
 measurement turned into a check: one program of 377 cases, compiled once beside the framework and
 once beside the port's four translation units with every name they define renamed, and the two
-runs compared line by line. `sh tests/backports/host/mlcompare/run.sh` runs it.
+runs compared line by line. `sh tests/backports/host/mlcompute/run.sh` runs it.
 
 Three cases are meant to differ and run.sh says so every time: `+[MLCDevice gpuDevice]`,
 `+[MLCDevice aneDevice]` and `+[MLCDevice deviceWithType:MLCDeviceTypeGPU]`. The host has a Metal

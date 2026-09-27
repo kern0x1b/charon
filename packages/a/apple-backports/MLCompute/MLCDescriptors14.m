@@ -1,7 +1,7 @@
 // The ten value objects an MLCompute layer is described with, and the layer base they and the layers share.
 //
 // Every default and every refusal here was measured on the host's own MLCompute and is held to it case by
-// case (tests/backports/host/mlcompare); facts/MLCompute/Descriptors.md carries the table. The three
+// case (tests/backports/host/mlcompute); facts/MLCompute/Descriptors.md carries the table. The three
 // shapes of answer worth naming:
 //
 //   - a descriptor is a value: -copyWithZone: gives another one with the same numbers, and every
