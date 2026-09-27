@@ -668,14 +668,24 @@ the path when it starts and when it changes, on the queue it was given, and says
 satisfiable, the interface (`en0`, or cellular and expensive) and the addresses. Connections and the rest of Network are
 not carried. See `facts/Network/NWPathMonitor.md`.
 
-`libNetworkBackports.dylib`, built with the `network` config, carries the connection of Network: `nw_endpoint_create_host`
-and its three calls, `nw_parameters_create_secure_udp`, `nw_connection_create` and its queue, path, viability, start and
-cancel, over a real BSD datagram socket - the host is resolved with `getaddrinfo`, the socket is opened and connected,
-and viable means the kernel has a route to that address and the path above is satisfied. It reports its path through
-the path monitor the Foundation library carries, and it defines the SDK's two sentinel blocks, which a release with no
-Network binds as the null, as the empty blocks they are documented to be. The stream parameters factories and the
-connection's data calls are absent rather than faked. It is what the Matter framework's device browser needs, and its
-own use of Network is exactly this. See `facts/Network/NWConnection.md`.
+`libNetworkBackports.dylib`, built with the `network` config, carries the connection of Network: `nw_connection_create`
+and its queue, path, viability, start and cancel, over a real BSD datagram socket - the host is resolved with
+`getaddrinfo`, the socket is opened and connected, and viable means the kernel has a route to that address and the
+path above is satisfied. It reports its path through the path monitor the Foundation library carries. The stream
+parameters factories and the connection's data calls are absent rather than faked. It is what the Matter framework's
+device browser needs, and its own use of Network is exactly this. See `facts/Network/NWConnection.md`.
+
+The same library carries the objects of Network's C API, which are one file per family and per release
+(`nw12-core.m` for the endpoint, the content context, the identity of a protocol and the options of IP, TCP, TLS and
+UDP; `nw12-parameters.m`; `nw13-txtrecord.m`, `nw13-ws.m`, `nw13-framer.m`, `nw13-reports.m` and the browse and
+advertise descriptors; `nw14-privacy.m`, `nw14-group.m` and the resolution reports; `nw15-quic.m`; `nw16-*.m`;
+`nw17-proxy.m`; `nw26-*.m`), with their state in `CharonNW.h` and the pieces of C every file needs in
+`CharonNWSupport.c`. The file per release is what `modules/apple/backports.lua` asks for: an object that exports the
+symbols of two introductions is split from under a band. What each of them answers was measured against the host's own
+Network - an empty host is an endpoint only when its port names something, a final content context takes no more
+change, two framer definitions of one name are different protocols, a record of no bytes is no record - and the two
+places where the host contradicts its own header are written down where they are answered for. See
+`facts/Network/NWObjects.md`.
 
 ### Not carried, and why
 

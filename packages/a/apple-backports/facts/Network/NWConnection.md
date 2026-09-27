@@ -5,6 +5,11 @@ connected to the first address that answers. `nw_path_monitor_*`, `nw_path_*` an
 Foundation library (`facts/Network/NWPathMonitor.md`), and this connection reports its path through them, so a
 program that only asks "is that peer reachable from here" needs nothing of Network beyond this file.
 
+The endpoint it is made of and the parameters it is given are the port's own objects of the families in
+`NWObjects.md` (`nw12-core.m` and `nw12-parameters.m`), which is where the calls that make them now live: the
+connection's own file holds the connection, and the two sentinels and the classes they were declared in moved to the
+files that own them, so that nothing is defined twice.
+
 This is the surface the Matter framework's device browser needs: `src/darwin/Framework/CHIP/MTRDeviceConnectivityMonitor.mm`
 of connectedhomeip v1.6.1.0 calls `nw_endpoint_create_host`, `nw_parameters_create_secure_udp`,
 `nw_connection_create`, `nw_connection_set_queue`, `nw_connection_set_path_changed_handler`,

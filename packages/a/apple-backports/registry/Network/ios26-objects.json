@@ -1,0 +1,45 @@
+{
+  "framework": "Network",
+  "entries": [
+    {
+      "api": "nw_parameters_get_allow_ultra_constrained()",
+      "kind": "function",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "whether a connection of these parameters may go over an ultra-constrained network",
+      "facts": "facts/Network/NWObjects.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+    },
+    {
+      "api": "nw_parameters_set_allow_ultra_constrained()",
+      "kind": "function",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "whether a connection of these parameters may go over an ultra-constrained network",
+      "facts": "facts/Network/NWObjects.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+    },
+    {
+      "api": "nw_path_get_link_quality()",
+      "kind": "function",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "how good the link under the path is, which this release cannot measure",
+      "facts": "facts/Network/NWObjects.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+    },
+    {
+      "api": "nw_path_is_ultra_constrained()",
+      "kind": "function",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "whether the path is an ultra-constrained network, which this release does not have",
+      "facts": "facts/Network/NWObjects.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+    }
+  ]
+}
