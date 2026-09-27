@@ -52,16 +52,17 @@ for minimum in $minimums; do
                 xmake emulate -d $device -r "$release" run /usr/libexec/display-probe $mode > "run-$name.log" 2>&1 || true
                 # A run that faults is the datum and its log says so; a run that got no report at all (boot-blocked, a timeout, an
                 # emulator that did not start) is not one. The report of a program run as a command is its `UIScreen screens` line, even
-                # when the display link then faults; the `app` mode's datum is the run's own verdict, boot-blocked among them.
+                # when the display link then faults; the `app` mode's datum is the run's own verdict, which the emulator prints as `pass on
+                # ...` or, for every other state, as `error: <state>(...) on ...`; a timeout is not a datum, so it is not matched.
                 case "$mode" in
-                    *app*) pattern='^(pass|fail|crash|timeout|boot-blocked)' ;;
+                    *app*) pattern='^(pass|error: (fail|crash|boot-blocked))' ;;
                     *)    pattern='^UIScreen screens' ;;
                 esac
                 if ! sed 's/\x1b\[[0-9;]*m//g' "run-$name.log" | grep -aEq "$pattern"; then
                     unreported=$((unreported + 1))
                     echo "min $minimum pkg $package, $mode: NO REPORT in run-$name.log"
                 fi
-                echo "== $release on $device, apple_minimum $minimum, package $package, $mode: $(sed 's/\x1b\[[0-9;]*m//g' "run-$name.log" | grep -a '^UIScreen screens\|^display link\|^FAULT\|^a UI\|^a CAT\|^waited\|^pass\|^fail\|^crash\|^timeout\|^error' | tr '\n' '|')"
+                echo "== $release on $device, apple_minimum $minimum, package $package, $mode: $(sed 's/\x1b\[[0-9;]*m//g' "run-$name.log" | grep -a '^UIScreen screens\|^display link\|^FAULT\|^a UI\|^a CAT\|^waited\|^pass\|^error' | tr '\n' '|')"
             done
             [ "$unreported" -eq 0 ] || exit 1
         ) || failed=1
