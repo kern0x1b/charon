@@ -102,6 +102,16 @@
       "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
     },
     {
+      "api": "nw_path_monitor_prohibit_interface_type()",
+      "kind": "function",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a kind of interface this monitor will not report a path over",
+      "facts": "facts/Network/NWPath.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428) for the call's own meaning, and the port's path monitor for what it does to the path: the type is kept in the monitor and left out of the interface list it works out for every path (facts/Network/NWPath.md) - the port's own file, NWPathMonitor14.m, beside the monitor's iOS 12 calls; the device check of the monitor itself is tests/backports/host/network and tests/backports/device/nwpath.m"
+    },
+    {
       "api": "nw_privacy_context_create()",
       "kind": "function",
       "introduced": "14.0",
