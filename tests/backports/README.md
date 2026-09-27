@@ -39,6 +39,9 @@ freshly made UUIDs in its header on every run.
 
     sh host/url/run.sh
     sh host/session/run.sh      starts host/session/server.py on a free 127.0.0.1 port
+    sh host/coremedia7/run.sh   holds CMTimeMultiplyByRatio to the host's own over 700k answers: it must be the
+                                same wherever a CMTime holds the exact rational, and the corner where none does is
+                                measured against the exact value (facts/CoreMedia/CMTimeMultiplyByRatio.md)
     sh host/gamecontroller/run.sh   the port of the GameController model against the host's GameController, 8576 lines
     sh host/alert/run.sh
     sh host/layout/run.sh
