@@ -38,6 +38,21 @@ repository's reader can walk: `objc.binary_inventory` finds no classes in it, th
 built here from source. The class and function counts could be had from its exports, which is where the first run of
 this measurement came from; the members could not be had at all until the framework was loaded instead.
 
+## The state of the build, measured
+
+- **All 123 sources compile for `armv7-apple-ios6.1.3`**: the 100 `MTR*` Objective-C++ of the framework and the 23
+  app-layer C++ files its own Xcode target carries, read out of that target's Sources phase and not guessed. The
+  objects are in the package's own source tree; `tools/matter-framework.sh` builds and links them there in minutes
+  instead of a whole package resolve.
+- **The link fails in the linker, not in Matter**: `ld64 956.6` (charon's cctools-port) aborts with
+  `Assertion failed: (it != _dylibToOrdinal.end()), function dylibToOrdinal, file OutputFile.cpp, line 5214` while
+  encoding the symbol table, and it does so only when the port's `libc++.1.dylib` and `libc++abi.1.dylib` are linked:
+  with `-L -l`, with their full paths, with and without `-rpath`, and with either or both. Without them the link runs
+  to completion and reports only the undefined C++ symbols it must be given. So every undefined symbol the framework
+  had is resolved - the codegen data model, the Ember attribute storage, the descriptor cluster's init and shutdown
+  callbacks - and what is left is a linker assertion on a C++ runtime that the port itself ships and that its own
+  swift-runtime libraries link the same way.
+
 ## Behaviour, held to the host
 
 `tests/backports/host/matter/pure.m` is one program with no device on the other end, written so it compiles against
