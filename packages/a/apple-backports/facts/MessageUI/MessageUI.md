@@ -50,14 +50,29 @@ its dictionaries with the release's own strings. On this release the answer is a
 independent reasons - the composer cannot take an attachment, and the keys do not exist - and both are
 true.
 
-## The three that cannot do their work here
+## The three that are not carried at all
 
-- `-disableUserAttachments` hides affordances the release's sheet does not have, and
-  `subject` names a field it does not have. Both are `inert`, both say so once in the log.
-- `-setUPIVerificationCodeSendCompletion:` is the one-time-code sheet of iOS 17. The block reports
-  whether a code the user pasted was sent, and the system is what recognises the code. There is
-  nothing here that recognises one, so the block is copied, kept and never called. Calling it with
-  either answer would tell the application that something happened which did not.
+`-disableUserAttachments`, `subject` and `-setUPIVerificationCodeSendCompletion:` are registry entries
+with status `absent`, and the port carries no code for any of them. The reason is the same in each
+case and it is not "doing nothing is safe":
+
+- `-disableUserAttachments` hides affordances the iOS 7 compose sheet grew. This release's sheet has
+  none, so there is nothing to disable and the postcondition already holds.
+- `subject` names a field the release's composer does not have, and its Messages sends no MMS, so a
+  subject can be neither shown to the sender nor transmitted. A value kept here would be read back to
+  the application and never sent - the worst of both, and exactly the "silently different answer" that
+  COORDINATION.md §2 calls the most dangerous outcome there is.
+- `-setUPIVerificationCodeSendCompletion:` belongs to the one-time-code detection in the system
+  Messages app, a service that arrived with iOS 17. The block reports whether a code the user pasted
+  was sent, so a block the port kept would be a completion nothing could ever call.
+
+Carrying a selector for any of them would mean storing a value nothing can act on, which is the silent
+fake. Not carrying it is the port's own answer for a member of a release class the release cannot
+honour: `absent`, the accessor not declared, `respondsToSelector:` answering NO, and an unchecked call
+a crash the application avoids by asking `+canSendSubject` / `+canSendAttachments` - which the port
+does carry, and which answer NO for the same measured reason. The port has 589 absent methods and 727
+absent properties of this shape already; `registry/MediaPlayer/absent_MediaPlayer.json` is the
+largest.
 
 ## The two collaboration factories
 

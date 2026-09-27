@@ -76,39 +76,6 @@
       "effect": "a real UIVibrancyEffect over UIBlurEffectStyleLight, equal to the primary widget effect",
       "facts": "facts/NotificationCenter/NotificationCenter.md",
       "source": "the header of NCWidgetProviding.h in SDK 26.2 (deprecated ios(8.0, 10.0) in favour of widgetEffectForVibrancyStyle:); the blur style values from UIBlurEffect.h in SDK 26.2. Reasoned, not measured against a host"
-    },
-    {
-      "api": "-[NSExtensionContext widgetLargestAvailableDisplayMode]",
-      "kind": "property",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the mode an extension declares it can be shown in is the extension's own statement, and the port's NSExtensionContext keeps state of its own",
-      "effect": "the declared mode is kept and read back; before anything is declared it reads NCWidgetDisplayModeCompact, which is the enumeration's own zero value and the mode a widget is in when it is first shown",
-      "facts": "facts/NotificationCenter/NotificationCenter.md",
-      "source": "the header of NCWidgetProviding.h in SDK 26.2; the enumeration's order from NCWidgetTypes.h in SDK 26.2 (Compact, then Expanded, with Compact documented as the fixed height)"
-    },
-    {
-      "api": "-[NSExtensionContext widgetActiveDisplayMode]",
-      "kind": "property",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "inert",
-      "reason": "which mode a widget is being shown in is a fact about a widget being shown, and this release shows none: there is no Notification Center to show it in",
-      "effect": "answers the mode the extension declared available, and says so once in the log the first time it is read; there is no other mode to be in on a release that never shows a widget, and a number of the port's own would be an invention",
-      "facts": "facts/NotificationCenter/NotificationCenter.md",
-      "source": "the header of NCWidgetProviding.h in SDK 26.2"
-    },
-    {
-      "api": "-[NSExtensionContext widgetMaximumSizeForDisplayMode:]",
-      "kind": "method",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "inert",
-      "reason": "the size is the Notification Center's own geometry for that mode, and iOS 6 has no Notification Center and therefore no such geometry; the two numbers would have to come from the port",
-      "effect": "answers CGSizeMake(0, 0) - the absence of a size - and says so once in the log the first time it is called; the two numbers a real Notification Center would give are its own geometry, and there is none here to read them from",
-      "facts": "facts/NotificationCenter/NotificationCenter.md",
-      "source": "the header of NCWidgetProviding.h in SDK 26.2; CGSizeMake and not CGSizeZero, which is an exported symbol in a modern CoreGraphics the release's cache does not resolve"
     }
   ]
 }

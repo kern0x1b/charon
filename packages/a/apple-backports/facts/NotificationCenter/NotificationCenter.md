@@ -21,25 +21,23 @@ This is the shape the registry's README already allows for MediaPlayer's
 `MPRemoteCommandCenter` (`registry/MediaPlayer`, "real, addressable command objects that never fire,
 honestly, not fabricated ones").
 
-## The display modes, and the one number the port will not invent
+## The three display-mode members, none of them carried
 
 `NCWidgetDisplayMode` is two cases, and `NCWidgetTypes.h` documents the first as the fixed height and
-the second as the variable one. `widgetLargestAvailableDisplayMode` is the extension's own
-declaration, so it is implemented: kept, read back, and defaulting to the enumeration's own zero
-value, Compact, which is the mode a widget is in when it is first shown.
+the second as the variable one. All three members that speak it -
+`NSExtensionContext.widgetLargestAvailableDisplayMode`, `-widgetActiveDisplayMode` and
+`-widgetMaximumSizeForDisplayMode:` - are registry entries with status `absent`, and the port carries
+no code for any of them.
 
-`widgetActiveDisplayMode` and `widgetMaximumSizeForDisplayMode:` are questions about a widget *being
-shown*, and the sizes are the panel's geometry. There is no panel here, so:
-
-- the active mode answers the declared mode - the only mode there is on a release that shows nothing -
-  and says once in the log that this is why. A different number would be the port's own invention.
-- the maximum size answers `CGSizeMake(0, 0)`, the absence of a size, and says once in the log that
-  this release's Notification Center has no geometry. Two invented dimensions would be worse than
-  none. It is `CGSizeMake` and not the `CGSizeZero` constant: the constants `CGSizeZero` and
-  `CGRectZero` are exported symbols in a modern CoreGraphics and the release's own cache does not
-  resolve them - the first gate run of this delivery found `_CGRectZero` and `_CGRectGetWidth`
-  undefined at link time, and the port spells both the way the rest of the port does
-  (`CGRectMake(0, 0, w, h)` and `.size.width`).
+All three are about a widget being shown in a panel, and there is no panel: no Notification Center,
+no Today widget, no widget host. A previous pass of this file had the active mode answer the declared
+mode and the maximum size answer `CGSizeMake(0, 0)`, and both of those were wrong in the same way -
+one derived a number from a declaration nothing would honour, the other produced a size the port made
+up. A `CGSizeZero` here also would not have been the honest zero: the constant is an exported symbol
+in a modern CoreGraphics that the release's cache does not resolve, which this delivery's first gate
+run found for `_CGRectZero` and `_CGRectGetWidth`. What the port does instead is carry none of the
+three, so the application is told by `respondsToSelector:` that a release with no panel cannot answer
+them.
 
 ## The four vibrancy factories, and what is *not* measured
 

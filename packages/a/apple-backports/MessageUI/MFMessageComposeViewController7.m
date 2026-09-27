@@ -66,17 +66,25 @@ static void CharonRecordAttachment(MFMessageComposeViewController *controller, N
     objc_setAssociatedObject(controller, @selector(attachments), [attachments copy], OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-// The two properties are declared again here, widened where the header has them readonly, because
-// @dynamic in a category needs a declaration of its own to answer to; the accessors below are the
-// ones the release's class and this category share.
+// The property is declared again here, widened where the header has it readonly, because @dynamic in
+// a category needs a declaration of its own to answer to; the accessor below is the one the release's
+// class and this category share.
+//
+// What is NOT here is as deliberate. -disableUserAttachments hides affordances this release's compose
+// sheet does not have, so there is nothing to hide; subject names a field the release's composer does
+// not have and its Messages sends no MMS, so a subject can be neither shown nor sent; and
+// -setUPIVerificationCodeSendCompletion: belongs to the one-time-code detection in the system Messages
+// app, which is a service this release has no path to. A selector the port carried for any of those
+// would be one that stores a value nothing can act on - the silent fake COORDINATION.md §2 forbids -
+// so they are registry entries with status absent, and the header's own +canSendSubject,
+// +canSendAttachments are what an application reads to find out.
 @interface MFMessageComposeViewController (Charon7)
 @property (nonatomic, copy, nullable) NSArray<NSDictionary *> *attachments;
-@property (nonatomic, copy, nullable) NSString *subject;
 @end
 
 @implementation MFMessageComposeViewController (Charon7)
 
-@dynamic attachments, subject;
+@dynamic attachments;
 
 + (BOOL)canSendSubject
 {
@@ -129,41 +137,6 @@ static void CharonRecordAttachment(MFMessageComposeViewController *controller, N
         [attachments addObject:@{urlKey: value, nameKey: name}];
     }];
     return [attachments copy];
-}
-
-- (void)disableUserAttachments
-{
-    charon_say_once_for(@"MFMessageComposeViewController.disableUserAttachments",
-                        @"CharonMessageUI: this release's compose controller has no attachment row to disable - "
-                        @"+canSendAttachments answers NO, so the camera and photo affordances it would hide are not there.");
-}
-
-- (NSString *)subject
-{
-    return objc_getAssociatedObject(self, @selector(subject));
-}
-
-- (void)setSubject:(NSString *)subject
-{
-    objc_setAssociatedObject(self, @selector(subject), subject, OBJC_ASSOCIATION_COPY_NONATOMIC);
-    if (![self.class canSendSubject])
-        charon_say_once_for(@"MFMessageComposeViewController.subject",
-                            @"CharonMessageUI: this release's compose controller has no subject field, so the value is "
-                            @"kept and read back but never shown to the sender.");
-}
-
-// The verification-code sheet arrived with iOS 17, and it is the system that recognises the code in
-// what the user typed. There is nothing here that recognises one, so the block is kept and never
-// called: the completion says whether a code was sent, and calling it with either answer would tell
-// the application that something happened which did not.
-- (void)setUPIVerificationCodeSendCompletion:(void (^)(BOOL didSend))completion
-{
-    objc_setAssociatedObject(self, @selector(setUPIVerificationCodeSendCompletion:), [completion copy],
-                             OBJC_ASSOCIATION_COPY_NONATOMIC);
-    if (completion)
-        charon_say_once_for(@"MFMessageComposeViewController.setUPIVerificationCodeSendCompletion:",
-                            @"CharonMessageUI: the verification-code completion is kept and never called - this release's "
-                            @"Messages has no one-time-code detection, so there is no code for it to send.");
 }
 
 // The composer this release has has no row a collaboration attachment could go into: the document

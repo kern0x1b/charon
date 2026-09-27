@@ -72,10 +72,9 @@
       "kind": "method",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "what it hides is the camera and photo affordances the compose sheet grows in iOS 7; this release's sheet has no such affordance to hide, and doing nothing is a safe reading of it - the same attachments are unreachable either way",
-      "effect": "does nothing, and says so once in the log the first time it is called: this release's compose controller has no attachment row, and +canSendAttachments answers NO",
-      "facts": "facts/MessageUI/MessageUI.md",
+      "status": "absent",
+      "reason": "what it hides is the camera and photo affordances the iOS 7 compose sheet grew; this release's sheet has none, and the release's own class has no attachment method at all (measured in the armv7 6.1.3 cache), so there is nothing to disable and the postcondition the method exists to reach already holds",
+      "effect": "the selector is not carried: respondsToSelector: for disableUserAttachments answers NO, and an unchecked call is a crash the application must avoid by asking +canSendAttachments, which answers NO for the same reason",
       "source": "the header of MFMessageComposeViewController.h in SDK 26.2; the release's own armv7 6.1.3 ObjC metadata"
     },
     {
@@ -83,10 +82,9 @@
       "kind": "property",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the release's compose controller has no subject field, so there is nothing to show a value in; keeping and returning what the application set is the most a controller with no field can do",
-      "effect": "reads back what was set, and says so once in the log the first time a subject is set: this release's compose controller has no subject field, so the value is kept but never shown to the sender",
-      "facts": "facts/MessageUI/MessageUI.md",
+      "status": "absent",
+      "reason": "the release's compose controller has no subject field (its own class carries no subject accessor at all, measured in the armv7 6.1.3 cache) and its Messages sends no MMS, so a subject can be neither shown to the sender nor transmitted; a value kept here would be read back to the application and never sent, which is the worst of both",
+      "effect": "neither accessor is carried: respondsToSelector: for subject and setSubject: answers NO, and an unchecked call is a crash the application must avoid by asking +canSendSubject, which answers NO for the same reason",
       "source": "the header of MFMessageComposeViewController.h in SDK 26.2; the release's own armv7 6.1.3 ObjC metadata, whose MFMessageComposeViewController has no subject accessor"
     },
     {
@@ -105,10 +103,9 @@
       "kind": "method",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the block reports whether a verification code the user pasted was sent, and it is the system that recognises such a code in what was typed; iOS 6's Messages has no such detection, so there is no code for the block to be called about",
-      "effect": "the block is copied and kept, and is never called; it says so once in the log the first time one is set. Calling it with either YES or NO would tell the application that something happened which did not",
-      "facts": "facts/MessageUI/MessageUI.md",
+      "status": "absent",
+      "reason": "the block reports whether a verification code the user pasted was sent, and recognising such a code is a service in the system Messages app that arrived with iOS 17; this release's Messages has none and the port has no path to one, so a block the port kept would be a value nothing could ever call",
+      "effect": "the selector is not carried: respondsToSelector: answers NO, and an unchecked call is a crash the application must avoid",
       "source": "the header of MFMessageComposeViewController+UPI.h in SDK 26.2"
     },
     {

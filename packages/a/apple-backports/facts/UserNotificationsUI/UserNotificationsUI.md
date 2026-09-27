@@ -14,11 +14,16 @@ offered for the notification; it is copied in, copied out, and an extension that
 empty array rather than nil. `mediaPlayingStarted` and `mediaPlayingPaused` record the state of the
 extension's own media on the context, so a host that existed would see it.
 
-**The message-to-the-host half, honestly inert.** `performNotificationDefaultAction` and
-`dismissNotificationContentExtension` act on a notification and on a presented content extension that
-this release never delivers and never presents. They do nothing, and each says so once in the log
-the first time it is called - the `inert` status the registry's own README allows for "a hint to a
-scheduler it does not run", applied to an extension host it does not run.
+**The message-to-the-host half, not carried at all.** `performNotificationDefaultAction`,
+`dismissNotificationContentExtension`, `mediaPlayingStarted` and `mediaPlayingPaused` are registry
+entries with status `absent`, and the port carries no code for any of them. Each needs something this
+release does not have - a delivered notification to act on, a presented content extension to dismiss,
+and a system that takes playback controls in a notification and plays a sound with it. Carrying them
+would mean storing a media state or an action list that nothing can act on, which is the silent fake
+COORDINATION.md §2 forbids; `mediaPlayingStarted` keeping a flag that no reader ever asks for was
+precisely that. Not carrying them is the port's own answer for a member of a class the release cannot
+honour: the accessor is not declared, `respondsToSelector:` answers NO, and an unchecked call is a
+crash the application must avoid.
 
 ## The protocol, and why it is `absent` rather than `implemented`
 

@@ -17,10 +17,9 @@
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the action belongs to a notification the system delivered to an extension, and iOS 6 delivers no notification to an extension: there is no notification and no action to perform",
-      "effect": "does nothing, and says so once in the log the first time it is called - the same answer the port's NSExtensionContext already gives for completing a request, cancelling one and opening a URL",
-      "facts": "facts/UserNotificationsUI/UserNotificationsUI.md",
+      "status": "absent",
+      "reason": "it is a message to the extension host, and this release has no app extensions at all: nothing makes an NSExtensionContext for an extension and nothing acts on what an extension says; there is no notification, so there is no default action to perform",
+      "effect": "the selector is not carried: respondsToSelector: answers NO, and an unchecked call is a crash the application must avoid",
       "source": "the header of UNNotificationContentExtension.h in SDK 26.2; facts/Foundation/NSExtensionContext.md"
     },
     {
@@ -28,10 +27,9 @@
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "there is no content extension to dismiss: the release runs no extension host, and the port's NSExtensionContext holds no presented controller either",
-      "effect": "does nothing, and says so once in the log the first time it is called",
-      "facts": "facts/UserNotificationsUI/UserNotificationsUI.md",
+      "status": "absent",
+      "reason": "it is a message to the extension host, and this release has no app extensions at all: nothing makes an NSExtensionContext for an extension and nothing acts on what an extension says, and nothing ever presents a content extension for it to dismiss",
+      "effect": "the selector is not carried: respondsToSelector: answers NO, and an unchecked call is a crash the application must avoid",
       "source": "the header of UNNotificationContentExtension.h in SDK 26.2; facts/Foundation/NSExtensionContext.md"
     },
     {
@@ -39,10 +37,9 @@
       "kind": "method",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "it tells the system the extension's media has started, so the system can put playback controls in the notification and stop the sound with it; this release's system takes no playback controls in a notification, and there is no notification to take them in",
-      "effect": "the started state is kept on the context, and nothing is shown for it; says so once in the log the first time it is called",
-      "facts": "facts/UserNotificationsUI/UserNotificationsUI.md",
+      "status": "absent",
+      "reason": "it is a message to the extension host, and this release has no app extensions at all: nothing makes an NSExtensionContext for an extension and nothing acts on what an extension says; the notification sound it would stop or start playing belongs to that same system, and this release's system never plays a sound for a notification",
+      "effect": "the selector is not carried: respondsToSelector: answers NO, and an unchecked call is a crash the application must avoid",
       "source": "the header of UNNotificationContentExtension.h in SDK 26.2"
     },
     {
@@ -50,10 +47,9 @@
       "kind": "method",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the other half of the same message, and the same wall: what it would stop is a sound this release's system never started for a notification",
-      "effect": "the paused state is kept on the context, and nothing is stopped for it; says so once in the log the first time it is called",
-      "facts": "facts/UserNotificationsUI/UserNotificationsUI.md",
+      "status": "absent",
+      "reason": "it is a message to the extension host, and this release has no app extensions at all: nothing makes an NSExtensionContext for an extension and nothing acts on what an extension says; the notification sound it would stop or start playing belongs to that same system, and this release's system never plays a sound for a notification",
+      "effect": "the selector is not carried: respondsToSelector: answers NO, and an unchecked call is a crash the application must avoid",
       "source": "the header of UNNotificationContentExtension.h in SDK 26.2"
     }
   ]
