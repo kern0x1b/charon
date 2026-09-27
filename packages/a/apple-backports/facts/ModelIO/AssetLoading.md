@@ -93,22 +93,32 @@ own triangles pass through, widened by the patch radius.
 - **Measured**: that iOS 6 carries no ModelIO (the release's own selector table and dyld cache, read
   directly). That the port's own code is what answers every row below 7.0 - the gate builds it and
   reads the built libraries' exports and Objective-C metadata.
-- **Measured**: the host differential, `tests/backports/host/modelio/differential.m`, which builds
-  the port's own sources for macOS with their selectors prefixed and asks the host's ModelIO and the
-  port's the same questions in one process: the animated values' samples and interpolation, the
-  transform's decomposition and its stack's product, the plane, box, ellipsoid, cylinder and cone
-  generators' vertex and index counts and their bounding boxes, the submesh's index re-typing, the
-  material's property types and its luminance, the texture's texel data under both origins, the
-  object's path and its children, and the voxel array's set operations. Its verdict line is in the
-  delivery.
+- **Not measured**: **there is no host differential for this pass, and the ordinary co-resident one
+  does not work for ModelIO.** `tests/backports/host/ciimage` builds the port's own sources for
+  macOS with their selectors prefixed and asks the system and the port in one process; that works
+  there because what the port adds to `CIImage` and `CIFilter` is categories, so the port's code runs
+  on the system's objects. What this pass adds is *re-implementations* of the SDK classes, so in one
+  process the system's `MDLAsset` and the port's `MDLAsset` are the same name, the system's wins, and
+  the port's methods are not there - measured, not reasoned: building the sources that way and
+  running the probe ends in `-[MDLAnimatedScalar charonHost_floatAtTime:]: unrecognized selector sent
+  to instance`. Renaming the port's classes does not fix it either, because ModelIO's own constants
+  (`MDLVertexAttributePosition` and the rest) are exported symbols of the host framework and would
+  then not resolve. The shape that does work is the one `tests/backports/host/scenekit` uses: a host
+  oracle that records Apple's own answers, and a device test that holds the port to them. That is
+  what the next pass needs, over: the animated values' samples and interpolation, the decomposition
+  of a transform and the product of a stack, the vertex count, index count and bounding box of the
+  plane, box, ellipsoid, cylinder and cone generators, `indexBufferAsIndexType:`, the type and the
+  luminance of a material property, the texels of a texture under both origins, an object's path and
+  children, the voxel array's set operations, and the three asset readers over one `.obj`, one `.ply`
+  (ASCII and binary) and one `.usda`.
 - **Not measured on the device**: no run on an iPad 2 running 6.1.3 and no run under `xmake emulate`
-  went with this pass. The emulator call test is named in the delivery as still to come. What the
-  device would add is the one thing the host cannot answer: that these classes' selectors resolve
-  against the release's own runtime and a dylib of the port's loads beside them.
+  went with this pass. What the device adds is the one thing the host cannot answer: that these
+  classes' selectors resolve against the release's own runtime and a dylib of the port's loads beside
+  them.
 - **Reasoned, not measured**: the black-body curve of a colour-temperature swatch, the value noise
   and cellular noise fields, and the cone's slope normal. These are the port's own implementations of
-  what the header names; they are not Apple's algorithms and the host differential does not compare
-  them, because the host's own values for them are Apple's.
+  what the header names; they are not Apple's algorithms and no check here compares them, because the
+  host's values for them are Apple's.
 
 ## Where the boundary of this pass is
 

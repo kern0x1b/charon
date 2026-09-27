@@ -1,7 +1,7 @@
 #import <ModelIO/ModelIO.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import <ImageIO/ImageIO.h>
-#import <MobileCoreServices/MobileCoreServices.h>
+#import <CoreServices/CoreServices.h>
 
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
