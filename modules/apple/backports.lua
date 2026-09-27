@@ -974,6 +974,13 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
     -- band keeps then needs none of it, or the link names the symbols that do.
     local real_paths = framework_install_path(library, releases)
     local absent = {}
+    -- A system library the library's own sources call into, a SQLite that HealthKit's store is: it is
+    -- linked as -l and the SDK carries its .tbd. Every release a band that keeps those sources runs
+    -- on has the library, which the import check below reads off the cache and would otherwise name
+    -- as unresolved.
+    for _, name in ipairs(library.system or {}) do
+        table.insert(arguments, "-l" .. name)
+    end
     for _, framework in ipairs(library.frameworks) do
         if real_paths[framework] then
             table.join2(arguments, {"-framework", framework})
@@ -1024,11 +1031,6 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
 =======
     os.vrunv(driver(opt, arguments))
     local embedded
-    -- A system library the library's own sources call into: linked as -l, and every release of a
-    -- band that carries those sources has it, which the import check below answers for.
-    for _, name in ipairs(library.system or {}) do
-        table.insert(arguments, "-l" .. name)
-    end
     for _, framework in ipairs(library.frameworks) do
         local real = real_paths[framework]
         if real then
