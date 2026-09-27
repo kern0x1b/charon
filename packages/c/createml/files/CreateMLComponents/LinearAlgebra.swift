@@ -277,9 +277,21 @@ public struct RowMatrix {
         return Int(info)
     }
 
-    /// A Cholesky factor of a symmetric positive definite matrix, in its lower triangle, by the
-    /// system's own LAPACK. `info > 0` means the leading minor of that order is not positive
-    /// definite — the caller has a design matrix that is rank-deficient, and has to say so.
+    /// A Cholesky factor of a symmetric positive definite matrix, by the system's own LAPACK.
+    /// `info > 0` means the leading minor of that order is not positive definite — the caller has a
+    /// rank-deficient design matrix, and has to say so.
+    ///
+    /// The factor lands in this matrix's **upper** triangle, and the reason is worth stating because
+    /// it is silent when it is wrong: **LAPACK is column-major and `RowMatrix` is row-major.**
+    /// Handing LAPACK a row-major buffer asks it for the *transpose* of what is in it, and for a
+    /// symmetric matrix the transpose is the same matrix — so the numbers come out right while the
+    /// triangle is the other one in memory. LAPACK's `L[i][j]`, `i > j`, is at buffer index
+    /// `i + n*j`, which in this matrix's row-major numbering is the cell `[j][i]`: the upper
+    /// triangle. A factor read from the lower one is a plausible wrong number and not a failure.
+    ///
+    /// Every other call here is CBLAS, which is told the order in `CblasRowMajor` and is unaffected.
+    /// The LU solve is the only other LAPACK call, and its *result* is unaffected for the same
+    /// reason — the normal matrix is symmetric, so solving its transpose solves it.
     @discardableResult
     public static func cholesky(_ matrix: inout RowMatrix) -> Int {
         precondition(matrix.isSquare, "the matrix is \(matrix.rows)x\(matrix.columns), not square")
@@ -293,15 +305,57 @@ public struct RowMatrix {
         return Int(info)
     }
 
-    /// The least-squares solution of `A x = b` in the ridge form every fit here uses: the normal
-    /// equations with `penalty` added to the diagonal.
+    /// The solution of `L L' x = b` from the factor `cholesky` wrote, by the two substitutions the
+    /// system is made of — the forward one first, then the backward one, because the second cannot
+    /// start until the first has finished.
     ///
-    /// The normal equations rather than a QR, because the ridge term is a diagonal and a Cholesky
-    /// factor of `A'A + penalty*I` takes it directly, and because the penalty is what keeps a
-    /// rank-deficient design matrix from being unsolvable rather than merely badly conditioned. The
-    /// cost is the squaring of the condition number; the answer this returns is the one the ridge
-    /// estimator's own objective is the minimum of, and a ridge fit is defined by that objective
-    /// and not by the route taken to it.
+    /// `L` is read through the upper triangle `cholesky` filled: its diagonal is the same cell either
+    /// way, its strictly-lower `L[i][j]` is `upper[j][i]`, and its strictly-upper is zero. Written
+    /// that way rather than as a matrix rebuilt from the triangle, because a copy is one more place
+    /// for the transposition to go wrong.
+    private static func triangularSolve(_ upper: RowMatrix, _ right: [Double]) -> [Double]? {
+        let n = upper.rows
+        guard n == upper.columns, right.count == n else { return nil }
+        var x = right
+        // Forward: L y = b.
+        for row in 0..<n {
+            var value = x[row]
+            for column in 0..<row {
+                value -= upper[column, row] * x[column]
+            }
+            let diagonal = upper[row, row]
+            guard diagonal != 0 else { return nil }
+            x[row] = value / diagonal
+        }
+        // Backward: L' x = y.
+        for row in Swift.stride(from: n - 1, through: 0, by: -1) {
+            var value = x[row]
+            for column in row + 1..<n {
+                value -= upper[row, column] * x[column]
+            }
+            let diagonal = upper[row, row]
+            guard diagonal != 0 else { return nil }
+            x[row] = value / diagonal
+        }
+        return x
+    }
+
+    /// The least-squares solution of `A x = b` in the ridge form every fit here uses: the normal
+    /// equations with `penalty` added to the diagonal, factored by Cholesky and solved through the
+    /// two triangular systems.
+    ///
+    /// The normal equations rather than a QR, and the reason is the ridge term: it is a diagonal, so
+    /// `A'A + penalty*I` is symmetric and — for a positive penalty — positive definite, which is
+    /// exactly the case the system's own `dpotrf_` factors. The cost is the squaring of the
+    /// condition number; the answer this returns is the one the ridge estimator's own objective is
+    /// the minimum of, and a ridge fit is defined by that objective and not by the route taken to it.
+    ///
+    /// With a penalty of zero the normal matrix is only positive definite when the design has full
+    /// column rank, and a Cholesky factor of a rank-deficient matrix reports it rather than
+    /// answering — so the factor's own `info` is what decides the route, and a matrix it refuses goes
+    /// to the LU solve, which reports singularity the same way. The two agree wherever both exist,
+    /// which is everywhere the factor succeeds; the fallback is for the case the factor is defined
+    /// to refuse and not for a second opinion.
     public static func ridgeLeastSquares(design: RowMatrix, targets: [Double], penalty: Double) -> (solution: [Double], info: Int) {
         precondition(design.rows == targets.count, "the design matrix has \(design.rows) rows, there are \(targets.count) targets")
         guard design.rows > 0, design.columns > 0 else { return ([], 0) }
@@ -309,9 +363,17 @@ public struct RowMatrix {
         for index in 0..<design.columns {
             normal[index, index] += penalty
         }
-        var residual = design.transposedMultiplied(by: targets)
-        let info = solve(&normal, rightHandSides: &residual)
-        return (info == 0 ? residual : [], info)
+        var right = design.transposedMultiplied(by: targets)
+        var factor = normal
+        if cholesky(&factor) == 0, let solution = triangularSolve(factor, right) {
+            return (solution, 0)
+        }
+        // The factor refused it, so the normal matrix is not positive definite: a rank-deficient
+        // design and no penalty to make it so. The LU solve is the system's answer for that, and it
+        // reports singularity through its own `info` rather than returning a plausible number.
+        var lu = normal
+        let info = solve(&lu, rightHandSides: &right)
+        return (info == 0 ? right : [], info)
     }
 
     /// The softmax of a vector, subtracting the maximum first: the shift is what keeps `exp` from

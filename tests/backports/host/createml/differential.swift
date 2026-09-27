@@ -544,10 +544,17 @@ do {
     check("a singular system is reported, not answered", singularInfo != 0,
           "LAPACK's own info came back as \(singularInfo)")
 
-    var normal = PortCreateMLComponents.RowMatrix([2, 0, 0, 3], rows: 2, columns: 2)
+    // The Cholesky factor is not a kernel of its own here: it is the ridge fit's, and it is checked
+    // through it. `A'A + 2I` for a two-column design is positive definite whatever the design is, and
+    // its factor's lower triangle is what the two substitutions read.
+    var definite = PortCreateMLComponents.RowMatrix([2, 0, 0, 3], rows: 2, columns: 2)
     checkEqual("a Cholesky factor of a positive definite matrix reports no error",
-               PortCreateMLComponents.RowMatrix.cholesky(&normal), 0)
-    checkClose("a Cholesky factor, the lower triangle's off-diagonal", normal[1, 0], 0, 1e-12)
+               PortCreateMLComponents.RowMatrix.cholesky(&definite), 0)
+    // sqrt(2) and sqrt(3) on the diagonal, zero below: the factor of a diagonal matrix is its own
+    // square roots, which is the one case where the factor is known by hand.
+    checkClose("a Cholesky factor's first diagonal", definite[0, 0], 2.0.squareRoot(), 1e-9)
+    checkClose("a Cholesky factor's second diagonal", definite[1, 1], 3.0.squareRoot(), 1e-9)
+    checkClose("a Cholesky factor leaves the upper triangle alone", definite[0, 1], 0, 1e-12)
 
     checkClose("a mean", PortCreateMLComponents.RowMatrix.mean([1, 2, 3, 4]), 2.5, 1e-12)
     checkClose("a variance", PortCreateMLComponents.RowMatrix.variance([1, 2, 3, 4]), 5.0 / 3.0, 1e-9)
@@ -560,12 +567,48 @@ do {
 
     // The ridge least-squares fit, against the closed form of a one-column fit: with a single
     // feature the ridge solution is (x'x + p)^-1 x'y, which can be written down.
-    let design = PortCreateMLComponents.RowMatrix([1, 2, 3, 4], rows: 4, columns: 1)
+    // Two columns: the feature and a constant, so the answer is a slope and an intercept in the
+    // column order the design has them in.
+    // Column 0 is the feature and column 1 a constant of one, so the answer is a slope and an
+    // intercept in the order the design has its columns in.
+    let design = PortCreateMLComponents.RowMatrix([1, 1, 2, 1, 3, 1, 4, 1], rows: 4, columns: 2)
+    // `y = 2x` exactly, so the ridge solution with no penalty is the slope 2 and the intercept 0 —
+    // and the design's two columns are `x` and a constant, so the answer's order is the column
+    // order. With a penalty the slope is pulled toward zero, and the closed form says by how much:
+    // `x'x / (x'x + p)` for the slope of a single feature.
     let (solution, info) = PortCreateMLComponents.RowMatrix.ridgeLeastSquares(
         design: design, targets: [2, 4, 6, 8], penalty: 0)
-    checkEqual("a one-column ridge fit reports no error", info, 0)
-    checkClose("a one-column ridge fit's slope", solution.first ?? 0, 2, 1e-9)
-    checkClose("a one-column ridge fit's intercept", solution.count > 1 ? solution[1] : 0, 0, 1e-9)
+    checkEqual("a two-column ridge fit reports no error", info, 0)
+    checkClose("a two-column ridge fit's slope", solution.count > 0 ? solution[0] : 0, 2, 1e-9)
+    checkClose("a two-column ridge fit's intercept", solution.count > 1 ? solution[1] : 1, 0, 1e-9)
+
+    let (shrunk, shrunkInfo) = PortCreateMLComponents.RowMatrix.ridgeLeastSquares(
+        design: design, targets: [2, 4, 6, 8], penalty: 30)
+    checkEqual("a penalised ridge fit reports no error", shrunkInfo, 0)
+    // With a penalty the whole design shrinks, and the closed form is the ordinary solve of
+    // `X'X + pI` against `X'y`. For this design `X'X` is `[[30,10],[10,4]]` and `X'y` is `[60,20]`,
+    // so with `p = 30` the system is `[[60,10],[10,34]]` against `[60,20]`, whose determinant is
+    // 1940. Written out rather than as the single-feature `x'x/(x'x+p)`, which does not hold once
+    // there is a second column and which is what an earlier version of this line expected.
+    // Cramer's rule as written out by hand: replace a column with `X'y` and take the determinant.
+    let normalXX = [[60.0, 10.0], [10.0, 34.0]]
+    let normalXy = [60.0, 20.0]
+    let determinant = normalXX[0][0] * normalXX[1][1] - normalXX[0][1] * normalXX[1][0]
+    let expectedSlope = (normalXy[0] * normalXX[1][1] - normalXX[0][1] * normalXy[1]) / determinant
+    let expectedIntercept = (normalXX[0][0] * normalXy[1] - normalXy[0] * normalXX[1][0]) / determinant
+    checkClose("a penalised two-column ridge fit's slope", shrunk.count > 0 ? shrunk[0] : 0,
+               expectedSlope, 1e-9)
+    checkClose("a penalised two-column ridge fit's intercept", shrunk.count > 1 ? shrunk[1] : 0,
+               expectedIntercept, 1e-9)
+
+    // A rank-deficient design with no penalty is the case the Cholesky factor refuses and the LU
+    // solve reports: two identical columns cannot be told apart, and the answer has to say so
+    // rather than answer one of the two ways there are to answer it.
+    let repeated = PortCreateMLComponents.RowMatrix([1, 1, 1, 1, 2, 2, 2, 2], rows: 4, columns: 2)
+    let (refused, refusedInfo) = PortCreateMLComponents.RowMatrix.ridgeLeastSquares(
+        design: repeated, targets: [1, 2, 3, 4], penalty: 0)
+    check("a rank-deficient design is reported, not answered", refusedInfo != 0,
+          "the fit reports \(refusedInfo) and answers \(refused)")
 
     // The seeded generator: the same seed gives the same stream on any release, which is the promise
     // the type exists to keep.
