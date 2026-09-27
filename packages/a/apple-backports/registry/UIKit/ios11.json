@@ -722,42 +722,6 @@
       "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
-      "api": "UIDragPreview",
-      "kind": "class",
-      "introduced": "11.0",
-      "status": "absent",
-      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
-      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
-      "source": "UIKit of iOS 11.0 arm64"
-    },
-    {
-      "api": "UIDragPreviewParameters",
-      "kind": "class",
-      "introduced": "11.0",
-      "status": "absent",
-      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
-      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
-      "source": "UIKit of iOS 11.0 arm64"
-    },
-    {
-      "api": "UIDragPreviewTarget",
-      "kind": "class",
-      "introduced": "11.0",
-      "status": "absent",
-      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
-      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
-      "source": "UIKit of iOS 11.0 arm64"
-    },
-    {
-      "api": "UITargetedDragPreview",
-      "kind": "class",
-      "introduced": "11.0",
-      "status": "absent",
-      "reason": "a drag is begun, carried between applications and ended by a system service this release does not run",
-      "effect": "the name is not there: an application that asks for it before dragging keeps the path it has for a release without dragging",
-      "source": "UIKit of iOS 11.0 arm64"
-    },
-    {
       "api": "UIDropProposal",
       "kind": "class",
       "introduced": "11.0",

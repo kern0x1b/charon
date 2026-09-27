@@ -1,0 +1,135 @@
+{
+ "framework": "UIKit",
+ "entries": [
+  {
+   "api": "-[UIDragItem initWithItemProvider:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "an item carrying that provider, and nothing else: the preview is given separately when the drag begins, or by the previewProvider the application sets",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is and what it is a subclass of; the tree's own UIPreviewTarget and UITargetedPreview, which the drag's target and preview build on and do not duplicate; the host's own UIKit under Mac Catalyst for the answers that are observable there"
+  },
+  {
+   "api": "UIDragItem.itemProvider",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the provider whose data this item moves, as it was given",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is and what it is a subclass of; the tree's own UIPreviewTarget and UITargetedPreview, which the drag's target and preview build on and do not duplicate; the host's own UIKit under Mac Catalyst for the answers that are observable there"
+  },
+  {
+   "api": "UIDragItem.localObject",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "what the application attached to this item, which is visible only inside the process that started the drag and travels with the item nowhere",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is and what it is a subclass of; the tree's own UIPreviewTarget and UITargetedPreview, which the drag's target and preview build on and do not duplicate; the host's own UIKit under Mac Catalyst for the answers that are observable there"
+  },
+  {
+   "api": "UIDragItem.previewProvider",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a block that makes this item's preview, copied when it is set and called when and if the preview is wanted, so an application can change the picture while the drag is under way",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is and what it is a subclass of; the tree's own UIPreviewTarget and UITargetedPreview, which the drag's target and preview build on and do not duplicate; the host's own UIKit under Mac Catalyst for the answers that are observable there"
+  },
+  {
+   "api": "UIDragPreview",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a still picture of a view with the parameters a lift and a drop are built from; it neither moves nor changes the view it was made from, which is what the header says of it",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is and what it is a subclass of; the tree's own UIPreviewTarget and UITargetedPreview, which the drag's target and preview build on and do not duplicate; the host's own UIKit under Mac Catalyst for the answers that are observable there"
+  },
+  {
+   "api": "-[UIDragPreview initWithView:parameters:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a preview of that view with those parameters, the designated way to make one",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is and what it is a subclass of; the tree's own UIPreviewTarget and UITargetedPreview, which the drag's target and preview build on and do not duplicate; the host's own UIKit under Mac Catalyst for the answers that are observable there"
+  },
+  {
+   "api": "-[UIDragPreview initWithView:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a preview of that view with default parameters, which is the parameters a peek uses",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is and what it is a subclass of; the tree's own UIPreviewTarget and UITargetedPreview, which the drag's target and preview build on and do not duplicate; the host's own UIKit under Mac Catalyst for the answers that are observable there"
+  },
+  {
+   "api": "UIDragPreview.view",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the view this preview was made from, which the preview does not move or change",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is and what it is a subclass of; the tree's own UIPreviewTarget and UITargetedPreview, which the drag's target and preview build on and do not duplicate; the host's own UIKit under Mac Catalyst for the answers that are observable there"
+  },
+  {
+   "api": "UIDragPreview.parameters",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the parameters the lift and the drop are built from, copied from the ones it was made with",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is and what it is a subclass of; the tree's own UIPreviewTarget and UITargetedPreview, which the drag's target and preview build on and do not duplicate; the host's own UIKit under Mac Catalyst for the answers that are observable there"
+  },
+  {
+   "api": "UIDragPreviewParameters",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a drag's preview parameters, which are the same kind of object as a peek's: the header makes it a subclass of UIPreviewParameters and the tree already carries that, down to the visible path and the shadow, so this adds nothing to it and duplicates nothing",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is and what it is a subclass of; the tree's own UIPreviewTarget and UITargetedPreview, which the drag's target and preview build on and do not duplicate; the host's own UIKit under Mac Catalyst for the answers that are observable there"
+  },
+  {
+   "api": "UIDragPreviewTarget",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "where a drag's preview is aimed: a container, a centre in it and a transform, which is UIPreviewTarget as the header says, and the tree already carries that including the precondition it raises on when the container is not in a window",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is and what it is a subclass of; the tree's own UIPreviewTarget and UITargetedPreview, which the drag's target and preview build on and do not duplicate; the host's own UIKit under Mac Catalyst for the answers that are observable there"
+  },
+  {
+   "api": "UITargetedDragPreview",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a drag's preview aimed at a target, which is UITargetedPreview as the header says and the tree already carries, with the drag's own types",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is and what it is a subclass of; the tree's own UIPreviewTarget and UITargetedPreview, which the drag's target and preview build on and do not duplicate; the host's own UIKit under Mac Catalyst for the answers that are observable there"
+  },
+  {
+   "api": "-[UITargetedDragPreview retargetedPreviewWithTarget:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the same picture aimed at another target, which is the superclass's own retargeting with the drag's type",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is and what it is a subclass of; the tree's own UIPreviewTarget and UITargetedPreview, which the drag's target and preview build on and do not duplicate; the host's own UIKit under Mac Catalyst for the answers that are observable there"
+  }
+ ]
+}
