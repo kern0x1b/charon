@@ -35,7 +35,7 @@ static NSString *CharonHKOperatorSpelling(NSPredicateOperatorType type)
 }
 
 @implementation HKQuery {
-    HKSampleType *_sampleType;
+    HKObjectType *_objectType;
     NSPredicate *_predicate;
     dispatch_queue_t _charonQueue;
     BOOL _charonExecuted;
@@ -51,9 +51,12 @@ static NSString *CharonHKOperatorSpelling(NSPredicateOperatorType type)
     return [super init];
 }
 
-- (HKSampleType *)sampleType
+// The type of the samples a query is for. It is not always one: an activity summary query's type is
+// not a sample type, which is what iOS 9.3 deprecated this name for and gave -objectType instead, and
+// the release answers nil here for such a query.
+- (nullable HKSampleType *)sampleType
 {
-    return _sampleType;
+    return [_objectType isKindOfClass:[HKSampleType class]] ? (HKSampleType *)_objectType : nil;
 }
 
 - (NSPredicate *)predicate
@@ -68,9 +71,14 @@ static NSString *CharonHKOperatorSpelling(NSPredicateOperatorType type)
 
 - (instancetype)initWithSampleType:(nullable HKSampleType *)sampleType
 {
+    return [self initWithObjectType:sampleType];
+}
+
+- (instancetype)initWithObjectType:(nullable HKObjectType *)objectType
+{
     HKQuery *fresh = [super init];
     if (fresh)
-        fresh->_sampleType = (HKSampleType *)[sampleType copy];
+        fresh->_objectType = (HKObjectType *)[objectType copy];
     return fresh;
 }
 
@@ -105,6 +113,11 @@ static NSString *CharonHKOperatorSpelling(NSPredicateOperatorType type)
 - (nullable NSPredicate *)charon_predicate
 {
     return _predicate;
+}
+
+- (nullable HKObjectType *)charon_objectType
+{
+    return _objectType;
 }
 
 #pragma mark - The predicates of the header

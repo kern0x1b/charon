@@ -23,7 +23,7 @@
                    resultsHandler:(void (^)(HKActivitySummaryQuery *query, NSArray<HKActivitySummary *> *_Nullable activitySummaries,
                                             NSError *_Nullable error))handler
 {
-    HKActivitySummaryQuery *query = [super initWithSampleType:[HKObjectType activitySummaryType]];
+    HKActivitySummaryQuery *query = [super initWithObjectType:[HKObjectType activitySummaryType]];
     if (query) {
         [query charon_setPredicate:predicate];
         query->_charonResultsHandler = [handler copy];
@@ -97,7 +97,7 @@
 // header deprecated it in favour of this in the same release.
 - (nullable HKObjectType *)objectType
 {
-    return self.sampleType;
+    return self.charon_objectType;
 }
 
 // A day of the ring, as the release builds the predicate: the year, the month and the day of the
