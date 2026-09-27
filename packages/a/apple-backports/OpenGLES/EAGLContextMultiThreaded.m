@@ -82,8 +82,12 @@ typedef BOOL (*CharonPresentRenderbuffer)(id, SEL, id<EAGLDrawable>);
 // because the release's class has no ivar of ours to put it in.
 @interface EAGLContext (CharonMultiThreaded)
 @property (getter=isMultiThreaded, nonatomic) BOOL multiThreaded;
-- (void)charon_installMultiThreadedGuards;
 @end
+
+// The installation is a C function and not a method of the category: a selector a category adds is
+// API the package carries, and this one is not API any application can call, so it has no business in
+// a category the registry has to describe.
+static void charon_install_multi_threaded_guards(void);
 
 @implementation EAGLContext (CharonMultiThreaded)
 
@@ -97,11 +101,11 @@ typedef BOOL (*CharonPresentRenderbuffer)(id, SEL, id<EAGLDrawable>);
 - (void)setMultiThreaded:(BOOL)multiThreaded
 {
     if (multiThreaded)
-        [self charon_installMultiThreadedGuards];
+        charon_install_multi_threaded_guards();
     objc_setAssociatedObject(self, &charon_multithreaded_key, @(multiThreaded), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (void)charon_installMultiThreadedGuards
+static void charon_install_multi_threaded_guards(void)
 {
     static dispatch_once_t once;
     dispatch_once(&once, ^{
