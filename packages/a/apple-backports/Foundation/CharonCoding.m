@@ -98,13 +98,25 @@ NSSet *charon_intents_allowed_classes(void)
     static NSSet *allowed;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
+        // Every name here is a class an archive of this package's data may hold, and the set is
+        // built from the names the process actually has: this file lives in the library every
+        // backport links, and a name it linked for one framework's sake would put that framework
+        // in every port. A class this process does not have cannot be in one of its archives, so
+        // leaving it out costs nothing and keeps CLPlacemark allowed where CoreLocation is.
         NSMutableSet *classes = [NSMutableSet setWithObjects:
                                  [NSArray class], [NSDictionary class], [NSSet class],
                                  [NSOrderedSet class], [NSIndexSet class], [NSCharacterSet class],
                                  [NSString class], [NSAttributedString class], [NSNumber class],
                                  [NSValue class], [NSData class], [NSDate class], [NSDateComponents class],
                                  [NSDateInterval class], [NSURL class], [NSUUID class], [NSError class],
-                                 [NSLocale class], [NSRegularExpression class], [CLPlacemark class], nil];
+                                 [NSLocale class], [NSRegularExpression class], nil];
+        for (NSString *name in @[@"CLPlacemark", @"CNContact", @"MKMapItem", @"INShortcut",
+                                 @"INVoiceShortcut", @"AXBrailleTable", @"AXRequest"]) {
+            Class named = NSClassFromString(name);
+            if (named) {
+                [classes addObject:named];
+            }
+        }
         unsigned count = objc_getClassList(NULL, 0);
         if (count > 0) {
             Class *loaded = (Class *)malloc(sizeof(Class) * count);
