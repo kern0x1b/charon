@@ -39,6 +39,14 @@ typedef NS_ENUM(NSInteger, CharonIntentsResolutionStatus) {
 // Which of the six answers this is.
 - (CharonIntentsResolutionStatus)resolutionStatus;
 
+// The reason +unsupportedForReason: was given, and 0 for a result that is not an unsupported one.
+// The reason is an enumeration of the release that added the method, and the classes that take
+// one expose no reader for it in their own headers - on those releases the system, which does
+// not exist here, is the only one who reads it. A result that swallowed the reason would answer
+// "unsupported" with no way to say why, which is a different answer from the one the method's
+// name promises.
+- (NSInteger)charon_unsupportedReason;
+
 @end
 
 // What every generated resolution result builds its answer with, and what the four accessors
@@ -50,5 +58,18 @@ typedef NS_ENUM(NSInteger, CharonIntentsResolutionStatus) {
                             resolvedValue:(id)resolvedValue
                       valuesToDisambiguate:(NSArray *)valuesToDisambiguate
                              valueToConfirm:(id)valueToConfirm;
+
++ (instancetype)charon_resolutionWithStatus:(CharonIntentsResolutionStatus)status
+                            resolvedValue:(id)resolvedValue
+                      valuesToDisambiguate:(NSArray *)valuesToDisambiguate
+                             valueToConfirm:(id)valueToConfirm
+                         unsupportedReason:(NSInteger)unsupportedReason;
+
+// A result that answers what another result answers, for the resolution results whose designated
+// initialiser takes one - INSendPaymentPayeeResolutionResult taking an
+// INPersonResolutionResult, and the four others of that shape. A caller that resolves a payee
+// asks this class and must get the answer the inner one gives, including its status, so the
+// inner one's whole state is taken rather than re-derived.
+- (void)charon_adoptResolutionOf:(id)inner;
 
 @end

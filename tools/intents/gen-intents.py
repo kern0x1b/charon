@@ -55,6 +55,7 @@ import sys
 
 # The ten classes whose bodies are hand written in CharonIntents100.m.
 HAND_WRITTEN = {
+    "INParameter",
     "INIntent",
     "INIntentResolutionResult",
     "INInteraction",
@@ -426,6 +427,35 @@ def zero_of(qual):
     return "0"
 
 
+def own_init_unavailable(interface, interfaces):
+    """Whether the -init a [super init] would reach is marked unavailable in the SDK's header.
+
+    The whole chain is walked, not the class and its direct superclass: a resolution result three
+    levels up the chain is what declares it, and a [super init] one level below that is refused
+    for the same reason.
+    """
+    seen, name = set(), interface
+    while name is not None and name.name not in seen:
+        seen.add(name.name)
+        declared = name.method("init")
+        if declared is not None and has_attr(declared, "UnavailableAttr"):
+            return True
+        name = interfaces.get(name.superclass)
+    return False
+
+
+def resolution_result(name, interfaces):
+    """Whether a class name is a resolution result, by the superclass the SDK gives it."""
+    seen = set()
+    while name and name not in seen:
+        if name == RESOLUTION_BASE:
+            return True
+        seen.add(name)
+        found = interfaces.get(name)
+        name = found.superclass if found else None
+    return False
+
+
 def initialiser(interface, method, states, spellings, interfaces):
     """The body of an initialiser: every parameter kept, in the state the class really has.
 
@@ -444,8 +474,14 @@ def initialiser(interface, method, states, spellings, interfaces):
     selector = method.get("name") or ""
     lines = ["- (instancetype)%s" % interface.spelled_selector(method), "{"]
 
-    given, after, chained = {}, [], False
+    given, after, adopt, chained = {}, [], [], False
     for kind, parameter in parameters_of(method):
+        # A parameter that is itself a resolution result is the whole state of this one: the class
+        # answers what the result it was given answers, which is what a payee or a currency
+        # amount that may be unsupported for a reason is asking for.
+        if resolution_result(base_type(kind), interfaces):
+            adopt.append(parameter)
+            continue
         name = spellings.get(parameter, parameter)
         given[name] = (kind, parameter)
         if ("_" + name) in states:
@@ -486,6 +522,11 @@ def initialiser(interface, method, states, spellings, interfaces):
             pieces.append("%s:%s" % (keywords[index] if index < len(keywords) else parameter,
                                      supplied[1] if supplied else zero_of(kind)))
         lines.append("    if ((self = [super %s])) {" % " ".join(pieces))
+    elif own_init_unavailable(interface, interfaces):
+        lines.append("    // The header marks this class's -init unavailable, so the superclass's own")
+        lines.append("    // -init is called through CharonIntentsCoding.h's one definition of it.")
+        lines.append("    if ((self = charon_intents_super_init(self, [%s class]))) {"
+                     % interface.superclass)
     else:
         lines.append("    if ((self = [super init])) {")
 
@@ -494,12 +535,45 @@ def initialiser(interface, method, states, spellings, interfaces):
             continue
         copied = spelled(kind).rstrip().endswith("*")
         lines.append("        _%s = %s;" % (name, "[%s copy]" % parameter if copied else parameter))
+    # What the class takes over from the result it was given is taken after this class's own
+    # state is in place, so the inner one's answer is the answer of the object.
+    for parameter in adopt:
+        lines.append("        [self charon_adoptResolutionOf:%s];" % parameter)
     lines += ["    }"]
     for name, kind, parameter in after:
         copied = spelled(kind).rstrip().endswith("*")
         lines.append("    self.%s = %s;" % (name, "[%s copy]" % parameter if copied else parameter))
     lines += ["    return self;", "}"]
     return lines
+
+
+def own_init_unavailable(interface, interfaces):
+    """Whether the -init a [super init] would reach is marked unavailable in the SDK's header.
+
+    The whole chain is walked, not the class and its direct superclass: a resolution result three
+    levels up the chain is what declares it, and a [super init] one level below that is refused
+    for the same reason.
+    """
+    seen, name = set(), interface
+    while name is not None and name.name not in seen:
+        seen.add(name.name)
+        declared = name.method("init")
+        if declared is not None and has_attr(declared, "UnavailableAttr"):
+            return True
+        name = interfaces.get(name.superclass)
+    return False
+
+
+def resolution_result(name, interfaces):
+    """Whether a class name is a resolution result, by the superclass chain the SDK gives it."""
+    seen = set()
+    while name and name not in seen:
+        if name == RESOLUTION_BASE:
+            return True
+        seen.add(name)
+        found = interfaces.get(name)
+        name = found.superclass if found else None
+    return False
 
 
 def render(interface, protocols, carried, intents, interfaces):
@@ -514,7 +588,7 @@ def render(interface, protocols, carried, intents, interfaces):
 
 
 def implementation(interface, protocols, carried, intents, interfaces):
-    resolution = interface.superclass == RESOLUTION_BASE
+    resolution = resolution_result(interface.superclass, interfaces)
     conformed = conformed_by(interface, interfaces)
     own = {p.get("name"): p for p in interface.properties
            if p.get("name") and not p.get("class")}
@@ -711,6 +785,11 @@ def factory(interface, method, resolution):
         return ["+ (%s)%s" % (returns, interface.spelled_selector(method)), "{",
                 "    return [self charon_resolutionWithStatus:CharonIntentsResolutionDisambiguation"
                 " resolvedValue:nil valuesToDisambiguate:%s valueToConfirm:nil];" % value, "}"]
+    if selector in ("unsupportedForReason:", "unsupportedWithReason:"):
+        return ["+ (%s)%s" % (returns, interface.spelled_selector(method)), "{",
+                "    return [self charon_resolutionWithStatus:CharonIntentsResolutionUnsupported"
+                " resolvedValue:nil valuesToDisambiguate:nil valueToConfirm:nil"
+                " unsupportedReason:%s];" % name, "}"]
     if CONFIRMATION.match(selector) or selector == CONFIRMATION_VALUE:
         return ["+ (%s)%s" % (returns, interface.spelled_selector(method)), "{",
                 "    return [self charon_resolutionWithStatus:CharonIntentsResolutionConfirmationRequired"

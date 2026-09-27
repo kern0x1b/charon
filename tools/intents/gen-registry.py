@@ -30,12 +30,12 @@ import os
 import re
 
 HAND_WRITTEN = {
+    "INParameter",
     "INIntent", "INIntentResolutionResult", "INInteraction", "INImage", "INSpeakableString",
     "INVocabulary", "INPreferences", "INExtension", "INPaymentMethod", "INRideCompletionStatus",
 }
 
-# What the class is where the class is one of the ten hand written ones, and what it answers.
-# Every one of these lines is measured against the code in packages/a/apple-backports/Intents/ and
+# The class of the iOS 11.0 group that is hand written, and what it answers.
 # repeated in facts/Intents/Intents.md, which the entries point at.
 HAND_WRITTEN_EFFECT = {
     "INIntent": "init makes a UUID string identifier, which is the key the interaction store of "
@@ -113,6 +113,19 @@ HAND_WRITTEN_EFFECT = {
                               "defaultTippingOptions are kept",
 }
 
+HAND_WRITTEN_EFFECT["INParameter"] = (
+    "parameterForClass:keyPath: keeps the class and the key path, which are the whole of what "
+    "the header's two properties say a parameter is; isEqualToParameter: compares those two, so "
+    "two parameters are the same parameter when they name the same class and the same key path; "
+    "setIndex:forSubKeyPath: and indexForSubKeyPath: keep a real index per sub key path, and a "
+    "sub key path that was never given one answers NSNotFound, which is what an NSUInteger return "
+    "has to say for no index; the class and the key path and the indices are carried by the "
+    "coding and the copy"
+)
+
+# What the class is where the class is one of the ten hand written ones, and what it answers.
+# Every one of these lines is measured against the code in packages/a/apple-backports/Intents/ and
+
 HAND_WRITTEN_REASON = (
     "behaviour that is more than the class's own storage, written by hand in "
     "packages/a/apple-backports/Intents/CharonIntents100.m"
@@ -134,8 +147,6 @@ GENERATED_EFFECT = (
 
 LATER_GROUP = "a class of a group of this delivery that is not in this one"
 
-# The one file the hand written classes are in, read to find what they answer.
-HAND_WRITTEN_SOURCE = "CharonIntents100.m"
 
 # The one member a hand written class of this delivery does not answer, and why. SF Symbols
 # arrived with iOS 13: this release has no set of them, there is no API on it that could be asked
@@ -196,6 +207,12 @@ def main():
     parser.add_argument("--facts", required=True)
     parser.add_argument("--release", required=True)
     parser.add_argument("--framework", default="Intents")
+    parser.add_argument("--classes", required=True,
+                        help="a file of the class names this group carries, one per line")
+    parser.add_argument("--hand-written", default="CharonIntents100.m",
+                        help="the file this group's hand written classes are in")
+    parser.add_argument("--no-protocols", action="store_true",
+                        help="this group writes no protocol row: another group's file already has it")
     parser.add_argument("--reason", required=True,
                         help="why a member whose type is a class of a later group is absent")
     options = parser.parse_args()
@@ -215,6 +232,9 @@ def main():
 
     classes = sorted(name for name in answered if name not in HAND_WRITTEN)
     carried = sorted(set(answered) | HAND_WRITTEN)
+    # Only the classes of this group are this file's business: a class of another group of the
+    # same delivery is that group's entry, and a member of one of those is skipped with it.
+    group = {line.strip() for line in open(options.classes) if line.strip()}
 
     # What the hand written classes answer, read back out of the same text the compiler
     # compiled: a hand written class is no less checked than a generated one, so it goes through
@@ -225,12 +245,13 @@ def main():
     generator = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(generator)
 
-    here = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(options.out)),
-                                         "..", "..", "Intents")) + "/"
-    hand_text = open(here + HAND_WRITTEN_SOURCE, errors="replace").read()
+    # <repository>/tools/intents/gen-registry.py -> <repository>/packages/a/apple-backports/Intents
+    here = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                         "..", "..", "packages", "a", "apple-backports", "Intents")) + "/"
+    hand_text = open(here + options.hand_written, errors="replace").read()
     hand_lines = hand_text.split("\n")
-    for name in HAND_WRITTEN:
-        block, depth, start = [], 0, None
+    for name in group | HAND_WRITTEN:
+        block, start = [], None
         for index, line in enumerate(hand_lines):
             if line.startswith("@implementation %s" % name) and \
                     line[len("@implementation %s" % name):].strip() in ("", "{"):
@@ -240,6 +261,8 @@ def main():
                 if line.startswith("@implementation ") or line.startswith("@end"):
                     break
                 block.append(line)
+        if not block:
+            continue
         answered.setdefault(name, {"properties": set(), "dynamic": set(), "methods": set()})
         report = generator.answer_of(block, name)
         for kind in ("properties", "dynamic", "methods"):
@@ -269,6 +292,12 @@ def main():
             # every API that uses it is implemented.
             continue
         if kind == "protocol":
+            # A protocol is the framework's, not one group's: it is written once, in the file of
+            # the group whose classes first conform to it, because two files naming one protocol
+            # stop the build with both names.
+            if options.no_protocols:
+                missing["protocol of another group"] += 1
+                continue
             entries.append({"api": api, "kind": "protocol", "introduced": intro,
                             "minimum": "6.0", "status": "implemented", "facts": options.facts,
                             "reason": "the protocol is the SDK's own declaration, carried by the "
@@ -281,6 +310,9 @@ def main():
         if kind == "swift" or row["lang"] == "swift":
             # The Swift-only rows of this framework are the swift-runtime's own module and not
             # this package's; they are in the delivery of the Swift side of AppIntents.
+            continue
+        if owner is not None and owner not in group:
+            missing["another group"] += 1
             continue
         if owner is not None and owner not in answered:
             # A member of a class this delivery does not carry is not this file's entry: it is
@@ -322,7 +354,7 @@ def main():
                 missing["skipped"] += 1
                 continue
         if kind == "class":
-            if api in carried:
+            if api in group:
                 entry = {"api": api, "kind": "class", "introduced": intro, "minimum": "6.0",
                          "status": "implemented", "facts": options.facts, "source": SOURCE}
                 if api in HAND_WRITTEN_EFFECT:
@@ -333,9 +365,7 @@ def main():
                     entry["effect"] = GENERATED_EFFECT
                 entries.append(entry)
                 continue
-            # A class this delivery does not carry is not this file's entry either: it belongs
-            # to the group of this same delivery that carries it.
-            missing["class"] += 1
+            missing["another group"] += 1
             continue
         # A member of a class this delivery does carry and does not answer: a class of a later
         # group of this same delivery, or a member the SDK's own header marks unavailable. It is

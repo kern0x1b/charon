@@ -17,6 +17,7 @@
 
 #import <Intents/Intents.h>
 #import <Intents/INIntentHandlerProviding.h>
+#import <Intents/INParameter.h>
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 
@@ -272,6 +273,7 @@
     id _resolvedValue;
     NSArray *_valuesToDisambiguate;
     id _valueToConfirm;
+    NSInteger _unsupportedReason;
 }
 
 + (instancetype)needsValue
@@ -303,12 +305,61 @@
                       valuesToDisambiguate:(NSArray *)valuesToDisambiguate
                              valueToConfirm:(id)valueToConfirm
 {
-    INIntentResolutionResult *result = [[self alloc] init];
+    return [self charon_resolutionWithStatus:status
+                               resolvedValue:resolvedValue
+                         valuesToDisambiguate:valuesToDisambiguate
+                                valueToConfirm:valueToConfirm
+                            unsupportedReason:0];
+}
+
++ (instancetype)charon_resolutionWithStatus:(CharonIntentsResolutionStatus)status
+                            resolvedValue:(id)resolvedValue
+                      valuesToDisambiguate:(NSArray *)valuesToDisambiguate
+                             valueToConfirm:(id)valueToConfirm
+                         unsupportedReason:(NSInteger)unsupportedReason
+{
+    INIntentResolutionResult *result = [self charon_adopted:NULL];
     result->_status = status;
     result->_resolvedValue = [resolvedValue copy];
     result->_valuesToDisambiguate = [valuesToDisambiguate copy];
     result->_valueToConfirm = [valueToConfirm copy];
+    result->_unsupportedReason = unsupportedReason;
     return result;
+}
+
+// The allocation both builders above share, reached through objc_msgSendSuper for the reason the
+// class's own header marks -init unavailable (see CharonIntentsCoding.h).
++ (instancetype)charon_adopted:(INIntentResolutionResult *)inner
+{
+    INIntentResolutionResult *result = charon_intents_super_init(self, [INIntentResolutionResult class]);
+    if (inner) {
+        result->_status = inner->_status;
+        result->_resolvedValue = [inner->_resolvedValue copy];
+        result->_valuesToDisambiguate = [inner->_valuesToDisambiguate copy];
+        result->_valueToConfirm = [inner->_valueToConfirm copy];
+        result->_unsupportedReason = inner->_unsupportedReason;
+    } else {
+        result->_status = CharonIntentsResolutionNeedsValue;
+    }
+    return result;
+}
+
+- (void)charon_adoptResolutionOf:(id)inner
+{
+    if (![inner isKindOfClass:[INIntentResolutionResult class]]) {
+        return;
+    }
+    INIntentResolutionResult *wrapped = inner;
+    _status = wrapped->_status;
+    _resolvedValue = [wrapped->_resolvedValue copy];
+    _valuesToDisambiguate = [wrapped->_valuesToDisambiguate copy];
+    _valueToConfirm = [wrapped->_valueToConfirm copy];
+    _unsupportedReason = wrapped->_unsupportedReason;
+}
+
+- (NSInteger)charon_unsupportedReason
+{
+    return _unsupportedReason;
 }
 
 - (id)resolvedValue
@@ -837,16 +888,23 @@ typedef NS_ENUM(NSInteger, CharonIntentsRideOutcome) {
     }
 }
 
-- (id)parameterValueForParameter:(NSString *)parameterName
+- (id)parameterValueForParameter:(INParameter *)parameter
 {
-    // The value the interaction's intent carries for a parameter of that name: the intent is a
-    // data class whose properties are the parameters it resolves, and a name the intent does not
-    // have is a name with no value. The accessor is asked for first, because a key-value lookup
-    // of a name the object has no accessor for raises, and an API must not crash its caller.
-    if (!parameterName || ![_intent respondsToSelector:NSSelectorFromString(parameterName)]) {
-        return nil;
+    // The value the interaction's intent carries for that parameter: a parameter names a class and
+    // a key path into it, and the value is read out of the intent by that path. It is read one
+    // component at a time, each asked for by name first, because a key-value lookup of a path the
+    // object has no accessor for raises, and an API must not crash its caller: a path the intent
+    // does not have answers nil.
+    id value = _intent;
+    for (NSString *part in [parameter.parameterKeyPath componentsSeparatedByString:@"."]) {
+        if (![value respondsToSelector:NSSelectorFromString(part)]) {
+            return nil;
+        }
+        value = [value valueForKey:part];
+        if (!value) {
+            return nil;
+        }
     }
-    id value = [_intent valueForKey:parameterName];
     return value == [NSNull null] ? nil : value;
 }
 
