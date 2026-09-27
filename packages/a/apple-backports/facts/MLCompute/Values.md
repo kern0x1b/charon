@@ -37,17 +37,21 @@ The framework is delivered in three families, and this is the first: everything 
 out of* - the tensors, the device, the layer base, the ten descriptors and the functions that name
 an enumeration's cases. 248 of the corpus's 564 missing rows for this framework.
 
-The other two are the layers with the arithmetic behind them, and the graphs, optimizers and
-training that drive them. They are listed in the same registry file with the rows they are, so the
-owner can see what is and is not there: `registry/MLCompute/ios14layers.json` and
-`ios14graphs.json` name what the next two families carry, and the code that carries them is not in
-this delivery.
+The other two are the layers with the arithmetic behind them - thirty classes, 218 rows - and the
+graphs, the optimizers and the training that drive them - 98 rows. Neither is in this delivery and
+neither has a registry entry, which is on purpose: the registry answers what the package *carries*,
+and an entry for a class the library does not define would stop the build. What those two families
+are is the checklist's own, at `coordination/corpus/ledger/MLCompute.tsv`: every row whose class is
+one of the thirty layer classes, and every row whose class is `MLCGraph`, `MLCInferenceGraph`,
+`MLCTrainingGraph`, `MLCOptimizer`, `MLCSGDOptimizer`, `MLCAdamOptimizer` or `MLCAdamWOptimizer`.
 
-Four factories of iOS 14 are not in the 26.2 headers and are not carried: the one-argument
-`+[MLCTensorDescriptor descriptorWithShape:]`, and `+[MLCTensor tensorWithShape:fillWithData:]` and
-`+[MLCTensor tensorWithShape:data:]`. The corpus of SDK 26.2 does not name them, the host's
-framework answers `unrecognized selector` for the descriptor one (measured) and does not implement
-the other two (measured: the class does not respond to them), so there is nothing to carry. The
+Three factories of iOS 14 are not in the 26.2 headers and are not carried:
+`+[MLCTensorDescriptor descriptorWithShape:]` with only a shape, and
+`+[MLCTensor tensorWithShape:fillWithData:]` and `+[MLCTensor tensorWithShape:data:]` with only a
+shape. The corpus of SDK 26.2 does not name them, the host's framework raises
+`NSInvalidArgumentException` for the descriptor one when it is reached through the runtime
+(measured) and does not answer the other two at all (measured: `+[MLCTensor respondsToSelector:]` is
+NO for both), so there is nothing to carry and nothing a program of the corpus can reach. The
 two-argument `+[MLCTensorDescriptor descriptorWithShape:dataType:]` that iOS 14 declared beside
 `descriptorWithShape:` is in the corpus, is carried, and is what the differential compares.
 
