@@ -32,6 +32,21 @@ enum {
     kCharonThreadingNone = 99
 };
 
+// The deallocators the two constructors that take a buffer over are given, counting how often each of
+// them saw the block it was promised, so the run can say whether the object gave it back exactly once.
+static int charon_handed_back[3];
+static void *charon_watched[3];
+
+static void charon_watch(void *given, int which)
+{
+    charon_handed_back[which] += (given == charon_watched[which]);
+    free(given);
+}
+
+static void charon_deallocator0(void *given) { charon_watch(given, 0); }
+static void charon_deallocator1(void *given) { charon_watch(given, 1); }
+static void charon_deallocator2(void *given) { charon_watch(given, 2); }
+
 // Whether a name in this process comes from the backports' own library and not from the release.
 static BOOL fromBackports(const char *name)
 {
@@ -119,6 +134,54 @@ int main(int argc, char **argv)
               "an object carrying an error has no scalar type to match a buffer");
         double readd[4] = {0};
         CHECK(la_matrix_to_double_buffer(readd, 2, d1) == LA_SUCCESS && readd[3] == 4.5, "a double 2x2 is stored");
+
+        // the two constructors that take a buffer over, which the host differential cannot exercise - a
+        // block it hands away is a block the caller may never touch again - so the device run is where
+        // they are called: the object reads the elements out, keeps the block, and gives it back to the
+        // deallocator when it goes, and a padded block is handed straight back instead.
+        {
+            memset(charon_handed_back, 0, sizeof charon_handed_back);
+            memset(charon_watched, 0, sizeof charon_watched);
+            float *block = malloc(3 * sizeof(float));
+            block[0] = 1;
+            block[1] = 2;
+            block[2] = 3;
+            charon_watched[0] = block;
+            la_object_t taken = la_matrix_from_float_buffer_nocopy(block, 3, 1, 1, LA_NO_HINT, charon_deallocator0,
+                                                                    LA_DEFAULT_ATTRIBUTES);
+            float readone[3] = {0};
+            CHECK(la_matrix_to_float_buffer(readone, 1, taken) == LA_SUCCESS && readone[2] == 3,
+                  "an object over the caller's own block reads what was there");
+            CHECK(charon_handed_back[0] == 0, "and has not given the block back yet");
+
+            float *padded = malloc(4 * sizeof(float));
+            padded[0] = 4;
+            padded[1] = 5;
+            padded[2] = 6;
+            padded[3] = 0;
+            charon_watched[1] = padded;
+            la_object_t given_back = la_matrix_from_float_buffer_nocopy(padded, 3, 1, 2, LA_NO_HINT,
+                                                                        charon_deallocator1, LA_DEFAULT_ATTRIBUTES);
+            float readpadded[3] = {0};
+            CHECK(la_matrix_to_float_buffer(readpadded, 1, given_back) == LA_SUCCESS && readpadded[2] == 6,
+                  "a block with a padded row stride is read at that stride");
+            CHECK(charon_handed_back[1] == 1, "and handed straight back, because the object cannot own its layout");
+
+            double *dblock = malloc(2 * sizeof(double));
+            dblock[0] = 1.5;
+            dblock[1] = 2.5;
+            charon_watched[2] = dblock;
+            la_object_t dtaken = la_matrix_from_double_buffer_nocopy(dblock, 2, 1, 1, LA_NO_HINT, charon_deallocator2,
+                                                                      LA_DEFAULT_ATTRIBUTES);
+            double readdouble[2] = {0};
+            CHECK(la_vector_to_double_buffer(readdouble, 1, dtaken) == LA_SUCCESS && readdouble[1] == 2.5,
+                  "the same in double");
+            // taken and dtaken go out of scope at the end of this block, and each must give its block
+            // back once and only once.
+        }
+        CHECK(charon_handed_back[0] == 1, "a block an object kept comes back to the deallocator when it goes");
+        CHECK(charon_handed_back[1] == 1, "and a block it handed back at once comes back once, not twice");
+        CHECK(charon_handed_back[2] == 1, "for the double constructor as well");
 
         // the sums, the products, and the order the operands are refused in
         ANSWER("la_sum of two vectors", la_sum(v6, w6), LA_SUCCESS, 6, 1, 11, 22, 33, 44, 55, 66);

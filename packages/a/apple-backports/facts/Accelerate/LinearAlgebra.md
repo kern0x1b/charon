@@ -118,6 +118,18 @@ this port is claiming. Everything else - every status, every shape, every elemen
 difference, a product, a slice, a transpose, a norm and a solve whose terms are exact - is compared
 with no tolerance at all.
 
+## What has not been run
+
+`tests/backports/device/linearalgebra.m` calls all 44 entry points on the device against the answers
+recorded above, and the two constructors that take a buffer over are called only there: a block a
+`la_matrix_from_*_buffer_nocopy` takes over is a block the host differential cannot hand away twice, so
+the ownership path - the object reading the elements out, keeping the block, and giving it to the
+deallocator once when it goes - is covered by the device run and not by the host one. The run has not
+happened yet: the device test is written and compiles for `armv7-apple-ios6.1.3` and
+`armv7-apple-ios4.3` against the SDK this port builds with, and until it is run on an emulated 6.1.3 or
+on an iPad 2 every answer on this page is a host measurement and a device-unverified one, which is the
+floor the port's own contract asks for and not the bar.
+
 ## What is reasoned rather than measured
 
 `la_normalized_vector` of an object whose scalar type does not match the norm's own is reasoned to answer
