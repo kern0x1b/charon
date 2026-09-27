@@ -41,8 +41,13 @@ static const uint16_t charon_ueb_letters[26] = {
     0x3D, 0x35,                                       // y z
 };
 
-static const uint16_t charon_ueb_capital = 0x40;  // dot 7, before the letter it capitalises
+static const uint16_t charon_ueb_capital = 0x20;  // dot 6, before the letter it capitalises
 static const uint16_t charon_ueb_number = 0x3C;   // dots 3, 4, 5, 6: after it a-j are 1-0
+
+// Dots 5 and 6, U+2830: the grade-1 indicator. A letter a-j straight after a digit would be read
+// as a digit, so the standard writes this before it - without it, "1a" and "12" would be the same
+// six cells.
+static const uint16_t charon_ueb_grade1 = 0x30;
 
 // A dot pattern is not yet a character: the braille block starts at U+2800 and a cell's code is
 // that base plus its dot bitmask, dot 1 the lowest bit. Every cell goes through here, so a table
@@ -107,6 +112,21 @@ static uint16_t charon_ueb_cell(unichar character, BOOL *covered)
     }
     *covered = NO;
     return CharonBrailleSpace;
+}
+
+// Whether this capital begins a run of capitals, which is what the standard marks with the sign
+// written twice. **Only consecutive capitals**: in "AbC" the A is a capital on its own, because the
+// b after it is a lower-case letter, so the sign is written once. Looking further ahead for
+// another capital is what made "AbC" come out as a run.
+static BOOL charon_ueb_run_starts(unichar character, NSString *text, NSUInteger index)
+{
+    (void)character;
+    NSUInteger next = index + 1;
+    if (next >= [text length]) {
+        return NO;
+    }
+    unichar following = [text characterAtIndex:next];
+    return following >= 'A' && following <= 'Z';
 }
 
 #pragma mark - AXBrailleTable
@@ -311,19 +331,29 @@ static uint16_t charon_ueb_cell(unichar character, BOOL *covered)
                 [map addObject:@(index)];
                 inNumbers = YES;
             }
-            [cells appendString:[NSString stringWithFormat:@"%C",
-                                 charon_ueb_pattern(charon_ueb_letters[character - '0'])]];
+            // 1-9 are a-i and 0 is j: the number sign is what tells the reader which it is.
+            uint16_t digit = character == '0' ? charon_ueb_letters[9]
+                                              : charon_ueb_letters[character - '1'];
+            [cells appendString:[NSString stringWithFormat:@"%C", charon_ueb_pattern(digit)]];
             [map addObject:@(index)];
             capitals = 0;
+            // inNumbers stays: the number sign holds for the whole run of digits, and it is
+            // written again only when something else breaks the run.
             index++;
             continue;
         }
-        inNumbers = NO;
         if (character >= 'A' && character <= 'Z') {
-            unsigned signs = capitals == 0 ? 1 : (capitals == 1 ? 2 : 0);
-            for (unsigned added = 0; added < signs; added++) {
-                [cells appendString:[NSString stringWithFormat:@"%C", charon_ueb_pattern(charon_ueb_capital)]];
-                [map addObject:@(index)];
+            inNumbers = NO;
+            // One capital sign for a capital letter on its own; the sign **twice** once before a
+            // run of capitals, which is the standard's word marker - not once per letter of the
+            // run, which would read as a run of single capitals.
+            if (capitals == 0) {
+                BOOL run = charon_ueb_run_starts(character, printText, index);
+                for (unsigned added = 0; added < (run ? 2 : 1); added++) {
+                    [cells appendString:[NSString stringWithFormat:@"%C",
+                                         charon_ueb_pattern(charon_ueb_capital)]];
+                    [map addObject:@(index)];
+                }
             }
             capitals++;
             [cells appendString:[NSString stringWithFormat:@"%C",
@@ -333,6 +363,13 @@ static uint16_t charon_ueb_cell(unichar character, BOOL *covered)
             continue;
         }
         capitals = 0;
+        if (inNumbers && character >= 'a' && character <= 'j') {
+            // The letter is one of a-j and the number sign is still in force, so the cell would
+            // read as a digit: the standard puts the grade-1 indicator before it.
+            [cells appendString:[NSString stringWithFormat:@"%C", charon_ueb_pattern(charon_ueb_grade1)]];
+            [map addObject:@(index)];
+            inNumbers = NO;
+        }
         BOOL covered = NO;
         uint16_t cell = charon_ueb_cell(character, &covered);
         if (!covered) {
@@ -377,6 +414,9 @@ static uint16_t charon_ueb_cell(unichar character, BOOL *covered)
             index++;
             continue;
         }
+        if (inNumbers && cell != charon_ueb_letters[0] && cell != charon_ueb_number) {
+            // handled below: a letter after the number sign is a digit only if it is a-j
+        }
         if (cell == charon_ueb_number) {
             inNumbers = YES;
             index++;
@@ -384,9 +424,11 @@ static uint16_t charon_ueb_cell(unichar character, BOOL *covered)
         }
         unichar character = 0;
         if (inNumbers) {
+            // The number sign holds until a cell that is not one of a-j: a run of digits comes
+            // back as a run of digits, and a letter after a break is a letter again.
             for (unsigned digit = 0; digit < 10; digit++) {
                 if (charon_ueb_letters[digit] == cell) {
-                    character = (unichar)('1' + digit);
+                    character = (unichar)(digit == 9 ? '0' : '1' + digit);
                     break;
                 }
             }
@@ -412,7 +454,6 @@ static uint16_t charon_ueb_cell(unichar character, BOOL *covered)
             index++;
             continue;
         }
-        inNumbers = NO;
         if (capitals > 0) {
             character = (unichar)toupper(character);
             capitals = 0;
