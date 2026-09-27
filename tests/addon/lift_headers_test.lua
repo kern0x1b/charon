@@ -56,6 +56,9 @@ function failures(opt)
     expect("a header that is not there raises", raises(function () standalone("no/such.h") end), true)
     local mute = {clang = path.join(work, "no-such-clang"), triple = probe.triple, sdk = sdk, outputdir = work}
     expect("a compiler that is not there raises", raises(function () lift.stands_alone(mute, "dispatch/dispatch.h") end), true)
+    -- an error of the driver has no place in a file: a triple the compiler does not know is not the header's fault
+    local bogus = {clang = opt.clang, triple = "bogus-none-none", sdk = sdk, outputdir = work}
+    expect("a triple the compiler does not know raises", raises(function () lift.stands_alone(bogus, "dispatch/dispatch.h") end), true)
 
     local function reached(symbols)
         return table.concat(lift.system_headers(sdk, symbols, standalone), ", ")

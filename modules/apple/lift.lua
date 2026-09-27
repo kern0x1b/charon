@@ -160,8 +160,8 @@ function system_headers(sdk, symbols, standalone)
     return table.orderkeys(found)
 end
 
--- Whether a header can be included alone: the compiler reads `#include <name>` and finds an error in it or not. An error of the header
--- says it cannot, and so does one of its own includes it cannot find (a libc++ header needs its C++ include path, which it does not
+-- Whether a header can be included alone: the compiler reads `#include <name>` and finds an error in it or not. An error the compiler places in
+-- a file (the header's, or one it includes) says it cannot, and so does one of its own includes it cannot find (a libc++ header needs its C++ include path, which it does not
 -- have here). A compiler that does not run, a crash, or the probed header not being there at all raise, because answering "cannot"
 -- for them would leave the header to its includer for the wrong reason. opt.clang, opt.triple, opt.sdk, and opt.outputdir for the
 -- probe file.
@@ -175,13 +175,17 @@ function stands_alone(opt, name)
     if status == 0 then
         return true
     end
-    local absent, crashed = false, diagnostics:find("PLEASE submit a bug report", 1, true) or diagnostics:find("Stack dump", 1, true)
+    local absent, crashed, located = false, diagnostics:find("PLEASE submit a bug report", 1, true) or diagnostics:find("Stack dump", 1, true), false
     for line in diagnostics:gmatch("[^\n]+") do
         if line:startswith(probe .. ":") and line:find("file not found", 1, true) then
             absent = true
         end
+        -- an error of a header is told by where it is (file:line:column); the driver's (a triple it does not know) has no place in a file
+        if line:find(":%d+:%d+: [%a ]*error: ") then
+            located = true
+        end
     end
-    if status == nil or crashed or absent or not diagnostics:find("error: ", 1, true) then
+    if status == nil or crashed or absent or not located then
         raise("the probe of %s did not end in an error of the header (%s): %s", name, tostring(launch or status), diagnostics)
     end
     return false
