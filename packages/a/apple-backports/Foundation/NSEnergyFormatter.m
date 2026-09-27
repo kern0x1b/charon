@@ -107,13 +107,16 @@
 - (NSString *)stringFromValue:(double)value unit:(NSEnergyFormatterUnit)unit
 {
     CharonUnitSystem system = charon_unit_system([NSLocale currentLocale]);
-    NSString *name = [self charon_nameOfUnit:unit value:value system:system written:YES];
-    if (!name)
-        return nil;
-    NSString *number = [self.numberFormatter stringFromNumber:@(value)];
-    return charon_unit_joins_with_space(_unitStyle) ? [NSString stringWithFormat:@"%@ %@", number, name]
-                                                    : [NSString stringWithFormat:@"%@%@", number, name];
-    (void)0;
+    /* A kilocalorie of food energy has a name of its own, and every other unit is written as the
+       shared machine writes it - including a unit outside the enumeration, which the system writes
+       with the name of the gram-force. */
+    NSString *food = _forFoodEnergyUse ? charon_unit_food_name(unit, _unitStyle, value, YES, self.numberFormatter) : nil;
+    if (food) {
+        NSString *number = charon_unit_number(value, self.numberFormatter);
+        return charon_unit_joins_with_space(_unitStyle) ? [NSString stringWithFormat:@"%@ %@", number, food]
+                                                        : [NSString stringWithFormat:@"%@%@", number, food];
+    }
+    return charon_unit_given(@"energy", system, value, unit, _unitStyle, self.numberFormatter);
 }
 
 - (NSString *)stringFromJoules:(double)numberInJoules

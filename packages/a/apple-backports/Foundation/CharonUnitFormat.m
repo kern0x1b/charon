@@ -201,7 +201,7 @@ NSString *charon_unit_written_name(NSString *dimension, CharonUnitSystem system,
 {
     const CharonUnitName *entry = charon_unit_entry(dimension, system, unit);
     if (!entry)
-        return nil;
+        return charon_unit_unknown_written(system, style, value);
     if (style == NSFormattingUnitStyleShort)
         return charon_unit_written_short(dimension, system, unit);
     if (style == NSFormattingUnitStyleMedium)
@@ -211,6 +211,42 @@ NSString *charon_unit_written_name(NSString *dimension, CharonUnitSystem system,
     if (unit == 1539 && system != CharonUnitSystemUnitedStates)
         return [NSString stringWithUTF8String:entry->one];
     return [NSString stringWithUTF8String:charon_unit_writes_one(value, numbers) ? entry->one : entry->other];
+}
+
+/* What the system answers for a unit that is not one. A unit value outside the enumeration is a
+   programming error and the system's own name lookup for it comes back unresolved, and the system
+   writes the key of that lookup out rather than refusing (measured, in English, and the same shape in
+   every locale with the plural category the locale's own rules give it):
+
+   | style | one | any other value |
+   | --- | --- | --- |
+   | short | `(null)_NARROW_ONE_UNKNOWN` | `(null)_NARROW_OTHER_UNKNOWN` |
+   | medium | `(null)_SHORT_ONE_UNKNOWN` | `(null)_SHORT_OTHER_UNKNOWN` |
+   | long | `(null)_WIDE_ONE_UNKNOWN` | `(null)_WIDE_OTHER_UNKNOWN` |
+
+   and a value written with one is written with the name of the gram-force - "0Gs", "1G", "-1G" in the
+   short style where the suffix is there for every value but one, "0 G" in the medium and "0 g-force"
+   in the long. The key and the fallback are reproduced; in a locale that writes its own names the
+   system answers that locale's instead, which is the limit named in facts/Foundation/NSUnitFormat.md. */
+NSString *charon_unit_unknown_name(NSFormattingUnitStyle style, double value)
+{
+    NSString *width = style == NSFormattingUnitStyleShort ? @"NARROW" : style == NSFormattingUnitStyleMedium ? @"SHORT" : @"WIDE";
+    NSString *plural = fabs(value) == 1 ? @"ONE" : @"OTHER";
+    return [NSString stringWithFormat:@"(null)_%@_%@_UNKNOWN", width, plural];
+}
+
+NSString *charon_unit_unknown_written(CharonUnitSystem system, NSFormattingUnitStyle style, double value)
+{
+    if (style == NSFormattingUnitStyleShort) {
+        /* The plural suffix of the narrow form is the locale's own plural data and not the port's:
+           en_US writes "0Gs" and en_CA with it, and en_GB, en_AU, en_001 and de_DE write "0G". The
+           U.S. form is carried and the rest is named in facts/Foundation/NSUnitFormat.md. */
+        BOOL suffix = system == CharonUnitSystemUnitedStates && fabs(value) != 1;
+        return suffix ? @"Gs" : @"G";
+    }
+    if (style == NSFormattingUnitStyleMedium)
+        return @"G";
+    return @"g-force";
 }
 
 NSString *charon_unit_name(NSString *dimension, CharonUnitSystem system, NSInteger unit, NSFormattingUnitStyle style, double value)
@@ -227,7 +263,7 @@ NSString *charon_unit_name(NSString *dimension, CharonUnitSystem system, NSInteg
     }
     const CharonUnitName *entry = charon_unit_entry(dimension, system, unit);
     if (!entry)
-        return nil;
+        return charon_unit_unknown_name(style, value);
     if (style == NSFormattingUnitStyleShort)
         return [NSString stringWithUTF8String:entry->shortName];
     if (style == NSFormattingUnitStyleMedium)
@@ -362,7 +398,9 @@ static NSString *charon_unit_pair(NSString *first, NSString *firstName, NSString
 NSString *charon_unit_given(NSString *dimension, CharonUnitSystem system, double inUnit, NSInteger unit,
                             NSFormattingUnitStyle style, NSNumberFormatter *numbers)
 {
-    NSString *name = charon_unit_written_name(dimension, system, unit, style, inUnit, numbers);
+    NSString *name = charon_unit_entry(dimension, system, unit)
+                         ? charon_unit_written_name(dimension, system, unit, style, inUnit, numbers)
+                         : charon_unit_unknown_written(system, style, inUnit);
     if (!name)
         return nil;
     NSString *number = charon_unit_number(inUnit, numbers);
@@ -374,7 +412,9 @@ NSString *charon_unit_string(NSString *dimension, CharonUnitSystem system, doubl
                              NSFormattingUnitStyle style, NSNumberFormatter *numbers)
 {
     double inUnit = base * charon_unit_factor(dimension, system, unit);
-    NSString *name = charon_unit_written_name(dimension, system, unit, style, inUnit, numbers);
+    NSString *name = charon_unit_entry(dimension, system, unit)
+                         ? charon_unit_written_name(dimension, system, unit, style, inUnit, numbers)
+                         : charon_unit_unknown_written(system, style, inUnit);
     if (!name)
         return nil;
     NSString *number = charon_unit_number(inUnit, numbers);

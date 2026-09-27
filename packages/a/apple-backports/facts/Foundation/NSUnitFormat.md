@@ -110,16 +110,24 @@ caller asked for.
 - **The unit names in any language but English.** The port answers the English name, and in a locale
   that writes its own the digits, the unit chosen, the plural shape and the two-unit structure are
   the system's and are compared; the text of the name, and the space its unit pattern puts before it
-  (German "0 mm" where English writes "0mm"), are that locale's data. `tests/backports/host/unitformat`
+  (German "0 mm" where English writes "0mm"), are that locale's data. Measured over the twelve locales
+  `tests/backports/host/unitformat` runs, every one of which is green. `tests/backports/host/unitformat`
   says so in its own header and compares the two ways.
 - **A `numberStyle` outside the seven the header names.** The system has a fallback table of its own
   for a value it does not know: style 9 writes "1,350.05 (unknown currency)", style 8 writes
   "XXX 1350.049" and style 7 writes a clock. None of the three is reproduced, and the differential
   sweeps the seven the header names.
-- **A unit value outside its enumeration.** The system answers its own internal lookup key —
-  `MILLIMETER_(null)_OTHER_UNKNOWN` and its siblings for a name, and a written form built from a
-  pattern it could not resolve for a value ("0Gs", "0 G", "5 g-force") — where the port answers nil,
-  because a value outside the enumeration is not a unit. In an English locale both answers are held.
+- **A unit value outside its enumeration, in a locale that writes its own names.** A value outside
+  the enumeration is a programming error and the system's own name lookup for it comes back
+  unresolved, and the system writes the key of that lookup out rather than refusing. **That is now
+  matched, not stated**: `(null)_NARROW_ONE_UNKNOWN` and its five siblings, one for each width and the
+  plural, for the two name methods, and the name of the gram-force for a written value — "0Gs", "1G",
+  "-1G" in the short style, "0 G" in the medium, "0 g-force" in the long. Two things are still the
+  locale's own and are the limit above: the plural category in the key, which in Arabic is one of
+  ZERO, ONE, TWO and OTHER and in Japanese is always OTHER, and the narrow form's plural suffix,
+  which en_US and en_CA write and en_GB, en_AU, en_001 and de_DE do not — a fact that neither the
+  system of units nor the language predicts, so the U.S. form is carried and the differential takes
+  that one suffix off both sides everywhere else while holding the U.S. to it exactly.
 
 ## Not built yet
 

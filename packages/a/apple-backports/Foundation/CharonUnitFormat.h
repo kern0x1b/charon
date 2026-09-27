@@ -62,6 +62,13 @@ double charon_unit_factor(NSString *dimension, CharonUnitSystem system, NSIntege
    U.K. and centimetres anywhere metric. */
 NSInteger charon_unit_chosen(NSString *dimension, CharonUnitSystem system, BOOL person, double base, double *chosen);
 
+/* The name of a unit the dimension does not have, which is the key the system's own lookup comes back
+   with: "(null)_WIDE_OTHER_UNKNOWN" and its five siblings, one for each width and the plural. */
+NSString *charon_unit_unknown_name(NSFormattingUnitStyle style, double value);
+
+/* And the name it writes beside a value with one: the gram-force, "G", "Gs", " G" or " g-force". */
+NSString *charon_unit_unknown_written(CharonUnitSystem system, NSFormattingUnitStyle style, double value);
+
 /* The name of one unit in one style, which is what -unitStringFromValue:unit: answers: the long
    style is plural on the value, one the singular and zero, a fraction and a negative the plural,
    except for the stone, whose name is always the singular. Answers nil for a unit the dimension

@@ -65,6 +65,12 @@ static BOOL charon_written_agrees(NSString *ours, NSString *theirs);
    number, the plural, the space and the shape, is still compared exactly. */
 static BOOL englishNames;
 
+/* Whether the locale's system of units is the U.S. one, which is where the plural suffix of the narrow
+   form of a unit outside the enumeration is written: en_US and en_CA write "0Gs" and en_GB, en_AU,
+   en_001 and de_DE write "0G". That suffix is the locale's own plural data, so where it is not the
+   U.S.'s the pair is compared with it taken off rather than the case left out. */
+static BOOL unitedStates;
+
 /* The units each dimension has, so a value outside the enumeration - where the host answers its own
    internal lookup key, "MILLIMETER_(null)_OTHER_UNKNOWN" in English and its own fallback text in any
    other language, and the port answers nil because it has no name for a unit that is not one - is only
@@ -252,6 +258,23 @@ static BOOL sameUnitName(NSString *ours, NSString *theirs)
 // for any other value) and the gram's own long name in the long one - so it writes a mass for a
 // length. The port answers nil, and this checks that the host's answer is one of the forms
 // measured for the style, rather than passing the case over.
+/* The narrow form of a unit outside the enumeration carries a plural suffix that is the locale's own
+   plural data and that neither the system of units nor the language predicts: en_US and en_CA write
+   "0Gs", en_GB, en_AU, en_001 and de_DE write "0G", and the port carries the U.S. form. So the pair
+   is compared with that one suffix taken off, and the U.S. is held to it exactly - the port and the
+   system must both write it there. */
+static BOOL sameFallbackWritten(NSString *ours, NSString *theirs)
+{
+    if (unitedStates)
+        return [ours isEqualToString:theirs];
+    NSString *mine = ours, *yours = theirs;
+    if (mine.length && [mine hasSuffix:@"s"])
+        mine = [mine substringToIndex:mine.length - 1];
+    if (yours.length && [yours hasSuffix:@"s"])
+        yours = [yours substringToIndex:yours.length - 1];
+    return [mine isEqualToString:yours];
+}
+
 static BOOL sameWritten(NSString *ours, NSString *theirs, NSFormattingUnitStyle style)
 {
     if (ours != nil) {
@@ -268,9 +291,11 @@ static BOOL sameWritten(NSString *ours, NSString *theirs, NSFormattingUnitStyle 
     return [theirs hasSuffix:@" g-force"] || [theirs hasSuffix:@" g-forces"];
 }
 
-static void checkWritten(NSString *what, NSString *ours, NSString *theirs, NSFormattingUnitStyle style)
+static void checkWritten(NSString *what, NSString *ours, NSString *theirs, NSFormattingUnitStyle style, BOOL unknownUnit)
 {
-    expect(sameWritten(ours, theirs, style), what,
+    // The U.S. is held to the suffix exactly and everywhere else it is taken off both sides, so the
+    // U.S. form is a real check and the rest is the locale's own plural data and not a gap.
+    expect(unknownUnit ? sameFallbackWritten(ours, theirs) : sameWritten(ours, theirs, style), what,
            [NSString stringWithFormat:@"ours %@, host %@", ours ? [ours description] : @"(nil)", theirs ? [theirs description] : @"(nil)"]);
 }
 
@@ -298,6 +323,7 @@ int main(void)
             NSLocale *locale = [NSLocale currentLocale];
             NSString *current = locale.localeIdentifier;
             englishNames = [[[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode] isEqualToString:@"en"];
+            unitedStates = [[[NSLocale currentLocale] objectForKey:NSLocaleMeasurementSystem] isEqualToString:@"U.S."];
             printf("== %s: %s%s\n", current.UTF8String, [[locale objectForKey:NSLocaleMeasurementSystem] UTF8String],
                    englishNames ? " (English names compared exactly)" : " (English names: only the shape is compared)");
 
@@ -324,7 +350,7 @@ int main(void)
                         if (englishNames || knownUnit(@"length", u)) checkName(@"length unitStringFromValue:unit:",
                                   [ourLength unitStringFromValue:v unit:u], [theirLength unitStringFromValue:v unit:u]);
                         if (englishNames || knownUnit(@"length", u)) checkWritten(@"length stringFromValue:unit:",
-                                   [ourLength stringFromValue:v unit:u], [theirLength stringFromValue:v unit:u], style);
+                                   [ourLength stringFromValue:v unit:u], [theirLength stringFromValue:v unit:u], style, !knownUnit(@"length", u));
 
                         CharonHostMassFormatter *ourMass = [[CharonHostMassFormatter alloc] init];
                         NSMassFormatter *theirMass = [[NSMassFormatter alloc] init];
@@ -332,7 +358,7 @@ int main(void)
                         if (englishNames || knownUnit(@"mass", u)) checkName(@"mass unitStringFromValue:unit:",
                                   [ourMass unitStringFromValue:v unit:u], [theirMass unitStringFromValue:v unit:u]);
                         if (englishNames || knownUnit(@"mass", u)) checkWritten(@"mass stringFromValue:unit:",
-                                   [ourMass stringFromValue:v unit:u], [theirMass stringFromValue:v unit:u], style);
+                                   [ourMass stringFromValue:v unit:u], [theirMass stringFromValue:v unit:u], style, !knownUnit(@"mass", u));
                         ourMass.forPersonMassUse = theirMass.forPersonMassUse = YES;
                         if (englishNames || knownUnit(@"mass", u)) checkName(@"mass person unitStringFromValue:unit:",
                                   [ourMass unitStringFromValue:v unit:u], [theirMass unitStringFromValue:v unit:u]);
@@ -343,12 +369,12 @@ int main(void)
                         if (englishNames || knownUnit(@"energy", u)) checkName(@"energy unitStringFromValue:unit:",
                                   [ourEnergy unitStringFromValue:v unit:u], [theirEnergy unitStringFromValue:v unit:u]);
                         if (englishNames || knownUnit(@"energy", u)) checkWritten(@"energy stringFromValue:unit:",
-                                   [ourEnergy stringFromValue:v unit:u], [theirEnergy stringFromValue:v unit:u], style);
+                                   [ourEnergy stringFromValue:v unit:u], [theirEnergy stringFromValue:v unit:u], style, !knownUnit(@"energy", u));
                         ourEnergy.forFoodEnergyUse = theirEnergy.forFoodEnergyUse = YES;
                         if (englishNames || knownUnit(@"energy", u)) checkName(@"energy food unitStringFromValue:unit:",
                                   [ourEnergy unitStringFromValue:v unit:u], [theirEnergy unitStringFromValue:v unit:u]);
                         if (englishNames || knownUnit(@"energy", u)) checkWritten(@"energy food stringFromValue:unit:",
-                                   [ourEnergy stringFromValue:v unit:u], [theirEnergy stringFromValue:v unit:u], style);
+                                   [ourEnergy stringFromValue:v unit:u], [theirEnergy stringFromValue:v unit:u], style, !knownUnit(@"energy", u));
                     }
                 }
             }
