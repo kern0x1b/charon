@@ -9,13 +9,13 @@
 // written by one launch is there for the next. That is what makes the store real rather than a
 // cache of what the process happens to be holding.
 //
-// **Where an accessory's own values come from.** A characteristic's value, whether an accessory is
-// reachable and a camera's stream state are the accessory's, and the port reaches them over the
-// HAP transport (CharonHAPTransport.h). Until a pair-setup has paired an accessory this port has
-// no session with it, so the transport reports HMErrorCodeAccessoryNotReachable for a read or a
-// write; what the graph itself knows -- names, rooms, the services and characteristics an accessory
-// advertises, the action sets and triggers -- is answered from the store, and answered the same way
-// on every launch.
+// **Where an accessory's own values come from.** A characteristic's value and whether an accessory is
+// reachable are the accessory's own, and the port has no HAP transport and no session with any
+// accessory: the HAP code that is in the tree is CharonHapCrypto.h (the curves and the AEAD HAP pairs
+// with) and CharonHAPBignum.h (the arithmetic under it), and neither of them opens a session. So
+// these answer HMErrorCodeAccessoryNotReachable, and the graph itself -- names, rooms, the services and
+// characteristics an accessory advertises, the action sets and the triggers -- is answered from the
+// store, and answered the same way on every launch.
 #ifndef CHARON_HOMEKIT_MODEL_H
 #define CHARON_HOMEKIT_MODEL_H
 

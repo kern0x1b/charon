@@ -134,10 +134,18 @@ static void mont_reduce(const BigNumMont *mont, uint32_t *t)
 static void mont_finish(const BigNumMont *mont, BigNum *out, const uint32_t *t)
 {
     int limbs = mont->limbs;
+    // The reduced value is below 2n, and a modulus that fills its own width -- which RFC 5054's
+    // 1024-bit group does, and every group a protocol names -- has 2n above R = 2^(32*limbs). So the
+    // value needs limbs + 1 limbs, and the carry limb is part of it rather than a flag beside it.
+    //
+    // Reading only the low `limbs` limbs and then subtracting the modulus *because* the carry limb was
+    // set is the defect RFC 5054's own test vector found: for a value below the modulus whose reduced
+    // form still carried a bit past R, the subtraction underflowed and produced a number that is
+    // wrong without being obviously so. The carry limb goes in the value, and the single conditional
+    // subtraction is the one the bound justifies.
     for (int index = 0; index < BN_LIMBS; ++index)
-        out->limb[index] = index < limbs ? t[limbs + index] : 0;
-    // The Montgomery product is below 2n, so one conditional subtraction is the whole reduction.
-    if (t[2 * limbs] || charon_bn_cmp(out, &mont->modulus) >= 0)
+        out->limb[index] = index <= limbs ? t[limbs + index] : 0;
+    if (charon_bn_cmp(out, &mont->modulus) >= 0)
         charon_bn_sub(out, out, &mont->modulus);
 }
 
