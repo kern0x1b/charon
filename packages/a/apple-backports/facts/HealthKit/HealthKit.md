@@ -19,7 +19,7 @@ constant followed through its entry in that image's symbol table to the `__cfstr
 110 of the 120 names the image exports are declared by the SDK headers, and those 110 are what
 `HKConstants8.m` carries; the other ten are Apple's private entitlement names. The reader is
 `.agent-work/runs/api-kits/cfconst32.py` and its output `.agent-work/runs/api-kits/hk8.0.constvalues`.
-Two controls: `HKCategoryTypeIdentifierStepCount` and `HKErrorDomain` are read out as real strings,
+Two controls: `HKQuantityTypeIdentifierStepCount` and `HKErrorDomain` are read out as real strings,
 and a name no image exports reports that instead of a value.
 
 **The unit strings are the release's too.** The image's own string pool holds the units it stored

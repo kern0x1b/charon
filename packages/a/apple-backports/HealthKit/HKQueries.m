@@ -396,10 +396,12 @@
 }
 
 // The handler is called with the anchor the store's own write sequence has reached, and with a
-// completion the application calls when it has caught up. This store has no work left once its
-// handler has returned - the change it is reporting has already been written - so the completion is
-// called when the handler returns, and an application that never calls it has still been told, which
-// is what the completion is for and not a way to stop the next change from coming.
+// completion the application calls when it has caught up. The change this is reporting is written before
+// the handler is called, so this store has nothing outstanding by the time the handler returns, and the
+// completion is therefore called when it does: an application that called it itself inside the handler
+// has already said so and is not called a second time, and one that never calls it has still been told
+// that there is nothing left to wait for. The completion is not a way to stop the next change from
+// coming - that is -stopQuery: - and the handler is told of every change while the query runs.
 - (void)charon_storeDidChange:(NSArray<NSUUID *> *)identifiers
 {
     CharonHKStore *store = [CharonHKStore sharedStore];
@@ -407,9 +409,15 @@
     HKQueryAnchor *anchor = [HKQueryAnchor charon_anchorWithSequence:sequence];
     _anchor = anchor;
     [self charon_perform:^{
-        if (self->_updateHandler)
-            self->_updateHandler(self, anchor, ^{
-            }, nil);
+        if (!self->_updateHandler)
+            return;
+        __block BOOL caughtUp = NO;
+        void (^completion)(void) = ^{
+            caughtUp = YES;
+        };
+        self->_updateHandler(self, anchor, completion, nil);
+        if (!caughtUp)
+            completion();
     }];
 }
 
