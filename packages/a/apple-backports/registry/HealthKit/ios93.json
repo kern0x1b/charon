@@ -35,17 +35,6 @@
       "source": "the armv7 shared cache of iOS 9.3, HealthKit.framework, extracted with modules/apple/dyld.lua's extract()"
     },
     {
-      "api": "HKPredicateKeyPathDateComponents",
-      "kind": "constant",
-      "introduced": "9.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "iOS 9.3 is the release of the activity ring, and the one whose image this workspace holds the two constants it added in",
-      "effect": "the value HealthKit gave it, read out of iOS 9.0's own image: the path the two activity-summary predicates are built over, and the property HKActivitySummary answers for it",
-      "facts": "facts/HealthKit/HealthKit.md",
-      "source": "the armv7 shared cache of iOS 9.3, HealthKit.framework, extracted with modules/apple/dyld.lua's extract()"
-    },
-    {
       "api": "HKQuantityTypeIdentifierAppleExerciseTime",
       "kind": "constant",
       "introduced": "9.3",
