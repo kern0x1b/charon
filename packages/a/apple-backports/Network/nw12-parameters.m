@@ -42,7 +42,7 @@ static CharonNWParameters *charon_parameters(CharonNWProtocolStack *stack)
     parameters->_prohibitedInterfaceTypes = [NSMutableArray array];
     parameters->_serviceClass = nw_service_class_best_effort;
     parameters->_multipathService = nw_multipath_service_disabled;
-    parameters->_expiredDNSBehavior = nw_parameters_expired_dns_behavior_allow;
+    parameters->_expiredDNSBehavior = nw_parameters_expired_dns_behavior_default;
     parameters->_requiredInterfaceType = nw_interface_type_other;
     parameters->_attribution = nw_parameters_attribution_developer;
     return parameters;
@@ -292,7 +292,7 @@ void nw_parameters_set_multipath_service(nw_parameters_t parameters, nw_multipat
 nw_parameters_expired_dns_behavior_t nw_parameters_get_expired_dns_behavior(nw_parameters_t parameters)
 {
     CharonNWParameters *value = (CharonNWParameters *)parameters;
-    return value ? value->_expiredDNSBehavior : nw_parameters_expired_dns_behavior_allow;
+    return value ? value->_expiredDNSBehavior : nw_parameters_expired_dns_behavior_default;
 }
 
 void nw_parameters_set_expired_dns_behavior(nw_parameters_t parameters, nw_parameters_expired_dns_behavior_t expired_dns_behavior)

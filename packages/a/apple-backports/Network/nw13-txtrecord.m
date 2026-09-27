@@ -42,6 +42,13 @@ static CharonNWTxtRecord *charon_txt_record(BOOL dictionary)
     return record;
 }
 
+/* A key with no value at all is kept as the null, so that the pairs of a record stay in step: a
+   dictionary cannot hold a nil, and the value of such a key is not an empty string but no value. */
+static BOOL charon_has_no_value(id value)
+{
+    return !value || [value isKindOfClass:[NSNull class]];
+}
+
 static nw_txt_record_find_key_t charon_find(CharonNWTxtRecord *record, const char *key)
 {
     if (!charon_key_valid(key))
@@ -49,10 +56,10 @@ static nw_txt_record_find_key_t charon_find(CharonNWTxtRecord *record, const cha
     NSUInteger index = [record->_keys indexOfObject:@(key)];
     if (index == NSNotFound)
         return nw_txt_record_find_key_not_present;
-    NSData *value = record->_values[index];
-    if (!value)
+    id value = record->_values[index];
+    if (charon_has_no_value(value))
         return nw_txt_record_find_key_no_value;
-    return value.length ? nw_txt_record_find_key_non_empty_value : nw_txt_record_find_key_empty_value;
+    return ((NSData *)value).length ? nw_txt_record_find_key_non_empty_value : nw_txt_record_find_key_empty_value;
 }
 
 nw_txt_record_t nw_txt_record_create_dictionary(void)
@@ -62,7 +69,12 @@ nw_txt_record_t nw_txt_record_create_dictionary(void)
 
 nw_txt_record_t nw_txt_record_create_with_bytes(const uint8_t *txt_bytes, size_t txt_len)
 {
-    if (!txt_bytes && txt_len)
+    /* Nothing at all is not a record: a TXT record carries at least the empty string, which is the
+       single zero byte the wire form of a record with no keys is. The host's own Network refuses a
+       record made of no bytes (tests/backports/host/network-objects). */
+    if (!txt_len)
+        return NULL;
+    if (!txt_bytes)
         return NULL;
     CharonNWTxtRecord *record = charon_txt_record(YES);
     /* Each string is a length byte and that many bytes; a length of zero is the empty string, which
@@ -139,9 +151,11 @@ bool nw_txt_record_is_equal(nw_txt_record_t left, nw_txt_record_t right)
         if (![a->_keys[index] isEqualToString:b->_keys[index]])
             return false;
         NSData *first = a->_values[index], *second = b->_values[index];
-        if ((first == nil) != (second == nil))
+        if (charon_has_no_value(first) != charon_has_no_value(second))
             return false;
-        if (first && ![first isEqualToData:second])
+        if (charon_has_no_value(first))
+            continue;
+        if (first && second && ![first isEqualToData:second])
             return false;
     }
     return true;
@@ -193,10 +207,10 @@ bool nw_txt_record_access_key(nw_txt_record_t txt_record, const char *key, nw_tx
     if (found == nw_txt_record_find_key_invalid || found == nw_txt_record_find_key_not_present)
         return access_value(charon_key_valid(key) ? key : "", found, NULL, 0);
     NSUInteger index = [record->_keys indexOfObject:@(key)];
-    NSData *value = record->_values[index];
-    if (value == nil || value == (id)[NSNull null])
+    id value = record->_values[index];
+    if (charon_has_no_value(value))
         return access_value(key, found, NULL, 0);
-    return access_value(key, found, (const uint8_t *)value.bytes, value.length);
+    return access_value(key, found, (const uint8_t *)((NSData *)value).bytes, ((NSData *)value).length);
 }
 
 bool nw_txt_record_apply(nw_txt_record_t txt_record, nw_txt_record_applier_t applier)
@@ -206,12 +220,12 @@ bool nw_txt_record_apply(nw_txt_record_t txt_record, nw_txt_record_applier_t app
         return false;
     for (NSUInteger index = 0; index < record->_keys.count; index++) {
         NSString *key = record->_keys[index];
-        NSData *value = record->_values[index];
-        if (value == (id)[NSNull null]) {
+        id value = record->_values[index];
+        if (charon_has_no_value(value)) {
             if (!applier(key.UTF8String, nw_txt_record_find_key_no_value, NULL, 0))
                 return false;
-        } else if (!applier(key.UTF8String, value.length ? nw_txt_record_find_key_non_empty_value : nw_txt_record_find_key_empty_value,
-                            (const uint8_t *)value.bytes, value.length)) {
+        } else if (!applier(key.UTF8String, ((NSData *)value).length ? nw_txt_record_find_key_non_empty_value : nw_txt_record_find_key_empty_value,
+                            (const uint8_t *)((NSData *)value).bytes, ((NSData *)value).length)) {
             return false;
         }
     }
@@ -227,13 +241,20 @@ bool nw_txt_record_access_bytes(nw_txt_record_t txt_record, nw_txt_record_access
        than 255 bytes cannot be written, and RFC 6763 asks for the record to be empty rather than
        truncated, which is what an empty record is. */
     NSMutableData *bytes = [NSMutableData data];
+    if (!record->_keys.count) {
+        /* A record with no keys is the single zero byte: that is what a service that says nothing
+           publishes, and what the host's own Network hands back (tests/backports/host/network-objects). */
+        uint8_t empty = 0;
+        [bytes appendBytes:&empty length:1];
+        return access_bytes((const uint8_t *)bytes.bytes, bytes.length);
+    }
     for (NSUInteger index = 0; index < record->_keys.count; index++) {
         NSMutableData *string = [NSMutableData data];
         [string appendData:[(NSString *)record->_keys[index] dataUsingEncoding:NSUTF8StringEncoding]];
-        NSData *value = record->_values[index];
-        if (value != (id)[NSNull null]) {
+        id value = record->_values[index];
+        if (!charon_has_no_value(value)) {
             [string appendBytes:"=" length:1];
-            [string appendData:value];
+            [string appendData:(NSData *)value];
         }
         if (string.length > 255)
             return access_bytes(NULL, 0);

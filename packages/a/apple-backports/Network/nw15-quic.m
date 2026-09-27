@@ -197,7 +197,7 @@ void nw_quic_add_tls_application_protocol(nw_protocol_options_t options, const c
 
 sec_protocol_options_t nw_quic_copy_sec_protocol_options(nw_protocol_options_t options)
 {
-    if (![options isKindOfClass:[CharonNWProtocolOptions class]])
+    if (!nw_protocol_options_is_quic(options))
         return NULL;
     CharonNWProtocolOptions *value = (CharonNWProtocolOptions *)options;
     CharonNWSecProtocol *sec = value->_objects[@"sec_protocol_options"];
@@ -337,7 +337,7 @@ uint8_t nw_quic_get_stream_type(nw_protocol_metadata_t stream_metadata)
 
 sec_protocol_metadata_t nw_quic_copy_sec_protocol_metadata(nw_protocol_metadata_t metadata)
 {
-    if (![metadata isKindOfClass:[CharonNWProtocolMetadata class]])
+    if (!nw_protocol_metadata_is_quic(metadata))
         return NULL;
     CharonNWProtocolMetadata *value = (CharonNWProtocolMetadata *)metadata;
     CharonNWSecProtocol *sec = value->_objects[@"sec_protocol_metadata"];

@@ -15,16 +15,27 @@ nw_endpoint_t nw_endpoint_create_url(const char *url)
 {
     if (!url || !*url)
         return NULL;
-    CFStringRef host = charon_nw_url_host(url);
-    if (!host)
+    /* A text with no colon in it names no scheme and no authority, and is not a URL: the host's own
+       Network refuses it (tests/backports/host/network-objects). A text with a scheme is one, and its
+       host is what its authority names - nothing, where the authority names nothing - and its port is
+       its own or, when it has none, the one its scheme answers. */
+    if (!strchr(url, ':'))
         return NULL;
+    /* Without the "://" there is no authority: the text before the colon is the scheme and nothing
+       names a host, so the endpoint's host is empty - which is what the host's own Network answers
+       for such a text (tests/backports/host/network-objects). */
+    const char *separator = strstr(url, "://");
+    CFStringRef host = separator ? charon_nw_url_host(url) : charon_nw_cfstring("");
+    if (!host)
+        host = charon_nw_cfstring("");
+    uint16_t port = separator ? charon_nw_url_port(url) : 0;
+    if (!port)
+        port = charon_nw_default_port_for_scheme(url);
     CharonNWEndpoint *endpoint = [[CharonNWEndpoint alloc] init];
     endpoint->_type = nw_endpoint_type_url;
     endpoint->_url = @(url);
     endpoint->_hostname = (__bridge_transfer NSString *)host;
-    uint16_t port = charon_nw_url_port(url);
-    if (port)
-        endpoint->_port = [NSString stringWithFormat:@"%u", port];
+    endpoint->_port = [NSString stringWithFormat:@"%u", port];
     return endpoint;
 }
 

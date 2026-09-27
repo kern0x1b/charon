@@ -78,15 +78,22 @@ nw_endpoint_t nw_endpoint_create_host(const char *hostname, const char *port)
     if (!hostname)
         return NULL;
     CharonNWEndpoint *endpoint = [[CharonNWEndpoint alloc] init];
-    endpoint->_port = port ? @(port) : nil;
+    /* The port is what makes a host endpoint one: a host with no port, or with a port that names
+       neither a number nor a service, is the invalid endpoint, which is what the host's own Network
+       makes of it (tests/backports/host/network-objects). */
+    uint16_t number = 0;
+    if (!charon_nw_resolve_port(port, &number))
+        return NULL;
+    endpoint->_port = [NSString stringWithFormat:@"%u", number];
     /* A host that is already an address is not looked up: it is the address, and the endpoint says
        so, which is what lets a connection open it without a resolver. The host is kept either way,
        because an address endpoint answers the host it was made from as its own text. */
     CFDataRef address = NULL;
-    uint16_t number = endpoint->_port.length ? (uint16_t)atoi(endpoint->_port.UTF8String) : 0;
     if (charon_nw_host_is_address(hostname, number, &address)) {
         endpoint->_type = nw_endpoint_type_address;
         endpoint->_address = (__bridge_transfer NSData *)address;
+    } else {
+        endpoint->_type = nw_endpoint_type_host;
     }
     endpoint->_hostname = @(hostname);
     return endpoint;
@@ -105,24 +112,26 @@ nw_endpoint_t nw_endpoint_create_address(const struct sockaddr *address)
     char text[INET6_ADDRSTRLEN + 4] = {0};
     if (charon_nw_sockaddr_text(address, text, sizeof text)) {
         endpoint->_hostname = @(text);
-        uint16_t port = charon_nw_sockaddr_port(address);
-        if (port)
-            endpoint->_port = [NSString stringWithFormat:@"%u", port];
+        endpoint->_port = [NSString stringWithFormat:@"%u", charon_nw_sockaddr_port(address)];
     }
     return endpoint;
 }
 
 nw_endpoint_t nw_endpoint_create_bonjour_service(const char *name, const char *type, const char *domain)
 {
-    if (!type || !*type)
+    /* A service needs all three of what it is: without a name there is nothing to publish, without a
+       type there is nothing to look for, and without a domain there is nowhere to publish it. Each
+       of those is refused, as the host's own Network refuses it (tests/backports/host/network-objects). */
+    if (!name || !*name || !type || !*type || !domain || !*domain)
         return NULL;
     CharonNWEndpoint *endpoint = [[CharonNWEndpoint alloc] init];
-    /* A service with no name has nothing to publish, and the endpoint of it is the invalid one -
-       the object is still made, and answers every Bonjour accessor with nothing. */
-    endpoint->_type = (name && *name) ? nw_endpoint_type_bonjour_service : nw_endpoint_type_invalid;
-    endpoint->_bonjourName = name && *name ? @(name) : nil;
+    endpoint->_type = nw_endpoint_type_bonjour_service;
+    endpoint->_bonjourName = @(name);
     endpoint->_bonjourType = @(type);
-    endpoint->_bonjourDomain = domain ? @(domain) : @"local.";
+    endpoint->_bonjourDomain = @(domain);
+    /* The port of a service is not in its name: it comes from the record the service publishes, and
+       until that is resolved the port is zero - which is what the port string says as well. */
+    endpoint->_port = @"0";
     return endpoint;
 }
 
@@ -134,18 +143,18 @@ nw_endpoint_type_t nw_endpoint_get_type(nw_endpoint_t endpoint)
 const char *nw_endpoint_get_hostname(nw_endpoint_t endpoint)
 {
     CharonNWEndpoint *value = (CharonNWEndpoint *)endpoint;
-    if (!value || (value->_type != nw_endpoint_type_host && value->_type != nw_endpoint_type_address))
+    if (!value || (value->_type != nw_endpoint_type_host && value->_type != nw_endpoint_type_address &&
+                   value->_type != nw_endpoint_type_url))
         return NULL;
     return value->_hostname.UTF8String;
 }
 
 uint16_t nw_endpoint_get_port(nw_endpoint_t endpoint)
 {
-    /* Host byte order, as the header says, and 0 for an endpoint of another type or with no port. */
+    /* Host byte order, as the header says, and 0 for an endpoint with no port. The port is kept as the
+       number it names, so this is that number. */
     CharonNWEndpoint *value = (CharonNWEndpoint *)endpoint;
-    if (!value || value->_type == nw_endpoint_type_bonjour_service)
-        return 0;
-    if (!value->_port.length)
+    if (!value || !value->_port.length)
         return 0;
     long number = strtol(value->_port.UTF8String, NULL, 10);
     if (number <= 0 || number > UINT16_MAX)
@@ -166,7 +175,7 @@ const char *nw_endpoint_get_bonjour_service_name(nw_endpoint_t endpoint)
     CharonNWEndpoint *value = (CharonNWEndpoint *)endpoint;
     if (!value || value->_type != nw_endpoint_type_bonjour_service)
         return NULL;
-    return value->_bonjourName ? value->_bonjourName.UTF8String : "";
+    return value->_bonjourName.UTF8String;
 }
 
 const char *nw_endpoint_get_bonjour_service_type(nw_endpoint_t endpoint)
@@ -182,14 +191,14 @@ const char *nw_endpoint_get_bonjour_service_domain(nw_endpoint_t endpoint)
     CharonNWEndpoint *value = (CharonNWEndpoint *)endpoint;
     if (!value || value->_type != nw_endpoint_type_bonjour_service)
         return NULL;
-    return value->_bonjourDomain ? value->_bonjourDomain.UTF8String : "";
+    return value->_bonjourDomain.UTF8String;
 }
 
 char *nw_endpoint_copy_address_string(nw_endpoint_t endpoint)
 {
     CharonNWEndpoint *value = (CharonNWEndpoint *)endpoint;
     if (!value)
-        return charon_nw_copy_cstring("");
+        return NULL;
     const struct sockaddr *address = (const struct sockaddr *)value->_address.bytes;
     if (value->_address.length && address) {
         char text[INET6_ADDRSTRLEN + 4] = {0};
@@ -203,7 +212,7 @@ char *nw_endpoint_copy_port_string(nw_endpoint_t endpoint)
 {
     CharonNWEndpoint *value = (CharonNWEndpoint *)endpoint;
     if (!value || !value->_port.length)
-        return charon_nw_copy_cstring("");
+        return NULL;
     return charon_nw_copy_cstring(value->_port.UTF8String);
 }
 
@@ -244,6 +253,12 @@ bool nw_protocol_definition_is_equal(nw_protocol_definition_t first, nw_protocol
     if (!first || !second)
         return false;
     CharonNWProtocolDefinition *a = (CharonNWProtocolDefinition *)first, *b = (CharonNWProtocolDefinition *)second;
+    /* A framer's definition is made afresh every time and belongs to the program that made it, so two
+       of them are not the same protocol even under one name: they carry different start handlers. The
+       built-in protocols each have one definition for the whole process, so those compare by what
+       they are. Both are what the host's own Network answers (tests/backports/host/network-objects). */
+    if (a->_payload || b->_payload)
+        return false;
     return a->_flags == b->_flags && [a->_family isEqualToString:b->_family] &&
            [a->_identifier isEqualToString:b->_identifier];
 }
@@ -447,7 +462,13 @@ const char *nw_content_context_get_identifier(nw_content_context_t context)
 
 double nw_content_context_get_relative_priority(nw_content_context_t context)
 {
-    return context ? ((CharonNWContentContext *)context)->_relativePriority : 0.0;
+    /* A context that has been declared final reports the defaults, whatever it was told before: the
+       end of its message is already decided, and the host's own Network answers it that way
+       (tests/backports/host/network-objects). */
+    CharonNWContentContext *value = (CharonNWContentContext *)context;
+    if (!value)
+        return 0.0;
+    return value->_isFinal ? 0.5 : value->_relativePriority;
 }
 
 void nw_content_context_set_relative_priority(nw_content_context_t context, double relative_priority)
@@ -462,7 +483,10 @@ void nw_content_context_set_relative_priority(nw_content_context_t context, doub
 
 uint64_t nw_content_context_get_expiration_milliseconds(nw_content_context_t context)
 {
-    return context ? ((CharonNWContentContext *)context)->_expirationMilliseconds : 0;
+    CharonNWContentContext *value = (CharonNWContentContext *)context;
+    if (!value)
+        return 0;
+    return value->_isFinal ? 0 : value->_expirationMilliseconds;
 }
 
 void nw_content_context_set_expiration_milliseconds(nw_content_context_t context, uint64_t expiration_milliseconds)
@@ -485,23 +509,18 @@ void nw_content_context_set_is_final(nw_content_context_t context, bool is_final
 
 nw_content_context_t nw_content_context_copy_antecedent(nw_content_context_t context)
 {
-    /* A copy of the antecedent, not the antecedent itself: the two contexts then change apart, which
-       is what the host's own Network does, measured (tests/backports/host/network-objects). */
+    /* The antecedent itself, held: the context a message is an answer to is the one that was set,
+       which is what the host's own Network answers, measured (tests/backports/host/network-objects). */
     CharonNWContentContext *value = (CharonNWContentContext *)context;
-    if (!value || !value->_antecedent)
-        return NULL;
-    CharonNWContentContext *copy = [[CharonNWContentContext alloc] init];
-    copy->_identifier = value->_antecedent->_identifier;
-    copy->_relativePriority = value->_antecedent->_relativePriority;
-    copy->_expirationMilliseconds = value->_antecedent->_expirationMilliseconds;
-    copy->_isFinal = value->_antecedent->_isFinal;
-    return copy;
+    return value ? value->_antecedent : NULL;
 }
 
 void nw_content_context_set_antecedent(nw_content_context_t context, nw_content_context_t antecedent_context)
 {
-    if (context)
-        ((CharonNWContentContext *)context)->_antecedent = (CharonNWContentContext *)antecedent_context;
+    /* A context that is final takes no antecedent either: what it carries is already decided. */
+    CharonNWContentContext *value = (CharonNWContentContext *)context;
+    if (value && !value->_isFinal)
+        value->_antecedent = (CharonNWContentContext *)antecedent_context;
 }
 
 void nw_content_context_set_metadata_for_protocol(nw_content_context_t context, nw_protocol_metadata_t protocol_metadata)

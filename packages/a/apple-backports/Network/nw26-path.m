@@ -17,12 +17,16 @@
 #import <Network/Network.h>
 #import "CharonNW.h"
 
+#if !__has_include(<Network/proxy_config.h>)
+/* The SDK this file is compiled against declares the whole of iOS 26's Network when it has a
+   proxy_config.h - link quality included - and then this declaration would be a second one. */
 typedef NS_ENUM(int, nw_link_quality_t) {
     nw_link_quality_unknown = 0,
     nw_link_quality_minimal = 10,
     nw_link_quality_moderate = 20,
     nw_link_quality_good = 30,
 };
+#endif
 
 nw_link_quality_t nw_path_get_link_quality(nw_path_t path)
 {

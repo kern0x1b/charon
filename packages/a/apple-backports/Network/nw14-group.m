@@ -27,6 +27,12 @@ bool nw_group_descriptor_add_endpoint(nw_group_descriptor_t descriptor, nw_endpo
     CharonNWGroupDescriptor *value = (CharonNWGroupDescriptor *)descriptor;
     if (!value || !endpoint)
         return false;
+    /* A member of a group is a peer it sends to, so it has to be an endpoint that names one: a host
+       or an address. A URL or a Bonjour service is not a peer of a group, and neither is the invalid
+       endpoint, and the header says such an endpoint is not added and that the answer is false. */
+    nw_endpoint_type_t type = ((CharonNWEndpoint *)endpoint)->_type;
+    if (type != nw_endpoint_type_host && type != nw_endpoint_type_address)
+        return false;
     [value->_endpoints addObject:(CharonNWEndpoint *)endpoint];
     return true;
 }

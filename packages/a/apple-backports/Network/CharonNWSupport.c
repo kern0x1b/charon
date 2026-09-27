@@ -5,9 +5,11 @@
 #include "CharonNWSupport.h"
 
 #include <arpa/inet.h>
+#include <netdb.h>
 #include <mach/mach_time.h>
 #include <netinet/in.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include <string.h>
 #include <sys/un.h>
 #include <time.h>
@@ -83,11 +85,7 @@ bool charon_nw_sockaddr_text(const struct sockaddr *address, char *out, size_t s
     }
     if (address->sa_family == AF_INET6) {
         const struct sockaddr_in6 *v6 = (const struct sockaddr_in6 *)address;
-        char inner[INET6_ADDRSTRLEN];
-        if (!inet_ntop(AF_INET6, &v6->sin6_addr, inner, sizeof inner))
-            return false;
-        snprintf(out, size, "[%s]", inner);
-        return true;
+        return inet_ntop(AF_INET6, &v6->sin6_addr, out, (socklen_t)size) != NULL;
     }
 #ifdef AF_UNIX
     if (address->sa_family == AF_UNIX) {
@@ -161,11 +159,14 @@ bool charon_nw_split_url(const char *url, CFStringRef *out_host, uint16_t *out_p
 
     char *userinfo = strchr(text, '@');
     char *host = userinfo ? userinfo + 1 : text;
-    /* An IPv6 literal is written in brackets, and its colons are not the port's. */
+    /* An IPv6 literal is written in brackets, and its colons are not the port's: the brackets are
+       part of the text of the URL and not part of the host. */
     char *closing = host[0] == '[' ? strchr(host, ']') : NULL;
     char *port = NULL;
     if (closing) {
         *closing = 0;
+        if (host[0] == '[')
+            memmove(host, host + 1, strlen(host));
         port = closing[1] == ':' ? closing + 2 : NULL;
     } else {
         port = strrchr(host, ':');
@@ -199,6 +200,51 @@ uint16_t charon_nw_url_port(const char *url)
     if (!charon_nw_split_url(url, NULL, &port))
         return 0;
     return port;
+}
+
+bool charon_nw_resolve_port(const char *text, uint16_t *out)
+{
+    if (!text || !*text)
+        return false;
+    char *end = NULL;
+    long number = strtol(text, &end, 10);
+    if (end && *end == 0 && number >= 0 && number <= UINT16_MAX) {
+        if (out)
+            *out = (uint16_t)number;
+        return true;
+    }
+    /* A name: the system's own services file is what says what "http" is, and it is the same file the
+       system's resolver uses, so the answer here is the one a release that has Network gives. */
+    struct servent *service = getservbyname(text, "tcp");
+    if (!service)
+        return false;
+    long value = ntohs((uint16_t)service->s_port);
+    if (value < 0 || value > UINT16_MAX)
+        return false;
+    if (out)
+        *out = (uint16_t)value;
+    return true;
+}
+
+uint16_t charon_nw_default_port_for_scheme(const char *url)
+{
+    if (!url)
+        return 0;
+    const char *separator = strstr(url, "://");
+    if (!separator)
+        return 0;
+    size_t length = (size_t)(separator - url);
+    if (!length || length > 31)
+        return 0;
+    char scheme[32];
+    memcpy(scheme, url, length);
+    scheme[length] = 0;
+    for (size_t index = 0; index < length; index++)
+        scheme[index] = (char)tolower((unsigned char)scheme[index]);
+    struct servent *service = getservbyname(scheme, "tcp");
+    if (!service)
+        return 0;
+    return ntohs((uint16_t)service->s_port);
 }
 
 uint64_t charon_nw_uptime_milliseconds(void)

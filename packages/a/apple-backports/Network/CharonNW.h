@@ -27,14 +27,20 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /* The two types of iOS 17, declared as the SDK's own OS_OBJECT_DECL would declare them: a release
-   that has Network defines both of them as a protocol and a typedef, and the SDK this port compiles
-   against is 16.4, which predates them. */
+   that has Network defines both of them as a protocol and a typedef. The SDK this port compiles
+   against is 16.4, which predates them and has no proxy_config.h at all, so the port declares them
+   itself; an SDK new enough to have that header declares them itself and must not be declared twice,
+   which is what the test is for. */
+#if !__has_include(<Network/proxy_config.h>)
 @protocol OS_nw_proxy_config <NSObject>
 @end
 @protocol OS_nw_relay_hop <NSObject>
 @end
 typedef NSObject <OS_nw_proxy_config> *nw_proxy_config_t;
 typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
+#endif
+
+
 
 @class CharonNWEndpoint;
 @class CharonNWParameters;

@@ -10,11 +10,13 @@
 
 nw_browse_descriptor_t nw_browse_descriptor_create_bonjour_service(const char *type, const char *domain)
 {
-    if (!type || !*type)
+    /* A type and a domain are what a browse is: without either there is nothing to look for and
+       nowhere to look, and the host's own Network refuses it (tests/backports/host/network-objects). */
+    if (!type || !*type || !domain || !*domain)
         return NULL;
     CharonNWBrowseDescriptor *descriptor = [[CharonNWBrowseDescriptor alloc] init];
     descriptor->_bonjourType = @(type);
-    descriptor->_bonjourDomain = domain ? @(domain) : @"local.";
+    descriptor->_bonjourDomain = @(domain);
     return descriptor;
 }
 

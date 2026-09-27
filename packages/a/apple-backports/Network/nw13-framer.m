@@ -74,9 +74,10 @@ bool nw_protocol_metadata_is_framer_message(nw_protocol_metadata_t metadata)
     if (!value)
         return false;
     CharonNWProtocolDefinition *definition = value->_definition;
-    /* A framer's definition is the one that carries a start handler, which is what tells a framer's
-       protocol from a built-in one: those are the definitions the factory of a protocol returns. */
-    return definition->_payload != nil || ![definition->_family hasPrefix:@"nw_"];
+    /* A framer's message is one of two kinds: a message of a protocol a program wrote, whose
+       definition carries the start handler, or a WebSocket frame, which the system itself carries as
+       one. The messages of the built-in protocols are not. */
+    return definition->_payload != nil || [definition->_family isEqualToString:@"nw_ws"];
 }
 
 void nw_framer_message_set_value(nw_framer_message_t message, const char *key, void *value, nw_framer_message_dispose_value_t dispose_value)

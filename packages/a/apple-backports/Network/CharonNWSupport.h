@@ -28,8 +28,16 @@ CFStringRef charon_nw_cfstring(const char *text);
 CFDataRef charon_nw_sockaddr_data(const struct sockaddr *address, socklen_t length);
 const struct sockaddr *charon_nw_sockaddr_of(CFDataRef data, socklen_t *length);
 
-/* A socket address in the text a program would write: "192.0.2.1", "[2001:db8::1]", or the name
-   of a Unix socket's path. False for an address of a family with no such text. */
+/* The port a string names: a number, or the name of a service in the system's own services file,
+   which is what a program that writes "http" means. False for a string that names neither. */
+bool charon_nw_resolve_port(const char *text, uint16_t *out);
+
+/* The port a URL's scheme answers when the URL has none of its own - 80 for http, 443 for https and so
+   on - and 0 for a scheme the system has no service for. */
+uint16_t charon_nw_default_port_for_scheme(const char *url);
+
+/* A socket address in the text a program would write: "192.0.2.1", "2001:db8::1", or the name of a
+   Unix socket's path. False for an address of a family with no such text. */
 bool charon_nw_sockaddr_text(const struct sockaddr *address, char *out, size_t size);
 uint16_t charon_nw_sockaddr_port(const struct sockaddr *address);
 socklen_t charon_nw_sockaddr_length(const struct sockaddr *address);
