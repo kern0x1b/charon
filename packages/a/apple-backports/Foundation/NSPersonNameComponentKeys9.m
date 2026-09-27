@@ -7,11 +7,6 @@
    annotated name from the host answers exactly these, one run per component and one for the
    separator). None of them is the symbol's own name, which is why they were read. */
 
-NSString * const NSPersonNameComponentKey = @"NSPersonNameComponentKey";
-NSString * const NSPersonNameComponentGivenName = @"givenName";
-NSString * const NSPersonNameComponentFamilyName = @"familyName";
-NSString * const NSPersonNameComponentMiddleName = @"middleName";
-NSString * const NSPersonNameComponentPrefix = @"namePrefix";
-NSString * const NSPersonNameComponentSuffix = @"nameSuffix";
-NSString * const NSPersonNameComponentNickname = @"nickname";
-NSString * const NSPersonNameComponentDelimiter = @"delimiter";
+/* The eight names the formatter writes, defined in NSPersonNameComponentsFormatter9.m beside the
+   code that writes them, and declared here for the rest of the port to import. */
+#import "NSPersonNameComponentKeys.h"

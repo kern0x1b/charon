@@ -232,16 +232,6 @@
       "source": "SDK 16.4, Foundation"
     },
     {
-      "api": "NSPersonNameComponentsFormatter.locale",
-      "kind": "property",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSPersonNameComponentsFormatter a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, Foundation"
-    },
-    {
       "api": "NSPresentationIntent",
       "kind": "class",
       "introduced": "15.0",
