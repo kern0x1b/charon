@@ -41,8 +41,32 @@ local function dylib(folder, ld64, name, triple, imported, extra)
     return fixtures.link(folder, ld64, name .. ".dylib", triple, name .. ".c", table.join({"-dynamiclib"}, extra or {}))
 end
 
+
+-- A framework moves between the two folders: IOSurface and VideoToolbox are under
+-- /System/Library/Frameworks/ in the SDK's .tbd and under /System/Library/PrivateFrameworks/ on 6.1.3,
+-- and both are there on 4.3. A cache that knows only the older name still holds the symbol, and the owner
+-- the SDK gives has to be followed into it - measured 2026-09-27: without this, _VTCompressionSessionCreate
+-- first appears at 6.0 and _IOSurfaceCreate at 11.0, both three releases and eight too late.
+local function moved_framework_step(dyld, folder, found)
+    local private = "/System/Library/PrivateFrameworks/IOSurface.framework/IOSurface"
+    local public = "/System/Library/Frameworks/IOSurface.framework/IOSurface"
+    local file = cache(path.join(folder, "moved"), "armv7", {"_IOSurfaceCreate"}, private)
+    local cacheobj = dyld.load(file)
+    if not dyld.exported_by(cacheobj, public, "_IOSurfaceCreate") then
+        table.insert(found, "a cache that holds IOSurface under PrivateFrameworks does not answer for the SDK's Frameworks name, so _IOSurfaceCreate reads as arriving at 11.0 instead of 3.0")
+    end
+    if not dyld.exported_by(cacheobj, private, "_IOSurfaceCreate") then
+        table.insert(found, "a cache does not answer for the install name it itself holds")
+    end
+    local other = cache(path.join(folder, "moved-back"), "armv7", {"_VTCompressionSessionCreate"}, "/System/Library/Frameworks/VideoToolbox.framework/VideoToolbox")
+    if not dyld.exported_by(dyld.load(other), "/System/Library/PrivateFrameworks/VideoToolbox.framework/VideoToolbox", "_VTCompressionSessionCreate") then
+        table.insert(found, "a cache that holds VideoToolbox under Frameworks does not answer for the SDK's PrivateFrameworks name, so _VTCompressionSessionCreate reads as arriving at 6.0 instead of 3.0")
+    end
+end
+
 function failures(opt)
     local dyld = import("apple.dyld", {rootdir = opt.modules, anonymous = true})
+    moved_framework_step(dyld, fixtures.scratch(), found)
     local found = {}
     local folder = fixtures.scratch()
     local armv7 = cache(path.join(folder, "dyld_shared_cache_armv7"), "armv7", "_exported")
