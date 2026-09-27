@@ -276,14 +276,27 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
         // The host reads an upper case N as the start of NaN and words the two ways it can end as it does, keeping
         // the %lu of its own message unexpanded (measured: "[N]" is a partial NaN, "[Na]" and "[None]" an invalid
         // one, both with the %lu still in the text).
-        if ([self matchesWord:@"NaN"]) { [self literal:@"NaN"]; return @(NAN); }
+        if ([self matchesWord:@"NaN"]) {
+            [self literal:@"NaN"];
+            // A double, which is what the host's own objCType says it reads; @(NAN) alone is a float.
+            double notANumber = NAN;
+            return @(notANumber);
+        }
         BOOL only = self.position + 1 == self.length;
         [self fail:(only ? @"Partial NaN around character %lu (EoF)." : @"Invalid NaN around character %lu (EoF).")
                  at:self.startOfValue];
         return nil;
     }
-    if (self.json5 && [self literal:@"NaN"]) return @(NAN);
-    if (self.json5 && [self literal:@"Infinity"]) return @(INFINITY);
+    if (self.json5 && [self literal:@"NaN"]) {
+        // A double, which is what the host's own objCType says it reads (measured on the NaN and the
+        // infinities of "[NaN, Infinity, -Infinity]"). @(NAN) alone would be a float.
+        double notANumber = NAN;
+        return @(notANumber);
+    }
+    if (self.json5 && [self literal:@"Infinity"]) {
+        double infinite = INFINITY;
+        return @(infinite);
+    }
     [self fail:@"Invalid value" at:self.startOfValue];
     return nil;
 }
@@ -502,17 +515,36 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
             case 't': [out appendString:@"\t"]; [self advance]; break;
             case '0': if (!self.json5) { [self fail:@"Invalid escape sequence" at:escape]; return nil; }
                        [self fail:@"Unsupported escaped null" at:escape]; return nil;
-            case '\n': case '\r':
-                // A backslash before a line terminator continues the line under JSON5, and the
-                // terminator stays in the string: the host reads "a\<newline>b" as the three
-                // characters a, newline, b, and not as "ab" (measured), and a CR and a CRLF pair both
-                // come out as the one newline.
+            case '\n':
                 if (!self.json5) { [self fail:@"Invalid escape sequence" at:escape]; return nil; }
                 [self advance];
-                if (self.buffer[self.position - 1] == '\r' && self.position < self.length && self.buffer[self.position] == '\n')
-                    [self advance];
                 [out appendString:@"\n"];
                 break;
+            case '\r': {
+                // A backslash before a line terminator continues the line, and the terminator stays in
+                // the string: the host reads "a\<newline>b" as the three characters a, newline, b and
+                // not as "ab" (measured). A CR and a LF make **two** newlines where the pair is CRLF -
+                // the host reads "\<CR><LF>" as a newline and a newline - while a lone CR and a lone LF
+                // make one each. Without JSON5 the pair is still read as a continuation and the LF that
+                // follows it is then refused as the unescaped control character it is, which is what the
+                // host answers for "a\<CR><LF>b"; a lone CR with nothing after it is an invalid escape
+                // at the backslash, as a lone LF is.
+                if (!self.json5) {
+                    if (self.position + 1 >= self.length || self.buffer[self.position + 1] != '\n') {
+                        [self fail:@"Invalid escape sequence" at:escape];
+                        return nil;
+                    }
+                    [self advance];
+                    break;
+                }
+                [self advance];
+                [out appendString:@"\n"];
+                if (self.position < self.length && self.buffer[self.position] == '\n') {
+                    [self advance];
+                    [out appendString:@"\n"];
+                }
+                break;
+            }
             case 'x': {
                 if (!self.json5) { [self fail:@"Invalid escape sequence" at:escape]; return nil; }
                 [self advance];
@@ -523,6 +555,10 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
                     high = high * 16 + digit;
                     [self advance];
                 }
+                // A null spelled as a hex escape is refused under JSON5, as a null spelled "\0" and
+                // "\u0000" are, and with the wording of its own: "Unsupported escaped (hex) null",
+                // against "Unsupported escaped null" and "Unsupported escaped (unicode) null" (measured).
+                if (high == 0 && self.json5) { [self fail:@"Unsupported escaped (hex) null" at:escape]; return nil; }
                 [out appendFormat:@"%C", (unichar)high];
                 break;
             }
@@ -530,10 +566,10 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
                 [self advance];
                 unichar u1 = [self readHex4];
                 if (self.error) return nil;
-                // A null spelled as a unicode escape is refused under JSON5, as a null spelled "\0" and
-                // "\x00" are, and with the wording of its own: "Unsupported escaped (unicode) null",
-                // against "Unsupported escaped null" and "Unsupported escaped (hex) null" (measured).
-                if (u1 == 0 && self.json5) { [self fail:@"Unsupported escaped (unicode) null" at:escape]; return nil; }
+                // A null spelled as a unicode escape is refused under JSON5 with the wording of its own
+                // path, "Unsupported escaped (unicode) null", at the string's opening quote and not at
+                // the backslash (measured for "[\"\u0000\"]", "[\"a\u0000\"]" and "{k:\"\u0000\"}").
+                if (u1 == 0 && self.json5) { [self fail:@"Unsupported escaped (unicode) null" at:self.stringStart]; return nil; }
                 if (u1 >= 0xD800 && u1 <= 0xDBFF) {
                     if (self.position + 1 >= self.length || self.buffer[self.position] != '\\' || self.buffer[self.position + 1] != 'u') {
                         [self fail:@"Unexpected end of file during string parse (expected low-surrogate code point but did not find one)." at:escape];
@@ -619,7 +655,9 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
     if (!digit && !dot) {
         if (self.json5 && [self matchesWord:@"Infinity"]) {
             [self literal:@"Infinity"];
-            return @(negative ? -INFINITY : INFINITY);
+            // A double, which is what the host's own objCType says it reads (measured).
+            double infinite = negative ? -INFINITY : INFINITY;
+            return @(infinite);
         }
         if (negative) { [self fail:@"Number with minus sign but no digits" at:self.position]; return nil; }
         [self fail:@"Malformed number" at:self.position];
@@ -651,10 +689,13 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
     BOOL isFractional = NO;
     NSUInteger fracDigits = 0;
     if (leadingDot || [self peek] == '.') {
-        isFractional = YES;
         [self advance];
         NSUInteger before = self.position;
         while ([self peek] >= '0' && [self peek] <= '9') { fracDigits++; [self advance]; }
+        // A dot with nothing after it is a dot, not a fraction: the host reads "1." under JSON5 as a
+        // long long and not as a double (measured), so the literal only becomes fractional when a digit
+        // follows the dot or one came before it.
+        isFractional = leadingDot || fracDigits > 0;
         if (self.position == before && !self.json5) {
             [self fail:@"Number with decimal point but no additional digits" at:self.position];
             return nil;
@@ -674,7 +715,11 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
         }
         if (digits >= 5 || (digits == 4 && signed_)) { [self fail:@"Number wound up as NaN" at:numberStart]; return nil; }
     }
-    NSString *literal = [NSString stringWithCharacters:self.buffer + numberStart length:self.position - numberStart];
+    // "1." is a dot with nothing after it, and the host reads the 1 as a long long (measured), so the
+    // integer path is given the digits and not the dot.
+    BOOL trailingDot = fracDigits == 0 && self.position > numberStart && self.buffer[self.position - 1] == '.';
+    NSUInteger literalEnd = trailingDot ? self.position - 1 : self.position;
+    NSString *literal = [NSString stringWithCharacters:self.buffer + numberStart length:literalEnd - numberStart];
     if (!isFractional) {
         const char *cstr = literal.UTF8String;
         errno = 0;

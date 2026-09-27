@@ -104,8 +104,8 @@ Three rules about the magnitude are the host's own and not the RFC's:
 ## `NSJSONReadingJSON5Allowed`
 
 Adds: single-quoted strings and the `\'` escape, `\xHH`, a `\` before a line terminator (which
-stays in the string: `a\<newline>b` is the three characters `a`, newline, `b`, and a CR or a CRLF
-pair both come out as the one newline), the refusal of a null spelled `\u0000` as
+stays in the string: `a\<newline>b` is the three characters `a`, newline, `b`; a lone CR and
+a lone LF each make one newline and a CRLF pair makes **two**, so `[\"\\<CR><LF>\"]` is two newlines), the refusal of a null spelled `\u0000` as
 `Unsupported escaped (unicode) null`, bare
 identifier keys (a letter, `_` or `$`, then letters, digits, `_` or `$` — not the fuller
 ECMAScript `IdentifierName`, which nothing measured reaches), `//` and `/* */` comments,

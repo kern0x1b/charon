@@ -64,6 +64,8 @@ static NSError *withoutIndex(NSError *error)
 // The two answers of one reading, compared where they can be and named where they cannot. comparePosition and
 // compareIndex are off only for the one failure whose position and index are an internal offset of the host (the
 // nesting limit, see run.sh); its wording and whether it happens at all are still compared.
+static void expectSameNumbers(id ours, id theirs, NSString *what);
+
 static void sameReadIn(NSString *what, NSData *data, NSJSONReadingOptions opt, BOOL comparePosition, BOOL compareIndex)
 {
     NSError *ours = nil, *theirs = nil;
@@ -114,18 +116,43 @@ read:
             expect([ourElements[i] isEqual:theirElements[i]], what,
                    [NSString stringWithFormat:@"element %lu: ours %@, host %@", (unsigned long)i,
                     ourElements[i], theirElements[i]]);
-    // The class of a number is part of the answer: a long long, an unsigned long long, a double and an NSDecimalNumber
-    // are four different answers to the same literal.
-    if (ourElements && theirElements && ourElements.count == 1 && theirElements.count == 1) {
-        id a = ourElements[0];
-        id b = theirElements[0];
-        if ([a isKindOfClass:[NSNumber class]] && [b isKindOfClass:[NSNumber class]] &&
-            !CFEqual((CFTypeRef)a, (CFTypeRef)b)) {
-            const char *ta = [(NSNumber *)a isKindOfClass:[NSDecimalNumber class]] ? "dec" : [a objCType];
-            const char *tb = [(NSNumber *)b isKindOfClass:[NSDecimalNumber class]] ? "dec" : [b objCType];
-            expect(strcmp(ta, tb) == 0 && strcmp([a description].UTF8String, [b description].UTF8String) == 0, what,
-                   [NSString stringWithFormat:@"number ours %s %@, host %s %@", ta, [a description], tb, [b description]]);
-        }
+    // The class of a number is part of the answer: a long long, an unsigned long long, a double and an
+    // NSDecimalNumber are four different answers to the same literal, and a caller asks
+    // [n isKindOfClass:[NSDecimalNumber class]] or strcmp([n objCType], "i") of it. The comparison is
+    // made wherever both sides are numbers and it does not go behind a value comparison, which is what
+    // left it unreachable: a literal that came back as a decimal where the host's is a long long is
+    // [isEqual:] to it, and every earlier version of this check sat inside a !CFEqual guard. The
+    // elements of a nested container are walked too, not only those of a single-element array.
+    expectSameNumbers(mine, host, what);
+}
+
+static void expectSameNumbers(id ours, id theirs, NSString *what)
+{
+    if ([ours isKindOfClass:[NSNumber class]] && [theirs isKindOfClass:[NSNumber class]]) {
+        // A boolean is a number to isKindOfClass: and its class and its type are its own.
+        const char *ta = [ours isKindOfClass:[NSDecimalNumber class]] ? "dec" : [ours objCType];
+        const char *tb = [theirs isKindOfClass:[NSDecimalNumber class]] ? "dec" : [theirs objCType];
+        expect(strcmp(ta, tb) == 0 && [[ours description] isEqualToString:[theirs description]], what,
+               [NSString stringWithFormat:@"number ours %s %@, host %s %@", ta, [ours description], tb, [theirs description]]);
+        return;
+    }
+    BOOL oursArray = [ours isKindOfClass:[NSArray class]], theirsArray = [theirs isKindOfClass:[NSArray class]];
+    if (oursArray && theirsArray) {
+        NSArray *a = ours, *b = theirs;
+        if (a.count != b.count)
+            return;
+        for (NSUInteger index = 0; index < a.count; index++)
+            expectSameNumbers(a[index], b[index], what);
+        return;
+    }
+    BOOL oursDict = [ours isKindOfClass:[NSDictionary class]], theirsDict = [theirs isKindOfClass:[NSDictionary class]];
+    if (oursDict && theirsDict) {
+        NSDictionary *a = ours, *b = theirs;
+        if (a.count != b.count)
+            return;
+        for (id key in a)
+            if (b[key])
+                expectSameNumbers(a[key], b[key], what);
     }
 }
 
@@ -133,6 +160,8 @@ static void sameRead(NSString *what, NSData *data, NSJSONReadingOptions opt, BOO
 {
     sameReadIn(what, data, opt, comparePosition, YES);
 }
+
+static void expectSameNumbers(id ours, id theirs, NSString *what);
 
 static NSData *text(NSString *s) { return [s dataUsingEncoding:NSUTF8StringEncoding]; }
 

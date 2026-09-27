@@ -28,6 +28,30 @@ static BOOL has_class(const char *name)
     return NSClassFromString([NSString stringWithUTF8String:name]) != Nil;
 }
 
+// One call with a double first argument and an NSInteger second, both by address, and an object
+// result. The three classes take their scalars that way and nothing else, so this is the only shape
+// that reaches the methods rather than a misread pointer.
+
+static id charon_invoke(id target, SEL selector, double *value, NSInteger *which, BOOL wantId)
+{
+    NSMethodSignature *signature = [target methodSignatureForSelector:selector];
+    if (!signature)
+        return nil;
+    NSInvocation *call = [NSInvocation invocationWithMethodSignature:signature];
+    call.selector = selector;
+    call.target = target;
+    if (value)
+        [call setArgument:value atIndex:2];
+    if (which)
+        [call setArgument:which atIndex:3];
+    [call invoke];
+    if (!wantId)
+        return nil;
+    id result = nil;
+    [call getReturnValue:&result];
+    return result;
+}
+
 int main(int argc, char **argv)
 {
     @autoreleasepool {
@@ -74,14 +98,22 @@ int main(int argc, char **argv)
                 } else {
                     units = @[@(11), @(14), @(1793), @(1794)];
                 }
+                // -stringFromValue:unit: and -unitStringFromValue:unit: take a double and an NSInteger,
+                // so they go through an NSInvocation and not through performSelector:, which would hand
+                // them the *pointers* of two NSNumbers where the two scalars are expected.
                 for (NSNumber *unit in units) {
                     for (NSNumber *value in @[@1, @0, @(-1), @2.5]) {
-                        SEL written = NSSelectorFromString(@"stringFromValue:unit:");
-                        SEL named = NSSelectorFromString(@"unitStringFromValue:unit:");
-                        id form = [fresh performSelector:written withObject:value withObject:unit];
-                        NSString *unitName = [fresh performSelector:named withObject:value withObject:unit];
-                        CHECK([form isKindOfClass:[NSString class]] && [form length] > 0, "a value and a unit write something");
-                        CHECK([unitName isKindOfClass:[NSString class]] && [unitName length] > 0, "and name something");
+                        double scalar = value.doubleValue;
+                        NSInteger which = unit.integerValue;
+                        id written = charon_invoke(fresh, NSSelectorFromString(@"stringFromValue:unit:"), &scalar, &which, YES);
+                        id named = charon_invoke(fresh, NSSelectorFromString(@"unitStringFromValue:unit:"), &scalar, &which, YES);
+                        CHECK([written isKindOfClass:[NSString class]] && [written length] > 0, "a value and a unit write something");
+                        CHECK([named isKindOfClass:[NSString class]] && [named length] > 0, "and name something");
+                        // The unit named must be one of the ones the dimension has: a pointer read as a
+                        // scalar lands outside the enumeration, and the system answers that with its own
+                        // lookup key rather than a name.
+                        CHECK(![named hasSuffix:@"_UNKNOWN"] && ![named isEqualToString:@"(null)"],
+                              "and it is a name of the dimension, not the answer for a unit outside it");
                     }
                 }
                 // The three methods that pick a unit, and the unit they report.
@@ -94,7 +126,8 @@ int main(int argc, char **argv)
                 double scales[] = {0, 0.0001, 0.5, 1, 1.5, 100, 1000, 100000, -1, -1000};
                 for (unsigned index = 0; index < sizeof(scales) / sizeof(*scales); index++) {
                     double value = scales[index];
-                    id form = [fresh performSelector:scaled withObject:@(value)];
+                    double scalar = value;
+                    id form = charon_invoke(fresh, scaled, &scalar, NULL, YES);
                     // -unitStringFrom...usedUnit: writes an NSInteger through the pointer, so it goes through an
                     // NSInvocation rather than performSelector:, which would read the pointer as an object.
                     NSInteger reported = -1;
