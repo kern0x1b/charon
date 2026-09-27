@@ -40,7 +40,7 @@ public enum MLColumnError: Error, CustomStringConvertible, Equatable {
 
 /// A column of a training table whose element type is not written down.
 public struct MLUntypedColumn: Equatable, CustomStringConvertible, CustomDebugStringConvertible {
-    public private(set) var name: String
+    public internal(set) var name: String
     public private(set) var values: [MLDataValue]
     /// Set when a value of a kind the column cannot carry is in it, or when its values are of two
     /// different kinds. The column stays readable and the failure stays visible: `isValid` answers
