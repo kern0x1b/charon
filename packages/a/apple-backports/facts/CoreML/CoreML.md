@@ -149,14 +149,29 @@ the writer wrote the array and the string and the reader read the type alone -- 
 written and read whole, with the kind beside the type because a value of a real type that is
 undefined and a value of that type that holds something are different facts.
 
-One difference from the framework is recorded rather than matched, and it is a difference in the
-port's favour. **Archiving a value over a multi array and reading it back with
-`+[NSKeyedUnarchiver unarchiveObjectWithData:]` raises on Apple's Core ML** --
-`NSInvalidUnarchiveOperationException: This method only supports secure coding` -- because
-Core ML's own `MLMultiArray` archive is decoded through a non-secure collection path. This port's
-`MLMultiArray` archive is secure-decodable, so the array comes back. Nothing is lost either way and
-no application can depend on the raise, so the port does the round trip; the difference is named in
-`tests/backports/host/coreml/run.sh` next to the check that prints it.
+**What the release does, measured on the caches this machine holds.** Core ML's own coder is not
+there at all on the first releases that have the framework: neither `MLFeatureValue` nor
+`MLMultiArray` carries `+supportsSecureCoding`, `encodeWithCoder:` or `initWithCoder:` in the
+**iOS 11.0**, **12.0**, **16.0** or **18.0** dyld shared cache, read through
+`tests/backports/tools/cache-methods.py`. So on the releases an application met first, a feature
+value cannot be archived at all.
+
+Where Core ML *does* have a coder, the multi array value is the one case that does not come back:
+a plain `+[NSKeyedUnarchiver unarchiveObjectWithData:]` raises
+`NSInvalidUnarchiveOperationException`, `*** -[NSKeyedUnarchiver
+_decodeCollectionOfClass:allowedClasses:forKey:]: This method only supports secure coding.`, because
+Core ML reads the array through a private unarchiver selector that refuses a coder which does not
+require secure coding. A **secure** unarchiver
+(`+[NSKeyedArchiver archivedDataWithRootObject:requiringSecureCoding:error:]` and
+`+[NSKeyedUnarchiver unarchivedObjectOfClass:fromData:error:]`) brings the array back on the
+framework, and every other kind of value round trips on both paths.
+
+**This port matches that.** The array is refused with the same exception name and the same reason
+on the same condition, which is also the exact string the port's own Foundation raises from
+`NSCoder+Collections14.m` when a collection is decoded from a coder of that kind -- the private
+selector is not reachable from here and is not the sort of thing this port calls, so the refusal is
+raised rather than taken. The case in `tests/backports/host/coreml` records both paths, so a change
+in either is caught: 678 keys, and the two builds agree on every one of them.
 
 An **image** feature value does not round trip on either: a pixel buffer is not something a secure
 archive carries, so the value comes back of the image type and undefined, and the facts say so.

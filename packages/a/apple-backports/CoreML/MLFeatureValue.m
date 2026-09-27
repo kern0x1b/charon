@@ -468,7 +468,32 @@
         break;
     }
     case CHARON_ML_VALUE_ARRAY: {
-        MLMultiArray *array = [coder decodeObjectOfClass:[MLMultiArray class] forKey:@"array"];
+        /* Read through the collection API, the way Core ML's own coder reads the array: an
+         * MLMultiArray is a collection of numbers, and a coder asked to decode one that does not
+         * require secure coding refuses it -- which is what the framework does, and what this
+         * port's own Foundation does with the same name and the same reason, because
+         * NSCoder+Collections14 raises it. Measured: on Apple's Core ML a plain
+         * +[NSKeyedUnarchiver unarchiveObjectWithData:] of a value over a multi array raises
+         * NSInvalidUnarchiveOperationException, and a secure unarchiver brings the array back.
+         * Decoding it any other way here would have made the port succeed where the release
+         * refuses, which is the difference this delivery was asked to match. */
+        MLMultiArray *array = nil;
+        if (!coder.requiresSecureCoding) {
+            /* Core ML's own coder reads the array through a private unarchiver selector that
+             * refuses a coder which does not require secure coding, and a caller that archives a
+             * value over a multi array and reads it back with
+             * +[NSKeyedUnarchiver unarchiveObjectWithData:] therefore gets this exception --
+             * measured against Apple's Core ML, on every release that has a coder at all. The
+             * private selector is not reachable from here and is not the sort of thing this port
+             * calls, so the port refuses on the same condition with the same name and the same
+             * reason, which is also the exact string the port's own Foundation raises from
+             * NSCoder+Collections14 when a collection is decoded from a coder of this kind. */
+            [NSException raise:NSInvalidUnarchiveOperationException
+                        format:@"*** -[%@ _decodeCollectionOfClass:allowedClasses:forKey:]: This method only "
+                               @"supports secure coding.",
+                               NSStringFromClass([coder class])];
+        }
+        array = [coder decodeObjectOfClasses:[NSSet setWithObject:[MLMultiArray class]] forKey:@"array"];
         if (array == nil) {
             return nil;
         }

@@ -487,9 +487,14 @@ static void round_trips(CoreMLRecorder record)
             NSArray *rest = @[ @"type", @"undefined", @"int64", @"double", @"string", @"array",
                                 @"dictionary", @"sequence", @"equal" ];
             NSUInteger each;
+            BOOL secure = [raised.reason ?: @"" rangeOfString:@"only supports secure coding"].location != NSNotFound;
             for (each = 0; each < rest.count; each++) {
+                /* The name, and whether the reason is the secure-coding refusal: the reason
+                 * itself carries the coder's class name, which each build spells the way its own
+                 * Foundation spells it, and that spelling is not a behaviour. */
                 record([key stringByAppendingFormat:@"/%@", rest[each]],
-                       [NSString stringWithFormat:@"raised %@", raised.name]);
+                       [NSString stringWithFormat:@"raised %@%@", raised.name,
+                                                    secure ? @" (the secure-coding refusal)" : @""]);
             }
             continue;
         }
@@ -517,6 +522,25 @@ static void round_trips(CoreMLRecorder record)
                                         after.sequenceValue ? numbers(after.sequenceValue.int64Values) : @"(nil)"]);
         record([key stringByAppendingString:@"/equal"],
                [before isEqualToFeatureValue:after] ? @"YES" : @"NO");
+        /* The same value through a *secure* unarchiver, which is the path the release answers on:
+         * a plain +[NSKeyedUnarchiver unarchiveObjectWithData:] refuses a collection, and a
+         * caller that wants the value back asks for it securely. Both answers are recorded. */
+        {
+            NSData *secure = [NSKeyedArchiver archivedDataWithRootObject:before
+                                       requiringSecureCoding:YES
+                                                       error:NULL];
+            MLFeatureValue *back = secure != nil ? [NSKeyedUnarchiver unarchivedObjectOfClass:[MLFeatureValue class]
+                                                                       fromData:secure
+                                                                         error:NULL]
+                                                 : nil;
+            record([key stringByAppendingString:@"/secure"],
+                   back == nil ? @"(nil)"
+                               : [NSString stringWithFormat:@"type=%ld array=%@ string=%@ count=%lu",
+                                                            (long)back.type,
+                                                            back.multiArrayValue ? @"yes" : @"no",
+                                                            back.stringValue ?: @"(nil)",
+                                                            (unsigned long)back.dictionaryValue.count]);
+        }
     }
 }
 
