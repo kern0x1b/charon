@@ -130,7 +130,6 @@ static void CharonMLCDefaultActivation(MLCActivationType type, float *a, float *
     *c = 1.0f;
     switch (type) {
         case MLCActivationTypeReLU:
-        case MLCActivationTypeReLUN:
             *a = 0.0f;
             break;
         case MLCActivationTypeLinear:
@@ -143,16 +142,6 @@ static void CharonMLCDefaultActivation(MLCActivationType type, float *a, float *
         case MLCActivationTypeHardShrink:
         case MLCActivationTypeSoftShrink:
             *a = 0.5f;
-            break;
-        case MLCActivationTypeTanhShrink:
-            *a = 0.0f;
-            break;
-        case MLCActivationTypeGELU:
-            // The normal distribution's density at zero and the constant of the standard normal's tail:
-            // sqrt(2/pi) and 1/sqrt(2*pi) as the framework spells them, rounded to the float it stores
-            // (measured: 0.797885 and 0.044715).
-            *a = 0.797885f;
-            *b = 0.044715f;
             break;
         default:
             break;
@@ -299,15 +288,25 @@ static void CharonMLCDefaultActivation(MLCActivationType type, float *a, float *
     return [[self alloc] init];
 }
 
-// The pair an argument array of a kernel, a stride, a dilation or a padding carries, read the way the
-// framework reads it: the first entry is the x of the name and the second the y, and a one-entry array is
-// that value for both (measured: kernelSizes 3, 5 is a kernelWidth of 5 and a kernelHeight of 3, and
-// strides 2, 1 is a strideInX of 1 and a strideInY of 2 - the array is given the other way round from the
-// names). A missing array is the one by one kernel, the unit stride and the unit dilation.
+// The pair an argument array carries, read the way the framework reads it: the second entry is the x of the
+// name and the first the y, and a one-entry array is that value for both (measured: kernelSizes 3, 5 is a
+// kernelWidth of 5 and a kernelHeight of 3, strides 2, 1 is a strideInX of 1 and a strideInY of 2, and
+// paddingSizes 4, 2 is a paddingSizeInX of 2 and a paddingSizeInY of 4).
 static void CharonMLCPair(NSArray<NSNumber *> *values, NSUInteger *x, NSUInteger *y)
 {
-    NSUInteger first = values.count > 0 ? values[values.count - 1].unsignedIntegerValue : 1;
-    NSUInteger second = values.count > 1 ? values[values.count - 2].unsignedIntegerValue : first;
+    NSUInteger first = values.count > 0 ? values[0].unsignedIntegerValue : 1;
+    NSUInteger second = values.count > 1 ? values[1].unsignedIntegerValue : first;
+    *x = second;
+    *y = first;
+}
+
+// The same, for the two padding sizes, whose default is no padding at all where a kernel, a stride and a
+// dilation default to one (measured: a convolution with the same padding policy and no padding sizes
+// answers zero by zero, and a max pooling with none as well).
+static void CharonMLCPaddingPair(NSArray<NSNumber *> *values, NSUInteger *x, NSUInteger *y)
+{
+    NSUInteger first = values.count > 0 ? values[0].unsignedIntegerValue : 0;
+    NSUInteger second = values.count > 1 ? values[1].unsignedIntegerValue : first;
     *x = second;
     *y = first;
 }
@@ -326,7 +325,7 @@ static void CharonMLCPair(NSArray<NSNumber *> *values, NSUInteger *x, NSUInteger
     CharonMLCPair(kernelSizes, &width, &height);
     CharonMLCPair(strides, &strideX, &strideY);
     CharonMLCPair(dilationRates, &dilationX, &dilationY);
-    CharonMLCPair(paddingSizes, &paddingX, &paddingY);
+    CharonMLCPaddingPair(paddingSizes, &paddingX, &paddingY);
     MLCConvolutionDescriptor *descriptor = [[MLCConvolutionDescriptor alloc] init];
     [descriptor charon_setType:convolutionType
                         kernel:width
@@ -809,7 +808,7 @@ static void CharonMLCPair(NSArray<NSNumber *> *values, NSUInteger *x, NSUInteger
         strideY = height;
     }
     CharonMLCPair(dilationRates, &dilationX, &dilationY);
-    CharonMLCPair(paddingSizes, &paddingX, &paddingY);
+    CharonMLCPaddingPair(paddingSizes, &paddingX, &paddingY);
     MLCPoolingDescriptor *descriptor = [[MLCPoolingDescriptor alloc] init];
     [descriptor charon_setType:type
                      kernelX:width
@@ -1316,10 +1315,12 @@ static void CharonMLCPair(NSArray<NSNumber *> *values, NSUInteger *x, NSUInteger
 
 - (id)copyWithZone:(NSZone *)zone
 {
+    // The copy keeps the scale and loses both transpositions. That is what the host's copy does (measured:
+    // a descriptor with a scale of 2 and a transposed x copies to a scale of 2 and no transposition), and
+    // the port keeps it rather than being quietly better than the framework it stands for;
+    // facts/MLDescriptors.md names it.
     MLCMatMulDescriptor *copy = [[[self class] allocWithZone:zone] init];
     copy->_alpha = _alpha;
-    copy->_transposesX = _transposesX;
-    copy->_transposesY = _transposesY;
     return copy;
 }
 
@@ -1338,14 +1339,8 @@ static void CharonMLCPair(NSArray<NSNumber *> *values, NSUInteger *x, NSUInteger
 
 - (instancetype)init
 {
-    // The header's unavailable initialiser: no rows, no columns and no padding, maximum norm or p-norm
-    // (measured).
+    // The header's unavailable initialiser: nothing set at all, not even the number of rows (measured).
     self = [super init];
-    if (self) {
-        _paddingIndex = @0;
-        _maximumNorm = @0;
-        _pNorm = @0;
-    }
     return self;
 }
 
@@ -1356,11 +1351,13 @@ static void CharonMLCPair(NSArray<NSNumber *> *values, NSUInteger *x, NSUInteger
 
 + (instancetype)descriptorWithEmbeddingCount:(NSNumber *)embeddingCount embeddingDimension:(NSNumber *)embeddingDimension
 {
+    // The shorter form leaves the padding index and the maximum norm unset and gives a p-norm of two, which
+    // is the exponent the longest form's default of nothing means (measured).
     return [self descriptorWithEmbeddingCount:embeddingCount
                              embeddingDimension:embeddingDimension
-                                   paddingIndex:@0
-                                   maximumNorm:@0
-                                         pNorm:@0
+                                   paddingIndex:nil
+                                   maximumNorm:nil
+                                         pNorm:@(2)
                      scalesGradientByFrequency:NO];
 }
 
@@ -1799,22 +1796,11 @@ scalesGradientByFrequency:_scalesGradientByFrequency];
 
 - (instancetype)init
 {
-    // The header's unavailable initialiser: no anchor boxes (measured, together with a count of zero), and
-    // the scales of the loss itself. Those are the numbers the factory carries and they are measured (a
-    // rescore of yes, 10 for each of the spatial position and the spatial size, 5 for the confidence that
-    // no object is there, 100 for the one that an object is, 2 for the class, an intersection over union of
-    // 0.7 for an object to be there and 0.3 for it to be absent).
+    // The header's unavailable initialiser: no anchor boxes, a count of zero and every scale zero, with no
+    // rescore (measured).
     self = [super init];
     if (self) {
         _anchorBoxes = [NSData data];
-        _shouldRescore = YES;
-        _scaleSpatialPositionLoss = 10.0f;
-        _scaleSpatialSizeLoss = 10.0f;
-        _scaleNoObjectConfidenceLoss = 5.0f;
-        _scaleObjectConfidenceLoss = 100.0f;
-        _scaleClassLoss = 2.0f;
-        _minimumIOUForObjectPresence = 0.7f;
-        _maximumIOUForObjectAbsence = 0.3f;
     }
     return self;
 }
@@ -1824,10 +1810,22 @@ scalesGradientByFrequency:_scalesGradientByFrequency];
     return [[self alloc] init];
 }
 
+// The scales the loss itself runs with, which the factory carries and an initialiser does not: a rescore of
+// yes, 10 for each of the spatial position and the spatial size, 5 for the confidence that no object is
+// there, 100 for the one that an object is, 2 for the class, an intersection over union of 0.7 for an
+// object to be there and 0.3 for it to be absent (measured).
 + (instancetype)descriptorWithAnchorBoxes:(NSData *)anchorBoxes anchorBoxCount:(NSUInteger)anchorBoxCount
 {
     MLCYOLOLossDescriptor *descriptor = [[MLCYOLOLossDescriptor alloc] init];
     [descriptor charon_setAnchorBoxes:anchorBoxes count:anchorBoxCount];
+    descriptor->_shouldRescore = YES;
+    descriptor->_scaleSpatialPositionLoss = 10.0f;
+    descriptor->_scaleSpatialSizeLoss = 10.0f;
+    descriptor->_scaleNoObjectConfidenceLoss = 5.0f;
+    descriptor->_scaleObjectConfidenceLoss = 100.0f;
+    descriptor->_scaleClassLoss = 2.0f;
+    descriptor->_minimumIOUForObjectPresence = 0.7f;
+    descriptor->_maximumIOUForObjectAbsence = 0.3f;
     return descriptor;
 }
 
@@ -1929,17 +1927,10 @@ scalesGradientByFrequency:_scalesGradientByFrequency];
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    MLCYOLOLossDescriptor *copy = [[[self class] allocWithZone:zone] init];
-    [copy charon_setAnchorBoxes:_anchorBoxes count:_anchorBoxCount];
-    copy->_shouldRescore = _shouldRescore;
-    copy->_scaleSpatialPositionLoss = _scaleSpatialPositionLoss;
-    copy->_scaleSpatialSizeLoss = _scaleSpatialSizeLoss;
-    copy->_scaleNoObjectConfidenceLoss = _scaleNoObjectConfidenceLoss;
-    copy->_scaleObjectConfidenceLoss = _scaleObjectConfidenceLoss;
-    copy->_scaleClassLoss = _scaleClassLoss;
-    copy->_minimumIOUForObjectPresence = _minimumIOUForObjectPresence;
-    copy->_maximumIOUForObjectAbsence = _maximumIOUForObjectAbsence;
-    return copy;
+    // The copy keeps the anchor boxes and their count and takes the loss's own scales, not the ones the
+    // descriptor was last given (measured: a descriptor whose class scale was set to 5.5 copies to 2). The
+    // port keeps that, and facts/MLCDescriptors.md names it.
+    return [[self class] descriptorWithAnchorBoxes:_anchorBoxes anchorBoxCount:_anchorBoxCount];
 }
 
 @end

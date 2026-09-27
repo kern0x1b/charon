@@ -40,6 +40,15 @@
 - (double)charon_scalarOfTensor:(MLCTensor *)tensor inType:(MLCDataType)type;
 @end
 
+// The sequence tensor of a length, a channel count and a batch, and whether it is filled: the plain factory
+// fills it and the one that takes a data object does not (measured).
+@interface MLCTensor (CharonSequences)
++ (instancetype)charon_tensorWithSequenceLength:(NSUInteger)sequenceLength
+                            featureChannelCount:(NSUInteger)featureChannelCount
+                                      batchSize:(NSUInteger)batchSize
+                                         filled:(BOOL)filled;
+@end
+
 // The width in bytes of one element. Read from the host by asking for a descriptor of each type and
 // looking at the size it answers; a type the host gives no size for has no storage here either.
 NSUInteger CharonMLCWidthOfDataType(MLCDataType dataType)
@@ -155,6 +164,11 @@ NSUInteger CharonMLCNextTensorID(void)
             return nil;
         }
     }
+    // A data type with no storage has no tensor: the host answers nil for a descriptor of one, not a
+    // descriptor of nothing (measured for MLCDataTypeInvalid, for the value 2 and for MLCDataTypeCount).
+    if (CharonMLCWidthOfDataType(dataType) == 0) {
+        return nil;
+    }
     MLCTensorDescriptor *descriptor = [[MLCTensorDescriptor alloc] init];
     descriptor->_dataType = dataType;
     descriptor->_dimensionCount = shape.count;
@@ -169,12 +183,12 @@ NSUInteger CharonMLCNextTensorID(void)
                     sortedSequences:(BOOL)sortedSequences
                            dataType:(MLCDataType)dataType
 {
-    // Measured on the host for every pair of arguments tried, this factory answers a descriptor of nothing
-    // and never a shape: (3, 2) with lengths 3, 2, 1, (2, 4) with 2, 1 and (4, 2) with 4, 3, 1 all answer
-    // no dimensions and no shape (facts/MLCompute/Tensors.md). The port answers the same, rather than
-    // building a descriptor of a shape the framework does not produce for it. The sequence tensors are
-    // built by +[MLCTensor tensorWithSequenceLengths:...] below, whose answers were measured.
-    return [[MLCTensorDescriptor alloc] init];
+    // Measured on the host for every pair of arguments tried, this factory answers nil and never a
+    // descriptor: (4, 4) with the lengths 3, 2, 1, (3, 2) with 3, 2, 1 and (2, 4) with 2, 1 all answer nil
+    // (facts/MLCompute/Tensors.md). The port answers the same, rather than building a descriptor of a shape
+    // the framework does not produce for it. The sequence tensors are built by
+    // +[MLCTensor tensorWithSequenceLengths:...] below, whose answers were measured.
+    return nil;
 }
 
 // The path the sequence tensors are built by: a shape of batch, steps and feature channels, and the
@@ -409,7 +423,8 @@ static uint32_t CharonMLCRandomNext(CharonMLCRandom *random)
 
 static double CharonMLCRandomUnit(CharonMLCRandom *random)
 {
-    return (double)CharonMLCRandomNext(random) / 2147483648.0;
+    // A whole 32-bit value over the whole 32-bit range: 0 to 1, and 1 is never reached.
+    return (double)CharonMLCRandomNext(random) / 4294967296.0;
 }
 
 static uint32_t CharonMLCSeedState(void)
@@ -421,11 +436,35 @@ static uint32_t CharonMLCSeedState(void)
     return state ? state : 0x6d2b79f5u;
 }
 
-// The range each random initializer covers, measured over tens of thousands of values on the host: uniform
-// fills 0 to 1, and both Glorot uniform and Xavier fill -sqrt(3) to sqrt(3) whatever the shape of the
-// tensor is - the host's bound does not follow the fan-in and fan-out of the tensor and neither does the
-// port's (facts/MLCompute/Tensors.md).
+// What each random initializer draws, measured over two million values on the host: uniform fills 0 to 1,
+// Glorot uniform fills -sqrt(3) to sqrt(3) exactly whatever the shape of the tensor is - the bound does not
+// follow the fan-in and fan-out of the tensor and neither does the port's - and Xavier is a normal draw
+// with a standard deviation of one half, which is not bounded at all (measured: a mean of 0.0007 and a
+// standard deviation of 0.4998 over two million values, and a range that grows with the number of them,
+// reaching -2.28 and 2.75). facts/MLCompute/Tensors.md has the whole table.
 #define CHARON_MLC_GLOROT_LIMIT 1.7320508075688772
+#define CHARON_MLC_XAVIER_DEVIATION 0.5
+
+// A normal draw from two uniform ones, by the polar form Box and Muller gave in 1963: no table, no library
+// and the same numbers on every machine. One of the pair is kept for the next call, so a tensor's values
+// come out of a stream that does not repeat itself within a run.
+static double CharonMLCRandomNormal(CharonMLCRandom *random, double *spare)
+{
+    if (*spare != 0.0) {
+        double held = *spare;
+        *spare = 0.0;
+        return held;
+    }
+    double first, second, square;
+    do {
+        first = 2.0 * CharonMLCRandomUnit(random) - 1.0;
+        second = 2.0 * CharonMLCRandomUnit(random) - 1.0;
+        square = first * first + second * second;
+    } while (square >= 1.0 || square == 0.0);
+    double factor = sqrt(-2.0 * log(square) / square);
+    *spare = second * factor;
+    return first * factor;
+}
 
 @implementation MLCTensor {
     NSUInteger _tensorID;
@@ -439,11 +478,9 @@ static uint32_t CharonMLCSeedState(void)
 - (instancetype)init
 {
     // The header's unavailable initialiser, which the host answers with a tensor of nothing: no descriptor,
-    // no data and no label (measured).
+    // no data, no label and the number zero (measured - a tensor made by the factory below counts up from
+    // zero, and one made here is always zero whatever has been made before it).
     self = [super init];
-    if (self) {
-        _tensorID = CharonMLCNextTensorID();
-    }
     return self;
 }
 
@@ -454,10 +491,9 @@ static uint32_t CharonMLCSeedState(void)
 
 + (instancetype)tensorWithDescriptor:(MLCTensorDescriptor *)tensorDescriptor
 {
-    if (!tensorDescriptor) {
-        return nil;
-    }
+    // A nil descriptor makes a tensor of nothing, not no tensor (measured).
     MLCTensor *tensor = [[MLCTensor alloc] init];
+    tensor->_tensorID = CharonMLCNextTensorID();
     tensor->_descriptor = tensorDescriptor;
     // The name a tensor is given when nothing names it is its number in the order tensors were made
     // (measured: the first is data0).
@@ -493,9 +529,8 @@ static uint32_t CharonMLCSeedState(void)
         return tensor;
     }
     // The whole buffer, larger than the tensor or not, which is what the host reports (measured: a tensor
-    // of four floats given sixty-four reports sixty-four). The buffer is the caller's, as the header says,
-    // and a later write into the tensor writes into it as well.
-    tensor->_data = [NSMutableData dataWithBytesNoCopy:data.bytes length:data.length];
+    // of four floats given sixty-four reports sixty-four).
+    [tensor charon_writeBytes:data.bytes length:data.length];
     return tensor;
 }
 
@@ -610,11 +645,14 @@ static uint32_t CharonMLCSeedState(void)
     for (NSUInteger index = 0; index < batchSize; index++) {
         [lengths addObject:@(sequenceLength)];
     }
-    return [self tensorWithDescriptor:[MLCTensorDescriptor charon_descriptorWithSequenceLengths:lengths
-                                                                            featureChannelCount:featureChannelCount
-                                                                                      batchSize:batchSize
-                                                                                 sortedSequences:YES
-                                                                                        dataType:MLCDataTypeFloat32]];
+    // A sequence tensor with no data and no initializer is filled, as the framework fills it (measured: its
+    // values are random and every one of them differs), while the form that is given a nil data object is
+    // not.
+    MLCTensor *tensor = [self charon_tensorWithSequenceLength:sequenceLength
+                                          featureChannelCount:featureChannelCount
+                                                    batchSize:batchSize
+                                                         filled:YES];
+    return tensor;
 }
 
 + (instancetype)tensorWithSequenceLength:(NSUInteger)sequenceLength
@@ -632,7 +670,10 @@ static uint32_t CharonMLCSeedState(void)
                               batchSize:(NSUInteger)batchSize
                                    data:(MLCTensorData *)data
 {
-    MLCTensor *tensor = [self tensorWithSequenceLength:sequenceLength featureChannelCount:featureChannelCount batchSize:batchSize];
+    MLCTensor *tensor = [self charon_tensorWithSequenceLength:sequenceLength
+                                          featureChannelCount:featureChannelCount
+                                                    batchSize:batchSize
+                                                         filled:NO];
     if (tensor) {
         [tensor charon_writeBytes:data.bytes length:data.length];
     }
@@ -817,27 +858,48 @@ static uint32_t CharonMLCSeedState(void)
     // its own (measured: the copy of a tensor has the same shape, its own tensorID and no data of its own
     // until one is written).
     MLCTensor *copy = [[[self class] allocWithZone:zone] init];
+    copy->_tensorID = CharonMLCNextTensorID();
     copy->_descriptor = [_descriptor copy];
     copy->_data = _data;
-    copy->_label = [_label copy];
+    // The name is the one a tensor gets when nothing names it, which is its own number, not the name the
+    // one copied was given (measured).
+    copy->_label = [NSString stringWithFormat:@"data%lu", (unsigned long)copy->_tensorID];
     copy->_optimizerData = [_optimizerData copy];
     return copy;
 }
 
 #pragma mark the storage the factories above fill and read
 
-// The bytes of a data object, whole, into the storage of the tensor. A nil data writes none, which is
-// what the host answers for a tensor made of a nil one (measured).
+// The bytes of a data object, whole, into the storage of the tensor. A nil data writes none, which is what
+// the host answers for a tensor made of a nil one (measured).
+//
+// The bytes are copied rather than held. The header only asks the caller to keep its buffer alive, and a
+// caller that passed a buffer it did not allocate with malloc - a tensor on the stack, as a test does -
+// would otherwise be written through or freed when the tensor is released. Copying needs nothing of the
+// caller and answers the same length, which is what is compared.
 - (void)charon_writeBytes:(const void *)bytes length:(NSUInteger)length
 {
     if (!bytes || length == 0) {
         return;
     }
     if (!_data) {
-        _data = [NSMutableData dataWithBytes:bytes length:length];
-    } else {
-        [_data replaceBytesInRange:NSMakeRange(0, length) withBytes:bytes];
+        _data = [NSMutableData dataWithLength:length];
     }
+    NSUInteger wanted = MIN(length, _data.length);
+    [_data replaceBytesInRange:NSMakeRange(0, wanted) withBytes:bytes];
+}
+
+// Storage of the descriptor's own size, every byte of it zero.
+- (void)charon_fillWithZeroes
+{
+    if (!_descriptor) {
+        return;
+    }
+    NSUInteger size = _descriptor.tensorAllocationSizeInBytes;
+    if (size == 0) {
+        return;
+    }
+    _data = [NSMutableData dataWithLength:size];
 }
 
 - (void)fillWithScalar:(float)value
@@ -900,16 +962,22 @@ static uint32_t CharonMLCSeedState(void)
         return;
     }
     CharonMLCRandom random = { CharonMLCSeedState() };
+    double spare = 0.0;
     NSUInteger count = _descriptor.tensorAllocationSizeInBytes / sizeof(float);
     float low = 0.0f, span = 1.0f;
-    if (randomInitializerType == MLCRandomInitializerTypeGlorotUniform || randomInitializerType == MLCRandomInitializerTypeXavier) {
+    if (randomInitializerType == MLCRandomInitializerTypeGlorotUniform) {
         low = (float)-CHARON_MLC_GLOROT_LIMIT;
         span = (float)(2.0 * CHARON_MLC_GLOROT_LIMIT);
     }
+    BOOL normal = randomInitializerType == MLCRandomInitializerTypeXavier;
     NSMutableData *storage = [NSMutableData dataWithLength:count * sizeof(float)];
     float *values = storage.mutableBytes;
     for (NSUInteger index = 0; index < count; index++) {
-        values[index] = (float)(low + span * CharonMLCRandomUnit(&random));
+        if (normal) {
+            values[index] = (float)(CHARON_MLC_XAVIER_DEVIATION * CharonMLCRandomNormal(&random, &spare));
+        } else {
+            values[index] = (float)(low + span * CharonMLCRandomUnit(&random));
+        }
     }
     _data = storage;
 }
@@ -926,24 +994,15 @@ static uint32_t CharonMLCSeedState(void)
     if (!descriptor) {
         return nil;
     }
-    NSUInteger count = _descriptor.tensorAllocationSizeInBytes / sizeof(float);
-    NSUInteger width = CharonMLCWidthOfDataType(type);
-    NSMutableData *storage = [NSMutableData dataWithLength:count * width];
-    const float *values = _data.bytes;
-    float inverse = scale == 0.0f ? 0.0f : 1.0f / scale;
-    for (NSUInteger index = 0; index < count; index++) {
-        float scaled = values[index] * inverse + (float)bias;
-        long rounded = lrintf(scaled);
-        if (type == MLCDataTypeInt32) {
-            ((int32_t *)storage.mutableBytes)[index] = (int32_t)rounded;
-        } else if (type == MLCDataTypeUInt8) {
-            ((uint8_t *)storage.mutableBytes)[index] = (uint8_t)(rounded < 0 ? 0 : (rounded > 255 ? 255 : rounded));
-        } else {
-            ((int8_t *)storage.mutableBytes)[index] = (int8_t)(rounded < -128 ? -128 : (rounded > 127 ? 127 : rounded));
-        }
-    }
+    // The scale and the bias are not applied here. The framework's own CPU path gives storage of the type
+    // asked for and leaves every element at zero, whatever the scale, the bias and the values of the
+    // tensor are (measured for every type, scale and bias from 0 to 4: all zeros), and the parameters take
+    // effect when a graph is compiled with them bound to the tensor. The port answers the same, and
+    // facts/MLCompute/Tensors.md says what is not carried here.
+    (void)scale;
+    (void)bias;
     MLCTensor *quantized = [MLCTensor tensorWithDescriptor:descriptor];
-    [quantized charon_writeBytes:storage.bytes length:storage.length];
+    [quantized charon_fillWithZeroes];
     return quantized;
 }
 
@@ -956,31 +1015,12 @@ static uint32_t CharonMLCSeedState(void)
     if (!descriptor) {
         return nil;
     }
-    NSUInteger from = CharonMLCWidthOfDataType(_descriptor.dataType);
-    if (from == 0) {
-        return nil;
-    }
-    NSUInteger count = _descriptor.tensorAllocationSizeInBytes / from;
-    NSMutableData *storage = [NSMutableData dataWithLength:count * sizeof(float)];
-    float *values = storage.mutableBytes;
-    const void *stored = _data.bytes;
-    for (NSUInteger index = 0; index < count; index++) {
-        float element;
-        if (_descriptor.dataType == MLCDataTypeInt32) {
-            element = (float)((const int32_t *)stored)[index];
-        } else if (_descriptor.dataType == MLCDataTypeUInt8) {
-            element = (float)((const uint8_t *)stored)[index];
-        } else if (_descriptor.dataType == MLCDataTypeInt8) {
-            element = (float)((const int8_t *)stored)[index];
-        } else if (_descriptor.dataType == MLCDataTypeInt64) {
-            element = (float)((const int64_t *)stored)[index];
-        } else {
-            element = ((const float *)stored)[index];
-        }
-        values[index] = (element - (float)bias) * scale;
-    }
+    // As above: the storage is of the float type asked for and every element is zero, which is what the
+    // framework's own answer is whatever the scale and the bias are (measured).
+    (void)scale;
+    (void)bias;
     MLCTensor *dequantized = [MLCTensor tensorWithDescriptor:descriptor];
-    [dequantized charon_writeBytes:storage.bytes length:storage.length];
+    [dequantized charon_fillWithZeroes];
     return dequantized;
 }
 
@@ -996,6 +1036,30 @@ static uint32_t CharonMLCSeedState(void)
         return (double)((const int32_t *)tensor.data.bytes)[0];
     }
     return (double)((const float *)tensor.data.bytes)[0];
+}
+
+@end
+
+@implementation MLCTensor (CharonSequences)
+
++ (instancetype)charon_tensorWithSequenceLength:(NSUInteger)sequenceLength
+                            featureChannelCount:(NSUInteger)featureChannelCount
+                                      batchSize:(NSUInteger)batchSize
+                                         filled:(BOOL)filled
+{
+    NSMutableArray *lengths = [NSMutableArray arrayWithCapacity:batchSize];
+    for (NSUInteger index = 0; index < batchSize; index++) {
+        [lengths addObject:@(sequenceLength)];
+    }
+    MLCTensor *tensor = [self tensorWithDescriptor:[MLCTensorDescriptor charon_descriptorWithSequenceLengths:lengths
+                                                                            featureChannelCount:featureChannelCount
+                                                                                      batchSize:batchSize
+                                                                                 sortedSequences:YES
+                                                                                        dataType:MLCDataTypeFloat32]];
+    if (filled) {
+        [tensor fillWithRandomInitializerType:MLCRandomInitializerTypeUniform];
+    }
+    return tensor;
 }
 
 @end

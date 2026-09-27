@@ -1,0 +1,12 @@
+// Runs the cases: one binary against the host's own MLCompute, one against the port's, both printing the
+// same lines, and the two compared. Nothing here decides what the right answer is - the host's is.
+#import <Foundation/Foundation.h>
+
+void charon_mlcompute_cases(void);
+
+int main(void)
+{
+    setbuf(stdout, NULL);
+    charon_mlcompute_cases();
+    return 0;
+}
