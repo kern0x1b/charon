@@ -51,8 +51,9 @@ static sparse_status CharonSparseProductSparse(void *A, uint32_t magicA, int ord
             if (c >= (sparse_index)asA->columns) {
                 continue;
             }
-            double value = size == sizeof(float) ? (double)((const float *)line->value)[at]
-                                                : ((const double *)line->value)[at];
+            // A[r, c] in both cases, read through the same lookup the rest of the family uses: the
+            // first version bound the row to NULL on the transposed path and then read through it.
+            double value = CharonSparseElementAt(&asA->row[r], c, size);
             if (value == 0.0) {
                 continue;
             }

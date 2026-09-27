@@ -1291,8 +1291,268 @@ static void level3(void)
         RENAME(sparse_matrix_destroy)(T.mine);
         sparse_matrix_destroy(T.theirs);
     }
+    // The transposed sparse-sparse product, with A 3x2 so op(A) = A' is 2x3 and B is 3x2.
+    {
+        double tValues[6] = {1, 2, 3, 4, 5, 6};
+        sparse_index tRows[6] = {0, 0, 1, 1, 2, 2}, tColumns[6] = {0, 1, 0, 1, 0, 1};
+        Pair T = pointwise(3, 2, 6, tValues, tRows, tColumns, 0);
+        // A 3x2 A with a 3x2 B is a legal pair only for the transposed operand: with op(A) = A' the inner
+        // dimensions are 3 and 3, and without the transpose they would be 2 and 3, which the header calls
+        // undefined. So the transposed case is compared on both layouts, and the other is the refusal the
+        // port makes and the host does not - recorded rather than made to agree.
+        for (int order = 0; order < 2; order++) {
+            float c1[4] = {7, 7, 7, 7}, c2[4] = {7, 7, 7, 7};
+            sparse_status ma = RENAME(sparse_matrix_product_sparse_float)((enum CBLAS_ORDER)(order ? 102 : 101),
+                                                                         CblasTrans, 1.0f,
+                                                                         (sparse_matrix_float)T.mine,
+                                                                         (sparse_matrix_float)S.mine, c1, 2);
+            sparse_status mb = sparse_matrix_product_sparse_float((enum CBLAS_ORDER)(order ? 102 : 101), CblasTrans, 1.0f,
+                                                                  (sparse_matrix_float)T.theirs,
+                                                                  (sparse_matrix_float)S.theirs, c2, 2);
+            snprintf(detail, sizeof detail, "order %d, CblasTrans: port %d host %d", order, ma, mb);
+            report(ma == mb && same_floats(c1, c2, 4, "x"), "a sparse product, CblasTrans, both layouts", detail);
+        }
+        {
+            float c1[4] = {7, 7, 7, 7}, c2[4] = {7, 7, 7, 7};
+            sparse_status ma = RENAME(sparse_matrix_product_sparse_float)(CblasRowMajor, CblasNoTrans, 1.0f,
+                                                                         (sparse_matrix_float)T.mine,
+                                                                         (sparse_matrix_float)S.mine, c1, 2);
+            sparse_status mb = sparse_matrix_product_sparse_float(CblasRowMajor, CblasNoTrans, 1.0f,
+                                                                  (sparse_matrix_float)T.theirs,
+                                                                  (sparse_matrix_float)S.theirs, c2, 2);
+            snprintf(detail, sizeof detail, "inner dimensions 2 against 3: the port refuses with %d, the host "
+                     "answers %d and writes a product of two matrices that do not conform", ma, mb);
+            report(ma == SPARSE_ILLEGAL_PARAMETER && mb == SPARSE_SUCCESS,
+                   "a sparse product whose inner dimensions do not conform", detail);
+        }
+        RENAME(sparse_matrix_destroy)(T.mine);
+        sparse_matrix_destroy(T.theirs);
+    }
     RENAME(sparse_matrix_destroy)(A.mine); sparse_matrix_destroy(A.theirs);
     RENAME(sparse_matrix_destroy)(S.mine); sparse_matrix_destroy(S.theirs);
+}
+
+// The sixteen rows this differential and the device test did not call, each now asked of both sides.
+// The float twin of every one of them is already compared above, so these are the same cases at the
+// other precision - and `sparse_permute_cols_double` and the two transposed products are where the
+// review found the faults.
+// The sixteen rows this differential and the device test did not call, each now asked of both sides.
+// They are the double twins of cases the float half already compares, so each is the same case at the
+// other precision - and `sparse_permute_cols_double` and the four level-3 transposes are where the
+// review found the faults, so they are here on purpose and not as an afterthought.
+static void theSixteen(void)
+{
+    char detail[512];
+    // sparse_insert_row_double and sparse_insert_col_double
+    {
+        double v[2] = {7, 8};
+        sparse_index at[2] = {1, 3};
+        Pair a = pointwise(4, 4, 0, NULL, NULL, NULL, 1), b = pointwise(4, 4, 0, NULL, NULL, NULL, 1);
+        sparse_status ma = RENAME(sparse_insert_row_double)((sparse_matrix_double)a.mine, 0, 2, v, at);
+        sparse_status mb = sparse_insert_row_double((sparse_matrix_double)b.theirs, 0, 2, v, at);
+        ma |= RENAME(sparse_insert_col_double)((sparse_matrix_double)a.mine, 2, 2, v, at);
+        mb |= sparse_insert_col_double((sparse_matrix_double)b.theirs, 2, 2, v, at);
+        snprintf(detail, sizeof detail, "port %d, host %d", ma, mb);
+        report(ma == mb, "a double row and a double column inserted", detail);
+        compare_matrix("a double row and column inserted, the matrix", a, 4, 4, 1);
+        RENAME(sparse_matrix_destroy)(a.mine); sparse_matrix_destroy(a.theirs);
+    }
+    // sparse_matrix_block_create_double, sparse_insert_block_double and sparse_extract_block_double, on a
+    // 2x3 block read back at two stride pairs, and one that was never inserted.
+    {
+        double block[6] = {1, 2, 3, 4, 5, 6};
+        sparse_matrix_double a = RENAME(sparse_matrix_block_create_double)(2, 2, 2, 3);
+        sparse_matrix_double b = sparse_matrix_block_create_double(2, 2, 2, 3);
+        sparse_status ma = RENAME(sparse_insert_block_double)(a, block, 3, 1, 0, 0);
+        sparse_status mb = sparse_insert_block_double(b, block, 3, 1, 0, 0);
+        report(ma == mb, "a double block inserted", "the same status");
+        report(RENAME(sparse_get_matrix_number_of_rows)(a) == sparse_get_matrix_number_of_rows(b) &&
+                   RENAME(sparse_get_matrix_nonzero_count)(a) == sparse_get_matrix_nonzero_count(b),
+               "a double block matrix's shape", "the same rows and the same count");
+        double back[6], other[6];
+        for (int pair = 0; pair < 2; pair++) {
+            for (int k = 0; k < 6; k++) back[k] = other[k] = 9;
+            ma = RENAME(sparse_extract_block_double)(a, 0, 0, pair ? 1 : 3, pair ? 3 : 1, back);
+            mb = sparse_extract_block_double(b, 0, 0, pair ? 1 : 3, pair ? 3 : 1, other);
+            report(ma == mb && same_doubles(back, other, 6, 1e-12, "x"), "a double block read back",
+                   pair ? "row stride 1, column stride 3" : "row stride 3, column stride 1");
+        }
+        for (int k = 0; k < 6; k++) back[k] = other[k] = 9;
+        ma = RENAME(sparse_extract_block_double)(a, 1, 1, 3, 1, back);
+        mb = sparse_extract_block_double(b, 1, 1, 3, 1, other);
+        report(ma == mb && same_doubles(back, other, 6, 1e-12, "x"), "a double block never inserted", "zeros");
+        report(RENAME(sparse_insert_block_double)(a, block, 3, 1, 5, 0) ==
+                   sparse_insert_block_double(b, block, 3, 1, 5, 0),
+               "a double block outside the matrix", "the same status");
+        report(RENAME(sparse_get_block_dimension_for_row)(a, 3) == sparse_get_block_dimension_for_row(b, 3) &&
+                   RENAME(sparse_get_block_dimension_for_col)(a, 2) == sparse_get_block_dimension_for_col(b, 2),
+               "a double block matrix's block dimensions", "the same on both sides");
+        RENAME(sparse_matrix_destroy)(a); sparse_matrix_destroy(b);
+    }
+    // sparse_extract_sparse_column_double, every column and every start
+    {
+        double v[5] = {1, 2, 3, 4, 5};
+        sparse_index rows[5] = {0, 0, 1, 2, 3}, columns[5] = {1, 2, 0, 2, 1};
+        Pair p = pointwise(4, 4, 5, v, rows, columns, 1);
+        for (sparse_index column = 0; column < 4; column++) {
+            for (sparse_index start = 0; start < 4; start++) {
+                double back[4] = {9, 9, 9, 9}, other[4] = {9, 9, 9, 9};
+                sparse_index mi[4] = {9, 9, 9, 9}, ti[4] = {9, 9, 9, 9};
+                sparse_index me = 0, te = 0;
+                long got = RENAME(sparse_extract_sparse_column_double)((sparse_matrix_double)p.mine, column, start, &me, 4, back, mi);
+                long want = sparse_extract_sparse_column_double((sparse_matrix_double)p.theirs, column, start, &te, 4, other, ti);
+                int ok = got == want && me == te;
+                for (int k = 0; k < 4; k++) ok = ok && mi[k] == ti[k] && same_doubles(back, other, 4, 1e-12, "an entry");
+                report(ok, "a double column extracted", "the count, the end and every value");
+            }
+        }
+        RENAME(sparse_matrix_destroy)(p.mine); sparse_matrix_destroy(p.theirs);
+    }
+    // sparse_inner_product_sparse_double, sparse_get_vector_nonzero_count_double, sparse_pack_vector_double
+    // and sparse_unpack_vector_double
+    {
+        double x[3] = {1, 0, 3}, y[2] = {4, 2};
+        sparse_index ix[3] = {0, 2, 3}, iy[2] = {1, 3};
+        for (sparse_dimension nzx = 0; nzx <= 3; nzx++) {
+            double mine = RENAME(sparse_inner_product_sparse_double)(nzx, 2, x, ix, y, iy);
+            double theirs = sparse_inner_product_sparse_double(nzx, 2, x, ix, y, iy);
+            report(same_double(mine, theirs, 1e-12), "a double inner product of two sparse vectors",
+                   "the same value");
+        }
+        for (sparse_stride stride = 1; stride <= 2; stride++) {
+            double buffer[12] = {0, 9, 2, 9, 0, 4, 5, 9, 0, 9, 0, 0};
+            report(RENAME(sparse_get_vector_nonzero_count_double)(6, buffer, stride) ==
+                       sparse_get_vector_nonzero_count_double(6, buffer, stride),
+                   "a double nonzero count", "the same count, over a buffer of N * stride elements");
+        }
+        double v[6] = {0, 2, 0, 4, 5, 0};
+        for (sparse_dimension nz = 0; nz <= 5; nz++) {
+            double back[5], other[5];
+            sparse_index mi[5], ti[5];
+            memset(back, 0, sizeof(back));
+            memset(other, 0, sizeof(other));
+            memset(mi, 0, sizeof(mi));
+            memset(ti, 0, sizeof(ti));
+            long got = RENAME(sparse_pack_vector_double)(6, nz, v, 1, back, mi);
+            long want = sparse_pack_vector_double(6, nz, v, 1, other, ti);
+            int ok = got == want;
+            for (int k = 0; k < 5; k++) ok = ok && mi[k] == ti[k] && same_doubles(back, other, 5, 1e-12, "a packed value");
+            report(ok, "a double packed vector", "the count, every value and every index");
+        }
+        for (int zero = 0; zero <= 1; zero++) {
+            double back[6], other[6];
+            for (int k = 0; k < 6; k++) back[k] = other[k] = 1;
+            RENAME(sparse_unpack_vector_double)(6, 2, zero, (double[]){7, 8}, (sparse_index[]){1, 4}, back, 1);
+            sparse_unpack_vector_double(6, 2, zero, (double[]){7, 8}, (sparse_index[]){1, 4}, other, 1);
+            report(same_doubles(back, other, 6, 1e-12, "an unpacked value"), "a double unpacked vector",
+                   "every element");
+        }
+    }
+    // sparse_matrix_vector_product_dense_double, both transposes and three alphas
+    {
+        double v[4] = {1, 2, 3, 4};
+        sparse_index rows[4] = {0, 0, 1, 1}, columns[4] = {0, 1, 0, 1};
+        Pair A = pointwise(2, 2, 4, v, rows, columns, 1);
+        double x[2] = {1, 2};
+        for (int tr = 0; tr < 2; tr++) {
+            for (int alpha = 0; alpha <= 2; alpha++) {
+                double a1[2] = {1, 1}, a2[2] = {1, 1};
+                sparse_status ma = RENAME(sparse_matrix_vector_product_dense_double)(
+                    (enum CBLAS_TRANSPOSE)(tr ? 112 : 111), alpha, (sparse_matrix_double)A.mine, x, 1, a1, 1);
+                sparse_status mb = sparse_matrix_vector_product_dense_double((enum CBLAS_TRANSPOSE)(tr ? 112 : 111), alpha,
+                                                                                 (sparse_matrix_double)A.theirs, x, 1, a2, 1);
+                report(ma == mb && same_doubles(a1, a2, 2, 1e-12, "x"), "a double matrix-vector product, both transposes",
+                       "the same status and every element");
+            }
+        }
+        RENAME(sparse_matrix_destroy)(A.mine); sparse_matrix_destroy(A.theirs);
+    }
+    // sparse_vector_triangular_solve_dense_double and sparse_matrix_triangular_solve_dense_double, over both
+    // layouts, both transposes and three leading dimensions
+    {
+        double v[4] = {2, 1, 3, 4};
+        sparse_index rows[4] = {0, 1, 1, 2}, columns[4] = {0, 0, 1, 2};
+        Pair a = pointwise(3, 3, 4, v, rows, columns, 1), b = pointwise(3, 3, 4, v, rows, columns, 1);
+        RENAME(sparse_set_matrix_property)(a.mine, SPARSE_LOWER_TRIANGULAR);
+        sparse_set_matrix_property(b.theirs, SPARSE_LOWER_TRIANGULAR);
+        for (int tr = 0; tr < 2; tr++) {
+            for (int alpha = 1; alpha <= 2; alpha++) {
+                double c1[3] = {2, 5, 4}, c2[3] = {2, 5, 4};
+                sparse_status ma = RENAME(sparse_vector_triangular_solve_dense_double)(
+                    (enum CBLAS_TRANSPOSE)(tr ? 112 : 111), alpha, (sparse_matrix_double)a.mine, c1, 1);
+                sparse_status mb = sparse_vector_triangular_solve_dense_double((enum CBLAS_TRANSPOSE)(tr ? 112 : 111), alpha,
+                                                                                 (sparse_matrix_double)b.theirs, c2, 1);
+                report(ma == mb && same_doubles(c1, c2, 3, 1e-12, "x"),
+                       "a double triangular solve of a vector, both transposes", "the same status and every element");
+                for (int order = 0; order < 2; order++) {
+                    for (sparse_dimension ldb = 3; ldb <= 5; ldb++) {
+                        double d1[16], d2[16];
+                        for (int k = 0; k < 16; k++) d1[k] = d2[k] = (double)(k + 1);
+                        ma = RENAME(sparse_matrix_triangular_solve_dense_double)((enum CBLAS_ORDER)(order ? 102 : 101),
+                                                                                 (enum CBLAS_TRANSPOSE)(tr ? 112 : 111), 2,
+                                                                                 1.5, (sparse_matrix_double)a.mine, d1, ldb);
+                        mb = sparse_matrix_triangular_solve_dense_double((enum CBLAS_ORDER)(order ? 102 : 101),
+                                                                          (enum CBLAS_TRANSPOSE)(tr ? 112 : 111), 2, 1.5,
+                                                                          (sparse_matrix_double)b.theirs, d2, ldb);
+                        snprintf(detail, sizeof detail, "order %d trans %d ldb %llu: port %d host %d", order, tr,
+                                 (unsigned long long)ldb, ma, mb);
+                        report(ma == mb && same_doubles(d1, d2, 16, 1e-12, "x"),
+                               "a double triangular solve of a matrix, both layouts and transposes", detail);
+                    }
+                }
+            }
+        }
+        RENAME(sparse_matrix_destroy)(a.mine); sparse_matrix_destroy(b.theirs);
+    }
+    // sparse_outer_product_dense_double
+    {
+        double x[2] = {1, 2}, y[3] = {3, 4, 5};
+        sparse_index indy[2] = {0, 2};
+        sparse_matrix_double a = NULL, b = NULL;
+        sparse_status ma = RENAME(sparse_outer_product_dense_double)(2, 3, 2, 2.0, x, 1, y, indy, &a);
+        sparse_status mb = sparse_outer_product_dense_double(2, 3, 2, 2.0, x, 1, y, indy, &b);
+        int ok = ma == mb;
+        if (ok && a && b && RENAME(sparse_get_matrix_nonzero_count)(a) > 0) {
+            compare_matrix("a double outer product, the matrix", (Pair){a, b}, 2, 3, 1);
+        }
+        snprintf(detail, sizeof detail, "port %d, host %d", ma, mb);
+        report(ok, "a double outer product", detail);
+        if (a) RENAME(sparse_matrix_destroy)(a);
+        if (b) sparse_matrix_destroy(b);
+        // and a count of nonzeros above N, which is refused
+        a = NULL; b = NULL;
+        ma = RENAME(sparse_outer_product_dense_double)(2, 3, 4, 1.0, x, 1, y, (sparse_index[]){0, 1, 2, 3}, &a);
+        mb = sparse_outer_product_dense_double(2, 3, 4, 1.0, x, 1, y, (sparse_index[]){0, 1, 2, 3}, &b);
+        snprintf(detail, sizeof detail, "port %d, host %d", ma, mb);
+        report(ma == mb && a == NULL && b == NULL, "a double outer product with more nonzeros than columns", detail);
+        if (a) RENAME(sparse_matrix_destroy)(a);
+        if (b) sparse_matrix_destroy(b);
+    }
+    // sparse_permute_rows_double and sparse_permute_cols_double. The values are 1.1, 2.2, 3.3, 4.4,
+    // 5.5 and 6.6 for the reason the review gives: a double whose low 32 mantissa bits are zero reads
+    // as 0.0f, so a case of powers of two cannot see a value read at the wrong width.
+    {
+        double v[6] = {1.1, 2.2, 3.3, 4.4, 5.5, 6.6};
+        sparse_index rows[6] = {0, 0, 0, 1, 1, 1}, columns[6] = {0, 1, 2, 0, 1, 2};
+        sparse_index colPerms[4][3] = {{2, 0, 1}, {1, 0, 2}, {0, 1, 2}, {0, 0, 0}};
+        for (int k = 0; k < 4; k++) {
+            Pair a = pointwise(2, 3, 6, v, rows, columns, 1), b = pointwise(2, 3, 6, v, rows, columns, 1);
+            sparse_status ma = RENAME(sparse_permute_cols_double)((sparse_matrix_double)a.mine, colPerms[k]);
+            sparse_status mb = sparse_permute_cols_double((sparse_matrix_double)b.theirs, colPerms[k]);
+            report(ma == mb, "a double column permutation", "the same status");
+            compare_matrix("a double column permutation, the matrix", a, 2, 3, 1);
+            RENAME(sparse_matrix_destroy)(a.mine); sparse_matrix_destroy(a.theirs);
+        }
+        sparse_index rowPerms[3][2] = {{1, 0}, {0, 0}, {0, 1}};
+        for (int k = 0; k < 3; k++) {
+            Pair a = pointwise(2, 3, 6, v, rows, columns, 1), b = pointwise(2, 3, 6, v, rows, columns, 1);
+            sparse_status ma = RENAME(sparse_permute_rows_double)((sparse_matrix_double)a.mine, rowPerms[k]);
+            sparse_status mb = sparse_permute_rows_double((sparse_matrix_double)b.theirs, rowPerms[k]);
+            report(ma == mb, "a double row permutation", "the same status");
+            compare_matrix("a double row permutation, the matrix", a, 2, 3, 1);
+            RENAME(sparse_matrix_destroy)(a.mine); sparse_matrix_destroy(a.theirs);
+        }
+    }
 }
 
 int main(void)

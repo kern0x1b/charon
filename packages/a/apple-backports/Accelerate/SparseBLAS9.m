@@ -1138,11 +1138,9 @@ static sparse_status CharonSparseTriangular(void *matrix, uint32_t magic, int tr
                     if (j == (sparse_index)i || (j < (sparse_index)i) == backwards) {
                         continue;
                     }
-                    sparse_index at = CharonSparseSearch(&asFloat->row[j], (sparse_index)i);
                     double other = CharonSparseElementAt(&asFloat->row[j], (sparse_index)i, size);
                     long at2 = (long)j * iStep + (long)right * rightStep;
                     double addend = size == sizeof(float) ? (double)((float *)b)[at2] : ((double *)b)[at2];
-                    (void)at;
                     value -= other * addend;
                 }
             }
@@ -1359,7 +1357,10 @@ sparse_status sparse_permute_cols_double(sparse_matrix_double A, const sparse_in
     if (!CharonSparseIsDouble(A)) {
         return SPARSE_ILLEGAL_PARAMETER;
     }
-    CharonSparsePermuteColumns((struct sparse_m_float *)A, perm, sizeof(float));
+    // The element width, and not sizeof(float): this helper branches on it to read and write every
+    // value, so a double's values passed as the float one were read and written four bytes at a time and
+    // column 0 came back as denormal garbage (measured by the review's probe, facts below).
+    CharonSparsePermuteColumns((struct sparse_m_float *)A, perm, sizeof(double));
     return SPARSE_SUCCESS;
 }
 
@@ -1647,9 +1648,12 @@ static sparse_status CharonSparseProductDense(void *matrix, uint32_t magic, int 
     if (!row) {
         return SPARSE_SYSTEM_ERROR;
     }
-    // A row of op(A) is the row of A itself, or the column of A when A is transposed, and the row of B
-    // a stored entry scales is B's row at the entry's inner index: A's own column when A is not
-    // transposed, its own row when it is.
+    // A row of op(A) is the row of A itself, or the column of A when A is transposed, and the row of B a
+    // stored entry scales is B's row at the entry's inner index: A's own column when A is not
+    // transposed, its own row when it is. The entry the walk is at is therefore A[r, c] in both cases,
+    // and it is read through the same lookup the trace, the norms and the triangular solve use - which is
+    // what the first version got wrong: it bound the row to NULL on the transposed path and then read
+    // through it, and CblasTrans took the process down on all four level-3 entry points.
     for (sparse_dimension i = 0; i < m; i++) {
         const CharonSparseRow *line = transposed ? NULL : &asFloat->row[i];
         for (sparse_index at = 0; at < (transposed ? (sparse_index)asFloat->rows : line->count); at++) {
@@ -1658,8 +1662,7 @@ static sparse_status CharonSparseProductDense(void *matrix, uint32_t magic, int 
             if (c >= (sparse_index)asFloat->columns) {
                 continue;
             }
-            double value = size == sizeof(float) ? (double)((const float *)line->value)[at]
-                                                : ((const double *)line->value)[at];
+            double value = CharonSparseElementAt(&asFloat->row[r], c, size);
             if (value == 0.0) {
                 continue;
             }

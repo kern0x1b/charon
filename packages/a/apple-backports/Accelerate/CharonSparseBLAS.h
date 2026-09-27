@@ -190,8 +190,8 @@ static inline sparse_status CharonSparsePut(CharonSparseRow *row, sparse_index c
     return SPARSE_SUCCESS;
 }
 
-// The same, for a value that is a pair of reals: the complex half of the family writes through this
-// and reads back through CharonComplexElementAt, so one row carries all four scalar types.
+// The two complex matrix types below carry the same body, so a row, a search and a growth serve all four
+// scalar types: what differs between them is the width a value occupies, and that is the last argument.
 
 // A[i, j], read: the stored value, or zero for a column the row does not hold. A matrix of this
 // library treats a column it has nothing for as a zero, which is what every operation below relies

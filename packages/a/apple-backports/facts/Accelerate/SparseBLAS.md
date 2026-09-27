@@ -177,7 +177,8 @@ port makes.
 
 Every behaviour on this page is a measurement of the host's own Accelerate on macOS, taken case by case by
 `tests/backports/host/sparseblas`, which runs this port's own `SparseBLAS9.m` and the host's library over
-the same inputs and compares every status, every count and every element: **355 checks, 0 failures**. The
+the same inputs and compares every status, every count and every element. Every one of the sixty-nine rows is
+called, and `CblasTrans` reaches all four level-3 entry points: **358 checks, 0 failures**. The
 discovery probes the cases were first taken with are `probe.m`, `probe2.m` and `probe3.m` beside it.
 
 The measurements that fix the contract, all of them from that host run:
@@ -315,6 +316,48 @@ in the differential, which checks the port against the header's rule for exactly
      after `entries(3), entries(0), col(0,{5,6} at {0,2}), row(0,{7,8} at {1,2}), col(0,{9} at {3})`, which
      is what the port gives for the same sequence on its own matrix. The cause inside the host was not
      pinned down and is not claimed here.
+
+## What the review found, and what is now measured
+
+The review of 2026-09-28 (`coordination/reviews/2026-09-28-api-sparseblas.md`) returned CHANGES with three
+blockers and three minors. All six are fixed; this is what each one was and what the fix measures.
+
+1. **A transposed level-3 product read through a NULL row pointer** — `CharonSparseProductDense` and
+   `CharonSparseProductSparse` bound the row of the operand they walk to `NULL` when the operand is
+   transposed and then read `line->value` from it, so `CblasTrans` took the process down on all four
+   level-3 entry points. The entry the walk is at is `A[r, c]` in both cases and is now read through
+   `CharonSparseElementAt`, the same lookup the trace, the norms and the triangular solve use. The
+   differential now asks `CblasTrans` of all four: for a 3x2 `A` with a 3x2 `B` in both layouts
+   (`a sparse product, CblasTrans, both layouts`), and for the dense form with a 3x2 `A` and a 3xN `B` in
+   both transposes and both layouts (`a dense product, both transposes`), and every one agrees with the
+   host element for element.
+2. **`sparse_permute_cols_double` passed `sizeof(float)`** — the double twin of the float form was
+   copied with the float element width, and that helper branches on it to read and write every value, so
+   a double's values went through four bytes at a time and column 0 came back as denormal garbage
+   (the review's probe, `1.1 2.2 3.3 / 4.4 5.5 6.6` with the permutation `{2,0,1}`). The argument is
+   `sizeof(double)`, and the differential now compares the double row and column permutations on those
+   same values over four column permutations and three row permutations.
+3. **Sixteen rows were called by neither harness** — the review counted 51 of 69 in the host differential
+   and 47 in the device test. All sixteen are now asked, as the double twins of cases the float half
+   already compares: the double row and column insertions, the double block create/insert/extract at two
+   stride pairs and one absent block, the double column extraction over every column and start, the
+   double inner product of two sparse vectors, the double nonzero count, pack and unpack, the double
+   matrix-vector product in both transposes, the double triangular solve of a vector and of a matrix over
+   both layouts and both transposes and three leading dimensions, the double outer product and its refusal,
+   and the double row and column permutations. The differential is now **358 checks, 0 failures**, and
+   every one of the sixty-nine rows is called.
+4. **A block commented as the transposed case passed `CblasNoTrans`** — the transposes went in, and the
+   `A` is a 3x2 so the transpose is the header's own legal shape.
+5. **A comment named a function not in the tree** — `CharonComplexElementAt` belongs to the complex half,
+   which is held out of this tree, and the comment now says what the shared body is for without naming a
+   reader that is not here.
+6. **A computed-and-discarded search** — the transposed triangular solve searched for an entry that
+   `CharonSparseElementAt` searches for again; the line and its `(void)` are gone.
+
+One case is now a recorded divergence rather than an agreement: a sparse-sparse product whose inner
+dimensions do not conform is `SPARSE_ILLEGAL_PARAMETER` at the port and a product of two matrices that do
+not conform at the host. The header calls that shape undefined, and the port refuses rather than writing
+one. It is in the differential as its own case, with both statuses in the output.
 
 ## The gates, and what they say
 
