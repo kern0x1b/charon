@@ -7,6 +7,10 @@ for _, tool in ipairs({sdk, ld64, ldid, llvm}) do
     add_requires("charon@" .. tool.name .. " " .. tool.version, {alias = tool.name})
 end
 
+-- a package that depends on the SDK (llvm builds compiler-rt's builtins against it) names no version and so takes the newest the
+-- iphoneos-sdk package lists: once it lists more than one, a second SDK beside the project's
+add_requireconfs("**.iphoneos-sdk", {override = true, version = sdk.version})
+
 add_requires("charon@firmware-tools", {alias = "firmware-tools"})
 
 add_requireconfs("**.m4", {system = false})
