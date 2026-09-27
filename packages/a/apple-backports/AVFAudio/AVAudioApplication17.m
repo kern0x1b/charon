@@ -47,32 +47,23 @@ NSString * const AVAudioSessionPortContinuityMicrophone = @"ContinuityMicrophone
 
 - (BOOL)setInputMuted:(BOOL)muted error:(NSError **)outError
 {
-    // The mute state of the hardware switch is the release's own: a route whose input is a hardware
-    // switch the system muted cannot be unmuted by a process, so the answer is the release's reading
-    // of that switch, and a mute this process cannot perform is refused with the error the header
-    // documents for it rather than silently accepted.
-    if (muted && !_charon_inputMuted) {
-        _charon_inputMuted = YES;
-        if (_charon_muteHandler) {
-            _charon_muteHandler(YES);
+    // The mute state is the release's own reading of the hardware switch, and only this process can
+    // change it here. Setting the state it already holds changes nothing, and says so rather than
+    // reporting a change that did not happen; a state that did change posts the notification the
+    // header names and calls the handler with the new state.
+    if (muted == _charon_inputMuted) {
+        if (outError) {
+            *outError = [NSError errorWithDomain:@"AVAudioApplicationErrorDomain" code:1 userInfo:nil];
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:AVAudioApplicationInputMuteStateChangeNotification object:self
-                                                          userInfo:@{AVAudioApplicationMuteStateKey: @(_charon_inputMuted ? 1 : 0)}];
-        return YES;
+        return NO;
     }
-    if (!muted) {
-        _charon_inputMuted = NO;
-        if (_charon_muteHandler) {
-            _charon_muteHandler(NO);
-        }
-        [[NSNotificationCenter defaultCenter] postNotificationName:AVAudioApplicationInputMuteStateChangeNotification object:self
-                                                          userInfo:@{AVAudioApplicationMuteStateKey: @(_charon_inputMuted ? 1 : 0)}];
-        return YES;
+    _charon_inputMuted = muted;
+    if (_charon_muteHandler) {
+        _charon_muteHandler(muted);
     }
-    if (outError) {
-        *outError = [NSError errorWithDomain:@"AVAudioApplicationErrorDomain" code:1 userInfo:nil];
-    }
-    return NO;
+    [[NSNotificationCenter defaultCenter] postNotificationName:AVAudioApplicationInputMuteStateChangeNotification object:self
+                                                      userInfo:@{AVAudioApplicationMuteStateKey: @(muted ? 1 : 0)}];
+    return YES;
 }
 
 - (BOOL)isInputMuted

@@ -233,28 +233,23 @@ static NSString *CharonTypeNameForType(OSType type)
     if (numInputChannels == 0 && numOutputChannels == 0) {
         supported = NO;
     }
-    struct CharonFormat {
-        AudioStreamBasicDescription description;
-        UInt32 channels;
-    } probe;
+    AudioStreamBasicDescription probe;
     memset(&probe, 0, sizeof(probe));
-    probe.description.mFormatID = kAudioFormatLinearPCM;
-    probe.description.mSampleRate = 44100.0;
-    probe.description.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked;
-    probe.description.mBitsPerChannel = 32;
-    probe.description.mFramesPerPacket = 1;
-    probe.description.mChannelsPerFrame = 1;
+    probe.mFormatID = kAudioFormatLinearPCM;
+    probe.mSampleRate = 44100.0;
+    probe.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked;
+    probe.mBitsPerChannel = 32;
+    probe.mFramesPerPacket = 1;
+    probe.mChannelsPerFrame = 1;
     if (supported && numInputChannels > 0) {
-        probe.description.mChannelsPerFrame = (UInt32)numInputChannels;
-        probe.channels = (UInt32)numInputChannels;
-        if (AudioUnitSetProperty(unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &probe.description, sizeof(probe.description)) != noErr) {
+        probe.mChannelsPerFrame = (UInt32)numInputChannels;
+        if (AudioUnitSetProperty(unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &probe, sizeof(probe)) != noErr) {
             supported = NO;
         }
     }
     if (supported && numOutputChannels > 0) {
-        probe.description.mChannelsPerFrame = (UInt32)numOutputChannels;
-        probe.channels = (UInt32)numOutputChannels;
-        if (AudioUnitSetProperty(unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 0, &probe.description, sizeof(probe.description)) != noErr) {
+        probe.mChannelsPerFrame = (UInt32)numOutputChannels;
+        if (AudioUnitSetProperty(unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 0, &probe, sizeof(probe)) != noErr) {
             supported = NO;
         }
     }
