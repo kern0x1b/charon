@@ -44,12 +44,35 @@ def spell_type(text, ours):
     body = body.replace("UITextItem.Content", "CharonUITextItem.Content")
     if body.endswith("?"):
         body = body[:-1]
+    body = re.sub(r"\s*=\s*[^,)]+$", "", body) if "=" in body else body
     return "(" + body + ")" if text.startswith("(") and text.endswith(")") and not body.endswith("?") else body
 
 
 # Types the SDK marks unavailable below the port's own release: the overlay declares them with the
 # SDK's own floor, which is the Swift counterpart of the `needs=lift` the Objective-C rows carry.
-UNAVAILABLE_TYPES = {"UITextItem": "17.0", "UITabSidebarItem": "18.0", "UIContentUnavailableConfiguration": "17.0"}
+# The release each type or Objective-C owner needs, from two measurements: the SDK's own
+# `@available(iOS X, *)` on the outermost declaration of the type, and the typecheck's own
+# "is only available in iOS X or newer" for a payload type the port's release predates. The floor
+# applied is the largest of the two, so a case that names a type of 13.4 is itself 13.4.
+FLOORS = {
+    "UIButton": None, "UIView": None, "UITabBarController": None, "UIFocusEnvironment": None,
+    "Sidebar": "18.0", "UITab": "18.0", "UITabSidebarItem": "18.0",
+    "UITextItem": "17.0", "UITextFormattingViewController": "18.0",
+    "UIContentUnavailableConfiguration": "17.0", "UICellConfigurationState": "14.0",
+    "UICollectionLayoutListConfiguration": "14.0", "UIListContentConfiguration": "14.0",
+    "UIListSeparatorConfiguration": "14.5", "UIPointerEffect": "13.4", "UIPointerShape": "13.4",
+    "UICellAccessory": None, "UIPreviewAction": None,
+}
+
+
+def floor(*names):
+    """The largest of the floors the names carry, as (version, attribute) or (None, "")."""
+    best = None
+    for name in names:
+        value = FLOORS.get(name)
+        if value and (best is None or [int(x) for x in value.split(".")] > [int(x) for x in best.split(".")]):
+            best = value
+    return (best, "@available(iOS %s, *)" % best) if best else (None, "")
 
 SWIFT_KEYWORDS = {"default", "Type", "Protocol", "Self", "super", "nil", "true", "false", "let",
                   "var", "func", "class", "enum", "struct", "case", "where", "in", "is", "as"}
@@ -224,6 +247,19 @@ def main():
     with open(HERE + "/checklist.tsv", newline="", encoding="utf-8") as handle:
         rows = [r for r in csv.DictReader(handle, delimiter="\t")
                 if r["lang"] == "swift" and r["kind"] == "constant"]
+    # Three payload types of UITextFormattingViewController.ChangeValue, which the cases of this
+    # checklist name and which the interface only ever *uses*: the cases come from the SDK's own
+    # Objective-C enumerations, whose values this band has already read out of a dyld cache
+    # (UIKitConstants180.m, UITextFormattingViewControllerTextList*, ...TextAlignment*,
+    # ...Highlight*), and the enum they are is the SDK's overlay re-nesting of those.
+    PAYLOAD_TYPES = {
+        "UITextFormattingViewController.TextAlignment": ["natural", "center", "justified"],
+        "UITextFormattingViewController.TextList": ["decimal", "disc", "hyphen", "other"],
+        "UITextFormattingViewController.Highlight": ["default", "blue", "mint", "orange", "pink", "purple"],
+    }
+    for name, cases in PAYLOAD_TYPES.items():
+        rows.extend({"lang": "swift", "kind": "constant", "api": "%s.%s" % (name, case)} for case in cases)
+    GIVEN_CASES = {name: cases for name, cases in PAYLOAD_TYPES.items()}
     types = {}
     for row in rows:
         types.setdefault(row["api"].rsplit(".", 1)[0], []).append(row["api"].rsplit(".", 1)[1])
@@ -232,6 +268,9 @@ def main():
     for swift_type in types:
         for part in swift_type.split("."):
             ours.add(part)
+    # The roots that keep their own name, so a payload naming one of ours must not be renamed.
+    for name in ABSENT_ROOTS:
+        ours.discard(name)
     out = ["""// The UIKit types and cases of the SDK 26.2 Swift surface that the port's UIKit overlay does
 // not carry, from the surface's own checklist (`coordination/corpus/ledger/UIKit.tsv`).
 //
@@ -257,7 +296,8 @@ import UIKit
         parts = swift_type.split(".")
         root, chain = parts[0], parts[1:]
         # UIPointerEffect and UIPointerShape are the type itself, not a member of one.
-        payloads = cases_of(swift_type, wanted)
+        given = GIVEN_CASES.get(swift_type)
+        payloads = {case: "" for case in given} if given else cases_of(swift_type, wanted)
         if payloads is None or set(payloads) != set(wanted):
             unresolved.append((swift_type, sorted(set(wanted) - set(payloads or {}))))
             continue
@@ -265,12 +305,14 @@ import UIKit
         if chain and root not in ABSENT_ROOTS:
             # One typealias per level, each naming the namespace type nested at that level.
             for depth, level in enumerate(chain):
+                if depth:
+                    continue          # the level is a nested type of the one above it already
                 def cap(q):
                     return q[:1].upper() + q[1:]
-                owner = root if depth == 0 else "Charon" + ".".join(cap(q) for q in parts[:depth + 1])
-                target = "Charon" + ".".join(cap(q) for q in parts[:depth + 2])
-                if owner in UNAVAILABLE_TYPES:
-                    aliases.append("@available(iOS %s, *)" % UNAVAILABLE_TYPES[owner])
+                owner = root
+                target = ".".join(cap(q) for q in parts[:depth + 2])
+                target = target if parts[0] in ABSENT_ROOTS else "Charon" + target
+
                 if (owner, level) in alias_seen:
                     continue
                 alias_seen.add((owner, level))
@@ -291,11 +333,15 @@ import UIKit
         node["cases"] = payloads
 
     def emit(node, path, depth):
-        name = path[-1] if depth else "Charon" + path[-1]
+        if depth:
+            name = path[-1]
+        else:
+            name = path[-1] if path[-1] in ABSENT_ROOTS else "Charon" + path[-1]
         pad = "    " * depth
-        if path[-1] in UNAVAILABLE_TYPES:
-            out.append("%s@available(iOS %s, *)" % (pad, UNAVAILABLE_TYPES[path[-1]]))
+
         out.append("%spublic enum %s {" % (pad, name))
+        for alias, spelling in NESTED_ALIASES.get(path[-1], []):
+            out.append("%s    public typealias %s = %s" % (pad, alias, spelling))
         if node["cases"] is not None:
             for case in sorted(node["cases"]):
                 out.append("%s    case %s%s" % (pad, spell(case), spell_type(node["cases"][case], ours)))
@@ -305,6 +351,7 @@ import UIKit
             emit(node[part], path + [part], depth + 1)
         out.append("%s}" % pad)
 
+    NESTED_ALIASES = {"Placement": [("Position", "([UICellAccessory]) -> Int")]}
     for root in sorted(tree):
         if root == "cases":
             continue

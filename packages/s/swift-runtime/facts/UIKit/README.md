@@ -33,21 +33,38 @@ CornerStyle` is the nested Swift name the SDK's overlay gives it. So:
 `UIKit.framework/Modules/UIKit.swiftmodule/arm64e-apple-ios.swiftinterface`, and prints the file
 above. The case names and their payloads are the SDK's own, not typed by hand.
 
-**State: the typecheck runs, and 111/111 is not yet reached.** `tc.sh` takes its resource
-directory from an installed `charon@swift-runtime`'s own `lib/swift`, which is where the armv7
-standard library, the armv7 swiftmodules and the toolchain's clang include are; with that the file
-compiles far enough to report real errors instead of "unable to load standard library". What is
-left, measured, one `tc.sh /tmp/n111/NNN.swift` per name:
+**State: 111/111 names resolve; the typecheck's last 30 errors are one lift change.**
 
-| errors | what |
-| --- | --- |
-| 8 | `'UITargetedPreview' is only available in iOS 13.0 or newer` - a payload type the SDK gates below the port's release, so the case that names it needs the same `@available` the roots get |
-| 4 | `'Position' is not a member type of enum 'CharonUICellAccessory.Placement'` - a payload naming a sibling type, substituted into the wrong parent |
-| 4 | `'CharonUITextItem' is only available in iOS 17.0 or newer` - a payload of ours that is itself gated, so its cases need the floor as well |
-| 2 | `CharonUIPointerShape has no member 'defaultCornerRadius'` - the case's default value names a `static let` that is a *property* row, not one of these 111; the case keeps its label and loses the default |
-| 2 | `invalid redeclaration of 'TitleAlignment'`, of `'Size'` - two types share a short name (`UIListContentConfiguration.TextProperties.TextAlignment` and `UIButton.Configuration.TitleAlignment`), and the generator's tree keys a level by its short name |
+`tc.sh` takes its resource directory from an installed `charon@swift-runtime`'s own `lib/swift`
+(where the armv7 standard library, the armv7 swiftmodules and the toolchain's clang include are),
+the SDK is the real 26.2 under the lift's `vfs.yaml`, and each of the 111 names is typechecked in
+its own file against the overlay. Measured:
 
-The file itself parses clean (`swiftc -parse`, no errors): 46 enumerations, 112 case declarations
-covering the 111 rows, 16 typealiases. It is **not yet in the package's patch set** - the diff is
-still to be generated with `git diff` in a git checkout of the pinned upstream, which is what the
-last commit's README says to do next.
+```
+$ for f in /tmp/n111/*.swift; do packages/s/swift-runtime/facts/UIKit/tc.sh "$f" 2>&1 | grep "error:"; done \
+    | sed 's/.*error: //' | grep -v "is only available in iOS" | sort | uniq -c
+(no output)
+```
+
+**Every error the typecheck still reports is the availability gate on seven SDK classes the surface
+spells these names through** - not one is a naming, nesting, payload or redeclaration error:
+
+| errors | class | its floor |
+| --- | --- | --- |
+| 8 | `UITextFormattingViewController` | 18.0 |
+| 8 | `UITargetedPreview` | 13.0 |
+| 4 | `UITextItem` | 17.0 |
+| 4 | `UITab` | 18.0 |
+| 2 | `UITabSidebarItem` | 18.0 |
+| 2 | `UIAction` | 13.0 |
+| 2 | `NSTextAttachment` | 7.0 |
+
+That gate is `charon`'s, and it is the same gate the Objective-C rows of this checklist already
+carry as `needs=lift`: the surface spells `UITabSidebarItem.Content` through a class the port's
+release does not have, and the lift lowers the headers' availability for the Objective-C side. The
+overlay's own types are declared **unconditionally** - that is the Swift counterpart, and the
+reason a name the surface spells at 6.1.3 can be named at 6.1.3 - so what is left is the lift
+lowering these seven classes' availability, after which the typecheck is 111/111.
+
+The file: 49 enumerations, 115 case declarations (the 111 rows and the three payload types of
+`ChangeValue` that the cases name), 9 typealiases, and `swiftc -parse` clean.
