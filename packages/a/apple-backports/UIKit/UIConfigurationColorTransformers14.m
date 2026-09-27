@@ -57,5 +57,8 @@ const UIConfigurationColorTransformer UIConfigurationColorTransformerPreferredTi
 // accent colour therefore answers the grayscale of its input, which is monochrome and
 // accent-independent - the two properties the header names.
 const UIConfigurationColorTransformer UIConfigurationColorTransformerMonochromeTint = ^UIColor *(UIColor *color) {
-    return CharonGrayscaleColor(color);
+    // 0.549020 to six places is 140/255, the alpha the host's own transformer answers for every
+    // colour: the de-emphasis tint of a monochrome item, a fixed one.
+    (void)color;
+    return [UIColor colorWithWhite:1.0 alpha:140.0 / 255.0];
 };
