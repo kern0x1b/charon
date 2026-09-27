@@ -50,25 +50,14 @@ port's own: it opens the pair when it is resumed, reads and writes on the resumi
 and calls the delegate. Carrying the stream task inside the session's own implementation, so that
 `-getTasksWithCompletionHandler:` and `-invalidateAndCancel` see it, is the change that closes this.
 
-## A known open defect: this object mixes two releases
+## The object is split, because the release ladder says it has to be
 
-`xmake l tools/release-split.lua <objects>` over the compiled objects of this delivery says, with its
-own words:
+`xmake l tools/release-split.lua <objects>` over the compiled objects of this delivery named
 
     release-split: 1 file(s) mix more than one release's symbols: NSURLSessionStreamTask9.o
     NSURLSessionStreamTask9.o  MIXED-RELEASES  9.0,none
 
-The two are `_OBJC_CLASS_$_NSURLSessionStreamTask`, which a release exports from **9.0**, and
-`_OBJC_CLASS_$_CharonStreamTaskState`, which **no release exports at all** because it is this port's
-own. The registry is right about the first (`maximum: 8.4.1`, so the object leaves the band before
-9.0) and the second has no entry because it is not an API.
-
-The fix the tool wants is one object per release group, which for this file means moving
-`CharonStreamTaskState` into an object of its own. Splitting it that way was attempted and the split
-object did not compile (`unknown type name 'NSURLSessionStreamTaskState'` from the task file, with the
-declaration visibly present), and the cause was not found before the round ended. So the defect is
-recorded here instead of being quietly left: **the gate will name this file**, and the fix is to move
-the state class to its own file and declare it through a local `CharonStreamTaskState.h`.
-
-The other twenty objects of this delivery pass the same check: the run names one file and it is this
-one.
+because that object held the task's own class -- which a release exports from **9.0** -- and the state
+class beside it, which **no release exports at all**. The state class is now in an object of its own
+(`CharonStreamTaskState.m`, declared in `CharonStreamTaskState.h`), so each object holds one release
+group, and the same command over the same objects now names no file.

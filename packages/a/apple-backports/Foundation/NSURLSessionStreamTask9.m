@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <CoreFoundation/CFStream.h>
+#import "CharonStreamTaskState.h"
 #import <objc/runtime.h>
 #include <unistd.h>
 
@@ -17,26 +18,6 @@
    queue when the session has one, and never when the delegate does not answer to the selector: what
    the header says they are for is a better route being found, the read side closing, the streams
    being handed to the application, and the write side closing. */
-
-@interface NSURLSessionStreamTaskState : NSObject
-@property NSInputStream *input;
-@property NSOutputStream *output;
-@property BOOL readOpen;
-@property BOOL writeOpen;
-@property BOOL secure;
-@property BOOL captured;
-@property BOOL started;
-@end
-
-@implementation NSURLSessionStreamTaskState
-@synthesize input = _input;
-@synthesize output = _output;
-@synthesize readOpen = _readOpen;
-@synthesize writeOpen = _writeOpen;
-@synthesize secure = _secure;
-@synthesize captured = _captured;
-@synthesize started = _started;
-@end
 
 static char CharonStreamTaskStateKey;
 
