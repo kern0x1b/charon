@@ -385,6 +385,44 @@ package("swift-runtime")
             -- overlays here and for every port that compiles against this runtime, which finds them through the environment.
             local lifted, carried = {}, {}
             local backported = package:dep("apple-backports")
+        -- One overlay: its module, in the layout the others are installed in, and its library, which a port finds by the
+        -- run path it carries.
+        local function build_overlay(name, overlay_sources, links, objects, opt)
+            local module = path.join(install, name .. ".swiftmodule")
+            os.mkdir(module)
+            local flags = table.join({"-target", triple, "-resource-dir", resources, "-module-name", name,
+                                      "-parse-as-library", "-swift-version", "5", "-O", "-wmo",
+                                      "-Xfrontend", "-disable-implicit-string-processing-module-import"}, use_ld,
+                                     (opt and opt.concurrency) and {} or {"-Xfrontend", "-disable-implicit-concurrency-module-import"},
+                                     runtime_flags, swift.availability(source),
+                                     -- the lifted headers only where the backports are linked: an overlay that does not
+                                     -- carry them would bind what the headers now call available to the system's library
+                                     (opt and opt.backports) and lifted or {})
+            local object = path.join(generated, name .. ".o")
+            -- The overlays built here are named to the linker by their paths, not by -l: the driver lists every framework
+            -- before every -l, and today's SDK's Foundation exports the Swift symbols of its own overlay (marked as moved
+            -- only for iOS 12.2 to 16), so an -lswiftFoundation behind -framework Foundation loses them to the system.
+            local linked = {}
+            -- ahead of the frameworks, for the same reason: the classes the backports carry are bound to them
+            for _, library in ipairs(opt and opt.backports or {}) do
+                if carried[library] then
+                    table.insert(linked, carried[library])
+                end
+            end
+            for _, link in ipairs(links) do
+                local library = link:match("^%-l(swift.+)$")
+                table.insert(linked, library and path.join(install, "lib" .. library .. ".dylib") or link)
+            end
+            os.vrunv(swiftc, table.join(flags, {"-emit-module", "-emit-module-path",
+                     path.join(module, package:arch() .. "-apple-ios.swiftmodule"),
+                     "-emit-object", "-module-link-name", "swift" .. name, "-o", object}, overlay_sources))
+            os.vrunv(swiftc, table.join(flags, {"-emit-library", "-o", path.join(install, "libswift" .. name .. ".dylib"),
+                     object, table.unpack(objects or {})}, {"-Xlinker", "-install_name", "-Xlinker", "@rpath/libswift" .. name .. ".dylib",
+                     "-L" .. install, "-lswiftCore"}, linked))
+            offer(module)
+            offer(path.join(install, "libswift" .. name .. ".dylib"))
+        end
+
             if package:config("backports") then
                 local lift = import("apple.lift", {rootdir = modules, anonymous = true})
                 -- what the lift leaves alone is checked against the set measured for this SDK (lift/<sdk folder>.txt, as the lift writes it to
@@ -478,43 +516,8 @@ package("swift-runtime")
                 end
                 return found
             end
-            -- One overlay: its module, in the layout the others are installed in, and its library, which a port finds by the
-            -- run path it carries.
-            local function build_overlay(name, overlay_sources, links, objects, opt)
-                local module = path.join(install, name .. ".swiftmodule")
-                os.mkdir(module)
-                local flags = table.join({"-target", triple, "-resource-dir", resources, "-module-name", name,
-                                          "-parse-as-library", "-swift-version", "5", "-O", "-wmo",
-                                          "-Xfrontend", "-disable-implicit-string-processing-module-import"}, use_ld,
-                                         (opt and opt.concurrency) and {} or {"-Xfrontend", "-disable-implicit-concurrency-module-import"},
-                                         runtime_flags, swift.availability(source),
-                                         -- the lifted headers only where the backports are linked: an overlay that does not
-                                         -- carry them would bind what the headers now call available to the system's library
-                                         (opt and opt.backports) and lifted or {})
-                local object = path.join(generated, name .. ".o")
-                -- The overlays built here are named to the linker by their paths, not by -l: the driver lists every framework
-                -- before every -l, and today's SDK's Foundation exports the Swift symbols of its own overlay (marked as moved
-                -- only for iOS 12.2 to 16), so an -lswiftFoundation behind -framework Foundation loses them to the system.
-                local linked = {}
-                -- ahead of the frameworks, for the same reason: the classes the backports carry are bound to them
-                for _, library in ipairs(opt and opt.backports or {}) do
-                    if carried[library] then
-                        table.insert(linked, carried[library])
-                    end
-                end
-                for _, link in ipairs(links) do
-                    local library = link:match("^%-l(swift.+)$")
-                    table.insert(linked, library and path.join(install, "lib" .. library .. ".dylib") or link)
-                end
-                os.vrunv(swiftc, table.join(flags, {"-emit-module", "-emit-module-path",
-                         path.join(module, package:arch() .. "-apple-ios.swiftmodule"),
-                         "-emit-object", "-module-link-name", "swift" .. name, "-o", object}, overlay_sources))
-                os.vrunv(swiftc, table.join(flags, {"-emit-library", "-o", path.join(install, "libswift" .. name .. ".dylib"),
-                         object, table.unpack(objects or {})}, {"-Xlinker", "-install_name", "-Xlinker", "@rpath/libswift" .. name .. ".dylib",
-                         "-L" .. install, "-lswiftCore"}, linked))
-                offer(module)
-                offer(path.join(install, "libswift" .. name .. ".dylib"))
-            end
+        -- One overlay: its module, in the layout the others are installed in, and its library, which a port finds by the
+        -- run path it carries.
             build_overlay("ObjectiveC", overlay_sources_of("ObjectiveC", {"ObjectiveC.swift"}), {"-lswiftDarwin"})
             -- Dispatch: its queues are Objective-C objects from iOS 6, which is what the overlay takes them for. Its constructor
             -- is Objective-C++, compiled the way the port's own C is; Schedulers+DispatchQueue.swift is left out, being Combine's.
