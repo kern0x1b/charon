@@ -362,6 +362,14 @@ static const NSUInteger CharonHKUnitTableCount = sizeof(CharonHKUnitTable) / siz
 @end
 
 @implementation HKUnit
+// The strict check the build runs asks for every property a class extension redeclares to be
+// synthesized explicitly, so that a property and the ivar behind it cannot drift apart by accident.
+@synthesize unitString = _unitString;
+@synthesize scale = _scale;
+@synthesize offset = _offset;
+@synthesize bases = _bases;
+@synthesize powers = _powers;
+@synthesize names = _names;
 
 + (BOOL)supportsSecureCoding
 {
