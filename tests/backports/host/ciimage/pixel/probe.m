@@ -220,6 +220,37 @@ static void reportAlgebra(void)
     }
 }
 
+// The context's own surface and options, and a draw into that surface: the bytes the CGContext ended
+// up holding are the measurement, drawn the same way on both sides.
+static void reportContextOwner(void)
+{
+    CGColorSpaceRef space = probeSpace();
+    NSDictionary *options = @{kCIContextWorkingColorSpace: [NSNull null], kCIContextOutputPremultiplied: @NO};
+    CIImage *image = [[[CIImage alloc] initWithColor:[[CIColor alloc] initWithRed:0.4 green:0.6 blue:0.2 alpha:1]]
+        imageByCroppingToRect:CGRectMake(0, 0, 5, 3)];
+    for (int withSpace = 0; withSpace < 2; withSpace++) {
+        NSString *key = withSpace ? @"ctx space srgb" : @"ctx space nil";
+        NSMutableData *bytes = [NSMutableData dataWithLength:8 * 6 * 4];
+        CGContextRef cgctx = CGBitmapContextCreate(bytes.mutableBytes, 8, 6, 8, 32, space,
+                                                   (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
+        NSDictionary *given = withSpace ? @{kCIContextWorkingColorSpace: (__bridge id)space} : options;
+        CIContext *context = [CIContext contextWithCGContext:cgctx options:given];
+        put(@"%@ working format %ld", key, (long)context.workingFormat);
+        put(@"%@ working space %@", key, context.workingColorSpace ? @"one" : @"none");
+        [context drawImage:image inRect:CGRectMake(0, 0, 8, 6) fromRect:image.extent];
+        CGContextFlush(cgctx);
+        CGContextRelease(cgctx);
+        put_bytes(key, bytes);
+        put_pixels(key, bytes);
+    }
+    // The unpremultiply, over a field with an alpha in it.
+    CIImage *field = [[[CIImage alloc] initWithColor:[[CIColor alloc] initWithRed:0.6 green:0.3 blue:0.9 alpha:0.5]]
+        imageByCroppingToRect:CGRectMake(0, 0, 6, 4)];
+    put_algebra(@"alg unpremultiplied", [field imageByUnpremultiplyingAlpha], CGRectMake(0, 0, 6, 4));
+    put_algebra(@"alg premultiplied twice", [[field imageByPremultiplyingAlpha] imageByUnpremultiplyingAlpha],
+                CGRectMake(0, 0, 6, 4));
+}
+
 // A colour, measured as the numbers the colour object holds and as the bytes an image of that colour
 // renders to. The named colours and the two spellings of the colour-space initialisers are asked with
 // the same components, so a conversion that is not the system's shows up as a different pixel.
@@ -349,6 +380,7 @@ int main(void)
                                                           colorSpace:probeSpace()];
         [spaced setImage:field(extent)];
         report(@"spaced", spaced);
+        reportContextOwner();
         reportAlgebra();
         reportColors();
         reportRepresentations();

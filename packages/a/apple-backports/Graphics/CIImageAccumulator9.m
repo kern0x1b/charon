@@ -162,3 +162,17 @@ static CIFormat CharonCIAccumulatorStoredFormat(void)
 }
 
 @end
+
+@implementation CIImageAccumulator (CharonPixels)
+
+// The accumulator's own bytes, replaced. This is what lets a kernel of the port's own write its result
+// into an accumulator and hand back a CIImage over it: -image is a view of these bytes, so what a
+// kernel puts here is what the image a caller holds reads.
+- (void)charon_setTexels:(NSData *)texels
+{
+    if (!_pixels || texels.length != _pixels.length)
+        return;
+    memcpy(_pixels.mutableBytes, texels.bytes, texels.length);
+}
+
+@end

@@ -1,0 +1,49 @@
+{
+  "framework": "CoreImage",
+  "entries": [
+    {
+      "api": "+[CIContext contextWithCGContext:options:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6 has no +contextWithCGContext: in either spelling - the 6.1.3 selector table has contextWithOptions:, contextWithEAGLContext: and contextWithEAGLContext:options: and nothing to extend - so the context here is one of the release's own, made by the release's own method, with the drawing surface beside it",
+      "effect": "a context of the release's own, made with the release's own +contextWithOptions:, that draws into the CGContext named; a category cannot add storage to a class the framework has, so the surface is an associated object on the context",
+      "facts": "facts/CoreImage/ContextOwner.md",
+      "source": "the header of the iOS 16.4 SDK for the contract; the host's own CoreImage over the same calls, by tests/backports/host/ciimage/pixel, which draws into a CGContext on both sides and prints the bytes that context ended up holding; the 6.1.3 armv7 selector table for what the release has"
+    },
+    {
+      "api": "CIContext.workingColorSpace",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6 has no +contextWithCGContext: in either spelling - the 6.1.3 selector table has contextWithOptions:, contextWithEAGLContext: and contextWithEAGLContext:options: and nothing to extend - so the context here is one of the release's own, made by the release's own method, with the drawing surface beside it",
+      "effect": "the colour space the context's options name, read off the same associated options, and none for a context made with no space in its options",
+      "facts": "facts/CoreImage/ContextOwner.md",
+      "source": "the header of the iOS 16.4 SDK for the contract; the host's own CoreImage over the same calls, by tests/backports/host/ciimage/pixel, which draws into a CGContext on both sides and prints the bytes that context ended up holding; the 6.1.3 armv7 selector table for what the release has"
+    },
+    {
+      "api": "CIContext.workingFormat",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6 has no +contextWithCGContext: in either spelling - the 6.1.3 selector table has contextWithOptions:, contextWithEAGLContext: and contextWithEAGLContext:options: and nothing to extend - so the context here is one of the release's own, made by the release's own method, with the drawing surface beside it",
+      "effect": "the format the context's options name, and eight bits a channel for a context whose options name none",
+      "facts": "facts/CoreImage/ContextOwner.md",
+      "source": "the header of the iOS 16.4 SDK for the contract; the host's own CoreImage over the same calls, by tests/backports/host/ciimage/pixel, which draws into a CGContext on both sides and prints the bytes that context ended up holding; the 6.1.3 armv7 selector table for what the release has"
+    },
+    {
+      "api": "-[CIImage imageByUnpremultiplyingAlpha]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6 has no filter that divides by alpha: CIDivideBlendMode is absent from its 6.1.3 cache, so the arithmetic is the port's own over the rendered bytes",
+      "effect": "each channel divided by the alpha it is multiplied by, over the release's own rendering of the image and handed back as a CIImage over the port's own accumulator; a pixel of no alpha is left as it is, because a colour of nothing cannot be unpremultiplied into a colour",
+      "facts": "facts/CoreImage/ContextOwner.md",
+      "source": "the header of the iOS 16.4 SDK for the contract; the host's own CoreImage over the same calls, by tests/backports/host/ciimage/pixel, which draws into a CGContext on both sides and prints the bytes that context ended up holding; the 6.1.3 armv7 selector table for what the release has"
+    }
+  ]
+}
