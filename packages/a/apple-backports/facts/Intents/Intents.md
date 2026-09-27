@@ -252,11 +252,16 @@ port compiles against**: the toolchain's `charon@iphoneos-sdk` is iPhoneOS 16.4,
 `INMessageLinkMetadata` (iOS 17), `INUnsendMessagesIntent`/`INUnsendMessagesIntentResponse` and
 `INEditMessageIntent`/`INEditMessageIntentResponse` (iOS 17), `INMessageReaction` and `INSticker`
 (iOS 18) appear first in the SDK of 17.0 and 18.0. Their contracts are read from the headers of
-**iPhoneOS 26.2** (`$HOME/Git/projects/ios/charon/.agent-work/sdk-26.2/iPhoneOS26.2.sdk`) and the
+**iPhoneOS 26.2** (the SDK that `tools/intents/generate.sh` asks for as `SDK_262`, which the coordinator
+keeps unpacked and a worktree sweep will delete) and the
 declaration the implementation compiles against is `CharonIntents262.h` — the seven classes, the
 two enumerations two of them are typed by, and the two response codes the two responses are typed
 by. That is what a backport writes for API its SDK does not have, and the same generator builds
 their bodies from the same declarations it builds every other class's from.
+
+**Thirteen, not eleven:** the header declares seven classes, **four** enumerations and **two**
+protocols, and the two protocols (`INUnsendMessagesIntentHandling`,
+`INEditMessageIntentHandling`) were left out of the earlier count of what this file carries.
 
 The generator takes a second AST for exactly this: `--dump-newer` is read for a class the port's
 SDK does not declare at all, and **only** for those — a class both SDKs declare is taken from the
