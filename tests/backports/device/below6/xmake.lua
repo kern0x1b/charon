@@ -5,19 +5,38 @@ set_version("0.0.1")
 local root = os.getenv("BELOW6_ROOT") or path.join(os.scriptdir(), "../../../..")
 add_repositories("charon " .. root)
 add_addons("charon v0.8.12")
--- One binary for every release it runs on, built for the lowest.
-set_config("apple_minimum", "4.3")
+-- The binary's own apple_minimum, read from run.sh (the same shape as tests/backports/device/display-probe/xmake.lua): 4.3 below the
+-- class's own minimum (6.0), where charon@apple-backports carries the class itself and its weak import is refused unless the target
+-- waives it; the reference release (6.0) itself at and above it, where band() (modules/apple/backports.lua) reexports the class
+-- instead of carrying it, the same way the real apple-backports .deb's own band 6.0 does (checked with nm on it: no NSProgress/NSUUID
+-- class metadata there, only a reexport stub) - charon's own "copy the library in" mechanism (charon/AGENTS.md, "charon.libraries
+-- and verify_placed") copies the band this build's own apple_minimum names, so setting it to the reference release copies that
+-- clean band, not band 4.3's, which would hold two classes of the same name next to the release's real Foundation.
+local minimum = os.getenv("BELOW6_MINIMUM") or "4.3"
 add_requires("charon@apple-backports", {alias = "apple-backports", configs = {uikit = os.getenv("BELOW6_UIKIT") == "1"}})
+set_config("apple_minimum", minimum)
 includes("@addon/charon/apple-ios")
 includes("@addon/charon/emulate")
 set_defaultplat("iphoneos")
 set_defaultarchs("iphoneos|armv7")
 
--- A program per class of the backports that reach below iOS 6 (tests/backports/README.md), each named for its source, tests/backports/device/<name>.m.
-for _, name in ipairs({"nsuuid"}) do
+-- A program per class of the backports that reach below iOS 6 (tests/backports/README.md), each named for its own source,
+-- tests/backports/device/<name>.m, with any extra file the program's own oracle needs (progress-cases.m, its own), and one
+-- waiver reason its own use of the package might need.
+local PROGRAMS = {
+    nsuuid = {},
+    -- progress.m decodes its own expectations file with NSJSONSerialization (device/progress.m, unchanged, written for
+    -- the release), which the backports do not yet carry below iOS 6 (a class of its own, still to come); the waiver is for
+    -- that harness-only use, not for anything of NSProgress under test here.
+    progress = {extra = {"progress-cases.m"}, waiver = "device/progress.m decodes its own expectations file with NSJSONSerialization, which the backports do not carry below iOS 6 yet; nothing of NSProgress reaches it"},
+}
+for name, program in pairs(PROGRAMS) do
     target(name)
         add_rules("@addon/charon/daemon")
         add_files(path.join(root, "tests/backports/device", name .. ".m"), path.join(root, "tests/backports/device/check.m"))
+        for _, extra in ipairs(program.extra or {}) do
+            add_files(path.join(root, "tests/backports/device", extra))
+        end
         add_includedirs(path.join(root, "tests/backports/device"))
         add_mflags("-fobjc-arc")
         add_ldflags("-fobjc-arc", {force = true})
@@ -25,7 +44,5 @@ for _, name in ipairs({"nsuuid"}) do
         add_packages("apple-backports")
         set_values("charon.libraries", "apple-backports")
         set_values("charon.control", "control")
-        -- libFoundationBackports.dylib still weakly imports NSProgress (NSItemProvider's progress), which the releases below 6.0 refuse, until the
-        -- backports carry that class too; nothing this program does reaches it. Remove the waiver with the last weak import.
-        set_values("charon.waive.weak-imports", "libFoundationBackports weakly imports NSProgress until the backports carry it below iOS 6; this program never asks an NSItemProvider for a progress")
+        if program.waiver then set_values("charon.waive.weak-imports", program.waiver) end
 end

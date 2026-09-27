@@ -1,4 +1,4 @@
-# NSProgress, iOS 7 to 11
+# NSProgress, iOS 6 to 11
 
 Source: the host's own Foundation, asked for every case below and held against the backport by the
 `progress.*` records of `tests/backports/host/foundation2/run.sh`, and Foundation of iOS 6.0 and 6.1.3 on the
@@ -10,8 +10,84 @@ backport's answers with the records the host wrote.
 `NSProgress` is in the Foundation of iOS 6.0 and 6.1.x, with most of the surface iOS 7 made public: the
 progress of the current thread, `progressWithTotalUnitCount:`, `becomeCurrentWithPendingUnitCount:` and
 `resignCurrent`, the two counts, `fractionCompleted`, cancelling and pausing with their handlers, the
-`userInfo` and the kind. A class that is there is not backported; what the release lacks is carried as
-categories, and the eight ways it answers differently are listed at the end.
+`userInfo` and the kind. From 6.0 a class that is there is not backported; what the release lacks is carried
+as categories, and the eight ways it answers differently are listed at the end. Below 6.0, where the class
+itself is missing (`Foundation/NSProgress.m`, registry `NSProgress`, no `minimum`), the categories attach
+to that instead, unchanged, the same way they attach to the release's from 6.0 on.
+
+## The class below iOS 6.0
+
+Two libraries weakly import it - `NSItemProvider` and `UIDragDropSession`, `libFoundationBackports.dylib` and
+`libUIKitBackports.dylib` - each only ever calling `+progressWithTotalUnitCount:1`, a leaf progress with no
+ambient current progress; nothing in the package reaches the current-progress stack, `-addChild:withPendingUnitCount:`
+or a handler through them. The class exists for its own sake, not only theirs, and is held to the same surface
+below 6.0 as the categories already assume is there from 6.0 on.
+
+`Foundation/NSProgress.m` carries: the current-progress stack (`+currentProgress`, `becomeCurrentWithPendingUnitCount:`,
+`resignCurrent`, `initWithParent:userInfo:`, `+progressWithTotalUnitCount:`, adapted from swift-corelibs-foundation's
+`Progress.swift`, which documents the mechanism but is not itself the answer where it disagrees with what iOS 6
+measures - see below), the two counts, `fractionCompleted`, `isIndeterminate`, cancelling and pausing with their
+handlers (`isCancellable`/`isPausable`/`isCancelled`/`isPaused`/`cancel`/`pause`/`resume`, the handler setters;
+the getters of `cancellationHandler`/`pausingHandler` stay in `NSProgress+Additions.m`, which already reads them
+by ivar name off whichever class the process has), `userInfo`/`setUserInfoObject:forKey:`, `kind`, and
+`localizedDescription`/`localizedAdditionalDescription`. `-addChild:withPendingUnitCount:` and `-isFinished` are
+deliberately not here: `NSProgress+AddChild9.m` and `+Additions.m` carry those, the same category for every band,
+so the class does not duplicate a selector two files would both define, and the categories' own `+load` guard
+(`if ([NSProgress instancesRespondToSelector:@selector(addChild:withPendingUnitCount:)]) return;`, read at
+`+load` time, before `attach.c`'s constructor attaches this package's own categories - charon/AGENTS.md, Traps)
+tells the release's-own-support case from this one the same way it always has.
+
+Cancelling and pausing cascade to an implicit child in both orders without a live link from child back to
+parent: a child attached while the parent is already cancelled/paused is cascaded at attach; one attached first
+is reached when the parent later cancels/pauses, by walking the array of already-attached children the parent
+holds. Neither needs `__weak` - a runtime this class is also built for, armv7-`apple_minimum` 4.3, does not have
+(`objc_storeWeak` is absent there, facts/Foundation/NSMapTable.md); `-Xclang -fobjc-runtime-has-weak`, which
+`modules/apple/backports.lua` passes for a band below 5.0, only lets *other* files that need real `__weak` compile
+in the same pass at this deployment target - it says nothing about whether calling it at 4.3 is safe, and this
+class is the one placed there, so it does not use it.
+
+Held to iOS 6, not the newest release, for three read cases where they disagree (below): `fractionCompleted` of
+a zero-total progress, `isIndeterminate` of a fresh one, and `resume`. `localizedDescription`/
+`localizedAdditionalDescription` answer what was explicitly set, or `""` when nothing was, matching iOS 6's own
+measured default (`null_resettable`, so a value once given is not silently dropped); the newest release computes
+a default from the counts and kind when nothing was set, and a rule read off a handful of cases would be a
+guess ("What the backport adds", above).
+
+The five `userInfo` keys these five properties read and write (`NSProgressThroughputKey`, `NSProgressFileOperationKindKey`,
+`NSProgressFileURLKey`, `NSProgressFileTotalCountKey`, `NSProgressFileCompletedCountKey`) are exported from 6.0 (armv7
+caches: absent through 6.1.6, present from 7.0), unlike `NSProgressEstimatedTimeRemainingKey` (absent through 6.1.6,
+present from 7.0 too, but the existing registry entry already reads its `introduced` as 7.0, its SDK-documented
+release; not revisited here). Weakly imported and NULL below 6.0 until this session, since `NSProgress+Additions.m`,
+which reads and writes them, was only ever placed at `minimum` 6.0 and later before this class existed below that -
+the same reason NSProgress itself was missing there. `Foundation/NSProgress+Keys6.m` carries them, apart from
+`+Additions.m`'s own two constants (introduced 6.0 and 7.0 respectively), each the string of its own name (measured
+with `tools/cfconst.py` against the 12.0 arm64 cache's Foundation), so no one object mixes a release its own symbols
+are present at with one they are not (`band()`, "split it").
+
+What is not carried, below 6.0 or from it: publishing and subscribing (`publish`, `unpublish`,
+`addSubscriberForFileURL:withPublishingHandler:`, `removeSubscriber:`, `isOld`) - all four are
+`API_UNAVAILABLE(ios)` in the SDK header itself, not something an iOS application can call regardless of release,
+so nothing is missing that a caller could reach.
+
+What the base class's own `fractionCompleted` does not do, stated rather than silently different, the same shape
+as the already-accepted limitation of `-addChild:withPendingUnitCount:` two paragraphs up in "What the release
+cannot do": an implicit child that finishes stays in the parent's list and keeps contributing its full portion to
+`fractionCompleted` for the rest of the parent's life, but the parent's own `completedUnitCount` never absorbs
+it. Not measured against a real device oracle (no test in the package reaches the current-progress stack at all,
+per "Two libraries weakly import it" above); checked against the host's own Foundation instead
+(`tests/backports/host/progress2/run.sh`, a differential with the class renamed, 36 checks, four named
+tolerances for the three read-case divergences above and for the handler dispatch below), which is this class's
+own oracle in the absence of a device one, same as `tests/backports/host/foundation2` already is for the
+categories. Checked on the emulator against the release's own class: `tests/backports/device/progress.m` and
+`progress-cases.m` (already written for the release, unchanged) through `tests/backports/device/below6/`, on
+4.3 and 5.0 against 6.0's own answers.
+
+Where a handler is called differs in timing, not effect: iOS 6's `-cancel`/`-pause` call the handler
+synchronously, at the call itself; the host's newest Foundation dispatches it asynchronously (read in
+`Progress.swift`: `DispatchQueue.global().async { handler() }`), so `host/progress2`'s checks of the handler
+firing wait briefly first, as `tests/backports/device/progress-cases.m`'s own `cancel.child`/`pause.child` cases
+already do for the same reason. Not measured which iOS 6 itself does (synchronous or dispatched) - not
+reachable by the package's own two callers, and `progress-cases.m`'s wait already tolerates either.
 
 ## What the backport adds
 
