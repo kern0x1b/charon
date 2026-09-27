@@ -89,5 +89,53 @@ function failures(opt)
     local groups = stubs.group(stubs.markers(second))
     expect("carried groups", #groups, 1)
     expect("carried tokens", #groups[1].tokens, 2)
+
+    -- a newer SDK's tbd (v3, no armv7-only symbols at all: no device runs 26.2 on 32-bit) beside the older one
+    -- (v4, still names them for armv7/armv7s): what it dropped, and adding it back as plain exports, not markers
+    local old_unwind = table.concat({
+        "--- !tapi-tbd\n", "tbd-version:     4\n", "targets:         [ armv7-ios, armv7s-ios, arm64-ios ]\n",
+        "install-name:    '/usr/lib/system/libunwind.dylib'\n", "exports:\n",
+        "  - targets:         [ armv7-ios, armv7s-ios ]\n",
+        "    symbols:         [ __Unwind_SjLj_Register, __Unwind_SjLj_Resume ]\n",
+        "  - targets:         [ armv7-ios, armv7s-ios, arm64-ios ]\n",
+        "    symbols:         [ __Unwind_Backtrace ]\n",
+        "  - targets:         [ armv7-ios ]\n",
+        "    weak-symbols:    [ __Unwind_Rarely ]\n", "...\n"})
+    local new_unwind = table.concat({
+        "--- !tapi-tbd-v3\n", "archs:                 [ armv7, armv7s, arm64, arm64e ]\n", "platform:              ios\n",
+        "install-name:          /usr/lib/system/libunwind.dylib\n", "exports:\n",
+        "  - archs:                [ armv7, armv7s, arm64, arm64e ]\n",
+        "    symbols:              [ __Unwind_Backtrace ]\n", "...\n"})
+    local dropped = stubs.dropped(stubs.read(old_unwind), stubs.read(new_unwind))
+    expect("dropped groups (symbols, weak-symbols)", #dropped, 2)
+    local by_list = {}
+    for _, g in ipairs(dropped) do by_list[g.list] = g end
+    expect("dropped plain symbols", table.concat(by_list.symbols.tokens, " "), "__Unwind_SjLj_Register __Unwind_SjLj_Resume")
+    expect("dropped symbols' architectures", table.concat(by_list.symbols.archs, ","), "armv7,armv7s")
+    expect("dropped weak symbols", table.concat(by_list["weak-symbols"].tokens, " "), "__Unwind_Rarely")
+    expect("what a shared, still-exported symbol is not", #stubs.dropped(stubs.read(old_unwind), stubs.read(old_unwind)), 0)
+    local restored = stubs.add_symbols(new_unwind, dropped)
+    local restored_doc = stubs.read(restored)
+    local exported = stubs.exported(restored_doc)
+    expect("a restored symbol exports for armv7", exported.__Unwind_SjLj_Register and exported.__Unwind_SjLj_Register.armv7 or false, true)
+    expect("a restored symbol does not export for arm64 (the new stub never had it there)", exported.__Unwind_SjLj_Register and exported.__Unwind_SjLj_Register.arm64 or false, false)
+    expect("the original export untouched", exported.__Unwind_Backtrace and exported.__Unwind_Backtrace.arm64 or false, true)
+    expect("restoring the same drop twice adds nothing new", stubs.add_symbols(restored, dropped), restored)
+
+    -- a symbol the new stub still lists, just regrouped under an architecture the old one never paired it with alone
+    -- (arm64 only, here) - not dropped, whatever architecture carries it now: restoring it would assert something no
+    -- SDK measurement backs, the exact gap the review of this series found the first version of dropped() left open
+    local new_unwind_regrouped = table.concat({
+        "--- !tapi-tbd-v3\n", "archs:                 [ armv7, armv7s, arm64, arm64e ]\n", "platform:              ios\n",
+        "install-name:          /usr/lib/system/libunwind.dylib\n", "exports:\n",
+        "  - archs:                [ armv7, armv7s, arm64, arm64e ]\n",
+        "    symbols:              [ __Unwind_Backtrace ]\n",
+        "  - archs:                [ arm64, arm64e ]\n",
+        "    symbols:              [ __Unwind_SjLj_Register ]\n", "...\n"})
+    local dropped_regrouped = stubs.dropped(stubs.read(old_unwind), stubs.read(new_unwind_regrouped))
+    local regrouped_by_list = {}
+    for _, g in ipairs(dropped_regrouped) do regrouped_by_list[g.list] = g end
+    expect("a symbol regrouped under arm64 only is not counted as dropped",
+           table.concat((regrouped_by_list.symbols or {tokens = {}}).tokens, " "), "__Unwind_SjLj_Resume")
     return found
 end

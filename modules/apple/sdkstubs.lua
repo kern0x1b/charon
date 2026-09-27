@@ -79,7 +79,7 @@ function read(text)
     for _, entry in ipairs(doc.exports) do
         entry.lists = {}
         for _, list in ipairs(LISTS) do
-            local content = entry.text:match("\n    " .. list .. ":%s*%[(.-)%]")
+            local content = entry.text:match("\n    " .. list:gsub("%-", "%%-") .. ":%s*%[(.-)%]")
             entry.lists[list] = content and names(content) or {}
         end
         entry.text = nil
@@ -160,38 +160,19 @@ local function wrapped(tokens, indent)
     return (table.concat(lines, "\n" .. string.rep(" ", indent)):gsub(",$", ""))
 end
 
--- `wanted` is {{archs = {"armv7", ...}, tokens = {...}}, ...}. The document text with each token that
--- its architectures name and it does not already list, put as entries at the top of its exports.
-function add_markers(text, wanted)
-    local doc = read(text)
-    local have = present(doc)
-    local supported = {}
-    for _, arch in ipairs(doc.archs) do
-        supported[arch] = true
+-- One export entry of `doc`'s format naming `archs` and listing `tokens` under `list`.
+local function entry_text(doc, archs, list, tokens)
+    local key, suffix = doc.format == "v3" and "archs" or "targets", doc.format == "v3" and "" or "-ios"
+    local listed = {}
+    for _, arch in ipairs(archs) do
+        table.insert(listed, arch .. suffix)
     end
-    local entries = {}
-    for _, group in ipairs(wanted) do
-        local archs, tokens = {}, {}
-        for _, arch in ipairs(group.archs) do
-            if supported[arch] then
-                table.insert(archs, arch)
-            end
-        end
-        for _, token in ipairs(group.tokens) do
-            if not have[token] then
-                have[token] = true
-                table.insert(tokens, token)
-            end
-        end
-        if #archs > 0 and #tokens > 0 then
-            local key, suffix = doc.format == "v3" and "archs" or "targets", doc.format == "v3" and "" or "-ios"
-            local listed = {}
-            for _, arch in ipairs(archs) do
-                table.insert(listed, arch .. suffix)
-            end
-            table.insert(entries, string.format("  - %s: [ %s ]\n    symbols: [ %s ]\n", key, table.concat(listed, ", "), wrapped(tokens, #"    symbols: [ ")))
-        end
-    end
+    local head = "    " .. list .. ": [ "
+    return string.format("  - %s: [ %s ]\n%s%s ]\n", key, table.concat(listed, ", "), head, wrapped(tokens, #head))
+end
+
+-- The document text with `entries` at the top of its exports.
+local function put_entries(text, entries)
     if #entries == 0 then
         return text
     end
@@ -204,6 +185,66 @@ function add_markers(text, wanted)
     local ending = text:find("\n%.%.%.[ \t]*\n?$")
     local head = ending and text:sub(1, ending) or text .. (text:find("\n$") and "" or "\n")
     return head .. "exports:\n" .. table.concat(entries) .. (ending and text:sub(ending + 1) or "")
+end
+
+-- The architectures of `wanted` (a group's) that the document has.
+local function supported_archs(doc, wanted)
+    local supported, archs = {}, {}
+    for _, arch in ipairs(doc.archs) do
+        supported[arch] = true
+    end
+    for _, arch in ipairs(wanted) do
+        if supported[arch] then
+            table.insert(archs, arch)
+        end
+    end
+    return archs
+end
+
+-- `wanted` is {{archs = {"armv7", ...}, tokens = {...}}, ...}. The document text with each token that
+-- its architectures name and it does not already list, put as entries at the top of its exports.
+function add_markers(text, wanted)
+    local doc = read(text)
+    local have = present(doc)
+    local entries = {}
+    for _, group in ipairs(wanted) do
+        local archs, tokens = supported_archs(doc, group.archs), {}
+        for _, token in ipairs(group.tokens) do
+            if not have[token] then
+                have[token] = true
+                table.insert(tokens, token)
+            end
+        end
+        if #archs > 0 and #tokens > 0 then
+            table.insert(entries, entry_text(doc, archs, "symbols", tokens))
+        end
+    end
+    return put_entries(text, entries)
+end
+
+-- `wanted` is {{archs = {...}, list = "symbols", tokens = {...}}, ...}, as dropped() gives it: plain symbols, each listed by
+-- an entry of its own architectures and its own list, for the architectures the document has.
+function add_symbols(text, wanted)
+    local doc = read(text)
+    local have = exported(doc)
+    local entries = {}
+    for _, group in ipairs(wanted) do
+        local archs = supported_archs(doc, group.archs)
+        local tokens = {}
+        for _, token in ipairs(group.tokens) do
+            local already = true
+            for _, arch in ipairs(archs) do
+                already = already and have[token] and have[token][arch]
+            end
+            if not already then
+                table.insert(tokens, token)
+            end
+        end
+        if #archs > 0 and #tokens > 0 then
+            table.insert(entries, entry_text(doc, archs, group.list, tokens))
+        end
+    end
+    return put_entries(text, entries)
 end
 
 -- Markers as add_markers takes them: {{archs, tokens}, ...}, one group for each architecture list, in the order first met.
@@ -286,6 +327,67 @@ function derived(doc, first, versions)
                     end
                 end
             end
+        end
+    end
+    local wanted = {}
+    for _, key in ipairs(order) do
+        table.insert(wanted, groups[key])
+    end
+    return wanted
+end
+
+-- What a stub of a newer SDK no longer lists at all for a 32-bit slice it still names: the symbols `older` (the same
+-- library's document in an older SDK) lists for armv7 or armv7s and `doc` lists under none of its architectures - not
+-- only not for armv7/armv7s, but not for arm64/arm64e either - as add_symbols takes them. `iphoneos-sdk` calls this for
+-- libSystem's own documents, where what the 32-bit slice exports and the 64-bit one never had (`__Unwind_SjLj_Register`,
+-- `___udivdi3`) is gone from a newer SDK's stub while the release the slice runs on still has it. A symbol `doc` still
+-- lists under any architecture (arm64 typically, sometimes armv7 itself grouped under a different entry) is never
+-- "dropped": that is 26.2's own reorganised layout, not Apple removing a 32-bit-only primitive, and restoring it as a
+-- plain export would assert something no measurement backs. Not specific to libSystem: any two documents of the same
+-- library, from the two SDKs, work here.
+function dropped(older, doc)
+    local have = {}
+    for _, entry in ipairs(doc.exports) do
+        for _, list in ipairs(LISTS) do
+            for _, symbol in ipairs(entry.lists[list]) do
+                have[symbol] = true
+            end
+        end
+    end
+    -- for each list, the architectures each missing symbol is missing for, then the symbols that share them
+    local missing = {}
+    for _, entry in ipairs(older.exports) do
+        for _, list in ipairs(LISTS) do
+            for _, symbol in ipairs(entry.lists[list]) do
+                if not symbol:startswith("$ld$") and not have[symbol] then
+                    for _, arch in ipairs(entry.archs) do
+                        if arch == "armv7" or arch == "armv7s" then
+                            missing[list] = missing[list] or {}
+                            missing[list][symbol] = missing[list][symbol] or {}
+                            missing[list][symbol][arch] = true
+                        end
+                    end
+                end
+            end
+        end
+    end
+    local groups, order = {}, {}
+    for _, list in ipairs(LISTS) do
+        local symbols = table.keys(missing[list] or {})
+        table.sort(symbols)
+        for _, symbol in ipairs(symbols) do
+            local archs = {}
+            for _, arch in ipairs({"armv7", "armv7s"}) do
+                if missing[list][symbol][arch] then
+                    table.insert(archs, arch)
+                end
+            end
+            local key = list .. "\t" .. table.concat(archs, ",")
+            if not groups[key] then
+                groups[key] = {archs = archs, list = list, tokens = {}}
+                table.insert(order, key)
+            end
+            table.insert(groups[key].tokens, symbol)
         end
     end
     local wanted = {}

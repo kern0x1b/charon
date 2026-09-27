@@ -82,6 +82,32 @@ package("iphoneos-sdk")
             end
             versions = table.keys(versions)
             table.sort(versions, function (a, b) return stubs.older(a, b) end)
+
+            -- libSystem, and the Objective-C runtime beside it: the two libraries every image links unconditionally and
+            -- the compiler itself emits direct calls into (a struct-returning message send lowers to _objc_msgSend_stret
+            -- with no source-level reference to it), so their 32-bit ABI is fixed across every release this project
+            -- targets, unlike a framework's own surface. libobjc is not in_libsystem (libSystem never re-exports it -
+            -- it is force-loaded and linked on its own), so it needs naming here beside it.
+            local function is_runtime(install)
+                return stubs.in_libsystem(install) or install == "/usr/lib/libobjc.A.dylib"
+            end
+
+            -- Those two families' own documents of the older SDK, by install name, read whether or not they carry a
+            -- marker: a 32-bit-only symbol (SjLj unwinding, the compiler-rt helpers, the struct-return message sends, ...)
+            -- an armv7/armv7s device still exports and this SDK's own stub of the same library has simply stopped
+            -- naming, because no 26.2 device is 32-bit.
+            local older_runtime = {}
+            for _, file in ipairs(os.files(path.join(older, "**.tbd"))) do
+                if not file:find("/DriverKit/", 1, true) then
+                    for _, part in ipairs(stubs.documents(io.readfile(file))) do
+                        local doc = stubs.read(part)
+                        if is_runtime(doc.install) and not older_runtime[doc.install] then
+                            older_runtime[doc.install] = doc
+                        end
+                    end
+                end
+            end
+
             local changed = 0
             for _, stub in ipairs(os.files(path.join(folder, "**.tbd"))) do
                 local text = not stub:find("/DriverKit/", 1, true) and io.readfile(stub)
@@ -91,10 +117,15 @@ package("iphoneos-sdk")
                         local install = stubs.install(part)
                         if carried[install] or stubs.in_libsystem(install) then
                             local wanted = stubs.group(carried[install] or {})
+                            local doc = stubs.read(part)
                             if stubs.in_libsystem(install) then
-                                table.join2(wanted, stubs.derived(stubs.read(part), first, versions))
+                                table.join2(wanted, stubs.derived(doc, first, versions))
                             end
-                            parts[index] = stubs.add_markers(part, wanted)
+                            part = stubs.add_markers(part, wanted)
+                            if older_runtime[install] then
+                                part = stubs.add_symbols(part, stubs.dropped(older_runtime[install], doc))
+                            end
+                            parts[index] = part
                         end
                     end
                     if table.concat(parts) ~= text then
