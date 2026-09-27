@@ -82,6 +82,7 @@ extern vImage_Error RENAME(vImageConvert_ARGB8888To422CbYpCrYp8_AA8)(const vImag
 static int checks, failures;
 static unsigned long long bytesCompared, bytesApart;
 static int widest;
+static char widestWhere[256] = "no case has differed at all";
 
 // The two functions whose source is a Q12 buffer are the one place where the system does not do what
 // Conversion.h says, and the measurement is what the port answers instead of the system's. These two
@@ -327,8 +328,13 @@ static NSString *compare(vImage_Buffer theirs, vImage_Buffer ours, unsigned word
             if (difference == 0)
                 continue;
             bytesApart++;
-            if (difference > widest)
+            if (difference > widest) {
                 widest = difference;
+                snprintf(widestWhere, sizeof widestWhere, "a 16-bit sample: the port and the system rounded "
+                         "the eight-bit dot product's one unit differently, and 2 * 28672 / 255 = 257 is what "
+                         "one unit of that sum is worth in a 16-bit sample - so this is inside the 257 those "
+                         "shapes are compared at");
+            }
             if (difference > worst) {
                 worst = difference;
                 where = (unsigned long long)row * 1000000 + (unsigned long long)(at / words);
@@ -1127,6 +1133,7 @@ int main(void)
         printf("\n%d checks, %d failures, %llu bytes compared, %llu apart (%.4f per cent), widest %d\n", checks,
                failures, bytesCompared, bytesApart, bytesCompared ? 100.0 * (double)bytesApart / (double)bytesCompared : 0.0,
                widest);
+        printf("the widest difference is %d, in %s\n", widest, widestWhere);
         printf("the Q12-source pair: %llu words compared against the system, %llu apart (%.2f per cent), widest %d - "
                "the port's answer is Conversion.h's formula, and the measurement is in facts/Accelerate/vImageYpCbCr.md\n",
                q12Bytes, q12Apart, q12Bytes ? 100.0 * (double)q12Apart / (double)q12Bytes : 0.0, q12Widest);

@@ -132,8 +132,6 @@ static inline vImage_Error CharonShearReady(const vImage_Buffer *src, const vIma
         return kvImageInvalidOffset_X;
     if (offsetY > src->height)
         return kvImageInvalidOffset_Y;
-    if (slope != 0.0)
-        return kvImageInvalidParameter;
     return kvImageNoError;
 }
 
@@ -180,27 +178,44 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
         uint8_t *out = (uint8_t *)dest->data + (size_t)cross * dest->rowBytes;
 
         for (vImagePixelCount along = 0; along < dstAlong; along++) {
-            double centre = ((double)along0 + (double)along + translate) / scale;
+            // The tap walk. A shear is a one-dimensional resample ALONG THE DIRECTION OF THE SHEAR: a tap
+            // one step along it is one column across AND `slope` rows down, so the kernel's taps are
+            //
+            //     (x + k, dy + slope * k)
+            //
+            // and not a row of them. That is what the cross-row blends are - at a slope of 1 one
+            // destination pixel's seven taps land in seven rows, and at a whole-pixel phase the only non-zero
+            // weight is the centre one, so the whole-pixel answers are exact while the phases between them
+            // blend two rows. A row-tap walk is that engine with the slope zero and is wrong at every other
+            // slope, which is what the differential was saying.
+            double centre = (double)along0 + (double)along + translate;
             int base = (int)floor(centre);
             CharonResampleWeights(centre, base, extent, filter->lobes, filter->scale, weights);
             long first = (long)base - (long)extent;
             for (unsigned channel = 0; channel < channels; channel++) {
                 double sum = 0.0;
-                int inside = 0;
+                int any = 0;
                 for (int k = 0; k < taps; k++) {
-                    long index = first + k;
-                    if (index < 0 || index >= (long)srcAlong) {
-                        if (!extend) {
-                            inside = 0;
-                            break;
-                        }
-                        if (index < 0) index = 0;
-                        if (index >= (long)srcAlong) index = srcAlong ? (long)srcAlong - 1 : 0;
+                    long column = first + k;
+                    long row = (long)cross0 + (long)cross + (long)(slope * (double)k);
+                    if (column < 0 || column >= (long)srcAlong || row < 0 || row >= (long)srcCross) {
+                        // A tap outside the picture contributes nothing and the sample is still the sum of
+                        // the taps inside: at a whole-pixel phase the out-of-range lobes of a Lanczos kernel
+                        // are exactly zero, so the destination's first column IS the source's first column.
+                        // Under kvImageEdgeExtend the tap is pulled back to the edge pixel instead, which is
+                        // the header's own "the edge pixels of the source are extended".
+                        if (!extend)
+                            continue;
+                        if (column < 0) column = 0;
+                        if (column >= (long)srcAlong) column = srcAlong ? (long)srcAlong - 1 : 0;
+                        if (row < 0) row = 0;
+                        if (row >= (long)srcCross) row = srcCross ? (long)srcCross - 1 : 0;
                     }
-                    sum += weights[k] * CharonChannelAt(in, (vImagePixelCount)index, channel, type);
-                    inside = 1;
+                    const uint8_t *tap = (const uint8_t *)src->data + (size_t)row * src->rowBytes;
+                    sum += weights[k] * CharonChannelAt(tap, (vImagePixelCount)column, channel, type);
+                    any = 1;
                 }
-                CharonChannelPut(out, along, channel, inside ? sum : backColor[channel], type);
+                CharonChannelPut(out, along, channel, any ? sum : backColor[channel], type);
             }
         }
     }

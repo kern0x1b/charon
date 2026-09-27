@@ -116,9 +116,28 @@ int main(void)
         vImage_Buffer source = make(8, 4), dest = make(8, 4);
         CharonResampleFilter ours;
         CharonResampleFilterInit(&ours, 1.0f, kvImageBackgroundColorFill);
-        vImage_Error a = CharonShearReady(&source, &dest, &ours, 0, 0, 1.0);
-        report(a == kvImageInvalidParameter, @"a non-zero shearSlope is refused rather than answered",
+        vImage_Error a = CharonShearReady(&source, &dest, &ours, 0, 0, 0.0);
+        report(a == kvImageNoError, @"a filter and the buffers are accepted",
                ([NSString stringWithFormat:@"the port answers %ld", (long)a]));
+        // and the slope, which is the diagonal tap walk, against the system's own
+        for (int si = 0; si < 4; si++) {
+            float slope = (float)si;
+            vImage_Buffer src = make(9, 6), theirD = make(9, 6), ourD = make(9, 6);
+            float *in = (float *)src.data;
+            for (vImagePixelCount r = 0; r < 6; r++)
+                for (vImagePixelCount c = 0; c < 9; c++) in[r * 9 + c] = (float)((r * 37 + c * 11) % 23) / 23.0f;
+            ResamplingFilter tf = vImageNewResamplingFilter(1.0f, kvImageNoFlags);
+            vImageHorizontalShear_PlanarF(&src, &theirD, 0, 0, 0.0f, slope, tf, (Pixel_F)0.25f, kvImageBackgroundColorFill);
+            vImageDestroyResamplingFilter(tf);
+            CharonResampleFilter mine;
+            CharonResampleFilterInit(&mine, 1.0f, kvImageBackgroundColorFill);
+            double bd[4] = {0.25, 0, 0, 0};
+            CharonShearRun(&src, &ourD, &mine, CharonPlanarF, YES, 0.0, (double)slope, 0, 0, bd, kvImageBackgroundColorFill);
+            NSString *diff = compare(theirD, ourD, 4.0 / 23.0);
+            report(diff == nil, ([NSString stringWithFormat:@"slope %g: every sample agrees", (double)slope]),
+                   diff ?: @"");
+            free(src.data); free(theirD.data); free(ourD.data);
+        }
         a = CharonShearReady(&source, &dest, NULL, 0, 0, 0.0);
         report(a == kvImageNullPointerArgument, @"a NULL filter is refused",
                ([NSString stringWithFormat:@"the port answers %ld", (long)a]));

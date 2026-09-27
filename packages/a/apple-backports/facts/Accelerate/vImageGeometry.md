@@ -564,8 +564,17 @@ for at least the destination-wider-than-source and downscale cases. One defect, 
 system renormalises over the inside taps where this port does not. That is the measurement the next run
 settles: a source narrower than the destination, and the weights of the surviving taps divided by their sum.
 
-Not committed as working, and not claimed to be: the code is committed because it is the engine the
-remaining work is one defect deep, and the check that says so is committed with it.
+**The 36 registry entries are NOT in the delivery.** While the differential is red, `status: implemented`
+would be the fake the brief forbids, so `ios7-15-shear.json` is removed: the functions are in the tree as the
+engine the remaining work is one rewrite deep, and nothing claims them. They come back with their entries when
+the differential is green.
+
+**The tap walk is now the diagonal one** - `(x + k, dy + shearSlope * k)` - and the slope is no longer
+refused. That is the rewrite the characterisation called for, and it is why the run's remaining failures
+moved from whole-sample differences to fractional ones concentrated at the bottom rows, where the diagonal
+runs off the picture and the two answers disagree about which taps to drop. The next thing to settle is that
+edge: the system at a steep slope and a destination near the last row blends the *last* row repeatedly where
+this port drops the taps that fall past it.
 
 ## The slope term is a DIAGONAL resample, and that is the whole of it
 
