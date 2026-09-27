@@ -95,17 +95,3 @@
 }
 
 @end
-
-#pragma mark - AXFeatureOverrideSession
-
-// The header gives the session nothing: it is a token the manager hands out and takes back. There
-// is no manager that can hand one out on this release, so the class is a container of its own and
-// the equality the header implies is by identity.
-@implementation AXFeatureOverrideSession
-
-- (NSString *)description
-{
-    return [NSString stringWithFormat:@"<AXFeatureOverrideSession %p>", self];
-}
-
-@end
