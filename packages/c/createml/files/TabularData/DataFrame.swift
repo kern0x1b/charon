@@ -53,6 +53,14 @@ public struct DataFrame {
         settle()
     }
 
+    /// A frame from a run of another frame's rows, keeping the base and the range: a frame is
+    /// a view of a view here, and `.frame` is where a caller asks for the copy.
+    public init(rows slice: DataFrame) {
+        self.columns = slice.columns
+        self.error = nil
+        settle()
+    }
+
     public init(_ slice: DataFrame.Slice) {
         self.columns = slice.frame.columns
         self.error = nil
@@ -260,11 +268,21 @@ extension DataFrame {
         }
     }
 
-    /// The frame's rows, in order.
-    public struct Rows {
+    /// The frame's rows, in order — a **random-access** collection, so a caller writes
+    /// `for row in frame.rows`.
+    ///
+    /// `RandomAccessCollection` and not `BidirectionalCollection` because it gives away a
+    /// `subscript(bounds:)` where `BidirectionalCollection` makes one a requirement. A frame's rows
+    /// are random access — any row is as cheap as any other — so the richer conformance is also the
+    /// true one, and it is the one that compiles without the port writing out a subscript the
+    /// standard library already has.
+    public struct Rows: RandomAccessCollection {
         public let base: DataFrame
         public typealias Element = Row
         public typealias Index = Int
+        public typealias Indices = Range<Int>
+        public typealias SubSequence = Rows
+        public typealias Iterator = IndexingIterator<Rows>
 
         public init(base: DataFrame) {
             self.base = base
@@ -273,8 +291,18 @@ extension DataFrame {
         public var startIndex: Int { 0 }
         public var endIndex: Int { base.count }
         public func index(after i: Int) -> Int { i + 1 }
+        public func index(before i: Int) -> Int { i - 1 }
         public var count: Int { base.count }
-        public subscript(_ index: Int) -> Row { Row(base: base, index: index) }
+        public var isEmpty: Bool { base.count == 0 }
+        public subscript(position: Int) -> Row { Row(base: base, index: position) }
+
+        /// `RandomAccessCollection` *overrides* `Collection`'s `subscript(bounds:)` — which the
+        /// standard library marks `@available(*, unavailable)` — with a requirement of its own, so a
+        /// conforming type supplies it. This is the compiler's own note, and it is the whole of every
+        /// `unavailable subscript` this file and `Columns.swift` kept hitting.
+        public subscript(bounds: Range<Int>) -> Rows {
+            Rows(base: DataFrame(rows: base.rows(Array(bounds))))
+        }
     }
 
     /// A run of a frame's rows, which keeps the base and the range rather than copying the columns.
@@ -296,6 +324,12 @@ extension DataFrame {
 
         public subscript<T>(columnID: ColumnID<T>) -> ColumnSlice<T> {
             ColumnSlice(base: base[columnID], range: range)
+        }
+
+        /// The slice's columns, each one a slice of the frame's own column: a view of a view, and
+        /// still a view all the way down, because the range is carried rather than copied.
+        public subscript(bounds: Range<Int>) -> DataFrame.Slice {
+            DataFrame.Slice(base: base, range: range.lowerBound + bounds.lowerBound ..< range.lowerBound + bounds.upperBound)
         }
 
         /// The slice as a frame of its own, which copies the rows out of the base: a slice is a view

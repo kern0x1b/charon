@@ -49,59 +49,91 @@ extension ColumnID: Hashable {
 }
 
 /// A column of a frame: a name and a vector of values of one type.
+///
+/// It does not refine a collection — see the file's header for the measurement — and the columns
+/// conform to `BidirectionalCollection` themselves.
 public protocol ColumnProtocol<Element> {
     associatedtype Element
-    /// How many values the column holds. Not `count` from a collection, because the column is not
-    /// one — see the file's header — and the name the surface records is the one here.
-    var count: Int { get }
-    var isEmpty: Bool { get }
     var name: String { get set }
 }
 
-/// A column of a frame, holding values of one type.
-public struct Column<Element>: ColumnProtocol {
-    public var name: String
-    public private(set) var values: [Element]
+/// A column's storage, in a box.
+///
+/// The box is what makes a slice a **view** rather than a copy. `Column` is a struct, so a
+/// `ColumnSlice` holding it by value holds a *copy* of the column, and a write through the slice
+/// would land in that copy while the frame kept the old value — the exact silent no-op the first
+/// version of this file avoided by making the slice read-only, which cost every caller the ability to
+/// write through a view. With the storage in a reference the slice and the column see the same values,
+/// which is what the name says and what the framework's own slice does.
+internal final class ColumnStorage<Element>: @unchecked Sendable {
+    var values: [Element]
 
+    init(_ values: [Element]) { self.values = values }
+}
+
+/// A column of a frame, holding values of one type.
+public struct Column<Element>: ColumnProtocol, BidirectionalCollection {
+    public var name: String
+    /// The column's values, in the box every view of this column shares. `storage` is `internal` and
+    /// the views are in this file, so nothing outside can reach past the value semantics.
+    internal let storage: ColumnStorage<Element>
+    public var values: [Element] {
+        get { storage.values }
+        set { storage.values = newValue }
+    }
+
+    /// Every initialiser assigns the **box** first and `name` second: `values` goes through the box,
+    /// so writing `self.values` before the box exists reads `self` uninitialised. That is a real
+    /// Swift restriction and not a style choice, and it is why the order is the same in all of them.
     public init(name: String = "") {
+        self.storage = ColumnStorage<Element>([])
         self.name = name
-        self.values = []
     }
 
     public init(name: String = "", _ values: [Element]) {
+        self.storage = ColumnStorage<Element>(values)
         self.name = name
-        self.values = values
     }
 
     public init<S: Sequence>(_ source: S, name: String = "") where S.Element == Element {
+        self.storage = ColumnStorage<Element>(Array(source))
         self.name = name
-        self.values = Array(source)
     }
 
+    /// A **view** of another column: the storage is shared, so a write through either is a write
+    /// through both, which is what makes `ColumnSlice` a view rather than a copy. Only
+    /// `init(copying:)` starts a column of its own over the same values.
     public init(_ column: Column<Element>, name: String? = nil) {
+        self.storage = column.storage
         self.name = name ?? column.name
-        self.values = column.values
+    }
+
+    /// A column of its own over a copy of another one's values.
+    public init(copying column: Column<Element>, name: String? = nil) {
+        self.storage = ColumnStorage<Element>(column.values)
+        self.name = name ?? column.name
     }
 
     public init(repeating value: Element, count: Int, name: String = "") {
+        self.storage = ColumnStorage<Element>([Element](repeating: value, count: count))
         self.name = name
-        self.values = [Element](repeating: value, count: count)
     }
 
-    public var count: Int { values.count }
-    public var isEmpty: Bool { values.isEmpty }
+
+    public typealias SubSequence = ColumnSlice<Element>
+
     public var startIndex: Int { 0 }
     public var endIndex: Int { values.count }
     public func index(after i: Int) -> Int { i + 1 }
     public func index(before i: Int) -> Int { i - 1 }
 
-    public subscript(position index: Int) -> Element {
-        get { values[index] }
-        set { values[index] = newValue }
+    public subscript(position: Int) -> Element {
+        get { values[position] }
+        set { values[position] = newValue }
     }
 
-    public subscript(bounds range: Range<Int>) -> ColumnSlice<Element> {
-        ColumnSlice(base: self, range: range)
+    public subscript(bounds: Range<Int>) -> ColumnSlice<Element> {
+        ColumnSlice(base: self, range: bounds)
     }
 
     public var slice: ColumnSlice<Element> { ColumnSlice(base: self, range: 0..<count) }
@@ -123,16 +155,36 @@ public struct Column<Element>: ColumnProtocol {
     }
 }
 
-extension Column: Equatable where Element: Equatable {}
+/// Equality is over the *values*, not over the boxes: two columns holding the same numbers are the
+/// same column whatever boxes they are in, and a row projection that copies a column's values must
+/// compare equal to the column it came from.
+extension Column: Equatable where Element: Equatable {
+    public static func == (lhs: Column, rhs: Column) -> Bool {
+        lhs.name == rhs.name && lhs.values == rhs.values
+    }
+}
+
 extension Column: Sendable where Element: Sendable {}
 
 /// A contiguous run of a column's rows: the column and a range into it.
-public struct ColumnSlice<Element> {
-    /// The column the slice is a run of. A copy: a slice that wrote through it would write into the
-    /// copy and the frame would keep the old value.
-    public let base: Column<Element>
+public struct ColumnSlice<Element>: ColumnProtocol, BidirectionalCollection {
+    /// The column the slice is a run of. Held by value and **mutable**, so a write through the slice
+    /// reaches the column.
+    ///
+    /// It used to be a `let` with a read-only subscript, on the reasoning that a slice holds its
+    /// base by value so a write would land in a copy and the frame would keep the old value. That
+    /// reasoning was right about the bug and wrong about the repair: the bug was a subscript spelled
+    /// with a second parameter name (see the file's header), and the honest fix is to let the write
+    /// through. A column's slice is a view of that column, and a view that cannot be written is a
+    /// copy wearing a view's name.
+    public var base: Column<Element>
     public let range: Range<Int>
-    public var name: String { base.name }
+    public var name: String {
+        get { base.name }
+        set { base.name = newValue }
+    }
+
+    public typealias SubSequence = ColumnSlice<Element>
 
     public init(base: Column<Element>, range: Range<Int>) {
         self.base = base
@@ -151,39 +203,38 @@ public struct ColumnSlice<Element> {
     public func index(after i: Int) -> Int { i + 1 }
     public func index(before i: Int) -> Int { i - 1 }
 
-    /// Read-only. A slice holds its base by value, so a write through it would land in that copy
-    /// and the frame would keep the old value: a subscript a caller can write and that does nothing
-    /// is worse than one they cannot write.
-    public subscript(position index: Int) -> Element {
-        base[position: range.lowerBound + index]
+    public subscript(position: Int) -> Element {
+        get { base[range.lowerBound + position] }
+        set { base[range.lowerBound + position] = newValue }
     }
 
-    public subscript(bounds slice: Range<Int>) -> ColumnSlice<Element> {
+    public subscript(bounds: Range<Int>) -> ColumnSlice<Element> {
         ColumnSlice(base: base,
-                    range: range.lowerBound + slice.lowerBound ..< range.lowerBound + slice.upperBound)
+                    range: range.lowerBound + bounds.lowerBound ..< range.lowerBound + bounds.upperBound)
     }
 
-    /// The slice as a column of its own, which is a copy: a slice knows its base and its range, and
-    /// a column knows neither.
+    /// The slice as a column of its own, which **is** a copy: a caller asking for a column of the
+    /// slice's values gets values of their own, and `Column(_:)` with a name makes a view of it
+    /// instead.
     public var column: Column<Element> { Column<Element>(name: name, values) }
 
-    /// The values, which is what a caller iterating a slice needs and what the copy is for.
-    public var values: [Element] {
-        var out = [Element]()
-        out.reserveCapacity(count)
-        for index in 0..<count { out.append(self[position: index]) }
-        return out
-    }
+    /// The values, which is what a caller reading a slice as a column needs and what the copy is for.
+    public var values: [Element] { Array(self) }
 }
 
 extension ColumnSlice: Equatable where Element: Equatable {}
 
 /// Rows taken from more than one place — a filtered frame, a sorted one, rows named by index — which
 /// is what a caller has after anything but a straight range.
-public struct DiscontiguousColumnSlice<Element> {
-    public let base: Column<Element>
+public struct DiscontiguousColumnSlice<Element>: ColumnProtocol, BidirectionalCollection {
+    public var base: Column<Element>
     private let indices: [Int]
-    public var name: String { base.name }
+    public var name: String {
+        get { base.name }
+        set { base.name = newValue }
+    }
+
+    public typealias SubSequence = DiscontiguousColumnSlice<Element>
 
     public init(name: String = "", base: Column<Element>, indices: [Int]) {
         self.base = base
@@ -197,14 +248,16 @@ public struct DiscontiguousColumnSlice<Element> {
     public func index(after i: Int) -> Int { i + 1 }
     public func index(before i: Int) -> Int { i - 1 }
 
-    public subscript(position index: Int) -> Element { base[position: indices[index]] }
-
-    public var values: [Element] {
-        var out = [Element]()
-        out.reserveCapacity(count)
-        for index in 0..<count { out.append(self[position: index]) }
-        return out
+    public subscript(position: Int) -> Element {
+        get { base[indices[position]] }
+        set { base[indices[position]] = newValue }
     }
+
+    public subscript(bounds: Range<Int>) -> DiscontiguousColumnSlice<Element> {
+        DiscontiguousColumnSlice(base: base, indices: Array(indices[bounds]))
+    }
+
+    public var values: [Element] { Array(self) }
 
     public var column: Column<Element> { Column<Element>(name: name, values) }
 }

@@ -27,6 +27,15 @@ func checkEqual<T: Equatable>(_ what: String, _ a: T, _ b: T) {
     check(what, a == b, "the port answers \(a)")
 }
 
+func checkClose(_ what: String, _ a: Double, _ b: Double, _ tolerance: Double) {
+    checks += 1
+    let difference = abs(a - b)
+    if !(difference <= tolerance) {
+        failures += 1
+        print("FAIL \(what): the port answers \(a), the arithmetic says \(b), a difference of \(difference)")
+    }
+}
+
 // A frame built the way a caller builds one: a column at a time.
 var frame = PortTabularData.DataFrame()
 frame.append(column: PortTabularData.Column<Int>(name: "id", [1, 2, 3, 4, 5, 6]))
@@ -128,18 +137,18 @@ check("a column is not empty", !column.isEmpty)
 checkEqual("a column's start and end index", column.startIndex..<column.endIndex, 0..<5)
 checkEqual("a column's index(after:)", column.index(after: 2), 3)
 checkEqual("a column's index(before:)", column.index(before: 2), 1)
-checkEqual("a column subscripted by position", column[position: 3], 2)
+checkEqual("a column subscripted by position", column[3], 2)
 var writable = column
-writable[position: 3] = 20
+writable[3] = 20
 checkEqual("a column written through its position subscript", writable.values, [5, 1, 4, 20, 3])
 checkEqual("a column mapped", writable.map { $0 * 2 }.values, [10, 2, 8, 40, 6])
 checkEqual("a column mapped keeps its name", writable.map { $0 * 2 }.name, "n")
 checkEqual("a column compact-mapped", writable.compactMap { $0 > 3 ? $0 : nil }.values, [5, 4, 20])
 checkEqual("a column filtered", writable.filter { $0 > 3 }.values, [5, 4, 20])
-checkEqual("a column's slice", writable[bounds: 1..<4].values, [1, 4, 20])
-checkEqual("a slice's range", writable[bounds: 1..<4].range, 1..<4)
-checkEqual("a slice's name is its column's", writable[bounds: 1..<4].name, "n")
-checkEqual("a slice of a slice", writable[bounds: 1..<4][bounds: 0..<2].values, [1, 4])
+checkEqual("a column's slice", writable[1..<4].values, [1, 4, 20])
+checkEqual("a slice's range", writable[1..<4].range, 1..<4)
+checkEqual("a slice's name is its column's", writable[1..<4].name, "n")
+checkEqual("a slice of a slice", writable[1..<4][0..<2].values, [1, 4])
 checkEqual("a column of a repeating value", PortTabularData.Column<Int>(repeating: 7, count: 4).values,
            [7, 7, 7, 7])
 checkEqual("a column built from a sequence", PortTabularData.Column<Int>([1, 2, 3], name: "s").values, [1, 2, 3])
@@ -162,6 +171,55 @@ checkEqual("an erased column's own type is the type of its values",
 let mixed = PortTabularData.AnyColumn(PortTabularData.Column<Any>(name: "m", [1, "two"]))
 check("an erased column of mixed kinds has no type", mixed.elementType == nil,
       "the port answers \(String(describing: mixed.elementType))")
+
+// The conformances themselves, which are the thing the port's own test was wrongly told it could
+// not have: a caller iterating a column and a frame's rows, with the standard library's own
+// algorithms over them rather than the port's.
+do {
+    let column = PortTabularData.Column<Int>(name: "n", [5, 1, 4, 2, 3])
+    checkEqual("a column iterates in order", Array(column), [5, 1, 4, 2, 3])
+    checkEqual("a column's reversed view", column.reversed().map { $0 }, [3, 2, 4, 1, 5])
+    checkEqual("the standard library's own max over a column", column.max(), 5)
+    checkEqual("the standard library's own min over a column", column.min(), 1)
+    checkClose("the standard library's own sum over a column",
+               Double(column.reduce(0, +)), 15, 1e-12)
+    checkEqual("a column's slice is a collection too", Array(column[2..<4]), [4, 2])
+    checkEqual("a slice of a slice", Array(column[1..<4][0..<2]), [1, 4])
+    checkEqual("a column's enumerated pairs", column.enumerated().map { "\($0.0):\($0.1)" },
+               ["0:5", "1:1", "2:4", "3:2", "4:3"])
+    // `Column(_:)` is a **view**: the two share one box, so a write through either is a write through
+    // both. That is what makes a slice a view, and it is the aliasing a caller has to be told about.
+    var written = column
+    written[0] = 50
+    checkEqual("a write through a view of a column reaches the column", written.values,
+               [50, 1, 4, 2, 3])
+    checkEqual("and the original sees it, because they are one column", column.values,
+               [50, 1, 4, 2, 3])
+    var copied = Column<Int>(copying: column)
+    copied[0] = 5
+    checkEqual("a column built with init(copying:) is a copy of its own", column.values,
+               [50, 1, 4, 2, 3])
+    // A write through a *slice* reaches the column too, because the slice holds it by `var` and its
+    // subscript writes through — the repair for the bug that was originally worked around by making
+    // the slice read-only.
+    var throughSlice = Column<Int>(copying: column)
+    var slice = throughSlice[1..<3]
+    slice[0] = 10
+    checkEqual("a write through a slice reaches the column it is a view of", throughSlice.values,
+               [50, 10, 4, 2, 3])
+
+    var frame = PortTabularData.DataFrame()
+    frame.append(column: PortTabularData.Column<Int>(name: "id", [1, 2, 3]))
+    frame.append(column: PortTabularData.Column<String>(name: "city", ["a", "b", "c"]))
+    checkEqual("a frame's rows iterate", frame.rowSequence.map { $0["id"] as Any? as Any }
+                   .compactMap { $0 as? Int }, [1, 2, 3])
+    checkEqual("a frame's row count through the standard library", frame.rowSequence.count, 3)
+    checkEqual("a frame's rows reversed", frame.rowSequence.reversed().map { $0["city"] as Any? as Any }
+                   .compactMap { $0 as? String }, ["c", "b", "a"])
+    checkEqual("a frame's rows filtered through the standard library",
+               frame.rowSequence.filter { ($0["id"] as Any? as Any) as? Int ?? 0 > 1 }
+                   .compactMap { $0["city"] as Any? as Any as? String }, ["b", "c"])
+}
 
 print("\(checks) checks, \(failures) failures")
 exit(failures == 0 ? 0 : 1)

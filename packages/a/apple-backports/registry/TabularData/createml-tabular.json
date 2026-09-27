@@ -172,7 +172,7 @@
             "introduced": "15.0",
             "minimum": "6.0",
             "status": "implemented",
-            "reason": "declared with its primary associated type, its count, its isEmpty and its name, and WITHOUT the BidirectionalCollection inheritance the framework's own declaration has. The inheritance is the part this toolchain will not accept: a conforming type cannot satisfy a collection requirement here, and a protocol that inherits it is unusable. The members are all here and the conformance is what is absent",
+            "reason": "declared with its primary associated type and its name, and WITHOUT the BidirectionalCollection inheritance the framework's own declaration has. The inheritance is the part this toolchain will not accept: a protocol whose primary associated type is named `Element` and which also inherits a collection has two `Element`s, and a conforming type cannot satisfy both - measured, four shapes tried. The columns conform to BidirectionalCollection directly, beside the protocol, so a caller iterating a column does it through the type it has; the cost is that a caller holding a ColumnProtocol existential cannot iterate it without a cast",
             "effect": "the name, the count and whether it is empty",
             "facts": "facts/TabularData/Columns.md",
             "source": "the iOS 26.2 SDK's TabularData.swiftinterface for the declaration; the divergence measured on both compilers and recorded with the witness"
@@ -183,10 +183,10 @@
             "introduced": "15.0",
             "minimum": "6.0",
             "status": "implemented",
-            "reason": "a named column of values of one type, with the collection's members as members \u2014 count, isEmpty, startIndex, endIndex, index(after:), index(before:), subscript(position:) and subscript(bounds:) \u2014 and without a collection conformance, which does not compile here",
-            "effect": "the values, by position, in a range, or the whole column",
+            "reason": "a named column of values of one type, and a real BidirectionalCollection: typealias Index, typealias SubSequence, startIndex, endIndex, index(after:), index(before:), a get-and-set subscript(position:) and a subscript(bounds:) of its own. Two spellings are load-bearing and both were found by measurement: the position subscript must be written `subscript(position:)` with NO second internal parameter name - `subscript(position i:)` is the same declaration to a reader and is rejected with `unavailable subscript 'subscript(_:)' was used to satisfy a requirement of protocol` - and a slice must supply subscript(bounds:) because BidirectionalCollection makes it a requirement rather than a default",
+            "effect": "the values, by position, in a range, or the whole buffer; and `Column(_:)` is a VIEW - two of them are one column and a write through either reaches both. init(copying:) is the one that starts a column of its own",
             "facts": "facts/TabularData/Columns.md",
-            "source": "the iOS 26.2 SDK's TabularData.swiftinterface for the shape; the conformance failure measured on both compilers"
+            "source": "the SDK 26.2 TabularData.swiftinterface for the shape; the two spellings measured on the port's compiler at -target armv7-apple-ios6.0 and on the host's, generic and non-generic, with everything else held identical; the conformances themselves are exercised by tests/backports/host/createml/tabularframe.swift, 86 checks"
         },
         {
             "api": "ColumnSlice",
@@ -194,10 +194,10 @@
             "introduced": "15.0",
             "minimum": "6.0",
             "status": "implemented",
-            "reason": "a contiguous run of a column's rows, holding the column by value and a range into it. Its subscript is READ-ONLY and that is the point: a write through it would land in that copy and the frame would keep the old value, so a subscript a caller can write and that does nothing is worse than one they cannot",
-            "effect": "the values in the range, read",
+            "reason": "a named column of values of one type, and a real BidirectionalCollection: typealias Index, typealias SubSequence, startIndex, endIndex, index(after:), index(before:), a get-and-set subscript(position:) and a subscript(bounds:) of its own. Two spellings are load-bearing and both were found by measurement: the position subscript must be written `subscript(position:)` with NO second internal parameter name - `subscript(position i:)` is the same declaration to a reader and is rejected with `unavailable subscript 'subscript(_:)' was used to satisfy a requirement of protocol` - and a slice must supply subscript(bounds:) because BidirectionalCollection makes it a requirement rather than a default",
+            "effect": "the values, read, and WRITABLE: the column's storage is reference-backed, so a write through the slice reaches the column it is a view of, and a read sees a later write to that column. A writable subscript that did nothing was the first version and was wrong",
             "facts": "facts/TabularData/Columns.md",
-            "source": "the iOS 26.2 SDK's TabularData.swiftinterface for the shape; the read-only decision is this port's and the reason is in facts"
+            "source": "the SDK 26.2 TabularData.swiftinterface for the shape; the two spellings measured on the port's compiler at -target armv7-apple-ios6.0 and on the host's, generic and non-generic, with everything else held identical; the conformances themselves are exercised by tests/backports/host/createml/tabularframe.swift, 86 checks"
         },
         {
             "api": "DiscontiguousColumnSlice",
@@ -205,10 +205,10 @@
             "introduced": "15.0",
             "minimum": "6.0",
             "status": "implemented",
-            "reason": "rows taken from more than one place \u2014 a filtered frame, a sorted one, rows named by index \u2014 which is what a caller has after anything but a straight range. Like the slice it is read-only, for the same reason",
-            "effect": "the values at the named rows, read",
+            "reason": "a named column of values of one type, and a real BidirectionalCollection: typealias Index, typealias SubSequence, startIndex, endIndex, index(after:), index(before:), a get-and-set subscript(position:) and a subscript(bounds:) of its own. Two spellings are load-bearing and both were found by measurement: the position subscript must be written `subscript(position:)` with NO second internal parameter name - `subscript(position i:)` is the same declaration to a reader and is rejected with `unavailable subscript 'subscript(_:)' was used to satisfy a requirement of protocol` - and a slice must supply subscript(bounds:) because BidirectionalCollection makes it a requirement rather than a default",
+            "effect": "the values, read, and WRITABLE: the column's storage is reference-backed, so a write through the slice reaches the column it is a view of, and a read sees a later write to that column. A writable subscript that did nothing was the first version and was wrong",
             "facts": "facts/TabularData/Columns.md",
-            "source": "the iOS 26.2 SDK's TabularData.swiftinterface for the shape"
+            "source": "the SDK 26.2 TabularData.swiftinterface for the shape; the two spellings measured on the port's compiler at -target armv7-apple-ios6.0 and on the host's, generic and non-generic, with everything else held identical; the conformances themselves are exercised by tests/backports/host/createml/tabularframe.swift, 86 checks"
         },
         {
             "api": "AnyColumn",
