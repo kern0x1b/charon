@@ -74,76 +74,93 @@ the pattern for a shared arithmetic header across several object files of one fa
 `probe-convention.m` asks the two questions that were open. Both answers are in, both are about the system
 rather than the header, and one of them is worse than "unknown".
 
-**The affine struct's field-to-matrix correspondence is still not settled, and the `tx = width - 1` case rules
-out the reading the header suggests.** The header's `vImage_AffineTransform` documents `a` and `b` as "the top
-left and top middle cell" and `c` and `d` as "the middle left and middle right cell", which is CG's
-`x' = a*x + c*y + tx`. A quarter turn about the origin - `a=0 b=1 c=-1 d=0` - does come back as the backColor
-for every one of the twenty-five destination pixels, which is what a rotation about the origin must do on a
-picture in the positive quadrant: **measured, and it agrees.** Bringing it back with `tx = width - 1` does put
-real pixels in the destination, so the translation is read - but the grid it produces is
-`src(dx + 1, height - 1 - dy)`, a *reflection in y with a shift of one in x*, not the quarter turn the matrix
-names. A second case, `a=0 b=1 c=1 d=0`, determinant -1, comes back as `src(width-1-dx, height-1-dy)`, a
-*point* reflection, which is not the reflection the matrix names either. And a general invertible matrix,
-`{1, 2, 3, 4, 0, 0}`, comes back with values in the tens of thousands, so the coefficients are being used at a
-much larger scale than a 5x5 picture admits.
+**The affine struct follows the header's reading with the destination's pixel centres at +0.5, and the
+`src(dx+1, ...)` my first probe kept seeing is that half-pixel.** A quarter turn about the origin,
+`a=0 b=1 c=-1 d=0`, does come back as the backColor for all twenty-five destination pixels, which is what a
+rotation about the origin must do on a picture in the positive quadrant. Bringing it back with
+`tx = width - 1` then gives, over the whole 5x5,
 
-So the translation is read, the matrix's *effect* on the mapping is not the header's, and the three cases do
-not reconcile with one convention of the six fields. A port cannot write these 24 functions from the header,
-and guessing a convention would be wrong on every pixel of every one of them - worse than not writing them,
-because it would look finished.
+    sx = a*(dx + 0.5) + c*(dy + 0.5) + tx
+    sy = b*(dx + 0.5) + d*(dy + 0.5) + ty
 
-**`vImageRotate90_ARGB16U`'s `rotationConstant` is not a fixed mapping: it depends on the picture's shape.**
-Over a 5x5 the four constants gave the identity, a transpose, a half turn, and a half turn again. Over a 4x3 -
-the non-square case that tells 90 from 270 degrees apart - they give:
+with the sample the nearest source pixel to `(sx, sy)`. That is the header's own `x' = a*x + c*y + tx` -
+`a` and `c` the first row, `b` and `d` the second, exactly as `vImage_Types.h` documents them - with the
+destination's pixel centre at `+0.5` instead of at the integer, and it reproduces the measured grid
+**exactly, 0 of 25 pixels wrong**, over the whole matrix and translation search of sixteen variants.
 
-| constant | the destination grid over the 4x3 source `10 11 12 13 / 14 15 16 17 / 18 19 20 21` | the mapping |
+What misled the earlier reading is the half-pixel itself. For that matrix `sx = 3.5 - dy` and
+`sy = dx + 0.5`, so the nearest source pixel is `(4 - dy, dx + 1)` - the source pixel *one column to the
+right* of where a whole-pixel reading would put it. That is the shift, and it is arithmetic, not a
+different convention.
+
+**One case still discriminates.** A translation, `{1, 0, 0, 1, 2, 0}`, comes back as the source moved two
+columns left, and the direct form above predicts `sx = dx + 2.5` and so a sample of `dx + 3` - three columns
+left - where the system gives two. The inverse form with no half-pixel reproduces the translation exactly.
+The quarter turn and the translation therefore want *opposite* forms of the same matrix, and only one more
+case - a matrix where the two forms differ in both axes, over several `tx` and `ty` - tells them apart. That
+is a single probe, and it is what stands between here and the 24 affine functions.
+
+**`vImageRotate90`'s `rotationConstant` is the four quarter turns, and the whole difficulty was the shape of
+the destination my first probe handed it.** A quarter turn of a WxH picture is a HxW picture; my first probe
+passed a WxH *destination* for a WxH source, so a turned picture that does not fit was being asked to land in
+a frame of the wrong shape, and the "subsampling" and the shape-dependent offset were the system centring it.
+With the destination transposed, over six shapes, the four constants are clean and exact:
+
+| constant | the mapping, `W` the source's width and `H` its height | the turn |
 | --- | --- | --- |
-| 0 | the source | `src(dx, dy)` |
-| 1 | background, `13 17 21 / 12 16 20 / 11 15 19` | `src(dx - 1, height - 1 - dy)` |
-| 2 | `21 20 19 18 / 17 16 15 14 / 13 12 11 10` | `src(width-1-dx, height-1-dy)` |
-| 3 | background, `18 14 10 / 19 15 11 / 20 16 12` | `src(height-1-dx, dy + 1)` |
+| 0 | `src(dx, dy)` | none |
+| 1 | `src(dx, W-1-dy)` | a quarter turn clockwise |
+| 2 | `src(W-1-dx, H-1-dy)` | a half turn |
+| 3 | `src(H-1-dx, dy)` | a quarter turn the other way |
 
-The 90 and 270 degree cases are now told apart - 1 and 3 - and both are *reflections with a one-pixel
-offset*, where a quarter turn is a transpose with a flip. On the 5x5 the same constant 1 gave
-`src(dx, width-1-dy)` with **no** offset and the whole first column real; here it gives a one-pixel offset and
-the whole first column background. **The same constant maps differently for a 5x5 and a 4x3**, so the mapping
-is a function of both dimensions and not of the constant alone, and the 5x5 reading - the only one a small
-probe gives - is misleading about every other shape.
+Measured over 6x4, 4x3, 5x3, 3x5, 5x5 and 4x6 sources into their transposed destinations, and **every one of
+the twenty-four cells of every one of the twenty-four grids is a source pixel, with no background and no
+interpolation** - a quarter turn moves pixels, it does not resample. So the 24 `rotate90` functions are a
+loop over that table and nothing else.
 
-That is worth more than the six functions it costs: twenty-four `rotate90` functions written on the
-square-only reading would be wrong on every non-square picture, which is most pictures.
+What the wrongly-shaped probe showed is still worth keeping, because it is what a caller sees who passes a
+destination of the wrong shape: the turned picture is **centred** in the destination, so a 4x6 picture turned
+into a 6x4 frame has a background column on each side, and a picture whose extents do not divide evenly has
+a background row or column at the far end. That is the centring, not a subsample.
 
 ## What the next measurement has to be
 
-Both remaining questions are about *where the turned or warped image is placed*, and both are answerable:
+`rotate90` is settled above. One measurement is left, and it is small:
 
-1. **`rotate90`'s closed form.** Swept and tabulated below; only the derivation is left.
-2. **The affine struct's convention.** The same matrix `{0,1,-1,0,tx,ty}` over several `tx` and `ty` on a
-   picture with distinct values, and the destination-to-source pairs read off directly - one probe producing a
-   table of `(tx, ty) -> (sx, sy)` from which the field order follows. `probe-convention.m` already prints
-   everything needed for that; it needs more cases, not new code.
+- **The affine form.** A matrix where the direct and inverse forms differ in both axes - `{2, 1, 1, 2, 3, 1}`
+  is enough - over a picture with distinct values, and the destination-to-source pairs read off the grid
+  directly. `probe-halfpixel.m` already has the sixteen-variant search; one more case in its table settles
+  which form is the rule, and the half-pixel question with it.
 ## The two convention probes, run: what they showed
 
 `probe-convention.m` asks the two questions that were open. Both answers are in, both are about the system
 rather than the header, and one of them is worse than "unknown".
 
-**The affine struct's field-to-matrix correspondence is still not settled, and the `tx = width - 1` case rules
-out the reading the header suggests.** The header's `vImage_AffineTransform` documents `a` and `b` as "the top
-left and top middle cell" and `c` and `d` as "the middle left and middle right cell", which is CG's
-`x' = a*x + c*y + tx`. A quarter turn about the origin - `a=0 b=1 c=-1 d=0` - does come back as the backColor
-for every one of the twenty-five destination pixels, which is what a rotation about the origin must do on a
-picture in the positive quadrant: **measured, and it agrees.** Bringing it back with `tx = width - 1` does put
-real pixels in the destination, so the translation is read - but the grid it produces is
-`src(dx + 1, height - 1 - dy)`, a *reflection in y with a shift of one in x*, not the quarter turn the matrix
-names. A second case, `a=0 b=1 c=1 d=0`, determinant -1, comes back as `src(width-1-dx, height-1-dy)`, a
-*point* reflection, which is not the reflection the matrix names either. And a general invertible matrix,
-`{1, 2, 3, 4, 0, 0}`, comes back with values in the tens of thousands, so the coefficients are being used at a
-much larger scale than a 5x5 picture admits.
+**The affine struct follows the header's reading with the destination's pixel centres at +0.5, and the
+`src(dx+1, ...)` my first probe kept seeing is that half-pixel.** A quarter turn about the origin,
+`a=0 b=1 c=-1 d=0`, does come back as the backColor for all twenty-five destination pixels, which is what a
+rotation about the origin must do on a picture in the positive quadrant. Bringing it back with
+`tx = width - 1` then gives, over the whole 5x5,
 
-So the translation is read, the matrix's *effect* on the mapping is not the header's, and the three cases do
-not reconcile with one convention of the six fields. A port cannot write these 24 functions from the header,
-and guessing a convention would be wrong on every pixel of every one of them - worse than not writing them,
-because it would look finished.
+    sx = a*(dx + 0.5) + c*(dy + 0.5) + tx
+    sy = b*(dx + 0.5) + d*(dy + 0.5) + ty
+
+with the sample the nearest source pixel to `(sx, sy)`. That is the header's own `x' = a*x + c*y + tx` -
+`a` and `c` the first row, `b` and `d` the second, exactly as `vImage_Types.h` documents them - with the
+destination's pixel centre at `+0.5` instead of at the integer, and it reproduces the measured grid
+**exactly, 0 of 25 pixels wrong**, over the whole matrix and translation search of sixteen variants.
+
+What misled the earlier reading is the half-pixel itself. For that matrix `sx = 3.5 - dy` and
+`sy = dx + 0.5`, so the nearest source pixel is `(4 - dy, dx + 1)` - the source pixel *one column to the
+right* of where a whole-pixel reading would put it. That is the shift, and it is arithmetic, not a
+different convention.
+
+**One case still discriminates.** A translation, `{1, 0, 0, 1, 2, 0}`, comes back as the source moved two
+columns left, and the direct form above predicts `sx = dx + 2.5` and so a sample of `dx + 3` - three columns
+left - where the system gives two. The inverse form with no half-pixel reproduces the translation exactly.
+The quarter turn and the translation therefore want *opposite* forms of the same matrix, and only one more
+case - a matrix where the two forms differ in both axes, over several `tx` and `ty` - tells them apart. That
+is a single probe, and it is what stands between here and the 24 affine functions.
 
 **`vImageRotate90_ARGB16U`'s `rotationConstant` is not a fixed mapping: it depends on the picture's shape.**
 Over a 5x5 the four constants gave the identity, a transpose, a half turn, and a half turn again. Over a 4x3 -
@@ -168,13 +185,12 @@ square-only reading would be wrong on every non-square picture, which is most pi
 
 ## What the next measurement has to be
 
-Both remaining questions are about *where the turned or warped image is placed*, and both are answerable:
+`rotate90` is settled above. One measurement is left, and it is small:
 
-1. **`rotate90`'s closed form.** Swept and tabulated below; only the derivation is left.
-2. **The affine struct's convention.** The same matrix `{0,1,-1,0,tx,ty}` over several `tx` and `ty` on a
-   picture with distinct values, and the destination-to-source pairs read off directly - one probe producing a
-   table of `(tx, ty) -> (sx, sy)` from which the field order follows. `probe-convention.m` already prints
-   everything needed for that; it needs more cases, not new code.
+- **The affine form.** A matrix where the direct and inverse forms differ in both axes - `{2, 1, 1, 2, 3, 1}`
+  is enough - over a picture with distinct values, and the destination-to-source pairs read off the grid
+  directly. `probe-halfpixel.m` already has the sixteen-variant search; one more case in its table settles
+  which form is the rule, and the half-pixel question with it.
 
 ## The `rotate90` shape sweep, tabulated
 
