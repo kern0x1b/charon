@@ -47,24 +47,26 @@ public indirect enum TreeNode {
 
 /// What a tree is allowed to be.
 public struct TreeParameters {
-    /// How deep the tree may go. Zero is a stump: one split and two leaves.
+    /// How deep the tree may go. Zero means no limit, which is what the framework's own default of
+    /// six becomes once a caller asks for a tree grown until it cannot split.
     public var maximumDepth: Int
     /// The fewest rows a node may hold and still be split. One is a leaf-per-sample tree.
     public var minimumSamplesToSplit: Int
     /// The fewest rows a leaf may hold.
     public var minimumSamplesToLeaf: Int
-    /// The smallest fall in impurity a split has to buy to be taken. Zero splits on any fall, which
-    /// is what a pure-CART search does; a larger value is the cheap guard against a split that
-    /// separates one row from the rest and predicts nothing.
-    public var minimumSplitImprovement: Double
+    /// The smallest fall in impurity a split has to buy to be taken — the framework's
+    /// `minLossReduction`. Zero splits on any fall, which is what a pure-CART search does; a larger
+    /// value is the cheap guard against a split that separates one row from the rest and predicts
+    /// nothing.
+    public var minimumLossReduction: Double
     public var seed: UInt64
 
     public init(maximumDepth: Int = 0, minimumSamplesToSplit: Int = 2, minimumSamplesToLeaf: Int = 1,
-                minimumSplitImprovement: Double = 0, seed: UInt64 = SeededGenerator.timestampSeed()) {
+                minimumLossReduction: Double = 0, seed: UInt64 = SeededGenerator.timestampSeed()) {
         self.maximumDepth = maximumDepth
         self.minimumSamplesToSplit = minimumSamplesToSplit
         self.minimumSamplesToLeaf = minimumSamplesToLeaf
-        self.minimumSplitImprovement = minimumSplitImprovement
+        self.minimumLossReduction = minimumLossReduction
         self.seed = seed
     }
 
@@ -93,6 +95,24 @@ public struct DecisionTreeModel {
     public func predict(_ features: [Double]) -> Double {
         let row = RowMatrix(features, rows: 1, columns: features.count)
         return predict(row, index: 0)
+    }
+
+    /// The label this tree answers for a row, and the distribution behind it: the most probable
+    /// label, with a tie broken by the label order rather than by floating point, so the same model
+    /// answers the same label twice.
+    public func predictLabel(_ row: RowMatrix, index: Int) -> String {
+        guard !labelOrder.isEmpty else { return "" }
+        let distribution = root.evaluate(row, rowIndex: index, featureNames: featureNames).probabilities
+        var best = labelOrder[0]
+        var bestProbability = -Double.infinity
+        for label in labelOrder {
+            let p = distribution[label] ?? 0
+            if p > bestProbability {
+                bestProbability = p
+                best = label
+            }
+        }
+        return best
     }
 
     /// Every prediction, in row order.
@@ -231,7 +251,7 @@ public enum SplitSearch {
         let isClassification = training.isClassification
         let weight = Double(rows.count)
         let parent = side(of: training, rows: rows, labels: labels, labelOrder: labelOrder).impurity()
-        var bestScore = parameters.minimumSplitImprovement
+        var bestScore = parameters.minimumLossReduction
         var best: (feature: Int, threshold: Double, categories: [String]?)?
 
         for feature in 0..<training.design.columns {

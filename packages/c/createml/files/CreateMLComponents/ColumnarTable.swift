@@ -288,3 +288,28 @@ public enum TabularFitting {
                                   targetLabels: labels, isClassification: classification)
     }
 }
+
+
+extension TabularTrainingSet {
+    /// The same table over `rows`, renumbered from zero.
+    ///
+    /// A forest's bootstrap sample sees some rows twice and misses others, and the rows it does see
+    /// are a *sub-table* — its own row indices, its own target vector, its own design matrix — not
+    /// the whole table with some rows marked. A view would have carried the full matrix into every
+    /// tree and made the tree's own row numbers mean nothing, which is the difference between a
+    /// sample and a mask and is worth a copy of the indices.
+    public func sample(rows indices: [Int]) -> TabularTrainingSet {
+        let total = design.rows
+        let inRange = indices.map { $0 >= 0 && $0 < total ? $0 : 0 }
+        var taken = RowMatrix(rows: inRange.count, columns: design.columns)
+        for (position, source) in inRange.enumerated() {
+            for column in 0..<design.columns {
+                taken[position, column] = design[source, column]
+            }
+        }
+        return TabularTrainingSet(featureNames: featureNames, design: taken,
+                                  targets: inRange.map { targets[$0] },
+                                  targetLabels: inRange.compactMap { targetLabels.indices.contains($0) ? targetLabels[$0] : nil },
+                                  isClassification: isClassification)
+    }
+}

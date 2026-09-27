@@ -21,36 +21,25 @@ public enum JoinType: String, CaseIterable, Hashable {
     case outer
 }
 
-/// An aggregate over a group of rows.
+/// An aggregate over a group of rows: the column it reads and what it does with each group's values.
+public typealias Aggregator = MLDataTableAggregator
+
 public struct MLDataTableAggregator {
-    /// The name of the aggregate's column.
+    /// What the aggregate does. An array, because one aggregator may name several operations over
+    /// the same column — a sum and a mean of a price in one group.
+    public var operations: [Operations]
+    /// The column the operations read.
     public var columnName: String
-    /// The aggregate, run over a group's values: one of the thirteen named operations, or a closure
-    /// the caller wrote.
-    public var operation: Operations?
-    private var closure: ([MLDataValue]) -> MLDataValue
 
-    public init(columnName: String, operation: @escaping ([MLDataValue]) -> MLDataValue) {
-        self.columnName = columnName
-        self.operation = nil
-        self.closure = operation
+    public init(operations: Operations..., of columnNamed: String) {
+        self.operations = operations
+        self.columnName = columnNamed
     }
+}
 
-    /// The aggregate, run over a group's values.
-    public func apply(to values: [MLDataValue]) -> MLDataValue {
-        if let operation = operation {
-            var generator = SeededGenerator(seed: SeededGenerator.timestampSeed())
-            return operation.apply(to: values, generator: &generator)
-        }
-        return closure(values)
-    }
-
+extension MLDataTable {
     /// The aggregate operations, named as the framework names them.
-    ///
-    /// Every one of them skips the cells that are missing rather than treating a missing value as
-    /// zero: a mean over a group with three values and one gap is a mean of three, and a sum that
-    /// counted the gap would answer a question about a table nobody wrote.
-    public enum Operations: String, CaseIterable {
+    public enum MLDataTableAggregatorOperations: String, CaseIterable {
         case sum
         case mean
         case min
@@ -63,8 +52,72 @@ public struct MLDataTableAggregator {
         case argmax
         case randomlySelectOne
         case sequenceMerge
-        case dictionaryMerge
+    }
+}
 
+extension MLDataTableAggregator {
+    /// One thing an aggregate does.
+    ///
+    /// The three that name a column — `argmin`, `argmax` and `dictionaryMerge` — are given the
+    /// column *they* write, which is what the framework's own spelling has: the operation reads
+    /// `columnName` and answers into the column it names, so a caller can ask for "the index of the
+    /// smallest price" and get the index in a column of its own beside the sum.
+    public enum Operations: Hashable {
+        case sum
+        case mean
+        case min
+        case max
+        case count
+        case distinctCount
+        case variance
+        case stdev
+        case argmin(outputColumn: String)
+        case argmax(outputColumn: String)
+        case randomlySelectOne
+        case sequenceMerge
+        case dictionaryMerge(valueColumn: String)
+
+        /// Whether this is the index-of-the-smallest operation, which is the one question the two
+        /// index operations share and the only way to tell them apart inside `apply`.
+        var isArgmin: Bool {
+            if case .argmin = self { return true }
+            return false
+        }
+
+        /// The name of the column this operation writes, and nil for the ones that write into the
+        /// aggregated column itself.
+        public var outputColumn: String? {
+            switch self {
+            case .argmin(let column), .argmax(let column), .dictionaryMerge(let column): return column
+            default: return nil
+            }
+        }
+
+        /// The name the framework's own enumeration spells this operation with, and which the
+        /// registry's rows are written against.
+        public var name: String {
+            switch self {
+            case .sum: return "sum"
+            case .mean: return "mean"
+            case .min: return "min"
+            case .max: return "max"
+            case .count: return "count"
+            case .distinctCount: return "distinctCount"
+            case .variance: return "variance"
+            case .stdev: return "stdev"
+            case .argmin: return "argmin"
+            case .argmax: return "argmax"
+            case .randomlySelectOne: return "randomlySelectOne"
+            case .sequenceMerge: return "sequenceMerge"
+            case .dictionaryMerge: return "dictionaryMerge"
+            }
+        }
+
+        /// The operation, run over a group's values, with the generator a randomised one needs.
+        ///
+        /// Every operation skips the cells that are missing rather than treating a missing value as
+        /// zero: a mean over a group with three values and one gap is a mean of three, and a sum
+        /// that counted the gap would answer a question about a table nobody wrote.
         public func apply(to values: [MLDataValue], generator: inout SeededGenerator) -> MLDataValue {
             let present = values.filter { $0.isValid }
             switch self {
@@ -90,15 +143,13 @@ public struct MLDataTableAggregator {
                 let mean = doubles.reduce(0, +) / Double(doubles.count)
                 let spread = doubles.reduce(0.0) { $0 + ($1 - mean) * ($1 - mean) } / Double(doubles.count - 1)
                 return .double(self == .variance ? spread : spread.squareRoot())
-            case .argmin:
-                // The index of the smallest, into the group's values *as they were*, so a missing
-                // cell still occupies its place: an index into a compacted list would point at a
-                // different cell than the one it names.
-                guard let index = present.indices.min(by: { valueOrder(present[$0], present[$1]) == .orderedAscending }) else { return .invalid }
-                return .int(Int64(values.firstIndex(of: present[index]) ?? 0))
-            case .argmax:
-                guard let index = present.indices.max(by: { valueOrder(present[$0], present[$1]) == .orderedAscending }) else { return .invalid }
-                return .int(Int64(values.firstIndex(of: present[index]) ?? 0))
+            case .argmin, .argmax:
+                // The index of the smallest or largest, into the group's values *as they were*, so a
+                // missing cell still occupies its place: an index into a compacted list would point
+                // at a different cell than the one it names.
+                let ordered = present.indices.sorted { valueOrder(present[$0], present[$1]) == .orderedAscending }
+                guard let position = self.isArgmin ? ordered.first : ordered.last else { return .invalid }
+                return .int(Int64(values.firstIndex(of: present[position]) ?? 0))
             case .randomlySelectOne:
                 return present.isEmpty ? .invalid : present[generator.nextInteger(below: present.count)]
             case .sequenceMerge:
@@ -118,17 +169,6 @@ public struct MLDataTableAggregator {
             }
         }
     }
-
-    public init(columnName: String, of operation: Operations) {
-        self.columnName = columnName
-        self.operation = operation
-        self.closure = { _ in .invalid }
-    }
-
-    /// The name of the operation this aggregator runs, when it was made from one of the thirteen
-    /// named ones. A caller that writes an aggregate of its own leaves this nil and the table runs
-    /// the closure.
-    public var operations: Operations? { operation }
 }
 
 /// The order two values stand in, which is the table's own: numbers by value, strings by their own
@@ -166,14 +206,26 @@ public struct MLDataTable {
         columnNames = []
     }
 
-    public init(namedColumns: [String: MLUntypedColumn]) {
+    /// A table from columns that are already named, in the order the dictionary gives them.
+    ///
+    /// Declared `throws` because the framework's is and a call site that compiles against both must
+    /// handle the failure — but the columns here are already built, so there is nothing that can
+    /// fail: the work is in `building`, and this initialiser is the spelling of it that a caller sees.
+    public init(namedColumns: [String: MLUntypedColumn]) throws {
+        try self.init(building: namedColumns)
+    }
+
+    /// The same table, without the failure a caller cannot cause. Every internal construction goes
+    /// through here, so no caller of the port's own ever has to write `try!` for a path that cannot
+    /// fail.
+    init(building namedColumns: [String: MLUntypedColumn]) {
         columns = namedColumns
         columnNames = Array(namedColumns.keys)
         settle()
     }
 
     /// A table from a dictionary of columns, one per key.
-    public init(dictionary: [String: [MLDataValue]]) {
+    public init(dictionary: [String: [MLDataValue]]) throws {
         var built = [String: MLUntypedColumn]()
         var order = [String]()
         for (name, values) in dictionary {
@@ -195,13 +247,19 @@ public struct MLDataTable {
         return out
     }
 
-    public var size: Int { columnNames.first.flatMap { columns[$0]?.count } ?? 0 }
-    public var count: Int { size }
-    public var isEmpty: Bool { size == 0 }
+    /// The table's shape, as the framework spells it: a labelled pair, and not a single row count.
+    /// Both numbers are here because a caller checking a table wants to know that its columns agree
+    /// on a height *and* how many of them there are, and one number cannot say both.
+    public var size: (rows: Int, columns: Int) {
+        (rows: columnNames.first.flatMap { columns[$0]?.count } ?? 0, columns: columnNames.count)
+    }
+
+    public var count: Int { size.rows }
+    public var isEmpty: Bool { size.rows == 0 }
 
     /// The table's rows, each a dictionary of its values.
     public var rows: [[String: MLDataValue]] {
-        (0..<size).map { index in
+        (0..<count).map { index in
             columnNames.reduce(into: [:]) { row, name in
                 row[name] = columns[name]?[index] ?? .invalid
             }
@@ -251,14 +309,14 @@ public struct MLDataTable {
         for name in names {
             if let column = columns[name] { built[name] = column }
         }
-        return MLDataTable(namedColumns: built)
+        return MLDataTable(building: built)
     }
     public subscript(rows range: Range<Int>) -> MLDataTable {
         var built = [String: MLUntypedColumn]()
         for name in columnNames {
             if let column = columns[name] { built[name] = column[range] }
         }
-        return MLDataTable(namedColumns: built)
+        return MLDataTable(building: built)
     }
     /// The rows whose mask is true.
     ///
@@ -271,7 +329,7 @@ public struct MLDataTable {
         for name in columnNames {
             if let source = columns[name] { built[name] = source[flags] }
         }
-        return MLDataTable(namedColumns: built)
+        return MLDataTable(building: built)
     }
 
     public mutating func append(contentsOf other: MLDataTable) {
@@ -288,11 +346,11 @@ public struct MLDataTable {
         settle()
     }
 
-    public func prefix(_ count: Int) -> MLDataTable { self[rows: 0..<Swift.min(count, size)] }
+    public func prefix(_ count: Int) -> MLDataTable { self[rows: 0..<Swift.min(count, self.count)] }
 
     public func suffix(_ count: Int) -> MLDataTable {
-        let start = Swift.max(0, size - count)
-        return self[rows: start..<size]
+        let start = Swift.max(0, self.count - count)
+        return self[rows: start..<self.count]
     }
 
     /// A table of the given rows, in the given order and with repeats kept: a bootstrap sample and a
@@ -302,7 +360,7 @@ public struct MLDataTable {
         for name in columnNames {
             if let column = columns[name] { built[name] = column.select(indices) }
         }
-        return MLDataTable(namedColumns: built)
+        return MLDataTable(building: built)
     }
 
     public func map(_ transform: (String, MLUntypedColumn) -> MLUntypedColumn) -> MLDataTable {
@@ -311,7 +369,7 @@ public struct MLDataTable {
             guard let column = columns[name] else { continue }
             built[name] = transform(name, column)
         }
-        return MLDataTable(namedColumns: built)
+        return MLDataTable(building: built)
     }
 
     public func exclude(_ columnsToExclude: [String], of type: MLDataValue.ValueType? = nil) -> MLDataTable {
@@ -321,11 +379,11 @@ public struct MLDataTable {
             if let type = type, column.type != type { continue }
             built[name] = column
         }
-        return MLDataTable(namedColumns: built)
+        return MLDataTable(building: built)
     }
 
     public func dropMissing() -> MLDataTable {
-        var keep = [Bool](repeating: true, count: size)
+        var keep = [Bool](repeating: true, count: count)
         for name in columnNames {
             guard let column = columns[name] else { continue }
             for (index, value) in column.values.enumerated() where !value.isValid {
@@ -337,8 +395,8 @@ public struct MLDataTable {
 
     public func dropDuplicates() -> MLDataTable {
         var seen = Set<[MLDataValue]>()
-        var keep = [Bool](repeating: false, count: size)
-        for index in 0..<size {
+        var keep = [Bool](repeating: false, count: count)
+        for index in 0..<count {
             let row = columnNames.map { columns[$0]?[index] ?? .invalid }
             if seen.insert(row).inserted { keep[index] = true }
         }
@@ -389,8 +447,8 @@ public struct MLDataTable {
         _ = try unique(mineKey)
 
         let theirNames = other.columnNames.filter { $0 != key }
-        var keep = [Bool](repeating: true, count: size)
-        var paired = [Int?](repeating: nil, count: size)
+        var keep = [Bool](repeating: true, count: count)
+        var paired = [Int?](repeating: nil, count: count)
         var theirRowsUsed = Set<Int>()
         for (index, value) in mineKey.values.enumerated() {
             paired[index] = theirsByKey[value]
@@ -403,14 +461,14 @@ public struct MLDataTable {
         // The unmatched rows of the other table, which only `right` and `outer` bring in.
         let theirUnmatched = theirsKey.values.indices.filter { !theirRowsUsed.contains($0) }
         let bringTheirUnmatched = type == .right || type == .outer
-        let width = size + (bringTheirUnmatched ? theirUnmatched.count : 0)
+        let width = count + (bringTheirUnmatched ? theirUnmatched.count : 0)
 
         var out = MLDataTable()
         for name in columnNames {
             if name == key {
                 var values = [MLDataValue](repeating: .invalid, count: width)
                 var position = 0
-                for index in 0..<size where keep[index] {
+                for index in 0..<count where keep[index] {
                     values[position] = mineKey.values[index]
                     position += 1
                 }
@@ -421,7 +479,7 @@ public struct MLDataTable {
             } else if let column = columns[name] {
                 var values = [MLDataValue](repeating: .invalid, count: width)
                 var position = 0
-                for index in 0..<size where keep[index] {
+                for index in 0..<count where keep[index] {
                     values[position] = column.values[index]
                     position += 1
                 }
@@ -434,7 +492,7 @@ public struct MLDataTable {
             guard let column = other.columns[name] else { continue }
             var values = [MLDataValue](repeating: .invalid, count: width)
             var position = 0
-            for index in 0..<size where keep[index] {
+            for index in 0..<count where keep[index] {
                 values[position] = paired[index].map { column.values[$0] } ?? .invalid
                 position += 1
             }
@@ -456,7 +514,7 @@ public struct MLDataTable {
         }
         var order = [[MLDataValue]]()
         var groups = [[MLDataValue]: [Int]]()
-        for index in 0..<size {
+        for index in 0..<count {
             // The key of a group is the tuple of its rows' values in the named columns, which is why
             // a `[MLDataValue]` and not a `MLDataValue`: grouping by two columns and by one are
             // different questions and a single value cannot tell them apart.
@@ -468,11 +526,21 @@ public struct MLDataTable {
         for (position, name) in names.enumerated() {
             out.addColumn(MLUntypedColumn(order.map { $0[position] }, name: name), named: name)
         }
+        // Each aggregator's operations write into the column they read, except the three that name
+        // a column of their own — the index of the smallest, the index of the largest and the merged
+        // dictionaries — which write into that.
         for aggregator in aggregators {
-            let values = order.map { key in
-                aggregator.apply(to: columns[aggregator.columnName]!.select(groups[key]!).values)
+            let source = columns[aggregator.columnName]!
+            for operation in aggregator.operations {
+                let target = operation.outputColumn ?? aggregator.columnName
+                if out.column(target) != nil { continue }
+                let values = order.map { key -> MLDataValue in
+                    let groupValues = source.select(groups[key]!).values
+                    var generator = SeededGenerator(seed: SeededGenerator.timestampSeed())
+                    return operation.apply(to: groupValues, generator: &generator)
+                }
+                out.addColumn(MLUntypedColumn(values, name: target), named: target)
             }
-            out.addColumn(MLUntypedColumn(values, name: aggregator.columnName), named: aggregator.columnName)
         }
         return out
     }
@@ -480,9 +548,9 @@ public struct MLDataTable {
     /// A random split of the rows into two tables.
     public func randomSplit(by proportion: Double, seed: UInt64) -> (MLDataTable, MLDataTable) {
         var generator = SeededGenerator(seed: seed)
-        let count = size
-        let taken = Swift.max(0, Swift.min(count, Int((Double(count) * proportion).rounded())))
-        var indices = [Int](0..<count)
+        let total = self.count
+        let taken = Swift.max(0, Swift.min(total, Int((Double(total) * proportion).rounded())))
+        var indices = [Int](0..<total)
         generator.shuffle(&indices)
         return (rows(Array(indices[0..<taken])), rows(Array(indices[taken...])))
     }

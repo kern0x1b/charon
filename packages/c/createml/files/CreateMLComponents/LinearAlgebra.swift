@@ -16,6 +16,18 @@
 import Accelerate
 import Foundation
 
+/// LAPACK's integer type, as the header spells it for this architecture.
+///
+/// `clapack.h` picks `long` where a long is 32 bits and `int` otherwise, and Swift spells those
+/// `Int` and `Int32` — both 32-bit, because the CLAPACK interface is ILP32 unless the SDK's ILP64
+/// switch is defined, and it is not. Naming it once here is what keeps the two architectures' call
+/// sites identical; below armv7 the header's `long` is the target's `Int`.
+#if arch(arm64) || arch(x86_64)
+typealias LapackInt = Int32
+#else
+typealias LapackInt = Int
+#endif
+
 /// A row-major matrix: `rows` rows of `columns` `Double`s, `stride` apart.
 ///
 /// The stride is separate from the count because every BLAS call here takes a leading dimension, and
@@ -240,15 +252,16 @@ public struct RowMatrix {
         precondition(matrix.isSquare, "the system is \(matrix.rows)x\(matrix.columns), not square")
         precondition(b.count == matrix.rows, "the right-hand side is \(b.count) long, the system has \(matrix.rows) rows")
         guard matrix.rows > 0 else { return 0 }
-        var order = matrix.rows, rightSides = 1, leading = matrix.stride, rhsLeading = b.count, info = 0
-        var pivots = [Int](repeating: 0, count: matrix.rows)
+        var order = LapackInt(matrix.rows), rightSides = LapackInt(1)
+        var leading = LapackInt(matrix.stride), rhsLeading = LapackInt(b.count), info = LapackInt(0)
+        var pivots = [LapackInt](repeating: 0, count: matrix.rows)
         matrix.values.withUnsafeMutableBufferPointer { a in
             b.withUnsafeMutableBufferPointer { right in
                 _ = dgesv_(&order, &rightSides, a.baseAddress!, &leading, &pivots,
                             right.baseAddress!, &rhsLeading, &info)
             }
         }
-        return info
+        return Int(info)
     }
 
     /// A Cholesky factor of a symmetric positive definite matrix, in its lower triangle, by the
@@ -258,13 +271,13 @@ public struct RowMatrix {
     public static func cholesky(_ matrix: inout RowMatrix) -> Int {
         precondition(matrix.isSquare, "the matrix is \(matrix.rows)x\(matrix.columns), not square")
         guard matrix.rows > 0 else { return 0 }
-        var info = 0
+        var info = LapackInt(0)
         var lower = Int8(UInt8(ascii: "L"))
-        var order = matrix.rows, leading = matrix.stride
+        var order = LapackInt(matrix.rows), leading = LapackInt(matrix.stride)
         matrix.values.withUnsafeMutableBufferPointer { a in
             _ = dpotrf_(&lower, &order, a.baseAddress!, &leading, &info)
         }
-        return info
+        return Int(info)
     }
 
     /// The least-squares solution of `A x = b` in the ridge form every fit here uses: the normal

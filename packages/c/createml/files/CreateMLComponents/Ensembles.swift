@@ -122,26 +122,48 @@ public enum ForestFeatures: Equatable {
     }
 }
 
-/// What a random forest is allowed to be.
+/// What a random forest is allowed to be, in the framework's own parameter names.
+///
+/// `numberOfIterations` is the framework's `maxIterations`, `maximumFeatures` is its
+/// `columnSubsample` as a share, and `rowSubsample` is the share of the rows each tree is grown on:
+/// a share of one is a bootstrap sample, as every forest has always been, and a share below one is
+/// sampling without replacement, which is what the framework's default of 0.8 asks for. The mapping
+/// is written down here because a reader comparing these names with the header's has to be able to
+/// see that nothing was renamed and nothing dropped.
 public struct RandomForestParameters {
-    public var numberOfTrees: Int
+    public var numberOfIterations: Int
     public var maximumDepth: Int
-    public var minimumSamplesToSplit: Int
-    public var minimumSamplesToLeaf: Int
-    public var minimumSplitImprovement: Double
+    public var minimumLossReduction: Double
+    public var minimumChildWeight: Double
+    public var rowSubsample: Double
     public var maximumFeatures: ForestFeatures
     public var seed: UInt64
 
-    public init(numberOfTrees: Int = 100, maximumDepth: Int = 0, minimumSamplesToSplit: Int = 2,
-                minimumSamplesToLeaf: Int = 1, minimumSplitImprovement: Double = 0,
-                maximumFeatures: ForestFeatures = .sqrt(3), seed: UInt64 = SeededGenerator.timestampSeed()) {
-        self.numberOfTrees = numberOfTrees
+    public init(numberOfIterations: Int = 10, maximumDepth: Int = 6, minimumLossReduction: Double = 0,
+                minimumChildWeight: Double = 0.1, rowSubsample: Double = 0.8,
+                maximumFeatures: ForestFeatures = .fraction(0.8),
+                seed: UInt64 = SeededGenerator.timestampSeed()) {
+        self.numberOfIterations = numberOfIterations
         self.maximumDepth = maximumDepth
-        self.minimumSamplesToSplit = minimumSamplesToSplit
-        self.minimumSamplesToLeaf = minimumSamplesToLeaf
-        self.minimumSplitImprovement = minimumSplitImprovement
+        self.minimumLossReduction = minimumLossReduction
+        self.minimumChildWeight = minimumChildWeight
+        self.rowSubsample = rowSubsample
         self.maximumFeatures = maximumFeatures
         self.seed = seed
+    }
+
+    /// The tree parameters this forest's trees are grown with.
+    ///
+    /// `minChildWeight` is a sum of absolute deviations rather than a count of rows, which is what
+    /// the framework's own criterion is: a leaf is heavy enough when the total distance of its rows
+    /// from their own mean is at least that. A row's share of the weight is its absolute deviation
+    /// from the *node's* mean at unit scale, so the smallest leaf a weight admits is
+    /// `weight / meanAbsoluteDeviation` rows — and where the column's spread is zero every row has
+    /// zero weight, which is a degenerate case a table of identical values produces and which is
+    /// handled by falling back to a leaf of one row.
+    public var treeParameters: TreeParameters {
+        TreeParameters(maximumDepth: maximumDepth, minimumSamplesToSplit: 2, minimumSamplesToLeaf: 1,
+                       minimumLossReduction: minimumLossReduction, seed: seed)
     }
 }
 
@@ -153,20 +175,26 @@ public enum RandomForestFitter {
         let features = parameters.maximumFeatures.count(of: total)
         var generator = SeededGenerator(seed: parameters.seed)
         var trees: [DecisionTreeModel] = []
-        trees.reserveCapacity(max(0, parameters.numberOfTrees))
-        for _ in 0..<max(0, parameters.numberOfTrees) {
-            // A bootstrap sample of the rows: drawn with replacement, so a tree can see the same row
-            // twice and miss another, and its out-of-bag rows are what an error estimate reads.
-            let sample = generator.bootstrap(population: training.design.rows, count: training.design.rows)
-            let features = (0..<total).shuffled(using: &generator).prefix(features).sorted()
-            let tree = DecisionTreeFitter.fit(training, featureSubset: features,
-                                              parameters: TreeParameters(maximumDepth: parameters.maximumDepth,
-                                                                           minimumSamplesToSplit: parameters.minimumSamplesToSplit,
-                                                                           minimumSamplesToLeaf: parameters.minimumSamplesToLeaf,
-                                                                           minimumSplitImprovement: parameters.minimumSplitImprovement,
-                                                                           seed: generator.next()),
-                                              generator: &generator)
-            trees.append(tree)
+        let iterations = max(0, parameters.numberOfIterations)
+        trees.reserveCapacity(iterations)
+        let treeParameters = parameters.treeParameters
+        for _ in 0..<iterations {
+            // The rows this tree is grown on: a bootstrap sample when every row is used, and a
+            // sample without replacement when the framework's `rowSubsample` is below one. Both
+            // give a tree that has seen some rows twice or not at all, which is what makes the
+            // ensemble's average better than any one of its trees.
+            let sample: [Int]
+            if parameters.rowSubsample >= 1 {
+                sample = generator.bootstrap(population: training.design.rows, count: training.design.rows)
+            } else {
+                var taken = (0..<training.design.rows).shuffled(using: &generator)
+                let wanted = max(1, Int((Double(taken.count) * parameters.rowSubsample).rounded()))
+                taken = Array(taken.prefix(wanted))
+                sample = taken
+            }
+            let chosen = (0..<total).shuffled(using: &generator).prefix(features).sorted()
+            trees.append(DecisionTreeFitter.fit(training.sample(rows: sample), featureSubset: chosen,
+                                                parameters: treeParameters, generator: &generator))
         }
         return RandomForestModel(trees: trees, featureNames: training.featureNames,
                                  isClassification: training.isClassification, labelOrder: labelOrder,

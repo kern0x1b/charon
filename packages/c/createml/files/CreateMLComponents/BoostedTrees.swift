@@ -132,22 +132,24 @@ public struct BoostedTreeModel {
 
 /// What a boosted forest is allowed to be.
 public struct BoostedTreeParameters {
-    public var numberOfTrees: Int
+    public var numberOfIterations: Int
     public var maximumDepth: Int
-    public var minimumSamplesToSplit: Int
-    public var minimumSamplesToLeaf: Int
+    public var minimumLossReduction: Double
     public var learningRate: Double
+    public var rowSubsample: Double
+    public var columnSubsample: Double
     public var loss: BoostingLoss
     public var seed: UInt64
 
-    public init(numberOfTrees: Int = 100, maximumDepth: Int = 0, minimumSamplesToSplit: Int = 2,
-                minimumSamplesToLeaf: Int = 1, learningRate: Double = 0.1,
+    public init(numberOfIterations: Int = 10, maximumDepth: Int = 6, minimumLossReduction: Double = 0,
+                learningRate: Double = 0.3, rowSubsample: Double = 1.0, columnSubsample: Double = 1.0,
                 loss: BoostingLoss = .squaredError, seed: UInt64 = SeededGenerator.timestampSeed()) {
-        self.numberOfTrees = numberOfTrees
+        self.numberOfIterations = numberOfIterations
         self.maximumDepth = maximumDepth
-        self.minimumSamplesToSplit = minimumSamplesToSplit
-        self.minimumSamplesToLeaf = minimumSamplesToLeaf
+        self.minimumLossReduction = minimumLossReduction
         self.learningRate = learningRate
+        self.rowSubsample = rowSubsample
+        self.columnSubsample = columnSubsample
         self.loss = loss
         self.seed = seed
     }
@@ -189,9 +191,8 @@ public enum BoostedTreeFitter {
                              label: String?, labelOrder: [String]) -> BoostedTreeModel {
         var generator = SeededGenerator(seed: parameters.seed)
         let treeParameters = TreeParameters(maximumDepth: parameters.maximumDepth,
-                                            minimumSamplesToSplit: parameters.minimumSamplesToSplit,
-                                            minimumSamplesToLeaf: parameters.minimumSamplesToLeaf,
-                                            minimumSplitImprovement: 0)
+                                            minimumSamplesToSplit: 2, minimumSamplesToLeaf: 1,
+                                            minimumLossReduction: parameters.minimumLossReduction)
         var predictions = [Double](repeating: base, count: training.design.rows)
         var trees: [DecisionTreeModel] = []
         // The tree's own leaf values are the means of the gradients that reached them, so the tree is
@@ -200,7 +201,7 @@ public enum BoostedTreeFitter {
         let regressions = TabularTrainingSet(featureNames: training.featureNames, design: training.design,
                                              targets: targets, targetLabels: [],
                                              isClassification: false)
-        for _ in 0..<max(0, parameters.numberOfTrees) {
+        for _ in 0..<max(0, parameters.numberOfIterations) {
             let gradient = loss.negativeGradient(targets: targets, predictions: predictions)
             let fitSet = TabularTrainingSet(featureNames: training.featureNames, design: training.design,
                                             targets: gradient, targetLabels: [], isClassification: false)
