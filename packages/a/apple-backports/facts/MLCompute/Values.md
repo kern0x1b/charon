@@ -17,7 +17,8 @@ directory are the measurement behind each family:
 | `Device.md` | `MLCDevice`, and what a machine with no GPU and no Neural Engine answers |
 | `Layer.md` | `MLCLayer`, the number a layer has before it is in a graph, and `+supportsDataType:onDevice:` |
 | `Descriptors.md` | the ten descriptor classes, and the two host defects the port keeps |
-| `Layers.md` | the thirty layer classes: measured, and **not carried** - the next family |
+| `Layers.md` | the thirty layer classes: their factories, measured, and **not carried** - the next family |
+| `Engine.md` | what the framework computes, measured: the activations, the arity of every arithmetic operation, the constant a comparison writes, the shape-moving and reducing layers - **not carried** |
 
 ## How each answer was measured
 

@@ -84,6 +84,7 @@ freshly made UUIDs in its header on every run.
     sh host/oslog/run.sh  writes device/oslog-expectations.h when it passes
     sh host/homeindicator/run.sh  writes device/homeindicator-expectations.h when it passes, then holds the port's categories to it with mutants
     sh host/mlcompute/run.sh  asks the host's own MLCompute and the port's the same 377 questions and compares the two answers line by line
+    sh host/mlcompute/measure.sh  asks the host's own MLCompute what it computes and what its layer factories keep, and writes the answers to a file; neither program is a test, they record
     sh host/vision/run.sh  writes device/vision-expectations.h when it passes, then holds the port's Vision classes, under names of their own, to it with mutants
     sh host/traits11/run.sh  writes device/traits11-expectations.h when it passes, then holds the port's text input traits, password rules and view flag to it with mutants
     sh host/callkit/run.sh  writes device/callkit-expectations.h, then holds the port's CallKit classes, under names of their own, to it with mutants
