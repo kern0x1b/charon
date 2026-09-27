@@ -75,7 +75,7 @@ extension EntityIdentifier: _IntentValue {
 /// The query that finds an entity by the identifiers the caller gave, and offers the ones it suggests.
 public protocol EntityQuery: DynamicOptionsProvider, PersistentlyIdentifiable, Sendable {
     associatedtype Entity: AppEntity
-    associatedtype Result: ResultsCollection where Result.Result == Entity
+    associatedtype Result: ResultsCollection = [Entity] where Result.Result == Entity
     init()
     func entities(for identifiers: [Entity.ID]) async throws -> [Entity]
     func suggestedEntities() async throws -> Result
@@ -177,7 +177,7 @@ public struct _TransientAppEntityQuery<Entity>: EntityQuery where Entity: Transi
 }
 
 /// An entity that stands for one thing only, so that a query can answer "the" entity without a list.
-public protocol UniqueAppEntity: AppEntity where Self.DefaultQuery: UniqueAppEntityQuery {
+public protocol UniqueAppEntity: AppEntity where DefaultQuery: UniqueAppEntityQuery {
     var id: String { get }
     var displayRepresentation: DisplayRepresentation { get }
 }
@@ -371,7 +371,7 @@ extension DynamicOptionsProvider {
 }
 
 /// A collection of results the caller chooses from: a list, or a list in sections.
-public protocol ResultsCollection<Result> {
+public protocol ResultsCollection {
     associatedtype Result: _IntentValue
     /// What the framework shows above the list, which is what the app wrote.
     var promptLabel: LocalizedStringResource? { get }

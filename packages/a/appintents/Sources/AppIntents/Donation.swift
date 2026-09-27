@@ -251,148 +251,45 @@ public protocol IntentPredictionConfiguration {
 /// An intent the framework may run on the app's behalf, which the app predicts.
 public protocol PredictableIntent: AppIntent {}
 
-/// The builder of a list of predictions.
+/// The builder of a list of predictions: the app's own `buildBlock` overloads, one per arity the
+/// framework names.
 @resultBuilder
-public enum IntentPredictionsBuilder {
-    public static func buildBlock(_ a: some IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] {
-        return [a]
-    }
+public enum IntentPredictionsBuilder {}
 
-    public static func buildBlock(_ a: some IntentPredictionConfiguration,
-                                  _ b: some IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] {
-        return [a, b]
-    }
-
-    public static func buildBlock(_ a: some IntentPredictionConfiguration, _ b: some IntentPredictionConfiguration,
-                                  _ c: some IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] {
-        return [a, b, c]
-    }
-
-    public static func buildBlock(_ a: some IntentPredictionConfiguration, _ b: some IntentPredictionConfiguration,
-                                  _ c: some IntentPredictionConfiguration,
-                                  _ d: some IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] {
-        return [a, b, c, d]
-    }
-
-    public static func buildBlock(_ a: some IntentPredictionConfiguration, _ b: some IntentPredictionConfiguration,
-                                  _ c: some IntentPredictionConfiguration, _ d: some IntentPredictionConfiguration,
-                                  _ e: some IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] {
-        return [a, b, c, d, e]
-    }
-
-    public static func buildBlock(_ a: some IntentPredictionConfiguration, _ b: some IntentPredictionConfiguration,
-                                  _ c: some IntentPredictionConfiguration, _ d: some IntentPredictionConfiguration,
-                                  _ e: some IntentPredictionConfiguration,
-                                  _ f: some IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] {
-        return [a, b, c, d, e, f]
-    }
-
-    public static func buildBlock(_ a: some IntentPredictionConfiguration, _ b: some IntentPredictionConfiguration,
-                                  _ c: some IntentPredictionConfiguration, _ d: some IntentPredictionConfiguration,
-                                  _ e: some IntentPredictionConfiguration, _ f: some IntentPredictionConfiguration,
-                                  _ g: some IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] {
-        return [a, b, c, d, e, f, g]
-    }
-
-    public static func buildBlock(_ a: some IntentPredictionConfiguration, _ b: some IntentPredictionCompletion,
-                                  _ c: some IntentPredictionConfiguration,
-                                  _ d: some IntentPredictionConfiguration,
-                                  _ e: some IntentPredictionCompletion,
-                                  _ f: some IntentPredictionConfiguration,
-                                  _ g: some IntentPredictionCompletion) -> [any IntentPredictionConfiguration] {
-        return [a, b, c, d, e, f, g]
-    }
-
-    public static func buildBlock(_ a: some IntentPredictionConfiguration, _ b: some IntentPredictionConfiguration,
-                                  _ c: some IntentPredictionCompletion,
-                                  _ d: some IntentPredictionCompletion,
-                                  _ e: some IntentPredictionCompletion, _ f: some IntentPredictionCompletion,
-                                  _ g: some IntentPredictionCompletion) -> [any IntentPredictionConfiguration] {
-        return [a, b, c, d, e, f, g]
-    }
-
-    public static func buildBlock(_ a: some IntentPredictionConfiguration, _ b: some IntentPredictionCompletion,
-                                  _ c: some IntentPredictionCompletion, _ d: some IntentPredictionCompletion,
-                                  _ e: some IntentPredictionCompletion, _ f: some IntentPredictionCompletion,
-                                  _ g: some IntentPredictionCompletion,
-                                  _ h: some IntentPredictionCompletion) -> [any IntentPredictionConfiguration] {
-        return [a, b, c, d, e, f, g, h]
-    }
-
-    public static func buildBlock(_ a: some IntentPredictionConfiguration, _ b: some IntentPredictionCompletion,
-                                  _ c: some IntentPredictionCompletion, _ d: some IntentPredictionCompletion,
-                                  _ e: some IntentPredictionCompletion, _ f: some IntentPredictionCompletion,
-                                  _ g: some IntentPredictionCompletion, _ h: some IntentPredictionCompletion,
-                                  _ i: some IntentPredictionCompletion) -> [any IntentPredictionConfiguration] {
-        return [a, b, c, d, e, f, g, h, i]
-    }
-
-    public static func buildBlock(_ a: some IntentPredictionConfiguration, _ b: some IntentPredictionCompletion,
-                                  _ c: some IntentPredictionCompletion, _ d: some IntentPredictionCompletion,
-                                  _ e: some IntentPredictionCompletion, _ f: some IntentPredictionCompletion,
-                                  _ g: some IntentPredictionCompletion, _ h: some IntentPredictionCompletion,
-                                  _ i: some IntentPredictionCompletion,
-                                  _ j: some IntentPredictionCompletion) -> [any IntentPredictionConfiguration] {
-        return [a, b, c, d, e, f, g, h, i, j]
-    }
-
-    public static func buildBlock(_ a: some IntentPredictionConfiguration, _ b: some IntentPredictionCompletion,
-                                  _ c: some IntentPredictionCompletion, _ d: some IntentPredictionCompletion,
-                                  _ e: some IntentPredictionCompletion, _ f: some IntentPredictionCompletion,
-                                  _ g: some IntentPredictionCompletion, _ h: some IntentPredictionCompletion,
-                                  _ i: some IntentPredictionCompletion, _ j: some IntentPredictionCompletion,
-                                  _ k: some IntentPredictionCompletion) -> [any IntentPredictionConfiguration] {
-        return [a, b, c, d, e, f, g, h, i, j, k]
-    }
-
-    public static func buildBlock(_ a: some IntentPredictionConfiguration, _ b: some IntentPredictionCompletion,
-                                  _ c: some IntentPredictionCompletion, _ d: some IntentPredictionCompletion,
-                                  _ e: some IntentPredictionCompletion, _ f: some IntentPredictionCompletion,
-                                  _ g: some IntentPredictionCompletion, _ h: some IntentPredictionCompletion,
-                                  _ i: some IntentPredictionCompletion, _ j: some IntentPredictionCompletion,
-                                  _ k: some IntentPredictionCompletion,
-                                  _ l: some IntentPredictionCompletion) -> [any IntentPredictionConfiguration] {
-        return [a, b, c, d, e, f, g, h, i, j, k, l]
-    }
-
-    public static func buildBlock(_ a: some IntentPredictionConfiguration, _ b: some IntentPredictionCompletion,
-                                  _ c: some IntentPredictionCompletion, _ d: some IntentPredictionCompletion,
-                                  _ e: some IntentPredictionCompletion, _ f: some IntentPredictionCompletion,
-                                  _ g: some IntentPredictionCompletion, _ h: some IntentPredictionCompletion,
-                                  _ i: some IntentPredictionCompletion, _ j: some IntentPredictionCompletion,
-                                  _ k: some IntentPredictionCompletion, _ l: some IntentPredictionCompletion,
-                                  _ m: some IntentPredictionCompletion) -> [any IntentPredictionConfiguration] {
-        return [a, b, c, d, e, f, g, h, i, j, k, l, m]
-    }
-
-    public static func buildBlock(_ a: some IntentPredictionConfiguration, _ b: some IntentPredictionCompletion,
-                                  _ c: some IntentPredictionCompletion, _ d: some IntentPredictionCompletion,
-                                  _ e: some IntentPredictionCompletion, _ f: some IntentPredictionCompletion,
-                                  _ g: some IntentPredictionCompletion, _ h: some IntentPredictionCompletion,
-                                  _ i: some IntentPredictionCompletion, _ j: some IntentPredictionCompletion,
-                                  _ k: some IntentPredictionCompletion, _ l: some IntentPredictionCompletion,
-                                  _ m: some IntentPredictionCompletion,
-                                  _ n: some IntentPredictionCompletion) -> [any IntentPredictionConfiguration] {
-        return [a, b, c, d, e, f, g, h, i, j, k, l, m, n]
-    }
-
-    public static func buildBlock(_ a: some IntentPredictionConfiguration, _ b: some IntentPredictionCompletion,
-                                  _ c: some IntentPredictionCompletion, _ d: some IntentPredictionCompletion,
-                                  _ e: some IntentPredictionCompletion, _ f: some IntentPredictionCompletion,
-                                  _ g: some IntentPredictionCompletion, _ h: some IntentPredictionCompletion,
-                                  _ i: some IntentPredictionCompletion, _ j: some IntentPredictionCompletion,
-                                  _ k: some IntentPredictionCompletion, _ l: some IntentPredictionCompletion,
-                                  _ m: some IntentPredictionCompletion, _ n: some IntentPredictionCompletion,
-                                  _ o: some IntentPredictionCompletion) -> [any IntentPredictionConfiguration] {
-        return [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o]
-    }
-
+extension IntentPredictionsBuilder {
     public static func buildExpression<S>(_ expression: S) -> S where S: IntentPredictionConfiguration { return expression }
+
+    public static func buildBlock(_ a1: any IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] { return [a1] }
+
+    public static func buildBlock(_ a1: any IntentPredictionConfiguration, _ a2: any IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] { return [a1, a2] }
+
+    public static func buildBlock(_ a1: any IntentPredictionConfiguration, _ a2: any IntentPredictionConfiguration, _ a3: any IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] { return [a1, a2, a3] }
+
+    public static func buildBlock(_ a1: any IntentPredictionConfiguration, _ a2: any IntentPredictionConfiguration, _ a3: any IntentPredictionConfiguration, _ a4: any IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] { return [a1, a2, a3, a4] }
+
+    public static func buildBlock(_ a1: any IntentPredictionConfiguration, _ a2: any IntentPredictionConfiguration, _ a3: any IntentPredictionConfiguration, _ a4: any IntentPredictionConfiguration, _ a5: any IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] { return [a1, a2, a3, a4, a5] }
+
+    public static func buildBlock(_ a1: any IntentPredictionConfiguration, _ a2: any IntentPredictionConfiguration, _ a3: any IntentPredictionConfiguration, _ a4: any IntentPredictionConfiguration, _ a5: any IntentPredictionConfiguration, _ a6: any IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] { return [a1, a2, a3, a4, a5, a6] }
+
+    public static func buildBlock(_ a1: any IntentPredictionConfiguration, _ a2: any IntentPredictionConfiguration, _ a3: any IntentPredictionConfiguration, _ a4: any IntentPredictionConfiguration, _ a5: any IntentPredictionConfiguration, _ a6: any IntentPredictionConfiguration, _ a7: any IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] { return [a1, a2, a3, a4, a5, a6, a7] }
+
+    public static func buildBlock(_ a1: any IntentPredictionConfiguration, _ a2: any IntentPredictionConfiguration, _ a3: any IntentPredictionConfiguration, _ a4: any IntentPredictionConfiguration, _ a5: any IntentPredictionConfiguration, _ a6: any IntentPredictionConfiguration, _ a7: any IntentPredictionConfiguration, _ a8: any IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] { return [a1, a2, a3, a4, a5, a6, a7, a8] }
+
+    public static func buildBlock(_ a1: any IntentPredictionConfiguration, _ a2: any IntentPredictionConfiguration, _ a3: any IntentPredictionConfiguration, _ a4: any IntentPredictionConfiguration, _ a5: any IntentPredictionConfiguration, _ a6: any IntentPredictionConfiguration, _ a7: any IntentPredictionConfiguration, _ a8: any IntentPredictionConfiguration, _ a9: any IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] { return [a1, a2, a3, a4, a5, a6, a7, a8, a9] }
+
+    public static func buildBlock(_ a1: any IntentPredictionConfiguration, _ a2: any IntentPredictionConfiguration, _ a3: any IntentPredictionConfiguration, _ a4: any IntentPredictionConfiguration, _ a5: any IntentPredictionConfiguration, _ a6: any IntentPredictionConfiguration, _ a7: any IntentPredictionConfiguration, _ a8: any IntentPredictionConfiguration, _ a9: any IntentPredictionConfiguration, _ a10: any IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] { return [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10] }
+
+    public static func buildBlock(_ a1: any IntentPredictionConfiguration, _ a2: any IntentPredictionConfiguration, _ a3: any IntentPredictionConfiguration, _ a4: any IntentPredictionConfiguration, _ a5: any IntentPredictionConfiguration, _ a6: any IntentPredictionConfiguration, _ a7: any IntentPredictionConfiguration, _ a8: any IntentPredictionConfiguration, _ a9: any IntentPredictionConfiguration, _ a10: any IntentPredictionConfiguration, _ a11: any IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] { return [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11] }
+
+    public static func buildBlock(_ a1: any IntentPredictionConfiguration, _ a2: any IntentPredictionConfiguration, _ a3: any IntentPredictionConfiguration, _ a4: any IntentPredictionConfiguration, _ a5: any IntentPredictionConfiguration, _ a6: any IntentPredictionConfiguration, _ a7: any IntentPredictionConfiguration, _ a8: any IntentPredictionConfiguration, _ a9: any IntentPredictionConfiguration, _ a10: any IntentPredictionConfiguration, _ a11: any IntentPredictionConfiguration, _ a12: any IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] { return [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12] }
+
+    public static func buildBlock(_ a1: any IntentPredictionConfiguration, _ a2: any IntentPredictionConfiguration, _ a3: any IntentPredictionConfiguration, _ a4: any IntentPredictionConfiguration, _ a5: any IntentPredictionConfiguration, _ a6: any IntentPredictionConfiguration, _ a7: any IntentPredictionConfiguration, _ a8: any IntentPredictionConfiguration, _ a9: any IntentPredictionConfiguration, _ a10: any IntentPredictionConfiguration, _ a11: any IntentPredictionConfiguration, _ a12: any IntentPredictionConfiguration, _ a13: any IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] { return [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13] }
+
+    public static func buildBlock(_ a1: any IntentPredictionConfiguration, _ a2: any IntentPredictionConfiguration, _ a3: any IntentPredictionConfiguration, _ a4: any IntentPredictionConfiguration, _ a5: any IntentPredictionConfiguration, _ a6: any IntentPredictionConfiguration, _ a7: any IntentPredictionConfiguration, _ a8: any IntentPredictionConfiguration, _ a9: any IntentPredictionConfiguration, _ a10: any IntentPredictionConfiguration, _ a11: any IntentPredictionConfiguration, _ a12: any IntentPredictionConfiguration, _ a13: any IntentPredictionConfiguration, _ a14: any IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] { return [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14] }
+
+    public static func buildBlock(_ a1: any IntentPredictionConfiguration, _ a2: any IntentPredictionConfiguration, _ a3: any IntentPredictionConfiguration, _ a4: any IntentPredictionConfiguration, _ a5: any IntentPredictionConfiguration, _ a6: any IntentPredictionConfiguration, _ a7: any IntentPredictionConfiguration, _ a8: any IntentPredictionConfiguration, _ a9: any IntentPredictionConfiguration, _ a10: any IntentPredictionConfiguration, _ a11: any IntentPredictionConfiguration, _ a12: any IntentPredictionConfiguration, _ a13: any IntentPredictionConfiguration, _ a14: any IntentPredictionConfiguration, _ a15: any IntentPredictionConfiguration) -> [any IntentPredictionConfiguration] { return [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15] }
+
 }
-
-/// A hole in a prediction, which the caller fills when the prediction is acted on.
-public typealias IntentPredictionCompletion = Never
-
 // MARK: - Relevant intents
 
 /// One of the intents a widget shows, and how relevant it is.
@@ -436,8 +333,8 @@ public final class RelevantIntentManager {
         store.write(intents)
     }
 
-    /// The intents the store holds, which is what a widget reads back in process.
-    public func relevantIntents() -> [RelevantIntent] {
+    /// The records the store holds, which is what a widget reads back in process.
+    public func relevantIntents() -> [[String: Any]] {
         lock.lock()
         defer { lock.unlock() }
         return store.read()
@@ -468,7 +365,7 @@ final class RelevantIntentStore {
         try? data.write(to: URL(fileURLWithPath: path))
     }
 
-    func read() -> [RelevantIntent] {
+    func read() -> [[String: Any]] {
         guard let data = FileManager.default.contents(atPath: path) else { return [] }
         return (try? PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [[String: Any]]) ?? []
     }

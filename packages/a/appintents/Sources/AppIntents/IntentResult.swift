@@ -119,7 +119,7 @@ extension IntentResult {
 
     public static func result(opensIntent: some AppIntent, dialog: IntentDialog) -> Self
         where Self == IntentResultContainer<Never, Never, Never, IntentDialog> {
-        return IntentResultContainer(dialog: dialog)
+        return IntentResultContainer(opensIntent: nil, dialog: dialog)
     }
 
     public static func result(snippetIntent: some SnippetIntent = EmptySnippetIntent()) -> Self
@@ -135,7 +135,7 @@ extension IntentResult {
     public static func result<Value>(value: Value, opensIntent: some AppIntent,
                                       snippetIntent: some SnippetIntent = EmptySnippetIntent()) -> Self
         where Self == IntentResultContainer<Value, Never, _SnippetIntentContainer, Never>, Value: _IntentValue {
-        return IntentResultContainer(value: value, opensIntent: opensIntent,
+        return IntentResultContainer(value: value, opensIntent: nil,
                                      snippet: _SnippetIntentContainer(intent: snippetIntent))
     }
 

@@ -1,0 +1,508 @@
+// The queries' own vocabulary: how entities are compared, sorted and filtered, and the search terms
+// and categories the app's own intents ask with.
+
+import Foundation
+
+// MARK: - Comparison operators
+
+/// Whether a parameter has a value at all.
+public enum HasValueComparisonOperator {
+    case hasNoValue
+    case hasAnyValue
+
+    public static func == (a: HasValueComparisonOperator, b: HasValueComparisonOperator) -> Bool { return true }
+
+    public func hash(into hasher: inout Hasher) {}
+}
+
+/// Whether a value is equal to another.
+public enum EquatableComparisonOperator {
+    case equalTo
+    case notEqualTo
+
+    public static func == (a: EquatableComparisonOperator, b: EquatableComparisonOperator) -> Bool { return true }
+
+    public func hash(into hasher: inout Hasher) {}
+}
+
+/// Whether a value is one of a list of values.
+public enum OneOfComparisonOperator {
+    case oneOf
+
+    public static func == (a: OneOfComparisonOperator, b: OneOfComparisonOperator) -> Bool { return true }
+
+    public func hash(into hasher: inout Hasher) {}
+}
+
+/// Whether a value is above or below another.
+public enum ComparableComparisonOperator {
+    case lessThan
+    case lessThanOrEqualTo
+    case greaterThan
+    case greaterThanOrEqualTo
+
+    public static func == (a: ComparableComparisonOperator, b: ComparableComparisonOperator) -> Bool { return true }
+
+    public func hash(into hasher: inout Hasher) {}
+}
+
+/// How a string is compared to another.
+public enum StringComparisonOperator {
+    case contains
+    case doesNotContain
+    case hasPrefix
+    case hasSuffix
+
+    public static func == (a: StringComparisonOperator, b: StringComparisonOperator) -> Bool { return true }
+
+    public func hash(into hasher: inout Hasher) {}
+}
+
+/// Whether several comparators are combined with every one of them or with any one of them.
+public enum EntityQueryComparatorMode {
+    /// Every comparator has to match.
+    case and
+    /// One comparator matching is enough.
+    case or
+
+    public static func == (a: EntityQueryComparatorMode, b: EntityQueryComparatorMode) -> Bool { return true }
+
+    public func hash(into hasher: inout Hasher) {}
+}
+
+// MARK: - Comparators
+
+/// The comparison of a property of an entity with a value, which is what an entity-property query
+/// filters with. Each of the framework's own comparators is the comparison it names.
+public class EntityQueryComparator<Property, PropertyType, InputType, ComparatorMappingType>
+    where Property: EntityProperty<PropertyType>, PropertyType: _IntentValue, PropertyType: Sendable {
+    /// The property compared, and the value it is compared to.
+    public let property: Property
+    public let value: InputType
+    /// Whether the mapping the app gave its own input goes through the framework's own value.
+    public let comparatorMapping: ComparatorMappingType
+
+    public init(property: Property, value: InputType, comparatorMapping: ComparatorMappingType) {
+        self.property = property
+        self.value = value
+        self.comparatorMapping = comparatorMapping
+    }
+}
+
+/// The comparison of a property of an entity with a value, without the property's own type.
+public struct AnyEntityQueryComparator<Entity, Subject, Property, PropertyType, ComparatorMappingType>
+    where Property: EntityProperty<PropertyType>, PropertyType: _IntentValue, PropertyType: Sendable {
+    public let comparator: EntityQueryComparator<Property, PropertyType, Subject, ComparatorMappingType>
+
+    public init(_ comparator: EntityQueryComparator<Property, PropertyType, Subject, ComparatorMappingType>) {
+        self.comparator = comparator
+    }
+}
+
+/// The builder of a list of comparators.
+@resultBuilder
+public enum EntityQueryComparatorsBuilder {
+    public static func buildBlock(_ comparator: some EntityQueryComparatorProtocol) -> [any EntityQueryComparatorProtocol] {
+        return [comparator]
+    }
+
+    public static func buildExpression(_ expression: some EntityQueryComparatorProtocol) -> some EntityQueryComparatorProtocol {
+        return expression
+    }
+}
+
+/// The marker of something an entity query can filter with.
+public protocol EntityQueryComparatorProtocol {}
+
+/// Whether the value is equal to the one the caller gave.
+public final class EqualToComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
+    where PropertyType: _IntentValue, PropertyType: Sendable {
+    public let value: PropertyType
+    public let comparatorMapping: ComparatorMappingType
+
+    public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(CharonBox.box(0))
+    }
+
+    public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(value)
+    }
+}
+
+/// Whether the value is not equal to the one the caller gave.
+public final class NotEqualToComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
+    where PropertyType: _IntentValue, PropertyType: Sendable {
+    public let value: PropertyType
+    public let comparatorMapping: ComparatorMappingType
+
+    public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(CharonBox.box(0))
+    }
+
+    public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(value)
+    }
+}
+
+/// Whether the value is above the one the caller gave.
+public final class GreaterThanComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
+    where PropertyType: _IntentValue, PropertyType: Sendable {
+    public let value: PropertyType
+    public let comparatorMapping: ComparatorMappingType
+
+    public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(CharonBox.box(0))
+    }
+
+    public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(value)
+    }
+}
+
+/// Whether the value is above or equal to the one the caller gave.
+public final class GreaterThanOrEqualToComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
+    where PropertyType: _IntentValue, PropertyType: Sendable {
+    public let value: PropertyType
+    public let comparatorMapping: ComparatorMappingType
+
+    public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(CharonBox.box(0))
+    }
+
+    public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(value)
+    }
+}
+
+/// Whether the value is below the one the caller gave.
+public final class LessThanComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
+    where PropertyType: _IntentValue, PropertyType: Sendable {
+    public let value: PropertyType
+    public let comparatorMapping: ComparatorMappingType
+
+    public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(CharonBox.box(0))
+    }
+
+    public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(value)
+    }
+}
+
+/// Whether the value is below or equal to the one the caller gave.
+public final class LessThanOrEqualToComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
+    where PropertyType: _IntentValue, PropertyType: Sendable {
+    public let value: PropertyType
+    public let comparatorMapping: ComparatorMappingType
+
+    public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(CharonBox.box(0))
+    }
+
+    public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(value)
+    }
+}
+
+/// Whether the value is between two values.
+public final class IsBetweenComparator<InputType, ComparatorMappingType>: EntityQueryComparatorProtocol {
+    public let lowerBound: InputType
+    public let upperBound: InputType
+    public let comparatorMapping: ComparatorMappingType
+
+    public init(lowerBound: InputType, upperBound: InputType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.lowerBound = lowerBound
+        self.upperBound = upperBound
+    }
+}
+
+/// Whether the string contains, or begins with, or ends with, the one the caller gave.
+public final class ContainsComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
+    where PropertyType: _IntentValue, PropertyType: Sendable {
+    public let value: PropertyType
+    public let comparatorMapping: ComparatorMappingType
+
+    public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(CharonBox.box(0))
+    }
+
+    public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(value)
+    }
+}
+
+/// Whether the string begins with the one the caller gave.
+public final class HasPrefixComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
+    where PropertyType: _IntentValue, PropertyType: Sendable {
+    public let value: PropertyType
+    public let comparatorMapping: ComparatorMappingType
+
+    public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(CharonBox.box(0))
+    }
+
+    public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(value)
+    }
+}
+
+/// Whether the string ends with the one the caller gave.
+public final class HasSuffixComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
+    where PropertyType: _IntentValue, PropertyType: Sendable {
+    public let value: PropertyType
+    public let comparatorMapping: ComparatorMappingType
+
+    public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(CharonBox.box(0))
+    }
+
+    public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
+        self.comparatorMapping = ComparatorMappingType()
+        self.value = mappingTransform(value)
+    }
+}
+
+// MARK: - The query of a property
+
+/// A property an entity-property query filters on, with the comparators the caller gave.
+public struct EntityQueryPropertyDeclaration<Entity, ComparatorMappingType> where Entity: AppEntity {
+    public let property: EntityQueryProperty<Entity, ComparatorMappingType>
+
+    public init(_ property: EntityQueryProperty<Entity, ComparatorMappingType>) {
+        self.property = property
+    }
+}
+
+/// A property an entity-property query filters on, and the value the caller is compared with.
+public struct EntityQueryProperty<Entity, ComparatorMappingType> where Entity: AppEntity {
+    public typealias QueryComparators = [any EntityQueryComparatorProtocol]
+
+    let entityProvider: () -> Entity
+    let comparators: QueryComparators
+
+    public init(_ property: EntityProperty<Entity.ID>, _ comparators: QueryComparators) {
+        self.entityProvider = { CharonBox.box(0) }
+        self.comparators = comparators
+    }
+
+    public init(_ property: EntityProperty<Entity.ID>, entityProvider: @escaping () -> Entity,
+                _ comparators: QueryComparators) {
+        self.entityProvider = entityProvider
+        self.comparators = comparators
+    }
+}
+
+/// The properties an entity-property query filters on.
+public struct EntityQueryProperties<Entity, ComparatorMappingType> where Entity: AppEntity {
+    private let declarations: [EntityQueryPropertyDeclaration<Entity, ComparatorMappingType>]
+
+    public init(@EntityQueryPropertiesBuilder<Entity, ComparatorMappingType>
+                properties: () -> [EntityQueryPropertyDeclaration<Entity, ComparatorMappingType>]) {
+        self.declarations = properties()
+    }
+
+    public subscript(index: Int) -> EntityQueryPropertyDeclaration<Entity, ComparatorMappingType> {
+        return declarations[index]
+    }
+}
+
+/// The builder of the properties an entity-property query filters on.
+@resultBuilder
+public enum EntityQueryPropertiesBuilder<Entity, ComparatorMappingType> where Entity: AppEntity {
+    public static func buildBlock(_ property: EntityQueryPropertyDeclaration<Entity, ComparatorMappingType>)
+        -> [EntityQueryPropertyDeclaration<Entity, ComparatorMappingType>] {
+        return [property]
+    }
+
+    public static func buildExpression(_ expression: EntityQueryPropertyDeclaration<Entity, ComparatorMappingType>)
+        -> EntityQueryPropertyDeclaration<Entity, ComparatorMappingType> {
+        return expression
+    }
+}
+
+/// A query that filters and sorts entities by their properties, which is what a widget or a search
+/// result is built from.
+public protocol EntityPropertyQuery: EntityQuery {
+    associatedtype Property
+    associatedtype QueryProperties
+    associatedtype Sort
+    associatedtype SizableByProperty
+    associatedtype SortableBy: EntityQuerySortableByProperty
+    associatedtype ComparatorMode = EntityQueryComparatorMode
+    associatedtype SortingOptions
+
+    var properties: QueryProperties { get }
+    var sortingOptions: SortingOptions { get }
+    var findIntentDescription: IntentDescription? { get }
+    func entities(matching comparators: QueryComparators, mode: ComparatorMode,
+                  sortedBy sort: [Sort], limit: Int?) async throws -> Result
+}
+
+/// The builder of a query's sorting options.
+@resultBuilder
+public enum EntityQuerySortingOptionsBuilder<Entity> where Entity: AppEntity {
+    public static func buildBlock(_ option: EntityQuerySortingOptions<Entity>) -> EntityQuerySortingOptions<Entity> {
+        return option
+    }
+
+    public static func buildExpression(_ expression: EntityQuerySortingOptions<Entity>) -> EntityQuerySortingOptions<Entity> {
+        return expression
+    }
+}
+
+/// What a query's results may be sorted by.
+public struct EntityQuerySortingOptions<Entity> where Entity: AppEntity {
+    private let options: [EntityQuerySort<Entity>]
+
+    public init() {
+        self.options = []
+    }
+
+    public init(@EntityQuerySortingOptionsBuilder<Entity> _: () -> Void) {
+        self.options = []
+    }
+
+    public subscript(index: Int) -> EntityQuerySort<Entity> { return options[index] }
+}
+
+/// What an entity's results may be sorted by, and in which order.
+public struct EntityQuerySort<Entity> where Entity: AppEntity {
+    /// Which way round.
+    public enum Ordering: Hashable, Sendable {
+        case ascending
+        case descending
+
+        public static func == (a: Ordering, b: Ordering) -> Bool { return true }
+
+        public func hash(into hasher: inout Hasher) {}
+    }
+
+    /// The property sorted by, written as the key path an app names it with.
+    public let by: (Entity) -> String
+    /// Which way round.
+    public let order: Ordering
+
+    public init(by: @escaping (Entity) -> String, order: Ordering) {
+        self.by = by
+        self.order = order
+    }
+}
+
+/// A sort of an entity's results by one of its properties, written as the key path an app names it
+/// with.
+public struct EntityQuerySortableByProperty<Entity> where Entity: AppEntity {
+    public init(_ by: @escaping (Entity) -> String) {
+        self.by = by
+    }
+
+    /// The property sorted by.
+    public let by: (Entity) -> String
+}
+
+// MARK: - The values a widget's intents ask for
+
+/// The widget families an intent can be asked for, added in iOS 17.
+public enum IntentWidgetFamily: String, _IntentValue, Hashable, Sendable, CaseDisplayRepresentable {
+    case systemSmall
+    case systemMedium
+    case systemLarge
+    case systemExtraLarge
+    case accessoryCircular
+    case accessoryCorner
+    case accessoryInline
+    case accessoryRectangular
+
+    public static func == (a: IntentWidgetFamily, b: IntentWidgetFamily) -> Bool { return a.rawValue == b.rawValue }
+
+    public static var defaultResolverSpecification: EmptyResolverSpecification<IntentWidgetFamily> {
+        return EmptyResolverSpecification()
+    }
+}
+
+/// A query of the values a widget's intent may be given, which is a list of the values the app has.
+public struct IntentValueQuery<Value: _IntentValue> {
+    public init() {}
+
+    public func values(for intent: some AppIntent) async throws -> [Value.ValueType] {
+        return []
+    }
+}
+
+/// What the caller searches the app's own contents for.
+public protocol SearchCriteria: _IntentValue, Hashable, Sendable {
+    associatedtype SearchScopes = Void
+}
+
+/// The term a caller searches with, and the scopes it is searched in.
+public struct StringSearchCriteria: SearchCriteria, Hashable, Sendable {
+    public typealias SearchScopes = Set<StringSearchScope>
+
+    public let term: String
+    public let scopes: SearchScopes
+
+    public init(term: String, scopes: SearchScopes = []) {
+        self.term = term
+        self.scopes = scopes
+    }
+
+    public static func == (a: StringSearchCriteria, b: StringSearchCriteria) -> Bool {
+        return a.term == b.term && a.scopes == b.scopes
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(term)
+    }
+
+    public static var defaultResolverSpecification: EmptyResolverSpecification<StringSearchCriteria> {
+        return EmptyResolverSpecification()
+    }
+}
+
+/// Where a string search looks, which is what an app narrows a search with.
+public enum StringSearchScope: String, AppEnum {
+    case general
+    case movies
+    case tv
+    case freeformVideo
+
+    public static var typeDisplayRepresentation: TypeDisplayRepresentation {
+        return TypeDisplayRepresentation(name: "Search Scope")
+    }
+
+    public static var caseDisplayRepresentations: [DisplayRepresentation] {
+        return allCases.map { DisplayRepresentation(title: LocalizedStringResource($0.rawValue)) }
+    }
+}
+
+/// What kind of video a caller searches for or plays.
+public enum VideoCategory: String, AppEnum {
+    case movies
+    case tv
+    case freeform
+
+    public static var typeDisplayRepresentation: TypeDisplayRepresentation {
+        return TypeDisplayRepresentation(name: "Video Category")
+    }
+
+    public static var caseDisplayRepresentations: [DisplayRepresentation] {
+        return allCases.map { DisplayRepresentation(title: LocalizedStringResource($0.rawValue)) }
+    }
+}

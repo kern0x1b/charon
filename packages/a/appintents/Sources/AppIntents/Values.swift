@@ -483,3 +483,65 @@ public struct StringSearchCriteriaFromStringResolverSpecificification: Resolver 
 
     public func hash(into hasher: inout Hasher) {}
 }
+
+/// How a string parameter of the framework's own is asked for: which keyboard, which capitalization,
+/// and whether it is one line or several.
+public extension String {
+    struct IntentInputOptions {
+        /// The keyboard the parameter is asked with, which is the release's own `UIKeyboardType` under
+        /// the name the framework gives it.
+        public enum KeyboardType: Hashable, Sendable {
+            case `default`
+            case asciiCapable
+            case numbersAndPunctuation
+            case URL
+            case numberPad
+
+            public static func == (a: KeyboardType, b: KeyboardType) -> Bool { true }
+            public func hash(into hasher: inout Hasher) {}
+        }
+
+        /// The capitalization the parameter is asked with.
+        public enum CapitalizationType: Hashable, Sendable {
+            case none
+            case words
+            case sentences
+            case allCharacters
+
+            public static func == (a: CapitalizationType, b: CapitalizationType) -> Bool { true }
+            public func hash(into hasher: inout Hasher) {}
+        }
+
+        public var keyboardType: KeyboardType
+        public var capitalizationType: CapitalizationType
+        public var multiline: Bool
+        public var autocorrect: Bool
+        public var smartQuotes: Bool
+        public var smartDashes: Bool
+
+        public init(keyboardType: KeyboardType = .default, capitalizationType: CapitalizationType = .none,
+                    multiline: Bool = false, autocorrect: Bool = true, smartQuotes: Bool = true,
+                    smartDashes: Bool = true) {
+            self.keyboardType = keyboardType
+            self.capitalizationType = capitalizationType
+            self.multiline = multiline
+            self.autocorrect = autocorrect
+            self.smartQuotes = smartQuotes
+            self.smartDashes = smartDashes
+        }
+    }
+}
+
+/// A list of values is the collection a query offers and a list parameter carries, which is what
+/// `ResultsCollection` needs of it.
+extension Array: ResultsCollection where Element: _IntentValue {
+    public static var empty: [Element.ValueType] { return [] }
+    public var promptLabel: LocalizedStringResource? { return nil }
+    public var usesIndexedCollation: Bool { return false }
+    public var items: [Element.ValueType] { return self.map { $0.valueType } }
+}
+
+extension Array {
+    /// The value the framework hands to `perform()`, which is the value the type unwraps to.
+    public var valueType: Element.ValueType { return CharonBox.box(self) }
+}

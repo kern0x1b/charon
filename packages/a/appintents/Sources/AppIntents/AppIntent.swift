@@ -413,7 +413,7 @@ extension AppIntent {
     /// Run the intent and donate the run, from a caller that cannot wait.
     @discardableResult
     public func donate() -> IntentDonationIdentifier {
-        return CharonRun.await { try await self.donate() }
+        return CharonRun.await { try await self.donate() } ?? IntentDonationIdentifier()
     }
 
     /// Donate a run that already happened, with what it returned.
@@ -425,7 +425,7 @@ extension AppIntent {
     /// Donate a run that already happened, with what it returned, from a caller that cannot wait.
     @discardableResult
     public func donate(result: some IntentResult) -> IntentDonationIdentifier {
-        return CharonRun.await { await self.donate(result: result) }
+        return (try? CharonRun.await { try await self.donate(result: result) }) ?? IntentDonationIdentifier()
     }
 
     /// Call the intent the way Shortcuts calls it: run it, donate the run, and hand back the value.

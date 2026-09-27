@@ -12,21 +12,21 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
     public var projectedValue: EntityProperty<Value> { return self }
 
     /// The name the property is indexed and searched under.
-    public let indexingKey: String
+    public var indexingKey: String
     /// The name the property is shown with.
-    public let title: LocalizedStringResource
+    public var title: LocalizedStringResource
     /// Whether the property may have no value.
-    public let isOptional: Bool
+    public var isOptional: Bool
     /// What the property's name is, as the index stores it.
-    public let identifier: String
+    public var identifier: String
     /// The modifiers the property carries, added in iOS 26.
-    public let modifiers: EntityPropertyModifiers
+    public var modifiers: EntityPropertyModifiers
     /// Whether the property is only read and never written by an intent.
-    public let isReadOnly: Bool
+    public var isReadOnly: Bool
     /// The getter the property is read with, which a property that is indexed asynchronously uses.
-    public let getter: ((EntityProperty<Value>) async -> Value.ValueType)?
+    public var getter: ((EntityProperty<Value>) async -> Value)?
     /// The setter the property is written with.
-    public let setter: ((Value.ValueType) async -> Void)?
+    public var setter: ((Value) async -> Void)?
 
     public init() {
         self.wrappedValue = CharonEmptyValue() as! Value
@@ -56,6 +56,7 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
         self.init(title: title)
         self.indexingKey = customIndexingKey
     }
+
 
     public init(customIndexingKey: String) {
         self.init()
@@ -120,14 +121,14 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
         self.indexingKey = indexingKey
     }
 
-    public init(identifier: String, getter: @escaping (EntityProperty<Value>) async -> Value.ValueType) {
+    public init(identifier: String, getter: @escaping (EntityProperty<Value>) async -> Value) {
         self.init(identifier: identifier)
         self.getter = getter
         self.modifiers = [.async]
     }
 
     public init(identifier: String, title: LocalizedStringResource,
-                getter: @escaping (EntityProperty<Value>) async -> Value.ValueType) {
+                getter: @escaping (EntityProperty<Value>) async -> Value) {
         self.init(identifier: identifier, title: title)
         self.getter = getter
         self.modifiers = [.async]
@@ -139,7 +140,7 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
     }
 
     public init(identifier: String, customIndexingKey: String,
-                getter: @escaping (EntityProperty<Value>) async -> Value.ValueType) {
+                getter: @escaping (EntityProperty<Value>) async -> Value) {
         self.init(identifier: identifier)
         self.indexingKey = customIndexingKey
         self.getter = getter
@@ -147,63 +148,63 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
     }
 
     public init(identifier: String, title: LocalizedStringResource, customIndexingKey: String,
-                getter: @escaping (EntityProperty<Value>) async -> Value.ValueType) {
+                getter: @escaping (EntityProperty<Value>) async -> Value) {
         self.init(identifier: identifier, title: title, customIndexingKey: customIndexingKey)
         self.getter = getter
         self.modifiers = [.async]
     }
 
     public init(identifier: String, title: LocalizedStringResource, indexingKey: String,
-                getter: @escaping (EntityProperty<Value>) async -> Value.ValueType) {
+                getter: @escaping (EntityProperty<Value>) async -> Value) {
         self.init(identifier: identifier, title: title, indexingKey: indexingKey)
         self.getter = getter
         self.modifiers = [.async]
     }
 
     public init(identifier: String, title: LocalizedStringResource, customIndexingKey: String, indexingKey: String,
-                getter: @escaping (EntityProperty<Value>) async -> Value.ValueType) {
+                getter: @escaping (EntityProperty<Value>) async -> Value) {
         self.init(identifier: identifier, title: title, indexingKey: indexingKey)
         self.getter = getter
         self.modifiers = [.async]
     }
 
-    public init(identifier: String, getSetter: @escaping (Value.ValueType) async -> Void) {
+    public init(identifier: String, getSetter: @escaping (Value) async -> Void) {
         self.init(identifier: identifier)
         self.setter = getSetter
     }
 
-    public init(identifier: String, customIndexingKey: String, getSetter: @escaping (Value.ValueType) async -> Void) {
+    public init(identifier: String, customIndexingKey: String, getSetter: @escaping (Value) async -> Void) {
         self.init(identifier: identifier)
         self.indexingKey = customIndexingKey
         self.setter = getSetter
     }
 
-    public init(identifier: String, title: LocalizedStringResource, getSetter: @escaping (Value.ValueType) async -> Void) {
+    public init(identifier: String, title: LocalizedStringResource, getSetter: @escaping (Value) async -> Void) {
         self.init(identifier: identifier, title: title)
         self.setter = getSetter
     }
 
     public init(identifier: String, title: LocalizedStringResource, customIndexingKey: String,
-                getSetter: @escaping (Value.ValueType) async -> Void) {
+                getSetter: @escaping (Value) async -> Void) {
         self.init(identifier: identifier, title: title, customIndexingKey: customIndexingKey)
         self.setter = getSetter
     }
 
     public init(identifier: String, title: LocalizedStringResource, indexingKey: String,
-                getSetter: @escaping (Value.ValueType) async -> Void) {
+                getSetter: @escaping (Value) async -> Void) {
         self.init(identifier: identifier, title: title, indexingKey: indexingKey)
         self.setter = getSetter
     }
 
     public init(identifier: String, title: LocalizedStringResource, customIndexingKey: String, indexingKey: String,
-                getSetter: @escaping (Value.ValueType) async -> Void) {
+                getSetter: @escaping (Value) async -> Void) {
         self.init(identifier: identifier, title: title, indexingKey: indexingKey)
         self.setter = getSetter
     }
 
     public init(identifier: String, title: LocalizedStringResource, customIndexingKey: String,
-                getSetter: @escaping (Value.ValueType) async -> Void,
-                getter: @escaping (EntityProperty<Value>) async -> Value.ValueType) {
+                getSetter: @escaping (Value) async -> Void,
+                getter: @escaping (EntityProperty<Value>) async -> Value) {
         self.init(identifier: identifier, title: title, customIndexingKey: customIndexingKey)
         self.setter = getSetter
         self.getter = getter

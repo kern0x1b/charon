@@ -50,8 +50,8 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
 
     /// The value the caller gave, when there is one.
     public var wrappedValue: Value {
-        get { storage }
-        set { storage = newValue }
+        get { value }
+        set { value = newValue }
     }
 
     /// The parameter itself, which is what a projection of the intent reads.
@@ -136,10 +136,8 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
         merged.supportsNegativeNumbers = supportsNegativeNumbers
         merged.optionsProvider = optionsProvider
         merged.query = query
-        self.init(storage: merged, value: CharonIntentValueBox.make(from: default), resolvers: resolvers)
-        if let default = default {
-            self.defaultValue = default
-        }
+        let unwrapped: Value.UnwrappedType? = default
+        self.init(storage: merged, value: CharonIntentValueBox.make(), default: unwrapped, resolvers: resolvers)
     }
 
     /// The whole of the parameter, as the framework's own storage, and the value that was read.
@@ -187,21 +185,21 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
     /// Ask the caller for the value. The framework's own prompt is a system dialog; the release this
     /// port builds for runs no such service, so the request is answered in process - the value the
     /// caller already has, or the error the framework reports for a parameter with no value.
-    public func requestValue(_ dialog: IntentDialog? = nil) async throws -> Value.ValueType {
+    public func requestValue(_ dialog: IntentDialog? = nil) async throws -> Value {
         guard valueSet else { throw needsValueError(dialog) }
-        return value.valueType
+        return value
     }
 
     /// Ask the caller to choose between the values that are not told apart by the parameter.
-    public func requestDisambiguation(among itemsToDisambiguate: [Value.ValueType],
-                                      dialog: IntentDialog? = nil) async throws -> Value.ValueType {
+    public func requestDisambiguation(among itemsToDisambiguate: [Value],
+                                      dialog: IntentDialog? = nil) async throws -> Value {
         guard !itemsToDisambiguate.isEmpty else { throw needsValueError(dialog) }
         guard valueSet else { throw needsDisambiguationError(among: itemsToDisambiguate, dialog: dialog) }
-        return value.valueType
+        return value
     }
 
     /// Ask the caller to confirm one value before the intent acts on it.
-    public func requestConfirmation(for itemToConfirm: Value.ValueType, dialog: IntentDialog? = nil) async throws -> Bool {
+    public func requestConfirmation(for itemToConfirm: Value, dialog: IntentDialog? = nil) async throws -> Bool {
         return true
     }
 
@@ -211,7 +209,7 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
     }
 
     /// The error the framework reports for values that are not told apart.
-    public func needsDisambiguationError(among itemsToDisambiguate: [Value.ValueType],
+    public func needsDisambiguationError(among itemsToDisambiguate: [Value],
                                          dialog: IntentDialog? = nil) -> AppIntentError {
         return AppIntentError(parameterTitle: title, dialog: dialog, optional: isOptional,
                                disambiguation: itemsToDisambiguate.count)
@@ -219,9 +217,18 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
 }
 
 extension IntentParameter {
-    /// The value of a parameter of this type, which the framework fills in before `perform()`.
+    /// A parameter is made by one of the initializers above, never by itself: the framework's own
+    /// declaration is unavailable for the same reason.
     @available(*, unavailable, message: "A parameter is made by one of the initializers, not by itself")
-    public init() {
+    public convenience init() {
         fatalError("IntentParameter is created by its initializers")
+    }
+}
+
+/// The value a parameter holds before the framework fills it in, read out of an erased box so that the
+/// parameter class needs no `Value` conformance beyond what it already has.
+enum CharonIntentValueBox {
+    static func make<Value: _IntentValue & Sendable>() -> Value {
+        return CharonBox.box(0)
     }
 }
