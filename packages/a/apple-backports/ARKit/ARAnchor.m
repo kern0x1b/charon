@@ -82,6 +82,14 @@
 
 @implementation ARPlaneGeometry
 {
+    @synthesize vertexCount = _vertexCount;
+    @synthesize vertices = _vertices;
+    @synthesize textureCoordinateCount = _textureCoordinateCount;
+    @synthesize textureCoordinates = _textureCoordinates;
+    @synthesize triangleCount = _triangleCount;
+    @synthesize triangleIndices = _triangleIndices;
+    @synthesize boundaryVertexCount = _boundaryVertexCount;
+    @synthesize boundaryVertices = _boundaryVertices;
     simd_float3 _center;
     simd_float3 _extent;
     NSMutableArray<NSValue *> *_vertices;
@@ -117,6 +125,8 @@
 
 @implementation ARPlaneAnchor
 {
+    @synthesize alignment = _alignment;
+    @synthesize center = _center;
     ARPlaneAnchorAlignment _alignment;
     simd_float3 _center;
     simd_float3 _extent;
@@ -164,6 +174,9 @@
 
 @implementation ARPointCloud
 {
+    @synthesize count = _count;
+    @synthesize points = _points;
+    @synthesize identifiers = _identifiers;
     NSData *_points;
     NSUInteger _count;
 }
@@ -200,6 +213,11 @@
 
 @implementation ARHitTestResult
 {
+    @synthesize type = _type;
+    @synthesize distance = _distance;
+    @synthesize localTransform = _localTransform;
+    @synthesize worldTransform = _worldTransform;
+    @synthesize anchor = _anchor;
     simd_float3 _worldPosition;
     simd_float3 _localNormal;
     NSUInteger _type;
@@ -234,6 +252,10 @@
 
 @implementation ARRaycastQuery
 {
+    @synthesize origin = _origin;
+    @synthesize direction = _direction;
+    @synthesize target = _target;
+    @synthesize targetAlignment = _targetAlignment;
     simd_float3 _origin;
     simd_float3 _direction;
     ARRaycastTarget _target;
@@ -275,6 +297,10 @@
 
 @implementation ARRaycastResult
 {
+    @synthesize worldTransform = _worldTransform;
+    @synthesize target = _target;
+    @synthesize targetAlignment = _targetAlignment;
+    @synthesize anchor = _anchor;
     simd_float3 _worldPosition;
     simd_float3 _localNormal;
     simd_float3 _cameraPosition;

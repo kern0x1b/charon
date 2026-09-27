@@ -20,6 +20,10 @@
 
 + (BOOL)isSupported
 {
+    @synthesize worldAlignment = _worldAlignment;
+    @synthesize lightEstimationEnabled = _lightEstimationEnabled;
+    @synthesize providesAudioData = _providesAudioData;
+    @dynamic isSupported;
     // The device, asked the question its own sensors can answer.
     return [CharonARTracker isSupported];
 }
