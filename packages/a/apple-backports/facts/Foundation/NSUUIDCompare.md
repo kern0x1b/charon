@@ -16,7 +16,7 @@ Source: Foundation of iOS 16.0 arm64e, `-[NSUUID compare:]` at `0x18179d164`, re
 ## What the port does
 
 The same: the receiver is compared with the argument by the bytes from the first, and nil is the UUID of zero bytes, so
-`[uuid compare:nil]` is 1 for every UUID but the zero one. The class has no such method in iOS 6.
+`[uuid compare:nil]` is 1 for every UUID but the zero one. The class has no such method in iOS 6. It is carried from the band of iOS 4.3, with the class the port makes of `NSUUID` below iOS 6.0 (`NSUUID.md`); the category attaches to that class as it does to the release's.
 
 ## What was measured
 
