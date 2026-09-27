@@ -1,9 +1,23 @@
 # CarPlay on iOS 6: the measurement pass, and what it decides
 
-`apple.objc.inventory` against the armv7 dyld shared cache of **6.1.3**: **no CarPlay class of any
-name is in the release.** `CPInterfaceController`, `CPInterfaceControllerDelegate`,
-`CPWindow` and every template class are absent -- the framework is not in this release at all, as the
-ledger's own reasons already say for all 74 of its classes.
+`apple.objc.inventory` against the armv7 dyld shared cache of **6.1.3**: **no CarPlay class is in
+this release -- with one exception that matters, which the first measurement pass got wrong.**
+`CPInterfaceController`, `CPWindow` and every template class are absent; the framework is not here at
+all. But a class **named** `CPListItem` is, and it is not CarPlay's: its own eleven methods are
+`-addParagraph:`, `-paragraphAtIndex:`, `-paragraphCount`, `-list`, `-number`, `-setList:` and
+`-setNumber:` -- some other framework's private list item, with no `text`, no `image`, no
+`accessoryType` and no `handler`.
+
+So Apple's CarPlay `CPListItem` is iOS 12 and absent, and its *name* is taken, which is the case
+`charon_alias.h` exists for. `CarPlay/CPListItem.m` carries the name as an **alias**: it defines
+`CharonCPListItem`, exports the release's name to it, and records the pair in
+`__DATA,__charon_alias` for the library's loader. A subclass an application writes of `CPListItem`
+inherits the release's class and is laid out after it; sent to `CharonCPListItem` itself, the class
+introspection answers as the release's class does, so `[CPListItem class]`, what `[CPListItem alloc]`
+makes and what the release hands out are one class. This is exactly how the port already handles a
+name the release carries and Apple did not add -- `UIKit`'s `NSTextList` and `NSTextTab`, whose rows
+in `registry/UIKit/base.json` say the same thing. The gate's `duplicated()` check is what found it
+and it is the check working.
 
 `apple.dyld`'s `first_releases` over the held cache ladder, for the 74 classes the SDK 26.2 declares
 and this port does not have:
