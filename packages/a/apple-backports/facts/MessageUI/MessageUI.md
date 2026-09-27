@@ -37,6 +37,19 @@ cannot, which is the header's own answer for an attachment that will not go in. 
 reports the controller's real contents, so on this release it is empty because nothing can be put in
 it - a report about the controller, not a placeholder.
 
+**The two keys of the array are the release's own constants, and this release has neither.**
+`MFMessageComposeViewControllerAttachmentURL` and
+`MFMessageComposeViewControllerAttachmentAlternateFilename` are absent from the armv7 6.1.3 cache's
+symbol table - measured with `dump-cache.lua` over the whole cache, where both names do not appear at
+all - so an array the port built would carry keys of its own making and an application reading
+`MFMessageComposeViewControllerAttachmentURL` out of it would get nil. The gate's first run of this
+delivery caught the reference at link time ("Undefined symbols ... `_CGRectGetWidth`, `_CGRectZero`"
+and, had it got that far, these two). So both keys are asked of the release at run time through
+`dlsym`, an attachment is not recorded unless the release really has both, and `-attachments` builds
+its dictionaries with the release's own strings. On this release the answer is an empty array for two
+independent reasons - the composer cannot take an attachment, and the keys do not exist - and both are
+true.
+
 ## The three that cannot do their work here
 
 - `-disableUserAttachments` hides affordances the release's sheet does not have, and

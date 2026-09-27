@@ -33,8 +33,13 @@ shown*, and the sizes are the panel's geometry. There is no panel here, so:
 
 - the active mode answers the declared mode - the only mode there is on a release that shows nothing -
   and says once in the log that this is why. A different number would be the port's own invention.
-- the maximum size answers `CGSizeZero`, the absence of a size, and says once in the log that this
-  release's Notification Center has no geometry. Two invented dimensions would be worse than none.
+- the maximum size answers `CGSizeMake(0, 0)`, the absence of a size, and says once in the log that
+  this release's Notification Center has no geometry. Two invented dimensions would be worse than
+  none. It is `CGSizeMake` and not the `CGSizeZero` constant: the constants `CGSizeZero` and
+  `CGRectZero` are exported symbols in a modern CoreGraphics and the release's own cache does not
+  resolve them - the first gate run of this delivery found `_CGRectZero` and `_CGRectGetWidth`
+  undefined at link time, and the port spells both the way the rest of the port does
+  (`CGRectMake(0, 0, w, h)` and `.size.width`).
 
 ## The four vibrancy factories, and what is *not* measured
 

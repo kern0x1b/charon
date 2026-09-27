@@ -40,7 +40,10 @@
     charon_say_once_for(@"NSExtensionContext.widgetMaximumSizeForDisplayMode:",
                         @"CharonNotificationCenter: this release's Notification Center has no geometry, so no display mode "
                         @"has a maximum size and the call answers CGSizeZero rather than a number of the port's own.");
-    return CGSizeZero;
+    // CGSizeMake and not CGSizeZero: the constant is an exported symbol in a modern CoreGraphics and
+    // the release's own cache does not resolve it, which the gate found for CGRectZero in this
+    // delivery's first run. The value is the same one CGSizeZero names.
+    return CGSizeMake(0.0f, 0.0f);
 }
 
 @end

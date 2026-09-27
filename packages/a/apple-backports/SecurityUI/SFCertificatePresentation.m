@@ -32,14 +32,14 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor colorWithWhite:0.94f alpha:1.0f];
 
-    _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 0.0f, 0.0f)];
     _titleLabel.text = self.sheetTitle.length ? self.sheetTitle : NSLocalizedString(@"Certificate", nil);
     _titleLabel.font = [UIFont boldSystemFontOfSize:17.0f];
     _titleLabel.backgroundColor = [UIColor clearColor];
     _titleLabel.numberOfLines = 0;
     [self.view addSubview:_titleLabel];
 
-    _messageLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    _messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 0.0f, 0.0f)];
     _messageLabel.text = self.sheetMessage;
     _messageLabel.numberOfLines = 0;
     _messageLabel.font = [UIFont systemFontOfSize:13.0f];
@@ -48,7 +48,7 @@
 
     _lineLabels = [NSMutableArray array];
     for (NSString *line in self.lines) {
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 0.0f, 0.0f)];
         label.text = line;
         label.numberOfLines = 0;
         label.font = [UIFont systemFontOfSize:12.0f];
@@ -68,7 +68,7 @@
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
-    CGFloat width = CGRectGetWidth(self.view.bounds) - 32.0f;
+    CGFloat width = self.view.bounds.size.width - 32.0f;
     CGFloat y = 20.0f;
     for (UILabel *label in [[NSArray alloc] initWithObjects:_titleLabel, _messageLabel, nil]) {
         CGFloat height = [label sizeThatFits:CGSizeMake(width, CGFLOAT_MAX)].height;

@@ -41,7 +41,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the header's own answer for an attachment the composer will not take is NO, and this release's composer will not take one; the call records what it was given so -attachments can report it truthfully rather than dropping it",
-      "effect": "NO when +canSendAttachments is NO, which is the case on this release, and NO for a nil URL. Where a release's controller can carry attachments the URL is recorded under the alternate filename, or under the URL's last path component, and -attachments answers with it",
+      "effect": "NO on this release, for both of the reasons -attachments reports: +canSendAttachments is NO, and the release exports neither of the array's two key constants, checked through dlsym at the moment of the call. NO for a nil URL. Where a release has both, the URL is recorded under the alternate filename, or under the URL's last path component, and -attachments answers with it",
       "facts": "facts/MessageUI/MessageUI.md",
       "source": "the header of MFMessageComposeViewController.h in SDK 26.2; the release's own armv7 6.1.3 ObjC metadata"
     },
@@ -52,7 +52,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the same seam and the same contract as the URL form, with the type the header asks for checked first",
-      "effect": "NO when +canSendAttachments is NO, NO for nil data, and NO for a type +isSupportedAttachmentUTI: rejects; where a release's controller can carry attachments the data is recorded under the filename and -attachments answers with it",
+      "effect": "the same two reasons as the URL form, and the type +isSupportedAttachmentUTI: rejects is a third; where a release has both keys, the data is recorded under the filename and -attachments answers with it",
       "facts": "facts/MessageUI/MessageUI.md",
       "source": "the header of MFMessageComposeViewController.h in SDK 26.2"
     },
@@ -63,7 +63,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the property reports what the controller holds, and holding nothing is what this release's composer can do - the report is the truth about the controller, not a placeholder",
-      "effect": "an empty array on this release, because both add methods answer NO, and the header's own MFMessageComposeViewControllerAttachmentURL / MFMessageComposeViewControllerAttachmentAlternateFilename keys for each attachment a release that can take them recorded",
+      "effect": "an empty array on this release, for two independent reasons: both add methods answer NO because the release's composer has no attachment row, and the two keys of each dictionary are the release's own MFMessageComposeViewControllerAttachmentURL and MFMessageComposeViewControllerAttachmentAlternateFilename constants, which this release does not export at all (absent from the armv7 6.1.3 cache's symbol table, measured with dump-cache.lua), so nothing could be read back out of a dictionary the port invented the keys for. Where a release has both, each attachment is one dictionary under the release's own key strings",
       "facts": "facts/MessageUI/MessageUI.md",
       "source": "the header of MFMessageComposeViewController.h in SDK 26.2"
     },

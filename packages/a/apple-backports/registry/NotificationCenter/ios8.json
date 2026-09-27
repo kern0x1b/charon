@@ -106,9 +106,9 @@
       "minimum": "6.0",
       "status": "inert",
       "reason": "the size is the Notification Center's own geometry for that mode, and iOS 6 has no Notification Center and therefore no such geometry; the two numbers would have to come from the port",
-      "effect": "answers CGSizeZero, the absence of a size rather than a size, and says so once in the log the first time it is called",
+      "effect": "answers CGSizeMake(0, 0) - the absence of a size - and says so once in the log the first time it is called; the two numbers a real Notification Center would give are its own geometry, and there is none here to read them from",
       "facts": "facts/NotificationCenter/NotificationCenter.md",
-      "source": "the header of NCWidgetProviding.h in SDK 26.2"
+      "source": "the header of NCWidgetProviding.h in SDK 26.2; CGSizeMake and not CGSizeZero, which is an exported symbol in a modern CoreGraphics the release's cache does not resolve"
     }
   ]
 }

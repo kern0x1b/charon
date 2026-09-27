@@ -2,6 +2,7 @@
 #import <MessageUI/MessageUI.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "../CharonSayOnce.h"
+#import <dlfcn.h>
 #import <objc/runtime.h>
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -28,9 +29,41 @@ static BOOL charon_release_knows_type(NSString *uti)
     return uti.length ? UTTypeConformsTo((__bridge CFStringRef)uti, CFSTR("public.data")) : NO;
 }
 
-static NSMutableDictionary *CharonAttachmentsOf(MFMessageComposeViewController *controller)
+// The two keys of the attachments array are the release's own constants, and they are the array's
+// contract: an application reads MFMessageComposeViewControllerAttachmentURL out of each dictionary it
+// is given. This release exports neither symbol (measured against the armv7 6.1.3 cache with
+// dump-cache.lua, and the two names are absent from it), so a dictionary the port built would carry
+// keys of its own making and nothing could read it back. So the keys are asked of the release at run
+// time, and an attachment is not recorded unless the release really has both.
+static NSString *CharonAttachmentKey(const char *symbol)
+{
+    // The release's own constant, reached through the symbol the release exports for it, so the key
+    // is the release's string and not this file's spelling of it.
+    NSString *const *constant = (NSString *const *)dlsym(RTLD_DEFAULT, symbol);
+    return constant ? *constant : nil;
+}
+
+static BOOL charon_release_exports_attachment_keys(void)
+{
+    return CharonAttachmentKey("MFMessageComposeViewControllerAttachmentURL") != nil &&
+           CharonAttachmentKey("MFMessageComposeViewControllerAttachmentAlternateFilename") != nil;
+}
+
+static BOOL charon_can_record_attachment(void)
+{
+    return [MFMessageComposeViewController canSendAttachments] && charon_release_exports_attachment_keys();
+}
+
+static NSDictionary *CharonAttachmentsOf(MFMessageComposeViewController *controller)
 {
     return objc_getAssociatedObject(controller, @selector(attachments));
+}
+
+static void CharonRecordAttachment(MFMessageComposeViewController *controller, NSString *name, id value)
+{
+    NSMutableDictionary *attachments = [CharonAttachmentsOf(controller) mutableCopy] ?: [NSMutableDictionary dictionary];
+    attachments[name] = value;
+    objc_setAssociatedObject(controller, @selector(attachments), [attachments copy], OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
 // The two properties are declared again here, widened where the header has them readonly, because
@@ -65,37 +98,35 @@ static NSMutableDictionary *CharonAttachmentsOf(MFMessageComposeViewController *
 // not a constant and not a fabricated YES.
 - (BOOL)addAttachmentURL:(NSURL *)attachmentURL withAlternateFilename:(NSString *)alternateFilename
 {
-    if (![self.class canSendAttachments] || !attachmentURL)
+    if (!charon_can_record_attachment() || !attachmentURL)
         return NO;
-    NSMutableDictionary *attachments = CharonAttachmentsOf(self);
-    if (!attachments) {
-        attachments = [NSMutableDictionary dictionary];
-        objc_setAssociatedObject(self, @selector(attachments), attachments, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
-    attachments[alternateFilename.length ? alternateFilename : attachmentURL.lastPathComponent] = attachmentURL;
+    CharonRecordAttachment(self, alternateFilename.length ? alternateFilename : attachmentURL.lastPathComponent, attachmentURL);
     return YES;
 }
 
 - (BOOL)addAttachmentData:(NSData *)attachmentData typeIdentifier:(NSString *)uti filename:(NSString *)filename
 {
-    if (![self.class canSendAttachments] || !attachmentData || ![self.class isSupportedAttachmentUTI:uti])
+    if (!charon_can_record_attachment() || !attachmentData || ![self.class isSupportedAttachmentUTI:uti])
         return NO;
-    NSMutableDictionary *attachments = CharonAttachmentsOf(self);
-    if (!attachments) {
-        attachments = [NSMutableDictionary dictionary];
-        objc_setAssociatedObject(self, @selector(attachments), attachments, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
-    attachments[filename.length ? filename : uti] = attachmentData;
+    CharonRecordAttachment(self, filename.length ? filename : uti, attachmentData);
     return YES;
 }
 
 - (NSArray<NSDictionary *> *)attachments
 {
+    // What the controller holds, one dictionary per attachment, each carrying the two keys the
+    // release's own constants name. Empty here, and empty for a reason: neither add method records
+    // anything on this release.
+    NSDictionary *held = CharonAttachmentsOf(self);
+    if (!held.count)
+        return @[];
+    NSString *urlKey = CharonAttachmentKey("MFMessageComposeViewControllerAttachmentURL");
+    NSString *nameKey = CharonAttachmentKey("MFMessageComposeViewControllerAttachmentAlternateFilename");
+    if (!urlKey || !nameKey)
+        return @[];
     NSMutableArray *attachments = [NSMutableArray array];
-    [CharonAttachmentsOf(self) enumerateKeysAndObjectsUsingBlock:^(NSString *name, id value, BOOL *stop) {
-        NSURL *url = [value isKindOfClass:[NSURL class]] ? value : nil;
-        [attachments addObject:@{MFMessageComposeViewControllerAttachmentURL: url ?: name,
-                                 MFMessageComposeViewControllerAttachmentAlternateFilename: name}];
+    [held enumerateKeysAndObjectsUsingBlock:^(NSString *name, id value, BOOL *stop) {
+        [attachments addObject:@{urlKey: value, nameKey: name}];
     }];
     return [attachments copy];
 }
