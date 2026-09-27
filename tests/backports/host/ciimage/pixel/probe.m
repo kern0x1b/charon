@@ -106,6 +106,51 @@ static void report(NSString *key, ACCUMULATOR *accumulator)
     put_pixels([key stringByAppendingString:@" pixels"], render(image));
 }
 
+// A colour, measured as the numbers the colour object holds and as the bytes an image of that colour
+// renders to. The named colours and the two spellings of the colour-space initialisers are asked with
+// the same components, so a conversion that is not the system's shows up as a different pixel.
+static void put_color(NSString *key, CIColor *color)
+{
+    if (!color) {
+        put(@"%@ none", key);
+        return;
+    }
+    put(@"%@ components %lu red %.4f green %.4f blue %.4f alpha %.4f", key, (unsigned long)color.numberOfComponents,
+        color.red, color.green, color.blue, color.alpha);
+    put_bytes([key stringByAppendingString:@" pixels"], render([[CIImage alloc] initWithColor:color]));
+}
+
+static void reportColors(void)
+{
+    CGColorSpaceRef srgb = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+    CGColorSpaceRef generic = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+    static const CGFloat triples[4][3] = {{1, 0, 0}, {0.2, 0.6, 0.9}, {0.5, 0.5, 0.5}, {0, 0, 0}};
+    static const CGFloat alphas[2] = {1, 0.25};
+    for (int t = 0; t < 4; t++)
+        for (int a = 0; a < 2; a++) {
+            NSString *key = [NSString stringWithFormat:@"color %d %d", t, a];
+            CGFloat r = triples[t][0], g = triples[t][1], b = triples[t][2], alpha = alphas[a];
+            put_color([key stringByAppendingString:@" srgb"], [CIColor colorWithRed:r green:g blue:b alpha:alpha colorSpace:srgb]);
+            put_color([key stringByAppendingString:@" generic"], [CIColor colorWithRed:r green:g blue:b alpha:alpha colorSpace:generic]);
+            put_color([key stringByAppendingString:@" opaque srgb"], [CIColor colorWithRed:r green:g blue:b colorSpace:srgb]);
+            put_color([key stringByAppendingString:@" init srgb"], [[CIColor alloc] initWithRed:r green:g blue:b alpha:alpha colorSpace:srgb]);
+            put_color([key stringByAppendingString:@" init noalpha srgb"], [[CIColor alloc] initWithRed:r green:g blue:b colorSpace:srgb]);
+            put_color([key stringByAppendingString:@" init rgb"], [[CIColor alloc] initWithRed:r green:g blue:b]);
+        }
+    // The named colours, each asked twice so a cached one and a made one are the same answer.
+    CIColor *(^named)(NSString *) = ^CIColor *(NSString *name) {
+        SEL selector = NSSelectorFromString(name);
+        return [CIColor respondsToSelector:selector] ? [CIColor performSelector:selector] : nil;
+    };
+    for (NSString *name in @[ @"blackColor", @"whiteColor", @"grayColor", @"redColor", @"greenColor", @"blueColor",
+                              @"cyanColor", @"magentaColor", @"yellowColor", @"clearColor" ]) {
+        put_color([@"named " stringByAppendingString:name], named(name));
+        put_color([@"named again " stringByAppendingString:name], named(name));
+    }
+    CGColorSpaceRelease(srgb);
+    CGColorSpaceRelease(generic);
+}
+
 // A filter shape, measured as a shape and as the region a render comes back over: the shape's own
 // extent, and the extent and the bytes of an image cropped to it, which is the shape doing the job a
 // caller asks of it.
@@ -190,6 +235,7 @@ int main(void)
                                                           colorSpace:probeSpace()];
         [spaced setImage:field(extent)];
         report(@"spaced", spaced);
+        reportColors();
         reportShapes();
     }
     return 0;
