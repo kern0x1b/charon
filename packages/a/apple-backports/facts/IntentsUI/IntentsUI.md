@@ -60,6 +60,30 @@ buttons — because the screens are those few pieces and this release's UIKit ha
 chain worth relying on for a view nobody loaded a nib for. The two buttons are the header's own
 answers, and they call the three delegate methods the header declares.
 
+## The hosted view, and why it is implementable here
+
+`INUIHostedViewControlling` looked like it needed a system host, and it does not: **the `context`
+argument is an enumeration** (`INUIHostedViewContextSiriSnippet`, `INUIHostedViewContextMapsCard`),
+not an `NSExtensionContext`, and the parameters come out of the interaction — which the port
+carries, donation and all. So both of the protocol's methods are implemented in full by
+`CharonIntentsUIHostedViewController` (`CharonIntentsUIHostedView.m`):
+
+* the interaction's parameters — its intent's own properties, by the key path an `INParameter`
+  names, which is exactly what `-[INInteraction parameterValueForParameter:]` reads — become the
+  view's content, one label each, and a parameter the interaction carries nothing for is **left
+  out of the configured set** rather than shown empty;
+* the interactive behaviour becomes the button the header describes for that case, and the four
+  cases are four different things: `None` shows nothing at all (it is the header's own first
+  case), `NextView` a navigation chevron, `Launch` a button to leave the context, and
+  `GenericAction` a large tap target in a bigger font;
+* the completions are answered with the size the content needs, and with the set of parameters
+  that were really configured.
+
+The class is named as **Charon's own**, because the SDK declares the *protocol* and the class that
+conforms to it is the application's: this is the port's, so an application has a conforming class
+to build on, and the name keeps it clear of any class Apple may add. A name no SDK header
+declares changes swift-runtime's lift sets — this is the one such name in this delivery.
+
 ## What is not carried, and why each
 
 Fifteen rows are `absent`, each with its reason in the registry, and none of them is answered
@@ -79,6 +103,6 @@ the compiler writes them into the application and the package carries nothing of
 
 ## What is not measured here
 
-Nothing on this framework has been run: not on the device, not in the emulator, not through the
-generated call test. Every entry is **device-unverified**, and the call test
-(`tests/backports/callgen/`) has been run over the Intents registry only.
+Nothing on this framework has been run: not on the device, not in the emulator, and not through
+the generated call test, which has been run over the Intents registry only. Every entry here is
+**device-unverified**, and the IntentsUI gate is still to come.

@@ -241,8 +241,9 @@
       "minimum": "6.0",
       "status": "implemented",
       "source": "the header of iPhoneOS 16.4",
-      "reason": "a method of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
-      "facts": "facts/IntentsUI/IntentsUI.md"
+      "reason": "the protocol's member, and CharonIntentsUIHostedViewController is a class that really answers it: the interaction's parameters become the view's content, the interactive behaviour becomes the button the header describes for that case, and the completion is answered with the set that was configured and the size the content needs. The class is named as Charon's own because no SDK header declares a conforming class - the application writes its own - and it is named so that nothing collides with a class Apple may add",
+      "facts": "facts/IntentsUI/IntentsUI.md",
+      "effect": "configureWithInteraction:context:completion: answers the completion with the size the view's content needs, and configureViewForParameters:ofInteraction:interactiveBehavior:context:completion: answers it with YES, the parameters that were configured from the interaction, and that size. The context argument is the enumeration the header declares - a Siri snippet or a place card within Maps - not an extension context, so neither method needs a host this release does not have"
     },
     {
       "api": "-[INUIHostedViewControlling configureWithInteraction:context:completion:]",
@@ -251,15 +252,16 @@
       "minimum": "6.0",
       "status": "implemented",
       "source": "the header of iPhoneOS 16.4",
-      "reason": "a method of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
-      "facts": "facts/IntentsUI/IntentsUI.md"
+      "reason": "the protocol's member, and CharonIntentsUIHostedViewController is a class that really answers it: the interaction's parameters become the view's content, the interactive behaviour becomes the button the header describes for that case, and the completion is answered with the set that was configured and the size the content needs. The class is named as Charon's own because no SDK header declares a conforming class - the application writes its own - and it is named so that nothing collides with a class Apple may add",
+      "facts": "facts/IntentsUI/IntentsUI.md",
+      "effect": "configureWithInteraction:context:completion: answers the completion with the size the view's content needs, and configureViewForParameters:ofInteraction:interactiveBehavior:context:completion: answers it with YES, the parameters that were configured from the interaction, and that size. The context argument is the enumeration the header declares - a Siri snippet or a place card within Maps - not an extension context, so neither method needs a host this release does not have"
     },
     {
       "api": "-[NSExtensionContext interfaceParametersDescription]",
       "kind": "method",
       "introduced": "11.0",
       "status": "absent",
-      "reason": "NSExtensionContext arrived with iOS 8 and this release runs no extension host at all, so the category the header declares cannot be attached to a class that is not there",
+      "reason": "NSExtensionContext arrived with iOS 8 and this release runs no extension host at all, so the category the header declares cannot be attached to a class that is not there - and nothing of the hosted view's flow needs one, because INUIHostedViewControlling's context argument is an enumeration",
       "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
@@ -330,7 +332,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "source": "the header of iPhoneOS 16.4",
-      "reason": "a property of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "reason": "a property of a protocol the SDK declares: the class that answers it is the application's - there is no Siri here to say which of the three a snippet shows - and the declaration is what this package carries",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
@@ -340,7 +342,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "source": "the header of iPhoneOS 16.4",
-      "reason": "a property of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "reason": "a property of a protocol the SDK declares: the class that answers it is the application's - there is no Siri here to say which of the three a snippet shows - and the declaration is what this package carries",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
@@ -350,7 +352,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "source": "the header of iPhoneOS 16.4",
-      "reason": "a property of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "reason": "a property of a protocol the SDK declares: the class that answers it is the application's - there is no Siri here to say which of the three a snippet shows - and the declaration is what this package carries",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
@@ -358,7 +360,7 @@
       "kind": "property",
       "introduced": "10.0",
       "status": "absent",
-      "reason": "NSExtensionContext arrived with iOS 8 and this release runs no extension host at all, so the category the header declares cannot be attached to a class that is not there",
+      "reason": "NSExtensionContext arrived with iOS 8 and this release runs no extension host at all, so the category the header declares cannot be attached to a class that is not there - and nothing of the hosted view's flow needs one, because INUIHostedViewControlling's context argument is an enumeration",
       "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
@@ -367,7 +369,7 @@
       "kind": "property",
       "introduced": "10.0",
       "status": "absent",
-      "reason": "NSExtensionContext arrived with iOS 8 and this release runs no extension host at all, so the category the header declares cannot be attached to a class that is not there",
+      "reason": "NSExtensionContext arrived with iOS 8 and this release runs no extension host at all, so the category the header declares cannot be attached to a class that is not there - and nothing of the hosted view's flow needs one, because INUIHostedViewControlling's context argument is an enumeration",
       "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
@@ -408,7 +410,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/IntentsUI/IntentsUI.md",
-      "reason": "the protocol is the SDK's own declaration and its members are answered by the conforming class, which is the application's",
+      "reason": "the protocol is the SDK's own declaration, and this release also carries a class that conforms to it (CharonIntentsUIHostedViewController), so the two members below are answered by code rather than only by the application's own class",
       "source": "the header of iPhoneOS 16.4"
     },
     {
