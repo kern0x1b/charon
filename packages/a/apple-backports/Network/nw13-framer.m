@@ -331,8 +331,16 @@ void nw_framer_write_output_data(nw_framer_t framer, dispatch_data_t output_data
 bool nw_framer_write_output_no_copy(nw_framer_t framer, size_t output_length)
 {
     CharonNWFramer *value = (CharonNWFramer *)framer;
-    if (!value || !output_length || output_length > value->_output.length)
+    if (!value || !output_length)
         return false;
+    /* The room is made here and the program writes into it, which is what a write without a copy is:
+       the framer's output is its own and grows, so there is room for as much as the program asks for,
+       and the answer is whether the connection is still there to take it. The framer is torn down when
+       the connection stops using it (nw_framer_set_stop_handler), and a stopped framer has nowhere to
+       put the bytes, which is the one way this is false. */
+    if (value->_failed)
+        return false;
+    [value->_output increaseLengthBy:output_length];
     return true;
 }
 

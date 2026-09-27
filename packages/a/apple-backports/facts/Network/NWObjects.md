@@ -129,6 +129,20 @@ These are the answers a program can see that the header alone would not have giv
   per-connection proxy, so a connection is made to the peer its endpoint names - and says so in its
   establishment report rather than pretending to have gone through a proxy. `facts/Network/NWProxy.md`.
 
+## What the reports are without a connection
+
+`nw_data_transfer_report` and its eighteen accessors, and the establishment and resolution reports a
+connection fills in, are here and are measured where they can be measured without one: the state of a
+report, and the rule that every value of a report answers 0 until the block of
+`nw_data_transfer_report_collect` has been given it, which is what the header says a report that is not
+collected answers. The numbers themselves are the connection's - the bytes it moved, the times it took,
+the addresses it tried - and the call that hands a program a report,
+`nw_connection_create_new_data_transfer_report`, is part of the connection and is not in this delivery.
+So a program cannot get a report yet; what it would get is the connection's own measurements, and the
+release's `TCP_CONNECTION_INFO` for the three round-trip times, which the SDK declares and which a kernel
+older than the call answers ENOPROTOOPT to - where it does, the report says 0 for a measurement the port
+could not take, and that is the whole of the gap.
+
 ## What the port has no transport for, and what that means for these calls
 
 Three of the protocols these objects configure have no transport in this port: **QUIC**, **WebSocket**
