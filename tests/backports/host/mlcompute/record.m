@@ -3,10 +3,12 @@
 #import <Foundation/Foundation.h>
 
 void charon_mlcompute_cases(void);
+void charon_mlcompute_layer_cases(void);
 
 int main(void)
 {
     setbuf(stdout, NULL);
     charon_mlcompute_cases();
+    charon_mlcompute_layer_cases();
     return 0;
 }

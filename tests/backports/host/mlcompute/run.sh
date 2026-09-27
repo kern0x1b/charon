@@ -43,15 +43,15 @@ print("renamed %d names" % len(names))
 PY
 
 # The system side: the host's framework answers every case.
-xcrun clang $common "$here/record.m" "$here/cases.m" $libs -framework MLCompute -o "$build/system"
+xcrun clang $common "$here/record.m" "$here/cases.m" "$here/layer-cases.m" $libs -framework MLCompute -o "$build/system"
 "$build/system" > "$build/system.log" 2>&1 || { echo "the system run failed:"; tail -20 "$build/system.log"; exit 1; }
 
 # The port side: the same program with the port's own files, which answer every case in their place. A
 # Metal device does not exist for the port to name, so the cases that ask MLCDevice about a GPU get the
 # answer a machine with no GPU gives; the run.sh notes those lines below as the ones that are meant to
 # differ, and they are the only ones.
-xcrun clang $common -include "$build/rename.h" -I"$port" "$here/record.m" "$here/cases.m" \
-    "$port/MLCTypes14.m" "$port/MLCDevice15.m" "$port/MLCTensors14.m" "$port/MLCDescriptors14.m" $libs -o "$build/port"
+xcrun clang $common -include "$build/rename.h" -I"$port" "$here/record.m" "$here/cases.m" "$here/layer-cases.m" \
+    "$port/MLCTypes14.m" "$port/MLCDevice15.m" "$port/MLCTensors14.m" "$port/MLCDescriptors14.m" "$port/MLCLayers14.m" $libs -o "$build/port"
 "$build/port" > "$build/port.log" 2>&1 || { echo "the port run failed:"; tail -20 "$build/port.log"; exit 1; }
 
 # The names of the two must be the same set, or a case is answered by one and not by the other.
@@ -63,7 +63,7 @@ fi
 # differ. A GPU through Metal and the Neural Engine: the host has both, the port has neither, and each side
 # answers as a machine with what it has. The cases record the difference rather than hide it, and the facts
 # say what the port answers and why.
-names="gpuDevice|aneDevice|deviceWithType (GPU|CPU|Any|Any multiple)|cpuDevice|cpuDevice copy|deviceWithGPUDevices empty"
+names="gpuDevice|aneDevice|deviceWithType (GPU|CPU|Any|Any multiple)|cpuDevice|cpuDevice copy|deviceWithGPUDevices empty|lstm with (peepholes|gates)"
 allowed="^($names)$"
 tab=$(printf '\t')
 diffout=$(diff "$build/system.log" "$build/port.log" || true)

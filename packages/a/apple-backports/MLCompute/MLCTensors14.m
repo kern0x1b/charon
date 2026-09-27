@@ -1126,6 +1126,29 @@ static double CharonMLCRandomNormal(CharonMLCRandom *random, double *spare)
 
 #pragma mark - MLCLayer
 
+// The two things the thirty layer factories need from their base, and what the base's own header marks
+// unavailable: an initialiser a subclass can call, and the name a factory gives a layer. They are
+// private to the port and named Charon* so the gate weighs neither against a release.
+@interface MLCLayer (CharonFactory)
+- (instancetype)charon_init;
+- (instancetype)charon_label:(NSString *)name;
+@end
+
+@implementation MLCLayer (CharonFactory)
+
+- (instancetype)charon_init
+{
+    return [super init];
+}
+
+- (instancetype)charon_label:(NSString *)name
+{
+    self.label = name;
+    return self;
+}
+
+@end
+
 // The base of the thirty layers: what a layer is, what it is called, and whether a program asked for it to
 // be watched. Its number is zero until the layer joins a graph, which is where the host counts (measured:
 // every layer of a program that is in no graph answers 0, and the layers of a graph are numbered from 1 in

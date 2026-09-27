@@ -1,0 +1,2185 @@
+{
+ "framework": "MLCompute",
+ "entries": [
+  {
+   "api": "+[MLCActivationLayer celuLayerWithA:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCActivationLayer clampLayerWithMinValue:maxValue:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCActivationLayer eluLayerWithA:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCActivationLayer hardShrinkLayerWithA:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCActivationLayer layerWithDescriptor:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCActivationLayer leakyReLULayerWithNegativeSlope:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCActivationLayer linearLayerWithScale:bias:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCActivationLayer relunLayerWithA:b:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCActivationLayer softPlusLayerWithBeta:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCActivationLayer softShrinkLayerWithA:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCActivationLayer thresholdLayerWithThreshold:replacement:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCArithmeticLayer layerWithOperation:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCBatchNormalizationLayer layerWithFeatureChannelCount:mean:variance:beta:gamma:varianceEpsilon:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCBatchNormalizationLayer layerWithFeatureChannelCount:mean:variance:beta:gamma:varianceEpsilon:momentum:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCComparisonLayer layerWithOperation:]",
+   "kind": "method",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCConcatenationLayer layerWithDimension:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCConcatenationLayer layer]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCConvolutionLayer layerWithWeights:biases:descriptor:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCDropoutLayer layerWithRate:seed:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCEmbeddingLayer layerWithDescriptor:weights:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCFullyConnectedLayer layerWithWeights:biases:descriptor:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCGatherLayer layerWithDimension:]",
+   "kind": "method",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCGramMatrixLayer layerWithScale:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCGroupNormalizationLayer layerWithFeatureChannelCount:groupCount:beta:gamma:varianceEpsilon:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCInstanceNormalizationLayer layerWithFeatureChannelCount:beta:gamma:varianceEpsilon:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCInstanceNormalizationLayer layerWithFeatureChannelCount:beta:gamma:varianceEpsilon:momentum:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCInstanceNormalizationLayer layerWithFeatureChannelCount:mean:variance:beta:gamma:varianceEpsilon:momentum:]",
+   "kind": "method",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLSTMLayer layerWithDescriptor:inputWeights:hiddenWeights:biases:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLSTMLayer layerWithDescriptor:inputWeights:hiddenWeights:peepholeWeights:biases:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLSTMLayer layerWithDescriptor:inputWeights:hiddenWeights:peepholeWeights:biases:gateActivations:outputResultActivation:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLayerNormalizationLayer layerWithNormalizedShape:beta:gamma:varianceEpsilon:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer categoricalCrossEntropyLossWithReductionType:labelSmoothing:classCount:weight:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer categoricalCrossEntropyLossWithReductionType:labelSmoothing:classCount:weights:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer cosineDistanceLossWithReductionType:weight:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer cosineDistanceLossWithReductionType:weights:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer hingeLossWithReductionType:weight:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer hingeLossWithReductionType:weights:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer huberLossWithReductionType:delta:weight:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer huberLossWithReductionType:delta:weights:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer layerWithDescriptor:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer layerWithDescriptor:weights:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer logLossWithReductionType:epsilon:weight:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer logLossWithReductionType:epsilon:weights:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer meanAbsoluteErrorLossWithReductionType:weight:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer meanAbsoluteErrorLossWithReductionType:weights:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer meanSquaredErrorLossWithReductionType:weight:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer meanSquaredErrorLossWithReductionType:weights:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer sigmoidCrossEntropyLossWithReductionType:labelSmoothing:weight:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer sigmoidCrossEntropyLossWithReductionType:labelSmoothing:weights:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer softmaxCrossEntropyLossWithReductionType:labelSmoothing:classCount:weight:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCLossLayer softmaxCrossEntropyLossWithReductionType:labelSmoothing:classCount:weights:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCMatMulLayer layerWithDescriptor:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCMultiheadAttentionLayer layerWithDescriptor:weights:biases:attentionBiases:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCPaddingLayer layerWithConstantPadding:constantValue:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCPaddingLayer layerWithReflectionPadding:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCPaddingLayer layerWithSymmetricPadding:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCPaddingLayer layerWithZeroPadding:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCPoolingLayer layerWithDescriptor:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCReductionLayer layerWithReductionType:dimension:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCReductionLayer layerWithReductionType:dimensions:]",
+   "kind": "method",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCReshapeLayer layerWithShape:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCScatterLayer layerWithDimension:reductionType:]",
+   "kind": "method",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCSelectionLayer layer]",
+   "kind": "method",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCSliceLayer sliceLayerWithStart:end:stride:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCSoftmaxLayer layerWithOperation:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCSoftmaxLayer layerWithOperation:dimension:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCSplitLayer layerWithSplitCount:dimension:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCSplitLayer layerWithSplitSectionLengths:dimension:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCTransposeLayer layerWithDimensions:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCUpsampleLayer layerWithShape:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCUpsampleLayer layerWithShape:sampleMode:alignsCorners:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "+[MLCYOLOLossLayer layerWithDescriptor:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it The class is carried though the current macOS header marks it gone past macOS 14, so the host can no longer answer for it and the cases that would have are not in the differential.",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.absoluteLayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.celuLayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.descriptor",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.eluLayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.geluLayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.hardShrinkLayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.hardSigmoidLayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.hardSwishLayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.leakyReLULayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.logSigmoidLayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.relu6Layer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.reluLayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.seluLayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.sigmoidLayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.softPlusLayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.softShrinkLayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.softSignLayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.tanhLayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer.tanhShrinkLayer",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCArithmeticLayer.operation",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCBatchNormalizationLayer.beta",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCBatchNormalizationLayer.betaParameter",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCBatchNormalizationLayer.featureChannelCount",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCBatchNormalizationLayer.gamma",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCBatchNormalizationLayer.gammaParameter",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCBatchNormalizationLayer.mean",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCBatchNormalizationLayer.momentum",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCBatchNormalizationLayer.variance",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCBatchNormalizationLayer.varianceEpsilon",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCComparisonLayer.operation",
+   "kind": "property",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCConcatenationLayer.dimension",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCConvolutionLayer.biases",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCConvolutionLayer.biasesParameter",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCConvolutionLayer.descriptor",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCConvolutionLayer.weights",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCConvolutionLayer.weightsParameter",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCDropoutLayer.rate",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCDropoutLayer.seed",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCEmbeddingLayer.descriptor",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCEmbeddingLayer.weights",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCEmbeddingLayer.weightsParameter",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCFullyConnectedLayer.biases",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCFullyConnectedLayer.biasesParameter",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCFullyConnectedLayer.descriptor",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCFullyConnectedLayer.weights",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCFullyConnectedLayer.weightsParameter",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCGatherLayer.dimension",
+   "kind": "property",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCGramMatrixLayer.scale",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCGroupNormalizationLayer.beta",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCGroupNormalizationLayer.betaParameter",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCGroupNormalizationLayer.featureChannelCount",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCGroupNormalizationLayer.gamma",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCGroupNormalizationLayer.gammaParameter",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCGroupNormalizationLayer.groupCount",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCGroupNormalizationLayer.varianceEpsilon",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCInstanceNormalizationLayer.beta",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCInstanceNormalizationLayer.betaParameter",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCInstanceNormalizationLayer.featureChannelCount",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCInstanceNormalizationLayer.gamma",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCInstanceNormalizationLayer.gammaParameter",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCInstanceNormalizationLayer.mean",
+   "kind": "property",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCInstanceNormalizationLayer.momentum",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCInstanceNormalizationLayer.variance",
+   "kind": "property",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCInstanceNormalizationLayer.varianceEpsilon",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLSTMLayer.biases",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLSTMLayer.biasesParameters",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLSTMLayer.descriptor",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLSTMLayer.gateActivations",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLSTMLayer.hiddenWeights",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLSTMLayer.hiddenWeightsParameters",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLSTMLayer.inputWeights",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLSTMLayer.inputWeightsParameters",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLSTMLayer.outputResultActivation",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLSTMLayer.peepholeWeights",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLSTMLayer.peepholeWeightsParameters",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLayerNormalizationLayer.beta",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLayerNormalizationLayer.betaParameter",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLayerNormalizationLayer.gamma",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLayerNormalizationLayer.gammaParameter",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLayerNormalizationLayer.normalizedShape",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLayerNormalizationLayer.varianceEpsilon",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLossLayer.descriptor",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLossLayer.weights",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCMatMulLayer.descriptor",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCMultiheadAttentionLayer.attentionBiases",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCMultiheadAttentionLayer.biases",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCMultiheadAttentionLayer.biasesParameters",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCMultiheadAttentionLayer.descriptor",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCMultiheadAttentionLayer.weights",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCMultiheadAttentionLayer.weightsParameters",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCPaddingLayer.constantValue",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCPaddingLayer.paddingBottom",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCPaddingLayer.paddingLeft",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCPaddingLayer.paddingRight",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCPaddingLayer.paddingTop",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCPaddingLayer.paddingType",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCPoolingLayer.descriptor",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCReductionLayer.dimension",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCReductionLayer.dimensions",
+   "kind": "property",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCReductionLayer.reductionType",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCReshapeLayer.shape",
+   "kind": "property",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCScatterLayer.dimension",
+   "kind": "property",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCScatterLayer.reductionType",
+   "kind": "property",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCSliceLayer.end",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCSliceLayer.start",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCSliceLayer.stride",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCSoftmaxLayer.dimension",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCSoftmaxLayer.operation",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCSplitLayer.dimension",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCSplitLayer.splitCount",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCSplitLayer.splitSectionLengths",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCTransposeLayer.dimensions",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCUpsampleLayer.alignsCorners",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCUpsampleLayer.sampleMode",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCUpsampleLayer.shape",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCYOLOLossLayer.yoloLossDescriptor",
+   "kind": "property",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the property answers what the host answers The class is carried though the current macOS header marks it gone past macOS 14, so the host can no longer answer for it and the cases that would have are not in the differential.",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCActivationLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCArithmeticLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCBatchNormalizationLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCComparisonLayer",
+   "kind": "class",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCConcatenationLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCConvolutionLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCDropoutLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCEmbeddingLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCFullyConnectedLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCGatherLayer",
+   "kind": "class",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCGramMatrixLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCGroupNormalizationLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCInstanceNormalizationLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLSTMLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLayerNormalizationLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCLossLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCMatMulLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCMultiheadAttentionLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCPaddingLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCPoolingLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCReductionLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCReshapeLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCScatterLayer",
+   "kind": "class",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCSelectionLayer",
+   "kind": "class",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCSliceLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCSoftmaxLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCSplitLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCTransposeLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCUpsampleLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCYOLOLossLayer",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the factory answers what the host's answers and the layer is named as the host names it The class is carried though the current macOS header marks it gone past macOS 14, so the host can no longer answer for it and the cases that would have are not in the differential.",
+   "facts": "facts/MLCompute/Layers.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 515 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  }
+ ]
+}
