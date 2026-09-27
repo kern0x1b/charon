@@ -17,7 +17,6 @@
 // `ARConfiguration` is abstract and its initialiser is declared unavailable, which is the SDK telling a
 // caller not to build one; a subclass is exactly what is being built here, so the calls that chain
 // to it are the base class saying yes.
-#pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunavailable-function"
 
 /// The auto focus every configuration that has a camera declares, and this camera has one.
@@ -36,7 +35,7 @@
     // `ARConfiguration`'s own initialiser is declared unavailable because it is abstract, so a
     // subclass starts from NSObject and carries its own state; the header's default for a world
     // map is horizontal plane detection.
-    self = [super init];
+    self = [self initCharonCommon];
     if (self)
         _planeDetection = ARPlaneDetectionHorizontal;
     return self;
@@ -88,7 +87,6 @@
 @dynamic appClipCodeTrackingEnabled;
 @dynamic sceneReconstruction;
 
-#pragma clang diagnostic pop
 
 @end
 
@@ -96,7 +94,7 @@
 
 - (instancetype)init
 {
-    self = [super init];
+    self = [self initCharonCommon];
     return self;
 }
 
@@ -120,7 +118,7 @@
 
 - (instancetype)init
 {
-    self = [super init];
+    self = [self initCharonCommon];
     if (self)
         _planeDetection = ARPlaneDetectionHorizontal;
     return self;
@@ -142,7 +140,6 @@
 - (ARPlaneDetection)planeDetection { return _planeDetection; }
 - (void)setPlaneDetection:(ARPlaneDetection)planeDetection { _planeDetection = planeDetection; }
 
-#pragma clang diagnostic pop
 
 @dynamic initialWorldMap;
 
@@ -155,7 +152,7 @@
 
 - (instancetype)init
 {
-    self = [super init];
+    self = [self initCharonCommon];
     return self;
 }
 
@@ -177,7 +174,6 @@
 
 @dynamic trackingImages;
 
-#pragma clang diagnostic pop
 
 @end
 
@@ -189,7 +185,7 @@
 
 - (instancetype)init
 {
-    self = [super init];
+    self = [self initCharonCommon];
     if (self)
         _planeDetection = ARPlaneDetectionHorizontal;
     return self;
@@ -223,7 +219,6 @@
 @dynamic maximumNumberOfTrackedImages;
 @dynamic appClipCodeTrackingEnabled;
 
-#pragma clang diagnostic pop
 
 @end
 
@@ -231,7 +226,7 @@
 
 - (instancetype)init
 {
-    self = [super init];
+    self = [self initCharonCommon];
     return self;
 }
 
@@ -256,7 +251,6 @@
 - (BOOL)isWorldTrackingEnabled { return NO; }
 - (void)setWorldTrackingEnabled:(BOOL)worldTrackingEnabled { (void)worldTrackingEnabled; }
 
-#pragma clang diagnostic pop
 
 @end
 
@@ -267,7 +261,7 @@
 
 - (instancetype)init
 {
-    self = [super init];
+    self = [self initCharonCommon];
     if (self)
         _planeDetection = ARPlaneDetectionHorizontal;
     return self;
@@ -288,6 +282,5 @@
 - (ARPlaneDetection)planeDetection { return _planeDetection; }
 - (void)setPlaneDetection:(ARPlaneDetection)planeDetection { _planeDetection = planeDetection; }
 
-#pragma clang diagnostic pop
 
 @end

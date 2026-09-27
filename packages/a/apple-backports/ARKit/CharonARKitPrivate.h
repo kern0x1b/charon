@@ -5,20 +5,36 @@
 #import <ARKit/ARKit.h>
 #import <simd/simd.h>
 
+#import "CharonARTracker.h"
+
 NS_ASSUME_NONNULL_BEGIN
+
+@interface ARConfiguration (CharonPrivate)
+/// The base class's own initialiser under a name a subclass can call. The SDK marks `-init`
+/// unavailable on `ARConfiguration` because the class is abstract, and an unavailable method is
+/// unreachable from the subclass that would initialise it, so the same initialiser is reached here
+/// instead. It is not API: nothing outside this library calls it, and a caller cannot create an
+/// abstract configuration in the first place.
+- (instancetype)initCharonCommon;
+@end
+
+@interface ARVideoFormat (CharonPrivate)
+/// Built from a format the primary camera really has, which the tracker enumerates.
+- (instancetype)initWithCaptureFormat:(AVCaptureDeviceFormat *)format;
+@end
 
 @interface ARPlaneAnchor (CharonPrivate)
 /// Built from a plane the detector found, which the tracker carries as its own struct.
-- (instancetype)initWithPlaneValue:(NSValue *)value;
+- (instancetype)initWithPlaneValue:(CharonARValue *)value;
 @end
 
 @interface ARPlaneGeometry (CharonPrivate)
 /// Built from one plane the detector found, which the tracker carries as its own struct.
-- (instancetype)initWithPlaneValue:(NSValue *)value;
+- (instancetype)initWithPlaneValue:(CharonARValue *)value;
 @end
 
 @interface ARHitTestResult (CharonPrivate)
-- (instancetype)initWithHitValue:(NSValue *)value;
+- (instancetype)initWithHitValue:(CharonARValue *)value;
 @end
 
 @interface ARPointCloud (CharonPrivate)
@@ -26,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface ARRaycastResult (CharonPrivate)
-- (instancetype)initWithHitValue:(NSValue *)value;
+- (instancetype)initWithHitValue:(CharonARValue *)value;
 @end
 
 @interface ARFrame (CharonPrivate)

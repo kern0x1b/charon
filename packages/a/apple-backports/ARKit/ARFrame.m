@@ -12,13 +12,6 @@
 
 @implementation ARCamera
 {
-    @synthesize transform = _transform;
-    @synthesize eulerAngles = _eulerAngles;
-    @synthesize trackingState = _trackingState;
-    @synthesize trackingStateReason = _trackingStateReason;
-    @synthesize intrinsics = _intrinsics;
-    @synthesize imageResolution = _imageResolution;
-    @synthesize projectionMatrix = _projectionMatrix;
     simd_float4x4 _transform;
     simd_float4x4 _projection;
     NSTimeInterval _transformTimestamp;
@@ -29,6 +22,15 @@
     CGFloat _exposureOffset;
     ARTrackingState _trackingState;
 }
+    @synthesize transform = _transform;
+    @synthesize eulerAngles = _eulerAngles;
+    @synthesize trackingState = _trackingState;
+    @synthesize trackingStateReason = _trackingStateReason;
+    @synthesize intrinsics = _intrinsics;
+    @synthesize imageResolution = _imageResolution;
+    @synthesize projectionMatrix = _projectionMatrix;
+
+
 
 - (instancetype)initWithTransform:(simd_float4x4)transform
                  transformTimestamp:(NSTimeInterval)timestamp
@@ -78,11 +80,13 @@
 
 @implementation ARLightEstimate
 {
-    @synthesize ambientIntensity = _ambientIntensity;
-    @synthesize ambientColorTemperature = _ambientColorTemperature;
     CGFloat _ambientIntensity;
     CGFloat _ambientColorTemperature;
 }
+    @synthesize ambientIntensity = _ambientIntensity;
+    @synthesize ambientColorTemperature = _ambientColorTemperature;
+
+
 
 - (instancetype)initWithAmbientIntensity:(CGFloat)intensity
                  ambientColorTemperature:(CGFloat)temperature
@@ -102,14 +106,6 @@
 
 @implementation ARFrame
 {
-    @synthesize timestamp = _timestamp;
-    @synthesize capturedImage = _capturedImage;
-    @synthesize capturedDepthData = _capturedDepthData;
-    @synthesize capturedDepthDataTimestamp = _capturedDepthDataTimestamp;
-    @synthesize camera = _camera;
-    @synthesize anchors = _anchors;
-    @synthesize lightEstimate = _lightEstimate;
-    @synthesize rawFeaturePoints = _rawFeaturePoints;
     simd_float4x4 _deviceTransform;
     ARCamera *_camera;
     NSMutableArray<ARAnchor *> *_anchors;
@@ -121,6 +117,16 @@
     CGFloat _ambientColorTemperature;
     BOOL _displayTransformApplied;
 }
+    @synthesize timestamp = _timestamp;
+    @synthesize capturedImage = _capturedImage;
+    @synthesize capturedDepthData = _capturedDepthData;
+    @synthesize capturedDepthDataTimestamp = _capturedDepthDataTimestamp;
+    @synthesize camera = _camera;
+    @synthesize anchors = _anchors;
+    @synthesize lightEstimate = _lightEstimate;
+    @synthesize rawFeaturePoints = _rawFeaturePoints;
+
+
 
 - (instancetype)initWithCameraTransform:(simd_float4x4)cameraTransform
                         deviceTransform:(simd_float4x4)deviceTransform

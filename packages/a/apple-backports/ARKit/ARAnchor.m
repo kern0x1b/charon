@@ -18,6 +18,34 @@
     simd_float4x4 _transform;
 }
 
+
+    @synthesize identifier = _identifier;
+    @synthesize transform = _transform;
+- (instancetype)initWithName:(NSString *)name transform:(simd_float4x4)transform
+{
+    self = [super init];
+    if (!self)
+        return nil;
+    _identifier = [[NSUUID alloc] init];
+    _name = [name copy];
+    _transform = transform;
+    return self;
+}
+
+- (instancetype)initWithAnchor:(ARAnchor *)anchor
+{
+    // Copying an anchor gives a new identity at the same place: a new name, a new UUID, and the
+    // transform it was at, which is what a caller duplicating an anchor expects it to mean.
+    if (![anchor isKindOfClass:[ARAnchor class]])
+        return nil;
+    return [self initWithName:anchor.name transform:anchor.transform];
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[self class] allocWithZone:zone];
+}
+
 /// The header declares an anchor secure-coding, and an anchor is a name, a pose and nothing else, so
 /// the two are all there is to encode.
 + (BOOL)supportsSecureCoding { return YES; }
@@ -25,7 +53,9 @@
 - (void)encodeWithCoder:(NSCoder *)coder
 {
     [coder encodeObject:_identifier forKey:@"identifier"];
-    [coder encodeObject:[NSValue valueWithBytes:&_transform objCType:@encode(simd_float4x4)] forKey:@"transform"];
+    // a matrix is a struct of vectors and `@encode` cannot describe one, so the sixteen floats go
+    // across as the bytes they are
+    [coder encodeBytes:&_transform length:sizeof _transform forKey:@"transform"];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -42,7 +72,6 @@
     return self;
 }
 
-@synthesize identifier = _identifier;
 
 - (instancetype)initWithIdentifier:(NSUUID *)identifier transform:(simd_float4x4)transform
 {
@@ -80,60 +109,117 @@
 
 @end
 
+/// A plane is a quad, so its geometry is four corners and the six indices that join them.
+enum { kPlaneQuadCorners = 4, kPlaneQuadTriangles = 6 };
+
 @implementation ARPlaneGeometry
 {
-    @synthesize vertexCount = _vertexCount;
-    @synthesize vertices = _vertices;
-    @synthesize textureCoordinateCount = _textureCoordinateCount;
-    @synthesize textureCoordinates = _textureCoordinates;
-    @synthesize triangleCount = _triangleCount;
-    @synthesize triangleIndices = _triangleIndices;
-    @synthesize boundaryVertexCount = _boundaryVertexCount;
-    @synthesize boundaryVertices = _boundaryVertices;
-    simd_float3 _center;
-    simd_float3 _extent;
-    NSMutableArray<NSValue *> *_vertices;
-    NSMutableArray<NSValue *> *_textureCoordinates;
-    NSMutableArray<NSNumber *> *_triangleIndices;
-    float _alignment;
+    simd_float3 *_vertices;
+    simd_float2 *_textureCoordinates;
+    int16_t *_triangleIndices;
+    simd_float3 *_boundaryVertices;
 }
+    @synthesize vertices = _vertices;
+    @synthesize textureCoordinates = _textureCoordinates;
+    @synthesize triangleIndices = _triangleIndices;
+    @synthesize boundaryVertices = _boundaryVertices;
 
-- (instancetype)initWithPlaneValue:(NSValue *)value
+    @synthesize vertexCount = _vertexCount;
+    @synthesize textureCoordinateCount = _textureCoordinateCount;
+    @synthesize triangleCount = _triangleCount;
+    @synthesize boundaryVertexCount = _boundaryVertexCount;
+
+
+
+/// The geometry of a plane is C buffers, not objects: the framework declares the vertices, the
+/// texture coordinates and the triangle indices as pointers into memory a renderer reads in place,
+/// and a caller walks them with the counts beside them. So the buffers are the storage, they are
+/// filled from the plane the detector found, and they live as long as this object does.
+- (instancetype)initWithPlaneValue:(CharonARValue *)value
 {
     self = [super init];
     if (!self)
         return nil;
     CharonARPlane plane;
-    [value getValue:&plane];
-    _center = plane.center;
-    _extent = plane.extent;
-    _alignment = ARPlaneAnchorAlignmentVertical;
-    _vertices = [NSMutableArray array];
-    _textureCoordinates = [NSMutableArray array];
-    _triangleIndices = [NSMutableArray array];
+    if (![value getValue:&plane])
+        return nil;
+
+    // One plane is a quad, and a quad is what a plane detector's rectangle is: four corners, six
+    // indices, and the four texture coordinates that go with the corners.
+    _vertexCount = kPlaneQuadCorners;
+    _textureCoordinateCount = kPlaneQuadCorners;
+    _triangleCount = kPlaneQuadTriangles;
+    _boundaryVertexCount = kPlaneQuadCorners;
+
+    simd_float3 corners[kPlaneQuadCorners];
+    simd_float2 coordinates[kPlaneQuadCorners] = {
+        {0.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f},
+    };
+    int16_t indices[kPlaneQuadTriangles] = {0, 2, 1, 1, 2, 3};
+    // The detector gives a centre, a normal and a half-extent, and the quad's corners follow from an
+    // orthonormal pair in the plane. The pair is built out of the normal by crossing it with the
+    // world axis it is least parallel to, so the corners are in the plane for any normal at all.
+    simd_float3 seed = fabsf(plane.normal.y) < 0.9f ? (simd_float3){0.0f, 1.0f, 0.0f}
+                                                   : (simd_float3){1.0f, 0.0f, 0.0f};
+    simd_float3 along = simd_normalize(simd_cross(plane.normal, seed));
+    simd_float3 across = simd_normalize(simd_cross(plane.normal, along));
+    for (size_t i = 0; i < kPlaneQuadCorners; i++) {
+        float u = (i == 1 || i == 3) ? 1.0f : -1.0f;
+        float v = (i >= 2) ? 1.0f : -1.0f;
+        corners[i] = plane.center + along * (u * plane.extent.x) + across * (v * plane.extent.y);
+    }
+
+    _vertices = malloc(kPlaneQuadCorners * sizeof * _vertices);
+    _textureCoordinates = malloc(kPlaneQuadCorners * sizeof * _textureCoordinates);
+    _triangleIndices = malloc(kPlaneQuadTriangles * sizeof * _triangleIndices);
+    _boundaryVertices = malloc(kPlaneQuadCorners * sizeof * _boundaryVertices);
+    if (!_vertices || !_textureCoordinates || !_triangleIndices || !_boundaryVertices) {
+        free(_vertices);
+        free(_textureCoordinates);
+        free(_triangleIndices);
+        free(_boundaryVertices);
+        return nil;
+    }
+    memcpy(_vertices, corners, sizeof corners);
+    memcpy(_textureCoordinates, coordinates, sizeof coordinates);
+    memcpy(_triangleIndices, indices, sizeof indices);
+    memcpy(_boundaryVertices, corners, sizeof corners);
     return self;
 }
 
-- (simd_float3)center { return _center; }
-- (simd_float3)extent { return _extent; }
-- (NSArray<NSValue *> *)vertices { return _vertices; }
-- (NSArray<NSValue *> *)textureCoordinates { return _textureCoordinates; }
-- (NSArray<NSNumber *> *)triangleIndices { return _triangleIndices; }
-- (ARPlaneAnchorAlignment)geometryAlignment { return ARPlaneAnchorAlignmentVertical; }
+- (void)dealloc
+{
+    free(_vertices);
+    free(_textureCoordinates);
+    free(_triangleIndices);
+    free(_boundaryVertices);
+}
+
+- (const simd_float3 *)vertices { return _vertices; }
+- (const simd_float2 *)textureCoordinates { return _textureCoordinates; }
+- (const int16_t *)triangleIndices { return _triangleIndices; }
+- (const simd_float3 *)boundaryVertices { return _boundaryVertices; }
 
 @end
 
+// `ARPlaneAnchor.geometry` is declared by the 11.3 headers and is implemented here for a runtime
+// that predates them; a caller reaching it is by definition on a release new enough for the answer.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
+
 @implementation ARPlaneAnchor
 {
-    @synthesize alignment = _alignment;
-    @synthesize center = _center;
     ARPlaneAnchorAlignment _alignment;
     simd_float3 _center;
     simd_float3 _extent;
     ARPlaneGeometry *_geometry;
 }
+    @synthesize alignment = _alignment;
+    @synthesize center = _center;
 
-- (instancetype)initWithPlaneValue:(NSValue *)value
+
+
+- (instancetype)initWithPlaneValue:(CharonARValue *)value
 {
     CharonARPlane plane;
     [value getValue:&plane];
@@ -164,7 +250,7 @@
         plane.normal = ((simd_float3){0, 1, 0});
         plane.identifier = 0;
         plane.alignment = 0;
-        NSValue *value = [NSValue valueWithBytes:&plane objCType:@encode(CharonARPlane)];
+        CharonARValue *value = [[CharonARValue alloc] initWithBytes:&plane size:sizeof plane];
         _geometry = [[ARPlaneGeometry alloc] initWithPlaneValue:value];
     }
     return _geometry;
@@ -172,14 +258,18 @@
 
 @end
 
+#pragma clang diagnostic pop
+
 @implementation ARPointCloud
 {
-    @synthesize count = _count;
-    @synthesize points = _points;
-    @synthesize identifiers = _identifiers;
     NSData *_points;
     NSUInteger _count;
 }
+    @synthesize count = _count;
+    @synthesize points = _points;
+    @synthesize identifiers = _identifiers;
+
+
 
 - (instancetype)initWithPoints:(NSData *)points count:(NSUInteger)count
 {
@@ -213,11 +303,6 @@
 
 @implementation ARHitTestResult
 {
-    @synthesize type = _type;
-    @synthesize distance = _distance;
-    @synthesize localTransform = _localTransform;
-    @synthesize worldTransform = _worldTransform;
-    @synthesize anchor = _anchor;
     simd_float3 _worldPosition;
     simd_float3 _localNormal;
     NSUInteger _type;
@@ -225,8 +310,15 @@
     ARAnchor *_anchor;
     NSUInteger _distance;
 }
+    @synthesize type = _type;
+    @synthesize distance = _distance;
+    @synthesize localTransform = _localTransform;
+    @synthesize worldTransform = _worldTransform;
+    @synthesize anchor = _anchor;
 
-- (instancetype)initWithHitValue:(NSValue *)value
+
+
+- (instancetype)initWithHitValue:(CharonARValue *)value
 {
     self = [super init];
     if (!self)
@@ -252,16 +344,18 @@
 
 @implementation ARRaycastQuery
 {
-    @synthesize origin = _origin;
-    @synthesize direction = _direction;
-    @synthesize target = _target;
-    @synthesize targetAlignment = _targetAlignment;
     simd_float3 _origin;
     simd_float3 _direction;
     ARRaycastTarget _target;
     ARRaycastTargetAlignment _targetAlignment;
     NSArray<ARRaycastQuery *> *_includedQueries;
 }
+    @synthesize origin = _origin;
+    @synthesize direction = _direction;
+    @synthesize target = _target;
+    @synthesize targetAlignment = _targetAlignment;
+
+
 
 - (simd_float3)origin { return _origin; }
 - (simd_float3)direction { return _direction; }
@@ -297,17 +391,19 @@
 
 @implementation ARRaycastResult
 {
-    @synthesize worldTransform = _worldTransform;
-    @synthesize target = _target;
-    @synthesize targetAlignment = _targetAlignment;
-    @synthesize anchor = _anchor;
     simd_float3 _worldPosition;
     simd_float3 _localNormal;
     simd_float3 _cameraPosition;
     CGFloat _distance;
 }
+    @synthesize worldTransform = _worldTransform;
+    @synthesize target = _target;
+    @synthesize targetAlignment = _targetAlignment;
+    @synthesize anchor = _anchor;
 
-- (instancetype)initWithHitValue:(NSValue *)value
+
+
+- (instancetype)initWithHitValue:(CharonARValue *)value
 {
     self = [super init];
     if (!self)

@@ -14,16 +14,109 @@
 #import <ARKit/ARKit.h>
 #import <CoreLocation/CoreLocation.h>
 
+#import "CharonARKitPrivate.h"
+#import "CharonARKitPrivate.h"
 #import "CharonARTracker.h"
+
+// `+supportedVideoFormats`, `+configurableCaptureDeviceForPrimaryCamera` and the two recommendations
+// are declared by the 16.0 headers and are implemented here for a runtime that predates them; the
+// class itself only exists from 11.3. A caller reaching one of these is by definition on a release
+// new enough for the answer, which is the same reasoning every other backport in this package uses.
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
 
 @implementation ARConfiguration
 
-+ (BOOL)isSupported
-{
-    @synthesize worldAlignment = _worldAlignment;
+
+    
+    
+    
+    @dynamic isSupported;
+@synthesize worldAlignment = _worldAlignment;
     @synthesize lightEstimationEnabled = _lightEstimationEnabled;
     @synthesize providesAudioData = _providesAudioData;
-    @dynamic isSupported;
+- (instancetype)initCharonCommon
+{
+    return [super init];
+}
+
++ (BOOL)supportsFrameSemantics:(ARFrameSemantics)frameSemantics
+{
+    // Scene semantics are read out of a depth sensor's classification of what the camera sees, and
+    // this device has none, so there is no semantics to enable.
+    return NO;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // A configuration describes what a session is asked to do; copying one and changing the copy
+    // must not change the original, so every value the base class stores is carried over.
+    ARConfiguration *copy = [[self class] allocWithZone:zone];
+    copy.worldAlignment = self.worldAlignment;
+    copy.lightEstimationEnabled = self.isLightEstimationEnabled;
+    copy.providesAudioData = self.providesAudioData;
+    copy.frameSemantics = self.frameSemantics;
+    return copy;
+}
+
++ (NSArray<ARVideoFormat *> *)supportedVideoFormats
+{
+    // The formats the back camera really has, in the order the camera reports them, so that a format
+    // offered here is one the session can be configured with.
+    NSArray<AVCaptureDeviceFormat *> *formats =
+            [CharonARTracker supportedCaptureFormatsForPosition:AVCaptureDevicePositionBack];
+    NSMutableArray<ARVideoFormat *> *result = [NSMutableArray arrayWithCapacity:formats.count];
+    for (AVCaptureDeviceFormat *format in formats)
+        [result addObject:[[ARVideoFormat alloc] initWithCaptureFormat:format]];
+    return result;
+}
+
++ (AVCaptureDevice *)configurableCaptureDeviceForPrimaryCamera
+{
+    return [CharonARTracker captureDeviceForPosition:AVCaptureDevicePositionBack];
+}
+
++ (ARVideoFormat *)recommendedVideoFormatFor4KResolution
+{
+    return [self videoFormatNearestTo:CGSizeMake(3840, 2160)];
+}
+
++ (ARVideoFormat *)recommendedVideoFormatForHighResolutionFrameCapturing
+{
+    // The largest frame the primary camera can deliver, and the first one at that size.
+    ARVideoFormat *best = nil;
+    CGFloat bestArea = 0;
+    for (ARVideoFormat *format in self.supportedVideoFormats) {
+        CGFloat area = format.imageResolution.width * format.imageResolution.height;
+        if (area > bestArea) {
+            bestArea = area;
+            best = format;
+        }
+    }
+    return best;
+}
+
+/// The offered format whose frame is closest to the one asked for, measured on the log of each
+/// dimension so that a factor of two in either direction costs the same.
++ (ARVideoFormat *)videoFormatNearestTo:(CGSize)size
+{
+    ARVideoFormat *best = nil;
+    CGFloat bestDistance = INFINITY;
+    for (ARVideoFormat *format in self.supportedVideoFormats) {
+        CGFloat width = format.imageResolution.width;
+        CGFloat height = format.imageResolution.height;
+        if (width <= 0 || height <= 0)
+            continue;
+        CGFloat distance = hypot(log(width / size.width), log(height / size.height));
+        if (distance < bestDistance) {
+            bestDistance = distance;
+            best = format;
+        }
+    }
+    return best;
+}
+
++ (BOOL)isSupported
+{
     // The device, asked the question its own sensors can answer.
     return [CharonARTracker isSupported];
 }
@@ -41,6 +134,47 @@
 @end
 
 @implementation ARWorldTrackingConfiguration
+- (instancetype)init
+{
+    self = [self initCharonCommon];
+    if (!self)
+        return nil;
+    self.planeDetection = ARPlaneDetectionNone;
+    self.environmentTexturing = AREnvironmentTexturingAutomatic;
+    self.worldAlignment = ARWorldAlignmentGravity;
+    self.lightEstimationEnabled = NO;
+    self.detectionImages = [NSSet set];
+    self.detectionObjects = [NSSet set];
+    // The documented default is the richest reconstruction, which needs the depth sensor this
+    // device does not have, so the default is the one the hardware can actually deliver.
+    self.sceneReconstruction = ARSceneReconstructionNone;
+    return self;
+}
+
+- (void)setDetectionImages:(NSSet<ARReferenceImage *> *)detectionImages
+{
+    // null_resettable: nil is how a caller clears the set, and it clears it.
+    self.detectionImages = detectionImages ?: [NSSet set];
+}
+
++ (BOOL)supportsAppClipCodeTracking
+{
+    // An App Clip code is recognised by a Neural Engine that no device this framework runs on has.
+    return NO;
+}
+
++ (BOOL)supportsUserFaceTracking
+{
+    // Counted from the depth sensor that measures a face, and this device has none.
+    return NO;
+}
+
++ (BOOL)supportsSceneReconstruction:(ARSceneReconstruction)reconstruction
+{
+    // A scene reconstruction is a mesh built from a depth sensor, and this device has none.
+    return NO;
+}
+
 
 + (BOOL)isSupported
 {
@@ -54,9 +188,23 @@
             NSStringFromClass([self class]), self, (unsigned long)_planeDetection];
 }
 
++ (instancetype)new
+{
+    return [[self alloc] init];
+}
+
 @end
 
 @implementation AROrientationTrackingConfiguration
+- (instancetype)init
+{
+    self = [self initCharonCommon];
+    if (!self)
+        return nil;
+    self.lightEstimationEnabled = NO;
+    return self;
+}
+
 
 + (BOOL)isSupported
 {
@@ -65,9 +213,19 @@
     return [manager isAvailable];
 }
 
++ (instancetype)new
+{
+    return [[self alloc] init];
+}
+
 @end
 
 @implementation ARPositionalTrackingConfiguration
+- (instancetype)init
+{
+    return [self initCharonCommon];
+}
+
 
 + (BOOL)isSupported
 {
@@ -77,9 +235,43 @@
     return [CLLocationManager class] != nil;
 }
 
++ (instancetype)new
+{
+    return [[self alloc] init];
+}
+
 @end
 
 @implementation ARFaceTrackingConfiguration
+- (instancetype)init
+{
+    self = [self initCharonCommon];
+    if (!self)
+        return nil;
+    self.maximumNumberOfTrackedFaces = 1;
+    self.worldTrackingEnabled = NO;
+    return self;
+}
+
++ (NSInteger)supportedNumberOfTrackedFaces
+{
+    // Counted from the sensor that measures them, and this device has none.
+    return 0;
+}
+
++ (BOOL)supportsWorldTracking
+{
+    // A face is anchored in the world, so this asks the camera and the gyroscope, not the face
+    // sensor: this device has both, and the face tracking that would follow does not.
+    return [CharonARTracker isSupported];
+}
+
++ (BOOL)supportsAppClipCodeTracking
+{
+    // An App Clip code is recognised by a Neural Engine that no device this framework runs on has.
+    return NO;
+}
+
 
 + (BOOL)isSupported
 {
@@ -88,9 +280,36 @@
     return NO;
 }
 
++ (instancetype)new
+{
+    return [[self alloc] init];
+}
+
 @end
 
 @implementation ARBodyTrackingConfiguration
+- (instancetype)init
+{
+    self = [self initCharonCommon];
+    if (!self)
+        return nil;
+    self.automaticSkeletonScaleEstimationEnabled = YES;
+    self.detectionImages = [NSSet set];
+    self.maximumNumberOfTrackedImages = 0;
+    return self;
+}
+
+- (void)setDetectionImages:(NSSet<ARReferenceImage *> *)detectionImages
+{
+    self.detectionImages = detectionImages ?: [NSSet set];
+}
+
++ (BOOL)supportsAppClipCodeTracking
+{
+    // An App Clip code is recognised by a Neural Engine that no device this framework runs on has.
+    return NO;
+}
+
 
 + (BOOL)isSupported
 {
@@ -99,9 +318,29 @@
     return [CharonARTracker hasFrontCamera];
 }
 
++ (instancetype)new
+{
+    return [[self alloc] init];
+}
+
 @end
 
 @implementation ARImageTrackingConfiguration
+- (instancetype)init
+{
+    self = [self initCharonCommon];
+    if (!self)
+        return nil;
+    self.trackingImages = [NSSet set];
+    self.maximumNumberOfTrackedImages = 0;
+    return self;
+}
+
+- (void)setTrackingImages:(NSSet<ARReferenceImage *> *)trackingImages
+{
+    self.trackingImages = [trackingImages copy] ?: [NSSet set];
+}
+
 
 + (BOOL)isSupported
 {
@@ -109,15 +348,30 @@
     return [CharonARTracker isSupported];
 }
 
++ (instancetype)new
+{
+    return [[self alloc] init];
+}
+
 @end
 
 @implementation ARObjectScanningConfiguration
+- (instancetype)init
+{
+    return [self initCharonCommon];
+}
+
 
 + (BOOL)isSupported
 {
     // Object scanning reads a mesh out of the depth the camera sees; without a depth sensor there is
     // no mesh to read, and the framework is right to say so.
     return NO;
+}
+
++ (instancetype)new
+{
+    return [[self alloc] init];
 }
 
 @end

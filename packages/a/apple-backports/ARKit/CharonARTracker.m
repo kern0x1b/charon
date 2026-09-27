@@ -90,6 +90,34 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
 
 #pragma mark - The tracker
 
+@implementation CharonARValue
+{
+    NSMutableData *_bytes;
+    size_t _size;
+}
+
+@synthesize size = _size;
+
+- (instancetype)initWithBytes:(const void *)bytes size:(size_t)size
+{
+    self = [super init];
+    if (!self)
+        return nil;
+    _bytes = [NSMutableData dataWithBytes:bytes length:size];
+    _size = size;
+    return self;
+}
+
+- (BOOL)getValue:(void *)value
+{
+    if (_bytes.length < self.size)
+        return NO;
+    memcpy(value, _bytes.bytes, self.size);
+    return YES;
+}
+
+@end
+
 @implementation CharonARTracker
 {
     AVCaptureSession *_capture;
@@ -104,7 +132,7 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
 
     // The world: the points the tracker has placed, and the planes it has found in them.
     NSMutableData *_worldPoints;
-    NSMutableArray<NSValue *> *_planes;
+    NSMutableArray<CharonARValue *> *_planes;
     uint32_t _nextIdentifier;
 
     // The pose, and what the last frame saw.
@@ -130,6 +158,17 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
     NSUInteger _lumaWidth;
     NSUInteger _lumaHeight;
 }
+    @synthesize delegate = _delegate;
+    @synthesize pointCloud = _pointCloud;
+    @synthesize planes = _planes;
+    @synthesize cameraTransform = _cameraTransform;
+    @synthesize deviceTransform = _deviceTransform;
+    @synthesize lightEstimate = _lightEstimate;
+    @synthesize ambientColorTemperature = _ambientColorTemperature;
+    @synthesize isTracking = _isTracking;
+    @synthesize imageResolution = _imageResolution;
+    @synthesize timestamp = _timestamp;
+
 
 + (BOOL)isSupported
 {
@@ -156,6 +195,40 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
             return YES;
     }
     return NO;
+#endif
+}
+
++ (AVCaptureDevice *)captureDeviceForPosition:(AVCaptureDevicePosition)position
+{
+#if CHARON_NO_CAMERA
+    return nil;
+#else
+    AVCaptureDevice *fallback = nil;
+    for (AVCaptureDevice *device in [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) {
+        if (![device hasMediaType:AVMediaTypeVideo])
+            continue;
+        if (device.position == position)
+            return device;
+        // A device that reports no position is one whose camera could not be told apart; it is
+        // still a camera this library can capture from, so it is kept rather than dropped.
+        if (device.position == AVCaptureDevicePositionUnspecified && !fallback)
+            fallback = device;
+    }
+    // The primary camera is the back one. Where the device reports no position at all, this is the
+    // only camera there is, and the session captures from it, so it is the primary one too.
+    if (position == AVCaptureDevicePositionBack)
+        return fallback;
+    return nil;
+#endif
+}
+
++ (NSArray<AVCaptureDeviceFormat *> *)supportedCaptureFormatsForPosition:(AVCaptureDevicePosition)position
+{
+#if CHARON_NO_CAMERA
+    return @[];
+#else
+    AVCaptureDevice *device = [self captureDeviceForPosition:position];
+    return device ? device.formats : @[];
 #endif
 }
 
@@ -689,7 +762,7 @@ static uint32_t CharonPatchCost(const uint8_t *luma, NSUInteger width, NSUIntege
     const float cell = 0.25f;          ///< a quarter of a metre, which is a tabletop's worth
     const float level = 0.90f;         ///< how nearly the normal has to be up
     const float spread = 0.75f;        ///< how far a point may stray and still be on the surface
-    NSMutableArray<NSValue *> *found = [NSMutableArray array];
+    NSMutableArray<CharonARValue *> *found = [NSMutableArray array];
     NSUInteger i, j;
 
     for (i = 0; i < count; i += 3) {
@@ -758,7 +831,7 @@ static uint32_t CharonPatchCost(const uint8_t *luma, NSUInteger width, NSUIntege
         plane.extent = (high - low) * 0.5f;
         plane.alignment = 0.5f;   // a detector's confidence, never Apple's measured alignment
         plane.identifier = _nextIdentifier++;
-        [found addObject:[NSValue valueWithBytes:&plane objCType:@encode(CharonARPlane)]];
+        [found addObject:[[CharonARValue alloc] initWithBytes:&plane size:sizeof plane]];
         if ([found count] >= 16)
             break;
     }
@@ -784,7 +857,7 @@ static uint32_t CharonPatchCost(const uint8_t *luma, NSUInteger width, NSUIntege
     return out;
 }
 
-- (NSArray<NSValue *> *)planes { return [_planes copy]; }
+- (NSArray<CharonARValue *> *)planes { return [_planes copy]; }
 - (simd_float4x4)cameraTransform { return _cameraTransform; }
 - (simd_float4x4)deviceTransform { return _deviceTransform; }
 - (CGFloat)lightEstimate { return _lightEstimate; }
@@ -826,7 +899,7 @@ static BOOL CharonRayPlane(simd_float3 origin, simd_float3 direction, CharonARPl
 
 - (BOOL)raycastFromPoint:(CGPoint)point
                 allowing:(NSUInteger)targets
-                results:(NSMutableArray<NSValue *> *)results
+                results:(NSMutableArray<CharonARValue *> *)results
 {
     simd_float3 origin, direction;
     if (!CharonCameraRay(_resolution, point, &origin, &direction))
@@ -837,7 +910,7 @@ static BOOL CharonRayPlane(simd_float3 origin, simd_float3 direction, CharonARPl
 - (BOOL)raycastFromOrigin:(simd_float3)origin
                  direction:(simd_float3)direction
                 allowing:(NSUInteger)targets
-                  results:(NSMutableArray<NSValue *> *)results
+                  results:(NSMutableArray<CharonARValue *> *)results
 {
     // The ray is given in the camera's space, which is where Apple's raycast query takes it.
     simd_float3 world = simd_mul(_cameraTransform, (simd_float4){origin.x, origin.y, origin.z, 1}).xyz;
@@ -875,19 +948,19 @@ static BOOL CharonRayPlane(simd_float3 origin, simd_float3 direction, CharonARPl
         nearest = distance;
         any = YES;
         if (results)
-            [results addObject:[NSValue valueWithBytes:&record objCType:@encode(CharonARHit)]];
+            [results addObject:[[CharonARValue alloc] initWithBytes:&record size:sizeof record]];
     }
     return any;
 }
 
-- (BOOL)hitTestPoint:(CGPoint)point results:(NSMutableArray<NSValue *> *)results
+- (BOOL)hitTestPoint:(CGPoint)point results:(NSMutableArray<CharonARValue *> *)results
 {
     return [self hitTestPoint:point existingPlane:NO results:results];
 }
 
 - (BOOL)hitTestPoint:(CGPoint)point
        existingPlane:(BOOL)existingPlane
-            results:(NSMutableArray<NSValue *> *)results
+            results:(NSMutableArray<CharonARValue *> *)results
 {
     simd_float3 origin, direction;
     if (!CharonCameraRay(_resolution, point, &origin, &direction))
@@ -916,7 +989,7 @@ static BOOL CharonRayPlane(simd_float3 origin, simd_float3 direction, CharonARPl
         nearest = distance;
         any = YES;
         if (results)
-            [results addObject:[NSValue valueWithBytes:&record objCType:@encode(CharonARHit)]];
+            [results addObject:[[CharonARValue alloc] initWithBytes:&record size:sizeof record]];
     }
     return any;
 }

@@ -20,10 +20,6 @@
 
 @implementation ARSession
 {
-    @synthesize delegate = _delegate;
-    @synthesize delegateQueue = _delegateQueue;
-    @synthesize currentFrame = _currentFrame;
-    @synthesize configuration = _configuration;
     CharonARTracker *_tracker;
     NSOperationQueue *_captureQueue;
     NSMutableArray<ARAnchor *> *_anchors;
@@ -32,6 +28,12 @@
     ARConfiguration *_configuration;
     NSUInteger _runOptions;
 }
+    @synthesize delegate = _delegate;
+    @synthesize delegateQueue = _delegateQueue;
+    @synthesize currentFrame = _currentFrame;
+    @synthesize configuration = _configuration;
+
+
 
 - (instancetype)init
 {

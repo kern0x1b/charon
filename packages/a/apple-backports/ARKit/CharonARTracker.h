@@ -17,6 +17,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import <CoreVideo/CoreVideo.h>
+#import <AVFoundation/AVFoundation.h>
 #import <simd/simd.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -56,6 +57,25 @@ typedef struct {
 @protocol CharonARTrackerDelegate;
 
 /// The tracker. One per session; a session owns it and asks it for a pose.
+@interface CharonARValue : NSObject
+
+/// A plane or a hit, carried out of the tracker as an object.
+///
+/// These are structs that hold SIMD vectors, and `@encode` cannot describe an extended vector type
+/// on this target - it answers that the type's encoding is incomplete - so the bytes travel in a
+/// box object with a declared ivar rather than in an NSValue, whose `objCType` would have to name
+/// the struct. Reading the struct back is `getValue:`, and the size is the struct's own.
+- (instancetype)initWithBytes:(const void *)bytes size:(size_t)size NS_DESIGNATED_INITIALIZER;
+- (instancetype)init NS_UNAVAILABLE;
+
+/// Copies the struct out. NO is answered when the box holds fewer bytes than the struct needs,
+/// which is what a box of a different struct is.
+- (BOOL)getValue:(void *)value;
+
+@property (nonatomic, readonly) size_t size;
+
+@end
+
 @interface CharonARTracker : NSObject
 
 /// Whether the camera and the gyroscope this needs are both really there. ARKit's own
@@ -64,6 +84,14 @@ typedef struct {
 
 /// Whether the front camera can be asked for, which the body and face work would need.
 + (BOOL)hasFrontCamera;
+
+/// The camera ARKit would capture from, or nil when there is none. This is the only place in the
+/// library that enumerates cameras, so `+[ARConfiguration configurableCaptureDeviceForPrimaryCamera]`
+/// and the video formats answer from the same enumeration the session captures with.
++ (nullable AVCaptureDevice *)captureDeviceForPosition:(AVCaptureDevicePosition)position;
+
+/// Every format the given camera can be configured to, as AVCaptureVideoDataOutput would list them.
++ (NSArray<AVCaptureDeviceFormat *> *)supportedCaptureFormatsForPosition:(AVCaptureDevicePosition)position;
 
 @property (nonatomic, weak, nullable) id<CharonARTrackerDelegate> delegate;
 
@@ -84,7 +112,7 @@ typedef struct {
 @property (nonatomic, readonly) NSData *pointCloud;
 
 /// The planes the detector has, which is the geometry a plane anchor is made of.
-@property (nonatomic, readonly) NSArray<NSValue *> *planes;
+@property (nonatomic, readonly) NSArray<CharonARValue *> *planes;
 
 /// The pose of the camera at the capture time of the current frame, as a `simd_float4x4`.
 @property (nonatomic, readonly) simd_float4x4 cameraTransform;
@@ -111,22 +139,22 @@ typedef struct {
 /// A ray from the camera through a point of the frame, in world coordinates.
 - (BOOL)raycastFromPoint:(CGPoint)point
                 allowing:(NSUInteger)targets
-                results:(NSMutableArray<NSValue *> *)results;
+                results:(NSMutableArray<CharonARValue *> *)results;
 
 /// A ray from a world point along a world direction.
 - (BOOL)raycastFromOrigin:(simd_float3)origin
                  direction:(simd_float3)direction
                 allowing:(NSUInteger)targets
-                  results:(NSMutableArray<NSValue *> *)results;
+                  results:(NSMutableArray<CharonARValue *> *)results;
 
 /// A ray in the camera's own space, which is what a hit test against a feature is.
 - (BOOL)hitTestPoint:(CGPoint)point
-          results:(NSMutableArray<NSValue *> *)results;
+          results:(NSMutableArray<CharonARValue *> *)results;
 
 /// A ray against the planes only, which is what Apple's "existingPlaneGeometry" asks for.
 - (BOOL)hitTestPoint:(CGPoint)point
     existingPlane:(BOOL)existingPlane
-          results:(NSMutableArray<NSValue *> *)results;
+          results:(NSMutableArray<CharonARValue *> *)results;
 
 @end
 
