@@ -1,0 +1,47 @@
+# What lift() leaves alone against iPhoneOS26.2.sdk (the archive the iphoneos-sdk package installs for 26.2): one full lift of the registry of this series
+# (main f6227d17 with the 16 methods of ios10capturephoto/ios9picture spelled -[Class selector:], OpenGLES's ES3 headers read), none dropped: 39 lines.
+# Each is a name the lift did not reach, and each was looked for in every header of the SDK (usr/include and the frameworks) and found declared nowhere,
+# but for the ones told here:
+#  - class (7): a class no header declares (a stub exports some, some are private, some a later SDK's).
+#  - undeclared (2): a registered member its class reaches no declaration of; the line says where the SDK declares it, or that it declares it nowhere.
+#  - unmatched (30): __sincosf_stret and __sincos_stret are declared by math.h, in the branch of __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000, which the 6.1.3 target does not read.
+#    The rest (CG*(), NSData*, NSExtensionMain, __NS*, __kCF*, compiler-rt and libSystem internals) are exported by a stub or private, and named by no header.
+class	NSConstantArray	
+class	NSConstantDictionary	
+class	NSConstantDoubleNumber	
+class	NSConstantIntegerNumber	
+class	NSUnitConverterReciprocal	
+class	SCNPhysicsRadialGravityField	
+class	_UIViewCubicTimingFunction	
+undeclared	-[NSCoder setDecodingFailurePolicy:]	declared only by NSKeyedUnarchiver
+undeclared	-[UISpringTimingParameters settlingDuration]	declared only by CASpringAnimation
+unmatched	CGBitmapGetAlignedBytesPerRow()	function
+unmatched	CGContextGetBlendMode()	function
+unmatched	CGContextGetLineWidth()	function
+unmatched	NSDataDeallocatorFree	constant
+unmatched	NSDataDeallocatorNone	constant
+unmatched	NSDataDeallocatorUnmap	constant
+unmatched	NSDataDeallocatorVM	constant
+unmatched	NSExtensionMain	function
+unmatched	__NSArray0__	constant
+unmatched	__NSDictionary0__	constant
+unmatched	__bswapdi2	function or constant
+unmatched	__bswapsi2	function or constant
+unmatched	__floatundidf	function or constant
+unmatched	__floatundisf	function or constant
+unmatched	__floatunsidf	function or constant
+unmatched	__floatunsisf	function or constant
+unmatched	__kCFBooleanFalse	constant
+unmatched	__kCFBooleanTrue	constant
+unmatched	__sincos_stret	function or constant
+unmatched	__sincosf_stret	function or constant
+unmatched	__strlcat_chk	function or constant
+unmatched	__strlcpy_chk	function or constant
+unmatched	__ulock_wait	function or constant
+unmatched	__ulock_wake	function or constant
+unmatched	objc_allocWithZone	function or constant
+unmatched	objc_opt_self	function or constant
+unmatched	os_unfair_recursive_lock_lock_with_options	function or constant
+unmatched	os_unfair_recursive_lock_unlock	function or constant
+unmatched	voucher_adopt	function or constant
+unmatched	voucher_copy	function or constant
