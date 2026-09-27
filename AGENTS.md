@@ -64,9 +64,8 @@ Android) as it is here; iOS 6 is the first platform it targets, not its limit.
   or absolute `/Users/<name>/…` paths in tracked files — use `$HOME`,
   placeholders, and a gitignored `device.env`.
 - **Commit messages:** plain imperative subject describing the change, no type
-  prefixes or scope tags. Keep the AI-attribution trailer:
-  an agent's commit ends with its own `Co-Authored-By:` line — the work is openly AI-built
-  and we keep the mark.
+  prefixes or scope tags. An agent's `Co-Authored-By:` trailer is optional (owner,
+  2026-09-27): welcome, never a reason to send a commit back.
 - **A recipe takes a dependency by platform, not by name.** `package:dep(name)` is keyed by the package's name, and a host tool
   in the graph (ldid) brings its own dependencies with it, so a target's openssl and the host's meet at one key and the later
   wins: tdlib linked a macOS libcrypto that way. Use `modules/apple/dependency.lua`'s `target_dependency(package, name)`
