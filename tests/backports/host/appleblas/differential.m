@@ -11,6 +11,7 @@
 #import <Accelerate/Accelerate.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -49,10 +50,28 @@ static int close_enough(double x, double y)
 
 // One case, run through both. C starts as the same bytes on both sides, so a call that reads less than
 // the other - an alpha of zero, an m of zero - shows up as a difference in what was left alone.
+//
+// When both sides are handed the *same* buffer - which fifteen of the eighteen call sites do, to keep the
+// case in one - that is not an oracle at all: the array is compared with itself and any arithmetic that
+// differs on the two sides cancels. So when the two buffers are one, each side gets a copy of it and the
+// comparison is between two different arrays. Measured: with the two sharing one buffer, dropping the
+// multiplication by beta in AppleBLAS8.m leaves the run at 22 checks and 0 failures; with a copy each, the
+// same mutation fails.
 static void same(const char *name, int is_double, int order, int trans_a, int trans_b, int m, int n, double alpha,
                  const void *a, int lda, double beta, const void *b, int ldb, const void *before, void *mine, void *theirs,
                  int ldc, int count)
 {
+    int copied = 0;
+    if (mine == theirs) {
+        size_t each = (size_t)count * (is_double ? sizeof(double) : sizeof(float));
+        void *first = malloc(each);
+        void *second = malloc(each);
+        memcpy(first, theirs, each);
+        memcpy(second, theirs, each);
+        mine = first;
+        theirs = second;
+        copied = 1;
+    }
     if (is_double) {
         charon_host_appleblas_dgeadd((enum CBLAS_ORDER)order, (enum CBLAS_TRANSPOSE)trans_a, (enum CBLAS_TRANSPOSE)trans_b,
                                      m, n, alpha, a, lda, beta, b, ldb, mine, ldc);
@@ -71,8 +90,16 @@ static void same(const char *name, int is_double, int order, int trans_a, int tr
             snprintf(detail, sizeof detail, "element %d is %.9g, the host says %.9g (C started as %.9g)", at, x, y,
                      is_double ? ((double *)before)[at] : ((float *)before)[at]);
             report(0, name, detail);
+            if (copied) {
+                free((void *)mine);
+                free((void *)theirs);
+            }
             return;
         }
+    }
+    if (copied) {
+        free((void *)mine);
+        free((void *)theirs);
     }
     report(1, name, "");
 }

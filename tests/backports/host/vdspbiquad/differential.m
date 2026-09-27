@@ -68,13 +68,18 @@ static int checks;
 static int failures;
 static char detail[512];
 
-// A value the port's answer is within 1e-5 of the host's, relative. The two sides sum the same terms in a
-// different order - the host's is a butterfly and this is the sum the header prints - so the last place of
-// a double is all there is to ask about (facts/Accelerate/vDSPDFT.md).
+// The tolerance is the tightest the measured worst difference supports, and the measurement is in the facts.
+// Tracked over every check in this file the worst relative difference between the port and the host is
+// **1.49012e-08**, and all of the checks pass at 1e-6, 1e-7, 3e-8 and 2e-8; the worst one is a *float* biquad
+// output, whose own precision is 1.2e-7, so the float half of this file is the part that needs a tolerance at
+// all. The DFT half agrees to about 1e-15 and is compared at the same number, which its own arithmetic
+// (facts/Accelerate/vDSPDFT.md).
+static const double kBiquadTolerance = 2e-8;
+
 static int agrees(double mine, double theirs)
 {
     double scale = fabs(theirs) > 1.0 ? fabs(theirs) : 1.0;
-    return fabs(mine - theirs) <= 1e-5 * scale;
+    return fabs(mine - theirs) <= kBiquadTolerance * scale;
 }
 
 static void report(int passed, const char *name, const char *why)

@@ -61,11 +61,16 @@ static inline CharonBiquadCell *CharonBiquadCells(void *setup)
     return (CharonBiquadCell *)((char *)setup + sizeof(CharonBiquadCommon));
 }
 
-// The cell for one section and channel. The caller's own array is in the layout vDSP.h documents: the block
-// for section s and channel c begins at (s * N + c) * 5 (measured - facts/Accelerate/vDSPBiquad.md).
+// The cell for one section and channel, or NULL when that section or channel is not one the setup has. The
+// header forbids a window that leaves the setup and the host answers one anyway - the cells inside the window
+// change, everything else is left alone and nothing crashes (measured) - so every setter asks through here
+// and writes nothing for a NULL, which is the same answer without writing past the block.
 static inline CharonBiquadCell *CharonBiquadCellOf(void *setup, vDSP_Length section, vDSP_Length channel)
 {
     CharonBiquadCommon *common = (CharonBiquadCommon *)setup;
+    if (section >= common->sections || channel >= common->channels) {
+        return NULL;
+    }
     return &CharonBiquadCells(setup)[section * common->channels + channel];
 }
 
@@ -158,7 +163,10 @@ static inline void CharonBiquadSetActive(void *setup, const bool *states)
     for (vDSP_Length section = 0; section < sections; section++) {
         int active = states[section] ? 1 : 0;
         for (vDSP_Length channel = 0; channel < channels; channel++) {
-            CharonBiquadCellOf(setup, section, channel)->active = active;
+            CharonBiquadCell *cell = CharonBiquadCellOf(setup, section, channel);
+            if (cell) {
+                cell->active = active;
+            }
         }
     }
 }
@@ -179,6 +187,9 @@ static inline void CharonBiquadSetCoefficients(void *setup, const double *values
         for (vDSP_Length channel = 0; channel < channels; channel++) {
             CharonBiquadCell *cell = CharonBiquadCellOf(setup, start_section + section, start_channel + channel);
             const double *block = CHARON_BIQUAD_WINDOW(values, section, channel, sections);
+            if (!cell) {
+                continue;
+            }
             for (int k = 0; k < 5; k++) {
                 // The target moves with the coefficient: a target is only elsewhere once a SetTargets says
                 // so, and a single-precision setup walks its coefficients toward their targets at every
@@ -201,6 +212,9 @@ static inline void CharonBiquadSetCoefficientsFloat(void *setup, const float *va
         for (vDSP_Length channel = 0; channel < channels; channel++) {
             CharonBiquadCell *cell = CharonBiquadCellOf(setup, start_section + section, start_channel + channel);
             const float *block = CHARON_BIQUAD_WINDOW(values, section, channel, sections);
+            if (!cell) {
+                continue;
+            }
             for (int k = 0; k < 5; k++) {
                 cell->coeff[k] = block[k];
                 cell->target[k] = block[k];
@@ -228,6 +242,13 @@ static inline void CharonBiquadSetCoefficientsFloat(void *setup, const float *va
 //     the first two answers 1, 5, 7 and 1, 8.2, 9. So for a double setup the two rate arguments are stored
 //     and change nothing, which is what `interpolates` records and what the registry entries for
 //     vDSP_biquadm_SetTargetsSingleD and vDSP_biquadm_SetTargetsDoubleD say (facts/Accelerate/vDSPBiquad.md).
+//
+// What is above is the *isolated* walk, one section, and it is what this answers for every number of
+// sections. A cascade of two or more walks differently - the snap lands a step later, so a two-section setup
+// whose sections go 2 -> 4 and 5 -> 10 answers 37.5 and 38.75 where the release answers 35.1562 and
+// 37.5391. That is measured, it is audible, and the rule behind it is not yet read off, so it is stated
+// rather than guessed at; the two-section case is in the differential and prints the divergence every run
+// (facts/Accelerate/vDSPBiquad.md).
 static inline void CharonBiquadSetTargets(void *setup, const double *values, double rate, double threshold,
                                           vDSP_Length start_section, vDSP_Length start_channel, vDSP_Length sections,
                                           vDSP_Length channels)
@@ -237,6 +258,9 @@ static inline void CharonBiquadSetTargets(void *setup, const double *values, dou
         for (vDSP_Length channel = 0; channel < channels; channel++) {
             CharonBiquadCell *cell = CharonBiquadCellOf(setup, start_section + section, start_channel + channel);
             const double *block = CHARON_BIQUAD_WINDOW(values, section, channel, sections);
+            if (!cell) {
+                continue;
+            }
             for (int k = 0; k < 5; k++) {
                 cell->target[k] = block[k];
             }
@@ -269,6 +293,9 @@ static inline void CharonBiquadSetTargetsFloat(void *setup, const float *values,
         for (vDSP_Length channel = 0; channel < channels; channel++) {
             CharonBiquadCell *cell = CharonBiquadCellOf(setup, start_section + section, start_channel + channel);
             const float *block = CHARON_BIQUAD_WINDOW(values, section, channel, sections);
+            if (!cell) {
+                continue;
+            }
             for (int k = 0; k < 5; k++) {
                 cell->target[k] = block[k];
             }

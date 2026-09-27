@@ -28,7 +28,10 @@ impulse answer 0.1, 0.16, 0.186, -0.1544, and `{1, 0, 0, 0.5, 0}` answer 1, -0.5
 `(s * N + c) * 5`. Measured with one section and two channels over the coefficients 1..10: channel 0 has a b0 of 1 and channel 1 a
 b0 of 6.
 
-**The cascade runs section 0 first.** Measured: two sections with the second one's b0 at 2 answer 2.
+**The order of a cascade does not matter, and saying so is the measurement.** A cascade of linear time-invariant sections
+commutes, and the release's own API gives nothing to tell the order apart with: putting the `a1` on section 0 or on section 1
+gives `1 -0.5 0.25 -0.125 0.0625` both times, and walking this port's cascade in reverse leaves the whole differential at 74 checks
+and 0 failures. The port walks section 0 first, which is one of the two orders that answer the same.
 
 **The delay is two doubles per section and channel**, which is the section in transposed direct form II - the two-value form that
 carries the last two samples' input and output history, and which a direct-form reading of the header's pseudocode would need four
@@ -47,9 +50,24 @@ the fresh response of that section when it is made active again). **The two prec
 a two-section setup inactive and the input 1, 2, 3, 4, `vDSP_biquadm` answers 1, 2, 3, 4 and `vDSP_biquadmD` answers 0, 0, 0, 0.
 
 **`SetCoefficients` takes a window of its own**, packed `nsec` by `nchn` - the five values of its (section, channel) begin at
-`(section * nchn + channel) * 5` - and places it in the setup at `(start_sec, start_chn)`. The two layouts are different and the
-window is the first of them: measured, a window of one section and one channel at `(0, 1)` of a two-channel setup takes the first
-five values of a five-value array, and the cell that changes is channel 1's. The elements are read in the element type the
+`(section * nchn + channel) * 5` - and places it in the setup at `(start_sec, start_chn)`. A window of one section and one channel
+cannot decide that, because with `nsec = nchn = 1` the two candidate strides are the same expression; what decides it is a window
+with `nsec >= 2` and a setup whose own `N` differs from the window's `nchn`. Measured on the host over a 2-section 4-channel setup
+of pure gains, where a channel's answer is the product of its two b0s:
+
+| window | the host's per-channel products | what it fixes |
+| --- | --- | --- |
+| `(nsec=2, nchn=4)` at `(0,0)` | 12 21 32 45 | blocks 0..7, the window's own `nchn` as the stride |
+| `(1, 4)` at `(0,0)` | 2 3 4 5 | section 1 alone, four blocks |
+| `(2, 1)` at `(0,0)` | 6 1 1 1 | blocks 0 and 1, the channels after it untouched |
+| `(2, 3)` at `(0,0)` | 10 18 28 1 | six blocks, section 1 using 3, 4, 5 |
+| `(2, 2)` at `(0,1)` | 1 8 15 1 | placed at `start_chn + c` |
+
+All five and a sixth at `(1, 2)` go through both sides on the reviewer instrument and the port matches the host element for
+element, so the code is right. **They are not in `tests/backports/host/vdspbiquad` yet**: the host's own
+`vDSP_biquadm_DestroySetup` stops the process on the buffer shapes those cases need, so putting them in the suite needs a
+setup whose destruction the host survives. Until then a change to the stride would not be caught by the suite, which is the
+one thing about this pair the record should not leave open. The elements are read in the element type the
 declaration names, in both the 9.0 pair and the 16.0 pair (measured: each of `SetCoefficientsSingleD` and `SetCoefficientsDoubleD` was
 handed a float array of 9 and a double array of 9, and each of them read its own).
 
@@ -73,6 +91,30 @@ handed a float array of 9 and a double array of 9, and each of them read its own
   same four parameter sets answer 9, 9, 9, 9 where the single-precision setup of the first two answers 1, 5, 7 and 1, 8.2, 9. So the
   `interp_rate` and `interp_threshold` of `vDSP_biquadm_SetTargetsSingleD` and `vDSP_biquadm_SetTargetsDoubleD` are recorded with the
   target and change no answer. That is a difference from the header's wording and the registry entries for those two functions say so.
+
+**What is not right yet, and it is the one thing on this page a caller can hear: the walk above is the
+*isolated* one, and a cascade of two or more sections walks differently.** Measured on this machine, over a
+two-section setup whose sections go 2 -> 4 and 5 -> 10 with a rate of 0.5 and a threshold of 0.25, the host answers
+
+```
+10  22.5  30.625  35.1562  37.5391  40  40  40
+```
+
+where this port answers 10, 22.5, 30.625, **37.5**, **38.75**, 40, 40, 40. The first two sections' products fix what the host's
+implied per-section b0 is: at the third sample 3.75 x 9.375 and at the fourth 3.875 x 9.6875, so the host's first section runs the
+geometric walk 2, 3, 3.5, 3.75, 3.875, 4 where in isolation it runs 2, 3, 3.5, **4**, 4 - **inside a cascade the snap lands one
+step later**, and it does the same for every threshold from 0.1 to 0.5 and every rate from 0.25 to 0.75. A two-section setup
+whose two walks are identical (both 1 -> 9) agrees with this port, which is why the single-section cases here never saw it.
+
+**The port therefore answers the isolated rule for every M, and for M >= 2 that is measurably not what the release answers** - 7%
+high at the peak of the transition, which is an audible level bump in the middle of a filter change. This is stated rather than
+papered over: the rule that governs the cascade is measured to *exist* and is not yet read off, and a guess at it would be a
+second wrong answer on top of a known one. What is needed to read it off is a probe that leaves one section inactive with the
+other present and reads that section's own b0 out of the answer; the two numbers above already pin it to "the isolated walk with the
+snap deferred", and the sweep over thresholds in the review's probe would confirm or correct that.
+
+`tests/backports/host/vdspbiquad` poses the two-section case beside the single-section ones and prints the
+divergence as a documented deviation, so it is re-measured on every run rather than assumed.
 
 A coefficient's target moves with it: `SetCoefficients` sets the target to the new coefficient, because a target is only elsewhere
 once a `SetTargets` says so, and a single-precision setup walks its coefficients toward their targets at every sample.

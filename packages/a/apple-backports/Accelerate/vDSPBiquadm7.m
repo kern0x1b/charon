@@ -26,8 +26,11 @@
 //     per sample would need four.
 //   - IX and IY are element strides: an impulse at index 1 of a strided input comes out at index 1, and a
 //     length of 0 leaves the output alone.
-//   - CreateSetup answers NULL for no coefficients, for no sections or no channels, and where the product
-//     would overflow; DestroySetup takes NULL and does nothing.
+//   - CreateSetup answers NULL for no coefficients at all and where the product would overflow. **No sections
+//     and no channels are not refusals**: the host answers a setup for both, and a call over M = 0 passes the
+//     input through while a call over N = 0 writes nothing (measured). DestroySetup takes NULL and does
+//     nothing, which the host cannot be asked about - the header does not declare that argument nullable and it
+//     reads through it.
 
 #import "CharonBiquad.h"
 
