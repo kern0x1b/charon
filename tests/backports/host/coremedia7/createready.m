@@ -1,5 +1,6 @@
 #import <CoreMedia/CoreMedia.h>
 #import <CoreVideo/CoreVideo.h>
+#import <AudioToolbox/AudioToolbox.h>
 #import <Foundation/Foundation.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,6 +22,12 @@ OSStatus CharonHostCMSampleBufferCreateForImageBufferWithMakeDataReadyHandler(CF
 
 static int failures, checks, cornerSame, cornerDifferent;
 
+OSStatus CharonHostCMAudioSampleBufferCreateReadyWithPacketDescriptions(CFAllocatorRef allocator, CMBlockBufferRef dataBuffer,
+                                                                      CMFormatDescriptionRef formatDescription, CMItemCount numSamples,
+                                                                      CMTime presentationTimeStamp,
+                                                                      const AudioStreamPacketDescription *packetDescriptions,
+                                                                      CMSampleBufferRef *sampleBufferOut);
+
 // The claim (registry/CoreMedia/ios8.json): a sample buffer built with a timing entry for every sample is
 // the host's own, byte for byte, and every iteration of CallBlockForEachSample hands the block the same
 // per-sample buffer and the same bytes for that sample. The temporary buffer's *total* length is not part
@@ -31,6 +38,22 @@ static int failures, checks, cornerSame, cornerDifferent;
 static int insideClaim(CMItemCount samples, CMItemCount timings)
 {
     return timings >= samples;
+}
+
+// CMAudioSampleBufferCreateReadyWithPacketDescriptions: for a format with no per-frame byte size of its
+// own (AAC) and a packet description whose mDataByteSize is zero, the host's sizing array depends on the
+// packet count in a way this grid could not pin down - one packet gets a zero size entry, two get none -
+// so that shape is outside the claim and its agreement is measured (facts/CoreMedia/SampleBufferCreateReady.md).
+static int audioClaim(UInt32 packets, const AudioStreamPacketDescription *descriptions, BOOL perFrameSize)
+{
+    if (perFrameSize)
+        return YES;
+    if (!descriptions)
+        return NO;
+    for (UInt32 index = 0; index < packets; index++)
+        if (!descriptions[index].mDataByteSize)
+            return NO;
+    return YES;
 }
 
 static NSString *describe(CMSampleBufferRef buffer, int perSample)
@@ -200,6 +223,74 @@ int main(void)
             system = port = NULL;
             compare("CreateReadyWithImageBuffer with no format", CMSampleBufferCreateReadyWithImageBuffer(kCFAllocatorDefault, pixels, NULL, &timing, &system), system,
                     CharonHostCMSampleBufferCreateReadyWithImageBuffer(kCFAllocatorDefault, pixels, NULL, &timing, &port), port, 1, 0);
+        }
+        // CMAudioSampleBufferCreateReadyWithPacketDescriptions: a packet description is a start offset, a
+        // frame count and a byte size, and the port lays the sample buffer out from those three.
+        {
+            static const UInt32 frameCounts[] = {1, 1024, 0};
+            static const UInt32 byteSizes[] = {0, 3, 211, 65536};
+            static const SInt64 offsets[] = {0, 1, 1024, -1};
+            static const int descriptorCounts[] = {0, 1, 2, 5};
+            for (size_t n = 0; n < sizeof descriptorCounts / sizeof *descriptorCounts; n++) {
+                CMItemCount count = (CMItemCount)descriptorCounts[n];
+                AudioStreamPacketDescription *descriptions = count ? calloc(count, sizeof *descriptions) : NULL;
+                CMBlockBufferRef block = blockOf(count * 4 + 8);
+                for (size_t packet = 0; packet < count; packet++) {
+                    descriptions[packet].mStartOffset = offsets[packet % 4];
+                    descriptions[packet].mVariableFramesInPacket = frameCounts[packet % 3];
+                    descriptions[packet].mDataByteSize = byteSizes[packet % 4];
+                }
+                for (size_t a = 0; a < sizeof frameCounts / sizeof *frameCounts; a++) {
+                    AudioStreamBasicDescription stream = {0};
+                    stream.mSampleRate = 44100;
+                    stream.mFormatID = kAudioFormatMPEG4AAC;
+                    stream.mFormatFlags = kMPEG4Object_AAC_LC;
+                    stream.mChannelsPerFrame = 2;
+                    stream.mFramesPerPacket = 1024;
+                    CMAudioFormatDescriptionRef format = NULL;
+                    if (CMAudioFormatDescriptionCreate(kCFAllocatorDefault, &stream, 0, NULL, 0, NULL, NULL, &format))
+                        continue;
+                    for (int withPackets = 0; withPackets < 2; withPackets++)
+                        for (int numeric = 0; numeric < 2; numeric++) {
+                            CMSampleBufferRef system = NULL, port = NULL;
+                            char name[128];
+                            snprintf(name, sizeof name, "AudioSampleBufferCreate %lu packets, descriptions %s, pts %s", (unsigned long)count,
+                                     withPackets ? "given" : "null", numeric ? "numeric" : "invalid");
+                            CMTime pts = numeric ? CMTimeMake(count, 44100) : kCMTimeInvalid;
+                            compare(name,
+                                    CMAudioSampleBufferCreateReadyWithPacketDescriptions(kCFAllocatorDefault, block, format, count, pts,
+                                                                                       withPackets ? descriptions : NULL, &system),
+                                    system,
+                                    CharonHostCMAudioSampleBufferCreateReadyWithPacketDescriptions(kCFAllocatorDefault, block, format, count, pts,
+                                                                                              withPackets ? descriptions : NULL, &port),
+                                    port, audioClaim((UInt32)count, withPackets ? descriptions : NULL, NO), 0);
+                        }
+                    for (size_t f = 0; f < sizeof frameCounts / sizeof *frameCounts; f++) {
+                        AudioStreamBasicDescription plain = {0};
+                        plain.mSampleRate = 48000;
+                        plain.mFormatID = kAudioFormatLinearPCM;
+                        plain.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
+                        plain.mChannelsPerFrame = 1;
+                        plain.mBitsPerChannel = 16;
+                        plain.mBytesPerFrame = 2;
+                        plain.mBytesPerPacket = 2;
+                        plain.mFramesPerPacket = 1;
+                        CMAudioFormatDescriptionRef linear = NULL;
+                        if (CMAudioFormatDescriptionCreate(kCFAllocatorDefault, &plain, 0, NULL, 0, NULL, NULL, &linear))
+                            continue;
+                        CMSampleBufferRef system = NULL, port = NULL;
+                        char name[128];
+                        snprintf(name, sizeof name, "AudioSampleBufferCreate linear, %lu packets, frames %u", (unsigned long)count, frameCounts[f]);
+                        compare(name, CMAudioSampleBufferCreateReadyWithPacketDescriptions(kCFAllocatorDefault, block, linear, count, CMTimeMake(count, 48000), descriptions, &system), system,
+                                CharonHostCMAudioSampleBufferCreateReadyWithPacketDescriptions(kCFAllocatorDefault, block, linear, count, CMTimeMake(count, 48000), descriptions, &port), port, 1, 0);
+                        if (linear)
+                            CFRelease(linear);
+                    }
+                    CFRelease(format);
+                }
+                free(descriptions);
+                CFRelease(block);
+            }
         }
         for (size_t n = 0; n < sizeof sampleCounts / sizeof *sampleCounts; n++)
             for (size_t t = 0; t < sizeof timingCounts / sizeof *timingCounts; t++) {

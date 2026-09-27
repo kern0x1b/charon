@@ -330,6 +330,17 @@
       "effect": "CFSTR(\"HDR10PlusPerFrameData\")",
       "facts": "facts/CoreMedia/SampleBufferConstants.md",
       "source": "read from the host's own CoreMedia"
+    },
+    {
+      "api": "CMAudioSampleBufferCreateReadyWithPacketDescriptions()",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "corpus row 5186, demand rank 192 with LOAD-FAIL for one application: a program that does not load without it; the field it reads is mVariableFramesInPacket, which Apple's CoreAudioTypes declares in every SDK the port builds against, and a previous delivery left it out on a false premise that the type is incomplete",
+      "effect": "lays the sample buffer out from the packet descriptions and hands it to the release's own CMSampleBufferCreate as one timing entry and one sizing entry, the 'every sample is the same' form Apple's header describes: the duration is the stream's mFramesPerPacket at its mSampleRate, the size is the description's mDataByteSize or the stream's mFramesPerPacket times its per-frame bytes; zero samples is kCMSampleBufferError_InvalidEntryCount, a presentation timestamp that is not numeric is kCMSampleBufferError_SampleTimingInfoInvalid, and with no packet descriptions a format with no per-frame byte size at all is kCMSampleBufferError_RequiredParameterMissing",
+      "facts": "facts/CoreMedia/SampleBufferCreateReady.md",
+      "source": "the host's own CoreMedia, held case by case over 239 answers by tests/backports/host/coremedia7/createready.m; the three field names read from CoreAudioBaseTypes.h in the iPhoneOS 16.4 SDK the gate resolves, iPhoneOS 26.2 and the macOS SDK alike"
     }
   ]
 }

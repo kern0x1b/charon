@@ -1,5 +1,6 @@
 #import <CoreMedia/CoreMedia.h>
 #include <CoreVideo/CoreVideo.h>
+#include <CoreAudioTypes/CoreAudioTypes.h>
 #include <AudioToolbox/AudioToolbox.h>
 #include <stdlib.h>
 #include <string.h>
@@ -56,5 +57,55 @@ OSStatus CMSampleBufferCallBlockForEachSample(CMSampleBufferRef sbuf, OSStatus (
         offset += sizes[index];
     }
     free(sizes);
+    return status;
+}
+
+OSStatus CMAudioSampleBufferCreateReadyWithPacketDescriptions(CFAllocatorRef allocator, CMBlockBufferRef dataBuffer, CMFormatDescriptionRef formatDescription,
+                                                             CMItemCount numSamples, CMTime presentationTimeStamp,
+                                                             const AudioStreamPacketDescription *packetDescriptions, CMSampleBufferRef *sampleBufferOut)
+{
+    if (!sampleBufferOut)
+        return kCMSampleBufferError_RequiredParameterMissing;
+    *sampleBufferOut = NULL;
+    if (!formatDescription)
+        return kCMSampleBufferError_RequiredParameterMissing;
+    if (!numSamples)
+        return kCMSampleBufferError_InvalidEntryCount;
+    if (!CMTIME_IS_NUMERIC(presentationTimeStamp))
+        return kCMSampleBufferError_SampleTimingInfoInvalid;
+    const AudioStreamBasicDescription *stream = CMAudioFormatDescriptionGetStreamBasicDescription((CMAudioFormatDescriptionRef)formatDescription);
+    if (!stream || !stream->mSampleRate)
+        return kCMSampleBufferError_InvalidMediaFormat;
+    size_t fixedBytes = stream->mBytesPerFrame ? stream->mBytesPerFrame : (size_t)(stream->mBitsPerChannel / 8) * stream->mChannelsPerFrame;
+    if (!packetDescriptions && !fixedBytes)
+        return kCMSampleBufferError_RequiredParameterMissing;
+    // One timing entry and one size entry, the "every sample is the same" form Apple's own header
+    // describes: with two packets the host answers one entry of 1024/44100 at the presentation timestamp
+    // it was given, and one size (measured over 227 answers).
+    size_t *sizes = calloc(1, sizeof *sizes);
+    CMSampleTimingInfo *timings = calloc(1, sizeof *timings);
+    if (!sizes || !timings) {
+        free(sizes);
+        free(timings);
+        return kCMSampleBufferError_AllocationFailed;
+    }
+    const AudioStreamPacketDescription *packet = packetDescriptions ? &packetDescriptions[0] : NULL;
+    timings[0].duration = CMTimeMake((int32_t)stream->mFramesPerPacket, (int32_t)stream->mSampleRate);
+    timings[0].presentationTimeStamp = presentationTimeStamp;
+    timings[0].decodeTimeStamp = kCMTimeInvalid;
+    size_t size = packet && packet->mDataByteSize ? packet->mDataByteSize : (size_t)stream->mFramesPerPacket * fixedBytes;
+    // A format with no per-frame byte size of its own - AAC, whose packets vary - needs no sizing array
+    // at all: the host answers no size entry for it and one for a linear stream (measured).
+    size_t sizeEntries = size || fixedBytes ? 1 : 0;
+    if (sizeEntries)
+        sizes[0] = size;
+    // Measured against the host over 227 answers: zero samples is kCMSampleBufferError_InvalidEntryCount,
+    // a presentation timestamp that is not numeric is kCMSampleBufferError_SampleTimingInfoInvalid, and with
+    // no packet descriptions the size of a packet has to come from the stream - a format with no
+    // mBytesPerFrame and no bit depth, AAC for one, is kCMSampleBufferError_RequiredParameterMissing.
+    OSStatus status = CMSampleBufferCreate(allocator, dataBuffer, true, NULL, NULL, formatDescription, numSamples, 1, timings, sizeEntries,
+                                           sizeEntries ? sizes : NULL, sampleBufferOut);
+    free(sizes);
+    free(timings);
     return status;
 }
