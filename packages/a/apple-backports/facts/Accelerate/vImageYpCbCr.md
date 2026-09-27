@@ -118,12 +118,26 @@ video range and the full range both give it - where the header's is `255 / (YpRa
 differs between them. Its *base* is the header's: the value at a zero sample is 136 with the ten-bit video
 range and 0 with the full range, and the header's own value at a zero sample is 135.575 and 0.
 
-So the system's ten-bit path starts from the header's answer at a zero sample and adds a fraction of the
-deviation, and the fraction is a quarter for the luma and the green chroma and about one for the blue
-chroma - **not one constant**, so it is not a scale this port can write down, and a port that guessed one
-would be wrong on every pixel of the two shapes. It is the system's ten-bit fixed-point pipeline, whose
-coefficients are not published, and the only honest answer is Conversion.h's formula with the difference
-measured: **63.4 per cent of 760 480 samples**, every one of them in one of the two ten-bit shapes.
+**And it is not affine, which settles it.** Fitting the full three-by-three matrix and bias by least squares
+over 10 000 random pixels per pixel range - the test that decides whether a linear rule can express it at
+all - gives a worst residual of **175, 176 and 178** for the ten-bit video range, the clamped one and the
+full one, and 178 for the 709 matrix. A rule that fits to within a unit would be the system's rule and the
+port would use it; 175 is not that.
+
+The period of the output in the luma field is **four**, which is a width signature rather than a scale: over
+every one of the 1023 steps of Yp at Cb = Cr = 0, not one of them changes the green by 0 or 1 - the values
+run 136, 111, 85, 60, 136, 111, 86, 61, 136, ... - so the low bits of one field are reaching the answer as
+if the field were read wider than it is. Searching the rule space that suggests, each field read at a width
+of 8 to 16 bits and divided by 1 to 16, over 2 304 rules and 3 000 random pixels, the best is **a residual of
+82** - a twelve-bit luma divided by four and an eight-bit chroma divided by two. Also not that.
+
+So the ten-bit path is non-linear, and it is neither a matrix, nor the header's formula at another scale, nor
+a field read at the wrong width. It is a fixed-point pipeline whose coefficients are not published, and a
+port that fitted a rule to it would be reproducing a fit with an 82-unit error and calling it the system.
+Conversion.h's formula is what the port answers, and the difference is measured and stated: **63.4 per cent
+of 760 480 samples**, every one of them in one of the two ten-bit shapes. The two Q12-source conversions are
+the same shape - the system's luma there is 258 at a zero pixel and a channel past 1023 wraps to zero - and
+are held to the same standard.
 
 The differential is explicit about it. For those two shapes, in both directions, it holds the port to the
 formula **written out a third time and independently in the test** - `reference_decode`, `reference_v410`,
