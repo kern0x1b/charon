@@ -29,7 +29,7 @@
 #import <stdint.h>
 
 #import "CharonBraille.h"
-#import "CharonIntentsCoding.h"
+#import "../Intents/CharonIntentsCoding.h"
 
 #pragma mark - The standard's tables
 
