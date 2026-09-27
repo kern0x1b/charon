@@ -24,7 +24,9 @@ public struct OpenURLIntent: SystemIntent, URLRepresentableIntent {
     public var urlRepresentation: IntentURLRepresentation<OpenURLIntent>
     /// The intent's own projection of its URL, which is the property wrapper a caller reads.
     public var urlParameter: IntentParameter<URL> {
-        let parameter = IntentParameter<URL>(description: LocalizedStringResource(stringLiteral: "URL"))
+        let title = LocalizedStringResource("URL")
+        let parameter = IntentParameter<URL>(description: title, requestValueDialog: nil,
+                                              inputConnectionBehavior: .default)
         parameter.setValue(url)
         return parameter
     }
@@ -55,7 +57,7 @@ public struct OpenURLIntent: SystemIntent, URLRepresentableIntent {
     public static var title: LocalizedStringResource { return LocalizedStringResource("Open URL") }
     public static var openAppWhenRun: Bool { return true }
 
-    public static var parameterSummary: SummaryContent { return SummaryContent("Open \(\.$url)") }
+    public static var parameterSummary: SummaryContent { return SummaryContent("Open the URL") }
 
     public func perform() async throws -> PerformResult {
         CharonURL.open(url)
