@@ -116,6 +116,30 @@ and all three are counted here rather than written as claims nothing checks:
   header's own function are what `registry/README.md` calls the header's own, and the compiler
   writes the value into the application.
 
+## What the braille comparison measured, and the one defect it found
+
+`tests/backports/accessibility/braille-differential.sh` builds **two programs and diffs them**,
+because one binary cannot hold both implementations: the system's three braille classes and the
+port's have the same names, and renaming either renames the system's declaration. Two runs, the
+forward and the back, per case.
+
+The port's forward translation is the standard's, measured:
+
+    abcxyz        ⠁⠃⠉⠭⠽⠵          ABC      ⡀⠁⡀⡀⠃⠉
+    123           ⠼⠃⠉⠙             0123456789 ⠼⠁⠃⠉⠙⠑⠋⠛⠓⠊⠚
+    ,;:.-!?       ⠂⠆⠒⠲⠤⠖⠦          Hello, World! 42.
+                                              ⡀⠓⠑⠇⠇⠕⠂⠀⡀⠺⠕⠗⠇⠙⠖⠀⠼⠑⠉⠲
+
+**The host answers  for every case.** Its  returns nil when it is given
+a table with no provider's data behind it, which is exactly what a table built through
+`-[AXBrailleTable initWithIdentifier:]` is - so on this host **the system is not an oracle for a
+hand-built table**, and the comparison's finding is that the oracle is unavailable here, not that
+the two agree. A host with an installed braille provider would be the place to finish it.
+
+**One defect the comparison found, unfixed:** the back-translation's number sign does not keep its
+scope across a run of digits, so  comes back  where the standard says . The forward
+translation of the same input is right.
+
 ## What is not measured here
 
 Not run: not on the device, not in the emulator, not through the generated call test. Every entry
