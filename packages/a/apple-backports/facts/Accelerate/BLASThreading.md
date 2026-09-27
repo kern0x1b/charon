@@ -12,6 +12,17 @@ answers 1, `BLASSetThreading(BLAS_THREADING_MULTI_THREADED)` answers 0 and `BLAS
 `BLASSetThreading(99)` answers -1 with `BLASGetThreading()` still answering 0 afterwards: a value the library does not have is refused
 and the setting is left as it was.
 
+## The three enumerators are a header, not a symbol
+
+`BLAS_THREADING_MULTI_THREADED`, `BLAS_THREADING_SINGLE_THREADED` and `BLAS_THREADING_MAX_OPTIONS` are cases of
+`enum BLAS_THREADING`, so nothing at run time carries them: they are a declaration in a header, and no release of any
+kind exports a symbol for them. They are therefore not in the registry as implemented - the gate weighs an implemented
+constant against a symbol the built library exports, and a gate run names an enumerator listed as implemented and not
+built, which is the correct answer for a name that has no code behind it on any release. They are counted as
+header-only rows, in the bucket the week's plan gives them: an Objective-C constant that is an enum case or a macro
+exists once the lift lowers its availability and has no code of its own. The two functions are the other matter and
+are carried.
+
 ## The header the build SDK does not have
 
 These five names come from `vecLib/thread_api.h`, which arrived with the API. The SDK the port builds against is 16.4, which has no
