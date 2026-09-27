@@ -20,6 +20,7 @@
 #import <CarPlay/CarPlay.h>
 #import <UIKit/UIKit.h>
 #import <objc/message.h>
+#import <objc/runtime.h>
 
 // The three buttons' own drawing and their own taps, which are implemented in
 // CarPlayTemplates12.m and declared here so the templates that hold them can ask. Every member is
@@ -43,6 +44,12 @@
 // Declared and not implemented here; each template implements it, which is where its drawing is.
 @interface CPTemplate (CharonDrawing)
 - (UIViewController *)charon_viewControllerForInterfaceController:(CPInterfaceController *)controller;
+@end
+
+// A row's handler, as the object the header's handler type is: the call the list template makes
+// when a row is chosen, so the handler is a real object with a real message and not a cast block.
+@interface CharonListItemHandler : NSObject
+- (void)charon_call:(id)item completion:(id)completion;
 @end
 
 // The grid source, declared before the grid template that uses it.
@@ -69,136 +76,140 @@
 
 // ============================ the list item ============================
 
-@implementation CPListItem {
-    NSString *_text;
-    NSString *_detailText;
-    UIImage *_image;
-    UIImage *_accessoryImage;
-    CPListItemAccessoryType _accessoryType;
-    BOOL _showsDisclosureIndicator;
-    id _userInfo;
-    void (^_handler)(id<CPSelectableListItem>, dispatch_block_t);
-    BOOL _explicitContent;
-    CGFloat _playbackProgress;
-    BOOL _playing;
-    CPListItemPlayingIndicatorLocation _playingIndicatorLocation;
-    BOOL _enabled;
-    BOOL _showsExplicitLabel;
-    NSString *_showsExplicitLabelText;
-}
+// The row's own state, held beside the row because a category cannot add an ivar and the row is a
+// CATEGORY on the release's own name (see CPListItem.m for why it has to be one). Charon's own, and
+// every member prefixed, so it carries no API.
+@interface CharonListRowState : NSObject
+@property (nonatomic, copy) NSString *text;
+@property (nonatomic, copy) NSString *detailText;
+@property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) UIImage *accessoryImage;
+@property (nonatomic, assign) NSInteger accessoryType;
+@property (nonatomic, assign) BOOL showsDisclosureIndicator;
+@property (nonatomic, strong) id userInfo;
+@property (nonatomic, copy) id handler;
+@property (nonatomic, assign) BOOL explicitContent;
+@property (nonatomic, assign) double playbackProgress;
+@property (nonatomic, assign) BOOL playing;
+@property (nonatomic, assign) NSInteger playingIndicatorLocation;
+@property (nonatomic, assign) BOOL enabled;
+@property (nonatomic, assign) BOOL showsExplicitLabel;
+@end
 
+@implementation CharonListRowState
 @synthesize text = _text;
 @synthesize detailText = _detailText;
 @synthesize image = _image;
 @synthesize accessoryImage = _accessoryImage;
 @synthesize accessoryType = _accessoryType;
+@synthesize showsDisclosureIndicator = _showsDisclosureIndicator;
 @synthesize userInfo = _userInfo;
 @synthesize handler = _handler;
+@synthesize explicitContent = _explicitContent;
+@synthesize playbackProgress = _playbackProgress;
 @synthesize playing = _playing;
 @synthesize playingIndicatorLocation = _playingIndicatorLocation;
+@synthesize enabled = _enabled;
 @synthesize showsExplicitLabel = _showsExplicitLabel;
+@end
+
+// A CATEGORY on the name, and not a class implementation: the release carries a class of another
+// framework under this name, so the name is an alias (CPListItem.m) and ld64 merges a category
+// written on it in this image into the alias's own class, which is the row. A class implementation
+// here would define a second class of that name and the runtime would take one of the two.
+@implementation CPListItem (CharonRow)
+
+- (CharonListRowState *)charon_state
+{
+    static const void *key = &key;
+    CharonListRowState *state = objc_getAssociatedObject(self, key);
+    if (!state) {
+        state = [[CharonListRowState alloc] init];
+        state.enabled = YES;
+        state.showsDisclosureIndicator = YES;
+        objc_setAssociatedObject(self, key, state, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return state;
+}
+
+- (CharonListRowState *)charon_stateInitWithText:(NSString *)text
+                               detailText:(NSString *)detailText
+                                    image:(UIImage *)image
+                           accessoryImage:(UIImage *)accessoryImage
+                            accessoryType:(NSInteger)accessoryType
+{
+    CharonListRowState *state = [[CharonListRowState alloc] init];
+    state.text = text ?: @"";
+    state.detailText = detailText ?: @"";
+    state.image = image;
+    state.accessoryImage = accessoryImage;
+    // The header's own rule: an accessory image sets the accessory type to none, because the two are
+    // the same slot and the caller's own image is what should be in it.
+    state.accessoryType = accessoryImage ? 0 : accessoryType;
+    state.enabled = YES;
+    state.showsDisclosureIndicator = accessoryType == 1;
+    return state;
+}
 
 - (instancetype)initWithText:(NSString *)text
                     detailText:(NSString *)detailText
                          image:(UIImage *)image
                 accessoryImage:(UIImage *)accessoryImage
-                 accessoryType:(CPListItemAccessoryType)accessoryType
+                 accessoryType:(NSInteger)accessoryType
 {
-    self = [super init];
-    if (self) {
-        _text = [text copy] ?: @"";
-        _detailText = [detailText copy] ?: @"";
-        _image = image;
-        _accessoryImage = accessoryImage;
-        // The header's own rule: an accessory image sets the accessory type to none, because the two
-        // are the same slot and the caller's own image is what should be in it.
-        _accessoryType = accessoryImage ? CPListItemAccessoryTypeNone : accessoryType;
-        _enabled = YES;
-        _showsDisclosureIndicator = accessoryType == CPListItemAccessoryTypeDisclosureIndicator;
-    }
+    // The alias's own -initWithText:... answers as the release's class does (see charon_alias.h), so
+    // the row is set up beside it, which is what a category on an aliased name is for. Going through
+    // NSObject's -init directly, because [self alloc] inside a category is the alias's -alloc and
+    // would answer the release's class, which is not a row.
+    self = ((id (*)(id, SEL))objc_msgSend)([CPListItem class], @selector(alloc));
+    self = ((id (*)(id, SEL, id))objc_msgSend)(self, @selector(init), @"");
+    [self charon_setState:[self charon_stateInitWithText:text detailText:detailText image:image
+                                     accessoryImage:accessoryImage accessoryType:accessoryType]];
     return self;
 }
 
-- (instancetype)initWithText:(NSString *)text detailText:(NSString *)detailText image:(UIImage *)image
+- (void)charon_setState:(CharonListRowState *)state
 {
-    return [self initWithText:text detailText:detailText image:image accessoryImage:nil
-               accessoryType:CPListItemAccessoryTypeNone];
+    static const void *key = &key;
+    objc_setAssociatedObject(self, key, state, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (instancetype)initWithText:(NSString *)text
+- (NSString *)text { return [self charon_state].text; }
+- (void)setText:(NSString *)text { [self charon_state].text = text ?: @""; }
+- (NSString *)detailText { return [self charon_state].detailText; }
+- (void)setDetailText:(NSString *)detailText { [self charon_state].detailText = detailText ?: @""; }
+- (UIImage *)image { return [self charon_state].image; }
+- (void)setImage:(UIImage *)image { [self charon_state].image = image; }
+- (UIImage *)accessoryImage { return [self charon_state].accessoryImage; }
+- (void)setAccessoryImage:(UIImage *)image
 {
-    return [self initWithText:text detailText:@"" image:nil accessoryImage:nil
-               accessoryType:CPListItemAccessoryTypeNone];
-}
-
-- (void)setText:(NSString *)text
-{
-    _text = [text copy] ?: @"";
-}
-
-- (void)setDetailText:(NSString *)detailText
-{
-    _detailText = [detailText copy] ?: @"";
-}
-
-- (void)setImage:(UIImage *)image
-{
-    _image = image;
-}
-
-- (void)setAccessoryImage:(UIImage *)accessoryImage
-{
-    _accessoryImage = accessoryImage;
-    if (accessoryImage) {
-        _accessoryType = CPListItemAccessoryTypeNone;
+    [self charon_state].accessoryImage = image;
+    if (image) {
+        [self charon_state].accessoryType = 0;
     }
 }
+- (NSInteger)accessoryType { return [self charon_state].accessoryType; }
+- (void)setAccessoryType:(NSInteger)accessoryType { [self charon_state].accessoryType = accessoryType; }
+- (BOOL)showsDisclosureIndicator { return [self charon_state].showsDisclosureIndicator; }
+- (void)setShowsDisclosureIndicator:(BOOL)shows { [self charon_state].showsDisclosureIndicator = shows; }
+- (id)userInfo { return [self charon_state].userInfo; }
+- (void)setUserInfo:(id)userInfo { [self charon_state].userInfo = userInfo; }
+- (id)handler { return [self charon_state].handler; }
+- (void)setHandler:(id)handler { [self charon_state].handler = handler; }
+- (BOOL)isExplicitContent { return [self charon_state].explicitContent; }
+- (void)setExplicitContent:(BOOL)explicitContent { [self charon_state].explicitContent = explicitContent; }
+- (double)playbackProgress { return [self charon_state].playbackProgress; }
+- (void)setPlaybackProgress:(double)progress { [self charon_state].playbackProgress = progress; }
+- (BOOL)isPlaying { return [self charon_state].playing; }
+- (void)setPlaying:(BOOL)playing { [self charon_state].playing = playing; }
+- (NSInteger)playingIndicatorLocation { return [self charon_state].playingIndicatorLocation; }
+- (void)setPlayingIndicatorLocation:(NSInteger)location { [self charon_state].playingIndicatorLocation = location; }
+- (BOOL)isEnabled { return [self charon_state].enabled; }
+- (void)setEnabled:(BOOL)enabled { [self charon_state].enabled = enabled; }
+- (BOOL)isShowingExplicitLabel { return [self charon_state].showsExplicitLabel; }
+- (void)setShowsExplicitLabel:(BOOL)shows { [self charon_state].showsExplicitLabel = shows; }
 
-// The header's own `showsDisclosureIndicator`, which is how a program asks for the trailing chevron.
-- (BOOL)showsDisclosureIndicator
-{
-    return _showsDisclosureIndicator || _accessoryType == CPListItemAccessoryTypeDisclosureIndicator;
-}
-
-- (void)setShowsDisclosureIndicator:(BOOL)showsDisclosureIndicator
-{
-    _showsDisclosureIndicator = showsDisclosureIndicator;
-}
-
-- (BOOL)isEnabled
-{
-    return _enabled;
-}
-
-- (void)setEnabled:(BOOL)enabled
-{
-    _enabled = enabled;
-}
-
-// The header's own explicit content: a row whose content is not a place, which is drawn in full and
-// not truncated, and which carries the label the caller gave it.
-- (BOOL)isExplicitContent
-{
-    return _explicitContent;
-}
-
-- (void)setExplicitContent:(BOOL)explicitContent
-{
-    _explicitContent = explicitContent;
-}
-
-- (CGFloat)playbackProgress
-{
-    return _playbackProgress;
-}
-
-- (void)setPlaybackProgress:(CGFloat)playbackProgress
-{
-    _playbackProgress = playbackProgress;
-}
-
-// The header's own class property: the largest image a row's image may be, which is the car's screen
-// divided the way the header's own constant says. Charon's own, so it carries no API.
+// The header's own class property: the largest image a row's image may be. Charon's own, so no API.
 + (CGSize)maximumImageSize
 {
     return CGSizeMake(60.0, 60.0);
@@ -208,12 +219,19 @@
 // handler's own signature takes. Charon's own, so it carries no API.
 - (void)charon_selected
 {
-    if (_handler) {
-        _handler(self, ^{
+    id handler = [self charon_state].handler;
+    void (*call)(id, SEL, id, id) = (void (*)(id, SEL, id, id))objc_msgSend;
+    SEL selector = NSSelectorFromString(@"charon_call");
+    if (handler && [handler respondsToSelector:selector]) {
+        call(handler, selector, self, ^{
         });
     }
 }
 
+@end
+
+@implementation CharonListItemHandler
+- (void)charon_call:(id)item completion:(id)completion { }
 @end
 
 // ============================ the list section ============================
