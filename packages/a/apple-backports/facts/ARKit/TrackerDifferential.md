@@ -119,3 +119,46 @@ to give the tracker the scene's real scale - from the camera's field of view, wh
 `+cameraIntrinsicsForResolution:` already reads and which turns a pixel offset into an angle and so a
 patch size into a distance - and then to re-measure. Until that is done the step is wired and
 running but is not yet producing a pose the picture agrees with.
+
+## The turn was being multiplied the wrong way round
+
+The pose accumulated, but ran away instead of tracking. `CharonRotationBetween(from, to)` multiplied
+the two quaternions in the order they were handed in, and the rotation that carries `from` onto `to`
+is `to` composed with `from`'s inverse. For two attitudes a step apart about one axis, the wrong order
+gives the *sum* of their angles rather than the difference, so a 5.73-degree step produced turns of
+5.73, 17.19, 28.65, 40.10, 51.57 degrees - the odd multiples of the step - and the pose reached 143
+degrees after five frames where the truth was at 28.65. The conjugate is the inverse of a unit
+quaternion, so the product is `conj(from) * to`.
+
+That is not a cosmetic fix. Measured after it, on the same 30-frame sequence:
+
+```
+tracking: yes, 5438 points, 16 planes
+rotation error: mean 2.16591 rad (124.097 deg), worst 3.12652 rad (179.136 deg)
+distance error: mean 0.62440 m, worst 1.31598 m
+```
+
+The plane detector now runs at all: sixteen planes out of 5438 placed points, where before the
+rotation was wrong there were none, because a run-away pose puts every point in the wrong place and
+there is no level surface in the wrong place to grow a region from. `tracking` is `yes` for the first
+time.
+
+**Two things are still wrong, and both are measured rather than suspected:**
+
+- **The rotation error is 124 degrees and the step makes it worse.** Without the Gauss-Newton step the
+  same sequence gives 78.13 degrees; with it, 124.10. A step that makes the picture fit *worse* is a
+  step whose landmarks are wrong, and the landmark depth is the suspect: it is now derived rather
+  than assumed (below), but the derivation assumes the focal length, and the focal length in an
+  offline run comes from the recording's own calibration, which this synthetic sequence now supplies.
+  That the error grew when a correct-looking depth was introduced says the depth and the pose
+  convention still disagree somewhere, and that is not yet located.
+- **The translation is never integrated at all.** The pose's translation column stays at exactly zero
+  for the whole sequence, so the distance error is the whole 1.450 m path and the mean of 0.62 m is
+  just where along the path the mean falls. Nothing in the pipeline has been given a reason to
+  translate: the gyroscope reports an attitude, not a displacement, and the depth-from-drift gives
+  each point a distance but never a baseline. Recovering the baseline from the depth change across a
+  frame is the next piece of work, and it is not written.
+
+So the tracker now tracks - it places its points, finds its planes, and reports `tracking: yes` - and
+its pose is not yet the pose the truth describes. The numbers above are the measurement, not a
+claim of convergence.

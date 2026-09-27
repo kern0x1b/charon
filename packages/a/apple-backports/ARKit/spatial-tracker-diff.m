@@ -24,6 +24,28 @@
 #include <stdlib.h>
 #include <string.h>
 
+/// The calibration of the synthetic camera above.
+///
+/// `CharonRenderFrame` projects with a tangent of half an angle of 0.5773502692 to the frame's half
+/// width, which is a 30-degree half angle - a 60-degree horizontal field of view. That fixes the
+/// focal length in pixels at `halfWidth / 0.5773502692` and the principal point at the middle of
+/// the frame.
+///
+/// This is handed to the tracker because a capture records the calibration of its camera beside its
+/// frames, and the tracker reads a device's from `AVCaptureDeviceFormat` instead; offline there is
+/// no device, and a camera and a gyroscope cannot recover a metric depth without the focal length,
+/// so this is what the measurement is being made with and it is stated here rather than assumed.
+static simd_float3x3 CharonSyntheticIntrinsics(NSUInteger width, NSUInteger height)
+{
+    const float halfAngleTangent = 0.5773502692f;
+    float focal = ((float)width / 2.0f) / halfAngleTangent;
+    simd_float3x3 intrinsics;
+    intrinsics.columns[0] = simd_make_float3(focal, 0, (float)width / 2.0f);
+    intrinsics.columns[1] = simd_make_float3(0, focal, (float)height / 2.0f);
+    intrinsics.columns[2] = simd_make_float3(0, 0, 1);
+    return intrinsics;
+}
+
 #pragma mark - The ground truth
 
 /// One step of a camera that turns a fixed angle about `y` and walks a fixed distance forwards.
@@ -158,6 +180,7 @@ int main(void)
         CharonRenderFrame(planes[step], width, height, CharonTruthAt(step, stepAngle, stepLength), rotationNoise);
 
     CharonARTracker *tracker = [[CharonARTracker alloc] init];
+    [CharonARTracker useCameraIntrinsics:CharonSyntheticIntrinsics(width, height)];
     double sumRotation = 0, sumDistance = 0, worstRotation = 0, worstDistance = 0;
     int measured = 0;
     for (int step = 0; step < count; step++) {

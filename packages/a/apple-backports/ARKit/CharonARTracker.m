@@ -84,8 +84,14 @@ static simd_float4 CharonQuaternionProduct(simd_float4 lhs, simd_float4 rhs)
 /// A quaternion that turns `from` onto `to`, both unit, by the shortest way round.
 static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
 {
-    simd_float4 product = CharonQuaternionProduct(from.vector, to.vector);
-    return simd_quaternion(product.x, product.y, product.z, product.w);
+    // The order is the whole content of this function: the rotation that carries `from` onto `to` is
+    // `to` composed with `from`'s inverse, and the inverse of a unit quaternion is its conjugate.
+    // Multiplied the other way round, two attitudes a step apart give a turn of the *sum* of their
+    // angles rather than the difference, and a pose built by accumulating those turns runs away
+    // instead of tracking - which is exactly what it did.
+    simd_quatf inverse = simd_normalize(simd_conjugate(from));
+    simd_float4 product = CharonQuaternionProduct(inverse.vector, to.vector);
+    return simd_normalize(simd_quaternion(product.x, product.y, product.z, product.w));
 }
 
 /// The matrix of the rotation a quaternion names. A C simd has no helper for this - `simd_quatf` is
@@ -279,10 +285,21 @@ static BOOL CharonSolveSix(float A[6][6], float b[6], float out[6])
     NSUInteger _lumaHeight;
 }
 
+static simd_float3x3 CharonRecordedIntrinsics = { 0 };
+
++ (void)useCameraIntrinsics:(simd_float3x3)intrinsics
+{
+    CharonRecordedIntrinsics = intrinsics;
+}
+
 + (simd_float3x3)cameraIntrinsicsForResolution:(CGSize)resolution
 {
 #if CHARON_NO_CAMERA
-    return matrix_identity_float3x3;
+    // With no camera there is no field of view to read, so the calibration of the recording is what
+    // the focal length comes from. Without one the answer is the identity, which projects nothing to
+    // anywhere - and a tracker given that cannot place a point in metres, which is why a capture
+    // records its calibration beside its frames.
+    return CharonRecordedIntrinsics;
 #else
     // The camera states how wide it sees - `AVCaptureDeviceFormat`'s field of view, in degrees - and
     // the frame says how many pixels that width is, which between them fix the focal length in
@@ -856,13 +873,56 @@ static uint32_t CharonPatchCost(const uint8_t *luma, NSUInteger width, NSUIntege
                                       (float)bestY / (float)_lumaHeight);
         now->age = was->age > 250 ? 250 : (uint8_t)(was->age + 1);
         now->hits = (uint8_t)(was->hits < 250 ? was->hits + 1 : 250);
-        if (now->hits == 2)
+
+        // The drift of this point across the frame, against the turn that should have caused it. The
+        // median of those over the frame is the scene's depth, and every point takes it: a frame
+        // looks at one scene, so its points are all at one distance to the accuracy a single frame
+        // can give, and the median is the one that is not a mis-correspondence.
+        simd_float2 driftPixels = simd_make_float2(
+                (now->image.x - was->image.x) * (float)_lumaWidth,
+                (now->image.y - was->image.y) * (float)_lumaHeight);
+        simd_float3 turnAxis = simd_make_float3(turn.vector.x, turn.vector.y, turn.vector.z);
+        now->depth = [self depthForDrift:driftPixels along:turnAxis
+                                    focal:[self focalLengthInPixels]];
+        if (now->hits >= 3)
             [self placePointInWorld:now];
         matched++;
         if (matched >= 4096)
             break;
     }
     _pointCount = matched;
+
+    // One scene, one distance: the median of what each point's own drift said about it, and then
+    // every point is placed at that. A single frame cannot separate depth from a feature's size -
+    // that is the ambiguity a camera and a gyroscope leave - so the frame's own answer is the one
+    // all of its points share, and the Gauss-Newton step is what improves on it from there.
+    if (matched) {
+        float *depths = calloc(matched, sizeof(float));
+        if (depths) {
+            NSUInteger measured = 0;
+            for (NSUInteger k = 0; k < matched; k++)
+                if (_points[k].depth > 0)
+                    depths[measured++] = _points[k].depth;
+            if (measured >= 3) {
+                for (NSUInteger a = 1; a < measured; a++) {   // a selection, for the median
+                    float key = depths[a];
+                    NSUInteger b = a;
+                    while (b > 0 && depths[b - 1] > key) {
+                        depths[b] = depths[b - 1];
+                        b--;
+                    }
+                    depths[b] = key;
+                }
+                float median = depths[measured / 2];
+                for (NSUInteger k = 0; k < matched; k++) {
+                    if (_points[k].depth > 0)
+                        _points[k].depth = median;
+                    [self placePointInWorld:&_points[k]];
+                }
+            }
+            free(depths);
+        }
+    }
     return matched >= 8;
 }
 
@@ -975,22 +1035,53 @@ static simd_float4x4 CharonNudgedPose(simd_float4x4 pose, int parameter, float e
 
 /// The points the search did not match keep their position in the world and are the only ones that
 /// can start a new one, so a feature that has been seen three frames running is given a place.
-/// A point's place in the world: the ray through it, as far off as the feature's size says, put
-/// through the pose the tracker holds. A feature's size says how far away it is, which is what puts
-/// it in the world at all - a camera and a gyroscope cannot say, and this is the scale the
-/// framework's own monocular tracking uses.
+/// How far off a point is, from the turn the gyroscope reported and the drift that turn put into
+/// the picture.
+///
+/// A camera and a gyroscope cannot say how far a thing is - that is why the reconstruction a camera
+/// alone gives is only good up to a scale. What it can say is this: when a camera turns by a known
+/// angle, a point at depth `z` drifts across the frame by an amount proportional to `1/z`, and the
+/// camera's own focal length is the constant that turns that drift into a depth. So the drift of a
+/// point that is known to be the same point, divided by the turn that moved it, gives the distance -
+/// no assumed size for the feature, and no constant fitted to a scene.
+- (float)depthForDrift:(simd_float2)driftPixels
+                 along:(simd_float3)turnAxis
+                focal:(float)focalLength
+{
+    simd_float3 axis = CharonNormalized(turnAxis);
+    if (simd_length(axis) < 1e-6f || focalLength <= 0)
+        return 0;
+    // The first-order relation for a point on the ray `unit`: the horizontal drift a turn about
+    // `axis` puts into its projection is `f * (axis x unit).x / z`, so `z` follows from the drift.
+    simd_float3 unit = CharonNormalized(simd_make_float3(driftPixels.x, driftPixels.y, 1));
+    float numerator = focalLength * simd_cross(axis, unit).x;
+    float denominator = driftPixels.x;
+    if (fabsf(denominator) < 1e-6f)
+        return 0;
+    float depth = numerator / denominator;
+    return depth > 0 ? depth : 0;
+}
+
+/// A point's place in the world, along the ray through it, as far off as the drift that placed it
+/// there says. A point with no usable drift has no distance yet, and is not placed.
 - (void)placePointInWorld:(CharonARPoint *)point
 {
-    if (_lumaWidth == 0)
+    if (_lumaWidth == 0 || point->depth <= 0)
         return;
     simd_float3 ray = CharonNormalized(simd_make_float3(point->image.x - 0.5f,
                                                         point->image.y - 0.5f, 1));
-    float distance = 0.5f / (point->scale / (float)_lumaWidth);
-    point->camera = CharonAlongRay(simd_make_float3(0, 0, 0), ray, distance);
+    point->camera = CharonAlongRay(simd_make_float3(0, 0, 0), ray, point->depth);
     simd_float4 world = simd_mul(_cameraTransform,
                                  simd_make_float4(point->camera.x, point->camera.y,
                                                   point->camera.z, 1));
     point->world = simd_make_float3(world.x, world.y, world.z);
+}
+
+/// The camera's focal length in pixels, which is the constant that turns a drift in the picture into
+/// a distance.
+- (float)focalLengthInPixels
+{
+    return [CharonARTracker cameraIntrinsicsForResolution:_resolution].columns[0][0];
 }
 
 - (void)placeUnmatchedPoints

@@ -28,6 +28,7 @@ typedef struct {
     simd_float3 camera;         ///< where it is in the camera's frame, metres
     simd_float3 world;          ///< where it is in the world, metres, once the pose is known
     float      scale;           ///< how big it looks, for the size of its patch
+    float      depth;           ///< how far off it is, from the turn and its drift across the frame
     uint32_t   identifier;      ///< stable across frames, so an anchor can name it
     uint8_t    age;             ///< frames seen, so a stale point can be dropped
     uint8_t    hits;            ///< frames matched in a row
@@ -101,6 +102,16 @@ typedef struct {
 /// and the principal point. A camera that states no field of view has nothing to build them from,
 /// and the answer is the matrix of ones, which projects nothing to anywhere.
 + (simd_float3x3)cameraIntrinsicsForResolution:(CGSize)resolution;
+
+/// The calibration to use where there is no camera to ask.
+///
+/// A camera and a gyroscope cannot recover a metric reconstruction on their own: the depth of a
+/// point and its size in the picture trade off exactly, and what breaks the trade-off is the camera's
+/// own focal length. A device gets that from `AVCaptureDeviceFormat`'s field of view, read above; a
+/// recorded sequence has no camera to read, and the calibration is recorded beside the frames. This
+/// is where such a recording hands it over, and it is the same matrix `cameraIntrinsicsForResolution:`
+/// would have built - the same three numbers, from the same field of view.
++ (void)useCameraIntrinsics:(simd_float3x3)intrinsics;
 
 @property (nonatomic, weak, nullable) id<CharonARTrackerDelegate> delegate;
 
