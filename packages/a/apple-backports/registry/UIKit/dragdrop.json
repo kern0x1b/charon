@@ -130,6 +130,156 @@
    "effect": "the same picture aimed at another target, which is the superclass's own retargeting with the drag's type",
    "facts": "facts/UIKit/DragAndDrop.md",
    "source": "the header of SDK 26.2 for what each type is and what it is a subclass of; the tree's own UIPreviewTarget and UITargetedPreview, which the drag's target and preview build on and do not duplicate; the host's own UIKit under Mac Catalyst for the answers that are observable there"
+  },
+  {
+   "api": "UIDropProposal",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "what a drop proposes: the operation it would do, whether it is precise, and whether it wants the full size preview; copied when it is copied",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
+  },
+  {
+   "api": "-[UIDropProposal initWithDropOperation:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a proposal for that operation, which is the designated way to make one",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
+  },
+  {
+   "api": "UIDropProposal.operation",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the operation this proposal would do, as it was given",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
+  },
+  {
+   "api": "UIDropProposal.precise",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "whether the drop is exactly where the finger is rather than over a target that accepted it, NO in a proposal made by hand",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
+  },
+  {
+   "api": "UIDropProposal.prefersFullSizePreview",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "whether the drop is shown with the whole of the item rather than a crop of it, NO in a proposal made by hand",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
+  },
+  {
+   "api": "UIDragInteraction",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the interaction a view has that lifts and carries: a long press lifts what is under the touch, a pan carries the picture the lift made across the application's own windows, and letting go is the drop",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
+  },
+  {
+   "api": "-[UIDragInteraction initWithDelegate:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a drag interaction for that delegate, enabled as the class says by default, with its two gestures installed on the view it is given",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
+  },
+  {
+   "api": "UIDragInteraction.delegate",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "who is asked what is being dragged and what happens to it, held weakly as the header says",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
+  },
+  {
+   "api": "UIDragInteraction.enabled",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "whether this interaction lifts and carries at all; turning it off stops both gestures",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
+  },
+  {
+   "api": "+[UIDragInteraction isEnabledByDefault]",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "YES: a drag interaction an application made is on unless it is turned off, and what lifts is the view under the touch",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
+  },
+  {
+   "api": "UIDragInteraction.allowsSimultaneousRecognitionDuringLift",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "whether the lift's gesture may be recognised at the same time as another, NO in an interaction made by hand",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
+  },
+  {
+   "api": "UIDropInteraction",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the interaction a view has that receives a drop: it is registered with the drags the application has, and a drag that is let go over it asks it whether it will have the session",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
+  },
+  {
+   "api": "-[UIDropInteraction initWithDelegate:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a drop interaction for that delegate, registered with every drag interaction in the application's windows so a drag knows where it may be let go",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
+  },
+  {
+   "api": "UIDropInteraction.delegate",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "who is asked whether the session will be handled, what to propose and to perform the drop, held weakly as the header says",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
+  },
+  {
+   "api": "UIDropInteraction.allowsSimultaneousDropSessions",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "whether more than one drop may be under this view at once, NO in an interaction made by hand",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
   }
  ]
 }

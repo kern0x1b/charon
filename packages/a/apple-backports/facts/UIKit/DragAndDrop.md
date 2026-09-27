@@ -36,11 +36,43 @@ subclassing says exactly that, and the only thing the drag adds is its own types
 A `UIDragPreview` is a still picture: it neither moves nor changes the view it was made from, which is
 what the header says, so nothing here takes a snapshot eagerly and the view is left alone.
 
+## The sessions, the proposals and the two interactions
+
+**The gestures are the release's own**, which is what makes this a drag and not a swipe: a
+`UILongPressGestureRecognizer` at half a second lifts what is under the touch and a
+`UIPanGestureRecognizer` carries the picture that lift made, and letting go is the drop. The preview
+is a still picture of a view — rendered from its layer, as the tree's own movement preview does — and
+it is added to the application's own window and travels between the application's own windows.
+
+There is **no drag that leaves the application** and none is faked: a session answers
+`isRestrictedToDraggingApplication` YES, which is the answer a device of this era gives, and the
+delegate is asked about it so the application sees the answer rather than having it assumed. A move is
+allowed, because a move inside the application needs no service.
+
+A drop is found by asking: the drag carries the list of drop interactions the application made, and
+the one whose view is under the finger is asked `canHandleSession:`, then told `sessionDidEnter:` and
+`sessionDidUpdate:` as the finger moves, and on letting go told `performDrop:`, `concludeDrop:` and
+`sessionDidEnd:`. The drag's own delegate is told what the drag ended with, and a drag that was
+called off ends as cancelled.
+
+**The data is the item provider's.** `loadObjectsOfClass:completion:` loads through the provider that
+carries it; nothing here copies a payload.
+
+**A lift with no delegate says nothing is being dragged.** A view cannot go into an item provider on
+this release — a provider writes objects that can be read back, and a view is not one — and guessing
+a payload would move the wrong data, so the lift ends there rather than dragging something invented.
+
+`UITargetedDragPreview` is given **no** way to make one: the header declares no initialiser, because
+the system hands the preview to the delegate it asks. The port therefore constructs none, and adds
+nothing to the `UITargetedPreview` the tree already carries beyond the retargeting the header does
+declare. Three more entries another band held `absent` for the same soft reason as the previews have
+moved to `implemented`.
+
 ## Not yet built in this family
 
-The sessions and proposals (`UIDragSession`, `UIDropSession`, `UIDropProposal`), the interactions
-(`UIDragInteraction`, `UIDropInteraction`), the table and collection drag and drop delegates and
-coordinators, and the placeholders. Two things in the tree need correcting as part of it and are
-recorded here so they are not lost: `-[UICollectionView hasActiveDrag]` and `-[UICollectionView
-hasActiveDrop]` answer a constant `NO` today, which is a silent fake, and become real answers once
-there is a session to report.
+The table and collection drag and drop delegates and coordinators (`UICollectionViewDragDelegate`,
+`UICollectionViewDropDelegate`, `UITableViewDragDelegate`, `UITableViewDropDelegate`, the two drop
+coordinators, the drop items, proposals with an intent and the placeholders). Two things in the tree
+need correcting as part of it and are recorded here so they are not lost: `-[UICollectionView
+hasActiveDrag]` and `-[UICollectionView hasActiveDrop]` answer a constant `NO` today, which is a
+silent fake, and become real answers once there is a session to report.

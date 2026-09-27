@@ -110,28 +110,15 @@
 @implementation UIDragPreviewTarget
 @end
 
+// The header gives a targeted drag preview no way to make one: the system hands it to the delegate
+// that is asked for a preview, and an application never constructs it. So this adds nothing to the
+// UITargetedPreview the tree already carries, and the one thing the header does declare is the
+// retargeting, which is the superclass's own with the drag's type.
 @implementation UITargetedDragPreview
 
-// The superclass already holds the view, the parameters and the target, and already knows how to
-// retarget itself, so this is the drag's own name for the same object with the drag's own types.
-- (instancetype)initWithPreview:(UIDragPreview *)preview target:(UIDragPreviewTarget *)target
-{
-    return [super initWithView:preview.view parameters:preview.parameters target:target];
-}
-
-- (instancetype)initWithPreview:(UIDragPreview *)preview
-{
-    // A targeted preview with no target of its own: the superclass's initialiser that takes none,
-    // which is how a peek's is made when the target is the view itself.
-    return [super initWithView:preview.view parameters:preview.parameters];
-}
-
-// The same picture aimed somewhere else, which is what a drag asks for when the item it is carrying
-// is dropped onto a different target mid-flight. The superclass's own retargeting does this for a
-// peek; this is the same thing with the drag's type.
 - (UITargetedDragPreview *)retargetedPreviewWithTarget:(UIDragPreviewTarget *)newTarget
 {
-    return [[UITargetedDragPreview alloc] initWithView:self.view parameters:self.parameters target:newTarget];
+    return (UITargetedDragPreview *)[super retargetedPreviewWithTarget:newTarget];
 }
 
 @end

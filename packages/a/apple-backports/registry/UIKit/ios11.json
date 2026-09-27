@@ -543,25 +543,6 @@
       "source": "UIKit of iOS 11.0 arm64, the exported constant at 0x1aa625d00"
     },
     {
-      "api": "UIDragInteraction",
-      "kind": "class",
-      "introduced": "11.0",
-      "status": "implemented",
-      "reason": "a departure from iOS 12 in one answer: a drag interaction is enabled by default only where a drag can happen, and nothing here carries a drag session, so +isEnabledByDefault answers NO on every device, an iPad included",
-      "effect": "the interaction is made with its delegate, held weakly, and is held by the view that adds it; enabled reads what was set, and NO if nothing was; the interaction never begins a drag and never asks the delegate anything",
-      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: +[UIDragInteraction isEnabledByDefault] answers YES for the iPad idiom and reads a setting of the internal builds otherwise, -isEnabled answers the flag once it was set and the class default before, -initWithDelegate: stores the delegate weakly, -didMoveToView: stores the view weakly; the host's UIKit through Mac Catalyst for the rest",
-      "facts": "facts/UIKit/DragAndDrop.md"
-    },
-    {
-      "api": "UIDropInteraction",
-      "kind": "class",
-      "introduced": "11.0",
-      "status": "implemented",
-      "effect": "the interaction is made with its delegate, held weakly, and is held by the view that adds it; allowsSimultaneousDropSessions is NO until set; no session ever enters the view, so the delegate is never asked anything",
-      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: -[UIDropInteraction initWithDelegate:] stores the delegate weakly; the host's UIKit through Mac Catalyst for the rest",
-      "facts": "facts/UIKit/DragAndDrop.md"
-    },
-    {
       "api": "UISpringLoadedInteraction",
       "kind": "class",
       "introduced": "11.0",
@@ -719,15 +700,6 @@
       "status": "implemented",
       "effect": "the item provider is kept by identity, as are the local object and the preview provider, which is copied; nothing reads them, since no drag begins",
       "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: -[UIDragItem initWithItemProvider:] stores the provider strongly and asks nothing of it; the host's UIKit through Mac Catalyst for the rest",
-      "facts": "facts/UIKit/DragAndDrop.md"
-    },
-    {
-      "api": "UIDropProposal",
-      "kind": "class",
-      "introduced": "11.0",
-      "status": "implemented",
-      "effect": "the operation, precise and prefersFullSizePreview a proposal was given; a new proposal prefers a full size preview and is not precise, and a copy carries all three",
-      "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: -[UIDropProposal initWithDropOperation:] sets the operation and prefersFullSizePreview to YES, -copyWithZone: makes a new proposal of the class and copies precise and prefersFullSizePreview",
       "facts": "facts/UIKit/DragAndDrop.md"
     },
     {
