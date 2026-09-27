@@ -1177,6 +1177,10 @@ end
 function build(opt)
     local release = loaded(opt.cache, opt.architecture)
     opt = table.join(opt, {triple = opt.architecture .. "-apple-ios" .. opt.deployment})
+    -- What the run spent, in the run's own output. A build that prints only its verdict cannot be
+    -- improved: the split of compile, link and checks is what says where a machine's time went,
+    -- and it is only comparable between runs if every run measures it the same way.
+    local compiling = os.mclock()
     local attach, objects, origins, minimums = compiled(opt)
     opt = table.join(opt, {origins = origins, minimums = minimums})
     local compiled_at = os.mclock()
