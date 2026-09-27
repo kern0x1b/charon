@@ -26,7 +26,7 @@ function failures(opt)
         local entries = {}
         for api, status in pairs(registry) do
             table.insert(entries, string.format('{"api": "%s", "kind": "%s", "introduced": "8.0", "minimum": "6.0", "status": "%s"%s}', api,
-                                                api:find("^[-+]") and "method" or "function", status,
+                                                api:find("^[-+]") and "method" or api:find(".", 1, true) and "method" or "function", status,
                                                 status == "implemented" and "" or ', "effect": "a fixture entry", "reason": "a fixture entry the backports do not carry"'))
         end
         table.sort(entries)
@@ -56,6 +56,11 @@ function failures(opt)
     -- a kept member of a class the lift redeclares a member on is asked, though no mark of its own is edited: what the redeclaration adds may match it
     skipped({"@interface FixView : NSObject <FixEnv>", "- (void)draw;", "- (void)keep API_AVAILABLE(ios(9.0));", "@end"},
             {["-[FixView traitDidChange:]"] = "implemented", ["-[FixView keep]"] = "absent"}, 0, "a kept member of a redeclared class")
+    -- a method spelled Class.selector: is read by nothing that lowers: the lift refuses it by name, and a set of what it leaves alone cannot hold it
+    result, failure = lifted({"@interface FixView : NSObject", "- (void)draw:(int)value;", "@end"}, {["FixView.draw:"] = "implemented"})
+    expect("a method spelled Class.selector: is refused by name", failure and failure:find("FixView.draw: is a method not spelled", 1, true) ~= nil, true)
+    result, failure = lifted({"@interface FixView : NSObject", "- (void)draw:(int)value API_AVAILABLE(ios(9.0));", "@end"}, {["-[FixView draw:]"] = "implemented"})
+    expect("the same method spelled -[Class selector:] is lifted", failure, nil)
     os.tryrm(root)
     return found
 end

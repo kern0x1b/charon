@@ -24,7 +24,7 @@
       "source": "see AVPictureInPictureController"
     },
     {
-      "api": "AVPictureInPictureController.initWithPlayerLayer:",
+      "api": "-[AVPictureInPictureController initWithPlayerLayer:]",
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",

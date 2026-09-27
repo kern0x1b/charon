@@ -734,6 +734,12 @@ function registry(root)
             end
             told[entry.api] = named
             listed[entry.api] = entry
+            -- a method or a property is told by -[Class selector:], +[Class selector:] or Class.name: lift() and the check of releases read
+            -- no other spelling, and a member spelled Class.selector: is asked for as a bare name, found nowhere and left as it was
+            local plain = entry.api:gsub("%(%)$", "")
+            if (entry.kind == "method" or entry.kind == "property") and not (plain:match("^[-+]%[[%w_]+ .+%]$") or plain:match("^[%w_]+%.[%w_]+$")) then
+                table.insert(incomplete, entry.api .. " is a " .. entry.kind .. " not spelled -[Class selector:], +[Class selector:] or Class.name")
+            end
             if not STATUSES[entry.status] then
                 table.insert(incomplete, entry.api .. " says " .. tostring(entry.status) .. ", which is not one of the four answers")
             elseif entry.status ~= "implemented" then

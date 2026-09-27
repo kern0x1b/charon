@@ -79,7 +79,7 @@
       "source": "see AVCapturePhotoOutput"
     },
     {
-      "api": "AVCapturePhotoOutput.capturePhotoWithSettings:delegate:",
+      "api": "-[AVCapturePhotoOutput capturePhotoWithSettings:delegate:]",
       "kind": "method",
       "introduced": "10.0.1",
       "minimum": "6.0",
@@ -112,7 +112,7 @@
       "source": "see AVCapturePhotoOutput"
     },
     {
-      "api": "AVCapturePhotoOutput.setPreparedPhotoSettingsArray:completionHandler:",
+      "api": "-[AVCapturePhotoOutput setPreparedPhotoSettingsArray:completionHandler:]",
       "kind": "method",
       "introduced": "10.0.1",
       "minimum": "6.0",
@@ -156,7 +156,7 @@
       "source": "see AVCapturePhotoOutput"
     },
     {
-      "api": "AVCapturePhotoOutput.isBayerRAWPixelFormat:",
+      "api": "+[AVCapturePhotoOutput isBayerRAWPixelFormat:]",
       "kind": "method",
       "introduced": "14.3",
       "minimum": "6.0",
@@ -167,7 +167,7 @@
       "source": "see AVCapturePhotoOutput"
     },
     {
-      "api": "AVCapturePhotoOutput.isAppleProRAWPixelFormat:",
+      "api": "+[AVCapturePhotoOutput isAppleProRAWPixelFormat:]",
       "kind": "method",
       "introduced": "14.3",
       "minimum": "6.0",
@@ -200,7 +200,7 @@
       "source": "see AVCapturePhotoOutput"
     },
     {
-      "api": "AVCapturePhotoOutput.supportedPhotoPixelFormatTypesForFileType:",
+      "api": "-[AVCapturePhotoOutput supportedPhotoPixelFormatTypesForFileType:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -211,7 +211,7 @@
       "source": "see AVCapturePhotoOutput"
     },
     {
-      "api": "AVCapturePhotoOutput.supportedPhotoCodecTypesForFileType:",
+      "api": "-[AVCapturePhotoOutput supportedPhotoCodecTypesForFileType:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -222,7 +222,7 @@
       "source": "see AVCapturePhotoOutput"
     },
     {
-      "api": "AVCapturePhotoOutput.supportedRawPhotoPixelFormatTypesForFileType:",
+      "api": "-[AVCapturePhotoOutput supportedRawPhotoPixelFormatTypesForFileType:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -453,7 +453,7 @@
       "source": "see AVCapturePhotoOutput"
     },
     {
-      "api": "AVCapturePhotoOutput.JPEGPhotoDataRepresentationForJPEGSampleBuffer:previewPhotoSampleBuffer:",
+      "api": "+[AVCapturePhotoOutput JPEGPhotoDataRepresentationForJPEGSampleBuffer:previewPhotoSampleBuffer:]",
       "kind": "method",
       "introduced": "10.0.1",
       "minimum": "6.0",
@@ -464,7 +464,7 @@
       "source": "see AVCapturePhotoOutput"
     },
     {
-      "api": "AVCapturePhotoOutput.DNGPhotoDataRepresentationForRawSampleBuffer:previewPhotoSampleBuffer:",
+      "api": "+[AVCapturePhotoOutput DNGPhotoDataRepresentationForRawSampleBuffer:previewPhotoSampleBuffer:]",
       "kind": "method",
       "introduced": "10.0.1",
       "minimum": "6.0",
@@ -585,7 +585,7 @@
       "source": "SDK 16.4, AVFoundation/AVCapturePhotoOutput.h"
     },
     {
-      "api": "AVCapturePhotoSettings.photoSettingsWithFormat:",
+      "api": "+[AVCapturePhotoSettings photoSettingsWithFormat:]",
       "kind": "method",
       "introduced": "10.0.1",
       "minimum": "6.0",
@@ -629,7 +629,7 @@
       "source": "see AVCapturePhotoSettings"
     },
     {
-      "api": "AVCapturePhotoSettings.photoSettingsWithRawPixelFormatType:",
+      "api": "+[AVCapturePhotoSettings photoSettingsWithRawPixelFormatType:]",
       "kind": "method",
       "introduced": "10.0.1",
       "minimum": "6.0",
@@ -640,7 +640,7 @@
       "source": "see AVCapturePhotoSettings"
     },
     {
-      "api": "AVCapturePhotoSettings.photoSettingsWithRawPixelFormatType:processedFormat:",
+      "api": "+[AVCapturePhotoSettings photoSettingsWithRawPixelFormatType:processedFormat:]",
       "kind": "method",
       "introduced": "10.0.1",
       "minimum": "6.0",
@@ -651,7 +651,7 @@
       "source": "see AVCapturePhotoSettings"
     },
     {
-      "api": "AVCapturePhotoSettings.photoSettingsWithRawPixelFormatType:rawFileType:processedFormat:processedFileType:",
+      "api": "+[AVCapturePhotoSettings photoSettingsWithRawPixelFormatType:rawFileType:processedFormat:processedFileType:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -662,7 +662,7 @@
       "source": "see AVCapturePhotoSettings"
     },
     {
-      "api": "AVCapturePhotoSettings.photoSettingsFromPhotoSettings:",
+      "api": "+[AVCapturePhotoSettings photoSettingsFromPhotoSettings:]",
       "kind": "method",
       "introduced": "10.0.1",
       "minimum": "6.0",
@@ -1168,7 +1168,7 @@
       "source": "see AVCaptureResolvedPhotoSettings"
     },
     {
-      "api": "AVCaptureResolvedPhotoSettings.dimensionsForSemanticSegmentationMatteOfType:",
+      "api": "-[AVCaptureResolvedPhotoSettings dimensionsForSemanticSegmentationMatteOfType:]",
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",

@@ -111,7 +111,33 @@ function failures(opt)
     end
     wiring(backports, root, found)
     range_step(backports, fixtures.scratch(), found)
+    spelling(backports, found)
     return found
+end
+
+-- A method or a property is told by -[Class selector:], +[Class selector:] or Class.name, which is what lift() reads: one spelled Class.selector:
+-- is asked for as a bare name, found nowhere and left as it was, so the registry refuses it (by name) and does not let a lift bless it.
+function spelling(backports, found)
+    local root = path.join(os.tmpdir(), "registry_test_spelling")
+    os.tryrm(root)
+    local function complaints(api, kind)
+        io.writefile(path.join(root, "registry", "Fix.json"), string.format('[{"api": "%s", "kind": "%s", "introduced": "8.0", "minimum": "6.0", "status": "implemented"}]', api, kind))
+        local _, incomplete = backports.registry(root)
+        return table.concat(incomplete, "; ")
+    end
+    for _, spelled in ipairs({{"-[FixView draw:]", "method"}, {"+[FixView make:]", "method"}, {"FixView.size", "property"}, {"FixView.draw", "method"}, {"FixView.size()", "property"}}) do
+        local told = complaints(spelled[1], spelled[2])
+        if told ~= "" then
+            table.insert(found, string.format("the %s %s is refused: %s", spelled[2], spelled[1], told))
+        end
+    end
+    for _, spelled in ipairs({{"FixView.draw:", "method"}, {"FixView.size:", "property"}, {"[FixView draw:]", "method"}, {"-[FixView]", "method"}}) do
+        local told = complaints(spelled[1], spelled[2])
+        if not told:find(spelled[1] .. " is a " .. spelled[2] .. " not spelled", 1, true) then
+            table.insert(found, string.format("the %s %s is not refused by name (says '%s')", spelled[2], spelled[1], told))
+        end
+    end
+    os.tryrm(root)
 end
 
 -- The registry is checked against what the backports carry only when every library
