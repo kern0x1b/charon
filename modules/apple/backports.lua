@@ -4,6 +4,7 @@ import("firmware")
 import("signing")
 import("objc")
 import("core.base.json")
+import("core.base.scheduler")
 
 -- A library stands after every library it names in `libraries`: link() finds those in the output folder, so they are built first.
 LIBRARIES = {
@@ -127,24 +128,33 @@ end
 
 -- The compiler cache a compile runs through, or nil where there is none to run through.
 --
--- ccache keys a result on the preprocessed source and on the compiler, not on where the source
--- sits, as long as the tree the worktrees live in is CCACHE_BASEDIR and the working directory is
--- not part of the key (hash_dir = false): the path of a backport source is then the same relative
--- path out of every worktree, so the objects a band did not touch are the objects it does not
--- compile. That is what the cache is for here - a round touches a handful of frameworks and the
--- machine compiles all ~960 of them again from nothing.
+-- ccache keys a result on the preprocessed source and on the compiler. What decides whether two
+-- worktrees share one is hash_dir = false, in the cache's own ccache.conf: with the working
+-- directory out of the key, a source is reached by the same path relative to it from every
+-- worktree, so the objects a band did not touch are the objects it does not compile. base_dir is a
+-- second, weaker half of the same thing - it rewrites paths under it to relative ones - and is
+-- harmless without it; what is not harmless is leaving hash_dir at its default of true, which puts
+-- each worktree's own directory into the key and gives every band a cache that only ever misses.
+-- Where that setting comes from is the machine's business, and coordination/heavy.sh exports the
+-- rest of the policy for the fleet.
 --
 -- Nothing of the compile moves into ccache: the same clang runs, with the same arguments, in the
 -- same order, and what the cache hands back is the object file the compiler wrote. On a miss
--- ccache runs the compiler and stores its output; on a hit it writes that same file back. A
--- cached build therefore links and installs byte for byte what an uncached one produces, which
--- is the only claim worth making about a compiler cache: the measured check for it is the built
--- libraries against an uncached build, not the hit rate.
+-- ccache runs the compiler and stores its output; on a hit it writes that same file back. So an
+-- object a cached build links is the object an uncached one would have compiled - measured, 21 of
+-- the gate's own units across seven frameworks, every mode, shasum against a CCACHE_DISABLE=1 run
+-- of the same sources. The stronger claim, that the built libraries come out identical, is not
+-- measured yet: it needs two linked libraries compared, which is a gate's worth of work, and the
+-- gate numbers for this series are in the band report.
 --
--- CCACHE_DISABLE takes the cache out again, for a build that has to show its own work; CCACHE
--- names the program to use where it is not on the path. xmake 3.1.1 has no os.which, so the path
--- is walked here rather than left to a program that may or may not be found at run time. The
--- answer is kept: a build compiles ~960 units and the path does not change under it.
+-- CCACHE_DISABLE takes the cache out again, for a build that has to show its own work. It is read
+-- the way ccache reads it - the variable being set at all, empty value included, is what disables
+-- the cache, which is measured: with CCACHE_DISABLE= set, ccache records no call at all, and with
+-- it unset the second identical compile is a direct hit. CCACHE names the program to use where it
+-- is not on the path, and is checked as hard as a program found on the path, so a stale CCACHE
+-- left in a shell profile by a brew upgrade that moved ccache costs the cache and not the build.
+-- xmake 3.1.1 has no os.which, so the path is walked here. The answer is kept: a build compiles
+-- ~960 units and neither the path nor the environment changes under it.
 local cached_program
 
 local function cache()
@@ -156,7 +166,7 @@ local function cache()
     end
     local given = os.getenv("CCACHE")
     if given and given ~= "" then
-        cached_program = given
+        cached_program = os.isexec(given) and given or nil
     else
         for _, folder in ipairs((os.getenv("PATH") or ""):split(path.envsep())) do
             local found = path.join(folder, "ccache")
@@ -210,25 +220,43 @@ function compile(opt, source, object)
     end
     local program, arguments = clang(opt, table.join(arguments, {"-c", source, "-o", object}), objective_c)
     local wrapper = cache()
-    -- one string, because that is what os.execv takes a program that carries its own arguments
-    -- as (xmake/core/base/os.lua, os.execv splits a name it cannot execute itself). The link
-    -- below goes through driver() and no cache: a cache holds compilations, not links.
-    os.vrunv(wrapper and program and (wrapper .. " " .. program) or program, arguments)
+    -- The wrapper is the program and the compiler its first argument, which is what os.execv is
+    -- built for: it runs a program it cannot execute itself by splitting its name on spaces, so a
+    -- compiler under a path with a space in it has to arrive as an argument and not as part of the
+    -- name. The link below goes through driver() and no cache: a cache holds compilations, not
+    -- links.
+    if wrapper and program then
+        os.vrunv(wrapper, table.join({program}, arguments))
+    else
+        os.vrunv(program, arguments)
+    end
 end
 
--- How many units this build may compile at once. Nothing here decides it, because only the caller
--- knows whether a build of its kind may start a job runner: heavy.sh exports FLEET_HEAVY_CPUS for
--- the builds that may - a gate, release-split, the canon build, all of which run from `xmake lua`
--- and are not themselves inside a job - and packages/a/apple-backports/xmake.lua passes 1 for the
--- one that may not. A package's on_install runs inside a job of xmake's own, and a job runner
--- started from inside one never returns: measured, the compiles all finish and then the run hangs
--- there for good, with or without isolate. The cache is what a package build wins on instead.
+-- How many units this build may compile at once. The caller may lower it, and heavy.sh raises it
+-- for the builds that are not already inside a job: a gate, release-split, the canon build, all of
+-- which run from `xmake lua` as the only coroutine of their own.
+--
+-- One at a time it is, whatever the caller asked for, as soon as xmake is already running a job of
+-- its own in this process - a package's on_install, and write_deb() called from it. A job runner
+-- started from inside one never returns: measured, every object is written and the run then hangs
+-- there for good, on a shared scheduler and on an isolated one alike. The test for that is here and
+-- not on a call site, because there are two entries into compiled() from a package install and the
+-- next caller would not remember: scheduler.co_count() is 1 for a script's own top level and 2
+-- inside a job, so anything above 1 means a job is already driving this process.
 local function width(opt)
+    if scheduler.co_count() > 1 then
+        return 1
+    end
     if opt.width then
         return opt.width
     end
     return math.max(1, tonumber(os.getenv("FLEET_HEAVY_CPUS") or "") or 1)
 end
+
+-- The units the compiler has actually been run on since the counter was last read. A placed object
+-- is not one of these: a unit the cache hands back is an object the build holds and a compile it
+-- did not do, and the line build() prints has to say which of the two it is reporting.
+local COMPILED
 
 -- The units of a build, compiled. A backport unit is independent of every other one: what it
 -- compiles is decided before any of them run, and the objects are only read afterwards, by the
@@ -239,6 +267,7 @@ end
 -- are numbered in, which the link reads them in, is built before this and never touched here.
 local function compile_all(opt, jobs)
     local count = width(opt)
+    COMPILED = (COMPILED or 0) + #jobs
     if count <= 1 or #jobs < 2 then
         for _, job in ipairs(jobs) do
             compile(job.opt, job.source, job.object)
@@ -1179,14 +1208,18 @@ function build(opt)
     opt = table.join(opt, {triple = opt.architecture .. "-apple-ios" .. opt.deployment})
     -- What the run spent, in the run's own output. A build that prints only its verdict cannot be
     -- improved: the split of compile, link and checks is what says where a machine's time went,
-    -- and it is only comparable between runs if every run measures it the same way.
+    -- and it is only comparable between runs if every run measures it the same way. The first
+    -- number is compiles this run made and the second is objects it holds, and they differ by
+    -- however much the compiler cache served - a line that said "compiled 969 objects in 0.4s"
+    -- would be the one number a band would quote and the one that would be wrong.
+    COMPILED = 0
     local compiling = os.mclock()
     local attach, objects, origins, minimums = compiled(opt)
     opt = table.join(opt, {origins = origins, minimums = minimums})
     local compiled_at = os.mclock()
-    local measured = 0
+    local compiled, placed = COMPILED, 0
     for _, library in ipairs(LIBRARIES) do
-        measured = measured + (objects[library.name] and #objects[library.name] or 0)
+        placed = placed + (objects[library.name] and #objects[library.name] or 0)
     end
     check_releases(opt, objects, origins)
     local checked_at = os.mclock()
@@ -1207,9 +1240,10 @@ function build(opt)
             cprint("${color.warning}note:${clear} %d of the registry's entries name no file of facts yet", undocumented)
         end
     end
-    print(string.format("build: %s compiled %d objects in %.1fs, measured their releases in %.1fs, linked %d libraries in %.1fs, checked in %.1fs",
-                        opt.deployment, measured, (compiled_at - compiling) / 1000, (checked_at - compiled_at) / 1000,
-                        #built, (linked_at - checked_at) / 1000, (os.mclock() - linked_at) / 1000))
+    print(string.format("build: %s compiled %d of %d objects in %.1fs, measured their releases in %.1fs, linked %d libraries in %.1fs, checked in %.1fs",
+                        opt.deployment, compiled, placed, (compiled_at - compiling) / 1000,
+                        (checked_at - compiled_at) / 1000, #built, (linked_at - checked_at) / 1000,
+                        (os.mclock() - linked_at) / 1000))
     return built
 end
 

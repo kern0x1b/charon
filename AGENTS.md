@@ -162,15 +162,30 @@ Each entry: wrong pattern → right pattern → the mechanical reason.
   `backports-gate` links one band and passes; only the all-band build of `canon-install` shows it.
 
 - **The compiler cache behind a backports build.** Wrong: reading a hit rate as proof the build is
-  the same, or setting `CCACHE_BASEDIR`/`hash_dir` for one run by hand. Right: gate through
-  `coordination/heavy.sh`, which exports the policy, and compare the built libraries against an
-  uncached build. Reason: ccache is only transparent where its key is — with `CCACHE_BASEDIR` at
-  `$HOME/Git/projects/ios` and `hash_dir = false` the key is the relative path, the preprocessed
-  source and the compiler, so every worktree shares one cache; without them the key carries each
-  worktree's absolute path and every band builds alone with a cache that only ever misses. What
-  ccache replays is the object the compiler wrote, so identity is a measurement (the libraries
-  against an uncached build), not something the hit rate can show.
-  `CCACHE_DISABLE=1` takes it out for a build that has to show its own work.
+  the same, or setting the cache's key by hand for one run. Right: gate through
+  `coordination/heavy.sh`, which exports `CCACHE_DIR` and `FLEET_HEAVY_CPUS` and writes
+  `hash_dir = false` and `max_size` into `$CCACHE_DIR/ccache.conf`; the check for a cache is the
+  objects it hands back against a `CCACHE_DISABLE=1` build, not the hit rate. Reason: the key is
+  the preprocessed source and the compiler, plus the path of the source — and `hash_dir = false` is
+  what makes that path relative, so every worktree reaches a source by the same name and shares one
+  cache. At the default `hash_dir = true` the key carries each worktree's own directory instead, and
+  every band builds alone with a cache that only ever misses: nothing fails, the fleet just keeps
+  paying. `base_dir` is the weaker half of the same thing and buys nothing on its own. What ccache
+  replays is the object the compiler wrote, so identity is a measurement. `CCACHE_DISABLE` set at
+  all, empty included, takes the cache out for a build that has to show its own work; `CCACHE` names
+  a program and is checked before it is used, so a stale one costs the cache and not the build.
+  No backport uses `__DATE__`/`__TIME__`, so no `time_macros` sloppiness is wanted: it would make a
+  cached unit hand back another build's timestamp.
+
+- **A job runner started from inside a job of xmake's own.** Wrong: calling `async.runjobs` — or
+  anything else that runs jobs on xmake's scheduler — from inside a `package:on_install`, or from
+  `write_deb()` which one calls. Right: let `backports.lua`'s `width()` see it and compile one unit
+  at a time, which is what it does when `scheduler.co_count() > 1`. Reason: a runner started from
+  inside a runner never returns. Measured: every object is written, nothing is printed, the process
+  stays alive, and the run hangs there for good — on a shared scheduler and on an isolated one
+  alike, so `isolate = true` is not the way out. It reads as a wedged build, not as a bug, and the
+  compile output all exists, which is what makes it expensive to diagnose. A gate, `release-split`
+  and the canon build run as the only coroutine of their own and are unaffected.
 
 - **A working copy installed as the addon.** Wrong: a scratch project with `add_addons("charon")`
   whose `add_repositories` points at a worktree or a clone, run against the shared `~/.xmake`.
