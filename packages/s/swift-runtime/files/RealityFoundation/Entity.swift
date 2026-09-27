@@ -43,7 +43,7 @@ import Foundation
 /// Every entity is in a hierarchy and has a transform; the protocols that say so are what the
 /// members below are declared on, so a caller that holds an `Entity` reaches all of them.
 @MainActor
-open class Entity: HasHierarchy, HasTransform, HasSynchronization, Sendable {
+open class Entity: HasHierarchy, HasTransform, HasSynchronization, EventSource, Sendable {
     /// A reference to this entity's node in the scene graph.
     public var __coreEntity: __EntityRef { __EntityRef(coreEntity) }
 

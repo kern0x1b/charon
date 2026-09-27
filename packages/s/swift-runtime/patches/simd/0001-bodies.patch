@@ -1,6 +1,6 @@
 --- a/simd.swift
 +++ b/simd.swift
-@@ -1000,19 +1000,33 @@
+@@ -999,19 +999,33 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_float2x2(diagonal:)")
@@ -41,7 +41,7 @@
  public typealias float3x2 = simd.simd_float3x2
  extension simd.simd_float3x2 {
    @_transparent public init(_ scalar: Swift.Float) {
-@@ -1135,12 +1149,20 @@
+@@ -1134,12 +1148,20 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_float3x2")
@@ -66,7 +66,7 @@
  public typealias float4x2 = simd.simd_float4x2
  extension simd.simd_float4x2 {
    @_transparent public init(_ scalar: Swift.Float) {
-@@ -1267,12 +1289,20 @@
+@@ -1266,12 +1288,20 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_float4x2")
@@ -91,7 +91,7 @@
  public typealias float2x3 = simd.simd_float2x3
  extension simd.simd_float2x3 {
    @_transparent public init(_ scalar: Swift.Float) {
-@@ -1391,12 +1421,20 @@
+@@ -1390,12 +1420,20 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_float2x3")
@@ -116,7 +116,7 @@
  public typealias float3x3 = simd.simd_float3x3
  extension simd.simd_float3x3 {
    @_transparent public init(_ scalar: Swift.Float) {
-@@ -1531,19 +1569,33 @@
+@@ -1530,19 +1568,33 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_float3x3(diagonal:)")
@@ -157,7 +157,7 @@
  public typealias float4x3 = simd.simd_float4x3
  extension simd.simd_float4x3 {
    @_transparent public init(_ scalar: Swift.Float) {
-@@ -1671,12 +1723,20 @@
+@@ -1670,12 +1722,20 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_float4x3")
@@ -182,7 +182,7 @@
  public typealias float2x4 = simd.simd_float2x4
  extension simd.simd_float2x4 {
    @_transparent public init(_ scalar: Swift.Float) {
-@@ -1795,12 +1855,20 @@
+@@ -1794,12 +1854,20 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_float2x4")
@@ -207,7 +207,7 @@
  public typealias float3x4 = simd.simd_float3x4
  extension simd.simd_float3x4 {
    @_transparent public init(_ scalar: Swift.Float) {
-@@ -1924,12 +1992,20 @@
+@@ -1923,12 +1991,20 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_float3x4")
@@ -232,7 +232,7 @@
  public typealias float4x4 = simd.simd_float4x4
  extension simd.simd_float4x4 {
    @_transparent public init(_ scalar: Swift.Float) {
-@@ -2069,19 +2145,33 @@
+@@ -2068,19 +2144,33 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_float4x4(diagonal:)")
@@ -273,7 +273,7 @@
  public typealias double2x2 = simd.simd_double2x2
  extension simd.simd_double2x2 {
    @_transparent public init(_ scalar: Swift.Double) {
-@@ -2211,19 +2301,33 @@
+@@ -2210,19 +2300,33 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_double2x2(diagonal:)")
@@ -314,7 +314,7 @@
  public typealias double3x2 = simd.simd_double3x2
  extension simd.simd_double3x2 {
    @_transparent public init(_ scalar: Swift.Double) {
-@@ -2346,12 +2450,20 @@
+@@ -2345,12 +2449,20 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_double3x2")
@@ -339,7 +339,7 @@
  public typealias double4x2 = simd.simd_double4x2
  extension simd.simd_double4x2 {
    @_transparent public init(_ scalar: Swift.Double) {
-@@ -2478,12 +2590,20 @@
+@@ -2477,12 +2589,20 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_double4x2")
@@ -364,7 +364,7 @@
  public typealias double2x3 = simd.simd_double2x3
  extension simd.simd_double2x3 {
    @_transparent public init(_ scalar: Swift.Double) {
-@@ -2602,12 +2722,20 @@
+@@ -2601,12 +2721,20 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_double2x3")
@@ -389,7 +389,7 @@
  public typealias double3x3 = simd.simd_double3x3
  extension simd.simd_double3x3 {
    @_transparent public init(_ scalar: Swift.Double) {
-@@ -2742,19 +2870,33 @@
+@@ -2741,19 +2869,33 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_double3x3(diagonal:)")
@@ -430,7 +430,7 @@
  public typealias double4x3 = simd.simd_double4x3
  extension simd.simd_double4x3 {
    @_transparent public init(_ scalar: Swift.Double) {
-@@ -2882,12 +3024,20 @@
+@@ -2881,12 +3023,20 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_double4x3")
@@ -455,7 +455,7 @@
  public typealias double2x4 = simd.simd_double2x4
  extension simd.simd_double2x4 {
    @_transparent public init(_ scalar: Swift.Double) {
-@@ -3006,12 +3156,20 @@
+@@ -3005,12 +3155,20 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_double2x4")
@@ -480,7 +480,7 @@
  public typealias double3x4 = simd.simd_double3x4
  extension simd.simd_double3x4 {
    @_transparent public init(_ scalar: Swift.Double) {
-@@ -3135,12 +3293,20 @@
+@@ -3134,12 +3292,20 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_double3x4")
@@ -505,7 +505,7 @@
  public typealias double4x4 = simd.simd_double4x4
  extension simd.simd_double4x4 {
    @_transparent public init(_ scalar: Swift.Double) {
-@@ -3280,19 +3446,33 @@
+@@ -3279,19 +3445,33 @@
    }
  }
  @available(swift, deprecated: 4, renamed: "simd_double4x4(diagonal:)")
@@ -543,10 +543,406 @@
 +public func matrix_equal(_ lhs: simd.simd_double4x4, _ rhs: simd.simd_double4x4) -> Swift.Bool {
 +  return simd_equal(lhs, rhs)
 +}
- @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
- @_transparent public func sincos(_ x: simd.simd_double2) -> (sin: simd.simd_double2, cos: simd.simd_double2) {
-     
-@@ -5215,14 +5395,18 @@
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func cos(_ x: simd.simd_double2) -> simd.simd_double2 {
+   return __tg_cos(x)
+@@ -3301,10 +3481,6 @@
+   return __tg_cosh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func cospi(_ x: simd.simd_double2) -> simd.simd_double2 {
+-  return __tg_cospi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func acos(_ x: simd.simd_double2) -> simd.simd_double2 {
+   return __tg_acos(x)
+ }
+@@ -3321,10 +3497,6 @@
+   return __tg_sinh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func sinpi(_ x: simd.simd_double2) -> simd.simd_double2 {
+-  return __tg_sinpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func asin(_ x: simd.simd_double2) -> simd.simd_double2 {
+   return __tg_asin(x)
+ }
+@@ -3341,10 +3513,6 @@
+   return __tg_tanh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func tanpi(_ x: simd.simd_double2) -> simd.simd_double2 {
+-  return __tg_tanpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func atan(_ x: simd.simd_double2) -> simd.simd_double2 {
+   return __tg_atan(x)
+ }
+@@ -3365,10 +3533,6 @@
+   return __tg_exp2(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func exp10(_ x: simd.simd_double2) -> simd.simd_double2 {
+-  return __tg_exp10(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func expm1(_ x: simd.simd_double2) -> simd.simd_double2 {
+   return __tg_expm1(x)
+ }
+@@ -3461,10 +3625,6 @@
+   return __tg_cosh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func cospi(_ x: simd.simd_double3) -> simd.simd_double3 {
+-  return __tg_cospi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func acos(_ x: simd.simd_double3) -> simd.simd_double3 {
+   return __tg_acos(x)
+ }
+@@ -3481,10 +3641,6 @@
+   return __tg_sinh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func sinpi(_ x: simd.simd_double3) -> simd.simd_double3 {
+-  return __tg_sinpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func asin(_ x: simd.simd_double3) -> simd.simd_double3 {
+   return __tg_asin(x)
+ }
+@@ -3501,10 +3657,6 @@
+   return __tg_tanh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func tanpi(_ x: simd.simd_double3) -> simd.simd_double3 {
+-  return __tg_tanpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func atan(_ x: simd.simd_double3) -> simd.simd_double3 {
+   return __tg_atan(x)
+ }
+@@ -3525,10 +3677,6 @@
+   return __tg_exp2(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func exp10(_ x: simd.simd_double3) -> simd.simd_double3 {
+-  return __tg_exp10(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func expm1(_ x: simd.simd_double3) -> simd.simd_double3 {
+   return __tg_expm1(x)
+ }
+@@ -3621,10 +3769,6 @@
+   return __tg_cosh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func cospi(_ x: simd.simd_double4) -> simd.simd_double4 {
+-  return __tg_cospi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func acos(_ x: simd.simd_double4) -> simd.simd_double4 {
+   return __tg_acos(x)
+ }
+@@ -3641,10 +3785,6 @@
+   return __tg_sinh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func sinpi(_ x: simd.simd_double4) -> simd.simd_double4 {
+-  return __tg_sinpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func asin(_ x: simd.simd_double4) -> simd.simd_double4 {
+   return __tg_asin(x)
+ }
+@@ -3661,10 +3801,6 @@
+   return __tg_tanh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func tanpi(_ x: simd.simd_double4) -> simd.simd_double4 {
+-  return __tg_tanpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func atan(_ x: simd.simd_double4) -> simd.simd_double4 {
+   return __tg_atan(x)
+ }
+@@ -3685,10 +3821,6 @@
+   return __tg_exp2(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func exp10(_ x: simd.simd_double4) -> simd.simd_double4 {
+-  return __tg_exp10(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func expm1(_ x: simd.simd_double4) -> simd.simd_double4 {
+   return __tg_expm1(x)
+ }
+@@ -3781,10 +3913,6 @@
+   return __tg_cosh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func cospi(_ x: simd.simd_double8) -> simd.simd_double8 {
+-  return __tg_cospi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func acos(_ x: simd.simd_double8) -> simd.simd_double8 {
+   return __tg_acos(x)
+ }
+@@ -3801,10 +3929,6 @@
+   return __tg_sinh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func sinpi(_ x: simd.simd_double8) -> simd.simd_double8 {
+-  return __tg_sinpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func asin(_ x: simd.simd_double8) -> simd.simd_double8 {
+   return __tg_asin(x)
+ }
+@@ -3821,10 +3945,6 @@
+   return __tg_tanh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func tanpi(_ x: simd.simd_double8) -> simd.simd_double8 {
+-  return __tg_tanpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func atan(_ x: simd.simd_double8) -> simd.simd_double8 {
+   return __tg_atan(x)
+ }
+@@ -3845,10 +3965,6 @@
+   return __tg_exp2(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func exp10(_ x: simd.simd_double8) -> simd.simd_double8 {
+-  return __tg_exp10(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func expm1(_ x: simd.simd_double8) -> simd.simd_double8 {
+   return __tg_expm1(x)
+ }
+@@ -3941,10 +4057,6 @@
+   return __tg_cosh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func cospi(_ x: simd.simd_float2) -> simd.simd_float2 {
+-  return __tg_cospi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func acos(_ x: simd.simd_float2) -> simd.simd_float2 {
+   return __tg_acos(x)
+ }
+@@ -3961,10 +4073,6 @@
+   return __tg_sinh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func sinpi(_ x: simd.simd_float2) -> simd.simd_float2 {
+-  return __tg_sinpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func asin(_ x: simd.simd_float2) -> simd.simd_float2 {
+   return __tg_asin(x)
+ }
+@@ -3981,10 +4089,6 @@
+   return __tg_tanh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func tanpi(_ x: simd.simd_float2) -> simd.simd_float2 {
+-  return __tg_tanpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func atan(_ x: simd.simd_float2) -> simd.simd_float2 {
+   return __tg_atan(x)
+ }
+@@ -4005,10 +4109,6 @@
+   return __tg_exp2(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func exp10(_ x: simd.simd_float2) -> simd.simd_float2 {
+-  return __tg_exp10(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func expm1(_ x: simd.simd_float2) -> simd.simd_float2 {
+   return __tg_expm1(x)
+ }
+@@ -4101,10 +4201,6 @@
+   return __tg_cosh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func cospi(_ x: simd.simd_float3) -> simd.simd_float3 {
+-  return __tg_cospi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func acos(_ x: simd.simd_float3) -> simd.simd_float3 {
+   return __tg_acos(x)
+ }
+@@ -4121,10 +4217,6 @@
+   return __tg_sinh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func sinpi(_ x: simd.simd_float3) -> simd.simd_float3 {
+-  return __tg_sinpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func asin(_ x: simd.simd_float3) -> simd.simd_float3 {
+   return __tg_asin(x)
+ }
+@@ -4141,10 +4233,6 @@
+   return __tg_tanh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func tanpi(_ x: simd.simd_float3) -> simd.simd_float3 {
+-  return __tg_tanpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func atan(_ x: simd.simd_float3) -> simd.simd_float3 {
+   return __tg_atan(x)
+ }
+@@ -4165,10 +4253,6 @@
+   return __tg_exp2(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func exp10(_ x: simd.simd_float3) -> simd.simd_float3 {
+-  return __tg_exp10(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func expm1(_ x: simd.simd_float3) -> simd.simd_float3 {
+   return __tg_expm1(x)
+ }
+@@ -4261,10 +4345,6 @@
+   return __tg_cosh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func cospi(_ x: simd.simd_float4) -> simd.simd_float4 {
+-  return __tg_cospi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func acos(_ x: simd.simd_float4) -> simd.simd_float4 {
+   return __tg_acos(x)
+ }
+@@ -4281,10 +4361,6 @@
+   return __tg_sinh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func sinpi(_ x: simd.simd_float4) -> simd.simd_float4 {
+-  return __tg_sinpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func asin(_ x: simd.simd_float4) -> simd.simd_float4 {
+   return __tg_asin(x)
+ }
+@@ -4301,10 +4377,6 @@
+   return __tg_tanh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func tanpi(_ x: simd.simd_float4) -> simd.simd_float4 {
+-  return __tg_tanpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func atan(_ x: simd.simd_float4) -> simd.simd_float4 {
+   return __tg_atan(x)
+ }
+@@ -4325,10 +4397,6 @@
+   return __tg_exp2(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func exp10(_ x: simd.simd_float4) -> simd.simd_float4 {
+-  return __tg_exp10(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func expm1(_ x: simd.simd_float4) -> simd.simd_float4 {
+   return __tg_expm1(x)
+ }
+@@ -4421,10 +4489,6 @@
+   return __tg_cosh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func cospi(_ x: simd.simd_float8) -> simd.simd_float8 {
+-  return __tg_cospi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func acos(_ x: simd.simd_float8) -> simd.simd_float8 {
+   return __tg_acos(x)
+ }
+@@ -4441,10 +4505,6 @@
+   return __tg_sinh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func sinpi(_ x: simd.simd_float8) -> simd.simd_float8 {
+-  return __tg_sinpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func asin(_ x: simd.simd_float8) -> simd.simd_float8 {
+   return __tg_asin(x)
+ }
+@@ -4461,10 +4521,6 @@
+   return __tg_tanh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func tanpi(_ x: simd.simd_float8) -> simd.simd_float8 {
+-  return __tg_tanpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func atan(_ x: simd.simd_float8) -> simd.simd_float8 {
+   return __tg_atan(x)
+ }
+@@ -4485,10 +4541,6 @@
+   return __tg_exp2(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func exp10(_ x: simd.simd_float8) -> simd.simd_float8 {
+-  return __tg_exp10(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func expm1(_ x: simd.simd_float8) -> simd.simd_float8 {
+   return __tg_expm1(x)
+ }
+@@ -4581,10 +4633,6 @@
+   return __tg_cosh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func cospi(_ x: simd.simd_float16) -> simd.simd_float16 {
+-  return __tg_cospi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func acos(_ x: simd.simd_float16) -> simd.simd_float16 {
+   return __tg_acos(x)
+ }
+@@ -4601,10 +4649,6 @@
+   return __tg_sinh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func sinpi(_ x: simd.simd_float16) -> simd.simd_float16 {
+-  return __tg_sinpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func asin(_ x: simd.simd_float16) -> simd.simd_float16 {
+   return __tg_asin(x)
+ }
+@@ -4621,10 +4665,6 @@
+   return __tg_tanh(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func tanpi(_ x: simd.simd_float16) -> simd.simd_float16 {
+-  return __tg_tanpi(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func atan(_ x: simd.simd_float16) -> simd.simd_float16 {
+   return __tg_atan(x)
+ }
+@@ -4643,10 +4683,6 @@
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func exp2(_ x: simd.simd_float16) -> simd.simd_float16 {
+   return __tg_exp2(x)
+-}
+-@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+-@_transparent public func exp10(_ x: simd.simd_float16) -> simd.simd_float16 {
+-  return __tg_exp10(x)
+ }
+ @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+ @_transparent public func expm1(_ x: simd.simd_float16) -> simd.simd_float16 {
+@@ -4794,14 +4830,18 @@
    }
  }
  extension simd.simd_float3x3 {
@@ -568,23 +964,7 @@
    }
  }
  extension simd.simd_quatf : Swift.Equatable {
-@@ -5232,9 +5416,13 @@
- }
- @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
- extension simd.simd_quatf : Swift.Hashable {
--  public func hash(into hasher: inout Swift.Hasher)
-+  public func hash(into hasher: inout Swift.Hasher) {
-+    hasher.combine(vector)
-+  }
-   public var hashValue: Swift.Int {
--    get
-+    var hasher = Hasher()
-+    hash(into: &hasher)
-+    return hasher.finalize()
-   }
- }
- extension simd.simd_quatf : @unchecked Swift.Sendable {
-@@ -5283,10 +5471,26 @@
+@@ -4853,10 +4893,26 @@
      lhs = lhs / rhs
    }
  }
@@ -612,7 +992,7 @@
  @_transparent public func exp(_ q: simd.simd_quatf) -> simd.simd_quatf {
    return __tg_exp(q)
  }
-@@ -5352,14 +5556,18 @@
+@@ -4922,14 +4978,18 @@
    }
  }
  extension simd.simd_double3x3 {
@@ -634,23 +1014,7 @@
    }
  }
  extension simd.simd_quatd : Swift.Equatable {
-@@ -5369,9 +5577,13 @@
- }
- @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
- extension simd.simd_quatd : Swift.Hashable {
--  public func hash(into hasher: inout Swift.Hasher)
-+  public func hash(into hasher: inout Swift.Hasher) {
-+    hasher.combine(vector)
-+  }
-   public var hashValue: Swift.Int {
--    get
-+    var hasher = Hasher()
-+    hash(into: &hasher)
-+    return hasher.finalize()
-   }
- }
- extension simd.simd_quatd : @unchecked Swift.Sendable {
-@@ -5423,7 +5635,14 @@
+@@ -4984,7 +5044,14 @@
  @_transparent public func dot(_ lhs: simd.simd_quatd, _ rhs: simd.simd_quatd) -> Swift.Double {
    return simd_dot(lhs, rhs)
  }

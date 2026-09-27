@@ -485,6 +485,9 @@ public struct __EntityRef: Equatable {
     public var synchronizationService: Any?
     /// The `Scene` that wraps this state, made on the first use and kept.
     public var wrapper: Scene?
+    /// The pairs of nodes that were touching at the last step of the simulation, so that the
+    /// events a collision ends are raised once.
+    public var collisions: Set<String>?
     private var counter: UInt64 = 0
     private let lock = NSLock()
 

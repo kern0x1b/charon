@@ -617,6 +617,11 @@ package("swift-runtime")
         -- one architecture; it is the release's own source, and the patches beside it fill in
         -- the bodies the dump leaves out, which is all that is missing for another
         -- architecture. The module shadows the C one by its layout, `<name>.swiftmodule/<triple>`.
+        --
+        -- The patch is against the SDK this recipe is built with, `includes/apple-ios`'s
+        -- 16.4: its interface is 4993 lines and the one of a newer SDK is not the same text.
+        -- `patch` fails the install when a hunk does not fit, which is what happened when the
+        -- patch was made against a 26.2 interface, and it is the right outcome.
         local simd = path.absolute("simd")
         os.mkdir(simd)
         local simd_module = os.files(path.join(toolchain:config("sdkdir"), "usr", "lib", "swift", "simd.swiftmodule", "*-apple-ios.swiftinterface"))
