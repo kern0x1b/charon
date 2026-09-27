@@ -89,6 +89,31 @@ release documents for the same condition with a real accessory absent, and each 
 of the header's own contract — not a behaviour observed on a device, because there is no HAP accessory
 on one. A device run with a real accessory is what would confirm them, and it has not happened.
 
+## A correction the compiler forced, and one I got wrong
+
+**HomeKit's `uniqueIdentifier` family is an `NSUUID`, not a string.** `HMRoom.h:37`, `HMZone.h:41` and
+`HMUser.h:31` all say `@property (readonly, copy) NSUUID *uniqueIdentifier`. Every graph edge is keyed by
+a string, so the accessors convert at the edge -- `CharonHomeKitUUIDString` to write one, `CharonHomeKitUUID`
+to read one back -- and the value an application reads is the UUID Apple's own type says it is. This
+was found by the compiler, not by reading the header first, and it is the kind of thing a port that
+writes from the memory of an API gets wrong.
+
+**I claimed a lift defect that does not exist, and it is retracted here.** Having seen an `NSUUID *`
+where a string was expected, I reported that the lifted Foundation declares `-[NSUUID UUIDString]`
+returning `NSUUID *`, and said it affected every band. It does not. The declaration is:
+
+    $SDK/System/Library/Frameworks/Foundation.framework/Headers/NSUUID.h:24
+      - (nullable instancetype)initWithUUIDString:(NSString *)string;
+    $SDK/System/Library/Frameworks/Foundation.framework/Headers/NSUUID.h:36
+      @property (readonly, copy) NSString *UUIDString;
+
+where `$SDK` is
+`~/.xmake/packages/i/iphoneos-sdk/16.4/cccc080d0cbe42c2a85b1369aba6e290/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk`
+-- the SDK the build compiles against, and the same 26.2 header agrees. A two-line file using both
+selectors compiles clean at `-target armv7-apple-ios6.1.3`. There is no lifted `NSUUID.h` in the
+include path. The `NSUUID *` came from HomeKit's own header, and the rest was me not reading the
+diagnostic to its source. Nothing here is a defect for the coordinator to route.
+
 ## Not carried, and what that costs
 
 - **`HMAccessoryBrowser`, `HMAccessoryProfile`, `HMCameraProfile` and the whole camera surface.**
