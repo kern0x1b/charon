@@ -10,16 +10,50 @@ iOS 16.4,
 `System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers/Sparse/Types.h` and
 `…/Sparse/BLAS.h`, with the declarations the port is compiled against and the documented contract.
 
-## What the releases this port supports have
+## What the releases this port supports have: measured, symbol by symbol
 
-None of the sixty-nine. The release ladder was walked symbol by symbol over the armv7 caches of 4.3,
-4.3.5, 5.0, 5.1.1, 6.0, 6.0.2, 6.1, 6.1.3, 6.1.4, 6.1.6, 7.0, 7.1.2, 8.0, 9.0, 9.3.5, 10.3.4, 12.0,
-16.0 and 18.0 and the arm64/arm64e ones where a release has no armv7: not one `sparse_*` name is exported
-by any of them, and the 6.1.3 `vecLib` carries 148 `cblas_*` names and 290 trailing-underscore LAPACK
-ones beside its 415 vDSP and 235 vImage, none of them a `sparse_*` one. The `Sparse` framework itself
-arrives after the last release this port supports. So there is no band to split: every one of these names
-is absent on armv7 at iOS 6.1.3 and on armv7 at iOS 4.3 alike, which is why the whole family is one
-object file (`Accelerate/SparseBLAS9.m`) and one registry file (`registry/Accelerate/ios9sparseblas.json`).
+The ladder was walked one symbol at a time with `dyld.first_releases` over every cache this port holds —
+the armv7 and armv7s of 2.2.1, 3.0, 3.1.3, 3.2, 4.0, 4.2.1, 4.3, 4.3.5, 5.0, 5.1.1, 6.0, 6.0.2, 6.1,
+6.1.3, 6.1.4, 6.1.6, 7.0, 7.0.1, 7.0.6, 7.1, 7.1.1, 7.1.2, 8.0, 8.0.2, 8.1, 8.1.1, 8.1.2, 8.1.3,
+8.2, 8.3, 8.4.1, 9.0, 9.0.2, 9.1, 9.2, 9.2.1, 9.3, 9.3.5, 9.3.6, 10.0.1, 10.1.1, 10.2, 10.2.1, 10.3,
+10.3.4 and the arm64 or arm64e of 11.0, 12.0, 16.0 and 18.0, where a release has no armv7 — against the
+iOS 16.4 SDK, so a name counts as exported only where a client binds it. The results:
+
+| family | rows | first release any held cache exports |
+| --- | --- | --- |
+| this one, the 67 names of `SparseBLAS9.m` | 67 | 9.0 |
+| this one, the two names of `SparseProduct10.m` | 2 | 10.0.1 |
+| the complex variants `_complex` | 58 | no release at all |
+| the `Sparse*` and `_Sparse*` solve entry points | 158 | 11.0 for 57 of them, 16.0 and 18.0 for the rest, and no release at all for the remainder |
+| `BNNS*` | 139 | 10.0.1 for 6, 11.0 for 1, 16.0 for 83, 18.0 for 45 and no release at all for 4 |
+| **the control: the 35 `cblas_*`, `ssyev_`, `dsyev_` and LAPACK names this port imports** | 35 | **4.0** |
+
+Three things follow, and the last one is the load-bearing one:
+
+1. **Nothing here is on any release this port supports.** The last of them is 6.1.3 and the earliest of
+   this family is 9.0, two releases later; the `Sparse` framework itself arrives after the newest release
+   this port supports. So every band builds this family and there is nothing to leave out.
+2. **One object file may not carry two releases' symbols**, and this family does: `sparse_matrix_product_
+   sparse_float` and `sparse_matrix_product_sparse_double` first appear at 10.0.1 while the other
+   sixty-seven appear at 9.0. They are therefore the object file of their own
+   (`Accelerate/SparseProduct10.m`, registry `ios10sparseproduct.json`, `introduced` 10.0.1) and the other
+   sixty-seven are `Accelerate/SparseBLAS9.m` (registry `ios9sparseblas.json`, `introduced` 9.0). This is
+   the same defect `tools/release-split.lua` exists to find — SCNLightTypeProbe was declared 10.0 and
+   exported at 9.0 — and the build would have linked a band whose file spans two releases.
+3. **Every name the port imports is exported from 4.0**, the oldest rung held, so `cblas_sgemv`,
+   `cblas_dgemv`, `cblas_sger`, `cblas_dger`, `cblas_saxpy`, `cblas_daxpy`, `cblas_sdot`, `cblas_ddot`,
+   `cblas_scopy`, `cblas_dcopy`, `cblas_sswap`, `cblas_dswap`, `cblas_sscal`, `cblas_dscal`, `cblas_ssyrk`,
+   `cblas_sgemm`, `cblas_dgemm`, `ssyev_`, `dsyev_`, `ssyevd_`, `ssygvd_`, `sgesv_`, `dgesv_`, `spotrf_`,
+   `dpotrf_`, `sgels_`, `sgetrf_`, `sgetrs_`, `dgetrf_`, `dgetrs_`, `sgeqrf_`, `sorgqr_`, `sgeqp3_`,
+   `sposv_` and `dposv_` all resolve on the 4.3 band and on the 6.1.3 one. That is the control the ladder
+   measurement needs: "no release exports it" means nothing unless the same walk finds the symbols it is
+   known to export, and this walk finds thirty-five.
+
+The 58 `_complex` variants are in no release's cache at all, which is why they are not in this delivery:
+the header that declares them is iOS 18.5 and later, and this port does not have that SDK, so their
+declarations would have to be written rather than read. They are listed here as the next piece of this
+family with that reason attached, and the coordinator should decide whether an 18.x SDK is fetched for
+them or whether the rows wait.
 
 ## What the arithmetic is made of
 
@@ -194,9 +228,16 @@ in the differential, which checks the port against the header's rule for exactly
 ## What has not been run
 
 `tests/backports/device/sparseblas.m` calls all sixty-nine entry points on the device against the answers
-recorded above. The run has not happened yet: the device test is written and compiles for
-`armv7-apple-ios6.1.3` and `armv7-apple-ios4.3` against the SDK this port builds with, and until it is run
-on an emulated 6.1.3 or on an iPad 2 every answer on this page is a host measurement and a device-unverified
-one, which is the floor the port's own contract asks for and not the bar. The `cblas_*` and `ssyev_` names
-the port imports are on both ends of the ladder by the same measurement the Accelerate worker recorded for
-its own BLAS rows, and the gate checks them against 6.1.3 and 4.3 as it links each band.
+recorded above: 86 checks, 0 failures when it is built and run on the host against the port's own objects.
+**The run on the device has not happened.** The test is written, and it is built here for `armv7` against
+the SDK this port builds with; until it is run on an emulated 6.1.3 (`xmake emulate`) or on an iPad 2
+every answer on this page is a host measurement and a device-unverified one, which is the floor the
+port's own contract asks for and not the bar.
+
+The imports are not a guess: the ladder walk in the second section above puts all thirty-five of them at
+4.0, so they resolve on the 4.3 band and on the 6.1.3 one, and the gate checks them against both as it
+links each band. The first gate run of this tree stopped for a different reason and is recorded in the
+delivery: the port's `ssyev_` call passed its scalars as `int *`, which the iOS 16.4 header's
+`__CLPK_integer` refuses on a 32-bit target where that typedef is a `long int`. The host's own Accelerate
+has the same header with `__CLPK_integer` as an `int`, so the host build accepted it and the device build
+did not — the port's variables are that typedef now, and both builds compile.

@@ -76,6 +76,16 @@ static inline int CharonSparseIsDouble(const void *matrix)
     return CharonSparseIsMatrix(matrix, CHARON_SPARSE_MAGIC_DOUBLE);
 }
 
+// The element of a dense matrix in the caller's own layout, so one loop covers both orders: a
+// row-major matrix steps by one along a row, a column-major one by its leading dimension. It lives here
+// and not in one of the two object files because both of them need it, and a function defined in a file
+// that exports an API symbol is left out of a band the release already has, which is how a shared C
+// function becomes an undefined symbol in a later band.
+static inline long CharonSparseDenseAt(int order, sparse_dimension leading, sparse_dimension row, sparse_dimension column)
+{
+    return order == CblasRowMajor ? (long)(row * leading + column) : (long)(column * leading + row);
+}
+
 // The first stored column of a row that is not below the one looked for: where an entry for that
 // column belongs, and where the search for it stops.
 static inline sparse_index CharonSparseSearch(const CharonSparseRow *row, sparse_index column)

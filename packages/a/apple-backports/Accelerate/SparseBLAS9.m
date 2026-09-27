@@ -1076,7 +1076,6 @@ static sparse_status CharonSparseTriangular(void *matrix, uint32_t magic, int tr
     // reached for a sparse matrix at all.
     int upper = (asFloat->property & SPARSE_UPPER_TRIANGULAR) != 0;
     sparse_dimension n = asFloat->rows;
-    sparse_dimension columns = transposed ? n : 0;
     sparse_index *lists = NULL;
     sparse_index *offsets = NULL;
     if (transposed) {
@@ -1105,7 +1104,6 @@ static sparse_status CharonSparseTriangular(void *matrix, uint32_t magic, int tr
             running += count;
         }
     }
-    (void)columns;
     for (sparse_dimension right = 0; right < nrhs; right++) {
         // An upper triangle is solved from the last row backwards, and a lower one from the first
         // forwards; transposing swaps which of the two the matrix's own storage is.
@@ -1511,8 +1509,11 @@ static double CharonSparseOperator(void *matrix, uint32_t magic, sparse_norm nor
             }
         }
         // vecLib/Headers/clapack.h declares the scalars of the LAPACK entry points as pointers, and
-        // the release's own functions read them there, so they are passed that way.
-        int count = (int)m, leading = (int)m, lwork = 4 * (int)m + 64, info = 0;
+        // the release's own functions read them there. Their type is the header's own __CLPK_integer,
+        // which is an int on a 64-bit target and a long int on the 32-bit one this library is built
+        // for - so the port's variables are that type and not int, which the 32-bit build refuses.
+        __CLPK_integer count = (__CLPK_integer)m, leading = (__CLPK_integer)m, lwork = 4 * (__CLPK_integer)m + 64,
+                          info = 0;
         float *work = (float *)malloc((size_t)lwork * sizeof(float));
         float *values = (float *)malloc((size_t)m * sizeof(float));
         double largest = 0.0;
@@ -1544,7 +1545,8 @@ static double CharonSparseOperator(void *matrix, uint32_t magic, sparse_norm nor
                 }
             }
         }
-        int count = (int)m, leading = (int)m, lwork = 4 * (int)m + 64, info = 0;
+        __CLPK_integer count = (__CLPK_integer)m, leading = (__CLPK_integer)m, lwork = 4 * (__CLPK_integer)m + 64,
+                          info = 0;
         double *work = (double *)malloc((size_t)lwork * sizeof(double));
         double *values = (double *)malloc((size_t)m * sizeof(double));
         double largest = 0.0;
@@ -1608,13 +1610,6 @@ double sparse_matrix_trace_double(sparse_matrix_double A, sparse_index offset)
 }
 
 // ---------------------------------------------------------------- level 3
-
-// The element of a dense matrix in the caller's own layout, so one loop covers both orders: a
-// row-major matrix steps by one along a row, a column-major one by its leading dimension.
-static long CharonSparseDenseAt(int order, sparse_dimension leading, sparse_dimension row, sparse_dimension column)
-{
-    return order == CblasRowMajor ? (long)(row * leading + column) : (long)(column * leading + row);
-}
 
 // C = alpha * op(A) * B + C, with B dense. One stored entry of op(A) at a time: the release's own
 // cblas_scopy gathers the row of B the entry names and cblas_saxpy adds alpha times the entry's value
@@ -1701,96 +1696,4 @@ sparse_status sparse_matrix_product_dense_double(enum CBLAS_ORDER order, enum CB
     }
     return CharonSparseProductDense(A, CHARON_SPARSE_MAGIC_DOUBLE, order, transa == CblasTrans, n, alpha, B, ldb, C, ldc,
                                     sizeof(double));
-}
-
-// C = alpha * op(A) * B + C with B sparse too, written out into a dense C. The same rank-one update
-// per nonzero, with the row of B taken from its own stored entries. A leading dimension below what
-// the layout needs and a matrix that is not one of ours are SPARSE_ILLEGAL_PARAMETER, measured.
-static sparse_status CharonSparseProductSparse(void *A, uint32_t magicA, int order, int transposed, double alpha, void *B,
-                                               uint32_t magicB, void *C, sparse_dimension ldc, size_t size)
-{
-    if (order != CblasRowMajor && order != CblasColMajor) {
-        return SPARSE_ILLEGAL_PARAMETER;
-    }
-    if (!CharonSparseIsMatrix(A, magicA) || !CharonSparseIsMatrix(B, magicB)) {
-        return SPARSE_ILLEGAL_PARAMETER;
-    }
-    const struct sparse_m_float *asA = (const struct sparse_m_float *)A;
-    const struct sparse_m_float *asB = (const struct sparse_m_float *)B;
-    sparse_dimension m = transposed ? asA->columns : asA->rows;
-    sparse_dimension k = transposed ? asA->rows : asA->columns;
-    sparse_dimension n = asB->columns;
-    if (k != asB->rows) {
-        return SPARSE_ILLEGAL_PARAMETER;
-    }
-    if (ldc < (order == CblasRowMajor ? (n ? n : 1) : (m ? m : 1))) {
-        return SPARSE_ILLEGAL_PARAMETER;
-    }
-    sparse_dimension cStep = order == CblasRowMajor ? 1 : ldc;
-    double *row = (double *)calloc(n ? n : 1, sizeof(double));
-    if (!row) {
-        return SPARSE_SYSTEM_ERROR;
-    }
-    for (sparse_dimension i = 0; i < m; i++) {
-        const CharonSparseRow *line = transposed ? NULL : &asA->row[i];
-        for (sparse_index at = 0; at < (transposed ? (sparse_index)asA->rows : line->count); at++) {
-            sparse_index r = transposed ? at : (sparse_index)i;
-            sparse_index c = transposed ? (sparse_index)i : line->column[at];
-            if (c >= (sparse_index)asA->columns) {
-                continue;
-            }
-            double value = size == sizeof(float) ? (double)((const float *)line->value)[at]
-                                                : ((const double *)line->value)[at];
-            if (value == 0.0) {
-                continue;
-            }
-            memset(row, 0, (size_t)(n ? n : 1) * sizeof(double));
-            const CharonSparseRow *from = &asB->row[transposed ? r : c];
-            for (sparse_index b = 0; b < from->count; b++) {
-                if (from->column[b] < (sparse_index)n) {
-                    row[from->column[b]] = CharonSparseElementAt(from, from->column[b], size);
-                }
-            }
-            long to = CharonSparseDenseAt(order, ldc, i, 0);
-            for (sparse_dimension j = 0; j < n; j++) {
-                if (row[j] == 0.0) {
-                    continue;
-                }
-                long at2 = to + (long)(j * cStep);
-                // The release's own cblas_saxpy does the one multiply-add: the gathered value is the
-                // vector and alpha times the entry's own value is the factor, so the product is formed
-                // once and by the release's BLAS rather than here.
-                if (size == sizeof(float)) {
-                    float one = (float)row[j];
-                    cblas_saxpy(1, (float)(alpha * value), &one, 1, (float *)C + at2, 1);
-                } else {
-                    cblas_daxpy(1, alpha * value, &row[j], 1, (double *)C + at2, 1);
-                }
-            }
-        }
-    }
-    free(row);
-    return SPARSE_SUCCESS;
-}
-
-sparse_status sparse_matrix_product_sparse_float(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE transa, float alpha,
-                                                 sparse_matrix_float A, sparse_matrix_float B, float *__restrict C,
-                                                 sparse_dimension ldc)
-{
-    if (transa != CblasNoTrans && transa != CblasTrans) {
-        return SPARSE_ILLEGAL_PARAMETER;
-    }
-    return CharonSparseProductSparse(A, CHARON_SPARSE_MAGIC_FLOAT, order, transa == CblasTrans, alpha, B,
-                                     CHARON_SPARSE_MAGIC_FLOAT, C, ldc, sizeof(float));
-}
-
-sparse_status sparse_matrix_product_sparse_double(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE transa, double alpha,
-                                                  sparse_matrix_double A, sparse_matrix_double B, double *__restrict C,
-                                                  sparse_dimension ldc)
-{
-    if (transa != CblasNoTrans && transa != CblasTrans) {
-        return SPARSE_ILLEGAL_PARAMETER;
-    }
-    return CharonSparseProductSparse(A, CHARON_SPARSE_MAGIC_DOUBLE, order, transa == CblasTrans, alpha, B,
-                                     CHARON_SPARSE_MAGIC_DOUBLE, C, ldc, sizeof(double));
 }

@@ -737,28 +737,6 @@
       "effect": "C = alpha * op(A) * B + C with C accumulated into, in either layout and either transpose, and SPARSE_SUCCESS; SPARSE_ILLEGAL_PARAMETER for an order or a transpose the enumeration does not name, for a leading dimension below what the layout needs (measured: a leading dimension of 1 and of 2 against a count of 3 columns are both refused, and an output stride of 1 is refused), and for a matrix that is not one of the port's, with C left exactly as it was in every refusal - measured; a count of columns of zero and an alpha of zero both answer SPARSE_SUCCESS and leave C alone, measured",
       "facts": "facts/Accelerate/SparseBLAS.md",
       "source": "the host's own Accelerate (macOS), which the port is held against case by case by tests/backports/host/sparseblas, which runs this port's own SparseBLAS9.m and the host's library over the same inputs and compares every status, every count and every element; the header of iOS 16.4 (System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers/Sparse/Types.h and BLAS.h) for the declarations and the documented contract; the release ladder for what the releases this port supports export, read from their own armv7 and arm64 caches"
-    },
-    {
-      "api": "sparse_matrix_product_sparse_float()",
-      "kind": "function",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "C = alpha * op(A) * B + C with B sparse as well, written out into the caller's dense C, by the same rank-one update per nonzero with the row of B taken from its own stored entries",
-      "effect": "C = alpha * op(A) * B + C with C accumulated into, in either layout, and SPARSE_SUCCESS; SPARSE_ILLEGAL_PARAMETER for an order or a transpose the enumeration does not name, for an output stride below what the layout needs (measured: an ldc of 1 against two columns is refused), for a matrix that is not one of the port's, and for a B whose row count is not A's column count, with C untouched in every refusal",
-      "facts": "facts/Accelerate/SparseBLAS.md",
-      "source": "the host's own Accelerate (macOS), which the port is held against case by case by tests/backports/host/sparseblas, which runs this port's own SparseBLAS9.m and the host's library over the same inputs and compares every status, every count and every element; the header of iOS 16.4 (System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers/Sparse/Types.h and BLAS.h) for the declarations and the documented contract; the release ladder for what the releases this port supports export, read from their own armv7 and arm64 caches"
-    },
-    {
-      "api": "sparse_matrix_product_sparse_double()",
-      "kind": "function",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "C = alpha * op(A) * B + C with B sparse as well, written out into the caller's dense C, by the same rank-one update per nonzero with the row of B taken from its own stored entries",
-      "effect": "C = alpha * op(A) * B + C with C accumulated into, in either layout, and SPARSE_SUCCESS; SPARSE_ILLEGAL_PARAMETER for an order or a transpose the enumeration does not name, for an output stride below what the layout needs (measured: an ldc of 1 against two columns is refused), for a matrix that is not one of the port's, and for a B whose row count is not A's column count, with C untouched in every refusal",
-      "facts": "facts/Accelerate/SparseBLAS.md",
-      "source": "the host's own Accelerate (macOS), which the port is held against case by case by tests/backports/host/sparseblas, which runs this port's own SparseBLAS9.m and the host's library over the same inputs and compares every status, every count and every element; the header of iOS 16.4 (System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers/Sparse/Types.h and BLAS.h) for the declarations and the documented contract; the release ladder for what the releases this port supports export, read from their own armv7 and arm64 caches"
     }
   ]
 }

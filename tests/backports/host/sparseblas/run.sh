@@ -26,9 +26,15 @@ PY
     renames="$renames -D$name=charon_host_$name"
 done
 
-xcrun clang -fobjc-arc -w $renames -I"$ACCELERATE" -c "$ACCELERATE/SparseBLAS9.m" -o "$build/SparseBLAS9.o"
+# Both object files, because the release ladder puts the two sparse-times-sparse products in one release
+# and the other sixty-seven in another, and the differential needs both.
+objects=""
+for source in SparseBLAS9.m SparseProduct10.m; do
+    xcrun clang -fobjc-arc -w $renames -I"$ACCELERATE" -c "$ACCELERATE/$source" -o "$build/${source%.m}.o"
+    objects="$objects $build/${source%.m}.o"
+done
 xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations -Wno-unused-function \
-    "$here/differential.m" "$build/SparseBLAS9.o" \
+    "$here/differential.m" $objects \
     -framework Foundation -framework Accelerate -o "$build/differential"
 "$build/differential" > "$build/log" 2>&1 && result=0 || result=$?
 grep -v '^ok ' "$build/log" || true
