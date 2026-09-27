@@ -339,7 +339,9 @@ driver's own and is not sent to Shade: `until-exit` holds the guest until the
 application has ended, so a port whose application produces its result over time
 is given the time to produce it, then settles and takes one more frame; the
 verdict says in `held` whether the application's own end or the run's budget came
-first. It prints the application's output and the snapshots, and fails naming
+first, and says in `held` whether the application's own end or the run's budget came
+first. It prints the application's output, the snapshots and the run folder, which
+is where a program that wrote into `/var/charon` left them, and fails naming
 SpringBoard's refusal, the signal or status the application ended with, or that
 its process never started; `log` prints the output again and `shot` the last
 frame. The guest has no network unless `-n` or a target's

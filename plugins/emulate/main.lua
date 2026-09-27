@@ -172,6 +172,9 @@ local function run(ctx, argv)
             io.write(io.readfile(file))
         end
     end
+    -- Where the run's own files are: a program writes what it has to say into /var/charon, and the
+    -- image is under the emulator root, so the folder is named for whoever has to read them.
+    print("run folder %s", folder)
     local described = emulator.describe(result)
     -- Both clocks are named whatever the outcome, so a run is never read as
     -- fast or slow without the scale that produced it.
@@ -234,6 +237,9 @@ local function launch(ctx, identifier, steps)
     for _, shot in ipairs(driver.shots) do
         print(shot)
     end
+    -- Where the run's own files are: the application writes what it has to say into /var/charon, and
+    -- the image is under the emulator root, so the folder is named for whoever has to read them.
+    print("run folder %s", folder)
     local where = string.format("on %s %s (%s) in %.1f host s at time scale %s", ctx.identifier, ctx.version, ctx.build,
                                 booted.seconds, booted.scale)
     if driver.failure == "refused" then
