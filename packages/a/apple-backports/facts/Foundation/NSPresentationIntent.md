@@ -68,6 +68,10 @@ owes is one thing, and the port keeps it: two equal intents hash equal, which is
 dictionary of intents needs. The differential checks that on both sides and prints the two numbers
 rather than holding them equal.
 
+`-description` is the port's own one line, where the host's is a private format of its own fields
+(`<NSPresentationIntent 0x…>: Paragraph (id 10)`); no API fixes the text of a description, and a
+program that parses it is parsing something private on either release.
+
 ## The archive
 
 The keys are the SDK's own, read out of a keyed archive the host wrote:

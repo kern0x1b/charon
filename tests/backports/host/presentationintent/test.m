@@ -49,11 +49,6 @@ static id makeIn(Class kind, NSString *factory, NSInteger identity, NSInteger nu
             [parts addObject:part];
     for (NSUInteger index = 0; index < parts.count; index++) {
         NSString *part = parts[index];
-        if (index + 2 >= signature.numberOfArguments) {
-            printf("MISMATCH %s on %s: %lu parts, %lu arguments\n", factory.UTF8String,
-                   class_getName(kind), (unsigned long)parts.count, (unsigned long)signature.numberOfArguments);
-            break;
-        }
         const char *type = [signature getArgumentTypeAtIndex:index + 2];
         if (type[0] == 'q' || type[0] == 'l' || type[0] == 'i' || type[0] == 's' || type[0] == 'S') {
             NSInteger value = [part isEqualToString:@"identity"] ? identity : number;
@@ -279,7 +274,6 @@ int main(void)
         /* The archive: the keys, then the round trip through the backport's own coder. */
         id ourTable = build(YES, 8, build(YES, 0, nil, 90, 0), 91, 3);
         id systemTable = build(NO, 8, build(NO, 0, nil, 90, 0), 91, 3);
-        if (getenv("SKIP_KEYS")) { printf("checks=%d failures=%d\n", charon_checks, charon_failures); fflush(stdout); return charon_failures; }
         NSArray *systemKeys = keysInArchive(systemTable);
         NSArray *ourKeys = keysInArchive(ourTable);
         charon_check([systemKeys isEqualToArray:ourKeys], "the archive's keys",
@@ -288,7 +282,6 @@ int main(void)
         /* And a round trip: the port's own archive, read back by the port's own decoder. */
         id read = nil;
         @try {
-            if (getenv("SKIP_ROUNDTRIP")) @throw [NSException exceptionWithName:@"skip" reason:@"skip" userInfo:nil];
             NSError *readError = nil;
             NSData *data = [NSKeyedArchiver archivedDataWithRootObject:ourTable requiringSecureCoding:YES error:&readError];
             NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:data error:&readError];
@@ -296,8 +289,8 @@ int main(void)
             read = [unarchiver decodeObjectOfClass:ourClass forKey:NSKeyedArchiveRootObjectKey];
             [unarchiver finishDecoding];
         } @catch (NSException *exception) {
-            if (getenv("SKIP_ROUNDTRIP")) { read = ourTable; }
-            else { read = nil; printf("FAIL the round trip raises %s: %s\n", exception.name.UTF8String, exception.reason.UTF8String); }
+            read = nil;
+            printf("FAIL the round trip raises %s: %s\n", exception.name.UTF8String, exception.reason.UTF8String);
         }
         charon_check(read && [answer(read) isEqualToString:answer(ourTable)] && [read isKindOfClass:ourClass],
                      "the round trip",
