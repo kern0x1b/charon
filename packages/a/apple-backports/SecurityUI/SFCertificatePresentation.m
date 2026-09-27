@@ -1,6 +1,4 @@
-#import <UIKit/UIKit.h>
-#import <SecurityUI/SecurityUI.h>
-#import <Security/Security.h>
+#import "CharonSecurityUI.h"
 
 // The sheet a trust object is shown in. It is the port's own: a plain UIViewController with labels
 // laid out in -viewDidLayoutSubviews, presented through the release's own modal presentation, which
