@@ -344,9 +344,16 @@ open class AnimationResource {
     /// a file carries its own, and a resource built here is the definition it was built from.
     public let definition: AnimationDefinition?
 
-    public init(name: String? = nil, definition: AnimationDefinition? = nil) {
+    /// The sequencer behind a group or a sequence, and nil for one animation.
+    let sequencer: __RESequencer?
+
+    /// The initializer a group or a sequence is made through; a caller makes a single animation
+    /// with the two-argument one.
+    internal init(name: String? = nil, definition: AnimationDefinition? = nil,
+                  sequencer: __RESequencer? = nil) {
         self.name = name
         self.definition = definition
+        self.sequencer = sequencer
     }
 
     /// The animation that repeats for ever.
@@ -482,4 +489,170 @@ private func __reAnimation(from definition: AnimationDefinition, name: String) -
                           fillMode: definition.fillMode, speed: definition.speed,
                           delay: definition.delay, offset: definition.offset,
                           from: from, to: to, by: by)
+}
+
+// MARK: - Sequencers
+
+/// What a group of animations does to a value, taken from the open code and not invented here.
+///
+/// Both shapes were read before they were written. Filament's `Animator`
+/// (`libs/gltfio/src/Animator.cpp`, Apache-2.0) searches a channel's own times with a lower
+/// bound, uses the *same* index on both sides before the first key and after the last so the
+/// value holds at the ends, and takes the factor between the two neighbouring keys - local to the
+/// pair - rather than over the whole animation. Assimp's `AnimEvaluator`
+/// (`tools/assimp_view/code/AnimEvaluator.cpp`, BSD-3) remembers the frame it was on, reuses it
+/// while time moves forward and starts again when it goes back, and wraps the next frame modulo
+/// the key count, so a run that reaches its end continues into its first key rather than
+/// stopping. What is taken is that shape; the code is this module's.
+@MainActor
+struct __RESequencer {
+    /// The animations in the order they run, and how long each one holds for.
+    let parts: [(name: String, resource: AnimationResource)]
+    /// How the group runs: all at once, or one after another.
+    enum Kind {
+        case sequence
+        case group
+    }
+    let kind: Kind
+    let name: String
+
+    /// The names in the order a caller sees them.
+    var names: [String] { parts.map { $0.name } }
+
+    /// Where in the group a time falls, and the fraction through the part that holds it.
+    ///
+    /// A sequence divides its time by the lengths of its parts; a group gives every part the
+    /// whole time, which is what running them at once means.
+    func placement(at time: TimeInterval) -> (part: Int, local: TimeInterval) {
+        switch kind {
+        case .group:
+            return (0, time)
+        case .sequence:
+            var remaining = time
+            for (index, part) in parts.enumerated() {
+                let length = part.resource.definition.map { max($0.duration, 0) } ?? 0
+                if remaining < length || index == parts.count - 1 {
+                    return (index, remaining)
+                }
+                remaining -= length
+            }
+            return (max(parts.count - 1, 0), 0)
+        }
+    }
+}
+
+extension AnimationResource {
+    /// The animations of this resource, or one animation when it is only one.
+    var __parts: [(name: String, resource: AnimationResource)] {
+        if let sequencer = sequencer { return sequencer.parts }
+        return [(name: name ?? "", resource: self)]
+    }
+
+    /// Several animations played one after another, as one.
+    ///
+    /// The parts are timed by their own durations, in the order they are given.
+    public static func sequence(with resources: [AnimationResource]) throws -> AnimationResource {
+        guard !resources.isEmpty else { throw AnimationResourceError.emptySequence }
+        return AnimationResource(name: nil, definition: nil,
+                                 sequencer: __RESequencer(parts: resources.enumerated().map {
+                                     (name: $0.element.name ?? "animation-\($0.offset)", resource: $0.element)
+                                 }, kind: .sequence, name: "sequence"))
+    }
+
+    /// Several animations blended, as one: every part sees the whole time at once.
+    public static func group(with resources: [AnimationResource]) throws -> AnimationResource {
+        guard !resources.isEmpty else { throw AnimationResourceError.emptySequence }
+        return AnimationResource(name: nil, definition: nil,
+                                 sequencer: __RESequencer(parts: resources.enumerated().map {
+                                     (name: $0.element.name ?? "animation-\($0.offset)", resource: $0.element)
+                                 }, kind: .group, name: "group"))
+    }
+
+    /// The animation a definition describes, as a resource a caller can play.
+    public static func generate(with definition: any AnimationDefinition) throws -> AnimationResource {
+        AnimationResource(name: definition.name, definition: definition)
+    }
+}
+
+/// Why a group or a sequence could not be made.
+public enum AnimationResourceError: Error, Equatable {
+    /// A group or a sequence needs at least one animation, and there were none.
+    case emptySequence
+    /// A sequence of resources that have no duration to divide the time by.
+    case undefinedDuration
+}
+
+// MARK: - Playing by name
+
+@MainActor
+extension Entity {
+    /// Plays the animation of that name, looked up in the model's library, and hands back the
+    /// controller.
+    @discardableResult
+    public func playAnimation(named animationName: String, transitionDuration: TimeInterval = 0,
+                              startsPaused: Bool = false, recursive: Bool = true) -> AnimationPlaybackController {
+        let library = animationLibrary
+        guard let resource = library?.animation(named: animationName) else {
+            // A name the library does not hold plays nothing, and the controller says so by being
+            // complete at once rather than by raising: a missing animation is a program's own
+            // mistake and must not take the process down.
+            let empty = AnimationPlaybackController(entity: self,
+                                                   animation: __REAnimation(name: animationName, duration: 0,
+                                                                           timing: .linear, repeatMode: .none,
+                                                                           repeatCount: 0, repeatWindow: nil,
+                                                                           fillMode: [], speed: 1, delay: 0,
+                                                                           offset: 0, from: nil, to: nil, by: nil),
+                                                   startsPaused: false)
+            empty.stop()
+            return empty
+        }
+        let controller = playAnimation(resource, startsPaused: startsPaused)
+        if recursive {
+            for child in coreEntity.children {
+                child.entity.playAnimation(resource, startsPaused: startsPaused)
+            }
+        }
+        return controller
+    }
+}
+
+/// The animations an entity's model carries, by name, and the controller playing each.
+@frozen public struct AnimationLibraryComponent: Component {
+    /// The animations, by the name they are played under.
+    public var resources: [String: AnimationResource]
+
+    public init(resources: [String: AnimationResource] = [:]) {
+        self.resources = resources
+    }
+
+    public init(dictionaryLiteral elements: (String, AnimationResource)...) {
+        resources = [:]
+        for (name, resource) in elements { resources[name] = resource }
+    }
+
+    /// The animation of that name, and nil for one the library does not hold.
+    public func animation(named name: String) -> AnimationResource? { resources[name] }
+    public subscript(name: String) -> AnimationResource? {
+        get { resources[name] }
+        set { resources[name] = newValue }
+    }
+}
+
+extension Array: ExpressibleByDictionaryLiteral where Element == (String, AnimationResource) {
+    public init(dictionaryLiteral elements: (String, AnimationResource)...) { self = elements.map { $0 } }
+}
+
+@MainActor
+extension Entity {
+    /// The animations this entity can be told to play by name.
+    public var animationLibrary: AnimationLibraryComponent? {
+        get { coreEntity.component(of: AnimationLibraryComponent.self) }
+        set {
+            if let newValue {
+                coreEntity.setComponent(newValue)
+            } else {
+                coreEntity.removeComponent(of: AnimationLibraryComponent.self)
+            }
+        }
+    }
 }
