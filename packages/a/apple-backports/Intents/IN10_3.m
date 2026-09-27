@@ -18,6 +18,7 @@
 #import <Intents/Intents.h>
 #import "CharonIntentsCoding.h"
 #import "CharonIntentsResolution.h"
+#import "CharonIntents262.h"
 
 // The SDK marks each class's initialiser as the designated one, in a header this package does not
 // own and cannot add a marking to, so clang reads the -initWithCoder: and -copyWithZone: every

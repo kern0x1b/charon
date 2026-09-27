@@ -9,7 +9,7 @@
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 callgen=$(cd "$here/../../callgen" && pwd)
-root=$(cd "$here/../../../../.." && pwd)
+root=$(cd "$here/../../../.." && pwd)
 minimum=6.1.3
 package=1
 while [ $# -gt 0 ]; do

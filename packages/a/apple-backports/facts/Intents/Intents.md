@@ -203,31 +203,39 @@ availability mark stays on it, so a port cannot call it, and `respondsToSelector
 instead of a process dying on an unrecognised selector. An initialiser that takes one of those
 values is left unimplemented for the same reason and says so in its own entry.
 
-## What is left, and where it starts
+## All 309 classes, and the nine declarations the port's SDK does not have
 
-Measured, not estimated. Of the 309 classes the measurement places, **193 are carried** (the
-10.0.1, 10.3 and 11.0 groups). The other 116 sit in three groups that are measured and known,
-and each is blocked on one thing this delivery did not do:
+Every one of the SDK 26.2 surface's 309 Intents classes is carried: the measurement places them
+at 10.0.1 (116), 10.3 (22), 11.0 (55), 12.0 (17), 16.0 (95) and 18.0 (4), one object file per
+group, and `registry/Intents/` has a file for each.
 
-| group | classes | blocked on |
-|---|---|---|
-| 12.0 | 17 | `INMessageLinkMetadata` — **no header in iPhoneOS 16.4**; a backport has to declare it |
-| 16.0 | 95 | `INUnsendMessagesIntent`, `INUnsendMessagesIntentResponse` — no header in 16.4 |
-| 18.0 | 4 | `INEditMessageIntent`, `INEditMessageIntentResponse`, `INMessageReaction`, `INSticker` — no header in 16.4 |
+Seven of those classes and the four declarations they are typed by are **newer than the SDK the
+port compiles against**: the toolchain's `charon@iphoneos-sdk` is iPhoneOS 16.4, and
+`INMessageLinkMetadata` (iOS 17), `INUnsendMessagesIntent`/`INUnsendMessagesIntentResponse` and
+`INEditMessageIntent`/`INEditMessageIntentResponse` (iOS 17), `INMessageReaction` and `INSticker`
+(iOS 18) appear first in the SDK of 17.0 and 18.0. Their contracts are read from the headers of
+**iPhoneOS 26.2** (`$HOME/Git/projects/ios/charon/.agent-work/sdk-26.2/iPhoneOS26.2.sdk`) and the
+declaration the implementation compiles against is `CharonIntents262.h` — the seven classes, the
+two enumerations two of them are typed by, and the two response codes the two responses are typed
+by. That is what a backport writes for API its SDK does not have, and the same generator builds
+their bodies from the same declarations it builds every other class's from.
 
-Those seven classes, and the four protocols that go with three of them
-(`INEditMessageIntentHandling`, `INUnsendMessagesIntentHandling`, `INIntentSetImageKeyPath`,
-`_INIntentSetImageKeyPath`), are the only names in the SDK 26.2 surface that the port's own SDK
-does not declare. They need one hand-written header per release group and the generated bodies
-that follow from it — the generator already refuses them with the name, and the same machinery
-that built the three delivered groups builds those the moment the header is there.
+The generator takes a second AST for exactly this: `--dump-newer` is read for a class the port's
+SDK does not declare at all, and **only** for those — a class both SDKs declare is taken from the
+port's own, because that is the declaration the implementation compiles against and the newer one
+names members (`INRelevantShortcut`, `INVoiceShortcut`) the port's headers do not.
+
+`INObjectCollection -initWithItems:` is the one member of the 16.0 group whose body is a
+derivation rather than a store, and it is hand written in the generator with the header's own
+words: `allItems` is the items, `sections` is them under one untitled section, and collation is
+not indexed, because the items arrive in the order they were given.
 
 The 16.0 and 18.0 groups are also the ones that are only reachable on **arm64**: no armv7 device
 runs past 10.3.4, so for the armv7 band they are carried by the last band and cost nothing, and
 for arm64 they need the band caches the arm64 plan names. Neither is measured here.
 
-IntentsUI (58 rows: 24 methods, 11 properties, 12 constants, 5 protocols, 3 classes) and
-AppIntents (2323 rows) are not in this delivery at all; see the delivery's report.
+IntentsUI (58 rows) and AppIntents (2323 rows, a `swift-runtime` deliverable) are not in this
+delivery; see the delivery's report.
 
 ## What is not measured here
 

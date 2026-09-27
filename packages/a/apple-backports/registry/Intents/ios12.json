@@ -1,0 +1,992 @@
+{
+  "framework": "Intents",
+  "entries": [
+    {
+      "api": "INDailyRoutineRelevanceProvider",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INDateRelevanceProvider",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INDefaultCardTemplate",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INLocationRelevanceProvider",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INMediaItem",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INMessageLinkMetadata",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INObject",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INPlayMediaIntent",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INPlayMediaIntentResponse",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INRelevanceProvider",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INRelevantShortcut",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INRelevantShortcutStore",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INShortcut",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INTimeIntervalResolutionResult",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INUpcomingMediaManager",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INVoiceShortcut",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INVoiceShortcutCenter",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "+[INShortcut new]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "+[INTimeIntervalResolutionResult confirmationRequiredWithTimeIntervalToConfirm:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INTimeIntervalResolutionResult, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "+[INTimeIntervalResolutionResult successWithResolvedTimeInterval:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INTimeIntervalResolutionResult, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "+[INVoiceShortcut new]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "+[INVoiceShortcutCenter new]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INDailyRoutineRelevanceProvider initWithSituation:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INDailyRoutineRelevanceProvider, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "-[INDateRelevanceProvider initWithStartDate:endDate:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INDateRelevanceProvider, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "-[INDefaultCardTemplate initWithTitle:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INDefaultCardTemplate, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "-[INDefaultCardTemplate init]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INLocationRelevanceProvider initWithRegion:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INLocationRelevanceProvider, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "-[INMediaItem initWithIdentifier:title:type:artwork:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INMediaItem initWithIdentifier:title:type:artwork:artist:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INMediaItem init]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INMessageLinkMetadata initWithSiteName:summary:title:openGraphType:linkURL:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMessageLinkMetadata, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "-[INObject initWithIdentifier:displayString:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INObject, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "-[INObject initWithIdentifier:displayString:pronunciationHint:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INObject, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "-[INObject initWithIdentifier:displayString:pronunciationHint:subtitleString:displayImage:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INObject initWithIdentifier:displayString:subtitleString:displayImage:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INObject init]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INPlayMediaIntent initWithMediaItems:mediaContainer:playShuffled:playbackRepeatMode:resumePlayback:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPlayMediaIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "-[INPlayMediaIntent initWithMediaItems:mediaContainer:playShuffled:playbackRepeatMode:resumePlayback:playbackQueueLocation:playbackSpeed:mediaSearch:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPlayMediaIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "-[INPlayMediaIntentResponse initWithCode:userActivity:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPlayMediaIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "-[INPlayMediaIntentResponse init]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INRelevanceProvider init]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INRelevantShortcut initWithShortcut:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRelevantShortcut, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "-[INRelevantShortcutStore init]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INRelevantShortcutStore setRelevantShortcuts:completionHandler:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INShortcut initWithIntent:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INShortcut initWithUserActivity:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INShortcut, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "-[INShortcut init]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INUpcomingMediaManager setPredictionMode:forType:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INUpcomingMediaManager setSuggestedMediaIntents:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INVoiceShortcut init]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INVoiceShortcutCenter getAllVoiceShortcutsWithCompletion:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INVoiceShortcutCenter getVoiceShortcutWithIdentifier:completion:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INVoiceShortcutCenter init]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INVoiceShortcutCenter setShortcutSuggestions:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "INDailyRoutineRelevanceProvider.situation",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INDailyRoutineRelevanceProvider, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INDateRelevanceProvider.endDate",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INDateRelevanceProvider, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INDateRelevanceProvider.startDate",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INDateRelevanceProvider, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INDefaultCardTemplate.image",
+      "kind": "property",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "INDefaultCardTemplate.subtitle",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INDefaultCardTemplate, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INDefaultCardTemplate.title",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INDefaultCardTemplate, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INLocationRelevanceProvider.region",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INLocationRelevanceProvider, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INMediaItem.artist",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMediaItem, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INMediaItem.artwork",
+      "kind": "property",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "INMediaItem.identifier",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMediaItem, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INMediaItem.title",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMediaItem, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INMediaItem.type",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMediaItem, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INMessageLinkMetadata.linkURL",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMessageLinkMetadata, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INMessageLinkMetadata.openGraphType",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMessageLinkMetadata, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INMessageLinkMetadata.siteName",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMessageLinkMetadata, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INMessageLinkMetadata.summary",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMessageLinkMetadata, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INMessageLinkMetadata.title",
+      "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMessageLinkMetadata, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INObject.alternativeSpeakableMatches",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INObject, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INObject.displayImage",
+      "kind": "property",
+      "introduced": "14.0",
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "INObject.displayString",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INObject, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INObject.identifier",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INObject, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INObject.pronunciationHint",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INObject, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INObject.subtitleString",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INObject, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INPlayMediaIntent.mediaContainer",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPlayMediaIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INPlayMediaIntent.mediaItems",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPlayMediaIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INPlayMediaIntent.mediaSearch",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPlayMediaIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INPlayMediaIntent.playShuffled",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPlayMediaIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INPlayMediaIntent.playbackQueueLocation",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPlayMediaIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INPlayMediaIntent.playbackRepeatMode",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPlayMediaIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INPlayMediaIntent.playbackSpeed",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPlayMediaIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INPlayMediaIntent.resumePlayback",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPlayMediaIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INPlayMediaIntentResponse.code",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPlayMediaIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INPlayMediaIntentResponse.nowPlayingInfo",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPlayMediaIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INRelevantShortcut.relevanceProviders",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRelevantShortcut, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INRelevantShortcut.shortcut",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRelevantShortcut, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INRelevantShortcut.shortcutRole",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRelevantShortcut, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INRelevantShortcut.watchTemplate",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRelevantShortcut, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INRelevantShortcut.widgetKind",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRelevantShortcut, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INRelevantShortcutStore.defaultStore",
+      "kind": "property",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "INShortcut.intent",
+      "kind": "property",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "INShortcut.userActivity",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INShortcut, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INUpcomingMediaManager.sharedManager",
+      "kind": "property",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "INVoiceShortcut.identifier",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INVoiceShortcut, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INVoiceShortcut.invocationPhrase",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INVoiceShortcut, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INVoiceShortcut.shortcut",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INVoiceShortcut, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INVoiceShortcutCenter.sharedCenter",
+      "kind": "property",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    }
+  ]
+}

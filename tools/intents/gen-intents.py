@@ -175,8 +175,41 @@ def base_type(qual):
 
 
 def spelled(qual):
-    """A type as a definition spells it: the macros off, nullability kept, spacing even."""
-    return re.sub(r"\s*\*\s*", " * ", re.sub(r"\s+", " ", clean(qual))).replace("* ", "*").strip() or "id"
+    """A type as a definition spells it: the macros off, nullability kept, spacing even.
+
+    A lightweight generic parameter is the caller's type and not this package's: an
+    INObjectSection<ObjectType> is an INObjectSection here, and an array of them keeps its
+    array. A bare ObjectType - a property of a bare generic - is whatever the caller passes.
+    """
+    text = re.sub(r"\s+", " ", clean(qual)).strip() or "id"
+    if "ObjectType" in text:
+        text = re.sub(r"<\s*ObjectType\s*>", "", text)
+        text = re.sub(r"\bObjectType\b", "id", text)
+    return text
+
+
+# A member whose body is a derivation the header describes rather than a store, written here with
+# the header's own words for what it builds: a generated body could only put the parameter under
+# a name of the generator's making, which is not a member of the class.
+EXTRA_METHODS = {
+    ("INObjectCollection", "initWithItems:"): [
+        "- (instancetype)initWithItems:(NSArray *)items",
+        "{",
+        "    // The header's own two properties say what a collection of items is: allItems is the",
+        "    // items, and sections is them under one section with no title. Collation is not",
+        "    // indexed, because the items arrive in the order they were given and nothing here",
+        "    // sorts them.",
+        "    INObjectSection *section =",
+        "        [[INObjectSection alloc] initWithTitle:nil items:items ?: [NSArray array]];",
+        "    if ((self = [super init])) {",
+        "        _sections = @[section];",
+        "        _allItems = [items copy] ?: [NSArray array];",
+        "        _usesIndexedCollation = NO;",
+        "    }",
+        "    return self;",
+        "}",
+    ],
+}
 
 
 def has_attr(node, kind):
@@ -685,6 +718,7 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
 
     out.append("")
     deferred_names = {name for name, _ in dynamic}
+    methods_written = set()
     states = {}
     for ivar, kind, name in stored:
         member = own.get(name)
@@ -719,8 +753,12 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
             # header's mark stays on it, so a port cannot call it and nothing crashes.
             skipped.append(selector)
             continue
-        out += initialiser(interface, method, states, spellings, interfaces)
-        out.append("")
+        written = EXTRA_METHODS.get((interface.name, selector), False)
+        if written is False:
+            out += initialiser(interface, method, states, spellings, interfaces)
+            out.append("")
+        elif written:
+            out += written + [""]
 
     for method in interface.methods:
         out += factory(interface, method, resolution)
@@ -848,6 +886,7 @@ def banner(name, classes, release, deferred):
 #import <Intents/Intents.h>
 #import "CharonIntentsCoding.h"
 #import "CharonIntentsResolution.h"
+#import "CharonIntents262.h"
 
 // The SDK marks each class's initialiser as the designated one, in a header this package does not
 // own and cannot add a marking to, so clang reads the -initWithCoder: and -copyWithZone: every
@@ -862,6 +901,10 @@ def main():
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--sdk", required=True)
     parser.add_argument("--dump", required=True)
+    parser.add_argument("--dump-newer",
+                        help="an AST of a newer SDK, for the names the port's own SDK does not "
+                             "declare: those classes are the ones CharonIntents262.h declares, "
+                             "and their contracts are read from the newer SDK's headers")
     parser.add_argument("--classes", required=True)
     parser.add_argument("--release", required=True)
     parser.add_argument("--carried", required=True,
@@ -873,6 +916,23 @@ def main():
     options = parser.parse_args()
 
     interfaces, protocols, _, forward = collect(options.dump)
+    newer = None
+    if options.dump_newer:
+        # The names the port's SDK does not declare, and the newer SDK that does: the class is
+        # the same, the contract is the newer header's, and the declaration the implementation
+        # compiles against is the one in CharonIntents262.h.
+        interfaces_before = set(interfaces)
+        fresh, newer_protocols, _, newer_forward = collect(options.dump_newer)
+        # Only for a class the port's own SDK does not have at all. A class both declare is
+        # taken from the port's SDK: its declaration is the one the implementation compiles
+        # against, and the newer one names members (INRelevantShortcut, INVoiceShortcut) the
+        # port's headers do not, which would not build.
+        for name, value in fresh.items():
+            if name not in interfaces:
+                interfaces[name] = value
+        for name, value in newer_protocols.items():
+            protocols.setdefault(name, value)
+        newer = set(fresh) - set(interfaces_before)
     names = [line.strip() for line in open(options.classes) if line.strip()]
     carried = {line.strip() for line in open(options.carried) if line.strip()}
     intents = {line.strip() for line in open(options.intents) if line.strip()}
@@ -882,7 +942,8 @@ def main():
         return 1
 
     generated = [name for name in names if name not in HAND_WRITTEN]
-    out = [banner(options.out.rsplit("/", 1)[-1], len(generated), options.release, 0)]
+    banner_text = banner(options.out.rsplit("/", 1)[-1], len(generated), options.release, 0)
+    out = [banner_text]
     answered, deferred = {}, 0
     for name in generated:
         interface = interfaces[name]

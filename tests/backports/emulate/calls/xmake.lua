@@ -7,9 +7,9 @@ set_version("0.0.1")
 -- It is a measurement program and not a released image: it calls every member of the framework it
 -- is handed, including the ones that refuse a neutral value, and it forks a thousand times. The
 -- waiver below is the same one the display probe carries, and for the same reason.
-local root = os.getenv("CHARCALLS_ROOT") or path.join(os.scriptdir(), "../../../../..")
+local root = os.getenv("CHARCALLS_ROOT") or path.join(os.scriptdir(), "../../../..")
 add_repositories("charon " .. root)
-add_addons("charon v0.8.12")
+add_addons("charon v0.8.13")
 set_config("apple_minimum", os.getenv("CHARCALLS_MINIMUM") or "6.1.3")
 local package = os.getenv("CHARCALLS_PACKAGE") ~= "0"
 if package then
