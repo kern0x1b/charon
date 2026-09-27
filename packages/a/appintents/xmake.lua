@@ -46,14 +46,14 @@ package("appintents")
         -- of Gated.swift that conforms it compiled into the module. What is left out is printed, so a
         -- row that is missing is never mistaken for one that is placed.
         local defs = {}
-        for _, probe in ipairs({
+        local probes = {
             {flag = "CHARON_APPINTENTS_ATTRIBUTED_STRING", name = "AttributedString",
              body = "import Foundation\npublic func probe() -> AttributedString { return AttributedString(\"x\") }"},
             {flag = "CHARON_APPINTENTS_MEASUREMENT", name = "Measurement",
              body = "import Foundation\npublic func probe() -> Measurement { return Measurement(value: 1, unit: UnitLength.meters) }"},
             {flag = "CHARON_APPINTENTS_RECURRENCE_RULE", name = "Calendar.RecurrenceRule",
-             body = "import Foundation\npublic func probe() -> Calendar.RecurrenceRule { return Calendar.RecurrenceRule(weekOfMonth: 1, weekOfYear: 2, month: 3, dayOfWeek: 4) }"},
-        }) do
+             body = "import Foundation\npublic func probe() -> Calendar.RecurrenceRule { return Calendar.RecurrenceRule(weekOfMonth: 1, weekOfYear: 2, month: 3, dayOfWeek: 4) }"}}
+        for _, probe in ipairs(probes) do
             local source = path.join(probe_dir, "probe.swift")
             io.writefile(source, probe.body)
             local ok = try {function ()
@@ -62,7 +62,7 @@ package("appintents")
                     resources = path.join(runtime:installdir(), "lib", "swift"),
                     plugins = table.wrap((runtime:envs() or {}).SWIFT_PLUGIN_PATH)[1],
                     module = "CharonAppIntentsProbe", optimize = "none", prefix_map = os.curdir() .. "=/appintents"}),
-                    {"-I", path.join(runtime:installdir(), "lib", "swift", "iphoneos"), "-typecheck", source})
+                    {"-I", path.join(runtime:installdir(), "lib", "swift", "iphoneos"), "-typecheck", source}))
                 return true
             end}
             os.tryrm(source)
