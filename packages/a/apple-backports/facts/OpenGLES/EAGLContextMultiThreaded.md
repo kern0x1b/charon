@@ -28,10 +28,12 @@ Every lock is recursive, because a call can reach the context from inside a call
 its lock: presenting the renderbuffer of a context the same code just made current is the ordinary
 case, and a non-recursive lock would deadlock on it.
 
-The lock is kept in an associated object assigned, not retained: a `pthread_mutex_t` is not an
-object, and sending it `retain` would be the `NSMapTable` trap this repository already records
-(`charon` AGENTS.md, "`NSMapTable` and non-object keys/values"). The flag itself is an `NSNumber`,
-so it is associated retained.
+The lock is kept boxed in an `NSValue` in an associated object: a `pthread_mutex_t` is not an object,
+and sending it `retain` would be the `NSMapTable` trap this repository already records (`charon`
+AGENTS.md, "`NSMapTable` and non-object keys/values"). The flag itself is an `NSNumber`, so it is
+associated retained. A mutex that could not be made - `pthread_mutex_init` or the recursive-type set
+failing, or the allocation itself - is not stored and not used: the context is then left the way the
+release leaves it, unguarded, rather than guarded by a mutex nothing initialised.
 
 ## What it costs
 

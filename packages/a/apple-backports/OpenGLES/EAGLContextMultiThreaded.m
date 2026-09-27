@@ -25,17 +25,35 @@ static const char charon_lock_key;
 // presenting a renderbuffer of a context the same code just made current - and must not deadlock on
 // itself.
 
+// No lock is better than a lock that is not there: a context whose mutex could not be made is left
+// unguarded, which is the release's own behaviour, rather than guarded by a mutex nothing initialised.
 static pthread_mutex_t *charon_mutex_new(void)
 {
     pthread_mutex_t *mutex = calloc(1, sizeof(pthread_mutex_t));
-    if (mutex) {
-        pthread_mutexattr_t attributes;
-        pthread_mutexattr_init(&attributes);
-        pthread_mutexattr_settype(&attributes, PTHREAD_MUTEX_RECURSIVE);
-        pthread_mutex_init(mutex, &attributes);
-        pthread_mutexattr_destroy(&attributes);
+    if (!mutex)
+        return NULL;
+    pthread_mutexattr_t attributes;
+    pthread_mutexattr_init(&attributes);
+    int recursive = pthread_mutexattr_settype(&attributes, PTHREAD_MUTEX_RECURSIVE);
+    int ready = recursive == 0 && pthread_mutex_init(mutex, &attributes) == 0;
+    pthread_mutexattr_destroy(&attributes);
+    if (!ready) {
+        free(mutex);
+        return NULL;
     }
     return mutex;
+}
+
+static void charon_lock(pthread_mutex_t *mutex)
+{
+    if (mutex)
+        pthread_mutex_lock(mutex);
+}
+
+static void charon_unlock(pthread_mutex_t *mutex)
+{
+    if (mutex)
+        pthread_mutex_unlock(mutex);
 }
 
 static pthread_mutex_t *charon_mutex_of(id owner)
@@ -124,14 +142,12 @@ static void charon_install_multi_threaded_guards(void)
             // the context's own lock as well when it is marked, so a context cannot be swapped in
             // while another thread is inside it. Always taken in that order, and both recursive.
             pthread_mutex_t *current = charon_current_mutex();
-            pthread_mutex_lock(current);
+            charon_lock(current);
             pthread_mutex_t *own = [context isMultiThreaded] ? charon_mutex_for(context) : NULL;
-            if (own)
-                pthread_mutex_lock(own);
+            charon_lock(own);
             BOOL answered = original(self_, setCurrent, context);
-            if (own)
-                pthread_mutex_unlock(own);
-            pthread_mutex_unlock(current);
+            charon_unlock(own);
+            charon_unlock(current);
             return answered;
         });
         class_replaceMethod([EAGLContext class], setCurrent, replaced, method_getTypeEncoding(setCurrentMethod));
@@ -145,9 +161,9 @@ static void charon_install_multi_threaded_guards(void)
             if (![self_ isMultiThreaded])
                 return original(self_, storage, format, drawable);
             pthread_mutex_t *mutex = charon_mutex_for(self_);
-            pthread_mutex_lock(mutex);
+            charon_lock(mutex);
             BOOL answered = original(self_, storage, format, drawable);
-            pthread_mutex_unlock(mutex);
+            charon_unlock(mutex);
             return answered;
         });
         class_replaceMethod([EAGLContext class], storage, replaced, method_getTypeEncoding(storageMethod));
@@ -161,9 +177,9 @@ static void charon_install_multi_threaded_guards(void)
             if (![self_ isMultiThreaded])
                 return original(self_, present, drawable);
             pthread_mutex_t *mutex = charon_mutex_for(self_);
-            pthread_mutex_lock(mutex);
+            charon_lock(mutex);
             BOOL answered = original(self_, present, drawable);
-            pthread_mutex_unlock(mutex);
+            charon_unlock(mutex);
             return answered;
         });
         class_replaceMethod([EAGLContext class], present, replaced, method_getTypeEncoding(presentMethod));
