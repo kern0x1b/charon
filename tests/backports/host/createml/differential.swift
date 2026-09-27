@@ -432,24 +432,30 @@ do {
           portModel.trainingMetrics.rootMeanSquaredError < 1.0 && portModel.trainingMetrics.isValid,
           "the port's own RMSE on a separable table is \(portModel.trainingMetrics.rootMeanSquaredError)")
 
-    // The host's leaf values are *shrunk*, and by an amount the header does not name. Measured on a
-    // table whose target is the constant 7 — a table no split can improve — the host answers 6.9286
-    // at a hundred rows, 6.9659 at two hundred, 6.8587 at fifty, 6.6905 at twenty and 6.2778 at
-    // eight. A tree that cannot improve a constant target has nothing to shrink, so the shrinkage is
-    // in the leaf *value* and not in the fit; from fifty rows upward it is exactly `mean·(1 - 1/n)`,
-    // and below that the two leaves of a split shrink by different amounts. Nothing in the header
-    // says so, and two numbers do not determine it.
+    // The host's leaf values are **shrunk**, and the shape of the shrinkage is now measured rather
+    // than guessed. On a table whose target is the constant 7 — which no split can improve — with
+    // `validation: .none`, so every row trains:
     //
-    // So the two models are NOT compared row by row: this would be measuring the host's private
-    // regulariser and calling a difference a defect. What *is* compared, and is exactly checkable,
-    // is the part this port owns:
+    //     n =  50   leaf 6.8725490570   leaf/7 = 0.98179272   n(1/p - 1) = 0.92820
+    //     n = 100   leaf 6.9356436729   leaf/7 = 0.99080624   n(1/p - 1) = 0.92820
+    //     n = 200   leaf 6.9676618576   leaf/7 = 0.99538027   n(1/p - 1) = 0.92680
     //
-    //   1. both models find the step — the port's error is small and the host's is small, and the
-    //      host's is larger by the shrinkage above, which is named;
-    //   2. the port's predictions are the step: every row of each half of the table gets the same
-    //      value, and the two halves differ;
-    //   3. the metrics, computed from the *host's own predictions*, come out as the host reports
-    //      them when this port computes them — which tests the definitions rather than the fit.
+    // The product in the last column is the same to three decimals at three sizes, and a product
+    // that agrees to that precision is not a coincidence: the form is `leaf = 7n/(n + c)` with
+    // `c ≈ 0.9277` — an L2 regulariser on the leaf value, which is what the framework's
+    // LightGBM-shaped parameters (`minLossReduction`, `minChildWeight`) imply and what the
+    // coordinator's own fit of `Σy/(n_train + λ)` found.
+    //
+    // What is *not* clean is `c`, and the holdout is separable from it but is not a clean fraction
+    // either. With the automatic split the same table gives 6.8587 / 6.9286 / 6.9660 at n = 50 / 100 /
+    // 200, which back-solves to training counts of about 46, 91 and 191 — holdouts of 8%, 9% and
+    // 4.5%, not one proportion, and at n = 8 and n = 20 no rows are held out at all.
+    //
+    // So the two effects are separated and neither is a value this port may write down: `c` is
+    // named by nothing in the header, and hard-coding 0.9277 would be a constant fitted from the
+    // host and a 7.3 reached by that constant rather than by the method. The part that *is* named —
+    // `validation`, a holdout — is implemented, and the leaf values are compared on the
+    // well-posed terms below instead.
     let portLow = portPredictions.prefix(80).map { $0 }
     let portHigh = portPredictions.suffix(80).map { $0 }
     check("the port predicts one value for the whole lower half",
@@ -458,7 +464,7 @@ do {
           portHigh.allSatisfy { $0 == portHigh[0] }, "the port answers \(Set(portHigh))")
     check("the port's two halves differ", (portHigh[0] - portLow[0]).magnitude > 100,
           "the port answers \(portLow[0]) and \(portHigh[0])")
-    check("the host's error is its leaf shrinkage, not a failure to fit",
+    check("the host's error is its leaf regulariser, not a failure to fit",
           hostModel.trainingMetrics.rootMeanSquaredError < 10.0,
           "the host's RMSE is \(hostModel.trainingMetrics.rootMeanSquaredError)")
 

@@ -1,0 +1,68 @@
+# `MLMultiArrayDataType`, and why one enumeration of CoreML is carried
+
+`MLMultiArrayDataType` is the only piece of CoreML this package carries, and it is carried because
+CreateML cannot be written without it: `LinearRegressor<Scalar>`, `MultivariateLinearRegressor<Scalar>`,
+`LogisticRegressionClassifier<Scalar, Label>`, `LinearRegressorModel<Scalar>` and the metrics are all
+constrained to `Scalar : MLShapedArrayScalar`, and that protocol's one requirement is
+
+    public protocol MLShapedArrayScalar {
+        static var multiArrayDataType: CoreML.MLMultiArrayDataType { get }
+    }
+
+so the whole linear and logistic family of CreateMLComponents is behind this enumeration.
+
+## What is being carried, and what is not
+
+The enumeration and its cases. `MLMultiArray.h:17` declares it
+
+    typedef NS_ENUM(NSInteger, MLMultiArrayDataType) { ... } API_AVAILABLE(..., ios(11.0), ...)
+
+which is header-only: no class, no method, nothing to build, no symbol to export. There is no
+`MLMultiArray` — the class that gives the enumeration its name and its only use is **absent**, in
+`registry/CoreML/absent_CoreML.json`, and stays absent. The registry check weighs what the package
+*exports* against what it says is implemented, and an enumeration exports nothing, which is why the
+ledger's own status for these rows is `header-ok` and why there is nothing to build for them.
+
+So the carry is a *lift*, not a library: the port's release has no CoreML at all, the SDK marks the
+header `ios(11.0)`, and Swift refuses a reference below the deployment target. The registry entry
+lowers the availability, and `registry/CoreML/createml-shapedarray.json` does that **and** brings CoreML
+into the set of frameworks the lift walks, because `modules/apple/lift.lua` reads exactly the
+frameworks the registry has a file for (`local frameworks = registered`, lift.lua:1187) — there is no
+list of frameworks to edit. Adding the file is the whole of it.
+
+## The values, read rather than assumed
+
+From `MLMultiArray.h` of the iPhoneOS 16.4 SDK:
+
+| Case | Value |
+| --- | --- |
+| `MLMultiArrayDataTypeDouble` | `0x10000 \| 64` |
+| `MLMultiArrayDataTypeFloat64` | `0x10000 \| 64` |
+| `MLMultiArrayDataTypeFloat32` | `0x10000 \| 32` |
+| `MLMultiArrayDataTypeFloat16` | `0x10000 \| 16` |
+| `MLMultiArrayDataTypeFloat` | `0x10000 \| 32` |
+| `MLMultiArrayDataTypeInt32` | `0x20000 \| 32` |
+
+The pairs are the same value under two names, which is what the release did: `Double`/`Float64` and
+`Float32`/`Float` are the same width, and the older name is the one the first release used.
+
+## Why it is honest to carry this much
+
+The alternative — defining the enumeration in the port's own Swift overlay — would be a second copy
+of a type CoreML declares, which the port's rules forbid, and it would leave the port answering a
+`MLMultiArrayDataType` that is not CoreML's. With the registry entry, the overlay *imports* CoreML's
+enumeration and names it; nothing is re-declared.
+
+The test that this is the right carry is that it is the *minimum*: the `MLShapedArray` overlay needs
+the enumeration and the enumeration needs no code, and every other CoreML type the overlay would want
+— `MLModel`, `MLMultiArray` itself, `MLFeatureValue` — is a class with methods, which is the
+CoreML package's work and is not begun here.
+
+## What a caller can and cannot do with it
+
+A caller can name a scalar type's `multiArrayDataType` and can build an `MLShapedArray` of that scalar
+— the shape, the strides and the values are the port's own, and the arithmetic behind them is the
+device's own BLAS. A caller cannot construct an `MLMultiArray` from one, and cannot hand a model to
+Core ML: those are the absent class and its absent methods, and `respondsToSelector:` and
+`NSClassFromString` say so. The `.mlmodel` export of a trained model refuses for the same reason, from
+the other end: the specification writer is the CoreML package's and is not begun.

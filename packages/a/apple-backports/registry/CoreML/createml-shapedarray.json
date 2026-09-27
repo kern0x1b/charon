@@ -1,0 +1,82 @@
+{
+    "framework": "CoreML",
+    "entries": [
+        {
+            "api": "MLMultiArrayDataType",
+            "kind": "type",
+            "introduced": "11.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the enumeration is header-only: no class, no method, nothing to build and no symbol to export, so there is nothing in the library to carry and the port's release has nothing to load. Its cases are the header's own bit patterns, read from MLMultiArray.h of the iOS 16.4 SDK: Double and Float64 are 0x10000|64, Float32 and Float are 0x10000|32, Float16 is 0x10000|16, Int32 is 0x20000|32",
+            "effect": "the enumeration answers its cases at every release, which is what an enumeration is: a name for a value the compiler reads and nothing more",
+            "facts": "facts/CoreML/ShapedArray.md",
+            "source": "MLMultiArray.h of the iPhoneOS 16.4 SDK, the declaration and its case values; the fact that the armv7 release exports the whole vecLib BLAS and LAPACK alongside it, measured over the caches from 4.3 up, is why the port can use a library whose only Swift-facing type is this one"
+        },
+        {
+            "api": "MLMultiArrayDataTypeDouble",
+            "kind": "constant",
+            "introduced": "11.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a case of MLMultiArrayDataType, and the enumeration is header-only with no code behind it, so the case needs none either",
+            "effect": "the value the header gives it",
+            "facts": "facts/CoreML/ShapedArray.md",
+            "source": "MLMultiArray.h of the iPhoneOS 16.4 SDK, 0x10000 | 64"
+        },
+        {
+            "api": "MLMultiArrayDataTypeFloat64",
+            "kind": "constant",
+            "introduced": "11.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a case of MLMultiArrayDataType, and the enumeration is header-only with no code behind it, so the case needs none either",
+            "effect": "the value the header gives it",
+            "facts": "facts/CoreML/ShapedArray.md",
+            "source": "MLMultiArray.h of the iPhoneOS 16.4 SDK, 0x10000 | 64, the same value as the Double case under a name the release added later"
+        },
+        {
+            "api": "MLMultiArrayDataTypeFloat32",
+            "kind": "constant",
+            "introduced": "11.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a case of MLMultiArrayDataType, and the enumeration is header-only with no code behind it, so the case needs none either",
+            "effect": "the value the header gives it",
+            "facts": "facts/CoreML/ShapedArray.md",
+            "source": "MLMultiArray.h of the iPhoneOS 16.4 SDK, 0x10000 | 32"
+        },
+        {
+            "api": "MLMultiArrayDataTypeFloat16",
+            "kind": "constant",
+            "introduced": "11.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a case of MLMultiArrayDataType, and the enumeration is header-only with no code behind it, so the case needs none either. It is the one case the header marks ios(16.0) and this port lowers it: the case is a name for a number and the number is in the header",
+            "effect": "the value the header gives it",
+            "facts": "facts/CoreML/ShapedArray.md",
+            "source": "MLMultiArray.h of the iPhoneOS 16.4 SDK, 0x10000 | 16"
+        },
+        {
+            "api": "MLMultiArrayDataTypeFloat",
+            "kind": "constant",
+            "introduced": "11.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a case of MLMultiArrayDataType, and the enumeration is header-only with no code behind it, so the case needs none either",
+            "effect": "the value the header gives it",
+            "facts": "facts/CoreML/ShapedArray.md",
+            "source": "MLMultiArray.h of the iPhoneOS 16.4 SDK, 0x10000 | 32, the same value as the Float32 case under a name the release added later"
+        },
+        {
+            "api": "MLMultiArrayDataTypeInt32",
+            "kind": "constant",
+            "introduced": "11.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a case of MLMultiArrayDataType, and the enumeration is header-only with no code behind it, so the case needs none either",
+            "effect": "the value the header gives it",
+            "facts": "facts/CoreML/ShapedArray.md",
+            "source": "MLMultiArray.h of the iPhoneOS 16.4 SDK, 0x20000 | 32"
+        }
+    ]
+}
