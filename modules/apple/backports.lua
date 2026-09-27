@@ -5,6 +5,7 @@ import("signing")
 import("objc")
 import("core.base.json")
 import("core.base.scheduler")
+import("cache")
 
 -- A library stands after every library it names in `libraries`: link() finds those in the output folder, so they are built first.
 LIBRARIES = {
@@ -126,59 +127,10 @@ local function driver(opt, arguments)
     return "xcrun", table.join({"clang"}, arguments)
 end
 
--- The compiler cache a compile runs through, or nil where there is none to run through.
---
--- ccache keys a result on the preprocessed source and on the compiler. What decides whether two
--- worktrees share one is hash_dir = false, in the cache's own ccache.conf: with the working
--- directory out of the key, a source is reached by the same path relative to it from every
--- worktree, so the objects a band did not touch are the objects it does not compile. base_dir is a
--- second, weaker half of the same thing - it rewrites paths under it to relative ones - and is
--- harmless without it; what is not harmless is leaving hash_dir at its default of true, which puts
--- each worktree's own directory into the key and gives every band a cache that only ever misses.
--- Where that setting comes from is the machine's business, and coordination/heavy.sh exports the
--- rest of the policy for the fleet.
---
--- Nothing of the compile moves into ccache: the same clang runs, with the same arguments, in the
--- same order, and what the cache hands back is the object file the compiler wrote. On a miss
--- ccache runs the compiler and stores its output; on a hit it writes that same file back. So an
--- object a cached build links is the object an uncached one would have compiled - measured, 21 of
--- the gate's own units across seven frameworks, every mode, shasum against a CCACHE_DISABLE=1 run
--- of the same sources. The stronger claim, that the built libraries come out identical, is not
--- measured yet: it needs two linked libraries compared, which is a gate's worth of work, and the
--- gate numbers for this series are in the band report.
---
--- CCACHE_DISABLE takes the cache out again, for a build that has to show its own work. It is read
--- the way ccache reads it - the variable being set at all, empty value included, is what disables
--- the cache, which is measured: with CCACHE_DISABLE= set, ccache records no call at all, and with
--- it unset the second identical compile is a direct hit. CCACHE names the program to use where it
--- is not on the path, and is checked as hard as a program found on the path, so a stale CCACHE
--- left in a shell profile by a brew upgrade that moved ccache costs the cache and not the build.
--- xmake 3.1.1 has no os.which, so the path is walked here. The answer is kept: a build compiles
--- ~960 units and neither the path nor the environment changes under it.
-local cached_program
-
-local function cache()
-    if os.getenv("CCACHE_DISABLE") then
-        return nil
-    end
-    if cached_program then
-        return cached_program
-    end
-    local given = os.getenv("CCACHE")
-    if given and given ~= "" then
-        cached_program = os.isexec(given) and given or nil
-    else
-        for _, folder in ipairs((os.getenv("PATH") or ""):split(path.envsep())) do
-            local found = path.join(folder, "ccache")
-            if os.isexec(found) then
-                cached_program = found
-                break
-            end
-        end
-    end
-    return cached_program
-end
-
+-- What a compile runs through is apple.cache, which the lift reads the SDK with as well: the
+-- backports build and the lift are the two things here that run a compiler thousands of times,
+-- and a second copy of "find ccache on the path" is a second thing to keep right. What the cache
+-- is and what it was measured to do is written there.
 local function clang(opt, arguments, objective_c)
     local given = {"-target", opt.triple, "-isysroot", opt.sdkdir}
     if objective_c then
@@ -219,17 +171,11 @@ function compile(opt, source, object)
         end
     end
     local program, arguments = clang(opt, table.join(arguments, {"-c", source, "-o", object}), objective_c)
-    local wrapper = cache()
-    -- The wrapper is the program and the compiler its first argument, which is what os.execv is
-    -- built for: it runs a program it cannot execute itself by splitting its name on spaces, so a
-    -- compiler under a path with a space in it has to arrive as an argument and not as part of the
-    -- name. The link below goes through driver() and no cache: a cache holds compilations, not
-    -- links.
-    if wrapper and program then
-        os.vrunv(wrapper, table.join({program}, arguments))
-    else
-        os.vrunv(program, arguments)
-    end
+    -- Through the cache, which is apple.cache: it puts the compiler in as the wrapper's first
+    -- argument, because os.execv runs a name it cannot execute itself by splitting that name on
+    -- spaces, and a checkout under a path with a space in it has to survive that. The link below
+    -- goes through driver() and no cache: a cache holds compilations, not links.
+    os.vrunv(cache.wrapped(program, arguments))
 end
 
 -- How many units this build may compile at once. The caller may lower it, and heavy.sh raises it

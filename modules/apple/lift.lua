@@ -21,6 +21,7 @@ import("async.runjobs")
 import("dyld")
 import("backports")
 import("compat")
+import("cache")
 
 local function version(text)
     return (text or ""):gsub("_", ".")
@@ -169,7 +170,7 @@ function stands_alone(opt, name)
     local probe = path.join(opt.outputdir, "standalone.m")
     local errors = path.join(opt.outputdir, "standalone.err")
     io.writefile(probe, string.format("#include <%s>\n", name))
-    local status, launch = os.execv(opt.clang, {"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-fsyntax-only",
+    local status, launch = cache.execv(opt.clang, {"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-fsyntax-only",
                                                 "-ferror-limit=0", "-x", "objective-c", probe}, {try = true, stderr = errors})
     local diagnostics = os.isfile(errors) and io.readfile(errors) or ""
     if status == 0 then
@@ -265,7 +266,7 @@ local function dumper(opt, frameworks, headers)
     end
     local function query(filter, vfs)
         local arguments = table.join(base(vfs), {"-Xclang", "-ast-dump-filter=" .. filter})
-        local text = os.iorunv(opt.clang, table.join(arguments, {"-Xclang", "-ast-dump=json"}))
+        local text = cache.iorunv(opt.clang, table.join(arguments, {"-Xclang", "-ast-dump=json"}))
         if not text then
             raise("clang gave no dump for the filter %s", filter)
         end
@@ -274,7 +275,7 @@ local function dumper(opt, frameworks, headers)
         -- the same order. With the declaration's type written after it (-ast-dump-decl-types: a function's, a variable's,
         -- a typedef's own), it also names every typedef that type goes through - a return type, a parameter's, and the
         -- typedef a typedef names in turn (dispatch_qos_class_t, then qos_class_t) - which the JSON gives no way to follow.
-        local listing = os.iorunv(opt.clang, table.join(arguments, {"-Xclang", "-ast-dump", "-Xclang", "-ast-dump-decl-types"}))
+        local listing = cache.iorunv(opt.clang, table.join(arguments, {"-Xclang", "-ast-dump", "-Xclang", "-ast-dump-decl-types"}))
         if not listing then
             raise("clang gave no dump for the filter %s", filter)
         end
@@ -411,7 +412,7 @@ local function conformer(opt, umbrella)
         end
         local probe = path.join(opt.outputdir, "conforms.m")
         io.writefile(probe, text .. table.concat(lines, "\n") .. "\n")
-        local _, diagnostics = os.iorunv(opt.clang, {"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot",
+        local _, diagnostics = cache.iorunv(opt.clang, {"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot",
                                                      "-fsyntax-only", "-x", "objective-c", "-fno-caret-diagnostics",
                                                      "-fno-color-diagnostics", "-Wno-unguarded-availability",
                                                      "-Wno-unguarded-availability-new", "-Wno-unused-function", probe})
@@ -486,7 +487,7 @@ local function preprocessed(opt, languages, names, apart)
     end
     local kept, reached = {}, {}
     for _, language in ipairs(languages) do
-        local text = os.iorunv(opt.clang, table.join({"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-E"},
+        local text = cache.iorunv(opt.clang, table.join({"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-E"},
                                                      language.arguments, {path.join(opt.outputdir, "umbrella.m")}))
         tokens_kept(text, wanted, kept, reached)
         if apart then
@@ -539,7 +540,7 @@ local function expander(opt, headers, languages)
     local defined, count = {}, {}
     for _, language in ipairs(languages) do
         defined[language.name] = {}
-        local text = os.iorunv(opt.clang, table.join({"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot",
+        local text = cache.iorunv(opt.clang, table.join({"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot",
                                                       "-E", "-dM"}, language.arguments, {empty}))
         for name in text:gmatch("#define ([%w_]+)") do
             defined[language.name][name] = true
@@ -601,7 +602,7 @@ local function expander(opt, headers, languages)
         json.savefile(vfs, overlay)
         local forms = {}
         for _, language in ipairs(languages) do
-            local text = os.iorunv(opt.clang, table.join({"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot",
+            local text = cache.iorunv(opt.clang, table.join({"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot",
                                                           "-E", "-P"}, language.arguments,
                                                          {path.join(opt.outputdir, "umbrella.m"), "-ivfsoverlay", vfs}))
             for index, expansion in text:gmatch("charon_expansion_(%d+)(.-)charon_expansion_end") do
