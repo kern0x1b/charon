@@ -96,52 +96,6 @@
 
 @end
 
-#pragma mark - AXFeatureOverrideSessionManager
-
-@implementation AXFeatureOverrideSessionManager
-
-+ (AXFeatureOverrideSessionManager *)sharedInstance
-{
-    static AXFeatureOverrideSessionManager *shared;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        shared = [[AXFeatureOverrideSessionManager alloc] init];
-    });
-    return shared;
-}
-
-- (AXFeatureOverrideSession *)beginOverrideSessionEnablingOptions:(AXFeatureOverrideSessionOptions)enableOptions
-                                                   disablingOptions:(AXFeatureOverrideSessionOptions)disableOptions
-                                                            error:(NSError **)error
-{
-    // The system that turns these on is not on this release. Undefined is the header's own name
-    // for a session that could not be begun for no more specific reason, and there is no more
-    // specific one here: there is no service, so there is nothing to be entitled to and nothing
-    // already active and nothing registered under a UUID. The manager is real and answers.
-    if (error) {
-        *error = [NSError errorWithDomain:@"AXFeatureOverrideSessionErrorDomain"
-                                     code:AXFeatureOverrideSessionErrorUndefined
-                                 userInfo:@{NSLocalizedDescriptionKey:
-                                                @"this release runs no service that overrides an "
-                                                @"accessibility feature, so no session can be begun"}];
-    }
-    return nil;
-}
-
-- (BOOL)endOverrideSession:(AXFeatureOverrideSession *)session error:(NSError **)error
-{
-    // No session was begun, so none is active. Ending one is therefore a NO, and it says why.
-    if (error) {
-        *error = [NSError errorWithDomain:@"AXFeatureOverrideSessionErrorDomain"
-                                     code:AXFeatureOverrideSessionErrorUndefined
-                                 userInfo:@{NSLocalizedDescriptionKey:
-                                                @"no session was begun, so none is active"}];
-    }
-    return NO;
-}
-
-@end
-
 #pragma mark - AXFeatureOverrideSession
 
 // The header gives the session nothing: it is a token the manager hands out and takes back. There
