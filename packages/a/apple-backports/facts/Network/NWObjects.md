@@ -177,6 +177,26 @@ WebSocket parameters is a connection over its transport with no layer of that pr
 are the option and metadata objects, which work; the transport is absent rather than faked, and
 `facts/Network/NWQUIC.md`, `facts/Network/NWWebSocket.md` and `facts/Network/NWProxy.md` say so.
 
+## The 21 names the port's own SDK does not declare
+
+Twenty-one of the functions here are exported and the SDK the port compiles against (16.4) does not
+declare them: the seventeen of iOS 17 (`nw_proxy_config_*`, `nw_privacy_context_add_proxy`,
+`nw_privacy_context_clear_proxies`, `nw_relay_hop_create`,
+`nw_relay_hop_add_additional_http_header_field`) and the four of iOS 26
+(`nw_parameters_get/set_allow_ultra_constrained`, `nw_path_get_link_quality`,
+`nw_path_is_ultra_constrained`) - measured against the SDK's own headers and
+`coordination/corpus/sdk-16.4-declared.json`, which agree. There is no prototype for any of the
+twenty-one anywhere in the tree, so **a program built against the port's SDK cannot name one of them
+without declaring the prototype itself**; the two types they need (`nw_proxy_config_t`,
+`nw_relay_hop_t`) are the port's own declarations, under `__has_include(<Network/proxy_config.h>)` so
+that a newer SDK's declarations are never made twice (`CharonNW.h`).
+
+`NW_ALL_PATHS` is **not** one of the twenty-one - the 16.4 SDK declares
+`_nw_data_transfer_report_all_paths` at `connection_report.h:538-539` - and neither are the two
+sentinel blocks, which it declares through `NW_PARAMETERS_CONFIGURE_PROTOCOL_DECL`
+(`parameters.h:72-78`).
+
+
 ## The exported symbols
 
 - `nw_retain` and `nw_release` are C functions here as well as the header's Objective-C macros, for a
