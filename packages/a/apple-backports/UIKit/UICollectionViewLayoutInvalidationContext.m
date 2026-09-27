@@ -28,6 +28,12 @@ static NSDictionary *charon_add_kind(NSDictionary *existing, NSString *kind, NSA
     NSDictionary *_decoration;
     CGPoint _contentOffsetAdjustment;
     CGSize _contentSizeAdjustment;
+    // The reordering a context built for an interactive movement carries: where the moving items
+    // were, where they are going, and the point the movement is at. The header names no setter for
+    // any of the three, so a layout that builds such a context sets them through this one message.
+    NSArray *_previousMovingIndexPaths;
+    NSArray *_targetMovingIndexPaths;
+    CGPoint _interactiveMovementTarget;
 }
 
 - (BOOL)invalidateEverything
@@ -88,6 +94,32 @@ static NSDictionary *charon_add_kind(NSDictionary *existing, NSString *kind, NSA
 - (void)setContentSizeAdjustment:(CGSize)value
 {
     _contentSizeAdjustment = value;
+}
+
+// The three reordering answers, each the caller's own index paths and point as they were given,
+// measured under Mac Catalyst (macOS 27.0) and held by tests/backports/host/collectionmovement.
+- (NSArray<NSIndexPath *> *)previousIndexPathsForInteractivelyMovingItems
+{
+    return _previousMovingIndexPaths;
+}
+
+- (NSArray<NSIndexPath *> *)targetIndexPathsForInteractivelyMovingItems
+{
+    return _targetMovingIndexPaths;
+}
+
+- (CGPoint)interactiveMovementTarget
+{
+    return _interactiveMovementTarget;
+}
+
+- (void)charon_setInteractivelyMovingPrevious:(NSArray<NSIndexPath *> *)previous
+                                       target:(NSArray<NSIndexPath *> *)target
+                                         atPoint:(CGPoint)position
+{
+    _previousMovingIndexPaths = previous;
+    _targetMovingIndexPaths = target;
+    _interactiveMovementTarget = position;
 }
 
 @end

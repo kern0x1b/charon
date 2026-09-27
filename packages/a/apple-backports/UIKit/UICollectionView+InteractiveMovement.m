@@ -15,6 +15,7 @@ static const char CharonMovementKey;
 @property (nonatomic, strong) NSTimer *scroller;
 @property (nonatomic, weak) UICollectionView *view;
 @property (nonatomic) BOOL ending;
+@property (nonatomic) BOOL cancelled;
 @end
 
 @implementation CharonMovement
@@ -25,6 +26,7 @@ static const char CharonMovementKey;
 @synthesize scroller = _scroller;
 @synthesize view = _view;
 @synthesize ending = _ending;
+@synthesize cancelled = _cancelled;
 
 - (void)hideCell
 {
@@ -45,6 +47,14 @@ static const char CharonMovementKey;
     [view performBatchUpdates:^{
         ((void (*)(id, SEL, id, id, id))objc_msgSend)(source, @selector(collectionView:moveItemAtIndexPath:toIndexPath:), view, from, target);
         [view moveItemAtIndexPath:from toIndexPath:target];
+        // The layout is invalidated through the context it makes for a movement in progress, so a
+        // layout that answers that question is laying the cells out, and the cells that moved are
+        // the ones it re-lays.
+        UICollectionViewLayout *layout = view.collectionViewLayout;
+        [layout invalidateLayoutWithContext:[layout invalidationContextForInteractivelyMovingItems:@[target]
+                                                                               withTargetPosition:_position
+                                                                                 previousIndexPaths:@[from]
+                                                                                  previousPosition:_position]];
     } completion:^(BOOL finished) {
         [self hideCell];
     }];
@@ -55,7 +65,17 @@ static const char CharonMovementKey;
 {
     UICollectionView *view = _view;
     NSIndexPath *hit = [view indexPathForItemAtPoint:_position];
-    if (!hit || [hit isEqual:_current])
+    if (!hit)
+        return nil;
+    // The layout is asked where the item being moved would land at this point. Its own answer to
+    // that question is the index path it was asked about, which is no opinion at all, so the item
+    // is left where the finger is over it; a layout that arranges its items differently answers
+    // otherwise and that answer stands. The delegate is asked after it, so it still has the last
+    // word, which is where it was before.
+    NSIndexPath *proposed = [view.collectionViewLayout targetIndexPathForInteractivelyMovingItem:_current withPosition:_position];
+    if (proposed && ![proposed isEqual:_current])
+        hit = proposed;
+    if ([hit isEqual:_current])
         return nil;
     id delegate = view.delegate;
     SEL adjust = @selector(collectionView:targetIndexPathForMoveFromItemAtIndexPath:toProposedIndexPath:);
@@ -151,8 +171,16 @@ static const char CharonMovementKey;
     movement.ending = YES;
     [movement.scroller invalidate];
     movement.scroller = nil;
-    objc_setAssociatedObject(self, &CharonMovementKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    UICollectionViewCell *cell = [self cellForItemAtIndexPath:movement.current];
+    // The layout is told the movement came to its end, at the index paths it ended at and the one
+    // it began at, and whether it was called off, so a layout that lays its cells out around a
+    // movement can put them back.
+    UICollectionView *view = movement.view;
+    UICollectionViewLayout *layout = view.collectionViewLayout;
+    [layout invalidateLayoutWithContext:[layout invalidationContextForEndingInteractiveMovementOfItemsToFinalIndexPaths:@[movement.current]
+                                                                                       previousIndexPaths:@[movement.original]
+                                                                                       movementCancelled:movement.cancelled]];
+    objc_setAssociatedObject(view, &CharonMovementKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    UICollectionViewCell *cell = [view cellForItemAtIndexPath:movement.current];
     UIImageView *proxy = movement.proxy;
     [UIView animateWithDuration:0.2 animations:^{
         if (cell)
@@ -179,6 +207,7 @@ static const char CharonMovementKey;
     CharonMovement *movement = [self charon_movement];
     if (!movement || movement.ending)
         return;
+    movement.cancelled = YES;
     if (![movement.current isEqual:movement.original])
         [movement moveTo:movement.original];
     [self charon_finishMovement:movement];

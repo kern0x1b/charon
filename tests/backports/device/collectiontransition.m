@@ -1,7 +1,9 @@
 #import <UIKit/UIKit.h>
 #import "check.h"
 #import "collectiontransition-cases.h"
+#import "collectionmovement-cases.h"
 #import "collectiontransition-expectations.h"
+#import "collectionmovement-expectations.h"
 
 static NSString *const results_folder = @"/private/var/backports";
 
@@ -60,7 +62,19 @@ static NSString *const results_folder = @"/private/var/backports";
             if ([expected[name] isEqualToString:records[name]])
                 charon_check(YES, name.UTF8String, nil);
             else
-                charon_check(NO, name.UTF8String, [NSString stringWithFormat:@"\n    device %@\n    host   %@", records[name], expected[name]]);
+                charon_check(NO, name.UTF8String, [NSString stringWithFormat:@"\n    device %@\n    host   %@", records[name], expected[name]]]);
+        }
+        NSDictionary *movementExpected = [NSJSONSerialization JSONObjectWithData:[NSData dataWithBytes:collectionmovement_expectations length:strlen(collectionmovement_expectations)] options:0 error:NULL];
+        NSMutableDictionary *movementRecords = [NSMutableDictionary dictionary];
+        collectionmovement_run(^(NSString *name, NSString *value) {
+            movementRecords[name] = value;
+            printf("record %s: %s\n", name.UTF8String, value.UTF8String);
+        });
+        for (NSString *name in [movementExpected.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
+            if ([movementExpected[name] isEqualToString:movementRecords[name]])
+                charon_check(YES, name.UTF8String, nil);
+            else
+                charon_check(NO, name.UTF8String, [NSString stringWithFormat:@"\n    device %@\n    host   %@", movementRecords[name], movementExpected[name]]]);
         }
         [self run_transition];
         printf("checks=%d failures=%d\n", charon_checks, charon_failures);

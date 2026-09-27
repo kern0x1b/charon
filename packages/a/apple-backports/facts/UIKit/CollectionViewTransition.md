@@ -76,6 +76,50 @@ the block is handed its `finished` after the collection view really is holding t
 asked for. Setting it eagerly would let the running transition's timer put its own layout back
 over the new one a frame later, which is the kind of quiet wrong answer this port must not give.
 
+## The reordering a layout does while an item is moved (iOS 9)
+
+The release's collection view reorders an item only through `UICollectionView+InteractiveMovement.m`,
+which the tree has carried for a while, and that path asked the data source and the delegate and
+nothing else. Everything a *layout* is asked during a reorder was missing, so a layout that
+arranges its own items had no say in a reorder at all:
+
+- `-[UICollectionViewLayout targetIndexPathForInteractivelyMovingItem:withPosition:]`
+- `-[UICollectionViewLayout layoutAttributesForInteractivelyMovingItemAtIndexPath:withTargetPosition:]`
+- `-[UICollectionViewLayout invalidationContextForInteractivelyMovingItems:...]`
+- `-[UICollectionViewLayout invalidationContextForEndingInteractiveMovementOfItemsToFinalIndexPaths:...]`
+- the three reordering answers on the invalidation context: `previousIndexPathsForInteractively-
+  MovingItems`, `targetIndexPathsForInteractivelyMovingItems`, `interactiveMovementTarget`
+
+`tests/backports/host/collectionmovement` records the host's answers for all of it, for the base
+layout and a flow layout both, windowless, and the device test holds the port to them. Measured:
+
+- **The base layout gives the index path back unchanged** and has **no attributes at all** for a
+  moving item: `layoutAttributesForInteractivelyMovingItemAtIndexPath:withTargetPosition:` answers
+  **nil** on `UICollectionViewLayout`. This was written first as a cell placed at the point on the
+  base class too, and the host said nil; the placement now lives on `UICollectionViewFlowLayout`,
+  which is the class that has attributes to place. That is the whole difference between the two
+  rows in the table above and it is why they are not one answer.
+- A flow layout places the item as a cell with **no size** whose centre is the point it is being
+  dragged to and whose `zIndex` is `NSIntegerMax`, so the item follows the finger and is never
+  behind another element. The size is the point's own, not the cell's laid out size: the cell is
+  being carried, not placed in the grid.
+- Both contexts are of the layout's own `invalidationContextClass` — a flow layout's is
+  `UICollectionViewFlowLayoutInvalidationContext`, so the flow-only answers come with it and answer
+  what the host answers (`invalidateFlowLayoutDelegateMetrics` 1) — and both carry the index paths
+  verbatim. A movement in progress carries the target position as its point; a movement that has
+  ended carries **the origin**, because it is at no point in particular. Neither invalidates an
+  item index path of its own and neither says invalidate everything.
+- A context built for a bounds change, which is not a movement, carries none of the three.
+
+These are wired into the movement the tree already had, not left as an API nothing calls: a reorder
+now invalidates the layout through the context the layout itself makes for a movement in progress,
+the movement's end invalidates through the one that ends it, and the proposal a finger makes goes
+through the layout's own question first, with the delegate asked after it so it keeps the last word.
+The base layout's answer to that question is the index path it was asked about, which is no opinion
+at all, so the item stays where the finger is over it unless a layout says otherwise.
+
+**The reordering inside a live collection view is device-unverified**, for the reason above.
+
 ## The two completion blocks are not the same block
 
 `UICollectionViewLayoutInteractiveTransitionCompletion` is `void (^)(BOOL completed, BOOL finished)`
