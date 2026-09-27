@@ -169,7 +169,7 @@ package("matter")
                     assert(flat[name] == nil, "the framework carries %s twice, in %s and in %s", name, flat[name], file)
                     flat[name] = file
                     if name:endswith(".mm") then
-                        table.insert(sources, name)
+                        table.insert(sources, path.relative(file, framework))
                     end
                 end
             end
@@ -178,10 +178,29 @@ package("matter")
         local names = {}
         for name in pairs(flat) do
             table.insert(names, name)
-            os.cp(flat[name], path.join(staged, name))
         end
         table.sort(names)
         assert(#sources > 0, "the framework at %s has no Objective-C++ source", framework)
+
+        -- Each file keeps its own place under the framework, so a source's quoted include of "MTRFoo.h" resolves
+        -- against its own directory as it does upstream, and "zap-generated/MTRFoo.h" resolves the same way. Each header
+        -- is then also reachable under its bare name, which is the one <Matter/MTRFoo.h> asks for, by a link to that
+        -- same file: not a copy, because a copy is a second file and this framework's headers carry no include guard,
+        -- so a class of one of them would be defined twice.
+        for _, name in ipairs(names) do
+            local here = path.join(staged, path.relative(flat[name], framework))
+            os.mkdir(path.directory(here))
+            os.cp(flat[name], here)
+            local bare = path.join(staged, name)
+            if bare ~= here then
+                os.vrunv("ln", {"-sf", here, bare})
+            end
+        end
+        for _, name in ipairs(sources) do
+            local here = path.join(staged, name)
+            os.mkdir(path.directory(here))
+            os.cp(flat[path.filename(here)], here)
+        end
 
         local search = {path.join(out, "framework"), path.join(out, "gen", "include"),
                         path.join(os.curdir(), "src"), path.join(os.curdir(), "src", "include"),
