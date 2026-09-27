@@ -22,16 +22,6 @@
       "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
     },
     {
-      "api": "nw_browse_descriptor_create_bonjour_service()",
-      "kind": "function",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "a browse of a Bonjour service type and domain",
-      "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
-    },
-    {
       "api": "nw_browse_descriptor_get_bonjour_service_domain()",
       "kind": "function",
       "introduced": "13.0",

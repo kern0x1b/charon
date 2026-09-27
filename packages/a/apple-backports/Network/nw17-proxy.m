@@ -95,15 +95,6 @@ nw_proxy_config_t nw_proxy_config_create_oblivious_http(nw_relay_hop_t relay, co
     return config;
 }
 
-void nw_proxy_config_set_username_and_password(nw_proxy_config_t proxy_config, const char *username, const char *password)
-{
-    CharonNWProxyConfig *value = (CharonNWProxyConfig *)proxy_config;
-    if (!value)
-        return;
-    value->_username = username ? @(username) : nil;
-    value->_password = password ? @(password) : nil;
-}
-
 void nw_proxy_config_set_failover_allowed(nw_proxy_config_t proxy_config, bool failover_allowed)
 {
     CharonNWProxyConfig *value = (CharonNWProxyConfig *)proxy_config;
