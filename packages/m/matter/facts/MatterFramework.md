@@ -71,6 +71,23 @@ commission, pair and subscribe need a device and a daemon, and this host has nei
 emulator call test, which calls every method the port's library carries and requires that none of them crashes - not
 by a differential, because there is nothing on the other side to be differential against.
 
+## The framework's own availability marks
+
+The framework's headers mark a member with the iOS release Matter shipped it in - `MTRAttributePath`'s `label` and
+`auxiliaryType` are iOS 17, its `readPathsSupported` and `simultaneousWritesSupported` iOS 18,
+`MTRDataTypeSemanticTagStruct.mfgCode` iOS 17 - and the first build of the wrapper refused every one of them as
+unavailable at 6.1.3. This library *is* the Matter framework: a member of it is carried by this library whatever release
+Apple shipped it in, so the mark does not describe this release's answer. The wrapper is therefore compiled with
+`-Wno-unguarded-availability-new`, and what it must still catch is a call to the **SDK's** own newer API - which the
+link decides, because an SDK function this release does not have is not in this release's library and clang cannot
+link the call. The registry says which rows this library carries, and the lift lowers the SDK's headers for what the
+backports implement; neither reaches the framework's own headers, which is why the mark is answered in the recipe.
+
+The follow-up this leaves, said rather than hidden: the principled shape is for the lift to lower the framework's own
+headers the way it lowers the SDK's, from the matter package's registry, instead of the recipe answering the mark at
+the compile. That is a change to `modules/apple/lift.lua` and a registry of 24 647 rows, and it is the next step
+rather than this one.
+
 ## What the port's release does not have, and what the build does about it
 
 - **Signposts.** The framework's device browser, `MTRDeviceConnectivityMonitor.mm`, watches a peer's reachability
