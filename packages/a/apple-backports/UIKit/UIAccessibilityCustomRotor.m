@@ -151,7 +151,8 @@ static const char CharonRotorsKey;
     if (!_attributedName)
         _attributedName = [[NSAttributedString alloc] initWithString:name ?: @""];
     else
-        _attributedName = [[NSAttributedString alloc] initWithString:name ?: @"" attributes:_attributedName.attributes];
+        _attributedName = [[NSAttributedString alloc] initWithString:name ?: @""
+                                                                 attributes:[_attributedName attributesAtIndex:0 effectiveRange:NULL]];
 }
 
 - (NSAttributedString *)attributedName
