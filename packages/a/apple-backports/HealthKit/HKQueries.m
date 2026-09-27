@@ -1,0 +1,480 @@
+// The six query subclasses of iOS 8, and the two result classes: what a query is asked and how the
+// store answers it.
+//
+// Every query is answered out of the store, in the order its handler expects: a sample query delivers
+// its results in batches with the handler's final flag set, a statistics query delivers one
+// statistics object, a statistics collection delivers its first statistics and then each interval's,
+// a source query delivers the sources, an observer query is answered when the store changes, and an
+// anchored query delivers the objects that changed and the anchor past them.
+
+#import <HealthKit/HealthKit.h>
+
+#import "CharonHKStore.h"
+
+#pragma mark - HKSampleQuery
+
+@implementation HKSampleQuery {
+    NSUInteger _limit;
+    NSArray<NSSortDescriptor *> *_sortDescriptors;
+    void (^_resultsHandler)(NSArray<HKSample *> *, BOOL, NSError *);
+    NSUInteger _delivered;
+}
+
+- (instancetype)initWithSampleType:(HKSampleType *)sampleType
+                         predicate:(nullable NSPredicate *)predicate
+                             limit:(NSUInteger)limit
+                  sortDescriptors:(nullable NSArray<NSSortDescriptor *> *)sortDescriptors
+                     resultsHandler:(void (^)(NSArray<HKSample *> *_Nullable results, BOOL done, NSError *_Nullable error))resultsHandler
+{
+    self = [super initWithSampleType:sampleType];
+    if (self) {
+        [self charon_setPredicate:predicate];
+        _limit = limit;
+        _sortDescriptors = [sortDescriptors copy];
+        _resultsHandler = [resultsHandler copy];
+    }
+    return self;
+}
+
+// The batch a query delivers at a time. The release delivers in batches and the handler says when
+// the last one has come; a query of the whole store answers in one batch when the store holds no
+// more than this, and in as many as it takes above it.
+#define CHARON_HK_SAMPLE_BATCH 200
+
+- (void)charon_run
+{
+    CharonHKStore *store = [CharonHKStore sharedStore];
+    NSError *error = nil;
+    NSArray *found = [store objectsOfType:self.sampleType
+                                 predicate:self.charon_predicate
+                                 startDate:nil
+                                   endDate:nil
+                         strictStartDate:NO
+                           strictEndDate:NO
+                                  limit:_limit
+                          sortDescriptors:_sortDescriptors
+                            fromSequence:0
+                                   error:&error];
+    if (!found) {
+        [self charon_perform:^{
+            if (self->_resultsHandler)
+                self->_resultsHandler(@[], YES, error);
+        }];
+        return;
+    }
+    NSUInteger delivered = 0;
+    while (delivered < found.count) {
+        NSRange range = NSMakeRange(delivered, MIN((NSUInteger)CHARON_HK_SAMPLE_BATCH, found.count - delivered));
+        NSArray *batch = [found subarrayWithRange:range];
+        BOOL last = NSMaxRange(range) >= found.count;
+        delivered = NSMaxRange(range);
+        [self charon_perform:^{
+            if (self->_resultsHandler)
+                self->_resultsHandler(batch, last, nil);
+        }];
+    }
+    if (!found.count) {
+        [self charon_perform:^{
+            if (self->_resultsHandler)
+                self->_resultsHandler(@[], YES, nil);
+        }];
+    }
+}
+
+- (NSUInteger)charon_deliveredCount
+{
+    return _delivered;
+}
+
+@end
+
+#pragma mark - HKStatisticsQuery
+
+@implementation HKStatisticsQuery {
+    HKStatisticsOptions _options;
+    void (^_completionHandler)(HKStatistics *_Nullable, NSError *_Nullable);
+}
+
+- (instancetype)initWithQuantityType:(HKQuantityType *)quantityType
+                quantitySamplePredicate:(nullable NSPredicate *)quantitySamplePredicate
+                             options:(HKStatisticsOptions)options
+                    completionHandler:(void (^)(HKStatistics *_Nullable result, NSError *_Nullable error))completionHandler
+{
+    self = [super initWithSampleType:quantityType];
+    if (self) {
+        [self charon_setPredicate:quantitySamplePredicate];
+        _options = options;
+        _completionHandler = [completionHandler copy];
+    }
+    return self;
+}
+
+- (void)charon_run
+{
+    CharonHKStore *store = [CharonHKStore sharedStore];
+    NSError *error = nil;
+    NSArray<HKQuantitySample *> *found = [store objectsOfType:self.sampleType
+                                                    predicate:self.charon_predicate
+                                                    startDate:nil
+                                                      endDate:nil
+                                            strictStartDate:NO
+                                              strictEndDate:NO
+                                                     limit:0
+                                             sortDescriptors:nil
+                                               fromSequence:0
+                                                      error:&error];
+    if (!found) {
+        [self charon_perform:^{
+            if (self->_completionHandler)
+                self->_completionHandler(nil, error);
+        }];
+        return;
+    }
+    HKStatistics *statistics = [HKStatistics charon_statisticsForSamples:found options:self->_options];
+    [self charon_perform:^{
+        if (self->_completionHandler)
+            self->_completionHandler(statistics, nil);
+    }];
+}
+
+@end
+
+#pragma mark - HKStatisticsCollectionQuery
+
+@implementation HKStatisticsCollectionQuery {
+    HKStatisticsOptions _options;
+    NSDateComponents *_intervalComponents;
+    NSDate *_anchorDate;
+    HKStatisticsCollection *_statisticsCollection;
+    NSDate *_lastAnchor;
+    void (^_initialResultsHandler)(HKStatisticsCollection *_Nullable, NSError *_Nullable);
+    void (^_statisticsUpdateHandler)(HKStatisticsCollection *_Nullable, NSError *_Nullable);
+}
+
+- (instancetype)initWithQuantityType:(HKQuantityType *)quantityType
+                quantitySamplePredicate:(nullable NSPredicate *)quantitySamplePredicate
+                             options:(HKStatisticsOptions)options
+                          anchorDate:(NSDate *)anchorDate
+                  intervalComponents:(NSDateComponents *)intervalComponents
+                 initialResultsHandler:(void (^)(HKStatisticsCollection *_Nullable results, NSError *_Nullable error))initialResultsHandler
+{
+    self = [super initWithSampleType:quantityType];
+    if (self) {
+        [self charon_setPredicate:quantitySamplePredicate];
+        _options = options;
+        _anchorDate = [anchorDate copy];
+        _intervalComponents = [intervalComponents copy];
+        _initialResultsHandler = [initialResultsHandler copy];
+    }
+    return self;
+}
+
+- (NSDate *)anchorDate
+{
+    return _anchorDate;
+}
+
+- (NSDateComponents *)intervalComponents
+{
+    return _intervalComponents;
+}
+
+- (nullable HKStatisticsCollection *)statisticsCollection
+{
+    return _statisticsCollection;
+}
+
+- (void)setStatisticsCollection:(nullable HKStatisticsCollection *)statisticsCollection
+{
+    _statisticsCollection = statisticsCollection;
+}
+
+- (nullable NSDate *)lastAnchor
+{
+    return _lastAnchor;
+}
+
+- (void)setLastAnchor:(nullable NSDate *)lastAnchor
+{
+    _lastAnchor = [lastAnchor copy];
+}
+
+- (nullable void (^)(HKStatisticsCollection *, NSError *))initialResultsHandler
+{
+    return _initialResultsHandler;
+}
+
+- (void)setInitialResultsHandler:(void (^)(HKStatisticsCollection *, NSError *))initialResultsHandler
+{
+    _initialResultsHandler = [initialResultsHandler copy];
+}
+
+- (nullable void (^)(HKStatisticsCollection *, NSError *))statisticsUpdateHandler
+{
+    return _statisticsUpdateHandler;
+}
+
+- (void)setStatisticsUpdateHandler:(void (^)(HKStatisticsCollection *, NSError *))statisticsUpdateHandler
+{
+    _statisticsUpdateHandler = [statisticsUpdateHandler copy];
+}
+
+// The intervals of a collection, from its anchor to the end of what the store holds, and the
+// statistics of each. A collection with no anchor runs from the first sample the store has.
+- (void)charon_run
+{
+    CharonHKStore *store = [CharonHKStore sharedStore];
+    NSError *error = nil;
+    NSArray<HKQuantitySample *> *found = [store objectsOfType:self.sampleType
+                                                    predicate:self.charon_predicate
+                                                    startDate:nil
+                                                      endDate:nil
+                                            strictStartDate:NO
+                                              strictEndDate:NO
+                                                     limit:0
+                                             sortDescriptors:nil
+                                               fromSequence:0
+                                                      error:&error];
+    if (!found) {
+        [self charon_perform:^{
+            if (self->_initialResultsHandler)
+                self->_initialResultsHandler(nil, error);
+        }];
+        return;
+    }
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDate *first = found.firstObject.startDate;
+    NSDate *last = found.lastObject.endDate;
+    NSDate *anchor = _anchorDate ?: first;
+    HKStatisticsCollection *collection = [HKStatisticsCollection charon_collectionWithAnchorDate:anchor
+                                                                                        options:_options
+                                                                            intervalComponents:_intervalComponents
+                                                                                          samples:found
+                                                                                          calendar:calendar];
+    _statisticsCollection = collection;
+    [self charon_perform:^{
+        if (self->_initialResultsHandler)
+            self->_initialResultsHandler(collection, nil);
+    }];
+}
+
+@end
+
+#pragma mark - HKSourceQuery
+
+@implementation HKSourceQuery {
+    void (^_completionHandler)(NSArray<HKSource *> *, NSError *_Nullable);
+}
+
+- (instancetype)initWithSampleType:(HKSampleType *)sampleType
+                    samplePredicate:(nullable NSPredicate *)predicate
+                  completionHandler:(void (^)(NSArray<HKSource *> *sources, NSError *_Nullable error))completionHandler
+{
+    self = [super initWithSampleType:sampleType];
+    if (self) {
+        [self charon_setPredicate:predicate];
+        _completionHandler = [completionHandler copy];
+    }
+    return self;
+}
+
+- (void)charon_run
+{
+    CharonHKStore *store = [CharonHKStore sharedStore];
+    NSArray<HKSource *> *sources = self.sampleType ? [store sourcesForType:self.sampleType] : [store allSources];
+    NSMutableArray *found = [NSMutableArray array];
+    for (HKSource *source in sources) {
+        NSPredicate *wanted = self.charon_predicate;
+        if (wanted && ![wanted evaluateWithObject:source])
+            continue;
+        [found addObject:source];
+    }
+    [self charon_perform:^{
+        if (self->_completionHandler)
+            self->_completionHandler(found, nil);
+    }];
+}
+
+@end
+
+#pragma mark - HKCorrelationQuery
+
+@implementation HKCorrelationQuery {
+    HKCorrelationType *_correlationType;
+    NSArray<NSPredicate *> *_samplePredicates;
+    void (^_resultsHandler)(NSArray<HKCorrelation *> *, NSError *_Nullable);
+}
+
+- (instancetype)initWithType:(HKCorrelationType *)correlationType
+                   predicate:(nullable NSPredicate *)predicate
+            samplePredicates:(nullable NSArray<NSPredicate *> *)samplePredicates
+                 completion:(void (^)(NSArray<HKCorrelation *> *_Nullable results, NSError *_Nullable error))completion
+{
+    self = [super initWithSampleType:correlationType];
+    if (self) {
+        _correlationType = correlationType;
+        _samplePredicates = [samplePredicates copy];
+        _resultsHandler = [completion copy];
+        [self charon_setPredicate:predicate];
+        (void)samplePredicates;
+    }
+    return self;
+}
+
+- (HKCorrelationType *)correlationType
+{
+    return _correlationType;
+}
+
+- (NSArray<NSPredicate *> *)samplePredicates
+{
+    return _samplePredicates;
+}
+
+- (void)charon_run
+{
+    CharonHKStore *store = [CharonHKStore sharedStore];
+    NSError *error = nil;
+    NSArray<HKCorrelation *> *found = [store objectsOfType:self.sampleType
+                                                 predicate:self.charon_predicate
+                                                 startDate:nil
+                                                   endDate:nil
+                                         strictStartDate:NO
+                                           strictEndDate:NO
+                                                  limit:0
+                                          sortDescriptors:nil
+                                            fromSequence:0
+                                                   error:&error];
+    if (!found) {
+        [self charon_perform:^{
+            if (self->_resultsHandler)
+                self->_resultsHandler(@[], error);
+        }];
+        return;
+    }
+    [self charon_perform:^{
+        if (self->_resultsHandler)
+            self->_resultsHandler(found, nil);
+    }];
+}
+
+@end
+
+#pragma mark - HKObserverQuery
+
+@implementation HKObserverQuery {
+    void (^_updateHandler)(HKObserverQuery *, HKQueryAnchor *_Nullable, void (^_Nullable)(void), NSError *_Nullable);
+    HKQueryAnchor *_anchor;
+}
+
+- (instancetype)initWithSampleType:(HKSampleType *)sampleType
+                        predicate:(nullable NSPredicate *)predicate
+                    updateHandler:(void (^)(HKObserverQuery *query, HKQueryAnchor *_Nullable anchor,
+                                            void (^_Nullable completion)(void), NSError *_Nullable error))updateHandler
+{
+    self = [super initWithSampleType:sampleType];
+    if (self) {
+        [self charon_setPredicate:predicate];
+        _updateHandler = [updateHandler copy];
+    }
+    return self;
+}
+
+- (void)charon_run
+{
+    // An observer query is answered when the store changes, not at once: the release answers its
+    // handler from the notification the health daemon posts, and this store's own write is what
+    // posts it. The anchor it is answered with is the sequence the store has reached.
+    CharonHKStore *store = [CharonHKStore sharedStore];
+    _anchor = [HKQueryAnchor charon_anchorWithSequence:store.highestSequence];
+    [store addObserver:self forTypes:self.sampleType ? [NSSet setWithObject:self.sampleType] : nil];
+}
+
+- (void)charon_stop
+{
+    [[CharonHKStore sharedStore] removeObserver:self];
+}
+
+- (void)charon_storeDidChange:(NSArray<NSUUID *> *)identifiers
+{
+    CharonHKStore *store = [CharonHKStore sharedStore];
+    NSInteger sequence = store.highestSequence;
+    HKQueryAnchor *anchor = [HKQueryAnchor charon_anchorWithSequence:sequence];
+    __block BOOL answered = NO;
+    [self charon_perform:^{
+        if (self->_updateHandler)
+            self->_updateHandler(self, anchor, ^{
+                @synchronized(self) {
+                    answered = YES;
+                }
+            }, nil);
+    }];
+    // The handler's completion is the release's signal that the application has caught up; this
+    // store has no work left to do when it is called, so it is called once the handler has run.
+    @synchronized(self) {
+        _anchor = anchor;
+    }
+}
+
+@end
+
+#pragma mark - HKAnchoredObjectQuery
+
+@implementation HKAnchoredObjectQuery {
+    HKQueryAnchor *_anchor;
+    NSUInteger _limit;
+    void (^_resultsHandler)(NSArray<HKObject *> *, NSUInteger, HKQueryAnchor *_Nullable, NSError *_Nullable);
+}
+
+- (instancetype)initWithType:(HKSampleType *)type
+                   predicate:(nullable NSPredicate *)predicate
+                      anchor:(nullable HKQueryAnchor *)anchor
+                       limit:(NSUInteger)limit
+          completionHandler:(void (^)(NSArray<HKObject *> *_Nullable added, NSUInteger deleted, HKQueryAnchor *_Nullable anchor, NSError *_Nullable error))completionHandler
+{
+    self = [super initWithSampleType:type];
+    if (self) {
+        _anchor = (HKQueryAnchor *)[anchor copy];
+        _limit = limit;
+        _resultsHandler = [completionHandler copy];
+        [self charon_setPredicate:predicate];
+    }
+    return self;
+}
+
+- (nullable HKQueryAnchor *)anchor
+{
+    return _anchor;
+}
+
+- (void)charon_run
+{
+    CharonHKStore *store = [CharonHKStore sharedStore];
+    NSError *error = nil;
+    NSInteger from = _anchor ? (NSInteger)_anchor.sequence : 0;
+    NSArray *added = [store objectsOfType:self.sampleType
+                                predicate:self.charon_predicate
+                                startDate:nil
+                                  endDate:nil
+                        strictStartDate:NO
+                          strictEndDate:NO
+                                 limit:_limit
+                         sortDescriptors:nil
+                           fromSequence:from
+                                  error:&error];
+    NSArray *deleted = [store deletedUUIDsSinceSequence:from];
+    HKQueryAnchor *anchor = [HKQueryAnchor charon_anchorWithSequence:store.highestSequence];
+    if (!added) {
+        [self charon_perform:^{
+            if (self->_resultsHandler)
+                self->_resultsHandler(@[], 0, nil, error);
+        }];
+        return;
+    }
+    [self charon_perform:^{
+        if (self->_resultsHandler)
+            self->_resultsHandler(added, deleted.count, anchor, nil);
+    }];
+}
+
+@end

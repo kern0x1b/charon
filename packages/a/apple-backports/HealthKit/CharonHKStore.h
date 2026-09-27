@@ -1,0 +1,249 @@
+// What the store keeps, and the private surface the classes of this framework share with it.
+//
+// Nothing here is API. Every name in this header and in the .m files that carry it begins with
+// Charon or charon_, which the linker is told to hide, so no symbol of ours is exported under a name
+// a release could answer for.
+
+#import <Foundation/Foundation.h>
+#import <HealthKit/HealthKit.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+// What an object's row in the store holds, as this store records it: the sample itself archived, and
+// the few facts SQLite has to narrow a query by.
+@interface CharonHKRow : NSObject
+@property (readonly, copy) NSUUID *uuid;
+@property (readonly, copy) NSString *type;
+@property (readonly) NSInteger kind;
+@property (readonly) NSTimeInterval start;
+@property (readonly) NSTimeInterval end;
+@property (readonly) NSTimeInterval created;
+@property (readonly) NSInteger sequence;
+@property (readonly, copy) NSString *sourceBundle;
+@property (readonly, copy) NSString *sourceName;
+@property (readonly, copy, nullable) NSString *sourceVersion;
+// The object as it was archived: its own class, its own NSSecureCoding.
+@property (readonly, copy) NSData *archive;
+@end
+
+// The one store the process's HKHealthStore objects share. A SQLite database under Application
+// Support, opened on first use. The release runs no healthd and carries no health database, so this
+// database is what stands in for it; what goes in it and what comes out is the objects' own
+// NSSecureCoding, and what decides which of them a query sees is SQLite's and the release's own
+// NSPredicate.
+@interface CharonHKStore : NSObject
+
++ (CharonHKStore *)sharedStore;
+
+@property (readonly, copy) NSString *path;
+@property (readonly, getter=isOpen) BOOL open;
+- (BOOL)openWithError:(NSError **)error;
+
+// Every object the process saves is written under the type it names, so that a query can be narrowed
+// by type and by date before anything is unarchived.
+- (BOOL)declareType:(HKObjectType *)type error:(NSError **)error;
+- (nullable HKObjectType *)typeWithIdentifier:(NSString *)identifier;
+
+// What the last authorization request recorded, and the store's enforcement of it: a save of a type
+// the process may not share fails, and a query that finds a type it may not read returns nothing.
+- (BOOL)recordAuthorizationToShare:(nullable NSSet *)typesToShare read:(nullable NSSet *)typesToRead error:(NSError **)error;
+- (HKAuthorizationStatus)authorizationStatusForType:(HKObjectType *)type;
+- (BOOL)mayReadType:(HKObjectType *)type;
+- (BOOL)mayShareType:(HKObjectType *)type;
+
+// The characteristics of the user, kept as the plist of what the characteristic objects archive.
+- (nullable id)characteristicForIdentifier:(NSString *)identifier;
+- (BOOL)setCharacteristic:(nullable id)value forIdentifier:(NSString *)identifier error:(NSError **)error;
+
+- (BOOL)saveObjects:(NSArray *)objects error:(NSError **)error;
+// The samples of a workout, kept in the same table a correlation's members are, so that
+// +[HKQuery predicateForObjectsFromWorkout:] finds them through the store's own relationship.
+- (BOOL)addSamples:(NSArray *)samples toWorkout:(HKObject *)workout error:(NSError **)error;
+- (BOOL)deleteObjects:(NSArray *)objects error:(NSError **)error;
+- (NSUInteger)deleteObjectsOfType:(HKObjectType *)type predicate:(nullable NSPredicate *)predicate error:(NSError **)error;
+
+// The objects of a type the store holds, newest last. A predicate is evaluated by the release's own
+// NSPredicate, over the objects read back, after SQLite has narrowed by type and by date.
+- (nullable NSArray *)objectsOfType:(HKObjectType *)type
+                          predicate:(nullable NSPredicate *)predicate
+                          startDate:(nullable NSDate *)startDate
+                            endDate:(nullable NSDate *)endDate
+                  strictStartDate:(BOOL)strictStartDate
+                    strictEndDate:(BOOL)strictEndDate
+                           limit:(NSUInteger)limit
+                   sortDescriptors:(nullable NSArray *)sortDescriptors
+                       fromSequence:(NSInteger)fromSequence
+                             error:(NSError **)error;
+- (nullable NSArray *)objectsWithUUIDs:(NSArray<NSUUID *> *)uuids ofType:(HKObjectType *)type error:(NSError **)error;
+- (NSInteger)highestSequence;
+- (NSArray *)deletedUUIDsSinceSequence:(NSInteger)sequence;
+
+// Every source the store holds a sample from, and the order the owner set for a type.
+- (NSArray *)allSources;
+- (NSArray *)sourcesForType:(HKObjectType *)type;
+- (BOOL)deleteSourceWithBundleIdentifier:(NSString *)bundleIdentifier error:(NSError **)error;
+- (BOOL)setOrderedSources:(NSArray *)sources forType:(HKObjectType *)type error:(NSError **)error;
+
+// Background delivery: the (type, frequency) pairs the process asked to be woken for. There is no
+// healthd to wake it, so nothing is woken; the registration is kept and read back by a later call.
+- (BOOL)setBackgroundDelivery:(BOOL)enabled forType:(HKObjectType *)type frequency:(NSUInteger)frequency error:(NSError **)error;
+- (BOOL)disableAllBackgroundDeliveryWithError:(NSError **)error;
+
+// The anchor of a running query, kept against its activation UUID.
+- (nullable id)anchorForActivationUUID:(NSUUID *)uuid;
+- (void)setAnchor:(nullable id)anchor forActivationUUID:(NSUUID *)uuid;
+
+// Who is watching: an observer query, an anchored query, a statistics collection. Every write and
+// every delete tells each of them what changed, as this database's own did.
+- (void)addObserver:(id)observer forTypes:(nullable NSSet *)types;
+- (void)removeObserver:(id)observer;
+
+@end
+
+// The private surface a class of this framework answers with, so that the store can read an object
+// and a type without either one's own header having to name the other. Each is implemented in the
+// class's own @implementation, never in a category, so none of them is a selector the registry has
+// to describe as a member this port adds to somebody else's class.
+@protocol CharonHKStorable <NSObject>
+// The row's own facts, which SQLite indexes and narrows by.
+- (NSString *)charon_storeTypeIdentifier;
+- (NSInteger)charon_storeKind;
+// The archive of the receiver, as NSSecureCoding writes it: the class name, then the properties.
+- (NSData *)charon_storeArchive;
++ (nullable instancetype)charon_objectFromArchive:(NSData *)archive type:(HKObjectType *)type store:(CharonHKStore *)store;
+@end
+
+// Who is watching the store. Every write and every delete tells each of them what changed, as this
+// database's own did: an observer query is answered with everything written since it last ran, and an
+// anchored query with the objects that changed and the sequence past them.
+@protocol CharonHKStoreObserver <NSObject>
+- (void)charon_storeDidChange:(NSArray<NSUUID *> *)identifiers;
+@end
+
+// What HKHealthStore asks of a query, whatever its subclass: run it once against the store, and stop
+// it when the caller says so.
+@protocol CharonHKRunnableQuery <NSObject>
+- (void)charon_run;
+- (void)charon_stop;
+- (void)charon_setHasBeenExecuted:(BOOL)executed;
+- (BOOL)charon_hasBeenExecuted;
+@end
+
+@protocol CharonHKTyped <NSObject>
++ (instancetype)charon_typeWithIdentifier:(NSString *)identifier;
+- (NSInteger)charon_storeKind;
+- (void)charon_setCanonicalUnitString:(nullable NSString *)unitString aggregationStyle:(NSInteger)aggregationStyle;
+- (NSInteger)charon_aggregationStyleValue;
+- (nullable NSString *)charon_canonicalUnitString;
+@end
+
+// Which class a row of the store holds, from the kind its row records, and which class a type
+// identifier names, from the kind the store keeps for it. Both are answered by name and looked up, so
+// that the store names no class of this framework as a symbol and the file that defines a class
+// stays the only one that carries it.
+extern Class _Nullable CharonHKClassForObjectKind(NSInteger kind);
+extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
+
+@interface HKStatisticsCollection (CharonInternal)
++ (instancetype)charon_collectionWithAnchorDate:(NSDate *)anchorDate
+                                       options:(NSUInteger)options
+                            intervalComponents:(NSDateComponents *)intervalComponents
+                                      samples:(NSArray *)samples
+                                      calendar:(NSCalendar *)calendar;
+- (void)enumerateStatisticsFromDate:(nullable NSDate *)startDate
+                             toDate:(nullable NSDate *)endDate
+                           withBlock:(void (^)(HKStatistics *result, BOOL *stop))block;
+@end
+
+// The private surface of the classes of this framework that another of them needs. Declared here and
+// implemented in each class's own @implementation, so that none of it is a selector this port adds
+// to somebody else's class and none of it needs a category.
+@interface HKObject (CharonInternal)
+- (instancetype)charon_initWithUUID:(NSUUID *)uuid source:(HKSource *)source metadata:(NSDictionary *)metadata;
+- (instancetype)charon_copyForStore;
+- (nullable HKCorrelation *)charon_correlation;
+- (void)charon_setCorrelation:(nullable HKCorrelation *)correlation;
+- (instancetype)charon_objectWithCoder:(NSCoder *)coder;
+@end
+
+@interface HKSample (CharonInternal)
+- (instancetype)charon_initWithType:(HKSampleType *)sampleType
+                           metadata:(nullable NSDictionary *)metadata
+                          startDate:(NSDate *)startDate
+                            endDate:(NSDate *)endDate;
+- (HKObjectType *)charon_typeForSaving;
+@end
+
+
+@interface HKCorrelation (CharonInternal)
+- (NSArray<HKObject *> *)charon_allObjects;
+- (NSSet<HKObject *> *)charon_allObjectsSet;
+@end
+
+@interface HKQuantity (CharonInternal)
+- (nullable HKUnit *)charon_unit;
+- (double)charon_rawValue;
+@end
+
+@interface HKUnit (CharonInternal)
+- (double)charon_value:(double)value inUnit:(HKUnit *)unit;
++ (nullable HKUnit *)charon_canonicalUnitForType:(HKQuantityType *)type;
+- (BOOL)charon_isCompatibleWithUnit:(HKUnit *)unit;
++ (nullable HKUnit *)charon_namedUnit:(NSString *)string;
++ (instancetype)charon_unitFromString:(NSString *)string;
++ (instancetype)charon_prefixedUnitForDimension:(NSInteger)dimension prefix:(HKMetricPrefix)prefix;
+@end
+
+@interface HKQuery (CharonInternal)
+- (instancetype)initWithSampleType:(nullable HKSampleType *)sampleType;
+- (nullable NSPredicate *)charon_predicate;
+- (void)charon_setPredicate:(nullable NSPredicate *)predicate;
+- (void)charon_setHasBeenExecuted:(BOOL)executed;
+- (BOOL)charon_hasBeenExecuted;
+- (void)charon_setQueue:(dispatch_queue_t)queue;
+- (void)charon_perform:(dispatch_block_t)block;
+@end
+
+@interface HKStatistics (CharonInternal)
++ (instancetype)charon_statisticsForSamples:(NSArray *)samples options:(NSUInteger)options;
+@end
+
+
+
+@interface HKQuantityType (CharonInternal)
+- (nullable HKUnit *)charon_canonicalUnit;
+@end
+
+@interface HKCategorySample (CharonInternal)
+- (HKCategoryType *)categoryType;
+@end
+
+@interface HKSource (CharonInternal)
++ (instancetype)charon_sourceWithName:(NSString *)name bundleIdentifier:(NSString *)bundleIdentifier;
+@end
+
+@interface HKBiologicalSexObject (CharonInternal)
++ (instancetype)charon_biologicalSexObject:(HKBiologicalSex)biologicalSex;
+@end
+
+@interface HKBloodTypeObject (CharonInternal)
++ (instancetype)charon_bloodTypeObject:(HKBloodType)bloodType;
+@end
+
+@interface HKQueryAnchor (CharonInternal)
++ (instancetype)charon_anchorWithSequence:(NSInteger)sequence;
+- (NSInteger)sequence;
+@end
+
+// The error this framework answers with: of HKErrorDomain, with the release's own code, and the
+// release's own localized description where there is one.
+extern NSError *CharonHKError(NSInteger code, NSString *description, NSString * _Nullable debug);
+
+// One line in the log, once per key, for what this port does not do.
+extern void charon_hk_say_once(NSString *key, NSString *text);
+
+// Where the database is: Application Support, or the temporary directory where this release has no
+// Application Support of its own to create it in.
+extern NSString *CharonHKStorePath(void);
+
+NS_ASSUME_NONNULL_END

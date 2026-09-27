@@ -50,25 +50,11 @@ LIBRARIES = {
     {name = "MapKitBackports", folder = "MapKit", frameworks = {"MapKit", "UIKit", "CoreGraphics", "CoreLocation", "QuartzCore", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "PassKitBackports", folder = "PassKit", frameworks = {"PassKit", "UIKit", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CarPlayBackports", folder = "CarPlay", frameworks = {"CarPlay", "MapKit", "UIKit", "CoreGraphics", "CoreTelephony", "Foundation"}, libraries = {"FoundationBackports"}},
-    -- Network.framework does not exist on the releases this port covers, so this library is the only place its
-    -- connection surface can be, and it reports the path through the Foundation library's path monitor.
     {name = "NetworkBackports", folder = "Network", frameworks = {"Network", "Foundation"}, libraries = {"FoundationBackports"}},
-    -- Intents arrives with iOS 8 and the armv7 ladder ends at 10.3.4, so no release this package
-    -- covers carries it: every band builds this library whole. It links UIKit because an Intents
-    -- image is the application's own image and UIKit is where the asset catalogue is on every
-    -- release below, and CoreLocation because INPlacemarkResolutionResult resolves a CLPlacemark.
     {name = "IntentsBackports", folder = "Intents", frameworks = {"Intents", "UIKit", "CoreLocation", "Foundation"}, libraries = {"FoundationBackports"}, archives = {"charon-coding"}, c_archives = {"charon-coding"}},
-    -- IntentsUI is the button and the two controllers an application shows to add or edit a
-    -- shortcut, so it is a library of its own: a port that only donates interactions never draws
-    -- one, and a daemon has no UIKit in its process to begin with. It needs the Intents classes
-    -- the controllers hold, and it draws with UIKit.
-    -- Accessibility arrived with iOS 3, so the release already has libAccessibility.dylib and its
-    -- C API; what it does not have is the Objective-C classes the SDK of 26.2 declares on top of
-    -- it, and this library is those. The release carries none of the 30 (measured against the
-    -- 6.1.3 armv7 cache, with a control), so every band builds it whole and nothing in it is a
-    -- class of its own that the release would answer.
     {name = "AccessibilityBackports", folder = "Accessibility", frameworks = {"Accessibility", "Foundation", "CoreGraphics"}, libraries = {"FoundationBackports"}, archives = {"charon-coding"}, c_archives = {"charon-coding"}},
     {name = "IntentsUIBackports", folder = "IntentsUI", frameworks = {"IntentsUI", "Intents", "UIKit", "Foundation", "CoreGraphics"}, libraries = {"FoundationBackports", "IntentsBackports"}}
+    {name = "HealthKitBackports", folder = "HealthKit", frameworks = {"Foundation"}, libraries = {"FoundationBackports"}, system = {"sqlite3"}},
 }
 
 PACKAGE = "org.charon.apple-backports"
@@ -1016,6 +1002,7 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
         io.writefile(list, table.concat(table.unique(internal), "\n") .. "\n")
         table.insert(arguments, "-Wl,-unexported_symbols_list," .. list)
     end
+<<<<<<< HEAD
     local program, argv = driver(opt, arguments)
     local stored = linked_key(opt, program, argv, real_paths, outputdir, output)
     stored = stored and path.join(opt.store, "links", stored:sub(1, 2), stored .. ".dylib")
@@ -1034,6 +1021,23 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
                     if current:endswith(suffix) and current ~= real then
                         os.vrunv("xcrun", {"install_name_tool", "-change", current, real, output})
                     end
+=======
+    os.vrunv(driver(opt, arguments))
+    local embedded
+    -- A system library the library's own sources call into: linked as -l, and every release of a
+    -- band that carries those sources has it, which the import check below answers for.
+    for _, name in ipairs(library.system or {}) do
+        table.insert(arguments, "-l" .. name)
+    end
+    for _, framework in ipairs(library.frameworks) do
+        local real = real_paths[framework]
+        if real then
+            embedded = embedded or macho.images(macho.read(output))[1].libraries
+            local suffix = "/" .. framework .. ".framework/" .. framework
+            for _, current in ipairs(embedded) do
+                if current:endswith(suffix) and current ~= real then
+                    os.vrunv("xcrun", {"install_name_tool", "-change", current, real, output})
+>>>>>>> fdd4d15d5 (Carry the iOS 8.0 surface of HealthKit over a real SQLite store)
                 end
             end
         end
