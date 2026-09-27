@@ -125,65 +125,72 @@ static void charon_install_multi_threaded_guards(void);
 
 static void charon_install_multi_threaded_guards(void)
 {
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
+    // Once for the process, and not once per context or per call. class_replaceMethod returns the
+    // implementation it replaced, so a second installation would take the first installation's block as
+    // its "original" and chain another lock around it: N marks for N contexts would take each mutex N
+    // times per call and leak three block-derived IMPs each time, since imp_implementationWithBlock's
+    // result has to be freed with imp_removeBlock and a replacement's previous IMP is not freed for us.
+    // One installation is already correct for every context, because each wrapper asks the context it
+    // was handed whether that context is marked before it takes anything.
+    static dispatch_once_t installed;
+    dispatch_once(&installed, ^{
         charon_say_once_for(@"EAGLContext.multiThreaded",
                             @"CharonOpenGLES: an EAGLContext was marked multiThreaded; +setCurrentContext:, "
                             @"-renderbufferStorage:fromDrawable: and -presentRenderbuffer: are now serialised "
                             @"by a recursive lock of the port's own, one per context.");
+
+        SEL setCurrent = @selector(setCurrentContext:);
+        Method setCurrentMethod = class_getClassMethod([EAGLContext class], setCurrent);
+        if (setCurrentMethod) {
+            CharonSetCurrentContext original = (CharonSetCurrentContext)method_getImplementation(setCurrentMethod);
+            IMP replaced = imp_implementationWithBlock(^(Class self_, EAGLContext *context) {
+                // The process lock always, because which context is current is one fact of the process;
+                // the context's own lock as well when it is marked, so a context cannot be swapped in
+                // while another thread is inside it. Always taken in that order, and both recursive.
+                pthread_mutex_t *current = charon_current_mutex();
+                charon_lock(current);
+                pthread_mutex_t *own = [context isMultiThreaded] ? charon_mutex_for(context) : NULL;
+                charon_lock(own);
+                BOOL answered = original(self_, setCurrent, context);
+                charon_unlock(own);
+                charon_unlock(current);
+                return answered;
+            });
+            class_replaceMethod([EAGLContext class], setCurrent, replaced, method_getTypeEncoding(setCurrentMethod));
+        }
+
+        SEL storage = @selector(renderbufferStorage:fromDrawable:);
+        Method storageMethod = class_getInstanceMethod([EAGLContext class], storage);
+        if (storageMethod) {
+            CharonRenderbufferStorage original = (CharonRenderbufferStorage)method_getImplementation(storageMethod);
+            IMP replaced = imp_implementationWithBlock(^(id self_, NSUInteger format, id<EAGLDrawable> drawable) {
+                if (![self_ isMultiThreaded])
+                    return original(self_, storage, format, drawable);
+                pthread_mutex_t *mutex = charon_mutex_for(self_);
+                charon_lock(mutex);
+                BOOL answered = original(self_, storage, format, drawable);
+                charon_unlock(mutex);
+                return answered;
+            });
+            class_replaceMethod([EAGLContext class], storage, replaced, method_getTypeEncoding(storageMethod));
+        }
+
+        SEL present = @selector(presentRenderbuffer:);
+        Method presentMethod = class_getInstanceMethod([EAGLContext class], present);
+        if (presentMethod) {
+            CharonPresentRenderbuffer original = (CharonPresentRenderbuffer)method_getImplementation(presentMethod);
+            IMP replaced = imp_implementationWithBlock(^(id self_, id<EAGLDrawable> drawable) {
+                if (![self_ isMultiThreaded])
+                    return original(self_, present, drawable);
+                pthread_mutex_t *mutex = charon_mutex_for(self_);
+                charon_lock(mutex);
+                BOOL answered = original(self_, present, drawable);
+                charon_unlock(mutex);
+                return answered;
+            });
+            class_replaceMethod([EAGLContext class], present, replaced, method_getTypeEncoding(presentMethod));
+        }
     });
-
-    SEL setCurrent = @selector(setCurrentContext:);
-    Method setCurrentMethod = class_getClassMethod([EAGLContext class], setCurrent);
-    if (setCurrentMethod) {
-        CharonSetCurrentContext original = (CharonSetCurrentContext)method_getImplementation(setCurrentMethod);
-        IMP replaced = imp_implementationWithBlock(^(Class self_, EAGLContext *context) {
-            // The process lock always, because which context is current is one fact of the process;
-            // the context's own lock as well when it is marked, so a context cannot be swapped in
-            // while another thread is inside it. Always taken in that order, and both recursive.
-            pthread_mutex_t *current = charon_current_mutex();
-            charon_lock(current);
-            pthread_mutex_t *own = [context isMultiThreaded] ? charon_mutex_for(context) : NULL;
-            charon_lock(own);
-            BOOL answered = original(self_, setCurrent, context);
-            charon_unlock(own);
-            charon_unlock(current);
-            return answered;
-        });
-        class_replaceMethod([EAGLContext class], setCurrent, replaced, method_getTypeEncoding(setCurrentMethod));
-    }
-
-    SEL storage = @selector(renderbufferStorage:fromDrawable:);
-    Method storageMethod = class_getInstanceMethod([EAGLContext class], storage);
-    if (storageMethod) {
-        CharonRenderbufferStorage original = (CharonRenderbufferStorage)method_getImplementation(storageMethod);
-        IMP replaced = imp_implementationWithBlock(^(id self_, NSUInteger format, id<EAGLDrawable> drawable) {
-            if (![self_ isMultiThreaded])
-                return original(self_, storage, format, drawable);
-            pthread_mutex_t *mutex = charon_mutex_for(self_);
-            charon_lock(mutex);
-            BOOL answered = original(self_, storage, format, drawable);
-            charon_unlock(mutex);
-            return answered;
-        });
-        class_replaceMethod([EAGLContext class], storage, replaced, method_getTypeEncoding(storageMethod));
-    }
-
-    SEL present = @selector(presentRenderbuffer:);
-    Method presentMethod = class_getInstanceMethod([EAGLContext class], present);
-    if (presentMethod) {
-        CharonPresentRenderbuffer original = (CharonPresentRenderbuffer)method_getImplementation(presentMethod);
-        IMP replaced = imp_implementationWithBlock(^(id self_, id<EAGLDrawable> drawable) {
-            if (![self_ isMultiThreaded])
-                return original(self_, present, drawable);
-            pthread_mutex_t *mutex = charon_mutex_for(self_);
-            charon_lock(mutex);
-            BOOL answered = original(self_, present, drawable);
-            charon_unlock(mutex);
-            return answered;
-        });
-        class_replaceMethod([EAGLContext class], present, replaced, method_getTypeEncoding(presentMethod));
-    }
 }
 
 @end

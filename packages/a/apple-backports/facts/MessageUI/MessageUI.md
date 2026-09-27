@@ -2,24 +2,33 @@
 
 Everything here is a question asked of the release and answered from it. The release's own
 `MFMessageComposeViewController` and `MFMailComposeViewController`, read out of the armv7 6.1.3
-cache's ObjC metadata with `objc.binary_inventory`, are:
+cache's ObjC metadata with `objc.binary_inventory`. The list below is the class's own selectors, not
+the ones it inherits from `UINavigationController` and `NSObject`, which is what the two facts this
+delivery rests on turn on:
 
-    MFMessageComposeViewController
-      -body  -setBody:  -recipients  -setRecipients:  -messageComposeDelegate
-      -setMessageComposeDelegate:  -smsComposeControllerSendStarted:  -smsComposeControllerCancelled:
+    MFMessageComposeViewController  (its own; it also inherits UIViewController's and NSObject's)
+      -body  -dealloc  -initWithNibName:bundle:  -messageComposeDelegate  -recipients
+      -setBody:  -setMessageComposeDelegate:  -setModalPresentationStyle:  -setRecipients:
+      -smsComposeControllerCancelled:  -smsComposeControllerSendStarted:  -viewWillAppear:
+      -automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers
       +canSendText  +initialize  +-_canSendText  +-_serviceAvailabilityChanged:  +-_setupAccountMonitor
       +-_startListeningForAvailabilityNotifications  +-_updateServiceAvailability
-    MFMailComposeViewController
-      +canSendMail  +maximumAttachmentSize
-      -setSubject:  -setToRecipients:  -setCcRecipients:  -setBccRecipients:  -setMessageBody:isHTML:
-      -addAttachmentData:mimeType:fileName:  -mailComposeDelegate  -setMailComposeDelegate:
-      -_validEmailAddressesFromArray:  -_addAttachmentData:mimeType:fileName:
-      -autosaveWithHandler:  -hasAutosavedMessageWithIdentifier:  -removeAutosavedMessageWithIdentifier:
+    MFMailComposeViewController  (its own; it also inherits UIViewController's and NSObject's)
+      +canSendMail  +hasAutosavedMessageWithIdentifier:  +maximumAttachmentSize
+      +removeAutosavedMessageWithIdentifier:
+      -addAttachmentData:mimeType:fileName:  -autosaveWithHandler:  -dealloc
+      -finalizeCompositionValues  -initWithNibName:bundle:  -initWithURL:  -mailComposeDelegate
       -recoverAutosavedMessageWithIdentifier:  -requestFramesForAttachmentsWithIdentifiers:resultHandler:
-      -finalizeCompositionValues  -initWithNibName:bundle:  -initWithURL:
+      -setAutorotationDelegate:  -setBccRecipients:  -setCcRecipients:  -setContentVisible:
+      -setKeyboardVisible:  -setMailComposeDelegate:  -setMessageBody:isHTML:  -setSubject:
+      -setToRecipients:  -shouldAutorotateToInterfaceOrientation:  -viewWillAppear:
+      -addSetupAnimationBlock:
+      -automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers
+      -__viewControllerWillBePresented:  -_addAttachmentData:mimeType:fileName:  -_internalViewController
+      -_validEmailAddressesFromArray:
 
-That is the whole of the difference between the two composers on this release, and it is what the
-three class methods are asked about rather than a table written here:
+Between the two lists is the whole of what the two composers of this release can do, and it is what
+the three class methods are asked about rather than a table written here:
 
 - `+canSendSubject` is YES exactly when the release's controller has `-setSubject:`. It does not, so
   the answer is NO - which is also the truth about iOS 6, whose SMS composer has no subject field.

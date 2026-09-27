@@ -21,6 +21,17 @@ This is the shape the registry's README already allows for MediaPlayer's
 `MPRemoteCommandCenter` (`registry/MediaPlayer`, "real, addressable command objects that never fire,
 honestly, not fabricated ones").
 
+**Why `setHasContent:forWidgetWithBundleIdentifier:` is `implemented` and the nine members of this
+delivery that became `absent` were not.** The difference is who can read the value back. This one
+writes a flag into `NSUserDefaults` under a namespaced key, which is public API the *application* can
+read, so the round trip is real to someone outside the port: an app that sets a flag and reads it gets
+it. The nine that went `absent` each kept their value in an object whose every reader was the port
+itself and got nothing - a subject with no field to show it, a media state with no system to take it, a
+display mode with no panel to honour it - so the value was stored and ignored, which is the silent
+fake `COORDINATION.md` §2 forbids. What is missing here is the *consumer* (a panel that would poll the
+record), which is the same seam as the MediaPlayer commands above; what was missing there was a reader
+of any kind, which is a different thing.
+
 ## The three display-mode members, none of them carried
 
 `NCWidgetDisplayMode` is two cases, and `NCWidgetTypes.h` documents the first as the fixed height and
