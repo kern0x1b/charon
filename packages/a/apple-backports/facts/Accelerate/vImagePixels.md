@@ -49,9 +49,24 @@ against the host over the corners of each word, all four agree with it byte for 
 
 **Two of them take a dither.** `vImageConvert_RGB565toARGB1555` and `vImageConvert_RGB565toRGBA5551` have an `int dither`
 parameter between the destination and the flags, and this port records it and answers for a dither of zero, which is what the
-differential asks. A non-zero dither is the one case in this family that cannot be reproduced here: the dither is a noise source
-that no published header carries, and the host's is the only oracle there is for it. The same is true of the twelve
-`*_dithered` conversions of the wider family, which is why they are not in this group.
+differential asks. The twelve `*_dithered` conversions of the wider family are **not blocked**, and an earlier version of this
+page said they were, which was wrong: the host's dither was measured rather than assumed. Run over the same input,
+`vImageConvert_PlanarFtoPlanar8_dithered` answers **byte for byte identically on eight consecutive runs**, with a dither of zero
+and with a dither of one - so the host's dither is a *fixed pattern* and not noise that moves between calls, and a port can
+recover it from the host's output rather than merely match its statistics. What the next measurement reads off is the pattern
+itself: a constant input across a long row gives the rounded value plus a position's offset, and the set of those offsets and
+their period are what a port has to carry. The probes are `probe-dither3.m` and `probe-dither4.m` in
+`.agent-work/runs/vimage/`.
+
+**The sixteen-bit interleaved conversions are not fixed repacks.** The ten names of that shape -
+`vImageConvert_ARGB16UToARGB8888`, `ARGB8888ToARGB16U`, `ARGB8888ToRGB16U`, `RGB16UToARGB8888`, `RGB16UtoARGB16U`,
+`RGB16UtoBGRA16U`, `RGB16UtoRGBA16U`, `ARGB16UtoRGB16U`, `BGRA16UtoRGB16U` and `RGBA16UtoRGB16U` - are the *general*
+channel-permuting converters: the four with a `permuteMap` and a `copyMask` take a background colour as well, and the other six
+take an alpha buffer, an alpha value and a `premultiply` flag. So each is a permute, a fill from the background and a
+premultiply rather than a move, and `Conversion.h` does document the arithmetic - `(alpha * rgb[i*3+0] + 32767) / 65535` is the
+premultiply rule for these and belongs to them, which an earlier reading of this page mistook for a neighbouring function's.
+They are not in this group because each is a permute with a caller-supplied map rather than a fixed layout, and that is a
+different piece of work from this one's.
 
 ## The refusals
 
