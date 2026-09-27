@@ -12,9 +12,11 @@
 // Everything here is Charon's own and carries no API: the members are prefixed charon_ because
 // apple/backports.lua's added_members() reads any other Objective-C member as an API the package
 // carries, and the build's registry check then wants an entry for it.
+// Included once: the port's own declarations are reached from every object of this library and
+// from the host probes, which include this header beside the SDK's own MapKit.framework.
+#ifndef CHARON_MAPKIT_H
+#define CHARON_MAPKIT_H
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import <QuartzCore/QuartzCore.h>
 #import <CoreLocation/CoreLocation.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import <MapKit/MKGeometry.h>
@@ -70,6 +72,11 @@ NS_ASSUME_NONNULL_BEGIN
 // MKAddressFilter, the iOS 18 filter of an address, declared here under Apple's own name and defined
 // in MKAddressFilter18.m, which is the object of its own release. Its option bits are the header's
 // own: the parts of an address a filter can name.
+//
+// A host probe that compiles this header beside macOS 27's own MapKit, which declares the same class
+// and the same bits, says CHARON_HOST_PROBE and gets the host's own declarations instead: on a host
+// that has them they are the host's to use, and the port's object is not compiled for that host.
+#if !CHARON_HOST_PROBE
 typedef NS_OPTIONS(NSUInteger, MKAddressFilterOption) {
     MKAddressFilterOptionCountry          = 1 << 0,
     MKAddressFilterOptionPostalCode       = 1 << 1,
@@ -96,6 +103,7 @@ typedef NS_OPTIONS(NSUInteger, MKAddressFilterOption) {
 @property (nonatomic, assign) NSInteger regionPriority;
 @property (nonatomic, copy) MKAddressFilter *addressFilter;
 @end
+#endif /* !CHARON_HOST_PROBE */
 
 // The rose's heading, which is this port's own: the header's MKCompassButton has a mapView and a
 // visibility and nothing that says which way the map is facing. Declared and not implemented here,
@@ -112,30 +120,11 @@ typedef NS_OPTIONS(NSUInteger, MKAddressFilterOption) {
 - (CGFloat)charon_lineWidthAtZoomScale:(MKZoomScale)zoomScale;
 @end
 
-// A renderer is a UIView at run time -- it is the release's own MKOverlayView -- while the 16.4
-// header says it is an NSObject. This is the view half of it, so the objects that build one can
-// size it and fill it.
-@protocol CharonOverlayView <NSObject>
-- (instancetype)initWithFrame:(CGRect)frame;
-- (instancetype)initWithCoder:(NSCoder *)coder;
-- (void)setFrame:(CGRect)frame;
-- (void)setBounds:(CGRect)bounds;
-@property (nonatomic) CGRect bounds;
-- (void)setBackgroundColor:(UIColor *)color;
-- (void)setOpaque:(BOOL)opaque;
-- (CGFloat)alpha;
-- (void)setAlpha:(CGFloat)alpha;
-- (void)setUserInteractionEnabled:(BOOL)enabled;
-- (void)setAutoresizingMask:(NSUInteger)mask;
-- (void)removeFromSuperview;
-- (void)setNeedsDisplay;
-- (void)setNeedsDisplayInRect:(CGRect)rect;
-@property (nonatomic, readonly) CALayer *layer;
-@end
-
 @interface MKOverlayRenderer (CharonDrawing)
 - (void)charon_drawInContext:(CGContextRef)context zoomScale:(MKZoomScale)zoomScale mapRect:(MKMapRect)mapRect;
 - (MKZoomScale)charon_zoomScale;
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif /* CHARON_MAPKIT_H */

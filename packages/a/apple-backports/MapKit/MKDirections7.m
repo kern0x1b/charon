@@ -128,7 +128,7 @@ static NSString *const MKCharonOSRMProfileCycling = @"bike";
 @end
 
 @implementation MKETAResponse {
-    MKDistanceFormatter *_formatter;
+    NSDateComponentsFormatter *_charon_duration;
     NSDate *_expectedDepartureDate;
     NSDate *_expectedArrivalDate;
     NSTimeInterval _expectedTravelTime;
@@ -163,16 +163,27 @@ static NSString *const MKCharonOSRMProfileCycling = @"bike";
         _expectedTravelTime = expectedTravelTime;
         _distance = distance;
         _destination = destination;
-        _formatter = [[MKDistanceFormatter alloc] init];
     }
     return self;
 }
 
-// The distance the header documents as a string: the formatter's own, over the release's own
-// measures, on the value the engine gave.
+// The header's own string for the expected travel time, which is a DURATION: the port's own
+// NSDateComponentsFormatter over the arrival-minus-departure interval, spelled the way MapKit spells
+// it -- "1 hour, 5 minutes" -- and not a distance. The distance the route covers has its own
+// formatter, and the two are not interchangeable: the engine's own duration is in seconds, and
+// running a distance formatter over seconds answers "600 m" for a ten minute trip.
 - (NSString *)expectedTravelTimeString
 {
-    return [_formatter stringFromDistance:_expectedTravelTime];
+    NSTimeInterval remaining = _expectedArrivalDate ? [_expectedArrivalDate timeIntervalSinceDate:_expectedDepartureDate]
+                                                    : _expectedTravelTime;
+    if (!_charon_duration) {
+        _charon_duration = [[NSDateComponentsFormatter alloc] init];
+        _charon_duration.unitsStyle = NSDateComponentsFormatterUnitsStyleFull;
+        _charon_duration.allowedUnits = NSCalendarUnitHour | NSCalendarUnitMinute;
+    }
+    // The port's own NSDateComponentsFormatter, which CarPlay's CPTravelEstimates already leans on.
+    NSString *text = [_charon_duration stringFromTimeInterval:remaining];
+    return text.length > 0 ? text : [NSString stringWithFormat:@"%.0f s", remaining];
 }
 
 @end
@@ -246,7 +257,9 @@ static NSString *const MKCharonOSRMProfileCycling = @"bike";
         dispatch_async(dispatch_get_main_queue(), ^{
             MKDirections *strong = weak;
             if (!strong) {
-                completionHandler(nil, nil);
+                // The request is gone: the caller is answered, and the answer says so. A nil/nil pair
+                // would read as success, and the caller's response would be a nil object.
+                completionHandler(nil, [[MKDirections class] charon_abandonedError]);
                 return;
             }
             strong->_calculating = NO;
@@ -293,7 +306,7 @@ static NSString *const MKCharonOSRMProfileCycling = @"bike";
         dispatch_async(dispatch_get_main_queue(), ^{
             MKDirections *strong = weak;
             if (!strong) {
-                completionHandler(nil, nil);
+                completionHandler(nil, [[MKDirections class] charon_abandonedError]);
                 return;
             }
             strong->_calculating = NO;
@@ -322,6 +335,16 @@ static NSString *const MKCharonOSRMProfileCycling = @"bike";
     _calculating = NO;
 }
 
+// The error a request that was abandoned answers with, in Apple's own domain and with Apple's own
+// "no directions" code, because the caller is owed one of the two. Charon's own, so it carries no
+// API.
++ (NSError *)charon_abandonedError
+{
+    return [NSError errorWithDomain:MKErrorDomain code:MKErrorDirectionsNotFound
+                           userInfo:@{NSLocalizedDescriptionKey:
+                                          @"the MKDirections that asked was released before the routing provider answered"}];
+}
+
 // The engine's own URL for this request: the profile the transport type asks for, and the two
 // coordinates the release's own MKMapItem carries. Charon's own, so it carries no API.
 - (NSURL *)charon_routeURL
@@ -337,6 +360,12 @@ static NSString *const MKCharonOSRMProfileCycling = @"bike";
         return nil;
     }
     NSString *profile = [self charon_profileForTransportType:_request.transportType];
+    if (!profile) {
+        // A profile the provider has no answer for is no request at all: the refusal is made here,
+        // where the header's own public entry points already turn a nil URL into charon_error, so
+        // the honest answer costs no round trip and reads as Apple's own.
+        return nil;
+    }
     NSString *format = @"%@/route/v1/%@/%.6f,%.6f;%.6f,%.6f?overview=full&geometries=polyline&steps=true&alternatives=true";
     NSString *text = [NSString stringWithFormat:format, MKCharonOSRMBase(), profile,
                       from.latitude, from.longitude, to.latitude, to.longitude];
@@ -358,13 +387,19 @@ static NSString *const MKCharonOSRMProfileCycling = @"bike";
         case MKDirectionsTransportTypeCycling:
             return MKCharonOSRMProfileCycling;
         case MKDirectionsTransportTypeTransit:
-            // A transit leg is not a walking leg, and OSRM has no transit profile, so there is no
-            // answer to give: the request is refused with Apple's own MKErrorDirectionsNotFound,
-            // which is what Apple answers where it has no transit data. The walking profile is
-            // never substituted, because a route on foot is a different route and a program would
-            // not be able to tell.
+            // A transit leg is not a walking leg, and the provider has no transit profile, so there
+            // is no answer to give: nil here refuses the request before it is built, and the public
+            // entry points answer Apple's own MKErrorDirectionsNotFound. The walking profile is
+            // never substituted, because a route on foot is a different route and a program could
+            // not tell the difference.
             return nil;
+        case MKDirectionsTransportTypeAutomobile:
+        case MKDirectionsTransportTypeAny:
+            return @"driving";
         default:
+            // Any transport type this port does not know, including Any as a mask, is driven: the
+            // header says Any may be any of them, and a driving route is the one a public router can
+            // answer for every one of them.
             return @"driving";
     }
 }
@@ -447,25 +482,30 @@ static NSString *const MKCharonOSRMProfileCycling = @"bike";
     return line;
 }
 
-// The error a request that has no answer carries: Apple's own MKErrorDomain and Apple's own
-// MKErrorDirectionsNotFound (code 4 in the SDK's own MKErrorCode), which is what Apple answers where
-// it has no route and not another. Charon's own, so it carries no API.
+// The error a request that has no answer carries: Apple's own MKErrorDomain symbol -- which the
+// release exports, so it is the symbol and not the literal text -- and Apple's own
+// MKErrorDirectionsNotFound, the enumerator the SDK's own MKErrorCode gives it. A later SDK that
+// renumbers the enumerator therefore moves this with it, and a hard-coded 4 would not: the SDK's own
+// MKErrorCode has MKErrorPlacemarkNotFound at 4 and MKErrorDirectionsNotFound at 5, measured by
+// compile-time assertion against the SDK this port compiles with.
 - (NSError *)charon_error
 {
     NSString *reason = nil;
-    if ((NSInteger)_request.transportType == 4) {
+    if (_request.transportType == MKDirectionsTransportTypeTransit) {
         reason = @"a transit route: the routing provider has no transit profile, and a walking route is not a transit route, so there is no answer to give";
     } else if (!_request.source || !_request.destination) {
         reason = @"the request has no source and destination, so there is nothing to route";
     } else {
         reason = @"the routing provider answered no route";
     }
-    return [NSError errorWithDomain:@"MKErrorDomain" code:4 userInfo:@{NSLocalizedDescriptionKey: reason}];
+    return [NSError errorWithDomain:MKErrorDomain code:MKErrorDirectionsNotFound
+                           userInfo:@{NSLocalizedDescriptionKey: reason}];
 }
 
 - (NSError *)charon_errorWithReason:(NSString *)reason
 {
-    return [NSError errorWithDomain:@"MKErrorDomain" code:4 userInfo:@{NSLocalizedDescriptionKey: reason}];
+    return [NSError errorWithDomain:MKErrorDomain code:MKErrorDirectionsNotFound
+                           userInfo:@{NSLocalizedDescriptionKey: reason}];
 }
 
 @end

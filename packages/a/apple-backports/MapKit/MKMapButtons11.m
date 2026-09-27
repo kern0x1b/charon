@@ -130,10 +130,17 @@
 
 @end
 
+// The tracking mode the button last carried, which the header's own -setTrackingMode:animated: takes
+// and -charon_tracking reads, and which the map view's own -userTrackingMode overwrites whenever
+// there is a map view to answer it.
+@interface MKUserTrackingButton ()
+@property (nonatomic) MKUserTrackingMode trackingMode;
+@end
 
 @implementation MKUserTrackingButton
 
 @synthesize mapView = _mapView;
+@synthesize trackingMode = _trackingMode;
 
 + (instancetype)userTrackingButtonWithMapView:(MKMapView *)mapView
 {
@@ -156,9 +163,29 @@
     [self charon_update];
 }
 
+// The button's own mode, which is the map view's own -userTrackingMode when there is a map view and
+// what the caller last set through -setTrackingMode:animated: when there is not, so the two spellings
+// of the same question -- the header's own on the button and the release's own on the map view --
+// never disagree.
 - (BOOL)charon_tracking
 {
-    return self.mapView ? self.mapView.userTrackingMode == MKUserTrackingModeFollow : NO;
+    if (self.mapView) {
+        return self.mapView.userTrackingMode == MKUserTrackingModeFollow;
+    }
+    return _trackingMode == MKUserTrackingModeFollow;
+}
+
+// The header's own member: put a map into following, or out of it, with the caller's own animated
+// flag -- through the release's own -setUserTrackingMode:animated:, which is what the tap uses too,
+// so there is one mechanism and not two.
+- (void)setTrackingMode:(MKUserTrackingMode)trackingMode animated:(BOOL)animated
+{
+    _trackingMode = trackingMode;
+    MKMapView *mapView = self.mapView;
+    if (mapView) {
+        [mapView setUserTrackingMode:trackingMode animated:animated];
+    }
+    [self charon_update];
 }
 
 // Following the user is the release's own -setUserTrackingMode:animated:, which is in the armv7

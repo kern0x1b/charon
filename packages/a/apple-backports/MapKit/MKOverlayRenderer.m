@@ -12,7 +12,7 @@
 #import <MapKit/MapKit.h>
 #import <UIKit/UIKit.h>
 #import <objc/message.h>
-#import "CharonMapKit.h"
+#import "CharonMapKitUI.h"
 
 // The transform between the renderer's own point space and the map's. Apple's renderer is handed
 // the visible map rect and draws in the overlay's coordinates; on this release the renderer is a

@@ -30,6 +30,15 @@
     return perPoint / pow(2.0, (double)zoomScale);
 }
 
++ (CLLocationDistance)charon_metresPerMapPointAtZoomScale:(MKZoomScale)zoomScale forMapRect:(MKMapRect)mapRect
+{
+    // The release's own metres per map point at the middle of the rect, halved once per zoom level:
+    // a map point is half as many metres for every doubling of the scale, which is what MKZoomScale
+    // means. The release's function is the projection's own, in the armv7 cache of 3.2 (measured).
+    CLLocationCoordinate2D centre = MKCoordinateForMapPoint(MKMapPointMake(MKMapRectGetMidX(mapRect), MKMapRectGetMidY(mapRect)));
+    return MKMetersPerMapPointAtLatitude(centre.latitude) / pow(2.0, (double)zoomScale);
+}
+
 + (CLLocationDirection)charon_bearingFromCoordinate:(CLLocationCoordinate2D)from toCoordinate:(CLLocationCoordinate2D)to
 {
     static const double pi = 3.14159265358979323846;

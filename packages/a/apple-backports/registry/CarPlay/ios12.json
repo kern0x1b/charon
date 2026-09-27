@@ -1106,22 +1106,11 @@
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a route choice is offered by a car's navigation: with no car there is no route choice to offer",
+      "status": "implemented",
+      "reason": "there is no CarPlay in this release, and a route choice is a choice of route between two places, which is arithmetic and needs no car",
+      "effect": "a route choice is a choice of route between two places, which is arithmetic and not a car: the choice's own three variant lists and user info, with NSCopying and NSSecureCoding as the header declares, and the choices' own summaries as the rows of a trip's list",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "-[CPRouteChoice init]",
-      "kind": "method",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a route choice is offered by a car's navigation: with no car there is no route choice to offer",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder"
     },
     {
       "api": "-[CPSessionConfiguration initWithDelegate:]",
@@ -2734,55 +2723,55 @@
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a route choice is offered by a car's navigation: with no car there is no route choice to offer",
+      "status": "implemented",
+      "reason": "there is no CarPlay in this release, and a route choice is a choice of route between two places, which is arithmetic and needs no car",
+      "effect": "a route choice is a choice of route between two places, which is arithmetic and not a car: the choice's own three variant lists and user info, with NSCopying and NSSecureCoding as the header declares, and the choices' own summaries as the rows of a trip's list",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder"
     },
     {
       "api": "CPRouteChoice.additionalInformationVariants",
       "kind": "property",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a route choice is offered by a car's navigation: with no car there is no route choice to offer",
+      "status": "implemented",
+      "reason": "there is no CarPlay in this release, and a route choice is a choice of route between two places, which is arithmetic and needs no car",
+      "effect": "a route choice is a choice of route between two places, which is arithmetic and not a car: the choice's own three variant lists and user info, with NSCopying and NSSecureCoding as the header declares, and the choices' own summaries as the rows of a trip's list",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder"
     },
     {
       "api": "CPRouteChoice.selectionSummaryVariants",
       "kind": "property",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a route choice is offered by a car's navigation: with no car there is no route choice to offer",
+      "status": "implemented",
+      "reason": "there is no CarPlay in this release, and a route choice is a choice of route between two places, which is arithmetic and needs no car",
+      "effect": "a route choice is a choice of route between two places, which is arithmetic and not a car: the choice's own three variant lists and user info, with NSCopying and NSSecureCoding as the header declares, and the choices' own summaries as the rows of a trip's list",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder"
     },
     {
       "api": "CPRouteChoice.summaryVariants",
       "kind": "property",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a route choice is offered by a car's navigation: with no car there is no route choice to offer",
+      "status": "implemented",
+      "reason": "there is no CarPlay in this release, and a route choice is a choice of route between two places, which is arithmetic and needs no car",
+      "effect": "a route choice is a choice of route between two places, which is arithmetic and not a car: the choice's own three variant lists and user info, with NSCopying and NSSecureCoding as the header declares, and the choices' own summaries as the rows of a trip's list",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder"
     },
     {
       "api": "CPRouteChoice.userInfo",
       "kind": "property",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a route choice is offered by a car's navigation: with no car there is no route choice to offer",
+      "status": "implemented",
+      "reason": "there is no CarPlay in this release, and a route choice is a choice of route between two places, which is arithmetic and needs no car",
+      "effect": "a route choice is a choice of route between two places, which is arithmetic and not a car: the choice's own three variant lists and user info, with NSCopying and NSSecureCoding as the header declares, and the choices' own summaries as the rows of a trip's list",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder"
     },
     {
       "api": "CPSearchTemplate",

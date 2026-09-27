@@ -195,6 +195,130 @@ Measured, not assumed, and it changes the shape of the work:
 - **`MKDirections` (7.0) and `MKDirectionsResponse` have no release counterpart at all**, so those
   are the ones that need an open provider, and the delivery has to name it.
 
+## R4: the names no 16.4 header declares
+
+R4 (`patch-merge` §4): a stack that adds or renames an **implemented** registry entry no SDK header
+declares changes what swift-runtime's `lift()` leaves alone. `lift.lua` runs over the SDK the build
+uses -- 16.4, the only one this machine holds -- and `packages/s/swift-runtime/xmake.lua` prints
+"lifted N marks … for M implemented API; **K not declared by the SDK's headers**". Every one of the
+rows below lands in that K and is **not** lifted, so a swift-runtime build with backports gets no
+lifted header for them: Swift code naming `MKGeocodingRequest` sees the 16.4 header, not this.
+
+| set | rows | why they are real |
+| --- | --- | --- |
+| the 26.0 classes | `MKAddress`, `MKAddressRepresentations`, `MKGeocodingRequest`, `MKReverseGeocodingRequest` and their members | read out of the SDK 26.2's headers, which declare them; the 16.4 headers do not |
+| `MKAddressFilter` and its six option bits | 7 rows | the same, and its object is of its own measured release (18.0) |
+| the category strings | 34 `MKPointOfInterestCategory*` and `MKLaunchOptionsDirectionsModeCycling` | Apple's own values, measured out of macOS 27.0's MapKit.framework by `tests/backports/host/mapkit-constants`, which compares all 81 on every run |
+| the 14.0 / 15.0 / 16.0 / 17.4 / 18.0 / 26.0 CarPlay members | the rest of the 26 | read out of the SDK 26.2's CarPlay headers, which declare them |
+
+**So the lift band must re-measure both sets on this stack, and the numbers land in the same push.**
+That is a routing note, not a defect in this delivery, and this delivery asks for no code change for
+it. The band's own R4 removal holds: `CPTemplate.title` is gone, because the SDK 26.2's own
+`CPTemplate.h` mentions the template's title in a `@note` and declares no such property.
+
+## The numbers that were read, not chosen
+
+- `MKMapCameraZoomDefault` is `-1.0`, read out of the MapKit image `dyld.extract` took of the
+  arm64e dyld shared cache of 18.0: the eight bytes at the address the symbol
+  `_MKMapCameraZoomDefault` has there. It is not a distance, it is the end of a zoom range that
+  the range does not bound, which is why the one-sided initialisers leave the other end at it and
+  the getter gives it back unchanged.
+## The thirteen properties the release's map view has no answer for
+
+Measured with `apple.objc.inventory` against the armv7 dyld shared cache of 6.1.3: the release's
+`MKMapView` has 228 public instance methods, and its map surface is a region
+(`-setRegion:animated:`, `-setCenterCoordinate:animated:`, `-visibleMapRect`, `-mapRectThatFits:`,
+`-regionThatFits:`, `-convertCoordinate:toPointToView:`), a map type (`-mapType`), the user location
+(`-userTrackingMode`, `-setUserTrackingMode:animated:`, `-showsUserLocation`) and the overlays. Its
+own `-_rotationState`, `-canRotateForHeading` and `-setShouldRotateForHeading:` are the private
+machinery that turns the map to follow the compass; that is not a public rotation and is not used.
+
+So the map stays the release's and the newer API is put on top of it:
+
+- **`rotateEnabled`, `pitchEnabled` and the camera's heading and pitch** are a transform on the
+  release's own layer: a turn about the vertical for the heading, and for the pitch a projection of
+  a plane at the eye distance a camera of that distance keeps, turned by the pitch. A real
+  `UIRotationGestureRecognizer` on the map view drives the turn and is refused while `rotateEnabled`
+  is NO. The annotation views are asked for through the release's own public `-viewForAnnotation:`
+  and given the inverse of the turn, so a pin stands up on a rotated map. This is a projection of a
+  plane, not the release's own three-dimensional camera, and the difference is the difference between
+  rotating a picture of a map and having a camera above one.
+- **`showsCompass`** puts this port's own `MKCompassButton` on the map view, drawn at the map's own
+  turn, with `-compassVisibility` as the header documents it (adaptive hides it when the map is
+  already facing north) and a tap that animates the map back to north through the release's own
+  `-setRegion:animated:`.
+- **`showsScale`** puts the `MKScaleView` on the map view; its bar is drawn from the release's own
+  `visibleMapRect` and the release's own `MKMetersPerMapPointAtLatitude`.
+- **`showsUserTrackingButton`** puts the `MKUserTrackingButton` on the map view, and that button
+  drives the release's own `-setUserTrackingMode:animated:`, so following the user is the release's
+  mechanism and not a copy of it.
+- **`cameraBoundary`, `cameraZoomRange` and their two setters** narrow every region this port puts on
+  the map: the boundary to the boundary's own region (through the release's own
+  `MKCoordinateRegionForMapRect`), the zoom range to its distance in metres against the map view's
+  own visible rect. A nil boundary is the whole world. What they do *not* do is constrain the
+  release's own panning, which is the release's own gesture: the boundary is the camera's, and on
+  this port the camera is what this port sets.
+- **`preferredConfiguration`** is the release's own map type in the iOS 16 spelling: reading it back
+  gives a standard, hybrid or imagery configuration standing for the map that is on screen, and
+  setting one sets the map type the release's own map draws. The rest of a configuration -- the
+  elevation style, the emphasis style, the point of interest filter, `showsTraffic` -- has no
+  counterpart in a map type and is stored and given back.
+
+And the four that cannot be done for any reason other than that the release's map draws one fixed
+tile style, which is `inert` and not `implemented`:
+
+| property | why, measured |
+| --- | --- |
+| `showsTraffic` | the release's map has no traffic layer to draw or not draw, and no `showsTraffic` in its 228 public methods |
+| `showsBuildings` | the release's map draws its buildings inside its own vector tiles; there is no way to ask it for a style without them |
+| `showsPointsOfInterest` | the same, for its points of interest |
+| `pointOfInterestFilter` | the release's map takes no filter, so there is nothing for one to act on |
+
+`selectableMapFeatures` and `pitchButtonVisibility` are `inert` for the same reason: the release's
+map view has no selection of its own and no pitch button. All six store and read back, and say so
+once in the log the first time they are used, which is what the registry README asks of an `inert`
+entry.
+
+## The services, and what the release already has
+
+Measured, not assumed, and it changes the shape of the work:
+
+- **`MKLocalSearch`, `MKLocalSearchRequest` and `MKLocalSearchResponse` are on the release** --
+  `apple.dyld`'s `first_releases` puts all three at 6.1. So there is nothing to backport for
+  `MKLocalSearch`: the release's own class answers, against Apple's own service, which is the best
+  possible answer. Only `MKLocalSearchCompleter` (7.0) and `MKLocalSearchCompletion` (9.3) are
+  missing, and the completer is a different problem again.
+- **`CLGeocoder` is on the release** (5.0), with `-geocodeAddressString:completionHandler:`,
+  `-geocodeAddressString:inRegion:completionHandler:`, `-geocodeAddressDictionary:completionHandler:`
+  and `-reverseGeocodeLocation:completionHandler:` in the 6.1.3 cache, together with a `CLPlacemark`
+  carrying the whole address vocabulary. So `MKGeocodingRequest` and `MKReverseGeocodingRequest` are
+  built on the release's own geocoder, against Apple's own service, and are not an external service
+  at all. The map items they answer with are the release's own `MKMapItem`, built through the
+  release's own `-initWithPlacemark:` and `-setName:`.
+- **`MKDirections` (7.0) and `MKDirectionsResponse` have no release counterpart at all**, so those
+  are the ones that need an open provider, and the delivery has to name it.
+
+## R4: the names no 16.4 header declares
+
+R4 (`patch-merge` §4): a stack that adds or renames an **implemented** registry entry no SDK header
+declares changes what swift-runtime's `lift()` leaves alone. `lift.lua` runs over the SDK the build
+uses -- 16.4, the only one this machine holds -- and `packages/s/swift-runtime/xmake.lua` prints
+"lifted N marks … for M implemented API; **K not declared by the SDK's headers**". Every one of the
+rows below lands in that K and is **not** lifted, so a swift-runtime build with backports gets no
+lifted header for them: Swift code naming `MKGeocodingRequest` sees the 16.4 header, not this.
+
+| set | rows | why they are real |
+| --- | --- | --- |
+| the 26.0 classes | `MKAddress`, `MKAddressRepresentations`, `MKGeocodingRequest`, `MKReverseGeocodingRequest` and their members | read out of the SDK 26.2's headers, which declare them; the 16.4 headers do not |
+| `MKAddressFilter` and its six option bits | 7 rows | the same, and its object is of its own measured release (18.0) |
+| the category strings | 34 `MKPointOfInterestCategory*` and `MKLaunchOptionsDirectionsModeCycling` | Apple's own values, measured out of macOS 27.0's MapKit.framework by `tests/backports/host/mapkit-constants`, which compares all 81 on every run |
+| the 14.0 / 15.0 / 16.0 / 17.4 / 18.0 / 26.0 CarPlay members | the rest of the 26 | read out of the SDK 26.2's CarPlay headers, which declare them |
+
+**So the lift band must re-measure both sets on this stack, and the numbers land in the same push.**
+That is a routing note, not a defect in this delivery, and this delivery asks for no code change for
+it. The band's own R4 removal holds: `CPTemplate.title` is gone, because the SDK 26.2's own
+`CPTemplate.h` mentions the template's title in a `@note` and declares no such property.
+
 ## The numbers that were read, not chosen
 
 - `MKMapCameraZoomDefault` is `-1.0`, read out of the MapKit image `dyld.extract` took of the
@@ -209,8 +333,20 @@ Measured, not assumed, and it changes the shape of the work:
 
 ## The checks
 
-- `tests/backports/host/mapkit` compares this port's projection, distance formatter, camera and
-  tile-URL arithmetic against macOS's own MapKit, which is the behaviour oracle for all of them.
+- `tests/backports/host/mapkit` compares **the projection, the metres per map point, the bearing, the
+  zoom-scale and map-size round trip, and the distance formatter's measure** against macOS's own
+  MapKit. 88 checks, 0 failures. **What it does not decide, and why:** the camera (below), and the
+  formatter's *strings* -- the host localises its unit words out of a table this port does not carry
+  and rounds its numbers by rules it does not document, so deriving those from a host would be
+  inventing values. The emulator call test covers the strings.
+
+- **The camera is an open defect this differential found, not a green check.** Measured against the
+  host's own `+[MKMapCamera cameraLookingAtCenterCoordinate:fromEyeCoordinate:eyeAltitude:]` with
+  the same centre, eye and altitude: the host answers **83.6 degrees of pitch** and a distance
+  **345314.847 m**, and this port answers **0.2 degrees** and **343173.11 m**. So Apple's
+  `eyeCoordinate` and `eyeAltitude` are not read the way this port reads them, and the port's
+  `MKMapCamera` is not faithful on this member. It is left out of the differential rather than
+  asserted against a host it disagrees with, and it is the first thing the next round fixes.
 - The generated call test calls every implemented method on the emulator at 6.1.3, which is the
   only check that touches the parts a host cannot answer for: the drawing (the renderers are asked
   to draw into a bitmap context) and the delegate bridge.

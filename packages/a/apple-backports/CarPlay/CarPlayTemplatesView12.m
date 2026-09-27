@@ -315,7 +315,6 @@
 // one to draw itself. Charon's own, so it carries no API.
 @interface CharonCarPlayBar : UIView
 @property (nonatomic, copy) NSArray<CPBarButton *> *charon_buttons;
-- (void)charon_tappedAtPoint:(CGPoint)point;
 @end
 
 @implementation CharonCarPlayBar {
@@ -323,6 +322,20 @@
 }
 
 @synthesize charon_buttons = _buttons;
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        // A CPBarButton is an NSObject and not a view, so the bar cannot hand it a touch. The bar
+        // takes the touch itself, works out which mark is under it -- the same arithmetic its own
+        // -drawRect: used to lay them out -- and calls that button's own handler.
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                action:@selector(charon_tappedAtPoint:)];
+        [self addGestureRecognizer:tap];
+    }
+    return self;
+}
 
 - (void)setCharon_buttons:(NSArray<CPBarButton *> *)buttons
 {
@@ -348,14 +361,20 @@
     }
 }
 
-- (void)charon_tappedAtPoint:(CGPoint)point
+- (void)charon_tappedAtPoint:(UITapGestureRecognizer *)gesture
 {
+    CGPoint point = [gesture locationInView:self];
     CGFloat width = MIN(88.0, CGRectGetWidth(self.bounds) / (CGFloat)MAX((NSUInteger)_buttons.count, 1U));
     NSUInteger index = width > 0.0 ? (NSUInteger)(point.x / width) : 0U;
-    if (index < _buttons.count) {
-        // The button's own handler, which a program gave the button.
-        [(CPBarButton *)_buttons[index] charon_tap];
+    if (index >= _buttons.count) {
+        return;
     }
+    CPBarButton *button = _buttons[index];
+    if (!button.isEnabled) {
+        return;
+    }
+    // The button's own handler, which a program gave the button, called by the button.
+    [(CPBarButton *)button charon_tap];
 }
 
 @end
@@ -882,6 +901,22 @@
         [(CPMapButton *)button charon_drawInRect:CGRectMake(at, 0.0, size, size)];
         at += size + 12.0;
     }
+}
+
+- (void)charon_tappedAtPoint:(UITapGestureRecognizer *)gesture
+{
+    CGPoint point = [gesture locationInView:self];
+    CGFloat size = 88.0;
+    NSUInteger index = point.x >= 0.0 ? (NSUInteger)(point.x / (size + 12.0)) : 0U;
+    if (index >= _buttons.count) {
+        return;
+    }
+    CPMapButton *button = _buttons[index];
+    if (button.isHidden || !button.isEnabled) {
+        return;
+    }
+    // The button's own handler, which a program gave the button, called by the button.
+    [(CPMapButton *)button charon_tap];
 }
 
 @end

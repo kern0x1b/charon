@@ -47,6 +47,22 @@
     NSArray<CPAlertAction *> *_charon_actions;
 }
 
+// The card's own buttons are real UIButtons with a real target, so a tap on one calls that action's
+// own handler -- which is the whole of what an action sheet and an alert are. The grid template's
+// -collectionView:didSelectItemAtIndexPath: is the same mechanism with a different view.
+- (void)charon_buttonTapped:(UIButton *)button
+{
+    NSInteger tag = button.tag;
+    if (tag < 0 || (NSUInteger)tag >= _charon_actions.count) {
+        return;
+    }
+    CPAlertAction *action = _charon_actions[(NSUInteger)tag];
+    // The action's own handler, which is what a program gave the action, called with the action.
+    if (action.handler) {
+        action.handler(action);
+    }
+}
+
 - (void)charon_showTitle:(NSString *)title message:(NSString *)message actions:(NSArray<CPAlertAction *> *)actions
 {
     _charon_actions = [actions copy] ?: @[];
@@ -68,6 +84,7 @@
         [button setTitle:action.title forState:UIControlStateNormal];
         [button setTitleColor:[UIColor colorWithRed:0.0 green:0.48 blue:1.0 alpha:1.0] forState:UIControlStateNormal];
         button.tag = (NSInteger)[_charon_actions indexOfObject:action];
+        [button addTarget:self action:@selector(charon_buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:button];
         at += width;
     }

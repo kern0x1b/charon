@@ -86,6 +86,7 @@
 
 @interface MKMapView (CharonCamera)
 - (CharonMapViewState *)charon_state;
+- (void)charon_startFollowingBounds;
 - (void)charon_applyTransform;
 - (void)charon_updateControls;
 - (MKCoordinateRegion)charon_clampRegion:(MKCoordinateRegion)region;
@@ -97,6 +98,18 @@
 @end
 
 @implementation MKMapView (CharonCamera)
+
+// The display link that follows the release's own layout, held beside the map view because a
+// category cannot have an ivar. Charon's own, so it carries no API.
+- (CADisplayLink *)charon_link
+{
+    return objc_getAssociatedObject(self, (const void *)"charonMapLink");
+}
+
+- (void)charon_setLink:(CADisplayLink *)link
+{
+    objc_setAssociatedObject(self, (const void *)"charonMapLink", link, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
 
 - (CharonMapViewState *)charon_state
 {
@@ -142,19 +155,43 @@
         }
     }
     [(MKCompassButton *)state.compass setCompassHeading:state.heading];
+    // The three controls' own frames, which the release's own layout does not know about and which
+    // would otherwise stay where the map view used to be after a bounds change.
+    [self charon_updateControls];
 }
 
-- (void)layoutSubviews
+// The release's own -layoutSubviews is NOT replaced here, and this is deliberate and measured.
+// Measured with apple.objc.inventory on the armv7 cache of 6.1.3: MKMapView has -layoutSubviews in
+// its OWN method list, so a category's method for that selector would never be installed -- the
+// runtime sets "ignore" when a class's implementation of a selector differs from its superclass's,
+// and attach.c's charon_collect skips the same selector for the same reason -- and if some release
+// lacked it, the lazy original-IMP lookup below would find the category's own and recurse until the
+// stack ran out.
+//
+// So the transform is re-applied from the port's own entry points instead: the camera and heading
+// setters, the rotation gesture, the three shows... setters through charon_updateControls, and a
+// CADisplayLink while the map is rotated, which is where a bounds change shows up anyway. The
+// release's own layout repositions the annotation views after any bounds change, so they are the
+// thing to re-stand, and this is where that happens.
+- (void)charon_startFollowingBounds
 {
-    // The release's own layout, and then this port's transform again: the release lays its tiles out
-    // in its own layer tree and the transform on that layer survives, but the annotation views it
-    // moves have to be put upright once more.
-    static IMP (*charon_super)(id, SEL);
-    if (!charon_super) {
-        charon_super = (IMP (*)(id, SEL))method_getImplementation(class_getInstanceMethod([MKMapView class], _cmd));
+    if ([self charon_link]) {
+        return;
     }
-    charon_super(self, _cmd);
-    [self charon_applyTransform];
+    CADisplayLink *link = [CADisplayLink displayLinkWithTarget:self selector:@selector(charon_followBounds:)];
+    [self charon_setLink:link];
+    [link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+}
+
+- (void)charon_followBounds:(CADisplayLink *)link
+{
+    // Only while there is something to stand back up: a map that is not rotated has no transform
+    // to undo, and a display link that runs for nothing is a battery cost.
+    CharonMapViewState *state = [self charon_state];
+    if (state.rotateEnabled || state.pitchEnabled) {
+        [self charon_applyTransform];
+        [self charon_updateControls];
+    }
 }
 
 #pragma mark - The rotation gesture
@@ -228,6 +265,9 @@
         // gets the perspective a camera of that distance would have.
         state.eyeDistance = MAX(400.0, [self charon_metresAcross]);
     }
+    if (pitchEnabled) {
+        [self charon_startFollowingBounds];
+    }
     [self charon_applyTransform];
 }
 
@@ -253,6 +293,7 @@
         if (state.eyeDistance <= 0.0) {
             state.eyeDistance = MAX(400.0, [self charon_metresAcross]);
         }
+        [self charon_startFollowingBounds];
     }
     [self charon_applyTransform];
 }

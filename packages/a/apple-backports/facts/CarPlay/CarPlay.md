@@ -108,8 +108,9 @@ actions are all writable against the release and against UIKit.
 
 ## What is carried, and what is the wall
 
-Seventeen classes, in three objects by the release that first exports them (12.0 twice, 16.0 once), and
-eight classes `absent` at the seam. The seventeen:
+**24 classes implemented, in four objects by the release that first exports them, and 7 classes
+`absent` at the seam.** The numbers are the registry's own, counted from
+`registry/CarPlay/ios12.json`; they are the only count in this file. The implemented ones:
 
 | object | classes |
 | --- | --- |
@@ -118,7 +119,10 @@ eight classes `absent` at the seam. The seventeen:
 | 12.0 | `CPActionSheetTemplate`, `CPAlertTemplate`, `CPImageSet`, `CPSearchTemplate`, `CPTrip`, `CPRouteChoice`, `CPTripPreviewTextConfiguration` |
 | 16.0 | `CPButton`, `CPTextButton` |
 
-That is 26 classes. The remaining 24 of the corpus, and the objects they go in, measured:
+The remaining 48 of the corpus have **no registry entry at all** and their ledger rows stay `missing`:
+they are not `absent` (they draw in-app like these do and nothing about them needs a car, so calling
+them absent would be a false claim), they are simply not written yet. The objects they go in,
+measured:
 
 | object | classes |
 | --- | --- |
@@ -167,15 +171,16 @@ operations, sends the delegate the four template lifecycle messages, and answers
 with **this device's own screen trait collection**, because the car is this device. `prefersDarkUser
 UserInterfaceStyle` is `inert`: the release has no dark mode, and there is nothing for it to change.
 
-**The wall, per class, as `absent`:** `CPTemplateApplicationScene` (13.0),
+**The wall, per class, as `absent` (7 of them):** `CPTemplateApplicationScene` (13.0),
 `CPTemplateApplicationDashboardScene` (13.4), `CPTemplateApplicationInstrumentClusterScene` (15.4),
-`CPNavigationSession`, `CPSessionConfiguration`, `CPRouteChoice`, `CPVoiceControlState` and
-`CPVoiceControlTemplate`. Each one's own reason is in its entry, and `NSClassFromString` answers nil
+`CPNavigationSession`, `CPSessionConfiguration`, `CPVoiceControlState` and `CPVoiceControlTemplate`.
+`CPRouteChoice` is **not** among them: a route choice is a choice of route between two places, which
+is arithmetic, and it is built and registered implemented. Each one's own reason is in its entry, and `NSClassFromString` answers nil
 for all of them, which is what `absent` means.
 
 ## What is not carried, and why that is not `absent`
 
-The other 49 classes of the corpus -- `CPNowPlayingTemplate` and the now-playing buttons, `CPTabBarTemplate`,
+The 48 classes named in the table above -- `CPNowPlayingTemplate` and the now-playing buttons, `CPTabBarTemplate`,
 `CPInformationTemplate`, `CPContactTemplate`, `CPSearchTemplate`, `CPActionSheetTemplate`,
 `CPAlertTemplate`, `CPTrip`, `CPSearchTemplateDelegate` and the rest -- have **no registry entry at
 all**, on purpose. They are not `absent`: they draw in-app like the seventeen do, and nothing about

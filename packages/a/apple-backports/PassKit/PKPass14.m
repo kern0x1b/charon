@@ -12,28 +12,13 @@
 #import <PassKit/PassKit.h>
 #import <UIKit/UIKit.h>
 
-// The release's own two string constants, whose values are Apple's own, read out of the host's
-// PassKit.framework by the generated probe in tests/backports/host/mapkit-constants' sibling,
-// tests/backports/host/passkit-constants. The first is the user-info key under which the release's
-// own pass library reports the passes it recovered; the second is the notification a remote payment
-// pass posts, and the remote payment pass is a Secure Element's, so on this release nothing posts it
-// -- the name is still Apple's and is what a program compares against.
-extern NSString *const PKPassLibraryRecoveredPassesUserInfoKey;
-extern NSString *const PKPassLibraryRemotePaymentPassesDidChangeNotification;
-
-NSString *const PKPassLibraryRecoveredPassesUserInfoKey = @"PKPassLibraryRecoveredPassesUserInfoKey";
-NSString *const PKPassLibraryRemotePaymentPassesDidChangeNotification = @"PKPassLibraryRemotePaymentPassesDidChange";
-
 // The release's own reading of a pass's JSON, which is in the armv7 cache of 6.1.3 (measured with
-// apple.objc.inventory) and which the 16.4 header does not declare. Declared and not implemented:
-// the method is the release's.
+// apple.objc.inventory) and which the 16.4 header does not declare. Declared and not implemented
+// here: the method is the release's.
 @interface PKPass (CharonReleaseJSON)
 - (NSDictionary *)dictionaryRepresentation;
 @end
 
-// The three members of the release's own PKPass this port answers: the pass's own JSON, the kind of
-// pass the pass itself says it is, and the dates the pass itself declares as relevant. PKPassType is
-// the SDK's own, with Apple's own values.
 @interface PKPass (CharonPassMembers)
 @property (nonatomic, readonly, copy) NSDictionary *userInfo;
 @property (nonatomic, readonly) PKPassType passType;

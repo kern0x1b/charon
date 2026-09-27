@@ -6,7 +6,6 @@
 // this class builds and a region the release's own MKMapView builds agree.
 #import <MapKit/MKMapCamera.h>
 #import <MapKit/MKMapItem.h>
-#import <UIKit/UIKit.h>
 #import <objc/message.h>
 #import <math.h>
 #import "CharonMapKit.h"
