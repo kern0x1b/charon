@@ -268,13 +268,53 @@ open class MeshResource {
     /// A plane in the x-y plane, one unit wide and one deep unless told otherwise. Measured on
     /// the host: `generatePlane(width: 2, height: 3)` is two wide, three high and flat in z.
     public static func generatePlane(width: Float, height: Float, cornerRadius: Float = 0) -> MeshResource {
-        __generatePlane(width: width, widthSegmentCount: 1, depth: height, depthSegmentCount: 1, cornerRadius: cornerRadius)
+        plane(width: width, across: 1, height: height, down: 1, inTheXZPlane: false)
     }
 
     /// A plane in the x-z plane. Measured on the host: `generatePlane(width: 2, depth: 3)` is two
     /// wide, three deep and flat in y.
     public static func generatePlane(width: Float, depth: Float, cornerRadius: Float = 0) -> MeshResource {
         __generatePlane(width: width, widthSegmentCount: 1, depth: depth, depthSegmentCount: 1, cornerRadius: cornerRadius)
+    }
+
+    /// A plane of quads across and down, flat in z when it is the x-y one and flat in y when it
+    /// is the x-z one. The two generators above differ only in which axis is flat, and the
+    /// host's answers are that they do: `generatePlane(width: 2, height: 3)` is flat in z and
+    /// `generatePlane(width: 2, depth: 3)` flat in y.
+    private static func plane(width: Float, across: Int, height: Float, down: Int,
+                              inTheXZPlane: Bool) -> MeshResource {
+        var descriptor = MeshDescriptor(name: "Plane")
+        var positions: [SIMD3<Float>] = []
+        var normals: [SIMD3<Float>] = []
+        var texCoords: [SIMD2<Float>] = []
+        var indices: [UInt32] = []
+        for row in 0...down {
+            for column in 0...across {
+                let u = Float(column) / Float(across)
+                let v = Float(row) / Float(down)
+                let along = (u - 0.5) * width
+                let other = (v - 0.5) * height
+                positions.append(inTheXZPlane ? SIMD3<Float>(along, 0, other) : SIMD3<Float>(along, other, 0))
+                normals.append(inTheXZPlane ? SIMD3<Float>(0, 1, 0) : SIMD3<Float>(0, 0, 1))
+                texCoords.append(SIMD2<Float>(u, v))
+            }
+        }
+        for row in 0..<down {
+            for column in 0..<across {
+                let topLeft = UInt32(row * (across + 1) + column)
+                let topRight = topLeft + 1
+                let bottomLeft = topLeft + UInt32(across + 1)
+                let bottomRight = bottomLeft + 1
+                indices += [topLeft, bottomLeft, topRight, topRight, bottomLeft, bottomRight]
+            }
+        }
+        descriptor[MeshBuffers.positions] = MeshBuffer(id: .positions, elements: positions)
+        descriptor[MeshBuffers.normals] = MeshBuffer(id: .normals, elements: normals)
+        descriptor[MeshBuffers.textureCoordinates] = MeshBuffer(id: .textureCoordinates, elements: texCoords)
+        descriptor[MeshBuffers.triangleIndices] = MeshBuffer(id: .triangleIndices, elements: indices,
+                                                             rate: .vertexNotInterpolated)
+        descriptor.primitives = .triangles(indices)
+        return MeshResource(descriptor)
     }
 
     /// A plane with as many quads across and down as asked for, its normal, its texture
