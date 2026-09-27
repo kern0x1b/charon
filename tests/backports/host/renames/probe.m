@@ -40,6 +40,21 @@ NSString *charon_renames_probe_value(NSString *name);
 
 @end
 
+// a category on the port's own class: the class is renamed, so the members of this one are already apart
+// from the host's class of the same name and must keep their own spelling
+@interface CharonRenamesProbe (CharonRenamesProbeExtras)
+- (id)extra;
+@end
+
+@implementation CharonRenamesProbe (CharonRenamesProbeExtras)
+
+- (id)extra
+{
+    return self;
+}
+
+@end
+
 @interface NSString (CharonRenamesProbeCategory)
 - (NSString *)probeOf:(id)object forKey:(id)key;
 @end

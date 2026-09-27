@@ -30,6 +30,9 @@ DEFINED = re.compile(r"[-+]\[[A-Za-z_][A-Za-z0-9_]*(?:\([A-Za-z0-9_]*\))? ([A-Za
 CLASS = re.compile(r"_OBJC_(?:META)?CLASS_\$_([A-Za-z_][A-Za-z0-9_]*)$")
 # every send names its selector as a symbol of its own, so what an object names is what it does not define
 SENT = re.compile(r"_objc_msgSend\$([A-Za-z_][A-Za-z0-9_:]*)")
+# and a name may be answered by a C symbol as well as by a method: dlsym(RTLD_DEFAULT, "CharonHostUICommandTagShare")
+# finds a renamed constant, which is what a test asks for when it looks a constant up that way
+DEFINED_SYMBOL = re.compile(r"^[0-9a-f]*\s*[a-zA-Z]\s+_?([A-Za-z_][A-Za-z0-9_:]*)$")
 
 
 def selectors(paths):
@@ -39,6 +42,9 @@ def selectors(paths):
     for path in paths:
         symbols = subprocess.run(["xcrun", "nm", path], capture_output=True, text=True)
         for line in symbols.stdout.splitlines():
+            exported = DEFINED_SYMBOL.match(line.strip())
+            if exported:
+                defined.add(exported.group(1))
             found = DEFINED.search(line)
             if found:
                 defined.add(found.group(1))

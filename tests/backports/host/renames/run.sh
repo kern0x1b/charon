@@ -89,6 +89,9 @@ check yes "$(present 'charonHostProbeOf:(id)object forKey:(id)key' "$build/probe
 check yes "$(present 'charonHostProbeOf:(__strong id)object forKey:(__strong id)key' "$build/declarations.h")" "and declared prefixed, whole"
 check no "$(present '-D' "$build/declarations.h")" "the declarations are method declarations, not -D defines"
 check yes "$(present '(id)setObject:(id)object forTrait:(id)trait' "$build/probe.renamed.m")" "the port class's own selector is left alone, its class is renamed instead"
+check yes "$(present '- (id)extra;' "$build/probe.renamed.m")" "a category on the port class's own member is left alone too"
+check no "$(present 'charonHostExtra' "$build/probe.renamed.m")" "and is not prefixed: the class rename already keeps it apart"
+check no "$(present 'charonHostExtra' "$build/declarations.h")" "so no prefixed declaration of it is emitted"
 
 # and the check above has teeth: a -D for the `object` of a selector does break that same file
 if xcrun clang $target $flags -Dobject=charonHostObject -DsetObject=setCharonHostObject -w -c "$build/subscript.m" -o "$build/broken.o" 2> "$build/broken.err"; then

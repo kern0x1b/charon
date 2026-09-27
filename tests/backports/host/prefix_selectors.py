@@ -16,10 +16,20 @@ def documents(text):
 
 
 def ported(objects):
+    """The selectors the objects' Charon categories carry, and the classes the objects themselves define.
+    A member of a class the port defines is not carried: the class is renamed, so nothing of it can reach
+    the host's class of the same name, and a member the port adds to its own class is the one the device
+    builds - UIAction (CharonFourteen)'s -sender lands on the port's own UIAction there, and on the port's
+    renamed class here. Prefixing it as well would leave the test calling a name only the host's class has."""
     names = subprocess.run(["xcrun", "nm", *objects], capture_output=True, text=True, check=True).stdout
-    found = set()
+    own, found = set(), set()
+    for line in names.splitlines():
+        parts = line.split()
+        if len(parts) == 3 and parts[1] != "U" and parts[2].startswith("_OBJC_CLASS_$_"):
+            own.add(parts[2][len("_OBJC_CLASS_$_"):])
     for kind, owner, selector in re.findall(r"([-+])\[([A-Za-z0-9_]+)\(Charon[A-Za-z0-9_]*\) ([A-Za-z0-9_:]+)\]", names):
-        found.add((kind, owner, selector))
+        if owner not in own:
+            found.add((kind, owner, selector))
     return found
 
 
