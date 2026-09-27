@@ -105,6 +105,19 @@ Two more where the host answers something the header does not describe, reproduc
 `LA_DIMENSION_MISMATCH_ERROR` where the header says a non-square matrix is answered with a least-squares solution - measured on a
 3x2 and a 2x3 A, both -1002.
 
+## The one tolerance in the differential, and what it is
+
+`tests/backports/host/linearalgebra` compares a status, a shape and every element exactly, with one
+exception: a product and a solve are compared to 1e-5 of the value, relative. That is not a widened
+expectation - it is the precision of the type. The two sides sum the same terms in a different order,
+and the host's own answers for the two systems the cases use differ from the port's in the last place a
+float has: 0.0909090787 against 0.0909090936, and 0.636363685 against 0.636363626 (both measured, both
+roundings of 1/11 and 7/11). A tolerance of zero would be asserting that two independent summations of
+the same terms produce the same bits, which is not true of any BLAS on any processor and is not what
+this port is claiming. Everything else - every status, every shape, every element of a sum, a
+difference, a product, a slice, a transpose, a norm and a solve whose terms are exact - is compared
+with no tolerance at all.
+
 ## What is reasoned rather than measured
 
 `la_normalized_vector` of an object whose scalar type does not match the norm's own is reasoned to answer

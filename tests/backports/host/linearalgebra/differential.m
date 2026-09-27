@@ -208,6 +208,13 @@ static la_object_t theirs_double(const double *buffer, la_count_t rows, la_count
     return la_matrix_from_double_buffer(buffer, rows, cols, cols, LA_NO_HINT, LA_DEFAULT_ATTRIBUTES);
 }
 
+// Where a result is a sum over a vector, the two sides add the same terms in a different order and the
+// answers differ in the last place a float has - the host answers 0.0909090787 and 0.636363685 for
+// [[4,1],[1,3]] against [1,2] where this port answers 0.0909090936 and 0.636363626, both roundings of
+// 1/11 and 7/11 (facts/Accelerate/LinearAlgebra.md). So a sum is compared to a thousandth of a place
+// and everything else is compared exactly: a status, a shape, an element that is a sum of two values,
+// a slice, a transpose, a norm, a dot product of whole numbers. A tolerance of zero here would be
+// asserting that two independent summations produce the same bits.
 #define TOLERANT 1e-5
 #define EXACT 0.0
 

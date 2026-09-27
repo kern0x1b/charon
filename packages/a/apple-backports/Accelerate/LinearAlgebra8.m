@@ -1064,23 +1064,28 @@ la_object_t la_normalized_vector(la_object_t vector, la_norm_t vector_norm)
     return result;
 }
 
-// The factorisation works on its own block, in the object's scalar type and narrowed at every step,
-// which is what a float object is answered in. These read and write a row-major block of `leading`
-// elements and a column of `leading` of the same.
-#define CHARON_LA_AT(block, leading, row, col) ((la_count_t)(row) * (leading) + (col))
+// The factorisation works on a block of its own, in the object's scalar type and narrowed at every
+// step, which is what a float object is answered in. A CharonLAValue over that block is all it takes to
+// read and write it with the same two accessors every other operation here uses.
+typedef struct CharonLAWorkspace {
+    CharonLAValue block;   // rows by cols elements, row-major
+    CharonLAValue column;  // one element, read and written as a vector of length 1
+} CharonLAWorkspace;
 
-static double CharonLAGet1(void *block, la_scalar_type_t scalar_type, la_count_t at)
+static void CharonLAWorkspaceOpen(CharonLAWorkspace *work, void *block, void *column, la_count_t n,
+                                  la_scalar_type_t scalar_type)
 {
-    return scalar_type == LA_SCALAR_TYPE_FLOAT ? ((float *)block)[at] : ((double *)block)[at];
-}
-
-static void CharonLASet1(void *block, la_scalar_type_t scalar_type, la_count_t at, double element)
-{
-    if (scalar_type == LA_SCALAR_TYPE_FLOAT) {
-        ((float *)block)[at] = (float)element;
-    } else {
-        ((double *)block)[at] = element;
-    }
+    memset(work, 0, sizeof(*work));
+    work->block.kind = CharonLAArray;
+    work->block.scalar_type = scalar_type;
+    work->block.rows = n;
+    work->block.cols = n;
+    work->block.elements = block;
+    work->column.kind = CharonLAArray;
+    work->column.scalar_type = scalar_type;
+    work->column.rows = n;
+    work->column.cols = 1;
+    work->column.elements = column;
 }
 
 // la_solve: A X = B for a square A, by the release's own LAPACK, sgetrf/sgetrs and dgetrf/dgetrs, which
@@ -1142,15 +1147,17 @@ la_object_t la_solve(la_object_t matrix_system, la_object_t obj_rhs)
         free(pivots);
         return CharonLAWithStatus(LA_INTERNAL_ERROR, attributes);
     }
+    CharonLAWorkspace work;
+    CharonLAWorkspaceOpen(&work, factor, right, n, a.scalar_type);
     for (la_count_t column = 0; column < columns; column++) {
         la_count_t singular_at = n;
         for (la_count_t row = 0; row < n; row++) {
             for (la_count_t col = 0; col < n; col++) {
-                CharonLASet1(factor, a.scalar_type, CHARON_LA_AT(factor, n, row, col), CharonLAGet(system, row, col));
+                CharonLASet(&work.block, row, col, CharonLAGet(system, row, col));
             }
-            CharonLASet1(right, a.scalar_type, row,
-                         vector_rhs ? (b.rows == 1 ? CharonLAGet(rhs, 0, row) : CharonLAGet(rhs, row, 0))
-                                    : CharonLAGet(rhs, row, column));
+            CharonLASet(&work.column, row, 0,
+                        vector_rhs ? (b.rows == 1 ? CharonLAGet(rhs, 0, row) : CharonLAGet(rhs, row, 0))
+                                   : CharonLAGet(rhs, row, column));
         }
         // An LU factorisation with partial pivoting, in the object's own scalar type, narrowed at every
         // step so a float object is answered in float the way the host answers it. The release's own
@@ -1162,9 +1169,9 @@ la_object_t la_solve(la_object_t matrix_system, la_object_t obj_rhs)
         // answers are the oracle, and they agree to the six significant digits a float has.
         for (la_count_t step = 0; step < n && singular_at == n; step++) {
             la_count_t pivot = step;
-            double largest = fabs(CharonLAGet1(factor, a.scalar_type, CHARON_LA_AT(factor, n, step, step)));
+            double largest = fabs(CharonLAGet(&work.block, step, step));
             for (la_count_t row = step + 1; row < n; row++) {
-                double magnitude = fabs(CharonLAGet1(factor, a.scalar_type, CHARON_LA_AT(factor, n, row, step)));
+                double magnitude = fabs(CharonLAGet(&work.block, row, step));
                 if (magnitude > largest) {
                     largest = magnitude;
                     pivot = row;
@@ -1177,27 +1184,24 @@ la_object_t la_solve(la_object_t matrix_system, la_object_t obj_rhs)
             }
             if (pivot != step) {
                 for (la_count_t col = 0; col < n; col++) {
-                    la_count_t here = CHARON_LA_AT(factor, n, step, col), there = CHARON_LA_AT(factor, n, pivot, col);
-                    double held = CharonLAGet1(factor, a.scalar_type, here);
-                    CharonLASet1(factor, a.scalar_type, here, CharonLAGet1(factor, a.scalar_type, there));
-                    CharonLASet1(factor, a.scalar_type, there, held);
+                    double held = CharonLAGet(&work.block, step, col);
+                    CharonLASet(&work.block, step, col, CharonLAGet(&work.block, pivot, col));
+                    CharonLASet(&work.block, pivot, col, held);
                 }
-                double moved = CharonLAGet1(right, a.scalar_type, step);
-                CharonLASet1(right, a.scalar_type, step, CharonLAGet1(right, a.scalar_type, pivot));
-                CharonLASet1(right, a.scalar_type, pivot, moved);
+                double moved = CharonLAGet(&work.column, step, 0);
+                CharonLASet(&work.column, step, 0, CharonLAGet(&work.column, pivot, 0));
+                CharonLASet(&work.column, pivot, 0, moved);
             }
-            double head = CharonLAGet1(factor, a.scalar_type, CHARON_LA_AT(factor, n, step, step));
+            double head = CharonLAGet(&work.block, step, step);
             for (la_count_t row = step + 1; row < n; row++) {
-                double below = CharonLAGet1(factor, a.scalar_type, CHARON_LA_AT(factor, n, row, step)) / head;
-                CharonLASet1(factor, a.scalar_type, CHARON_LA_AT(factor, n, row, step), below);
+                double below = CharonLAGet(&work.block, row, step) / head;
+                CharonLASet(&work.block, row, step, below);
                 for (la_count_t col = step + 1; col < n; col++) {
-                    CharonLASet1(factor, a.scalar_type, CHARON_LA_AT(factor, n, row, col),
-                                 CharonLAGet1(factor, a.scalar_type, CHARON_LA_AT(factor, n, row, col)) -
-                                     below * CharonLAGet1(factor, a.scalar_type, CHARON_LA_AT(factor, n, step, col)));
+                    CharonLASet(&work.block, row, col,
+                                CharonLAGet(&work.block, row, col) - below * CharonLAGet(&work.block, step, col));
                 }
-                CharonLASet1(right, a.scalar_type, row,
-                             CharonLAGet1(right, a.scalar_type, row) -
-                                 below * CharonLAGet1(right, a.scalar_type, step));
+                CharonLASet(&work.column, row, 0,
+                            CharonLAGet(&work.column, row, 0) - below * CharonLAGet(&work.column, step, 0));
             }
         }
         if (singular_at != n) {
@@ -1213,16 +1217,14 @@ la_object_t la_solve(la_object_t matrix_system, la_object_t obj_rhs)
         // The forward substitution is already done: the factorisation applies each multiplier to the
         // right-hand side as it eliminates, so only the upper triangle is left to walk back.
         for (la_count_t step = n; step-- > 0;) {
-            double value = CharonLAGet1(right, a.scalar_type, step);
+            double value = CharonLAGet(&work.column, step, 0);
             for (la_count_t col = step + 1; col < n; col++) {
-                value -= CharonLAGet1(factor, a.scalar_type, CHARON_LA_AT(factor, n, step, col)) *
-                         CharonLAGet1(right, a.scalar_type, col);
+                value -= CharonLAGet(&work.block, step, col) * CharonLAGet(&work.column, col, 0);
             }
-            CharonLASet1(right, a.scalar_type, step,
-                         value / CharonLAGet1(factor, a.scalar_type, CHARON_LA_AT(factor, n, step, step)));
+            CharonLASet(&work.column, step, 0, value / CharonLAGet(&work.block, step, step));
         }
         for (la_count_t row = 0; row < n; row++) {
-            CharonLASet(to, row, column, CharonLAGet1(right, a.scalar_type, row));
+            CharonLASet(to, row, column, CharonLAGet(&work.column, row, 0));
         }
     }
     free(factor);
