@@ -127,7 +127,12 @@ through unchanged (measured, 1, 2, 3, 4) while a call over `N = 0` writes nothin
 `memmove` inside the host's own `CreateSetup` and stops the process, so the port's NULL there is a refusal the differential cannot
 compare. The same is true of `DestroySetup(NULL)`: the header does not declare that argument nullable and the host reads through it,
 so the port takes it and does nothing - a difference in care rather than of behaviour, and one the differential records as the port's
-answer alone.
+answer alone. A third is a **window that names channels the setup does not have**: the release answers it on some shapes and
+stops the process on others, so the differential asserts the port's own answer there, which is the one the review measured on a
+shape the host survives - the cells the window covers change, the rest of the setup is left alone, and nothing is written past
+the block. That case is placed so an unclamped index would land on a cell the setup *does* have, which is what gives it teeth
+on a band with no AddressSanitizer: a two-section two-channel setup and a one-section four-channel window at channel one, and
+the two answers are 10 and 140 with the guard and 8 and 63 without it.
 
 ## What has not been run
 
