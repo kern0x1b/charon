@@ -11,7 +11,7 @@ where both cover a name they agree:
 | --- | --- |
 | the arm64e shared cache of iOS 18.0 | `.agent-work/plan-and-analysis/avfaudio/cfconst.lua`, the symbol's address from `libAVFAudio.dylib`'s export trie, then the pointer it holds, then the `__cfstring` that pointer names, then the bytes - with `cache.pointer_at` applying the cache's own slide info. The control for the reader is `UIApplicationOpenSettingsURLString` in the same cache, which it answers `app-settings:`. |
 | the arm64 caches of iOS 7.0 and 12.0 | the same reader, on a cache that is one file, where the image is `/System/Library/Frameworks/AVFoundation.framework/libAVFAudio.dylib`. |
-| the host's own AVFAudio | `.agent-work/plan-and-analysis/avfaudio/probe3.c`, `dlsym` for the symbol and `CFStringGetCString` for the bytes. |
+| the host's own AVFAudio | `.agent-work/plan-and-analysis/avfaudio/probe3.c` and `probe4.c`, `dlsym` for the symbol and `CFStringGetCString` for the bytes. |
 
 `tools/cfconst.py` in the repository root reads a **32-bit** cache header and a 16-byte symbol entry
 and cannot read the 64-bit split caches 16.0 and 18.0 are; the reader above is the same walk over
@@ -48,12 +48,20 @@ do not reach. That gap is why the six 14.0 port names below have the host as the
 | `AVAudioSessionPortContinuityMicrophone` | `ContinuityMicrophone` | host |
 | `AVAudioApplicationMuteStateKey` | `AVAudioApplicationMuteStateKey` | host |
 | `AVAudioApplicationInputMuteStateChangeNotification` | `AVAudioApplicationInputMuteStateChangeNotification` | host |
+| `AVAudioSessionModeShortFormVideo` | `AVAudioSessionModeShortFormVideo` | host |
+| `AVAudioSessionModeDualRoute` | `AVAudioSessionModeDualRoute` | host |
 
-`AVAudioSessionModeDualRoute` and `AVAudioSessionModeShortFormVideo` are **not** carried here: the
-corpus lists both as `code+lift`, but no release among those held exports either name
-(`dyld.load` over 7.0, 12.0, 16.0 and 18.0 - see `.agent-work/plan-and-analysis/avfaudio/whoknows.lua`),
-so there is no value to read and none was invented. They belong with the session's mode handling,
-where the corpus's own classification of them can be settled with a release that does export them.
+`AVAudioSessionModeShortFormVideo` and `AVAudioSessionModeDualRoute` are the two modes no held cache
+has. The 26.2 header dates them at **26.0** and **26.2** respectively, and the newest 64-bit cache
+on this machine is 18.0, so neither can be in it - confirmed, with `AVAudioSessionModeVoicePrompt`
+and five other modes as the controls in the same call, by `dyld.load` over 16.0 and 18.0
+(`.agent-work/plan-and-analysis/avfaudio/whoknows.lua`): six of the eight mode strings are exported
+and those two are not. Their values are therefore the host's own AVFAudio's, read with `dlsym`
+(`.agent-work/plan-and-analysis/avfaudio/probe4.c`, log `hostmodes.log`), where
+`AVAudioSessionModeDefault` and `AVAudioSessionModeVoicePrompt` are read in the same call as the
+controls. Both answer with the constant's own name, which is the shape every mode string that *is*
+readable out of a cache answers with. Each is in an object file of its own, because an object is
+carried from one release on and 26.0 is not 26.2.
 
 The five names of iOS 18.2 and later (`AVAudioApplicationMuteStateKey`,
 `AVAudioApplicationInputMuteStateChangeNotification`) are readable only from the host, because 18.2
