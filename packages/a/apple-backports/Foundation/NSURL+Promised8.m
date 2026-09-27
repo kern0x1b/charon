@@ -12,9 +12,14 @@
 
 @implementation NSURL (CharonPromisedItem)
 
+- (BOOL)charon_promisedItemIsReachable
+{
+    return [self checkPromisedItemIsReachableAndReturnError:NULL];
+}
+
 - (BOOL)getPromisedItemResourceValue:(id *)value forKey:(NSURLResourceKey)key error:(NSError **)error
 {
-    if ([self checkPromisedItemIsReachableAndReturnError:NULL])
+    if ([self charon_promisedItemIsReachable])
         return [self getResourceValue:value forKey:key error:error];
     if (value)
         *value = nil;

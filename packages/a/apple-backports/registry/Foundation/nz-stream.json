@@ -1,0 +1,185 @@
+{
+  "framework": "Foundation",
+  "entries": [
+    {
+      "api": "+[NSStream getStreamsToHostWithName:port:inputStream:outputStream:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "maximum": "8.3",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionStreamTask.md",
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+    },
+    {
+      "api": "+[NSStream getBoundStreamsWithBufferSize:inputStream:outputStream:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "maximum": "8.3",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionStreamTask.md",
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+    },
+    {
+      "api": "NSURLSessionStreamTask",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "maximum": "8.4.1",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionStreamTask.md",
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+    },
+    {
+      "api": "-[NSURLSessionStreamTask readDataOfMinLength:maxLength:timeout:completionHandler:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "maximum": "8.4.1",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionStreamTask.md",
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+    },
+    {
+      "api": "-[NSURLSessionStreamTask writeData:timeout:completionHandler:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "maximum": "8.4.1",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionStreamTask.md",
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+    },
+    {
+      "api": "-[NSURLSessionStreamTask captureStreams]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "maximum": "8.4.1",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionStreamTask.md",
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+    },
+    {
+      "api": "-[NSURLSessionStreamTask closeWrite]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "maximum": "8.4.1",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionStreamTask.md",
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+    },
+    {
+      "api": "-[NSURLSessionStreamTask closeRead]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "maximum": "8.4.1",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionStreamTask.md",
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+    },
+    {
+      "api": "-[NSURLSessionStreamTask startSecureConnection]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "maximum": "8.4.1",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionStreamTask.md",
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+    },
+    {
+      "api": "-[NSURLSessionStreamTask stopSecureConnection]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "maximum": "8.3",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionStreamTask.md",
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+    },
+    {
+      "api": "-[NSURLSession streamTaskWithHostName:port:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "maximum": "8.4.1",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionStreamTask.md",
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+    },
+    {
+      "api": "-[NSURLSession streamTaskWithNetService:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "maximum": "8.4.1",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionStreamTask.md",
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+    },
+    {
+      "api": "-[NSURLSessionStreamDelegate URLSession:streamTask:didBecomeInputStream:outputStream:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "maximum": "8.4.1",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionStreamTask.md",
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+    },
+    {
+      "api": "-[NSURLSessionStreamDelegate URLSession:betterRouteDiscoveredForStreamTask:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "maximum": "8.4.1",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionStreamTask.md",
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+    },
+    {
+      "api": "-[NSURLSessionStreamDelegate URLSession:readClosedForStreamTask:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "maximum": "8.4.1",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionStreamTask.md",
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+    },
+    {
+      "api": "-[NSURLSessionStreamDelegate URLSession:writeClosedForStreamTask:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "maximum": "8.4.1",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionStreamTask.md",
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+    },
+    {
+      "api": "+[NSURLSessionStreamTask new]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "maximum": "8.3",
+      "status": "absent",
+      "reason": "the SDK's own header deprecates it with \"please use -streamTaskWithHostName:port: or other NSURLSession methods to create instances\", and a task without a host and a port has no connection to drive",
+      "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
+    },
+    {
+      "api": "-[NSURLSessionStreamTask init]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "maximum": "8.3",
+      "status": "absent",
+      "reason": "the same deprecation, and the same reason: a stream task is a connection, and a connection is named",
+      "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
+    }
+  ]
+}

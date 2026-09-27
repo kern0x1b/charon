@@ -57,12 +57,19 @@ static char CharonProgressResumingKey;
     objc_setAssociatedObject(self, &CharonProgressResumingKey, [handler copy], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+/* The handler, reached by its own name: a category cannot use dot syntax for a method the selector
+   rewriter renames, and this file's own reader wants the renamed one. */
+- (void (^)(void))charon_progressResumingHandler
+{
+    return objc_getAssociatedObject(self, &CharonProgressResumingKey);
+}
+
 - (void)resume
 {
     BOOL wasPaused = self.isPaused;
     if (wasPaused)
         objc_setAssociatedObject(self, &CharonProgressPausedKey, @NO, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    void (^handler)(void) = self.resumingHandler;
+    void (^handler)(void) = [self charon_progressResumingHandler];
     if (handler && wasPaused)
         handler();
 }

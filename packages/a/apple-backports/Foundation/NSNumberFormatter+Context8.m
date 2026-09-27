@@ -80,12 +80,18 @@ static NSString *charon_release_string(NSNumberFormatter *formatter, NSNumber *n
     objc_setAssociatedObject(self, &CharonNumberFormatterGroupingKey, @(digits), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+/* Read by name, for the same reason as the progress's handler: the rewriter renames the selector. */
+- (NSUInteger)charon_numberFormatterMinimumGroupingDigits
+{
+    return [self minimumGroupingDigits];
+}
+
 - (NSString *)stringFromNumber:(NSNumber *)number
 {
     NSString *text = charon_release_string(self, number);
     if (!text)
         return text;
-    return charon_grouped(text, self.minimumGroupingDigits);
+    return charon_grouped(text, [self charon_numberFormatterMinimumGroupingDigits]);
 }
 
 @end
