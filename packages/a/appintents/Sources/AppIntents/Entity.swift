@@ -110,6 +110,12 @@ public protocol EnumerableEntityQuery: EntityQuery {
 
 extension EnumerableEntityQuery {
     public var findIntentDescription: IntentDescription? { return nil }
+
+    /// The entities an enumerable query suggests when the caller named none: every one it has, which
+    /// is what the framework's own default is.
+    public func suggestedEntities() async throws -> Result {
+        return try await allEntities()
+    }
 }
 
 /// A query whose entities are found by a string the caller wrote.
