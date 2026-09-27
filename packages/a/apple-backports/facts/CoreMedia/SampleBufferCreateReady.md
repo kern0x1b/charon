@@ -67,12 +67,45 @@ refcon and a C trampoline in front of it; the argument order of the invalidation
 rather than assumed, because with the callback third instead of second it stores the refcon as the
 function pointer and the process dies inside `CMSampleBufferInvalidate`.
 
-The implementation is not in the tree. It was written, it **crashes the host test with SIGBUS**, and it
-was reverted rather than delivered: freeing the copied block after the first make-data-ready call and
-also from the invalidation hook means a holder one path frees is handed to the other, because the
-release does not clear the invalidation callback when the trampoline has run. The live-holder table
-that fixes it was the last thing written and is not verified. So this entry stays open, and the registry
-says why in one clause rather than leaving the timing to be inferred.
+### The holder as an attachment, and what is still missing
+
+The block's lifetime is the buffer's if the holder is attached to the buffer: the attachments are
+released with the buffer, whatever path the buffer takes. `CMSetAttachment` is public at `ios(4.0)`, so
+nothing private is involved, and the trampoline only calls the block and never frees.
+
+**Measured, what the attachment is visible to**, with `CMSetAttachment(sbuf, CFSTR("CharonMakeDataReadyHolder"), value,
+kCMAttachmentMode_ShouldNotPropagate)` on a sample buffer the release created:
+
+| query | answer |
+| --- | --- |
+| `CMCopyDictionaryOfAttachments(..., kCMAttachmentMode_ShouldPropagate)` | `(null)` - not there |
+| `CMCopyDictionaryOfAttachments(..., kCMAttachmentMode_ShouldNotPropagate)` | the key is there |
+| `CMSampleBufferGetSampleAttachmentsArray(sbuf, true)` | one entry, **its key list is empty** |
+| `CMGetAttachment(sbuf, kCMAnyOtherKey, NULL)` | `NULL` |
+| the host's own creator, with or without a handler | leaves **no** attachment at all |
+| after `CMSampleBufferInvalidate` | gone, in both modes |
+
+So the key is reachable only by a caller that asks for `ShouldNotPropagate` attachments - which is
+exactly the "my own private attachments" query - and by `CMGetAttachment` with that one string. It is
+invisible to `CMSampleBufferGetSampleAttachmentsArray`, which is the call an application iterating a
+sample buffer's attachments actually makes. A key beginning with `Charon` cannot collide with an Apple
+one.
+
+**What is still missing, and it is a trap, not a lifetime.** The attachment design was written and it
+**traps the host test (SIGTRAP) on the port side of the first make-data-ready case**, where the system
+side of the *same* case passes (`create 0, ran 0` then `MakeDataReady 0, ran 1, ready 1`). The earlier
+attempt, which freed the copied block on whichever of the trampoline and the invalidation hook fired
+first, crashed with SIGBUS; the live-holder table that fixed that one was then replaced by the
+attachment, and the trap moved to the release's own `CMSampleBufferMakeDataReady`. The tree is back at
+the last green commit and this entry stays open, with the registry carrying the one clause that says
+where the handler runs.
+
+The next thing to ask, which is cheap and would settle it: does the release assert because the callback
+returned 0 **without** the block having made the data ready. Apple's own wording for the callback is
+"This callback must make the data ready ... If this callback succeeds and returns 0, the CMSampleBuffer
+will then be marked as 'data ready'", and the system's own handler in the same probe also only returned
+0 - so if the trap is an assertion about readiness, the difference between the two paths is the *refcon*,
+which on the port side is a bridged Objective-C object pointer where the system uses its own storage.
 
 ## `CMAudioSampleBufferCreateReadyWithPacketDescriptions` (8.0)
 
