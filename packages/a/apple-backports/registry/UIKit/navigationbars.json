@@ -60,6 +60,26 @@
    "effect": "the tap that hides the bar, made once per controller, where the host's is the private _UIBarTapGestureRecognizer: the case nav.tapGestureKind.diverges records that divergence",
    "facts": "facts/UIKit/ScrollViewsAndNavigation.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikitscroll (the nav.* cases, including the defaults, and the two divergence cases named .diverges); the recogniser is a public UITapGestureRecognizer where the host's is private, which this port may not name"
+  },
+  {
+   "api": "-[UINavigationControllerDelegate navigationControllerPreferredInterfaceOrientationForPresentation:]",
+   "kind": "method",
+   "introduced": "7.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "asked before the navigation controller answers which orientation to present in, and the delegate's answer is used; a delegate that answers neither leaves the release's own answer, which is what a stack with no delegate has always done. With no delegate the host answers neither portrait nor any particular mask, and that is recorded rather than assumed",
+   "facts": "facts/UIKit/ScrollViewsAndNavigation.md",
+   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikitscroll (the nav.delegatePreferredOrientationDefault and nav.delegateSupportedOrientationsDefault cases); the header of SDK 26.2 for the two questions"
+  },
+  {
+   "api": "-[UINavigationControllerDelegate navigationControllerSupportedInterfaceOrientations:]",
+   "kind": "method",
+   "introduced": "7.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "asked before the navigation controller answers which orientations it may rotate to, and the delegate's answer is used, with the release's own answer left for a delegate that answers neither",
+   "facts": "facts/UIKit/ScrollViewsAndNavigation.md",
+   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikitscroll (the nav.delegatePreferredOrientationDefault and nav.delegateSupportedOrientationsDefault cases); the header of SDK 26.2 for the two questions"
   }
  ]
 }
