@@ -84,6 +84,12 @@ package("swift-runtime")
     -- library, and loading it would pull UIKit into the process, so it is a config of its own.
     add_configs("backports_uikit", {description = "With backports: link the overlay of UIKit against libUIKitBackports, for an application that carries charon@apple-backports with its uikit config.", default = false, type = "boolean"})
 
+    -- The standard library the way Apple builds it, with resilient layouts and the symbols that keep its ABI: a program built
+    -- against an SDK's Swift standard library (a released application, lifted for a release that lacks it) binds to those and
+    -- to no others. What is built for a program of this port's own stays without: its layouts are fixed and its classes need
+    -- no metadata update from the Objective-C runtime.
+    add_configs("library_evolution", {description = "Build the standard library, the runtime and concurrency with library evolution, for programs compiled by an SDK's Swift that bind to its resilient symbols.", default = false, type = "boolean"})
+
     -- The runtime as a package of its own, /usr/lib/charon/org.charon.swift-runtime-<build>, that programs depend on and
     -- share, instead of libraries each of them carries. The build is part of the name: with no library evolution a program
     -- runs only against the build it was compiled with (see the mark).
@@ -244,9 +250,17 @@ package("swift-runtime")
             os.vrunv("cmake", {"--install", builddir})
         end
 
-        -- The standard library, the runtime and concurrency. Library evolution is off: the runtime ships with the program,
-        -- so nothing needs ABI stability, and a resilient layout would make a client's class need the metadata update of
-        -- iOS 12's Objective-C runtime, which the releases this is for do not have.
+        -- With library evolution the compiler writes the textual interface of a module and compiles it again to check it,
+        -- and the interface of a library built for the port's release cannot pass: the availability macros are all "always
+        -- available", as the runtime ships with the program, and the compiler holds a value generic, or concurrency, to the
+        -- release that introduced them. Only a client built by another compiler reads an interface; the ports of this runtime
+        -- are built by the one that built it, from the binary module, so none is written
+        -- (patches/no-module-interface-when-none-reads-it).
+        local no_interface = "-DSwiftCore_NO_MODULE_INTERFACE=" .. (package:config("library_evolution") and "ON" or "OFF")
+
+        -- The standard library, the runtime and concurrency. Library evolution is off unless the config asks for it: the
+        -- runtime ships with the program, so nothing needs ABI stability, and a resilient layout would make a client's class
+        -- need the metadata update of iOS 12's Objective-C runtime, which the releases this is for do not have.
         configure("core", path.join(source, "Runtimes", "Core"), {
             -- The compiler emits the pre-stable Swift bit for a deployment target below 12.2, and the runtime hardcodes the
             -- stable one on Apple platforms; built this way, a Swift class is recognised as one. The layouts of the
@@ -263,7 +277,8 @@ package("swift-runtime")
             "-Ddispatch_INCLUDE_DIR=" .. path.join(toolchain:config("sdkdir"), "usr", "include"),
             "-DSwiftCore_ENABLE_CRASH_REPORTER_CLIENT=OFF", "-DSwiftCore_ENABLE_BACKTRACING=OFF",
             "-DSwiftCore_ENABLE_STDLIB_TRACING=OFF", "-DSwiftCore_ENABLE_CONCURRENCY=ON",
-            "-DSwiftCore_ENABLE_STRICT_AVAILABILITY=OFF", "-DSwiftCore_ENABLE_LIBRARY_EVOLUTION=OFF",
+            "-DSwiftCore_ENABLE_STRICT_AVAILABILITY=OFF", "-DSwiftCore_ENABLE_LIBRARY_EVOLUTION=" .. (package:config("library_evolution") and "ON" or "OFF"),
+            no_interface,
             "-DSwiftCore_ENABLE_OBJC_INTEROP=ON", "-DSwiftCore_ENABLE_TYPE_PRINTING=ON", "-DSwiftCore_ENABLE_REFLECTION=ON",
             "-DSwiftCore_INSTALL_NESTED_SUBDIR=OFF"})
 
@@ -323,252 +338,260 @@ package("swift-runtime")
         offer(path.join(install, "Darwin.swiftmodule"))
         offer(path.join(install, "libswiftDarwin.dylib"))
 
-        -- The overlay of Objective-C: what a port needs to write a selector, to read a BOOL as a Bool and to hold an
-        -- autorelease pool. It is the release's own source, built against the C library's overlay as its own build did.
-        -- Its shim goes in beside the shims the standard library installed, because those are the ones every build here
-        -- reads and the ones a port is given; the standard library installs a list of its own and would not carry it.
-        -- The overlays above it are the release's own sources too, built by today's compiler in the language mode they were
-        -- written for. What of them the SDK of today no longer lets them write is changed by the patches beside them.
-        local overlays = path.absolute("overlays")
-        local overlay_patches = os.files(path.join(package:scriptdir(), "patches", "overlays", "*.patch"))
-        table.sort(overlay_patches)
-        for _, patch in ipairs(overlay_patches) do
-            os.vrunv("patch", {"-p1", "-i", patch}, {curdir = overlays})
-        end
-        -- The backports variant: the headers with what the backports implement lowered to the port's release, for the
-        -- overlays here and for every port that compiles against this runtime, which finds them through the environment.
-        local lifted, carried = {}, {}
-        local backported = package:dep("apple-backports")
-        if package:config("backports") then
-            local lift = import("apple.lift", {rootdir = modules, anonymous = true})
-            -- what the lift leaves alone is checked against the set measured for this SDK (lift/<sdk folder>.txt, as the lift writes it to
-            -- share/lift/left-alone.txt): a name that is not in it, or one that is gone, fails the build with the name
-            local measured = path.join(package:scriptdir(), "lift", path.filename(toolchain:config("sdkdir")) .. ".txt")
-            local result = lift.lift({clang = toolchain:tool("cc"), swiftc = swiftc, sdk = toolchain:config("sdkdir"), triple = triple,
-                                      minimum = minimum, registry = backported:installdir("share"),
-                                      outputdir = path.join(package:installdir("share"), "lift"),
-                                      expected = os.isfile(measured) and io.readfile(measured) or ""})
-            print("lifted %d marks in %d headers for %d implemented API; left alone: %d classes, %d other names the lift found no declaration of, %d members no class reaches a declaration of (share/lift/left-alone.txt)",
-                  result.lifted, result.headers, result.implemented, #result.classes, #result.unmatched, #result.undeclared)
-            lifted = {"-vfsoverlay", result.vfs}
-            package:setenv("CHARON_SWIFT_LIFTED_HEADERS", result.vfs)
-            -- the configs of apple-backports whose libraries the overlays link, which a port must carry as well
-            package:setenv("CHARON_SWIFT_RUNTIME_BACKPORTS", package:config("backports_uikit") and "coredata,uikit" or "coredata")
-            carried.FoundationBackports = path.join(backported:installdir("lib"), "libFoundationBackports.dylib")
-            carried.CoreDataBackports = path.join(backported:installdir("lib"), "libCoreDataBackports.dylib")
+        -- The other overlays are the ones the SDK lacks for this architecture. Its Darwin is only an interface for arm64, and
+        -- Synchronization and Observation import it, so that one is built above; the rest the SDK has for arm64 as interfaces
+        -- the compiler builds when a module imports one, and building this runtime's own beside them does not work: the
+        -- interface of the SDK's Foundation names CGFloat in CoreFoundation, where the overlay built here keeps it in
+        -- CoreGraphics, and QuartzCore stops on it. An arm64 install is the standard library, its runtime, Darwin and the
+        -- supplemental libraries, for a guest of the recompiler that binds to the SDK's overlays by name.
+        if not package:is_arch("arm64") then
+            -- The overlay of Objective-C: what a port needs to write a selector, to read a BOOL as a Bool and to hold an
+            -- autorelease pool. It is the release's own source, built against the C library's overlay as its own build did.
+            -- Its shim goes in beside the shims the standard library installed, because those are the ones every build here
+            -- reads and the ones a port is given; the standard library installs a list of its own and would not carry it.
+            -- The overlays above it are the release's own sources too, built by today's compiler in the language mode they were
+            -- written for. What of them the SDK of today no longer lets them write is changed by the patches beside them.
+            local overlays = path.absolute("overlays")
+            local overlay_patches = os.files(path.join(package:scriptdir(), "patches", "overlays", "*.patch"))
+            table.sort(overlay_patches)
+            for _, patch in ipairs(overlay_patches) do
+                os.vrunv("patch", {"-p1", "-i", patch}, {curdir = overlays})
+            end
+            -- The backports variant: the headers with what the backports implement lowered to the port's release, for the
+            -- overlays here and for every port that compiles against this runtime, which finds them through the environment.
+            local lifted, carried = {}, {}
+            local backported = package:dep("apple-backports")
+            if package:config("backports") then
+                local lift = import("apple.lift", {rootdir = modules, anonymous = true})
+                -- what the lift leaves alone is checked against the set measured for this SDK (lift/<sdk folder>.txt, as the lift writes it to
+                -- share/lift/left-alone.txt): a name that is not in it, or one that is gone, fails the build with the name
+                local measured = path.join(package:scriptdir(), "lift", path.filename(toolchain:config("sdkdir")) .. ".txt")
+                local result = lift.lift({clang = toolchain:tool("cc"), swiftc = swiftc, sdk = toolchain:config("sdkdir"), triple = triple,
+                                          minimum = minimum, registry = backported:installdir("share"),
+                                          outputdir = path.join(package:installdir("share"), "lift"),
+                                          expected = os.isfile(measured) and io.readfile(measured) or ""})
+                print("lifted %d marks in %d headers for %d implemented API; left alone: %d classes, %d other names the lift found no declaration of, %d members no class reaches a declaration of (share/lift/left-alone.txt)",
+                      result.lifted, result.headers, result.implemented, #result.classes, #result.unmatched, #result.undeclared)
+                lifted = {"-vfsoverlay", result.vfs}
+                package:setenv("CHARON_SWIFT_LIFTED_HEADERS", result.vfs)
+                -- the configs of apple-backports whose libraries the overlays link, which a port must carry as well
+                package:setenv("CHARON_SWIFT_RUNTIME_BACKPORTS", package:config("backports_uikit") and "coredata,uikit" or "coredata")
+                carried.FoundationBackports = path.join(backported:installdir("lib"), "libFoundationBackports.dylib")
+                carried.CoreDataBackports = path.join(backported:installdir("lib"), "libCoreDataBackports.dylib")
+                if package:config("backports_uikit") then
+                    carried.UIKitBackports = path.join(backported:installdir("lib"), "libUIKitBackports.dylib")
+                end
+                -- The marks the Foundation patch puts on what came with iOS 7 are left out where the backports carry it; what
+                -- stays marked is what they do not, named here so that it is a decision rather than a guess.
+                local foundation = path.join(overlays, "stdlib", "public", "Darwin", "Foundation")
+                for _, file in ipairs(os.files(path.join(foundation, "*.swift"))) do
+                    if not still_ios7[path.filename(file)] then
+                        io.writefile(file, (io.readfile(file):gsub("\n[ \t]*@available%(macOS 10%.9, iOS 7%.0, %*%)\n", "\n")))
+                    end
+                end
+                for _, name in ipairs(lowered_with_backports) do
+                    local file = path.join(foundation, name)
+                    io.writefile(file, (io.readfile(file):gsub("@available%(([^)]*)%)", function (arguments)
+                        return "@available(" .. arguments:gsub("iOS (%d+)%.(%d+)", function (major, minor)
+                            local release = tonumber(major)
+                            return (release >= 7 and release <= 11) and "iOS " .. minimum or "iOS " .. major .. "." .. minor
+                        end) .. ")"
+                    end)))
+                end
+            end
+            local installed_shims = path.join(install, "shims")
+            local shim_modules = path.join(installed_shims, "module.modulemap")
+            for _, name in ipairs({"ObjectiveC", "Dispatch", "CoreFoundation", "Foundation"}) do
+                os.vcp(path.join(overlays, "stdlib", "public", "SwiftShims", name .. "OverlayShims.h"), installed_shims .. "/")
+                local module = "_Swift" .. name .. "OverlayShims"
+                if not io.readfile(shim_modules):find(module, 1, true) then
+                    io.writefile(shim_modules, io.readfile(shim_modules) ..
+                                 string.format("\nmodule %s {\n  header \"%sOverlayShims.h\"\n}\n", module, name))
+                end
+            end
+            -- The overlay of Foundation reads its shims through the headers they include, one per class or type it reaches.
+            local shim_headers = table.join(os.files(path.join(overlays, "stdlib", "public", "SwiftShims", "NS*Shims.h")),
+                                            os.files(path.join(overlays, "stdlib", "public", "SwiftShims", "CF*Shims.h")))
+            for _, header in ipairs(shim_headers) do
+                os.vcp(header, installed_shims .. "/")
+            end
+            os.vcp(path.join(overlays, "stdlib", "public", "SwiftShims", "FoundationShimSupport.h"), installed_shims .. "/")
+            local uikit = path.absolute("uikit")
+            local uikit_patches = os.files(path.join(package:scriptdir(), "patches", "uikit", "*.patch"))
+            table.sort(uikit_patches)
+            for _, patch in ipairs(uikit_patches) do
+                os.vrunv("patch", {"-p1", "-i", patch}, {curdir = uikit})
+            end
             if package:config("backports_uikit") then
-                carried.UIKitBackports = path.join(backported:installdir("lib"), "libUIKitBackports.dylib")
-            end
-            -- The marks the Foundation patch puts on what came with iOS 7 are left out where the backports carry it; what
-            -- stays marked is what they do not, named here so that it is a decision rather than a guess.
-            local foundation = path.join(overlays, "stdlib", "public", "Darwin", "Foundation")
-            for _, file in ipairs(os.files(path.join(foundation, "*.swift"))) do
-                if not still_ios7[path.filename(file)] then
-                    io.writefile(file, (io.readfile(file):gsub("\n[ \t]*@available%(macOS 10%.9, iOS 7%.0, %*%)\n", "\n")))
+                -- What the UIKit backports carry of the iOS 11 wrappers: UIFontMetrics through UIFont.TextStyle.metrics, and the
+                -- comparison of content size categories, from iOS 7 where the type came. NSDirectionalEdgeInsets stays marked (the registry does not carry
+                -- every user of the type), and so do the focus and drag and drop wrappers, which nobody carries.
+                local file = path.join(uikit, "stdlib", "public", "Darwin", "UIKit", "UIKit.swift")
+                local text = io.readfile(file)
+                local function lowered(block)
+                    return (block:gsub("@available%(iOS 11%.0", "@available(iOS " .. minimum))
                 end
+                local count
+                text, count = text:gsub("(extension UIFont%.TextStyle {.-\n})", lowered)
+                assert(count == 1, "UIKit.swift has no extension of UIFont.TextStyle")
+                -- UIContentSizeCategory itself stays at iOS 7 (one of its users, a limit on a view, is iOS 15 and not carried),
+                -- and a member cannot be more available than the extension that holds it: its comparison comes down to 7
+                text, count = text:gsub("(extension UIContentSizeCategory {.-\n}\n)", function (block)
+                    return (block:gsub("@available%(iOS 11%.0", "@available(iOS 7.0"))
+                end)
+                assert(count == 1, "UIKit.swift has no extension of UIContentSizeCategory")
+                io.writefile(file, text)
             end
-            for _, name in ipairs(lowered_with_backports) do
-                local file = path.join(foundation, name)
-                io.writefile(file, (io.readfile(file):gsub("@available%(([^)]*)%)", function (arguments)
-                    return "@available(" .. arguments:gsub("iOS (%d+)%.(%d+)", function (major, minor)
-                        local release = tonumber(major)
-                        return (release >= 7 and release <= 11) and "iOS " .. minimum or "iOS " .. major .. "." .. minor
-                    end) .. ")"
-                end)))
-            end
-        end
-        local installed_shims = path.join(install, "shims")
-        local shim_modules = path.join(installed_shims, "module.modulemap")
-        for _, name in ipairs({"ObjectiveC", "Dispatch", "CoreFoundation", "Foundation"}) do
-            os.vcp(path.join(overlays, "stdlib", "public", "SwiftShims", name .. "OverlayShims.h"), installed_shims .. "/")
-            local module = "_Swift" .. name .. "OverlayShims"
-            if not io.readfile(shim_modules):find(module, 1, true) then
+            os.vcp(path.join(uikit, "stdlib", "public", "SwiftShims", "UIKitOverlayShims.h"), installed_shims .. "/")
+            if not io.readfile(shim_modules):find("_SwiftUIKitOverlayShims", 1, true) then
                 io.writefile(shim_modules, io.readfile(shim_modules) ..
-                             string.format("\nmodule %s {\n  header \"%sOverlayShims.h\"\n}\n", module, name))
+                             "\nmodule _SwiftUIKitOverlayShims {\n  header \"UIKitOverlayShims.h\"\n}\n")
             end
-        end
-        -- The overlay of Foundation reads its shims through the headers they include, one per class or type it reaches.
-        local shim_headers = table.join(os.files(path.join(overlays, "stdlib", "public", "SwiftShims", "NS*Shims.h")),
-                                        os.files(path.join(overlays, "stdlib", "public", "SwiftShims", "CF*Shims.h")))
-        for _, header in ipairs(shim_headers) do
-            os.vcp(header, installed_shims .. "/")
-        end
-        os.vcp(path.join(overlays, "stdlib", "public", "SwiftShims", "FoundationShimSupport.h"), installed_shims .. "/")
-        local uikit = path.absolute("uikit")
-        local uikit_patches = os.files(path.join(package:scriptdir(), "patches", "uikit", "*.patch"))
-        table.sort(uikit_patches)
-        for _, patch in ipairs(uikit_patches) do
-            os.vrunv("patch", {"-p1", "-i", patch}, {curdir = uikit})
-        end
-        if package:config("backports_uikit") then
-            -- What the UIKit backports carry of the iOS 11 wrappers: UIFontMetrics through UIFont.TextStyle.metrics, and the
-            -- comparison of content size categories, from iOS 7 where the type came. NSDirectionalEdgeInsets stays marked (the registry does not carry
-            -- every user of the type), and so do the focus and drag and drop wrappers, which nobody carries.
-            local file = path.join(uikit, "stdlib", "public", "Darwin", "UIKit", "UIKit.swift")
-            local text = io.readfile(file)
-            local function lowered(block)
-                return (block:gsub("@available%(iOS 11%.0", "@available(iOS " .. minimum))
-            end
-            local count
-            text, count = text:gsub("(extension UIFont%.TextStyle {.-\n})", lowered)
-            assert(count == 1, "UIKit.swift has no extension of UIFont.TextStyle")
-            -- UIContentSizeCategory itself stays at iOS 7 (one of its users, a limit on a view, is iOS 15 and not carried),
-            -- and a member cannot be more available than the extension that holds it: its comparison comes down to 7
-            text, count = text:gsub("(extension UIContentSizeCategory {.-\n}\n)", function (block)
-                return (block:gsub("@available%(iOS 11%.0", "@available(iOS 7.0"))
-            end)
-            assert(count == 1, "UIKit.swift has no extension of UIContentSizeCategory")
-            io.writefile(file, text)
-        end
-        os.vcp(path.join(uikit, "stdlib", "public", "SwiftShims", "UIKitOverlayShims.h"), installed_shims .. "/")
-        if not io.readfile(shim_modules):find("_SwiftUIKitOverlayShims", 1, true) then
-            io.writefile(shim_modules, io.readfile(shim_modules) ..
-                         "\nmodule _SwiftUIKitOverlayShims {\n  header \"UIKitOverlayShims.h\"\n}\n")
-        end
-        local function overlay_sources_of(name, files)
-            local found = {}
-            for _, file in ipairs(files) do
-                table.insert(found, path.join(overlays, "stdlib", "public", "Darwin", name, file))
-            end
-            return found
-        end
-        -- One overlay: its module, in the layout the others are installed in, and its library, which a port finds by the
-        -- run path it carries.
-        local function build_overlay(name, overlay_sources, links, objects, opt)
-            local module = path.join(install, name .. ".swiftmodule")
-            os.mkdir(module)
-            local flags = table.join({"-target", triple, "-resource-dir", resources, "-module-name", name,
-                                      "-parse-as-library", "-swift-version", "5", "-O", "-wmo",
-                                      "-Xfrontend", "-disable-implicit-string-processing-module-import"}, use_ld,
-                                     (opt and opt.concurrency) and {} or {"-Xfrontend", "-disable-implicit-concurrency-module-import"},
-                                     runtime_flags, swift.availability(source),
-                                     -- the lifted headers only where the backports are linked: an overlay that does not
-                                     -- carry them would bind what the headers now call available to the system's library
-                                     (opt and opt.backports) and lifted or {})
-            local object = path.join(generated, name .. ".o")
-            -- The overlays built here are named to the linker by their paths, not by -l: the driver lists every framework
-            -- before every -l, and today's SDK's Foundation exports the Swift symbols of its own overlay (marked as moved
-            -- only for iOS 12.2 to 16), so an -lswiftFoundation behind -framework Foundation loses them to the system.
-            local linked = {}
-            -- ahead of the frameworks, for the same reason: the classes the backports carry are bound to them
-            for _, library in ipairs(opt and opt.backports or {}) do
-                if carried[library] then
-                    table.insert(linked, carried[library])
+            local function overlay_sources_of(name, files)
+                local found = {}
+                for _, file in ipairs(files) do
+                    table.insert(found, path.join(overlays, "stdlib", "public", "Darwin", name, file))
                 end
+                return found
             end
-            for _, link in ipairs(links) do
-                local library = link:match("^%-l(swift.+)$")
-                table.insert(linked, library and path.join(install, "lib" .. library .. ".dylib") or link)
+            -- One overlay: its module, in the layout the others are installed in, and its library, which a port finds by the
+            -- run path it carries.
+            local function build_overlay(name, overlay_sources, links, objects, opt)
+                local module = path.join(install, name .. ".swiftmodule")
+                os.mkdir(module)
+                local flags = table.join({"-target", triple, "-resource-dir", resources, "-module-name", name,
+                                          "-parse-as-library", "-swift-version", "5", "-O", "-wmo",
+                                          "-Xfrontend", "-disable-implicit-string-processing-module-import"}, use_ld,
+                                         (opt and opt.concurrency) and {} or {"-Xfrontend", "-disable-implicit-concurrency-module-import"},
+                                         runtime_flags, swift.availability(source),
+                                         -- the lifted headers only where the backports are linked: an overlay that does not
+                                         -- carry them would bind what the headers now call available to the system's library
+                                         (opt and opt.backports) and lifted or {})
+                local object = path.join(generated, name .. ".o")
+                -- The overlays built here are named to the linker by their paths, not by -l: the driver lists every framework
+                -- before every -l, and today's SDK's Foundation exports the Swift symbols of its own overlay (marked as moved
+                -- only for iOS 12.2 to 16), so an -lswiftFoundation behind -framework Foundation loses them to the system.
+                local linked = {}
+                -- ahead of the frameworks, for the same reason: the classes the backports carry are bound to them
+                for _, library in ipairs(opt and opt.backports or {}) do
+                    if carried[library] then
+                        table.insert(linked, carried[library])
+                    end
+                end
+                for _, link in ipairs(links) do
+                    local library = link:match("^%-l(swift.+)$")
+                    table.insert(linked, library and path.join(install, "lib" .. library .. ".dylib") or link)
+                end
+                os.vrunv(swiftc, table.join(flags, {"-emit-module", "-emit-module-path",
+                         path.join(module, package:arch() .. "-apple-ios.swiftmodule"),
+                         "-emit-object", "-module-link-name", "swift" .. name, "-o", object}, overlay_sources))
+                os.vrunv(swiftc, table.join(flags, {"-emit-library", "-o", path.join(install, "libswift" .. name .. ".dylib"),
+                         object, table.unpack(objects or {})}, {"-Xlinker", "-install_name", "-Xlinker", "@rpath/libswift" .. name .. ".dylib",
+                         "-L" .. install, "-lswiftCore"}, linked))
+                offer(module)
+                offer(path.join(install, "libswift" .. name .. ".dylib"))
             end
-            os.vrunv(swiftc, table.join(flags, {"-emit-module", "-emit-module-path",
-                     path.join(module, package:arch() .. "-apple-ios.swiftmodule"),
-                     "-emit-object", "-module-link-name", "swift" .. name, "-o", object}, overlay_sources))
-            os.vrunv(swiftc, table.join(flags, {"-emit-library", "-o", path.join(install, "libswift" .. name .. ".dylib"),
-                     object, table.unpack(objects or {})}, {"-Xlinker", "-install_name", "-Xlinker", "@rpath/libswift" .. name .. ".dylib",
-                     "-L" .. install, "-lswiftCore"}, linked))
-            offer(module)
-            offer(path.join(install, "libswift" .. name .. ".dylib"))
-        end
-        build_overlay("ObjectiveC", overlay_sources_of("ObjectiveC", {"ObjectiveC.swift"}), {"-lswiftDarwin"})
-        -- Dispatch: its queues are Objective-C objects from iOS 6, which is what the overlay takes them for. Its constructor
-        -- is Objective-C++, compiled the way the port's own C is; Schedulers+DispatchQueue.swift is left out, being Combine's.
-        local dispatch_object = path.join(generated, "Dispatch.mm.o")
-        os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
-                 -- It adds the protocols of libdispatch's sources to their class, and reads them from the headers the way
-                 -- Swift does: the headers declare them only where OS_OBJECT_SWIFT3 is set, which importing them into Swift sets.
-                 toolchain:config("sdkdir"), "-Os", "-DOS_OBJECT_SWIFT3=1", "-c",
-                 path.join(overlays, "stdlib", "public", "Darwin", "Dispatch", "Dispatch.mm"),
-                 "-o", dispatch_object})
-        build_overlay("Dispatch", overlay_sources_of("Dispatch", {"Dispatch.swift", "Block.swift", "Data.swift", "IO.swift",
-                                                                  "Private.swift", "Queue.swift", "Source.swift", "Time.swift"}),
-                      {"-lswiftDarwin", "-lswiftObjectiveC"}, {dispatch_object})
-        build_overlay("CoreFoundation", overlay_sources_of("CoreFoundation", {"CoreFoundation.swift"}),
-                      {"-lswiftDarwin", "-framework", "CoreFoundation"})
-        -- CGFloat is generated for the width of the target's pointer, as the release's own build generated it.
-        local graphics = path.join(generated, "CGFloat.swift")
-        os.vrunv("python3", {path.join(source, "utils", "gyb.py"),
-                             "-DCMAKE_SIZEOF_VOID_P=" .. (package:arch() == "arm64" and "8" or "4"),
-                             "--line-directive", "", "-o", graphics,
-                             path.join(overlays, "stdlib", "public", "Darwin", "CoreGraphics", "CGFloat.swift.gyb")})
-        -- Private.swift is left out: it is the release's migration aid, a declaration of each C call the overlay renamed,
-        -- unavailable and ending in fatalError, and in the overlay's own module it hides the C calls the patches reach.
-        build_overlay("CoreGraphics", table.join({graphics}, overlay_sources_of("CoreGraphics", {"CoreGraphics.swift", "Geometry.swift"})),
-                      {"-lswiftDarwin", "-lswiftObjectiveC", "-lswiftCoreFoundation",
-                       "-framework", "CoreGraphics", "-framework", "CoreFoundation"})
-
-        -- Foundation: the release's sources but those of Combine, which no release before iOS 13 has, with its value types
-        -- generated as its own build generated them and its two files of Objective-C compiled the way the port's own are.
-        local foundation = path.join(overlays, "stdlib", "public", "Darwin", "Foundation")
-        local values = path.join(generated, "NSValue.swift")
-        os.vrunv("python3", {path.join(source, "utils", "gyb.py"), "-DCMAKE_SIZEOF_VOID_P=" .. (package:arch() == "arm64" and "8" or "4"),
-                             "--line-directive", "", "-o", values, path.join(foundation, "NSValue.swift.gyb")})
-        local foundation_objects = {}
-        for _, file in ipairs({"DataThunks.m", "BundleLookup.mm"}) do
-            local object = path.join(generated, file .. ".o")
+            build_overlay("ObjectiveC", overlay_sources_of("ObjectiveC", {"ObjectiveC.swift"}), {"-lswiftDarwin"})
+            -- Dispatch: its queues are Objective-C objects from iOS 6, which is what the overlay takes them for. Its constructor
+            -- is Objective-C++, compiled the way the port's own C is; Schedulers+DispatchQueue.swift is left out, being Combine's.
+            local dispatch_object = path.join(generated, "Dispatch.mm.o")
             os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
-                     toolchain:config("sdkdir"), "-Os", "-I" .. path.join(source, "stdlib", "public", "SwiftShims"),
-                     "-c", path.join(foundation, file), "-o", object})
-            table.insert(foundation_objects, object)
-        end
-        build_overlay("Foundation", table.join({values}, overlay_sources_of("Foundation", {
-            "AffineTransform.swift", "Boxing.swift", "Calendar.swift", "CharacterSet.swift",
-            "CheckClass.swift", "Codable.swift", "Collections+DataProtocol.swift", "ContiguousBytes.swift",
-            "Data.swift", "DataProtocol.swift", "Date.swift", "DateComponents.swift", "DateInterval.swift",
-            "Decimal.swift", "DispatchData+DataProtocol.swift", "FileManager.swift", "Foundation.swift",
-            "IndexPath.swift", "IndexSet.swift", "JSONEncoder.swift", "Locale.swift", "Measurement.swift",
-            "Notification.swift", "NSArray.swift", "NSCoder.swift", "NSData+DataProtocol.swift",
-            "NSDate.swift", "NSDictionary.swift", "NSError.swift", "NSExpression.swift",
-            "NSFastEnumeration.swift", "NSGeometry.swift", "NSIndexSet.swift", "NSItemProvider.swift",
-            "NSNumber.swift", "NSObject.swift", "NSOrderedCollectionDifference.swift", "NSPredicate.swift",
-            "NSRange.swift", "NSSet.swift", "NSSortDescriptor.swift", "NSString.swift", "NSStringAPI.swift",
-            "NSStringEncodings.swift", "NSTextCheckingResult.swift", "NSUndoManager.swift", "NSURL.swift",
-            "PersonNameComponents.swift", "PlistEncoder.swift", "Pointers+DataProtocol.swift",
-            "Progress.swift", "ReferenceConvertible.swift", "Scanner.swift", "String.swift", "TimeZone.swift",
-            "URL.swift", "URLCache.swift", "URLComponents.swift", "URLRequest.swift", "URLSession.swift",
-            "UUID.swift"})),
-                      {"-lswiftDarwin", "-lswiftObjectiveC", "-lswiftDispatch", "-lswiftCoreFoundation", "-lswiftCoreGraphics",
-                       "-framework", "Foundation", "-framework", "CoreFoundation"}, foundation_objects,
-                      -- URLSession has async calls, which want the concurrency library the runtime already carries.
-                      {concurrency = true, backports = {"FoundationBackports"}})
+                     -- It adds the protocols of libdispatch's sources to their class, and reads them from the headers the way
+                     -- Swift does: the headers declare them only where OS_OBJECT_SWIFT3 is set, which importing them into Swift sets.
+                     toolchain:config("sdkdir"), "-Os", "-DOS_OBJECT_SWIFT3=1", "-c",
+                     path.join(overlays, "stdlib", "public", "Darwin", "Dispatch", "Dispatch.mm"),
+                     "-o", dispatch_object})
+            build_overlay("Dispatch", overlay_sources_of("Dispatch", {"Dispatch.swift", "Block.swift", "Data.swift", "IO.swift",
+                                                                      "Private.swift", "Queue.swift", "Source.swift", "Time.swift"}),
+                          {"-lswiftDarwin", "-lswiftObjectiveC"}, {dispatch_object})
+            build_overlay("CoreFoundation", overlay_sources_of("CoreFoundation", {"CoreFoundation.swift"}),
+                          {"-lswiftDarwin", "-framework", "CoreFoundation"})
+            -- CGFloat is generated for the width of the target's pointer, as the release's own build generated it.
+            local graphics = path.join(generated, "CGFloat.swift")
+            os.vrunv("python3", {path.join(source, "utils", "gyb.py"),
+                                 "-DCMAKE_SIZEOF_VOID_P=" .. (package:arch() == "arm64" and "8" or "4"),
+                                 "--line-directive", "", "-o", graphics,
+                                 path.join(overlays, "stdlib", "public", "Darwin", "CoreGraphics", "CGFloat.swift.gyb")})
+            -- Private.swift is left out: it is the release's migration aid, a declaration of each C call the overlay renamed,
+            -- unavailable and ending in fatalError, and in the overlay's own module it hides the C calls the patches reach.
+            build_overlay("CoreGraphics", table.join({graphics}, overlay_sources_of("CoreGraphics", {"CoreGraphics.swift", "Geometry.swift"})),
+                          {"-lswiftDarwin", "-lswiftObjectiveC", "-lswiftCoreFoundation",
+                           "-framework", "CoreGraphics", "-framework", "CoreFoundation"})
 
-        -- QuartzCore and UIKit, from the release that last had them: CATransform3D and UIKit's structures cross to NSValue,
-        -- UIKit's structures compare and are Codable, and its alert and action sheet take their buttons as variadic
-        -- arguments through an initializer its one file of Objective-C adds.
-        local function generated_from(folder, name)
-            local output = path.join(generated, name)
+            -- Foundation: the release's sources but those of Combine, which no release before iOS 13 has, with its value types
+            -- generated as its own build generated them and its two files of Objective-C compiled the way the port's own are.
+            local foundation = path.join(overlays, "stdlib", "public", "Darwin", "Foundation")
+            local values = path.join(generated, "NSValue.swift")
             os.vrunv("python3", {path.join(source, "utils", "gyb.py"), "-DCMAKE_SIZEOF_VOID_P=" .. (package:arch() == "arm64" and "8" or "4"),
-                                 "--line-directive", "", "-o", output, path.join(uikit, "stdlib", "public", "Darwin", folder, name .. ".gyb")})
-            return output
-        end
-        local foundation_links = {"-lswiftDarwin", "-lswiftObjectiveC", "-lswiftDispatch", "-lswiftCoreFoundation",
-                                  "-lswiftCoreGraphics", "-lswiftFoundation", "-framework", "Foundation", "-framework", "CoreFoundation"}
-        build_overlay("QuartzCore", {generated_from("QuartzCore", "NSValue.swift")},
-                      table.join(foundation_links, {"-framework", "QuartzCore"}))
-        local initializers = path.join(generated, "DesignatedInitializers.mm.o")
-        os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
-                 toolchain:config("sdkdir"), "-Os", "-c", path.join(uikit, "stdlib", "public", "Darwin", "UIKit", "DesignatedInitializers.mm"),
-                 "-o", initializers})
-        build_overlay("UIKit", {path.join(uikit, "stdlib", "public", "Darwin", "UIKit", "UIKit.swift"),
-                                generated_from("UIKit", "UIKit_FoundationExtensions.swift")},
-                      table.join(foundation_links, {"-lswiftQuartzCore", "-framework", "QuartzCore", "-framework", "UIKit"}), {initializers},
-                      {backports = package:config("backports_uikit") and {"UIKitBackports", "FoundationBackports"} or nil})
+                                 "--line-directive", "", "-o", values, path.join(foundation, "NSValue.swift.gyb")})
+            local foundation_objects = {}
+            for _, file in ipairs({"DataThunks.m", "BundleLookup.mm"}) do
+                local object = path.join(generated, file .. ".o")
+                os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
+                         toolchain:config("sdkdir"), "-Os", "-I" .. path.join(source, "stdlib", "public", "SwiftShims"),
+                         "-c", path.join(foundation, file), "-o", object})
+                table.insert(foundation_objects, object)
+            end
+            build_overlay("Foundation", table.join({values}, overlay_sources_of("Foundation", {
+                "AffineTransform.swift", "Boxing.swift", "Calendar.swift", "CharacterSet.swift",
+                "CheckClass.swift", "Codable.swift", "Collections+DataProtocol.swift", "ContiguousBytes.swift",
+                "Data.swift", "DataProtocol.swift", "Date.swift", "DateComponents.swift", "DateInterval.swift",
+                "Decimal.swift", "DispatchData+DataProtocol.swift", "FileManager.swift", "Foundation.swift",
+                "IndexPath.swift", "IndexSet.swift", "JSONEncoder.swift", "Locale.swift", "Measurement.swift",
+                "Notification.swift", "NSArray.swift", "NSCoder.swift", "NSData+DataProtocol.swift",
+                "NSDate.swift", "NSDictionary.swift", "NSError.swift", "NSExpression.swift",
+                "NSFastEnumeration.swift", "NSGeometry.swift", "NSIndexSet.swift", "NSItemProvider.swift",
+                "NSNumber.swift", "NSObject.swift", "NSOrderedCollectionDifference.swift", "NSPredicate.swift",
+                "NSRange.swift", "NSSet.swift", "NSSortDescriptor.swift", "NSString.swift", "NSStringAPI.swift",
+                "NSStringEncodings.swift", "NSTextCheckingResult.swift", "NSUndoManager.swift", "NSURL.swift",
+                "PersonNameComponents.swift", "PlistEncoder.swift", "Pointers+DataProtocol.swift",
+                "Progress.swift", "ReferenceConvertible.swift", "Scanner.swift", "String.swift", "TimeZone.swift",
+                "URL.swift", "URLCache.swift", "URLComponents.swift", "URLRequest.swift", "URLSession.swift",
+                "UUID.swift"})),
+                          {"-lswiftDarwin", "-lswiftObjectiveC", "-lswiftDispatch", "-lswiftCoreFoundation", "-lswiftCoreGraphics",
+                           "-framework", "Foundation", "-framework", "CoreFoundation"}, foundation_objects,
+                          -- URLSession has async calls, which want the concurrency library the runtime already carries.
+                          {concurrency = true, backports = {"FoundationBackports"}})
 
-        -- CoreData: the generic fetch and count of a context, CoreData's error codes as CocoaError's, and its one file of
-        -- Objective-C, which makes the classes a fetch answers conform to NSFetchRequestResult where the release does not.
-        local coredata = path.join(uikit, "stdlib", "public", "Darwin", "CoreData")
-        local conformances = path.join(generated, "CoreData.mm.o")
-        os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
-                 toolchain:config("sdkdir"), "-Os", "-c", path.join(coredata, "CoreData.mm"), "-o", conformances})
-        build_overlay("CoreData", {path.join(coredata, "CocoaError.swift"), path.join(coredata, "NSManagedObjectContext.swift")},
-                      table.join(foundation_links, {"-framework", "CoreData"}), {conformances},
-                      {backports = {"FoundationBackports", "CoreDataBackports"}})
+            -- QuartzCore and UIKit, from the release that last had them: CATransform3D and UIKit's structures cross to NSValue,
+            -- UIKit's structures compare and are Codable, and its alert and action sheet take their buttons as variadic
+            -- arguments through an initializer its one file of Objective-C adds.
+            local function generated_from(folder, name)
+                local output = path.join(generated, name)
+                os.vrunv("python3", {path.join(source, "utils", "gyb.py"), "-DCMAKE_SIZEOF_VOID_P=" .. (package:arch() == "arm64" and "8" or "4"),
+                                     "--line-directive", "", "-o", output, path.join(uikit, "stdlib", "public", "Darwin", folder, name .. ".gyb")})
+                return output
+            end
+            local foundation_links = {"-lswiftDarwin", "-lswiftObjectiveC", "-lswiftDispatch", "-lswiftCoreFoundation",
+                                      "-lswiftCoreGraphics", "-lswiftFoundation", "-framework", "Foundation", "-framework", "CoreFoundation"}
+            build_overlay("QuartzCore", {generated_from("QuartzCore", "NSValue.swift")},
+                          table.join(foundation_links, {"-framework", "QuartzCore"}))
+            local initializers = path.join(generated, "DesignatedInitializers.mm.o")
+            os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
+                     toolchain:config("sdkdir"), "-Os", "-c", path.join(uikit, "stdlib", "public", "Darwin", "UIKit", "DesignatedInitializers.mm"),
+                     "-o", initializers})
+            build_overlay("UIKit", {path.join(uikit, "stdlib", "public", "Darwin", "UIKit", "UIKit.swift"),
+                                    generated_from("UIKit", "UIKit_FoundationExtensions.swift")},
+                          table.join(foundation_links, {"-lswiftQuartzCore", "-framework", "QuartzCore", "-framework", "UIKit"}), {initializers},
+                          {backports = package:config("backports_uikit") and {"UIKitBackports", "FoundationBackports"} or nil})
+
+            -- CoreData: the generic fetch and count of a context, CoreData's error codes as CocoaError's, and its one file of
+            -- Objective-C, which makes the classes a fetch answers conform to NSFetchRequestResult where the release does not.
+            local coredata = path.join(uikit, "stdlib", "public", "Darwin", "CoreData")
+            local conformances = path.join(generated, "CoreData.mm.o")
+            os.vrunv(toolchain:tool("cc"), {"-target", triple, "-miphoneos-version-min=" .. minimum, "-isysroot",
+                     toolchain:config("sdkdir"), "-Os", "-c", path.join(coredata, "CoreData.mm"), "-o", conformances})
+            build_overlay("CoreData", {path.join(coredata, "CocoaError.swift"), path.join(coredata, "NSManagedObjectContext.swift")},
+                          table.join(foundation_links, {"-framework", "CoreData"}), {conformances},
+                          {backports = {"FoundationBackports", "CoreDataBackports"}})
+        end
 
         -- The supplemental libraries, each its own project, against the standard library built above.
         for _, library in ipairs({"Synchronization", "Observation", "StringProcessing"}) do
             configure(library:lower(), path.join(source, "Runtimes", "Supplemental", library),
                       {swiftflags = {"-resource-dir", resources}}, {
                 "-DSwiftCore_DIR=" .. path.join(package:installdir("lib"), "cmake", "SwiftCore"),
-                "-DCMAKE_FIND_PACKAGE_PREFER_CONFIG=YES"})
+                "-DCMAKE_FIND_PACKAGE_PREFER_CONFIG=YES", no_interface})
             offer(path.join(install, "*.swiftmodule"))
             offer(path.join(install, "iphoneos", "*.swiftmodule"))
             offer(path.join(install, "iphoneos", package:arch(), "*.dylib"))
