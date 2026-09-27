@@ -1,4 +1,5 @@
 #import <Accelerate/Accelerate.h>
+#import <Foundation/Foundation.h>   // BOOL, which the 4.3 include chain does not reach on its own
 #include <math.h>
 #include <string.h>
 

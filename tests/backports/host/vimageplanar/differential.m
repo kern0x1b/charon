@@ -161,12 +161,12 @@ int main(void)
 {
     setbuf(stdout, NULL);
     @autoreleasepool {
-        report(spread("vImageConvert_ARGB16UtoPlanar16U", vImageConvert_ARGB16UtoPlanar16U, charon_host_vImageConvert_ARGB16UtoPlanar16U, 4, 0), "vImageConvert_ARGB16UtoPlanar16U", "the rows differ", 0);
-        report(spread("vImageConvert_RGB16UtoPlanar16U", vImageConvert_RGB16UtoPlanar16U, charon_host_vImageConvert_RGB16UtoPlanar16U, 3, 0), "vImageConvert_RGB16UtoPlanar16U", "the rows differ", 0);
+        report(spread("vImageConvert_ARGB16UtoPlanar16U", vImageConvert_ARGB16UtoPlanar16U, charon_host_vImageConvert_ARGB16UtoPlanar16U, 4, 2), "vImageConvert_ARGB16UtoPlanar16U", "the rows differ", 0);
+        report(spread("vImageConvert_RGB16UtoPlanar16U", vImageConvert_RGB16UtoPlanar16U, charon_host_vImageConvert_RGB16UtoPlanar16U, 3, 2), "vImageConvert_RGB16UtoPlanar16U", "the rows differ", 0);
         report(spread("vImageConvert_ARGB8888toPlanar16Q12", vImageConvert_ARGB8888toPlanar16Q12, charon_host_vImageConvert_ARGB8888toPlanar16Q12, 4, 1), "vImageConvert_ARGB8888toPlanar16Q12", "the rows differ", 0);
         report(spread("vImageConvert_RGB888toPlanar16Q12", vImageConvert_RGB888toPlanar16Q12, charon_host_vImageConvert_RGB888toPlanar16Q12, 3, 1), "vImageConvert_RGB888toPlanar16Q12", "the rows differ", 0);
-        report(gather("vImageConvert_Planar16UtoARGB16U", vImageConvert_Planar16UtoARGB16U, charon_host_vImageConvert_Planar16UtoARGB16U, 4, 0), "vImageConvert_Planar16UtoARGB16U", "the rows differ", 0);
-        report(gather("vImageConvert_Planar16UtoRGB16U", vImageConvert_Planar16UtoRGB16U, charon_host_vImageConvert_Planar16UtoRGB16U, 3, 0), "vImageConvert_Planar16UtoRGB16U", "the rows differ", 0);
+        report(gather("vImageConvert_Planar16UtoARGB16U", vImageConvert_Planar16UtoARGB16U, charon_host_vImageConvert_Planar16UtoARGB16U, 4, 2), "vImageConvert_Planar16UtoARGB16U", "the rows differ", 0);
+        report(gather("vImageConvert_Planar16UtoRGB16U", vImageConvert_Planar16UtoRGB16U, charon_host_vImageConvert_Planar16UtoRGB16U, 3, 2), "vImageConvert_Planar16UtoRGB16U", "the rows differ", 0);
         report(gather("vImageConvert_Planar16Q12toARGB8888", vImageConvert_Planar16Q12toARGB8888, charon_host_vImageConvert_Planar16Q12toARGB8888, 4, 1), "vImageConvert_Planar16Q12toARGB8888", "the rows differ", 0);
         report(gather("vImageConvert_Planar16Q12toRGB888", vImageConvert_Planar16Q12toRGB888, charon_host_vImageConvert_Planar16Q12toRGB888, 3, 1), "vImageConvert_Planar16Q12toRGB888", "the rows differ", 0);
         printf("%d checks, %d failures\n", checks, failures);

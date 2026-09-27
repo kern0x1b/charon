@@ -93,10 +93,20 @@ int main(void)
                                         256,      1023,     1024,     2047,     2048,     4095,     4096,     16383,
                                         16384,    32767,    32768,    49151,    49152,    57343,    57344,    61439,
                                         61440,    64511,    64512,    65023,    65024,    65535,    65534,    65473};
-        const int16_t q12[COUNT] = {0,      16,     2048,   16384,   32768,  32767,  32769,  4096,
-                                    4095,   65535,  65536,  0x7FFF,  0x8000, 0x8001, 0xC000, 0x3C00,
-                                    0x3800, 0x4000, 0x0400, 0xFC00,  0x2000,  0xE000,  0x1000,  0x3000,
-                                    0x5000,  0x7000,  0x0800,  0xF000,  0xBFFF,  0xCFFF};
+        // The Q12 table, and the three points that decide how 1.0 is rounded: 2049 and 4094 are a little
+        // over and under it and 4095 is the largest value that is still under it, so a mapping that rounded
+        // the other way, or that used the neighbouring power of two, answers differently at all three.
+        // - 2049, 4094 and 4095 decide how 1.0 is rounded, one a little over, one a little under and one the
+        //   largest value still under it;
+        // - 265, 522 and 1036 are values where the eight-bit answer differs if the scale is 255/4095 rather
+        //   than 255/4096, which no other value in the table would catch;
+        // - -4, -5 and -8 are the values whose scaled answer lands in (-0.5, 0], which is the only place the
+        //   saturation's own bounds can be told from one another.
+        const int16_t q12[COUNT] = {0,     16,    -4,     -5,     -8,     265,    522,     1036,
+                                    2048,  2049,  4094,   4095,   4096,   8192,    16384,   16385,
+                                    0x7FFF, 0x8000, 0x8001, 0xC000, 0x3C00, 0x3800, 0x4000,  0x0400,
+                                    0xFC00, 0x2000, 0xE000, 0x1000, 0x3000, 0x5000, 0x7000,  0x0800,
+                                    0xF000, 0xBFFF, 0xCFFF, 0xFFFE};
         const uint16_t half[COUNT] = {0x0000, 0x8000, 0x3C00, 0x3C01, 0x3800, 0x4000, 0x7BFF, 0x0400,
                                       0x3555, 0x4900, 0x0001, 0x7C00, 0xFC00, 0x0200, 0x2E66, 0x6E66,
                                       0x5C00, 0x4400, 0x1400, 0x1F80, 0x2400, 0x2A00, 0x3000, 0x31FF,
@@ -109,18 +119,19 @@ int main(void)
                                      1.0e-7f,    -1.0e-7f,     0.99999988f, -0.99999988f, 65535.0f,    -65535.0f,
                                      0.000244140625f, 4096.0f,   -4096.0f,   0.001f,      1000.0f,     -0.5f};
         // the sixteen-bit tables, as sixteen-bit words
-        uint8_t ramp16[COUNT * 2], half8[COUNT * 2], small8[COUNT], float8[COUNT * 4];
+        uint8_t ramp16[COUNT * 2], half8[COUNT * 2], q12_8[COUNT * 2], small8[COUNT], float8[COUNT * 4];
         for (int at = 0; at < COUNT; at++) {
             memcpy(ramp16 + at * 2, &ramp32[at], 2);
             memcpy(half8 + at * 2, &half[at], 2);
+            memcpy(q12_8 + at * 2, &q12[at], 2);
             small8[at] = small[at];
             memcpy(float8 + at * 4, &floats[at], 4);
         }
 
-        compare("vImageConvert_16Q12to16U", vImageConvert_16Q12to16U, charon_host_vImageConvert_16Q12to16U, half8, 2, 2, 2);
-        compare("vImageConvert_16Q12to8", vImageConvert_16Q12to8, charon_host_vImageConvert_16Q12to8, half8, 2, 1, 2);
-        compare("vImageConvert_16Q12toF", vImageConvert_16Q12toF, charon_host_vImageConvert_16Q12toF, half8, 2, 4, 2);
-        compare("vImageConvert_16Q12to16F", vImageConvert_16Q12to16F, charon_host_vImageConvert_16Q12to16F, half8, 2, 2, 2);
+        compare("vImageConvert_16Q12to16U", vImageConvert_16Q12to16U, charon_host_vImageConvert_16Q12to16U, q12_8, 2, 2, 2);
+        compare("vImageConvert_16Q12to8", vImageConvert_16Q12to8, charon_host_vImageConvert_16Q12to8, q12_8, 2, 1, 2);
+        compare("vImageConvert_16Q12toF", vImageConvert_16Q12toF, charon_host_vImageConvert_16Q12toF, q12_8, 2, 4, 2);
+        compare("vImageConvert_16Q12to16F", vImageConvert_16Q12to16F, charon_host_vImageConvert_16Q12to16F, q12_8, 2, 2, 2);
         // vImageConvert_16Fto16U is not carried, and the one thing the host does reproduce is kept here so
         // the record stays checkable: over a row with no infinity in it, the answer for 0.5. The buffer was
         // checked before any of this was called a difference in the oracle - rowBytes, alignment, a guard

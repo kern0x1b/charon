@@ -1,5 +1,7 @@
 # The interleaved and planar moves of vImage, iOS 7.0
 
+
+The whole vImage half of this library answers **4.3**: the objects are this port's own arithmetic over headers the 4.3 SDK has, and the gate builds every one of them for 4.3 (measured - the 4.3 band's own note about what it leaves out no longer names any Accelerate object, and 134 of 134 registry rows are exported in its artifact).
 Eight entry points in `Accelerate/vImagePlanar7.m`, and the twenty-four that are still to come in this group are named
 at the end. Measured from the release's own armv7 caches, 7.0 is the first held release that exports the eight, so the file
 holds the API of exactly one release.
